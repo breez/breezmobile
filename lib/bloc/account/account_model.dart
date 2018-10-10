@@ -53,7 +53,7 @@ class AccountModel {
         return "Breez is opening a secure channel with our server (this usually takes ~10 minutes to be completed)";
       }
       if (this.active) {
-        return "Processing incomoing transfer";
+        return "Transferring funds";
       }
     }        
     
