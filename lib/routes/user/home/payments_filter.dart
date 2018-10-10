@@ -1,0 +1,93 @@
+import 'package:breez/widgets/fixed_sliver_delegate.dart';
+import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
+
+class PaymentFilterSliver extends StatefulWidget {
+
+  final ScrollController _controller;
+  final Function(String fitler) _onFilterChanged;
+  final double _minSize;
+  final double _maxSize;
+  final String _filter;
+  
+  PaymentFilterSliver(this._controller, this._onFilterChanged, this._minSize, this._maxSize, this._filter);
+
+  @override
+  State<StatefulWidget> createState() {
+    return PaymentFilterSliverState();
+  }
+}
+
+class PaymentFilterSliverState extends State<PaymentFilterSliver> {
+
+  @override
+  void initState() {    
+    super.initState();
+    widget._controller.addListener((){
+      setState((){});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double scrollOffset = widget._controller.position.pixels;
+    return SliverPersistentHeader(
+        pinned: true,
+        delegate: new FixedSliverDelegate(widget._filter != "All Activities" ? widget._maxSize : (scrollOffset).clamp(widget._minSize, widget._maxSize),
+            builder: (context, shrinkedHeight, overlapContent) {
+          return Container(
+              decoration: BoxDecoration(color: theme.BreezColors.blue[500]),
+              height: widget._maxSize,
+              child: AnimatedOpacity(
+                  duration: Duration(milliseconds: 100),
+                  opacity: widget._filter != "All Activities" ? 1.0 : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
+                  child: PaymentsFilter(widget._filter, widget._onFilterChanged)));
+        }),
+      );
+  }
+}
+
+class PaymentsFilter extends StatelessWidget {
+  final String _filter;
+  final Function(String fitler) _onFilterChanged;
+
+  PaymentsFilter(this._filter, this._onFilterChanged);
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = <Widget>[];
+    children.add(
+      new Padding(
+        padding: EdgeInsets.only(left: 16.0, right: 16.0),
+        child: ImageIcon(
+          AssetImage("src/icon/calendar.png"),
+          color: Colors.white,
+          size: 24.0,
+        ),
+      ),
+    );
+    children.add(
+      new Container(
+        width: 150.0,
+        child: new DropdownButtonHideUnderline(
+          child: ButtonTheme(
+            alignedDropdown: true,
+            child: new DropdownButton(
+                value: _filter,
+                style: theme.transactionTitleStyle,
+                items: <String>['All Activities', 'Sent', 'Received'].map((String value) {
+                  return new DropdownMenuItem<String>(
+                    value: value,
+                    child: new Text(
+                      value,
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) => _onFilterChanged(value)),
+          ),
+        ),
+      ),
+    );
+    return Row(children: children);
+  }
+}

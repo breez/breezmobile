@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package breez_client;
+
+message Invoice {
+  string description = 1;
+  string logo = 2;
+  int64 amount = 3;
+}

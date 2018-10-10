@@ -1,0 +1,12 @@
+lib/services/breez_server/protobuf/breez.proto
+.DS_Store
+.atom/
+.dart_tool/
+.idea
+.vscode/
+.packages
+.pub/
+build/
+ios/.generated/
+packages
+.flutter-plugins

@@ -1,0 +1,5 @@
+<resources>
+    <string name="breez_apdu_service">Breez NFC Service</string>
+    <string name="breez_nfc_service">Breez NFC Service</string>
+    <string name="breez_apdu_service_description">Breez NFC Service</string>
+</resources>

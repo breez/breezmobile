@@ -1,0 +1,123 @@
+import 'dart:async';
+import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
+import 'package:breez/bloc/connect_pay/firebase_session_channel.dart';
+import 'package:breez/bloc/connect_pay/online_status_updater.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/injector.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:breez/services/share.dart';
+import 'package:uuid/uuid.dart';
+import 'connect_pay_model.dart';
+
+/*
+A concrete implementation of RemoteSession from the payer side.
+*/
+class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
+  String _currentSessionInvite;
+  
+  final _sentInvitesController = new StreamController<String>();
+  Sink<String> get sentInvitesSink => _sentInvitesController.sink;
+
+  final _amountController = new StreamController<int>();
+  Sink<int> get amountSink => _amountController.sink;
+
+  final _paymentSessionController = new BehaviorSubject<PaymentSessionState>();
+  Stream<PaymentSessionState> get paymentSessionStateStream => _paymentSessionController.stream;
+
+  final _sessionErrorsController = new StreamController<PaymentSessionError>.broadcast();
+  Stream<PaymentSessionError> get sessionErrors => _sessionErrorsController.stream;  
+
+  PaymentSessionChannel _channel;  
+  BreezBridge _breezLib = ServiceInjector().breezBridge; 
+  BreezUserModel _currentUser; 
+
+  PayerRemoteSession(this._currentUser) : super(_currentUser){
+    _startSession();
+  }
+
+  _startSession() async {
+    String sessionSecret = await _generateSecret();    
+    _amountController.stream.listen((amount) {
+      _sendAmount(amount).catchError(_onError);
+    });
+    _watchInviteRequests(sessionSecret);
+    _channel = new PaymentSessionChannel(sessionSecret, true);    
+    _watchPayeeMessages();    
+    _paymentSessionController.add(PaymentSessionState.payerStart(sessionSecret, _currentUser.name, _currentUser.avatarURL));
+    startPushingStatuses('remote-payments/$sessionSecret/payer/status', (status) {
+      var payerData = _currentSession.payerData;
+      _paymentSessionController.add(_currentSession.copyWith(payerData: payerData.copyWith(status: status)));
+    });  
+    _channel.sendDataUpdate("userName", _currentUser.name);
+    _channel.sendDataUpdate("imageURL", _currentUser.avatarURL);
+  }
+
+  Future terminate() async {
+    await _channel.terminate(destroyHistory: true);
+    await _amountController.close();
+    await _paymentSessionController.close();
+    await _sessionErrorsController.close();
+    await stopPushingStatuses();
+  }
+
+  void _watchInviteRequests(String sessionSecret){
+    ServiceInjector().deepLinks.generateInviteLink(sessionSecret).then((inviteLink) {
+       _currentSessionInvite = inviteLink;
+       _paymentSessionController.add(
+            _currentSession.copyWith(invitationReady: true));
+    });
+    _sentInvitesController.stream.listen((inviteLink) async{      
+      if (await Share.share('${_currentUser.name} wants to pay you via Breez...\nFollow this link to receive payment: ${Uri.encodeFull(_currentSessionInvite)}')) {
+        _paymentSessionController.add(
+            _currentSession.copyWith(invitationSent: true));
+      }
+    });
+  }
+
+  void _watchPayeeMessages() {    
+    _channel.incomingMessagesStream.listen((data) {
+      PayeeSessionData newPayeeData = PayeeSessionData.fromJson(data ?? {});
+      PaymentSessionState nextState = _currentSession.copyWith(payeeData: newPayeeData);
+      String paymentRequest = nextState.payeeData.paymentRequest;
+      if (paymentRequest != null) {
+        _breezLib.decodePaymentRequest(paymentRequest).then((invoice) {  
+          if (invoice.amount.toInt() != _currentSession.payerData.amount) {
+            throw new Exception("Wrong amount in payment request");
+          }        
+          _paymentSessionController.add(nextState);
+          return _breezLib.sendPaymentForRequest(paymentRequest)
+          .then((res) => _onPaymenetFulfilled(invoice));
+        })
+        .catchError(_onError);
+      } else {
+        _paymentSessionController.add(nextState);
+      }
+    });   
+  }
+
+  _onPaymenetFulfilled(InvoiceMemo invoice){
+    _channel.sendDataUpdate("paymentFulfilled", true).then((_){
+      _paymentSessionController.add(_currentSession.copyWith(paymentFulfilled: true, settledAmount: invoice.amount.toInt()));
+    });
+  }
+
+  _onError(err){
+    _channel.sendDataUpdate("error", err.toString()).then((_){
+      _sessionErrorsController.add(PaymentSessionError.unknown(err.toString()));
+    });
+  }
+
+  Future<void> _sendAmount(int amount) {
+    return _channel.sendDataUpdate("amount", amount).then((res){
+         _paymentSessionController.add(_currentSession.copyWith(payerData: _currentSession.payerData.copyWith(amount: amount)));
+    });    
+  }
+
+  Future<String> _generateSecret() async{
+    return Uuid().v4();  
+  }
+
+  PaymentSessionState get _currentSession => _paymentSessionController.value;
+}

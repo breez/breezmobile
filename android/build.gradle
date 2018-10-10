@@ -1,0 +1,50 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "https://maven.google.com"
+        }
+        google()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.1.2'
+        classpath 'com.google.gms:google-services:3.1.0'
+    }
+}
+
+allprojects {
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            def requested = details.requested
+            if (requested.name == 'firebase-core') {
+                details.useVersion "16.0.4"
+            }
+            if (requested.name == 'firebase-messaging') {
+                details.useVersion "17.3.3"
+            }
+            if (requested.name == 'firebase-database') {
+                details.useVersion "16.0.3"
+            }
+        }
+    }
+    repositories {
+        google()
+        jcenter()
+        flatDir {
+        dirs 'libs'
+      }
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

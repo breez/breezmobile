@@ -1,0 +1,433 @@
+///
+//  Generated code. Do not modify.
+///
+// ignore_for_file: non_constant_identifier_names,library_prefixes
+library data_rpc;
+
+// ignore: UNUSED_SHOWN_NAME
+import 'dart:core' show int, bool, double, String, List, override;
+
+import 'package:fixnum/fixnum.dart';
+import 'package:protobuf/protobuf.dart';
+
+import 'rpc.pbenum.dart';
+
+export 'rpc.pbenum.dart';
+
+class ChainStatus extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('ChainStatus')
+    ..a<int>(1, 'blockHeight', PbFieldType.OU3)
+    ..aOB(2, 'syncedToChain')
+    ..hasRequiredFields = false
+  ;
+
+  ChainStatus() : super();
+  ChainStatus.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  ChainStatus.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  ChainStatus clone() => new ChainStatus()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static ChainStatus create() => new ChainStatus();
+  static PbList<ChainStatus> createRepeated() => new PbList<ChainStatus>();
+  static ChainStatus getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyChainStatus();
+    return _defaultInstance;
+  }
+  static ChainStatus _defaultInstance;
+  static void $checkItem(ChainStatus v) {
+    if (v is! ChainStatus) checkItemFailed(v, 'ChainStatus');
+  }
+
+  int get blockHeight => $_get(0, 0);
+  set blockHeight(int v) { $_setUnsignedInt32(0, v); }
+  bool hasBlockHeight() => $_has(0);
+  void clearBlockHeight() => clearField(1);
+
+  bool get syncedToChain => $_get(1, false);
+  set syncedToChain(bool v) { $_setBool(1, v); }
+  bool hasSyncedToChain() => $_has(1);
+  void clearSyncedToChain() => clearField(2);
+}
+
+class _ReadonlyChainStatus extends ChainStatus with ReadonlyMessageMixin {}
+
+class Account extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('Account')
+    ..aOS(1, 'id')
+    ..aInt64(2, 'balance')
+    ..aInt64(3, 'remoteBalance')
+    ..aInt64(4, 'walletBalance')
+    ..aInt64(5, 'nonDepositableBalance')
+    ..e<Account_AccountStatus>(6, 'status', PbFieldType.OE, Account_AccountStatus.WAITING_DEPOSIT, Account_AccountStatus.valueOf, Account_AccountStatus.values)
+    ..aInt64(9, 'maxAllowedToReceive')
+    ..aInt64(10, 'maxPaymentAmount')
+    ..hasRequiredFields = false
+  ;
+
+  Account() : super();
+  Account.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  Account.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  Account clone() => new Account()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static Account create() => new Account();
+  static PbList<Account> createRepeated() => new PbList<Account>();
+  static Account getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyAccount();
+    return _defaultInstance;
+  }
+  static Account _defaultInstance;
+  static void $checkItem(Account v) {
+    if (v is! Account) checkItemFailed(v, 'Account');
+  }
+
+  String get id => $_getS(0, '');
+  set id(String v) { $_setString(0, v); }
+  bool hasId() => $_has(0);
+  void clearId() => clearField(1);
+
+  Int64 get balance => $_getI64(1);
+  set balance(Int64 v) { $_setInt64(1, v); }
+  bool hasBalance() => $_has(1);
+  void clearBalance() => clearField(2);
+
+  Int64 get remoteBalance => $_getI64(2);
+  set remoteBalance(Int64 v) { $_setInt64(2, v); }
+  bool hasRemoteBalance() => $_has(2);
+  void clearRemoteBalance() => clearField(3);
+
+  Int64 get walletBalance => $_getI64(3);
+  set walletBalance(Int64 v) { $_setInt64(3, v); }
+  bool hasWalletBalance() => $_has(3);
+  void clearWalletBalance() => clearField(4);
+
+  Int64 get nonDepositableBalance => $_getI64(4);
+  set nonDepositableBalance(Int64 v) { $_setInt64(4, v); }
+  bool hasNonDepositableBalance() => $_has(4);
+  void clearNonDepositableBalance() => clearField(5);
+
+  Account_AccountStatus get status => $_getN(5);
+  set status(Account_AccountStatus v) { setField(6, v); }
+  bool hasStatus() => $_has(5);
+  void clearStatus() => clearField(6);
+
+  Int64 get maxAllowedToReceive => $_getI64(6);
+  set maxAllowedToReceive(Int64 v) { $_setInt64(6, v); }
+  bool hasMaxAllowedToReceive() => $_has(6);
+  void clearMaxAllowedToReceive() => clearField(9);
+
+  Int64 get maxPaymentAmount => $_getI64(7);
+  set maxPaymentAmount(Int64 v) { $_setInt64(7, v); }
+  bool hasMaxPaymentAmount() => $_has(7);
+  void clearMaxPaymentAmount() => clearField(10);
+}
+
+class _ReadonlyAccount extends Account with ReadonlyMessageMixin {}
+
+class Payment extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('Payment')
+    ..e<Payment_PaymentType>(1, 'type', PbFieldType.OE, Payment_PaymentType.DEPOSIT, Payment_PaymentType.valueOf, Payment_PaymentType.values)
+    ..aInt64(3, 'amount')
+    ..aInt64(4, 'creationTimestamp')
+    ..a<InvoiceMemo>(6, 'invoiceMemo', PbFieldType.OM, InvoiceMemo.getDefault, InvoiceMemo.create)
+    ..hasRequiredFields = false
+  ;
+
+  Payment() : super();
+  Payment.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  Payment.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  Payment clone() => new Payment()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static Payment create() => new Payment();
+  static PbList<Payment> createRepeated() => new PbList<Payment>();
+  static Payment getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyPayment();
+    return _defaultInstance;
+  }
+  static Payment _defaultInstance;
+  static void $checkItem(Payment v) {
+    if (v is! Payment) checkItemFailed(v, 'Payment');
+  }
+
+  Payment_PaymentType get type => $_getN(0);
+  set type(Payment_PaymentType v) { setField(1, v); }
+  bool hasType() => $_has(0);
+  void clearType() => clearField(1);
+
+  Int64 get amount => $_getI64(1);
+  set amount(Int64 v) { $_setInt64(1, v); }
+  bool hasAmount() => $_has(1);
+  void clearAmount() => clearField(3);
+
+  Int64 get creationTimestamp => $_getI64(2);
+  set creationTimestamp(Int64 v) { $_setInt64(2, v); }
+  bool hasCreationTimestamp() => $_has(2);
+  void clearCreationTimestamp() => clearField(4);
+
+  InvoiceMemo get invoiceMemo => $_getN(3);
+  set invoiceMemo(InvoiceMemo v) { setField(6, v); }
+  bool hasInvoiceMemo() => $_has(3);
+  void clearInvoiceMemo() => clearField(6);
+}
+
+class _ReadonlyPayment extends Payment with ReadonlyMessageMixin {}
+
+class PaymentsList extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('PaymentsList')
+    ..pp<Payment>(1, 'paymentsList', PbFieldType.PM, Payment.$checkItem, Payment.create)
+    ..hasRequiredFields = false
+  ;
+
+  PaymentsList() : super();
+  PaymentsList.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  PaymentsList.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  PaymentsList clone() => new PaymentsList()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static PaymentsList create() => new PaymentsList();
+  static PbList<PaymentsList> createRepeated() => new PbList<PaymentsList>();
+  static PaymentsList getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyPaymentsList();
+    return _defaultInstance;
+  }
+  static PaymentsList _defaultInstance;
+  static void $checkItem(PaymentsList v) {
+    if (v is! PaymentsList) checkItemFailed(v, 'PaymentsList');
+  }
+
+  List<Payment> get paymentsList => $_getList(0);
+}
+
+class _ReadonlyPaymentsList extends PaymentsList with ReadonlyMessageMixin {}
+
+class SendNonDepositedCoinsRequest extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('SendNonDepositedCoinsRequest')
+    ..aOS(1, 'address')
+    ..hasRequiredFields = false
+  ;
+
+  SendNonDepositedCoinsRequest() : super();
+  SendNonDepositedCoinsRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  SendNonDepositedCoinsRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  SendNonDepositedCoinsRequest clone() => new SendNonDepositedCoinsRequest()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static SendNonDepositedCoinsRequest create() => new SendNonDepositedCoinsRequest();
+  static PbList<SendNonDepositedCoinsRequest> createRepeated() => new PbList<SendNonDepositedCoinsRequest>();
+  static SendNonDepositedCoinsRequest getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlySendNonDepositedCoinsRequest();
+    return _defaultInstance;
+  }
+  static SendNonDepositedCoinsRequest _defaultInstance;
+  static void $checkItem(SendNonDepositedCoinsRequest v) {
+    if (v is! SendNonDepositedCoinsRequest) checkItemFailed(v, 'SendNonDepositedCoinsRequest');
+  }
+
+  String get address => $_getS(0, '');
+  set address(String v) { $_setString(0, v); }
+  bool hasAddress() => $_has(0);
+  void clearAddress() => clearField(1);
+}
+
+class _ReadonlySendNonDepositedCoinsRequest extends SendNonDepositedCoinsRequest with ReadonlyMessageMixin {}
+
+class PayInvoiceRequest extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('PayInvoiceRequest')
+    ..aInt64(1, 'amount')
+    ..aOS(2, 'paymentRequest')
+    ..hasRequiredFields = false
+  ;
+
+  PayInvoiceRequest() : super();
+  PayInvoiceRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  PayInvoiceRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  PayInvoiceRequest clone() => new PayInvoiceRequest()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static PayInvoiceRequest create() => new PayInvoiceRequest();
+  static PbList<PayInvoiceRequest> createRepeated() => new PbList<PayInvoiceRequest>();
+  static PayInvoiceRequest getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyPayInvoiceRequest();
+    return _defaultInstance;
+  }
+  static PayInvoiceRequest _defaultInstance;
+  static void $checkItem(PayInvoiceRequest v) {
+    if (v is! PayInvoiceRequest) checkItemFailed(v, 'PayInvoiceRequest');
+  }
+
+  Int64 get amount => $_getI64(0);
+  set amount(Int64 v) { $_setInt64(0, v); }
+  bool hasAmount() => $_has(0);
+  void clearAmount() => clearField(1);
+
+  String get paymentRequest => $_getS(1, '');
+  set paymentRequest(String v) { $_setString(1, v); }
+  bool hasPaymentRequest() => $_has(1);
+  void clearPaymentRequest() => clearField(2);
+}
+
+class _ReadonlyPayInvoiceRequest extends PayInvoiceRequest with ReadonlyMessageMixin {}
+
+class InvoiceMemo extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('InvoiceMemo')
+    ..aOS(1, 'description')
+    ..aInt64(2, 'amount')
+    ..aOS(3, 'payeeName')
+    ..aOS(4, 'payeeImageURL')
+    ..aOS(5, 'payerName')
+    ..aOS(6, 'payerImageURL')
+    ..aOB(7, 'transferRequest')
+    ..hasRequiredFields = false
+  ;
+
+  InvoiceMemo() : super();
+  InvoiceMemo.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  InvoiceMemo.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  InvoiceMemo clone() => new InvoiceMemo()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static InvoiceMemo create() => new InvoiceMemo();
+  static PbList<InvoiceMemo> createRepeated() => new PbList<InvoiceMemo>();
+  static InvoiceMemo getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyInvoiceMemo();
+    return _defaultInstance;
+  }
+  static InvoiceMemo _defaultInstance;
+  static void $checkItem(InvoiceMemo v) {
+    if (v is! InvoiceMemo) checkItemFailed(v, 'InvoiceMemo');
+  }
+
+  String get description => $_getS(0, '');
+  set description(String v) { $_setString(0, v); }
+  bool hasDescription() => $_has(0);
+  void clearDescription() => clearField(1);
+
+  Int64 get amount => $_getI64(1);
+  set amount(Int64 v) { $_setInt64(1, v); }
+  bool hasAmount() => $_has(1);
+  void clearAmount() => clearField(2);
+
+  String get payeeName => $_getS(2, '');
+  set payeeName(String v) { $_setString(2, v); }
+  bool hasPayeeName() => $_has(2);
+  void clearPayeeName() => clearField(3);
+
+  String get payeeImageURL => $_getS(3, '');
+  set payeeImageURL(String v) { $_setString(3, v); }
+  bool hasPayeeImageURL() => $_has(3);
+  void clearPayeeImageURL() => clearField(4);
+
+  String get payerName => $_getS(4, '');
+  set payerName(String v) { $_setString(4, v); }
+  bool hasPayerName() => $_has(4);
+  void clearPayerName() => clearField(5);
+
+  String get payerImageURL => $_getS(5, '');
+  set payerImageURL(String v) { $_setString(5, v); }
+  bool hasPayerImageURL() => $_has(5);
+  void clearPayerImageURL() => clearField(6);
+
+  bool get transferRequest => $_get(6, false);
+  set transferRequest(bool v) { $_setBool(6, v); }
+  bool hasTransferRequest() => $_has(6);
+  void clearTransferRequest() => clearField(7);
+}
+
+class _ReadonlyInvoiceMemo extends InvoiceMemo with ReadonlyMessageMixin {}
+
+class Invoice extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('Invoice')
+    ..a<InvoiceMemo>(1, 'memo', PbFieldType.OM, InvoiceMemo.getDefault, InvoiceMemo.create)
+    ..aOB(2, 'settled')
+    ..aInt64(3, 'amtPaid')
+    ..hasRequiredFields = false
+  ;
+
+  Invoice() : super();
+  Invoice.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  Invoice.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  Invoice clone() => new Invoice()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static Invoice create() => new Invoice();
+  static PbList<Invoice> createRepeated() => new PbList<Invoice>();
+  static Invoice getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyInvoice();
+    return _defaultInstance;
+  }
+  static Invoice _defaultInstance;
+  static void $checkItem(Invoice v) {
+    if (v is! Invoice) checkItemFailed(v, 'Invoice');
+  }
+
+  InvoiceMemo get memo => $_getN(0);
+  set memo(InvoiceMemo v) { setField(1, v); }
+  bool hasMemo() => $_has(0);
+  void clearMemo() => clearField(1);
+
+  bool get settled => $_get(1, false);
+  set settled(bool v) { $_setBool(1, v); }
+  bool hasSettled() => $_has(1);
+  void clearSettled() => clearField(2);
+
+  Int64 get amtPaid => $_getI64(2);
+  set amtPaid(Int64 v) { $_setInt64(2, v); }
+  bool hasAmtPaid() => $_has(2);
+  void clearAmtPaid() => clearField(3);
+}
+
+class _ReadonlyInvoice extends Invoice with ReadonlyMessageMixin {}
+
+class NotificationEvent extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('NotificationEvent')
+    ..e<NotificationEvent_NotificationType>(1, 'type', PbFieldType.OE, NotificationEvent_NotificationType.READY, NotificationEvent_NotificationType.valueOf, NotificationEvent_NotificationType.values)
+    ..hasRequiredFields = false
+  ;
+
+  NotificationEvent() : super();
+  NotificationEvent.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  NotificationEvent.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  NotificationEvent clone() => new NotificationEvent()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static NotificationEvent create() => new NotificationEvent();
+  static PbList<NotificationEvent> createRepeated() => new PbList<NotificationEvent>();
+  static NotificationEvent getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyNotificationEvent();
+    return _defaultInstance;
+  }
+  static NotificationEvent _defaultInstance;
+  static void $checkItem(NotificationEvent v) {
+    if (v is! NotificationEvent) checkItemFailed(v, 'NotificationEvent');
+  }
+
+  NotificationEvent_NotificationType get type => $_getN(0);
+  set type(NotificationEvent_NotificationType v) { setField(1, v); }
+  bool hasType() => $_has(0);
+  void clearType() => clearField(1);
+}
+
+class _ReadonlyNotificationEvent extends NotificationEvent with ReadonlyMessageMixin {}
+
+class FundStatusReply extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('FundStatusReply')
+    ..e<FundStatusReply_FundStatus>(1, 'status', PbFieldType.OE, FundStatusReply_FundStatus.NO_FUND, FundStatusReply_FundStatus.valueOf, FundStatusReply_FundStatus.values)
+    ..hasRequiredFields = false
+  ;
+
+  FundStatusReply() : super();
+  FundStatusReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  FundStatusReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  FundStatusReply clone() => new FundStatusReply()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static FundStatusReply create() => new FundStatusReply();
+  static PbList<FundStatusReply> createRepeated() => new PbList<FundStatusReply>();
+  static FundStatusReply getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyFundStatusReply();
+    return _defaultInstance;
+  }
+  static FundStatusReply _defaultInstance;
+  static void $checkItem(FundStatusReply v) {
+    if (v is! FundStatusReply) checkItemFailed(v, 'FundStatusReply');
+  }
+
+  FundStatusReply_FundStatus get status => $_getN(0);
+  set status(FundStatusReply_FundStatus v) { setField(1, v); }
+  bool hasStatus() => $_has(0);
+  void clearStatus() => clearField(1);
+}
+
+class _ReadonlyFundStatusReply extends FundStatusReply with ReadonlyMessageMixin {}
+
