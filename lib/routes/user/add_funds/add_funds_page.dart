@@ -130,13 +130,16 @@ class AddFundsState extends State<_AddFundsPage> {
                         return CircularProgressIndicator();
                       }
                       String message;
+                      AccountModel acc = snapshot.data;
                       if (!snapshot.hasData) {
                         message =
                             'Bitcoin address will be available as soon as Breez is synchronized.';
                       } else if (snapshot.data.waitingDepositConfirmation ||                          
                           snapshot.data.processingWithdrawal) {
                         message =
-                            'Breez is processing your previous ${snapshot.data.waitingDepositConfirmation || snapshot.data.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
+                            'Breez is processing your previous ${acc.waitingDepositConfirmation || acc.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
+                      } else if (snapshot.data.maxAllowedToDeposit == 0) {
+                        message = 'Adding funds is enabled when the balance is under ${acc.currency.format(acc.balanceLimitForDeposit, includeSymbol: true)}';
                       }
 
                       if (message != null) {
@@ -193,14 +196,12 @@ Widget _buildAmountWarning(AccountBloc accountBloc) {
         if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
-        if (snapshot.hasData) {
+        if (snapshot.hasData && !snapshot.data.waitingDepositConfirmation && snapshot.data.maxAllowedToDeposit > 0) {          
           return new Column(children: <Widget>[
             Text(
                 "Send up to " +
                     snapshot.data.currency.format(
-                        snapshot.data.active
-                            ? snapshot.data.remoteBalance
-                            : snapshot.data.maxPaymentAmount,
+                        snapshot.data.maxAllowedToDeposit,
                         includeSymbol: true) +
                     " to this address",
                 style: theme.warningStyle)
