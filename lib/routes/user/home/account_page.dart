@@ -31,7 +31,7 @@ class AccountPage extends StatelessWidget {
 
 class _AccountPage extends StatefulWidget {
   final AccountBloc _accountBloc;
-  final UserProfileBloc _userProfileBloc;  
+  final UserProfileBloc _userProfileBloc;
 
   _AccountPage(this._accountBloc, this._userProfileBloc);
 
@@ -46,16 +46,21 @@ class _AccountPageState extends State<_AccountPage> {
   final List<String> currencyList = Currency.currencies.map((c) => c.symbol).toList();
   StreamSubscription<String> _accountActionsSubscription;
   StreamSubscription<AccountModel> _statusSubscription;
-  String _filter;  
+  String _filter;
+  DateTime _startDate;
+  DateTime _endDate;
+  DateTime _firstDate;
   String _paymentRequestInProgress;
 
   @override
   void initState() {
     super.initState();
+    _startDate = null;
+    _endDate = null;
     _filter = 'All Activities';
 
     _statusSubscription = widget._accountBloc.accountStream.listen((acc) {
-      if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {        
+      if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {
         Scaffold.of(context).showSnackBar(new SnackBar(
             duration: new Duration(seconds: 5), content: new Text("Processing Payment...")));
       }
@@ -69,7 +74,7 @@ class _AccountPageState extends State<_AccountPage> {
 
     _accountActionsSubscription = widget._accountBloc.accountActionsStream.listen((data) {}, onError: (e) {
       Scaffold.of(context).showSnackBar(new SnackBar(duration: new Duration(seconds: 10), content: new Text(e.toString())));
-    });   
+    });
   }
 
   @override
@@ -95,21 +100,25 @@ class _AccountPageState extends State<_AccountPage> {
               stream: widget._accountBloc.paymentsStream,
               builder: (context, snapshot) {
                 List<PaymentInfo> payments;
+                List<PaymentInfo> paymentsNoFilter;
                 if (snapshot.hasData) {
-                  payments = _filterPayments(snapshot.data);
+                  paymentsNoFilter = _filterPayments(snapshot.data);
+                  DateTime _firstPaymentDate = DateTime.fromMillisecondsSinceEpoch(paymentsNoFilter[0].creationTimestamp.toInt() * 1000);
+                  _firstDate = new DateTime(_firstPaymentDate.year, _firstPaymentDate.month, _firstPaymentDate.day, 0, 0, 0, 0, 0);
+                  payments = _filterPayments(snapshot.data,_startDate,_endDate);
                 }
 
                 if (account == null || payments == null) {
-                  // build loading page, wating for account to initialize
+                  // build loading page, waiting for account to initialize
                   return _buildLoading(ListLoader());
                 }
 
                 if (account.balance == 0 && payments.length == 0) {
-                  //build empty account page
+                  // build empty account page
                   return _buildEmptyAccount(account);
                 }
 
-                //account and payments are ready, build their widgets
+                // account and payments are ready, build their widgets
                 return _buildBalanceAndPayments(payments, account);
               });
         });
@@ -128,24 +137,23 @@ class _AccountPageState extends State<_AccountPage> {
 
   Widget _buildEmptyAccount(AccountModel account){
     return Stack(
-      fit: StackFit.expand,
-      children: [
-      Column(
-      children: <Widget>[
-        Expanded(
-            flex: 0,
-            child: Container(height: DASHBOARD_MAX_HEIGHT, child: WalletDashboard(account, DASHBOARD_MAX_HEIGHT, 0.0, widget._userProfileBloc.currencySink.add, widget._accountBloc.routingNodeConnectionStream))),
-        Expanded(flex: 1, child: _buildEmptyHomeScreen(account))
-      ],
-    ),
-    FloatingActionsBar(account, DASHBOARD_MAX_HEIGHT, 0.0)
-    ]);
+        fit: StackFit.expand,
+        children: [
+          Column(
+            children: <Widget>[
+              Expanded(
+                  flex: 0,
+                  child: Container(height: DASHBOARD_MAX_HEIGHT, child: WalletDashboard(account, DASHBOARD_MAX_HEIGHT, 0.0, widget._userProfileBloc.currencySink.add, widget._accountBloc.routingNodeConnectionStream))),
+              Expanded(flex: 1, child: _buildEmptyHomeScreen(account))
+            ],
+          ),
+          FloatingActionsBar(account, DASHBOARD_MAX_HEIGHT, 0.0)
+        ]);
   }
 
   Widget _buildBalanceAndPayments(List<PaymentInfo> payments, AccountModel account) {
     double listHeightSpace = MediaQuery.of(context).size.height - DASHBOARD_MIN_HEIGHT - kToolbarHeight - FILTER_MAX_SIZE - 25.0;
     double bottomPlaceholderSpace = payments == null ? 0.0 : (listHeightSpace - PAYMENT_LIST_ITEM_HEIGHT * payments.length).clamp(0.0, listHeightSpace);
-
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -156,7 +164,7 @@ class _AccountPageState extends State<_AccountPage> {
             SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(widget._accountBloc, widget._userProfileBloc), pinned: true),
 
             //payment filter
-            PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter),
+            PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter, _firstDate),
 
             // //List
             PaymentsList(payments, PAYMENT_LIST_ITEM_HEIGHT),
@@ -183,21 +191,37 @@ class _AccountPageState extends State<_AccountPage> {
     );
   }
 
-  _onFilterChanged(String newFilter) {
+  _onFilterChanged(String newFilter,[DateTime startDate, DateTime endDate]) {
     setState(() {
       _filter = newFilter;
+      _startDate = startDate;
+      _endDate = endDate;
     });
   }
 
-  _filterPayments(List<PaymentInfo> payments) {
-    if (_filter == "All Activities") {
-      return payments;
-    }
-    if (_filter == "Sent") {
-      return payments.where((p) => p.type == PaymentType.WITHDRAWAL || p.type == PaymentType.SENT).toList();
-    }
-    if (_filter == "Received") {
-      return payments.where((p) => p.type == PaymentType.DEPOSIT || p.type == PaymentType.RECEIVED).toList();
+  _filterPayments(List<PaymentInfo> payments, [DateTime _startDate, DateTime _endDate]) {
+    if (_startDate != null || _endDate != null) {
+      if (_filter == "All Activities") {
+        return payments.where((p) => p.creationTimestamp.toInt() * 1000 >= _startDate.millisecondsSinceEpoch && p.creationTimestamp.toInt() * 1000 <= _endDate.millisecondsSinceEpoch).toList();
+      }
+      if (_filter == "Sent") {
+        return payments.where((p) => (p.type == PaymentType.WITHDRAWAL || p.type == PaymentType.SENT) &&
+            p.creationTimestamp.toInt() * 1000 >= _startDate.millisecondsSinceEpoch && p.creationTimestamp.toInt() * 1000 <= _endDate.millisecondsSinceEpoch).toList();
+      }
+      if (_filter == "Received") {
+        return payments.where((p) => (p.type == PaymentType.DEPOSIT || p.type == PaymentType.RECEIVED) &&
+            p.creationTimestamp.toInt() * 1000 >= _startDate.millisecondsSinceEpoch && p.creationTimestamp.toInt() * 1000 <= _endDate.millisecondsSinceEpoch).toList();
+      }
+    } else {
+      if (_filter == "All Activities") {
+        return payments;
+      }
+      if (_filter == "Sent") {
+        return payments.where((p) => p.type == PaymentType.WITHDRAWAL || p.type == PaymentType.SENT).toList();
+      }
+      if (_filter == "Received") {
+        return payments.where((p) => p.type == PaymentType.DEPOSIT || p.type == PaymentType.RECEIVED).toList();
+      }
     }
     return null;
   }
@@ -224,7 +248,7 @@ Widget _buildEmptyHomeScreen(AccountModel account) {
 
 class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final AccountBloc accountBloc;
-  final UserProfileBloc _userProfileBloc;  
+  final UserProfileBloc _userProfileBloc;
 
   WalletDashboardHeaderDelegate(this.accountBloc, this._userProfileBloc);
   @override
