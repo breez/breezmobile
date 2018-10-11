@@ -84,11 +84,10 @@ class UserProfileBloc {
       BreezUserModel user = BreezUserModel.fromJson(profile);
 
       if (user.userID != null) {
-        user = await saveUser(injector, preferences, user);
+        saveUser(injector, preferences, user).then(_publishUser);
       }
 
-      _userStreamController.add(user);
-      _userStreamPreviewController.add(user);
+      _publishUser(user);      
     });
   }
 
@@ -174,6 +173,10 @@ class UserProfileBloc {
 
   void _saveChanges(SharedPreferences preferences, BreezUserModel user) {
     preferences.setString(USER_DETAILS_PREFERENCES_KEY, json.encode(user));
+    _publishUser(user);    
+  }
+
+  void _publishUser(BreezUserModel user) {
     _userStreamController.add(user);
     _userStreamPreviewController.add(user);
   }
