@@ -9,7 +9,8 @@ class PosHome extends StatefulWidget {
 
   final List<DrawerItemConfig> _majorActions =
       new List<DrawerItemConfig>.unmodifiable([
-        new DrawerItemConfig("/transactions", "Transactions","src/icon/withdraw_funds.png"),
+        new DrawerItemConfig("/transactions", "Transactions","src/icon/transactions.png"),
+        new DrawerItemConfig("/withdraw_funds", "Remove Funds", "src/icon/withdraw_funds.png"),
         new DrawerItemConfig("/settings", "Settings","src/icon/settings.png")
       ]);
 
