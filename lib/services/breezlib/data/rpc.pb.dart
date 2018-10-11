@@ -60,6 +60,7 @@ class Account extends GeneratedMessage {
     ..e<Account_AccountStatus>(6, 'status', PbFieldType.OE, Account_AccountStatus.WAITING_DEPOSIT, Account_AccountStatus.valueOf, Account_AccountStatus.values)
     ..aInt64(9, 'maxAllowedToReceive')
     ..aInt64(10, 'maxPaymentAmount')
+    ..aInt64(11, 'balanceLimitForDeposit')
     ..hasRequiredFields = false
   ;
 
@@ -118,6 +119,11 @@ class Account extends GeneratedMessage {
   set maxPaymentAmount(Int64 v) { $_setInt64(7, v); }
   bool hasMaxPaymentAmount() => $_has(7);
   void clearMaxPaymentAmount() => clearField(10);
+
+  Int64 get balanceLimitForDeposit => $_getI64(8);
+  set balanceLimitForDeposit(Int64 v) { $_setInt64(8, v); }
+  bool hasBalanceLimitForDeposit() => $_has(8);
+  void clearBalanceLimitForDeposit() => clearField(11);
 }
 
 class _ReadonlyAccount extends Account with ReadonlyMessageMixin {}

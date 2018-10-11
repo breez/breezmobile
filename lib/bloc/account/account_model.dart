@@ -20,6 +20,7 @@ class AccountModel {
       ..status = Account_AccountStatus.WAITING_DEPOSIT
       ..maxAllowedToReceive = Int64(0)
       ..maxPaymentAmount = Int64(0)
+      ..balanceLimitForDeposit = Int64(0)
       , Currency.BTC);
   AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply_FundStatus addedFundsStatus, String paymentRequestInProgress, bool connected}) {
     return AccountModel(
@@ -44,6 +45,9 @@ class AccountModel {
   Currency get currency => _currency;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;  
+  Int64 get maxAllowedToDeposit => _accountResponse.balance >= _accountResponse.balanceLimitForDeposit ? Int64(0) : _accountResponse.balanceLimitForDeposit - _accountResponse.balance;
+  Int64 get balanceLimitForDeposit => _accountResponse.balanceLimitForDeposit;
+
   String get statusMessage {
     if (this.waitingDepositConfirmation) {
       return "Breez is waiting for BTC transfer to be confirmed. Confirmation usually takes ~10 minutes to be completed";

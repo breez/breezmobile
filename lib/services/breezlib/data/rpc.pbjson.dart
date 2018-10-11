@@ -23,6 +23,7 @@ const Account$json = const {
     const {'1': 'status', '3': 6, '4': 1, '5': 14, '6': '.data.Account.AccountStatus', '10': 'status'},
     const {'1': 'maxAllowedToReceive', '3': 9, '4': 1, '5': 3, '10': 'maxAllowedToReceive'},
     const {'1': 'maxPaymentAmount', '3': 10, '4': 1, '5': 3, '10': 'maxPaymentAmount'},
+    const {'1': 'balanceLimitForDeposit', '3': 11, '4': 1, '5': 3, '10': 'balanceLimitForDeposit'},
   ],
   '4': const [Account_AccountStatus$json],
 };
