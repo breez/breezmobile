@@ -139,7 +139,7 @@ class AddFundsState extends State<_AddFundsPage> {
                         message =
                             'Breez is processing your previous ${acc.waitingDepositConfirmation || acc.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
                       } else if (snapshot.data.maxAllowedToDeposit == 0) {
-                        message = 'Adding funds is enabled when the balance is under ${acc.currency.format(acc.balanceLimitForDeposit, includeSymbol: true)}';
+                        message = 'Adding funds is enabled when the balance is under ${acc.currency.format(acc.depositBalanceThreshold, includeSymbol: true)}';
                       }
 
                       if (message != null) {
