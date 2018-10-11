@@ -54,13 +54,13 @@ class Account extends GeneratedMessage {
   static final BuilderInfo _i = new BuilderInfo('Account')
     ..aOS(1, 'id')
     ..aInt64(2, 'balance')
-    ..aInt64(3, 'remoteBalance')
-    ..aInt64(4, 'walletBalance')
-    ..aInt64(5, 'nonDepositableBalance')
-    ..e<Account_AccountStatus>(6, 'status', PbFieldType.OE, Account_AccountStatus.WAITING_DEPOSIT, Account_AccountStatus.valueOf, Account_AccountStatus.values)
-    ..aInt64(9, 'maxAllowedToReceive')
-    ..aInt64(10, 'maxPaymentAmount')
-    ..aInt64(11, 'balanceLimitForDeposit')
+    ..aInt64(3, 'nonDepositableBalance')
+    ..e<Account_AccountStatus>(4, 'status', PbFieldType.OE, Account_AccountStatus.WAITING_DEPOSIT, Account_AccountStatus.valueOf, Account_AccountStatus.values)
+    ..aInt64(5, 'maxAllowedToReceive')
+    ..aInt64(6, 'maxAllowedToPay')
+    ..aInt64(7, 'maxPaymentAmount')
+    ..aInt64(8, 'maxAllowedDeposit')
+    ..aInt64(9, 'depositBalanceThreshold')
     ..hasRequiredFields = false
   ;
 
@@ -90,40 +90,40 @@ class Account extends GeneratedMessage {
   bool hasBalance() => $_has(1);
   void clearBalance() => clearField(2);
 
-  Int64 get remoteBalance => $_getI64(2);
-  set remoteBalance(Int64 v) { $_setInt64(2, v); }
-  bool hasRemoteBalance() => $_has(2);
-  void clearRemoteBalance() => clearField(3);
+  Int64 get nonDepositableBalance => $_getI64(2);
+  set nonDepositableBalance(Int64 v) { $_setInt64(2, v); }
+  bool hasNonDepositableBalance() => $_has(2);
+  void clearNonDepositableBalance() => clearField(3);
 
-  Int64 get walletBalance => $_getI64(3);
-  set walletBalance(Int64 v) { $_setInt64(3, v); }
-  bool hasWalletBalance() => $_has(3);
-  void clearWalletBalance() => clearField(4);
+  Account_AccountStatus get status => $_getN(3);
+  set status(Account_AccountStatus v) { setField(4, v); }
+  bool hasStatus() => $_has(3);
+  void clearStatus() => clearField(4);
 
-  Int64 get nonDepositableBalance => $_getI64(4);
-  set nonDepositableBalance(Int64 v) { $_setInt64(4, v); }
-  bool hasNonDepositableBalance() => $_has(4);
-  void clearNonDepositableBalance() => clearField(5);
+  Int64 get maxAllowedToReceive => $_getI64(4);
+  set maxAllowedToReceive(Int64 v) { $_setInt64(4, v); }
+  bool hasMaxAllowedToReceive() => $_has(4);
+  void clearMaxAllowedToReceive() => clearField(5);
 
-  Account_AccountStatus get status => $_getN(5);
-  set status(Account_AccountStatus v) { setField(6, v); }
-  bool hasStatus() => $_has(5);
-  void clearStatus() => clearField(6);
+  Int64 get maxAllowedToPay => $_getI64(5);
+  set maxAllowedToPay(Int64 v) { $_setInt64(5, v); }
+  bool hasMaxAllowedToPay() => $_has(5);
+  void clearMaxAllowedToPay() => clearField(6);
 
-  Int64 get maxAllowedToReceive => $_getI64(6);
-  set maxAllowedToReceive(Int64 v) { $_setInt64(6, v); }
-  bool hasMaxAllowedToReceive() => $_has(6);
-  void clearMaxAllowedToReceive() => clearField(9);
+  Int64 get maxPaymentAmount => $_getI64(6);
+  set maxPaymentAmount(Int64 v) { $_setInt64(6, v); }
+  bool hasMaxPaymentAmount() => $_has(6);
+  void clearMaxPaymentAmount() => clearField(7);
 
-  Int64 get maxPaymentAmount => $_getI64(7);
-  set maxPaymentAmount(Int64 v) { $_setInt64(7, v); }
-  bool hasMaxPaymentAmount() => $_has(7);
-  void clearMaxPaymentAmount() => clearField(10);
+  Int64 get maxAllowedDeposit => $_getI64(7);
+  set maxAllowedDeposit(Int64 v) { $_setInt64(7, v); }
+  bool hasMaxAllowedDeposit() => $_has(7);
+  void clearMaxAllowedDeposit() => clearField(8);
 
-  Int64 get balanceLimitForDeposit => $_getI64(8);
-  set balanceLimitForDeposit(Int64 v) { $_setInt64(8, v); }
-  bool hasBalanceLimitForDeposit() => $_has(8);
-  void clearBalanceLimitForDeposit() => clearField(11);
+  Int64 get depositBalanceThreshold => $_getI64(8);
+  set depositBalanceThreshold(Int64 v) { $_setInt64(8, v); }
+  bool hasDepositBalanceThreshold() => $_has(8);
+  void clearDepositBalanceThreshold() => clearField(9);
 }
 
 class _ReadonlyAccount extends Account with ReadonlyMessageMixin {}
