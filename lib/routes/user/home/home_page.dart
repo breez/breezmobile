@@ -14,7 +14,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/widgets/error_dialog.dart';
-
+import 'dart:io';
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -65,7 +65,10 @@ class HomeState extends State<Home> {
               context,
               "No Internet Connection.",
               Text("You can try:\nTurning off airplane mode\nTurning on mobile data or Wi-Fi\nChecking the signal in your area",
-                  style: theme.alertStyle));
+                  style: theme.alertStyle),
+              "OK",
+              "Exit", ()=> exit(0),
+              );
     });
   }
 
