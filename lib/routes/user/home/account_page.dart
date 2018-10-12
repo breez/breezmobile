@@ -15,6 +15,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/bloc/status_indicator/status_indicator_bloc.dart';
 import 'package:breez/routes/user/home/status_text.dart';
+import 'package:fixnum/fixnum.dart';
 
 const DASHBOARD_MAX_HEIGHT = 188.0;
 const DASHBOARD_MIN_HEIGHT = 70.0;
@@ -57,7 +58,7 @@ class _AccountPageState extends State<_AccountPage> {
     _statusSubscription = widget._accountBloc.accountStream.listen((acc) {
       if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {        
         Scaffold.of(context).showSnackBar(new SnackBar(
-            duration: new Duration(seconds: 60), content: new Text("Processing Payment...")));
+            duration: new Duration(seconds: Int32.MAX_VALUE.toInt()), content: new Text("Processing Payment...")));
       }
       else if (acc.paymentRequestInProgress == null || acc.paymentRequestInProgress.isEmpty){
         Scaffold.of(context).removeCurrentSnackBar();
