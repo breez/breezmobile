@@ -8,7 +8,7 @@
     <img src='https://drive.google.com/uc?id=16gD7djk_o8YZnk8BMypVAR8HPdI4cRRd&export=download' height='400' alt='screenshot' />
   </a>
     <a href='https://breez.technology'>
-    <img src='https://drive.google.com/uc?id=1695YD_xb0TTpEfMKz2RG4WNwClijd5rb&export=download' height='400' alt='screenshot' />
+    <img src='https://drive.google.com/uc?id=1Cf1-9hX5ri0gsgU4qhM3-Flt-J5RWuFK&export=download' height='400' alt='screenshot' />
   </a>
   <a href='https://breez.technology'>
     <img src='https://drive.google.com/uc?id=1hHzDMW4JlauGlgOncUpCyzjk8qmeD4QI&export=download' height='400' alt='screenshot' />
