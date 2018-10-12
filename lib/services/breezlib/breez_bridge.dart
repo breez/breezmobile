@@ -115,8 +115,8 @@ class BreezBridge {
     return _invokeMethodWhenReady("newAddress", {"argument": breezID}).then( (address) => address as String);
   }
 
-  Future<String> addFunds(String breezID) {
-    return _invokeMethodWhenReady("addFunds", {"argument": breezID}).then((address) => address as String);
+  Future<AddFundReply> addFunds(String breezID) {
+    return _invokeMethodWhenReady("addFunds", {"argument": breezID}).then((reply) => new AddFundReply()..mergeFromBuffer(reply ?? []));
   }
 
   Future<FundStatusReply> getFundStatus(String notificationToken) {

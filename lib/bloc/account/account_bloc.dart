@@ -21,8 +21,8 @@ class AccountBloc {
   final _requestAddressController = new StreamController<void>();
   Sink<void> get requestAddressSink => _requestAddressController.sink;
 
-  final _addressesController = new BehaviorSubject<String>();
-  Stream<String> get addressesStream => _addressesController.stream;
+  final _addFundController = new BehaviorSubject<AddFundResponse>();
+  Stream<AddFundResponse> get addFundStream => _addFundController.stream;
     
   final _accountController = new BehaviorSubject<AccountModel>();
   Stream<AccountModel> get accountStream => _accountController.stream;
@@ -130,8 +130,8 @@ class AccountBloc {
     void _listenNewAddressRequests(BreezBridge breezLib) {    
       _requestAddressController.stream.listen((request){
         breezLib.addFunds(_currentUser.userID)
-          .then(_addressesController.add)
-          .catchError(_addressesController.addError);
+          .then((reply) => _addFundController.add(new AddFundResponse(reply)))
+          .catchError(_addFundController.addError);
       });          
     }
   
@@ -232,7 +232,7 @@ class AccountBloc {
   
     close() {
       _requestAddressController.close();
-      _addressesController.close();    
+      _addFundController.close();    
       _paymentsController.close();    
       _posFundingRequestController.close();
       _accountActionsController.close();

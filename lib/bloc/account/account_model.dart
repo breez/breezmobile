@@ -39,9 +39,7 @@ class AccountModel {
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
-  Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;  
-  Int64 get maxAllowedToDeposit => _accountResponse.maxAllowedDeposit;
-  Int64 get depositBalanceThreshold => _accountResponse.depositBalanceThreshold;
+  Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
 
   String get statusMessage {
     if (this.waitingDepositConfirmation) {
@@ -94,6 +92,15 @@ class PaymentInfo {
   PaymentInfo copyWith(Currency currency) {
     return PaymentInfo(this._paymentResponse, currency);
   }
+}
+
+class AddFundResponse {
+  AddFundReply _addfundReply;
+  AddFundResponse(this._addfundReply);
+
+  String get errorMessage => _addfundReply.errorMessage;
+  Int64 get maxAllowedDeposit => _addfundReply.maxAllowedDeposit;
+  String get address => _addfundReply.address;
 }
 
 class MockPaymentInfo implements PaymentInfo {

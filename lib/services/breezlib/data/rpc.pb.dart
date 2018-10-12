@@ -59,8 +59,6 @@ class Account extends GeneratedMessage {
     ..aInt64(5, 'maxAllowedToReceive')
     ..aInt64(6, 'maxAllowedToPay')
     ..aInt64(7, 'maxPaymentAmount')
-    ..aInt64(8, 'maxAllowedDeposit')
-    ..aInt64(9, 'depositBalanceThreshold')
     ..hasRequiredFields = false
   ;
 
@@ -114,16 +112,6 @@ class Account extends GeneratedMessage {
   set maxPaymentAmount(Int64 v) { $_setInt64(6, v); }
   bool hasMaxPaymentAmount() => $_has(6);
   void clearMaxPaymentAmount() => clearField(7);
-
-  Int64 get maxAllowedDeposit => $_getI64(7);
-  set maxAllowedDeposit(Int64 v) { $_setInt64(7, v); }
-  bool hasMaxAllowedDeposit() => $_has(7);
-  void clearMaxAllowedDeposit() => clearField(8);
-
-  Int64 get depositBalanceThreshold => $_getI64(8);
-  set depositBalanceThreshold(Int64 v) { $_setInt64(8, v); }
-  bool hasDepositBalanceThreshold() => $_has(8);
-  void clearDepositBalanceThreshold() => clearField(9);
 }
 
 class _ReadonlyAccount extends Account with ReadonlyMessageMixin {}
@@ -406,6 +394,48 @@ class NotificationEvent extends GeneratedMessage {
 }
 
 class _ReadonlyNotificationEvent extends NotificationEvent with ReadonlyMessageMixin {}
+
+class AddFundReply extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('AddFundReply')
+    ..aOS(1, 'address')
+    ..aInt64(2, 'maxAllowedDeposit')
+    ..aOS(3, 'errorMessage')
+    ..hasRequiredFields = false
+  ;
+
+  AddFundReply() : super();
+  AddFundReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  AddFundReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  AddFundReply clone() => new AddFundReply()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static AddFundReply create() => new AddFundReply();
+  static PbList<AddFundReply> createRepeated() => new PbList<AddFundReply>();
+  static AddFundReply getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyAddFundReply();
+    return _defaultInstance;
+  }
+  static AddFundReply _defaultInstance;
+  static void $checkItem(AddFundReply v) {
+    if (v is! AddFundReply) checkItemFailed(v, 'AddFundReply');
+  }
+
+  String get address => $_getS(0, '');
+  set address(String v) { $_setString(0, v); }
+  bool hasAddress() => $_has(0);
+  void clearAddress() => clearField(1);
+
+  Int64 get maxAllowedDeposit => $_getI64(1);
+  set maxAllowedDeposit(Int64 v) { $_setInt64(1, v); }
+  bool hasMaxAllowedDeposit() => $_has(1);
+  void clearMaxAllowedDeposit() => clearField(2);
+
+  String get errorMessage => $_getS(2, '');
+  set errorMessage(String v) { $_setString(2, v); }
+  bool hasErrorMessage() => $_has(2);
+  void clearErrorMessage() => clearField(3);
+}
+
+class _ReadonlyAddFundReply extends AddFundReply with ReadonlyMessageMixin {}
 
 class FundStatusReply extends GeneratedMessage {
   static final BuilderInfo _i = new BuilderInfo('FundStatusReply')

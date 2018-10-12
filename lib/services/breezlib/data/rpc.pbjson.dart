@@ -22,8 +22,6 @@ const Account$json = const {
     const {'1': 'maxAllowedToReceive', '3': 5, '4': 1, '5': 3, '10': 'maxAllowedToReceive'},
     const {'1': 'maxAllowedToPay', '3': 6, '4': 1, '5': 3, '10': 'maxAllowedToPay'},
     const {'1': 'maxPaymentAmount', '3': 7, '4': 1, '5': 3, '10': 'maxPaymentAmount'},
-    const {'1': 'maxAllowedDeposit', '3': 8, '4': 1, '5': 3, '10': 'maxAllowedDeposit'},
-    const {'1': 'depositBalanceThreshold', '3': 9, '4': 1, '5': 3, '10': 'depositBalanceThreshold'},
   ],
   '4': const [Account_AccountStatus$json],
 };
@@ -120,6 +118,15 @@ const NotificationEvent_NotificationType$json = const {
     const {'1': 'ACCOUNT_CHANGED', '2': 2},
     const {'1': 'INVOICE_PAID', '2': 3},
     const {'1': 'ROUTING_NODE_CONNECTION_CHANGED', '2': 4},
+  ],
+};
+
+const AddFundReply$json = const {
+  '1': 'AddFundReply',
+  '2': const [
+    const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
+    const {'1': 'maxAllowedDeposit', '3': 2, '4': 1, '5': 3, '10': 'maxAllowedDeposit'},
+    const {'1': 'errorMessage', '3': 3, '4': 1, '5': 9, '10': 'errorMessage'},
   ],
 };
 
