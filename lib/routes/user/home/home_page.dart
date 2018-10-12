@@ -64,7 +64,7 @@ class HomeState extends State<Home> {
           promptError(
               context,
               "No Internet Connection.",
-              Text("You can try:\nTurning off airplane mode\nTurning on mobile data or Wi-Fi\nChecking the signal in your area",
+              Text("You can try:\n•Turning off airplane mode\n•Turning on mobile data or Wi-Fi\n•Checking the signal in your area",
                   style: theme.alertStyle),
               "OK",
               "Exit", ()=> exit(0),
