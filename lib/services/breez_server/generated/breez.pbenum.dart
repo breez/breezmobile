@@ -25,8 +25,8 @@ class FundReply_ReturnCode extends $pb.ProtobufEnum {
     WRONG_AMOUNT,
   ];
 
-  static final Map<int, dynamic> _byValue = $pb.ProtobufEnum.initByValue(values);
-  static FundReply_ReturnCode valueOf(int value) => _byValue[value] as FundReply_ReturnCode;
+  static final Map<int, FundReply_ReturnCode> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static FundReply_ReturnCode valueOf(int value) => _byValue[value];
   static void $checkItem(FundReply_ReturnCode v) {
     if (v is! FundReply_ReturnCode) $pb.checkItemFailed(v, 'FundReply_ReturnCode');
   }

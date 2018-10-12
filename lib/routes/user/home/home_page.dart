@@ -9,6 +9,12 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/widgets/error_dialog.dart';
+
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -51,11 +57,26 @@ class HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String _activeScreen = "breezHome";
 
+  void _listenNoConnection(BreezBridge breezLib) {
+    Observable(breezLib.notificationStream)
+        .where((event) => event.type == NotificationEvent_NotificationType.NOT_CONNECTED)
+        .listen((change) {
+          promptError(
+              context,
+              "No Internet Connection.",
+              Text("You can try:\nTurning off airplane mode\nTurning on mobile data or Wi-Fi\nChecking the signal in your area",
+                  style: theme.alertStyle));
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     InvoiceNotificationsHandler _notificationsHandler =
     new InvoiceNotificationsHandler(context, widget.accountBloc, widget.receivedInvoicesStream);
+    ServiceInjector injector = new ServiceInjector();
+    BreezBridge breezLib = injector.breezBridge;
+    _listenNoConnection(breezLib);
   }
 
   @override

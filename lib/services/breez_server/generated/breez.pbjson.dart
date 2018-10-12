@@ -4,26 +4,72 @@
 ///
 // ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
 
+const OpenChannelRequest$json = const {
+  '1': 'OpenChannelRequest',
+  '2': const [
+    const {'1': 'pubKey', '3': 1, '4': 1, '5': 9, '10': 'pubKey'},
+  ],
+};
+
+const OpenChannelReply$json = const {
+  '1': 'OpenChannelReply',
+};
+
 const AddFundRequest$json = const {
   '1': 'AddFundRequest',
   '2': const [
-    const {'1': 'PaymentRequest', '3': 1, '4': 1, '5': 9, '10': 'PaymentRequest'},
-    const {'1': 'clientID', '3': 2, '4': 1, '5': 9, '10': 'clientID'},
+    const {'1': 'paymentRequest', '3': 1, '4': 1, '5': 9, '10': 'paymentRequest'},
+    const {'1': 'notificationToken', '3': 2, '4': 1, '5': 9, '10': 'notificationToken'},
   ],
 };
 
 const AddFundReply$json = const {
   '1': 'AddFundReply',
   '2': const [
-    const {'1': 'Address', '3': 1, '4': 1, '5': 9, '10': 'Address'},
+    const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
   ],
+};
+
+const AddFundStatusRequest$json = const {
+  '1': 'AddFundStatusRequest',
+  '2': const [
+    const {'1': 'addresses', '3': 1, '4': 3, '5': 9, '10': 'addresses'},
+    const {'1': 'notificationToken', '3': 2, '4': 1, '5': 9, '10': 'notificationToken'},
+  ],
+};
+
+const AddFundStatusReply$json = const {
+  '1': 'AddFundStatusReply',
+  '2': const [
+    const {'1': 'statuses', '3': 1, '4': 3, '5': 11, '6': '.breez.AddFundStatusReply.StatusesEntry', '10': 'statuses'},
+  ],
+  '3': const [AddFundStatusReply_AddressStatus$json, AddFundStatusReply_StatusesEntry$json],
+};
+
+const AddFundStatusReply_AddressStatus$json = const {
+  '1': 'AddressStatus',
+  '2': const [
+    const {'1': 'tx', '3': 1, '4': 1, '5': 9, '10': 'tx'},
+    const {'1': 'amount', '3': 2, '4': 1, '5': 3, '10': 'amount'},
+    const {'1': 'confirmed', '3': 3, '4': 1, '5': 8, '10': 'confirmed'},
+    const {'1': 'blockHash', '3': 4, '4': 1, '5': 9, '10': 'blockHash'},
+  ],
+};
+
+const AddFundStatusReply_StatusesEntry$json = const {
+  '1': 'StatusesEntry',
+  '2': const [
+    const {'1': 'key', '3': 1, '4': 1, '5': 9, '10': 'key'},
+    const {'1': 'value', '3': 2, '4': 1, '5': 11, '6': '.breez.AddFundStatusReply.AddressStatus', '10': 'value'},
+  ],
+  '7': const {'7': true},
 };
 
 const RemoveFundRequest$json = const {
   '1': 'RemoveFundRequest',
   '2': const [
-    const {'1': 'Address', '3': 1, '4': 1, '5': 9, '10': 'Address'},
-    const {'1': 'Amount', '3': 2, '4': 1, '5': 1, '10': 'Amount'},
+    const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
+    const {'1': 'amount', '3': 2, '4': 1, '5': 3, '10': 'amount'},
   ],
 };
 
@@ -82,6 +128,21 @@ const FundReply_ReturnCode$json = const {
     const {'1': 'CLIENT_NOT_REGISTERED', '2': -3},
     const {'1': 'WRONG_NODE_ID', '2': -4},
     const {'1': 'WRONG_AMOUNT', '2': -5},
+  ],
+};
+
+const GetPaymentRequest$json = const {
+  '1': 'GetPaymentRequest',
+  '2': const [
+    const {'1': 'paymentRequest', '3': 1, '4': 1, '5': 9, '10': 'paymentRequest'},
+    const {'1': 'address', '3': 2, '4': 1, '5': 9, '10': 'address'},
+  ],
+};
+
+const GetPaymentReply$json = const {
+  '1': 'GetPaymentReply',
+  '2': const [
+    const {'1': 'paymentError', '3': 1, '4': 1, '5': 9, '10': 'paymentError'},
   ],
 };
 
