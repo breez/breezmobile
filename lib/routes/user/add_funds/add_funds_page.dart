@@ -55,6 +55,7 @@ class _AddFundsPage extends StatefulWidget {
 class AddFundsState extends State<_AddFundsPage> {
   final String _title = "Add Funds";
   StreamSubscription<AccountModel> _accountSubscription;
+  StreamSubscription<AddFundResponse> _addressSubscription;
 
   bool _connected = true;
 
@@ -62,13 +63,17 @@ class AddFundsState extends State<_AddFundsPage> {
   initState() {
     super.initState();
 
-    widget._accountBloc.addFundStream.listen((data) {
-
-    }).onError((error) {
+    _addressSubscription = widget._accountBloc.addFundStream.listen((data) {
+      setState(() {
+        _connected = true;
+      });
+    });
+    _addressSubscription.onError((error) {
       setState(() {
         _connected = false;
       });
     });
+
     widget._accountBloc.requestAddressSink.add(null);
 
   }
@@ -77,6 +82,9 @@ class AddFundsState extends State<_AddFundsPage> {
   void dispose() {
     if (_accountSubscription != null) {
       _accountSubscription.cancel();
+    }
+    if (_addressSubscription != null) {
+      _addressSubscription.cancel();
     }
     super.dispose();
   }
@@ -101,7 +109,6 @@ class AddFundsState extends State<_AddFundsPage> {
                   elevation: 0.0,
                   shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(42.0)),
                   onPressed: () {
-                    _connected = true;
                     widget._accountBloc.requestAddressSink.add(null);
                   },
                 ),
