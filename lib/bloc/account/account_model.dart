@@ -13,14 +13,11 @@ class AccountModel {
 
   AccountModel.empty() : 
     this(Account()
-      ..balance = Int64(0)
-      ..remoteBalance = Int64(0)
-      ..walletBalance = Int64(0)
+      ..balance = Int64(0)      
       ..nonDepositableBalance = Int64(0)
       ..status = Account_AccountStatus.WAITING_DEPOSIT
       ..maxAllowedToReceive = Int64(0)
-      ..maxPaymentAmount = Int64(0)
-      ..balanceLimitForDeposit = Int64(0)
+      ..maxPaymentAmount = Int64(0)      
       , Currency.BTC);
   AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply_FundStatus addedFundsStatus, String paymentRequestInProgress, bool connected}) {
     return AccountModel(
@@ -37,16 +34,12 @@ class AccountModel {
   bool get processiongBreezConnection => _accountResponse.status == Account_AccountStatus.PROCESSING_BREEZ_CONNECTION;
   bool get processingWithdrawal => _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
   bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;  
-  Int64 get remoteBalance => _accountResponse.remoteBalance;
-  Int64 get walletBalance => _accountResponse.walletBalance;
   Int64 get balance => _accountResponse.balance;  
   Int64 get nonDepositableBalance => _accountResponse.nonDepositableBalance;
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
-  Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;  
-  Int64 get maxAllowedToDeposit => _accountResponse.balance >= _accountResponse.balanceLimitForDeposit ? Int64(0) : _accountResponse.balanceLimitForDeposit - _accountResponse.balance;
-  Int64 get balanceLimitForDeposit => _accountResponse.balanceLimitForDeposit;
+  Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
 
   String get statusMessage {
     if (this.waitingDepositConfirmation) {
@@ -99,6 +92,15 @@ class PaymentInfo {
   PaymentInfo copyWith(Currency currency) {
     return PaymentInfo(this._paymentResponse, currency);
   }
+}
+
+class AddFundResponse {
+  AddFundReply _addfundReply;
+  AddFundResponse(this._addfundReply);
+
+  String get errorMessage => _addfundReply.errorMessage;
+  Int64 get maxAllowedDeposit => _addfundReply.maxAllowedDeposit;
+  String get address => _addfundReply.address;
 }
 
 class MockPaymentInfo implements PaymentInfo {
