@@ -102,8 +102,10 @@ class _CalendarDialogState extends State<CalendarDialog> {
         new FlatButton(
           child: new Text("Apply Filter", style: theme.buttonStyle),
           onPressed: () {
-            if (_startDate != widget._firstDate || _endDate != new DateTime.now()) {
+            if (_startDate != widget._firstDate || _endDate.day != new DateTime.now().day) {
               Navigator.of(context).pop([_startDate, _endDate]);
+            } else {
+              Navigator.of(context).pop();
             }
           },
         ),
