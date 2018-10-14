@@ -42,12 +42,12 @@ class UserLoaderWidget extends StatelessWidget {
           return new MaterialApp(
             title: 'Breez POS',
             initialRoute: snapshot.data.registered ? null : '/intro',
-            home: PosHome(),
+            home: PosHome(_blocs.accountBloc),
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
                 case '/home':
                   return new FadeInRoute(
-                    builder: (_) => new PosHome(),
+                    builder: (_) => new PosHome(_blocs.accountBloc),
                     settings: settings,
                   );
                 case '/intro':
