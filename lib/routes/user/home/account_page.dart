@@ -103,9 +103,11 @@ class _AccountPageState extends State<_AccountPage> {
                 List<PaymentInfo> paymentsNoFilter;
                 if (snapshot.hasData) {
                   paymentsNoFilter = _filterPayments(snapshot.data);
-                  DateTime _firstPaymentDate = DateTime.fromMillisecondsSinceEpoch(paymentsNoFilter[0].creationTimestamp.toInt() * 1000);
-                  _firstDate = new DateTime(_firstPaymentDate.year, _firstPaymentDate.month, _firstPaymentDate.day, 0, 0, 0, 0, 0);
-                  payments = _filterPayments(snapshot.data,_startDate,_endDate);
+                  if(paymentsNoFilter.length > 0){
+                    DateTime _firstPaymentDate = DateTime.fromMillisecondsSinceEpoch(paymentsNoFilter[0].creationTimestamp.toInt() * 1000);
+                    _firstDate = new DateTime(_firstPaymentDate.year, _firstPaymentDate.month, _firstPaymentDate.day, 0, 0, 0, 0, 0);
+                  }
+                  payments = _filterPayments(snapshot.data, _startDate, _endDate);
                 }
 
                 if (account == null || payments == null) {
@@ -165,6 +167,7 @@ class _AccountPageState extends State<_AccountPage> {
 
             //payment filter
             PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter, _firstDate),
+            PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter, _firstDate, _startDate, _endDate),
 
             // //List
             PaymentsList(payments, PAYMENT_LIST_ITEM_HEIGHT),

@@ -11,8 +11,10 @@ class PaymentFilterSliver extends StatefulWidget {
   final double _maxSize;
   final String _filter;
   final DateTime _firstDate;
+  final DateTime _startDate;
+  final DateTime _endDate;
 
-  PaymentFilterSliver(this._controller, this._onFilterChanged, this._minSize, this._maxSize, this._filter, this._firstDate);
+  PaymentFilterSliver(this._controller, this._onFilterChanged, this._minSize, this._maxSize, this._filter, this._firstDate, this._startDate, this._endDate);
 
   @override
   State<StatefulWidget> createState() {
@@ -43,7 +45,7 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
                 child: AnimatedOpacity(
                     duration: Duration(milliseconds: 100),
                     opacity: widget._filter != "All Activities" ? 1.0 : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
-                    child: PaymentsFilter(widget._filter, widget._onFilterChanged, widget._firstDate)));
+                    child: PaymentsFilter(widget._filter, widget._onFilterChanged, widget._firstDate, widget._startDate, widget._endDate)));
           }),
     );
   }
@@ -53,8 +55,10 @@ class PaymentsFilter extends StatelessWidget {
   final String _filter;
   final Function(String filter, [DateTime startDate, DateTime endDate]) _onFilterChanged;
   final DateTime _firstDate;
+  final DateTime _startDate;
+  final DateTime _endDate;
 
-  PaymentsFilter(this._filter, this._onFilterChanged, this._firstDate);
+  PaymentsFilter(this._filter, this._onFilterChanged, this._firstDate, this._startDate, this._endDate);
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +70,7 @@ class PaymentsFilter extends StatelessWidget {
               AssetImage("src/icon/calendar.png"),
               color: Colors.white,
               size: 24.0,
-            ), onPressed: () => showDialog(barrierDismissible: false, context: context, builder: (_) => CalendarDialog(context, _firstDate)).then((result){_onFilterChanged(_filter, result[0], result[1]);}))));
+            ), onPressed: () => showDialog(barrierDismissible: false, context: context, builder: (_) => CalendarDialog(context, _firstDate, _startDate, _endDate)).then((result){_onFilterChanged(_filter, result[0], result[1]);}))));
     children.add(
       new Container(
         width: 150.0,
