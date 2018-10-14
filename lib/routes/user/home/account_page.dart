@@ -100,7 +100,7 @@ class _AccountPageState extends State<_AccountPage> {
                   payments = _filterPayments(snapshot.data ?? new List<PaymentInfo>());
                 }                
 
-                if (account != null && !account.empty && payments.length == 0) {
+                if (account != null && !account.initial && payments.length == 0) {
                   //build empty account page
                   return _buildEmptyAccount(account);
                 }                
