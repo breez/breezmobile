@@ -166,7 +166,6 @@ class _AccountPageState extends State<_AccountPage> {
             SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(widget._accountBloc, widget._userProfileBloc), pinned: true),
 
             //payment filter
-            PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter, _firstDate),
             PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter, _firstDate, _startDate, _endDate),
 
             // //List
