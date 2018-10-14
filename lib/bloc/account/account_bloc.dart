@@ -74,7 +74,7 @@ class AccountBloc {
       Notifications notificationsService = injector.notifications;
       Device device = injector.device;      
 
-      _accountController.add(AccountModel.empty());
+      _accountController.add(AccountModel.initial());
       //listen streams      
       _listenUserChanges(userProfileStream, breezLib);
       _listenNewAddressRequests(breezLib);
