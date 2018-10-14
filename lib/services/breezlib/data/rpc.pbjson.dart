@@ -118,7 +118,7 @@ const NotificationEvent_NotificationType$json = const {
     const {'1': 'ACCOUNT_CHANGED', '2': 2},
     const {'1': 'INVOICE_PAID', '2': 3},
     const {'1': 'ROUTING_NODE_CONNECTION_CHANGED', '2': 4},
-    const {'1': 'NOT_CONNECTED', '2': 5},
+    const {'1': 'LIGHTNING_SERVICE_DOWN', '2': 5},
   ],
 };
 

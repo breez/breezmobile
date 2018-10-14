@@ -2,14 +2,14 @@ import 'pos_invoice.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/widgets/navigation_drawer.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:rxdart/rxdart.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'dart:io';
+import 'package:breez/routes/shared/no_connection_dialog.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
 
 class PosHome extends StatefulWidget {
+  final AccountBloc accountBloc;
+
+  PosHome(this.accountBloc);
+
   final List<DrawerItemConfig> _screens =
       new List<DrawerItemConfig>.unmodifiable([]);
 
@@ -34,27 +34,10 @@ class PosHome extends StatefulWidget {
 class PosHomeState extends State<PosHome> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  void _listenNoConnection(BreezBridge breezLib) {
-    Observable(breezLib.notificationStream)
-        .where((event) => event.type == NotificationEvent_NotificationType.NOT_CONNECTED)
-        .listen((change) {
-      promptError(
-          context,
-          "No Internet Connection.",
-          Text("You can try:\n•Turning off airplane mode\n•Turning on mobile data or Wi-Fi\n•Checking the signal in your area",
-              style: theme.alertStyle),
-        "OK",
-        "Exit", ()=> exit(0),
-      );
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    ServiceInjector injector = new ServiceInjector();
-    BreezBridge breezLib = injector.breezBridge;
-    _listenNoConnection(breezLib);
+    listenNoConnection(context, widget.accountBloc);
   }
 
   @override

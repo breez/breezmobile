@@ -60,7 +60,7 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
   static const NotificationEvent_NotificationType ACCOUNT_CHANGED = const NotificationEvent_NotificationType._(2, 'ACCOUNT_CHANGED');
   static const NotificationEvent_NotificationType INVOICE_PAID = const NotificationEvent_NotificationType._(3, 'INVOICE_PAID');
   static const NotificationEvent_NotificationType ROUTING_NODE_CONNECTION_CHANGED = const NotificationEvent_NotificationType._(4, 'ROUTING_NODE_CONNECTION_CHANGED');
-  static const NotificationEvent_NotificationType NOT_CONNECTED = const NotificationEvent_NotificationType._(5, 'NOT_CONNECTED');
+  static const NotificationEvent_NotificationType LIGHTNING_SERVICE_DOWN = const NotificationEvent_NotificationType._(5, 'LIGHTNING_SERVICE_DOWN');
 
   static const List<NotificationEvent_NotificationType> values = const <NotificationEvent_NotificationType> [
     READY,
@@ -68,7 +68,7 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
     ACCOUNT_CHANGED,
     INVOICE_PAID,
     ROUTING_NODE_CONNECTION_CHANGED,
-    NOT_CONNECTED,
+    LIGHTNING_SERVICE_DOWN,
   ];
 
   static final Map<int, NotificationEvent_NotificationType> _byValue = $pb.ProtobufEnum.initByValue(values);
