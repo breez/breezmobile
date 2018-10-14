@@ -57,6 +57,10 @@ class AccountBloc {
   final _fulfilledPaymentsController = new StreamController<String>.broadcast();
   Stream<String> get fulfilledPayments => _fulfilledPaymentsController.stream;
 
+  final _lightningDownController = new StreamController<bool>.broadcast();
+  Stream<bool> get lightningDownStream => _lightningDownController.stream;
+
+
   Stream<Map<String, DownloadFileInfo>>  chainBootstrapProgress;
 
   Sink<StatusUpdateModel> _statusUpdateSink;
@@ -201,6 +205,13 @@ class AccountBloc {
   
     void _listenAccountChanges(BreezBridge breezLib) {
       Observable(breezLib.notificationStream)
+          .where((event) =>
+      event.type == NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN)
+          .listen((change) {
+            _lightningDownController.add(true);
+      });
+
+      Observable(breezLib.notificationStream)
       .where((event) => event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED)
       .listen((change) => _refreshAcount(breezLib));
     }
@@ -239,5 +250,6 @@ class AccountBloc {
       _accountActionsController.close();
       _sentPaymentsController.close();
       _withdrawalController.close();
+      _lightningDownController.close();
     }
   }  

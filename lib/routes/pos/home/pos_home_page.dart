@@ -2,8 +2,14 @@ import 'pos_invoice.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/widgets/navigation_drawer.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/routes/shared/no_connection_dialog.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
 
 class PosHome extends StatefulWidget {
+  final AccountBloc accountBloc;
+
+  PosHome(this.accountBloc);
+
   final List<DrawerItemConfig> _screens =
       new List<DrawerItemConfig>.unmodifiable([]);
 
@@ -27,6 +33,12 @@ class PosHome extends StatefulWidget {
 
 class PosHomeState extends State<PosHome> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    listenNoConnection(context, widget.accountBloc);
+  }
 
   @override
   Widget build(BuildContext context) {
