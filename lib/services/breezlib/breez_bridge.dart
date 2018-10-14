@@ -34,8 +34,7 @@ class BreezBridge {
         _readyCompleter.complete();
       }
       _eventsController.add(new NotificationEvent()..mergeFromBuffer(event));      
-    });
-    bootstrapAndStart();    
+    });     
   }
 
   Future start(String workingDir) async{

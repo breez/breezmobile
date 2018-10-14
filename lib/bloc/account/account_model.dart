@@ -8,17 +8,18 @@ class AccountModel {
   final FundStatusReply_FundStatus addedFundsStatus;
   final String paymentRequestInProgress;
   final bool connected;
+  final bool initial;
 
-  AccountModel(this._accountResponse, this._currency, {this.addedFundsStatus = FundStatusReply_FundStatus.NO_FUND, this.paymentRequestInProgress, this.connected = false});
+  AccountModel(this._accountResponse, this._currency, {this.initial = false, this.addedFundsStatus = FundStatusReply_FundStatus.NO_FUND, this.paymentRequestInProgress, this.connected = false});
 
-  AccountModel.empty() : 
+  AccountModel.initial() : 
     this(Account()
       ..balance = Int64(0)      
       ..nonDepositableBalance = Int64(0)
       ..status = Account_AccountStatus.WAITING_DEPOSIT
       ..maxAllowedToReceive = Int64(0)
       ..maxPaymentAmount = Int64(0)      
-      , Currency.BTC);
+      , Currency.BTC, initial: true);
   AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply_FundStatus addedFundsStatus, String paymentRequestInProgress, bool connected}) {
     return AccountModel(
       accountResponse ?? this._accountResponse, 

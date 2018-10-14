@@ -13,9 +13,9 @@ import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/bloc_widget_connector.dart';
-import 'package:breez/bloc/status_indicator/status_indicator_bloc.dart';
 import 'package:breez/routes/user/home/status_text.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:breez/logger.dart';
 
 const DASHBOARD_MAX_HEIGHT = 188.0;
 const DASHBOARD_MIN_HEIGHT = 70.0;
@@ -70,7 +70,7 @@ class _AccountPageState extends State<_AccountPage> {
 
     _accountActionsSubscription = widget._accountBloc.accountActionsStream.listen((data) {}, onError: (e) {
       Scaffold.of(context).showSnackBar(new SnackBar(duration: new Duration(seconds: 10), content: new Text(e.toString())));
-    });   
+    });
   }
 
   @override
@@ -87,45 +87,29 @@ class _AccountPageState extends State<_AccountPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     return StreamBuilder<AccountModel>(
         stream: widget._accountBloc.accountStream,
         builder: (context, snapshot) {
-          AccountModel account = snapshot.data;
+          AccountModel account = snapshot.data;          
           return StreamBuilder<List<PaymentInfo>>(
               stream: widget._accountBloc.paymentsStream,
-              builder: (context, snapshot) {
+              builder: (context, snapshot) {                
                 List<PaymentInfo> payments;
-                if (snapshot.hasData) {
-                  payments = _filterPayments(snapshot.data);
-                }
+                if (snapshot.hasData) {                  
+                  payments = _filterPayments(snapshot.data ?? new List<PaymentInfo>());
+                }                
 
-                if (account == null || payments == null) {
-                  // build loading page, wating for account to initialize
-                  return _buildLoading(ListLoader());
-                }
-
-                if (account.balance == 0 && payments.length == 0) {
+                if (account != null && !account.empty && payments.length == 0) {
                   //build empty account page
                   return _buildEmptyAccount(account);
-                }
+                }                
 
                 //account and payments are ready, build their widgets
-                return _buildBalanceAndPayments(payments, account);
+                return _buildBalanceAndPayments(payments ?? new List<PaymentInfo>(), account);
               });
         });
-  }
-
-  Widget _buildLoading(Widget child) {
-    return Column(
-      children: <Widget>[
-        Expanded(
-            flex: 0,
-            child: Container(height: DASHBOARD_MAX_HEIGHT, child: WalletDashboard(null, DASHBOARD_MAX_HEIGHT, 0.0, widget._userProfileBloc.currencySink.add, widget._accountBloc.routingNodeConnectionStream))),
-        Expanded(flex: 1, child: child)
-      ],
-    );
-  }
+  }  
 
   Widget _buildEmptyAccount(AccountModel account){
     return Stack(
@@ -145,9 +129,9 @@ class _AccountPageState extends State<_AccountPage> {
 
   Widget _buildBalanceAndPayments(List<PaymentInfo> payments, AccountModel account) {
     double listHeightSpace = MediaQuery.of(context).size.height - DASHBOARD_MIN_HEIGHT - kToolbarHeight - FILTER_MAX_SIZE - 25.0;
-    double bottomPlaceholderSpace = payments == null ? 0.0 : (listHeightSpace - PAYMENT_LIST_ITEM_HEIGHT * payments.length).clamp(0.0, listHeightSpace);
-
+    double bottomPlaceholderSpace = payments == null || payments.length == 0 ? 0.0 : (listHeightSpace - PAYMENT_LIST_ITEM_HEIGHT * payments.length).clamp(0.0, listHeightSpace);    
     return Stack(
+      key: Key("account_sliver"),
       fit: StackFit.expand,
       children: [
         CustomScrollView(

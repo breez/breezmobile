@@ -17,7 +17,7 @@ import 'package:breez/bloc/status_indicator/status_update_model.dart';
 
 
 class AccountBloc {  
-  
+
   final _requestAddressController = new StreamController<void>();
   Sink<void> get requestAddressSink => _requestAddressController.sink;
 
@@ -80,7 +80,8 @@ class AccountBloc {
       _listenPOSFundingRequests(server, breezLib);
       _listenMempoolTransactions(device, notificationsService, breezLib);
       _listenRoutingNodeConnectionChanges(breezLib);
-      _refreshAcount(breezLib);            
+       breezLib.bootstrapAndStart();      
+       _refreshAcount(breezLib);     
     }
   
     void _listenMempoolTransactions(Device device, Notifications notificationService, BreezBridge breezLib) {      
