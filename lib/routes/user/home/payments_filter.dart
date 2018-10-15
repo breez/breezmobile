@@ -1,5 +1,6 @@
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/calendar_dialog.dart';
 
@@ -93,6 +94,20 @@ class PaymentsFilter extends StatelessWidget {
         ),
       ),
     );
-    return Row(children: children);
+    return new Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start
+      ,children: <Widget>[Row(children: children), _buildDateFilterChip(_startDate,_endDate)],);
+  }
+
+  _buildDateFilterChip(DateTime startDate,DateTime endDate){
+    if(_startDate != null && _endDate != null){
+      return new Padding(padding: EdgeInsets.only(left: 16.0),child: Chip(label: Text(_formatTransactionDate(_startDate) + " - " + _formatTransactionDate(_endDate)),onDeleted: (){ _onFilterChanged(_filter); startDate = null; endDate= null;} ,));
+    }
+    return Container();
+  }
+
+  String _formatTransactionDate(DateTime date) {
+    var formatter = new DateFormat('MM/dd/yyyy');
+    String formattedDate = formatter.format(date);
+    return formattedDate;
   }
 }

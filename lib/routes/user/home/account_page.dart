@@ -18,7 +18,7 @@ import 'package:breez/routes/user/home/status_text.dart';
 
 const DASHBOARD_MAX_HEIGHT = 188.0;
 const DASHBOARD_MIN_HEIGHT = 70.0;
-const FILTER_MAX_SIZE = 70.0;
+const FILTER_MAX_SIZE = 96.0;
 const FILTER_MIN_SIZE = 30.0;
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
