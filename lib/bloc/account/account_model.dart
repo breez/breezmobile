@@ -101,6 +101,30 @@ class PaymentInfo {
   }
 }
 
+class PaymentFilterModel {
+  final String _filter;
+  final DateTime _firstDate;
+  final DateTime _startDate;
+  final DateTime _endDate;
+
+  PaymentFilterModel(this._filter, this._firstDate, this._startDate, this._endDate);
+
+  PaymentFilterModel.empty() :
+        this();
+  PaymentFilterModel copyWith({String filter, DateTime firstDate, DateTime startDate, DateTime endDate}) {
+    return PaymentFilterModel(
+        filter ?? this._filter,
+        firstDate ?? this.firstDate,
+        startDate ?? this.startDate,
+        endDate ?? this.endDate);
+  }
+
+  DateTime get firstDate => _firstDate;
+  DateTime get startDate => _startDate;
+  DateTime get endDate => _endDate;
+
+}
+
 class MockPaymentInfo implements PaymentInfo {
   static bool isMockData = false;
   MockPaymentInfo(this.amount, this.fee, this.hash, this.type, this.creationTimestamp, this.description, this.imageURL);

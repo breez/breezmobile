@@ -27,6 +27,10 @@ class AccountBloc {
   final _accountController = new BehaviorSubject<AccountModel>();
   Stream<AccountModel> get accountStream => _accountController.stream;
 
+  final _paymentFilterController = BehaviorSubject<PaymentFilterModel>();
+  Stream<PaymentFilterModel> get paymentFilterStream => _paymentFilterController.stream;
+  Sink<PaymentFilterModel> get paymentFilterSink => _paymentFilterController.sink;
+
   final _routingNodeConnectionController = new BehaviorSubject<bool>();
   Stream<bool> get routingNodeConnectionStream => _routingNodeConnectionController.stream;
 
@@ -74,13 +78,14 @@ class AccountBloc {
       //listen streams      
       _listenUserChanges(userProfileStream, breezLib);
       _listenNewAddressRequests(breezLib);
+      _listenFilterChanges(breezLib);
       _listenWithdrawalRequests(breezLib);  
       _listenSentPayments(breezLib);    
       _listenAccountChanges(breezLib);
       _listenPOSFundingRequests(server, breezLib);
       _listenMempoolTransactions(device, notificationsService, breezLib);
       _listenRoutingNodeConnectionChanges(breezLib);
-      _refreshAcount(breezLib);            
+      _refreshAccount(breezLib);
     }
   
     void _listenMempoolTransactions(Device device, Notifications notificationService, BreezBridge breezLib) {      
@@ -141,7 +146,7 @@ class AccountBloc {
           breezLib.sendNonDepositedCoins(address)
           .then((res) => _withdrawalResultController.add(address))
           .catchError(_withdrawalResultController.addError)
-          .whenComplete(() => _refreshAcount(breezLib));
+          .whenComplete(() => _refreshAccount(breezLib));
         });    
     }
   
@@ -162,7 +167,7 @@ class AccountBloc {
         });    
     }
   
-    void _refreshPayments(BreezBridge breezLib) {
+    void _refreshPayments(BreezBridge breezLib,[List<PaymentFilterModel> filter]) {
       if (MockPaymentInfo.isMockData) {
         _paymentsController.add(MockPaymentInfo.createMockData());
         return;
@@ -189,7 +194,7 @@ class AccountBloc {
         .then((FundReply_ReturnCode res) {
           if (res == FundReply_ReturnCode.SUCCESS) {
             return Future.delayed(Duration(seconds: 3), () {
-              _refreshAcount(breezLib);
+              _refreshAccount(breezLib);
             });
           }
           else {          
@@ -201,10 +206,20 @@ class AccountBloc {
     void _listenAccountChanges(BreezBridge breezLib) {
       Observable(breezLib.notificationStream)
       .where((event) => event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED)
-      .listen((change) => _refreshAcount(breezLib));
+      .listen((change) => _refreshAccount(breezLib));
+    }
+
+    void _listenFilterChanges(BreezBridge breezLib) {
+      // Listen to the filter stream
+      _paymentFilterController.stream.listen(
+              (filter) {
+                // for each filter event, call refreshPayments with the new filter [WIP]
+                _refreshPayments(breezLib, [filter]);
+          });
     }
   
-    _refreshAcount(BreezBridge breezLib){      
+    _refreshAccount(BreezBridge breezLib){
+      // !! Also make sure that every invocations to _refreshPayments now gets a filter. [WIP]
       _refreshPayments(breezLib);
       _fetchFundStatus(breezLib);
       breezLib.getAccount()
@@ -239,4 +254,4 @@ class AccountBloc {
       _sentPaymentsController.close();
       _withdrawalController.close();
     }
-  }  
+  }
