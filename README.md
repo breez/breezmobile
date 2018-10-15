@@ -36,6 +36,7 @@ Breez is a Lightning Network [mobile client](https://github.com/breez/breezmobil
 - [ ] Removing funds 
 - [ ] Send payments to non-Breez users
 - [ ] End-to-end encryption of 'Connect to Pay' session
+- [ ] Receive payments from other ln wallets
 - [ ] Ability to Backup/Restore the ln node  
 - [ ] Mainnet support
 - [ ] Add mobile device security
