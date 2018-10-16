@@ -18,8 +18,10 @@ const OpenChannelReply$json = const {
 const AddFundRequest$json = const {
   '1': 'AddFundRequest',
   '2': const [
-    const {'1': 'paymentRequest', '3': 1, '4': 1, '5': 9, '10': 'paymentRequest'},
-    const {'1': 'notificationToken', '3': 2, '4': 1, '5': 9, '10': 'notificationToken'},
+    const {'1': 'paymentHash', '3': 1, '4': 1, '5': 12, '10': 'paymentHash'},
+    const {'1': 'chainPublicKey', '3': 2, '4': 1, '5': 12, '10': 'chainPublicKey'},
+    const {'1': 'notificationToken', '3': 3, '4': 1, '5': 9, '10': 'notificationToken'},
+    const {'1': 'lightningNodeId', '3': 4, '4': 1, '5': 9, '10': 'lightningNodeId'},
   ],
 };
 
@@ -27,6 +29,23 @@ const AddFundReply$json = const {
   '1': 'AddFundReply',
   '2': const [
     const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
+    const {'1': 'chainPublicKey', '3': 2, '4': 1, '5': 12, '10': 'chainPublicKey'},
+    const {'1': 'maxAllowedDeposit', '3': 3, '4': 1, '5': 3, '10': 'maxAllowedDeposit'},
+    const {'1': 'errorMessage', '3': 4, '4': 1, '5': 9, '10': 'errorMessage'},
+  ],
+};
+
+const PaySwapInvoiceRequest$json = const {
+  '1': 'PaySwapInvoiceRequest',
+  '2': const [
+    const {'1': 'paymentRequest', '3': 1, '4': 1, '5': 9, '10': 'paymentRequest'},
+  ],
+};
+
+const PaySwapInvoiceReply$json = const {
+  '1': 'PaySwapInvoiceReply',
+  '2': const [
+    const {'1': 'preimage', '3': 1, '4': 1, '5': 9, '10': 'preimage'},
   ],
 };
 
@@ -75,31 +94,29 @@ const RemoveFundRequest$json = const {
 
 const RemoveFundReply$json = const {
   '1': 'RemoveFundReply',
+  '2': const [
+    const {'1': 'statuses', '3': 1, '4': 3, '5': 11, '6': '.breez.RemoveFundReply.StatusesEntry', '10': 'statuses'},
+  ],
+  '3': const [RemoveFundReply_AddressStatus$json, RemoveFundReply_StatusesEntry$json],
 };
 
-const MempoolRegisterRequest$json = const {
-  '1': 'MempoolRegisterRequest',
+const RemoveFundReply_AddressStatus$json = const {
+  '1': 'AddressStatus',
   '2': const [
-    const {'1': 'clientID', '3': 1, '4': 1, '5': 9, '10': 'clientID'},
-    const {'1': 'addresses', '3': 2, '4': 3, '5': 9, '10': 'addresses'},
+    const {'1': 'tx', '3': 1, '4': 1, '5': 9, '10': 'tx'},
+    const {'1': 'amount', '3': 2, '4': 1, '5': 3, '10': 'amount'},
+    const {'1': 'confirmed', '3': 3, '4': 1, '5': 8, '10': 'confirmed'},
+    const {'1': 'blockHash', '3': 4, '4': 1, '5': 9, '10': 'blockHash'},
   ],
 };
 
-const MempoolRegisterReply$json = const {
-  '1': 'MempoolRegisterReply',
+const RemoveFundReply_StatusesEntry$json = const {
+  '1': 'StatusesEntry',
   '2': const [
-    const {'1': 'TXS', '3': 1, '4': 3, '5': 11, '6': '.breez.MempoolRegisterReply.Transaction', '10': 'TXS'},
+    const {'1': 'key', '3': 1, '4': 1, '5': 9, '10': 'key'},
+    const {'1': 'value', '3': 2, '4': 1, '5': 11, '6': '.breez.RemoveFundReply.AddressStatus', '10': 'value'},
   ],
-  '3': const [MempoolRegisterReply_Transaction$json],
-};
-
-const MempoolRegisterReply_Transaction$json = const {
-  '1': 'Transaction',
-  '2': const [
-    const {'1': 'TX', '3': 1, '4': 1, '5': 9, '10': 'TX'},
-    const {'1': 'Address', '3': 2, '4': 1, '5': 9, '10': 'Address'},
-    const {'1': 'Value', '3': 3, '4': 1, '5': 1, '10': 'Value'},
-  ],
+  '7': const {'7': true},
 };
 
 const FundRequest$json = const {

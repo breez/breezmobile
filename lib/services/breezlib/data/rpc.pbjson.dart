@@ -93,6 +93,15 @@ const InvoiceMemo$json = const {
   ],
 };
 
+const SendSwapInvoiceRequest$json = const {
+  '1': 'SendSwapInvoiceRequest',
+  '2': const [
+    const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
+    const {'1': 'tx', '3': 2, '4': 1, '5': 9, '10': 'tx'},
+    const {'1': 'value', '3': 3, '4': 1, '5': 3, '10': 'value'},
+  ],
+};
+
 const Invoice$json = const {
   '1': 'Invoice',
   '2': const [
@@ -128,6 +137,7 @@ const AddFundReply$json = const {
     const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
     const {'1': 'maxAllowedDeposit', '3': 2, '4': 1, '5': 3, '10': 'maxAllowedDeposit'},
     const {'1': 'errorMessage', '3': 3, '4': 1, '5': 9, '10': 'errorMessage'},
+    const {'1': 'backupJson', '3': 4, '4': 1, '5': 9, '10': 'backupJson'},
   ],
 };
 

@@ -295,6 +295,44 @@ class InvoiceMemo extends $pb.GeneratedMessage {
   void clearTransferRequest() => clearField(7);
 }
 
+class SendSwapInvoiceRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('SendSwapInvoiceRequest', package: const $pb.PackageName('data'))
+    ..aOS(1, 'address')
+    ..aOS(2, 'tx')
+    ..aInt64(3, 'value')
+    ..hasRequiredFields = false
+  ;
+
+  SendSwapInvoiceRequest() : super();
+  SendSwapInvoiceRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  SendSwapInvoiceRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  SendSwapInvoiceRequest clone() => new SendSwapInvoiceRequest()..mergeFromMessage(this);
+  SendSwapInvoiceRequest copyWith(void Function(SendSwapInvoiceRequest) updates) => super.copyWith((message) => updates(message as SendSwapInvoiceRequest));
+  $pb.BuilderInfo get info_ => _i;
+  static SendSwapInvoiceRequest create() => new SendSwapInvoiceRequest();
+  static $pb.PbList<SendSwapInvoiceRequest> createRepeated() => new $pb.PbList<SendSwapInvoiceRequest>();
+  static SendSwapInvoiceRequest getDefault() => _defaultInstance ??= create()..freeze();
+  static SendSwapInvoiceRequest _defaultInstance;
+  static void $checkItem(SendSwapInvoiceRequest v) {
+    if (v is! SendSwapInvoiceRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  String get address => $_getS(0, '');
+  set address(String v) { $_setString(0, v); }
+  bool hasAddress() => $_has(0);
+  void clearAddress() => clearField(1);
+
+  String get tx => $_getS(1, '');
+  set tx(String v) { $_setString(1, v); }
+  bool hasTx() => $_has(1);
+  void clearTx() => clearField(2);
+
+  Int64 get value => $_getI64(2);
+  set value(Int64 v) { $_setInt64(2, v); }
+  bool hasValue() => $_has(2);
+  void clearValue() => clearField(3);
+}
+
 class Invoice extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('Invoice', package: const $pb.PackageName('data'))
     ..a<InvoiceMemo>(1, 'memo', $pb.PbFieldType.OM, InvoiceMemo.getDefault, InvoiceMemo.create)
@@ -364,6 +402,7 @@ class AddFundReply extends $pb.GeneratedMessage {
     ..aOS(1, 'address')
     ..aInt64(2, 'maxAllowedDeposit')
     ..aOS(3, 'errorMessage')
+    ..aOS(4, 'backupJson')
     ..hasRequiredFields = false
   ;
 
@@ -395,6 +434,11 @@ class AddFundReply extends $pb.GeneratedMessage {
   set errorMessage(String v) { $_setString(2, v); }
   bool hasErrorMessage() => $_has(2);
   void clearErrorMessage() => clearField(3);
+
+  String get backupJson => $_getS(3, '');
+  set backupJson(String v) { $_setString(3, v); }
+  bool hasBackupJson() => $_has(3);
+  void clearBackupJson() => clearField(4);
 }
 
 class FundStatusReply extends $pb.GeneratedMessage {

@@ -100,6 +100,16 @@ class BreezBridge {
     }
     return _invokeMethodWhenReady("addInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
+
+  Future sendSwapInvoice(String address, String tx, Int64 value){
+    SendSwapInvoiceRequest swap = new SendSwapInvoiceRequest();
+    swap.address = address;
+    swap.tx = tx;
+    swap.value = value;
+
+    return _invokeMethodWhenReady("sendSwapInvoice", {"argument": swap.writeToBuffer()});
+  }
+
   Future<Invoice> getRelatedInvoice(String paymentRequest) {
     return _invokeMethodWhenReady("getRelatedInvoice", {"argument": paymentRequest})
       .then((invoiceData) => new Invoice()..mergeFromBuffer(invoiceData));
