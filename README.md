@@ -48,6 +48,39 @@ Breez is a Lightning Network [mobile client](https://github.com/breez/breezmobil
 - [ ] lnd on iOS
 
 ## Build & Run
+1. Build `breez.aar` as decribed in https://github.com/breez/breez
+2. Put `breez.aar` in `android/app/libs/` directory
+3. Create `lnd.conf` in the `conf` directory with the following content:
+```
+[Application Options]
+debuglevel=debug
+noseedbackup=1
+nolisten=1
+rpcmemlisten=1
+nobootstrap=1
+maxbackoff=2s
+[Bitcoin]
+bitcoin.active=1
+bitcoin.node=neutrino
+bitcoin.defaultchanconfs=1
+[Routing]
+routing.assumechanvalid=1
+[Neutrino]
+neutrino.connect=<bitcoin node supporting bip157/bip158>
+```
+4. Create `breez.conf` in the `conf` directory with the following content:
+```
+[Application Options]
+network=simnet #or testnet/mainnet
+routingnodehost=<hubnode hostname:port>
+routingnodepubkey=<hubnode pubkey>
+breezserver=<host:port> #This is the server running https://github.com/breez/server
+```
+5. Assuming that you have already installed and configured flutter, you can use the following commands to run in a connected device the client app or the pos or to build the corresponding apks:
+ - flutter run --flavor=client --target=lib/main.dart
+ - flutter run --flavor=pos    --target=lib/main_pos.dart
+ - flutter build apk --target-platform=android-arm64 --flavor=client --debug   --target=lib/main.dart
+ - flutter build apk --target-platform=android-arm64 --flavor=pos    --debug   --target=lib/main_pos.dart
 
 ## Architecture 
 <p align='center'>
