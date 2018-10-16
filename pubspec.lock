@@ -97,7 +97,7 @@ packages:
     description:
       path: "packages/firebase_database"
       ref: HEAD
-      resolved-ref: "21f7bfd3bbdd58596530bbf27f54e95176a285fb"
+      resolved-ref: ab6d93d6ec9040d2954a75a6da623174b4df2098
       url: "https://github.com/flutter/plugins.git"
     source: git
     version: "1.0.5"
@@ -106,10 +106,10 @@ packages:
     description:
       path: "packages/firebase_messaging"
       ref: HEAD
-      resolved-ref: "21f7bfd3bbdd58596530bbf27f54e95176a285fb"
+      resolved-ref: ab6d93d6ec9040d2954a75a6da623174b4df2098
       url: "https://github.com/flutter/plugins.git"
     source: git
-    version: "2.0.0"
+    version: "2.0.1"
   fixnum:
     dependency: transitive
     description:
@@ -227,6 +227,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.7"
+  ini:
+    dependency: "direct main"
+    description:
+      name: ini
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   intl:
     dependency: "direct main"
     description:
