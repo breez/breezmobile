@@ -102,7 +102,7 @@ class AddFundResponse {
   String get errorMessage => _addfundReply.errorMessage;
   Int64 get maxAllowedDeposit => _addfundReply.maxAllowedDeposit;
   String get address => _addfundReply.address;
-  List<int> get serializedScript => _addfundReply.serializedScript;
+  String get backupJson => _addfundReply.backupJson;
 }
 
 class MockPaymentInfo implements PaymentInfo {
