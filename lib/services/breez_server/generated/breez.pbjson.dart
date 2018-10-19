@@ -35,20 +35,6 @@ const AddFundReply$json = const {
   ],
 };
 
-const PaySwapInvoiceRequest$json = const {
-  '1': 'PaySwapInvoiceRequest',
-  '2': const [
-    const {'1': 'paymentRequest', '3': 1, '4': 1, '5': 9, '10': 'paymentRequest'},
-  ],
-};
-
-const PaySwapInvoiceReply$json = const {
-  '1': 'PaySwapInvoiceReply',
-  '2': const [
-    const {'1': 'preimage', '3': 1, '4': 1, '5': 9, '10': 'preimage'},
-  ],
-};
-
 const AddFundStatusRequest$json = const {
   '1': 'AddFundStatusRequest',
   '2': const [
@@ -94,29 +80,6 @@ const RemoveFundRequest$json = const {
 
 const RemoveFundReply$json = const {
   '1': 'RemoveFundReply',
-  '2': const [
-    const {'1': 'statuses', '3': 1, '4': 3, '5': 11, '6': '.breez.RemoveFundReply.StatusesEntry', '10': 'statuses'},
-  ],
-  '3': const [RemoveFundReply_AddressStatus$json, RemoveFundReply_StatusesEntry$json],
-};
-
-const RemoveFundReply_AddressStatus$json = const {
-  '1': 'AddressStatus',
-  '2': const [
-    const {'1': 'tx', '3': 1, '4': 1, '5': 9, '10': 'tx'},
-    const {'1': 'amount', '3': 2, '4': 1, '5': 3, '10': 'amount'},
-    const {'1': 'confirmed', '3': 3, '4': 1, '5': 8, '10': 'confirmed'},
-    const {'1': 'blockHash', '3': 4, '4': 1, '5': 9, '10': 'blockHash'},
-  ],
-};
-
-const RemoveFundReply_StatusesEntry$json = const {
-  '1': 'StatusesEntry',
-  '2': const [
-    const {'1': 'key', '3': 1, '4': 1, '5': 9, '10': 'key'},
-    const {'1': 'value', '3': 2, '4': 1, '5': 11, '6': '.breez.RemoveFundReply.AddressStatus', '10': 'value'},
-  ],
-  '7': const {'7': true},
 };
 
 const FundRequest$json = const {
