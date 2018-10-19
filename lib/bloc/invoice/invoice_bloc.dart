@@ -40,7 +40,6 @@ class InvoiceBloc {
     _listenInvoiceRequests(breezLib, nfc);
     _listenNFCStream(nfc, server, breezLib);
     _listenIncomingInvoices(notificationsService, breezLib, nfc);
-    _listenIncomingSwaps(notificationsService, breezLib);
     _listenIncomingBlankInvoices(breezLib, nfc);
     _listenPaidInvoices(breezLib);
   }
@@ -103,16 +102,6 @@ class InvoiceBloc {
     })
     .listen(_receivedInvoicesController.add)
     .onError(_receivedInvoicesController.addError);    
-  }
-
-  void _listenIncomingSwaps(Notifications notificationService, BreezBridge breezLib) {
-    notificationService.notifications
-        .where((message) => message["msg"] == "Unconfirmed transaction" ||  message["msg"] == "Confirmed transaction")
-        .listen((message) {
-      log.severe("Incoming swap: " + message.toString());
-      // Create an invoice of the correct amount
-      breezLib.sendSwapInvoice(message["address"], message["tx"], Int64(int.parse(message["value"])));
-    });
   }
 
   void _listenPaidInvoices(BreezBridge breezLib) {
