@@ -105,7 +105,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
             if (_startDate != widget._firstDate || _endDate.day != new DateTime.now().day) {
               Navigator.of(context).pop([_startDate, _endDate]);
             } else {
-              Navigator.of(context).pop();
+              Navigator.of(context).pop([null,null]);
             }
           },
         ),
