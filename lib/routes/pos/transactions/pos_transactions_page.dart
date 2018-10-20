@@ -69,12 +69,10 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
               stream: widget._accountBloc.paymentsStream,
               builder: (context, snapshot) {
                 List<PaymentInfo> payments;
-                List<PaymentInfo> paymentsNoFilter;
                 if (snapshot.hasData) {
-                  paymentsNoFilter = _filterPayments(snapshot.data);
-                  DateTime _firstPaymentDate = DateTime.fromMillisecondsSinceEpoch(paymentsNoFilter[0].creationTimestamp.toInt() * 1000);
+                  payments = snapshot.data;
+                  DateTime _firstPaymentDate = DateTime.fromMillisecondsSinceEpoch(payments[payments.length-1].creationTimestamp.toInt() * 1000);
                   _firstDate = new DateTime(_firstPaymentDate.year, _firstPaymentDate.month, _firstPaymentDate.day, 0, 0, 0, 0, 0);
-                  payments = _filterPayments(snapshot.data, _startDate, _endDate);
                 }
 
                 if (account == null || payments == null) {
@@ -136,14 +134,9 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
     setState(() {
       _startDate = startDate;
       _endDate = endDate;
+      PaymentFilterModel filterData = PaymentFilterModel("All Activities", _firstDate, startDate, endDate);
+      widget._accountBloc.paymentFilterSink.add(filterData);
     });
-  }
-
-  _filterPayments(List<PaymentInfo> payments, [DateTime _startDate, DateTime _endDate]) {
-    if(_startDate != null || _endDate != null ) {
-      return payments.where((p) => p.creationTimestamp.toInt() * 1000 >= _startDate.millisecondsSinceEpoch && p.creationTimestamp.toInt() * 1000 <= _endDate.millisecondsSinceEpoch).toList();
-    }
-    return payments;
   }
 
 }
