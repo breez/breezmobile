@@ -15,15 +15,13 @@ import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/bloc/status_indicator/status_update_model.dart';
 
-
-class AccountBloc {  
-  
+class AccountBloc {
   final _requestAddressController = new StreamController<void>();
   Sink<void> get requestAddressSink => _requestAddressController.sink;
 
   final _addressesController = new BehaviorSubject<String>();
   Stream<String> get addressesStream => _addressesController.stream;
-    
+
   final _accountController = new BehaviorSubject<AccountModel>();
   Stream<AccountModel> get accountStream => _accountController.stream;
 
@@ -46,10 +44,13 @@ class AccountBloc {
   final _paymentsController = new BehaviorSubject<List<PaymentInfo>>();
   Stream<List<PaymentInfo>> get paymentsStream => _paymentsController.stream;
   Stream<List<PaymentInfo>> get receivedPayments {
-    return paymentsStream.map( (payments) => payments.where( (p) => [PaymentType.DEPOSIT, PaymentType.RECEIVED].contains(p.type)));
+    return paymentsStream
+        .map((payments) => payments.where((p) => [PaymentType.DEPOSIT, PaymentType.RECEIVED].contains(p.type)));
   }
+
   Stream<List<PaymentInfo>> get sentPayments {
-    return paymentsStream.map( (payments) => payments.where( (p) => [PaymentType.WITHDRAWAL, PaymentType.SENT].contains(p.type)));
+    return paymentsStream
+        .map((payments) => payments.where((p) => [PaymentType.WITHDRAWAL, PaymentType.SENT].contains(p.type)));
   }
 
   final _accountActionsController = new StreamController<String>.broadcast();
@@ -61,207 +62,211 @@ class AccountBloc {
   final _fulfilledPaymentsController = new StreamController<String>.broadcast();
   Stream<String> get fulfilledPayments => _fulfilledPaymentsController.stream;
 
-  Stream<Map<String, DownloadFileInfo>>  chainBootstrapProgress;
+  Stream<Map<String, DownloadFileInfo>> chainBootstrapProgress;
 
   Sink<StatusUpdateModel> _statusUpdateSink;
 
-  BreezUserModel _currentUser;  
+  BreezUserModel _currentUser;
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
-      ServiceInjector injector = new ServiceInjector();    
-      BreezBridge breezLib = injector.breezBridge;  
-      BreezServer server = injector.breezServer;
-      Notifications notificationsService = injector.notifications;
-      Device device = injector.device;      
+    ServiceInjector injector = new ServiceInjector();
+    BreezBridge breezLib = injector.breezBridge;
+    BreezServer server = injector.breezServer;
+    Notifications notificationsService = injector.notifications;
+    Device device = injector.device;
 
-      _accountController.add(AccountModel.empty());
-      _paymentFilterController.add(PaymentFilterModel.empty());
-      
-      //listen streams      
-      _listenUserChanges(userProfileStream, breezLib);
-      _listenNewAddressRequests(breezLib);
-      _listenFilterChanges(breezLib);
-      _listenWithdrawalRequests(breezLib);  
-      _listenSentPayments(breezLib);    
-      _listenAccountChanges(breezLib);
-      _listenPOSFundingRequests(server, breezLib);
-      _listenMempoolTransactions(device, notificationsService, breezLib);
-      _listenRoutingNodeConnectionChanges(breezLib);
-      _refreshAccount(breezLib);
-    }
-  
-    void _listenMempoolTransactions(Device device, Notifications notificationService, BreezBridge breezLib) {      
-      notificationService.notifications
-        .where((message) => message["msg"] == "Unconfirmed transaction" ||  message["msg"] == "Confirmed transaction")
+    _accountController.add(AccountModel.empty());
+    _paymentFilterController.add(PaymentFilterModel.empty());
+
+    //listen streams
+    _listenUserChanges(userProfileStream, breezLib);
+    _listenNewAddressRequests(breezLib);
+    _listenFilterChanges(breezLib);
+    _listenWithdrawalRequests(breezLib);
+    _listenSentPayments(breezLib);
+    _listenAccountChanges(breezLib);
+    _listenPOSFundingRequests(server, breezLib);
+    _listenMempoolTransactions(device, notificationsService, breezLib);
+    _listenRoutingNodeConnectionChanges(breezLib);
+    _refreshAccount(breezLib);
+  }
+
+  void _listenMempoolTransactions(Device device, Notifications notificationService, BreezBridge breezLib) {
+    notificationService.notifications
+        .where((message) => message["msg"] == "Unconfirmed transaction" || message["msg"] == "Confirmed transaction")
         .listen((message) {
-          log.severe(message.toString());
-          _fetchFundStatus(breezLib);         
-        });
+      log.severe(message.toString());
+      _fetchFundStatus(breezLib);
+    });
 
-        device.eventStream.where((e) => e == NotificationType.RESUME).listen((e){          
-          _fetchFundStatus(breezLib);
-        });
-    }
+    device.eventStream.where((e) => e == NotificationType.RESUME).listen((e) {
+      _fetchFundStatus(breezLib);
+    });
+  }
 
-    _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib){
-      userProfileStream.listen((user) { 
-        _currentUser = user;
-        if (_accountController.value != null) {
-          _accountController.add(_accountController.value.copyWith(currency: user.currency));
-        }
-        if (_paymentsController.value != null) {
-          _paymentsController.add(_paymentsController.value.map((p) => p.copyWith(user.currency)).toList());
-        }    
-
-        _fetchFundStatus(breezLib);                 
-      });
-    }
-
-    void _fetchFundStatus(BreezBridge breezLib){
-      if (_currentUser == null) {
-        return;
+  _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib) {
+    userProfileStream.listen((user) {
+      _currentUser = user;
+      if (_accountController.value != null) {
+        _accountController.add(_accountController.value.copyWith(currency: user.currency));
       }
-      
-      breezLib.getFundStatus(_currentUser.userID)
-      .then( (status){
-        log.info("Got status " + status.status.toString());
-        if (status.status != _accountController.value.addedFundsStatus) {          
-          _accountController.add(_accountController.value.copyWith(addedFundsStatus: status.status));          
-        }
-      })
-      .catchError((err){
-        log.severe("Error in getFundStatus " + err.toString());
-      });
+      if (_paymentsController.value != null) {
+        _paymentsController.add(_paymentsController.value.map((p) => p.copyWith(user.currency)).toList());
+      }
+
+      _fetchFundStatus(breezLib);
+    });
+  }
+
+  void _fetchFundStatus(BreezBridge breezLib) {
+    if (_currentUser == null) {
+      return;
     }
-  
-    void _listenNewAddressRequests(BreezBridge breezLib) {    
-      _requestAddressController.stream.listen((request){
-        breezLib.addFunds(_currentUser.userID)
-          .then(_addressesController.add)
-          .catchError(_addressesController.addError);
-      });          
-    }
-  
-    void _listenWithdrawalRequests(BreezBridge breezLib) {
-      _withdrawalController.stream.listen(
-        (address) {
-          breezLib.sendNonDepositedCoins(address)
+
+    breezLib.getFundStatus(_currentUser.userID).then((status) {
+      log.info("Got status " + status.status.toString());
+      if (status.status != _accountController.value.addedFundsStatus) {
+        _accountController.add(_accountController.value.copyWith(addedFundsStatus: status.status));
+      }
+    }).catchError((err) {
+      log.severe("Error in getFundStatus " + err.toString());
+    });
+  }
+
+  void _listenNewAddressRequests(BreezBridge breezLib) {
+    _requestAddressController.stream.listen((request) {
+      breezLib.addFunds(_currentUser.userID).then(_addressesController.add).catchError(_addressesController.addError);
+    });
+  }
+
+  void _listenWithdrawalRequests(BreezBridge breezLib) {
+    _withdrawalController.stream.listen((address) {
+      breezLib
+          .sendNonDepositedCoins(address)
           .then((res) => _withdrawalResultController.add(address))
           .catchError(_withdrawalResultController.addError)
           .whenComplete(() => _refreshAccount(breezLib));
-        });    
-    }
-  
-    void _listenSentPayments(BreezBridge breezLib) {
-      _sentPaymentsController.stream.listen(
-        (bolt11) {
-          _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: bolt11));          
-          breezLib.sendPaymentForRequest(bolt11)     
-          .then((response) {
-            _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: ""));          
-            _fulfilledPaymentsController.add(bolt11); 
-          })        
-          .catchError((err) {
-           _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: ""));
-            log.severe(err.toString());
-            _fulfilledPaymentsController.addError(err);
-          });
-        });    
-    }
-  
-    void _refreshPayments(BreezBridge breezLib) {
-      if(_paymentFilterController.value.filter != null || (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null)){
-        print("New Filter: ${_paymentFilterController.value}");
-        print("Filter: ${_paymentFilterController.value.filter}");
-        print("First Date: ${_paymentFilterController.value.firstDate}");
-        print("Start Date: ${_paymentFilterController.value.startDate}");
-        print("End Date: ${_paymentFilterController.value.endDate}");
-      }
-      if (MockPaymentInfo.isMockData) {
-        _paymentsController.add(MockPaymentInfo.createMockData());
-        return;
-      }
-       breezLib.getPayments().then( (payments) {
-        _paymentsController.add(payments.paymentsList.map( (payment) => new PaymentInfo(payment, _currentUser.currency)).toList());
-      })
-      .catchError(_paymentsController.addError); 
-    }  
-  
-    void _listenPOSFundingRequests(BreezServer server, BreezBridge breezLib) {
-      _posFundingRequestController.stream.listen((amount){
-        retry(
-          () => _fundPOSChannel(server, breezLib, amount) ,
-          tryLimit: 3,
-          interval: Duration(seconds: 5)
-        )      
-        .catchError(_accountActionsController.addError);   
-      });  
-    }
-  
-    Future _fundPOSChannel(BreezServer server, BreezBridge breezLib, Int64 remoteAmount) {
-      return server.requestChannel(_accountController.value.id, remoteAmount)
-        .then((FundReply_ReturnCode res) {
-          if (res == FundReply_ReturnCode.SUCCESS) {
-            return Future.delayed(Duration(seconds: 3), () {
-              _refreshAccount(breezLib);
-            });
-          }
-          else {          
-            throw new Exception(res.toString());
-          }
-        });      
-    }
-  
-    void _listenAccountChanges(BreezBridge breezLib) {
-      Observable(breezLib.notificationStream)
-      .where((event) => event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED)
-      .listen((change) => _refreshAccount(breezLib));
-    }
-
-    void _listenFilterChanges(BreezBridge breezLib) {
-      // Listen to the filter stream
-      _paymentFilterController.stream.listen(
-              (filter) {
-                  // for each filter event, call refreshPayments with the new filter [WIP]
-                  _refreshPayments(breezLib);
-          });
-    }
-  
-    _refreshAccount(BreezBridge breezLib){
-      // !! Also make sure that every invocations to _refreshPayments now gets a filter. [WIP]
-      _refreshPayments(breezLib);
-      _fetchFundStatus(breezLib);
-      breezLib.getAccount()
-        .then((acc) {
-          log.info("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());
-          _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser.currency));          
-        })
-        .catchError(_accountController.addError);
-    }
-
-    void _listenRoutingNodeConnectionChanges(BreezBridge breezLib) {
-      Observable(breezLib.notificationStream)
-      .where((event) => event.type == NotificationEvent_NotificationType.ROUTING_NODE_CONNECTION_CHANGED)
-      .listen((change) => _refreshRoutingNodeConnection(breezLib));
-    }
-
-    _refreshRoutingNodeConnection(BreezBridge breezLib){
-      breezLib.isConnectedToRoutingNode()
-        .then((connected){
-          _accountController.add(_accountController.value.copyWith(connected: connected));                    
-        })
-        .catchError(_routingNodeConnectionController.addError);
-    }
-
-  
-    close() {
-      _requestAddressController.close();
-      _addressesController.close();    
-      _paymentsController.close();
-      _paymentFilterController.close();
-      _posFundingRequestController.close();
-      _accountActionsController.close();
-      _sentPaymentsController.close();
-      _withdrawalController.close();
-    }
+    });
   }
+
+  void _listenSentPayments(BreezBridge breezLib) {
+    _sentPaymentsController.stream.listen((bolt11) {
+      _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: bolt11));
+      breezLib.sendPaymentForRequest(bolt11).then((response) {
+        _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: ""));
+        _fulfilledPaymentsController.add(bolt11);
+      }).catchError((err) {
+        _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: ""));
+        log.severe(err.toString());
+        _fulfilledPaymentsController.addError(err);
+      });
+    });
+  }
+
+  void _refreshPayments(BreezBridge breezLib) {
+    if (_paymentFilterController.value.filter != null ||
+        (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null)) {
+      print("Filter: ${_paymentFilterController.value.filter}");
+      print("First Date: ${_paymentFilterController.value.firstDate}");
+      print("Start Date: ${_paymentFilterController.value.startDate}");
+      print("End Date: ${_paymentFilterController.value.endDate}");
+      breezLib.getPayments().then((payments) {
+        if (_paymentFilterController.value.startDate != null || _paymentFilterController.value.endDate != null) {
+          _paymentsController.add(payments.paymentsList
+              .where((p) =>
+                  p.creationTimestamp.toInt() * 1000 >=
+                      _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
+                  p.creationTimestamp.toInt() * 1000 <= _paymentFilterController.value.endDate.millisecondsSinceEpoch)
+              .map((payment) => new PaymentInfo(payment, _currentUser.currency))
+              .toList());
+        }
+        if (_paymentFilterController.value.filter == "Sent") {
+          _paymentsController.add(payments.paymentsList
+              .where((p) => [PaymentType.WITHDRAWAL, PaymentType.SENT].contains(p.type))
+              .map((payment) => new PaymentInfo(payment, _currentUser.currency))
+              .toList());
+        } else if (_paymentFilterController.value.filter == "Received") {
+          _paymentsController.add(payments.paymentsList
+              .where((p) => [PaymentType.DEPOSIT, PaymentType.RECEIVED].contains(p.type))
+              .map((payment) => new PaymentInfo(payment, _currentUser.currency))
+              .toList());
+        } else {
+          _paymentsController
+              .add(payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList());
+        }
+      }).catchError(_paymentsController.addError);
+      return;
+    }
+    if (MockPaymentInfo.isMockData) {
+      _paymentsController.add(MockPaymentInfo.createMockData());
+      return;
+    }
+    breezLib.getPayments().then((payments) {
+      _paymentsController
+          .add(payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList());
+    }).catchError(_paymentsController.addError);
+  }
+
+  void _listenPOSFundingRequests(BreezServer server, BreezBridge breezLib) {
+    _posFundingRequestController.stream.listen((amount) {
+      retry(() => _fundPOSChannel(server, breezLib, amount), tryLimit: 3, interval: Duration(seconds: 5))
+          .catchError(_accountActionsController.addError);
+    });
+  }
+
+  Future _fundPOSChannel(BreezServer server, BreezBridge breezLib, Int64 remoteAmount) {
+    return server.requestChannel(_accountController.value.id, remoteAmount).then((FundReply_ReturnCode res) {
+      if (res == FundReply_ReturnCode.SUCCESS) {
+        return Future.delayed(Duration(seconds: 3), () {
+          _refreshAccount(breezLib);
+        });
+      } else {
+        throw new Exception(res.toString());
+      }
+    });
+  }
+
+  void _listenAccountChanges(BreezBridge breezLib) {
+    Observable(breezLib.notificationStream)
+        .where((event) => event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED)
+        .listen((change) => _refreshAccount(breezLib));
+  }
+
+  void _listenFilterChanges(BreezBridge breezLib) {
+    _paymentFilterController.stream.listen((filter) {
+      _refreshPayments(breezLib);
+    });
+  }
+
+  _refreshAccount(BreezBridge breezLib) {
+    _refreshPayments(breezLib);
+    _fetchFundStatus(breezLib);
+    breezLib.getAccount().then((acc) {
+      log.info("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());
+      _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser.currency));
+    }).catchError(_accountController.addError);
+  }
+
+  void _listenRoutingNodeConnectionChanges(BreezBridge breezLib) {
+    Observable(breezLib.notificationStream)
+        .where((event) => event.type == NotificationEvent_NotificationType.ROUTING_NODE_CONNECTION_CHANGED)
+        .listen((change) => _refreshRoutingNodeConnection(breezLib));
+  }
+
+  _refreshRoutingNodeConnection(BreezBridge breezLib) {
+    breezLib.isConnectedToRoutingNode().then((connected) {
+      _accountController.add(_accountController.value.copyWith(connected: connected));
+    }).catchError(_routingNodeConnectionController.addError);
+  }
+
+  close() {
+    _requestAddressController.close();
+    _addressesController.close();
+    _paymentsController.close();
+    _paymentFilterController.close();
+    _posFundingRequestController.close();
+    _accountActionsController.close();
+    _sentPaymentsController.close();
+    _withdrawalController.close();
+  }
+}

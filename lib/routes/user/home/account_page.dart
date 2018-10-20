@@ -100,14 +100,14 @@ class _AccountPageState extends State<_AccountPage> {
               stream: widget._accountBloc.paymentsStream,
               builder: (context, snapshot) {
                 List<PaymentInfo> payments;
-                List<PaymentInfo> paymentsNoFilter;
                 if (snapshot.hasData) {
-                  paymentsNoFilter = _filterPayments(snapshot.data);
-                  if(paymentsNoFilter.length > 0){
-                    DateTime _firstPaymentDate = DateTime.fromMillisecondsSinceEpoch(paymentsNoFilter[0].creationTimestamp.toInt() * 1000);
-                    _firstDate = new DateTime(_firstPaymentDate.year, _firstPaymentDate.month, _firstPaymentDate.day, 0, 0, 0, 0, 0);
+                  payments = snapshot.data;
+                  if (payments.length > 0) {
+                    DateTime _firstPaymentDate =
+                        DateTime.fromMillisecondsSinceEpoch(payments[0].creationTimestamp.toInt() * 1000);
+                    _firstDate = new DateTime(
+                        _firstPaymentDate.year, _firstPaymentDate.month, _firstPaymentDate.day, 0, 0, 0, 0, 0);
                   }
-                  payments = _filterPayments(snapshot.data, _startDate, _endDate);
                 }
 
                 if (account == null || payments == null) {
@@ -115,7 +115,8 @@ class _AccountPageState extends State<_AccountPage> {
                   return _buildLoading(ListLoader());
                 }
 
-                if (account.balance == 0 && payments.length == 0) {
+                if (account.balance == 0 && payments.length == 0 &&
+                    (_filter == "All Activities" && (_startDate == null && _endDate == null))) {
                   // build empty account page
                   return _buildEmptyAccount(account);
                 }
@@ -201,33 +202,6 @@ class _AccountPageState extends State<_AccountPage> {
       PaymentFilterModel filterData = PaymentFilterModel(newFilter, _firstDate, startDate, endDate);
       widget._accountBloc.paymentFilterSink.add(filterData);
     });
-  }
-
-  _filterPayments(List<PaymentInfo> payments, [DateTime _startDate, DateTime _endDate]) {
-    if (_startDate != null || _endDate != null) {
-      if (_filter == "All Activities") {
-        return payments.where((p) => p.creationTimestamp.toInt() * 1000 >= _startDate.millisecondsSinceEpoch && p.creationTimestamp.toInt() * 1000 <= _endDate.millisecondsSinceEpoch).toList();
-      }
-      if (_filter == "Sent") {
-        return payments.where((p) => (p.type == PaymentType.WITHDRAWAL || p.type == PaymentType.SENT) &&
-            p.creationTimestamp.toInt() * 1000 >= _startDate.millisecondsSinceEpoch && p.creationTimestamp.toInt() * 1000 <= _endDate.millisecondsSinceEpoch).toList();
-      }
-      if (_filter == "Received") {
-        return payments.where((p) => (p.type == PaymentType.DEPOSIT || p.type == PaymentType.RECEIVED) &&
-            p.creationTimestamp.toInt() * 1000 >= _startDate.millisecondsSinceEpoch && p.creationTimestamp.toInt() * 1000 <= _endDate.millisecondsSinceEpoch).toList();
-      }
-    } else {
-      if (_filter == "All Activities") {
-        return payments;
-      }
-      if (_filter == "Sent") {
-        return payments.where((p) => p.type == PaymentType.WITHDRAWAL || p.type == PaymentType.SENT).toList();
-      }
-      if (_filter == "Received") {
-        return payments.where((p) => p.type == PaymentType.DEPOSIT || p.type == PaymentType.RECEIVED).toList();
-      }
-    }
-    return null;
   }
 }
 
