@@ -106,10 +106,6 @@ class PaymentsFilter extends StatelessWidget {
     return Container();
   }
 
-  String _formatTransactionDate(DateTime date) {
-    var formatter = new DateFormat('MM/dd/yyyy');
-    String formattedDate = formatter.format(date);
-    return formattedDate;
   String _formatFilterDateRange(DateTime startDate,DateTime endDate) {
     var formatter = DateFormat.Md(Platform.localeName);
     if(startDate.year != endDate.year) {

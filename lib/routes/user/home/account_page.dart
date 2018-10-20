@@ -18,7 +18,7 @@ import 'package:breez/routes/user/home/status_text.dart';
 
 const DASHBOARD_MAX_HEIGHT = 188.0;
 const DASHBOARD_MIN_HEIGHT = 70.0;
-const FILTER_MAX_SIZE = 96.0;
+var FILTER_MAX_SIZE = 70.0;
 const FILTER_MIN_SIZE = 30.0;
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
@@ -58,7 +58,6 @@ class _AccountPageState extends State<_AccountPage> {
     _startDate = null;
     _endDate = null;
     _filter = 'All Activities';
-
     _statusSubscription = widget._accountBloc.accountStream.listen((acc) {
       if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {
         Scaffold.of(context).showSnackBar(new SnackBar(
@@ -104,7 +103,7 @@ class _AccountPageState extends State<_AccountPage> {
                   payments = snapshot.data;
                   if (payments.length > 0) {
                     DateTime _firstPaymentDate =
-                        DateTime.fromMillisecondsSinceEpoch(payments[0].creationTimestamp.toInt() * 1000);
+                        DateTime.fromMillisecondsSinceEpoch(payments[payments.length-1].creationTimestamp.toInt() * 1000);
                     _firstDate = new DateTime(
                         _firstPaymentDate.year, _firstPaymentDate.month, _firstPaymentDate.day, 0, 0, 0, 0, 0);
                   }
@@ -199,6 +198,11 @@ class _AccountPageState extends State<_AccountPage> {
       _filter = newFilter;
       _startDate = startDate;
       _endDate = endDate;
+      if(startDate != null && endDate != null) {
+        FILTER_MAX_SIZE = 112.0;
+      } else {
+        FILTER_MAX_SIZE = 70.0;
+      }
       PaymentFilterModel filterData = PaymentFilterModel(newFilter, _firstDate, startDate, endDate);
       widget._accountBloc.paymentFilterSink.add(filterData);
     });
