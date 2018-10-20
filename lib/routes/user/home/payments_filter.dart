@@ -100,7 +100,7 @@ class PaymentsFilter extends StatelessWidget {
 
   _buildDateFilterChip(DateTime startDate,DateTime endDate){
     if(_startDate != null && _endDate != null){
-      return new Padding(padding: EdgeInsets.only(left: 16.0),child: Chip(label: Text(_formatTransactionDate(_startDate) + " - " + _formatTransactionDate(_endDate)),onDeleted: (){ _onFilterChanged(_filter); startDate = null; endDate= null;} ,));
+      return new Padding(padding: EdgeInsets.only(left: 16.0),child: Chip(label: Text(_formatTransactionDate(_startDate) + " - " + _formatTransactionDate(_endDate)),onDeleted: (){ _onFilterChanged(_filter,null,null);} ,));
     }
     return Container();
   }

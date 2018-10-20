@@ -109,8 +109,8 @@ class PaymentFilterModel {
 
   PaymentFilterModel(this._filter, this._firstDate, this._startDate, this._endDate);
 
-  PaymentFilterModel.empty() :
-        this();
+  PaymentFilterModel.empty() : this(null,null,null,null);
+
   PaymentFilterModel copyWith({String filter, DateTime firstDate, DateTime startDate, DateTime endDate}) {
     return PaymentFilterModel(
         filter ?? this._filter,
@@ -119,10 +119,10 @@ class PaymentFilterModel {
         endDate ?? this.endDate);
   }
 
+  String get filter => this._filter;
   DateTime get firstDate => _firstDate;
   DateTime get startDate => _startDate;
   DateTime get endDate => _endDate;
-
 }
 
 class MockPaymentInfo implements PaymentInfo {

@@ -75,6 +75,8 @@ class AccountBloc {
       Device device = injector.device;      
 
       _accountController.add(AccountModel.empty());
+      _paymentFilterController.add(PaymentFilterModel.empty());
+      
       //listen streams      
       _listenUserChanges(userProfileStream, breezLib);
       _listenNewAddressRequests(breezLib);
@@ -167,7 +169,14 @@ class AccountBloc {
         });    
     }
   
-    void _refreshPayments(BreezBridge breezLib,[List<PaymentFilterModel> filter]) {
+    void _refreshPayments(BreezBridge breezLib) {
+      if(_paymentFilterController.value.filter != null || (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null)){
+        print("New Filter: ${_paymentFilterController.value}");
+        print("Filter: ${_paymentFilterController.value.filter}");
+        print("First Date: ${_paymentFilterController.value.firstDate}");
+        print("Start Date: ${_paymentFilterController.value.startDate}");
+        print("End Date: ${_paymentFilterController.value.endDate}");
+      }
       if (MockPaymentInfo.isMockData) {
         _paymentsController.add(MockPaymentInfo.createMockData());
         return;
@@ -213,8 +222,8 @@ class AccountBloc {
       // Listen to the filter stream
       _paymentFilterController.stream.listen(
               (filter) {
-                // for each filter event, call refreshPayments with the new filter [WIP]
-                _refreshPayments(breezLib, [filter]);
+                  // for each filter event, call refreshPayments with the new filter [WIP]
+                  _refreshPayments(breezLib);
           });
     }
   
@@ -248,7 +257,8 @@ class AccountBloc {
     close() {
       _requestAddressController.close();
       _addressesController.close();    
-      _paymentsController.close();    
+      _paymentsController.close();
+      _paymentFilterController.close();
       _posFundingRequestController.close();
       _accountActionsController.close();
       _sentPaymentsController.close();

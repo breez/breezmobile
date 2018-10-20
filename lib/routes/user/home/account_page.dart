@@ -198,6 +198,8 @@ class _AccountPageState extends State<_AccountPage> {
       _filter = newFilter;
       _startDate = startDate;
       _endDate = endDate;
+      PaymentFilterModel filterData = PaymentFilterModel(newFilter, _firstDate, startDate, endDate);
+      widget._accountBloc.paymentFilterSink.add(filterData);
     });
   }
 
