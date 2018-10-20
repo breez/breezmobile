@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io' show Platform;
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -171,7 +173,8 @@ class _CalendarDialogState extends State<CalendarDialog> {
   }
 
   String _formatTransactionDate(DateTime date) {
-    var formatter = new DateFormat('MM/dd/yyyy');
+    initializeDateFormatting(Platform.localeName,null);
+    var formatter = new DateFormat.yMd(Platform.localeName);
     String formattedDate = formatter.format(date);
     return formattedDate;
   }

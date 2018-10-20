@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -41,8 +43,9 @@ class PosPaymentItem extends StatelessWidget {
   }
 
   String _formatTransactionDate(Int64 timestamp) {
+    initializeDateFormatting(Platform.localeName,null);
     DateTime date = new DateTime.fromMillisecondsSinceEpoch(timestamp.toInt() * 1000);
-    var formatter = new DateFormat('MM/dd/yyyy hh:mm');
+    var formatter = new DateFormat.yMd(Platform.localeName).add_jm();
     String formattedDate = formatter.format(date);
     return formattedDate;
   }

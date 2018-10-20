@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+import 'package:intl/date_symbol_data_local.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,6 +58,7 @@ class HomeState extends State<Home> {
     super.initState();
     InvoiceNotificationsHandler _notificationsHandler =
     new InvoiceNotificationsHandler(context, widget.accountBloc, widget.receivedInvoicesStream);
+    initializeDateFormatting(Platform.localeName,null);
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -89,18 +90,18 @@ class PaymentsFilter extends StatelessWidget {
                     ),
                   );
                 }).toList(),
-                onChanged: (value) => _onFilterChanged(value)),
+                onChanged: (value) => _onFilterChanged(value,_startDate,_endDate)),
           ),
         ),
       ),
     );
-    return new Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start
-      ,children: <Widget>[Row(children: children), _buildDateFilterChip(_startDate,_endDate)],);
+    return new Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start
+      ,children: <Widget>[new Padding(padding: EdgeInsets.only(top: 16.0,bottom: 0.0),child: Row(children: children)), _buildDateFilterChip(_startDate,_endDate)],);
   }
 
   _buildDateFilterChip(DateTime startDate,DateTime endDate){
     if(_startDate != null && _endDate != null){
-      return new Padding(padding: EdgeInsets.only(left: 16.0),child: Chip(label: Text(_formatTransactionDate(_startDate) + " - " + _formatTransactionDate(_endDate)),onDeleted: (){ _onFilterChanged(_filter,null,null);} ,));
+      return new Padding(padding: EdgeInsets.only(left: 16.0,top: 0.0),child: Chip(label: Text(_formatFilterDateRange(_startDate,_endDate)),onDeleted: (){ _onFilterChanged(_filter,null,null);} ,));
     }
     return Container();
   }
@@ -109,5 +110,13 @@ class PaymentsFilter extends StatelessWidget {
     var formatter = new DateFormat('MM/dd/yyyy');
     String formattedDate = formatter.format(date);
     return formattedDate;
+  String _formatFilterDateRange(DateTime startDate,DateTime endDate) {
+    var formatter = DateFormat.Md(Platform.localeName);
+    if(startDate.year != endDate.year) {
+      formatter = new DateFormat.yMd(Platform.localeName);
+    }
+    String _startDate = formatter.format(startDate);
+    String _endDate = formatter.format(endDate);
+    return _startDate + "-" + _endDate;
   }
 }

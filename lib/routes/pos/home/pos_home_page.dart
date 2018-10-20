@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+import 'package:intl/date_symbol_data_local.dart';
 import 'pos_invoice.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/widgets/navigation_drawer.dart';
@@ -26,6 +28,12 @@ class PosHome extends StatefulWidget {
 
 class PosHomeState extends State<PosHome> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting(Platform.localeName,null);
+  }
 
   @override
   Widget build(BuildContext context) {

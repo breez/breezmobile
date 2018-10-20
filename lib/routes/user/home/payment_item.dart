@@ -1,3 +1,6 @@
+import 'dart:io' show Platform;
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/payment_item_avatar.dart';
 import 'package:fixnum/fixnum.dart';
@@ -39,7 +42,10 @@ class PaymentItem extends StatelessWidget {
   }
 
   String _formatTransactionDate(Int64 timestamp) {
+    initializeDateFormatting(Platform.localeName,null);
     DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp.toInt() * 1000);
-    return '${date.month}/${date.day}';
+    var formatter = new DateFormat.Md(Platform.localeName);
+    String formattedDate = formatter.format(date);
+    return formattedDate;
   }
 }
