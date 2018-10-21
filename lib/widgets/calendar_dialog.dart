@@ -105,7 +105,14 @@ class _CalendarDialogState extends State<CalendarDialog> {
           child: new Text("Apply Filter", style: theme.buttonStyle),
           onPressed: () {
             if (_startDate != widget._firstDate || _endDate.day != new DateTime.now().day) {
-              Navigator.of(context).pop([_startDate, _endDate]);
+              DateTime startDate = new DateTime(_startDate.year, _startDate.month, _startDate.day, 0, 0, 0);
+              DateTime endDate = new DateTime(_endDate.year, _endDate.month, _endDate.day, 0, 0, 0);
+              if(startDate.compareTo(endDate) == 0) {
+                endDate = new DateTime(_endDate.year, _endDate.month, _endDate.day, 23, 59, 59, 999);
+                Navigator.of(context).pop([startDate, endDate]);
+              } else {
+                Navigator.of(context).pop([_startDate, _endDate]);
+              }
             } else {
               Navigator.of(context).pop([null,null]);
             }
