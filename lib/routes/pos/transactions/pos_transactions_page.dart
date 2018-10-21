@@ -10,6 +10,8 @@ import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/theme_data.dart' as theme;
+import 'dart:io' show Platform;
+import 'package:intl/intl.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
@@ -42,6 +44,8 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
   DateTime _endDate;
   DateTime _firstDate;
 
+  double _sliverPadding = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -71,8 +75,11 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
                 List<PaymentInfo> payments;
                 if (snapshot.hasData) {
                   payments = snapshot.data;
-                  DateTime _firstPaymentDate = DateTime.fromMillisecondsSinceEpoch(payments[payments.length-1].creationTimestamp.toInt() * 1000);
-                  _firstDate = new DateTime(_firstPaymentDate.year, _firstPaymentDate.month, _firstPaymentDate.day, 0, 0, 0, 0, 0);
+                  if(payments.isNotEmpty){
+                    DateTime _firstPaymentDate = DateTime.fromMillisecondsSinceEpoch(payments[payments.length-1].creationTimestamp.toInt() * 1000);
+                    _firstDate = new DateTime(_firstPaymentDate.year, _firstPaymentDate.month, _firstPaymentDate.day, 0, 0, 0, 0, 0);
+                  }
+
                 }
 
                 if (account == null || payments == null) {
@@ -120,20 +127,46 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
     return Stack(
       fit: StackFit.expand,
       children: [
+        ((_startDate != null && _endDate != null) && payments.length == 0) ? Center(child: Text("There are no transactions in this date range"),) :
         CustomScrollView(
           controller: _scrollController,
           slivers: <Widget>[
-            PosPaymentsList(payments, PAYMENT_LIST_ITEM_HEIGHT),
+            new SliverPadding(
+              padding: EdgeInsets.symmetric(vertical: _sliverPadding),
+              sliver: PosPaymentsList(payments, PAYMENT_LIST_ITEM_HEIGHT),)
           ],
         ),
+        _buildDateFilterChip(_startDate, _endDate),
       ],
     );
+  }
+
+  _buildDateFilterChip(DateTime startDate,DateTime endDate){
+    if(_startDate != null && _endDate != null){
+      return Positioned(left: 0.0, top: 0.0, child: Padding(padding: EdgeInsets.only(left: 16.0), child:Chip(label: new Text(_formatFilterDateRange(_startDate, _endDate)),onDeleted: () {setDateFilter(null, null);},),),);
+    }
+    return Container();
+  }
+
+  String _formatFilterDateRange(DateTime startDate,DateTime endDate) {
+    var formatter = DateFormat.Md(Platform.localeName);
+    if(startDate.year != endDate.year) {
+      formatter = new DateFormat.yMd(Platform.localeName);
+    }
+    String _startDate = formatter.format(startDate);
+    String _endDate = formatter.format(endDate);
+    return _startDate + "-" + _endDate;
   }
 
   void setDateFilter(DateTime startDate, DateTime endDate) {
     setState(() {
       _startDate = startDate;
       _endDate = endDate;
+      if(startDate == null && endDate == null){
+        _sliverPadding = 0.0;
+      } else {
+        _sliverPadding = 32.0;
+      }
       PaymentFilterModel filterData = PaymentFilterModel("All Activities", _firstDate, startDate, endDate);
       widget._accountBloc.paymentFilterSink.add(filterData);
     });
