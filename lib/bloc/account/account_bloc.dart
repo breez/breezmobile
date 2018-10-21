@@ -167,7 +167,7 @@ class AccountBloc {
     if (_paymentFilterController.value.filter != null ||
         (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null)) {
       breezLib.getPayments().then((payments) {
-        filterPayments(payments);
+        _filterPayments(payments);
       }).catchError(_paymentsController.addError);
       return;
     }
@@ -181,53 +181,66 @@ class AccountBloc {
     }).catchError(_paymentsController.addError);
   }
 
-  void filterPayments(PaymentsList payments) {
+  void _filterPayments(PaymentsList payments) {
     if (_paymentFilterController.value.filter == "Sent") {
+      var _sentPaymentsSet = payments.paymentsList
+          .where((p) =>
+          [Payment_PaymentType.WITHDRAWAL, Payment_PaymentType.SENT].contains(p.type));
       if (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null) {
-        _paymentsController.add(payments.paymentsList
+        var _dateFilteredPayments = payments.paymentsList
             .where((p) =>
-                [Payment_PaymentType.WITHDRAWAL, Payment_PaymentType.SENT].contains(p.type) &&
-                (p.creationTimestamp.toInt() * 1000 >=
-                        _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
-                    p.creationTimestamp.toInt() * 1000 <=
-                        _paymentFilterController.value.endDate.millisecondsSinceEpoch))
-            .map((payment) => new PaymentInfo(payment, _currentUser.currency))
-            .toList());
+        (p.creationTimestamp.toInt() * 1000 >=
+            _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
+            p.creationTimestamp.toInt() * 1000 <=
+                _paymentFilterController.value.endDate.millisecondsSinceEpoch));
+
+        getIntersection(_sentPaymentsSet, _dateFilteredPayments);
       } else {
-        _paymentsController.add(payments.paymentsList
-            .where((p) => [Payment_PaymentType.WITHDRAWAL, Payment_PaymentType.SENT].contains(p.type))
+        _paymentsController.add(_sentPaymentsSet
             .map((payment) => new PaymentInfo(payment, _currentUser.currency))
             .toList());
       }
     } else if (_paymentFilterController.value.filter == "Received") {
+      var _receivedPaymentsSet = payments.paymentsList
+          .where((p) =>
+          [Payment_PaymentType.DEPOSIT, Payment_PaymentType.RECEIVED].contains(p.type));
       if (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null) {
-        _paymentsController.add(payments.paymentsList
+        var _dateFilteredPayments = payments.paymentsList
             .where((p) =>
-        [Payment_PaymentType.DEPOSIT, Payment_PaymentType.RECEIVED].contains(p.type) &&
-            (p.creationTimestamp.toInt() * 1000 >=
-                _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
-                p.creationTimestamp.toInt() * 1000 <=
-                    _paymentFilterController.value.endDate.millisecondsSinceEpoch))
-            .map((payment) => new PaymentInfo(payment, _currentUser.currency))
-            .toList());
+        (p.creationTimestamp.toInt() * 1000 >=
+            _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
+            p.creationTimestamp.toInt() * 1000 <=
+                _paymentFilterController.value.endDate.millisecondsSinceEpoch));
+
+        getIntersection(_receivedPaymentsSet, _dateFilteredPayments);
       } else {
-        _paymentsController.add(payments.paymentsList
-            .where((p) => [Payment_PaymentType.DEPOSIT, Payment_PaymentType.RECEIVED].contains(p.type))
+        _paymentsController.add(_receivedPaymentsSet
             .map((payment) => new PaymentInfo(payment, _currentUser.currency))
             .toList());
       }
     } else if (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null) {
       _paymentsController.add(payments.paymentsList
           .where((p) =>
-              p.creationTimestamp.toInt() * 1000 >=
-                  _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
-              p.creationTimestamp.toInt() * 1000 <= _paymentFilterController.value.endDate.millisecondsSinceEpoch)
+      p.creationTimestamp.toInt() * 1000 >=
+          _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
+          p.creationTimestamp.toInt() * 1000 <= _paymentFilterController.value.endDate.millisecondsSinceEpoch)
           .map((payment) => new PaymentInfo(payment, _currentUser.currency))
           .toList());
     } else {
       _paymentsController
           .add(payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList());
     }
+  }
+
+  void getIntersection(Iterable<Payment> _paymentSet, Iterable<Payment> _dateFilteredPayments) {
+    List<Payment> _intersection = new List<Payment>();
+    _paymentSet.forEach((data) {
+      if (_dateFilteredPayments.contains(data)) _intersection.add(data);
+    });
+
+    return _paymentsController.add(_intersection
+        .map((payment) => new PaymentInfo(payment, _currentUser.currency))
+        .toList());
   }
 
   void _listenPOSFundingRequests(BreezServer server, BreezBridge breezLib) {
