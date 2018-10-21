@@ -14,9 +14,15 @@ import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/bloc/status_indicator/status_update_model.dart';
+import 'package:connectivity/connectivity.dart';
+
 
 
 class AccountBloc {  
+    
+  bool _allowReconnect;
+  final _reconnectStreamController = new StreamController<void>();
+  Sink<void> get _reconnectSink => _reconnectStreamController.sink;
 
   final _requestAddressController = new StreamController<void>();
   Sink<void> get requestAddressSink => _requestAddressController.sink;
@@ -85,9 +91,40 @@ class AccountBloc {
       _listenMempoolTransactions(device, notificationsService, breezLib);
       _listenRoutingNodeConnectionChanges(breezLib);
        breezLib.bootstrapAndStart();      
-       _refreshAcount(breezLib);     
+       _refreshAcount(breezLib);   
+       _listenConnectivityChanges(breezLib);   
+       _listenReconnects(breezLib);
     }
-  
+
+    void _listenConnectivityChanges(BreezBridge breezLib){
+      var connectivity = Connectivity();
+      connectivity.checkConnectivity().then((connectivityResult) {
+         _allowReconnect = connectivityResult != ConnectivityResult.none;
+         log.info("initial connection = " + connectivityResult.toString());
+        }
+      );      
+      
+      connectivity.onConnectivityChanged.listen((connectivityResult){
+          log.info("_listenConnectivityChanges: connection changed to: " + connectivityResult.toString());
+          _allowReconnect = connectivityResult != ConnectivityResult.none;          
+            _reconnectSink.add(null);          
+        });
+    }
+    
+    void _listenReconnects(BreezBridge breezLib){
+      Future connectingFuture = Future.value(null);
+      _reconnectStreamController.stream.transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
+      .listen((_) async {
+        log.info("_listenReconnects: got Reconnect request");
+        if (_allowReconnect && !_accountController.value.connected) {          
+          connectingFuture = connectingFuture.whenComplete((){
+            log.info("_listenReconnects: reconnecting...");
+            breezLib.connectAccount();
+          });
+        }
+      });
+    }
+
     void _listenMempoolTransactions(Device device, Notifications notificationService, BreezBridge breezLib) {      
       notificationService.notifications
         .where((message) => message["msg"] == "Unconfirmed transaction" ||  message["msg"] == "Confirmed transaction")
@@ -97,6 +134,7 @@ class AccountBloc {
         });
 
         device.eventStream.where((e) => e == NotificationType.RESUME).listen((e){          
+          _reconnectSink.add(null);
           _fetchFundStatus(breezLib);
         });
     }
@@ -233,10 +271,13 @@ class AccountBloc {
       .listen((change) => _refreshRoutingNodeConnection(breezLib));
     }
 
-    _refreshRoutingNodeConnection(BreezBridge breezLib){
+    _refreshRoutingNodeConnection(BreezBridge breezLib){      
       breezLib.isConnectedToRoutingNode()
         .then((connected){
-          _accountController.add(_accountController.value.copyWith(connected: connected));                    
+          _accountController.add(_accountController.value.copyWith(connected: connected));
+          if (!connected) {            
+            _reconnectSink.add(null);
+          }                                 
         })
         .catchError(_routingNodeConnectionController.addError);
     }
@@ -251,5 +292,6 @@ class AccountBloc {
       _sentPaymentsController.close();
       _withdrawalController.close();
       _lightningDownController.close();
+      _reconnectStreamController.close();
     }
   }  
