@@ -67,16 +67,14 @@ class PaymentsFilter extends StatelessWidget {
     List<Widget> children = <Widget>[];
     children.add(
         new Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
+            padding: EdgeInsets.only(left: 8.0, right: 0.0),
             child: IconButton(icon: ImageIcon(
               AssetImage("src/icon/calendar.png"),
               color: Colors.white,
               size: 24.0,
             ), onPressed: () => showDialog(barrierDismissible: false, context: context, builder: (_) => CalendarDialog(context, _firstDate, _startDate, _endDate)).then((result){_onFilterChanged(_filter, result[0], result[1]);}))));
     children.add(
-      new Container(
-        width: 150.0,
-        child: new DropdownButtonHideUnderline(
+       DropdownButtonHideUnderline(
           child: ButtonTheme(
             alignedDropdown: true,
             child: new DropdownButton(
@@ -93,15 +91,14 @@ class PaymentsFilter extends StatelessWidget {
                 onChanged: (value) => _onFilterChanged(value,_startDate,_endDate)),
           ),
         ),
-      ),
     );
     return new Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start
-      ,children: <Widget>[new Padding(padding: EdgeInsets.only(top: 16.0,bottom: 0.0),child: Row(children: children)), _buildDateFilterChip(_startDate,_endDate)],);
+      ,children: <Widget>[new Padding(padding: EdgeInsets.only(top: 16.0),child: Row(children: children)), _buildDateFilterChip(_startDate,_endDate)],);
   }
 
   _buildDateFilterChip(DateTime startDate,DateTime endDate){
     if(_startDate != null && _endDate != null){
-      return new Padding(padding: EdgeInsets.only(left: 16.0,top: 0.0),child: Chip(label: Text(_formatFilterDateRange(_startDate,_endDate)),onDeleted: (){ _onFilterChanged(_filter,null,null);} ,));
+      return new Padding(padding: EdgeInsets.only(left: 16.0),child: Chip(label: Text(_formatFilterDateRange(_startDate,_endDate)),onDeleted: (){ _onFilterChanged(_filter,null,null);} ,));
     }
     return Container();
   }
