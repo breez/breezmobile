@@ -97,17 +97,11 @@ class AccountBloc {
     }
 
     void _listenConnectivityChanges(BreezBridge breezLib){
-      var connectivity = Connectivity();
-      connectivity.checkConnectivity().then((connectivityResult) {
-         _allowReconnect = connectivityResult != ConnectivityResult.none;
-         log.info("initial connection = " + connectivityResult.toString());
-        }
-      );      
-      
-      connectivity.onConnectivityChanged.listen((connectivityResult){
-          log.info("_listenConnectivityChanges: connection changed to: " + connectivityResult.toString());
-          _allowReconnect = connectivityResult != ConnectivityResult.none;          
-            _reconnectSink.add(null);          
+      var connectivity = Connectivity();     
+      connectivity.onConnectivityChanged.skip(1).listen((connectivityResult){
+          log.info("_listenConnectivityChanges: connection changed to: " + connectivityResult.toString());          
+          _allowReconnect = (connectivityResult != ConnectivityResult.none);
+          _reconnectSink.add(null);
         });
     }
     
@@ -116,7 +110,7 @@ class AccountBloc {
       _reconnectStreamController.stream.transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
       .listen((_) async {
         log.info("_listenReconnects: got Reconnect request");
-        if (_allowReconnect && !_accountController.value.connected) {          
+        if (_allowReconnect == true && _accountController.value.connected == false) {          
           connectingFuture = connectingFuture.whenComplete((){
             log.info("_listenReconnects: reconnecting...");
             breezLib.connectAccount();
