@@ -423,9 +423,7 @@ class _NfcDialogState extends State<_NfcDialog> {
   }
 
   Widget _cancelButton() {
-    return new Padding(
-      padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
-      child: new FlatButton(
+    return new Padding(padding: EdgeInsets.only(top: 16.0),child: new FlatButton(
         child: new Text(
           'CANCEL PAYMENT',
           textAlign: TextAlign.center,
@@ -433,15 +431,14 @@ class _NfcDialogState extends State<_NfcDialog> {
         ),
         onPressed: () {
           Navigator.of(context).pop(false);
-        },
-      ),
+        },),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
+      contentPadding: EdgeInsets.fromLTRB(24.0, 40.0, 24.0, 16.0),
       content: new SingleChildScrollView(
           child: _state == _NfcState.WAITING_FOR_NFC
               ? new ListBody(
@@ -466,19 +463,17 @@ class _NfcDialogState extends State<_NfcDialog> {
                 textAlign: TextAlign.center,
                 style: theme.paymentRequestTitleStyle,
               ),
-              new Text('DEBUG: ' + _debugMessage),
+              _debugMessage == "" ? new Text('DEBUG: ' + _debugMessage) : Padding(padding: EdgeInsets.only(top: 8.0)),
               new Text('Waiting for customer approval...',
                   textAlign: TextAlign.center, style: theme.paymentRequestSubtitleStyle),
-              new Padding(
-                  padding: EdgeInsets.only(top: 15.0),
-                  child: new Text(_countdownString,
-                      textAlign: TextAlign.center, style: theme.paymentRequestTitleStyle)),
-              new Padding(
-                  padding: EdgeInsets.only(top: 8.0),
-                  child: new Image.asset(
+              new Text(_countdownString,
+                      textAlign: TextAlign.center, style: theme.paymentRequestTitleStyle),
+              Padding(padding: EdgeInsets.only(top: 16.0)),
+              new Image.asset(
                     'src/images/breez_loader.gif',
                     gaplessPlayback: true,
-                  )),
+                height: 48.0,
+                  ),
               _cancelButton(),
             ],
           )
