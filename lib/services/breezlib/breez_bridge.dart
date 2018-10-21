@@ -63,6 +63,10 @@ class BreezBridge {
       .then((result) => result as bool);
   }
 
+  Future connectAccount(){
+    return _invokeMethodWhenReady("connectAccount");
+  }
+
   Future sendNonDepositedCoins(String address){
     SendNonDepositedCoinsRequest request = new SendNonDepositedCoinsRequest()..address = address;
     return _invokeMethodWhenReady("sendNonDepositedCoins", {"argument": request.writeToBuffer()});
