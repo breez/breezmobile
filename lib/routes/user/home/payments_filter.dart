@@ -39,14 +39,14 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
     double scrollOffset = widget._controller.position.pixels;
     return SliverPersistentHeader(
       pinned: true,
-      delegate: new FixedSliverDelegate(widget._filter != "All Activities" ? widget._maxSize : (scrollOffset).clamp(widget._minSize, widget._maxSize),
+      delegate: new FixedSliverDelegate((widget._filter == "All Activities" && (widget._startDate == null && widget._endDate == null)) ? (scrollOffset).clamp(widget._minSize, widget._maxSize) : widget._maxSize,
           builder: (context, shrinkedHeight, overlapContent) {
             return Container(
                 decoration: BoxDecoration(color: theme.BreezColors.blue[500]),
                 height: widget._maxSize,
                 child: AnimatedOpacity(
                     duration: Duration(milliseconds: 100),
-                    opacity: widget._filter != "All Activities" ? 1.0 : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
+                    opacity: (widget._filter == "All Activities" && (widget._startDate == null && widget._endDate == null)) ? (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0) : 1.0,
                     child: PaymentsFilter(widget._filter, widget._onFilterChanged, widget._firstDate, widget._startDate, widget._endDate)));
           }),
     );
