@@ -491,7 +491,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                             },
                                             validator: (value) {
                                               RegExp regExp = new RegExp(
-                                                  r"^(?!0{3})[0-9]{3,5}$");
+                                                  r"^(?!0{3})[0-9]{3,10}$");
                                               if (!regExp.hasMatch(value) &&
                                                   value.isNotEmpty) {
                                                 return "Invalid zip code";
