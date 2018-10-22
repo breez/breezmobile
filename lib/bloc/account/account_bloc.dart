@@ -127,7 +127,8 @@ class AccountBloc {
           _fetchFundStatus(breezLib);         
         });
 
-        device.eventStream.where((e) => e == NotificationType.RESUME).listen((e){          
+        device.eventStream.where((e) => e == NotificationType.RESUME).listen((e){
+          log.info("App Resumed - flutter resume called");        
           _reconnectSink.add(null);
           _fetchFundStatus(breezLib);
         });
