@@ -11,6 +11,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/routes/shared/no_connection_dialog.dart';
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -59,6 +60,7 @@ class HomeState extends State<Home> {
     InvoiceNotificationsHandler _notificationsHandler =
     new InvoiceNotificationsHandler(context, widget.accountBloc, widget.receivedInvoicesStream);
     initializeDateFormatting(Platform.localeName,null);
+    listenNoConnection(context, widget.accountBloc);
   }
 
   @override

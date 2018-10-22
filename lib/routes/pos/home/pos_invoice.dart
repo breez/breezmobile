@@ -52,6 +52,7 @@ class _PosNumPadState extends State<_POSNumPad> {
   int _currentAmount;
   int _totalAmount;
   Int64 _maxPaymentAmount;
+  Int64 _maxAllowedToReceive;
 
   StreamSubscription<AccountModel> _accountSubscription;
   StreamSubscription<POSProfileModel> _posProfileSubscription;
@@ -71,6 +72,7 @@ class _PosNumPadState extends State<_POSNumPad> {
       setState(() {
         _currency = acc.currency;
         _maxPaymentAmount = acc.maxPaymentAmount;
+        _maxAllowedToReceive = acc.maxAllowedToReceive;
         _amountController.text = _currency.format((Int64(_currentAmount)), fixedDecimals: true, includeSymbol: false);
         _chargeAmountController.text = _currency.format((Int64(_totalAmount + _currentAmount)), fixedDecimals: true, includeSymbol: true);
       });
@@ -250,7 +252,16 @@ class _PosNumPadState extends State<_POSNumPad> {
 
       if (_totalAmount == 0) {
         return null;
-      } else if (_totalAmount < _maxPaymentAmount.toInt() || _totalAmount < _maxPaymentAmount.toInt()) {
+      } else if (_totalAmount > _maxAllowedToReceive.toInt()) {
+        promptError(
+            context,
+            "You don't have the capacity to receive such payment.",
+            Text(
+                "Maximum payment size you can receive is ${_currency.format(_maxAllowedToReceive,
+                    includeSymbol: true)}. Please enter a smaller value.",
+                style: theme.alertStyle));
+      }
+      else if (_totalAmount < _maxPaymentAmount.toInt() || _totalAmount < _maxPaymentAmount.toInt()) {
         widget._invoiceBloc.newInvoicerequestSink.add(
             new InvoiceRequestModel(_posProfile.invoiceString, null, _posProfile.logo, Int64(_totalAmount)));
       } else {

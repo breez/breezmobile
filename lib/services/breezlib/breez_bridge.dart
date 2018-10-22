@@ -34,8 +34,7 @@ class BreezBridge {
         _readyCompleter.complete();
       }
       _eventsController.add(new NotificationEvent()..mergeFromBuffer(event));      
-    });
-    bootstrapAndStart();    
+    });     
   }
 
   Future start(String workingDir) async{
@@ -62,6 +61,10 @@ class BreezBridge {
   Future<bool> isConnectedToRoutingNode() {
     return _invokeMethodWhenReady("isConnectedToRoutingNode")
       .then((result) => result as bool);
+  }
+
+  Future connectAccount(){
+    return _invokeMethodWhenReady("connectAccount");
   }
 
   Future sendNonDepositedCoins(String address){
@@ -115,8 +118,8 @@ class BreezBridge {
     return _invokeMethodWhenReady("newAddress", {"argument": breezID}).then( (address) => address as String);
   }
 
-  Future<String> addFunds(String breezID) {
-    return _invokeMethodWhenReady("addFunds", {"argument": breezID}).then((address) => address as String);
+  Future<AddFundReply> addFunds(String breezID) {
+    return _invokeMethodWhenReady("addFunds", {"argument": breezID}).then((reply) => new AddFundReply()..mergeFromBuffer(reply ?? []));
   }
 
   Future<FundStatusReply> getFundStatus(String notificationToken) {

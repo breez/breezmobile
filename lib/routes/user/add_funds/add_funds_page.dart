@@ -55,6 +55,7 @@ class _AddFundsPage extends StatefulWidget {
 class AddFundsState extends State<_AddFundsPage> {
   final String _title = "Add Funds";
   StreamSubscription<AccountModel> _accountSubscription;
+  StreamSubscription<AddFundResponse> _addressSubscription;
 
   bool _connected = true;
 
@@ -62,13 +63,17 @@ class AddFundsState extends State<_AddFundsPage> {
   initState() {
     super.initState();
 
-    widget._accountBloc.addressesStream.listen((data) {
-
-    }).onError((error) {
+    _addressSubscription = widget._accountBloc.addFundStream.listen((data) {
+      setState(() {
+        _connected = true;
+      });
+    });
+    _addressSubscription.onError((error) {
       setState(() {
         _connected = false;
       });
     });
+
     widget._accountBloc.requestAddressSink.add(null);
 
   }
@@ -77,6 +82,9 @@ class AddFundsState extends State<_AddFundsPage> {
   void dispose() {
     if (_accountSubscription != null) {
       _accountSubscription.cancel();
+    }
+    if (_addressSubscription != null) {
+      _addressSubscription.cancel();
     }
     super.dispose();
   }
@@ -101,7 +109,6 @@ class AddFundsState extends State<_AddFundsPage> {
                   elevation: 0.0,
                   shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(42.0)),
                   onPressed: () {
-                    _connected = true;
                     widget._accountBloc.requestAddressSink.add(null);
                   },
                 ),
@@ -125,41 +132,41 @@ class AddFundsState extends State<_AddFundsPage> {
                 StreamBuilder(
                     stream: widget._accountBloc.accountStream,
                     builder: (BuildContext context,
-                        AsyncSnapshot<AccountModel> snapshot) {
-                      if (snapshot.hasError) {
-                        return CircularProgressIndicator();
-                      }
-                      String message;
-                      AccountModel acc = snapshot.data;
-                      if (!snapshot.hasData) {
-                        message =
-                            'Bitcoin address will be available as soon as Breez is synchronized.';
-                      } else if (snapshot.data.waitingDepositConfirmation ||                          
-                          snapshot.data.processingWithdrawal) {
-                        message =
-                            'Breez is processing your previous ${acc.waitingDepositConfirmation || acc.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
-                      } else if (snapshot.data.maxAllowedToDeposit == 0) {
-                        message = 'Adding funds is enabled when the balance is under ${acc.currency.format(acc.balanceLimitForDeposit, includeSymbol: true)}';
-                      }
-
-                      if (message != null) {
-                        return Container(
-                          color: theme.massageBackgroundColor,
-                          padding: new EdgeInsets.only(
-                              left: 16.0, top: 9.0, right: 16.0, bottom: 9.0),
-                          child: new Text(
-                            message,
-                            style: new TextStyle(
-                              color: theme.whiteColor,
-                            ),
-                          ),
-                        );
-                      }
-
+                        AsyncSnapshot<AccountModel> accSnapshot) {
+                      AccountModel acc = accSnapshot.data;                      
                       return StreamBuilder(
-                          stream: widget._accountBloc.addressesStream,
+                          stream: widget._accountBloc.addFundStream,
                           builder: (BuildContext context,
-                              AsyncSnapshot<String> snapshot) {
+                              AsyncSnapshot<AddFundResponse> snapshot) {
+                            AddFundResponse response = snapshot.data;
+                            String message;      
+                            if (accSnapshot.hasError) {
+                              message = accSnapshot.error.toString();
+                            } else if (!accSnapshot.hasData) {
+                              message =
+                                  'Bitcoin address will be available as soon as Breez is synchronized.';
+                            } else if (accSnapshot.data.waitingDepositConfirmation ||                          
+                                accSnapshot.data.processingWithdrawal) {
+                              message =
+                                  'Breez is processing your previous ${acc.waitingDepositConfirmation || acc.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
+                            } else if (snapshot.hasData && response.errorMessage != null && response.errorMessage.isNotEmpty) {
+                              message = response.errorMessage;
+                            }
+
+                            if (message != null) {
+                              return Container(
+                                color: theme.massageBackgroundColor,
+                                padding: new EdgeInsets.only(
+                                    left: 16.0, top: 9.0, right: 16.0, bottom: 9.0),
+                                child: new Text(
+                                  message,
+                                  style: new TextStyle(
+                                    color: theme.whiteColor,
+                                  ),
+                                ),
+                              );
+                            }
+
                             if (snapshot.hasError) {
                               return Container(
                                 padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
@@ -168,12 +175,8 @@ class AddFundsState extends State<_AddFundsPage> {
                               ]));
                             }
 
-                            // if (!snapshot.hasData) {
-                            //   return Text("");
-                            // }
-
                             return _buildBitcoinFundsSection(
-                                context, snapshot.data);
+                                context, snapshot.data?.address);
                           });
                     }),
                 new Container(
@@ -192,23 +195,24 @@ class AddFundsState extends State<_AddFundsPage> {
 Widget _buildAmountWarning(AccountBloc accountBloc) {
   return StreamBuilder(
       stream: accountBloc.accountStream,
-      builder: (BuildContext context, AsyncSnapshot<AccountModel> snapshot) {
-        if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-        if (snapshot.hasData && !snapshot.data.waitingDepositConfirmation && snapshot.data.maxAllowedToDeposit > 0) {          
-          return new Column(children: <Widget>[
-            Text(
-                "Send up to " +
-                    snapshot.data.currency.format(
-                        snapshot.data.maxAllowedToDeposit,
-                        includeSymbol: true) +
-                    " to this address",
-                style: theme.warningStyle)
-          ]);
-        } else {
-          return new Container();
-        }
+      builder: (BuildContext context, AsyncSnapshot<AccountModel> accountSnapshot) {  
+        return StreamBuilder(
+            stream: accountBloc.addFundStream,
+            builder: (BuildContext context, AsyncSnapshot<AddFundResponse> addFundSnapshot) {         
+              if (addFundSnapshot.hasData && accountSnapshot.hasData && addFundSnapshot.data.errorMessage.isEmpty) {          
+                return new Column(children: <Widget>[
+                  Text(
+                      "Send up to " +
+                          accountSnapshot.data.currency.format(
+                              addFundSnapshot.data.maxAllowedDeposit,
+                              includeSymbol: true) +
+                          " to this address",
+                      style: theme.warningStyle)
+                ]);
+              } else {
+                return new Container();
+              }
+            });
       });
 }
 

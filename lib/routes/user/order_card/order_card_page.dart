@@ -358,6 +358,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                           decoration:
                           new InputDecoration(labelText: "Full Name"),
                           style: theme.FieldTextStyle.textStyle,
+                          textCapitalization: TextCapitalization.words,
                           onSaved: (String value) {
                             this._data.fullName = value;
                           },
@@ -373,6 +374,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                         child: new TextFormField(
                           decoration: new InputDecoration(labelText: "Address"),
                           style: theme.FieldTextStyle.textStyle,
+                          textCapitalization: TextCapitalization.words,
                           onSaved: (String value) {
                             this._data.address = value;
                           },
@@ -399,6 +401,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                         decoration: new InputDecoration(
                                             labelText: "City"),
                                         style: theme.FieldTextStyle.textStyle,
+                                        textCapitalization: TextCapitalization.words,
                                         onSaved: (String value) {
                                           this._data.city = value;
                                         },
@@ -421,6 +424,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                         decoration: new InputDecoration(
                                             labelText: "State"),
                                         style: theme.FieldTextStyle.textStyle,
+                                        textCapitalization: TextCapitalization.words,
                                         onSaved: (String value) {
                                           this._data.state = value;
                                         },
@@ -459,8 +463,8 @@ class OrderCardPageState extends State<OrderCardPage> {
                                             focusNode: _countryFocusNode,
                                             decoration: new InputDecoration(
                                                 labelText: "Country"),
-                                            style:
-                                            theme.FieldTextStyle.textStyle,
+                                            style: theme.FieldTextStyle.textStyle,
+                                            textCapitalization: TextCapitalization.words,
                                             onSaved: (String value) {
                                               this._data.country = value;
                                             },
@@ -491,7 +495,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                             },
                                             validator: (value) {
                                               RegExp regExp = new RegExp(
-                                                  r"^(?!0{3})[0-9]{3,5}$");
+                                                  r"^(?!0{3})[0-9]{3,10}$");
                                               if (!regExp.hasMatch(value) &&
                                                   value.isNotEmpty) {
                                                 return "Invalid zip code";

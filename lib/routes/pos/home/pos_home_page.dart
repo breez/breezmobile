@@ -4,14 +4,21 @@ import 'pos_invoice.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/widgets/navigation_drawer.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/routes/shared/no_connection_dialog.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
 
 class PosHome extends StatefulWidget {
+  final AccountBloc accountBloc;
+
+  PosHome(this.accountBloc);
+
   final List<DrawerItemConfig> _screens =
       new List<DrawerItemConfig>.unmodifiable([]);
 
   final List<DrawerItemConfig> _majorActions =
       new List<DrawerItemConfig>.unmodifiable([
-        new DrawerItemConfig("/transactions", "Transactions","src/icon/withdraw_funds.png"),
+        new DrawerItemConfig("/transactions", "Transactions","src/icon/transactions.png"),
+        new DrawerItemConfig("/withdraw_funds", "Remove Funds", "src/icon/withdraw_funds.png"),
         new DrawerItemConfig("/settings", "Settings","src/icon/settings.png")
       ]);
 
@@ -33,6 +40,7 @@ class PosHomeState extends State<PosHome> {
   void initState() {
     super.initState();
     initializeDateFormatting(Platform.localeName,null);
+    listenNoConnection(context, widget.accountBloc);
   }
 
   @override

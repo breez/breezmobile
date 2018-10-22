@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:fixnum/fixnum.dart';
 import 'package:breez/logger.dart';
+import "package:ini/ini.dart";
 
 
 class BreezServer {
@@ -16,15 +17,15 @@ class BreezServer {
 
   initChannel() async {
     if (_channel == null) {
-      String configString = await rootBundle.loadString('conf/config.json');
-      Map<String, dynamic> configProps = json.decode(configString);
-
       var cert = await rootBundle.load('cert/letsencrypt.cert');
-      var host = configProps["breezServer"]["host"];
-      var port = configProps["breezServer"]["port"];
-
-      _channel = new ClientChannel(host,
-          port: port,
+      String configString = await rootBundle.loadString('conf/breez.conf');
+      Config config = await new Config.fromString(configString);
+      var hostdetails = config.get("Application Options", "breezserver").split(':');
+      if (hostdetails.length < 2) {
+        hostdetails.add("443");
+      }
+      _channel = new ClientChannel(hostdetails[0],
+          port: int.parse(hostdetails[1]),
           options: ChannelOptions(                 
               credentials: ChannelCredentials.secure(
                   certificates: cert.buffer.asUint8List())));

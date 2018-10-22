@@ -3,18 +3,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 Future<Null> promptError(BuildContext context, String title, Widget body,
-    [String okText = "OK"]) {
+    [String okText = "OK", String optionText, Function optionFunc]) {
   return showDialog<Null>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return new AlertDialog(
+          contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
           title: new Text(title, style: new TextStyle(
             fontFamily: "IBMPlexSansMedium", fontSize: 16.4, letterSpacing: 0.0, color: Colors.black),),
           content: new SingleChildScrollView(
             child: body,
           ),
           actions: <Widget>[
+            optionText != null ? new FlatButton(
+              child: new Text(optionText,style: new TextStyle(
+                  fontFamily: "IBMPlexSansMedium", fontSize: 16.4, letterSpacing: 0.0, color: Colors.black),),
+              onPressed: () {
+                optionFunc();
+              },
+            ) : null,
             new FlatButton(
               child: new Text(okText,style: new TextStyle(
             fontFamily: "IBMPlexSansMedium", fontSize: 16.4, letterSpacing: 0.0, color: Colors.black),),

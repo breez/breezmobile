@@ -11,6 +11,7 @@ import 'package:breez/routes/shared/dev/dev.dart';
 import 'package:breez/routes/shared/initial_walkthrough.dart';
 import 'package:breez/routes/pos/home/pos_home_page.dart';
 import 'package:breez/routes/pos/settings/pos_settings_page.dart';
+import 'package:breez/routes/user/withdraw_funds/withdraw_funds_page.dart';
 import 'package:breez/routes/pos/transactions/pos_transactions_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 
@@ -41,12 +42,12 @@ class UserLoaderWidget extends StatelessWidget {
           return new MaterialApp(
             title: 'Breez POS',
             initialRoute: snapshot.data.registered ? null : '/intro',
-            home: PosHome(),
+            home: PosHome(_blocs.accountBloc),
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
                 case '/home':
                   return new FadeInRoute(
-                    builder: (_) => new PosHome(),
+                    builder: (_) => new PosHome(_blocs.accountBloc),
                     settings: settings,
                   );
                 case '/intro':
@@ -57,6 +58,11 @@ class UserLoaderWidget extends StatelessWidget {
                 case '/transactions':
                   return new FadeInRoute(
                     builder: (_) => new PosTransactionsPage(),
+                    settings: settings,
+                  );
+                case '/withdraw_funds':
+                  return new FadeInRoute(
+                    builder: (_) => new WithdrawFundsPage(false),
                     settings: settings,
                   );
                 case '/settings':
