@@ -37,6 +37,7 @@ public class LifecycleEvents implements StreamHandler, ActivityLifecycleListener
 
     @Override
     public void onPostResume() {
+        Log.d("Breez", "App Resumed - OnPostResume called");
         if (m_eventsListener != null) {
             m_eventsListener.success("resume");
         }
