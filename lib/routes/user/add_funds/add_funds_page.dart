@@ -298,6 +298,9 @@ Widget _buildQRPlaceholder() {
     height: 188.6,
     margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
     padding: const EdgeInsets.all(8.6),
-    child: CircularProgressIndicator(),
+    child: Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: CircularProgressIndicator(),
+    ),
   );
 }
