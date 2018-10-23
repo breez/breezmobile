@@ -1,6 +1,6 @@
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/payment_item_avatar.dart';
-import 'package:fixnum/fixnum.dart';
+import 'package:breez/utils/date.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 
@@ -20,7 +20,7 @@ class PaymentItem extends StatelessWidget {
             style: theme.transactionTitleStyle,
           ),
           subtitle: Text(
-            _formatTransactionDate(_paymentInfo.creationTimestamp),
+            DateUtils.formatTransactionDate(_paymentInfo.creationTimestamp),
             style: theme.transactionSubtitleStyle,
           ),
           trailing: Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: <Widget>[
@@ -36,10 +36,5 @@ class PaymentItem extends StatelessWidget {
         indent: 72.0,
       ),
     ]);
-  }
-
-  String _formatTransactionDate(Int64 timestamp) {
-    DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp.toInt() * 1000);
-    return '${date.month}/${date.day}';
   }
 }
