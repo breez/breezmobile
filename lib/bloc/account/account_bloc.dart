@@ -211,6 +211,7 @@ class AccountBloc {
       }
 
        breezLib.getPayments().then( (payments) {
+        _firstDate =  DateTime.fromMillisecondsSinceEpoch(payments.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
         _paymentsController.add(payments.paymentsList.map( (payment) => new PaymentInfo(payment, _currentUser.currency)).toList());
       })
       .catchError(_paymentsController.addError); 
