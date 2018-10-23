@@ -47,6 +47,10 @@ class AccountBloc {
 
   final _paymentsController = new BehaviorSubject<List<PaymentInfo>>();
   Stream<List<PaymentInfo>> get paymentsStream => _paymentsController.stream;
+  Stream<DateTime> get firstDate {
+    return paymentsStream.map( (payments) => DateTime.fromMillisecondsSinceEpoch(payments[0].creationTimestamp.toInt() * 1000));
+  }
+
   Stream<List<PaymentInfo>> get receivedPayments {
     return paymentsStream.map( (payments) => payments.where( (p) => [PaymentType.DEPOSIT, PaymentType.RECEIVED].contains(p.type)));
   }
