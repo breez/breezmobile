@@ -50,8 +50,8 @@ class _CalendarDialogState extends State<CalendarDialog> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            _selectDateButton("Start", _startDateController),
-            _selectDateButton("End", _endDateController),
+            _selectDateButton("Start", _startDateController, true),
+            _selectDateButton("End", _endDateController, false),
           ],
         ),
       ),
@@ -87,7 +87,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
     }
   }
 
-  Widget _selectDateButton(String label, TextEditingController textEditingController) {
+  Widget _selectDateButton(String label, TextEditingController textEditingController, bool isStartBtn) {
     return FlatButton(
       child: Container(
         child: TextFormField(
@@ -104,7 +104,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
       ),
       onPressed: () {
         setState(() {
-          label == "Start" ? _selectDate(context, true) : _selectDate(context, false);
+          _selectDate(context, isStartBtn);
         });
       },
     );
