@@ -47,7 +47,6 @@ class _AccountPageState extends State<_AccountPage> {
   final List<String> currencyList = Currency.currencies.map((c) => c.symbol).toList();
   StreamSubscription<String> _accountActionsSubscription;
   StreamSubscription<AccountModel> _statusSubscription;
-  DateTime _firstDate;
   String _filter;  
   String _paymentRequestInProgress;
 
@@ -98,7 +97,6 @@ class _AccountPageState extends State<_AccountPage> {
               builder: (context, snapshot) {                
                 List<PaymentInfo> payments = new List<PaymentInfo>();
                 if (snapshot.hasData) {
-                  widget._accountBloc.firstDate.listen((firstDate) => _firstDate = firstDate);
                   payments = _filterPayments(snapshot.data ?? new List<PaymentInfo>());
                 }                
 
@@ -143,7 +141,7 @@ class _AccountPageState extends State<_AccountPage> {
             SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(widget._accountBloc, widget._userProfileBloc), pinned: true),
 
             //payment filter
-            PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter, _firstDate),
+            PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter, widget._accountBloc.firstDate),
 
             // //List
             PaymentsList(payments, PAYMENT_LIST_ITEM_HEIGHT),
