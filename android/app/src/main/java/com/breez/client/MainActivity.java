@@ -3,7 +3,7 @@ package com.breez.client;
 import com.breez.client.plugins.*;
 import com.breez.client.plugins.breez.BreezCredential;
 import com.breez.client.plugins.breez.BreezDeepLinks;
-import com.breez.client.plugins.breez.BreezLib;
+import com.breez.client.plugins.breez.breezlib.Breez;
 import com.breez.client.plugins.breez.*;
 import com.breez.client.plugins.breez.ShareBreezLog;
 import com.breez.client.plugins.breez.BreezShare;
@@ -30,10 +30,12 @@ public class MainActivity extends FlutterActivity {
 
     MethodChannel mainMethodChannel;
     NfcHandler m_nfc;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "Breez activity created...");
+        BreezApplication.isRunning = true;
 
         m_nfc = new NfcHandler(this);
 
@@ -61,7 +63,7 @@ public class MainActivity extends FlutterActivity {
 
     void registerBreezPlugins() {
         new ImageCropper(this.registrarFor("com.breez.client.plugins.image_cropper"));
-        new BreezLib(this.registrarFor("com.breez.client.plugins.breez_lib"));
+        new Breez(this.registrarFor("com.breez.client.plugins.breez_lib"));
         new BreezDeepLinks(this.registrarFor("com.breez.client.plugins.breez_deep_links"));
         BreezApplication.breezShare = new BreezShare(this.registrarFor("com.breez.client.plugins.breez_share"), this);
         new ShareBreezLog(this.registrarFor("com.breez.client.plugins.share_breez_log"), this);
