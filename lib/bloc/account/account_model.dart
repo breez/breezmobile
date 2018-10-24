@@ -85,11 +85,11 @@ class PaymentFilterModel {
 
   PaymentFilterModel.initial() : this(null, null, null);
 
-  PaymentFilterModel copyWith({PaymentType filter, DateTime startDate, DateTime endDate}) {
+  PaymentFilterModel copyWith({List<PaymentType> filter, DateTime startDate, DateTime endDate}) {
     return PaymentFilterModel(
         filter ?? this.paymentType,
-        startDate,
-        endDate);
+        startDate ?? this.startDate,
+        endDate ?? this.endDate);
   }
 }
 
