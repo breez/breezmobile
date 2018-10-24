@@ -73,6 +73,5 @@ dependencies {
     implementation 'android.arch.work:work-runtime:1.0.0-alpha10'
     compile 'com.felipecsl:gifimageview:2.1.0'
     compile 'commons-io:commons-io:2.4'
-    //implementation 'com.google.android.gms:play-services-gcm:16.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

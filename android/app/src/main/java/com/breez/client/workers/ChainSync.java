@@ -20,15 +20,16 @@ public class ChainSync extends Worker {
 
     @Override
     public Worker.Result doWork() {
-      try {
-          String workingDir = getInputData().getString("workingDir");
-          Bindings.runSyncJob(workingDir);
-      } catch (Exception e) {
-          Log.e(TAG, "Job received error: ",  e);
-          m_result = Result.FAILURE;
-      }
+        Log.i("BREEZJOB", "ChainSync job started");
+        try {
+              String workingDir = getInputData().getString("workingDir");
+              Bindings.runSyncJob(workingDir);
+          } catch (Exception e) {
+              Log.e(TAG, "ChainSync job received error: ",  e);
+              m_result = Result.FAILURE;
+          }
 
-      Log.e("BREEZJOB", "Job finished with status: " + m_result.toString());
-      return m_result;
-    }
+          Log.i("BREEZJOB", "ChainSync job finished with status: " + m_result.toString());
+          return m_result;
+        }
 }
