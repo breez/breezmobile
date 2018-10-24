@@ -1,7 +1,6 @@
-import 'package:intl/intl.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/utils/date.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class PosPaymentItem extends StatelessWidget {
@@ -17,7 +16,7 @@ class PosPaymentItem extends StatelessWidget {
         padding: EdgeInsets.only(bottom: 10.0),
         child: ListTile(
             title: Text(
-              _formatTransactionDate(_paymentInfo.creationTimestamp),
+              DateUtils.formatYearMonthDayHourMinute(new DateTime.fromMillisecondsSinceEpoch(_paymentInfo.creationTimestamp.toInt() * 1000)),
               style: _paymentInfo.type == PaymentType.SENT
                   ? theme.posWithdrawalTransactionTitleStyle
                   : theme.posTransactionTitleStyle,
@@ -38,12 +37,5 @@ class PosPaymentItem extends StatelessWidget {
         indent: 16.0,
       ),
     ]);
-  }
-
-  String _formatTransactionDate(Int64 timestamp) {
-    DateTime date = new DateTime.fromMillisecondsSinceEpoch(timestamp.toInt() * 1000);
-    var formatter = new DateFormat('MM/dd/yyyy hh:mm');
-    String formattedDate = formatter.format(date);
-    return formattedDate;
   }
 }

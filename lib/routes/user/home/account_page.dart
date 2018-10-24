@@ -96,7 +96,7 @@ class _AccountPageState extends State<_AccountPage> {
               stream: widget._accountBloc.paymentsStream,
               builder: (context, snapshot) {                
                 List<PaymentInfo> payments = new List<PaymentInfo>();
-                if (snapshot.hasData) {                  
+                if (snapshot.hasData) {
                   payments = _filterPayments(snapshot.data ?? new List<PaymentInfo>());
                 }                
 

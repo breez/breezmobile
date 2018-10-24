@@ -47,6 +47,7 @@ class AccountBloc {
 
   final _paymentsController = new BehaviorSubject<List<PaymentInfo>>();
   Stream<List<PaymentInfo>> get paymentsStream => _paymentsController.stream;
+
   Stream<List<PaymentInfo>> get receivedPayments {
     return paymentsStream.map( (payments) => payments.where( (p) => [PaymentType.DEPOSIT, PaymentType.RECEIVED].contains(p.type)));
   }
@@ -205,6 +206,7 @@ class AccountBloc {
         _paymentsController.add(MockPaymentInfo.createMockData());
         return;
       }
+
        breezLib.getPayments().then( (payments) {
         _paymentsController.add(payments.paymentsList.map( (payment) => new PaymentInfo(payment, _currentUser.currency)).toList());
       })

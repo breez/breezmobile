@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +21,7 @@ AppBlocs blocs = AppBlocs();
 void main() {
   BreezLogger();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  initializeDateFormatting(Platform.localeName, null);
   runApp(BlocProvider<AppBlocs>(blocs, UserLoaderWidget(blocs)));
 }
 

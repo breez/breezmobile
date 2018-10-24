@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'dart:io' show Platform;
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +26,7 @@ AppBlocs blocs = AppBlocs();
 void main() {
   BreezLogger();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  initializeDateFormatting(Platform.localeName, null);
   runApp(BlocProvider<AppBlocs>(blocs, UserLoaderWidget(blocs)));
 }
 
