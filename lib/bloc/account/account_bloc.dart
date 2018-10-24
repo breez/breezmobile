@@ -48,11 +48,20 @@ class AccountBloc {
   final _paymentsController = new BehaviorSubject<PaymentsModel>();
   Stream<PaymentsModel> get paymentsStream => _paymentsController.stream;
 
-  Stream<List<PaymentInfo>> get receivedPayments {
-    return paymentsStream.map( (payments) => payments.where( (p) => [PaymentType.DEPOSIT, PaymentType.RECEIVED].contains(p.type)));
+  Stream<PaymentsModel> get receivedPayments {
+    var _paymentsList = _paymentsController.value.paymentsList
+        .where((p) => [Payment_PaymentType.DEPOSIT, Payment_PaymentType.RECEIVED].contains(p.type)).toList();
+    var _filter = _paymentFilterController.value;
+    var _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsController.value.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
+    return paymentsStream.map( (p) => PaymentsModel(_paymentsList, _filter, _firstDate));
   }
-  Stream<List<PaymentInfo>> get sentPayments {
-    return paymentsStream.map( (payments) => payments.where( (p) => [PaymentType.WITHDRAWAL, PaymentType.SENT].contains(p.type)));
+
+  Stream<PaymentsModel> get sentPayments {
+    var _paymentsList = _paymentsController.value.paymentsList
+        .where((p) => [Payment_PaymentType.WITHDRAWAL, Payment_PaymentType.SENT].contains(p.type)).toList();
+    var _filter = _paymentFilterController.value;
+    var _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsController.value.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
+    return paymentsStream.map( (p) => PaymentsModel(_paymentsList, _filter, _firstDate));
   }
 
   final _paymentFilterController = new BehaviorSubject<PaymentFilterModel>();
