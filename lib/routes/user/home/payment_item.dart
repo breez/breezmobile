@@ -20,7 +20,7 @@ class PaymentItem extends StatelessWidget {
             style: theme.transactionTitleStyle,
           ),
           subtitle: Text(
-            DateUtils.formatTransactionDate(_paymentInfo.creationTimestamp),
+            DateUtils.formatMonthDate(DateTime.fromMillisecondsSinceEpoch(_paymentInfo.creationTimestamp.toInt() * 1000)),
             style: theme.transactionSubtitleStyle,
           ),
           trailing: Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: <Widget>[

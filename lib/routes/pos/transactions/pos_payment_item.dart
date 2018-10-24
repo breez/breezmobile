@@ -16,7 +16,7 @@ class PosPaymentItem extends StatelessWidget {
         padding: EdgeInsets.only(bottom: 10.0),
         child: ListTile(
             title: Text(
-              DateUtils.formatPosTransactionDate(_paymentInfo.creationTimestamp),
+              DateUtils.formatYearMonthDayHourMinute(new DateTime.fromMillisecondsSinceEpoch(_paymentInfo.creationTimestamp.toInt() * 1000)),
               style: _paymentInfo.type == PaymentType.SENT
                   ? theme.posWithdrawalTransactionTitleStyle
                   : theme.posTransactionTitleStyle,
