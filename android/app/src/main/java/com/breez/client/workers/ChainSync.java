@@ -11,7 +11,7 @@ import com.breez.client.BreezApplication;
 
 public class ChainSync extends Worker {
 
-    public static final String TAG = "BREEZJOB";
+    public static final String TAG = "BREEZSYNC";
     private volatile Result m_result = Result.SUCCESS;
 
     public ChainSync(Context context, WorkerParameters params) {
@@ -20,7 +20,7 @@ public class ChainSync extends Worker {
 
     @Override
     public Worker.Result doWork() {
-        Log.i("BREEZJOB", "ChainSync job started");
+        Log.i(TAG, "ChainSync job started");
         try {
               String workingDir = getInputData().getString("workingDir");
               Bindings.runSyncJob(workingDir);
@@ -29,7 +29,7 @@ public class ChainSync extends Worker {
               m_result = Result.FAILURE;
           }
 
-          Log.i("BREEZJOB", "ChainSync job finished with status: " + m_result.toString());
+          Log.i(TAG, "ChainSync job finished with status: " + m_result.toString());
           return m_result;
-        }
+    }
 }
