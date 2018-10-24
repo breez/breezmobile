@@ -189,6 +189,7 @@ class _AccountPageState extends State<_AccountPage> {
     } else if (startDate != null && endDate != null) {
       widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(startDate: startDate, endDate: endDate));
     } else if (_filterType != null && (startDate == null && endDate == null)) {
+      widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(filter: _filterType, startDate: null, endDate: null));
     } else {
       widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(filter: null, startDate: null, endDate: null));
     }

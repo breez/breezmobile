@@ -234,7 +234,7 @@ class AccountBloc {
         return;
       }
 
-      if (_paymentFilterController.value.paymentType.isNotEmpty ||
+      if (_paymentFilterController.value.paymentType != null ||
           (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null)) {
         breezLib.getPayments().then((payments) {
           _filterPayments(payments);
