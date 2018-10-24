@@ -7,7 +7,6 @@ dependencies:
   grpc: ^0.6.4
   protobuf: any
   path_provider: any
-  google_sign_in: "^3.0.0"  
   firebase_database:
     git:
       url: https://github.com/flutter/plugins.git
