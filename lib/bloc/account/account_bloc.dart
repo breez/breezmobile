@@ -45,10 +45,8 @@ class AccountBloc {
   final _withdrawalResultController = new StreamController<String>.broadcast();
   Stream<String> get withdrawalResultStream => _withdrawalResultController.stream;
 
-  DateTime _firstDate;
   final _paymentsController = new BehaviorSubject<List<PaymentInfo>>();
   Stream<List<PaymentInfo>> get paymentsStream => _paymentsController.stream;
-  DateTime get firstDate => this._firstDate == null ? DateTime(2018) : this._firstDate;
 
   Stream<List<PaymentInfo>> get receivedPayments {
     return paymentsStream.map( (payments) => payments.where( (p) => [PaymentType.DEPOSIT, PaymentType.RECEIVED].contains(p.type)));
@@ -205,13 +203,11 @@ class AccountBloc {
   
     void _refreshPayments(BreezBridge breezLib) {
       if (MockPaymentInfo.isMockData) {
-        _firstDate =  DateTime.fromMillisecondsSinceEpoch(MockPaymentInfo.createMockData().elementAt(0).creationTimestamp.toInt() * 1000);
         _paymentsController.add(MockPaymentInfo.createMockData());
         return;
       }
 
        breezLib.getPayments().then( (payments) {
-        _firstDate =  DateTime.fromMillisecondsSinceEpoch(payments.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
         _paymentsController.add(payments.paymentsList.map( (payment) => new PaymentInfo(payment, _currentUser.currency)).toList());
       })
       .catchError(_paymentsController.addError); 
