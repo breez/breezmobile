@@ -64,7 +64,7 @@ class PaymentsModel {
   final PaymentFilterModel filter;
   final DateTime firstDate;
 
-  PaymentsModel(this.paymentsList, this.filter, this.firstDate);
+  PaymentsModel(this.paymentsList, this.filter, [this.firstDate]);
 
   PaymentsModel.initial() : this(null, null, null);
 
