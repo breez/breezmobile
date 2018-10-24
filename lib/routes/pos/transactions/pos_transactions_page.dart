@@ -6,6 +6,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/pos/transactions/pos_payments_list.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/theme_data.dart' as theme;
 
@@ -66,12 +67,16 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
           ),
           actions: <Widget>[
             new Padding(
-              padding: EdgeInsets.only(right: 16.0),
-              child: ImageIcon(
+              padding: EdgeInsets.only(left: 12.0, right: 0.0),
+              child: IconButton(icon: ImageIcon(
                 AssetImage("src/icon/calendar.png"),
                 color: Colors.white,
                 size: 24.0,
               ),
+                onPressed: () =>
+                    showDialog(barrierDismissible: false,
+                      context: context,
+                      builder: (_) => CalendarDialog(context, widget._accountBloc.firstDate),),),
             ),
           ],
           elevation: 0.0,

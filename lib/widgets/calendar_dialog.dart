@@ -74,14 +74,8 @@ class _CalendarDialogState extends State<CalendarDialog> {
     // Check if filter is unchanged
     if (_startDate != widget.firstDate || _endDate.day != DateTime.now().day) {
       DateTime startDate = DateTime(_startDate.year, _startDate.month, _startDate.day, 0, 0, 0);
-      DateTime endDate = DateTime(_endDate.year, _endDate.month, _endDate.day, 0, 0, 0);
-      // If selected dates are equal to each other, apply filter to the whole day
-      if (startDate.compareTo(endDate) == 0) {
-        endDate = DateTime(_endDate.year, _endDate.month, _endDate.day, 23, 59, 59, 999);
-        Navigator.of(context).pop([startDate, endDate]);
-      } else {
-        Navigator.of(context).pop([_startDate, _endDate]);
-      }
+      DateTime endDate = DateTime(_endDate.year, _endDate.month, _endDate.day, 23, 59, 59, 999);
+      Navigator.of(context).pop([startDate, endDate]);
     } else {
       Navigator.of(context).pop([null, null]);
     }
