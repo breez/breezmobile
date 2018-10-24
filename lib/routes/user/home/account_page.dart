@@ -184,12 +184,10 @@ class _AccountPageState extends State<_AccountPage> {
       _filterType = [PaymentType.RECEIVED, PaymentType.DEPOSIT];
     }
 
-    if (_filterType != null && (startDate != null && endDate != null)) {
+    if (startDate != null && endDate != null) {
       widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(filter: _filterType, startDate: startDate, endDate: endDate));
-    } else if (startDate != null && endDate != null) {
-      widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(startDate: startDate, endDate: endDate));
     } else {
-      widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(filter: _filterType, startDate: null, endDate: null));
+      widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(filter: _filterType));
     }
   }
 }
