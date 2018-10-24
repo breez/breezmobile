@@ -45,8 +45,8 @@ class AccountBloc {
   final _withdrawalResultController = new StreamController<String>.broadcast();
   Stream<String> get withdrawalResultStream => _withdrawalResultController.stream;
 
-  final _paymentsController = new BehaviorSubject<List<PaymentInfo>>();
-  Stream<List<PaymentsModel>> get paymentsStream => _paymentsController.stream;
+  final _paymentsController = new BehaviorSubject<PaymentsModel>();
+  Stream<PaymentsModel> get paymentsStream => _paymentsController.stream;
 
   Stream<List<PaymentInfo>> get receivedPayments {
     return paymentsStream.map( (payments) => payments.where( (p) => [PaymentType.DEPOSIT, PaymentType.RECEIVED].contains(p.type)));
@@ -148,7 +148,10 @@ class AccountBloc {
           _accountController.add(_accountController.value.copyWith(currency: user.currency));
         }
         if (_paymentsController.value != null) {
-          _paymentsController.add(_paymentsController.value.map((p) => p.copyWith(user.currency)).toList());
+          var _paymentsList = _paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList();
+          var _filter = _paymentFilterController.value;
+          var _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsController.value.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
+          _paymentsController.add(PaymentsModel(_paymentsList, _filter, _firstDate));
         }    
 
         _fetchFundStatus(breezLib);                 
@@ -215,7 +218,10 @@ class AccountBloc {
 
     void _refreshPayments(BreezBridge breezLib) {
       if (MockPaymentInfo.isMockData) {
-        _paymentsController.add(MockPaymentInfo.createMockData());
+        var _paymentsList = MockPaymentInfo.createMockData();
+        var _filter = _paymentFilterController.value;
+        var _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
+        _paymentsController.add(PaymentsModel(_paymentsList, _filter, _firstDate));
         return;
       }
 
@@ -228,12 +234,19 @@ class AccountBloc {
       }
 
        breezLib.getPayments().then( (payments) {
-        _paymentsController.add(payments.paymentsList.map( (payment) => new PaymentInfo(payment, _currentUser.currency)).toList());
+         var _paymentsList = payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList();
+         var _filter = _paymentFilterController.value;
+         var _firstDate = DateTime.fromMillisecondsSinceEpoch(payments.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
+         _paymentsController.add(PaymentsModel(_paymentsList, _filter, _firstDate));
       })
       .catchError(_paymentsController.addError); 
     }
 
     void _filterPayments(PaymentsList payments) {
+      var _paymentsList = payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList();
+      var _filter = _paymentFilterController.value;
+      var _firstDate = DateTime.fromMillisecondsSinceEpoch(payments.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
+
       bool hasDateFilter = _paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null;
       var _dateFilteredPayments;
       if (hasDateFilter) {
@@ -242,16 +255,10 @@ class AccountBloc {
             p.creationTimestamp.toInt() * 1000 <= _paymentFilterController.value.endDate.millisecondsSinceEpoch));
       }
 
-      if (_paymentFilterController.value.paymentType.isEmpty) {
-        if (hasDateFilter) {
-          var _dateFilteredPayments = payments.paymentsList.where((p) =>
-          (p.creationTimestamp.toInt() * 1000 >= _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
-              p.creationTimestamp.toInt() * 1000 <= _paymentFilterController.value.endDate.millisecondsSinceEpoch));
-
-          _paymentsController.add(_dateFilteredPayments
+      if (_paymentFilterController.value.paymentType.isEmpty && hasDateFilter) {
+          _paymentsList = _dateFilteredPayments
               .map((payment) => new PaymentInfo(payment, _currentUser.currency))
-              .toList());
-        }
+              .toList();
       }
 
       if (_paymentFilterController.value.paymentType.isNotEmpty) {
@@ -262,9 +269,9 @@ class AccountBloc {
           if(hasDateFilter) {
             _sentPaymentsSet = _getIntersection(_sentPaymentsSet, _dateFilteredPayments);
           }
-          _paymentsController.add(_sentPaymentsSet
+          _paymentsList = _sentPaymentsSet
               .map((payment) => new PaymentInfo(payment, _currentUser.currency))
-              .toList());
+              .toList();
         }
         if (_paymentFilterController.value.paymentType.contains(PaymentType.RECEIVED) ||
             _paymentFilterController.value.paymentType.contains(PaymentType.DEPOSIT)) {
@@ -273,14 +280,12 @@ class AccountBloc {
           if(hasDateFilter) {
             _receivedPaymentsSet = _getIntersection(_receivedPaymentsSet, _dateFilteredPayments);
           }
-          _paymentsController.add(_receivedPaymentsSet
+          _paymentsList = _receivedPaymentsSet
               .map((payment) => new PaymentInfo(payment, _currentUser.currency))
-              .toList());
+              .toList();
         }
       }
-
-      _paymentsController
-          .add(payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList());
+      _paymentsController.add(PaymentsModel(_paymentsList, _filter, _firstDate));
     }
 
     _getIntersection(Iterable<Payment> _paymentSet, Iterable<Payment> _dateFilteredPayments) {
