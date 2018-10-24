@@ -45,10 +45,8 @@ class AccountBloc {
   final _withdrawalResultController = new StreamController<String>.broadcast();
   Stream<String> get withdrawalResultStream => _withdrawalResultController.stream;
 
-  DateTime _firstDate;
   final _paymentsController = new BehaviorSubject<List<PaymentInfo>>();
-  Stream<List<PaymentInfo>> get paymentsStream => _paymentsController.stream;
-  DateTime get firstDate => this._firstDate == null ? DateTime(2018) : this._firstDate;
+  Stream<List<PaymentsModel>> get paymentsStream => _paymentsController.stream;
 
   Stream<List<PaymentInfo>> get receivedPayments {
     return paymentsStream.map( (payments) => payments.where( (p) => [PaymentType.DEPOSIT, PaymentType.RECEIVED].contains(p.type)));
@@ -56,6 +54,10 @@ class AccountBloc {
   Stream<List<PaymentInfo>> get sentPayments {
     return paymentsStream.map( (payments) => payments.where( (p) => [PaymentType.WITHDRAWAL, PaymentType.SENT].contains(p.type)));
   }
+
+  final _paymentFilterController = new BehaviorSubject<PaymentFilterModel>();
+  Stream<PaymentFilterModel> get paymentFilterStream => _paymentFilterController.stream;
+  Sink<PaymentFilterModel> get paymentFilterSink => _paymentFilterController.sink;
 
   final _accountActionsController = new StreamController<String>.broadcast();
   Stream<String> get accountActionsStream => _accountActionsController.stream;
@@ -84,11 +86,13 @@ class AccountBloc {
       Device device = injector.device;      
 
       _accountController.add(AccountModel.initial());
+      _paymentFilterController.add(PaymentFilterModel.initial());
       //listen streams      
       _listenUserChanges(userProfileStream, breezLib);
       _listenNewAddressRequests(breezLib);
       _listenWithdrawalRequests(breezLib);  
-      _listenSentPayments(breezLib);    
+      _listenSentPayments(breezLib);
+      _listenFilterChanges(breezLib);
       _listenAccountChanges(breezLib);
       _listenPOSFundingRequests(server, breezLib);
       _listenMempoolTransactions(device, notificationsService, breezLib);
@@ -202,11 +206,24 @@ class AccountBloc {
           });
         });    
     }
-  
+
+    void _listenFilterChanges(BreezBridge breezLib) {
+      _paymentFilterController.stream.listen((filter) {
+        _refreshPayments(breezLib);
+      });
+    }
+
     void _refreshPayments(BreezBridge breezLib) {
       if (MockPaymentInfo.isMockData) {
-        _firstDate =  DateTime.fromMillisecondsSinceEpoch(MockPaymentInfo.createMockData().elementAt(0).creationTimestamp.toInt() * 1000);
         _paymentsController.add(MockPaymentInfo.createMockData());
+        return;
+      }
+
+      if (_paymentFilterController.value.paymentType.isNotEmpty ||
+          (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null)) {
+        breezLib.getPayments().then((payments) {
+          _filterPayments(payments);
+        }).catchError(_paymentsController.addError);
         return;
       }
 
@@ -214,8 +231,67 @@ class AccountBloc {
         _paymentsController.add(payments.paymentsList.map( (payment) => new PaymentInfo(payment, _currentUser.currency)).toList());
       })
       .catchError(_paymentsController.addError); 
-    }  
-  
+    }
+
+    void _filterPayments(PaymentsList payments) {
+      bool hasDateFilter = _paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null;
+      var _dateFilteredPayments;
+      if (hasDateFilter) {
+        _dateFilteredPayments = payments.paymentsList.where((p) =>
+        (p.creationTimestamp.toInt() * 1000 >= _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
+            p.creationTimestamp.toInt() * 1000 <= _paymentFilterController.value.endDate.millisecondsSinceEpoch));
+      }
+
+      if (_paymentFilterController.value.paymentType.isEmpty) {
+        if (hasDateFilter) {
+          var _dateFilteredPayments = payments.paymentsList.where((p) =>
+          (p.creationTimestamp.toInt() * 1000 >= _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
+              p.creationTimestamp.toInt() * 1000 <= _paymentFilterController.value.endDate.millisecondsSinceEpoch));
+
+          _paymentsController.add(_dateFilteredPayments
+              .map((payment) => new PaymentInfo(payment, _currentUser.currency))
+              .toList());
+        }
+      }
+
+      if (_paymentFilterController.value.paymentType.isNotEmpty) {
+        if (_paymentFilterController.value.paymentType.contains(PaymentType.SENT) ||
+            _paymentFilterController.value.paymentType.contains(PaymentType.WITHDRAWAL)) {
+          var _sentPaymentsSet = payments.paymentsList
+              .where((p) => [Payment_PaymentType.WITHDRAWAL, Payment_PaymentType.SENT].contains(p.type));
+          if(hasDateFilter) {
+            _sentPaymentsSet = _getIntersection(_sentPaymentsSet, _dateFilteredPayments);
+          }
+          _paymentsController.add(_sentPaymentsSet
+              .map((payment) => new PaymentInfo(payment, _currentUser.currency))
+              .toList());
+        }
+        if (_paymentFilterController.value.paymentType.contains(PaymentType.RECEIVED) ||
+            _paymentFilterController.value.paymentType.contains(PaymentType.DEPOSIT)) {
+          var _receivedPaymentsSet = payments.paymentsList
+              .where((p) => [Payment_PaymentType.DEPOSIT, Payment_PaymentType.RECEIVED].contains(p.type));
+          if(hasDateFilter) {
+            _receivedPaymentsSet = _getIntersection(_receivedPaymentsSet, _dateFilteredPayments);
+          }
+          _paymentsController.add(_receivedPaymentsSet
+              .map((payment) => new PaymentInfo(payment, _currentUser.currency))
+              .toList());
+        }
+      }
+
+      _paymentsController
+          .add(payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList());
+    }
+
+    _getIntersection(Iterable<Payment> _paymentSet, Iterable<Payment> _dateFilteredPayments) {
+      List<Payment> _intersection = new List<Payment>();
+      _paymentSet.forEach((data) {
+        if (_dateFilteredPayments.contains(data)) _intersection.add(data);
+      });
+
+      return _intersection;
+    }
+
     void _listenPOSFundingRequests(BreezServer server, BreezBridge breezLib) {
       _posFundingRequestController.stream.listen((amount){
         retry(
@@ -291,6 +367,7 @@ class AccountBloc {
       _accountActionsController.close();
       _sentPaymentsController.close();
       _withdrawalController.close();
+      _paymentFilterController.close();
       _lightningDownController.close();
       _reconnectStreamController.close();
     }

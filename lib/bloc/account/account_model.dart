@@ -59,6 +59,40 @@ class AccountModel {
   }
 }
 
+class PaymentsModel {
+  final List<PaymentInfo> paymentsList;
+  final PaymentFilterModel filter;
+  final DateTime firstDate;
+
+  PaymentsModel(this.paymentsList, this.filter, this.firstDate);
+
+  PaymentsModel.initial() : this(null, null, null);
+
+  PaymentsModel copyWith({List<PaymentInfo> paymentsList, PaymentFilterModel filter, DateTime firstDate}) {
+    return PaymentsModel(
+        paymentsList ?? this.paymentsList,
+        filter ?? this.filter,
+        firstDate ?? this.firstDate);
+  }
+}
+
+class PaymentFilterModel {
+  final List<PaymentType> paymentType;
+  final DateTime startDate;
+  final DateTime endDate;
+
+  PaymentFilterModel(this.paymentType, this.startDate, this.endDate);
+
+  PaymentFilterModel.initial() : this(null, null, null);
+
+  PaymentFilterModel copyWith({PaymentType filter, DateTime startDate, DateTime endDate}) {
+    return PaymentFilterModel(
+        filter ?? this.paymentType,
+        startDate,
+        endDate);
+  }
+}
+
 enum PaymentType { DEPOSIT, WITHDRAWAL, SENT, RECEIVED }
 
 class PaymentInfo {
