@@ -226,141 +226,58 @@ class AccountBloc {
     }
 
     void _refreshPayments(BreezBridge breezLib) {
+      DateTime _firstDate = DateTime(2018);
       if (MockPaymentInfo.isMockData) {
         List<PaymentInfo> _paymentsList = _filterMockDataPayments(MockPaymentInfo.createMockData());
-        PaymentFilterModel _filter = _paymentFilterController.value;
-        DateTime _firstDate = DateTime(2018);
         if(_paymentsList.length > 0){
           _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
         }
-        _paymentsController.add(PaymentsModel(_paymentsList, _filter, _firstDate));
-        return;
-      }
-
-      if (_paymentFilterController.value.paymentType != null ||
-          (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null)) {
-        breezLib.getPayments().then((payments) {
-          PaymentFilterModel _filter = _paymentFilterController.value;
-          DateTime _firstDate = DateTime(2018);
-          if(payments.paymentsList.length > 0){
-            _firstDate = DateTime.fromMillisecondsSinceEpoch(payments.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
-          }
-          _paymentsController.add(PaymentsModel(_filterPayments(payments), _filter, _firstDate));
-        }).catchError(_paymentsController.addError);
+        _paymentsController.add(PaymentsModel(_paymentsList, _paymentFilterController.value, _firstDate));
         return;
       }
 
        breezLib.getPayments().then( (payments) {
-         List<PaymentInfo> _paymentsList = payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList();
-         PaymentFilterModel _filter = _paymentFilterController.value;
-         DateTime _firstDate = DateTime(2018);
          if(payments.paymentsList.length > 0){
            _firstDate = DateTime.fromMillisecondsSinceEpoch(payments.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
          }
-         _paymentsController.add(PaymentsModel(_paymentsList, _filter, _firstDate));
+         _paymentsController.add(PaymentsModel(_filterPayments(payments), _paymentFilterController.value, _firstDate));
       })
-      .catchError(_paymentsController.addError); 
+      .catchError(_paymentsController.addError);
     }
 
-    _filterMockDataPayments(List<PaymentInfo> paymentsList) {
-      PaymentFilterModel _filter = _paymentFilterController.value;
-      bool hasDateFilter = _filter.startDate != null && _filter.endDate != null;
-      Set<PaymentInfo> _dateFilteredPaymentsSet;
-      if (hasDateFilter) {
-        _dateFilteredPaymentsSet = paymentsList.where((p) =>
-        (p.creationTimestamp.toInt() * 1000 >= _filter.startDate.millisecondsSinceEpoch &&
-            p.creationTimestamp.toInt() * 1000 <= _filter.endDate.millisecondsSinceEpoch)).toSet();
-      }
-
-      if (_filter.paymentType.length == 4 && hasDateFilter) {
-        return _dateFilteredPaymentsSet.toList();
-      }
-
-      if (_filter.paymentType.length == 4 && !hasDateFilter) {
-        return paymentsList;
-      }
-
-      if (_filter.paymentType.contains(PaymentType.SENT) &&
-          _filter.paymentType.contains(PaymentType.WITHDRAWAL)) {
-        Set<PaymentInfo> _sentPaymentsSet = paymentsList
-            .where((p) => [PaymentType.WITHDRAWAL, PaymentType.SENT].contains(p.type)).toSet();
-        if (hasDateFilter) {
-          return _dateFilteredPaymentsSet.intersection(_sentPaymentsSet).toList();
-        }
-        return _sentPaymentsSet.toList();
-      }
-      if (_filter.paymentType.contains(PaymentType.RECEIVED) &&
-          _filter.paymentType.contains(PaymentType.DEPOSIT)) {
-        Set<PaymentInfo> _receivedPaymentsSet = paymentsList
-            .where((p) => [PaymentType.RECEIVED, PaymentType.DEPOSIT].contains(p.type)).toSet();
-        if (hasDateFilter) {
-          return _dateFilteredPaymentsSet.intersection(_receivedPaymentsSet).toList();
-        }
-        return _receivedPaymentsSet.toList();
-      }
-
-      return paymentsList;
+  _filterMockDataPayments(List<PaymentInfo> paymentsList) {
+    Set<PaymentInfo> paymentsSet = paymentsList
+        .where((p) => _paymentFilterController.value.paymentType.contains(p.type)).toSet();
+    if (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null) {
+      Set<PaymentInfo> _dateFilteredPaymentsSet = paymentsList.where((p) =>
+      (p.creationTimestamp.toInt() * 1000 >= _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
+          p.creationTimestamp.toInt() * 1000 <= _paymentFilterController.value.endDate.millisecondsSinceEpoch)).toSet();
+      return _dateFilteredPaymentsSet.intersection(paymentsSet).toList();
     }
+    return paymentsSet.toList();
+  }
 
-    _filterPayments(PaymentsList payments) {
-      List<PaymentInfo> _paymentsList = payments.paymentsList.map((payment) =>
+  _filterPayments(PaymentsList payments) {
+    Iterable<Payment> _paymentsList = payments.paymentsList
+        .where((p) => _paymentFilterController.value.paymentType.contains(p.type));
+    if (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null) {
+      Iterable<Payment> _dateFilteredPayments = payments.paymentsList.where((p) =>
+      (p.creationTimestamp.toInt() * 1000 >= _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
+          p.creationTimestamp.toInt() * 1000 <= _paymentFilterController.value.endDate.millisecondsSinceEpoch));
+      _getIntersection(_paymentsList, _dateFilteredPayments).map((payment) =>
       new PaymentInfo(payment, _currentUser.currency)).toList();
-      var _filter = _paymentFilterController.value;
-
-      bool hasDateFilter = _filter.startDate != null && _filter.endDate != null;
-      Iterable<Payment> _dateFilteredPayments;
-      if (hasDateFilter) {
-        _dateFilteredPayments = payments.paymentsList.where((p) =>
-        (p.creationTimestamp.toInt() * 1000 >= _filter.startDate.millisecondsSinceEpoch &&
-            p.creationTimestamp.toInt() * 1000 <= _filter.endDate.millisecondsSinceEpoch));
-      }
-
-      if (_filter.paymentType == null && hasDateFilter) {
-        _paymentsList = _dateFilteredPayments
-            .map((payment) => new PaymentInfo(payment, _currentUser.currency))
-            .toList();
-      }
-
-      if (_filter.paymentType.length == 4 && hasDateFilter) {
-        _paymentsList = _dateFilteredPayments
-            .map((payment) => new PaymentInfo(payment, _currentUser.currency))
-            .toList();
-      }
-
-      if (_filter.paymentType.contains(PaymentType.SENT) ||
-          _filter.paymentType.contains(PaymentType.WITHDRAWAL)) {
-        Iterable<Payment> _sentPaymentsSet = payments.paymentsList
-            .where((p) => [Payment_PaymentType.WITHDRAWAL, Payment_PaymentType.SENT].contains(p.type));
-        if (hasDateFilter) {
-          return _getIntersection(_sentPaymentsSet, _dateFilteredPayments);
-        }
-        return _sentPaymentsSet
-            .map((payment) => new PaymentInfo(payment, _currentUser.currency))
-            .toList();
-      }
-      if (_filter.paymentType.contains(PaymentType.RECEIVED) ||
-          _filter.paymentType.contains(PaymentType.DEPOSIT)) {
-        Iterable<Payment> _receivedPaymentsSet = payments.paymentsList
-            .where((p) => [Payment_PaymentType.DEPOSIT, Payment_PaymentType.RECEIVED].contains(p.type));
-        if (hasDateFilter) {
-          return _getIntersection(_receivedPaymentsSet, _dateFilteredPayments);
-        }
-        return _receivedPaymentsSet
-            .map((payment) => new PaymentInfo(payment, _currentUser.currency))
-            .toList();
-      }
-
-      return _paymentsList;
     }
+    return _paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList();
+  }
 
-    _getIntersection(Iterable<Payment> _paymentSet, Iterable<Payment> _dateFilteredPayments) {
-      List<Payment> _intersection = new List<Payment>();
-      _paymentSet.forEach((data) {
-        if (_dateFilteredPayments.contains(data)) _intersection.add(data);
-      });
+  _getIntersection(Iterable<Payment> _paymentSet, Iterable<Payment> _dateFilteredPayments) {
+    List<Payment> _intersection = new List<Payment>();
+    _paymentSet.forEach((data) {
+      if (_dateFilteredPayments.contains(data)) _intersection.add(data);
+    });
 
-      return _intersection;
-    }
+    return _intersection;
+  }
 
     void _listenPOSFundingRequests(BreezServer server, BreezBridge breezLib) {
       _posFundingRequestController.stream.listen((amount){
