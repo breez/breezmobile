@@ -83,7 +83,7 @@ class PaymentFilterModel {
 
   PaymentFilterModel(this.paymentType, this.startDate, this.endDate);
 
-  PaymentFilterModel.initial() : this(null, null, null);
+  PaymentFilterModel.initial() : this([PaymentType.SENT,PaymentType.DEPOSIT,PaymentType.WITHDRAWAL,PaymentType.RECEIVED], null, null);
 
   PaymentFilterModel copyWith({List<PaymentType> filter, DateTime startDate, DateTime endDate}) {
     return PaymentFilterModel(
