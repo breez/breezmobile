@@ -227,9 +227,12 @@ class AccountBloc {
 
     void _refreshPayments(BreezBridge breezLib) {
       if (MockPaymentInfo.isMockData) {
-        var _paymentsList = MockPaymentInfo.createMockData();
-        var _filter = _paymentFilterController.value;
-        var _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
+        List<PaymentInfo> _paymentsList = _filterMockDataPayments(MockPaymentInfo.createMockData());
+        PaymentFilterModel _filter = _paymentFilterController.value;
+        DateTime _firstDate = DateTime(2018);
+        if(_paymentsList.length > 0){
+          _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
+        }
         _paymentsController.add(PaymentsModel(_paymentsList, _filter, _firstDate));
         return;
       }
@@ -237,64 +240,117 @@ class AccountBloc {
       if (_paymentFilterController.value.paymentType != null ||
           (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null)) {
         breezLib.getPayments().then((payments) {
-          _filterPayments(payments);
+          PaymentFilterModel _filter = _paymentFilterController.value;
+          DateTime _firstDate = DateTime(2018);
+          if(payments.paymentsList.length > 0){
+            _firstDate = DateTime.fromMillisecondsSinceEpoch(payments.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
+          }
+          _paymentsController.add(PaymentsModel(_filterPayments(payments), _filter, _firstDate));
         }).catchError(_paymentsController.addError);
         return;
       }
 
        breezLib.getPayments().then( (payments) {
-         var _paymentsList = payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList();
-         var _filter = _paymentFilterController.value;
-         var _firstDate = DateTime.fromMillisecondsSinceEpoch(payments.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
+         List<PaymentInfo> _paymentsList = payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList();
+         PaymentFilterModel _filter = _paymentFilterController.value;
+         DateTime _firstDate = DateTime(2018);
+         if(payments.paymentsList.length > 0){
+           _firstDate = DateTime.fromMillisecondsSinceEpoch(payments.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
+         }
          _paymentsController.add(PaymentsModel(_paymentsList, _filter, _firstDate));
       })
       .catchError(_paymentsController.addError); 
     }
 
-    void _filterPayments(PaymentsList payments) {
-      var _paymentsList = payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList();
-      var _filter = _paymentFilterController.value;
-      var _firstDate = DateTime.fromMillisecondsSinceEpoch(payments.paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
+    _filterMockDataPayments(List<PaymentInfo> paymentsList) {
+      PaymentFilterModel _filter = _paymentFilterController.value;
+      bool hasDateFilter = _filter.startDate != null && _filter.endDate != null;
+      Set<PaymentInfo> _dateFilteredPaymentsSet;
+      if (hasDateFilter) {
+        _dateFilteredPaymentsSet = paymentsList.where((p) =>
+        (p.creationTimestamp.toInt() * 1000 >= _filter.startDate.millisecondsSinceEpoch &&
+            p.creationTimestamp.toInt() * 1000 <= _filter.endDate.millisecondsSinceEpoch)).toSet();
+      }
 
-      bool hasDateFilter = _paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null;
-      var _dateFilteredPayments;
+      if (_filter.paymentType.length == 4 && hasDateFilter) {
+        return _dateFilteredPaymentsSet.toList();
+      }
+
+      if (_filter.paymentType.length == 4 && !hasDateFilter) {
+        return paymentsList;
+      }
+
+      if (_filter.paymentType.contains(PaymentType.SENT) &&
+          _filter.paymentType.contains(PaymentType.WITHDRAWAL)) {
+        Set<PaymentInfo> _sentPaymentsSet = paymentsList
+            .where((p) => [PaymentType.WITHDRAWAL, PaymentType.SENT].contains(p.type)).toSet();
+        if (hasDateFilter) {
+          return _dateFilteredPaymentsSet.intersection(_sentPaymentsSet).toList();
+        }
+        return _sentPaymentsSet.toList();
+      }
+      if (_filter.paymentType.contains(PaymentType.RECEIVED) &&
+          _filter.paymentType.contains(PaymentType.DEPOSIT)) {
+        Set<PaymentInfo> _receivedPaymentsSet = paymentsList
+            .where((p) => [PaymentType.RECEIVED, PaymentType.DEPOSIT].contains(p.type)).toSet();
+        if (hasDateFilter) {
+          return _dateFilteredPaymentsSet.intersection(_receivedPaymentsSet).toList();
+        }
+        return _receivedPaymentsSet.toList();
+      }
+
+      return paymentsList;
+    }
+
+    _filterPayments(PaymentsList payments) {
+      List<PaymentInfo> _paymentsList = payments.paymentsList.map((payment) =>
+      new PaymentInfo(payment, _currentUser.currency)).toList();
+      var _filter = _paymentFilterController.value;
+
+      bool hasDateFilter = _filter.startDate != null && _filter.endDate != null;
+      Iterable<Payment> _dateFilteredPayments;
       if (hasDateFilter) {
         _dateFilteredPayments = payments.paymentsList.where((p) =>
-        (p.creationTimestamp.toInt() * 1000 >= _paymentFilterController.value.startDate.millisecondsSinceEpoch &&
-            p.creationTimestamp.toInt() * 1000 <= _paymentFilterController.value.endDate.millisecondsSinceEpoch));
+        (p.creationTimestamp.toInt() * 1000 >= _filter.startDate.millisecondsSinceEpoch &&
+            p.creationTimestamp.toInt() * 1000 <= _filter.endDate.millisecondsSinceEpoch));
       }
 
-      if (_paymentFilterController.value.paymentType.isEmpty && hasDateFilter) {
-          _paymentsList = _dateFilteredPayments
-              .map((payment) => new PaymentInfo(payment, _currentUser.currency))
-              .toList();
+      if (_filter.paymentType == null && hasDateFilter) {
+        _paymentsList = _dateFilteredPayments
+            .map((payment) => new PaymentInfo(payment, _currentUser.currency))
+            .toList();
       }
 
-      if (_paymentFilterController.value.paymentType.isNotEmpty) {
-        if (_paymentFilterController.value.paymentType.contains(PaymentType.SENT) ||
-            _paymentFilterController.value.paymentType.contains(PaymentType.WITHDRAWAL)) {
-          var _sentPaymentsSet = payments.paymentsList
-              .where((p) => [Payment_PaymentType.WITHDRAWAL, Payment_PaymentType.SENT].contains(p.type));
-          if(hasDateFilter) {
-            _sentPaymentsSet = _getIntersection(_sentPaymentsSet, _dateFilteredPayments);
-          }
-          _paymentsList = _sentPaymentsSet
-              .map((payment) => new PaymentInfo(payment, _currentUser.currency))
-              .toList();
-        }
-        if (_paymentFilterController.value.paymentType.contains(PaymentType.RECEIVED) ||
-            _paymentFilterController.value.paymentType.contains(PaymentType.DEPOSIT)) {
-          var _receivedPaymentsSet = payments.paymentsList
-              .where((p) => [Payment_PaymentType.DEPOSIT, Payment_PaymentType.RECEIVED].contains(p.type));
-          if(hasDateFilter) {
-            _receivedPaymentsSet = _getIntersection(_receivedPaymentsSet, _dateFilteredPayments);
-          }
-          _paymentsList = _receivedPaymentsSet
-              .map((payment) => new PaymentInfo(payment, _currentUser.currency))
-              .toList();
-        }
+      if (_filter.paymentType.length == 4 && hasDateFilter) {
+        _paymentsList = _dateFilteredPayments
+            .map((payment) => new PaymentInfo(payment, _currentUser.currency))
+            .toList();
       }
-      _paymentsController.add(PaymentsModel(_paymentsList, _filter, _firstDate));
+
+      if (_filter.paymentType.contains(PaymentType.SENT) ||
+          _filter.paymentType.contains(PaymentType.WITHDRAWAL)) {
+        Iterable<Payment> _sentPaymentsSet = payments.paymentsList
+            .where((p) => [Payment_PaymentType.WITHDRAWAL, Payment_PaymentType.SENT].contains(p.type));
+        if (hasDateFilter) {
+          return _getIntersection(_sentPaymentsSet, _dateFilteredPayments);
+        }
+        return _sentPaymentsSet
+            .map((payment) => new PaymentInfo(payment, _currentUser.currency))
+            .toList();
+      }
+      if (_filter.paymentType.contains(PaymentType.RECEIVED) ||
+          _filter.paymentType.contains(PaymentType.DEPOSIT)) {
+        Iterable<Payment> _receivedPaymentsSet = payments.paymentsList
+            .where((p) => [Payment_PaymentType.DEPOSIT, Payment_PaymentType.RECEIVED].contains(p.type));
+        if (hasDateFilter) {
+          return _getIntersection(_receivedPaymentsSet, _dateFilteredPayments);
+        }
+        return _receivedPaymentsSet
+            .map((payment) => new PaymentInfo(payment, _currentUser.currency))
+            .toList();
+      }
+
+      return _paymentsList;
     }
 
     _getIntersection(Iterable<Payment> _paymentSet, Iterable<Payment> _dateFilteredPayments) {

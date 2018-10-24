@@ -177,7 +177,7 @@ class _AccountPageState extends State<_AccountPage> {
       _filter = newFilter;
     });
 
-    var _filterType;
+    var _filterType = [PaymentType.RECEIVED, PaymentType.DEPOSIT, PaymentType.SENT, PaymentType.WITHDRAWAL];
     if (_filter == "Sent") {
       _filterType = [PaymentType.SENT, PaymentType.WITHDRAWAL];
     } else if (_filter == "Received") {
@@ -188,10 +188,8 @@ class _AccountPageState extends State<_AccountPage> {
       widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(filter: _filterType, startDate: startDate, endDate: endDate));
     } else if (startDate != null && endDate != null) {
       widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(startDate: startDate, endDate: endDate));
-    } else if (_filterType != null && (startDate == null && endDate == null)) {
-      widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(filter: _filterType, startDate: null, endDate: null));
     } else {
-      widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(filter: null, startDate: null, endDate: null));
+      widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(filter: _filterType, startDate: null, endDate: null));
     }
   }
 }
