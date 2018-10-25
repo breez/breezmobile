@@ -36,6 +36,7 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
   final ScrollController _scrollController = new ScrollController();
 
   StreamSubscription<String> _accountActionsSubscription;
+  DateTime _firstDate;
 
   @override
   void initState() {
@@ -76,7 +77,7 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
                 onPressed: () =>
                     showDialog(barrierDismissible: false,
                       context: context,
-                      builder: (_) => CalendarDialog(context, widget._accountBloc.firstDate),),),
+                      builder: (_) => CalendarDialog(context, _firstDate),),),
             ),
           ],
           elevation: 0.0,
@@ -85,12 +86,13 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
             stream: widget._accountBloc.accountStream,
             builder: (context, snapshot) {
               AccountModel account = snapshot.data;
-              return StreamBuilder<List<PaymentInfo>>(
+              return StreamBuilder<PaymentsModel>(
                   stream: widget._accountBloc.paymentsStream,
                   builder: (context, snapshot) {
-                    List<PaymentInfo> payments;
+                    List<PaymentInfo> payments = new List<PaymentInfo>();
                     if (snapshot.hasData) {
-                      payments = snapshot.data;
+                      payments = snapshot.data.paymentsList ?? new List<PaymentInfo>();
+                      _firstDate = snapshot.data.firstDate ?? DateTime(2018);
                     }
 
                     if (account == null || payments == null) {
