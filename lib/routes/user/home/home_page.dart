@@ -18,26 +18,40 @@ class Home extends StatefulWidget {
   Home(this.accountBloc, this.receivedInvoicesStream);
 
   final List<DrawerItemConfig> _screens =
-      new List<DrawerItemConfig>.unmodifiable([new DrawerItemConfig("breezHome", "Breez", "")]);
+      new List<DrawerItemConfig>.unmodifiable(
+          [new DrawerItemConfig("breezHome", "Breez", "")]);
 
-  final List<DrawerItemConfig> _majorActionsFunds = new List<DrawerItemConfig>.unmodifiable([
+  final List<DrawerItemConfig> _majorActionsFunds =
+      new List<DrawerItemConfig>.unmodifiable([
     new DrawerItemConfig("/add_funds", "Add Funds", "src/icon/add_funds.png"),
-    new DrawerItemConfig("/withdraw_funds", "Remove Funds", "src/icon/withdraw_funds.png"),
+    new DrawerItemConfig(
+        "/withdraw_funds", "Remove Funds", "src/icon/withdraw_funds.png"),
   ]);
 
-  final List<DrawerItemConfig> _majorActionsPay = new List<DrawerItemConfig>.unmodifiable([
-    new DrawerItemConfig("/connect_to_pay", "Connect to Pay", "src/icon/connect_to_pay.png"),
-    new DrawerItemConfig("/pay_nearby", "Pay Someone Nearby", "src/icon/pay.png"),
+  final List<DrawerItemConfig> _majorActionsPay =
+      new List<DrawerItemConfig>.unmodifiable([
+    new DrawerItemConfig(
+        "/connect_to_pay", "Connect to Pay", "src/icon/connect_to_pay.png"),
+    new DrawerItemConfig(
+        "/pay_nearby", "Pay Someone Nearby", "src/icon/pay.png"),
+    new DrawerItemConfig(
+        "/create_invoice", "Create an Invoice", "src/icon/paste.png"),
   ]);
 
-  final List<DrawerItemConfig> _minorActionsCard = new List<DrawerItemConfig>.unmodifiable([
-    new DrawerItemConfig("/order_card", "Order Card", "src/icon/order_card.png"),
-    new DrawerItemConfig("/activate_card", "Activate Card", "src/icon/activate_card.png"),
-    new DrawerItemConfig("/lost_card", "Lost or Stolen Card", "src/icon/lost_card.png"),
+  final List<DrawerItemConfig> _minorActionsCard =
+      new List<DrawerItemConfig>.unmodifiable([
+    new DrawerItemConfig(
+        "/order_card", "Order Card", "src/icon/order_card.png"),
+    new DrawerItemConfig(
+        "/activate_card", "Activate Card", "src/icon/activate_card.png"),
+    new DrawerItemConfig(
+        "/lost_card", "Lost or Stolen Card", "src/icon/lost_card.png"),
   ]);
 
-  final List<DrawerItemConfig> _minorActionsDev = new List<DrawerItemConfig>.unmodifiable([
-    new DrawerItemConfig("/developers", "Developers", "src/icon/developers.png"),
+  final List<DrawerItemConfig> _minorActionsDev =
+      new List<DrawerItemConfig>.unmodifiable([
+    new DrawerItemConfig(
+        "/developers", "Developers", "src/icon/developers.png"),
   ]);
 
   final Map<String, Widget> _screenBuilders = {"breezHome": new AccountPage()};
@@ -55,8 +69,10 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    // add my stuff here
     InvoiceNotificationsHandler _notificationsHandler =
-    new InvoiceNotificationsHandler(context, widget.accountBloc, widget.receivedInvoicesStream);
+        new InvoiceNotificationsHandler(
+            context, widget.accountBloc, widget.receivedInvoicesStream);
     listenNoConnection(context, widget.accountBloc);
   }
 
@@ -66,15 +82,29 @@ class HomeState extends State<Home> {
         key: _scaffoldKey,
         appBar: new AppBar(
           leading: new IconButton(
-              icon: ImageIcon(AssetImage("src/icon/hamburger.png"), size: 24.0, color: null,),
+              icon: ImageIcon(
+                AssetImage("src/icon/hamburger.png"),
+                size: 24.0,
+                color: null,
+              ),
               onPressed: () => _scaffoldKey.currentState.openDrawer()),
-          title: new Image.asset("src/images/logo-color.png", height: 23.5, width: 62.7,),
+          title: new Image.asset(
+            "src/images/logo-color.png",
+            height: 23.5,
+            width: 62.7,
+          ),
           iconTheme: new IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
           backgroundColor: theme.whiteColor,
           elevation: 0.0,
         ),
-        drawer: new NavigationDrawer(true, widget._screens, widget._majorActionsFunds, widget._majorActionsPay,
-            widget._minorActionsCard, widget._minorActionsDev, _onNavigationItemSelected),
+        drawer: new NavigationDrawer(
+            true,
+            widget._screens,
+            widget._majorActionsFunds,
+            widget._majorActionsPay,
+            widget._minorActionsCard,
+            widget._minorActionsDev,
+            _onNavigationItemSelected),
         body: widget._screenBuilders[_activeScreen]);
   }
 
@@ -85,7 +115,11 @@ class HomeState extends State<Home> {
       });
     } else {
       if (itemName == "/lost_card") {
-          showDialog(context: context, builder: (_) => lostCard.LostCardDialog(context: context,));
+        showDialog(
+            context: context,
+            builder: (_) => lostCard.LostCardDialog(
+                  context: context,
+                ));
       } else {
         Navigator.of(context).pushNamed(itemName).then((message) {
           if (message != null) {
