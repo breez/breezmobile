@@ -15,6 +15,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/routes/user/home/status_text.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:breez/utils/date.dart';
 import 'package:breez/logger.dart';
 
 const DASHBOARD_MAX_HEIGHT = 188.0;
@@ -106,7 +107,7 @@ class _AccountPageState extends State<_AccountPage> {
                 }
 
                 //account and payments are ready, build their widgets
-                return _buildBalanceAndPayments(paymentsModel.paymentsList ?? new List<PaymentInfo>(), account, paymentsModel.firstDate);
+                return _buildBalanceAndPayments(paymentsModel, account);
               });
         });
   }  
@@ -127,9 +128,9 @@ class _AccountPageState extends State<_AccountPage> {
     ]);
   }
 
-  Widget _buildBalanceAndPayments(List<PaymentInfo> payments, AccountModel account, DateTime firstDate) {
+  Widget _buildBalanceAndPayments(PaymentsModel paymentsModel, AccountModel account) {
     double listHeightSpace = MediaQuery.of(context).size.height - DASHBOARD_MIN_HEIGHT - kToolbarHeight - FILTER_MAX_SIZE - 25.0;
-    double bottomPlaceholderSpace = payments == null || payments.length == 0 ? 0.0 : (listHeightSpace - PAYMENT_LIST_ITEM_HEIGHT * payments.length).clamp(0.0, listHeightSpace);    
+    double bottomPlaceholderSpace = paymentsModel.paymentsList == null || paymentsModel.paymentsList.length == 0 ? 0.0 : (listHeightSpace - PAYMENT_LIST_ITEM_HEIGHT * paymentsModel.paymentsList.length).clamp(0.0, listHeightSpace);
     return Stack(
       key: Key("account_sliver"),
       fit: StackFit.expand,
@@ -141,10 +142,18 @@ class _AccountPageState extends State<_AccountPage> {
             SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(widget._accountBloc, widget._userProfileBloc), pinned: true),
 
             //payment filter
-            PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter, firstDate),
+            PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter, paymentsModel.firstDate),
 
+            (paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
+                ? SliverAppBar(
+              pinned: true,
+              automaticallyImplyLeading: false,
+              backgroundColor: Theme.of(context).canvasColor,
+              flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
+            ) : SliverPadding(padding: EdgeInsets.zero)
+            ,
             // //List
-            PaymentsList(payments, PAYMENT_LIST_ITEM_HEIGHT),
+            PaymentsList(paymentsModel.paymentsList, PAYMENT_LIST_ITEM_HEIGHT),
 
             //footer
             SliverPersistentHeader(
@@ -166,6 +175,20 @@ class _AccountPageState extends State<_AccountPage> {
         ),
       ],
     );
+  }
+
+  _buildDateFilterChip(PaymentFilterModel filter) {
+    return (filter.startDate != null && filter.endDate != null) ?
+    _filterChip(filter) : Container();
+  }
+
+  Widget _filterChip(PaymentFilterModel filter) {
+    return Row(mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[Padding(padding: EdgeInsets.only(left: 16.0),
+      child: Chip(label: new Text(DateUtils.formatFilterDateRange(filter.startDate, filter.endDate)),
+        onDeleted: () =>
+            widget._accountBloc.paymentFilterSink.add(PaymentFilterModel(filter.paymentType, null,
+                null)),),)],);
   }
 
   _onFilterChanged(String newFilter, [DateTime startDate, DateTime endDate]) {
