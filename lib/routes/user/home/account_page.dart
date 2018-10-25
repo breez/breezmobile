@@ -49,7 +49,6 @@ class _AccountPageState extends State<_AccountPage> {
   StreamSubscription<AccountModel> _statusSubscription;
   String _filter;  
   String _paymentRequestInProgress;
-  PaymentFilterModel _paymentFilterModel;
 
   @override
   void initState() {
