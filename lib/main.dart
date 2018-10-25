@@ -18,6 +18,7 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_page.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_complete.dart';
+import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 AppBlocs blocs = AppBlocs();
@@ -136,6 +137,11 @@ class BreezAppState extends State<BreezApp> {
           case '/pay_nearby_complete':
             return new FadeInRoute(
               builder: (_) => new PayNearbyComplete(),
+              settings: settings,
+            );
+          case '/create_invoice':
+            return new FadeInRoute(
+              builder: (_) => new CreateInvoicePage(),
               settings: settings,
             );
           case '/developers':
