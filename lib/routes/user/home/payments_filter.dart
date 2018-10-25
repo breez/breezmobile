@@ -6,7 +6,7 @@ import 'package:breez/theme_data.dart' as theme;
 class PaymentFilterSliver extends StatefulWidget {
 
   final ScrollController _controller;
-  final Function(String fitler) _onFilterChanged;
+  final Function(String filter, [DateTime startDate, DateTime endDate]) _onFilterChanged;
   final double _minSize;
   final double _maxSize;
   final String _filter;
@@ -51,7 +51,7 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
 
 class PaymentsFilter extends StatelessWidget {
   final String _filter;
-  final Function(String fitler) _onFilterChanged;
+  final Function(String filter, [DateTime startDate, DateTime endDate]) _onFilterChanged;
   final DateTime _firstDate;
 
   PaymentsFilter(this._filter, this._onFilterChanged, this._firstDate);
@@ -62,15 +62,20 @@ class PaymentsFilter extends StatelessWidget {
     children.add(
       new Padding(
         padding: EdgeInsets.only(left: 12.0, right: 0.0),
-        child: IconButton(icon: ImageIcon(
-          AssetImage("src/icon/calendar.png"),
-          color: Colors.white,
-          size: 24.0,
+        child: IconButton(
+          icon: ImageIcon(
+            AssetImage("src/icon/calendar.png"),
+            color: Colors.white,
+            size: 24.0,
+          ),
+          onPressed: () => showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (_) => CalendarDialog(context, _firstDate),
+          ).then((result) {
+            _onFilterChanged(_filter, result[0], result[1]);
+          }),
         ),
-          onPressed: () =>
-              showDialog(barrierDismissible: false,
-                context: context,
-                builder: (_) => CalendarDialog(context, _firstDate),),),
       ),
     );
     children.add(
