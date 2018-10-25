@@ -9,8 +9,9 @@ import com.breez.client.BreezApplication;
 
 public class ChainSync extends Worker {
 
-    public static final String TAG = "BREEZSYNC";
-    private static volatile boolean mRunning;
+    private static final String TAG = "BREEZSYNC";
+
+    private static volatile boolean sRunning;
 
     public ChainSync(Context context, WorkerParameters params) {
         super(context, params);
@@ -25,7 +26,11 @@ public class ChainSync extends Worker {
             //if breez app is running ignore this job
             if (BreezApplication.isRunning) {
                 Log.i(TAG, "ChainSync job ignored because app is running");
-                return Result.RETRY;
+                if (Bindings.daemonReady() && !Bindings.isConnectedToRoutingNode()) {
+                    Log.i(TAG, "ChainSync job trying to connect and wait...");
+                    Bindings.connectAccount();
+                }
+                return Result.SUCCESS;
             }
 
             if (isStopped()) {
@@ -50,19 +55,18 @@ public class ChainSync extends Worker {
 
     @Override
     public void onStopped(boolean cancelled) {
-        Log.i(TAG, "ChainSync job onStopped called cancelled=: " + cancelled);  
-        //left these lines commented deliberately untill the right changes will be impemented in breez lib.
-              
-    //    try {
-    //        Bindings.stop();
-    //    }
-    //    catch(Exception e) {
-    //        Log.e(TAG, "ChainSync job Bindings.stop has thrown exception: ",  e);
-    //    }
+        super.onStopped(cancelled);
+        Log.i(TAG, "ChainSync job onStopped called cancelled=: " + cancelled);
+        try {
+            Bindings.stop();
+        }
+        catch(Exception e) {
+            Log.e(TAG, "ChainSync job Bindings.stop has thrown exception: ",  e);
+        }
     }
 
     public static synchronized void waitShutdown(){
-        if (!mRunning) {
+        if (!sRunning) {
             return;
         }
         try {
@@ -73,7 +77,7 @@ public class ChainSync extends Worker {
     }
 
     private static synchronized void setRunning(boolean running) {
-        mRunning = running;
+        sRunning = running;
         if (!running) {
             ChainSync.class.notifyAll();
         }
