@@ -38,13 +38,13 @@ class PaymentRequestDialog extends StatelessWidget {
             ]),
       titlePadding: EdgeInsets.only(top: 48.0),
       children: <Widget>[
-        new Text(
+        invoice.payeeName == null ? null : new Text(
           "${invoice.payeeName}",
           style: theme.paymentRequestTitleStyle,
           textAlign: TextAlign.center,
         ),
         new Text(
-          "is requesting you to pay:",
+          invoice.payeeName == null ? invoice.description : "is requesting you to pay:",
           style: theme.paymentRequestSubtitleStyle,
           textAlign: TextAlign.center,
         ),
