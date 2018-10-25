@@ -91,7 +91,7 @@ class AccountBloc {
       _listenMempoolTransactions(device, notificationsService, breezLib);
       _listenRoutingNodeConnectionChanges(breezLib);
        breezLib.bootstrapAndStart();      
-       _refreshAcount(breezLib);   
+       _refreshAccount(breezLib);
        _listenConnectivityChanges(breezLib);   
        _listenReconnects(breezLib);
     }
@@ -179,7 +179,7 @@ class AccountBloc {
           breezLib.sendNonDepositedCoins(address)
           .then((res) => _withdrawalResultController.add(address))
           .catchError(_withdrawalResultController.addError)
-          .whenComplete(() => _refreshAcount(breezLib));
+          .whenComplete(() => _refreshAccount(breezLib));
         });    
     }
   
@@ -255,7 +255,7 @@ class AccountBloc {
         .then((FundReply_ReturnCode res) {
           if (res == FundReply_ReturnCode.SUCCESS) {
             return Future.delayed(Duration(seconds: 3), () {
-              _refreshAcount(breezLib);
+              _refreshAccount(breezLib);
             });
           }
           else {          
@@ -274,10 +274,10 @@ class AccountBloc {
 
       Observable(breezLib.notificationStream)
       .where((event) => event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED)
-      .listen((change) => _refreshAcount(breezLib));
+      .listen((change) => _refreshAccount(breezLib));
     }
   
-    _refreshAcount(BreezBridge breezLib){      
+    _refreshAccount(BreezBridge breezLib){
       _refreshPayments(breezLib);
       _fetchFundStatus(breezLib);
       breezLib.getAccount()
