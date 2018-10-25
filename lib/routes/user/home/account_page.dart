@@ -50,7 +50,6 @@ class _AccountPageState extends State<_AccountPage> {
   String _filter;  
   String _paymentRequestInProgress;
   PaymentFilterModel _paymentFilterModel;
-  DateTime _firstDate;
 
   @override
   void initState() {
@@ -97,20 +96,18 @@ class _AccountPageState extends State<_AccountPage> {
           return StreamBuilder<PaymentsModel>(
               stream: widget._accountBloc.paymentsStream,
               builder: (context, snapshot) {                
-                List<PaymentInfo> payments = new List<PaymentInfo>();
+                PaymentsModel paymentsModel = new PaymentsModel.initial();
                 if (snapshot.hasData) {
-                  payments = snapshot.data.paymentsList ?? new List<PaymentInfo>();
-                  _paymentFilterModel = snapshot.data.filter ?? PaymentFilterModel.initial();
-                  _firstDate = snapshot.data.firstDate ?? DateTime(2018);
+                  paymentsModel = snapshot.data;
                 }
 
-                if (account != null && !account.initial && payments.length == 0) {
+                if (account != null && !account.initial && paymentsModel.paymentsList.length == 0) {
                   //build empty account page
                   return _buildEmptyAccount(account);
-                }                
+                }
 
                 //account and payments are ready, build their widgets
-                return _buildBalanceAndPayments(payments ?? new List<PaymentInfo>(), account);
+                return _buildBalanceAndPayments(paymentsModel.paymentsList ?? new List<PaymentInfo>(), account, paymentsModel.firstDate ?? DateTime(2018));
               });
         });
   }  
@@ -131,7 +128,7 @@ class _AccountPageState extends State<_AccountPage> {
     ]);
   }
 
-  Widget _buildBalanceAndPayments(List<PaymentInfo> payments, AccountModel account) {
+  Widget _buildBalanceAndPayments(List<PaymentInfo> payments, AccountModel account, DateTime firstDate) {
     double listHeightSpace = MediaQuery.of(context).size.height - DASHBOARD_MIN_HEIGHT - kToolbarHeight - FILTER_MAX_SIZE - 25.0;
     double bottomPlaceholderSpace = payments == null || payments.length == 0 ? 0.0 : (listHeightSpace - PAYMENT_LIST_ITEM_HEIGHT * payments.length).clamp(0.0, listHeightSpace);    
     return Stack(
@@ -145,7 +142,7 @@ class _AccountPageState extends State<_AccountPage> {
             SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(widget._accountBloc, widget._userProfileBloc), pinned: true),
 
             //payment filter
-            PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter, _firstDate),
+            PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter, firstDate),
 
             // //List
             PaymentsList(payments, PAYMENT_LIST_ITEM_HEIGHT),
@@ -184,11 +181,7 @@ class _AccountPageState extends State<_AccountPage> {
       _filterType = [PaymentType.RECEIVED, PaymentType.DEPOSIT];
     }
 
-    if (startDate != null && endDate != null) {
-      widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(filter: _filterType, startDate: startDate, endDate: endDate));
-    } else {
-      widget._accountBloc.paymentFilterSink.add(_paymentFilterModel.copyWith(filter: _filterType));
-    }
+    widget._accountBloc.paymentFilterSink.add(PaymentFilterModel(_filterType, startDate, endDate));
   }
 }
 
