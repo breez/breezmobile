@@ -8,10 +8,8 @@ import 'package:breez/theme_data.dart' as theme;
 class CalendarDialog extends StatefulWidget {
   final BuildContext context;
   final DateTime firstDate;
-  final DateTime startDate;
-  final DateTime endDate;
 
-  CalendarDialog(this.context, this.firstDate, [this.startDate, this.endDate]);
+  CalendarDialog(this.context, this.firstDate);
 
   @override
   _CalendarDialogState createState() => new _CalendarDialogState();
@@ -27,8 +25,8 @@ class _CalendarDialogState extends State<CalendarDialog> {
   void initState() {
     super.initState();
     setState(() {
-      _startDate = widget.startDate == null ? widget.firstDate : widget.startDate;
-      _endDate = widget.endDate == null ? DateTime.now() : widget.endDate;
+      _startDate = widget.firstDate;
+      _endDate = DateTime.now();
       _startDateController.text = DateUtils.formatYearMonthDay(_startDate);
       _endDateController.text = DateUtils.formatYearMonthDay(_endDate);
     });
