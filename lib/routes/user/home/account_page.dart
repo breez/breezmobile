@@ -106,7 +106,7 @@ class _AccountPageState extends State<_AccountPage> {
                 }
 
                 //account and payments are ready, build their widgets
-                return _buildBalanceAndPayments(paymentsModel.paymentsList ?? new List<PaymentInfo>(), account, paymentsModel.firstDate ?? DateTime(2018));
+                return _buildBalanceAndPayments(paymentsModel.paymentsList ?? new List<PaymentInfo>(), account, paymentsModel.firstDate);
               });
         });
   }  

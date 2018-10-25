@@ -207,13 +207,13 @@ class AccountBloc {
     }
 
     void _refreshPayments(BreezBridge breezLib) {
-      DateTime _firstDate = DateTime(2018);
+      DateTime _firstDate;
       if (MockPaymentInfo.isMockData) {
         List<PaymentInfo> _paymentsList = _filterPayments(MockPaymentInfo.createMockData());
         if(_paymentsList.length > 0){
           _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
         }
-        _paymentsController.add(PaymentsModel(_paymentsList, _paymentFilterController.value, _firstDate));
+        _paymentsController.add(PaymentsModel(_paymentsList, _paymentFilterController.value, _firstDate ?? DateTime(DateTime.now().year)));
         return;
       }
 
@@ -222,7 +222,7 @@ class AccountBloc {
         if(_paymentsList.length > 0){
           _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.elementAt(0).creationTimestamp.toInt() * 1000);
         }
-        _paymentsController.add(PaymentsModel(_filterPayments(_paymentsList), _paymentFilterController.value, _firstDate));
+        _paymentsController.add(PaymentsModel(_filterPayments(_paymentsList), _paymentFilterController.value, _firstDate ?? DateTime(DateTime.now().year)));
       })
           .catchError(_paymentsController.addError);
     }

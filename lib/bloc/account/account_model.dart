@@ -66,7 +66,7 @@ class PaymentsModel {
 
   PaymentsModel(this.paymentsList, this.filter, [this.firstDate]);
 
-  PaymentsModel.initial() : this(null, null, null);
+  PaymentsModel.initial() : this(null, null, DateTime(DateTime.now().year));
 
   PaymentsModel copyWith({List<PaymentInfo> paymentsList, PaymentFilterModel filter, DateTime firstDate}) {
     return PaymentsModel(
