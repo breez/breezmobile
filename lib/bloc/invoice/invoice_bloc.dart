@@ -16,6 +16,9 @@ class InvoiceBloc {
   final _newInvoiceRequestController = StreamController<InvoiceRequestModel>();
   Sink<InvoiceRequestModel> get newInvoicerequestSink => _newInvoiceRequestController.sink;
 
+  final _newStandardInvoiceRequestController = StreamController<InvoiceRequestModel>();
+  Sink<InvoiceRequestModel> get newStandardInvoiceRequestSink => _newStandardInvoiceRequestController.sink;
+
   final _readyInvoicesController = new BehaviorSubject<String>();
   Stream<String> get readyInvoicesStream => _readyInvoicesController.stream;
 
@@ -38,6 +41,7 @@ class InvoiceBloc {
     Notifications notificationsService = injector.notifications;
 
     _listenInvoiceRequests(breezLib, nfc);
+    _listenStandardInvoiceRequests(breezLib);
     _listenNFCStream(nfc, server, breezLib);
     _listenIncomingInvoices(notificationsService, breezLib, nfc);
     _listenIncomingBlankInvoices(breezLib, nfc);
@@ -54,6 +58,16 @@ class InvoiceBloc {
           _readyInvoicesController.add(paymentRequest);
         })
         .catchError(_readyInvoicesController.addError);
+    });
+  }
+
+  void _listenStandardInvoiceRequests(BreezBridge breezLib) {
+    _newStandardInvoiceRequestController.stream.listen((invoiceRequest){
+      breezLib.addStandardInvoice(invoiceRequest.amount, invoiceRequest.description)
+          .then( (paymentRequest) {
+        _readyInvoicesController.add(paymentRequest);
+      })
+          .catchError(_readyInvoicesController.addError);
     });
   }
 
@@ -113,7 +127,8 @@ class InvoiceBloc {
   }
 
   close() {    
-    _newInvoiceRequestController.close();    
+    _newInvoiceRequestController.close();
+    _newStandardInvoiceRequestController.close();
     _sentInvoicesController.close();
     _receivedInvoicesController.close();
     _paidInvoicesController.close();
