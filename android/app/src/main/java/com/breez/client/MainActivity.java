@@ -22,6 +22,8 @@ import io.flutter.plugins.GeneratedPluginRegistrant;
 
 import android.util.Log;
 
+import static android.content.Intent.ACTION_VIEW;
+
 public class MainActivity extends FlutterActivity {
     private static final String TAG = "Breez";
     public static final int NOTIFICATION_ID = 200;
@@ -67,6 +69,7 @@ public class MainActivity extends FlutterActivity {
         new ShareBreezLog(this.registrarFor("com.breez.client.plugins.share_breez_log"), this);
         new BreezCredential(this.registrarFor("com.breez.client.plugins.breez_credential"), this);
         new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
+        new LightningLinks(this.registrarFor("com.breez.client.plugins.lightning_links"));
     }
 
     public void onPause() {
