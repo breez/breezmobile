@@ -59,6 +59,11 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
 
         PeriodicWorkRequest periodic =
                 new PeriodicWorkRequest.Builder(ChainSync.class, 15, TimeUnit.MINUTES)
+                        .setConstraints(
+                                new Constraints.Builder()
+                                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                                        .setRequiresBatteryNotLow(true)
+                                        .build())
                         .setInputData(
                                 new Data.Builder()
                                         .putString("workingDir", workingDir)
