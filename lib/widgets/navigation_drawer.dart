@@ -7,6 +7,8 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/widgets/breez_avatar_dialog.dart';
 import 'package:breez/widgets/breez_drawer_header.dart';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/services.dart';
 
 class DrawerItemConfig {
   final String _name;
@@ -118,7 +120,11 @@ class _NavigationDrawer extends StatelessWidget {
                   .map(
                     (action) => _actionTile(action, context, _onItemSelected),
                   )
-                  .toList())),
+                  .toList())
+              ..add(new Padding(
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Divider()))
+        ..add(_scanIcon(context))),
       );
     } else {
       return new Drawer(
@@ -206,6 +212,29 @@ Widget _actionTile(
       onTap: () {
         Navigator.pop(context);
         onItemSelected(action.name);
+      },
+    ),
+  );
+}
+
+Widget _scanIcon(BuildContext context) {
+  return new Padding(
+    padding: EdgeInsets.only(left: 8.0, right: 8.0),
+    child: new ListTile(
+      title: new Image(
+          image: new AssetImage("src/icon/qr_scan.png"),
+          width: 24.0,
+          height: 24.0,
+          color: theme.BreezColors.white[500]),
+      onTap: () async {
+          try {
+            String barcode = await BarcodeScanner.scan();
+            // decode barcode
+          } on PlatformException catch (e) {
+            if (e.code == BarcodeScanner.CameraAccessDenied) {
+              // get a dialog with 'Please grant Breez camera permission to scan QR codes.';
+            }
+          }
       },
     ),
   );
