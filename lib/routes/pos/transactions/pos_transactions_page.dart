@@ -105,7 +105,7 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
     return Padding(padding: EdgeInsets.only(right: 16.0), child:
     IconButton(icon: ImageIcon(AssetImage("src/icon/calendar.png"), color: Colors.white, size: 24.0),
         onPressed: () =>
-            showDialog(barrierDismissible: false,
+            showDialog(
                 context: context,
                 builder: (_) => CalendarDialog(context, firstDate)).then(((result) =>
                 widget._accountBloc.paymentFilterSink.add(PaymentFilterModel(

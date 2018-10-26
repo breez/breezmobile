@@ -69,7 +69,6 @@ class PaymentsFilter extends StatelessWidget {
             size: 24.0,
           ),
           onPressed: () => showDialog(
-            barrierDismissible: false,
             context: context,
             builder: (_) => CalendarDialog(context, _firstDate),
           ).then((result) {
