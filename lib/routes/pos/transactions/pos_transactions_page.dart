@@ -77,7 +77,7 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
                     }
 
                     // account and payments are ready, build their widgets
-                    return _buildScaffold(_buildTransactions(paymentsModel),_calendarButton(paymentsModel.firstDate));
+                    return _buildScaffold(_buildTransactions(paymentsModel),_calendarButton(paymentsModel));
                   });
             });
   }
@@ -101,16 +101,15 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
     );
   }
 
-  Widget _calendarButton(DateTime firstDate) {
+  Widget _calendarButton(PaymentsModel paymentsModel) {
     return Padding(padding: EdgeInsets.only(right: 16.0), child:
     IconButton(icon: ImageIcon(AssetImage("src/icon/calendar.png"), color: Colors.white, size: 24.0),
         onPressed: () =>
             showDialog(
                 context: context,
-                builder: (_) => CalendarDialog(context, firstDate)).then(((result) =>
-                widget._accountBloc.paymentFilterSink.add(PaymentFilterModel(
-                    [PaymentType.RECEIVED, PaymentType.DEPOSIT, PaymentType.SENT, PaymentType.WITHDRAWAL
-                    ], result[0], result[1]))))));
+                builder: (_) => CalendarDialog(context, paymentsModel.firstDate)).then(((result) =>
+                widget._accountBloc.paymentFilterSink.add(
+                    paymentsModel.filter.copyWith(startDate: result[0], endDate: result[1]))))));
   }
 
   Widget _buildTransactions(PaymentsModel paymentsModel) {
