@@ -17,31 +17,54 @@ class PaymentDetailsDialog extends StatelessWidget {
 
   Widget showPaymentDetailsDialog() {
     return new SimpleDialog(
-      contentPadding: EdgeInsets.all(24.0),
+      contentPadding: EdgeInsets.fromLTRB(16.0,32.0,16.0,16.0),
       children: <Widget>[
         //Text((paymentInfo.type == PaymentType.SENT || paymentInfo.type == PaymentType.WITHDRAWAL ? "Recipient: " : "Sender: "),style: theme.paymentRequestTitleStyle,textAlign: TextAlign.left,),
-        Center(child:PaymentItemAvatar(paymentInfo,radius: 32.0),),
+        Center(
+          child: PaymentItemAvatar(paymentInfo, radius: 32.0),
+        ),
+        Padding(padding: EdgeInsets.only(top: 8.0),),
         Text(
           paymentInfo.title,
-          style: theme.paymentRequestTitleStyle,
+          style: theme.paymentRequestAmountStyle,
           textAlign: TextAlign.center,
         ),
-        Text(
-          "Amount: " + (paymentInfo.type == PaymentType.SENT || paymentInfo.type == PaymentType.WITHDRAWAL ? "-" : "+") + paymentInfo.currency.format(paymentInfo.amount),
-          style: theme.invoiceMemoStyle,
-          textAlign: TextAlign.left,
-        ),
-        Text(
-          "Date: ${DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)}",
-          style: theme.invoiceMemoStyle,
-          textAlign: TextAlign.left,
-        ),
-        Text(
-          "Hash: ${paymentInfo.hashCode}",
-          style: theme.invoiceMemoStyle,
-          textAlign: TextAlign.left,
-        ),
-        new Row(
+        Padding(padding: EdgeInsets.only(top: 16.0),),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+          Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[Text(
+            "Amount:",
+            style: theme.paymentDetailsTitleStyle,
+            textAlign: TextAlign.left,
+          ),
+          Text(
+            "Date:",
+            style: theme.paymentDetailsTitleStyle,
+            textAlign: TextAlign.left,
+          ),
+          Text(
+            "Hash:",
+            style: theme.paymentDetailsTitleStyle,
+            textAlign: TextAlign.left,
+          ),],),
+          Column(crossAxisAlignment: CrossAxisAlignment.end,children: <Widget>[Text(
+            (paymentInfo.type == PaymentType.SENT || paymentInfo.type == PaymentType.WITHDRAWAL ? "-" : "+") +
+                paymentInfo.currency.format(paymentInfo.amount),
+            style: theme.paymentDetailsSubtitleStyle,
+            textAlign: TextAlign.left,
+          ),
+          Text(
+            DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000).toString(),
+            style: theme.paymentDetailsSubtitleStyle,
+            textAlign: TextAlign.left,
+          ),
+          Text(
+            paymentInfo.hashCode.toString(),
+            style: theme.paymentDetailsSubtitleStyle,
+            textAlign: TextAlign.left,
+          ),],)
+        ]),
+        Padding(padding: EdgeInsets.only(top: 16.0),),
+        Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
