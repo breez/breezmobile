@@ -1,6 +1,7 @@
 package com.breez.client.plugins.breez.breezlib;
 import androidx.work.*;
 import bindings.Bindings;
+import bindings.BreezNotifier;
 
 import android.content.*;
 import android.util.Log;
@@ -11,7 +12,7 @@ public class ChainSync extends Worker {
 
     private static final String TAG = "BREEZSYNC";
 
-    private static volatile boolean sRunning;
+    private static boolean sRunning;
 
     public ChainSync(Context context, WorkerParameters params) {
         super(context, params);
@@ -19,6 +20,7 @@ public class ChainSync extends Worker {
 
     @Override
     public Worker.Result doWork() {
+
         Log.i(TAG, "ChainSync job started");
         Result result = Result.SUCCESS;
         setRunning(true);
@@ -57,15 +59,11 @@ public class ChainSync extends Worker {
     public void onStopped(boolean cancelled) {
         super.onStopped(cancelled);
         Log.i(TAG, "ChainSync job onStopped called cancelled=: " + cancelled);
-        try {
-            Bindings.stop();
-        }
-        catch(Exception e) {
-            Log.e(TAG, "ChainSync job Bindings.stop has thrown exception: ",  e);
-        }
+        Bindings.stop();
     }
 
     public static synchronized void waitShutdown(){
+        Log.i(TAG, "ChainSync job wait for shut down");
         if (!sRunning) {
             return;
         }
@@ -77,6 +75,7 @@ public class ChainSync extends Worker {
     }
 
     private static synchronized void setRunning(boolean running) {
+        Log.i(TAG, "ChainSync job setRunning = " + running);
         sRunning = running;
         if (!running) {
             ChainSync.class.notifyAll();
