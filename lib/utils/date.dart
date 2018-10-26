@@ -10,7 +10,7 @@ class DateUtils {
   static String formatYearMonthDay(DateTime d) => _yearMonthDayFormat.format(d);
   static String formatYearMonthDayHourMinute(DateTime d) => _yearMonthDayHourMinuteFormat.format(d);
   static String formatFilterDateRange(DateTime startDate, DateTime endDate) {
-    var formatter = (startDate.year != endDate.year) ? _monthDateFormat : _yearMonthDayFormat;
+    var formatter = (startDate.year == endDate.year) ? _monthDateFormat : _yearMonthDayFormat;
     return formatter.format(startDate) + "-" + formatter.format(endDate);
   }
 }

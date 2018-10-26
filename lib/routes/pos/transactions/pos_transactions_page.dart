@@ -7,6 +7,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/pos/transactions/pos_payments_list.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/calendar_dialog.dart';
+import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/theme_data.dart' as theme;
 
@@ -36,7 +37,6 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
   final ScrollController _scrollController = new ScrollController();
 
   StreamSubscription<String> _accountActionsSubscription;
-  DateTime _firstDate;
 
   @override
   void initState() {
@@ -55,73 +55,102 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        key: _scaffoldKey,
-        appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
-          leading: backBtn.BackButton(),
-          title: new Text(
-            _title,
-            style: theme.appBarTextStyle,
-          ),
-          actions: <Widget>[
-            new Padding(
-              padding: EdgeInsets.only(left: 12.0, right: 0.0),
-              child: IconButton(icon: ImageIcon(
-                AssetImage("src/icon/calendar.png"),
-                color: Colors.white,
-                size: 24.0,
-              ),
-                onPressed: () =>
-                    showDialog(barrierDismissible: false,
-                      context: context,
-                      builder: (_) => CalendarDialog(context, _firstDate),),),
-            ),
-          ],
-          elevation: 0.0,
-        ),
-        body: StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel>(
             stream: widget._accountBloc.accountStream,
             builder: (context, snapshot) {
               AccountModel account = snapshot.data;
               return StreamBuilder<PaymentsModel>(
                   stream: widget._accountBloc.paymentsStream,
                   builder: (context, snapshot) {
-                    List<PaymentInfo> payments = new List<PaymentInfo>();
+                    PaymentsModel paymentsModel;
                     if (snapshot.hasData) {
-                      payments = snapshot.data.paymentsList ?? new List<PaymentInfo>();
-                      _firstDate = snapshot.data.firstDate ?? DateTime(2018);
+                      paymentsModel = snapshot.data;
                     }
 
-                    if (account == null || payments == null) {
+                    if (account == null || paymentsModel == null) {
                       // build loading page, waiting for account to initialize || this is temporary
-                      return Center(child: Loader());
+                      return _buildScaffold(Center(child: Loader()));
                     }
 
-                    if (account.balance == 0 && payments.length == 0) {
-                      // build empty account page || this is temporary
-                      return Center(child: Text("Successful transactions are displayed here."),);
+                    if (account.balance == 0 && paymentsModel.paymentsList.length == 0) {
+                      return _buildScaffold(Center(child: Text("Successful transactions are displayed here.")));
                     }
 
                     // account and payments are ready, build their widgets
-                    return _buildTransactions(payments);
+                    return _buildScaffold(_buildTransactions(paymentsModel),_calendarButton(paymentsModel));
                   });
-            }));
+            });
   }
 
-  Widget _buildTransactions(List<PaymentInfo> payments) {
+  Widget _buildScaffold(Widget body, [Widget actions]) {
+    return new Scaffold(
+      key: _scaffoldKey,
+      appBar: new AppBar(
+        iconTheme: theme.appBarIconTheme,
+        textTheme: theme.appBarTextTheme,
+        backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
+        leading: backBtn.BackButton(),
+        title: new Text(
+          _title,
+          style: theme.appBarTextStyle,
+        ),
+        actions: <Widget>[actions == null ? Container() : actions],
+        elevation: 0.0,
+      ),
+      body: body,
+    );
+  }
+
+  Widget _calendarButton(PaymentsModel paymentsModel) {
+    return Padding(padding: EdgeInsets.only(right: 16.0), child:
+    IconButton(icon: ImageIcon(AssetImage("src/icon/calendar.png"), color: Colors.white, size: 24.0),
+        onPressed: () =>
+            showDialog(
+                context: context,
+                builder: (_) => CalendarDialog(context, paymentsModel.firstDate)).then(((result) =>
+                widget._accountBloc.paymentFilterSink.add(
+                    paymentsModel.filter.copyWith(startDate: result[0], endDate: result[1]))))));
+  }
+
+  Widget _buildTransactions(PaymentsModel paymentsModel) {
     return Stack(
       fit: StackFit.expand,
       children: [
+        ((paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null) &&
+            paymentsModel.paymentsList.length == 0) ? Column(mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[_buildDateFilterChip(paymentsModel.filter), Center(child: Text("There are no transactions in this date range"),heightFactor: 20.0,),]) :
         CustomScrollView(
           controller: _scrollController,
           slivers: <Widget>[
-            PosPaymentsList(payments, PAYMENT_LIST_ITEM_HEIGHT),
+            (paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
+                ? SliverAppBar(
+              pinned: true,
+              automaticallyImplyLeading: false,
+              backgroundColor: Theme.of(context).canvasColor,
+              flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
+            ) : SliverPadding(padding: EdgeInsets.zero)
+            ,
+            PosPaymentsList(paymentsModel.paymentsList, PAYMENT_LIST_ITEM_HEIGHT),
           ],
         ),
       ],
     );
   }
+
+  _buildDateFilterChip(PaymentFilterModel filter) {
+    return (filter.startDate != null && filter.endDate != null) ?
+    _filterChip(filter) : Container();
+  }
+
+  Widget _filterChip(PaymentFilterModel filter) {
+    return Row(mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[Padding(padding: EdgeInsets.only(left: 16.0),
+        child: Chip(label: new Text(DateUtils.formatFilterDateRange(filter.startDate, filter.endDate)),
+          onDeleted: () =>
+              widget._accountBloc.paymentFilterSink.add(PaymentFilterModel(
+                  filter.paymentType, null,
+                  null)),),)
+      ],);
+  }
+
 }
