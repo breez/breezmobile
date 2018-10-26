@@ -58,7 +58,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
         }
 
         PeriodicWorkRequest periodic =
-                new PeriodicWorkRequest.Builder(ChainSync.class, 15, TimeUnit.MINUTES)
+                new PeriodicWorkRequest.Builder(ChainSync.class, 1, TimeUnit.HOURS)
                         .setConstraints(
                                 new Constraints.Builder()
                                         .setRequiredNetworkType(NetworkType.CONNECTED)
