@@ -5,15 +5,14 @@ import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/widgets/static_loader.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share/share.dart';
 
 class CreateInvoicePage extends StatelessWidget {
   CreateInvoicePage();
@@ -21,17 +20,16 @@ class CreateInvoicePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new BlocConnector<AppBlocs>((context, blocs) => _CreateInvoicePage(
-        blocs.accountBloc, blocs.userProfileBloc, blocs.invoicesBloc));
+        blocs.accountBloc, blocs.invoicesBloc));
   }
 }
 
 class _CreateInvoicePage extends StatefulWidget {
   final AccountBloc _accountBloc;
-  final UserProfileBloc _userProfileBloc;
   final InvoiceBloc _invoiceBloc;
 
   const _CreateInvoicePage(
-      this._accountBloc, this._userProfileBloc, this._invoiceBloc);
+      this._accountBloc, this._invoiceBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -182,13 +180,19 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                               ),
                             ),
                           ),
+                    new GestureDetector(
+                      onTap: () {
+                        Share.share(_bolt11);
+                      },
+                      child:
                     new Container(
-                      padding: EdgeInsets.only(top: 16.0),
+                      padding: EdgeInsets.only(top: 4.0, bottom: 13.0),
                       child: new Text(
                         _bolt11,
                         style: theme.smallTextStyle,
                       ),
-                    )
+                    ),),
+                    _buildExpiryMessage()
                         ])
                 ],
               ),
