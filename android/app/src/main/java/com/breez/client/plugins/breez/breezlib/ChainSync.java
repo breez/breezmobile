@@ -20,26 +20,21 @@ public class ChainSync extends Worker {
 
     @Override
     public Worker.Result doWork() {
-
         Log.i(TAG, "ChainSync job started");
+
+        //if breez app is running just ensure connected so sync will be done
+        if (BreezApplication.isRunning) {
+            return ensureConnected();
+        }
+
         Result result = Result.SUCCESS;
         setRunning(true);
         try {
-            //if breez app is running ignore this job
-            if (BreezApplication.isRunning) {
-                Log.i(TAG, "ChainSync job ignored because app is running");
-                if (Bindings.daemonReady() && !Bindings.isConnectedToRoutingNode()) {
-                    Log.i(TAG, "ChainSync job trying to connect and wait...");
-                    Bindings.connectAccount();
-                }
-                return Result.SUCCESS;
-            }
-
+            //if this job was stopped/cancelled, ignore.
             if (isStopped()) {
                 Log.i(TAG, "ChainSync job ignored because job is cancelled");
                 return Result.SUCCESS;
             }
-
 
             String workingDir = getInputData().getString("workingDir");
             Bindings.runSyncJob(workingDir);
@@ -55,11 +50,27 @@ public class ChainSync extends Worker {
         return result;
     }
 
+    private Result ensureConnected(){
+        Log.i(TAG, "ChainSync job ignored because app is running");
+        if (Bindings.daemonReady() && !Bindings.isConnectedToRoutingNode()) {
+            Log.i(TAG, "ChainSync job trying to connect and wait...");
+            try {
+                Bindings.connectAccount();
+            } catch (Exception e) {
+                //just log this error so the WorkManager won't try again
+                Log.e(TAG, "error connecting to account from job", e);
+            }
+        }
+        return Result.RETRY;
+    }
+
     @Override
     public void onStopped(boolean cancelled) {
         super.onStopped(cancelled);
         Log.i(TAG, "ChainSync job onStopped called cancelled=: " + cancelled);
-        Bindings.stop();
+        if (isRunning()) {
+            Bindings.stop();
+        }
     }
 
     public static synchronized void waitShutdown(){
@@ -81,4 +92,6 @@ public class ChainSync extends Worker {
             ChainSync.class.notifyAll();
         }
     }
+
+    private static synchronized  boolean isRunning(){ return sRunning; }
 }
