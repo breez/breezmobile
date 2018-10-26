@@ -211,7 +211,7 @@ class AccountBloc {
       if (MockPaymentInfo.isMockData) {
         List<PaymentInfo> _paymentsList = _filterPayments(MockPaymentInfo.createMockData());
         if(_paymentsList.length > 0){
-          _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.elementAt(_paymentsList.length-1).creationTimestamp.toInt() * 1000);
+          _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.last.creationTimestamp.toInt() * 1000);
         }
         _paymentsController.add(PaymentsModel(_paymentsList, _paymentFilterController.value, _firstDate ?? DateTime(DateTime.now().year)));
         return;
@@ -220,7 +220,7 @@ class AccountBloc {
       breezLib.getPayments().then( (payments) {
         List<PaymentInfo> _paymentsList =  payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList();
         if(_paymentsList.length > 0){
-          _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.elementAt(_paymentsList.length-1).creationTimestamp.toInt() * 1000);
+          _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.last.creationTimestamp.toInt() * 1000);
         }
         _paymentsController.add(PaymentsModel(_filterPayments(_paymentsList), _paymentFilterController.value, _firstDate ?? DateTime(DateTime.now().year)));
       })

@@ -96,7 +96,7 @@ class _AccountPageState extends State<_AccountPage> {
           return StreamBuilder<PaymentsModel>(
               stream: widget._accountBloc.paymentsStream,
               builder: (context, snapshot) {                
-                PaymentsModel paymentsModel = new PaymentsModel.initial();
+                PaymentsModel paymentsModel;
                 if (snapshot.hasData) {
                   paymentsModel = snapshot.data;
                 }

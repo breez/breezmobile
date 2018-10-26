@@ -62,7 +62,7 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
               return StreamBuilder<PaymentsModel>(
                   stream: widget._accountBloc.paymentsStream,
                   builder: (context, snapshot) {
-                    PaymentsModel paymentsModel = new PaymentsModel.initial();
+                    PaymentsModel paymentsModel;
                     if (snapshot.hasData) {
                       paymentsModel = snapshot.data;
                     }
@@ -73,7 +73,7 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
                     }
 
                     if (account.balance == 0 && paymentsModel.paymentsList.length == 0) {
-                      return _buildScaffold(Center(child: Text("Successful transactions are displayed here."),), _calendarButton(paymentsModel.firstDate));
+                      return _buildScaffold(Center(child: Text("Successful transactions are displayed here.")));
                     }
 
                     // account and payments are ready, build their widgets
@@ -118,8 +118,8 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
       fit: StackFit.expand,
       children: [
         ((paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null) &&
-            paymentsModel.paymentsList.length == 0) ? Center(
-          child: Text("There are no transactions in this date range"),) :
+            paymentsModel.paymentsList.length == 0) ? Column(mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[_buildDateFilterChip(paymentsModel.filter), Center(child: Text("There are no transactions in this date range"),heightFactor: 20.0,),]) :
         CustomScrollView(
           controller: _scrollController,
           slivers: <Widget>[
