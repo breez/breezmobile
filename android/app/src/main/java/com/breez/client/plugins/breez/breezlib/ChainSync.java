@@ -61,7 +61,7 @@ public class ChainSync extends Worker {
                 Log.e(TAG, "error connecting to account from job", e);
             }
         }
-        return Result.RETRY;
+        return Result.SUCCESS;
     }
 
     @Override
