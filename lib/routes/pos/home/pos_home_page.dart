@@ -53,7 +53,7 @@ class PosHomeState extends State<PosHome> {
           elevation: 0.0,
         ),
         drawer: new NavigationDrawer(false, widget._screens, widget._majorActions, null,
-            null, widget._minorActions, _onNavigationItemSelected),
+            null, null, widget._minorActions, _onNavigationItemSelected),
         body: new Builder(builder: (BuildContext context) {
           return POSInvoice();
         }));

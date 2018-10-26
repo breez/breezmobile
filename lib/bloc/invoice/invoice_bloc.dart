@@ -9,7 +9,7 @@ import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
-
+import 'package:breez/services/lightning_links.dart';
 
 class InvoiceBloc {
 
@@ -24,6 +24,9 @@ class InvoiceBloc {
 
   final _sentInvoicesController = new StreamController<String>.broadcast();
   Stream<String> get sentInvoicesStream => _sentInvoicesController.stream;
+
+  final _decodeInvoiceController = new StreamController<String>();
+  Sink<String> get decodeInvoiceSink => _decodeInvoiceController.sink;
 
   final _receivedInvoicesController = new BehaviorSubject<PaymentRequestModel>();
   Stream<PaymentRequestModel> get receivedInvoicesStream => _receivedInvoicesController.stream;
@@ -46,6 +49,12 @@ class InvoiceBloc {
     _listenIncomingInvoices(notificationsService, breezLib, nfc);
     _listenIncomingBlankInvoices(breezLib, nfc);
     _listenPaidInvoices(breezLib);
+    _listenDecodeInvoiceRequests(breezLib);
+
+    LightningLinksService lightningLinks = ServiceInjector().lightningLinks;
+    lightningLinks.linksNotifications.listen((link) {
+      decodeInvoiceSink.add(link);
+    });
   }
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
@@ -68,6 +77,16 @@ class InvoiceBloc {
         _readyInvoicesController.add(paymentRequest);
       })
           .catchError(_readyInvoicesController.addError);
+    });
+  }
+
+  void _listenDecodeInvoiceRequests(BreezBridge breezLib) {
+    _decodeInvoiceController.stream.listen((bolt11){
+      breezLib.decodePaymentRequest(bolt11)
+          .then( (paymentRequest) {
+        _receivedInvoicesController.add(PaymentRequestModel(paymentRequest, bolt11));
+      })
+          .catchError(_receivedInvoicesController.addError);
     });
   }
 
@@ -132,5 +151,6 @@ class InvoiceBloc {
     _sentInvoicesController.close();
     _receivedInvoicesController.close();
     _paidInvoicesController.close();
+    _decodeInvoiceController.close();
   }
 }

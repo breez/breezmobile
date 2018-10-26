@@ -8,14 +8,28 @@ import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/routes/shared/no_connection_dialog.dart';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/services.dart';
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
-  final Stream<PaymentRequestModel> receivedInvoicesStream;
+  final InvoiceBloc invoiceBloc;
 
-  Home(this.accountBloc, this.receivedInvoicesStream);
+  Home(this.accountBloc, this.invoiceBloc) {
+    _minorActionsInvoice =
+    new List<DrawerItemConfig>.unmodifiable([
+      new DrawerItemConfig(
+          "/scan_invoice", "Scan Invoice", "src/icon/qr_scan.png", onItemSelected: (String name) async {
+          String decodedQr = await BarcodeScanner.scan();
+          invoiceBloc.decodeInvoiceSink.add(decodedQr);
+      }),
+      new DrawerItemConfig(
+          "/create_invoice", "Create Invoice", "src/icon/paste.png"),
+    ]);
+  }
 
   final List<DrawerItemConfig> _screens =
       new List<DrawerItemConfig>.unmodifiable(
@@ -34,8 +48,6 @@ class Home extends StatefulWidget {
         "/connect_to_pay", "Connect to Pay", "src/icon/connect_to_pay.png"),
     new DrawerItemConfig(
         "/pay_nearby", "Pay Someone Nearby", "src/icon/pay.png"),
-    new DrawerItemConfig(
-        "/create_invoice", "Create an Invoice", "src/icon/paste.png"),
   ]);
 
   final List<DrawerItemConfig> _minorActionsCard =
@@ -47,6 +59,8 @@ class Home extends StatefulWidget {
     new DrawerItemConfig(
         "/lost_card", "Lost or Stolen Card", "src/icon/lost_card.png"),
   ]);
+
+  List<DrawerItemConfig> _minorActionsInvoice;
 
   final List<DrawerItemConfig> _minorActionsDev =
       new List<DrawerItemConfig>.unmodifiable([
@@ -72,7 +86,7 @@ class HomeState extends State<Home> {
     // add my stuff here
     InvoiceNotificationsHandler _notificationsHandler =
         new InvoiceNotificationsHandler(
-            context, widget.accountBloc, widget.receivedInvoicesStream);
+            context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
     listenNoConnection(context, widget.accountBloc);
   }
 
@@ -103,6 +117,7 @@ class HomeState extends State<Home> {
             widget._majorActionsFunds,
             widget._majorActionsPay,
             widget._minorActionsCard,
+            widget._minorActionsInvoice,
             widget._minorActionsDev,
             _onNavigationItemSelected),
         body: widget._screenBuilders[_activeScreen]);

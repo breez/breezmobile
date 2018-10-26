@@ -22,7 +22,7 @@ class PaymentRequestDialog extends StatelessWidget {
 
   Widget showPaymentRequestDialog() {
     return new SimpleDialog(
-      title: invoice.payeeImageURL == null
+      title: invoice.payeeImageURL.isEmpty
           ? null
           : Stack(alignment: Alignment(0.0, 0.0), children: <Widget>[
               CircularProgressIndicator(),
@@ -44,7 +44,7 @@ class PaymentRequestDialog extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         new Text(
-          invoice.payeeName == null ? invoice.description : "is requesting you to pay:",
+          invoice.payeeName.isEmpty ? invoice.description : "is requesting you to pay:",
           style: theme.paymentRequestSubtitleStyle,
           textAlign: TextAlign.center,
         ),

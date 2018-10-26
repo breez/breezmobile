@@ -58,7 +58,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
     _invoiceReadyNotificationsSubscription =
         widget._invoiceBloc.readyInvoicesStream.listen((invoice) {
       setState(() {
-        //_bolt11 = invoice;
+        _bolt11 = invoice;
       });
     });
 
@@ -182,13 +182,13 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                               ),
                             ),
                           ),
-//                    new Container(
-//                      padding: EdgeInsets.only(top: 16.0),
-//                      child: new Text(
-//                        address,
-//                        style: theme.smallTextStyle,
-//                      ),
-//                    )
+                    new Container(
+                      padding: EdgeInsets.only(top: 16.0),
+                      child: new Text(
+                        _bolt11,
+                        style: theme.smallTextStyle,
+                      ),
+                    )
                         ])
                 ],
               ),

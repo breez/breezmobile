@@ -91,12 +91,12 @@ class BreezAppState extends State<BreezApp> {
         cardColor: Color.fromRGBO(5, 93, 235, 1.0),
       ),
       initialRoute: widget._userModel.registered ? null : '/splash',
-      home: new Home(widget._blocs.accountBloc,widget._blocs.invoicesBloc.receivedInvoicesStream),
+      home: new Home(widget._blocs.accountBloc, widget._blocs.invoicesBloc),
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case '/home':
             return new FadeInRoute(
-              builder: (_) => new Home(widget._blocs.accountBloc,widget._blocs.invoicesBloc.receivedInvoicesStream),
+              builder: (_) => new Home(widget._blocs.accountBloc, widget._blocs.invoicesBloc),
               settings: settings,
             );
           case '/intro':
