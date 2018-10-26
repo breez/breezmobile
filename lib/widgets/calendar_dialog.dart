@@ -121,9 +121,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
         setState(() {
           if (isStartBtn) {
             _startDate = selectedDate;
-            _endDate = DateTime.now();
           } else {
-            _startDate = widget.firstDate;
             _endDate = selectedDate;
           }
           _startDateController.text = DateUtils.formatYearMonthDay(_startDate);
