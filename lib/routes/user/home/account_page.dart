@@ -48,14 +48,11 @@ class _AccountPageState extends State<_AccountPage> {
   final List<String> currencyList = Currency.currencies.map((c) => c.symbol).toList();
   StreamSubscription<String> _accountActionsSubscription;
   StreamSubscription<AccountModel> _statusSubscription;
-  String _filter;  
   String _paymentRequestInProgress;
 
   @override
   void initState() {
     super.initState();
-    _filter = 'All Activities';
-
     _statusSubscription = widget._accountBloc.accountStream.listen((acc) {
       if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {        
         Scaffold.of(context).showSnackBar(new SnackBar(
@@ -79,12 +76,6 @@ class _AccountPageState extends State<_AccountPage> {
     _accountActionsSubscription.cancel();
     _statusSubscription.cancel();
     super.dispose();
-  }
-
-  void setFilter(String filter) {
-    setState(() {
-      _filter = filter;
-    });
   }
 
   @override
@@ -142,16 +133,17 @@ class _AccountPageState extends State<_AccountPage> {
             SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(widget._accountBloc, widget._userProfileBloc), pinned: true),
 
             //payment filter
-            PaymentFilterSliver(_scrollController, _onFilterChanged, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _filter, paymentsModel.firstDate),
+            PaymentFilterSliver(_scrollController, FILTER_MIN_SIZE, FILTER_MAX_SIZE, widget._accountBloc, paymentsModel),
 
             (paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
                 ? SliverAppBar(
               pinned: true,
               automaticallyImplyLeading: false,
               backgroundColor: Theme.of(context).canvasColor,
+              expandedHeight: 32.0,
               flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
-            ) : SliverPadding(padding: EdgeInsets.zero)
-            ,
+            ) : SliverPadding(padding: EdgeInsets.zero),
+
             // //List
             PaymentsList(paymentsModel.paymentsList, PAYMENT_LIST_ITEM_HEIGHT),
 
@@ -189,21 +181,6 @@ class _AccountPageState extends State<_AccountPage> {
         onDeleted: () =>
             widget._accountBloc.paymentFilterSink.add(PaymentFilterModel(filter.paymentType, null,
                 null)),),)],);
-  }
-
-  _onFilterChanged(String newFilter, [DateTime startDate, DateTime endDate]) {
-    setState(() {
-      _filter = newFilter;
-    });
-
-    var _filterType = [PaymentType.RECEIVED, PaymentType.DEPOSIT, PaymentType.SENT, PaymentType.WITHDRAWAL];
-    if (_filter == "Sent") {
-      _filterType = [PaymentType.SENT, PaymentType.WITHDRAWAL];
-    } else if (_filter == "Received") {
-      _filterType = [PaymentType.RECEIVED, PaymentType.DEPOSIT];
-    }
-
-    widget._accountBloc.paymentFilterSink.add(PaymentFilterModel(_filterType, startDate, endDate));
   }
 }
 

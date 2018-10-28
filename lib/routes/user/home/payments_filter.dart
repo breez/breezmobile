@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:breez/widgets/calendar_dialog.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class PaymentFilterSliver extends StatefulWidget {
 
   final ScrollController _controller;
-  final Function(String filter, [DateTime startDate, DateTime endDate]) _onFilterChanged;
   final double _minSize;
   final double _maxSize;
-  final String _filter;
-  final DateTime _firstDate;
+  final AccountBloc _accountBloc;
+  final PaymentsModel _paymentsModel;
 
-  PaymentFilterSliver(this._controller, this._onFilterChanged, this._minSize, this._maxSize, this._filter, this._firstDate);
+  PaymentFilterSliver(this._controller, this._minSize, this._maxSize, this._accountBloc, this._paymentsModel);
 
   @override
   State<StatefulWidget> createState() {
@@ -21,7 +22,6 @@ class PaymentFilterSliver extends StatefulWidget {
 }
 
 class PaymentFilterSliverState extends State<PaymentFilterSliver> {
-
   @override
   void initState() {
     super.initState();
@@ -35,26 +35,40 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
     double scrollOffset = widget._controller.position.pixels;
     return SliverPersistentHeader(
         pinned: true,
-        delegate: new FixedSliverDelegate(widget._filter != "All Activities" ? widget._maxSize : (scrollOffset).clamp(widget._minSize, widget._maxSize),
+        delegate: new FixedSliverDelegate(widget._paymentsModel.filter.paymentType != [PaymentType.WITHDRAWAL,PaymentType.RECEIVED,PaymentType.DEPOSIT,PaymentType.WITHDRAWAL] ? widget._maxSize : (scrollOffset).clamp(widget._minSize, widget._maxSize),
             builder: (context, shrinkedHeight, overlapContent) {
           return Container(
               decoration: BoxDecoration(color: theme.BreezColors.blue[500]),
               height: widget._maxSize,
               child: AnimatedOpacity(
                   duration: Duration(milliseconds: 100),
-                  opacity: widget._filter != "All Activities" ? 1.0 : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
-                  child: PaymentsFilter(widget._filter, widget._onFilterChanged, widget._firstDate)));
+                  opacity: widget._paymentsModel.filter.paymentType != [PaymentType.WITHDRAWAL,PaymentType.RECEIVED,PaymentType.DEPOSIT,PaymentType.WITHDRAWAL] ? 1.0 : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
+                  child: PaymentsFilter(widget._accountBloc, widget._paymentsModel)));
         }),
       );
   }
 }
 
-class PaymentsFilter extends StatelessWidget {
-  final String _filter;
-  final Function(String filter, [DateTime startDate, DateTime endDate]) _onFilterChanged;
-  final DateTime _firstDate;
+class PaymentsFilter extends StatefulWidget {
+  final AccountBloc _accountBloc;
+  final PaymentsModel _paymentsModel;
 
-  PaymentsFilter(this._filter, this._onFilterChanged, this._firstDate);
+  PaymentsFilter(this._accountBloc, this._paymentsModel);
+
+  @override
+  State<StatefulWidget> createState() {
+    return PaymentsFilterState();
+  }
+}
+
+class PaymentsFilterState extends State<PaymentsFilter> {
+  String _filter;
+
+  @override
+  void initState() {
+    super.initState();
+    _filter = "All Activities";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,12 +82,14 @@ class PaymentsFilter extends StatelessWidget {
             color: Colors.white,
             size: 24.0,
           ),
-          onPressed: () => showDialog(
-            context: context,
-            builder: (_) => CalendarDialog(context, _firstDate),
-          ).then((result) {
-            _onFilterChanged(_filter, result[0], result[1]);
-          }),
+          onPressed: () =>
+              showDialog(
+                context: context,
+                builder: (_) => CalendarDialog(context, widget._paymentsModel.firstDate),
+              ).then((result) {
+                widget._accountBloc.paymentFilterSink.add(widget._paymentsModel.filter.copyWith(
+                    filter: _getFilterType(_filter), startDate: result[0], endDate: result[1]));
+              }),
         ),
       ),
     );
@@ -92,10 +108,24 @@ class PaymentsFilter extends StatelessWidget {
                   ),
                 );
               }).toList(),
-              onChanged: (value) => _onFilterChanged(value)),
+              onChanged: (value) {
+                setState(() {
+                  _filter = value;
+                });
+                widget._accountBloc.paymentFilterSink.add(widget._paymentsModel.filter.copyWith(filter: _getFilterType(_filter)));
+              }),
         ),
       ),
     );
     return Row(children: children);
+  }
+
+  _getFilterType(String _filter){
+    if (_filter == "Sent") {
+      return [PaymentType.SENT, PaymentType.WITHDRAWAL];
+    } else if (_filter == "Received") {
+      return [PaymentType.RECEIVED, PaymentType.DEPOSIT];
+    }
+    return [PaymentType.RECEIVED, PaymentType.DEPOSIT, PaymentType.SENT, PaymentType.WITHDRAWAL];
   }
 }
