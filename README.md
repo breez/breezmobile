@@ -31,12 +31,13 @@ Breez is a Lightning Network [mobile client](https://github.com/breez/breezmobil
 - [x] NFC card support: activate an NFC card to be used by POS
 - [x] A full lncli interface to query and execute ln commands
 - [x] Filter tx by type
-- [ ] Filter tx by date
+- [x] Filter tx by date
+- [ ] Pay invoice (link or QR) from other ln wallets
+- [ ] Create invoice (link or QR) to be paid by other ln wallets
 - [ ] SubmarineSwaps for adding on-chain funds
 - [ ] Removing funds 
-- [ ] Send payments to non-Breez users
-- [ ] End-to-end encryption of 'Connect to Pay' session
-- [ ] Receive payments from other ln wallets
+- [ ] Make Connect-to-Pay links work for users that didn't yet install Breez
+- [ ] End-to-end encryption of Connect-to-Pay session
 - [ ] Ability to Backup/Restore the ln node  
 - [ ] Mainnet support
 - [ ] Add mobile device security
