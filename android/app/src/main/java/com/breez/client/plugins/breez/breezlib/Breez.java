@@ -43,6 +43,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
     }
 
     private void start(MethodCall call, MethodChannel.Result result){
+
         //First cancel current pending/running sync so we don't conflict.
         WorkManager.getInstance().cancelUniqueWork("chainSync");
 
@@ -60,8 +61,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
         PeriodicWorkRequest periodic =
                 new PeriodicWorkRequest.Builder(ChainSync.class, 1, TimeUnit.HOURS)
                         .setConstraints(
-                                new Constraints.Builder()
-                                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                                new Constraints.Builder()                                       
                                         .setRequiresBatteryNotLow(true)
                                         .build())
                         .setInputData(
@@ -69,7 +69,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
                                         .putString("workingDir", workingDir)
                                         .build())
                         .build();
-        WorkManager.getInstance().enqueueUniquePeriodicWork("chainSync", ExistingPeriodicWorkPolicy.KEEP, periodic);
+        WorkManager.getInstance().enqueueUniquePeriodicWork("chainSync", ExistingPeriodicWorkPolicy.REPLACE, periodic);
         return;
     }
 
