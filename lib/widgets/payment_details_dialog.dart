@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/payment_item_avatar.dart';
+import 'package:breez/utils/date.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class PaymentDetailsDialog extends StatelessWidget {
@@ -29,9 +31,10 @@ class PaymentDetailsDialog extends StatelessWidget {
           style: theme.paymentRequestAmountStyle,
           textAlign: TextAlign.center,
         ),
-        Padding(padding: EdgeInsets.only(top: 16.0),),
+        Padding(padding: EdgeInsets.only(top: 8.0),),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[Text(
+          Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
+            Text(
             "Amount:",
             style: theme.paymentDetailsTitleStyle,
             textAlign: TextAlign.left,
@@ -46,14 +49,15 @@ class PaymentDetailsDialog extends StatelessWidget {
             style: theme.paymentDetailsTitleStyle,
             textAlign: TextAlign.left,
           ),],),
-          Column(crossAxisAlignment: CrossAxisAlignment.end,children: <Widget>[Text(
+          Column(crossAxisAlignment: CrossAxisAlignment.end,children: <Widget>[
+          Text(
             (paymentInfo.type == PaymentType.SENT || paymentInfo.type == PaymentType.WITHDRAWAL ? "-" : "+") +
                 paymentInfo.currency.format(paymentInfo.amount),
             style: theme.paymentDetailsSubtitleStyle,
             textAlign: TextAlign.left,
           ),
           Text(
-            DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000).toString(),
+            DateUtils.formatYearMonthDayHourMinuteSecond(DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)),
             style: theme.paymentDetailsSubtitleStyle,
             textAlign: TextAlign.left,
           ),
@@ -72,7 +76,7 @@ class PaymentDetailsDialog extends StatelessWidget {
               onPressed: (() {
                 Navigator.pop(context);
               }),
-              child: new Text("COPY HASH", style: theme.buttonStyle),
+              child: new Text("CLOSE", style: theme.buttonStyle),
             ),
           ],
         ),
