@@ -127,7 +127,7 @@ class AccountBloc {
           _fetchFundStatus(breezLib);         
         });
 
-        device.eventStream.where((e) => e == NotificationType.RESUME).skip(1).listen((e){
+        device.eventStream.where((e) => e == NotificationType.RESUME).listen((e){
           log.info("App Resumed - flutter resume called");        
           _reconnectSink.add(null);
           _fetchFundStatus(breezLib);
@@ -269,10 +269,7 @@ class AccountBloc {
     _refreshRoutingNodeConnection(BreezBridge breezLib){      
       breezLib.isConnectedToRoutingNode()
         .then((connected){
-          _accountController.add(_accountController.value.copyWith(connected: connected));
-          if (!connected) {            
-            _reconnectSink.add(null);
-          }                                 
+          _accountController.add(_accountController.value.copyWith(connected: connected));                                        
         })
         .catchError(_routingNodeConnectionController.addError);
     }
