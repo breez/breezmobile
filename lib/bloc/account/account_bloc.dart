@@ -297,10 +297,7 @@ class AccountBloc {
     _refreshRoutingNodeConnection(BreezBridge breezLib){      
       breezLib.isConnectedToRoutingNode()
         .then((connected){
-          _accountController.add(_accountController.value.copyWith(connected: connected));
-          if (!connected) {            
-            _reconnectSink.add(null);
-          }                                 
+          _accountController.add(_accountController.value.copyWith(connected: connected));                                        
         })
         .catchError(_routingNodeConnectionController.addError);
     }

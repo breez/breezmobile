@@ -1,4 +1,4 @@
-package com.breez.client.plugins.breez;
+package com.breez.client.plugins.breez.breezlib;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -11,8 +11,10 @@ import io.flutter.plugin.common.PluginRegistry;
 import bindings.*;
 import java.lang.reflect.*;
 import java.util.*;
+import androidx.work.*;
+import java.util.concurrent.*;
 
-public class BreezLib implements MethodChannel.MethodCallHandler, bindings.BreezNotifier, StreamHandler {
+public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNotifier, StreamHandler {
 
     public static final String BREEZ_CHANNEL_NAME = "com.breez.client/breez_lib";
     public static final String BREEZ_STREAM_NAME = "com.breez.client/breez_lib_notifications";
@@ -20,7 +22,7 @@ public class BreezLib implements MethodChannel.MethodCallHandler, bindings.Breez
     private EventChannel.EventSink m_eventsListener;
     private Map<String, Method> _bindingMethods = new HashMap<String, Method>();
 
-    public BreezLib(PluginRegistry.Registrar registrar) {
+    public Breez(PluginRegistry.Registrar registrar) {
         new MethodChannel(registrar.messenger(), BREEZ_CHANNEL_NAME).setMethodCallHandler(this);
         new EventChannel(registrar.messenger(), BREEZ_STREAM_NAME).setStreamHandler(this);
         Method[] methods = Bindings.class.getDeclaredMethods();
@@ -41,12 +43,33 @@ public class BreezLib implements MethodChannel.MethodCallHandler, bindings.Breez
     }
 
     private void start(MethodCall call, MethodChannel.Result result){
+
+        //First cancel current pending/running sync so we don't conflict.
+        WorkManager.getInstance().cancelUniqueWork("chainSync");
+
+        //Then wait for running job to shutdown gracefully
+        ChainSync.waitShutdown();
+
+        String workingDir = call.argument("workingDir").toString();
         try {
-            Bindings.start(call.argument("workingDir").toString(), this);
+            Bindings.start(workingDir, this);
             result.success(true);
         } catch (Exception e) {
             result.error("ResultError", "Failed to Start breez library", e.getMessage());
         }
+
+        PeriodicWorkRequest periodic =
+                new PeriodicWorkRequest.Builder(ChainSync.class, 1, TimeUnit.HOURS)
+                        .setConstraints(
+                                new Constraints.Builder()                                       
+                                        .setRequiresBatteryNotLow(true)
+                                        .build())
+                        .setInputData(
+                                new Data.Builder()
+                                        .putString("workingDir", workingDir)
+                                        .build())
+                        .build();
+        WorkManager.getInstance().enqueueUniquePeriodicWork("chainSync", ExistingPeriodicWorkPolicy.REPLACE, periodic);
         return;
     }
 
@@ -91,7 +114,7 @@ public class BreezLib implements MethodChannel.MethodCallHandler, bindings.Breez
                 }
                 Object arg = ((MethodCall)call[0]).argument("argument");
                 if (method.getParameterTypes().length > 1) {
-                    result.error("NotSupported", "BreezLib supports only methods with none or one arguments", "");
+                    result.error("NotSupported", "Breez supports only methods with none or one arguments", "");
                 }
                 else if (method.getParameterTypes().length == 1) {
                     result.success(method.invoke(null, arg)); //static method with one arg
