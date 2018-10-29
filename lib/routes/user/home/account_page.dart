@@ -143,9 +143,10 @@ class _AccountPageState extends State<_AccountPage> {
             (paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
                 ? SliverAppBar(
               pinned: true,
+              elevation: 0.0,
+              expandedHeight: 32.0,
               automaticallyImplyLeading: false,
               backgroundColor: Theme.of(context).canvasColor,
-              expandedHeight: 32.0,
               flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
             ) : SliverPadding(padding: EdgeInsets.zero),
 
