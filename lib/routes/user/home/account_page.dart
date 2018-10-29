@@ -93,8 +93,9 @@ class _AccountPageState extends State<_AccountPage> {
                   paymentsModel = snapshot.data;
                 }
 
-                if (account == null || paymentsModel == null) {
-                  return Center(child: Loader());
+                if (account == null || paymentsModel == null || !account.connected || paymentsModel.paymentsList.elementAt(0) == null) {
+                  // build loading page, waiting for account to initialize
+                  return _buildLoading(ListLoader());
                 }
 
                 if (!account.initial && paymentsModel.paymentsList.length == 0 && paymentsModel.filter.initial) {
@@ -106,7 +107,18 @@ class _AccountPageState extends State<_AccountPage> {
                 return _buildBalanceAndPayments(paymentsModel, account);
               });
         });
-  }  
+  }
+
+  Widget _buildLoading(Widget child) {
+    return Column(
+      children: <Widget>[
+        Expanded(
+            flex: 0,
+            child: Container(height: DASHBOARD_MAX_HEIGHT, child: WalletDashboard(null, DASHBOARD_MAX_HEIGHT, 0.0, widget._userProfileBloc.currencySink.add, widget._accountBloc.routingNodeConnectionStream))),
+        Expanded(flex: 1, child: child)
+      ],
+    );
+  }
 
   Widget _buildEmptyAccount(AccountModel account){
     return Stack(
