@@ -262,8 +262,12 @@ class _PosNumPadState extends State<_POSNumPad> {
                 style: theme.alertStyle));
       }
       else if (_totalAmount < _maxPaymentAmount.toInt() || _totalAmount < _maxPaymentAmount.toInt()) {
-        widget._invoiceBloc.newInvoicerequestSink.add(
-            new InvoiceRequestModel(_posProfile.invoiceString, null, _posProfile.logo, Int64(_totalAmount)));
+        widget._invoiceBloc.newStandardInvoiceRequestSink.add(
+            new InvoiceRequestModel(
+                null,
+                " | " + _posProfile.invoiceString + " | " + _posProfile.logo,  // TODO: Add a description field to POS invoices
+                null,
+                Int64(_totalAmount)));
       } else {
         promptError(
             context,
