@@ -141,7 +141,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                             child: new Container(
                               color: theme.whiteColor,
                               child: new QrImage(
-                                version: 11,
+                                version: 17,
                                 data: snapshot.data,
                                 size: 180.0,
                               ),
