@@ -1,6 +1,5 @@
 package com.breez.client.plugins.breez;
 
-import android.app.Activity;
 import android.content.Intent;
 
 import io.flutter.plugin.common.EventChannel;
@@ -16,7 +15,12 @@ public class LightningLinks implements EventChannel.StreamHandler {
 
     public LightningLinks(PluginRegistry.Registrar registrar) {
         new EventChannel(registrar.messenger(), STREAM_NAME).setStreamHandler(this);
-        checkLinkOnIntent(registrar.activity().getIntent());
+        registrar.addNewIntentListener(new PluginRegistry.NewIntentListener() {
+            @Override
+            public boolean onNewIntent(Intent intent) {
+                return checkLinkOnIntent(intent);
+            }
+        });
     }
 
     @Override
@@ -29,9 +33,14 @@ public class LightningLinks implements EventChannel.StreamHandler {
         m_eventsListener = null;
     }
 
-    public void checkLinkOnIntent(Intent intent){
-        if (intent != null && intent.getAction().equals(ACTION_VIEW) && intent.getData() != null) {
+    public boolean checkLinkOnIntent(Intent intent) {
+        if (intent != null
+                && intent.getAction().equals(ACTION_VIEW)
+                && intent.getData() != null
+                && intent.getScheme().contains("lightning")) {
             m_eventsListener.success(intent.getDataString().substring(10));
+            return true;
         }
+        return false;
     }
 }

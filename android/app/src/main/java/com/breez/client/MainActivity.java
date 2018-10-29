@@ -30,8 +30,6 @@ public class MainActivity extends FlutterActivity {
     private static final String MAIN_CHANNEL = "com.breez.client/main";
     public boolean isPos = false;
 
-    private LightningLinks m_lightningLinks;
-
     MethodChannel mainMethodChannel;
     NfcHandler m_nfc;
     @Override
@@ -71,7 +69,7 @@ public class MainActivity extends FlutterActivity {
         new ShareBreezLog(this.registrarFor("com.breez.client.plugins.share_breez_log"), this);
         new BreezCredential(this.registrarFor("com.breez.client.plugins.breez_credential"), this);
         new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
-        m_lightningLinks = new LightningLinks(this.registrarFor("com.breez.client.plugins.lightning_links"));
+        new LightningLinks(this.registrarFor("com.breez.client.plugins.lightning_links"));
     }
 
     public void onPause() {
@@ -95,9 +93,6 @@ public class MainActivity extends FlutterActivity {
                 || intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)
                 || intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED))) {
             m_nfc.handleIntent(intent);
-        }
-        else {
-            m_lightningLinks.checkLinkOnIntent(intent);
         }
     }
 }
