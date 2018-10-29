@@ -126,6 +126,7 @@ class AddFundsState extends State<_AddFundsPage> {
                             } else if (!accSnapshot.hasData) {
                               message =
                                   'Bitcoin address will be available as soon as Breez is synchronized.';
+                            } else if (accSnapshot.data.waitingDepositConfirmation ||
                                 accSnapshot.data.processingWithdrawal) {
                               message =
                                   'Breez is processing your previous ${acc.waitingDepositConfirmation || acc.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
