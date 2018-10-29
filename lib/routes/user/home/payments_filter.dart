@@ -22,6 +22,7 @@ class PaymentFilterSliver extends StatefulWidget {
 }
 
 class PaymentFilterSliverState extends State<PaymentFilterSliver> {
+  bool _hasNoFilter;
   @override
   void initState() {
     super.initState();
@@ -33,16 +34,20 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
   @override
   Widget build(BuildContext context) {
     double scrollOffset = widget._controller.position.pixels;
+    _hasNoFilter = (widget._paymentsModel.filter.paymentType.contains(PaymentType.SENT) &&
+        widget._paymentsModel.filter.paymentType.contains(PaymentType.DEPOSIT) &&
+        widget._paymentsModel.filter.paymentType.contains(PaymentType.WITHDRAWAL) &&
+        widget._paymentsModel.filter.paymentType.contains(PaymentType.RECEIVED)) && (widget._paymentsModel.filter.startDate == null || widget._paymentsModel.filter.endDate == null);
     return SliverPersistentHeader(
         pinned: true,
-        delegate: new FixedSliverDelegate(widget._paymentsModel.filter.paymentType != [PaymentType.WITHDRAWAL,PaymentType.RECEIVED,PaymentType.DEPOSIT,PaymentType.WITHDRAWAL] ? widget._maxSize : (scrollOffset).clamp(widget._minSize, widget._maxSize),
+        delegate: new FixedSliverDelegate(!_hasNoFilter ? widget._maxSize : (scrollOffset).clamp(widget._minSize, widget._maxSize),
             builder: (context, shrinkedHeight, overlapContent) {
           return Container(
               decoration: BoxDecoration(color: theme.BreezColors.blue[500]),
               height: widget._maxSize,
               child: AnimatedOpacity(
                   duration: Duration(milliseconds: 100),
-                  opacity: widget._paymentsModel.filter.paymentType != [PaymentType.WITHDRAWAL,PaymentType.RECEIVED,PaymentType.DEPOSIT,PaymentType.WITHDRAWAL] ? 1.0 : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
+                  opacity: !_hasNoFilter ? 1.0 : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
                   child: PaymentsFilter(widget._accountBloc, widget._paymentsModel)));
         }),
       );
