@@ -125,6 +125,8 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
             (paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
                 ? SliverAppBar(
               pinned: true,
+              elevation: 0.0,
+              expandedHeight: 32.0,
               automaticallyImplyLeading: false,
               backgroundColor: Theme.of(context).canvasColor,
               flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
