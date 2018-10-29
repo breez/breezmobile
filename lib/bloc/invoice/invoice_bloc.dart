@@ -44,7 +44,6 @@ class InvoiceBloc {
     Notifications notificationsService = injector.notifications;
 
     _listenInvoiceRequests(breezLib, nfc);
-    _listenStandardInvoiceRequests(breezLib);
     _listenNFCStream(nfc, server, breezLib);
     _listenIncomingInvoices(notificationsService, breezLib, nfc);
     _listenIncomingBlankInvoices(breezLib, nfc);
@@ -58,6 +57,14 @@ class InvoiceBloc {
   }
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
+    _newStandardInvoiceRequestController.stream.listen((invoiceRequest){
+      breezLib.addStandardInvoice(invoiceRequest.amount, invoiceRequest.description)
+          .then( (paymentRequest) {
+        _readyInvoicesController.add(paymentRequest);
+      })
+          .catchError(_readyInvoicesController.addError);
+    });
+
     _newInvoiceRequestController.stream.listen((invoiceRequest){       
       breezLib.addInvoice( invoiceRequest.amount, invoiceRequest.payeeName, invoiceRequest.logo, description: invoiceRequest.description)
         .then( (paymentRequest) { 
@@ -67,16 +74,6 @@ class InvoiceBloc {
           _readyInvoicesController.add(paymentRequest);
         })
         .catchError(_readyInvoicesController.addError);
-    });
-  }
-
-  void _listenStandardInvoiceRequests(BreezBridge breezLib) {
-    _newStandardInvoiceRequestController.stream.listen((invoiceRequest){
-      breezLib.addStandardInvoice(invoiceRequest.amount, invoiceRequest.description)
-          .then( (paymentRequest) {
-        _readyInvoicesController.add(paymentRequest);
-      })
-          .catchError(_readyInvoicesController.addError);
     });
   }
 
