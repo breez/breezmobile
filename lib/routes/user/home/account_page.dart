@@ -3,6 +3,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/home/floating_actions_bar.dart';
 import 'package:breez/routes/user/home/list_loader.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/routes/user/home/payments_filter.dart';
 import 'package:breez/routes/user/home/payments_list.dart';
 import 'package:breez/routes/user/home/wallet_dashboard.dart';
@@ -92,7 +93,11 @@ class _AccountPageState extends State<_AccountPage> {
                   paymentsModel = snapshot.data;
                 }
 
-                if (account != null && !account.initial && paymentsModel.paymentsList.length == 0) {
+                if (account == null || paymentsModel == null) {
+                  return Center(child: Loader());
+                }
+
+                if (!account.initial && paymentsModel.paymentsList.length == 0 && !paymentsModel.filter.initial) {
                   //build empty account page
                   return _buildEmptyAccount(account);
                 }
