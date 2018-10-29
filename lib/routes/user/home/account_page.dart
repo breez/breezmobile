@@ -97,7 +97,7 @@ class _AccountPageState extends State<_AccountPage> {
                   return Center(child: Loader());
                 }
 
-                if (!account.initial && paymentsModel.paymentsList.length == 0 && !paymentsModel.filter.initial) {
+                if (!account.initial && paymentsModel.paymentsList.length == 0 && paymentsModel.filter.initial) {
                   //build empty account page
                   return _buildEmptyAccount(account);
                 }
