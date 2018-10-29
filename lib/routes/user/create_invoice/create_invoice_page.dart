@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/app_blocs.dart';
@@ -38,6 +39,22 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
   final TextEditingController _descriptionController =
       new TextEditingController();
   final TextEditingController _amountController = new TextEditingController();
+  StreamSubscription<bool> _paidInvoicesSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _paidInvoicesSubscription =
+        widget._invoiceBloc.paidInvoicesStream.listen((paid) {
+          Navigator.of(context).pop();
+        });
+  }
+
+  @override
+  void dispose() {
+    _paidInvoicesSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +144,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                     child: _buildReceivableBTC(acc),
                   ),
                   StreamBuilder<String>(
-                      stream: widget._invoiceBloc.readyInvoicesStream,
+                      stream: widget._invoiceBloc.readyInvoicesStream.skip(1),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return StaticLoader();
