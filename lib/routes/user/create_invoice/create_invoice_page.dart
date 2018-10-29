@@ -1,9 +1,7 @@
-import 'dart:async';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/bloc_widget_connector.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -19,8 +17,8 @@ class CreateInvoicePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) => _CreateInvoicePage(
-        blocs.accountBloc, blocs.invoicesBloc));
+    return new BlocConnector<AppBlocs>((context, blocs) =>
+        _CreateInvoicePage(blocs.accountBloc, blocs.invoicesBloc));
   }
 }
 
@@ -28,8 +26,7 @@ class _CreateInvoicePage extends StatefulWidget {
   final AccountBloc _accountBloc;
   final InvoiceBloc _invoiceBloc;
 
-  const _CreateInvoicePage(
-      this._accountBloc, this._invoiceBloc);
+  const _CreateInvoicePage(this._accountBloc, this._invoiceBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -38,39 +35,9 @@ class _CreateInvoicePage extends StatefulWidget {
 }
 
 class _CreateInvoiceState extends State<_CreateInvoicePage> {
-  final _formKey = GlobalKey<FormState>();
-  String _errorMessage = "";
-  String _bolt11 = "";
   final TextEditingController _descriptionController =
       new TextEditingController();
   final TextEditingController _amountController = new TextEditingController();
-  StreamSubscription<AccountModel> accountSubscription;
-  StreamSubscription<String> _invoiceReadyNotificationsSubscription;
-
-  Currency _currency = Currency.BTC;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _invoiceReadyNotificationsSubscription =
-        widget._invoiceBloc.readyInvoicesStream.listen((invoice) {
-      setState(() {
-        _bolt11 = invoice;
-      });
-    });
-
-    accountSubscription = widget._accountBloc.accountStream.listen((acc) {
-      _currency = acc.currency;
-    });
-  }
-
-  @override
-  void dispose() {
-    accountSubscription.cancel();
-    _invoiceReadyNotificationsSubscription.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +96,6 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
           }
           AccountModel acc = snapshot.data;
           return Form(
-            key: _formKey,
             child: new Padding(
               padding: EdgeInsets.only(
                   left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
@@ -149,24 +115,24 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                       }
                     },
                   ),
-                  new Text(
-                    _errorMessage,
-                    style: theme.validatorStyle,
-                  ),
                   new AmountFormField(
                       controller: _amountController,
-                      currency: _currency,
+                      currency: acc.currency,
                       maxAmount: acc.maxAllowedToReceive,
                       decoration: new InputDecoration(
-                          labelText: _currency.displayName + " Amount"),
+                          labelText: acc.currency.displayName + " Amount"),
                       style: theme.FieldTextStyle.textStyle),
                   new Container(
                     padding: new EdgeInsets.only(top: 36.0),
                     child: _buildReceivableBTC(acc),
                   ),
-                  _bolt11.isEmpty
-                      ? Container()
-                      : new Column(children: <Widget>[
+                  StreamBuilder<String>(
+                      stream: widget._invoiceBloc.readyInvoicesStream,
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return StaticLoader();
+                        }
+                        return Column(children: <Widget>[
                           new Container(
                             margin:
                                 const EdgeInsets.only(top: 32.0, bottom: 16.0),
@@ -175,26 +141,27 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                             child: new Container(
                               color: theme.whiteColor,
                               child: new QrImage(
-                                version: 9,
-                                data: _bolt11,
+                                version: 11,
+                                data: snapshot.data,
                                 size: 180.0,
                               ),
                             ),
                           ),
-                    new GestureDetector(
-                      onTap: () {
-                        Share.share(_bolt11);
-                      },
-                      child:
-                    new Container(
-                      padding: EdgeInsets.only(top: 4.0, bottom: 13.0),
-                      child: new Text(
-                        _bolt11,
-                        style: theme.smallTextStyle,
-                      ),
-                    ),),
-                    _buildExpiryMessage()
-                        ])
+                          new GestureDetector(
+                            onTap: () {
+                              Share.share(snapshot.data);
+                            },
+                            child: new Container(
+                              padding: EdgeInsets.only(top: 4.0, bottom: 13.0),
+                              child: new Text(
+                                snapshot.data,
+                                style: theme.smallTextStyle,
+                              ),
+                            ),
+                          ),
+                          _buildExpiryMessage()
+                        ]);
+                      })
                 ],
               ),
             ),
@@ -210,7 +177,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
         new Text("Receive up to:", style: theme.textStyle),
         new Padding(
           padding: EdgeInsets.only(left: 3.0),
-          child: new Text(_currency.format(acc.maxAllowedToReceive),
+          child: new Text(acc.currency.format(acc.maxAllowedToReceive),
               style: theme.textStyle),
         )
       ],
