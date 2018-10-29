@@ -9,18 +9,24 @@ import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
-
+import 'package:breez/services/lightning_links.dart';
 
 class InvoiceBloc {
 
   final _newInvoiceRequestController = StreamController<InvoiceRequestModel>();
   Sink<InvoiceRequestModel> get newInvoicerequestSink => _newInvoiceRequestController.sink;
 
+  final _newStandardInvoiceRequestController = StreamController<InvoiceRequestModel>();
+  Sink<InvoiceRequestModel> get newStandardInvoiceRequestSink => _newStandardInvoiceRequestController.sink;
+
   final _readyInvoicesController = new BehaviorSubject<String>();
   Stream<String> get readyInvoicesStream => _readyInvoicesController.stream;
 
   final _sentInvoicesController = new StreamController<String>.broadcast();
   Stream<String> get sentInvoicesStream => _sentInvoicesController.stream;
+
+  final _decodeInvoiceController = new StreamController<String>();
+  Sink<String> get decodeInvoiceSink => _decodeInvoiceController.sink;
 
   final _receivedInvoicesController = new BehaviorSubject<PaymentRequestModel>();
   Stream<PaymentRequestModel> get receivedInvoicesStream => _receivedInvoicesController.stream;
@@ -42,9 +48,23 @@ class InvoiceBloc {
     _listenIncomingInvoices(notificationsService, breezLib, nfc);
     _listenIncomingBlankInvoices(breezLib, nfc);
     _listenPaidInvoices(breezLib);
+    _listenDecodeInvoiceRequests(breezLib);
+
+    LightningLinksService lightningLinks = ServiceInjector().lightningLinks;
+    lightningLinks.linksNotifications.listen((link) {
+      decodeInvoiceSink.add(link);
+    });
   }
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
+    _newStandardInvoiceRequestController.stream.listen((invoiceRequest){
+      breezLib.addStandardInvoice(invoiceRequest.amount, invoiceRequest.description)
+          .then( (paymentRequest) {
+        _readyInvoicesController.add(paymentRequest);
+      })
+          .catchError(_readyInvoicesController.addError);
+    });
+
     _newInvoiceRequestController.stream.listen((invoiceRequest){       
       breezLib.addInvoice( invoiceRequest.amount, invoiceRequest.payeeName, invoiceRequest.logo, description: invoiceRequest.description)
         .then( (paymentRequest) { 
@@ -54,6 +74,16 @@ class InvoiceBloc {
           _readyInvoicesController.add(paymentRequest);
         })
         .catchError(_readyInvoicesController.addError);
+    });
+  }
+
+  void _listenDecodeInvoiceRequests(BreezBridge breezLib) {
+    _decodeInvoiceController.stream.listen((bolt11){
+      breezLib.decodePaymentRequest(bolt11)
+          .then( (paymentRequest) {
+        _receivedInvoicesController.add(PaymentRequestModel(paymentRequest, bolt11));
+      })
+          .catchError(_receivedInvoicesController.addError);
     });
   }
 
@@ -113,9 +143,11 @@ class InvoiceBloc {
   }
 
   close() {    
-    _newInvoiceRequestController.close();    
+    _newInvoiceRequestController.close();
+    _newStandardInvoiceRequestController.close();
     _sentInvoicesController.close();
     _receivedInvoicesController.close();
     _paidInvoicesController.close();
+    _decodeInvoiceController.close();
   }
 }

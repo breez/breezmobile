@@ -20,6 +20,7 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_page.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_complete.dart';
+import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 AppBlocs blocs = AppBlocs();
@@ -93,12 +94,12 @@ class BreezAppState extends State<BreezApp> {
         cardColor: Color.fromRGBO(5, 93, 235, 1.0),
       ),
       initialRoute: widget._userModel.registered ? null : '/splash',
-      home: new Home(widget._blocs.accountBloc,widget._blocs.invoicesBloc.receivedInvoicesStream),
+      home: new Home(widget._blocs.accountBloc, widget._blocs.invoicesBloc),
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case '/home':
             return new FadeInRoute(
-              builder: (_) => new Home(widget._blocs.accountBloc,widget._blocs.invoicesBloc.receivedInvoicesStream),
+              builder: (_) => new Home(widget._blocs.accountBloc, widget._blocs.invoicesBloc),
               settings: settings,
             );
           case '/intro':
@@ -139,6 +140,11 @@ class BreezAppState extends State<BreezApp> {
           case '/pay_nearby_complete':
             return new FadeInRoute(
               builder: (_) => new PayNearbyComplete(),
+              settings: settings,
+            );
+          case '/create_invoice':
+            return new FadeInRoute(
+              builder: (_) => new CreateInvoicePage(),
               settings: settings,
             );
           case '/developers':
