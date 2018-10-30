@@ -10,8 +10,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:share/share.dart';
+import 'package:breez/routes/user/create_invoice/qr_code_dialog.dart';
 
 class CreateInvoicePage extends StatelessWidget {
   CreateInvoicePage();
@@ -36,6 +35,7 @@ class _CreateInvoicePage extends StatefulWidget {
 }
 
 class _CreateInvoiceState extends State<_CreateInvoicePage> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _descriptionController =
       new TextEditingController();
   final TextEditingController _amountController = new TextEditingController();
@@ -46,8 +46,8 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
     super.initState();
     _paidInvoicesSubscription =
         widget._invoiceBloc.paidInvoicesStream.listen((paid) {
-          Navigator.of(context).pop();
-        });
+      Navigator.of(context).pop();
+    });
   }
 
   @override
@@ -85,13 +85,17 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(42.0)),
                       onPressed: () {
-                        widget._invoiceBloc.newStandardInvoiceRequestSink.add(
-                            new InvoiceRequestModel(
-                                null,
-                                _descriptionController.text,
-                                null,
-                                account.currency
-                                    .parse(_amountController.text)));
+                        if (_formKey.currentState.validate()) {
+                          widget._invoiceBloc.newStandardInvoiceRequestSink.add(
+                              new InvoiceRequestModel(
+                                  null,
+                                  _descriptionController.text,
+                                  null,
+                                  account.currency
+                                      .parse(_amountController.text)));
+                          showDialog(
+                              context: context, builder: (_) => QrCodeDialog(context, widget._invoiceBloc));
+                        }
                       },
                     );
                   }),
@@ -113,6 +117,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
           }
           AccountModel acc = snapshot.data;
           return Form(
+            key: _formKey,
             child: new Padding(
               padding: EdgeInsets.only(
                   left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
@@ -143,41 +148,42 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                     padding: new EdgeInsets.only(top: 36.0),
                     child: _buildReceivableBTC(acc),
                   ),
-                  StreamBuilder<String>(
-                      stream: widget._invoiceBloc.readyInvoicesStream.skip(1),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return StaticLoader();
+                  StreamBuilder(
+                      stream: widget._accountBloc.accountStream,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<AccountModel> accSnapshot) {
+
+                        AccountModel acc = accSnapshot.data;
+
+                        String message;
+                        if (accSnapshot.hasError) {
+                          message = accSnapshot.error.toString();
+                        } else if (!accSnapshot.hasData) {
+                          message =
+                              'Receiving payments will be available as soon as Breez is synchronized.';
+                        } else if (acc.waitingDepositConfirmation || acc.processiongBreezConnection) {
+                          message =
+                              'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
                         }
-                        return Column(children: <Widget>[
-                          new Container(
-                            margin:
-                                const EdgeInsets.only(top: 32.0, bottom: 16.0),
-                            padding: const EdgeInsets.all(8.6),
-                            decoration: theme.qrImageStyle,
-                            child: new Container(
-                              color: theme.whiteColor,
-                              child: new QrImage(
-                                version: 17,
-                                data: snapshot.data,
-                                size: 180.0,
-                              ),
-                            ),
-                          ),
-                          new GestureDetector(
-                            onTap: () {
-                              Share.share(snapshot.data);
-                            },
-                            child: new Container(
-                              padding: EdgeInsets.only(top: 4.0, bottom: 13.0),
-                              child: new Text(
-                                snapshot.data,
-                                style: theme.smallTextStyle,
-                              ),
-                            ),
-                          ),
-                          _buildExpiryMessage()
-                        ]);
+
+                        if (message != null) {
+                          // In case error doesn't have a trailing full stop
+                          if (!message.endsWith('.')) {
+                            message += '.';
+                          }
+                          return Container(
+                              padding: EdgeInsets.only(
+                                  top: 50.0, left: 30.0, right: 30.0),
+                              child: Column(children: <Widget>[
+                                Text(
+                                  message,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ]));
+                        }
+                        else {
+                          return Container();
+                        }
                       })
                 ],
               ),
@@ -199,12 +205,5 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
         )
       ],
     );
-  }
-
-  Widget _buildExpiryMessage() {
-    return new Column(children: <Widget>[
-      Text("In order to receive payment Breez app needs to stay open.",
-          style: theme.warningStyle)
-    ]);
   }
 }

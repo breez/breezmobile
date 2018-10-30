@@ -20,6 +20,7 @@ final TextStyle textStyle = new TextStyle(color: BreezColors.white[400], fontSiz
 final TextStyle navigationDrawerHandleStyle = new TextStyle(fontSize: 16.0, letterSpacing: 0.2);
 final TextStyle warningStyle = new TextStyle(color: errorColor, fontSize: 16.0);
 final TextStyle alertStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 16.0, height: 1.5);
+final TextStyle bolt11Style = new TextStyle(color: BreezColors.grey[500], fontSize: 9.0);
 final TextStyle alertTitleStyle = new TextStyle(color: BreezColors.grey[600], fontSize: 20.5, letterSpacing: 0.25);
 final TextStyle instructionStyle = new TextStyle(color: BreezColors.white[400], fontSize: 14.3);
 final TextStyle validatorStyle = new TextStyle(color: Color(0xFFe3b42f), fontSize: 12.0, height: 1.25);
