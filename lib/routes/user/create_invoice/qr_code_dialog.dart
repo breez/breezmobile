@@ -99,7 +99,7 @@ class QrCodeDialog extends StatelessWidget {
       Padding(
           padding: EdgeInsets.only(top: 8.0, bottom: 12.0),
           child: Text(
-              "In order to receive payment Breez app needs to stay open.",
+              "Keep the Breez app open in order to receive payment.",
               style: theme.alertStyle))
     ]);
   }
