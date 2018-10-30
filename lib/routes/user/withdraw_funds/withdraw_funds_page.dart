@@ -11,29 +11,23 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 
 
-class WithdrawFundsPage extends StatelessWidget {
-  final bool sendNonDepositable;
-
-  WithdrawFundsPage(this.sendNonDepositable);
+class WithdrawFundsPage extends StatelessWidget {    
 
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) => _WithdrawFundsPage(blocs.accountBloc, blocs.userProfileBloc, this.sendNonDepositable));
+    return new BlocConnector<AppBlocs>((context, blocs) => _WithdrawFundsPage(blocs.accountBloc));
   }
 }
 
 class _WithdrawFundsPage extends StatefulWidget {
-  final AccountBloc _accountBloc;
-  final UserProfileBloc _userProfileBloc;
-  final bool sendNonDepositable;
+  final AccountBloc _accountBloc;   
 
-  const _WithdrawFundsPage(this._accountBloc, this._userProfileBloc, this.sendNonDepositable);
+  const _WithdrawFundsPage(this._accountBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -61,11 +55,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
     _breezLib = injector.breezBridge;
 
     accountSubscription = widget._accountBloc.accountStream.listen((acc) {
-      _currency = acc.currency;
-      if (widget.sendNonDepositable) {
-        _amountController.text = acc.currency.format(acc.nonDepositableBalance, includeSymbol: false);
-        _formattedAmount = acc.currency.format(acc.nonDepositableBalance, includeSymbol: true, fixedDecimals: false);
-      }
+      _currency = acc.currency;      
     });
     withdrawalResultSubscription = widget._accountBloc.withdrawalResultStream.listen((address) {
       if (address == _addressController.text) {
@@ -86,7 +76,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final String _title = widget.sendNonDepositable ? "Remove Excess Funds" : "Remove Funds";
+    final String _title = "Remove Funds";
     return new Scaffold(
       bottomNavigationBar: new Padding(
           padding: new EdgeInsets.only(bottom: 40.0),
@@ -187,13 +177,12 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
                   new AmountFormField(
                       controller: _amountController,
                       currency: _currency,
-                      maxAmount: widget.sendNonDepositable ? acc.nonDepositableBalance : acc.balance,
-                      decoration: new InputDecoration(labelText: _currency.displayName + " Amount"),
-                      enabled: !widget.sendNonDepositable,
+                      maxAmount: acc.balance,
+                      decoration: new InputDecoration(labelText: _currency.displayName + " Amount"),                      
                       style: theme.FieldTextStyle.textStyle),
                   new Container(
                     padding: new EdgeInsets.only(top: 36.0),
-                    child: widget.sendNonDepositable ? _buildOverCapacityMessage() : _buildAvailableBTC(acc),
+                    child: _buildAvailableBTC(acc),
                   ),
                 ],
               ),
@@ -218,12 +207,6 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
         )
       ],
     );
-  }
-
-  Widget _buildOverCapacityMessage() {
-    return new Column(children: <Widget>[
-      Text("Funds previously added were above Breez's capacity. Please remove the difference before adding more funds.", style: theme.warningStyle)
-    ]);
   }
 
   void _showAlertDialog() {
