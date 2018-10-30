@@ -442,25 +442,9 @@ class _NfcDialogState extends State<_NfcDialog> {
 
   Widget _cancelButton() {
     return new Padding(
-      padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
+      padding: EdgeInsets.only(left: 30.0, top: 8.0, bottom: 16.0),
       child: new Row(
       children: [
-        new IconButton(
-          padding: EdgeInsets.only(right: 16.0),
-          alignment: Alignment.centerRight,
-          icon: new Image(
-            image: _scanQr ? new AssetImage("src/icon/lost_card.png") : new AssetImage("src/icon/qr_scan.png"),
-            color: theme.BreezColors.grey[500],
-            fit: BoxFit.contain,
-            width: 24.0,
-            height: 24.0,
-          ),
-          onPressed: () {
-            setState(() {
-              _scanQr = !_scanQr;
-            });
-          },
-        ),
         new FlatButton(
         child: new Text(
           'CANCEL PAYMENT',
@@ -487,6 +471,20 @@ class _NfcDialogState extends State<_NfcDialog> {
                 'Hold a Breez card closely to process this payment.',
                 textAlign: TextAlign.center,
                 style: theme.paymentRequestTitleStyle,
+              ),
+              new IconButton(
+                alignment: Alignment.bottomRight,
+                icon: new Image(
+                  image: _scanQr ? new AssetImage("src/icon/lost_card.png") : new AssetImage("src/icon/qr_scan.png"),
+                  color: theme.BreezColors.grey[500],
+                  width: 24.0,
+                  height: 24.0,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _scanQr = !_scanQr;
+                  });
+                },
               ),
               _scanQr ? new Container(
                 padding: EdgeInsets.only(left: 4.0),
