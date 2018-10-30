@@ -30,15 +30,8 @@ class DrawerItemConfig {
 }
 
 class NavigationDrawer extends StatelessWidget {
-  NavigationDrawer(
-      this._avatar,
-      this._screensConfig,
-      this._majorActionsFundsConfig,
-      this._majorActionsPayConfig,
-      this._minorActionsCardConfig,
-      this._minorActionsInvoiceConfig,
-      this._minorActionsDevConfig,
-      this._onItemSelected);
+  NavigationDrawer(this._avatar, this._screensConfig, this._majorActionsFundsConfig, this._majorActionsPayConfig,
+      this._minorActionsCardConfig, this._minorActionsInvoiceConfig, this._minorActionsDevConfig, this._onItemSelected);
   final bool _avatar;
   final List<DrawerItemConfig> _screensConfig;
   final List<DrawerItemConfig> _majorActionsFundsConfig;
@@ -50,17 +43,16 @@ class NavigationDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) =>
-        new _NavigationDrawer(
-            _avatar,
-            _screensConfig,
-            _majorActionsFundsConfig,
-            _majorActionsPayConfig,
-            _minorActionsCardConfig,
-            _minorActionsInvoiceConfig,
-            _minorActionsDevConfig,
-            _onItemSelected,
-            blocs.userProfileBloc));
+    return new BlocConnector<AppBlocs>((context, blocs) => new _NavigationDrawer(
+        _avatar,
+        _screensConfig,
+        _majorActionsFundsConfig,
+        _majorActionsPayConfig,
+        _minorActionsCardConfig,
+        _minorActionsInvoiceConfig,
+        _minorActionsDevConfig,
+        _onItemSelected,
+        blocs.userProfileBloc));
   }
 }
 
@@ -98,39 +90,23 @@ class _NavigationDrawer extends StatelessWidget {
             ]
               ..addAll(_majorActionsFundsConfig
                   .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
+                    (action) => _actionTile(action, context, _onItemSelected, false),
                   )
                   .toList())
-              ..add(new Padding(
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Divider()))
+              ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
               ..addAll(_majorActionsPayConfig
                   .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
+                    (action) => _actionTile(action, context, _onItemSelected, false),
                   )
                   .toList())
-              ..add(new Padding(
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Divider()))
-              ..addAll(_minorActionsCardConfig
-                  .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
-                  )
-                  .toList())
-              ..add(new Padding(
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Divider()))
-              ..addAll(_minorActionsInvoiceConfig
-                  .map(
-                    (action) => _actionTile(action, context, action.onItemSelected ?? _onItemSelected),
-              )
-                  .toList())
-              ..add(new Padding(
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Divider()))
+              ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
+              ..add(_expansionTile(context, "Card", Icons.credit_card, _minorActionsCardConfig, _onItemSelected))
+              ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
+              ..add(_expansionTile(context, "Invoice", Icons.monetization_on, _minorActionsInvoiceConfig, _onItemSelected))
+              ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
               ..addAll(_minorActionsDevConfig
                   .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
+                    (action) => _actionTile(action, context, _onItemSelected, false),
                   )
                   .toList())),
       );
@@ -139,20 +115,16 @@ class _NavigationDrawer extends StatelessWidget {
         child: new ListView(
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
-            children: <Widget>[
-              _breezDrawerHeader(_userProfileBloc, _avatar)
-            ]
+            children: <Widget>[_breezDrawerHeader(_userProfileBloc, _avatar)]
               ..addAll(_majorActionsFundsConfig
                   .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
+                    (action) => _actionTile(action, context, _onItemSelected, false),
                   )
                   .toList())
-              ..add(new Padding(
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Divider()))
+              ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
               ..addAll(_minorActionsDevConfig
                   .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
+                    (action) => _actionTile(action, context, _onItemSelected, false),
                   )
                   .toList())),
       );
@@ -163,53 +135,54 @@ class _NavigationDrawer extends StatelessWidget {
 Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return new BreezDrawerHeader(
     padding: EdgeInsets.only(top: 54.0, left: 16.0),
-    child: !drawAvatar ? new Container() : new StreamBuilder<BreezUserModel>(
-        stream: user.userStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return new Container();
-          } else {
-            return new GestureDetector(
-              onTap: () {
-                showDialog<bool>(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => breezAvatarDialog(context, user),
+    child: !drawAvatar
+        ? new Container()
+        : new StreamBuilder<BreezUserModel>(
+            stream: user.userStream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return new Container();
+              } else {
+                return new GestureDetector(
+                  onTap: () {
+                    showDialog<bool>(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) => breezAvatarDialog(context, user),
+                    );
+                  },
+                  child: new Column(children: <Widget>[
+                    new Row(
+                      children: <Widget>[
+                        BreezAvatar(snapshot.data.avatarURL, radius: 24.0),
+                      ],
+                    ),
+                    new Padding(
+                      padding: EdgeInsets.only(top: 22.0),
+                      child: new Row(
+                        children: <Widget>[
+                          new Opacity(
+                              opacity: 0.6,
+                              child: new Text(
+                                snapshot.data.name ?? "No Name",
+                                style: theme.navigationDrawerHandleStyle,
+                              )),
+                        ],
+                      ),
+                    ),
+                  ]),
                 );
-              },
-              child: new Column(children: <Widget>[
-                new Row(
-                  children: <Widget>[
-                    BreezAvatar(snapshot.data.avatarURL, radius: 24.0),
-                  ],
-                ),
-                new Padding(
-                  padding: EdgeInsets.only(top: 22.0),
-                  child: new Row(
-                    children: <Widget>[
-                      new Opacity(
-                          opacity: 0.6,
-                          child: new Text(
-                            snapshot.data.name ?? "No Name",
-                            style: theme.navigationDrawerHandleStyle,
-                          )),
-                    ],
-                  ),
-                ),
-              ]),
-            );
-          }
-        }),
+              }
+            }),
     decoration: new BoxDecoration(
       image: DecorationImage(image: AssetImage("src/images/waves-drawer.png")),
     ),
   );
 }
 
-Widget _actionTile(
-    DrawerItemConfig action, BuildContext context, Function onItemSelected) {
+Widget _actionTile(DrawerItemConfig action, BuildContext context, Function onItemSelected, bool subTile) {
   return new Padding(
-    padding: EdgeInsets.only(left: 8.0, right: 8.0),
+    padding: EdgeInsets.only(left: subTile ? 32.0 : 8.0, right: 8.0),
     child: new ListTile(
       leading: ImageIcon(
         AssetImage(action._icon),
@@ -223,4 +196,15 @@ Widget _actionTile(
       },
     ),
   );
+}
+
+Widget _expansionTile(BuildContext context, String title, IconData icon, List<DrawerItemConfig> config, Function onItemSelected){
+  final _expansionTileTheme = Theme.of(context).copyWith(dividerColor: Theme.of(context).canvasColor);
+  return Theme(data: _expansionTileTheme, child:ExpansionTile(
+    title: Text(title,style: theme.drawerItemTextStyle,),
+    leading: Padding(padding: EdgeInsets.only(left:8.0),child:Icon(icon, size: 24.0,
+      color: Colors.white,),),
+    children:
+    config.map((action) => _actionTile(action, context, onItemSelected, true)).toList(),
+  ));
 }

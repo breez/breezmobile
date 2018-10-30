@@ -22,12 +22,12 @@ class Home extends StatefulWidget {
     _minorActionsInvoice =
     new List<DrawerItemConfig>.unmodifiable([
       new DrawerItemConfig(
-          "/scan_invoice", "Scan Invoice", "src/icon/qr_scan.png", onItemSelected: (String name) async {
+          "/scan_invoice", "Scan", "src/icon/qr_scan.png", onItemSelected: (String name) async {
           String decodedQr = await BarcodeScanner.scan();
           invoiceBloc.decodeInvoiceSink.add(decodedQr);
       }),
       new DrawerItemConfig(
-          "/create_invoice", "Create Invoice", "src/icon/paste.png"),
+          "/create_invoice", "Create", "src/icon/paste.png"),
     ]);
   }
 
@@ -53,11 +53,11 @@ class Home extends StatefulWidget {
   final List<DrawerItemConfig> _minorActionsCard =
       new List<DrawerItemConfig>.unmodifiable([
     new DrawerItemConfig(
-        "/order_card", "Order Card", "src/icon/order_card.png"),
+        "/order_card", "Order", "src/icon/order_card.png"),
     new DrawerItemConfig(
-        "/activate_card", "Activate Card", "src/icon/activate_card.png"),
+        "/activate_card", "Activate", "src/icon/activate_card.png"),
     new DrawerItemConfig(
-        "/lost_card", "Lost or Stolen Card", "src/icon/lost_card.png"),
+        "/lost_card", "Lost or Stolen", "src/icon/lost_card.png"),
   ]);
 
   List<DrawerItemConfig> _minorActionsInvoice;
