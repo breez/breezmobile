@@ -499,7 +499,7 @@ class _NfcDialogState extends State<_NfcDialog> {
                       return Container();
                     }
                     return new QrImage(
-                      version: 17,
+                      version: 20,
                       data: snapshot.data,
                     );
                     })) :

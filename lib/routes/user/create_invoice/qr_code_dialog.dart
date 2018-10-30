@@ -70,7 +70,7 @@ class QrCodeDialog extends StatelessWidget {
                     width: 220.0,
                     height: 220.0,
                     child: new QrImage(
-                      version: 17,
+                      version: 20,
                       data: snapshot.data,
                     ),
                   ),
