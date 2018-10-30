@@ -12,8 +12,9 @@ class DrawerItemConfig {
   final String _name;
   final String _title;
   final String _icon;
+  final void Function(String name) onItemSelected;
 
-  DrawerItemConfig(this._name, this._title, this._icon);
+  DrawerItemConfig(this._name, this._title, this._icon, {this.onItemSelected});
 
   String get name {
     return _name;
@@ -35,6 +36,7 @@ class NavigationDrawer extends StatelessWidget {
       this._majorActionsFundsConfig,
       this._majorActionsPayConfig,
       this._minorActionsCardConfig,
+      this._minorActionsInvoiceConfig,
       this._minorActionsDevConfig,
       this._onItemSelected);
   final bool _avatar;
@@ -42,6 +44,7 @@ class NavigationDrawer extends StatelessWidget {
   final List<DrawerItemConfig> _majorActionsFundsConfig;
   final List<DrawerItemConfig> _majorActionsPayConfig;
   final List<DrawerItemConfig> _minorActionsCardConfig;
+  final List<DrawerItemConfig> _minorActionsInvoiceConfig;
   final List<DrawerItemConfig> _minorActionsDevConfig;
   final void Function(String screenName) _onItemSelected;
 
@@ -54,6 +57,7 @@ class NavigationDrawer extends StatelessWidget {
             _majorActionsFundsConfig,
             _majorActionsPayConfig,
             _minorActionsCardConfig,
+            _minorActionsInvoiceConfig,
             _minorActionsDevConfig,
             _onItemSelected,
             blocs.userProfileBloc));
@@ -66,6 +70,7 @@ class _NavigationDrawer extends StatelessWidget {
   final List<DrawerItemConfig> _majorActionsFundsConfig;
   final List<DrawerItemConfig> _majorActionsPayConfig;
   final List<DrawerItemConfig> _minorActionsCardConfig;
+  final List<DrawerItemConfig> _minorActionsInvoiceConfig;
   final List<DrawerItemConfig> _minorActionsDevConfig;
   final void Function(String screenName) _onItemSelected;
   final UserProfileBloc _userProfileBloc;
@@ -76,6 +81,7 @@ class _NavigationDrawer extends StatelessWidget {
       this._majorActionsFundsConfig,
       this._majorActionsPayConfig,
       this._minorActionsCardConfig,
+      this._minorActionsInvoiceConfig,
       this._minorActionsDevConfig,
       this._onItemSelected,
       this._userProfileBloc);
@@ -110,6 +116,14 @@ class _NavigationDrawer extends StatelessWidget {
                   .map(
                     (action) => _actionTile(action, context, _onItemSelected),
                   )
+                  .toList())
+              ..add(new Padding(
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Divider()))
+              ..addAll(_minorActionsInvoiceConfig
+                  .map(
+                    (action) => _actionTile(action, context, action.onItemSelected ?? _onItemSelected),
+              )
                   .toList())
               ..add(new Padding(
                   padding: EdgeInsets.only(left: 8.0, right: 8.0),

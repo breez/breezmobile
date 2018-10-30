@@ -66,13 +66,8 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
                     if (snapshot.hasData) {
                       paymentsModel = snapshot.data;
                     }
-
-                    if (account == null || paymentsModel == null || !account.connected || paymentsModel.paymentsList.elementAt(0) == null) {
-                      // build loading page, waiting for account to initialize || this is temporary
-                      return _buildScaffold(Center(child: Loader()));
-                    }
-
-                    if (!account.initial && paymentsModel.paymentsList.length == 0) {
+                    
+                    if ((account != null && !account.initial) && (paymentsModel != null && paymentsModel.paymentsList.length == 0)) {
                       return _buildScaffold(Center(child: Text("Successful transactions are displayed here.")));
                     }
 

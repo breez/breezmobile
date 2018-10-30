@@ -104,6 +104,14 @@ class BreezBridge {
     }
     return _invokeMethodWhenReady("addInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
+
+  Future<String> addStandardInvoice(Int64 amount, String description){
+    InvoiceMemo invoice = new InvoiceMemo();
+    invoice.amount = amount;
+    invoice.description = description;
+    return _invokeMethodWhenReady("addInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
+  }
+
   Future<Invoice> getRelatedInvoice(String paymentRequest) {
     return _invokeMethodWhenReady("getRelatedInvoice", {"argument": paymentRequest})
       .then((invoiceData) => new Invoice()..mergeFromBuffer(invoiceData));

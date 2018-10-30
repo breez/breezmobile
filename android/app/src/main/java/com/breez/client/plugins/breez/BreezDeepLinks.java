@@ -95,7 +95,7 @@ public class BreezDeepLinks implements EventChannel.StreamHandler, MethodChannel
 
     private boolean checkLinkOnIntent(Intent intent){        
         android.net.Uri data = intent.getData();
-        if (intent.getData() != null) {            
+        if (intent.getData() != null && data.getScheme().contains("http")) {
             FirebaseDynamicLinks.getInstance().getDynamicLink(intent)
                     .addOnCompleteListener(
                             m_activity,

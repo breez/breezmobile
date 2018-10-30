@@ -6,6 +6,7 @@ import 'package:breez/services/device.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:breez/services/lightning_links.dart';
 
 class ServiceInjector {
   static final _singleton = new ServiceInjector._internal();
@@ -16,6 +17,7 @@ class ServiceInjector {
   BreezBridge _breezBridge;
   NFCService _nfcService;
   DeepLinksService _deepLinksService;
+  LightningLinksService _lightningLinksService;
   Device _device;
 
   factory ServiceInjector() {
@@ -47,6 +49,7 @@ class ServiceInjector {
   Device get device => _device ?? Device();
 
   DeepLinksService get deepLinks => _deepLinksService ??= new DeepLinksService();
+  LightningLinksService get lightningLinks => _lightningLinksService ??= new LightningLinksService();
 
   Future<SharedPreferences> get sharedPreferences =>
       SharedPreferences.getInstance();

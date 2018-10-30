@@ -58,10 +58,22 @@ class AddFundsState extends State<_AddFundsPage> {
   StreamSubscription<AddFundResponse> _addressSubscription;
 
   bool _connected = true;
+  bool _hasError = false;
 
   @override
   initState() {
     super.initState();
+
+    _accountSubscription = widget._accountBloc.accountStream.listen((data){
+      setState(() {
+        _hasError = false;
+      });
+    });
+    _accountSubscription.onError((error) {
+      setState(() {
+        _hasError = true;
+      });
+    });
 
     _addressSubscription = widget._accountBloc.addFundStream.listen((data) {
       setState(() {
@@ -75,7 +87,6 @@ class AddFundsState extends State<_AddFundsPage> {
     });
 
     widget._accountBloc.requestAddressSink.add(null);
-
   }
 
   @override
@@ -93,27 +104,7 @@ class AddFundsState extends State<_AddFundsPage> {
   Widget build(BuildContext context) {
     return new Material(
       child: new Scaffold(
-        bottomNavigationBar: !_connected ? new Padding(
-            padding: new EdgeInsets.only(bottom: 40.0),
-            child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              new SizedBox(
-                height: 48.0,
-                width: 168.0,
-                child: RaisedButton(
-                  padding: EdgeInsets.only(top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
-                  child: new Text(
-                    "RETRY",
-                    style: theme.buttonStyle,
-                  ),
-                  color: Colors.white,
-                  elevation: 0.0,
-                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(42.0)),
-                  onPressed: () {
-                    widget._accountBloc.requestAddressSink.add(null);
-                  },
-                ),
-              ),
-            ])) : null,
+        bottomNavigationBar: _buildBottomNavigationBar(),
         appBar: new AppBar(
           iconTheme: theme.appBarIconTheme,
           textTheme: theme.appBarTextTheme,
@@ -145,7 +136,7 @@ class AddFundsState extends State<_AddFundsPage> {
                             } else if (!accSnapshot.hasData) {
                               message =
                                   'Bitcoin address will be available as soon as Breez is synchronized.';
-                            } else if (accSnapshot.data.waitingDepositConfirmation ||                          
+                            } else if (accSnapshot.data.waitingDepositConfirmation ||
                                 accSnapshot.data.processingWithdrawal) {
                               message =
                                   'Breez is processing your previous ${acc.waitingDepositConfirmation || acc.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
@@ -154,17 +145,14 @@ class AddFundsState extends State<_AddFundsPage> {
                             }
 
                             if (message != null) {
+                              if(!message.endsWith('.')){
+                                message += '.';
+                              }
                               return Container(
-                                color: theme.massageBackgroundColor,
-                                padding: new EdgeInsets.only(
-                                    left: 16.0, top: 9.0, right: 16.0, bottom: 9.0),
-                                child: new Text(
-                                  message,
-                                  style: new TextStyle(
-                                    color: theme.whiteColor,
-                                  ),
-                                ),
-                              );
+                                  padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+                                  child: Column(children: <Widget>[
+                                    Text(message, textAlign: TextAlign.center,),
+                                  ]));
                             }
 
                             if (snapshot.hasError) {
@@ -190,6 +178,59 @@ class AddFundsState extends State<_AddFundsPage> {
       ),
     );
   }
+
+  Widget _buildBottomNavigationBar() {
+    if (!_connected) {
+      return new Padding(
+          padding: new EdgeInsets.only(bottom: 40.0),
+          child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            new SizedBox(
+              height: 48.0,
+              width: 168.0,
+              child: RaisedButton(
+                padding: EdgeInsets.only(top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
+                child: new Text(
+                  "RETRY",
+                  style: theme.buttonStyle,
+                ),
+                color: Colors.white,
+                elevation: 0.0,
+                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(42.0)),
+                onPressed: () {
+                  widget._accountBloc.requestAddressSink.add(null);
+                },
+              ),
+            ),
+          ]));
+    }
+
+    if (_hasError) {
+      return new Padding(
+          padding: new EdgeInsets.only(bottom: 40.0),
+          child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            new SizedBox(
+              height: 48.0,
+              width: 168.0,
+              child: RaisedButton(
+                padding: EdgeInsets.only(top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
+                child: new Text(
+                  "CLOSE",
+                  style: theme.buttonStyle,
+                ),
+                color: Colors.white,
+                elevation: 0.0,
+                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(42.0)),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ]));
+    }
+
+    return null;
+  }
+
 }
 
 Widget _buildAmountWarning(AccountBloc accountBloc) {
