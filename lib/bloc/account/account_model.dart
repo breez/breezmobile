@@ -122,7 +122,10 @@ class PaymentInfo {
     String peerName = (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeName : _paymentResponse.invoiceMemo?.payerName);
     return (peerName == null || peerName.isEmpty) ? "Unknown" : peerName;
   }
-  Currency get currency => _currency;  
+  Currency get currency => _currency;
+
+  // TODO: implement nodeId
+  String get nodeId => "037a49752a66e57ea6a2c90d3d9d34fc6bcd8a4a28b90735473d9710038cbf397e";
 
   PaymentInfo(this._paymentResponse, this._currency);
   PaymentInfo copyWith(Currency currency) {
@@ -171,6 +174,9 @@ class MockPaymentInfo implements PaymentInfo {
   @override
   Currency get _currency => Currency.BTC;
 
+  // TODO: implement nodeId
+  @override
+  String get nodeId => "037a49752a66e57ea6a2c90d3d9d34fc6bcd8a4a28b90735473d9710038cbf397e";
   
   // @override
   // String get formattedAmount => CurrencyFormatter.format(amount, _currency);

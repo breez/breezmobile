@@ -18,14 +18,7 @@ class PaymentDetailsDialog extends StatelessWidget {
   }
 
   Widget showPaymentDetailsDialog() {
-    final snackBar = new SnackBar(
-      content: new Text(
-        'Hashcode is copied to your clipboard.',
-        style: theme.snackBarStyle,
-      ),
-      backgroundColor: theme.snackBarBackgroundColor,
-      duration: new Duration(seconds: 4),
-    );
+    final tooltipKey = new GlobalKey();
     return new SimpleDialog(
       contentPadding: EdgeInsets.fromLTRB(16.0, 32.0, 16.0, 16.0),
       children: <Widget>[
@@ -73,6 +66,54 @@ class PaymentDetailsDialog extends StatelessWidget {
             ),
           ),
         ),
+        Padding(
+          padding: EdgeInsets.only(top: 16.0),
+        ),
+        Container(
+          height: 72.0,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(left: 16.0),
+                child: Text(
+                  "Node ID",
+                  style: theme.paymentDetailsTitleStyle,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              SizedBox(
+                width: 154.0,
+                child: Padding(
+                  padding: EdgeInsets.only(right: 16.0),
+                  child: Text('${paymentInfo.nodeId}',
+                      textAlign: TextAlign.right,
+                      overflow: TextOverflow.clip,
+                      maxLines: 3,
+                      style: theme.paymentDetailsSubtitleStyle),
+                ),
+              ),
+              /*
+              IconButton(
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.fromLTRB(0.0, 8.0, 14.0, 8.0),
+                tooltip: "Copy node id",
+                iconSize: 24.0,
+                color: Colors.blue,
+                icon: Icon(
+                  IconData(0xe90b, fontFamily: 'icomoon'),
+                ),
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: paymentInfo.nodeId));
+                  Navigator.pop(context);
+                  Scaffold.of(context).showSnackBar(_buildSnackBar("Node Id"));
+                },
+              ),
+              */
+            ],
+          ),
+        ),
         Container(
           height: 36.0,
           child: ListTile(
@@ -90,9 +131,10 @@ class PaymentDetailsDialog extends StatelessWidget {
                   style: theme.paymentDetailsSubtitleStyle,
                   textAlign: TextAlign.right,
                 ),
+                /*
                 IconButton(
                   alignment: Alignment.centerRight,
-                  padding: EdgeInsets.fromLTRB(16.0,8.0,0.0,8.0),
+                  padding: EdgeInsets.fromLTRB(16.0, 8.0, 0.0, 8.0),
                   tooltip: "Copy hashcode",
                   iconSize: 24.0,
                   color: Colors.blue,
@@ -102,29 +144,51 @@ class PaymentDetailsDialog extends StatelessWidget {
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: paymentInfo.hashCode.toString()));
                     Navigator.pop(context);
-                    Scaffold.of(context).showSnackBar(snackBar);
+                    Scaffold.of(context).showSnackBar(_buildSnackBar("Hash code"));
                   },
                 ),
+                */
               ],
             ),
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 32.0),
+          padding: EdgeInsets.only(top: 16.0),
         ),
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new SimpleDialogOption(
-              onPressed: (() {
-                Navigator.pop(context);
-              }),
-              child: new Text("CLOSE", style: theme.buttonStyle),
+              onPressed: () {
+                final dynamic tooltip = tooltipKey.currentState;
+                tooltip.ensureTooltipVisible();
+              },
+              child: new Tooltip(
+                  key: tooltipKey,
+                  message: "Long press values to copy them",
+                  preferBelow: false,
+                  child: new Icon(
+                    Icons.info_outline,
+                    color: theme.BreezColors.blue[500],
+                  )),
+              //child: new Text("CLOSE", style: theme.buttonStyle),
             ),
           ],
         ),
       ],
     );
   }
+}
+
+_buildSnackBar(String item) {
+  final snackBar = new SnackBar(
+    content: new Text(
+      '$item is copied to your clipboard.',
+      style: theme.snackBarStyle,
+    ),
+    backgroundColor: theme.snackBarBackgroundColor,
+    duration: new Duration(seconds: 4),
+  );
+  return snackBar;
 }
