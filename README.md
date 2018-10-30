@@ -32,8 +32,8 @@ Breez is a Lightning Network [mobile client](https://github.com/breez/breezmobil
 - [x] A full lncli interface to query and execute ln commands
 - [x] Filter tx by type
 - [x] Filter tx by date
-- [ ] Pay invoice (link or QR) from other ln wallets
-- [ ] Create invoice (link or QR) to be paid by other ln wallets
+- [x] Pay invoice (link or QR) from other ln wallets
+- [x] Create invoice (link or QR) to be paid by other ln wallets
 - [ ] SubmarineSwaps for adding on-chain funds
 - [ ] Removing funds 
 - [ ] Make Connect-to-Pay links work for users that didn't yet install Breez
