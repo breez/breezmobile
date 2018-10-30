@@ -42,18 +42,14 @@ class InvoiceBloc {
     NFCService nfc = injector.nfc;
     BreezServer server = injector.breezServer;
     Notifications notificationsService = injector.notifications;
-
+    LightningLinksService lightningLinks = ServiceInjector().lightningLinks;
+    
     _listenInvoiceRequests(breezLib, nfc);
     _listenNFCStream(nfc, server, breezLib);
-    _listenIncomingInvoices(notificationsService, breezLib, nfc);
+    _listenIncomingInvoices(notificationsService, breezLib, nfc, lightningLinks);
     _listenIncomingBlankInvoices(breezLib, nfc);
     _listenPaidInvoices(breezLib);
     _listenDecodeInvoiceRequests(breezLib);
-
-    LightningLinksService lightningLinks = ServiceInjector().lightningLinks;
-    lightningLinks.linksNotifications.listen((link) {
-      decodeInvoiceSink.add(link);
-    });
   }
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
@@ -112,7 +108,7 @@ class InvoiceBloc {
     }).onError(_paidInvoicesController.addError);
   }
 
-  void _listenIncomingInvoices(Notifications notificationService, BreezBridge breezLib, NFCService nfc) {
+  void _listenIncomingInvoices(Notifications notificationService, BreezBridge breezLib, NFCService nfc, LightningLinksService links) {
     Observable<String>.merge([
       Observable(notificationService.notifications)      
         .where((message) => message["msg"] == "Payment request" || message.containsKey("payment_request"))
@@ -124,7 +120,8 @@ class InvoiceBloc {
             return message["invoice"];
           }
         }),
-      nfc.receivedBolt11s()
+      nfc.receivedBolt11s(),
+      links.linksNotifications
     ])
     .asyncMap( (paymentRequest) {       
       return breezLib.decodePaymentRequest(paymentRequest)
