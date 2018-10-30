@@ -64,6 +64,17 @@ class AddFundsState extends State<_AddFundsPage> {
   initState() {
     super.initState();
 
+    _accountSubscription = widget._accountBloc.accountStream.listen((data){
+      setState(() {
+        _hasError = false;
+      });
+    });
+    _accountSubscription.onError((error) {
+      setState(() {
+        _hasError = true;
+      });
+    });
+
     _addressSubscription = widget._accountBloc.addFundStream.listen((data) {
       setState(() {
         _connected = true;
@@ -76,7 +87,6 @@ class AddFundsState extends State<_AddFundsPage> {
     });
 
     widget._accountBloc.requestAddressSink.add(null);
-
   }
 
   @override
@@ -132,7 +142,6 @@ class AddFundsState extends State<_AddFundsPage> {
                                   'Breez is processing your previous ${acc.waitingDepositConfirmation || acc.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
                             } else if (snapshot.hasData && response.errorMessage != null && response.errorMessage.isNotEmpty) {
                               message = response.errorMessage;
-                              _hasError = true;
                             }
 
                             if (message != null) {
@@ -145,7 +154,6 @@ class AddFundsState extends State<_AddFundsPage> {
                                     Text(message, textAlign: TextAlign.center,),
                                   ]));
                             }
-                            _hasError = false;
 
                             if (snapshot.hasError) {
                               return Container(
