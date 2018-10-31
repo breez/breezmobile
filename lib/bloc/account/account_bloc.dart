@@ -39,11 +39,11 @@ class AccountBloc {
   final _posFundingRequestController = new StreamController<Int64>.broadcast();
   Sink<Int64> get posFundingRequestStream => _posFundingRequestController.sink;
 
-  final _withdrawalController = new StreamController<String>.broadcast();
-  Sink<String> get withdrawalSink => _withdrawalController.sink;
+  final _withdrawalController = new StreamController<RemoveFundRequestModel>.broadcast();
+  Sink<RemoveFundRequestModel> get withdrawalSink => _withdrawalController.sink;
 
-  final _withdrawalResultController = new StreamController<String>.broadcast();
-  Stream<String> get withdrawalResultStream => _withdrawalResultController.stream;
+  final _withdrawalResultController = new StreamController<RemoveFundResponseModel>.broadcast();
+  Stream<RemoveFundResponseModel> get withdrawalResultStream => _withdrawalResultController.stream;
 
   final _paymentsController = new BehaviorSubject<PaymentsModel>();
   Stream<PaymentsModel> get paymentsStream => _paymentsController.stream;
@@ -175,11 +175,10 @@ class AccountBloc {
   
     void _listenWithdrawalRequests(BreezBridge breezLib) {
       _withdrawalController.stream.listen(
-        (address) {
-          breezLib.sendNonDepositedCoins(address)
-          .then((res) => _withdrawalResultController.add(address))
-          .catchError(_withdrawalResultController.addError)
-          .whenComplete(() => _refreshAccount(breezLib));
+        (removeFundRequestModel) {
+          breezLib.removeFund(removeFundRequestModel.address, removeFundRequestModel.amount)
+          .then((res) => _withdrawalResultController.add(new RemoveFundResponseModel(res)))
+          .catchError(_withdrawalResultController.addError);          
         });    
     }
   
