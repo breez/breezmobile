@@ -29,7 +29,7 @@ class InvoiceNotificationsHandler {
       });
     });
     _sentPaymentResultSubscription = _accountBloc.fulfilledPayments.listen((fulfilledPayment) {
-      showFlushbar(_context, message: "Payment was send successfuly!");
+      showFlushbar(_context, message: "Payment was successfuly sent!");
     }, onError: (error) {
       showFlushbar(_context, message: "Failed to send payment: ${error.toString().split("\n").first}");
     });
