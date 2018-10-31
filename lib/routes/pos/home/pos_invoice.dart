@@ -476,7 +476,7 @@ class _NfcDialogState extends State<_NfcDialog> {
                 alignment: Alignment.bottomRight,
                 icon: new Image(
                   image: _scanQr ? new AssetImage("src/icon/lost_card.png") : new AssetImage("src/icon/qr_scan.png"),
-                  color: theme.BreezColors.grey[500],
+                  color: theme.BreezColors.blue[500],
                   width: 24.0,
                   height: 24.0,
                 ),
@@ -487,9 +487,8 @@ class _NfcDialogState extends State<_NfcDialog> {
                 },
               ),
               _scanQr ? new Container(
-                padding: EdgeInsets.only(left: 4.0),
-                width: 220.0,
-                  height: 220.0,
+                width: 240.0,
+                  height: 240.0,
                   child: new StreamBuilder<String>(
                     stream: widget._invoiceBloc.readyInvoicesStream,
                     builder: (context, snapshot) {
@@ -505,6 +504,10 @@ class _NfcDialogState extends State<_NfcDialog> {
                 padding: EdgeInsets.only(top: 13.0, left: 22.0, right: 6.0),
                 child: new Image.asset('src/images/breez_nfc.png'),
               ),
+              new Padding(
+                  padding: EdgeInsets.only(top: 15.0),
+                  child: new Text(_countdownString,
+                      textAlign: TextAlign.center, style: theme.paymentRequestTitleStyle)),
               _cancelButton(),
             ],
           )

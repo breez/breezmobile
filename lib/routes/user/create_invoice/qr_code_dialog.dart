@@ -28,7 +28,12 @@ class QrCodeDialog extends StatelessWidget {
 
   Widget _buildQrCodeDialog() {
     return new SimpleDialog(
-      contentPadding: EdgeInsets.all(20.0),
+      title: new Text(
+        "Invoice",
+        style: theme.alertTitleStyle,
+      ),
+      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
+      contentPadding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
       children: <Widget>[
         new StreamBuilder<String>(
             stream: _invoiceBloc.readyInvoicesStream,
@@ -47,12 +52,13 @@ class QrCodeDialog extends StatelessWidget {
               return new Column(
                 children: [
                   new Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       new IconButton(
                         icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
                         color: theme.BreezColors.grey[500],
                         onPressed: () {
-                          Share.share(snapshot.data);
+                          Share.share("lightning:" + snapshot.data);
                         },
                       ),
                       new IconButton(
@@ -67,8 +73,8 @@ class QrCodeDialog extends StatelessWidget {
                     ],
                   ),
                   new Container(
-                    width: 220.0,
-                    height: 220.0,
+                    width: 230.0,
+                    height: 230.0,
                     child: new QrImage(
                       version: 20,
                       data: snapshot.data,

@@ -178,6 +178,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                                 Text(
                                   message,
                                   textAlign: TextAlign.center,
+                                  style: theme.warningStyle,
                                 ),
                               ]));
                         }

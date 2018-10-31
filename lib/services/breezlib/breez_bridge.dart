@@ -109,7 +109,7 @@ class BreezBridge {
     InvoiceMemo invoice = new InvoiceMemo();
     invoice.amount = amount;
     invoice.description = description;
-    return _invokeMethodWhenReady("addInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
+    return _invokeMethodWhenReady("addStandardInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
 
   Future<Invoice> getRelatedInvoice(String paymentRequest) {
