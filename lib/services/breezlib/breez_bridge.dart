@@ -50,7 +50,7 @@ class BreezBridge {
   }
 
   Future<String> getLogPath() {
-    return _invokeMethodWhenReady("getLogPath").then( (logPath) => logPath as String);;
+    return _invokeMethodWhenReady("getLogPath").then( (logPath) => logPath as String);
   }
 
   Future<Account> getAccount() {
@@ -67,9 +67,12 @@ class BreezBridge {
     return _invokeMethodWhenReady("connectAccount");
   }
 
-  Future sendNonDepositedCoins(String address){
-    SendNonDepositedCoinsRequest request = new SendNonDepositedCoinsRequest()..address = address;
-    return _invokeMethodWhenReady("sendNonDepositedCoins", {"argument": request.writeToBuffer()});
+  Future<RemoveFundReply> removeFund(String address, Int64 amount){
+    RemoveFundRequest request = new RemoveFundRequest()
+      ..address = address
+      ..amount = amount;
+    return _invokeMethodWhenReady("removeFund", {"argument": request.writeToBuffer()})
+      .then( (res) => new RemoveFundReply()..mergeFromBuffer(res ?? []));
   }
 
   Future sendPaymentForRequest(String bolt11PaymentRequest) {
