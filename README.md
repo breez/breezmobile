@@ -34,8 +34,8 @@ Breez is a Lightning Network [mobile client](https://github.com/breez/breezmobil
 - [x] Filter tx by date
 - [x] Pay invoice (link or QR) from other ln wallets
 - [x] Create invoice (link or QR) to be paid by other ln wallets
-- [ ] SubmarineSwaps for adding on-chain funds
-- [ ] Removing funds 
+- [x] Removing funds to an on-chain address
+- [ ] SubmarineSwaps for adding on-chain funds 
 - [ ] Make Connect-to-Pay links work for users that didn't yet install Breez
 - [ ] End-to-end encryption of Connect-to-Pay session
 - [ ] Ability to Backup/Restore the ln node  
@@ -43,7 +43,7 @@ Breez is a Lightning Network [mobile client](https://github.com/breez/breezmobil
 - [ ] Add mobile device security
 - [ ] Use static card IDs
 - [ ] NFC card deactivation
-- [ ] Fiat units
+- [ ] Fiat units (?)
 - [ ] Watchtower
 - [ ] Adding funds using fiat
 - [ ] lnd on iOS
