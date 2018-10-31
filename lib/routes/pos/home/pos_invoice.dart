@@ -441,11 +441,8 @@ class _NfcDialogState extends State<_NfcDialog> {
   }
 
   Widget _cancelButton() {
-    return new Padding(
-      padding: EdgeInsets.only(left: 30.0, top: 8.0, bottom: 16.0),
-      child: new Row(
-      children: [
-        new FlatButton(
+    return new FlatButton(
+      padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
         child: new Text(
           'CANCEL PAYMENT',
           textAlign: TextAlign.center,
@@ -454,8 +451,7 @@ class _NfcDialogState extends State<_NfcDialog> {
         onPressed: () {
           Navigator.of(context).pop(false);
         },
-      ),]
-    ),);
+      );
   }
 
   @override
@@ -501,7 +497,7 @@ class _NfcDialogState extends State<_NfcDialog> {
                     );
                     })) :
               new Padding(
-                padding: EdgeInsets.only(top: 13.0, left: 22.0, right: 6.0),
+                padding: EdgeInsets.only(top: 13.0, left: 12.0, right: 12.0),
                 child: new Image.asset('src/images/breez_nfc.png'),
               ),
               new Padding(
