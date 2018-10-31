@@ -482,10 +482,7 @@ class _NfcDialogState extends State<_NfcDialog> {
                   });
                 },
               ),
-              _scanQr ? new Container(
-                width: 240.0,
-                  height: 240.0,
-                  child: new StreamBuilder<String>(
+              _scanQr ? new StreamBuilder<String>(
                     stream: widget._invoiceBloc.readyInvoicesStream,
                     builder: (context, snapshot) {
                     if (!snapshot.hasData) {
@@ -495,7 +492,7 @@ class _NfcDialogState extends State<_NfcDialog> {
                       version: 20,
                       data: snapshot.data,
                     );
-                    })) :
+                    }) :
               new Padding(
                 padding: EdgeInsets.only(top: 13.0, left: 12.0, right: 12.0),
                 child: new Image.asset('src/images/breez_nfc.png'),
