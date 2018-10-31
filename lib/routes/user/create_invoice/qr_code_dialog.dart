@@ -28,11 +28,45 @@ class QrCodeDialog extends StatelessWidget {
 
   Widget _buildQrCodeDialog() {
     return new SimpleDialog(
-      title: new Text(
-        "Invoice",
-        style: theme.alertTitleStyle,
+      title: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          new Text(
+            "Invoice",
+            style: theme.alertTitleStyle,
+          ),
+          new StreamBuilder<String>(
+            stream: _invoiceBloc.readyInvoicesStream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Container();
+              }
+              return new Row(
+                children: <Widget>[
+                  new IconButton(
+                    padding: EdgeInsets.only(top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
+                    icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
+                    color: theme.BreezColors.grey[500],
+                    onPressed: () {
+                      Share.share("lightning:" + snapshot.data);
+                    },
+                  ),
+                  new IconButton(
+                    padding: EdgeInsets.only(top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
+                    icon: new Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+                    color: theme.BreezColors.grey[500],
+                    onPressed: () {
+                      Clipboard.setData(new ClipboardData(text: snapshot.data));
+                      Scaffold.of(context).showSnackBar(snackBar);
+                    },
+                  )
+                ],
+              );
+            },
+          ),
+        ],
       ),
-      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
+      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 8.0),
       contentPadding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
       children: <Widget>[
         new StreamBuilder<String>(
@@ -43,35 +77,17 @@ class QrCodeDialog extends StatelessWidget {
                     width: 150.0,
                     height: 150.0,
                     child: Padding(
-                        padding: EdgeInsets.only(right: 45.0, left: 45.0, bottom: 20.0),
+                        padding: EdgeInsets.only(
+                            right: 45.0, left: 45.0, bottom: 20.0),
                         child: CircularProgressIndicator(
-                      valueColor: new AlwaysStoppedAnimation<Color>(theme.BreezColors.grey[500],),
-                      backgroundColor: theme.BreezColors.grey[500],
-                    )));
+                          valueColor: new AlwaysStoppedAnimation<Color>(
+                            theme.BreezColors.grey[500],
+                          ),
+                          backgroundColor: theme.BreezColors.grey[500],
+                        )));
               }
               return new Column(
                 children: [
-                  new Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      new IconButton(
-                        icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
-                        color: theme.BreezColors.grey[500],
-                        onPressed: () {
-                          Share.share("lightning:" + snapshot.data);
-                        },
-                      ),
-                      new IconButton(
-                        icon: new Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-                        color: theme.BreezColors.grey[500],
-                        onPressed: () {
-                          Clipboard.setData(
-                              new ClipboardData(text: snapshot.data));
-                          Scaffold.of(context).showSnackBar(snackBar);
-                        },
-                      )
-                    ],
-                  ),
                   new Container(
                     width: 230.0,
                     height: 230.0,
@@ -103,10 +119,9 @@ class QrCodeDialog extends StatelessWidget {
   Widget _buildExpiryMessage() {
     return new Column(children: <Widget>[
       Padding(
-          padding: EdgeInsets.only(top: 8.0, bottom: 12.0),
-          child: Text(
-              "Keep the Breez app open in order to receive payment.",
-              style: theme.alertStyle))
+          padding: EdgeInsets.only(top: 16.0, bottom: 12.0),
+          child: Text("Keep the Breez app open in order to receive payment.",
+              style: theme.createInvoiceDialogWarningStyle))
     ]);
   }
 

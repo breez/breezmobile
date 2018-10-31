@@ -19,6 +19,7 @@ final TextStyle errorStyle = new TextStyle(color: errorColor, fontSize: 12.0);
 final TextStyle textStyle = new TextStyle(color: BreezColors.white[400], fontSize: 16.0);
 final TextStyle navigationDrawerHandleStyle = new TextStyle(fontSize: 16.0, letterSpacing: 0.2);
 final TextStyle warningStyle = new TextStyle(color: errorColor, fontSize: 16.0);
+final TextStyle createInvoiceDialogWarningStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 12.0);
 final TextStyle alertStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 16.0, height: 1.5);
 final TextStyle bolt11Style = new TextStyle(color: BreezColors.grey[500], fontSize: 9.0);
 final TextStyle alertTitleStyle = new TextStyle(color: BreezColors.grey[600], fontSize: 20.5, letterSpacing: 0.25);
