@@ -475,7 +475,7 @@ class _NfcDialogState extends State<_NfcDialog> {
               new IconButton(
                 alignment: Alignment.bottomRight,
                 icon: new Image(
-                  image: _scanQr ? new AssetImage("src/icon/lost_card.png") : new AssetImage("src/icon/qr_scan.png"),
+                  image: _scanQr ? new AssetImage("src/icon/card.png") : new AssetImage("src/icon/qr_scan.png"),
                   color: theme.BreezColors.blue[500],
                   width: 24.0,
                   height: 24.0,
