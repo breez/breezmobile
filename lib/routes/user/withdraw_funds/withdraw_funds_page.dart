@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -15,17 +16,16 @@ import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 
-
-class WithdrawFundsPage extends StatelessWidget {    
-
+class WithdrawFundsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) => _WithdrawFundsPage(blocs.accountBloc));
+    return new BlocConnector<AppBlocs>(
+        (context, blocs) => _WithdrawFundsPage(blocs.accountBloc));
   }
 }
 
 class _WithdrawFundsPage extends StatefulWidget {
-  final AccountBloc _accountBloc;   
+  final AccountBloc _accountBloc;
 
   const _WithdrawFundsPage(this._accountBloc);
 
@@ -38,14 +38,14 @@ class _WithdrawFundsPage extends StatefulWidget {
 class _WithdrawFundsState extends State<_WithdrawFundsPage> {
   final _formKey = GlobalKey<FormState>();
   String _scannerErrorMessage = "";
-  String _formattedAmount = "";
   final TextEditingController _addressController = new TextEditingController();
   final TextEditingController _amountController = new TextEditingController();
   StreamSubscription<AccountModel> accountSubscription;
-  StreamSubscription<String> withdrawalResultSubscription;
+  StreamSubscription<RemoveFundResponseModel> withdrawalResultSubscription;
   Currency _currency = Currency.BTC;
   BreezBridge _breezLib;
   bool _addressValidated = false;
+  bool _inProgress = false;
 
   @override
   void initState() {
@@ -55,15 +55,27 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
     _breezLib = injector.breezBridge;
 
     accountSubscription = widget._accountBloc.accountStream.listen((acc) {
-      _currency = acc.currency;      
+      _currency = acc.currency;
     });
-    withdrawalResultSubscription = widget._accountBloc.withdrawalResultStream.listen((address) {
-      if (address == _addressController.text) {
-        Navigator.of(context).pop(_formattedAmount + " were successfully sent to the address you have specified.");
+    withdrawalResultSubscription =
+        widget._accountBloc.withdrawalResultStream.listen((response) {
+      setState(() {
+        _inProgress = false;
+      });
+      Navigator.of(context).pop(); //remove the loading dialog
+      if (response.errorMessage.isNotEmpty) {
+        promptError(context, null,
+            Text(response.errorMessage, style: theme.alertStyle));
+        return;
       }
+      Navigator.of(context).pop(
+          "The funds were successfully sent to the address you have specified.");
     }, onError: (err) {
-      print(err);
-      //show error
+      setState(() {
+        _inProgress = false;
+      });
+      Navigator.of(context).pop(); //remove the loading dialog
+      promptError(context, null, Text(err.toString(), style: theme.alertStyle));
     });
   }
 
@@ -72,6 +84,13 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
     accountSubscription.cancel();
     withdrawalResultSubscription.cancel();
     super.dispose();
+  }
+
+  Future<bool> _onWillPop() async {
+    if (_inProgress) {
+      return false;
+    }
+    return true;
   }
 
   @override
@@ -85,16 +104,18 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
               height: 48.0,
               width: 168.0,
               child: RaisedButton(
-                padding: EdgeInsets.only(top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
+                padding: EdgeInsets.only(
+                    top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
                 child: new Text(
                   "REMOVE",
                   style: theme.buttonStyle,
                 ),
                 color: Colors.white,
                 elevation: 0.0,
-                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(42.0)),
+                shape: new RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(42.0)),
                 onPressed: () {
-                  _asyncValidate().then((validated){
+                  _asyncValidate().then((validated) {
                     if (validated) {
                       _formKey.currentState.save();
                       _showAlertDialog();
@@ -136,7 +157,8 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
           return Form(
             key: _formKey,
             child: new Padding(
-              padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+              padding: EdgeInsets.only(
+                  left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
               child: new Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,8 +199,10 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
                   new AmountFormField(
                       controller: _amountController,
                       currency: _currency,
-                      maxAmount: acc.balance,
-                      decoration: new InputDecoration(labelText: _currency.displayName + " Amount"),                      
+                      maxPaymentAmount: acc.maxPaymentAmount,
+                      maxAmount: acc.maxAllowedToPay,
+                      decoration: new InputDecoration(
+                          labelText: _currency.displayName + " Amount"),
                       style: theme.FieldTextStyle.textStyle),
                   new Container(
                     padding: new EdgeInsets.only(top: 36.0),
@@ -193,17 +217,14 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
     );
   }
 
-  bool canWithdraw() {
-    return _amountController.text.length > 0 && Int64.parseInt(_amountController.text) > 0;
-  }
-
   Widget _buildAvailableBTC(AccountModel acc) {
     return new Row(
       children: <Widget>[
         new Text("Available:", style: theme.textStyle),
         new Padding(
           padding: EdgeInsets.only(left: 3.0),
-          child: new Text(_currency.format(acc.balance), style: theme.textStyle),
+          child: new Text(_currency.format(acc.balance),
+              style: theme.textStyle),
         )
       ],
     );
@@ -211,19 +232,53 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
 
   void _showAlertDialog() {
     AlertDialog dialog = new AlertDialog(
-      content: new Text("Are you sure you want to withdraw " + _amountController.text + " " + _currency.displayName + " from Breez?",
+      content: new Text(
+          "Are you sure you want to remove " +
+              _amountController.text +
+              " " +
+              _currency.displayName +
+              " from Breez?",
           style: theme.alertStyle),
       actions: <Widget>[
-        new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("NO", style: theme.buttonStyle)),
+        new FlatButton(
+            onPressed: () => Navigator.pop(context),
+            child: new Text("NO", style: theme.buttonStyle)),
         new FlatButton(
             onPressed: () {
               Navigator.pop(context);
-              widget._accountBloc.withdrawalSink.add(_addressController.text);
+              _showLoadingDialog();
+              widget._accountBloc.withdrawalSink.add(new RemoveFundRequestModel(
+                  Int64.parseInt(_amountController.text),
+                  _addressController.text));
             },
             child: new Text("YES", style: theme.buttonStyle))
       ],
     );
     showDialog(context: context, builder: (_) => dialog);
+  }
+
+  _showLoadingDialog() {
+    setState(() {
+      _inProgress = true;
+    });
+    AlertDialog dialog = new AlertDialog(
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          new Text("Removing Funds...", style: theme.alertStyle),
+          Padding(padding: EdgeInsets.only(top: 12.0)),
+          CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(
+            Color.fromRGBO(51, 255, 255, 0.7),
+          ))
+        ],
+      ),
+    );
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => WillPopScope(onWillPop: _onWillPop, child: dialog));
   }
 
   Future _scanBarcode() async {
@@ -236,7 +291,8 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          this._scannerErrorMessage = 'Please grant Breez camera permission to scan QR codes.';
+          this._scannerErrorMessage =
+              'Please grant Breez camera permission to scan QR codes.';
         });
       } else {
         setState(() => this._scannerErrorMessage = '');
@@ -257,5 +313,4 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
       return _formKey.currentState.validate();
     });
   }
-
 }
