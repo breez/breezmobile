@@ -11,12 +11,13 @@ class PaymentItemAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (paymentItem.type == PaymentType.DEPOSIT) {
+    if (paymentItem.type == PaymentType.DEPOSIT || paymentItem.type == PaymentType.WITHDRAWAL) {
+      IconData icon = paymentItem.type == PaymentType.DEPOSIT ? Icons.add : Icons.remove;
       return Container(
           decoration: BoxDecoration(color: Colors.white, borderRadius: new BorderRadius.all(new Radius.circular(radius))),
           width: radius * 2,
           height: radius * 2,
-          child: Icon(Icons.add, color: theme.BreezColors.blue[500]));
+          child: Icon(icon, color: theme.BreezColors.blue[500]));
     } else {
       return BreezAvatar(paymentItem.imageURL, radius: radius);
     }

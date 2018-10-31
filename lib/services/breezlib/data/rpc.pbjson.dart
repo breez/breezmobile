@@ -1,8 +1,8 @@
 ///
 //  Generated code. Do not modify.
-//  source: rpc.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
+// ignore_for_file: non_constant_identifier_names,library_prefixes
+library data_rpc_pbjson;
 
 const ChainStatus$json = const {
   '1': 'ChainStatus',
@@ -145,6 +145,22 @@ const FundStatusReply_FundStatus$json = const {
     const {'1': 'NO_FUND', '2': 0},
     const {'1': 'WAITING_CONFIRMATION', '2': 1},
     const {'1': 'CONFIRMED', '2': 2},
+  ],
+};
+
+const RemoveFundRequest$json = const {
+  '1': 'RemoveFundRequest',
+  '2': const [
+    const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
+    const {'1': 'amount', '3': 2, '4': 1, '5': 3, '10': 'amount'},
+  ],
+};
+
+const RemoveFundReply$json = const {
+  '1': 'RemoveFundReply',
+  '2': const [
+    const {'1': 'txid', '3': 1, '4': 1, '5': 9, '10': 'txid'},
+    const {'1': 'errorMessage', '3': 2, '4': 1, '5': 9, '10': 'errorMessage'},
   ],
 };
 
