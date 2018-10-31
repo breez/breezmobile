@@ -98,7 +98,7 @@ class AccountBloc {
 
     void _listenConnectivityChanges(BreezBridge breezLib){
       var connectivity = Connectivity();     
-      connectivity.onConnectivityChanged.skip(1).listen((connectivityResult){
+      connectivity.onConnectivityChanged.listen((connectivityResult){
           log.info("_listenConnectivityChanges: connection changed to: " + connectivityResult.toString());          
           _allowReconnect = (connectivityResult != ConnectivityResult.none);
           _reconnectSink.add(null);
@@ -109,13 +109,16 @@ class AccountBloc {
       Future connectingFuture = Future.value(null);
       _reconnectStreamController.stream.transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
       .listen((_) async {
-        log.info("_listenReconnects: got Reconnect request");
-        if (_allowReconnect == true && _accountController.value.connected == false) {          
-          connectingFuture = connectingFuture.whenComplete((){
+        print("inside reconnect");
+        log.info('_listenReconnects: got Reconnect request _alloReconnect=$_allowReconnect connected=${_accountController.value.connected}');                    
+        connectingFuture = connectingFuture.whenComplete((){
+          log.info("_listenReconnects after last reconnection future completed");
+          log.info('_listenReconnects: got Reconnect request _alloReconnect=$_allowReconnect connected=${_accountController.value.connected}');                    
+          if (_allowReconnect == true && _accountController.value.connected == false) { 
             log.info("_listenReconnects: reconnecting...");
-            breezLib.connectAccount();
-          });
-        }
+            return breezLib.connectAccount();
+          }
+        });        
       });
     }
 
@@ -130,6 +133,7 @@ class AccountBloc {
         device.eventStream.where((e) => e == NotificationType.RESUME).listen((e){
           log.info("App Resumed - flutter resume called");        
           _reconnectSink.add(null);
+          print("after adding reconnect");
           _fetchFundStatus(breezLib);
         });
     }
@@ -298,6 +302,7 @@ class AccountBloc {
         .then((connected){
           _accountController.add(_accountController.value.copyWith(connected: connected));  
           if (!connected) {
+            log.info("Adding reconnect request from disconnect trigger connected = ${_accountController.value}");
             _reconnectSink.add(null); //try to reconnect
           }                                      
         })
