@@ -91,7 +91,11 @@ class _AccountPageState extends State<_AccountPage> {
                   paymentsModel = snapshot.data;
                 }
 
-                if ((account != null && !account.initial) && (paymentsModel != null && paymentsModel.paymentsList.length == 0 && paymentsModel.filter.initial)) {
+                if(account == null || paymentsModel == null){
+                  return Container();
+                }
+
+                if ((account != null && !account.initial) || (paymentsModel != null && paymentsModel.paymentsList.length == 0 && paymentsModel.filter.initial)) {
                   //build empty account page
                   return _buildEmptyAccount(account);
                 }
