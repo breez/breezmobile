@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 Future<Null> promptError(BuildContext context, String title, Widget body,
     [String okText = "OK", String optionText, Function optionFunc]) {
@@ -10,8 +11,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
       builder: (BuildContext context) {
         return new AlertDialog(
           contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-          title: title == null ? null : new Text(title, style: new TextStyle(
-            fontFamily: "IBMPlexSansMedium", fontSize: 16.4, letterSpacing: 0.0, color: Colors.black),),
+          title: title == null ? null : new Text(title, style: theme.alertTitleStyle,),
           content: new SingleChildScrollView(
             child: body,
           ),
@@ -24,8 +24,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
               },
             ) : null,
             new FlatButton(
-              child: new Text(okText,style: new TextStyle(
-            fontFamily: "IBMPlexSansMedium", fontSize: 16.4, letterSpacing: 0.0, color: Colors.black),),
+              child: new Text(okText, style: theme.buttonStyle),
               onPressed: () {
                 Navigator.of(context).pop();
               },

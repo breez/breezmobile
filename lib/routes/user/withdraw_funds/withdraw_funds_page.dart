@@ -234,10 +234,8 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
     AlertDialog dialog = new AlertDialog(
       content: new Text(
           "Are you sure you want to remove " +
-              _amountController.text +
-              " " +
-              _currency.displayName +
-              " from Breez?",
+              _currency.format(Int64.parseInt( _amountController.text )) +                            
+              " from Breez and send this amount to the address you've specified?",
           style: theme.alertStyle),
       actions: <Widget>[
         new FlatButton(
@@ -262,15 +260,17 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
       _inProgress = true;
     });
     AlertDialog dialog = new AlertDialog(
+      title: Text("Removing Funds", style: theme.alertTitleStyle, textAlign: TextAlign.center,),
       content: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          new Text("Removing Funds...", style: theme.alertStyle),
-          Padding(padding: EdgeInsets.only(top: 12.0)),
-          CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(
-            Color.fromRGBO(51, 255, 255, 0.7),
+          new Text("Please wait while Breez is sending the funds to the specified address.", style: theme.alertStyle, textAlign: TextAlign.center,),
+          Padding(
+            padding: EdgeInsets.only(top: 8.0),
+            child: new Image.asset(
+              'src/images/breez_loader.gif',
+              gaplessPlayback: true,
           ))
         ],
       ),
