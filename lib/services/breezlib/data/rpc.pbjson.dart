@@ -1,8 +1,8 @@
 ///
 //  Generated code. Do not modify.
+//  source: rpc.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes
-library data_rpc_pbjson;
+// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
 
 const ChainStatus$json = const {
   '1': 'ChainStatus',
@@ -90,6 +90,7 @@ const InvoiceMemo$json = const {
     const {'1': 'payerName', '3': 5, '4': 1, '5': 9, '10': 'payerName'},
     const {'1': 'payerImageURL', '3': 6, '4': 1, '5': 9, '10': 'payerImageURL'},
     const {'1': 'transferRequest', '3': 7, '4': 1, '5': 8, '10': 'transferRequest'},
+    const {'1': 'expiry', '3': 8, '4': 1, '5': 3, '10': 'expiry'},
   ],
 };
 
