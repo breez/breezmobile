@@ -269,7 +269,8 @@ class _PosNumPadState extends State<_POSNumPad> {
                 null,
                 " | " + _posProfile.invoiceString + " | " + _posProfile.logo,  // TODO: Add a description field to POS invoices
                 null,
-                Int64(_totalAmount)));
+                Int64(_totalAmount),
+                expiry: Int64(int.parse(cancellationTimeoutValue))));
       } else {
         promptError(
             context,

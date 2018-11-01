@@ -65,7 +65,7 @@ class _UnknownAvatar extends StatelessWidget {
     return CircleAvatar(
       backgroundColor: backgroundColor,
       radius: radius,
-      child: Icon(Icons.person, color: theme.BreezColors.blue[500], size: 0.7 * radius * 2,),
+      child: ImageIcon(AssetImage("src/icon/alien.png"), color: theme.BreezColors.blue[500])//Icon(Icons.person, color: theme.BreezColors.blue[500], size: 0.7 * radius * 2,),
     );
   }
 }
