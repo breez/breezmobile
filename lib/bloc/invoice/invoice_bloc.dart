@@ -124,7 +124,12 @@ class InvoiceBloc {
         }),
       nfc.receivedBolt11s(),
       links.linksNotifications,
-      device.deviceClipboardStream.distinct()
+      device.deviceClipboardStream
+        .where((s) => s.startsWith("ln") || s.startsWith("lightning:"))
+        .map((s) {
+          if (s.startsWith("ln")) return s.substring(2);
+          if (s.startsWith("lightning:")) return s.substring(10);
+    })
     ])
     .asyncMap( (paymentRequest) {       
       return breezLib.decodePaymentRequest(paymentRequest)

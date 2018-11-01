@@ -3,50 +3,44 @@ import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum NotificationType {
-  RESUME
-}
+enum NotificationType { RESUME }
 
 class Device {
-  static const EventChannel _notificationsChannel = const EventChannel('com.breez.client/lifecycle_events_notifications');
+  static const EventChannel _notificationsChannel =
+      const EventChannel('com.breez.client/lifecycle_events_notifications');
 
-  final StreamController _eventsController = new StreamController<NotificationType>.broadcast();
+  final StreamController _eventsController =
+      new StreamController<NotificationType>.broadcast();
   Stream get eventStream => _eventsController.stream;
 
   final _deviceClipboardController = new BehaviorSubject<String>();
   Stream get deviceClipboardStream => _deviceClipboardController.stream;
 
-  String _lastClipping;
+  String _lastClipping = "";
   static const String LAST_CLIPPING_PREFERENCES_KEY = "lastClipping";
 
-  Device(){
-    // Retrieve last clipping to avoid parsing a pasted invoice twice
+  Device() {
     var sharedPrefrences = SharedPreferences.getInstance();
     sharedPrefrences.then((preferences) {
       _lastClipping = preferences.getString(LAST_CLIPPING_PREFERENCES_KEY) ?? "";
     });
 
-    _notificationsChannel.receiveBroadcastStream().listen((event){
+    _notificationsChannel.receiveBroadcastStream().listen((event) {
       if (event == "resume") {
         _eventsController.sink.add(NotificationType.RESUME);
 
         Clipboard.getData("text/plain").then((clipboardData) {
           var text = clipboardData.text;
+
           if (text != _lastClipping) {
-            _lastClipping = text;
+            _deviceClipboardController.add(text);
             sharedPrefrences.then((preferences) {
-              preferences.setString(LAST_CLIPPING_PREFERENCES_KEY, _lastClipping);
+              preferences.setString(LAST_CLIPPING_PREFERENCES_KEY, text);
+              _lastClipping = text;
             });
-            
-            if (text.startsWith("lightning:")) {
-              _deviceClipboardController.add(text.substring(10));
-            }
-            else if (text.startsWith("ln")) {
-              _deviceClipboardController.add(text.substring(2));
-            }
           }
         });
       }
     });
-  } 
+  }
 }
