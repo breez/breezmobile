@@ -44,6 +44,9 @@ const Payment$json = const {
     const {'1': 'amount', '3': 3, '4': 1, '5': 3, '10': 'amount'},
     const {'1': 'creationTimestamp', '3': 4, '4': 1, '5': 3, '10': 'creationTimestamp'},
     const {'1': 'invoiceMemo', '3': 6, '4': 1, '5': 11, '6': '.data.InvoiceMemo', '10': 'invoiceMemo'},
+    const {'1': 'redeemTxID', '3': 7, '4': 1, '5': 9, '10': 'redeemTxID'},
+    const {'1': 'paymentHash', '3': 8, '4': 1, '5': 9, '10': 'paymentHash'},
+    const {'1': 'destination', '3': 9, '4': 1, '5': 9, '10': 'destination'},
   ],
   '4': const [Payment_PaymentType$json],
 };
@@ -90,6 +93,7 @@ const InvoiceMemo$json = const {
     const {'1': 'payerName', '3': 5, '4': 1, '5': 9, '10': 'payerName'},
     const {'1': 'payerImageURL', '3': 6, '4': 1, '5': 9, '10': 'payerImageURL'},
     const {'1': 'transferRequest', '3': 7, '4': 1, '5': 8, '10': 'transferRequest'},
+    const {'1': 'expiry', '3': 8, '4': 1, '5': 3, '10': 'expiry'},
   ],
 };
 

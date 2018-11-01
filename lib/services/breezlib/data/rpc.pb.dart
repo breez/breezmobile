@@ -122,6 +122,9 @@ class Payment extends GeneratedMessage {
     ..aInt64(3, 'amount')
     ..aInt64(4, 'creationTimestamp')
     ..a<InvoiceMemo>(6, 'invoiceMemo', PbFieldType.OM, InvoiceMemo.getDefault, InvoiceMemo.create)
+    ..aOS(7, 'redeemTxID')
+    ..aOS(8, 'paymentHash')
+    ..aOS(9, 'destination')
     ..hasRequiredFields = false
   ;
 
@@ -160,6 +163,21 @@ class Payment extends GeneratedMessage {
   set invoiceMemo(InvoiceMemo v) { setField(6, v); }
   bool hasInvoiceMemo() => $_has(3);
   void clearInvoiceMemo() => clearField(6);
+
+  String get redeemTxID => $_getS(4, '');
+  set redeemTxID(String v) { $_setString(4, v); }
+  bool hasRedeemTxID() => $_has(4);
+  void clearRedeemTxID() => clearField(7);
+
+  String get paymentHash => $_getS(5, '');
+  set paymentHash(String v) { $_setString(5, v); }
+  bool hasPaymentHash() => $_has(5);
+  void clearPaymentHash() => clearField(8);
+
+  String get destination => $_getS(6, '');
+  set destination(String v) { $_setString(6, v); }
+  bool hasDestination() => $_has(6);
+  void clearDestination() => clearField(9);
 }
 
 class _ReadonlyPayment extends Payment with ReadonlyMessageMixin {}
@@ -266,6 +284,7 @@ class InvoiceMemo extends GeneratedMessage {
     ..aOS(5, 'payerName')
     ..aOS(6, 'payerImageURL')
     ..aOB(7, 'transferRequest')
+    ..aInt64(8, 'expiry')
     ..hasRequiredFields = false
   ;
 
@@ -319,6 +338,11 @@ class InvoiceMemo extends GeneratedMessage {
   set transferRequest(bool v) { $_setBool(6, v); }
   bool hasTransferRequest() => $_has(6);
   void clearTransferRequest() => clearField(7);
+
+  Int64 get expiry => $_getI64(7);
+  set expiry(Int64 v) { $_setInt64(7, v); }
+  bool hasExpiry() => $_has(7);
+  void clearExpiry() => clearField(8);
 }
 
 class _ReadonlyInvoiceMemo extends InvoiceMemo with ReadonlyMessageMixin {}
