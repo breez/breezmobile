@@ -56,12 +56,12 @@ class PaymentDetailsDialog extends StatelessWidget {
           height: 36.0,
           child: ListTile(
             title: Text(
-              "Date",
+              "Date & Time",
               style: theme.paymentDetailsTitleStyle,
               textAlign: TextAlign.left,
             ),
             trailing: Text(
-              DateUtils.formatYearMonthDayHourMinuteSecond(
+              DateUtils.formatYearMonthDayHourMinute(
                   DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)),
               style: theme.paymentDetailsSubtitleStyle,
               textAlign: TextAlign.left,
@@ -87,10 +87,10 @@ class PaymentDetailsDialog extends StatelessWidget {
                       child: Padding(
                         padding: EdgeInsets.only(left: 16.0, right: 0.0),
                         child: Text('${paymentInfo.destination}',
-                            textAlign: TextAlign.right,
+                            textAlign: TextAlign.left,
                             overflow: TextOverflow.clip,
                             maxLines: 4,
-                            style: theme.paymentDetailsSubtitleStyle),
+                            style: theme.paymentDetailsNodeIdStyle),
                       ),
                     ),
                     Expanded(
@@ -103,7 +103,7 @@ class PaymentDetailsDialog extends StatelessWidget {
                               IconButton(
                                 alignment: Alignment.centerRight,
                                 tooltip: "Copy Node ID",
-                                iconSize: 19.0,
+                                iconSize: 16.0,
                                 color: theme.BreezColors.blue[500],
                                 icon: Icon(
                                   IconData(0xe90b, fontFamily: 'icomoon'),
@@ -117,7 +117,7 @@ class PaymentDetailsDialog extends StatelessWidget {
                               IconButton(
                                 padding: EdgeInsets.only(right: 8.0),
                                 tooltip: "Share Node ID",
-                                iconSize: 19.0,
+                                iconSize: 16.0,
                                 color: theme.BreezColors.blue[500],
                                 icon: Icon(Icons.share),
                                 onPressed: () {
@@ -147,10 +147,10 @@ class PaymentDetailsDialog extends StatelessWidget {
                       child: Padding(
                         padding: EdgeInsets.only(left: 16.0, right: 0.0),
                         child: Text('${paymentInfo.paymentHash}',
-                            textAlign: TextAlign.right,
+                            textAlign: TextAlign.left,
                             overflow: TextOverflow.clip,
                             maxLines: 4,
-                            style: theme.paymentDetailsSubtitleStyle),
+                            style: theme.paymentDetailsNodeIdStyle),
                       ),
                     ),
                     Expanded(
@@ -162,8 +162,9 @@ class PaymentDetailsDialog extends StatelessWidget {
                             children: <Widget>[
                               IconButton(
                                 alignment: Alignment.centerRight,
+                                padding: EdgeInsets.only(right: 8.0),
                                 tooltip: "Copy Hash Code",
-                                iconSize: 19.0,
+                                iconSize: 16.0,
                                 color: theme.BreezColors.blue[500],
                                 icon: Icon(
                                   IconData(0xe90b, fontFamily: 'icomoon'),
@@ -177,7 +178,7 @@ class PaymentDetailsDialog extends StatelessWidget {
                               IconButton(
                                 padding: EdgeInsets.only(right: 8.0),
                                 tooltip: "Share Hash Code",
-                                iconSize: 19.0,
+                                iconSize: 16.0,
                                 color: theme.BreezColors.blue[500],
                                 icon: Icon(Icons.share),
                                 onPressed: () {
