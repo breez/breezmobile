@@ -1,8 +1,8 @@
 ///
 //  Generated code. Do not modify.
-//  source: rpc.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
+// ignore_for_file: non_constant_identifier_names,library_prefixes
+library data_rpc_pbjson;
 
 const ChainStatus$json = const {
   '1': 'ChainStatus',
@@ -44,6 +44,9 @@ const Payment$json = const {
     const {'1': 'amount', '3': 3, '4': 1, '5': 3, '10': 'amount'},
     const {'1': 'creationTimestamp', '3': 4, '4': 1, '5': 3, '10': 'creationTimestamp'},
     const {'1': 'invoiceMemo', '3': 6, '4': 1, '5': 11, '6': '.data.InvoiceMemo', '10': 'invoiceMemo'},
+    const {'1': 'redeemTxID', '3': 7, '4': 1, '5': 9, '10': 'redeemTxID'},
+    const {'1': 'paymentHash', '3': 8, '4': 1, '5': 9, '10': 'paymentHash'},
+    const {'1': 'destination', '3': 9, '4': 1, '5': 9, '10': 'destination'},
   ],
   '4': const [Payment_PaymentType$json],
 };

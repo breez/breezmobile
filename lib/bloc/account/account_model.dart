@@ -113,6 +113,9 @@ class PaymentInfo {
   PaymentType get type => _typeMap[_paymentResponse.type];  
   Int64 get amount => _paymentResponse.amount;
   Int64 get creationTimestamp => _paymentResponse.creationTimestamp;  
+  String get destination => _paymentResponse.destination;
+  String get redeemTxID => _paymentResponse.redeemTxID;
+  String get paymentHash => _paymentResponse.paymentHash;
   String get description => type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL ? "Bitcoin Transfer" : _paymentResponse.invoiceMemo?.description;
   String get imageURL {    
     String url = (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeImageURL : _paymentResponse.invoiceMemo?.payerImageURL);
@@ -205,4 +208,16 @@ class MockPaymentInfo implements PaymentInfo {
   // TODO: implement title
   @override
   String get title => description;
+
+  // TODO: implement destination
+  @override
+  String get destination => null;
+
+  // TODO: implement paymentHash
+  @override
+  String get paymentHash => null;
+
+  // TODO: implement redeemTxID
+  @override
+  String get redeemTxID => null;
 }
