@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum NotificationType {
   RESUME
@@ -11,18 +13,37 @@ class Device {
   final StreamController _eventsController = new StreamController<NotificationType>.broadcast();
   Stream get eventStream => _eventsController.stream;
 
-  final StreamController _deviceClipboardController = new StreamController<String>.broadcast();
+  final _deviceClipboardController = new BehaviorSubject<String>();
   Stream get deviceClipboardStream => _deviceClipboardController.stream;
 
+  String _lastClipping;
+  static const String LAST_CLIPPING_PREFERENCES_KEY = "lastClipping";
+
   Device(){
+    // Retrieve last clipping to avoid parsing a pasted invoice twice
+    var sharedPrefrences = SharedPreferences.getInstance();
+    sharedPrefrences.then((preferences) {
+      _lastClipping = preferences.getString(LAST_CLIPPING_PREFERENCES_KEY) ?? "";
+    });
+
     _notificationsChannel.receiveBroadcastStream().listen((event){
       if (event == "resume") {
         _eventsController.sink.add(NotificationType.RESUME);
 
         Clipboard.getData("text/plain").then((clipboardData) {
           var text = clipboardData.text;
-          if (text.startsWith("lightning:")) {
-            _deviceClipboardController.add(text.substring(10));
+          if (text != _lastClipping) {
+            _lastClipping = text;
+            sharedPrefrences.then((preferences) {
+              preferences.setString(LAST_CLIPPING_PREFERENCES_KEY, _lastClipping);
+            });
+            
+            if (text.startsWith("lightning:")) {
+              _deviceClipboardController.add(text.substring(10));
+            }
+            else if (text.startsWith("ln")) {
+              _deviceClipboardController.add(text.substring(2));
+            }
           }
         });
       }

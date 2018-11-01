@@ -124,7 +124,7 @@ class InvoiceBloc {
         }),
       nfc.receivedBolt11s(),
       links.linksNotifications,
-      device.deviceClipboardStream
+      device.deviceClipboardStream.distinct()
     ])
     .asyncMap( (paymentRequest) {       
       return breezLib.decodePaymentRequest(paymentRequest)
