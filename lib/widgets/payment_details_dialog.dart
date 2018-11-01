@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share/share.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/payment_item_avatar.dart';
 import 'package:breez/utils/date.dart';
@@ -18,7 +19,6 @@ class PaymentDetailsDialog extends StatelessWidget {
   }
 
   Widget showPaymentDetailsDialog() {
-    final tooltipKey = new GlobalKey();
     final _expansionTileTheme = Theme.of(context)
         .copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
     return new SimpleDialog(
@@ -74,62 +74,120 @@ class PaymentDetailsDialog extends StatelessWidget {
         Theme(
           data: _expansionTileTheme,
           child: ExpansionTile(
-              trailing: IconButton(
-                tooltip: "Copy node id",
-                iconSize: 24.0,
-                color: theme.BreezColors.blue[500],
-                icon: Icon(
-                  IconData(0xe90b, fontFamily: 'icomoon'),
-                ),
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: paymentInfo.nodeId));
-                  Navigator.pop(context);
-                  Scaffold.of(context).showSnackBar(_buildSnackBar("Node Id"));
-                },
-              ),
               title: Text(
                 "Node ID",
                 style: theme.paymentDetailsTitleStyle,
               ),
               children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: Text('${paymentInfo.nodeId}',
-                      textAlign: TextAlign.right,
-                      overflow: TextOverflow.clip,
-                      maxLines: 3,
-                      style: theme.paymentDetailsSubtitleStyle),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 16.0, right: 0.0),
+                        child: Text('${paymentInfo.destination}',
+                            textAlign: TextAlign.right,
+                            overflow: TextOverflow.clip,
+                            maxLines: 4,
+                            style: theme.paymentDetailsSubtitleStyle),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 0,
+                      child: Padding(
+                          padding: EdgeInsets.zero,
+                          child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              IconButton(
+                                alignment: Alignment.centerRight,
+                                tooltip: "Copy Node ID",
+                                iconSize: 19.0,
+                                color: theme.BreezColors.blue[500],
+                                icon: Icon(
+                                  IconData(0xe90b, fontFamily: 'icomoon'),
+                                ),
+                                onPressed: () {
+                                  Clipboard.setData(ClipboardData(text: paymentInfo.destination));
+                                  Navigator.pop(context);
+                                  Scaffold.of(context).showSnackBar(_buildSnackBar("Node Id"));
+                                },
+                              ),
+                              IconButton(
+                                padding: EdgeInsets.only(right: 8.0),
+                                tooltip: "Share Node ID",
+                                iconSize: 19.0,
+                                color: theme.BreezColors.blue[500],
+                                icon: Icon(Icons.share),
+                                onPressed: () {
+                                  Share.share(paymentInfo.destination);
+                                },
+                              ),
+                            ],
+                          )),
+                    ),
+                  ],
                 ),
               ]),
         ),
         Theme(
           data: _expansionTileTheme,
           child: ExpansionTile(
-              trailing: IconButton(
-                tooltip: "Copy hash code",
-                iconSize: 24.0,
-                color: theme.BreezColors.blue[500],
-                icon: Icon(
-                  IconData(0xe90b, fontFamily: 'icomoon'),
-                ),
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: paymentInfo.hashCode.toString()));
-                  Navigator.pop(context);
-                  Scaffold.of(context).showSnackBar(_buildSnackBar("Hash code"));
-                },
-              ),
               title: Text(
                 "Hash",
                 style: theme.paymentDetailsTitleStyle,
               ),
               children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: Text('${paymentInfo.nodeId}${paymentInfo.nodeId}',
-                      textAlign: TextAlign.right,
-                      overflow: TextOverflow.clip,
-                      maxLines: 5,
-                      style: theme.paymentDetailsSubtitleStyle),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 16.0, right: 0.0),
+                        child: Text('${paymentInfo.paymentHash}',
+                            textAlign: TextAlign.right,
+                            overflow: TextOverflow.clip,
+                            maxLines: 4,
+                            style: theme.paymentDetailsSubtitleStyle),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 0,
+                      child: Padding(
+                          padding: EdgeInsets.zero,
+                          child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              IconButton(
+                                alignment: Alignment.centerRight,
+                                tooltip: "Copy Hash Code",
+                                iconSize: 19.0,
+                                color: theme.BreezColors.blue[500],
+                                icon: Icon(
+                                  IconData(0xe90b, fontFamily: 'icomoon'),
+                                ),
+                                onPressed: () {
+                                  Clipboard.setData(ClipboardData(text: paymentInfo.paymentHash));
+                                  Navigator.pop(context);
+                                  Scaffold.of(context).showSnackBar(_buildSnackBar("Hash code"));
+                                },
+                              ),
+                              IconButton(
+                                padding: EdgeInsets.only(right: 8.0),
+                                tooltip: "Share Hash Code",
+                                iconSize: 19.0,
+                                color: theme.BreezColors.blue[500],
+                                icon: Icon(Icons.share),
+                                onPressed: () {
+                                  Share.share(paymentInfo.paymentHash);
+                                },
+                              ),
+                            ],
+                          )),
+                    ),
+                  ],
                 )
               ]),
         ),

@@ -130,9 +130,6 @@ class PaymentInfo {
   }
   Currency get currency => _currency;
 
-  // TODO: implement nodeId
-  String get nodeId => "037a49752a66e57ea6a2c90d3d9d34fc6bcd8a4a28b90735473d9710038cbf397e";
-
   PaymentInfo(this._paymentResponse, this._currency);
   PaymentInfo copyWith(Currency currency) {
     return PaymentInfo(this._paymentResponse, currency);
@@ -195,10 +192,6 @@ class MockPaymentInfo implements PaymentInfo {
   @override
   Currency get _currency => Currency.BTC;
 
-  // TODO: implement nodeId
-  @override
-  String get nodeId => "037a49752a66e57ea6a2c90d3d9d34fc6bcd8a4a28b90735473d9710038cbf397e";
-  
   // @override
   // String get formattedAmount => CurrencyFormatter.format(amount, _currency);
 
@@ -217,11 +210,11 @@ class MockPaymentInfo implements PaymentInfo {
 
   // TODO: implement destination
   @override
-  String get destination => null;
+  String get destination => "02f6725f9c1c40333b67faea92fd211c183050f28df32cac3f9d69685fe9665432";
 
   // TODO: implement paymentHash
   @override
-  String get paymentHash => null;
+  String get paymentHash => "c794bc55ec111256e41ba7c53f6aafadf39975a47abf52d496b662cdc4d5a90e";
 
   // TODO: implement redeemTxID
   @override
