@@ -39,11 +39,11 @@ class AccountBloc {
   final _posFundingRequestController = new StreamController<Int64>.broadcast();
   Sink<Int64> get posFundingRequestStream => _posFundingRequestController.sink;
 
-  final _withdrawalController = new StreamController<String>.broadcast();
-  Sink<String> get withdrawalSink => _withdrawalController.sink;
+  final _withdrawalController = new StreamController<RemoveFundRequestModel>.broadcast();
+  Sink<RemoveFundRequestModel> get withdrawalSink => _withdrawalController.sink;
 
-  final _withdrawalResultController = new StreamController<String>.broadcast();
-  Stream<String> get withdrawalResultStream => _withdrawalResultController.stream;
+  final _withdrawalResultController = new StreamController<RemoveFundResponseModel>.broadcast();
+  Stream<RemoveFundResponseModel> get withdrawalResultStream => _withdrawalResultController.stream;
 
   final _paymentsController = new BehaviorSubject<PaymentsModel>();
   Stream<PaymentsModel> get paymentsStream => _paymentsController.stream;
@@ -98,7 +98,7 @@ class AccountBloc {
 
     void _listenConnectivityChanges(BreezBridge breezLib){
       var connectivity = Connectivity();     
-      connectivity.onConnectivityChanged.skip(1).listen((connectivityResult){
+      connectivity.onConnectivityChanged.listen((connectivityResult){
           log.info("_listenConnectivityChanges: connection changed to: " + connectivityResult.toString());          
           _allowReconnect = (connectivityResult != ConnectivityResult.none);
           _reconnectSink.add(null);
@@ -109,13 +109,16 @@ class AccountBloc {
       Future connectingFuture = Future.value(null);
       _reconnectStreamController.stream.transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
       .listen((_) async {
-        log.info("_listenReconnects: got Reconnect request");
-        if (_allowReconnect == true && _accountController.value.connected == false) {          
-          connectingFuture = connectingFuture.whenComplete((){
+        print("inside reconnect");
+        log.info('_listenReconnects: got Reconnect request _alloReconnect=$_allowReconnect connected=${_accountController.value.connected}');                    
+        connectingFuture = connectingFuture.whenComplete((){
+          log.info("_listenReconnects after last reconnection future completed");
+          log.info('_listenReconnects: got Reconnect request _alloReconnect=$_allowReconnect connected=${_accountController.value.connected}');                    
+          if (_allowReconnect == true && _accountController.value.connected == false) { 
             log.info("_listenReconnects: reconnecting...");
-            breezLib.connectAccount();
-          });
-        }
+            return breezLib.connectAccount();
+          }
+        });        
       });
     }
 
@@ -130,6 +133,7 @@ class AccountBloc {
         device.eventStream.where((e) => e == NotificationType.RESUME).listen((e){
           log.info("App Resumed - flutter resume called");        
           _reconnectSink.add(null);
+          print("after adding reconnect");
           _fetchFundStatus(breezLib);
         });
     }
@@ -175,11 +179,10 @@ class AccountBloc {
   
     void _listenWithdrawalRequests(BreezBridge breezLib) {
       _withdrawalController.stream.listen(
-        (address) {
-          breezLib.sendNonDepositedCoins(address)
-          .then((res) => _withdrawalResultController.add(address))
-          .catchError(_withdrawalResultController.addError)
-          .whenComplete(() => _refreshAccount(breezLib));
+        (removeFundRequestModel) {
+          breezLib.removeFund(removeFundRequestModel.address, removeFundRequestModel.amount)
+          .then((res) => _withdrawalResultController.add(new RemoveFundResponseModel(res)))
+          .catchError(_withdrawalResultController.addError);          
         });    
     }
   
@@ -297,7 +300,11 @@ class AccountBloc {
     _refreshRoutingNodeConnection(BreezBridge breezLib){      
       breezLib.isConnectedToRoutingNode()
         .then((connected){
-          _accountController.add(_accountController.value.copyWith(connected: connected));                                        
+          _accountController.add(_accountController.value.copyWith(connected: connected));  
+          if (!connected) {
+            log.info("Adding reconnect request from disconnect trigger connected = ${_accountController.value}");
+            _reconnectSink.add(null); //try to reconnect
+          }                                      
         })
         .catchError(_routingNodeConnectionController.addError);
     }

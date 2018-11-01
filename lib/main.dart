@@ -124,7 +124,7 @@ class BreezAppState extends State<BreezApp> {
             );
           case '/withdraw_funds':
             return new FadeInRoute(
-              builder: (_) => new WithdrawFundsPage(false),
+              builder: (_) => new WithdrawFundsPage(),
               settings: settings,
             );
           case '/activate_card':

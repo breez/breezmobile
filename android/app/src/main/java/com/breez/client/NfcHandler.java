@@ -46,7 +46,7 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
         m_adapter = NfcAdapter.getDefaultAdapter(mainActivity);
 
         m_pendingIntent = PendingIntent.getActivity(
-                mainActivity, 0, new Intent(mainActivity, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+                mainActivity, 0, new Intent(mainActivity, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
         IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
 

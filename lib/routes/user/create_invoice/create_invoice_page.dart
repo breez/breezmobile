@@ -36,9 +36,12 @@ class _CreateInvoicePage extends StatefulWidget {
 
 class _CreateInvoiceState extends State<_CreateInvoicePage> {
   final _formKey = GlobalKey<FormState>();
+  var _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   final TextEditingController _descriptionController =
       new TextEditingController();
   final TextEditingController _amountController = new TextEditingController();
+
   StreamSubscription<bool> _paidInvoicesSubscription;
 
   @override
@@ -46,7 +49,9 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
     super.initState();
     _paidInvoicesSubscription =
         widget._invoiceBloc.paidInvoicesStream.listen((paid) {
-      Navigator.of(context).pop();
+          // Workaround for snackbar appearing mid air
+          Navigator.pop(context, 'Payment was successfuly received!');
+          Navigator.pop(context, 'Payment was successfuly received!');
     });
   }
 
@@ -60,6 +65,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
   Widget build(BuildContext context) {
     final String _title = "Create an Invoice";
     return new Scaffold(
+      key: _scaffoldKey,
       bottomNavigationBar: new Padding(
           padding: new EdgeInsets.only(bottom: 40.0),
           child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
@@ -161,7 +167,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                         } else if (!accSnapshot.hasData) {
                           message =
                               'Receiving payments will be available as soon as Breez is synchronized.';
-                        } else if (acc.waitingDepositConfirmation || acc.processiongBreezConnection) {
+                        } else if (acc.processiongBreezConnection) {
                           message =
                               'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
                         }
@@ -178,6 +184,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                                 Text(
                                   message,
                                   textAlign: TextAlign.center,
+                                  style: theme.warningStyle,
                                 ),
                               ]));
                         }

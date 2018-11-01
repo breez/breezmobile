@@ -10,6 +10,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:breez/services/lightning_links.dart';
+import 'package:breez/services/device.dart';
 
 class InvoiceBloc {
 
@@ -43,10 +44,11 @@ class InvoiceBloc {
     BreezServer server = injector.breezServer;
     Notifications notificationsService = injector.notifications;
     LightningLinksService lightningLinks = ServiceInjector().lightningLinks;
-    
+    Device device = injector.device;
+
     _listenInvoiceRequests(breezLib, nfc);
     _listenNFCStream(nfc, server, breezLib);
-    _listenIncomingInvoices(notificationsService, breezLib, nfc, lightningLinks);
+    _listenIncomingInvoices(notificationsService, breezLib, nfc, lightningLinks, device);
     _listenIncomingBlankInvoices(breezLib, nfc);
     _listenPaidInvoices(breezLib);
     _listenDecodeInvoiceRequests(breezLib);
@@ -54,7 +56,7 @@ class InvoiceBloc {
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
     _newStandardInvoiceRequestController.stream.listen((invoiceRequest){
-      breezLib.addStandardInvoice(invoiceRequest.amount, invoiceRequest.description)
+      breezLib.addStandardInvoice(invoiceRequest.amount, invoiceRequest.description, expiry: invoiceRequest.expiry)
           .then( (paymentRequest) {
         _readyInvoicesController.add(paymentRequest);
       })
@@ -108,7 +110,7 @@ class InvoiceBloc {
     }).onError(_paidInvoicesController.addError);
   }
 
-  void _listenIncomingInvoices(Notifications notificationService, BreezBridge breezLib, NFCService nfc, LightningLinksService links) {
+  void _listenIncomingInvoices(Notifications notificationService, BreezBridge breezLib, NFCService nfc, LightningLinksService links, Device device) {
     Observable<String>.merge([
       Observable(notificationService.notifications)      
         .where((message) => message["msg"] == "Payment request" || message.containsKey("payment_request"))
@@ -121,7 +123,13 @@ class InvoiceBloc {
           }
         }),
       nfc.receivedBolt11s(),
-      links.linksNotifications
+      links.linksNotifications,
+      device.deviceClipboardStream
+        .where((s) => s.startsWith("ln") || s.startsWith("lightning:"))
+        .map((s) {
+          if (s.startsWith("ln")) return s.substring(2);
+          if (s.startsWith("lightning:")) return s.substring(10);
+    })
     ])
     .asyncMap( (paymentRequest) {       
       return breezLib.decodePaymentRequest(paymentRequest)

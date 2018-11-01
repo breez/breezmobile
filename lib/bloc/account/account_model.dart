@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
@@ -40,6 +42,7 @@ class AccountModel {
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
+  Int64 get maxAllowedToPay => Int64(min(_accountResponse.maxAllowedToPay.toInt(), _accountResponse.maxPaymentAmount.toInt()));
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
 
   String get statusMessage {
@@ -110,13 +113,16 @@ class PaymentInfo {
   PaymentType get type => _typeMap[_paymentResponse.type];  
   Int64 get amount => _paymentResponse.amount;
   Int64 get creationTimestamp => _paymentResponse.creationTimestamp;  
-  String get description => type == PaymentType.DEPOSIT ? "Bitcoin Transfer" : _paymentResponse.invoiceMemo?.description;
+  String get destination => _paymentResponse.destination;
+  String get redeemTxID => _paymentResponse.redeemTxID;
+  String get paymentHash => _paymentResponse.paymentHash;
+  String get description => type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL ? "Bitcoin Transfer" : _paymentResponse.invoiceMemo?.description;
   String get imageURL {    
     String url = (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeImageURL : _paymentResponse.invoiceMemo?.payerImageURL);
     return (url == null || url.isEmpty) ? null : url;      
   }
   String get title {
-    if (type == PaymentType.DEPOSIT){
+    if (type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL){
       return "Bitcoin Transfer";
     }
     String peerName = (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeName : _paymentResponse.invoiceMemo?.payerName);
@@ -140,6 +146,21 @@ class AddFundResponse {
   String get errorMessage => _addfundReply.errorMessage;
   Int64 get maxAllowedDeposit => _addfundReply.maxAllowedDeposit;
   String get address => _addfundReply.address;
+}
+
+class RemoveFundRequestModel {
+  final Int64 amount;
+  final String address;
+
+  RemoveFundRequestModel(this.amount, this.address);
+}
+
+class RemoveFundResponseModel {
+  final RemoveFundReply _reply;
+  String get transactionID => _reply.txid;
+  String get errorMessage => _reply.errorMessage;
+
+  RemoveFundResponseModel(this._reply);
 }
 
 class MockPaymentInfo implements PaymentInfo {
@@ -193,4 +214,16 @@ class MockPaymentInfo implements PaymentInfo {
   // TODO: implement title
   @override
   String get title => description;
+
+  // TODO: implement destination
+  @override
+  String get destination => null;
+
+  // TODO: implement paymentHash
+  @override
+  String get paymentHash => null;
+
+  // TODO: implement redeemTxID
+  @override
+  String get redeemTxID => null;
 }
