@@ -102,7 +102,11 @@ class _NavigationDrawer extends StatelessWidget {
               ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
               ..add(_expansionTile(context, "Card", Icons.credit_card, _minorActionsCardConfig, _onItemSelected))
               ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
-              ..add(_expansionTile(context, "Invoice", Icons.monetization_on, _minorActionsInvoiceConfig, _onItemSelected))
+              ..addAll(_minorActionsInvoiceConfig
+                  .map(
+                    (action) => _actionTile(action, context, _onItemSelected, false),
+              )
+                  .toList())
               ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
               ..addAll(_minorActionsDevConfig
                   .map(

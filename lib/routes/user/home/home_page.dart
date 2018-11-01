@@ -22,12 +22,12 @@ class Home extends StatefulWidget {
     _minorActionsInvoice =
     new List<DrawerItemConfig>.unmodifiable([
       new DrawerItemConfig(
-          "/scan_invoice", "Scan", "src/icon/qr_scan.png", onItemSelected: (String name) async {
+          "/scan_invoice", "Scan Invoice", "src/icon/qr_scan.png", onItemSelected: (String name) async {
           String decodedQr = await BarcodeScanner.scan();
           invoiceBloc.decodeInvoiceSink.add(decodedQr);
       }),
       new DrawerItemConfig(
-          "/create_invoice", "Create", "src/icon/paste.png"),
+          "/create_invoice", "Create Invoice", "src/icon/paste.png"),
     ]);
   }
 
