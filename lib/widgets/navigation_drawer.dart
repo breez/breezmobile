@@ -30,8 +30,15 @@ class DrawerItemConfig {
 }
 
 class NavigationDrawer extends StatelessWidget {
-  NavigationDrawer(this._avatar, this._screensConfig, this._majorActionsFundsConfig, this._majorActionsPayConfig,
-      this._minorActionsCardConfig, this._minorActionsInvoiceConfig, this._minorActionsDevConfig, this._onItemSelected);
+  NavigationDrawer(
+      this._avatar,
+      this._screensConfig,
+      this._majorActionsFundsConfig,
+      this._majorActionsPayConfig,
+      this._minorActionsCardConfig,
+      this._minorActionsInvoiceConfig,
+      this._minorActionsDevConfig,
+      this._onItemSelected);
   final bool _avatar;
   final List<DrawerItemConfig> _screensConfig;
   final List<DrawerItemConfig> _majorActionsFundsConfig;
@@ -43,7 +50,8 @@ class NavigationDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) => new _NavigationDrawer(
+    return new BlocConnector<AppBlocs>((context, blocs) =>
+    new _NavigationDrawer(
         _avatar,
         _screensConfig,
         _majorActionsFundsConfig,
@@ -90,27 +98,35 @@ class _NavigationDrawer extends StatelessWidget {
             ]
               ..addAll(_majorActionsFundsConfig
                   .map(
-                    (action) => _actionTile(action, context, _onItemSelected, false),
+                    (action) => _actionTile(action, context, _onItemSelected),
                   )
                   .toList())
-              ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
+              ..add(new Padding(
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Divider()))
               ..addAll(_majorActionsPayConfig
                   .map(
-                    (action) => _actionTile(action, context, _onItemSelected, false),
+                    (action) => _actionTile(action, context, _onItemSelected),
                   )
                   .toList())
-              ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
+              ..add(new Padding(
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Divider()))
               ..add(_expansionTile(context, "Card", AssetImage("src/icon/card.png"), _minorActionsCardConfig, _onItemSelected))
-              ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
+              ..add(new Padding(
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Divider()))
               ..addAll(_minorActionsInvoiceConfig
                   .map(
-                    (action) => _actionTile(action, context, _onItemSelected, false),
+                    (action) => _actionTile(action, context, _onItemSelected),
               )
                   .toList())
-              ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
+              ..add(new Padding(
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Divider()))
               ..addAll(_minorActionsDevConfig
                   .map(
-                    (action) => _actionTile(action, context, _onItemSelected, false),
+                    (action) => _actionTile(action, context, _onItemSelected),
                   )
                   .toList())),
       );
@@ -119,16 +135,20 @@ class _NavigationDrawer extends StatelessWidget {
         child: new ListView(
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
-            children: <Widget>[_breezDrawerHeader(_userProfileBloc, _avatar)]
+            children: <Widget>[
+              _breezDrawerHeader(_userProfileBloc, _avatar)
+            ]
               ..addAll(_majorActionsFundsConfig
                   .map(
-                    (action) => _actionTile(action, context, _onItemSelected, false),
+                    (action) => _actionTile(action, context, _onItemSelected),
                   )
                   .toList())
-              ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
+              ..add(new Padding(
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Divider()))
               ..addAll(_minorActionsDevConfig
                   .map(
-                    (action) => _actionTile(action, context, _onItemSelected, false),
+                    (action) => _actionTile(action, context, _onItemSelected),
                   )
                   .toList())),
       );
@@ -139,9 +159,7 @@ class _NavigationDrawer extends StatelessWidget {
 Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return new BreezDrawerHeader(
     padding: EdgeInsets.only(top: 54.0, left: 16.0),
-    child: !drawAvatar
-        ? new Container()
-        : new StreamBuilder<BreezUserModel>(
+    child: !drawAvatar ? new Container() : new StreamBuilder<BreezUserModel>(
             stream: user.userStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -184,9 +202,10 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   );
 }
 
-Widget _actionTile(DrawerItemConfig action, BuildContext context, Function onItemSelected, bool subTile) {
+Widget _actionTile(
+    DrawerItemConfig action, BuildContext context, Function onItemSelected, [bool subTile]) {
   return new Padding(
-    padding: EdgeInsets.only(left: subTile ? 36.0 : 8.0, right: 8.0),
+    padding: subTile != null ? EdgeInsets.only(left: 36.0, right: 8.0) : EdgeInsets.only(left: 8.0, right: 8.0),
     child: new ListTile(
       leading: ImageIcon(
         AssetImage(action._icon),
