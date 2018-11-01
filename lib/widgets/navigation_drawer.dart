@@ -100,7 +100,7 @@ class _NavigationDrawer extends StatelessWidget {
                   )
                   .toList())
               ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
-              ..add(_expansionTile(context, "Card", Icons.credit_card, _minorActionsCardConfig, _onItemSelected))
+              ..add(_expansionTile(context, "Card", AssetImage("src/icon/card.png"), _minorActionsCardConfig, _onItemSelected))
               ..add(new Padding(padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider()))
               ..addAll(_minorActionsInvoiceConfig
                   .map(
@@ -186,7 +186,7 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
 
 Widget _actionTile(DrawerItemConfig action, BuildContext context, Function onItemSelected, bool subTile) {
   return new Padding(
-    padding: EdgeInsets.only(left: subTile ? 32.0 : 8.0, right: 8.0),
+    padding: EdgeInsets.only(left: subTile ? 36.0 : 8.0, right: 8.0),
     child: new ListTile(
       leading: ImageIcon(
         AssetImage(action._icon),
@@ -202,11 +202,12 @@ Widget _actionTile(DrawerItemConfig action, BuildContext context, Function onIte
   );
 }
 
-Widget _expansionTile(BuildContext context, String title, IconData icon, List<DrawerItemConfig> config, Function onItemSelected){
+Widget _expansionTile(BuildContext context, String title, AssetImage icon, List<DrawerItemConfig> config, Function onItemSelected){
   final _expansionTileTheme = Theme.of(context).copyWith(dividerColor: Theme.of(context).canvasColor);
   return Theme(data: _expansionTileTheme, child:ExpansionTile(
-    title: Text(title,style: theme.drawerItemTextStyle,),
-    leading: Padding(padding: EdgeInsets.only(left:8.0),child:Icon(icon, size: 24.0,
+    title: Padding(
+      padding: EdgeInsets.only(left:8.0, right: 8.0), child:Text(title,style: theme.drawerItemTextStyle,),),
+    leading: Padding(padding: EdgeInsets.only(left:8.0),child:ImageIcon(icon, size: 24.0,
       color: Colors.white,),),
     children:
     config.map((action) => _actionTile(action, context, onItemSelected, true)).toList(),
