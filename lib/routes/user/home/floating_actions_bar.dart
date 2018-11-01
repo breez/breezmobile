@@ -31,15 +31,7 @@ class FloatingActionsBar extends StatelessWidget {
                 Navigator.of(context).pushNamed('/connect_to_pay');
                 return;
               }
-              if (account.nonDepositableBalance > 0) {
-                Navigator.of(context).push<String>(new MaterialPageRoute(builder: (ctx) => new WithdrawFundsPage(true))).then((message) {
-                  if (message != null) {
-                    Scaffold.of(context).showSnackBar(new SnackBar(content: new Text(message)));
-                  }
-                });
-              } else {
-                Navigator.of(context).pushNamed('/add_funds');
-              }
+              Navigator.of(context).pushNamed('/add_funds');
             },
             shape: isSmallView
                 ? new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(56.0))

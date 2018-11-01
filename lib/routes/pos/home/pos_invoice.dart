@@ -269,7 +269,8 @@ class _PosNumPadState extends State<_POSNumPad> {
                 null,
                 " | " + _posProfile.invoiceString + " | " + _posProfile.logo,  // TODO: Add a description field to POS invoices
                 null,
-                Int64(_totalAmount)));
+                Int64(_totalAmount),
+                expiry: Int64(int.parse(cancellationTimeoutValue))));
       } else {
         promptError(
             context,
@@ -441,11 +442,8 @@ class _NfcDialogState extends State<_NfcDialog> {
   }
 
   Widget _cancelButton() {
-    return new Padding(
-      padding: EdgeInsets.only(left: 30.0, top: 8.0, bottom: 16.0),
-      child: new Row(
-      children: [
-        new FlatButton(
+    return new FlatButton(
+      padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
         child: new Text(
           'CANCEL PAYMENT',
           textAlign: TextAlign.center,
@@ -454,8 +452,7 @@ class _NfcDialogState extends State<_NfcDialog> {
         onPressed: () {
           Navigator.of(context).pop(false);
         },
-      ),]
-    ),);
+      );
   }
 
   @override
@@ -475,8 +472,8 @@ class _NfcDialogState extends State<_NfcDialog> {
               new IconButton(
                 alignment: Alignment.bottomRight,
                 icon: new Image(
-                  image: _scanQr ? new AssetImage("src/icon/lost_card.png") : new AssetImage("src/icon/qr_scan.png"),
-                  color: theme.BreezColors.grey[500],
+                  image: _scanQr ? new AssetImage("src/icon/card.png") : new AssetImage("src/icon/qr_scan.png"),
+                  color: theme.BreezColors.blue[500],
                   width: 24.0,
                   height: 24.0,
                 ),
@@ -486,11 +483,7 @@ class _NfcDialogState extends State<_NfcDialog> {
                   });
                 },
               ),
-              _scanQr ? new Container(
-                padding: EdgeInsets.only(left: 4.0),
-                width: 220.0,
-                  height: 220.0,
-                  child: new StreamBuilder<String>(
+              _scanQr ? new StreamBuilder<String>(
                     stream: widget._invoiceBloc.readyInvoicesStream,
                     builder: (context, snapshot) {
                     if (!snapshot.hasData) {
@@ -500,11 +493,15 @@ class _NfcDialogState extends State<_NfcDialog> {
                       version: 20,
                       data: snapshot.data,
                     );
-                    })) :
+                    }) :
               new Padding(
-                padding: EdgeInsets.only(top: 13.0, left: 22.0, right: 6.0),
+                padding: EdgeInsets.only(top: 13.0, left: 12.0, right: 12.0),
                 child: new Image.asset('src/images/breez_nfc.png'),
               ),
+              new Padding(
+                  padding: EdgeInsets.only(top: 15.0),
+                  child: new Text(_countdownString,
+                      textAlign: TextAlign.center, style: theme.paymentRequestTitleStyle)),
               _cancelButton(),
             ],
           )

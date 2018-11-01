@@ -13,3 +13,4 @@ packages
 /conf/
 /android/app/src/pos/google-services.json
 /android/app/src/client/google-services.json
+lib/services/breezlib/rpc.proto

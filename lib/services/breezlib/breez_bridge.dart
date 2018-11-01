@@ -50,7 +50,7 @@ class BreezBridge {
   }
 
   Future<String> getLogPath() {
-    return _invokeMethodWhenReady("getLogPath").then( (logPath) => logPath as String);;
+    return _invokeMethodWhenReady("getLogPath").then( (logPath) => logPath as String);
   }
 
   Future<Account> getAccount() {
@@ -67,9 +67,12 @@ class BreezBridge {
     return _invokeMethodWhenReady("connectAccount");
   }
 
-  Future sendNonDepositedCoins(String address){
-    SendNonDepositedCoinsRequest request = new SendNonDepositedCoinsRequest()..address = address;
-    return _invokeMethodWhenReady("sendNonDepositedCoins", {"argument": request.writeToBuffer()});
+  Future<RemoveFundReply> removeFund(String address, Int64 amount){
+    RemoveFundRequest request = new RemoveFundRequest()
+      ..address = address
+      ..amount = amount;
+    return _invokeMethodWhenReady("removeFund", {"argument": request.writeToBuffer()})
+      .then( (res) => new RemoveFundReply()..mergeFromBuffer(res ?? []));
   }
 
   Future sendPaymentForRequest(String bolt11PaymentRequest) {
@@ -88,7 +91,7 @@ class BreezBridge {
       .then((result) => new PaymentsList()..mergeFromBuffer(result ?? []));
   }
 
-  Future<String> addInvoice(Int64 amount, String payeeName, String payeeImageURL, {String payerName, String payerImageURL, String description}){
+  Future<String> addInvoice(Int64 amount, String payeeName, String payeeImageURL, {String payerName, String payerImageURL, String description, Int64 expiry}){
     InvoiceMemo invoice = new InvoiceMemo();    
     invoice.amount = amount;
     invoice.payeeImageURL = payeeImageURL;
@@ -105,11 +108,14 @@ class BreezBridge {
     return _invokeMethodWhenReady("addInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
 
-  Future<String> addStandardInvoice(Int64 amount, String description){
+  Future<String> addStandardInvoice(Int64 amount, String description, {Int64 expiry}){
     InvoiceMemo invoice = new InvoiceMemo();
     invoice.amount = amount;
     invoice.description = description;
-    return _invokeMethodWhenReady("addInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
+    if (expiry != null) {
+      invoice.expiry = expiry;
+    }
+    return _invokeMethodWhenReady("addStandardInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
 
   Future<Invoice> getRelatedInvoice(String paymentRequest) {
