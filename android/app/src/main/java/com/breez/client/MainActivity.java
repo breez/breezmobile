@@ -63,6 +63,13 @@ public class MainActivity extends FlutterActivity {
         GeneratedPluginRegistrant.registerWith(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "Breez activity destroying...");
+        super.onDestroy();
+        System.exit(0);
+    }
+
     void registerBreezPlugins() {
         new ImageCropper(this.registrarFor("com.breez.client.plugins.image_cropper"));
         new Breez(this.registrarFor("com.breez.client.plugins.breez_lib"));
