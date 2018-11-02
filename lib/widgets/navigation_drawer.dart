@@ -51,16 +51,16 @@ class NavigationDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new BlocConnector<AppBlocs>((context, blocs) =>
-        new _NavigationDrawer(
-            _avatar,
-            _screensConfig,
-            _majorActionsFundsConfig,
-            _majorActionsPayConfig,
-            _minorActionsCardConfig,
-            _minorActionsInvoiceConfig,
-            _minorActionsDevConfig,
-            _onItemSelected,
-            blocs.userProfileBloc));
+    new _NavigationDrawer(
+        _avatar,
+        _screensConfig,
+        _majorActionsFundsConfig,
+        _majorActionsPayConfig,
+        _minorActionsCardConfig,
+        _minorActionsInvoiceConfig,
+        _minorActionsDevConfig,
+        _onItemSelected,
+        blocs.userProfileBloc));
   }
 }
 
@@ -112,17 +112,13 @@ class _NavigationDrawer extends StatelessWidget {
               ..add(new Padding(
                   padding: EdgeInsets.only(left: 8.0, right: 8.0),
                   child: Divider()))
-              ..addAll(_minorActionsCardConfig
-                  .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
-                  )
-                  .toList())
+              ..add(_expansionTile(context, "Card", AssetImage("src/icon/card.png"), _minorActionsCardConfig, _onItemSelected))
               ..add(new Padding(
                   padding: EdgeInsets.only(left: 8.0, right: 8.0),
                   child: Divider()))
               ..addAll(_minorActionsInvoiceConfig
                   .map(
-                    (action) => _actionTile(action, context, action.onItemSelected ?? _onItemSelected),
+                    (action) => _actionTile(action, context, _onItemSelected),
               )
                   .toList())
               ..add(new Padding(
@@ -164,42 +160,42 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return new BreezDrawerHeader(
     padding: EdgeInsets.only(top: 54.0, left: 16.0),
     child: !drawAvatar ? new Container() : new StreamBuilder<BreezUserModel>(
-        stream: user.userStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return new Container();
-          } else {
-            return new GestureDetector(
-              onTap: () {
-                showDialog<bool>(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => breezAvatarDialog(context, user),
+            stream: user.userStream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return new Container();
+              } else {
+                return new GestureDetector(
+                  onTap: () {
+                    showDialog<bool>(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) => breezAvatarDialog(context, user),
+                    );
+                  },
+                  child: new Column(children: <Widget>[
+                    new Row(
+                      children: <Widget>[
+                        BreezAvatar(snapshot.data.avatarURL, radius: 24.0),
+                      ],
+                    ),
+                    new Padding(
+                      padding: EdgeInsets.only(top: 22.0),
+                      child: new Row(
+                        children: <Widget>[
+                          new Opacity(
+                              opacity: 0.6,
+                              child: new Text(
+                                snapshot.data.name ?? "No Name",
+                                style: theme.navigationDrawerHandleStyle,
+                              )),
+                        ],
+                      ),
+                    ),
+                  ]),
                 );
-              },
-              child: new Column(children: <Widget>[
-                new Row(
-                  children: <Widget>[
-                    BreezAvatar(snapshot.data.avatarURL, radius: 24.0),
-                  ],
-                ),
-                new Padding(
-                  padding: EdgeInsets.only(top: 22.0),
-                  child: new Row(
-                    children: <Widget>[
-                      new Opacity(
-                          opacity: 0.6,
-                          child: new Text(
-                            snapshot.data.name ?? "No Name",
-                            style: theme.navigationDrawerHandleStyle,
-                          )),
-                    ],
-                  ),
-                ),
-              ]),
-            );
-          }
-        }),
+              }
+            }),
     decoration: new BoxDecoration(
       image: DecorationImage(image: AssetImage("src/images/waves-drawer.png")),
     ),
@@ -207,9 +203,9 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
 }
 
 Widget _actionTile(
-    DrawerItemConfig action, BuildContext context, Function onItemSelected) {
+    DrawerItemConfig action, BuildContext context, Function onItemSelected, [bool subTile]) {
   return new Padding(
-    padding: EdgeInsets.only(left: 8.0, right: 8.0),
+    padding: subTile != null ? EdgeInsets.only(left: 36.0, right: 8.0) : EdgeInsets.only(left: 8.0, right: 8.0),
     child: new ListTile(
       leading: ImageIcon(
         AssetImage(action._icon),
@@ -223,4 +219,16 @@ Widget _actionTile(
       },
     ),
   );
+}
+
+Widget _expansionTile(BuildContext context, String title, AssetImage icon, List<DrawerItemConfig> config, Function onItemSelected){
+  final _expansionTileTheme = Theme.of(context).copyWith(dividerColor: Theme.of(context).canvasColor);
+  return Theme(data: _expansionTileTheme, child:ExpansionTile(
+    title: Padding(
+      padding: EdgeInsets.only(left:8.0, right: 8.0), child:Text(title,style: theme.drawerItemTextStyle,),),
+    leading: Padding(padding: EdgeInsets.only(left:8.0),child:ImageIcon(icon, size: 24.0,
+      color: Colors.white,),),
+    children:
+    config.map((action) => _actionTile(action, context, onItemSelected, true)).toList(),
+  ));
 }

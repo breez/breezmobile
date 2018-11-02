@@ -53,11 +53,11 @@ class Home extends StatefulWidget {
   final List<DrawerItemConfig> _minorActionsCard =
       new List<DrawerItemConfig>.unmodifiable([
     new DrawerItemConfig(
-        "/order_card", "Order Card", "src/icon/order_card.png"),
+        "/order_card", "Order", "src/icon/order_card.png"),
     new DrawerItemConfig(
-        "/activate_card", "Activate Card", "src/icon/activate_card.png"),
+        "/activate_card", "Activate", "src/icon/activate_card.png"),
     new DrawerItemConfig(
-        "/lost_card", "Lost or Stolen Card", "src/icon/lost_card.png"),
+        "/lost_card", "Lost or Stolen", "src/icon/lost_card.png"),
   ]);
 
   List<DrawerItemConfig> _minorActionsInvoice;
