@@ -2,6 +2,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/payment_item_avatar.dart';
 import 'package:breez/utils/date.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class PaymentItem extends StatelessWidget {
@@ -29,7 +30,7 @@ class PaymentItem extends StatelessWidget {
                   _paymentInfo.currency.format(_paymentInfo.amount, includeSymbol: false),
               style: theme.transactionAmountStyle,
             ),
-          ])),
+          ]),onTap: () => showDialog(context: context, builder: (_) => PaymentDetailsDialog(context, _paymentInfo)),),
       new Divider(
         height: 0.0,
         color: _lastItem ? Color.fromRGBO(255, 255, 255, 0.0) : Color.fromRGBO(255, 255, 255, 0.12),
