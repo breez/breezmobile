@@ -31,6 +31,7 @@ dependencies:
   uuid: ^1.0.3
   ini:
   connectivity: ^0.3.2
+  logging: ^0.11.3+2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
