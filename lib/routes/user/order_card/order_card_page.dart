@@ -384,7 +384,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                           decoration:
                           new InputDecoration(labelText: "E-mail Address"),
                           style: theme.FieldTextStyle.textStyle,
-                          textCapitalization: TextCapitalization.words,
+                          textCapitalization: TextCapitalization.none,
                           onSaved: (String value) {
                             this._data.email = value;
                           },
