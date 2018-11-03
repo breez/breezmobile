@@ -37,7 +37,7 @@ class PaymentDetailsDialog extends StatelessWidget {
         ),
       ]),
       children: <Widget>[
-        paymentInfo.title == null
+        paymentInfo.title == null || paymentInfo.title.isEmpty
             ? Container()
             : Text(
                 paymentInfo.title,
@@ -83,7 +83,7 @@ class PaymentDetailsDialog extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(top: 16.0),
         ),
-        paymentInfo.destination == null
+        paymentInfo.destination == null || paymentInfo.destination.isEmpty
             ? Container()
             : Theme(
                 data: _expansionTileTheme,
@@ -145,7 +145,7 @@ class PaymentDetailsDialog extends StatelessWidget {
                       ),
                     ]),
               ),
-        paymentInfo.paymentHash == null
+        paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
             ? Container()
             : Theme(
                 data: _expansionTileTheme,
