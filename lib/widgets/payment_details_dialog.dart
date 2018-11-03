@@ -216,7 +216,7 @@ class PaymentDetailsDialog extends StatelessWidget {
 _buildSnackBar(String item) {
   final snackBar = new SnackBar(
     content: new Text(
-      '$item is copied to your clipboard.',
+      '$item was copied to your clipboard.',
       style: theme.snackBarStyle,
     ),
     backgroundColor: theme.snackBarBackgroundColor,
