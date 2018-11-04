@@ -739,11 +739,12 @@ class PingReply extends $pb.GeneratedMessage {
 class OrderRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('OrderRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'fullName')
-    ..aOS(2, 'address')
-    ..aOS(3, 'city')
-    ..aOS(4, 'state')
-    ..aOS(5, 'zip')
-    ..aOS(6, 'country')
+    ..aOS(2, 'email')
+    ..aOS(3, 'address')
+    ..aOS(4, 'city')
+    ..aOS(5, 'state')
+    ..aOS(6, 'zip')
+    ..aOS(7, 'country')
     ..hasRequiredFields = false
   ;
 
@@ -766,30 +767,35 @@ class OrderRequest extends $pb.GeneratedMessage {
   bool hasFullName() => $_has(0);
   void clearFullName() => clearField(1);
 
-  String get address => $_getS(1, '');
-  set address(String v) { $_setString(1, v); }
-  bool hasAddress() => $_has(1);
-  void clearAddress() => clearField(2);
+  String get email => $_getS(1, '');
+  set email(String v) { $_setString(1, v); }
+  bool hasEmail() => $_has(1);
+  void clearEmail() => clearField(2);
 
-  String get city => $_getS(2, '');
-  set city(String v) { $_setString(2, v); }
-  bool hasCity() => $_has(2);
-  void clearCity() => clearField(3);
+  String get address => $_getS(2, '');
+  set address(String v) { $_setString(3, v); }
+  bool hasAddress() => $_has(2);
+  void clearAddress() => clearField(3);
 
-  String get state => $_getS(3, '');
-  set state(String v) { $_setString(3, v); }
-  bool hasState() => $_has(3);
-  void clearState() => clearField(4);
+  String get city => $_getS(3, '');
+  set city(String v) { $_setString(3, v); }
+  bool hasCity() => $_has(3);
+  void clearCity() => clearField(4);
 
-  String get zip => $_getS(4, '');
-  set zip(String v) { $_setString(4, v); }
-  bool hasZip() => $_has(4);
-  void clearZip() => clearField(5);
+  String get state => $_getS(4, '');
+  set state(String v) { $_setString(4, v); }
+  bool hasState() => $_has(4);
+  void clearState() => clearField(5);
 
-  String get country => $_getS(5, '');
-  set country(String v) { $_setString(5, v); }
-  bool hasCountry() => $_has(5);
-  void clearCountry() => clearField(6);
+  String get zip => $_getS(5, '');
+  set zip(String v) { $_setString(5, v); }
+  bool hasZip() => $_has(5);
+  void clearZip() => clearField(6);
+
+  String get country => $_getS(6, '');
+  set country(String v) { $_setString(6, v); }
+  bool hasCountry() => $_has(6);
+  void clearCountry() => clearField(7);
 }
 
 class OrderReply extends $pb.GeneratedMessage {

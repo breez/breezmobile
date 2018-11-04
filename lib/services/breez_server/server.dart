@@ -72,10 +72,11 @@ class BreezServer {
       .then((reply) => reply.url);
   }
 
-  Future<OrderReply> orderCard(String fullName, String address, String city, String state, String zip, String country) async {
+  Future<OrderReply> orderCard(String fullName, String email, String address, String city, String state, String zip, String country) async {
     if (_channel == null) await initChannel();
     var response = await _cardOrdererClient.order(new OrderRequest()
         ..fullName = fullName
+        ..email = email
         ..address = address
         ..city = city
         ..state = state

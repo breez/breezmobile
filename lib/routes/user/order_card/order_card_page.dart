@@ -10,6 +10,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class _CustomerData {
   String fullName = '';
+  String email = '';
   String address = '';
   String city = '';
   String state = '';
@@ -238,6 +239,14 @@ class OrderCardPageState extends State<OrderCardPage> {
         null;
   }
 
+  bool _validateEmail(String value) {
+    return RegExp(r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?").hasMatch(value);
+  }
+
+  bool _validateZip(String value) {
+    return RegExp(r"^(?!0{3})[0-9]{3,10}$").hasMatch(value);
+  }
+
   Widget _getFutureWidgetStates() {
     List<InkWell> list = new List();
     int number = _statesShow.length > 2 ? 3 : _statesShow.length;
@@ -370,6 +379,26 @@ class OrderCardPageState extends State<OrderCardPage> {
                         ),
                       ),
                       new Container(
+                        padding: new EdgeInsets.only(top: 8.0),
+                        child: new TextFormField(
+                          decoration:
+                          new InputDecoration(labelText: "E-mail Address"),
+                          style: theme.FieldTextStyle.textStyle,
+                          textCapitalization: TextCapitalization.none,
+                          onSaved: (String value) {
+                            this._data.email = value;
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Please enter your e-mail address";
+                            } else if (!_validateEmail(
+                                value)) {
+                              return "Invalid e-mail";
+                            }
+                          },
+                        ),
+                      ),
+                      new Container(
                         padding: new EdgeInsets.only(top: 19.0),
                         child: new TextFormField(
                           decoration: new InputDecoration(labelText: "Address"),
@@ -494,10 +523,8 @@ class OrderCardPageState extends State<OrderCardPage> {
                                               this._data.zip = value;
                                             },
                                             validator: (value) {
-                                              RegExp regExp = new RegExp(
-                                                  r"^(?!0{3})[0-9]{3,10}$");
-                                              if (!regExp.hasMatch(value) &&
-                                                  value.isNotEmpty) {
+                                              if (value.isNotEmpty && !_validateZip(
+                                                  value)) {
                                                 return "Invalid zip code";
                                               }
                                             },
@@ -583,6 +610,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                         _breezServer
                             .orderCard(
                             _data.fullName,
+                            _data.email,
                             _data.address,
                             _data.city,
                             _data.state,
