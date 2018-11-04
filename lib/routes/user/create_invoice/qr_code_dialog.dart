@@ -130,7 +130,7 @@ class QrCodeDialog extends StatelessWidget {
       onPressed: (() {
         Navigator.pop(context);
       }),
-      child: new Text("CANCEL", style: theme.buttonStyle),
+      child: new Text("CLOSE", style: theme.buttonStyle),
     );
   }
 }
