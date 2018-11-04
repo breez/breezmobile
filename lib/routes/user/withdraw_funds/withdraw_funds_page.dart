@@ -131,21 +131,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
         backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
         leading: backBtn.BackButton(),
         title: new Text(_title, style: theme.appBarTextStyle),
-        elevation: 0.0,
-        actions: <Widget>[
-          new IconButton(
-            padding: EdgeInsets.only(right: 16.0),
-            alignment: Alignment.centerRight,
-            icon: new Image(
-              image: new AssetImage("src/icon/qr_scan.png"),
-              color: theme.BreezColors.white[500],
-              fit: BoxFit.contain,
-              width: 24.0,
-              height: 24.0,
-            ),
-            onPressed: _scanBarcode,
-          )
-        ],
+        elevation: 0.0        
       ),
       body: StreamBuilder<AccountModel>(
         stream: widget._accountBloc.accountStream,
@@ -171,18 +157,14 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
                         padding: EdgeInsets.only(top: 21.0),
                         alignment: Alignment.bottomRight,
                         icon: new Image(
-                          image: new AssetImage("src/icon/paste.png"),
+                          image: new AssetImage("src/icon/qr_scan.png"),
                           color: theme.BreezColors.white[500],
                           fit: BoxFit.contain,
                           width: 24.0,
                           height: 24.0,
                         ),
-                        tooltip: 'Paste clipboard',
-                        onPressed: () {
-                          Clipboard.getData("text/plain").then((data) {
-                            _addressController.text = data.text;
-                          });
-                        },
+                        tooltip: 'Scan Barcode',
+                        onPressed: _scanBarcode,
                       ),
                     ),
                     style: theme.FieldTextStyle.textStyle,
