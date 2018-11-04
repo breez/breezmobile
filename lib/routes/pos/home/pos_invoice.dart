@@ -462,51 +462,42 @@ class _NfcDialogState extends State<_NfcDialog> {
       content: new SingleChildScrollView(
           child: _state == _NfcState.WAITING_FOR_NFC
               ? new ListBody(
-            children: <Widget>[
-              new Text(
-                _scanQr ? 'Scan the QR code to process this payment.' :
-                'Hold a Breez card closely to process this payment.',
-                textAlign: TextAlign.center,
-                style: theme.paymentRequestTitleStyle,
-              ),
-              new IconButton(
-                highlightColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                alignment: Alignment.bottomRight,
-                icon: new Image(
-                  image: _scanQr ? new AssetImage("src/icon/card.png") : new AssetImage("src/icon/qr_scan.png"),
-                  color: theme.BreezColors.blue[500],
-                  width: 24.0,
-                  height: 24.0,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _scanQr = !_scanQr;
-                  });
-                },
-              ),
-              _scanQr ? new StreamBuilder<String>(
-                    stream: widget._invoiceBloc.readyInvoicesStream,
-                    builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(height: 200.0,);
-                    }
-                    return new QrImage(
-                      version: 20,
-                      data: snapshot.data,
-                    );
-                    }) :
-              new Padding(
-                padding: EdgeInsets.only(top: 13.0, left: 12.0, right: 12.0),
-                child: new Image.asset('src/images/breez_nfc.png'),
-              ),
-              new Padding(
-                  padding: EdgeInsets.only(top: 15.0),
-                  child: new Text(_countdownString,
-                      textAlign: TextAlign.center, style: theme.paymentRequestTitleStyle)),
-              _cancelButton(),
-            ],
-          )
+                  children: <Widget>[
+                    AnimatedCrossFade(
+                      duration: const Duration(milliseconds: 200),
+                      firstCurve: Cubic(1.0, 2.0, 1.0, 2.0),
+                      secondCurve: Cubic(2.0, 1.0, 2.0, 1.0),
+                      sizeCurve: Curves.easeInOut,
+                      firstChild: _buildDialogBody(
+                          'Hold a Breez card closely to process this payment.', 'qr_scan',
+                          new Padding(
+                            padding: EdgeInsets.only(top: 13.0, left: 12.0, right: 12.0),
+                            child: new Image.asset('src/images/breez_nfc.png'),
+                          )),
+                      secondChild: _buildDialogBody(
+                          'Scan the QR code to process this payment.', 'card',
+                          StreamBuilder<String>(
+                              stream: widget._invoiceBloc.readyInvoicesStream,
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Container(
+                                    height: 200.0,
+                                  );
+                                }
+                                return new QrImage(
+                                  version: 20,
+                                  data: snapshot.data,
+                                );
+                              })),
+                      crossFadeState: !_scanQr ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                    ),
+                    new Padding(
+                        padding: EdgeInsets.only(top: 15.0),
+                        child: new Text(_countdownString,
+                            textAlign: TextAlign.center, style: theme.paymentRequestTitleStyle)),
+                    _cancelButton(),
+                  ],
+                )
               : _state == _NfcState.WAITING_FOR_PAYMENT
               ? new ListBody(
             children: <Widget>[
@@ -556,6 +547,32 @@ class _NfcDialogState extends State<_NfcDialog> {
             ),
           )),
     );
+  }
+
+  ListBody _buildDialogBody(String title, String iconName, Widget body) {
+    return new ListBody(children: <Widget>[
+                      new Text(title,
+                        textAlign: TextAlign.center,
+                        style: theme.paymentRequestTitleStyle,
+                      ),
+                      new IconButton(
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        alignment: Alignment.bottomRight,
+                        icon: Image(
+                          image: AssetImage("src/icon/$iconName.png"),
+                          color: theme.BreezColors.blue[500],
+                          width: 24.0,
+                          height: 24.0,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _scanQr = !_scanQr;
+                          });
+                        },
+                      ),
+                      body
+                    ]);
   }
 }
 
