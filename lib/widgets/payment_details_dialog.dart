@@ -6,44 +6,38 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/payment_item_avatar.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:auto_size_text/auto_size_text.dart';
 
-class PaymentDetailsDialog extends StatelessWidget {
-  final BuildContext context;
-  final PaymentInfo paymentInfo;
-
-  PaymentDetailsDialog(this.context, this.paymentInfo);
-
-  @override
-  Widget build(BuildContext context) {
-    return showPaymentDetailsDialog();
-  }
-
-  Widget showPaymentDetailsDialog() {
-    final _expansionTileTheme = Theme.of(context)
-        .copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
-    return new SimpleDialog(
-      titlePadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
-      title: new Stack(children: <Widget>[
-        Container(
-          color: theme.BreezColors.blue[900],
-          height: 64.0,
+Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentInfo) {
+  final _expansionTileTheme = Theme.of(context)
+      .copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
+  AlertDialog _paymentDetailsDialog = new AlertDialog(
+    titlePadding: EdgeInsets.zero,
+    title: new Stack(children: <Widget>[
+      Container(
+        color: theme.BreezColors.blue[900],
+        height: 64.0,
+      ),
+      Padding(
+        padding: EdgeInsets.only(top: 32.0),
+        child: Center(
+          child: PaymentItemAvatar(paymentInfo, radius: 32.0),
         ),
-        Padding(
-          padding: EdgeInsets.only(top: 32.0),
-          child: Center(
-            child: PaymentItemAvatar(paymentInfo, radius: 32.0),
-          ),
-        ),
-      ]),
+      ),
+    ]),
+    contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         paymentInfo.title == null || paymentInfo.title.isEmpty
             ? Container()
-            : Text(
+            : Padding(padding: EdgeInsets.only(left: 16.0,right: 16.0),child:AutoSizeText(
                 paymentInfo.title,
                 style: theme.paymentRequestAmountStyle,
                 textAlign: TextAlign.center,
-              ),
+                maxLines: 1,
+              ),),
         paymentInfo.amount == null
             ? Container()
             : Container(
@@ -80,9 +74,7 @@ class PaymentDetailsDialog extends StatelessWidget {
                   ),
                 ),
               ),
-        Padding(
-          padding: EdgeInsets.only(top: 16.0),
-        ),
+        Padding(padding: EdgeInsets.only(top: 8.0)),
         paymentInfo.destination == null || paymentInfo.destination.isEmpty
             ? Container()
             : Theme(
@@ -112,6 +104,7 @@ class PaymentDetailsDialog extends StatelessWidget {
                             child: Padding(
                                 padding: EdgeInsets.zero,
                                 child: new Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: <Widget>[
                                     IconButton(
@@ -174,6 +167,7 @@ class PaymentDetailsDialog extends StatelessWidget {
                             child: Padding(
                                 padding: EdgeInsets.zero,
                                 child: new Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: <Widget>[
                                     IconButton(
@@ -209,8 +203,12 @@ class PaymentDetailsDialog extends StatelessWidget {
                     ]),
               ),
       ],
-    );
-  }
+    ),
+  );
+  return showDialog<Null>(
+    context: context,
+    builder: (_) => _paymentDetailsDialog,
+  );
 }
 
 _buildSnackBar(String item) {

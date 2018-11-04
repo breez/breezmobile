@@ -30,7 +30,7 @@ class PosPaymentItem extends StatelessWidget {
                   style: _paymentInfo.type == PaymentType.SENT
                       ? theme.posWithdrawalTransactionAmountStyle
                       : theme.transactionAmountStyle),
-            ]),onTap: () => showDialog(context: context, builder: (_) => PaymentDetailsDialog(context, _paymentInfo)),),
+                ]),onTap: () => showPaymentDetailsDialog(context, _paymentInfo),),
       ),
       new Divider(
         height: 0.0,

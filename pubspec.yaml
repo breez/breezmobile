@@ -32,7 +32,7 @@ dependencies:
   ini:
   connectivity: ^0.3.2
   logging: ^0.11.3+2
-
+  auto_size_text: ^0.2.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.0

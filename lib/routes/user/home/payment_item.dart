@@ -30,7 +30,7 @@ class PaymentItem extends StatelessWidget {
                   _paymentInfo.currency.format(_paymentInfo.amount, includeSymbol: false),
               style: theme.transactionAmountStyle,
             ),
-          ]),onTap: () => showDialog(context: context, builder: (_) => PaymentDetailsDialog(context, _paymentInfo)),),
+          ]),onTap: () => showPaymentDetailsDialog(context, _paymentInfo),),
       new Divider(
         height: 0.0,
         color: _lastItem ? Color.fromRGBO(255, 255, 255, 0.0) : Color.fromRGBO(255, 255, 255, 0.12),
