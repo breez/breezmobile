@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'dart:io' show Platform;
+import 'package:breez/routes/user/get_refund/get_refund_page.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:flutter/material.dart';
@@ -127,11 +128,16 @@ class BreezAppState extends State<BreezApp> {
               builder: (_) => new WithdrawFundsPage(),
               settings: settings,
             );
+          case '/get_refund':
+            return new FadeInRoute(
+              builder: (_) => new GetRefundPage(),
+              settings: settings,
+            );
           case '/activate_card':
             return new FadeInRoute(
               builder: (_) => new ActivateCardPage(),
               settings: settings,
-            );
+            );          
           case '/pay_nearby':
             return new FadeInRoute(
               builder: (_) => new PayNearbyPage(),
