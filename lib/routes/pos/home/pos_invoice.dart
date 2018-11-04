@@ -470,6 +470,8 @@ class _NfcDialogState extends State<_NfcDialog> {
                 style: theme.paymentRequestTitleStyle,
               ),
               new IconButton(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
                 alignment: Alignment.bottomRight,
                 icon: new Image(
                   image: _scanQr ? new AssetImage("src/icon/card.png") : new AssetImage("src/icon/qr_scan.png"),
@@ -487,7 +489,7 @@ class _NfcDialogState extends State<_NfcDialog> {
                     stream: widget._invoiceBloc.readyInvoicesStream,
                     builder: (context, snapshot) {
                     if (!snapshot.hasData) {
-                      return Container();
+                      return Container(height: 200.0,);
                     }
                     return new QrImage(
                       version: 20,
