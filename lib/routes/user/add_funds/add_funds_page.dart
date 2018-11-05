@@ -164,7 +164,7 @@ class AddFundsState extends State<_AddFundsPage> {
                             }
 
                             return _buildBitcoinFundsSection(
-                                context, snapshot.data?.address);
+                                context, snapshot.data?.address, snapshot.data?.backupJson);
                           });
                     }),
                 new Container(
@@ -257,7 +257,7 @@ Widget _buildAmountWarning(AccountBloc accountBloc) {
       });
 }
 
-Widget _buildBitcoinFundsSection(BuildContext context, String address) {
+Widget _buildBitcoinFundsSection(BuildContext context, String address, String backupJson) {
   final snackBar = new SnackBar(
     content: new Text(
       'Deposit address was copied to your clipboard.',
@@ -327,7 +327,16 @@ Widget _buildBitcoinFundsSection(BuildContext context, String address) {
                   address,
                   style: theme.smallTextStyle,
                 ),
-              )
+              ),
+              new GestureDetector(
+                  onTap: () {
+                    final RenderBox box = context.findRenderObject();
+                    Share.share(backupJson,
+                        sharePositionOrigin:
+                        box.localToGlobal(Offset.zero) & box.size);
+                  },
+                  child: new Text("Get refund transaction",
+                      style: theme.linkStyle)),
             ])
     ],
   );
