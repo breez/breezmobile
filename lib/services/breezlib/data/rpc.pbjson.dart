@@ -1,8 +1,8 @@
 ///
 //  Generated code. Do not modify.
+//  source: rpc.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes
-library data_rpc_pbjson;
+// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
 
 const ChainStatus$json = const {
   '1': 'ChainStatus',
@@ -126,12 +126,20 @@ const NotificationEvent_NotificationType$json = const {
   ],
 };
 
-const AddFundReply$json = const {
-  '1': 'AddFundReply',
+const AddFundInitReply$json = const {
+  '1': 'AddFundInitReply',
   '2': const [
     const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
     const {'1': 'maxAllowedDeposit', '3': 2, '4': 1, '5': 3, '10': 'maxAllowedDeposit'},
     const {'1': 'errorMessage', '3': 3, '4': 1, '5': 9, '10': 'errorMessage'},
+    const {'1': 'backupJson', '3': 4, '4': 1, '5': 9, '10': 'backupJson'},
+  ],
+};
+
+const AddFundReply$json = const {
+  '1': 'AddFundReply',
+  '2': const [
+    const {'1': 'errorMessage', '3': 1, '4': 1, '5': 9, '10': 'errorMessage'},
   ],
 };
 

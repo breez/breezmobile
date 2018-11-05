@@ -246,54 +246,17 @@ abstract class InformationServiceBase extends Service {
   $async.Future<PingReply> ping(ServiceCall call, PingRequest request);
 }
 
-class MempoolNotifierClient extends Client {
-  static final _$mempoolRegister =
-      new ClientMethod<MempoolRegisterRequest, MempoolRegisterReply>(
-          '/breez.MempoolNotifier/MempoolRegister',
-          (MempoolRegisterRequest value) => value.writeToBuffer(),
-          (List<int> value) => new MempoolRegisterReply.fromBuffer(value));
-
-  MempoolNotifierClient(ClientChannel channel, {CallOptions options})
-      : super(channel, options: options);
-
-  ResponseFuture<MempoolRegisterReply> mempoolRegister(
-      MempoolRegisterRequest request,
-      {CallOptions options}) {
-    final call = $createCall(
-        _$mempoolRegister, new $async.Stream.fromIterable([request]),
-        options: options);
-    return new ResponseFuture(call);
-  }
-}
-
-abstract class MempoolNotifierServiceBase extends Service {
-  String get $name => 'breez.MempoolNotifier';
-
-  MempoolNotifierServiceBase() {
-    $addMethod(new ServiceMethod<MempoolRegisterRequest, MempoolRegisterReply>(
-        'MempoolRegister',
-        mempoolRegister_Pre,
-        false,
-        false,
-        (List<int> value) => new MempoolRegisterRequest.fromBuffer(value),
-        (MempoolRegisterReply value) => value.writeToBuffer()));
-  }
-
-  $async.Future<MempoolRegisterReply> mempoolRegister_Pre(
-      ServiceCall call, $async.Future request) async {
-    return mempoolRegister(call, await request);
-  }
-
-  $async.Future<MempoolRegisterReply> mempoolRegister(
-      ServiceCall call, MempoolRegisterRequest request);
-}
-
 class FundManagerClient extends Client {
   static final _$openChannel =
       new ClientMethod<OpenChannelRequest, OpenChannelReply>(
           '/breez.FundManager/OpenChannel',
           (OpenChannelRequest value) => value.writeToBuffer(),
           (List<int> value) => new OpenChannelReply.fromBuffer(value));
+  static final _$addFundInit =
+      new ClientMethod<AddFundInitRequest, AddFundInitReply>(
+          '/breez.FundManager/AddFundInit',
+          (AddFundInitRequest value) => value.writeToBuffer(),
+          (List<int> value) => new AddFundInitReply.fromBuffer(value));
   static final _$addFund = new ClientMethod<AddFundRequest, AddFundReply>(
       '/breez.FundManager/AddFund',
       (AddFundRequest value) => value.writeToBuffer(),
@@ -308,6 +271,11 @@ class FundManagerClient extends Client {
           '/breez.FundManager/RemoveFund',
           (RemoveFundRequest value) => value.writeToBuffer(),
           (List<int> value) => new RemoveFundReply.fromBuffer(value));
+  static final _$redeemRemovedFunds =
+      new ClientMethod<RedeemRemovedFundsRequest, RedeemRemovedFundsReply>(
+          '/breez.FundManager/RedeemRemovedFunds',
+          (RedeemRemovedFundsRequest value) => value.writeToBuffer(),
+          (List<int> value) => new RedeemRemovedFundsReply.fromBuffer(value));
   static final _$getPayment =
       new ClientMethod<GetPaymentRequest, GetPaymentReply>(
           '/breez.FundManager/GetPayment',
@@ -321,6 +289,14 @@ class FundManagerClient extends Client {
       {CallOptions options}) {
     final call = $createCall(
         _$openChannel, new $async.Stream.fromIterable([request]),
+        options: options);
+    return new ResponseFuture(call);
+  }
+
+  ResponseFuture<AddFundInitReply> addFundInit(AddFundInitRequest request,
+      {CallOptions options}) {
+    final call = $createCall(
+        _$addFundInit, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -349,6 +325,15 @@ class FundManagerClient extends Client {
     return new ResponseFuture(call);
   }
 
+  ResponseFuture<RedeemRemovedFundsReply> redeemRemovedFunds(
+      RedeemRemovedFundsRequest request,
+      {CallOptions options}) {
+    final call = $createCall(
+        _$redeemRemovedFunds, new $async.Stream.fromIterable([request]),
+        options: options);
+    return new ResponseFuture(call);
+  }
+
   ResponseFuture<GetPaymentReply> getPayment(GetPaymentRequest request,
       {CallOptions options}) {
     final call = $createCall(
@@ -369,6 +354,13 @@ abstract class FundManagerServiceBase extends Service {
         false,
         (List<int> value) => new OpenChannelRequest.fromBuffer(value),
         (OpenChannelReply value) => value.writeToBuffer()));
+    $addMethod(new ServiceMethod<AddFundInitRequest, AddFundInitReply>(
+        'AddFundInit',
+        addFundInit_Pre,
+        false,
+        false,
+        (List<int> value) => new AddFundInitRequest.fromBuffer(value),
+        (AddFundInitReply value) => value.writeToBuffer()));
     $addMethod(new ServiceMethod<AddFundRequest, AddFundReply>(
         'AddFund',
         addFund_Pre,
@@ -390,6 +382,15 @@ abstract class FundManagerServiceBase extends Service {
         false,
         (List<int> value) => new RemoveFundRequest.fromBuffer(value),
         (RemoveFundReply value) => value.writeToBuffer()));
+    $addMethod(
+        new ServiceMethod<RedeemRemovedFundsRequest, RedeemRemovedFundsReply>(
+            'RedeemRemovedFunds',
+            redeemRemovedFunds_Pre,
+            false,
+            false,
+            (List<int> value) =>
+                new RedeemRemovedFundsRequest.fromBuffer(value),
+            (RedeemRemovedFundsReply value) => value.writeToBuffer()));
     $addMethod(new ServiceMethod<GetPaymentRequest, GetPaymentReply>(
         'GetPayment',
         getPayment_Pre,
@@ -402,6 +403,11 @@ abstract class FundManagerServiceBase extends Service {
   $async.Future<OpenChannelReply> openChannel_Pre(
       ServiceCall call, $async.Future request) async {
     return openChannel(call, await request);
+  }
+
+  $async.Future<AddFundInitReply> addFundInit_Pre(
+      ServiceCall call, $async.Future request) async {
+    return addFundInit(call, await request);
   }
 
   $async.Future<AddFundReply> addFund_Pre(
@@ -419,6 +425,11 @@ abstract class FundManagerServiceBase extends Service {
     return removeFund(call, await request);
   }
 
+  $async.Future<RedeemRemovedFundsReply> redeemRemovedFunds_Pre(
+      ServiceCall call, $async.Future request) async {
+    return redeemRemovedFunds(call, await request);
+  }
+
   $async.Future<GetPaymentReply> getPayment_Pre(
       ServiceCall call, $async.Future request) async {
     return getPayment(call, await request);
@@ -426,11 +437,15 @@ abstract class FundManagerServiceBase extends Service {
 
   $async.Future<OpenChannelReply> openChannel(
       ServiceCall call, OpenChannelRequest request);
+  $async.Future<AddFundInitReply> addFundInit(
+      ServiceCall call, AddFundInitRequest request);
   $async.Future<AddFundReply> addFund(ServiceCall call, AddFundRequest request);
   $async.Future<AddFundStatusReply> addFundStatus(
       ServiceCall call, AddFundStatusRequest request);
   $async.Future<RemoveFundReply> removeFund(
       ServiceCall call, RemoveFundRequest request);
+  $async.Future<RedeemRemovedFundsReply> redeemRemovedFunds(
+      ServiceCall call, RedeemRemovedFundsRequest request);
   $async.Future<GetPaymentReply> getPayment(
       ServiceCall call, GetPaymentRequest request);
 }
