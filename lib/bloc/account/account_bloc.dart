@@ -27,6 +27,15 @@ class AccountBloc {
   final _requestAddressController = new StreamController<void>();
   Sink<void> get requestAddressSink => _requestAddressController.sink;
 
+  final _broadcastRefundRequestController = new StreamController<BroadcastRefundRequestModel>.broadcast();
+  Sink<BroadcastRefundRequestModel> get broadcastRefundRequestSink => _broadcastRefundRequestController.sink;
+
+  final _broadcastRefundResponseController = new StreamController<BroadcastRefundResponseModel>.broadcast();
+  Stream<BroadcastRefundResponseModel> get broadcastRefundResponseStream => _broadcastRefundResponseController.stream;
+
+  final _refundableDepositsController = new BehaviorSubject<List<RefundableDepositModel>>();
+  Stream<List<RefundableDepositModel>> get refundableDepositsStream => _refundableDepositsController.stream;
+
   final _addFundController = new BehaviorSubject<AddFundResponse>();
   Stream<AddFundResponse> get addFundStream => _addFundController.stream;
     
@@ -94,6 +103,26 @@ class AccountBloc {
        _refreshAccount(breezLib);
        _listenConnectivityChanges(breezLib);   
        _listenReconnects(breezLib);
+       _listenRefundableDeposits();
+       _listenRefundBroadcasts();
+    }
+
+    void _listenRefundableDeposits(){
+      _refundableDepositsController.add(
+        [
+          RefundableDepositModel("sb1qnr8saruve94kt8ltql9094se7kek40swdlgjf7", Int64(100000), false),
+          RefundableDepositModel("sb1qmf2nnajrv9hq90dpc7mxasmdqupuqwmcj5hknf", Int64(500000), true),                        
+        ]
+      );
+    }
+
+    void _listenRefundBroadcasts(){
+      _broadcastRefundRequestController.stream.listen((request){
+        //dummy for now
+        Future.delayed(Duration(seconds: 3), (){
+          _broadcastRefundResponseController.add(new BroadcastRefundResponseModel(request, "5c31b870213a33b4702313e97efa3df64f13f8474b12891b6a543f135d5b0735"));
+        });
+      });
     }
 
     void _listenConnectivityChanges(BreezBridge breezLib){

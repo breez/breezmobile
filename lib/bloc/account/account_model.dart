@@ -160,6 +160,29 @@ class RemoveFundResponseModel {
   RemoveFundResponseModel(this._reply);
 }
 
+class RefundableDepositModel {
+  final String address;
+  final Int64 amount;
+  final bool refundBroadcasted;
+
+  RefundableDepositModel(this.address, this.amount, this.refundBroadcasted);    
+}
+
+class BroadcastRefundRequestModel {
+  final String fromAddress;
+  final String toAddress;
+  final Int64 amount;
+
+  BroadcastRefundRequestModel(this.fromAddress, this.toAddress, this.amount);
+}
+
+class BroadcastRefundResponseModel {
+  final BroadcastRefundRequestModel request;
+  final String txID;
+
+  BroadcastRefundResponseModel(this.request, this.txID);
+}
+
 class MockPaymentInfo implements PaymentInfo {
   static bool isMockData = false;
   MockPaymentInfo(this.amount, this.fee, this.hash, this.type, this.creationTimestamp, this.description, this.imageURL);
