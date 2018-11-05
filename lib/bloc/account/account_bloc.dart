@@ -29,6 +29,9 @@ class AccountBloc {
 
   final _addFundController = new BehaviorSubject<AddFundResponse>();
   Stream<AddFundResponse> get addFundStream => _addFundController.stream;
+
+  final _confirmedFundController = new BehaviorSubject<Int64>();
+  Stream<Int64> get confirmedFundStream => _confirmedFundController.stream;
     
   final _accountController = new BehaviorSubject<AccountModel>();
   Stream<AccountModel> get accountStream => _accountController.stream;
@@ -161,7 +164,10 @@ class AccountBloc {
       .then( (status){
         log.info("Got status " + status.status.toString());
         if (status.status != _accountController.value.addedFundsStatus) {          
-          _accountController.add(_accountController.value.copyWith(addedFundsStatus: status.status));          
+          _accountController.add(_accountController.value.copyWith(addedFundsStatus: status.status));
+          if (status.status == FundStatusReply_FundStatus.CONFIRMED) {
+            _confirmedFundController.add(Int64(10000));
+          }
         }
       })
       .catchError((err){
@@ -312,7 +318,8 @@ class AccountBloc {
   
     close() {
       _requestAddressController.close();
-      _addFundController.close();    
+      _addFundController.close();
+      _confirmedFundController.close();
       _paymentsController.close();    
       _posFundingRequestController.close();
       _accountActionsController.close();

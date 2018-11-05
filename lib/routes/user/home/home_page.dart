@@ -13,6 +13,8 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/routes/shared/no_connection_dialog.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+import 'package:breez/widgets/error_dialog.dart';
+
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -83,11 +85,22 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    // add my stuff here
     InvoiceNotificationsHandler _notificationsHandler =
         new InvoiceNotificationsHandler(
             context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
     listenNoConnection(context, widget.accountBloc);
+
+    widget.accountBloc.confirmedFundStream.listen((amount) {
+      promptError(
+        context,
+        "Funds confirmed in Breez",
+        Text(
+            " transfer has been confirmed, do you want to top up your Breez channel with these funds?",
+            style: theme.alertStyle),
+        "Proceed",
+        "Cancel",
+      );
+    });
   }
 
   @override
