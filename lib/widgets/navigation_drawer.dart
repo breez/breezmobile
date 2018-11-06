@@ -118,7 +118,7 @@ class _NavigationDrawer extends StatelessWidget {
                   child: Divider()))
               ..addAll(_minorActionsInvoiceConfig
                   .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
+                    (action) => _actionTile(action, context, action.onItemSelected ?? _onItemSelected),
               )
                   .toList())
               ..add(new Padding(
