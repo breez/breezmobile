@@ -419,11 +419,57 @@ class NotificationEvent extends GeneratedMessage {
 
 class _ReadonlyNotificationEvent extends NotificationEvent with ReadonlyMessageMixin {}
 
-class AddFundReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('AddFundReply')
+class AddFundInitReply extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('AddFundInitReply')
     ..aOS(1, 'address')
     ..aInt64(2, 'maxAllowedDeposit')
     ..aOS(3, 'errorMessage')
+    ..aOS(4, 'backupJson')
+    ..hasRequiredFields = false
+  ;
+
+  AddFundInitReply() : super();
+  AddFundInitReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  AddFundInitReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  AddFundInitReply clone() => new AddFundInitReply()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static AddFundInitReply create() => new AddFundInitReply();
+  static PbList<AddFundInitReply> createRepeated() => new PbList<AddFundInitReply>();
+  static AddFundInitReply getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyAddFundInitReply();
+    return _defaultInstance;
+  }
+  static AddFundInitReply _defaultInstance;
+  static void $checkItem(AddFundInitReply v) {
+    if (v is! AddFundInitReply) checkItemFailed(v, 'AddFundInitReply');
+  }
+
+  String get address => $_getS(0, '');
+  set address(String v) { $_setString(0, v); }
+  bool hasAddress() => $_has(0);
+  void clearAddress() => clearField(1);
+
+  Int64 get maxAllowedDeposit => $_getI64(1);
+  set maxAllowedDeposit(Int64 v) { $_setInt64(1, v); }
+  bool hasMaxAllowedDeposit() => $_has(1);
+  void clearMaxAllowedDeposit() => clearField(2);
+
+  String get errorMessage => $_getS(2, '');
+  set errorMessage(String v) { $_setString(2, v); }
+  bool hasErrorMessage() => $_has(2);
+  void clearErrorMessage() => clearField(3);
+
+  String get backupJson => $_getS(3, '');
+  set backupJson(String v) { $_setString(3, v); }
+  bool hasBackupJson() => $_has(3);
+  void clearBackupJson() => clearField(4);
+}
+
+class _ReadonlyAddFundInitReply extends AddFundInitReply with ReadonlyMessageMixin {}
+
+class AddFundReply extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('AddFundReply')
+    ..aOS(1, 'errorMessage')
     ..hasRequiredFields = false
   ;
 
@@ -443,20 +489,10 @@ class AddFundReply extends GeneratedMessage {
     if (v is! AddFundReply) checkItemFailed(v, 'AddFundReply');
   }
 
-  String get address => $_getS(0, '');
-  set address(String v) { $_setString(0, v); }
-  bool hasAddress() => $_has(0);
-  void clearAddress() => clearField(1);
-
-  Int64 get maxAllowedDeposit => $_getI64(1);
-  set maxAllowedDeposit(Int64 v) { $_setInt64(1, v); }
-  bool hasMaxAllowedDeposit() => $_has(1);
-  void clearMaxAllowedDeposit() => clearField(2);
-
-  String get errorMessage => $_getS(2, '');
-  set errorMessage(String v) { $_setString(2, v); }
-  bool hasErrorMessage() => $_has(2);
-  void clearErrorMessage() => clearField(3);
+  String get errorMessage => $_getS(0, '');
+  set errorMessage(String v) { $_setString(0, v); }
+  bool hasErrorMessage() => $_has(0);
+  void clearErrorMessage() => clearField(1);
 }
 
 class _ReadonlyAddFundReply extends AddFundReply with ReadonlyMessageMixin {}
@@ -562,4 +598,94 @@ class RemoveFundReply extends GeneratedMessage {
 }
 
 class _ReadonlyRemoveFundReply extends RemoveFundReply with ReadonlyMessageMixin {}
+
+class SwapAddressInfo extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('SwapAddressInfo')
+    ..aOS(1, 'address')
+    ..aOS(2, 'paymentHash')
+    ..aInt64(3, 'confirmedAmount')
+    ..pPS(4, 'confirmedTransactionIds')
+    ..aInt64(5, 'paidAmount')
+    ..a<int>(6, 'lockHeight', PbFieldType.OU3)
+    ..aOS(7, 'errorMessage')
+    ..hasRequiredFields = false
+  ;
+
+  SwapAddressInfo() : super();
+  SwapAddressInfo.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  SwapAddressInfo.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  SwapAddressInfo clone() => new SwapAddressInfo()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static SwapAddressInfo create() => new SwapAddressInfo();
+  static PbList<SwapAddressInfo> createRepeated() => new PbList<SwapAddressInfo>();
+  static SwapAddressInfo getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlySwapAddressInfo();
+    return _defaultInstance;
+  }
+  static SwapAddressInfo _defaultInstance;
+  static void $checkItem(SwapAddressInfo v) {
+    if (v is! SwapAddressInfo) checkItemFailed(v, 'SwapAddressInfo');
+  }
+
+  String get address => $_getS(0, '');
+  set address(String v) { $_setString(0, v); }
+  bool hasAddress() => $_has(0);
+  void clearAddress() => clearField(1);
+
+  String get paymentHash => $_getS(1, '');
+  set paymentHash(String v) { $_setString(1, v); }
+  bool hasPaymentHash() => $_has(1);
+  void clearPaymentHash() => clearField(2);
+
+  Int64 get confirmedAmount => $_getI64(2);
+  set confirmedAmount(Int64 v) { $_setInt64(2, v); }
+  bool hasConfirmedAmount() => $_has(2);
+  void clearConfirmedAmount() => clearField(3);
+
+  List<String> get confirmedTransactionIds => $_getList(3);
+
+  Int64 get paidAmount => $_getI64(4);
+  set paidAmount(Int64 v) { $_setInt64(4, v); }
+  bool hasPaidAmount() => $_has(4);
+  void clearPaidAmount() => clearField(5);
+
+  int get lockHeight => $_get(5, 0);
+  set lockHeight(int v) { $_setUnsignedInt32(5, v); }
+  bool hasLockHeight() => $_has(5);
+  void clearLockHeight() => clearField(6);
+
+  String get errorMessage => $_getS(6, '');
+  set errorMessage(String v) { $_setString(6, v); }
+  bool hasErrorMessage() => $_has(6);
+  void clearErrorMessage() => clearField(7);
+}
+
+class _ReadonlySwapAddressInfo extends SwapAddressInfo with ReadonlyMessageMixin {}
+
+class SwapAddressList extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('SwapAddressList')
+    ..pp<SwapAddressInfo>(1, 'addresses', PbFieldType.PM, SwapAddressInfo.$checkItem, SwapAddressInfo.create)
+    ..hasRequiredFields = false
+  ;
+
+  SwapAddressList() : super();
+  SwapAddressList.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  SwapAddressList.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  SwapAddressList clone() => new SwapAddressList()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static SwapAddressList create() => new SwapAddressList();
+  static PbList<SwapAddressList> createRepeated() => new PbList<SwapAddressList>();
+  static SwapAddressList getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlySwapAddressList();
+    return _defaultInstance;
+  }
+  static SwapAddressList _defaultInstance;
+  static void $checkItem(SwapAddressList v) {
+    if (v is! SwapAddressList) checkItemFailed(v, 'SwapAddressList');
+  }
+
+  List<SwapAddressInfo> get addresses => $_getList(0);
+}
+
+class _ReadonlySwapAddressList extends SwapAddressList with ReadonlyMessageMixin {}
 

@@ -132,8 +132,12 @@ class BreezBridge {
     return _invokeMethodWhenReady("newAddress", {"argument": breezID}).then( (address) => address as String);
   }
 
-  Future<AddFundReply> addFunds(String breezID) {
-    return _invokeMethodWhenReady("addFunds", {"argument": breezID}).then((reply) => new AddFundReply()..mergeFromBuffer(reply ?? []));
+  Future<AddFundInitReply> addFundsInit(String breezID) {
+    return _invokeMethodWhenReady("addFundsInit", {"argument": breezID}).then((reply) => new AddFundInitReply()..mergeFromBuffer(reply ?? []));
+  }
+
+  Future<SwapAddressList> getRefundableSwapAddresses() {    
+    return _invokeMethodImmediate("getRefundableSwapAddresses").then((reply) => new SwapAddressList()..mergeFromBuffer(reply ?? []));
   }
 
   Future<FundStatusReply> getFundStatus(String notificationToken) {
