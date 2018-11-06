@@ -46,7 +46,9 @@ class ServiceInjector {
     return _breezBridge ??= new BreezBridge();
   }
 
-  Device get device => _device ?? Device();
+  Device get device {
+    return _device ??= Device();
+  }
 
   DeepLinksService get deepLinks => _deepLinksService ??= new DeepLinksService();
   LightningLinksService get lightningLinks => _lightningLinksService ??= new LightningLinksService();

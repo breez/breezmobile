@@ -27,7 +27,7 @@ class Device {
 
     _notificationsChannel.receiveBroadcastStream().listen((event) {
       if (event == "resume") {
-        _eventsController.sink.add(NotificationType.RESUME);
+        _eventsController.add(NotificationType.RESUME);
 
         Clipboard.getData("text/plain").then((clipboardData) {
           var text = clipboardData.text;
