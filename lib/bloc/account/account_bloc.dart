@@ -33,9 +33,6 @@ class AccountBloc {
   final _broadcastRefundResponseController = new StreamController<BroadcastRefundResponseModel>.broadcast();
   Stream<BroadcastRefundResponseModel> get broadcastRefundResponseStream => _broadcastRefundResponseController.stream;
 
-  final _fetchRefundableDepositsController = new StreamController<void>();
-  Sink<void> get fetchRefundableDepositsSink => _fetchRefundableDepositsController.sink;
-
   final _refundableDepositsController = new BehaviorSubject<List<RefundableDepositModel>>();
   Stream<List<RefundableDepositModel>> get refundableDepositsStream => _refundableDepositsController.stream;
 
@@ -106,12 +103,12 @@ class AccountBloc {
        _refreshAccount(breezLib);
        _listenConnectivityChanges(breezLib);   
        _listenReconnects(breezLib);
-       _listenRefundableDeposits(breezLib);
-       _listenRefundBroadcasts();
+       _listenRefundableDeposits(breezLib, device);
+       _listenRefundBroadcasts(breezLib);
     }
 
-    void _listenRefundableDeposits(BreezBridge breezLib){
-      _fetchRefundableDepositsController.stream.listen((_){
+    void _listenRefundableDeposits(BreezBridge breezLib, Device device){
+      var refreshRefundableAddresses = (){
         breezLib.getRefundableSwapAddresses()
         .then(
           (addressList){
@@ -121,15 +118,23 @@ class AccountBloc {
         .catchError((err){
           _refundableDepositsController.addError(err);
         });
-      });      
+      };
+
+      refreshRefundableAddresses();
+      Observable.merge([
+        device.eventStream.where((e) => e == NotificationType.RESUME),
+        breezLib.notificationStream.where((n) => n.type == NotificationEvent_NotificationType.FUND_ADDRESS_UNSPENT_CHANGED)
+      ])
+      .listen((e) => refreshRefundableAddresses());      
     }
 
-    void _listenRefundBroadcasts(){
+    void _listenRefundBroadcasts(BreezBridge breezLib){
       _broadcastRefundRequestController.stream.listen((request){
-        //dummy for now
-        Future.delayed(Duration(seconds: 3), (){
-          _broadcastRefundResponseController.add(new BroadcastRefundResponseModel(request, "5c31b870213a33b4702313e97efa3df64f13f8474b12891b6a543f135d5b0735"));
-        });
+        breezLib.refund(request.fromAddress, request.toAddress)
+          .then((txID){
+            _broadcastRefundResponseController.add(new BroadcastRefundResponseModel(request, txID));
+          })
+          .catchError(_broadcastRefundResponseController.addError);
       });
     }
 

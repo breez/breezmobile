@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/services/share.dart';
@@ -7,8 +9,10 @@ import 'package:flutter/services.dart';
 
 class WaitBroadcastDialog extends StatefulWidget {
   final AccountBloc _accountBloc;
+  final String _fromAddress;
+  final String _toAddress;
 
-  WaitBroadcastDialog(this._accountBloc);
+  WaitBroadcastDialog(this._accountBloc, this._fromAddress, this._toAddress);
 
   @override
   State<StatefulWidget> createState() {
@@ -19,11 +23,13 @@ class WaitBroadcastDialog extends StatefulWidget {
 class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
   BroadcastRefundResponseModel _response;
   Object _error;
+  StreamSubscription<BroadcastRefundResponseModel> _broadcastSubscription;
 
   @override
   void initState() {
     super.initState();
-    widget._accountBloc.broadcastRefundResponseStream.listen((response) {
+    _broadcastSubscription =
+        widget._accountBloc.broadcastRefundResponseStream.listen((response) {
       setState(() {
         _response = response;
       });
@@ -32,6 +38,14 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
         _error = e;
       });
     });
+
+    var broadcastModel = new BroadcastRefundRequestModel(widget._fromAddress, widget._toAddress);                             
+    widget._accountBloc.broadcastRefundRequestSink.add(broadcastModel);
+  }
+
+  @override void dispose() {
+    _broadcastSubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -123,7 +137,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
               ),
               Expanded(
                   child: Container(
-                height: 36.0,                
+                height: 36.0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[

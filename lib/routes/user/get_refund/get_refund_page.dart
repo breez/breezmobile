@@ -30,12 +30,7 @@ class GetRefund extends StatefulWidget {
 }
 
 class _GetRefundState extends State<GetRefund> {
-  static const String TITLE = "Get Refund";   
-
-  @override void initState() {    
-    super.initState();
-    widget._accountBloc.fetchRefundableDepositsSink.add(null);
-  }
+  static const String TITLE = "Get Refund";
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +64,9 @@ class _GetRefundState extends State<GetRefund> {
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
-                            Expanded(flex: 3, child: Text(item.address)),
+                            Expanded(flex: 5, child: Text(item.address)),
                             Expanded(
-                                flex: 2,
+                                flex: 3,
                                 child: Text(
                                     account.currency.format(item.confirmedAmount),
                                     textAlign: TextAlign.right))
@@ -85,9 +80,9 @@ class _GetRefundState extends State<GetRefund> {
                                 padding: const EdgeInsets.all(16.0),
                                 child: SizedBox(
                                     height: 36.0,
-                                    width: 140.0,
+                                    width: 145.0,
                                     child: SubmitButton(
-                                        "REFUND",
+                                        item.refundBroadcasted ? "BROADCASTED" : "REFUND",
                                         item.refundBroadcasted == true
                                             ? null
                                             : () => onRefund(context, item))),
@@ -108,18 +103,15 @@ class _GetRefundState extends State<GetRefund> {
     showDialog(
         context: context,
         builder: (ctx) => RefundForm((address) {
-          Navigator.of(context).pop();
-          widget._accountBloc.broadcastRefundRequestSink.add(
-              new BroadcastRefundRequestModel(
-                  item.address, address, item.confirmedAmount));
-          waitForBroadcast(context);
+          Navigator.of(context).pop();        
+          broadcastAndWait(context, item.address, address);
         }));
   }
 
-  waitForBroadcast(BuildContext context){
+  broadcastAndWait(BuildContext context, String fromAddress, toAddress){
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => WaitBroadcastDialog(widget._accountBloc));
+        builder: (_) => WaitBroadcastDialog(widget._accountBloc, fromAddress, toAddress));
   }
 }

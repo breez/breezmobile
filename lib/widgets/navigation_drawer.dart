@@ -183,12 +183,10 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                       padding: EdgeInsets.only(top: 22.0),
                       child: new Row(
                         children: <Widget>[
-                          new Opacity(
-                              opacity: 0.6,
-                              child: new Text(
+                          new Text(
                                 snapshot.data.name ?? "No Name",
                                 style: theme.navigationDrawerHandleStyle,
-                              )),
+                              ),
                         ],
                       ),
                     ),

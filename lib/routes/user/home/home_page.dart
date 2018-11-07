@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:breez/widgets/navigation_drawer.dart';
@@ -9,10 +8,8 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/routes/shared/no_connection_dialog.dart';
 import 'package:barcode_scan/barcode_scan.dart';
-import 'package:flutter/services.dart';
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -40,8 +37,8 @@ class Home extends StatefulWidget {
     new DrawerItemConfig("/add_funds", "Add Funds", "src/icon/add_funds.png"),
     new DrawerItemConfig(
         "/withdraw_funds", "Remove Funds", "src/icon/withdraw_funds.png"),
-      // new DrawerItemConfig(
-      //   "/get_refund", "Get Refund", "src/icon/withdraw_funds.png"),
+       new DrawerItemConfig(
+         "/get_refund", "Get Refund", "src/icon/withdraw_funds.png"),
   ]);
 
   final List<DrawerItemConfig> _majorActionsPay =
@@ -81,6 +78,7 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String _activeScreen = "breezHome";
+  Set _hiddenRountes = Set<String>();
 
   @override
   void initState() {
@@ -90,6 +88,19 @@ class HomeState extends State<Home> {
         new InvoiceNotificationsHandler(
             context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
     listenNoConnection(context, widget.accountBloc);
+    widget.accountBloc.refundableDepositsStream.listen((addresses){
+      setState(() {
+        if (addresses.length > 0) {
+          _hiddenRountes.remove("/get_refund");
+        } else {
+          _hiddenRountes.add("/get_refund");
+        }     
+      });      
+    });
+  }
+
+  List<DrawerItemConfig> filterItems(List<DrawerItemConfig> items){
+    return items.where( (c) => !_hiddenRountes.contains(c.name)).toList();
   }
 
   @override
@@ -115,12 +126,12 @@ class HomeState extends State<Home> {
         ),
         drawer: new NavigationDrawer(
             true,
-            widget._screens,
-            widget._majorActionsFunds,
-            widget._majorActionsPay,
-            widget._minorActionsCard,
-            widget._minorActionsInvoice,
-            widget._minorActionsDev,
+            filterItems(widget._screens),
+            filterItems(widget._majorActionsFunds),
+            filterItems(widget._majorActionsPay),
+            filterItems(widget._minorActionsCard),
+            filterItems(widget._minorActionsInvoice),
+            filterItems(widget._minorActionsDev),
             _onNavigationItemSelected),
         body: widget._screenBuilders[_activeScreen]);
   }
