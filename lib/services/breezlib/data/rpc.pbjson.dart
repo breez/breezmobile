@@ -195,6 +195,7 @@ const SwapAddressInfo$json = const {
     const {'1': 'PaidAmount', '3': 5, '4': 1, '5': 3, '10': 'PaidAmount'},
     const {'1': 'lockHeight', '3': 6, '4': 1, '5': 13, '10': 'lockHeight'},
     const {'1': 'errorMessage', '3': 7, '4': 1, '5': 9, '10': 'errorMessage'},
+    const {'1': 'lastRefundTxID', '3': 8, '4': 1, '5': 9, '10': 'lastRefundTxID'},
   ],
 };
 

@@ -80,9 +80,9 @@ class _GetRefundState extends State<GetRefund> {
                                 padding: const EdgeInsets.all(16.0),
                                 child: SizedBox(
                                     height: 36.0,
-                                    width: 140.0,
+                                    width: 145.0,
                                     child: SubmitButton(
-                                        "REFUND",
+                                        item.refundBroadcasted ? "BROADCASTED" : "REFUND",
                                         item.refundBroadcasted == true
                                             ? null
                                             : () => onRefund(context, item))),

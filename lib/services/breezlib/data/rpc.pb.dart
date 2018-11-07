@@ -644,6 +644,7 @@ class SwapAddressInfo extends GeneratedMessage {
     ..aInt64(5, 'paidAmount')
     ..a<int>(6, 'lockHeight', PbFieldType.OU3)
     ..aOS(7, 'errorMessage')
+    ..aOS(8, 'lastRefundTxID')
     ..hasRequiredFields = false
   ;
 
@@ -694,6 +695,11 @@ class SwapAddressInfo extends GeneratedMessage {
   set errorMessage(String v) { $_setString(6, v); }
   bool hasErrorMessage() => $_has(6);
   void clearErrorMessage() => clearField(7);
+
+  String get lastRefundTxID => $_getS(7, '');
+  set lastRefundTxID(String v) { $_setString(7, v); }
+  bool hasLastRefundTxID() => $_has(7);
+  void clearLastRefundTxID() => clearField(8);
 }
 
 class _ReadonlySwapAddressInfo extends SwapAddressInfo with ReadonlyMessageMixin {}

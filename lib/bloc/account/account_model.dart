@@ -167,7 +167,7 @@ class RefundableDepositModel {
 
   String get address => _address.address;
   Int64 get confirmedAmount => _address.confirmedAmount;    
-  bool get refundBroadcasted => false;
+  bool get refundBroadcasted =>  _address.lastRefundTxID != null && _address.lastRefundTxID.isNotEmpty;
 }
 
 class BroadcastRefundRequestModel {
