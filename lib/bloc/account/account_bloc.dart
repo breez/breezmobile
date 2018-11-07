@@ -33,6 +33,9 @@ class AccountBloc {
   final _broadcastRefundResponseController = new StreamController<BroadcastRefundResponseModel>.broadcast();
   Stream<BroadcastRefundResponseModel> get broadcastRefundResponseStream => _broadcastRefundResponseController.stream;
 
+  final _fetchRefundableDepositsController = new StreamController<void>();
+  Sink<void> get fetchRefundableDepositsSink => _fetchRefundableDepositsController.sink;
+
   final _refundableDepositsController = new BehaviorSubject<List<RefundableDepositModel>>();
   Stream<List<RefundableDepositModel>> get refundableDepositsStream => _refundableDepositsController.stream;
 
@@ -103,17 +106,22 @@ class AccountBloc {
        _refreshAccount(breezLib);
        _listenConnectivityChanges(breezLib);   
        _listenReconnects(breezLib);
-       _listenRefundableDeposits();
+       _listenRefundableDeposits(breezLib);
        _listenRefundBroadcasts();
     }
 
-    void _listenRefundableDeposits(){
-      _refundableDepositsController.add(
-        [
-          RefundableDepositModel("sb1qnr8saruve94kt8ltql9094se7kek40swdlgjf7", Int64(100000), false),
-          RefundableDepositModel("sb1qmf2nnajrv9hq90dpc7mxasmdqupuqwmcj5hknf", Int64(500000), true),                        
-        ]
-      );
+    void _listenRefundableDeposits(BreezBridge breezLib){
+      _fetchRefundableDepositsController.stream.listen((_){
+        breezLib.getRefundableSwapAddresses()
+        .then(
+          (addressList){
+            _refundableDepositsController.add(addressList.addresses.map((a) => RefundableDepositModel(a)).toList());
+          }
+        )
+        .catchError((err){
+          _refundableDepositsController.addError(err);
+        });
+      });      
     }
 
     void _listenRefundBroadcasts(){
@@ -127,7 +135,7 @@ class AccountBloc {
 
     void _listenConnectivityChanges(BreezBridge breezLib){
       var connectivity = Connectivity();     
-      connectivity.onConnectivityChanged.listen((connectivityResult){
+      connectivity.onConnectivityChanged.skip(1).listen((connectivityResult){
           log.info("_listenConnectivityChanges: connection changed to: " + connectivityResult.toString());          
           _allowReconnect = (connectivityResult != ConnectivityResult.none);
           _reconnectSink.add(null);
@@ -200,7 +208,7 @@ class AccountBloc {
   
     void _listenNewAddressRequests(BreezBridge breezLib) {    
       _requestAddressController.stream.listen((request){
-        breezLib.addFunds(_currentUser.userID)
+        breezLib.addFundsInit(_currentUser.userID)
           .then((reply) => _addFundController.add(new AddFundResponse(reply)))
           .catchError(_addFundController.addError);
       });          

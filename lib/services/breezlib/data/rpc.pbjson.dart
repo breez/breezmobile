@@ -126,12 +126,20 @@ const NotificationEvent_NotificationType$json = const {
   ],
 };
 
-const AddFundReply$json = const {
-  '1': 'AddFundReply',
+const AddFundInitReply$json = const {
+  '1': 'AddFundInitReply',
   '2': const [
     const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
     const {'1': 'maxAllowedDeposit', '3': 2, '4': 1, '5': 3, '10': 'maxAllowedDeposit'},
     const {'1': 'errorMessage', '3': 3, '4': 1, '5': 9, '10': 'errorMessage'},
+    const {'1': 'backupJson', '3': 4, '4': 1, '5': 9, '10': 'backupJson'},
+  ],
+};
+
+const AddFundReply$json = const {
+  '1': 'AddFundReply',
+  '2': const [
+    const {'1': 'errorMessage', '3': 1, '4': 1, '5': 9, '10': 'errorMessage'},
   ],
 };
 
@@ -165,6 +173,26 @@ const RemoveFundReply$json = const {
   '2': const [
     const {'1': 'txid', '3': 1, '4': 1, '5': 9, '10': 'txid'},
     const {'1': 'errorMessage', '3': 2, '4': 1, '5': 9, '10': 'errorMessage'},
+  ],
+};
+
+const SwapAddressInfo$json = const {
+  '1': 'SwapAddressInfo',
+  '2': const [
+    const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
+    const {'1': 'PaymentHash', '3': 2, '4': 1, '5': 9, '10': 'PaymentHash'},
+    const {'1': 'ConfirmedAmount', '3': 3, '4': 1, '5': 3, '10': 'ConfirmedAmount'},
+    const {'1': 'ConfirmedTransactionIds', '3': 4, '4': 3, '5': 9, '10': 'ConfirmedTransactionIds'},
+    const {'1': 'PaidAmount', '3': 5, '4': 1, '5': 3, '10': 'PaidAmount'},
+    const {'1': 'lockHeight', '3': 6, '4': 1, '5': 13, '10': 'lockHeight'},
+    const {'1': 'errorMessage', '3': 7, '4': 1, '5': 9, '10': 'errorMessage'},
+  ],
+};
+
+const SwapAddressList$json = const {
+  '1': 'SwapAddressList',
+  '2': const [
+    const {'1': 'addresses', '3': 1, '4': 3, '5': 11, '6': '.data.SwapAddressInfo', '10': 'addresses'},
   ],
 };
 

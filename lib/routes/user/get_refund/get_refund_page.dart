@@ -11,20 +11,31 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class GetRefundPage extends StatelessWidget {
-  GetRefundPage();
-
-  @override
+   @override
   Widget build(BuildContext context) {
     return new BlocConnector<AppBlocs>(
-        (context, blocs) => _GetRefundPage(blocs.accountBloc));
+        (context, blocs) => GetRefund(blocs.accountBloc));
   }
 }
 
-class _GetRefundPage extends StatelessWidget {
-  static final String TITLE = "Get Refund";
+class GetRefund extends StatefulWidget {   
   final AccountBloc _accountBloc;
 
-  _GetRefundPage(this._accountBloc);
+  GetRefund(this._accountBloc);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _GetRefundState();
+  }
+}
+
+class _GetRefundState extends State<GetRefund> {
+  static const String TITLE = "Get Refund";   
+
+  @override void initState() {    
+    super.initState();
+    widget._accountBloc.fetchRefundableDepositsSink.add(null);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +48,16 @@ class _GetRefundPage extends StatelessWidget {
           title: new Text(TITLE, style: theme.appBarTextStyle),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
-        stream: _accountBloc.accountStream,
+        stream: widget._accountBloc.accountStream,
         builder: (context, accSnapshot) =>
             StreamBuilder<List<RefundableDepositModel>>(
-                stream: _accountBloc.refundableDepositsStream,
+                stream: widget._accountBloc.refundableDepositsStream,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData || !accSnapshot.hasData) {
                     return Loader();
+                  }
+                  if (snapshot.hasError) {
+                    return Text(snapshot.error.toString());
                   }
                   var refundableItems = snapshot.data;
                   var account = accSnapshot.data;
@@ -59,7 +73,7 @@ class _GetRefundPage extends StatelessWidget {
                             Expanded(
                                 flex: 2,
                                 child: Text(
-                                    account.currency.format(item.amount),
+                                    account.currency.format(item.confirmedAmount),
                                     textAlign: TextAlign.right))
                           ],
                         ),
@@ -95,9 +109,9 @@ class _GetRefundPage extends StatelessWidget {
         context: context,
         builder: (ctx) => RefundForm((address) {
           Navigator.of(context).pop();
-          _accountBloc.broadcastRefundRequestSink.add(
+          widget._accountBloc.broadcastRefundRequestSink.add(
               new BroadcastRefundRequestModel(
-                  item.address, address, item.amount));
+                  item.address, address, item.confirmedAmount));
           waitForBroadcast(context);
         }));
   }
@@ -106,6 +120,6 @@ class _GetRefundPage extends StatelessWidget {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => WaitBroadcastDialog(_accountBloc));
+        builder: (_) => WaitBroadcastDialog(widget._accountBloc));
   }
 }

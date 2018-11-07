@@ -137,7 +137,7 @@ class PaymentInfo {
 }
 
 class AddFundResponse {
-  AddFundReply _addfundReply;
+  AddFundInitReply _addfundReply;
   AddFundResponse(this._addfundReply);
 
   String get errorMessage => _addfundReply.errorMessage;
@@ -161,11 +161,12 @@ class RemoveFundResponseModel {
 }
 
 class RefundableDepositModel {
-  final String address;
-  final Int64 amount;
-  final bool refundBroadcasted;
+  final SwapAddressInfo _address;
+  RefundableDepositModel(this._address);
 
-  RefundableDepositModel(this.address, this.amount, this.refundBroadcasted);    
+  String get address => _address.address;
+  Int64 get confirmedAmount => _address.confirmedAmount;    
+  bool get refundBroadcasted => false;
 }
 
 class BroadcastRefundRequestModel {

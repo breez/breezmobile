@@ -19,7 +19,7 @@ class BreezServer {
     if (_channel == null) {
       var cert = await rootBundle.load('cert/letsencrypt.cert');
       String configString = await rootBundle.loadString('conf/breez.conf');
-      Config config = await new Config.fromString(configString);
+      Config config = Config.fromString(configString);
       var hostdetails = config.get("Application Options", "breezserver").split(':');
       if (hostdetails.length < 2) {
         hostdetails.add("443");
