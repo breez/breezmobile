@@ -167,15 +167,14 @@ class RefundableDepositModel {
 
   String get address => _address.address;
   Int64 get confirmedAmount => _address.confirmedAmount;    
-  bool get refundBroadcasted => false;
+  bool get refundBroadcasted =>  _address.lastRefundTxID != null && _address.lastRefundTxID.isNotEmpty;
 }
 
 class BroadcastRefundRequestModel {
   final String fromAddress;
-  final String toAddress;
-  final Int64 amount;
+  final String toAddress;  
 
-  BroadcastRefundRequestModel(this.fromAddress, this.toAddress, this.amount);
+  BroadcastRefundRequestModel(this.fromAddress, this.toAddress);
 }
 
 class BroadcastRefundResponseModel {

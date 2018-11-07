@@ -497,6 +497,42 @@ class AddFundReply extends GeneratedMessage {
 
 class _ReadonlyAddFundReply extends AddFundReply with ReadonlyMessageMixin {}
 
+class RefundRequest extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('RefundRequest')
+    ..aOS(1, 'address')
+    ..aOS(2, 'refundAddress')
+    ..hasRequiredFields = false
+  ;
+
+  RefundRequest() : super();
+  RefundRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RefundRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RefundRequest clone() => new RefundRequest()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static RefundRequest create() => new RefundRequest();
+  static PbList<RefundRequest> createRepeated() => new PbList<RefundRequest>();
+  static RefundRequest getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRefundRequest();
+    return _defaultInstance;
+  }
+  static RefundRequest _defaultInstance;
+  static void $checkItem(RefundRequest v) {
+    if (v is! RefundRequest) checkItemFailed(v, 'RefundRequest');
+  }
+
+  String get address => $_getS(0, '');
+  set address(String v) { $_setString(0, v); }
+  bool hasAddress() => $_has(0);
+  void clearAddress() => clearField(1);
+
+  String get refundAddress => $_getS(1, '');
+  set refundAddress(String v) { $_setString(1, v); }
+  bool hasRefundAddress() => $_has(1);
+  void clearRefundAddress() => clearField(2);
+}
+
+class _ReadonlyRefundRequest extends RefundRequest with ReadonlyMessageMixin {}
+
 class FundStatusReply extends GeneratedMessage {
   static final BuilderInfo _i = new BuilderInfo('FundStatusReply')
     ..e<FundStatusReply_FundStatus>(1, 'status', PbFieldType.OE, FundStatusReply_FundStatus.NO_FUND, FundStatusReply_FundStatus.valueOf, FundStatusReply_FundStatus.values)
@@ -608,6 +644,7 @@ class SwapAddressInfo extends GeneratedMessage {
     ..aInt64(5, 'paidAmount')
     ..a<int>(6, 'lockHeight', PbFieldType.OU3)
     ..aOS(7, 'errorMessage')
+    ..aOS(8, 'lastRefundTxID')
     ..hasRequiredFields = false
   ;
 
@@ -658,6 +695,11 @@ class SwapAddressInfo extends GeneratedMessage {
   set errorMessage(String v) { $_setString(6, v); }
   bool hasErrorMessage() => $_has(6);
   void clearErrorMessage() => clearField(7);
+
+  String get lastRefundTxID => $_getS(7, '');
+  set lastRefundTxID(String v) { $_setString(7, v); }
+  bool hasLastRefundTxID() => $_has(7);
+  void clearLastRefundTxID() => clearField(8);
 }
 
 class _ReadonlySwapAddressInfo extends SwapAddressInfo with ReadonlyMessageMixin {}

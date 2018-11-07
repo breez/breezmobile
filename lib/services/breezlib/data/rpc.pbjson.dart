@@ -123,6 +123,7 @@ const NotificationEvent_NotificationType$json = const {
     const {'1': 'INVOICE_PAID', '2': 3},
     const {'1': 'ROUTING_NODE_CONNECTION_CHANGED', '2': 4},
     const {'1': 'LIGHTNING_SERVICE_DOWN', '2': 5},
+    const {'1': 'FUND_ADDRESS_UNSPENT_CHANGED', '2': 6},
   ],
 };
 
@@ -140,6 +141,14 @@ const AddFundReply$json = const {
   '1': 'AddFundReply',
   '2': const [
     const {'1': 'errorMessage', '3': 1, '4': 1, '5': 9, '10': 'errorMessage'},
+  ],
+};
+
+const RefundRequest$json = const {
+  '1': 'RefundRequest',
+  '2': const [
+    const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
+    const {'1': 'refundAddress', '3': 2, '4': 1, '5': 9, '10': 'refundAddress'},
   ],
 };
 
@@ -186,6 +195,7 @@ const SwapAddressInfo$json = const {
     const {'1': 'PaidAmount', '3': 5, '4': 1, '5': 3, '10': 'PaidAmount'},
     const {'1': 'lockHeight', '3': 6, '4': 1, '5': 13, '10': 'lockHeight'},
     const {'1': 'errorMessage', '3': 7, '4': 1, '5': 9, '10': 'errorMessage'},
+    const {'1': 'lastRefundTxID', '3': 8, '4': 1, '5': 9, '10': 'lastRefundTxID'},
   ],
 };
 
