@@ -323,30 +323,19 @@ Widget _buildBitcoinFundsSection(BuildContext context, String address, String ba
               ),
               new Container(
                 padding: EdgeInsets.only(top: 16.0),
-                child: new Text(
-                  address,
-                  style: theme.smallTextStyle,
-                ),
-              ),
-              new Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-              new GestureDetector(
+                child: new GestureDetector(
                   onTap: () {
-                    final RenderBox box = context.findRenderObject();
-                    Share.share(backupJson,
-                        sharePositionOrigin:
-                        box.localToGlobal(Offset.zero) & box.size);
+                  final RenderBox box = context.findRenderObject();
+                  Share.share(backupJson,
+                  sharePositionOrigin:
+                  box.localToGlobal(Offset.zero) & box.size);
                   },
-                  child: new Text("Refund transaction",
-                      style: theme.refundLinkStyle)),
-              IconButton(
-
-                padding: EdgeInsets.only(top: 2.0, right: 2.0),
-                icon: Icon(Icons.info_outline, color: theme.BreezColors.white[300],),
-                iconSize: 24.0,
-                onPressed: () {},
-              )])
+                  child: new Text(
+                    address,
+                    style: theme.smallTextStyle,
+                    ),
+                  ),
+              ),
             ])
     ],
   );
