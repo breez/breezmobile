@@ -137,7 +137,14 @@ class BreezBridge {
   }
 
   Future<SwapAddressList> getRefundableSwapAddresses() {    
-    return _invokeMethodImmediate("getRefundableSwapAddresses").then((reply) => new SwapAddressList()..mergeFromBuffer(reply ?? []));
+    return _invokeMethodWhenReady("getRefundableSwapAddresses").then((reply) => new SwapAddressList()..mergeFromBuffer(reply ?? []));
+  }
+
+  Future<String> refund(String address, String refundAddress) {
+    var refundRequest = RefundRequest()
+                          ..address = address
+                          ..refundAddress = refundAddress;
+    return _invokeMethodWhenReady("refund",  {"argument": refundRequest.writeToBuffer()}).then((txID) => txID as String);
   }
 
   Future<FundStatusReply> getFundStatus(String notificationToken) {

@@ -61,6 +61,7 @@ class NotificationEvent_NotificationType extends ProtobufEnum {
   static const NotificationEvent_NotificationType INVOICE_PAID = const NotificationEvent_NotificationType._(3, 'INVOICE_PAID');
   static const NotificationEvent_NotificationType ROUTING_NODE_CONNECTION_CHANGED = const NotificationEvent_NotificationType._(4, 'ROUTING_NODE_CONNECTION_CHANGED');
   static const NotificationEvent_NotificationType LIGHTNING_SERVICE_DOWN = const NotificationEvent_NotificationType._(5, 'LIGHTNING_SERVICE_DOWN');
+  static const NotificationEvent_NotificationType FUND_ADDRESS_UNSPENT_CHANGED = const NotificationEvent_NotificationType._(6, 'FUND_ADDRESS_UNSPENT_CHANGED');
 
   static const List<NotificationEvent_NotificationType> values = const <NotificationEvent_NotificationType> [
     READY,
@@ -69,6 +70,7 @@ class NotificationEvent_NotificationType extends ProtobufEnum {
     INVOICE_PAID,
     ROUTING_NODE_CONNECTION_CHANGED,
     LIGHTNING_SERVICE_DOWN,
+    FUND_ADDRESS_UNSPENT_CHANGED,
   ];
 
   static final Map<int, dynamic> _byValue = ProtobufEnum.initByValue(values);
