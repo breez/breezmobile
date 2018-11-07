@@ -133,6 +133,6 @@ class AvatarDecorator extends StatelessWidget {
 class AlienAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AvatarDecorator(ImageIcon(AssetImage("src/icon/alien.png"), color: theme.BreezColors.blue[500]));
+    return AvatarDecorator(ImageIcon(AssetImage("src/icon/alien.png"), color: Color.fromARGB(255, 0, 166, 68)));
   }
 }
