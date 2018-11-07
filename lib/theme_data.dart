@@ -49,6 +49,7 @@ final TextStyle numPadAdditionStyle = new TextStyle(color: BreezColors.white[500
 final TextStyle appBarTextStyle = new TextStyle(color: BreezColors.white[500], fontSize: 18.0, letterSpacing: 0.22);
 final TextStyle smallTextStyle = new TextStyle(color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09);
 final TextStyle linkStyle = new TextStyle(color: BreezColors.white[300], fontSize: 12.3, letterSpacing: 0.4, height: 1.2, decoration: TextDecoration.underline);
+final TextStyle refundLinkStyle = new TextStyle(color: BreezColors.white[300], fontSize: 12.0, letterSpacing: 0.4, height: 1.2, decoration: TextDecoration.underline);
 final TextStyle snackBarStyle = new TextStyle(color: BreezColors.white[500], fontSize: 14.0, letterSpacing: 0.25, height: 1.2);
 final TextStyle sessionNotificationStyle = TextStyle(fontSize: 14.2);
 final TextStyle sessionNotificationWarningStyle = new TextStyle(color: errorColor, fontSize: 14.2);
