@@ -19,8 +19,7 @@ import 'package:connectivity/connectivity.dart';
 
 
 class AccountBloc {  
-    
-  bool _allowReconnect;
+      
   final _reconnectStreamController = new StreamController<void>();
   Sink<void> get _reconnectSink => _reconnectStreamController.sink;
 
@@ -75,10 +74,8 @@ class AccountBloc {
 
 
   Stream<Map<String, DownloadFileInfo>>  chainBootstrapProgress;
-
-  Sink<StatusUpdateModel> _statusUpdateSink;
-
   BreezUserModel _currentUser;  
+  bool _allowReconnect = true;
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
       ServiceInjector injector = new ServiceInjector();    
