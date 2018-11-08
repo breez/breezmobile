@@ -111,11 +111,16 @@ class AddFundsState extends State<_AddFundsPage> {
       if (!errorMessage.endsWith('.')) {
         errorMessage += '.';
       }
-      return Container(
-          padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
-          child: Column(children: <Widget>[
-            Text(errorMessage, textAlign: TextAlign.center)
-          ]));
+      return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+               Container(
+                 padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+                 child: Text(errorMessage, textAlign: TextAlign.center)
+              )
+            ],            
+      );
     }
     return Column(children: <Widget>[
       AddressWidget(response?.address, response?.backupJson),
