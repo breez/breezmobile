@@ -78,6 +78,9 @@ class AddFundsState extends State<_AddFundsPage> {
     _addressSubscription = widget._accountBloc.addFundStream.listen((data) {
       setState(() {
         _connected = true;
+        if (data.errorMessage.isNotEmpty) {
+          _hasError = true;
+        }
       });
     });
     _addressSubscription.onError((error) {
