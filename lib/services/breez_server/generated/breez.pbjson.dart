@@ -15,18 +15,24 @@ const OpenChannelReply$json = const {
   '1': 'OpenChannelReply',
 };
 
-const AddFundRequest$json = const {
-  '1': 'AddFundRequest',
+const AddFundInitRequest$json = const {
+  '1': 'AddFundInitRequest',
   '2': const [
-    const {'1': 'paymentRequest', '3': 1, '4': 1, '5': 9, '10': 'paymentRequest'},
+    const {'1': 'nodeID', '3': 1, '4': 1, '5': 9, '10': 'nodeID'},
     const {'1': 'notificationToken', '3': 2, '4': 1, '5': 9, '10': 'notificationToken'},
+    const {'1': 'pubkey', '3': 3, '4': 1, '5': 12, '10': 'pubkey'},
+    const {'1': 'hash', '3': 4, '4': 1, '5': 12, '10': 'hash'},
   ],
 };
 
-const AddFundReply$json = const {
-  '1': 'AddFundReply',
+const AddFundInitReply$json = const {
+  '1': 'AddFundInitReply',
   '2': const [
     const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
+    const {'1': 'pubkey', '3': 2, '4': 1, '5': 12, '10': 'pubkey'},
+    const {'1': 'lockHeight', '3': 3, '4': 1, '5': 3, '10': 'lockHeight'},
+    const {'1': 'maxAllowedDeposit', '3': 4, '4': 1, '5': 3, '10': 'maxAllowedDeposit'},
+    const {'1': 'errorMessage', '3': 5, '4': 1, '5': 9, '10': 'errorMessage'},
   ],
 };
 
@@ -75,30 +81,23 @@ const RemoveFundRequest$json = const {
 
 const RemoveFundReply$json = const {
   '1': 'RemoveFundReply',
-};
-
-const MempoolRegisterRequest$json = const {
-  '1': 'MempoolRegisterRequest',
   '2': const [
-    const {'1': 'clientID', '3': 1, '4': 1, '5': 9, '10': 'clientID'},
-    const {'1': 'addresses', '3': 2, '4': 3, '5': 9, '10': 'addresses'},
+    const {'1': 'paymentRequest', '3': 1, '4': 1, '5': 9, '10': 'paymentRequest'},
+    const {'1': 'errorMessage', '3': 2, '4': 1, '5': 9, '10': 'errorMessage'},
   ],
 };
 
-const MempoolRegisterReply$json = const {
-  '1': 'MempoolRegisterReply',
+const RedeemRemovedFundsRequest$json = const {
+  '1': 'RedeemRemovedFundsRequest',
   '2': const [
-    const {'1': 'TXS', '3': 1, '4': 3, '5': 11, '6': '.breez.MempoolRegisterReply.Transaction', '10': 'TXS'},
+    const {'1': 'paymenthash', '3': 1, '4': 1, '5': 9, '10': 'paymenthash'},
   ],
-  '3': const [MempoolRegisterReply_Transaction$json],
 };
 
-const MempoolRegisterReply_Transaction$json = const {
-  '1': 'Transaction',
+const RedeemRemovedFundsReply$json = const {
+  '1': 'RedeemRemovedFundsReply',
   '2': const [
-    const {'1': 'TX', '3': 1, '4': 1, '5': 9, '10': 'TX'},
-    const {'1': 'Address', '3': 2, '4': 1, '5': 9, '10': 'Address'},
-    const {'1': 'Value', '3': 3, '4': 1, '5': 1, '10': 'Value'},
+    const {'1': 'txid', '3': 1, '4': 1, '5': 9, '10': 'txid'},
   ],
 };
 
@@ -131,16 +130,15 @@ const FundReply_ReturnCode$json = const {
   ],
 };
 
-const GetPaymentRequest$json = const {
-  '1': 'GetPaymentRequest',
+const GetSwapPaymentRequest$json = const {
+  '1': 'GetSwapPaymentRequest',
   '2': const [
     const {'1': 'paymentRequest', '3': 1, '4': 1, '5': 9, '10': 'paymentRequest'},
-    const {'1': 'address', '3': 2, '4': 1, '5': 9, '10': 'address'},
   ],
 };
 
-const GetPaymentReply$json = const {
-  '1': 'GetPaymentReply',
+const GetSwapPaymentReply$json = const {
+  '1': 'GetSwapPaymentReply',
   '2': const [
     const {'1': 'paymentError', '3': 1, '4': 1, '5': 9, '10': 'paymentError'},
   ],
@@ -212,6 +210,7 @@ const OrderRequest$json = const {
     const {'1': 'State', '3': 4, '4': 1, '5': 9, '10': 'State'},
     const {'1': 'Zip', '3': 5, '4': 1, '5': 9, '10': 'Zip'},
     const {'1': 'Country', '3': 6, '4': 1, '5': 9, '10': 'Country'},
+    const {'1': 'Email', '3': 7, '4': 1, '5': 9, '10': 'Email'},
   ],
 };
 
