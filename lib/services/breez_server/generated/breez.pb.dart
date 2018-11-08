@@ -60,62 +60,98 @@ class OpenChannelReply extends $pb.GeneratedMessage {
   }
 }
 
-class AddFundRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('AddFundRequest', package: const $pb.PackageName('breez'))
-    ..aOS(1, 'paymentRequest')
+class AddFundInitRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('AddFundInitRequest', package: const $pb.PackageName('breez'))
+    ..aOS(1, 'nodeID')
     ..aOS(2, 'notificationToken')
+    ..a<List<int>>(3, 'pubkey', $pb.PbFieldType.OY)
+    ..a<List<int>>(4, 'hash', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
-  AddFundRequest() : super();
-  AddFundRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  AddFundRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  AddFundRequest clone() => new AddFundRequest()..mergeFromMessage(this);
-  AddFundRequest copyWith(void Function(AddFundRequest) updates) => super.copyWith((message) => updates(message as AddFundRequest));
+  AddFundInitRequest() : super();
+  AddFundInitRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  AddFundInitRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  AddFundInitRequest clone() => new AddFundInitRequest()..mergeFromMessage(this);
+  AddFundInitRequest copyWith(void Function(AddFundInitRequest) updates) => super.copyWith((message) => updates(message as AddFundInitRequest));
   $pb.BuilderInfo get info_ => _i;
-  static AddFundRequest create() => new AddFundRequest();
-  static $pb.PbList<AddFundRequest> createRepeated() => new $pb.PbList<AddFundRequest>();
-  static AddFundRequest getDefault() => _defaultInstance ??= create()..freeze();
-  static AddFundRequest _defaultInstance;
-  static void $checkItem(AddFundRequest v) {
-    if (v is! AddFundRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  static AddFundInitRequest create() => new AddFundInitRequest();
+  static $pb.PbList<AddFundInitRequest> createRepeated() => new $pb.PbList<AddFundInitRequest>();
+  static AddFundInitRequest getDefault() => _defaultInstance ??= create()..freeze();
+  static AddFundInitRequest _defaultInstance;
+  static void $checkItem(AddFundInitRequest v) {
+    if (v is! AddFundInitRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
-  String get paymentRequest => $_getS(0, '');
-  set paymentRequest(String v) { $_setString(0, v); }
-  bool hasPaymentRequest() => $_has(0);
-  void clearPaymentRequest() => clearField(1);
+  String get nodeID => $_getS(0, '');
+  set nodeID(String v) { $_setString(0, v); }
+  bool hasNodeID() => $_has(0);
+  void clearNodeID() => clearField(1);
 
   String get notificationToken => $_getS(1, '');
   set notificationToken(String v) { $_setString(1, v); }
   bool hasNotificationToken() => $_has(1);
   void clearNotificationToken() => clearField(2);
+
+  List<int> get pubkey => $_getN(2);
+  set pubkey(List<int> v) { $_setBytes(2, v); }
+  bool hasPubkey() => $_has(2);
+  void clearPubkey() => clearField(3);
+
+  List<int> get hash => $_getN(3);
+  set hash(List<int> v) { $_setBytes(3, v); }
+  bool hasHash() => $_has(3);
+  void clearHash() => clearField(4);
 }
 
-class AddFundReply extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('AddFundReply', package: const $pb.PackageName('breez'))
+class AddFundInitReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('AddFundInitReply', package: const $pb.PackageName('breez'))
     ..aOS(1, 'address')
+    ..a<List<int>>(2, 'pubkey', $pb.PbFieldType.OY)
+    ..aInt64(3, 'lockHeight')
+    ..aInt64(4, 'maxAllowedDeposit')
+    ..aOS(5, 'errorMessage')
     ..hasRequiredFields = false
   ;
 
-  AddFundReply() : super();
-  AddFundReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  AddFundReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  AddFundReply clone() => new AddFundReply()..mergeFromMessage(this);
-  AddFundReply copyWith(void Function(AddFundReply) updates) => super.copyWith((message) => updates(message as AddFundReply));
+  AddFundInitReply() : super();
+  AddFundInitReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  AddFundInitReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  AddFundInitReply clone() => new AddFundInitReply()..mergeFromMessage(this);
+  AddFundInitReply copyWith(void Function(AddFundInitReply) updates) => super.copyWith((message) => updates(message as AddFundInitReply));
   $pb.BuilderInfo get info_ => _i;
-  static AddFundReply create() => new AddFundReply();
-  static $pb.PbList<AddFundReply> createRepeated() => new $pb.PbList<AddFundReply>();
-  static AddFundReply getDefault() => _defaultInstance ??= create()..freeze();
-  static AddFundReply _defaultInstance;
-  static void $checkItem(AddFundReply v) {
-    if (v is! AddFundReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  static AddFundInitReply create() => new AddFundInitReply();
+  static $pb.PbList<AddFundInitReply> createRepeated() => new $pb.PbList<AddFundInitReply>();
+  static AddFundInitReply getDefault() => _defaultInstance ??= create()..freeze();
+  static AddFundInitReply _defaultInstance;
+  static void $checkItem(AddFundInitReply v) {
+    if (v is! AddFundInitReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get address => $_getS(0, '');
   set address(String v) { $_setString(0, v); }
   bool hasAddress() => $_has(0);
   void clearAddress() => clearField(1);
+
+  List<int> get pubkey => $_getN(1);
+  set pubkey(List<int> v) { $_setBytes(1, v); }
+  bool hasPubkey() => $_has(1);
+  void clearPubkey() => clearField(2);
+
+  Int64 get lockHeight => $_getI64(2);
+  set lockHeight(Int64 v) { $_setInt64(2, v); }
+  bool hasLockHeight() => $_has(2);
+  void clearLockHeight() => clearField(3);
+
+  Int64 get maxAllowedDeposit => $_getI64(3);
+  set maxAllowedDeposit(Int64 v) { $_setInt64(3, v); }
+  bool hasMaxAllowedDeposit() => $_has(3);
+  void clearMaxAllowedDeposit() => clearField(4);
+
+  String get errorMessage => $_getS(4, '');
+  set errorMessage(String v) { $_setString(4, v); }
+  bool hasErrorMessage() => $_has(4);
+  void clearErrorMessage() => clearField(5);
 }
 
 class AddFundStatusRequest extends $pb.GeneratedMessage {
@@ -280,6 +316,8 @@ class RemoveFundRequest extends $pb.GeneratedMessage {
 
 class RemoveFundReply extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RemoveFundReply', package: const $pb.PackageName('breez'))
+    ..aOS(1, 'paymentRequest')
+    ..aOS(2, 'errorMessage')
     ..hasRequiredFields = false
   ;
 
@@ -296,96 +334,68 @@ class RemoveFundReply extends $pb.GeneratedMessage {
   static void $checkItem(RemoveFundReply v) {
     if (v is! RemoveFundReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
+
+  String get paymentRequest => $_getS(0, '');
+  set paymentRequest(String v) { $_setString(0, v); }
+  bool hasPaymentRequest() => $_has(0);
+  void clearPaymentRequest() => clearField(1);
+
+  String get errorMessage => $_getS(1, '');
+  set errorMessage(String v) { $_setString(1, v); }
+  bool hasErrorMessage() => $_has(1);
+  void clearErrorMessage() => clearField(2);
 }
 
-class MempoolRegisterRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('MempoolRegisterRequest', package: const $pb.PackageName('breez'))
-    ..aOS(1, 'clientID')
-    ..pPS(2, 'addresses')
+class RedeemRemovedFundsRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RedeemRemovedFundsRequest', package: const $pb.PackageName('breez'))
+    ..aOS(1, 'paymenthash')
     ..hasRequiredFields = false
   ;
 
-  MempoolRegisterRequest() : super();
-  MempoolRegisterRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  MempoolRegisterRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  MempoolRegisterRequest clone() => new MempoolRegisterRequest()..mergeFromMessage(this);
-  MempoolRegisterRequest copyWith(void Function(MempoolRegisterRequest) updates) => super.copyWith((message) => updates(message as MempoolRegisterRequest));
+  RedeemRemovedFundsRequest() : super();
+  RedeemRemovedFundsRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RedeemRemovedFundsRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RedeemRemovedFundsRequest clone() => new RedeemRemovedFundsRequest()..mergeFromMessage(this);
+  RedeemRemovedFundsRequest copyWith(void Function(RedeemRemovedFundsRequest) updates) => super.copyWith((message) => updates(message as RedeemRemovedFundsRequest));
   $pb.BuilderInfo get info_ => _i;
-  static MempoolRegisterRequest create() => new MempoolRegisterRequest();
-  static $pb.PbList<MempoolRegisterRequest> createRepeated() => new $pb.PbList<MempoolRegisterRequest>();
-  static MempoolRegisterRequest getDefault() => _defaultInstance ??= create()..freeze();
-  static MempoolRegisterRequest _defaultInstance;
-  static void $checkItem(MempoolRegisterRequest v) {
-    if (v is! MempoolRegisterRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  static RedeemRemovedFundsRequest create() => new RedeemRemovedFundsRequest();
+  static $pb.PbList<RedeemRemovedFundsRequest> createRepeated() => new $pb.PbList<RedeemRemovedFundsRequest>();
+  static RedeemRemovedFundsRequest getDefault() => _defaultInstance ??= create()..freeze();
+  static RedeemRemovedFundsRequest _defaultInstance;
+  static void $checkItem(RedeemRemovedFundsRequest v) {
+    if (v is! RedeemRemovedFundsRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
-  String get clientID => $_getS(0, '');
-  set clientID(String v) { $_setString(0, v); }
-  bool hasClientID() => $_has(0);
-  void clearClientID() => clearField(1);
-
-  List<String> get addresses => $_getList(1);
+  String get paymenthash => $_getS(0, '');
+  set paymenthash(String v) { $_setString(0, v); }
+  bool hasPaymenthash() => $_has(0);
+  void clearPaymenthash() => clearField(1);
 }
 
-class MempoolRegisterReply_Transaction extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('MempoolRegisterReply.Transaction', package: const $pb.PackageName('breez'))
-    ..aOS(1, 'tX')
-    ..aOS(2, 'address')
-    ..a<double>(3, 'value', $pb.PbFieldType.OD)
+class RedeemRemovedFundsReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RedeemRemovedFundsReply', package: const $pb.PackageName('breez'))
+    ..aOS(1, 'txid')
     ..hasRequiredFields = false
   ;
 
-  MempoolRegisterReply_Transaction() : super();
-  MempoolRegisterReply_Transaction.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  MempoolRegisterReply_Transaction.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  MempoolRegisterReply_Transaction clone() => new MempoolRegisterReply_Transaction()..mergeFromMessage(this);
-  MempoolRegisterReply_Transaction copyWith(void Function(MempoolRegisterReply_Transaction) updates) => super.copyWith((message) => updates(message as MempoolRegisterReply_Transaction));
+  RedeemRemovedFundsReply() : super();
+  RedeemRemovedFundsReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RedeemRemovedFundsReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RedeemRemovedFundsReply clone() => new RedeemRemovedFundsReply()..mergeFromMessage(this);
+  RedeemRemovedFundsReply copyWith(void Function(RedeemRemovedFundsReply) updates) => super.copyWith((message) => updates(message as RedeemRemovedFundsReply));
   $pb.BuilderInfo get info_ => _i;
-  static MempoolRegisterReply_Transaction create() => new MempoolRegisterReply_Transaction();
-  static $pb.PbList<MempoolRegisterReply_Transaction> createRepeated() => new $pb.PbList<MempoolRegisterReply_Transaction>();
-  static MempoolRegisterReply_Transaction getDefault() => _defaultInstance ??= create()..freeze();
-  static MempoolRegisterReply_Transaction _defaultInstance;
-  static void $checkItem(MempoolRegisterReply_Transaction v) {
-    if (v is! MempoolRegisterReply_Transaction) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  static RedeemRemovedFundsReply create() => new RedeemRemovedFundsReply();
+  static $pb.PbList<RedeemRemovedFundsReply> createRepeated() => new $pb.PbList<RedeemRemovedFundsReply>();
+  static RedeemRemovedFundsReply getDefault() => _defaultInstance ??= create()..freeze();
+  static RedeemRemovedFundsReply _defaultInstance;
+  static void $checkItem(RedeemRemovedFundsReply v) {
+    if (v is! RedeemRemovedFundsReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
-  String get tX => $_getS(0, '');
-  set tX(String v) { $_setString(0, v); }
-  bool hasTX() => $_has(0);
-  void clearTX() => clearField(1);
-
-  String get address => $_getS(1, '');
-  set address(String v) { $_setString(1, v); }
-  bool hasAddress() => $_has(1);
-  void clearAddress() => clearField(2);
-
-  double get value => $_getN(2);
-  set value(double v) { $_setDouble(2, v); }
-  bool hasValue() => $_has(2);
-  void clearValue() => clearField(3);
-}
-
-class MempoolRegisterReply extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('MempoolRegisterReply', package: const $pb.PackageName('breez'))
-    ..pp<MempoolRegisterReply_Transaction>(1, 'tXS', $pb.PbFieldType.PM, MempoolRegisterReply_Transaction.$checkItem, MempoolRegisterReply_Transaction.create)
-    ..hasRequiredFields = false
-  ;
-
-  MempoolRegisterReply() : super();
-  MempoolRegisterReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  MempoolRegisterReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  MempoolRegisterReply clone() => new MempoolRegisterReply()..mergeFromMessage(this);
-  MempoolRegisterReply copyWith(void Function(MempoolRegisterReply) updates) => super.copyWith((message) => updates(message as MempoolRegisterReply));
-  $pb.BuilderInfo get info_ => _i;
-  static MempoolRegisterReply create() => new MempoolRegisterReply();
-  static $pb.PbList<MempoolRegisterReply> createRepeated() => new $pb.PbList<MempoolRegisterReply>();
-  static MempoolRegisterReply getDefault() => _defaultInstance ??= create()..freeze();
-  static MempoolRegisterReply _defaultInstance;
-  static void $checkItem(MempoolRegisterReply v) {
-    if (v is! MempoolRegisterReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
-  }
-
-  List<MempoolRegisterReply_Transaction> get tXS => $_getList(0);
+  String get txid => $_getS(0, '');
+  set txid(String v) { $_setString(0, v); }
+  bool hasTxid() => $_has(0);
+  void clearTxid() => clearField(1);
 }
 
 class FundRequest extends $pb.GeneratedMessage {
@@ -452,56 +462,50 @@ class FundReply extends $pb.GeneratedMessage {
   void clearReturnCode() => clearField(1);
 }
 
-class GetPaymentRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('GetPaymentRequest', package: const $pb.PackageName('breez'))
+class GetSwapPaymentRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('GetSwapPaymentRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'paymentRequest')
-    ..aOS(2, 'address')
     ..hasRequiredFields = false
   ;
 
-  GetPaymentRequest() : super();
-  GetPaymentRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  GetPaymentRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  GetPaymentRequest clone() => new GetPaymentRequest()..mergeFromMessage(this);
-  GetPaymentRequest copyWith(void Function(GetPaymentRequest) updates) => super.copyWith((message) => updates(message as GetPaymentRequest));
+  GetSwapPaymentRequest() : super();
+  GetSwapPaymentRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  GetSwapPaymentRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  GetSwapPaymentRequest clone() => new GetSwapPaymentRequest()..mergeFromMessage(this);
+  GetSwapPaymentRequest copyWith(void Function(GetSwapPaymentRequest) updates) => super.copyWith((message) => updates(message as GetSwapPaymentRequest));
   $pb.BuilderInfo get info_ => _i;
-  static GetPaymentRequest create() => new GetPaymentRequest();
-  static $pb.PbList<GetPaymentRequest> createRepeated() => new $pb.PbList<GetPaymentRequest>();
-  static GetPaymentRequest getDefault() => _defaultInstance ??= create()..freeze();
-  static GetPaymentRequest _defaultInstance;
-  static void $checkItem(GetPaymentRequest v) {
-    if (v is! GetPaymentRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  static GetSwapPaymentRequest create() => new GetSwapPaymentRequest();
+  static $pb.PbList<GetSwapPaymentRequest> createRepeated() => new $pb.PbList<GetSwapPaymentRequest>();
+  static GetSwapPaymentRequest getDefault() => _defaultInstance ??= create()..freeze();
+  static GetSwapPaymentRequest _defaultInstance;
+  static void $checkItem(GetSwapPaymentRequest v) {
+    if (v is! GetSwapPaymentRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get paymentRequest => $_getS(0, '');
   set paymentRequest(String v) { $_setString(0, v); }
   bool hasPaymentRequest() => $_has(0);
   void clearPaymentRequest() => clearField(1);
-
-  String get address => $_getS(1, '');
-  set address(String v) { $_setString(1, v); }
-  bool hasAddress() => $_has(1);
-  void clearAddress() => clearField(2);
 }
 
-class GetPaymentReply extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('GetPaymentReply', package: const $pb.PackageName('breez'))
+class GetSwapPaymentReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('GetSwapPaymentReply', package: const $pb.PackageName('breez'))
     ..aOS(1, 'paymentError')
     ..hasRequiredFields = false
   ;
 
-  GetPaymentReply() : super();
-  GetPaymentReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  GetPaymentReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  GetPaymentReply clone() => new GetPaymentReply()..mergeFromMessage(this);
-  GetPaymentReply copyWith(void Function(GetPaymentReply) updates) => super.copyWith((message) => updates(message as GetPaymentReply));
+  GetSwapPaymentReply() : super();
+  GetSwapPaymentReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  GetSwapPaymentReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  GetSwapPaymentReply clone() => new GetSwapPaymentReply()..mergeFromMessage(this);
+  GetSwapPaymentReply copyWith(void Function(GetSwapPaymentReply) updates) => super.copyWith((message) => updates(message as GetSwapPaymentReply));
   $pb.BuilderInfo get info_ => _i;
-  static GetPaymentReply create() => new GetPaymentReply();
-  static $pb.PbList<GetPaymentReply> createRepeated() => new $pb.PbList<GetPaymentReply>();
-  static GetPaymentReply getDefault() => _defaultInstance ??= create()..freeze();
-  static GetPaymentReply _defaultInstance;
-  static void $checkItem(GetPaymentReply v) {
-    if (v is! GetPaymentReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  static GetSwapPaymentReply create() => new GetSwapPaymentReply();
+  static $pb.PbList<GetSwapPaymentReply> createRepeated() => new $pb.PbList<GetSwapPaymentReply>();
+  static GetSwapPaymentReply getDefault() => _defaultInstance ??= create()..freeze();
+  static GetSwapPaymentReply _defaultInstance;
+  static void $checkItem(GetSwapPaymentReply v) {
+    if (v is! GetSwapPaymentReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get paymentError => $_getS(0, '');
@@ -739,12 +743,12 @@ class PingReply extends $pb.GeneratedMessage {
 class OrderRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('OrderRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'fullName')
-    ..aOS(2, 'email')
-    ..aOS(3, 'address')
-    ..aOS(4, 'city')
-    ..aOS(5, 'state')
-    ..aOS(6, 'zip')
-    ..aOS(7, 'country')
+    ..aOS(2, 'address')
+    ..aOS(3, 'city')
+    ..aOS(4, 'state')
+    ..aOS(5, 'zip')
+    ..aOS(6, 'country')
+    ..aOS(7, 'email')
     ..hasRequiredFields = false
   ;
 
@@ -767,35 +771,35 @@ class OrderRequest extends $pb.GeneratedMessage {
   bool hasFullName() => $_has(0);
   void clearFullName() => clearField(1);
 
-  String get email => $_getS(1, '');
-  set email(String v) { $_setString(1, v); }
-  bool hasEmail() => $_has(1);
-  void clearEmail() => clearField(2);
+  String get address => $_getS(1, '');
+  set address(String v) { $_setString(1, v); }
+  bool hasAddress() => $_has(1);
+  void clearAddress() => clearField(2);
 
-  String get address => $_getS(2, '');
-  set address(String v) { $_setString(3, v); }
-  bool hasAddress() => $_has(2);
-  void clearAddress() => clearField(3);
+  String get city => $_getS(2, '');
+  set city(String v) { $_setString(2, v); }
+  bool hasCity() => $_has(2);
+  void clearCity() => clearField(3);
 
-  String get city => $_getS(3, '');
-  set city(String v) { $_setString(3, v); }
-  bool hasCity() => $_has(3);
-  void clearCity() => clearField(4);
+  String get state => $_getS(3, '');
+  set state(String v) { $_setString(3, v); }
+  bool hasState() => $_has(3);
+  void clearState() => clearField(4);
 
-  String get state => $_getS(4, '');
-  set state(String v) { $_setString(4, v); }
-  bool hasState() => $_has(4);
-  void clearState() => clearField(5);
+  String get zip => $_getS(4, '');
+  set zip(String v) { $_setString(4, v); }
+  bool hasZip() => $_has(4);
+  void clearZip() => clearField(5);
 
-  String get zip => $_getS(5, '');
-  set zip(String v) { $_setString(5, v); }
-  bool hasZip() => $_has(5);
-  void clearZip() => clearField(6);
+  String get country => $_getS(5, '');
+  set country(String v) { $_setString(5, v); }
+  bool hasCountry() => $_has(5);
+  void clearCountry() => clearField(6);
 
-  String get country => $_getS(6, '');
-  set country(String v) { $_setString(6, v); }
-  bool hasCountry() => $_has(6);
-  void clearCountry() => clearField(7);
+  String get email => $_getS(6, '');
+  set email(String v) { $_setString(6, v); }
+  bool hasEmail() => $_has(6);
+  void clearEmail() => clearField(7);
 }
 
 class OrderReply extends $pb.GeneratedMessage {
