@@ -120,7 +120,7 @@ class BreezAppState extends State<BreezApp> {
             );
           case '/add_funds':
             return new FadeInRoute(
-              builder: (_) => new AddOrSendFundsPage(),
+              builder: (_) => new AddFundsPage(widget._userModel),
               settings: settings,
             );
           case '/withdraw_funds':

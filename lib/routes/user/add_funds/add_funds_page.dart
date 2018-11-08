@@ -1,50 +1,32 @@
-import 'dart:async';
-
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/bloc_widget_connector.dart';
-import 'package:breez/widgets/loader.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/routes/user/add_funds/address_widget.dart';
+import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:share/share.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
-class AddOrSendFundsPage extends StatelessWidget {
+class AddFundsPage extends StatelessWidget {
+  final BreezUserModel _user;
+
+  AddFundsPage(this._user);
+
   @override
   Widget build(BuildContext context) {
     return new BlocConnector<AppBlocs>(
-        (context, blocs) => _AddOrSendFunds(blocs.accountBloc));
-  }
-}
-
-class _AddOrSendFunds extends StatelessWidget {
-  final AccountBloc _accountBloc;
-
-  const _AddOrSendFunds(this._accountBloc);
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<AccountModel>(
-        stream: _accountBloc.accountStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          if (!snapshot.hasData) {
-            return Loader();
-          }
-          return _AddFundsPage(_accountBloc);
-        });
+        (context, blocs) => _AddFundsPage(this._user, blocs.accountBloc));
   }
 }
 
 class _AddFundsPage extends StatefulWidget {
+  final BreezUserModel _user;
   final AccountBloc _accountBloc;
 
-  _AddFundsPage(this._accountBloc);
+  const _AddFundsPage(this._user, this._accountBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -54,302 +36,113 @@ class _AddFundsPage extends StatefulWidget {
 
 class AddFundsState extends State<_AddFundsPage> {
   final String _title = "Add Funds";
-  StreamSubscription<AccountModel> _accountSubscription;
-  StreamSubscription<AddFundResponse> _addressSubscription;
-
-  bool _connected = true;
-  bool _hasError = false;
+  AddFundsBloc _addFundsBloc;
 
   @override
   initState() {
     super.initState();
-
-    _accountSubscription = widget._accountBloc.accountStream.listen((data){
-      setState(() {
-        _hasError = false;
-      });
-    });
-    _accountSubscription.onError((error) {
-      setState(() {
-        _hasError = true;
-      });
-    });
-
-    _addressSubscription = widget._accountBloc.addFundStream.listen((data) {
-      setState(() {
-        _connected = true;
-      });
-    });
-    _addressSubscription.onError((error) {
-      setState(() {
-        _connected = false;
-      });
-    });
-
-    widget._accountBloc.requestAddressSink.add(null);
+    _addFundsBloc = new AddFundsBloc(widget._user.userID);
+    _addFundsBloc.addFundRequestSink.add(null);
   }
 
   @override
   void dispose() {
-    if (_accountSubscription != null) {
-      _accountSubscription.cancel();
-    }
-    if (_addressSubscription != null) {
-      _addressSubscription.cancel();
-    }
+    _addFundsBloc.addFundRequestSink.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Material(
-      child: new Scaffold(
-        bottomNavigationBar: _buildBottomNavigationBar(),
-        appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
-          leading: backBtn.BackButton(),
-          title: new Text(
-            _title,
-            style: theme.appBarTextStyle,
-          ),
-          elevation: 0.0,
-        ),
-        body: new Container(
-          child: Material(
-            child: Column(
-              children: <Widget>[
-                StreamBuilder(
-                    stream: widget._accountBloc.accountStream,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<AccountModel> accSnapshot) {
-                      AccountModel acc = accSnapshot.data;                      
-                      return StreamBuilder(
-                          stream: widget._accountBloc.addFundStream,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<AddFundResponse> snapshot) {
-                            AddFundResponse response = snapshot.data;
-                            String message;      
-                            if (accSnapshot.hasError) {
-                              message = accSnapshot.error.toString();
-                            } else if (!accSnapshot.hasData) {
-                              message =
-                                  'Bitcoin address will be available as soon as Breez is synchronized.';
-                            } else if (accSnapshot.data.waitingDepositConfirmation ||
-                                accSnapshot.data.processingWithdrawal) {
-                              message =
-                                  'Breez is processing your previous ${acc.waitingDepositConfirmation || acc.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
-                            } else if (snapshot.hasData && response.errorMessage != null && response.errorMessage.isNotEmpty) {
-                              message = response.errorMessage;
-                            }
-
-                            if (message != null) {
-                              if(!message.endsWith('.')){
-                                message += '.';
-                              }
-                              return Container(
-                                  padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
-                                  child: Column(children: <Widget>[
-                                    Text(message, textAlign: TextAlign.center,),
-                                  ]));
-                            }
-
-                            if (snapshot.hasError) {
-                              return Container(
-                                padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
-                                  child: Column(children: <Widget>[
-                                Text("Failed to retrieve an address from Breez server\nPlease check your internet connection.", textAlign: TextAlign.center,),
-                              ]));
-                            }
-
-                            return _buildBitcoinFundsSection(
-                                context, snapshot.data?.address, snapshot.data?.backupJson);
-                          });
-                    }),
-                new Container(
-                  padding: new EdgeInsets.only(top: 36.0),
-                  child: _connected ? _buildAmountWarning(widget._accountBloc) : Container(),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+    return new StreamBuilder(
+        stream: widget._accountBloc.accountStream,
+        builder:
+            (BuildContext context, AsyncSnapshot<AccountModel> accSnapshot) {
+          return StreamBuilder(
+              stream: _addFundsBloc.addFundResponseStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<AddFundResponse> snapshot) {
+                return Material(
+                  child: new Scaffold(
+                      bottomNavigationBar: _buildBottomBar(snapshot.data,
+                          hasError: snapshot.hasError),
+                      appBar: new AppBar(
+                        iconTheme: theme.appBarIconTheme,
+                        textTheme: theme.appBarTextTheme,
+                        backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
+                        leading: backBtn.BackButton(),
+                        title: new Text(
+                          _title,
+                          style: theme.appBarTextStyle,
+                        ),
+                        elevation: 0.0,
+                      ),
+                      body: new Container(
+                        child: Material(
+                            child: getBody(
+                                context,
+                                accSnapshot.data,
+                                snapshot.data,
+                                snapshot.hasError
+                                    ? "Failed to retrieve an address from Breez server\nPlease check your internet connection."
+                                    : null)),
+                      )),
+                );
+              });
+        });
   }
 
-  Widget _buildBottomNavigationBar() {
-    if (!_connected) {
-      return new Padding(
-          padding: new EdgeInsets.only(bottom: 40.0),
-          child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            new SizedBox(
-              height: 48.0,
-              width: 168.0,
-              child: RaisedButton(
-                padding: EdgeInsets.only(top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
-                child: new Text(
-                  "RETRY",
-                  style: theme.buttonStyle,
-                ),
-                color: Colors.white,
-                elevation: 0.0,
-                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(42.0)),
-                onPressed: () {
-                  widget._accountBloc.requestAddressSink.add(null);
-                },
-              ),
-            ),
-          ]));
+  Widget getBody(BuildContext context, AccountModel account,
+      AddFundResponse response, String error) {
+    String errorMessage;
+    if (error != null) {
+      errorMessage = error;
+    } else if (account == null) {
+      errorMessage =
+          'Bitcoin address will be available as soon as Breez is synchronized.';
+    } else if (account.waitingDepositConfirmation ||
+        account.processingWithdrawal) {
+      errorMessage =
+          'Breez is processing your previous ${account.waitingDepositConfirmation || account.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
+    } else if (response != null && response.errorMessage.isNotEmpty) {
+      errorMessage = response.errorMessage;
     }
 
-    if (_hasError) {
-      return new Padding(
-          padding: new EdgeInsets.only(bottom: 40.0),
-          child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            new SizedBox(
-              height: 48.0,
-              width: 168.0,
-              child: RaisedButton(
-                padding: EdgeInsets.only(top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
-                child: new Text(
-                  "CLOSE",
-                  style: theme.buttonStyle,
-                ),
-                color: Colors.white,
-                elevation: 0.0,
-                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(42.0)),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ),
+    if (errorMessage != null) {
+      if (!errorMessage.endsWith('.')) {
+        errorMessage += '.';
+      }
+      return Container(
+          padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+          child: Column(children: <Widget>[
+            Text(errorMessage, textAlign: TextAlign.center)
           ]));
     }
-
-    return null;
+    return Column(children: <Widget>[
+      AddressWidget(response?.address, response?.backupJson),
+      response == null ? SizedBox() : Container(
+          padding: new EdgeInsets.only(top: 36.0),
+          child: Text(
+              "Send up to " +
+                  account.currency
+                      .format(response.maxAllowedDeposit, includeSymbol: true) +
+                  " to this address",
+              style: theme.warningStyle))
+    ]);   
   }
 
-}
+  Widget _buildBottomBar(AddFundResponse response, {hasError = false}) {
+    if (hasError || response?.errorMessage?.isNotEmpty == true) {      
+      return SingleButtonBottomBar(
+          text: hasError ? "RETRY" : "CLOSE",
+          onPressed: () {
+            if (hasError) {
+              _addFundsBloc.addFundRequestSink.add(null);
+            } else {
+              Navigator.of(context).pop();
+            }
+          });
+    }
 
-Widget _buildAmountWarning(AccountBloc accountBloc) {
-  return StreamBuilder(
-      stream: accountBloc.accountStream,
-      builder: (BuildContext context, AsyncSnapshot<AccountModel> accountSnapshot) {  
-        return StreamBuilder(
-            stream: accountBloc.addFundStream,
-            builder: (BuildContext context, AsyncSnapshot<AddFundResponse> addFundSnapshot) {         
-              if (addFundSnapshot.hasData && accountSnapshot.hasData && addFundSnapshot.data.errorMessage.isEmpty) {          
-                return new Column(children: <Widget>[
-                  Text(
-                      "Send up to " +
-                          accountSnapshot.data.currency.format(
-                              addFundSnapshot.data.maxAllowedDeposit,
-                              includeSymbol: true) +
-                          " to this address",
-                      style: theme.warningStyle)
-                ]);
-              } else {
-                return new Container();
-              }
-            });
-      });
-}
-
-Widget _buildBitcoinFundsSection(BuildContext context, String address, String backupJson) {
-  final snackBar = new SnackBar(
-    content: new Text(
-      'Deposit address was copied to your clipboard.',
-      style: theme.snackBarStyle,
-    ),
-    backgroundColor: theme.snackBarBackgroundColor,
-    duration: new Duration(seconds: 4),
-  );
-
-  return new Column(
-    mainAxisAlignment: MainAxisAlignment.start,
-    children: <Widget>[
-      new Container(
-        padding: new EdgeInsets.only(left: 16.0, top: 24.0, right: 16.0),
-        child: new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            new Text(
-              "Deposit Address",
-              style: theme.FieldTextStyle.labelStyle,
-            ),
-            new Container(
-              child: Row(
-                children: <Widget>[
-                  new IconButton(
-                    icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
-                    color: theme.whiteColor,
-                    onPressed: () {
-                      final RenderBox box = context.findRenderObject();
-                      Share.share(address,
-                          sharePositionOrigin:
-                              box.localToGlobal(Offset.zero) & box.size);
-                    },
-                  ),
-                  new IconButton(
-                    icon: new Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-                    color: theme.whiteColor,
-                    onPressed: () {
-                      Clipboard.setData(new ClipboardData(text: address));
-                      Scaffold.of(context).showSnackBar(snackBar);
-                    },
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      address == null
-          ? _buildQRPlaceholder()
-          : new Column(children: <Widget>[
-              new Container(
-                margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
-                padding: const EdgeInsets.all(8.6),
-                decoration: theme.qrImageStyle,
-                child: new Container(
-                  color: theme.whiteColor,
-                  child: new QrImage(
-                    data: "bitcoin:" + address,
-                    size: 180.0,
-                  ),
-                ),
-              ),
-              new Container(
-                padding: EdgeInsets.only(top: 16.0),
-                child: new GestureDetector(
-                  onTap: () {
-                  final RenderBox box = context.findRenderObject();
-                  Share.share(backupJson,
-                  sharePositionOrigin:
-                  box.localToGlobal(Offset.zero) & box.size);
-                  },
-                  child: new Text(
-                    address,
-                    style: theme.smallTextStyle,
-                    ),
-                  ),
-              ),
-            ])
-    ],
-  );
-}
-
-Widget _buildQRPlaceholder() {
-  return Container(
-    width: 188.6,
-    height: 188.6,
-    margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
-    padding: const EdgeInsets.all(8.6),
-    child: Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: CircularProgressIndicator(),
-    ),
-  );
+    return SizedBox(width: 0.0, height: 0.0);
+  }
 }
