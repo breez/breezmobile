@@ -13,6 +13,9 @@
   <a href='https://breez.technology'>
     <img src='https://drive.google.com/uc?id=1hHzDMW4JlauGlgOncUpCyzjk8qmeD4QI&export=download' height='400' alt='screenshot' />
   </a>
+    <a href='https://breez.technology'>
+    <img src='https://drive.google.com/uc?id==1oOxChmEKd7c_AKZ_2ACgIBA56OFt6wGo&export=download' height='400' alt='screenshot' />
+  </a>
 </p>
 
 Breez is a Lightning Network [mobile client](https://github.com/breez/breezmobile) and a [hub](https://github.com/breez/server). It provides a platform for simple, instantaneous bitcoin payments.
