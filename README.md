@@ -1,19 +1,19 @@
 # Breez Mobile Client
 
 <p align='center'>
-  <a href='https://drive.google.com/open?id=1MHi-sdhoOXTxnlkwa2Eg0e6LThr0r_x-' target='_blank'>
+  <a href='https://drive.google.com/open?id=1MHi-sdhoOXTxnlkwa2Eg0e6LThr0r_x-'>
     <img src='https://drive.google.com/uc?id=1MHi-sdhoOXTxnlkwa2Eg0e6LThr0r_x-&export=download' height='350' alt='screenshot' />
   </a>
-  <a href='https://drive.google.com/open?id=16gD7djk_o8YZnk8BMypVAR8HPdI4cRRd' target='_blank'>
+  <a href='https://drive.google.com/open?id=16gD7djk_o8YZnk8BMypVAR8HPdI4cRRd'>
     <img src='https://drive.google.com/uc?id=16gD7djk_o8YZnk8BMypVAR8HPdI4cRRd&export=download' height='350' alt='screenshot' />
   </a>
-  <a href='https://drive.google.com/open?id=1hHzDMW4JlauGlgOncUpCyzjk8qmeD4QI' target='_blank'>
+  <a href='https://drive.google.com/open?id=1hHzDMW4JlauGlgOncUpCyzjk8qmeD4QI'>
     <img src='https://drive.google.com/uc?id=1hHzDMW4JlauGlgOncUpCyzjk8qmeD4QI&export=download' height='350' alt='screenshot' />
   </a>
-    <a href='https://drive.google.com/open?id=1oOxChmEKd7c_AKZ_2ACgIBA56OFt6wGo' target='_blank'>
+    <a href='https://drive.google.com/open?id=1oOxChmEKd7c_AKZ_2ACgIBA56OFt6wGo'>
     <img src='https://drive.google.com/uc?id=1oOxChmEKd7c_AKZ_2ACgIBA56OFt6wGo&export=download' height='350' alt='screenshot' />
   </a>
-  <a href='https://drive.google.com/open?id=1Cf1-9hX5ri0gsgU4qhM3-Flt-J5RWuFK' target='_blank'>
+  <a href='https://drive.google.com/open?id=1Cf1-9hX5ri0gsgU4qhM3-Flt-J5RWuFK'>
     <img src='https://drive.google.com/uc?id=1Cf1-9hX5ri0gsgU4qhM3-Flt-J5RWuFK&export=download' height='350' alt='screenshot' />
   </a>
 </p>
