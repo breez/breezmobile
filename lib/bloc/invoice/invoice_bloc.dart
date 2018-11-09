@@ -56,7 +56,7 @@ class InvoiceBloc {
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
     _newStandardInvoiceRequestController.stream.listen((invoiceRequest){
-      breezLib.addStandardInvoice(invoiceRequest.amount, invoiceRequest.description, expiry: invoiceRequest.expiry)
+      breezLib.addInvoice(invoiceRequest.amount, invoiceRequest.payeeName, invoiceRequest.logo, description: invoiceRequest.description, expiry: invoiceRequest.expiry)
           .then( (paymentRequest) {
         _readyInvoicesController.add(paymentRequest);
       })

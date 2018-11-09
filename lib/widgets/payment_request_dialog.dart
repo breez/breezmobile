@@ -44,7 +44,12 @@ class PaymentRequestDialog extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         new Text(
-          invoice.payeeName.isEmpty ? invoice.description : "is requesting you to pay:",
+         "is requesting you to pay:",
+          style: theme.paymentRequestSubtitleStyle,
+          textAlign: TextAlign.center,
+        ),
+        invoice.description == null ? null : new Text(
+          "Note: ${invoice.description}",
           style: theme.paymentRequestSubtitleStyle,
           textAlign: TextAlign.center,
         ),

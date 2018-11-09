@@ -88,7 +88,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
           }        
           _paymentSessionController.add(nextState);
           return _breezLib.sendPaymentForRequest(paymentRequest)
-          .then((res) => _onPaymenetFulfilled(invoice));
+          .then((res) => _onPaymentFulfilled(invoice));
         })
         .catchError(_onError);
       } else {
@@ -97,7 +97,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     });   
   }
 
-  _onPaymenetFulfilled(InvoiceMemo invoice){
+  _onPaymentFulfilled(InvoiceMemo invoice){
     _channel.sendDataUpdate("paymentFulfilled", true).then((_){
       _paymentSessionController.add(_currentSession.copyWith(paymentFulfilled: true, settledAmount: invoice.amount.toInt()));
     });
