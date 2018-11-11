@@ -1,21 +1,24 @@
 # Breez Mobile Client
 
 <p align='center'>
-  <a href='https://breez.technology'>
-    <img src='https://drive.google.com/uc?id=1MHi-sdhoOXTxnlkwa2Eg0e6LThr0r_x-&export=download' height='400' alt='screenshot' />
+  <a href='https://drive.google.com/open?id=1MHi-sdhoOXTxnlkwa2Eg0e6LThr0r_x-'>
+    <img src='https://drive.google.com/uc?id=1MHi-sdhoOXTxnlkwa2Eg0e6LThr0r_x-&export=download' height='350' alt='screenshot' />
   </a>
-  <a href='https://breez.technology'>
-    <img src='https://drive.google.com/uc?id=16gD7djk_o8YZnk8BMypVAR8HPdI4cRRd&export=download' height='400' alt='screenshot' />
+  <a href='https://drive.google.com/open?id=16gD7djk_o8YZnk8BMypVAR8HPdI4cRRd'>
+    <img src='https://drive.google.com/uc?id=16gD7djk_o8YZnk8BMypVAR8HPdI4cRRd&export=download' height='350' alt='screenshot' />
   </a>
-    <a href='https://breez.technology'>
-    <img src='https://drive.google.com/uc?id=1Cf1-9hX5ri0gsgU4qhM3-Flt-J5RWuFK&export=download' height='400' alt='screenshot' />
+  <a href='https://drive.google.com/open?id=1hHzDMW4JlauGlgOncUpCyzjk8qmeD4QI'>
+    <img src='https://drive.google.com/uc?id=1hHzDMW4JlauGlgOncUpCyzjk8qmeD4QI&export=download' height='350' alt='screenshot' />
   </a>
-  <a href='https://breez.technology'>
-    <img src='https://drive.google.com/uc?id=1hHzDMW4JlauGlgOncUpCyzjk8qmeD4QI&export=download' height='400' alt='screenshot' />
+    <a href='https://drive.google.com/open?id=1oOxChmEKd7c_AKZ_2ACgIBA56OFt6wGo'>
+    <img src='https://drive.google.com/uc?id=1oOxChmEKd7c_AKZ_2ACgIBA56OFt6wGo&export=download' height='350' alt='screenshot' />
+  </a>
+  <a href='https://drive.google.com/open?id=1Cf1-9hX5ri0gsgU4qhM3-Flt-J5RWuFK'>
+    <img src='https://drive.google.com/uc?id=1Cf1-9hX5ri0gsgU4qhM3-Flt-J5RWuFK&export=download' height='350' alt='screenshot' />
   </a>
 </p>
 
-Breez is a Lightning Network [mobile client](https://github.com/breez/breezmobile) and a [hub](https://github.com/breez/server). It provides a platform for simple, instantaneous bitcoin payments.
+[Breez](https://breez.technology) is a Lightning Network [mobile client](https://github.com/breez/breezmobile) and a [hub](https://github.com/breez/server). It provides a platform for simple, instantaneous bitcoin payments.
 
 ## Features
 
