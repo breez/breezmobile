@@ -32,8 +32,9 @@ class _PayNearbyPage extends StatefulWidget {
 
 class PayNearbyState extends State<_PayNearbyPage> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _descriptionController = TextEditingController();
   final String _title = "Pay Someone Nearby";
-  Int64 _amountToSendSatoshi;  
+  Int64 _amountToSendSatoshi;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +103,7 @@ class PayNearbyState extends State<_PayNearbyPage> {
                       },
                     ),
                     new Container(
-                      padding: new EdgeInsets.only(top: 36.0),
+                      padding: new EdgeInsets.only(top: 16.0),
                       child: new Row(
                         children: <Widget>[
                           new Text("Available:", style: theme.textStyle),
@@ -112,7 +113,23 @@ class PayNearbyState extends State<_PayNearbyPage> {
                           )
                         ],
                       ),
-                    )
+                    ),
+                    new TextFormField(
+                      controller: _descriptionController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 2,
+                      maxLength: 90,
+                      maxLengthEnforced: true,
+                      decoration: new InputDecoration(
+                        labelText: "Description",
+                      ),
+                      style: theme.transactionTitleStyle,
+                      validator: (text) {
+                        if (text.length == 0) {
+                          return "Please enter a description";
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),

@@ -133,6 +133,10 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                 children: <Widget>[
                   new TextFormField(
                     controller: _descriptionController,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 3,
+                    maxLength: 90,
+                    maxLengthEnforced: true,
                     decoration: new InputDecoration(
                       labelText: "Description",
                     ),

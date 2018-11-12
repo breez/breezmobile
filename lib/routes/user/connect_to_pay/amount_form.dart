@@ -21,6 +21,7 @@ class AmountForm extends StatefulWidget {
 
 class _AmountFormState extends State<AmountForm> {
   TextEditingController _amountController = new TextEditingController();
+  TextEditingController _descriptionController = new TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -37,33 +38,51 @@ class _AmountFormState extends State<AmountForm> {
         Stack(
           alignment: AlignmentDirectional.topCenter,
           children: <Widget>[
-            Positioned(child: Container(height: 120.0)),
             Positioned(
                 child: Form(
-              key: _formKey,
-              child: AmountFormField(
-                maxPaymentAmount: widget._account.maxPaymentAmount,
-                currency: widget._account.currency,
-                controller: _amountController,
-                maxAmount: widget._account.balance,
-                decoration: new InputDecoration(labelText: widget._account.currency.displayName + " Amount"),
-              ),
-            )),
-            Positioned(
-                top: 50.0,
-                left: 0.0,
-                child: Container(
-                  padding: new EdgeInsets.only(top: 36.0),
-                  child: new Row(
-                    children: <Widget>[
-                      new Text("Available:", style: theme.textStyle),
-                      new Padding(
-                        padding: EdgeInsets.only(left: 3.0),
-                        child: new Text(widget._account.currency.format(widget._account.balance), style: theme.textStyle),
-                      )
-                    ],
-                  ),
-                ))
+                    key: _formKey,
+                    child: new Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[ AmountFormField(
+                          maxPaymentAmount: widget._account.maxPaymentAmount,
+                          currency: widget._account.currency,
+                          controller: _amountController,
+                          maxAmount: widget._account.balance,
+                          decoration: new InputDecoration(
+                              labelText: widget._account.currency.displayName + " Amount"),
+                        ),
+                        new Container(
+                          padding: new EdgeInsets.only(top: 16.0),
+                          child: new Row(
+                            children: <Widget>[
+                              new Text("Available:", style: theme.textStyle),
+                              new Padding(
+                                padding: EdgeInsets.only(left: 3.0),
+                                child: new Text(widget._account.currency.format(widget._account.balance),
+                                    style: theme.textStyle),
+                              )
+                            ],
+                          ),
+                        ),
+                        new TextFormField(
+                          controller: _descriptionController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 3,
+                          maxLength: 90,
+                          maxLengthEnforced: true,
+                          decoration: new InputDecoration(
+                            labelText: "Description",
+                          ),
+                          style: theme.transactionTitleStyle,
+                          validator: (text) {
+                            if (text.length == 0) {
+                              return "Please enter a description";
+                            }
+                          },
+                        ),
+                        ]
+                    ))),
           ],
         ),
         Expanded(
