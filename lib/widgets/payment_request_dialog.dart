@@ -6,6 +6,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter_advanced_networkimage/flutter_advanced_networkimage.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class PaymentRequestDialog extends StatelessWidget {
   final BuildContext context;
@@ -21,7 +22,10 @@ class PaymentRequestDialog extends StatelessWidget {
   }
 
   Widget showPaymentRequestDialog() {
-    return new SimpleDialog(
+    final _expansionTileTheme = Theme.of(context)
+        .copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
+    return new AlertDialog(
+      titlePadding: EdgeInsets.only(top: 48.0),
       title: invoice.payeeImageURL.isEmpty
           ? null
           : Stack(alignment: Alignment(0.0, 0.0), children: <Widget>[
@@ -36,8 +40,11 @@ class PaymentRequestDialog extends StatelessWidget {
                     fadeInDuration: new Duration(milliseconds: 200)),
               )
             ]),
-      titlePadding: EdgeInsets.only(top: 48.0),
-      children: <Widget>[
+      contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
         invoice.payeeName == null ? null : new Text(
           "${invoice.payeeName}",
           style: theme.paymentRequestTitleStyle,
@@ -45,11 +52,6 @@ class PaymentRequestDialog extends StatelessWidget {
         ),
         new Text(
          "is requesting you to pay:",
-          style: theme.paymentRequestSubtitleStyle,
-          textAlign: TextAlign.center,
-        ),
-        invoice.description == null ? null : new Text(
-          "Note: ${invoice.description}",
           style: theme.paymentRequestSubtitleStyle,
           textAlign: TextAlign.center,
         ),
@@ -68,6 +70,35 @@ class PaymentRequestDialog extends StatelessWidget {
                       textAlign: TextAlign.center,
                     );
             }),
+        invoice.description == null || invoice.description.isEmpty
+            ? Container()
+            : Theme(
+          data: _expansionTileTheme,
+          child: ExpansionTile(
+              title: Text(
+                "Note",
+                style: theme.paymentDetailsTitleStyle,
+              ),
+              initiallyExpanded: true,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                        child: AutoSizeText('${invoice.description}',
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.clip,
+                            maxLines: 2,
+                            style: theme.paymentRequestSubtitleStyle),
+                      ),
+                    ),
+                  ],
+                ),
+              ]),
+        ),
         new Padding(padding: EdgeInsets.only(top: 32.0)),
         new Row(
           mainAxisSize: MainAxisSize.max,
@@ -86,7 +117,7 @@ class PaymentRequestDialog extends StatelessWidget {
             ),
           ],
         ),
-      ],
+      ],),
     );
   }
 }
