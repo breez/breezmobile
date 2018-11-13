@@ -223,6 +223,7 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('PayInvoiceRequest', package: const $pb.PackageName('data'))
     ..aInt64(1, 'amount')
     ..aOS(2, 'paymentRequest')
+    ..aOS(3, 'description')
     ..hasRequiredFields = false
   ;
 
@@ -249,6 +250,11 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
   set paymentRequest(String v) { $_setString(1, v); }
   bool hasPaymentRequest() => $_has(1);
   void clearPaymentRequest() => clearField(2);
+
+  String get description => $_getS(2, '');
+  set description(String v) { $_setString(2, v); }
+  bool hasDescription() => $_has(2);
+  void clearDescription() => clearField(3);
 }
 
 class InvoiceMemo extends $pb.GeneratedMessage {

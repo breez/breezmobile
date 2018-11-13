@@ -36,6 +36,7 @@ class InvoiceBloc {
   Stream<bool> get paidInvoicesStream => _paidInvoicesController.stream;
 
   Int64 payBlankAmount = Int64(-1);
+  String description = "";
 
   InvoiceBloc() {
     ServiceInjector injector = new ServiceInjector();
@@ -106,7 +107,7 @@ class InvoiceBloc {
 
   void _listenIncomingBlankInvoices(BreezBridge breezLib, NFCService nfc) {
     nfc.receivedBlankInvoices().listen((invoice) {
-      breezLib.payBlankInvoice(invoice, payBlankAmount).catchError(_paidInvoicesController.addError);
+      breezLib.payBlankInvoice(invoice, payBlankAmount, description).catchError(_paidInvoicesController.addError);
     }).onError(_paidInvoicesController.addError);
   }
 

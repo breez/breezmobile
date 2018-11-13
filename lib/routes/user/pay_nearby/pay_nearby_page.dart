@@ -35,6 +35,7 @@ class PayNearbyState extends State<_PayNearbyPage> {
   final TextEditingController _descriptionController = TextEditingController();
   final String _title = "Pay Someone Nearby";
   Int64 _amountToSendSatoshi;
+  String _description;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +60,7 @@ class PayNearbyState extends State<_PayNearbyPage> {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
                       widget._invoiceBloc.payBlankAmount = _amountToSendSatoshi;
+                      widget._invoiceBloc.description = _description;
                       Navigator.of(context).pushNamed('/pay_nearby_complete');
                     }
                   },
@@ -128,6 +130,9 @@ class PayNearbyState extends State<_PayNearbyPage> {
                         if (text.length == 0) {
                           return "Please enter a description";
                         }
+                      },
+                      onFieldSubmitted: (String value){
+                        _description = value;
                       },
                     ),
                   ],
