@@ -36,51 +36,41 @@ class _AmountFormState extends State<AmountForm> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Stack(
-          alignment: AlignmentDirectional.topCenter,
           children: <Widget>[
             Positioned(
                 child: Form(
                     key: _formKey,
                     child: new Column(
-                        mainAxisSize: MainAxisSize.max,
+                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[ AmountFormField(
-                          maxPaymentAmount: widget._account.maxPaymentAmount,
-                          currency: widget._account.currency,
-                          controller: _amountController,
-                          maxAmount: widget._account.balance,
-                          decoration: new InputDecoration(
-                              labelText: widget._account.currency.displayName + " Amount"),
-                        ),
-                        new Container(
-                          padding: new EdgeInsets.only(top: 16.0),
-                          child: new Row(
-                            children: <Widget>[
-                              new Text("Available:", style: theme.textStyle),
-                              new Padding(
-                                padding: EdgeInsets.only(left: 3.0),
-                                child: new Text(widget._account.currency.format(widget._account.balance),
-                                    style: theme.textStyle),
-                              )
-                            ],
+                        children: <Widget>[
+                          Container(
+                            child: AmountFormField(
+                              maxPaymentAmount: widget._account.maxPaymentAmount,
+                              currency: widget._account.currency,
+                              controller: _amountController,
+                              maxAmount: widget._account.balance,
+                              decoration: InputDecoration(labelText: widget._account.currency.displayName + " Amount"),
+                            ),
                           ),
-                        ),
-                        new TextFormField(
-                          controller: _descriptionController,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 3,
-                          maxLength: 90,
-                          maxLengthEnforced: true,
-                          decoration: new InputDecoration(
-                            labelText: "Description",
+                          Container(
+                            padding: EdgeInsets.only(top: 16.0,),
+                            child: Text("Available: ${widget._account.currency.format(widget._account.balance)}",
+                                style: theme.textStyle),
                           ),
-                          style: theme.transactionTitleStyle,
-                          validator: (text) {
-                            if (text.length == 0) {
-                              return "Please enter a description";
-                            }
-                          },
-                        ),
+                          Container(
+                            padding: EdgeInsets.only(top: 16.0,),
+                            child: TextFormField(
+                              controller: _descriptionController,
+                              maxLines: 1,
+                              maxLength: 90,
+                              maxLengthEnforced: true,
+                              decoration: InputDecoration(
+                                labelText: "Description (Optional)",
+                              ),
+                              style: theme.transactionTitleStyle,
+                            ),
+                          ),
                         ]
                     ))),
           ],
@@ -91,7 +81,7 @@ class _AmountFormState extends State<AmountForm> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(bottom: 56.0),
+                padding: const EdgeInsets.only(bottom: 48.0),
                 child: SubmitButton(widget._sessionState.paymentFulfilled ? "Close" : "Pay", () {
                   if (widget._sessionState.paymentFulfilled) {
                     Navigator.pop(context);
