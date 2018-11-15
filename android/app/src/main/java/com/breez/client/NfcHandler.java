@@ -231,8 +231,32 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
 
         if (reply != null && reply[0] == BreezApduService.BLANK_INVOICE_COMMAND[0]) {
             try {
-                String blankInvoice = new String(Arrays.copyOfRange(reply, 1, reply.length), "UTF-8");
+                // If there is only one packet
+                //int totalPackets = reply[1];
+                int totalPackets = reply[2];
+                String blankInvoice = new String(Arrays.copyOfRange(reply, 3, reply.length), "UTF-8");
+
+                if (totalPackets == 1) {
+                    m_methodChannel.invokeMethod("receivedBlankInvoice", blankInvoice);
+                    return;
+                }
+
+                // Otherwise transceive and put together
+                int currentPacket = 0;
+
+                while (currentPacket < totalPackets) {
+                    try {
+                        reply = isoDep.transceive(BreezApduService.DATA_RESPONSE_OK);
+                    } catch (java.io.IOException ioe) {
+                        Log.d(TAG, "IOException when transmitting to IsoDep");
+                    }
+                    blankInvoice = blankInvoice + new String(Arrays.copyOfRange(reply, 3, reply.length), "UTF-8");
+                    currentPacket++;
+                }
+
                 m_methodChannel.invokeMethod("receivedBlankInvoice", blankInvoice);
+                return;
+
             } catch (UnsupportedEncodingException exc) {
                 Log.e(TAG, "UnsupportedEncodingException while reading APDU user ID", exc);
             }
@@ -275,7 +299,7 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
             bolt11Bytes = Arrays.copyOfRange(bolt11Bytes, bolt11Bytes.length > payloadSize ? payloadSize : bolt11Bytes.length, bolt11Bytes.length);
 
             byte[] packet = new byte[3 + bolt11Chunk.length];
-            packet[0] = BreezApduService.BOLT11_COMMAND;
+            packet[0] = BreezApduService.BOLT11_COMMAND[0];
             packet[1] = (byte) i;
             packet[2] = (byte) (numberOfPackets);
 

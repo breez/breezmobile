@@ -59,6 +59,7 @@ class InvoiceBloc {
     _newStandardInvoiceRequestController.stream.listen((invoiceRequest){
       breezLib.addInvoice(invoiceRequest.amount, invoiceRequest.payeeName, invoiceRequest.logo, description: invoiceRequest.description, expiry: invoiceRequest.expiry)
           .then( (paymentRequest) {
+        nfc.startBolt11Beam(paymentRequest);
         _readyInvoicesController.add(paymentRequest);
       })
           .catchError(_readyInvoicesController.addError);
