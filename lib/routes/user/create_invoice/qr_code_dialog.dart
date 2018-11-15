@@ -88,7 +88,6 @@ class QrCodeDialog extends StatelessWidget {
               }
               return new Column(
                 children: [
-                  _buildExpiryMessage(),
                   new Container(
                     width: 230.0,
                     height: 230.0,
@@ -111,6 +110,8 @@ class QrCodeDialog extends StatelessWidget {
                 ],
               );
             }),
+        Padding(padding: EdgeInsets.only(top: 16.0)),
+        _buildExpiryMessage(),
         Padding(padding: EdgeInsets.only(top: 16.0)),
         _buildCloseButton()
       ],

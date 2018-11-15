@@ -22,8 +22,6 @@ class PaymentRequestDialog extends StatelessWidget {
   }
 
   Widget showPaymentRequestDialog() {
-    final _expansionTileTheme = Theme.of(context)
-        .copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
     return new AlertDialog(
       titlePadding: EdgeInsets.only(top: 48.0),
       title: invoice.payeeImageURL.isEmpty
@@ -45,13 +43,17 @@ class PaymentRequestDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-        invoice.payeeName == null ? null : new Text(
+        invoice.payeeName == null ? Container() : new Text(
           "${invoice.payeeName}",
           style: theme.paymentRequestTitleStyle,
           textAlign: TextAlign.center,
         ),
-        invoice.payeeName == null ? null : new Text(
-         "is requesting you to pay:",
+        invoice.payeeName == null || invoice.payeeName.isEmpty ? new Text(
+          "You are requested to pay:",
+          style: theme.paymentRequestSubtitleStyle,
+          textAlign: TextAlign.center,
+        ) : new Text(
+          "is requesting you to pay:",
           style: theme.paymentRequestSubtitleStyle,
           textAlign: TextAlign.center,
         ),
@@ -72,34 +74,13 @@ class PaymentRequestDialog extends StatelessWidget {
             }),
         invoice.description == null || invoice.description.isEmpty
             ? Container()
-            : Theme(
-          data: _expansionTileTheme,
-          child: ExpansionTile(
-              title: Text(
-                "Note",
-                style: theme.paymentDetailsTitleStyle,
-              ),
-              initiallyExpanded: true,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                        child: AutoSizeText('${invoice.description}',
-                            textAlign: TextAlign.left,
-                            overflow: TextOverflow.clip,
-                            maxLines: 2,
-                            style: theme.paymentRequestSubtitleStyle),
-                      ),
-                    ),
-                  ],
-                ),
-              ]),
-        ),
-        new Padding(padding: EdgeInsets.only(top: 32.0)),
+            : Padding(padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0), child: AutoSizeText(
+          invoice.description,
+          style: theme.paymentRequestSubtitleStyle,
+          textAlign: invoice.description.length > 40 ? TextAlign.justify : TextAlign.center,
+          maxLines: 3,
+        ),),
+        new Padding(padding: EdgeInsets.only(top: 24.0)),
         new Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.end,
