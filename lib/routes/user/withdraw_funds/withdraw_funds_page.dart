@@ -216,7 +216,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
     AlertDialog dialog = new AlertDialog(
       content: new Text(
           "Are you sure you want to remove " +
-              _currency.format(Int64.parseInt( _amountController.text )) +                            
+              _currency.format(_currency.parse( _amountController.text )) +                            
               " from Breez and send this amount to the address you've specified?",
           style: theme.alertStyle),
       actions: <Widget>[
@@ -228,7 +228,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
               Navigator.pop(context);
               _showLoadingDialog();
               widget._accountBloc.withdrawalSink.add(new RemoveFundRequestModel(
-                  Int64.parseInt(_amountController.text),
+                  _currency.parse(_amountController.text),
                   _addressController.text));
             },
             child: new Text("YES", style: theme.buttonStyle))
