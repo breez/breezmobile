@@ -70,7 +70,7 @@ public class BreezApduService extends HostApduService {
     public static final byte[] SELECT_RESPONSE_OK_DEBUG = {(byte) 0x90, (byte) 0x00};
 
     // Protocol commands issued by POS
-    public static final byte BOLT11_COMMAND = (byte) 0x01;
+    public static final byte[] BOLT11_COMMAND = {(byte) 0x01};
 
     // Protocol commands issued by client
     public static final byte[] USERID_COMMAND = {(byte) 0x02};
@@ -87,11 +87,33 @@ public class BreezApduService extends HostApduService {
 
     private ByteArrayOutputStream bolt11receiveBuffer;
 
+    private static int m_packetSize = 255;
+    private static int m_payloadSize = m_packetSize - 3;
+    private int m_packetsNumber = 0;
+    private int m_currentPacket = 0;
+
+    private byte[] m_blankInvoiceBytes;
+
     @Override
     public void onCreate() {
         Log.i(TAG, "Created");
         super.onCreate();
         bolt11receiveBuffer = new ByteArrayOutputStream();
+    }
+
+    private byte[] blankInvoicePacket() {
+        byte[] blankInvoiceChunk = Arrays.copyOfRange(m_blankInvoiceBytes, 0, m_blankInvoiceBytes.length > m_payloadSize ? m_payloadSize : m_blankInvoiceBytes.length);
+        m_blankInvoiceBytes = Arrays.copyOfRange(m_blankInvoiceBytes, m_blankInvoiceBytes.length > m_payloadSize ? m_payloadSize : m_blankInvoiceBytes.length, m_blankInvoiceBytes.length);
+
+        byte[] packet = new byte[3 + blankInvoiceChunk.length];
+        packet[0] = BreezApduService.BLANK_INVOICE_COMMAND[0];
+        packet[1] = (byte) m_currentPacket;
+        packet[2] = (byte) m_packetsNumber;
+
+        System.arraycopy(blankInvoiceChunk, 0, packet, 3, blankInvoiceChunk.length);
+
+        m_currentPacket++;
+        return packet;
     }
 
     @Override
@@ -105,13 +127,13 @@ public class BreezApduService extends HostApduService {
             File localDir = this.getFilesDir().getParentFile();
             File blankInvoiceFile = new File(localDir, "/app_flutter/blank_invoice.txt");
 
-            byte[] blankInvoiceBytes = new byte[(int)blankInvoiceFile.length()];
+            m_blankInvoiceBytes = new byte[(int)blankInvoiceFile.length()];
 
             Log.i(TAG, blankInvoiceFile.getAbsolutePath());
 
             try {
                 BufferedInputStream buf = new BufferedInputStream(new FileInputStream(blankInvoiceFile));
-                buf.read(blankInvoiceBytes, 0, blankInvoiceBytes.length);
+                buf.read(m_blankInvoiceBytes, 0, m_blankInvoiceBytes.length);
                 buf.close();
             } catch (java.io.FileNotFoundException e) {
                 Log.i(TAG, "Blank invoice file not found", e);
@@ -120,14 +142,12 @@ public class BreezApduService extends HostApduService {
                 e.printStackTrace();
             }
 
-            byte[] blankInvoiceResponse = new byte[BLANK_INVOICE_COMMAND.length + blankInvoiceBytes.length];
-            System.arraycopy(BLANK_INVOICE_COMMAND, 0, blankInvoiceResponse, 0, BLANK_INVOICE_COMMAND.length);
-            System.arraycopy(blankInvoiceBytes, 0, blankInvoiceResponse, BLANK_INVOICE_COMMAND.length, blankInvoiceBytes.length);
-
-            return blankInvoiceResponse;
+            m_packetsNumber = (m_blankInvoiceBytes.length / m_payloadSize) + 1;
+            m_currentPacket = 0;
+            return blankInvoicePacket();
         }
 
-        if (Arrays.equals(SELECT_AID_COMMAND_POS, commandApdu)) {
+        else if (Arrays.equals(SELECT_AID_COMMAND_POS, commandApdu)) {
             Log.i(TAG, "POS link established");
 
             // Get the file
@@ -154,7 +174,12 @@ public class BreezApduService extends HostApduService {
 
             return userIdResponse;
         }
-        else if (commandApdu[0] == BOLT11_COMMAND) {
+
+        else if (commandApdu[0] == DATA_RESPONSE_OK[0]) {
+            return blankInvoicePacket();
+        }
+
+        else if (commandApdu[0] == BOLT11_COMMAND[0]) {
             final int seqNo = commandApdu[1];
             final int totalPackets = commandApdu[2];
 
@@ -177,6 +202,7 @@ public class BreezApduService extends HostApduService {
                 return bolt11Received();
             }
         }
+
         else {
             return UNKNOWN_COMMAND_RESPONSE;
         }

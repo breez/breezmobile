@@ -53,11 +53,11 @@ class PayNearbyCompleteState extends State<_PayNearbyComplete> {
 
     _paidInvoicesSubscription = widget._invoiceBloc.paidInvoicesStream.listen(
         (paid) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop('Payment was sent successfuly!');
     },
         onError: (err) => _scaffoldKey.currentState.showSnackBar(new SnackBar(
             duration: new Duration(seconds: 3),
-            content: new Text(err.toString()))));
+            content: new Text("Failed to send payment: " + err.toString()))));
 
     _sentPaymentResultSubscription =
         widget._accountBloc.fulfilledPayments.listen((fulfilledPayment) {
