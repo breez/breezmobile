@@ -92,7 +92,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                           borderRadius: new BorderRadius.circular(42.0)),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          widget._invoiceBloc.newStandardInvoiceRequestSink.add(
+                          widget._invoiceBloc.newInvoiceRequestSink.add(
                               new InvoiceRequestModel(
                                   null,
                                   _descriptionController.text,

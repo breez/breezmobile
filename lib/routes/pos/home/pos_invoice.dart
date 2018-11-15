@@ -284,10 +284,10 @@ class _PosNumPadState extends State<_POSNumPad> {
                 style: theme.alertStyle));
       }
       else if (_totalAmount < _maxPaymentAmount.toInt() || _totalAmount < _maxPaymentAmount.toInt()) {
-        widget._invoiceBloc.newStandardInvoiceRequestSink.add(
+        widget._invoiceBloc.newInvoiceRequestSink.add(
             new InvoiceRequestModel(
                 _posProfile.invoiceString,
-                _invoiceDescriptionController.text,  // TODO: Add a description field to POS invoices
+                _invoiceDescriptionController.text,
                 _posProfile.logo,
                 Int64(_totalAmount),
                 expiry: Int64(int.parse(cancellationTimeoutValue))));

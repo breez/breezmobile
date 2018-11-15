@@ -92,11 +92,15 @@ class BreezBridge {
       .then((result) => new PaymentsList()..mergeFromBuffer(result ?? []));
   }
 
-  Future<String> addInvoice(Int64 amount, String payeeName, String payeeImageURL, {String payerName, String payerImageURL, String description, Int64 expiry}){
-    InvoiceMemo invoice = new InvoiceMemo();    
+  Future<String> addInvoice(Int64 amount, {String payeeName, String payeeImageURL, String payerName, String payerImageURL, String description, Int64 expiry}){
+    InvoiceMemo invoice = new InvoiceMemo();
     invoice.amount = amount;
-    invoice.payeeImageURL = payeeImageURL;
-    invoice.payeeName = payeeName;
+    if (payeeImageURL != null) {
+      invoice.payeeImageURL = payeeImageURL;
+    }
+    if (payeeName != null) {
+      invoice.payeeName = payeeName;
+    }
     if (payerImageURL != null) {
       invoice.payerImageURL = payerImageURL;
     }
@@ -107,16 +111,6 @@ class BreezBridge {
       invoice.description = description;
     }
     return _invokeMethodWhenReady("addInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
-  }
-
-  Future<String> addStandardInvoice(Int64 amount, String description, {Int64 expiry}){
-    InvoiceMemo invoice = new InvoiceMemo();
-    invoice.amount = amount;
-    invoice.description = description;
-    if (expiry != null) {
-      invoice.expiry = expiry;
-    }
-    return _invokeMethodWhenReady("addStandardInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
 
   Future<Invoice> getRelatedInvoice(String paymentRequest) {
