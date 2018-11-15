@@ -72,25 +72,6 @@ class PaymentSessionChannel {
     });
   }
 
-  Future<Map<dynamic,dynamic>> convert(Map<dynamic,dynamic> messageValue) async {
-    var convertedValue = Map<dynamic,dynamic>();          
-    Iterable<Future> conversions = messageValue.keys.map((k) { 
-      if (messageValue[k].runtimeType == String) {
-        return interceptor.transformIncoingMessage(messageValue[k])
-          .then(
-            (transformed) => convertedValue[k] = transformed
-          ).catchError((err){
-            print ("error");
-          });
-      }
-      convertedValue[k] = messageValue[k];
-      return Future.value(null);
-    });      
-
-    await Future.wait(conversions);
-    return convertedValue;
-  }
-
   void _watchSessionTermination() {
     var terminationPath = _payer ? _sessionID : '$_sessionID/payer';
     var sessionRoot = FirebaseDatabase.instance.reference().child('remote-payments/$terminationPath');
