@@ -13,8 +13,8 @@ The handling of the session itself is not done here but within the concrete sess
 */
 class ConnectPayBloc {
   RemoteSession _currentSession;
-  final StreamController _sessionInvitesController = new BehaviorSubject<String>();
-  Stream<String> get sessionInvites => _sessionInvitesController.stream;
+  final StreamController _sessionInvitesController = new BehaviorSubject<SessionLinkModel>();
+  Stream<SessionLinkModel> get sessionInvites => _sessionInvitesController.stream;
   BreezUserModel _currentUser;
 
   ConnectPayBloc(Stream<BreezUserModel> userStream) {
@@ -28,9 +28,9 @@ class ConnectPayBloc {
     return _currentSession as PayerRemoteSession;
   }
 
-  PayeeRemoteSession joinSessionAsPayee(String sessionSecret) {
+  PayeeRemoteSession joinSessionAsPayee(SessionLinkModel sessionLink) {
     terminateCurrentSession();
-    _currentSession = new PayeeRemoteSession(_currentUser, sessionSecret);
+    _currentSession = new PayeeRemoteSession(_currentUser, sessionLink);
     return _currentSession as PayeeRemoteSession;
   }
 
@@ -46,9 +46,9 @@ class ConnectPayBloc {
   _monitorSessionInvites() {
     DeepLinksService deepLinks = ServiceInjector().deepLinks;
     deepLinks.linksNotifications.listen((link) {      
-      String sessionSecret = deepLinks.extractSessionSecretFromLink(link);
-      if (sessionSecret != null) {        
-        _sessionInvitesController.add(sessionSecret);
+      SessionLinkModel sessionLink = deepLinks.parseSessionInviteLink(link);
+      if (sessionLink != null && sessionLink.sessionID != null) {        
+        _sessionInvitesController.add(sessionLink);
       }
     });
   }
