@@ -131,22 +131,6 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  new TextFormField(
-                    controller: _descriptionController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 3,
-                    maxLength: 90,
-                    maxLengthEnforced: true,
-                    decoration: new InputDecoration(
-                      labelText: "Description",
-                    ),
-                    style: theme.FieldTextStyle.textStyle,
-                    validator: (text) {
-                      if (text.length == 0) {
-                        return "Please enter a description";
-                      }
-                    },
-                  ),
                   new AmountFormField(
                       controller: _amountController,
                       currency: acc.currency,
@@ -155,9 +139,23 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                           labelText: acc.currency.displayName + " Amount"),
                       style: theme.FieldTextStyle.textStyle),
                   new Container(
-                    padding: new EdgeInsets.only(top: 36.0),
+                    padding: new EdgeInsets.only(top: 16.0),
                     child: _buildReceivableBTC(acc),
                   ),
+                  new Container(
+                    padding: new EdgeInsets.only(top: 32.0),
+                    child: new TextFormField(
+                      controller: _descriptionController,
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.done,
+                      maxLines: null,
+                      maxLength: 90,
+                      maxLengthEnforced: true,
+                      decoration: new InputDecoration(
+                        labelText: "Description (Optional)",
+                      ),
+                      style: theme.FieldTextStyle.textStyle,
+                    ),),
                   StreamBuilder(
                       stream: widget._accountBloc.accountStream,
                       builder: (BuildContext context,

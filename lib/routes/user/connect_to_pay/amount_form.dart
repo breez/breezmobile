@@ -62,7 +62,9 @@ class _AmountFormState extends State<AmountForm> {
                             padding: EdgeInsets.only(top: 16.0,),
                             child: TextFormField(
                               controller: _descriptionController,
-                              maxLines: 1,
+                              keyboardType: TextInputType.multiline,
+                              textInputAction: TextInputAction.done,
+                              maxLines: null,
                               maxLength: 90,
                               maxLengthEnforced: true,
                               decoration: InputDecoration(
