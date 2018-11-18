@@ -88,6 +88,7 @@ class HomeState extends State<Home> {
         new InvoiceNotificationsHandler(
             context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
     listenNoConnection(context, widget.accountBloc);
+    _hiddenRountes.add("/get_refund");
     widget.accountBloc.refundableDepositsStream.listen((addresses){
       setState(() {
         if (addresses.length > 0) {
