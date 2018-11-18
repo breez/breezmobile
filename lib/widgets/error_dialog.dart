@@ -34,13 +34,12 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
       });
 }
 
-Future promptAreYouSure(BuildContext context, String title, Widget body, {String okText = "YES", String cancelText = "NO", TextStyle textStyle = const TextStyle(color: Colors.white)}) {  
+Future promtAreYouSure(BuildContext context, String title, Widget body, {String okText = "YES", String cancelText = "NO", TextStyle textStyle = const TextStyle(color: Colors.white)}) {
   return showDialog<bool>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return new AlertDialog(
-          contentPadding: EdgeInsets.only(top:32.0,left: 32.0,right: 32.0),
           title: title == null ? null : new Text(title, style: textStyle),
           content: new SingleChildScrollView(
             child: body,

@@ -35,14 +35,14 @@ class PayerSessionWidget extends StatelessWidget {
             children: <Widget>[
               SessionInstructions(_PayerInstructions(sessionState, _account), actions: _getActions(sessionState), onAction: (action) => _onAction(context, action)),              
               Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                padding: const EdgeInsets.only(left: 25.0, right: 25.0, bottom: 21.0, top: 25.0),
                 child: PeersConnection(sessionState, onShareInvite: () {
                     _currentSession.sentInvitesSink.add(null);
                   }),
               ),
               waitingFormPayee(sessionState) ? Container() : Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(32.0, 0.0, 32.0, 0.0),
+                    padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 0.0),
                     child: DelayRender(
                       child: AmountForm(_account, sessionState, (amountToPay) => _currentSession.amountSink.add(amountToPay.toInt())),
                       duration: PaymentSessionState.connectionEmulationDuration),

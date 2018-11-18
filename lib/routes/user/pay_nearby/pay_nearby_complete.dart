@@ -96,7 +96,7 @@ class PayNearbyCompleteState extends State<_PayNearbyComplete> {
           fit: StackFit.expand,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: 48.0, left: 16.0, right: 16.0),
+              padding: EdgeInsets.only(top: 48.0, left: 23.0, right: 24.0),
               child: new Text(
                 _instructions,
                 textAlign: TextAlign.center,

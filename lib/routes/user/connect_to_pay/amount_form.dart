@@ -21,7 +21,6 @@ class AmountForm extends StatefulWidget {
 
 class _AmountFormState extends State<AmountForm> {
   TextEditingController _amountController = new TextEditingController();
-  TextEditingController _descriptionController = new TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -36,45 +35,35 @@ class _AmountFormState extends State<AmountForm> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Stack(
+          alignment: AlignmentDirectional.topCenter,
           children: <Widget>[
+            Positioned(child: Container(height: 120.0)),
             Positioned(
                 child: Form(
-                    key: _formKey,
-                    child: new Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            child: AmountFormField(
-                              maxPaymentAmount: widget._account.maxPaymentAmount,
-                              currency: widget._account.currency,
-                              controller: _amountController,
-                              maxAmount: widget._account.balance,
-                              decoration: InputDecoration(labelText: widget._account.currency.displayName + " Amount"),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(top: 16.0,),
-                            child: Text("Available: ${widget._account.currency.format(widget._account.balance)}",
-                                style: theme.textStyle),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(top: 16.0,),
-                            child: TextFormField(
-                              controller: _descriptionController,
-                              keyboardType: TextInputType.multiline,
-                              textInputAction: TextInputAction.done,
-                              maxLines: null,
-                              maxLength: 90,
-                              maxLengthEnforced: true,
-                              decoration: InputDecoration(
-                                labelText: "Description (Optional)",
-                              ),
-                              style: theme.transactionTitleStyle,
-                            ),
-                          ),
-                        ]
-                    ))),
+              key: _formKey,
+              child: AmountFormField(
+                maxPaymentAmount: widget._account.maxPaymentAmount,
+                currency: widget._account.currency,
+                controller: _amountController,
+                maxAmount: widget._account.balance,
+                decoration: new InputDecoration(labelText: widget._account.currency.displayName + " Amount"),
+              ),
+            )),
+            Positioned(
+                top: 50.0,
+                left: 0.0,
+                child: Container(
+                  padding: new EdgeInsets.only(top: 36.0),
+                  child: new Row(
+                    children: <Widget>[
+                      new Text("Available:", style: theme.textStyle),
+                      new Padding(
+                        padding: EdgeInsets.only(left: 3.0),
+                        child: new Text(widget._account.currency.format(widget._account.balance), style: theme.textStyle),
+                      )
+                    ],
+                  ),
+                ))
           ],
         ),
         Expanded(
@@ -83,7 +72,7 @@ class _AmountFormState extends State<AmountForm> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(bottom: 48.0),
+                padding: const EdgeInsets.only(bottom: 56.0),
                 child: SubmitButton(widget._sessionState.paymentFulfilled ? "Close" : "Pay", () {
                   if (widget._sessionState.paymentFulfilled) {
                     Navigator.pop(context);

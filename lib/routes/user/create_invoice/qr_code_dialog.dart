@@ -77,8 +77,8 @@ class QrCodeDialog extends StatelessWidget {
                     width: 150.0,
                     height: 150.0,
                     child: Padding(
-                        padding: EdgeInsets.only(top: 8.0,
-                            right: 48.0, left: 48.0, bottom: 8.0),
+                        padding: EdgeInsets.only(
+                            right: 45.0, left: 45.0, bottom: 20.0),
                         child: CircularProgressIndicator(
                           valueColor: new AlwaysStoppedAnimation<Color>(
                             theme.BreezColors.grey[500],
@@ -107,12 +107,10 @@ class QrCodeDialog extends StatelessWidget {
                       ),
                     ),
                   ),
+                  _buildExpiryMessage(),
                 ],
               );
             }),
-        Padding(padding: EdgeInsets.only(top: 16.0)),
-        _buildExpiryMessage(),
-        Padding(padding: EdgeInsets.only(top: 16.0)),
         _buildCloseButton()
       ],
     );
@@ -120,8 +118,10 @@ class QrCodeDialog extends StatelessWidget {
 
   Widget _buildExpiryMessage() {
     return new Column(children: <Widget>[
-      Text("Keep the Breez app open in order to receive payment.",
-          style: theme.createInvoiceDialogWarningStyle)
+      Padding(
+          padding: EdgeInsets.only(top: 16.0, bottom: 12.0),
+          child: Text("Keep the Breez app open in order to receive payment.",
+              style: theme.createInvoiceDialogWarningStyle))
     ]);
   }
 

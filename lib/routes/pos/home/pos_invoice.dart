@@ -157,25 +157,6 @@ class _PosNumPadState extends State<_POSNumPad> {
                             onPressed: onInvoiceSubmitted,
                           ),
                         ),),
-                      new Padding(
-                        padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                        child: new TextField(
-                          maxLines: _invoiceDescriptionController.text.length < 60 ? 1 : 2,
-                          enabled: true,
-                          textAlign: TextAlign.left,
-                          maxLength: 90,
-                          maxLengthEnforced: true,
-                          controller: _invoiceDescriptionController,
-                          decoration: InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(style: BorderStyle.solid, color: Color(0xFFc5cedd)),
-                            ),
-                            hintText: 'Add Note',
-                            hintStyle: theme.invoiceMemoStyle,
-                          ),
-                          style: theme.invoiceMemoStyle,
-                        ),
-                      ),
                       new Align(
                         alignment: Alignment.bottomRight,
                         child: new Padding(padding: EdgeInsets.only(left: 16.0,right: 16.0),

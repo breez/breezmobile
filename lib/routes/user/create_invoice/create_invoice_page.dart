@@ -133,11 +133,6 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                 children: <Widget>[
                   new TextFormField(
                     controller: _descriptionController,
-                    keyboardType: TextInputType.multiline,
-                    textInputAction: TextInputAction.done,
-                    maxLines: null,
-                    maxLength: 90,
-                    maxLengthEnforced: true,
                     decoration: new InputDecoration(
                       labelText: "Description",
                     ),
@@ -146,7 +141,8 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                       if (text.length == 0) {
                         return "Please enter a description";
                       }
-                    },),
+                    },
+                  ),
                   new AmountFormField(
                       controller: _amountController,
                       currency: acc.currency,
@@ -155,7 +151,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                           labelText: acc.currency.displayName + " Amount"),
                       style: theme.FieldTextStyle.textStyle),
                   new Container(
-                    padding: new EdgeInsets.only(top: 16.0),
+                    padding: new EdgeInsets.only(top: 36.0),
                     child: _buildReceivableBTC(acc),
                   ),
                   StreamBuilder(

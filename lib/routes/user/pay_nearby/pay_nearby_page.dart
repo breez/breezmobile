@@ -104,7 +104,7 @@ class PayNearbyState extends State<_PayNearbyPage> {
                       },
                     ),
                     new Container(
-                      padding: new EdgeInsets.only(top: 16.0),
+                      padding: new EdgeInsets.only(top: 36.0),
                       child: new Row(
                         children: <Widget>[
                           new Text("Available:", style: theme.textStyle),
@@ -114,21 +114,7 @@ class PayNearbyState extends State<_PayNearbyPage> {
                           )
                         ],
                       ),
-                    ),
-                    new Container(
-                      padding: new EdgeInsets.only(top: 32.0),
-                      child: new TextFormField(
-                        controller: _descriptionController,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.done,
-                        maxLines: null,
-                        maxLength: 90,
-                        maxLengthEnforced: true,
-                        decoration: new InputDecoration(
-                          labelText: "Description (Optional)",
-                        ),
-                        style: theme.transactionTitleStyle,
-                      ),),
+                    )
                   ],
                 ),
               ),
