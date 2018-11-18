@@ -2,7 +2,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 
 abstract class MessageInterceptor {
   Future<String> transformOutgoingMessage(String message);
-  Future<String> transformIncoingMessage(String message);
+  Future<String> transformIncomingMessage(String message);
 }
 
 class SessionEncryption implements MessageInterceptor {
@@ -12,7 +12,7 @@ class SessionEncryption implements MessageInterceptor {
   SessionEncryption(this._breezLib, this.sessionID);
   
   @override
-  Future<String> transformIncoingMessage(String encryptedMessage) {
+  Future<String> transformIncomingMessage(String encryptedMessage) {
     return _breezLib.ratchetDecrypt(sessionID, encryptedMessage);
   }
 

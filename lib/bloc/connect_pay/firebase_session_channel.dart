@@ -64,7 +64,7 @@ class PaymentSessionChannel {
       var stateMessage = event.snapshot.value;
       if (stateMessage != null && stateMessage.runtimeType == String) {        
         if (interceptor != null) {                              
-          stateMessage = await interceptor.transformIncoingMessage(stateMessage);
+          stateMessage = await interceptor.transformIncomingMessage(stateMessage);
         }
         Map<String, dynamic> decodedState = json.decode(stateMessage);
         _incomingMessagesController.add(decodedState);       
