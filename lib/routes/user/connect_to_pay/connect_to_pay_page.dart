@@ -9,6 +9,7 @@ import 'package:breez/logger.dart';
 import 'package:breez/routes/user/connect_to_pay/payee_session_widget.dart';
 import 'package:breez/routes/user/connect_to_pay/payer_session_widget.dart';
 import 'package:breez/routes/user/connect_to_pay/session_instructions.dart';
+import 'package:breez/services/deep_links.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -22,22 +23,22 @@ ConnectToPayPage shows the UI for handling a remote payment session between paye
 It is reused for both sides by implementing the shared UI and creating the specific widget for the specific UI of each peer.
 */
 class ConnectToPayPage extends StatelessWidget {
-  final String _sessionSecret;
+  final SessionLinkModel _sessionLink;
 
-  const ConnectToPayPage(this._sessionSecret);
+  const ConnectToPayPage(this._sessionLink);
 
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) => new _ConnectToPayPage(blocs.connectPayBloc, blocs.accountBloc, this._sessionSecret));
+    return new BlocConnector<AppBlocs>((context, blocs) => new _ConnectToPayPage(blocs.connectPayBloc, blocs.accountBloc, this._sessionLink));
   }
 }
 
 class _ConnectToPayPage extends StatefulWidget {
   final ConnectPayBloc _connectPayBloc;
   final AccountBloc _accountBloc;
-  final String _sessionSecret;
+  final SessionLinkModel _sessionLink;
 
-  const _ConnectToPayPage(this._connectPayBloc, this._accountBloc, this._sessionSecret);
+  const _ConnectToPayPage(this._connectPayBloc, this._accountBloc, this._sessionLink);
 
   @override
   State<StatefulWidget> createState() {
@@ -62,8 +63,8 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   }
 
   _initSession(){
-    if (widget._sessionSecret != null) {
-      _currentSession = widget._connectPayBloc.joinSessionAsPayee(widget._sessionSecret);
+    if (widget._sessionLink != null) {
+      _currentSession = widget._connectPayBloc.joinSessionAsPayee(widget._sessionLink);
       _payer = false;
       _title = "Receive Payment";
     } else {

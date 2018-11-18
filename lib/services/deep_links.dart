@@ -17,12 +17,28 @@ class DeepLinksService {
     });
   }
 
-  String extractSessionSecretFromLink(String link) { 
-    return Uri.parse(link).queryParameters["session"];    
+  SessionLinkModel parseSessionInviteLink(String link) {     
+    return SessionLinkModel.fromLinkQuery( Uri.parse(link).query);
   }
 
-  Future<String> generateInviteLink(String sessionSecret) async {
-    String link = await _methodChannel.invokeMethod("generateLink",{"query": 'session=$sessionSecret'});
-    return link;
+  Future<String> generateSessionInviteLink(SessionLinkModel link) async {
+    return await _methodChannel.invokeMethod("generateLink",{"query": link.toLinkQuery()});    
+  }
+}
+
+class SessionLinkModel {
+  final String sessionID;
+  final String sessionSecret;
+  final String initiatorPubKey;
+
+  SessionLinkModel(this.sessionID, this.sessionSecret, this.initiatorPubKey);
+
+  String toLinkQuery(){
+    return 'sessionID=$sessionID&sessionSecret=$sessionSecret&pubKey=$initiatorPubKey';
+  }
+
+  static SessionLinkModel fromLinkQuery(String queryStr) {       
+    Map<String, String> query = Uri.splitQueryString(queryStr); 
+    return SessionLinkModel(query["sessionID"], query["sessionSecret"], query["pubKey"]);
   }
 }

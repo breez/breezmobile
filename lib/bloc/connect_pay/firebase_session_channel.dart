@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 /*
@@ -6,32 +8,40 @@ This class abstracts a "channel" that handles all communciation between payment 
 The implementation is based on firebase messaging.
 */
 class PaymentSessionChannel {
-  final StreamController _incomingMessagesController = new StreamController<Map<dynamic, dynamic>>.broadcast();
+  final StreamController<Map<dynamic, dynamic>> _incomingMessagesController = new StreamController<Map<dynamic, dynamic>>.broadcast();
   Stream<Map<dynamic, dynamic>> get incomingMessagesStream => _incomingMessagesController.stream;
 
   final StreamController<void> _peerTerminatedController = new StreamController<void>();
   Stream<void> get peerTerminatedStream => _peerTerminatedController.stream;
 
-  final String _sessionSecret;
+  final String _sessionID;  
   final bool _payer;
   String _myKey;
   String _theirKey;
   StreamSubscription _theirDataListener;
   StreamSubscription _sessionRootListener;
   bool _terminated = false;
+  MessageInterceptor interceptor;
 
-  PaymentSessionChannel(this._sessionSecret, this._payer) {
+  PaymentSessionChannel(this._sessionID, this._payer, {this.interceptor}) {
     _myKey = this._payer ? "payer" : "payee";
     _theirKey = this._payer ? "payee" : "payer";
     _listenIncomingMessages();
     Future sessionCreated =
-        !_payer ? Future.value(null) : FirebaseDatabase.instance.reference().child('remote-payments/$_sessionSecret').update({"payer": "created"});
+        !_payer ? Future.value(null) : FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID').update({"payer": "created"});
     sessionCreated.then((res) => _watchSessionTermination);
     _watchSessionTermination();
   }
 
-  Future sendDataUpdate(String key, dynamic value) {
-    return FirebaseDatabase.instance.reference().child('remote-payments/$_sessionSecret/$_myKey').update({key: value});
+  Future sendStateUpdate(Map<String, dynamic> newState) {
+    String stateString = json.encode(newState);
+    Future<String> toSend = Future.value(stateString);
+    if (interceptor != null) {
+      toSend = interceptor.transformOutgoingMessage(stateString);
+    }
+    return toSend.then( (valueToSend) {
+      return FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID/$_myKey').update({"state": valueToSend});
+    });    
   }
 
   Future terminate({bool destroyHistory = false}) async {
@@ -39,7 +49,7 @@ class PaymentSessionChannel {
       await _theirDataListener.cancel();
       await _sessionRootListener.cancel();
       if (destroyHistory) {
-        await FirebaseDatabase.instance.reference().child('remote-payments/$_sessionSecret').remove();
+        await FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID').remove();
       }
       await _incomingMessagesController.close();
       _terminated = true;
@@ -48,17 +58,22 @@ class PaymentSessionChannel {
 
   bool get terminated => _terminated;
 
-  void _listenIncomingMessages() {
-    var theirData = FirebaseDatabase.instance.reference().child('remote-payments/$_sessionSecret/$_theirKey');
-    _theirDataListener = theirData.onValue.listen((event) {
-      if (event.snapshot.value != null) {
-        _incomingMessagesController.add(event.snapshot.value);
+  void _listenIncomingMessages() async {    
+    var theirData = FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID/$_theirKey/state');
+    _theirDataListener = theirData.onValue.listen((event) async{
+      var stateMessage = event.snapshot.value;
+      if (stateMessage != null && stateMessage.runtimeType == String) {        
+        if (interceptor != null) {                              
+          stateMessage = await interceptor.transformIncomingMessage(stateMessage);
+        }
+        Map<String, dynamic> decodedState = json.decode(stateMessage);
+        _incomingMessagesController.add(decodedState);       
       }
     });
   }
 
   void _watchSessionTermination() {
-    var terminationPath = _payer ? _sessionSecret : '$_sessionSecret/payer';
+    var terminationPath = _payer ? _sessionID : '$_sessionID/payer';
     var sessionRoot = FirebaseDatabase.instance.reference().child('remote-payments/$terminationPath');
     _sessionRootListener = sessionRoot.onValue.listen((event) {
       if (event.snapshot.value == null) {

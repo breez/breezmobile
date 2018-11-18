@@ -30,14 +30,16 @@ class Device {
         _eventsController.add(NotificationType.RESUME);
 
         Clipboard.getData("text/plain").then((clipboardData) {
-          var text = clipboardData.text;
+          if (clipboardData != null) {
+            var text = clipboardData.text;
 
-          if (text != _lastClipping) {
-            _deviceClipboardController.add(text);
-            sharedPrefrences.then((preferences) {
-              preferences.setString(LAST_CLIPPING_PREFERENCES_KEY, text);
-              _lastClipping = text;
-            });
+            if (text != _lastClipping) {
+              _deviceClipboardController.add(text);
+              sharedPrefrences.then((preferences) {
+                preferences.setString(LAST_CLIPPING_PREFERENCES_KEY, text);
+                _lastClipping = text;
+              });
+            }
           }
         });
       }
