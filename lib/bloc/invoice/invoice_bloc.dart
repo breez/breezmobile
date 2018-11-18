@@ -15,7 +15,10 @@ import 'package:breez/services/device.dart';
 class InvoiceBloc {
 
   final _newInvoiceRequestController = StreamController<InvoiceRequestModel>();
-  Sink<InvoiceRequestModel> get newInvoiceRequestSink => _newInvoiceRequestController.sink;
+  Sink<InvoiceRequestModel> get newInvoicerequestSink => _newInvoiceRequestController.sink;
+
+  final _newStandardInvoiceRequestController = StreamController<InvoiceRequestModel>();
+  Sink<InvoiceRequestModel> get newStandardInvoiceRequestSink => _newStandardInvoiceRequestController.sink;
 
   final _readyInvoicesController = new BehaviorSubject<String>();
   Stream<String> get readyInvoicesStream => _readyInvoicesController.stream;
@@ -33,7 +36,6 @@ class InvoiceBloc {
   Stream<bool> get paidInvoicesStream => _paidInvoicesController.stream;
 
   Int64 payBlankAmount = Int64(-1);
-  String description = "";
 
   InvoiceBloc() {
     ServiceInjector injector = new ServiceInjector();
@@ -53,11 +55,20 @@ class InvoiceBloc {
   }
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
+    _newStandardInvoiceRequestController.stream.listen((invoiceRequest){
+      breezLib.addStandardInvoice(invoiceRequest.amount, invoiceRequest.description, expiry: invoiceRequest.expiry)
+          .then( (paymentRequest) {
+        nfc.startBolt11Beam(paymentRequest);
+        _readyInvoicesController.add(paymentRequest);
+      })
+          .catchError(_readyInvoicesController.addError);
+    });
+
     _newInvoiceRequestController.stream.listen((invoiceRequest){
-      breezLib.addInvoice(invoiceRequest.amount, payeeName: invoiceRequest.payeeName, payeeImageURL: invoiceRequest.logo, description: invoiceRequest.description, expiry: invoiceRequest.expiry)
+      breezLib.addInvoice( invoiceRequest.amount, invoiceRequest.payeeName, invoiceRequest.logo, description: invoiceRequest.description)
         .then( (paymentRequest) { 
           nfc.startBolt11Beam(paymentRequest);
-          log.info("Payment Request");
+          log.info("payment request");
           log.info(paymentRequest);
           _readyInvoicesController.add(paymentRequest);
         })
@@ -96,7 +107,7 @@ class InvoiceBloc {
 
   void _listenIncomingBlankInvoices(BreezBridge breezLib, NFCService nfc) {
     nfc.receivedBlankInvoices().listen((invoice) {
-      breezLib.payBlankInvoice(invoice, payBlankAmount, description).catchError(_paidInvoicesController.addError);
+      breezLib.payBlankInvoice(invoice, payBlankAmount).catchError(_paidInvoicesController.addError);
     }).onError(_paidInvoicesController.addError);
   }
 
@@ -139,6 +150,7 @@ class InvoiceBloc {
 
   close() {    
     _newInvoiceRequestController.close();
+    _newStandardInvoiceRequestController.close();
     _sentInvoicesController.close();
     _receivedInvoicesController.close();
     _paidInvoicesController.close();

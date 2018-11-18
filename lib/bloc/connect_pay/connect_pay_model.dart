@@ -34,21 +34,19 @@ class PayerSessionData {
   final int amount;
   final String error;
   final bool paymentFulfilled;
-  final String description;
 
-  PayerSessionData(this.userName, this.imageURL, this.status, this.amount, {this.error, this.paymentFulfilled = false, this.description});
+  PayerSessionData(this.userName, this.imageURL, this.status, this.amount, {this.error, this.paymentFulfilled = false});
   PayerSessionData.fromJson(Map<dynamic, dynamic> json)
       : status = json['status'] == null ? null : PeerStatus.fromJson(json['status']),
         amount = json['amount'] != null ? int.parse(json['amount'].toString()) : null,
         userName = json["userName"],
         imageURL = json["imageURL"],
         error = json["error"],
-        paymentFulfilled = json["paymentFulfilled"] ?? false,
-        description = json["description"];
+        paymentFulfilled = json["paymentFulfilled"] ?? false;
 
   PayerSessionData copyWith({String userName, String imageURL, PeerStatus status, int amount, String error, bool paymentFulfilled}) {
     return new PayerSessionData(userName ?? this.userName, imageURL ?? this.imageURL, status ?? this.status, 
-        amount ?? this.amount, error: error ?? this.error, paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled, description:  description ?? this.description);
+        amount ?? this.amount, error: error ?? this.error, paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled);
   }
 
    PayerSessionData update(PayerSessionData other) {
