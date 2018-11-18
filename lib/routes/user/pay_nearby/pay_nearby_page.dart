@@ -59,7 +59,6 @@ class PayNearbyState extends State<_PayNearbyPage> {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
                       widget._invoiceBloc.payBlankAmount = _amountToSendSatoshi;
-                      widget._invoiceBloc.description = _descriptionController.text;
                       Navigator.of(context).pushNamed('/pay_nearby_complete');
                     }
                   },

@@ -64,7 +64,7 @@ class InvoiceBloc {
           .catchError(_readyInvoicesController.addError);
     });
 
-    _newInvoiceRequestController.stream.listen((invoiceRequest){
+    _newInvoiceRequestController.stream.listen((invoiceRequest){       
       breezLib.addInvoice( invoiceRequest.amount, invoiceRequest.payeeName, invoiceRequest.logo, description: invoiceRequest.description)
         .then( (paymentRequest) { 
           nfc.startBolt11Beam(paymentRequest);
