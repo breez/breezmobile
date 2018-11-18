@@ -79,10 +79,13 @@ class BreezBridge {
     return _invokeMethodWhenReady("sendPaymentForRequest", {"argument": bolt11PaymentRequest});
   }
 
-  Future payBlankInvoice(String blankInvoicePaymentRequest, Int64 amount) {
+  Future payBlankInvoice(String blankInvoicePaymentRequest, Int64 amount, [String description]) {
     PayInvoiceRequest invoice = new PayInvoiceRequest();
     invoice.amount = amount;
     invoice.paymentRequest = blankInvoicePaymentRequest;
+    if (description != null) {
+      invoice.description = description;
+    }
     return _invokeMethodWhenReady("payBlankInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
 
@@ -91,11 +94,15 @@ class BreezBridge {
       .then((result) => new PaymentsList()..mergeFromBuffer(result ?? []));
   }
 
-  Future<String> addInvoice(Int64 amount, String payeeName, String payeeImageURL, {String payerName, String payerImageURL, String description, Int64 expiry}){
+  Future<String> addInvoice(Int64 amount, {String payeeName, String payeeImageURL, String payerName, String payerImageURL, String description, Int64 expiry}){
     InvoiceMemo invoice = new InvoiceMemo();    
     invoice.amount = amount;
-    invoice.payeeImageURL = payeeImageURL;
-    invoice.payeeName = payeeName;
+    if (payeeImageURL != null) {
+      invoice.payeeImageURL = payeeImageURL;
+    }
+    if (payeeName != null) {
+      invoice.payeeName = payeeName;
+    }
     if (payerImageURL != null) {
       invoice.payerImageURL = payerImageURL;
     }
