@@ -108,6 +108,27 @@ class BreezBridge {
     return _invokeMethodWhenReady("addInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
 
+  Future<CreateRatchetSessionReply> createRatchetSession({String secret, String remotePubKey}) {
+    var request = CreateRatchetSessionRequest()
+      ..secret = secret ?? ""
+      ..remotePubKey = remotePubKey ?? "";
+    return _invokeMethodImmediate("createRatchetSession", {"argument": request.writeToBuffer()}).then((res) =>  new CreateRatchetSessionReply()..mergeFromBuffer(res ?? []));
+  }
+
+  Future<String> ratchetEncrypt(String sessionID, String message) {
+    var request =  RatchetEncryptRequest()
+      ..message = message
+      ..sessionID = sessionID;
+    return _invokeMethodImmediate("ratchetEncrypt", {"argument": request.writeToBuffer()}).then((res) =>  res as String);
+  }
+
+  Future<String> ratchetDecrypt(String sessionID, String encryptedMessage) {
+     var request =  RatchetDecryptRequest()
+      ..encryptedMessage = encryptedMessage
+      ..sessionID = sessionID;
+    return _invokeMethodImmediate("ratchetDecrypt", {"argument": request.writeToBuffer()}).then((res) =>  res as String);
+  }
+
   Future<String> addStandardInvoice(Int64 amount, String description, {Int64 expiry}){
     InvoiceMemo invoice = new InvoiceMemo();
     invoice.amount = amount;

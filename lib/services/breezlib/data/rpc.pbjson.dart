@@ -1,8 +1,8 @@
 ///
 //  Generated code. Do not modify.
-//  source: rpc.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
+// ignore_for_file: non_constant_identifier_names,library_prefixes
+library data_rpc_pbjson;
 
 const ChainStatus$json = const {
   '1': 'ChainStatus',
@@ -203,6 +203,39 @@ const SwapAddressList$json = const {
   '1': 'SwapAddressList',
   '2': const [
     const {'1': 'addresses', '3': 1, '4': 3, '5': 11, '6': '.data.SwapAddressInfo', '10': 'addresses'},
+  ],
+};
+
+const CreateRatchetSessionRequest$json = const {
+  '1': 'CreateRatchetSessionRequest',
+  '2': const [
+    const {'1': 'secret', '3': 1, '4': 1, '5': 9, '10': 'secret'},
+    const {'1': 'remotePubKey', '3': 2, '4': 1, '5': 9, '10': 'remotePubKey'},
+  ],
+};
+
+const CreateRatchetSessionReply$json = const {
+  '1': 'CreateRatchetSessionReply',
+  '2': const [
+    const {'1': 'sessionID', '3': 1, '4': 1, '5': 9, '10': 'sessionID'},
+    const {'1': 'secret', '3': 2, '4': 1, '5': 9, '10': 'secret'},
+    const {'1': 'pubKey', '3': 3, '4': 1, '5': 9, '10': 'pubKey'},
+  ],
+};
+
+const RatchetEncryptRequest$json = const {
+  '1': 'RatchetEncryptRequest',
+  '2': const [
+    const {'1': 'sessionID', '3': 1, '4': 1, '5': 9, '10': 'sessionID'},
+    const {'1': 'message', '3': 2, '4': 1, '5': 9, '10': 'message'},
+  ],
+};
+
+const RatchetDecryptRequest$json = const {
+  '1': 'RatchetDecryptRequest',
+  '2': const [
+    const {'1': 'sessionID', '3': 1, '4': 1, '5': 9, '10': 'sessionID'},
+    const {'1': 'encryptedMessage', '3': 2, '4': 1, '5': 9, '10': 'encryptedMessage'},
   ],
 };
 
