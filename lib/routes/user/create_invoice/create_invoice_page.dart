@@ -98,7 +98,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                                   _descriptionController.text,
                                   null,
                                   account.currency
-                                      .parse(_amountController.text)));
+                                      .parse(_amountController.text), standard: true));
                           showDialog(
                               context: context, builder: (_) => QrCodeDialog(context, widget._invoiceBloc));
                         }

@@ -7,8 +7,9 @@ class InvoiceRequestModel {
   final String logo;
   final Int64 amount;
   final Int64 expiry;
+  final bool standard;
 
-  InvoiceRequestModel(this.payeeName, this.description, this.logo, this.amount, {this.expiry});
+  InvoiceRequestModel(this.payeeName, this.description, this.logo, this.amount, {this.expiry, this.standard = false});
 }
 
 class PaymentRequestModel {
