@@ -44,6 +44,10 @@ class PaymentSessionChannel {
     });    
   }
 
+  Future sendResetMessage() async{
+    await FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID').remove();
+  }
+
   Future terminate({bool destroyHistory = false}) async {
     if (!_terminated) {
       await _theirDataListener.cancel();
@@ -72,13 +76,16 @@ class PaymentSessionChannel {
     });
   }
 
+  bool firstMessage = true;
   void _watchSessionTermination() {
     var terminationPath = _payer ? _sessionID : '$_sessionID/payer';
     var sessionRoot = FirebaseDatabase.instance.reference().child('remote-payments/$terminationPath');
     _sessionRootListener = sessionRoot.onValue.listen((event) {
-      if (event.snapshot.value == null) {
+      if (event.snapshot.value == null && !firstMessage) {
+        print("re_watchSessionTerminationset state**********");        
         _peerTerminatedController.add(null);
       }
+      firstMessage = false;
     });
   }
 }

@@ -36,11 +36,23 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
   var sessionState = Map<String, dynamic>();
 
   PayeeRemoteSession(this._currentUser, SessionLinkModel sessionLink) : super(_currentUser) {
-
-    _joinSession(sessionLink);
+    _joinSessionByLink(sessionLink);
   }
 
-  _joinSession(SessionLinkModel link) async {
+  _joinSessionByLink(SessionLinkModel sessionLink) async{
+    String sessionID = sessionLink.sessionID;
+    _channel = new PaymentSessionChannel(sessionID, false, interceptor: new SessionEncryption(_breezLib, sessionID));
+    var sessionDetails = await _breezLib.ratchetSessionInfo(sessionID);    
+    if (sessionDetails.sessionID.isEmpty) {
+      var _ = await _breezLib.createRatchetSession(sessionID: sessionID, secret: sessionLink.sessionSecret,  remotePubKey: sessionLink.initiatorPubKey);
+    } else {
+      await _channel.sendResetMessage();
+    }
+     await _resetSessionState();     
+    _initExistingSession(sessionID);
+  }
+
+  _initExistingSession(String sessionID) async {
     _approvePaymentController.stream.listen((request) {     
       var payerData = _currentSession.payerData;    
       _breezLib
@@ -54,25 +66,26 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
         terminate();
       });
     });
-
-    var reply = await _breezLib.createRatchetSession(secret: link.sessionSecret,  remotePubKey: link.initiatorPubKey);
-    _channel = new PaymentSessionChannel(link.sessionID, false, interceptor: new SessionEncryption(_breezLib, reply.sessionID));
+        
+    _paymentSessionController.add(PaymentSessionState.payeeStart(sessionID, _currentUser.name, _currentUser.avatarURL));
     _watchPayerMessages();
-    _watchPaymentFulfilled();
-    _paymentSessionController.add(PaymentSessionState.payeeStart(link.sessionID, _currentUser.name, _currentUser.avatarURL));
-    startStatusUpdates('remote-payments/${link.sessionID}/payee/status', (status) {
+    _watchPaymentFulfilled();    
+    startStatusUpdates('remote-payments/$sessionID/payee/status', (status) {
       var payeeData = _currentSession.payeeData;
       _paymentSessionController.add(_currentSession.copyWith(payeeData: payeeData.copyWith(status: status)));
     },
-    'remote-payments/${link.sessionID}/payer/status', (status) {
+    'remote-payments/$sessionID/payer/status', (status) {
       var payerData = _currentSession.payerData;
       _paymentSessionController.add(_currentSession.copyWith(payerData: payerData.copyWith(status: status)));
-    });
-
-    sessionState["userName"] = _currentUser.name;
-    pushStateUpdate("imageURL", _currentUser.avatarURL);
+    });   
   }
-  
+
+  Future _resetSessionState(){
+    sessionState.clear();
+    sessionState["userName"] = _currentUser.name;
+    return pushStateUpdate("imageURL", _currentUser.avatarURL);
+  }
+
   Future pushStateUpdate(String key, dynamic value){
     sessionState[key] = value;
     return _channel.sendStateUpdate(sessionState);
@@ -86,7 +99,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
 
   Future terminate() async {
     await _invoicesPaidSubscription.cancel();
-    await _channel.terminate(destroyHistory: false);
+    await _channel.terminate(destroyHistory: true);
     await _approvePaymentController.close();
     await _paymentSessionController.close();
     await _sessionErrorsController.close();
@@ -101,11 +114,17 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
   }
 
   void _watchPayerMessages() {
-    _channel.peerTerminatedStream.listen((_){
+    _channel.peerTerminatedStream.listen((_) async{
       if (!_currentSession.payerData.paymentFulfilled) {
-        String remoteUserName = _currentSession.payeeData.userName;
-        String terminateMessage =  remoteUserName == null ? 'Payment session has been cancelled' : '$remoteUserName has cancelled the payment session';
-        _sessionErrorsController.add(PaymentSessionError(PaymentSessionErrorType.PAYER_CANCELLED, terminateMessage));
+        // String remoteUserName = _currentSession.payeeData.userName;
+        // String terminateMessage =  remoteUserName == null ? 'Payment session has been cancelled' : '$remoteUserName has cancelled the payment session';
+        // _sessionErrorsController.add(PaymentSessionError(PaymentSessionErrorType.PAYER_CANCELLED, terminateMessage));        
+        pushOnline();
+        var startState = PaymentSessionState.payeeStart(_paymentSessionController.value.sessionSecret, _currentUser.name, _currentUser.avatarURL);
+        startState = startState.copyWith(payeeData: startState.payeeData.copyWith(status: _paymentSessionController.value.payeeData.status));
+        startState = startState.copyWith(payerData: startState.payerData.copyWith(status: _paymentSessionController.value.payerData.status));
+        _paymentSessionController.add(startState);        
+        _resetSessionState();        
       }
     });
 

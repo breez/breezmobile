@@ -13,12 +13,14 @@ class SessionEncryption implements MessageInterceptor {
   
   @override
   Future<String> transformIncomingMessage(String encryptedMessage) {
-    return _breezLib.ratchetDecrypt(sessionID, encryptedMessage);
+    return Future.value(encryptedMessage);
+    //return _breezLib.ratchetDecrypt(sessionID, encryptedMessage);
   }
 
   @override
   Future<String> transformOutgoingMessage(String message) {
-    return _breezLib.ratchetEncrypt(sessionID, message);
+    return Future.value(message);
+    //return _breezLib.ratchetEncrypt(sessionID, message);
   }
 
 }

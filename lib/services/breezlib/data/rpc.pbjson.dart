@@ -211,6 +211,7 @@ const CreateRatchetSessionRequest$json = const {
   '2': const [
     const {'1': 'secret', '3': 1, '4': 1, '5': 9, '10': 'secret'},
     const {'1': 'remotePubKey', '3': 2, '4': 1, '5': 9, '10': 'remotePubKey'},
+    const {'1': 'sessionID', '3': 3, '4': 1, '5': 9, '10': 'sessionID'},
   ],
 };
 
@@ -220,6 +221,14 @@ const CreateRatchetSessionReply$json = const {
     const {'1': 'sessionID', '3': 1, '4': 1, '5': 9, '10': 'sessionID'},
     const {'1': 'secret', '3': 2, '4': 1, '5': 9, '10': 'secret'},
     const {'1': 'pubKey', '3': 3, '4': 1, '5': 9, '10': 'pubKey'},
+  ],
+};
+
+const RatchetSessionInfoReply$json = const {
+  '1': 'RatchetSessionInfoReply',
+  '2': const [
+    const {'1': 'sessionID', '3': 1, '4': 1, '5': 9, '10': 'sessionID'},
+    const {'1': 'initiated', '3': 2, '4': 1, '5': 8, '10': 'initiated'},
   ],
 };
 

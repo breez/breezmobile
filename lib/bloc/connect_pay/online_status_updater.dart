@@ -7,19 +7,17 @@ class OnlineStatusUpdater {
   StreamSubscription _onRemoteConnectSubscription;    
   DatabaseReference _userStatuPath;
 
+
   void startStatusUpdates(String localKey, Function(PeerStatus) onLocalStatusChanged, String remoteKey, Function(PeerStatus) onRemoteStatusChanged) {
     if (_onLocalConnectSubscription != null) {
       throw new Exception("Status tracking alredy started, must be stopped before start again");
     }
-    _userStatuPath = FirebaseDatabase.instance.reference().child(localKey);
-    var offlineStatus = {"online": false, "lastChanged": ServerValue.timestamp},
-      onlineStatus = {"online": true, "lastChanged": ServerValue.timestamp};
+    _userStatuPath = FirebaseDatabase.instance.reference().child(localKey);    
 
     _onLocalConnectSubscription = FirebaseDatabase.instance.reference().child('.info/connected').onValue.listen((event) {
       onLocalStatusChanged(PeerStatus(event.snapshot.value, DateTime.now().millisecondsSinceEpoch));      
       if (event.snapshot.value) {
-        _userStatuPath.set(onlineStatus);
-        _userStatuPath.onDisconnect().set(offlineStatus);
+        pushOnline();
       }     
     });
 
@@ -27,6 +25,13 @@ class OnlineStatusUpdater {
       var connected = event.snapshot.value != null && event.snapshot.value["online"];
       onRemoteStatusChanged(PeerStatus(connected, DateTime.now().millisecondsSinceEpoch));
     });
+  }
+
+  pushOnline(){
+    var offlineStatus = {"online": false, "lastChanged": ServerValue.timestamp},
+      onlineStatus = {"online": true, "lastChanged": ServerValue.timestamp};
+    _userStatuPath.set(onlineStatus);
+    _userStatuPath.onDisconnect().set(offlineStatus);
   }
 
   Future stopStatusUpdates(){

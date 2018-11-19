@@ -15,6 +15,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/static_loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
@@ -51,7 +52,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   RemoteSession _currentSession;
   bool _payer;
   String _remoteUserName;
-  String _title;
+  String _title = "";
   StreamSubscription _errorsSubscription;
   StreamSubscription cancelSessionSubscription;
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
@@ -62,17 +63,26 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
     _initSession();
   }
 
-  _initSession(){
+  _initSession() async {
     if (widget._sessionLink != null) {
-      _currentSession = widget._connectPayBloc.joinSessionAsPayee(widget._sessionLink);
-      _payer = false;
-      _title = "Receive Payment";
+      widget._connectPayBloc.joinSessionByLink(widget._sessionLink)
+      .then((session){        
+        setState(() {
+          _currentSession = session;
+          _payer = false;
+          _title = "Receive Payment";   
+          _onSessionCreated();   
+        });
+      });      
     } else {
       _currentSession = widget._connectPayBloc.startSessionAsPayer();
       _payer = true;
       _title = "Connect To Pay";
-    }
+      _onSessionCreated();
+    }   
+  }
 
+  _onSessionCreated(){
     _errorsSubscription = _currentSession.sessionErrors.listen((error) {      
       _popWithMessage(error.description);
     });
@@ -94,7 +104,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
         _popWithMessage(successMessage);
       }
     });
-    cancelSessionSubscription.onDone(() {      
+    cancelSessionSubscription.onDone(() {           
       _popWithMessage(null);
     });  
   }
@@ -166,7 +176,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
         ),
         body: WillPopScope(
             onWillPop: _onWillPop,
-            child: StreamBuilder<PaymentSessionState>(
+            child: _currentSession == null ? Container() : StreamBuilder<PaymentSessionState>(
               stream: _currentSession.paymentSessionStateStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
