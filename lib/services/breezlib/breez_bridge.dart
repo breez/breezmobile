@@ -94,7 +94,7 @@ class BreezBridge {
       .then((result) => new PaymentsList()..mergeFromBuffer(result ?? []));
   }
 
-  Future<String> addInvoice(Int64 amount, {String payeeName, String payeeImageURL, String payerName, String payerImageURL, String description, Int64 expiry}){
+  Future<String> addInvoice(Int64 amount, {String payeeName, String payeeImageURL, String payerName, String payerImageURL, String description, Int64 expiry, bool standard = false}){
     InvoiceMemo invoice = new InvoiceMemo();    
     invoice.amount = amount;
     if (payeeImageURL != null) {
@@ -112,7 +112,18 @@ class BreezBridge {
     if (description != null) {
       invoice.description = description;
     }
-    return _invokeMethodWhenReady("addInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
+
+    if (standard) {
+      return _invokeMethodWhenReady(
+          "addStandardInvoice", {"argument": invoice.writeToBuffer()}).then((
+          payReq) => payReq as String);
+
+    }
+    else {
+      return _invokeMethodWhenReady(
+          "addInvoice", {"argument": invoice.writeToBuffer()}).then((
+          payReq) => payReq as String);
+    }
   }
 
   Future<CreateRatchetSessionReply> createRatchetSession({String secret, String remotePubKey}) {
@@ -134,16 +145,6 @@ class BreezBridge {
       ..encryptedMessage = encryptedMessage
       ..sessionID = sessionID;
     return _invokeMethodImmediate("ratchetDecrypt", {"argument": request.writeToBuffer()}).then((res) =>  res as String);
-  }
-
-  Future<String> addStandardInvoice(Int64 amount, String description, {Int64 expiry}){
-    InvoiceMemo invoice = new InvoiceMemo();
-    invoice.amount = amount;
-    invoice.description = description;
-    if (expiry != null) {
-      invoice.expiry = expiry;
-    }
-    return _invokeMethodWhenReady("addStandardInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
 
   Future<Invoice> getRelatedInvoice(String paymentRequest) {
