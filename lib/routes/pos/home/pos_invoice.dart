@@ -160,7 +160,8 @@ class _PosNumPadState extends State<_POSNumPad> {
                       new Padding(
                         padding: EdgeInsets.only(left: 16.0, right: 16.0),
                         child: new TextField(
-                          maxLines: _invoiceDescriptionController.text.length < 60 ? 1 : 2,
+                          textInputAction: TextInputAction.done,
+                          maxLines: 1,
                           enabled: true,
                           textAlign: TextAlign.left,
                           maxLength: 90,
