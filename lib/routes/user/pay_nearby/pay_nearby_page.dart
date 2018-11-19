@@ -32,7 +32,6 @@ class _PayNearbyPage extends StatefulWidget {
 
 class PayNearbyState extends State<_PayNearbyPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _descriptionController = TextEditingController();
   final String _title = "Pay Someone Nearby";
   Int64 _amountToSendSatoshi;
 
@@ -59,7 +58,6 @@ class PayNearbyState extends State<_PayNearbyPage> {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
                       widget._invoiceBloc.payBlankAmount = _amountToSendSatoshi;
-                      widget._invoiceBloc.description = _descriptionController.text;
                       Navigator.of(context).pushNamed('/pay_nearby_complete');
                     }
                   },
@@ -104,7 +102,7 @@ class PayNearbyState extends State<_PayNearbyPage> {
                       },
                     ),
                     new Container(
-                      padding: new EdgeInsets.only(top: 16.0),
+                      padding: new EdgeInsets.only(top: 32.0),
                       child: new Row(
                         children: <Widget>[
                           new Text("Available:", style: theme.textStyle),
@@ -114,21 +112,7 @@ class PayNearbyState extends State<_PayNearbyPage> {
                           )
                         ],
                       ),
-                    ),
-                    new Container(
-                      padding: new EdgeInsets.only(top: 32.0),
-                      child: new TextFormField(
-                        controller: _descriptionController,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.done,
-                        maxLines: null,
-                        maxLength: 90,
-                        maxLengthEnforced: true,
-                        decoration: new InputDecoration(
-                          labelText: "Description (Optional)",
-                        ),
-                        style: theme.transactionTitleStyle,
-                      ),),
+                    )
                   ],
                 ),
               ),

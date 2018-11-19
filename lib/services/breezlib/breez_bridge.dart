@@ -79,13 +79,10 @@ class BreezBridge {
     return _invokeMethodWhenReady("sendPaymentForRequest", {"argument": bolt11PaymentRequest});
   }
 
-  Future payBlankInvoice(String blankInvoicePaymentRequest, Int64 amount, [String description]) {
+  Future payBlankInvoice(String blankInvoicePaymentRequest, Int64 amount) {
     PayInvoiceRequest invoice = new PayInvoiceRequest();
     invoice.amount = amount;
     invoice.paymentRequest = blankInvoicePaymentRequest;
-    if (description != null) {
-      invoice.description = description;
-    }
     return _invokeMethodWhenReady("payBlankInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
 
