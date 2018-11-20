@@ -68,10 +68,8 @@ class BreezAppState extends State<BreezApp> {
   @override
   void initState() {
     super.initState();
-    widget._blocs.connectPayBloc.sessionInvites.listen((sessionLink) async {
-      print("got invite in breez app " + _navigatorKey.currentState.toString());
-      var remoteSession = await widget._blocs.connectPayBloc.joinSessionByLink(sessionLink);
-      _navigatorKey.currentState.push(FadeInRoute(builder: (_) => new ConnectToPayPage(remoteSession)));         
+    widget._blocs.connectPayBloc.sessionInvites.listen((sessionLink) async {      
+      _navigatorKey.currentState.push(FadeInRoute(builder: (_) => new ConnectToPayPage(sessionLink)));         
     });
   }
 

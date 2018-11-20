@@ -5,13 +5,17 @@ import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/routes/user/connect_to_pay/payee_session_widget.dart';
 import 'package:breez/routes/user/connect_to_pay/payer_session_widget.dart';
+import 'package:breez/routes/user/connect_to_pay/session_instructions.dart';
+import 'package:breez/services/deep_links.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/static_loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
@@ -20,21 +24,22 @@ ConnectToPayPage shows the UI for handling a remote payment session between paye
 It is reused for both sides by implementing the shared UI and creating the specific widget for the specific UI of each peer.
 */
 class ConnectToPayPage extends StatelessWidget {
-  final RemoteSession _currentSession;
+  final SessionLinkModel _sessionLink;
 
-  const ConnectToPayPage(this._currentSession);
+  const ConnectToPayPage(this._sessionLink);
 
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) => new _ConnectToPayPage(blocs.accountBloc, this._currentSession));
+    return new BlocConnector<AppBlocs>((context, blocs) => new _ConnectToPayPage(blocs.connectPayBloc, blocs.accountBloc, this._sessionLink));
   }
 }
 
-class _ConnectToPayPage extends StatefulWidget {  
+class _ConnectToPayPage extends StatefulWidget {
+  final ConnectPayBloc _connectPayBloc;
   final AccountBloc _accountBloc;
-  final RemoteSession _currentSession;
+  final SessionLinkModel _sessionLink;
 
-  const _ConnectToPayPage(this._accountBloc, this._currentSession);
+  const _ConnectToPayPage(this._connectPayBloc, this._accountBloc, this._sessionLink);
 
   @override
   State<StatefulWidget> createState() {
@@ -50,7 +55,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   StreamSubscription _errorsSubscription;
   StreamSubscription cancelSessionSubscription;
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
-  RemoteSession get _currentSession => widget._currentSession;
+  RemoteSession _currentSession;
 
   @override
   void initState() {
@@ -58,9 +63,18 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
     _initSession();
   }
 
-  _initSession() async {
-    _payer = _currentSession.runtimeType == PayerRemoteSession;
-    _title = _payer ? "Connect To Pay" : "Receive Payment";    
+  _initSession({bool reset = false}) async {
+    if (widget._sessionLink != null && !reset) {
+      _currentSession = await widget._connectPayBloc.joinSessionByLink(widget._sessionLink);
+    } else {
+      _currentSession = await widget._connectPayBloc.startSessionAsPayer();
+    }
+
+    setState(() {
+      _payer = _currentSession.runtimeType == PayerRemoteSession;
+      _title = _payer ? "Connect To Pay" : "Receive Payment"; 
+    });       
+
     _errorsSubscription = _currentSession.sessionErrors.listen((error) {      
       _popWithMessage(error.description);
     });
@@ -98,7 +112,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   void _resetSession(){
     _clearSession().then((_) {
       setState((){
-        _initSession();
+        _initSession(reset: true);
       });       
     });  
   }
@@ -153,7 +167,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
         ),
         body: WillPopScope(
             onWillPop: _onWillPop,
-            child: StreamBuilder<PaymentSessionState>(
+            child: _currentSession == null ? Container() : StreamBuilder<PaymentSessionState>(
               stream: _currentSession.paymentSessionStateStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
