@@ -47,11 +47,7 @@ class PayerSessionData {
   PayerSessionData copyWith({String userName, String imageURL, PeerStatus status, int amount, String error, bool paymentFulfilled}) {
     return new PayerSessionData(userName ?? this.userName, imageURL ?? this.imageURL, status ?? this.status, 
         amount ?? this.amount, error: error ?? this.error, paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled);
-  }
-
-   PayerSessionData update(PayerSessionData other) {
-    return copyWith(userName: other.userName, imageURL: other.imageURL, status: other.status, amount: other.amount, error: other.error, paymentFulfilled: other.paymentFulfilled);
-  }
+  }  
 }
 
 class PayeeSessionData {
@@ -73,11 +69,7 @@ class PayeeSessionData {
 
   PayeeSessionData copyWith({String userName, String imageURL, PeerStatus status, String paymentRequest, String error}) {
     return new PayeeSessionData(userName ?? this.userName, imageURL ?? this.imageURL, status ?? this.status, paymentRequest ?? this.paymentRequest, error ?? this.error);
-  }
-
-  PayeeSessionData update(PayeeSessionData other) {
-    return copyWith(userName: other.userName, imageURL: other.imageURL, status: other.status, paymentRequest: other.paymentRequest, error: other.error);
-  }
+  }  
 }
 
 class PeerStatus {
