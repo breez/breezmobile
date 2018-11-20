@@ -35,29 +35,21 @@ class ConnectPayBloc {
 
   Future<RemoteSession> joinSessionByLink(SessionLinkModel sessionLink) async{
     await terminateCurrentSession();
-
-    //check if we have already a session
-    String sessionID;    
+        
     RatchetSessionInfoReply sessionInfo = await _breezLib.ratchetSessionInfo(sessionLink.sessionID);    
     bool existingSession = sessionInfo.sessionID.isNotEmpty;
 
     //if we have already a session and it is our intiated then we are a returning payer
-    if (sessionInfo.initiated) {
-      SessionLinkModel payerLink = sessionLink;
+    if (sessionInfo.initiated) {      
+      _currentSession = new PayerRemoteSession(_currentUser, sessionLink)..start();       
+    } else {
+       //otherwise we are payee
       if (!existingSession) {
-        CreateRatchetSessionReply session = await _breezLib.createRatchetSession(); 
-        payerLink = new SessionLinkModel(sessionID, session.secret, session.pubKey);
+        await _breezLib.createRatchetSession(sessionID: sessionLink.sessionID, secret: sessionLink.sessionSecret,  remotePubKey: sessionLink.initiatorPubKey);      
       }
-      _currentSession = new PayerRemoteSession(_currentUser, payerLink)..start(); 
-      
-      return _currentSession;
+      _currentSession = new PayeeRemoteSession(_currentUser, sessionLink)..start();
     }
 
-    //we are payers
-    if (!existingSession) {
-      await _breezLib.createRatchetSession(sessionID: sessionLink.sessionID, secret: sessionLink.sessionSecret,  remotePubKey: sessionLink.initiatorPubKey);      
-    }
-    _currentSession = new PayeeRemoteSession(_currentUser, sessionLink)..start();
     return _currentSession;    
   }
 
