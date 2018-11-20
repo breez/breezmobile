@@ -47,12 +47,14 @@ class ConnectedPeer extends StatelessWidget {
             right: 25.0,
             height: 24.0,
             width: 24.0,
-            child: _online ? Container(
+            child: _online ? DelayRender(              	
+              duration: PaymentSessionState.connectionEmulationDuration,	
+              child: Container(
                   decoration: BoxDecoration(
                 color: Colors.greenAccent[400],
                 border: Border.all(color: Colors.white, width: 3.0),
                 borderRadius: BorderRadius.all(Radius.circular(12.0)),
-              )) : SizedBox()) : SizedBox()
+              ))) : SizedBox()) : SizedBox()
       ])
     ]));
   }
