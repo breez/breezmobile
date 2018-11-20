@@ -25,9 +25,11 @@ class ConnectPayBloc {
     _monitorSessionInvites();
   }
 
-  PayerRemoteSession startSessionAsPayer() {
-    terminateCurrentSession();
-    _currentSession = new PayerRemoteSession(_currentUser);
+  Future<PayerRemoteSession> startSessionAsPayer() async {
+    await terminateCurrentSession();
+    CreateRatchetSessionReply session = await _breezLib.createRatchetSession(); 
+    SessionLinkModel payerLink = new SessionLinkModel(session.sessionID, session.secret, session.pubKey);
+    _currentSession = new PayerRemoteSession(_currentUser, payerLink)..start();
     return _currentSession as PayerRemoteSession;
   }
 
@@ -35,16 +37,28 @@ class ConnectPayBloc {
     await terminateCurrentSession();
 
     //check if we have already a session
+    String sessionID;    
     RatchetSessionInfoReply sessionInfo = await _breezLib.ratchetSessionInfo(sessionLink.sessionID);    
+    bool existingSession = sessionInfo.sessionID.isNotEmpty;
 
     //if we have already a session and it is our intiated then we are a returning payer
-    if (sessionInfo.sessionID.isNotEmpty && sessionInfo.initiated) {
-       _currentSession = new PayerRemoteSession(_currentUser, sessionID: sessionLink.sessionID);       
-    } else {
-      //no session exists or not initiated then we are payee      
-      _currentSession = new PayeeRemoteSession(_currentUser, sessionLink);
-    }    
-    return _currentSession;
+    if (sessionInfo.initiated) {
+      SessionLinkModel payerLink = sessionLink;
+      if (!existingSession) {
+        CreateRatchetSessionReply session = await _breezLib.createRatchetSession(); 
+        payerLink = new SessionLinkModel(sessionID, session.secret, session.pubKey);
+      }
+      _currentSession = new PayerRemoteSession(_currentUser, payerLink)..start(); 
+      
+      return _currentSession;
+    }
+
+    //we are payers
+    if (!existingSession) {
+      await _breezLib.createRatchetSession(sessionID: sessionLink.sessionID, secret: sessionLink.sessionSecret,  remotePubKey: sessionLink.initiatorPubKey);      
+    }
+    _currentSession = new PayeeRemoteSession(_currentUser, sessionLink)..start();
+    return _currentSession;    
   }
 
   Future terminateCurrentSession() {
