@@ -5,17 +5,13 @@ import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/user/connect_to_pay/payee_session_widget.dart';
 import 'package:breez/routes/user/connect_to_pay/payer_session_widget.dart';
-import 'package:breez/routes/user/connect_to_pay/session_instructions.dart';
-import 'package:breez/services/deep_links.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/static_loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
@@ -30,16 +26,15 @@ class ConnectToPayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) => new _ConnectToPayPage(blocs.connectPayBloc, blocs.accountBloc, this._currentSession));
+    return new BlocConnector<AppBlocs>((context, blocs) => new _ConnectToPayPage(blocs.accountBloc, this._currentSession));
   }
 }
 
-class _ConnectToPayPage extends StatefulWidget {
-  final ConnectPayBloc _connectPayBloc;
+class _ConnectToPayPage extends StatefulWidget {  
   final AccountBloc _accountBloc;
   final RemoteSession _currentSession;
 
-  const _ConnectToPayPage(this._connectPayBloc, this._accountBloc, this._currentSession);
+  const _ConnectToPayPage(this._accountBloc, this._currentSession);
 
   @override
   State<StatefulWidget> createState() {
