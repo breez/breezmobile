@@ -32,7 +32,7 @@ class AmountFormField extends TextFormField {
             style: style,
             enabled: enabled,
             controller: controller,
-            inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+            inputFormatters: currency != Currency.SAT ? [WhitelistingTextInputFormatter(RegExp(r'\d+\.?\d*'))] : [WhitelistingTextInputFormatter.digitsOnly],
             onFieldSubmitted: onFieldSubmitted,
             onSaved: onSaved);
 
