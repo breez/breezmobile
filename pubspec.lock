@@ -109,21 +109,17 @@ packages:
   firebase_database:
     dependency: "direct main"
     description:
-      path: "packages/firebase_database"
-      ref: HEAD
-      resolved-ref: ab6d93d6ec9040d2954a75a6da623174b4df2098
-      url: "https://github.com/flutter/plugins.git"
-    source: git
+      name: firebase_database
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "1.0.5"
   firebase_messaging:
     dependency: "direct main"
     description:
-      path: "packages/firebase_messaging"
-      ref: HEAD
-      resolved-ref: ab6d93d6ec9040d2954a75a6da623174b4df2098
-      url: "https://github.com/flutter/plugins.git"
-    source: git
-    version: "2.0.1"
+      name: firebase_messaging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   fixnum:
     dependency: transitive
     description:
