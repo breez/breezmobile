@@ -41,7 +41,7 @@ class ConnectPayBloc {
 
     //if we have already a session and it is our intiated then we are a returning payer
     if (sessionInfo.initiated) {      
-      _currentSession = new PayerRemoteSession(_currentUser, sessionLink);
+        _currentSession = new PayerRemoteSession(_currentUser, sessionLink);
     } else {
        //otherwise we are payee
       if (!existingSession) {

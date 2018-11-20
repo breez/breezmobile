@@ -88,16 +88,14 @@ class PaymentSessionChannel {
       }
     });
   }
-
-  bool firstMessage = true;
+  
   void _watchSessionTermination() {
     var terminationPath = _payer ? _sessionID : '$_sessionID/payer';
     var sessionRoot = FirebaseDatabase.instance.reference().child('remote-payments/$terminationPath');
     _sessionRootListener = sessionRoot.onValue.listen((event) {
-      if (event.snapshot.value == null && !firstMessage) {        
+      if (event.snapshot.value == null) {        
         _peerTerminatedController.add(null);
-      }
-      firstMessage = false;
+      }      
     });
   }
 
