@@ -39,7 +39,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
 
   PayeeRemoteSession(this._currentUser, this.sessionLink) : super(_currentUser);
 
-  start() async{        
+  Future start() async{        
     _channel = new PaymentSessionChannel(sessionID, false, interceptor: new SessionEncryption(_breezLib, sessionID));
     _resetSessionState();
     _channel.sendResetMessage();

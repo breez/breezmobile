@@ -40,7 +40,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
 
   PayerRemoteSession(this._currentUser, this.sessionLink) : super(_currentUser);
 
-  start() async{    
+  Future start() async{    
     if (sessionLink.sessionSecret != null) {             
       _watchInviteRequests(SessionLinkModel(sessionID, sessionLink.sessionSecret, sessionLink.initiatorPubKey));
     }

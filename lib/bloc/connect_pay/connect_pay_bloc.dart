@@ -41,16 +41,16 @@ class ConnectPayBloc {
 
     //if we have already a session and it is our intiated then we are a returning payer
     if (sessionInfo.initiated) {      
-      _currentSession = new PayerRemoteSession(_currentUser, sessionLink)..start();       
+      _currentSession = new PayerRemoteSession(_currentUser, sessionLink);
     } else {
        //otherwise we are payee
       if (!existingSession) {
         await _breezLib.createRatchetSession(sessionID: sessionLink.sessionID, secret: sessionLink.sessionSecret,  remotePubKey: sessionLink.initiatorPubKey);      
       }
-      _currentSession = new PayeeRemoteSession(_currentUser, sessionLink)..start();
+      _currentSession = new PayeeRemoteSession(_currentUser, sessionLink);
     }
 
-    return _currentSession;    
+    return _currentSession..start();
   }
 
   Future terminateCurrentSession() {
@@ -81,5 +81,6 @@ abstract class RemoteSession {
   BreezUserModel get currentUser => _currentUser;
   Stream<PaymentSessionState> get paymentSessionStateStream;
   Stream<PaymentSessionError> get sessionErrors;
+  Future start();
   Future terminate();
 }
