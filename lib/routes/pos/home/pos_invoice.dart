@@ -55,15 +55,21 @@ class _PosNumPadState extends State<_POSNumPad> {
   int _totalAmount;
   Int64 _maxPaymentAmount;
   Int64 _maxAllowedToReceive;
+  bool _isButtonDisabled = true;
 
   StreamSubscription<AccountModel> _accountSubscription;
   StreamSubscription<POSProfileModel> _posProfileSubscription;
   StreamSubscription<String> _invoiceReadyNotificationsSubscription;
   StreamSubscription<String> _invoiceNotificationsSubscription;
 
+  FocusNode _focusNode;
+
   @override
   void initState() {
     super.initState();
+    _focusNode = new FocusNode();
+    _focusNode.addListener(_onOnFocusNodeEvent);
+
     _NfcDialog _nfcDialog = new _NfcDialog(widget._invoiceBloc, _scaffoldKey);
     setState(() {
       _currency = Currency.BTC;
@@ -121,6 +127,7 @@ class _PosNumPadState extends State<_POSNumPad> {
     _posProfileSubscription.cancel();
     _invoiceReadyNotificationsSubscription.cancel();
     _invoiceNotificationsSubscription.cancel();
+    _focusNode.dispose();
   }
 
   @override
@@ -131,6 +138,9 @@ class _PosNumPadState extends State<_POSNumPad> {
         onTap: () {
           // call this method here to hide soft keyboard
           FocusScope.of(context).requestFocus(new FocusNode());
+          setState(() {
+            _isButtonDisabled = false;
+          });
         },
         child: new Builder(builder: (BuildContext context) {
           return Column(
@@ -158,7 +168,7 @@ class _PosNumPadState extends State<_POSNumPad> {
                               textAlign: TextAlign.center,
                               style: theme.invoiceChargeAmountStyle,
                             ),
-                            onPressed: onInvoiceSubmitted,
+                            onPressed: _isButtonDisabled ? null : onInvoiceSubmitted,
                           ),
                         ),
                       ),
@@ -167,6 +177,7 @@ class _PosNumPadState extends State<_POSNumPad> {
                         child: new Padding(
                           padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0),
                           child: new TextField(
+                            focusNode: _focusNode,
                             textInputAction: TextInputAction.done,
                             keyboardType: TextInputType.multiline,
                             maxLines: null,
@@ -242,6 +253,12 @@ class _PosNumPadState extends State<_POSNumPad> {
         }),
       ),
     );
+  }
+
+  _onOnFocusNodeEvent() {
+    setState(() {
+      _isButtonDisabled = true;
+    });
   }
 
   onInvoiceSubmitted() {
@@ -376,7 +393,7 @@ class _PosNumPadState extends State<_POSNumPad> {
     return Container(
         decoration: new BoxDecoration(border: new Border.all(color: Colors.white, width: 0.5)),
         child: new FlatButton(
-            onPressed: () => onNumButtonPressed(number),
+            onPressed: _isButtonDisabled ? null : () => onNumButtonPressed(number),
             child: new Text(number, textAlign: TextAlign.center, style: theme.numPadNumberStyle)));
   }
 
