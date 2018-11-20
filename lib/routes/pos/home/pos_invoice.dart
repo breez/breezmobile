@@ -168,7 +168,8 @@ class _PosNumPadState extends State<_POSNumPad> {
                           padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0),
                           child: new TextField(
                             textInputAction: TextInputAction.done,
-                            maxLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
                             enabled: true,
                             textAlign: TextAlign.left,
                             maxLength: 90,
