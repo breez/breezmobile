@@ -65,20 +65,19 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
 
   _initSession() async {
     if (widget._sessionLink != null) {
-      widget._connectPayBloc.joinSessionByLink(widget._sessionLink)
-      .then((session){        
-        setState(() {
-          _currentSession = session;
+      _currentSession = await widget._connectPayBloc.joinSessionByLink(widget._sessionLink);
+      setState(() {          
           _payer = false;
           _title = "Receive Payment";   
           _onSessionCreated();   
-        });
-      });      
+        });   
     } else {
-      _currentSession = widget._connectPayBloc.startSessionAsPayer();
-      _payer = true;
-      _title = "Connect To Pay";
-      _onSessionCreated();
+      _currentSession = await widget._connectPayBloc.startSessionAsPayer();
+       setState(() { 
+        _payer = true;
+        _title = "Connect To Pay";
+        _onSessionCreated();
+       });
     }   
   }
 
