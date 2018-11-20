@@ -24,22 +24,22 @@ ConnectToPayPage shows the UI for handling a remote payment session between paye
 It is reused for both sides by implementing the shared UI and creating the specific widget for the specific UI of each peer.
 */
 class ConnectToPayPage extends StatelessWidget {
-  final SessionLinkModel _sessionLink;
+  final RemoteSession _currentSession;
 
-  const ConnectToPayPage(this._sessionLink);
+  const ConnectToPayPage(this._currentSession);
 
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) => new _ConnectToPayPage(blocs.connectPayBloc, blocs.accountBloc, this._sessionLink));
+    return new BlocConnector<AppBlocs>((context, blocs) => new _ConnectToPayPage(blocs.connectPayBloc, blocs.accountBloc, this._currentSession));
   }
 }
 
 class _ConnectToPayPage extends StatefulWidget {
   final ConnectPayBloc _connectPayBloc;
   final AccountBloc _accountBloc;
-  final SessionLinkModel _sessionLink;
+  final RemoteSession _currentSession;
 
-  const _ConnectToPayPage(this._connectPayBloc, this._accountBloc, this._sessionLink);
+  const _ConnectToPayPage(this._connectPayBloc, this._accountBloc, this._currentSession);
 
   @override
   State<StatefulWidget> createState() {
@@ -48,14 +48,14 @@ class _ConnectToPayPage extends StatefulWidget {
 }
 
 class _ConnectToPayState extends State<_ConnectToPayPage> {
-  bool _warnAreYouSure = false;
-  RemoteSession _currentSession;
+  bool _warnAreYouSure = false;  
   bool _payer;
   String _remoteUserName;
   String _title = "";
   StreamSubscription _errorsSubscription;
   StreamSubscription cancelSessionSubscription;
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
+  RemoteSession get _currentSession => widget._currentSession;
 
   @override
   void initState() {
@@ -64,24 +64,8 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   }
 
   _initSession() async {
-    if (widget._sessionLink != null) {
-      _currentSession = await widget._connectPayBloc.joinSessionByLink(widget._sessionLink);
-      setState(() {          
-          _payer = false;
-          _title = "Receive Payment";   
-          _onSessionCreated();   
-        });   
-    } else {
-      _currentSession = await widget._connectPayBloc.startSessionAsPayer();
-       setState(() { 
-        _payer = true;
-        _title = "Connect To Pay";
-        _onSessionCreated();
-       });
-    }   
-  }
-
-  _onSessionCreated(){
+    _payer = _currentSession.runtimeType == PayerRemoteSession;
+    _title = _payer ? "Connect To Pay" : "Receive Payment";    
     _errorsSubscription = _currentSession.sessionErrors.listen((error) {      
       _popWithMessage(error.description);
     });
@@ -125,8 +109,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   }
 
   Future _clearSession() async {
-    _remoteUserName = null;
-    _currentSession = null;
+    _remoteUserName = null;    
     _warnAreYouSure = false;
     await cancelSessionSubscription.cancel();
     await _errorsSubscription.cancel();
@@ -175,7 +158,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
         ),
         body: WillPopScope(
             onWillPop: _onWillPop,
-            child: _currentSession == null ? Container() : StreamBuilder<PaymentSessionState>(
+            child: StreamBuilder<PaymentSessionState>(
               stream: _currentSession.paymentSessionStateStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
