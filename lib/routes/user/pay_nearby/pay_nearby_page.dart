@@ -33,7 +33,7 @@ class _PayNearbyPage extends StatefulWidget {
 class PayNearbyState extends State<_PayNearbyPage> {
   final _formKey = GlobalKey<FormState>();
   final String _title = "Pay Someone Nearby";
-  Int64 _amountToSendSatoshi;  
+  Int64 _amountToSendSatoshi;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +102,7 @@ class PayNearbyState extends State<_PayNearbyPage> {
                       },
                     ),
                     new Container(
-                      padding: new EdgeInsets.only(top: 36.0),
+                      padding: new EdgeInsets.only(top: 32.0),
                       child: new Row(
                         children: <Widget>[
                           new Text("Available:", style: theme.textStyle),

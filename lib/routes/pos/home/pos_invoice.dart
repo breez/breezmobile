@@ -46,6 +46,7 @@ class _PosNumPadState extends State<_POSNumPad> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _amountController = new TextEditingController();
   TextEditingController _chargeAmountController = new TextEditingController();
+  TextEditingController _invoiceDescriptionController = new TextEditingController();
 
   POSProfileModel _posProfile;
   Currency _currency;
@@ -156,6 +157,26 @@ class _PosNumPadState extends State<_POSNumPad> {
                             onPressed: onInvoiceSubmitted,
                           ),
                         ),),
+                      new Padding(
+                        padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                        child: new TextField(
+                          textInputAction: TextInputAction.done,
+                          maxLines: 1,
+                          enabled: true,
+                          textAlign: TextAlign.left,
+                          maxLength: 90,
+                          maxLengthEnforced: true,
+                          controller: _invoiceDescriptionController,
+                          decoration: InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(style: BorderStyle.solid, color: Color(0xFFc5cedd)),
+                            ),
+                            hintText: 'Add Note',
+                            hintStyle: theme.invoiceMemoStyle,
+                          ),
+                          style: theme.invoiceMemoStyle,
+                        ),
+                      ),
                       new Align(
                         alignment: Alignment.bottomRight,
                         child: new Padding(padding: EdgeInsets.only(left: 16.0,right: 16.0),
@@ -264,13 +285,14 @@ class _PosNumPadState extends State<_POSNumPad> {
                 style: theme.alertStyle));
       }
       else if (_totalAmount < _maxPaymentAmount.toInt() || _totalAmount < _maxPaymentAmount.toInt()) {
-        widget._invoiceBloc.newStandardInvoiceRequestSink.add(
+        widget._invoiceBloc.newInvoiceRequestSink.add(
             new InvoiceRequestModel(
-                null,
-                " | " + _posProfile.invoiceString + " | " + _posProfile.logo,  // TODO: Add a description field to POS invoices
-                null,
+                _posProfile.invoiceString,
+                _invoiceDescriptionController.text,
+                _posProfile.logo,
                 Int64(_totalAmount),
-                expiry: Int64(int.parse(cancellationTimeoutValue))));
+                expiry: Int64(int.parse(cancellationTimeoutValue)),
+                standard: true));
       } else {
         promptError(
             context,

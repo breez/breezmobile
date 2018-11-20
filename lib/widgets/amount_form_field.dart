@@ -1,6 +1,7 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:fixnum/fixnum.dart';
 
 
@@ -31,6 +32,7 @@ class AmountFormField extends TextFormField {
             style: style,
             enabled: enabled,
             controller: controller,
+            inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
             onFieldSubmitted: onFieldSubmitted,
             onSaved: onSaved);
 
