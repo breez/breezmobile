@@ -7,14 +7,8 @@ dependencies:
   grpc: ^0.6.4
   protobuf: any
   path_provider: any
-  firebase_database:
-    git:
-      url: https://github.com/flutter/plugins.git
-      path: packages/firebase_database
-  firebase_messaging:
-    git:
-      url: https://github.com/flutter/plugins.git
-      path: packages/firebase_messaging
+  firebase_database: ^1.0.5
+  firebase_messaging: ^2.1.0
   shared_preferences: "^0.4.1"
   share: "^0.5.2"
   qr_flutter: ^1.1.1
