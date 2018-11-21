@@ -15,10 +15,7 @@ import 'package:breez/services/device.dart';
 class InvoiceBloc {
 
   final _newInvoiceRequestController = StreamController<InvoiceRequestModel>();
-  Sink<InvoiceRequestModel> get newInvoicerequestSink => _newInvoiceRequestController.sink;
-
-  final _newStandardInvoiceRequestController = StreamController<InvoiceRequestModel>();
-  Sink<InvoiceRequestModel> get newStandardInvoiceRequestSink => _newStandardInvoiceRequestController.sink;
+  Sink<InvoiceRequestModel> get newInvoiceRequestSink => _newInvoiceRequestController.sink;
 
   final _readyInvoicesController = new BehaviorSubject<String>();
   Stream<String> get readyInvoicesStream => _readyInvoicesController.stream;
@@ -55,20 +52,11 @@ class InvoiceBloc {
   }
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
-    _newStandardInvoiceRequestController.stream.listen((invoiceRequest){
-      breezLib.addStandardInvoice(invoiceRequest.amount, invoiceRequest.description, expiry: invoiceRequest.expiry)
-          .then( (paymentRequest) {
-        nfc.startBolt11Beam(paymentRequest);
-        _readyInvoicesController.add(paymentRequest);
-      })
-          .catchError(_readyInvoicesController.addError);
-    });
-
-    _newInvoiceRequestController.stream.listen((invoiceRequest){       
-      breezLib.addInvoice( invoiceRequest.amount, invoiceRequest.payeeName, invoiceRequest.logo, description: invoiceRequest.description)
+    _newInvoiceRequestController.stream.listen((invoiceRequest){
+      breezLib.addInvoice(invoiceRequest.amount, payeeName: invoiceRequest.payeeName, payeeImageURL: invoiceRequest.logo, description: invoiceRequest.description, expiry: invoiceRequest.expiry, standard: invoiceRequest.standard)
         .then( (paymentRequest) { 
           nfc.startBolt11Beam(paymentRequest);
-          log.info("payment request");
+          log.info("Payment Request");
           log.info(paymentRequest);
           _readyInvoicesController.add(paymentRequest);
         })
@@ -150,7 +138,6 @@ class InvoiceBloc {
 
   close() {    
     _newInvoiceRequestController.close();
-    _newStandardInvoiceRequestController.close();
     _sentInvoicesController.close();
     _receivedInvoicesController.close();
     _paidInvoicesController.close();

@@ -17,14 +17,13 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/routes/user/home/status_indicator.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-
 var cancellationTimeoutValue;
 
 class POSInvoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>(
-            (context, appBlocs) => new _POSNumPad(appBlocs.accountBloc, appBlocs.invoicesBloc, appBlocs.posProfileBloc, appBlocs.userProfileBloc));
+    return new BlocConnector<AppBlocs>((context, appBlocs) =>
+        new _POSNumPad(appBlocs.accountBloc, appBlocs.invoicesBloc, appBlocs.posProfileBloc, appBlocs.userProfileBloc));
   }
 }
 
@@ -46,6 +45,7 @@ class _PosNumPadState extends State<_POSNumPad> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _amountController = new TextEditingController();
   TextEditingController _chargeAmountController = new TextEditingController();
+  TextEditingController _invoiceDescriptionController = new TextEditingController();
 
   POSProfileModel _posProfile;
   Currency _currency;
@@ -55,20 +55,27 @@ class _PosNumPadState extends State<_POSNumPad> {
   int _totalAmount;
   Int64 _maxPaymentAmount;
   Int64 _maxAllowedToReceive;
+  bool _isButtonDisabled = true;
 
   StreamSubscription<AccountModel> _accountSubscription;
   StreamSubscription<POSProfileModel> _posProfileSubscription;
   StreamSubscription<String> _invoiceReadyNotificationsSubscription;
   StreamSubscription<String> _invoiceNotificationsSubscription;
 
+  FocusNode _focusNode;
+
   @override
   void initState() {
     super.initState();
+    _focusNode = new FocusNode();
+    _focusNode.addListener(_onOnFocusNodeEvent);
+
     _NfcDialog _nfcDialog = new _NfcDialog(widget._invoiceBloc, _scaffoldKey);
     setState(() {
       _currency = Currency.BTC;
       _currentAmount = 0;
       _totalAmount = 0;
+      _invoiceDescriptionController.text = "";
     });
     _accountSubscription = widget._accountBloc.accountStream.listen((acc) {
       setState(() {
@@ -76,7 +83,8 @@ class _PosNumPadState extends State<_POSNumPad> {
         _maxPaymentAmount = acc.maxPaymentAmount;
         _maxAllowedToReceive = acc.maxAllowedToReceive;
         _amountController.text = _currency.format((Int64(_currentAmount)), fixedDecimals: true, includeSymbol: false);
-        _chargeAmountController.text = _currency.format((Int64(_totalAmount + _currentAmount)), fixedDecimals: true, includeSymbol: true);
+        _chargeAmountController.text =
+            _currency.format((Int64(_totalAmount + _currentAmount)), fixedDecimals: true, includeSymbol: true);
       });
     });
     _posProfileSubscription = widget._posProfileBloc.posProfileStream.listen((posProfile) {
@@ -95,7 +103,9 @@ class _PosNumPadState extends State<_POSNumPad> {
           _currentAmount = 0;
           _totalAmount = 0;
           _amountController.text = _currency.format((Int64(_currentAmount)), fixedDecimals: true, includeSymbol: false);
-          _chargeAmountController.text = _currency.format((Int64(_totalAmount + _currentAmount)), fixedDecimals: true, includeSymbol: true);
+          _chargeAmountController.text =
+              _currency.format((Int64(_totalAmount + _currentAmount)), fixedDecimals: true, includeSymbol: true);
+          _invoiceDescriptionController.text = "";
         });
       });
     },
@@ -117,33 +127,38 @@ class _PosNumPadState extends State<_POSNumPad> {
     _posProfileSubscription.cancel();
     _invoiceReadyNotificationsSubscription.cancel();
     _invoiceNotificationsSubscription.cancel();
+    _focusNode.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: new Builder(builder: (BuildContext context) {
-        return Stack(
-          children: <Widget>[
-            new Align(
-              alignment: Alignment.topCenter,
-              child: new FractionallySizedBox(
-                widthFactor: 1.0,
-                heightFactor: 0.32,
-                alignment: FractionalOffset.center,
-                child: new Container(
+      body: new GestureDetector(
+        onTap: () {
+          // call this method here to hide soft keyboard
+          FocusScope.of(context).requestFocus(new FocusNode());
+          setState(() {
+            _isButtonDisabled = false;
+          });
+        },
+        child: new Builder(builder: (BuildContext context) {
+          return Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              new Container(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: new Column(
-                    mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       new StreamBuilder<AccountModel>(
-                      stream: widget._accountBloc.accountStream,
-                      builder: (context, snapshot) {
-                        return new StatusIndicator(snapshot.data);
-                      }),
-                      new Padding(padding: EdgeInsets.only(left: 16.0,right: 16.0),
-                        child:new ConstrainedBox(
+                          stream: widget._accountBloc.accountStream,
+                          builder: (context, snapshot) {
+                            return new StatusIndicator(snapshot.data);
+                          }),
+                      new Padding(
+                        padding: EdgeInsets.only(top: 0.0),
+                        child: new ConstrainedBox(
                           constraints: const BoxConstraints(minWidth: double.infinity),
                           child: new RaisedButton(
                             padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
@@ -153,100 +168,129 @@ class _PosNumPadState extends State<_POSNumPad> {
                               textAlign: TextAlign.center,
                               style: theme.invoiceChargeAmountStyle,
                             ),
-                            onPressed: onInvoiceSubmitted,
+                            onPressed: _isButtonDisabled ? null : onInvoiceSubmitted,
                           ),
-                        ),),
-                      new Align(
-                        alignment: Alignment.bottomRight,
-                        child: new Padding(padding: EdgeInsets.only(left: 16.0,right: 16.0),
-                          child: new Row(
-                            children: <Widget>[
-                              new Flexible(
-                                child: new TextField(
-                                  enabled: false,
-                                  controller: _amountController,
-                                  style: theme.invoiceAmountStyle,
-                                  textAlign: TextAlign.right,
+                        ),
+                      ),
+                      new Container(
+                        height: 50.0,
+                        child: new Padding(
+                          padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0),
+                          child: new TextField(
+                            focusNode: _focusNode,
+                            textInputAction: TextInputAction.done,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            enabled: true,
+                            textAlign: TextAlign.left,
+                            maxLength: 90,
+                            maxLengthEnforced: true,
+                            controller: _invoiceDescriptionController,
+                            decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  style: BorderStyle.solid,
+                                  color: Color(0xFFc5cedd),
                                 ),
                               ),
-                              new Theme(
-                                data: Theme.of(context).copyWith(
-                                  brightness: Brightness.light,
-                                  canvasColor: theme.BreezColors.white[500],
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  style: BorderStyle.solid,
+                                  color: Color(0xFFc5cedd),
                                 ),
-                                child: new DropdownButtonHideUnderline(
-                                  child: ButtonTheme(
-                                    alignedDropdown: true,
-                                    child: new DropdownButton(
-                                      onChanged: (value) => changeCurrency(value),
-                                      value: _currency.displayName,
+                              ),
+                              hintText: 'Add Note',
+                              hintStyle: theme.invoiceMemoStyle,
+                            ),
+                            style: theme.invoiceMemoStyle,
+                          ),
+                        ),
+                      ),
+                      Row(children: <Widget>[
+                        new Flexible(
+                            child: new TextField(
+                          enabled: false,
+                          controller: _amountController,
+                          style: theme.invoiceAmountStyle,
+                          textAlign: TextAlign.right,
+                        )),
+                        new Theme(
+                          data: Theme.of(context).copyWith(
+                            brightness: Brightness.light,
+                            canvasColor: theme.BreezColors.white[500],
+                          ),
+                          child: new DropdownButtonHideUnderline(
+                            child: ButtonTheme(
+                              alignedDropdown: true,
+                              child: new DropdownButton(
+                                onChanged: (value) => changeCurrency(value),
+                                value: _currency.displayName,
+                                style: theme.invoiceAmountStyle,
+                                items: Currency.currencies.map((Currency value) {
+                                  return new DropdownMenuItem<String>(
+                                    value: value.displayName,
+                                    child: new Text(
+                                      value.displayName,
+                                      textAlign: TextAlign.right,
                                       style: theme.invoiceAmountStyle,
-                                      items: Currency.currencies.map((Currency value) {
-                                        return new DropdownMenuItem<String>(
-                                          value: value.displayName,
-                                          child: new Text(
-                                            value.displayName,
-                                            textAlign: TextAlign.right,
-                                            style: theme.invoiceAmountStyle,
-                                          ),
-                                        );
-                                      }).toList(),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                }).toList(),
                               ),
-                            ],
-                          ),),
-                      )
+                            ),
+                          ),
+                        ),
+                      ]),
                     ],
                   ),
                   decoration: new BoxDecoration(
                     color: Colors.white,
                   ),
-                ),
-              ),
-            ),
-            new Align(
-              child: new FractionallySizedBox(
-                  widthFactor: 1.0, heightFactor: 0.68, alignment: FractionalOffset.center, child: _numPad()),
-              alignment: Alignment.bottomCenter,
-            )
-          ],
-        );
-      }),
+                  height: MediaQuery.of(context).size.height * 0.29),
+              new Expanded(child: _numPad())
+            ],
+          );
+        }),
+      ),
     );
+  }
+
+  _onOnFocusNodeEvent() {
+    setState(() {
+      _isButtonDisabled = true;
+    });
   }
 
   onInvoiceSubmitted() {
     if (_posProfile.invoiceString == null || _posProfile.logo == null) {
       String errorMessage = "Please";
-      if(_posProfile.invoiceString == null)
-        errorMessage +=  " enter your business name";
-      if(_posProfile.logo == null && _posProfile.invoiceString == null)
-        errorMessage += " and ";
-      if(_posProfile.logo == null)
-        errorMessage += " select a business logo";
+      if (_posProfile.invoiceString == null) errorMessage += " enter your business name";
+      if (_posProfile.logo == null && _posProfile.invoiceString == null) errorMessage += " and ";
+      if (_posProfile.logo == null) errorMessage += " select a business logo";
       return showDialog<Null>(
           context: context,
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
             return new AlertDialog(
-              title: new Text("Required Information",style: theme.alertTitleStyle,),
+              title: new Text(
+                "Required Information",
+                style: theme.alertTitleStyle,
+              ),
               contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
               content: new SingleChildScrollView(
-                child: new Text("$errorMessage in the Settings screen.",style: theme.alertStyle),
+                child: new Text("$errorMessage in the Settings screen.", style: theme.alertStyle),
               ),
               actions: <Widget>[
                 new FlatButton(
-                  child: new Text("Go to Settings",style: theme.buttonStyle),
+                  child: new Text("Go to Settings", style: theme.buttonStyle),
                   onPressed: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pushNamed("/settings");
                   },
                 ),
               ],
-            );});
-
+            );
+          });
     } else {
       if (_totalAmount == 0 && _currentAmount > 0) {
         _totalAmount = _currentAmount;
@@ -259,25 +303,18 @@ class _PosNumPadState extends State<_POSNumPad> {
             context,
             "You don't have the capacity to receive such payment.",
             Text(
-                "Maximum payment size you can receive is ${_currency.format(_maxAllowedToReceive,
-                    includeSymbol: true)}. Please enter a smaller value.",
+                "Maximum payment size you can receive is ${_currency.format(_maxAllowedToReceive, includeSymbol: true)}. Please enter a smaller value.",
                 style: theme.alertStyle));
-      }
-      else if (_totalAmount < _maxPaymentAmount.toInt() || _totalAmount < _maxPaymentAmount.toInt()) {
-        widget._invoiceBloc.newStandardInvoiceRequestSink.add(
-            new InvoiceRequestModel(
-                null,
-                " | " + _posProfile.invoiceString + " | " + _posProfile.logo,  // TODO: Add a description field to POS invoices
-                null,
-                Int64(_totalAmount),
-                expiry: Int64(int.parse(cancellationTimeoutValue))));
+      } else if (_totalAmount < _maxPaymentAmount.toInt() || _totalAmount < _maxPaymentAmount.toInt()) {
+        widget._invoiceBloc.newInvoiceRequestSink.add(new InvoiceRequestModel(
+            _posProfile.invoiceString, _invoiceDescriptionController.text, _posProfile.logo, Int64(_totalAmount),
+            expiry: Int64(int.parse(cancellationTimeoutValue)), standard: true));
       } else {
         promptError(
             context,
             "You have exceeded the maximum payment size.",
             Text(
-                "Maximum payment size on the Lightning Network is ${_currency.format(_maxPaymentAmount,
-                    includeSymbol: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
+                "Maximum payment size on the Lightning Network is ${_currency.format(_maxPaymentAmount, includeSymbol: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
                 style: theme.alertStyle));
       }
     }
@@ -296,7 +333,8 @@ class _PosNumPadState extends State<_POSNumPad> {
     setState(() {
       _currentAmount = (_currentAmount * 10) + int.parse(numberText);
       _amountController.text = _currency.format((Int64(_currentAmount)), fixedDecimals: true, includeSymbol: false);
-      _chargeAmountController.text = _currency.format((Int64(_totalAmount + _currentAmount)), fixedDecimals: true, includeSymbol: true);
+      _chargeAmountController.text =
+          _currency.format((Int64(_totalAmount + _currentAmount)), fixedDecimals: true, includeSymbol: true);
     });
   }
 
@@ -323,19 +361,19 @@ class _PosNumPadState extends State<_POSNumPad> {
       _amountController.text = _currency.format((Int64(_currentAmount)), fixedDecimals: true, includeSymbol: false);
       _chargeAmountController.text =
           _currency.format((Int64(_totalAmount + _currentAmount)), fixedDecimals: true, includeSymbol: true);
+      _invoiceDescriptionController.text = "";
     });
   }
 
   approveClear() {
-    if(_totalAmount + _currentAmount != 0) {
+    if (_totalAmount + _currentAmount != 0) {
       AlertDialog dialog = new AlertDialog(
         title: new Text(
           "Clear Sale?",
           textAlign: TextAlign.center,
           style: theme.alertTitleStyle,
         ),
-        content:
-        new Text("This will clear the current transaction.", style: theme.alertStyle),
+        content: new Text("This will clear the current transaction.", style: theme.alertStyle),
         contentPadding: EdgeInsets.only(left: 24.0, right: 24.0, bottom: 12.0, top: 24.0),
         actions: <Widget>[
           new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("Cancel", style: theme.buttonStyle)),
@@ -355,7 +393,7 @@ class _PosNumPadState extends State<_POSNumPad> {
     return Container(
         decoration: new BoxDecoration(border: new Border.all(color: Colors.white, width: 0.5)),
         child: new FlatButton(
-            onPressed: () => onNumButtonPressed(number),
+            onPressed: _isButtonDisabled ? null : () => onNumButtonPressed(number),
             child: new Text(number, textAlign: TextAlign.center, style: theme.numPadNumberStyle)));
   }
 
@@ -365,16 +403,16 @@ class _PosNumPadState extends State<_POSNumPad> {
         childAspectRatio: (itemWidth / itemHeight),
         padding: EdgeInsets.zero,
         children: List<int>.generate(9, (i) => i).map((index) => _numberButton((index + 1).toString())).followedBy([
-      Container(
-          decoration: new BoxDecoration(border: new Border.all(color: Colors.white, width: 0.5)),
-          child: new GestureDetector(
-              onLongPress: approveClear,
-              child: new FlatButton(onPressed: onClear, child: new Text("C", style: theme.numPadNumberStyle)))),
-      _numberButton("0"),
-      Container(
-          decoration: new BoxDecoration(border: new Border.all(color: Colors.white, width: 0.5)),
-          child: new FlatButton(onPressed: onAddition, child: new Text("+", style: theme.numPadAdditionStyle))),
-    ]).toList());
+          Container(
+              decoration: new BoxDecoration(border: new Border.all(color: Colors.white, width: 0.5)),
+              child: new GestureDetector(
+                  onLongPress: approveClear,
+                  child: new FlatButton(onPressed: onClear, child: new Text("C", style: theme.numPadNumberStyle)))),
+          _numberButton("0"),
+          Container(
+              decoration: new BoxDecoration(border: new Border.all(color: Colors.white, width: 0.5)),
+              child: new FlatButton(onPressed: onAddition, child: new Text("+", style: theme.numPadAdditionStyle))),
+        ]).toList());
   }
 }
 
@@ -444,15 +482,15 @@ class _NfcDialogState extends State<_NfcDialog> {
   Widget _cancelButton() {
     return new FlatButton(
       padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
-        child: new Text(
-          'CANCEL PAYMENT',
-          textAlign: TextAlign.center,
-          style: theme.cancelButtonStyle,
-        ),
-        onPressed: () {
-          Navigator.of(context).pop(false);
-        },
-      );
+      child: new Text(
+        'CANCEL PAYMENT',
+        textAlign: TextAlign.center,
+        style: theme.cancelButtonStyle,
+      ),
+      onPressed: () {
+        Navigator.of(context).pop(false);
+      },
+    );
   }
 
   @override
@@ -469,13 +507,15 @@ class _NfcDialogState extends State<_NfcDialog> {
                       secondCurve: Cubic(2.0, 1.0, 2.0, 1.0),
                       sizeCurve: Curves.easeInOut,
                       firstChild: _buildDialogBody(
-                          'Hold a Breez card closely to process this payment.', 'qr_scan',
+                          'Hold a Breez card closely to process this payment.',
+                          'qr_scan',
                           new Padding(
                             padding: EdgeInsets.only(top: 13.0, left: 12.0, right: 12.0),
                             child: new Image.asset('src/images/breez_nfc.png'),
                           )),
                       secondChild: _buildDialogBody(
-                          'Scan the QR code to process this payment.', 'card',
+                          'Scan the QR code to process this payment.',
+                          'card',
                           StreamBuilder<String>(
                               stream: widget._invoiceBloc.readyInvoicesStream,
                               builder: (context, snapshot) {
@@ -499,80 +539,81 @@ class _NfcDialogState extends State<_NfcDialog> {
                   ],
                 )
               : _state == _NfcState.WAITING_FOR_PAYMENT
-              ? new ListBody(
-            children: <Widget>[
-              new Text(
-                'Payment request was successfully sent.',
-                textAlign: TextAlign.center,
-                style: theme.paymentRequestTitleStyle,
-              ),
-              new Text('DEBUG: ' + _debugMessage),
-              new Text('Waiting for customer approval...',
-                  textAlign: TextAlign.center, style: theme.paymentRequestSubtitleStyle),
-              new Padding(
-                  padding: EdgeInsets.only(top: 15.0),
-                  child: new Text(_countdownString,
-                      textAlign: TextAlign.center, style: theme.paymentRequestTitleStyle)),
-              new Padding(
-                  padding: EdgeInsets.only(top: 8.0),
-                  child: new Image.asset(
-                    'src/images/breez_loader.gif',
-                    gaplessPlayback: true,
-                  )),
-              _cancelButton(),
-            ],
-          )
-              : new GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop(true);
-            },
-            child: new ListBody(
-              children: <Widget>[
-                new Padding(
-                  padding: EdgeInsets.only(bottom: 40.0),
-                  child: new Text(
-                    'Payment approved!',
-                    textAlign: TextAlign.center,
-                    style: theme.paymentRequestTitleStyle,
-                  ),
-                ),
-                new Padding(
-                    padding: EdgeInsets.only(bottom: 40.0),
-                    child: ImageIcon(
-                      AssetImage("src/icon/ic_done.png"),
-                      size: 48.0,
-                      color: Color.fromRGBO(0, 133, 251, 1.0),
+                  ? new ListBody(
+                      children: <Widget>[
+                        new Text(
+                          'Payment request was successfully sent.',
+                          textAlign: TextAlign.center,
+                          style: theme.paymentRequestTitleStyle,
+                        ),
+                        new Text('DEBUG: ' + _debugMessage),
+                        new Text('Waiting for customer approval...',
+                            textAlign: TextAlign.center, style: theme.paymentRequestSubtitleStyle),
+                        new Padding(
+                            padding: EdgeInsets.only(top: 15.0),
+                            child: new Text(_countdownString,
+                                textAlign: TextAlign.center, style: theme.paymentRequestTitleStyle)),
+                        new Padding(
+                            padding: EdgeInsets.only(top: 8.0),
+                            child: new Image.asset(
+                              'src/images/breez_loader.gif',
+                              gaplessPlayback: true,
+                            )),
+                        _cancelButton(),
+                      ],
+                    )
+                  : new GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      child: new ListBody(
+                        children: <Widget>[
+                          new Padding(
+                            padding: EdgeInsets.only(bottom: 40.0),
+                            child: new Text(
+                              'Payment approved!',
+                              textAlign: TextAlign.center,
+                              style: theme.paymentRequestTitleStyle,
+                            ),
+                          ),
+                          new Padding(
+                              padding: EdgeInsets.only(bottom: 40.0),
+                              child: ImageIcon(
+                                AssetImage("src/icon/ic_done.png"),
+                                size: 48.0,
+                                color: Color.fromRGBO(0, 133, 251, 1.0),
+                              )),
+                        ],
+                      ),
                     )),
-              ],
-            ),
-          )),
     );
   }
 
   ListBody _buildDialogBody(String title, String iconName, Widget body) {
     return new ListBody(children: <Widget>[
-                      new Text(title,
-                        textAlign: TextAlign.center,
-                        style: theme.paymentRequestTitleStyle,
-                      ),
-                      new IconButton(
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        alignment: Alignment.bottomRight,
-                        icon: Image(
-                          image: AssetImage("src/icon/$iconName.png"),
-                          color: theme.BreezColors.blue[500],
-                          width: 24.0,
-                          height: 24.0,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _scanQr = !_scanQr;
-                          });
-                        },
-                      ),
-                      body
-                    ]);
+      new Text(
+        title,
+        textAlign: TextAlign.center,
+        style: theme.paymentRequestTitleStyle,
+      ),
+      new IconButton(
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        alignment: Alignment.bottomRight,
+        icon: Image(
+          image: AssetImage("src/icon/$iconName.png"),
+          color: theme.BreezColors.blue[500],
+          width: 24.0,
+          height: 24.0,
+        ),
+        onPressed: () {
+          setState(() {
+            _scanQr = !_scanQr;
+          });
+        },
+      ),
+      body
+    ]);
   }
 }
 

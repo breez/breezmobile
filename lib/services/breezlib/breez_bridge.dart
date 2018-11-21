@@ -28,21 +28,21 @@ class BreezBridge {
 
   BreezBridge(){
     _eventChannel.receiveBroadcastStream().listen((event){
-      var notification = new NotificationEvent()..mergeFromBuffer(event);   
+      var notification = new NotificationEvent()..mergeFromBuffer(event);
       if (notification.type == NotificationEvent_NotificationType.READY){
         ready = true;
         _readyCompleter.complete();
       }
-      _eventsController.add(new NotificationEvent()..mergeFromBuffer(event));      
-    });     
+      _eventsController.add(new NotificationEvent()..mergeFromBuffer(event));
+    });
   }
 
   Future start(String workingDir) async{
-    await _copyBreezConfig(workingDir);    
+    await _copyBreezConfig(workingDir);
     return _methodChannel.invokeMethod("start", {
-        "workingDir": workingDir        
-      })
-      .then((_) => _startedCompleter.complete());      
+      "workingDir": workingDir
+    })
+        .then((_) => _startedCompleter.complete());
   }
 
   void log(String msg, String level) {
@@ -55,12 +55,12 @@ class BreezBridge {
 
   Future<Account> getAccount() {
     return _invokeMethodImmediate("getAccountInfo")
-      .then((result) => new Account()..mergeFromBuffer(result ?? []));
+        .then((result) => new Account()..mergeFromBuffer(result ?? []));
   }
 
   Future<bool> isConnectedToRoutingNode() {
     return _invokeMethodWhenReady("isConnectedToRoutingNode")
-      .then((result) => result as bool);
+        .then((result) => result as bool);
   }
 
   Future connectAccount(){
@@ -72,7 +72,7 @@ class BreezBridge {
       ..address = address
       ..amount = amount;
     return _invokeMethodWhenReady("removeFund", {"argument": request.writeToBuffer()})
-      .then( (res) => new RemoveFundReply()..mergeFromBuffer(res ?? []));
+        .then( (res) => new RemoveFundReply()..mergeFromBuffer(res ?? []));
   }
 
   Future sendPaymentForRequest(String bolt11PaymentRequest) {
@@ -86,16 +86,20 @@ class BreezBridge {
     return _invokeMethodWhenReady("payBlankInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
 
-  Future<PaymentsList> getPayments(){ 
+  Future<PaymentsList> getPayments(){
     return _invokeMethodImmediate("getPayments")
-      .then((result) => new PaymentsList()..mergeFromBuffer(result ?? []));
+        .then((result) => new PaymentsList()..mergeFromBuffer(result ?? []));
   }
 
-  Future<String> addInvoice(Int64 amount, String payeeName, String payeeImageURL, {String payerName, String payerImageURL, String description, Int64 expiry}){
-    InvoiceMemo invoice = new InvoiceMemo();    
+  Future<String> addInvoice(Int64 amount, {String payeeName, String payeeImageURL, String payerName, String payerImageURL, String description, Int64 expiry, bool standard = false}){
+    InvoiceMemo invoice = new InvoiceMemo();
     invoice.amount = amount;
-    invoice.payeeImageURL = payeeImageURL;
-    invoice.payeeName = payeeName;
+    if (payeeImageURL != null) {
+      invoice.payeeImageURL = payeeImageURL;
+    }
+    if (payeeName != null) {
+      invoice.payeeName = payeeName;
+    }
     if (payerImageURL != null) {
       invoice.payerImageURL = payerImageURL;
     }
@@ -105,7 +109,18 @@ class BreezBridge {
     if (description != null) {
       invoice.description = description;
     }
-    return _invokeMethodWhenReady("addInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
+
+    if (standard) {
+      return _invokeMethodWhenReady(
+          "addStandardInvoice", {"argument": invoice.writeToBuffer()}).then((
+          payReq) => payReq as String);
+
+    }
+    else {
+      return _invokeMethodWhenReady(
+          "addInvoice", {"argument": invoice.writeToBuffer()}).then((
+          payReq) => payReq as String);
+    }
   }
 
   Future<CreateRatchetSessionReply> createRatchetSession({String sessionID, String secret, String remotePubKey}) {
@@ -128,30 +143,20 @@ class BreezBridge {
   }
 
   Future<String> ratchetDecrypt(String sessionID, String encryptedMessage) {
-     var request =  RatchetDecryptRequest()
+    var request =  RatchetDecryptRequest()
       ..encryptedMessage = encryptedMessage
       ..sessionID = sessionID;
     return _invokeMethodImmediate("ratchetDecrypt", {"argument": request.writeToBuffer()}).then((res) =>  res as String);
   }
 
-  Future<String> addStandardInvoice(Int64 amount, String description, {Int64 expiry}){
-    InvoiceMemo invoice = new InvoiceMemo();
-    invoice.amount = amount;
-    invoice.description = description;
-    if (expiry != null) {
-      invoice.expiry = expiry;
-    }
-    return _invokeMethodWhenReady("addStandardInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
-  }
-
   Future<Invoice> getRelatedInvoice(String paymentRequest) {
     return _invokeMethodWhenReady("getRelatedInvoice", {"argument": paymentRequest})
-      .then((invoiceData) => new Invoice()..mergeFromBuffer(invoiceData));
+        .then((invoiceData) => new Invoice()..mergeFromBuffer(invoiceData));
   }
 
   Future<InvoiceMemo> decodePaymentRequest(String payReq) {
     return _invokeMethodWhenReady("decodePaymentRequest", {"argument": payReq})
-      .then( (result) => new InvoiceMemo()..mergeFromBuffer(result));
+        .then( (result) => new InvoiceMemo()..mergeFromBuffer(result));
   }
 
   Future<String> newAddress(String breezID) {
@@ -162,20 +167,20 @@ class BreezBridge {
     return _invokeMethodWhenReady("addFundsInit", {"argument": breezID}).then((reply) => new AddFundInitReply()..mergeFromBuffer(reply ?? []));
   }
 
-  Future<SwapAddressList> getRefundableSwapAddresses() {    
+  Future<SwapAddressList> getRefundableSwapAddresses() {
     return _invokeMethodWhenReady("getRefundableSwapAddresses").then((reply) => new SwapAddressList()..mergeFromBuffer(reply ?? []));
   }
 
   Future<String> refund(String address, String refundAddress) {
     var refundRequest = RefundRequest()
-                          ..address = address
-                          ..refundAddress = refundAddress;
+      ..address = address
+      ..refundAddress = refundAddress;
     return _invokeMethodWhenReady("refund",  {"argument": refundRequest.writeToBuffer()}).then((txID) => txID as String);
   }
 
   Future<FundStatusReply> getFundStatus(String notificationToken) {
     return _invokeMethodImmediate("getFundStatus", {"argument": notificationToken}).then(
-      (result) => new FundStatusReply()..mergeFromBuffer(result ?? [])
+            (result) => new FundStatusReply()..mergeFromBuffer(result ?? [])
     );
   }
 
@@ -191,58 +196,58 @@ class BreezBridge {
 
   Future _copyBreezConfig(String workingDir) async{
     String configString = await rootBundle.loadString('conf/breez.conf');
-    File file = File(workingDir + "/breez.conf");    
-    file.writeAsStringSync(configString, flush: true);        
+    File file = File(workingDir + "/breez.conf");
+    file.writeAsStringSync(configString, flush: true);
     String data = await rootBundle.loadString('conf/lnd.conf');
-    new File(workingDir + "/lnd.conf").writeAsStringSync(data, flush: true);   
+    new File(workingDir + "/lnd.conf").writeAsStringSync(data, flush: true);
   }
 
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
     return _readyCompleter.future.then(
-      (completed) {
-        return _methodChannel.invokeMethod(methodName, arguments).catchError((err){
-          if (err.runtimeType == PlatformException) {
-            throw (err as PlatformException).details;
-          }
-          throw err;
-        });
-      }
-    );    
-  }  
+            (completed) {
+          return _methodChannel.invokeMethod(methodName, arguments).catchError((err){
+            if (err.runtimeType == PlatformException) {
+              throw (err as PlatformException).details;
+            }
+            throw err;
+          });
+        }
+    );
+  }
 
   Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
     return _startedCompleter.future.then(
-      (completed) {
-        return _methodChannel.invokeMethod(methodName, arguments).catchError((err){
-          if (err.runtimeType == PlatformException) {
-            throw (err as PlatformException).details;
-          }
-          throw err;
-        });
-      }
-    );     
-  }  
+            (completed) {
+          return _methodChannel.invokeMethod(methodName, arguments).catchError((err){
+            if (err.runtimeType == PlatformException) {
+              throw (err as PlatformException).details;
+            }
+            throw err;
+          });
+        }
+    );
+  }
 
-  void bootstrapAndStart() {    
-     getApplicationDocumentsDirectory().then(
-        (appDir) {
+  void bootstrapAndStart() {
+    getApplicationDocumentsDirectory().then(
+            (appDir) {
           var lndBootstrapper = new LNDBootstrapper();
           lndBootstrapper.bootstrapProgressStreams.listen((downloadFileInfo) {
-              var aggregatedStatus = Map<String, DownloadFileInfo>();
-              aggregatedStatus.addAll(_bootstrapDownloadProgressController.value);
-              aggregatedStatus[downloadFileInfo.fileURL] = downloadFileInfo;
-              _bootstrapDownloadProgressController.add(aggregatedStatus);
-            }, 
-            onError: (err){
-              print("Error");
-              _bootstrapDownloadProgressController.addError(err);
-            },
-            onDone: () { 
-              _bootstrapDownloadProgressController.close();
-              start(appDir.path);
-            });
-          lndBootstrapper.downloadBootstrapFiles(appDir.path);  
+            var aggregatedStatus = Map<String, DownloadFileInfo>();
+            aggregatedStatus.addAll(_bootstrapDownloadProgressController.value);
+            aggregatedStatus[downloadFileInfo.fileURL] = downloadFileInfo;
+            _bootstrapDownloadProgressController.add(aggregatedStatus);
+          },
+              onError: (err){
+                print("Error");
+                _bootstrapDownloadProgressController.addError(err);
+              },
+              onDone: () {
+                _bootstrapDownloadProgressController.close();
+                start(appDir.path);
+              });
+          lndBootstrapper.downloadBootstrapFiles(appDir.path);
         }
-      );    
+    );
   }
 }

@@ -6,6 +6,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter_advanced_networkimage/flutter_advanced_networkimage.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class PaymentRequestDialog extends StatelessWidget {
   final BuildContext context;
@@ -21,7 +22,8 @@ class PaymentRequestDialog extends StatelessWidget {
   }
 
   Widget showPaymentRequestDialog() {
-    return new SimpleDialog(
+    return new AlertDialog(
+      titlePadding: EdgeInsets.only(top: 48.0),
       title: invoice.payeeImageURL.isEmpty
           ? null
           : Stack(alignment: Alignment(0.0, 0.0), children: <Widget>[
@@ -36,15 +38,22 @@ class PaymentRequestDialog extends StatelessWidget {
                     fadeInDuration: new Duration(milliseconds: 200)),
               )
             ]),
-      titlePadding: EdgeInsets.only(top: 48.0),
-      children: <Widget>[
-        invoice.payeeName == null ? null : new Text(
+      contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+        invoice.payeeName == null ? Container() : new Text(
           "${invoice.payeeName}",
           style: theme.paymentRequestTitleStyle,
           textAlign: TextAlign.center,
         ),
-        new Text(
-          invoice.payeeName.isEmpty ? invoice.description : "is requesting you to pay:",
+        invoice.payeeName == null || invoice.payeeName.isEmpty ? new Text(
+          "You are requested to pay:",
+          style: theme.paymentRequestSubtitleStyle,
+          textAlign: TextAlign.center,
+        ) : new Text(
+          "is requesting you to pay:",
           style: theme.paymentRequestSubtitleStyle,
           textAlign: TextAlign.center,
         ),
@@ -63,7 +72,15 @@ class PaymentRequestDialog extends StatelessWidget {
                       textAlign: TextAlign.center,
                     );
             }),
-        new Padding(padding: EdgeInsets.only(top: 32.0)),
+        invoice.description == null || invoice.description.isEmpty
+            ? Container()
+            : Padding(padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0), child: AutoSizeText(
+          invoice.description,
+          style: theme.paymentRequestSubtitleStyle,
+          textAlign: invoice.description.length > 40 ? TextAlign.justify : TextAlign.center,
+          maxLines: 3,
+        ),),
+        new Padding(padding: EdgeInsets.only(top: 24.0)),
         new Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.end,
@@ -81,7 +98,7 @@ class PaymentRequestDialog extends StatelessWidget {
             ),
           ],
         ),
-      ],
+      ],),
     );
   }
 }

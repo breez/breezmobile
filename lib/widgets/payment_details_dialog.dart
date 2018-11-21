@@ -38,6 +38,14 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                 textAlign: TextAlign.center,
                 maxLines: 1,
               ),),
+        paymentInfo.description == null || paymentInfo.description.isEmpty
+            ? Container()
+            : Padding(padding: EdgeInsets.only(left: 16.0,right: 16.0),child:AutoSizeText(
+          paymentInfo.description,
+          style: theme.paymentDetailsTitleStyle,
+          textAlign: paymentInfo.description.length > 40 ? TextAlign.justify : TextAlign.center,
+          maxLines: 3,
+        ),),
         paymentInfo.amount == null
             ? Container()
             : Container(
