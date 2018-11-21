@@ -6,7 +6,6 @@ import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/static_loader.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -39,10 +38,8 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
   final _formKey = GlobalKey<FormState>();
   String _scannerErrorMessage = "";
   final TextEditingController _addressController = new TextEditingController();
-  final TextEditingController _amountController = new TextEditingController();
-  StreamSubscription<AccountModel> accountSubscription;
-  StreamSubscription<RemoveFundResponseModel> withdrawalResultSubscription;
-  Currency _currency = Currency.BTC;
+  final TextEditingController _amountController = new TextEditingController();  
+  StreamSubscription<RemoveFundResponseModel> withdrawalResultSubscription;  
   BreezBridge _breezLib;
   bool _addressValidated = false;
   bool _inProgress = false;
@@ -54,9 +51,6 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
     ServiceInjector injector = new ServiceInjector();
     _breezLib = injector.breezBridge;
 
-    accountSubscription = widget._accountBloc.accountStream.listen((acc) {
-      _currency = acc.currency;
-    });
     withdrawalResultSubscription =
         widget._accountBloc.withdrawalResultStream.listen((response) {
       setState(() {
@@ -80,8 +74,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
   }
 
   @override
-  void dispose() {
-    accountSubscription.cancel();
+  void dispose() {    
     withdrawalResultSubscription.cancel();
     super.dispose();
   }
@@ -97,42 +90,48 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
   Widget build(BuildContext context) {
     final String _title = "Remove Funds";
     return new Scaffold(
-      bottomNavigationBar: new Padding(
-          padding: new EdgeInsets.only(bottom: 40.0),
-          child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            new SizedBox(
-              height: 48.0,
-              width: 168.0,
-              child: RaisedButton(
-                padding: EdgeInsets.only(
-                    top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
-                child: new Text(
-                  "REMOVE",
-                  style: theme.buttonStyle,
-                ),
-                color: Colors.white,
-                elevation: 0.0,
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(42.0)),
-                onPressed: () {
-                  _asyncValidate().then((validated) {
-                    if (validated) {
-                      _formKey.currentState.save();
-                      _showAlertDialog();
-                    }
-                  });
-                },
-              ),
-            ),
-          ])),
+      bottomNavigationBar: StreamBuilder<AccountModel>(
+          stream: widget._accountBloc.accountStream,
+          builder: (context, snapshot) {
+            AccountModel acc = snapshot.data;
+            return new Padding(
+                padding: new EdgeInsets.only(bottom: 40.0),
+                child: new Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      new SizedBox(
+                        height: 48.0,
+                        width: 168.0,
+                        child: RaisedButton(
+                          padding: EdgeInsets.only(
+                              top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
+                          child: new Text(
+                            "REMOVE",
+                            style: theme.buttonStyle,
+                          ),
+                          color: Colors.white,
+                          elevation: 0.0,
+                          shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(42.0)),
+                          onPressed: acc == null ? null :  () {
+                            _asyncValidate().then((validated) {
+                              if (validated) {
+                                _formKey.currentState.save();
+                                _showAlertDialog(acc.currency);
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ]));
+          }),
       appBar: new AppBar(
-        iconTheme: theme.appBarIconTheme,
-        textTheme: theme.appBarTextTheme,
-        backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
-        leading: backBtn.BackButton(),
-        title: new Text(_title, style: theme.appBarTextStyle),
-        elevation: 0.0        
-      ),
+          iconTheme: theme.appBarIconTheme,
+          textTheme: theme.appBarTextTheme,
+          backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
+          leading: backBtn.BackButton(),
+          title: new Text(_title, style: theme.appBarTextStyle),
+          elevation: 0.0),
       body: StreamBuilder<AccountModel>(
         stream: widget._accountBloc.accountStream,
         builder: (context, snapshot) {
@@ -180,11 +179,11 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
                   ),
                   new AmountFormField(
                       controller: _amountController,
-                      currency: _currency,
+                      currency: acc.currency,
                       maxPaymentAmount: acc.maxPaymentAmount,
                       maxAmount: acc.maxAllowedToPay,
                       decoration: new InputDecoration(
-                          labelText: _currency.displayName + " Amount"),
+                          labelText: acc.currency.displayName + " Amount"),
                       style: theme.FieldTextStyle.textStyle),
                   new Container(
                     padding: new EdgeInsets.only(top: 36.0),
@@ -205,18 +204,18 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
         new Text("Available:", style: theme.textStyle),
         new Padding(
           padding: EdgeInsets.only(left: 3.0),
-          child: new Text(_currency.format(acc.balance),
+          child: new Text(acc.currency.format(acc.balance),
               style: theme.textStyle),
         )
       ],
     );
   }
 
-  void _showAlertDialog() {
+  void _showAlertDialog(Currency currency) {
     AlertDialog dialog = new AlertDialog(
       content: new Text(
           "Are you sure you want to remove " +
-              _currency.format(_currency.parse( _amountController.text )) +                            
+              currency.format(currency.parse(_amountController.text)) +
               " from Breez and send this amount to the address you've specified?",
           style: theme.alertStyle),
       actions: <Widget>[
@@ -228,7 +227,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
               Navigator.pop(context);
               _showLoadingDialog();
               widget._accountBloc.withdrawalSink.add(new RemoveFundRequestModel(
-                  _currency.parse(_amountController.text),
+                  currency.parse(_amountController.text),
                   _addressController.text));
             },
             child: new Text("YES", style: theme.buttonStyle))
@@ -242,18 +241,26 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
       _inProgress = true;
     });
     AlertDialog dialog = new AlertDialog(
-      title: Text("Removing Funds", style: theme.alertTitleStyle, textAlign: TextAlign.center,),
+      title: Text(
+        "Removing Funds",
+        style: theme.alertTitleStyle,
+        textAlign: TextAlign.center,
+      ),
       content: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          new Text("Please wait while Breez is sending the funds to the specified address.", style: theme.alertStyle, textAlign: TextAlign.center,),
+          new Text(
+            "Please wait while Breez is sending the funds to the specified address.",
+            style: theme.alertStyle,
+            textAlign: TextAlign.center,
+          ),
           Padding(
-            padding: EdgeInsets.only(top: 8.0),
-            child: new Image.asset(
-              'src/images/breez_loader.gif',
-              gaplessPlayback: true,
-          ))
+              padding: EdgeInsets.only(top: 8.0),
+              child: new Image.asset(
+                'src/images/breez_loader.gif',
+                gaplessPlayback: true,
+              ))
         ],
       ),
     );
