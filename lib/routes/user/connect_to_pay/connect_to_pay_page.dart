@@ -15,6 +15,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/static_loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
@@ -47,14 +48,14 @@ class _ConnectToPayPage extends StatefulWidget {
 }
 
 class _ConnectToPayState extends State<_ConnectToPayPage> {
-  bool _warnAreYouSure = false;
-  RemoteSession _currentSession;
+  bool _warnAreYouSure = false;  
   bool _payer;
   String _remoteUserName;
-  String _title;
+  String _title = "";
   StreamSubscription _errorsSubscription;
   StreamSubscription cancelSessionSubscription;
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
+  RemoteSession _currentSession;
 
   @override
   void initState() {
@@ -62,16 +63,17 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
     _initSession();
   }
 
-  _initSession(){
-    if (widget._sessionLink != null) {
-      _currentSession = widget._connectPayBloc.joinSessionAsPayee(widget._sessionLink);
-      _payer = false;
-      _title = "Receive Payment";
+  _initSession({bool reset = false}) async {
+    if (widget._sessionLink != null && !reset) {
+      _currentSession = await widget._connectPayBloc.joinSessionByLink(widget._sessionLink);
     } else {
-      _currentSession = widget._connectPayBloc.startSessionAsPayer();
-      _payer = true;
-      _title = "Connect To Pay";
+      _currentSession = await widget._connectPayBloc.startSessionAsPayer();
     }
+
+    setState(() {
+      _payer = _currentSession.runtimeType == PayerRemoteSession;
+      _title = _payer ? "Connect To Pay" : "Receive Payment"; 
+    });       
 
     _errorsSubscription = _currentSession.sessionErrors.listen((error) {      
       _popWithMessage(error.description);
@@ -94,7 +96,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
         _popWithMessage(successMessage);
       }
     });
-    cancelSessionSubscription.onDone(() {      
+    cancelSessionSubscription.onDone(() {           
       _popWithMessage(null);
     });  
   }
@@ -110,14 +112,13 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   void _resetSession(){
     _clearSession().then((_) {
       setState((){
-        _initSession();
+        _initSession(reset: true);
       });       
     });  
   }
 
   Future _clearSession() async {
-    _remoteUserName = null;
-    _currentSession = null;
+    _remoteUserName = null;    
     _warnAreYouSure = false;
     await cancelSessionSubscription.cancel();
     await _errorsSubscription.cancel();
@@ -166,7 +167,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
         ),
         body: WillPopScope(
             onWillPop: _onWillPop,
-            child: StreamBuilder<PaymentSessionState>(
+            child: _currentSession == null ? Container() : StreamBuilder<PaymentSessionState>(
               stream: _currentSession.paymentSessionStateStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {

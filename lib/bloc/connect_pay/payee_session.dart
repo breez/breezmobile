@@ -34,14 +34,20 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
   BreezBridge _breezLib = ServiceInjector().breezBridge;
   BreezUserModel _currentUser;
   var sessionState = Map<String, dynamic>();
+  SessionLinkModel sessionLink;
+  String get sessionID => sessionLink.sessionID;
 
-  PayeeRemoteSession(this._currentUser, SessionLinkModel sessionLink) : super(_currentUser) {
+  PayeeRemoteSession(this._currentUser, this.sessionLink) : super(_currentUser);
 
-    _joinSession(sessionLink);
+  Future start() async{        
+    _channel = new PaymentSessionChannel(sessionID, false, interceptor: new SessionEncryption(_breezLib, sessionID));
+    _resetSessionState();
+    _channel.sendResetMessage();
+    _handleIncomingMessages();    
   }
 
-  _joinSession(SessionLinkModel link) async {
-    _approvePaymentController.stream.listen((request) {     
+  _handleIncomingMessages(){
+     _approvePaymentController.stream.listen((request) {     
       var payerData = _currentSession.payerData;    
       _breezLib
           .addInvoice(Int64(payerData.amount), payeeName: _currentUser.name, payeeImageURL: _currentUser.avatarURL, payerName: payerData.userName, payerImageURL: payerData.imageURL)
@@ -50,36 +56,45 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
     });
 
     _rejectPaymentController.stream.listen((_){
-      pushStateUpdate("error", "Payment rejected").then((res) {
+      pushStateUpdate({"error": "Payment rejected"}).then((res) {
         terminate();
       });
-    });
+    }); 
 
-    var reply = await _breezLib.createRatchetSession(secret: link.sessionSecret,  remotePubKey: link.initiatorPubKey);
-    _channel = new PaymentSessionChannel(link.sessionID, false, interceptor: new SessionEncryption(_breezLib, reply.sessionID));
     _watchPayerMessages();
-    _watchPaymentFulfilled();
-    _paymentSessionController.add(PaymentSessionState.payeeStart(link.sessionID, _currentUser.name, _currentUser.avatarURL));
-    startStatusUpdates('remote-payments/${link.sessionID}/payee/status', (status) {
+    _watchPaymentFulfilled();  
+  }
+
+  Future _resetSessionState() {
+    var sessionResetState = PaymentSessionState.payeeStart(sessionID, _currentUser.name, _currentUser.avatarURL);  
+    if (_currentSession != null) {
+      sessionResetState = _currentSession.copyWith(payeeData: sessionResetState.payeeData);
+    }         
+    _paymentSessionController.add(sessionResetState);
+    _handleStatusUpdates();
+    sessionState.clear();
+    return pushStateUpdate({"userName": _currentUser.name, "imageURL":  _currentUser.avatarURL});    
+  }
+
+  Future _handleStatusUpdates() async {
+    await stopStatusUpdates();
+    startStatusUpdates('remote-payments/$sessionID/payee/status', (status) {
       var payeeData = _currentSession.payeeData;
       _paymentSessionController.add(_currentSession.copyWith(payeeData: payeeData.copyWith(status: status)));
     },
-    'remote-payments/${link.sessionID}/payer/status', (status) {
+    'remote-payments/$sessionID/payer/status', (status) {
       var payerData = _currentSession.payerData;
       _paymentSessionController.add(_currentSession.copyWith(payerData: payerData.copyWith(status: status)));
-    });
-
-    sessionState["userName"] = _currentUser.name;
-    pushStateUpdate("imageURL", _currentUser.avatarURL);
+    });  
   }
-  
-  Future pushStateUpdate(String key, dynamic value){
-    sessionState[key] = value;
+
+  Future pushStateUpdate(Map<String, dynamic> updates){
+    sessionState.addAll(updates);
     return _channel.sendStateUpdate(sessionState);
   }
 
   _onInvoiceError(err){
-    pushStateUpdate("error", err.toString()).then((_){
+    pushStateUpdate({"error": err.toString()}).then((_){
       _sessionErrorsController.add(PaymentSessionError.unknown(err.toString()));
     });
   }
@@ -95,23 +110,19 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
   }
 
   Future<void> _sendPaymentRequest(String payReq) {
-    return pushStateUpdate("paymentRequest", payReq).then((res) {
+    return pushStateUpdate({"paymentRequest": payReq}).then((res) {
       _paymentSessionController.add(_currentSession.copyWith(payeeData: _currentSession.payeeData.copyWith(paymentRequest: payReq)));
     });
   }
 
   void _watchPayerMessages() {
-    _channel.peerTerminatedStream.listen((_){
-      if (!_currentSession.payerData.paymentFulfilled) {
-        String remoteUserName = _currentSession.payeeData.userName;
-        String terminateMessage =  remoteUserName == null ? 'Payment session has been cancelled' : '$remoteUserName has cancelled the payment session';
-        _sessionErrorsController.add(PaymentSessionError(PaymentSessionErrorType.PAYER_CANCELLED, terminateMessage));
-      }
+    _channel.peerResetStream.listen((_) async{
+      _resetSessionState();
     });
 
     _channel.incomingMessagesStream.listen((data) {      
-      PayerSessionData newPayerData = PayerSessionData.fromJson(data ?? {});
-      _paymentSessionController.add(_currentSession.copyWith(payerData: _currentSession.payerData.update( newPayerData)));
+      PayerSessionData newPayerData = PayerSessionData.fromJson(data ?? {}).copyWith(status: _currentSession.payerData.status);
+      _paymentSessionController.add(_currentSession.copyWith(payerData: newPayerData));
     });
   }
 

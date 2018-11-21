@@ -741,6 +741,7 @@ class CreateRatchetSessionRequest extends GeneratedMessage {
   static final BuilderInfo _i = new BuilderInfo('CreateRatchetSessionRequest')
     ..aOS(1, 'secret')
     ..aOS(2, 'remotePubKey')
+    ..aOS(3, 'sessionID')
     ..hasRequiredFields = false
   ;
 
@@ -769,6 +770,11 @@ class CreateRatchetSessionRequest extends GeneratedMessage {
   set remotePubKey(String v) { $_setString(1, v); }
   bool hasRemotePubKey() => $_has(1);
   void clearRemotePubKey() => clearField(2);
+
+  String get sessionID => $_getS(2, '');
+  set sessionID(String v) { $_setString(2, v); }
+  bool hasSessionID() => $_has(2);
+  void clearSessionID() => clearField(3);
 }
 
 class _ReadonlyCreateRatchetSessionRequest extends CreateRatchetSessionRequest with ReadonlyMessageMixin {}
@@ -814,6 +820,42 @@ class CreateRatchetSessionReply extends GeneratedMessage {
 }
 
 class _ReadonlyCreateRatchetSessionReply extends CreateRatchetSessionReply with ReadonlyMessageMixin {}
+
+class RatchetSessionInfoReply extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('RatchetSessionInfoReply')
+    ..aOS(1, 'sessionID')
+    ..aOB(2, 'initiated')
+    ..hasRequiredFields = false
+  ;
+
+  RatchetSessionInfoReply() : super();
+  RatchetSessionInfoReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RatchetSessionInfoReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RatchetSessionInfoReply clone() => new RatchetSessionInfoReply()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static RatchetSessionInfoReply create() => new RatchetSessionInfoReply();
+  static PbList<RatchetSessionInfoReply> createRepeated() => new PbList<RatchetSessionInfoReply>();
+  static RatchetSessionInfoReply getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRatchetSessionInfoReply();
+    return _defaultInstance;
+  }
+  static RatchetSessionInfoReply _defaultInstance;
+  static void $checkItem(RatchetSessionInfoReply v) {
+    if (v is! RatchetSessionInfoReply) checkItemFailed(v, 'RatchetSessionInfoReply');
+  }
+
+  String get sessionID => $_getS(0, '');
+  set sessionID(String v) { $_setString(0, v); }
+  bool hasSessionID() => $_has(0);
+  void clearSessionID() => clearField(1);
+
+  bool get initiated => $_get(1, false);
+  set initiated(bool v) { $_setBool(1, v); }
+  bool hasInitiated() => $_has(1);
+  void clearInitiated() => clearField(2);
+}
+
+class _ReadonlyRatchetSessionInfoReply extends RatchetSessionInfoReply with ReadonlyMessageMixin {}
 
 class RatchetEncryptRequest extends GeneratedMessage {
   static final BuilderInfo _i = new BuilderInfo('RatchetEncryptRequest')

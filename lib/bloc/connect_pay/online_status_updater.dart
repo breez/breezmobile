@@ -5,21 +5,19 @@ import 'package:firebase_database/firebase_database.dart';
 class OnlineStatusUpdater {
   StreamSubscription _onLocalConnectSubscription;    
   StreamSubscription _onRemoteConnectSubscription;    
-  DatabaseReference _userStatuPath;
+  DatabaseReference _userStatusPath;
+
 
   void startStatusUpdates(String localKey, Function(PeerStatus) onLocalStatusChanged, String remoteKey, Function(PeerStatus) onRemoteStatusChanged) {
     if (_onLocalConnectSubscription != null) {
       throw new Exception("Status tracking alredy started, must be stopped before start again");
     }
-    _userStatuPath = FirebaseDatabase.instance.reference().child(localKey);
-    var offlineStatus = {"online": false, "lastChanged": ServerValue.timestamp},
-      onlineStatus = {"online": true, "lastChanged": ServerValue.timestamp};
+    _userStatusPath = FirebaseDatabase.instance.reference().child(localKey);    
 
     _onLocalConnectSubscription = FirebaseDatabase.instance.reference().child('.info/connected').onValue.listen((event) {
       onLocalStatusChanged(PeerStatus(event.snapshot.value, DateTime.now().millisecondsSinceEpoch));      
       if (event.snapshot.value) {
-        _userStatuPath.set(onlineStatus);
-        _userStatuPath.onDisconnect().set(offlineStatus);
+        pushOnline();
       }     
     });
 
@@ -29,11 +27,18 @@ class OnlineStatusUpdater {
     });
   }
 
+  pushOnline(){
+    var offlineStatus = {"online": false, "lastChanged": ServerValue.timestamp},
+      onlineStatus = {"online": true, "lastChanged": ServerValue.timestamp};
+    _userStatusPath.set(onlineStatus);
+    _userStatusPath.onDisconnect().set(offlineStatus);
+  }
+
   Future stopStatusUpdates(){
     if (_onLocalConnectSubscription == null) {
       return Future.value(null);
     }
-    _userStatuPath.onDisconnect().remove();
+    _userStatusPath.onDisconnect().remove();
     return Future.wait(
       [_onRemoteConnectSubscription.cancel(),_onLocalConnectSubscription.cancel()]
     ).then((_) {

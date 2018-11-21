@@ -3,6 +3,8 @@ import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payee_session.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
@@ -12,26 +14,43 @@ Bloc that responsible for creating online payments session.
 The handling of the session itself is not done here but within the concrete session implementation.
 */
 class ConnectPayBloc {
+  BreezBridge _breezLib = ServiceInjector().breezBridge;
   RemoteSession _currentSession;
   final StreamController _sessionInvitesController = new BehaviorSubject<SessionLinkModel>();
   Stream<SessionLinkModel> get sessionInvites => _sessionInvitesController.stream;
-  BreezUserModel _currentUser;
+  BreezUserModel _currentUser;  
 
   ConnectPayBloc(Stream<BreezUserModel> userStream) {
     userStream.listen((user) => _currentUser = user);
     _monitorSessionInvites();
   }
 
-  PayerRemoteSession startSessionAsPayer() {
-    terminateCurrentSession();
-    _currentSession = new PayerRemoteSession(_currentUser);
+  Future<PayerRemoteSession> startSessionAsPayer() async {
+    await terminateCurrentSession();
+    CreateRatchetSessionReply session = await _breezLib.createRatchetSession(); 
+    SessionLinkModel payerLink = new SessionLinkModel(session.sessionID, session.secret, session.pubKey);
+    _currentSession = new PayerRemoteSession(_currentUser, payerLink)..start();
     return _currentSession as PayerRemoteSession;
   }
 
-  PayeeRemoteSession joinSessionAsPayee(SessionLinkModel sessionLink) {
-    terminateCurrentSession();
-    _currentSession = new PayeeRemoteSession(_currentUser, sessionLink);
-    return _currentSession as PayeeRemoteSession;
+  Future<RemoteSession> joinSessionByLink(SessionLinkModel sessionLink) async{
+    await terminateCurrentSession();
+        
+    RatchetSessionInfoReply sessionInfo = await _breezLib.ratchetSessionInfo(sessionLink.sessionID);    
+    bool existingSession = sessionInfo.sessionID.isNotEmpty;
+
+    //if we have already a session and it is our intiated then we are a returning payer
+    if (sessionInfo.initiated) {      
+        _currentSession = new PayerRemoteSession(_currentUser, sessionLink);
+    } else {
+       //otherwise we are payee
+      if (!existingSession) {
+        await _breezLib.createRatchetSession(sessionID: sessionLink.sessionID, secret: sessionLink.sessionSecret,  remotePubKey: sessionLink.initiatorPubKey);      
+      }
+      _currentSession = new PayeeRemoteSession(_currentUser, sessionLink);
+    }
+
+    return _currentSession..start();
   }
 
   Future terminateCurrentSession() {
@@ -62,5 +81,6 @@ abstract class RemoteSession {
   BreezUserModel get currentUser => _currentUser;
   Stream<PaymentSessionState> get paymentSessionStateStream;
   Stream<PaymentSessionError> get sessionErrors;
+  Future start();
   Future terminate();
 }

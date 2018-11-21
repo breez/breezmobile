@@ -123,11 +123,16 @@ class BreezBridge {
     }
   }
 
-  Future<CreateRatchetSessionReply> createRatchetSession({String secret, String remotePubKey}) {
+  Future<CreateRatchetSessionReply> createRatchetSession({String sessionID, String secret, String remotePubKey}) {
     var request = CreateRatchetSessionRequest()
       ..secret = secret ?? ""
+      ..sessionID = sessionID ?? ""
       ..remotePubKey = remotePubKey ?? "";
     return _invokeMethodImmediate("createRatchetSession", {"argument": request.writeToBuffer()}).then((res) =>  new CreateRatchetSessionReply()..mergeFromBuffer(res ?? []));
+  }
+
+  Future<RatchetSessionInfoReply> ratchetSessionInfo(String sessionID) {
+    return _invokeMethodImmediate("ratchetSessionInfo", {"argument": sessionID}).then((res) =>  new RatchetSessionInfoReply()..mergeFromBuffer(res ?? []));
   }
 
   Future<String> ratchetEncrypt(String sessionID, String message) {

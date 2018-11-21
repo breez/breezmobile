@@ -42,20 +42,19 @@ class ConnectedPeer extends StatelessWidget {
               border: Border.all(color: Colors.white, width: 3.0),
               borderRadius: BorderRadius.all(Radius.circular(12.0)),
             ))) : SizedBox(),
-        _paymentSessionData.invitationReady || _renderPayer ? Positioned(
+        _paymentSessionData.invitationReady || _renderPayer || _online ? Positioned(
             bottom: 25.0,
             right: 25.0,
             height: 24.0,
             width: 24.0,
-            child: _online ? DelayRender(              
-              duration: PaymentSessionState.connectionEmulationDuration,
+            child: _online ? DelayRender(              	
+              duration: PaymentSessionState.connectionEmulationDuration,	
               child: Container(
                   decoration: BoxDecoration(
                 color: Colors.greenAccent[400],
                 border: Border.all(color: Colors.white, width: 3.0),
                 borderRadius: BorderRadius.all(Radius.circular(12.0)),
-              )),
-            ) : SizedBox()) : SizedBox()
+              ))) : SizedBox()) : SizedBox()
       ])
     ]));
   }
