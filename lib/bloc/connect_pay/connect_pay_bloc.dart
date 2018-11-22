@@ -31,8 +31,7 @@ class ConnectPayBloc {
 
 
 
-  Future<PayerRemoteSession> startSessionAsPayer() async {
-    await terminateCurrentSession();
+  Future<PayerRemoteSession> startSessionAsPayer() async {    
     var newSessionReply = await _breezServer.joinSession(true, _currentUser.name, _currentUser.token);
     CreateRatchetSessionReply session = await _breezLib.createRatchetSession(newSessionReply.sessionID); 
     SessionLinkModel payerLink = new SessionLinkModel(session.sessionID, session.secret, session.pubKey);
@@ -40,8 +39,7 @@ class ConnectPayBloc {
     return _currentSession as PayerRemoteSession;
   }
 
-  Future<RemoteSession> joinSessionByLink(SessionLinkModel sessionLink) async{
-    await terminateCurrentSession();
+  Future<RemoteSession> joinSessionByLink(SessionLinkModel sessionLink) async{    
         
     RatchetSessionInfoReply sessionInfo = await _breezLib.ratchetSessionInfo(sessionLink.sessionID);    
     bool existingSession = sessionInfo.sessionID.isNotEmpty;
@@ -66,22 +64,18 @@ class ConnectPayBloc {
     } catch(e) {
       throw new SessionExpiredException();
     }
+
+    //clean current session on terminate
     currentSession.terminationStream.first.then((_) {
-       _currentSession = null;
+      if (_currentSession == currentSession) {
+        _currentSession = null;
+      }
     });
+
     return _currentSession = currentSession..start();    
   }
 
   RemoteSession get currentSession => _currentSession;
-
-  Future terminateCurrentSession() {
-    Future res = Future.value(null);
-    if (_currentSession != null) {
-      res = _currentSession.terminate();
-      _currentSession = null;      
-    }
-    return res;
-  }
 
   _monitorSessionInvites() {
     DeepLinksService deepLinks = ServiceInjector().deepLinks;
@@ -99,11 +93,9 @@ class ConnectPayBloc {
     notificationService.notifications
     .where(
       (message) => (message["msg"] ?? "").toString().contains("CTPSessionID"))
-    .listen((message) {
-      print("go ctp message " + message["msg"]);
+    .listen((message) {      
       Map<String,dynamic> parsedMsg = json.decode(message["msg"]);
-      String sessionID = parsedMsg["CTPSessionID"];
-      print ("session id = " + sessionID);
+      String sessionID = parsedMsg["CTPSessionID"];      
       _sessionInvitesController.add(SessionLinkModel(sessionID, null, null));
     });
   }

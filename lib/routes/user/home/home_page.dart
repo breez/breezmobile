@@ -107,7 +107,11 @@ class HomeState extends State<Home> {
     new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
     new CTPJoinSessionHandler(widget.ctpBloc, this.context, 
       (session) {
-        Navigator.of(context).push(FadeInRoute(builder: (_) => new ConnectToPayPage(session)));
+        Navigator.popUntil(context, (route) {
+          return route.settings.name != "/connect_to_pay";          
+        });        
+        var ctpRoute = FadeInRoute(builder: (_) => new ConnectToPayPage(session), settings: RouteSettings(name: "/connect_to_pay"));
+        Navigator.of(context).push(ctpRoute);                    
       },
       (e) {
         promptError(context, "Connect to Pay", Text(e.toString(), style: theme.alertStyle));
