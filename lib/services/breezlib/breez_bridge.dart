@@ -39,8 +39,10 @@ class BreezBridge {
 
   Future start(String workingDir) async{
     await _copyBreezConfig(workingDir);
+    Directory tempDir = await getTemporaryDirectory();
     return _methodChannel.invokeMethod("start", {
-      "workingDir": workingDir
+      "workingDir": workingDir,
+      "tempDir": tempDir.path
     })
         .then((_) => _startedCompleter.complete());
   }
