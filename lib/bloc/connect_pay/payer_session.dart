@@ -89,6 +89,10 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   }
 
   Future terminate() async {
+    if (_isTerminated) {
+      return Future.value(null);
+    }
+
     await _channel.terminate(destroyHistory: false);    
     await stopStatusUpdates();    
     await _amountController.close();    
@@ -97,9 +101,10 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     if (_sentInvitesController.hasListener) {
       await _sentInvitesController.close();
     }        
-    _terminationStreamController.add(null); 
-    await _terminationStreamController.close();   
+    _terminationStreamController.add(null);      
   }
+
+  bool get _isTerminated => _terminationStreamController.isClosed;
 
   void _watchInviteRequests(SessionLinkModel sessionLink){        
     _deepLinks.generateSessionInviteLink(SessionLinkModel(sessionLink.sessionID, sessionLink.sessionSecret, sessionLink.initiatorPubKey)).then((inviteLink) {      
