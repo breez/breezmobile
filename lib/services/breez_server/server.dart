@@ -8,12 +8,14 @@ import 'package:fixnum/fixnum.dart';
 import 'package:breez/logger.dart';
 import "package:ini/ini.dart";
 
-
+//proto command:
+//protoc --dart_out=grpc:lib/services/breez_server/generated/ -Ilib/services/breez_server/protobuf/ lib/services/breez_server/protobuf/breez.prot
 class BreezServer {
   ClientChannel _channel;
   InvoicerClient _invoicerClient;
   PosClient _posClient;
   CardOrdererClient _cardOrdererClient;
+  CTPClient _ctpClient;
 
   initChannel() async {
     if (_channel == null) {
@@ -34,6 +36,7 @@ class BreezServer {
       _invoicerClient = new InvoicerClient(_channel, options: callOptions);
       _posClient = new PosClient(_channel, options: callOptions);
       _cardOrdererClient = new CardOrdererClient(_channel, options: callOptions);
+      _ctpClient = new CTPClient(_channel, options: callOptions);
     }
   }
 
@@ -84,5 +87,16 @@ class BreezServer {
         ..country = country);
 
     return response;
+  }
+
+  Future<JoinCTPSessionResponse> joinSession(bool payer, String userName, String notificationToken, {String sessionID}) async {
+    await initChannel();
+    return await _ctpClient.joinCTPSession(
+      new JoinCTPSessionRequest()
+        ..partyType = payer ? JoinCTPSessionRequest_PartyType.PAYER : JoinCTPSessionRequest_PartyType.PAYEE
+        ..partyName = userName
+        ..notificationToken = notificationToken
+        ..sessionID = sessionID ?? ""
+    );
   }
 }
