@@ -147,7 +147,6 @@ class _PosNumPadState extends State<_POSNumPad> {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               new Container(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -157,25 +156,27 @@ class _PosNumPadState extends State<_POSNumPad> {
                             return new StatusIndicator(snapshot.data);
                           }),
                       new Padding(
-                        padding: EdgeInsets.only(top: 0.0),
+                        padding: EdgeInsets.only(top: 0.0, left: 16.0, right: 16.0),
                         child: new ConstrainedBox(
                           constraints: const BoxConstraints(minWidth: double.infinity),
-                          child: new RaisedButton(
-                            padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
-                            child: new Text(
-                              "Charge ${_chargeAmountController.text}".toUpperCase(),
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                              style: theme.invoiceChargeAmountStyle,
-                            ),
-                            onPressed: _isButtonDisabled ? null : onInvoiceSubmitted,
-                          ),
+                          child: IgnorePointer(
+                            ignoring: _isButtonDisabled,
+                            child: new RaisedButton(
+                              padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
+                              child: new Text(
+                                "Charge ${_chargeAmountController.text}".toUpperCase(),
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                style: theme.invoiceChargeAmountStyle,
+                              ),
+                              onPressed: () => onInvoiceSubmitted,
+                            ),),
                         ),
                       ),
                       new Container(
                         height: 50.0,
                         child: new Padding(
-                          padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0),
+                          padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 8.0),
                           child: new TextField(
                             focusNode: _focusNode,
                             textInputAction: TextInputAction.done,
@@ -206,14 +207,15 @@ class _PosNumPadState extends State<_POSNumPad> {
                           ),
                         ),
                       ),
+                      new Padding(padding: EdgeInsets.only(left: 16.0, right: 16.0), child:
                       Row(children: <Widget>[
                         new Flexible(
                             child: new TextField(
-                          enabled: false,
-                          controller: _amountController,
-                          style: theme.invoiceAmountStyle,
-                          textAlign: TextAlign.right,
-                        )),
+                              enabled: false,
+                              controller: _amountController,
+                              style: theme.invoiceAmountStyle,
+                              textAlign: TextAlign.right,
+                            )),
                         new Theme(
                           data: Theme.of(context).copyWith(
                             brightness: Brightness.light,
@@ -240,7 +242,7 @@ class _PosNumPadState extends State<_POSNumPad> {
                             ),
                           ),
                         ),
-                      ]),
+                      ]),),
                     ],
                   ),
                   decoration: new BoxDecoration(
@@ -392,9 +394,11 @@ class _PosNumPadState extends State<_POSNumPad> {
   Container _numberButton(String number) {
     return Container(
         decoration: new BoxDecoration(border: new Border.all(color: Colors.white, width: 0.5)),
-        child: new FlatButton(
-            onPressed: _isButtonDisabled ? null : () => onNumButtonPressed(number),
-            child: new Text(number, textAlign: TextAlign.center, style: theme.numPadNumberStyle)));
+        child: IgnorePointer(
+            ignoring: _isButtonDisabled,
+            child: new FlatButton(
+                onPressed: () => onNumButtonPressed(number),
+                child: new Text(number, textAlign: TextAlign.center, style: theme.numPadNumberStyle))));
   }
 
   Widget _numPad() {
