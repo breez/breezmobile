@@ -16,10 +16,13 @@ import 'connect_pay_model.dart';
 A concrete implementation of RemoteSession from the payer side.
 */
 class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
-  String _currentSessionInvite;
+  String _currentSessionInvite;  
+
+  final StreamController<void>  _terminationStreamController = new StreamController<void>();
+  Stream<void> get terminationStream => _terminationStreamController.stream;
   
   final _sentInvitesController = new StreamController<String>();
-  Sink<String> get sentInvitesSink => _sentInvitesController.sink;
+  Sink<String> get sentInvitesSink => _sentInvitesController.sink;    
 
   final _amountController = new StreamController<int>();
   Sink<int> get amountSink => _amountController.sink;
@@ -86,12 +89,16 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   }
 
   Future terminate() async {
-    await _channel.terminate(destroyHistory: false);
-    await _amountController.close();
-    await _paymentSessionController.close();
-    await _sessionErrorsController.close();
-    await _sentInvitesController.close();
+    await _channel.terminate(destroyHistory: false);    
     await stopStatusUpdates();    
+    await _amountController.close();    
+    await _paymentSessionController.close();    
+    await _sessionErrorsController.close();    
+    if (_sentInvitesController.hasListener) {
+      await _sentInvitesController.close();
+    }        
+    _terminationStreamController.add(null); 
+    await _terminationStreamController.close();   
   }
 
   void _watchInviteRequests(SessionLinkModel sessionLink){        

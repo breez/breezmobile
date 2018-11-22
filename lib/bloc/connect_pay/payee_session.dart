@@ -17,6 +17,9 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 A concrete implementation of RemoteSession from the payee side.
 */
 class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
+  final StreamController<void>  _terminationStreamController = new StreamController<void>();
+  Stream<void> get terminationStream => _terminationStreamController.stream;
+
   final _approvePaymentController = new StreamController<BreezUserModel>();
   Sink<BreezUserModel> get approvePaymentSink => _approvePaymentController.sink;
 
@@ -102,11 +105,13 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
   Future terminate() async {
     await _invoicesPaidSubscription.cancel();
     await _channel.terminate(destroyHistory: false);
+    await stopStatusUpdates();
     await _approvePaymentController.close();
     await _paymentSessionController.close();
     await _sessionErrorsController.close();
-    await _rejectPaymentController.close();
-    await stopStatusUpdates();
+    await _rejectPaymentController.close();    
+    _terminationStreamController.add(null); 
+    await _terminationStreamController.close();   
   }
 
   Future<void> _sendPaymentRequest(String payReq) {
