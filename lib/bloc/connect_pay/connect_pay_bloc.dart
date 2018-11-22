@@ -47,21 +47,29 @@ class ConnectPayBloc {
     bool existingSession = sessionInfo.sessionID.isNotEmpty;
 
     if (!existingSession && ( sessionLink.sessionSecret == null || sessionLink.initiatorPubKey == null) ) {
-      throw new Exception("Session doesn't exist");
+      throw new SessionExpiredException();
     }
 
+    RemoteSession currentSession;
     //if we have already a session and it is our intiated then we are a returning payer
     if (sessionInfo.initiated) {      
-        _currentSession = new PayerRemoteSession(_currentUser, sessionLink);
+        currentSession = new PayerRemoteSession(_currentUser, sessionLink);
     } else {
        //otherwise we are payee
       if (!existingSession) {
         await _breezLib.createRatchetSession(sessionLink.sessionID, secret: sessionLink.sessionSecret,  remotePubKey: sessionLink.initiatorPubKey);      
       }
-      _currentSession = new PayeeRemoteSession(_currentUser, sessionLink);
+      currentSession = new PayeeRemoteSession(_currentUser, sessionLink);
     }
-    //await _breezServer.joinSession(_currentSession.runtimeType == PayerRemoteSession, _currentUser.name, _currentUser.token, sessionID: sessionLink.sessionID);
-    return _currentSession..start();
+    try {
+      await _breezServer.joinSession(currentSession.runtimeType == PayerRemoteSession, _currentUser.name, _currentUser.token, sessionID: sessionLink.sessionID);
+    } catch(e) {
+      throw new SessionExpiredException();
+    }
+    currentSession.terminationStream.first.then((_) {
+       _currentSession = null;
+    });
+    return _currentSession = currentSession..start();    
   }
 
   RemoteSession get currentSession => _currentSession;
@@ -102,6 +110,7 @@ class ConnectPayBloc {
 }
 
 abstract class RemoteSession {
+  Stream<void> terminationStream;
   BreezUserModel _currentUser;
   
   RemoteSession(this._currentUser);
@@ -112,4 +121,8 @@ abstract class RemoteSession {
   Stream<PaymentSessionError> get sessionErrors;
   Future start();
   Future terminate();
+}
+
+class SessionExpiredException implements Exception {
+  String toString() => "This link had expired and is no longer valid for payment.";
 }
