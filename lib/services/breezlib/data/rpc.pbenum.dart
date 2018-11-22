@@ -1,14 +1,14 @@
 ///
 //  Generated code. Do not modify.
+//  source: rpc.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes
-library data_rpc_pbenum;
+// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
 
 // ignore_for_file: UNDEFINED_SHOWN_NAME,UNUSED_SHOWN_NAME
 import 'dart:core' show int, dynamic, String, List, Map;
-import 'package:protobuf/protobuf.dart';
+import 'package:protobuf/protobuf.dart' as $pb;
 
-class Account_AccountStatus extends ProtobufEnum {
+class Account_AccountStatus extends $pb.ProtobufEnum {
   static const Account_AccountStatus WAITING_DEPOSIT = const Account_AccountStatus._(0, 'WAITING_DEPOSIT');
   static const Account_AccountStatus WAITING_DEPOSIT_CONFIRMATION = const Account_AccountStatus._(1, 'WAITING_DEPOSIT_CONFIRMATION');
   static const Account_AccountStatus PROCESSING_BREEZ_CONNECTION = const Account_AccountStatus._(2, 'PROCESSING_BREEZ_CONNECTION');
@@ -23,16 +23,16 @@ class Account_AccountStatus extends ProtobufEnum {
     ACTIVE,
   ];
 
-  static final Map<int, dynamic> _byValue = ProtobufEnum.initByValue(values);
-  static Account_AccountStatus valueOf(int value) => _byValue[value] as Account_AccountStatus;
+  static final Map<int, Account_AccountStatus> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static Account_AccountStatus valueOf(int value) => _byValue[value];
   static void $checkItem(Account_AccountStatus v) {
-    if (v is! Account_AccountStatus) checkItemFailed(v, 'Account_AccountStatus');
+    if (v is! Account_AccountStatus) $pb.checkItemFailed(v, 'Account_AccountStatus');
   }
 
   const Account_AccountStatus._(int v, String n) : super(v, n);
 }
 
-class Payment_PaymentType extends ProtobufEnum {
+class Payment_PaymentType extends $pb.ProtobufEnum {
   static const Payment_PaymentType DEPOSIT = const Payment_PaymentType._(0, 'DEPOSIT');
   static const Payment_PaymentType WITHDRAWAL = const Payment_PaymentType._(1, 'WITHDRAWAL');
   static const Payment_PaymentType SENT = const Payment_PaymentType._(2, 'SENT');
@@ -45,16 +45,16 @@ class Payment_PaymentType extends ProtobufEnum {
     RECEIVED,
   ];
 
-  static final Map<int, dynamic> _byValue = ProtobufEnum.initByValue(values);
-  static Payment_PaymentType valueOf(int value) => _byValue[value] as Payment_PaymentType;
+  static final Map<int, Payment_PaymentType> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static Payment_PaymentType valueOf(int value) => _byValue[value];
   static void $checkItem(Payment_PaymentType v) {
-    if (v is! Payment_PaymentType) checkItemFailed(v, 'Payment_PaymentType');
+    if (v is! Payment_PaymentType) $pb.checkItemFailed(v, 'Payment_PaymentType');
   }
 
   const Payment_PaymentType._(int v, String n) : super(v, n);
 }
 
-class NotificationEvent_NotificationType extends ProtobufEnum {
+class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
   static const NotificationEvent_NotificationType READY = const NotificationEvent_NotificationType._(0, 'READY');
   static const NotificationEvent_NotificationType INITIALIZATION_FAILED = const NotificationEvent_NotificationType._(1, 'INITIALIZATION_FAILED');
   static const NotificationEvent_NotificationType ACCOUNT_CHANGED = const NotificationEvent_NotificationType._(2, 'ACCOUNT_CHANGED');
@@ -62,6 +62,7 @@ class NotificationEvent_NotificationType extends ProtobufEnum {
   static const NotificationEvent_NotificationType ROUTING_NODE_CONNECTION_CHANGED = const NotificationEvent_NotificationType._(4, 'ROUTING_NODE_CONNECTION_CHANGED');
   static const NotificationEvent_NotificationType LIGHTNING_SERVICE_DOWN = const NotificationEvent_NotificationType._(5, 'LIGHTNING_SERVICE_DOWN');
   static const NotificationEvent_NotificationType FUND_ADDRESS_UNSPENT_CHANGED = const NotificationEvent_NotificationType._(6, 'FUND_ADDRESS_UNSPENT_CHANGED');
+  static const NotificationEvent_NotificationType BACKUP_FILES_AVAILABLE = const NotificationEvent_NotificationType._(7, 'BACKUP_FILES_AVAILABLE');
 
   static const List<NotificationEvent_NotificationType> values = const <NotificationEvent_NotificationType> [
     READY,
@@ -71,18 +72,19 @@ class NotificationEvent_NotificationType extends ProtobufEnum {
     ROUTING_NODE_CONNECTION_CHANGED,
     LIGHTNING_SERVICE_DOWN,
     FUND_ADDRESS_UNSPENT_CHANGED,
+    BACKUP_FILES_AVAILABLE,
   ];
 
-  static final Map<int, dynamic> _byValue = ProtobufEnum.initByValue(values);
-  static NotificationEvent_NotificationType valueOf(int value) => _byValue[value] as NotificationEvent_NotificationType;
+  static final Map<int, NotificationEvent_NotificationType> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static NotificationEvent_NotificationType valueOf(int value) => _byValue[value];
   static void $checkItem(NotificationEvent_NotificationType v) {
-    if (v is! NotificationEvent_NotificationType) checkItemFailed(v, 'NotificationEvent_NotificationType');
+    if (v is! NotificationEvent_NotificationType) $pb.checkItemFailed(v, 'NotificationEvent_NotificationType');
   }
 
   const NotificationEvent_NotificationType._(int v, String n) : super(v, n);
 }
 
-class FundStatusReply_FundStatus extends ProtobufEnum {
+class FundStatusReply_FundStatus extends $pb.ProtobufEnum {
   static const FundStatusReply_FundStatus NO_FUND = const FundStatusReply_FundStatus._(0, 'NO_FUND');
   static const FundStatusReply_FundStatus WAITING_CONFIRMATION = const FundStatusReply_FundStatus._(1, 'WAITING_CONFIRMATION');
   static const FundStatusReply_FundStatus CONFIRMED = const FundStatusReply_FundStatus._(2, 'CONFIRMED');
@@ -93,10 +95,10 @@ class FundStatusReply_FundStatus extends ProtobufEnum {
     CONFIRMED,
   ];
 
-  static final Map<int, dynamic> _byValue = ProtobufEnum.initByValue(values);
-  static FundStatusReply_FundStatus valueOf(int value) => _byValue[value] as FundStatusReply_FundStatus;
+  static final Map<int, FundStatusReply_FundStatus> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static FundStatusReply_FundStatus valueOf(int value) => _byValue[value];
   static void $checkItem(FundStatusReply_FundStatus v) {
-    if (v is! FundStatusReply_FundStatus) checkItemFailed(v, 'FundStatusReply_FundStatus');
+    if (v is! FundStatusReply_FundStatus) $pb.checkItemFailed(v, 'FundStatusReply_FundStatus');
   }
 
   const FundStatusReply_FundStatus._(int v, String n) : super(v, n);

@@ -15,13 +15,16 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/routes/shared/no_connection_dialog.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/widgets/backup_disabled_indicator.dart';
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
   final InvoiceBloc invoiceBloc;
   final ConnectPayBloc ctpBloc;
+  final BackupBloc backupBloc;
 
-  Home(this.accountBloc, this.invoiceBloc, this.ctpBloc) {
+  Home(this.accountBloc, this.invoiceBloc, this.ctpBloc, this.backupBloc) {
     _minorActionsInvoice =
     new List<DrawerItemConfig>.unmodifiable([
       new DrawerItemConfig(
@@ -128,6 +131,11 @@ class HomeState extends State<Home> {
     return new Scaffold(
         key: _scaffoldKey,
         appBar: new AppBar(
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(14.0),
+              child: BackupDisabledIndicator(widget.backupBloc),
+            ),],
           leading: new IconButton(
               icon: ImageIcon(
                 AssetImage("src/icon/hamburger.png"),

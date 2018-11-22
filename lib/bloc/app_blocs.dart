@@ -4,6 +4,7 @@ import 'invoice/invoice_bloc.dart';
 import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/bloc/status_indicator/status_indicator_bloc.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 
 /*
 Bloc stands for Business Logic Component.
@@ -15,6 +16,7 @@ class AppBlocs {
   final InvoiceBloc invoicesBloc;
   final ConnectPayBloc connectPayBloc;
   final StatusIndicatorBloc statusIndicatorBloc;
+  final BackupBloc backupBloc;
 
   factory AppBlocs() {
     StatusIndicatorBloc statusIndicatorBloc = new StatusIndicatorBloc();
@@ -23,6 +25,7 @@ class AppBlocs {
     POSProfileBloc posProfileBloc = new POSProfileBloc();    
     InvoiceBloc invoicesBloc = new InvoiceBloc();
     ConnectPayBloc connectPayBloc = new ConnectPayBloc(userProfileBloc.userStream);
+    BackupBloc backupBloc = new BackupBloc(accountBloc.accountStream);
     
     return AppBlocs._(      
       userProfileBloc,
@@ -30,7 +33,8 @@ class AppBlocs {
       posProfileBloc,       
       invoicesBloc,
       connectPayBloc,
-      statusIndicatorBloc
+      statusIndicatorBloc,
+      backupBloc
     );
   }
 
@@ -40,6 +44,7 @@ class AppBlocs {
     this.posProfileBloc,         
     this.invoicesBloc,
     this.connectPayBloc,
-    this.statusIndicatorBloc
+    this.statusIndicatorBloc,
+    this.backupBloc
   );
 }
