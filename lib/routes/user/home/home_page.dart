@@ -1,3 +1,8 @@
+import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
+import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
+import 'package:breez/routes/user/ctp_join_session_handler.dart';
+import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:breez/widgets/navigation_drawer.dart';
@@ -14,8 +19,9 @@ import 'package:barcode_scan/barcode_scan.dart';
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
   final InvoiceBloc invoiceBloc;
+  final ConnectPayBloc ctpBloc;
 
-  Home(this.accountBloc, this.invoiceBloc) {
+  Home(this.accountBloc, this.invoiceBloc, this.ctpBloc) {
     _minorActionsInvoice =
     new List<DrawerItemConfig>.unmodifiable([
       new DrawerItemConfig(
@@ -83,10 +89,7 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    // add my stuff here
-    InvoiceNotificationsHandler _notificationsHandler =
-        new InvoiceNotificationsHandler(
-            context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
+    registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
     _hiddenRountes.add("/get_refund");
     widget.accountBloc.refundableDepositsStream.listen((addresses){
@@ -98,6 +101,18 @@ class HomeState extends State<Home> {
         }     
       });      
     });
+  }
+
+  registerNotificationHandlers(){
+    new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
+    new CTPJoinSessionHandler(widget.ctpBloc, this.context, 
+      (session) {
+        Navigator.of(context).push(FadeInRoute(builder: (_) => new ConnectToPayPage(session)));
+      },
+      (e) {
+        promptError(context, "Connect to Pay", Text(e.toString(), style: theme.alertStyle));
+      }
+    );
   }
 
   List<DrawerItemConfig> filterItems(List<DrawerItemConfig> items){

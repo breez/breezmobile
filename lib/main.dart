@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'dart:io' show Platform;
 import 'package:breez/routes/user/get_refund/get_refund_page.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:flutter/material.dart';
@@ -66,15 +67,6 @@ class BreezAppState extends State<BreezApp> {
   GlobalKey<NavigatorState> _navigatorKey = new GlobalKey<NavigatorState>();
 
   @override
-  void initState() {
-    super.initState();
-    widget._blocs.connectPayBloc.sessionInvites.listen((sessionLink) async {
-      await widget._blocs.connectPayBloc.terminateCurrentSession();      
-      _navigatorKey.currentState.push(FadeInRoute(builder: (_) => new ConnectToPayPage(sessionLink)));         
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       navigatorKey: _navigatorKey,
@@ -93,12 +85,12 @@ class BreezAppState extends State<BreezApp> {
         cardColor: Color.fromRGBO(5, 93, 235, 1.0),
       ),
       initialRoute: widget._userModel.registered ? null : '/splash',
-      home: new Home(widget._blocs.accountBloc, widget._blocs.invoicesBloc),
+      home: new Home(widget._blocs.accountBloc, widget._blocs.invoicesBloc, widget._blocs.connectPayBloc),
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case '/home':
             return new FadeInRoute(
-              builder: (_) => new Home(widget._blocs.accountBloc, widget._blocs.invoicesBloc),
+              builder: (_) => new Home(widget._blocs.accountBloc, widget._blocs.invoicesBloc, widget._blocs.connectPayBloc),
               settings: settings,
             );
           case '/intro':
