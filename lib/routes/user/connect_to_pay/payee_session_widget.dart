@@ -21,7 +21,7 @@ class PayeeSessionWidget extends StatelessWidget {
     return StreamBuilder<PaymentSessionState>(
         stream: _currentSession.paymentSessionStateStream,
         builder: (context, snapshot) {
-          if (!snapshot.hasData || snapshot.data.payerData.userName == null) {
+          if (!snapshot.hasData) {
             return Center(child: Loader());
           }
           PaymentSessionState sessionState = snapshot.data;
@@ -76,7 +76,7 @@ class _PayeeInstructions extends StatelessWidget {
     if (_sessionState.paymentFulfilled) {
             message = "You've successfully got " + _account.currency.format(Int64(_sessionState.settledAmount));
     } else if (_sessionState.payerData.amount == null) {
-      return LoadingAnimatedText('Waiting for ${_sessionState.payerData.userName} to enter an amount', textStyle: theme.sessionNotificationStyle);
+      return LoadingAnimatedText('Waiting for ${_sessionState.payerData.userName ?? "payer"} to enter an amount', textStyle: theme.sessionNotificationStyle);
     }
     else if (_sessionState.payerData.amount != null && _sessionState.payeeData.paymentRequest == null) {
       message = '${_sessionState.payerData.userName} wants to pay you ${_account.currency.format(Int64(_sessionState.payerData.amount))}.';
