@@ -51,8 +51,9 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
         ChainSync.waitShutdown();
 
         String workingDir = call.argument("workingDir").toString();
+        String tempDir = call.argument("tempDir").toString();
         try {
-            Bindings.start(workingDir, this);
+            Bindings.start(workingDir, tempDir, this);
             result.success(true);
         } catch (Exception e) {
             result.error("ResultError", "Failed to Start breez library", e.getMessage());
