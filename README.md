@@ -39,8 +39,8 @@
 - [x] Create invoice (link or QR) to be paid by other ln wallets
 - [x] Removing funds to an on-chain address
 - [x] SubmarineSwaps for adding on-chain funds including refund functionality
+- [x] End-to-end encryption of Connect-to-Pay session
 - [ ] Make Connect-to-Pay links work for users that didn't yet install Breez
-- [ ] End-to-end encryption of Connect-to-Pay session
 - [ ] Ability to Backup/Restore the ln node  
 - [ ] Mainnet support
 - [ ] Add mobile device security
