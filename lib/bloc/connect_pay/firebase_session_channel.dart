@@ -8,6 +8,9 @@ This class abstracts a "channel" that handles all communciation between payment 
 The implementation is based on firebase messaging.
 */
 class PaymentSessionChannel {
+
+  static int _activeChannels = 0;
+
   final StreamController<Map<dynamic, dynamic>> _incomingMessagesController = new StreamController<Map<dynamic, dynamic>>.broadcast();
   Stream<Map<dynamic, dynamic>> get incomingMessagesStream => _incomingMessagesController.stream;
 
@@ -28,6 +31,7 @@ class PaymentSessionChannel {
   MessageInterceptor interceptor;
 
   PaymentSessionChannel(this._sessionID, this._payer, {this.interceptor}) {
+    _activeChannels++;
     FirebaseDatabase.instance.goOnline();
     _myKey = this._payer ? "payer" : "payee";
     _theirKey = this._payer ? "payee" : "payer";
@@ -63,7 +67,10 @@ class PaymentSessionChannel {
         await FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID').remove();
       }
       await _incomingMessagesController.close();
-      await FirebaseDatabase.instance.goOffline();
+      _activeChannels--;
+      if (_activeChannels == 0) {
+        await FirebaseDatabase.instance.goOffline();
+      }
       _terminated = true;
     }
   }
