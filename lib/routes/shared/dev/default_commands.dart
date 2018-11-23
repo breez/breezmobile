@@ -10,6 +10,11 @@ var defaultCliCommandsText = <TextSpan>[
   new TextSpan(text: "\n"),
   new LinkTextSpan(
     style: theme.linkStyle,
+    command: 'getbackup',
+  ),
+  new TextSpan(text: "\n"),
+  new LinkTextSpan(
+    style: theme.linkStyle,
     command: 'listpeers',
   ),
   new TextSpan(text: "\n"),
