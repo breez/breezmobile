@@ -31,12 +31,22 @@ class ConnectPayBloc {
 
 
 
-  Future<PayerRemoteSession> startSessionAsPayer() async {    
-    var newSessionReply = await _breezServer.joinSession(true, _currentUser.name, _currentUser.token);
-    CreateRatchetSessionReply session = await _breezLib.createRatchetSession(newSessionReply.sessionID); 
-    SessionLinkModel payerLink = new SessionLinkModel(session.sessionID, session.secret, session.pubKey);
-    _currentSession = new PayerRemoteSession(_currentUser, payerLink)..start();
-    return _currentSession as PayerRemoteSession;
+  PayerRemoteSession startSessionAsPayer() {    
+    var currentSession = new PayerRemoteSession(_currentUser);
+    _breezServer.joinSession(true, _currentUser.name, _currentUser.token).then((newSessionReply) async {
+      CreateRatchetSessionReply session = await _breezLib.createRatchetSession(newSessionReply.sessionID);     
+      SessionLinkModel payerLink = new SessionLinkModel(session.sessionID, session.secret, session.pubKey);
+      currentSession.start(payerLink);
+    });
+
+    //clean current session on terminate
+    currentSession.terminationStream.first.then((_) {
+      if (_currentSession == currentSession) {
+        _currentSession = null;
+      }
+    });
+
+    return _currentSession = currentSession;
   }
 
   Future<RemoteSession> joinSessionByLink(SessionLinkModel sessionLink) async{    
@@ -51,13 +61,13 @@ class ConnectPayBloc {
     RemoteSession currentSession;
     //if we have already a session and it is our intiated then we are a returning payer
     if (sessionInfo.initiated) {      
-        currentSession = new PayerRemoteSession(_currentUser, sessionLink);
+        currentSession = new PayerRemoteSession(_currentUser);
     } else {
        //otherwise we are payee
       if (!existingSession) {
         await _breezLib.createRatchetSession(sessionLink.sessionID, secret: sessionLink.sessionSecret,  remotePubKey: sessionLink.initiatorPubKey);      
       }
-      currentSession = new PayeeRemoteSession(_currentUser, sessionLink);
+      currentSession = new PayeeRemoteSession(_currentUser);
     }
     try {
       await _breezServer.joinSession(currentSession.runtimeType == PayerRemoteSession, _currentUser.name, _currentUser.token, sessionID: sessionLink.sessionID);
@@ -72,7 +82,7 @@ class ConnectPayBloc {
       }
     });
 
-    return _currentSession = currentSession..start();    
+    return _currentSession = currentSession..start(sessionLink);    
   }
 
   RemoteSession get currentSession => _currentSession;
@@ -111,7 +121,7 @@ abstract class RemoteSession {
   BreezUserModel get currentUser => _currentUser;
   Stream<PaymentSessionState> get paymentSessionStateStream;
   Stream<PaymentSessionError> get sessionErrors;
-  Future start();
+  Future start(SessionLinkModel sessionLink);
   Future terminate();
 }
 

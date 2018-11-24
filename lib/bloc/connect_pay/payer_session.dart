@@ -39,11 +39,14 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   BreezUserModel _currentUser; 
   var sessionState = Map<String, dynamic>();  
   SessionLinkModel sessionLink;
-  String get sessionID => sessionLink.sessionID;
+  String get sessionID => sessionLink?.sessionID;
 
-  PayerRemoteSession(this._currentUser, this.sessionLink) : super(_currentUser);
+  PayerRemoteSession(this._currentUser) : super(_currentUser) {
+    _paymentSessionController.add(PaymentSessionState.payerStart(sessionID, _currentUser.name, _currentUser.avatarURL));
+  }
 
-  Future start() async{    
+  Future start(SessionLinkModel sessionLink) async{    
+    this.sessionLink = sessionLink;
     if (sessionLink.sessionSecret != null) {             
       _watchInviteRequests(SessionLinkModel(sessionID, sessionLink.sessionSecret, sessionLink.initiatorPubKey));
     }

@@ -63,24 +63,13 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
     _initSession();
   }
 
-  _initSession({bool reset = false}) async {
+  _initSession() async {
     _currentSession = widget._currentSession;
     if (_currentSession == null) {
-        try {
-          _currentSession = await widget._connectPayBloc.startSessionAsPayer();
-        } 
-        catch (e) {
-          setState(() {
-            _error = e;
-          });
-          return;
-      }  
+        _currentSession = widget._connectPayBloc.startSessionAsPayer();
     }
-
-    setState(() {
-      _payer = _currentSession.runtimeType == PayerRemoteSession;
-      _title = _payer ? "Connect To Pay" : "Receive Payment";
-    });
+    _payer = _currentSession.runtimeType == PayerRemoteSession;
+    _title = _payer ? "Connect To Pay" : "Receive Payment";
 
     _errorsSubscription = _currentSession.sessionErrors.listen((error) {
       _popWithMessage(error.description);
@@ -123,7 +112,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   void _resetSession() {
     _clearSession().then((_) {
       setState(() {
-        _initSession(reset: true);
+        _initSession();
       });
     });
   }
