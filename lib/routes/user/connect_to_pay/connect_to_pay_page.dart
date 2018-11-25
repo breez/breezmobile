@@ -140,7 +140,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
 
     TextStyle textStyle = TextStyle(color: Colors.black);
     String exitSessionMessage =
-        'Are you sure you want to cancel this payment session?';
+        'Are you sure you want to leave this payment session?';
     bool result = await promptAreYouSure(
         _key.currentContext, null, Text(exitSessionMessage, style: textStyle),
         textStyle: textStyle);

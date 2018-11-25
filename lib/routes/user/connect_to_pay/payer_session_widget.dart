@@ -58,14 +58,14 @@ class PayerSessionWidget extends StatelessWidget {
   }
 
   _onAction(BuildContext context, String action){
-    if (action == "Cancel Payment") {
+    if (action == "Leave Payment") {
       _onReset();
     }
   }
 
   _getActions(PaymentSessionState sessionState){
     if (sessionState.invitationSent && sessionState.payeeData.paymentRequest == null) {
-      return ["Cancel Payment"];
+      return ["Leave Payment"];
     }
     return null;
   }
