@@ -73,7 +73,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
 
   Future _resetSessionState() {
     var sessionResetState = PaymentSessionState.payeeStart(sessionID, _currentUser.name, _currentUser.avatarURL);  
-    if (_currentSession != null) {
+    if (_currentSession != null && _currentSession.sessionSecret != null) {
       sessionResetState = _currentSession.copyWith(payeeData: sessionResetState.payeeData);
     }         
     _paymentSessionController.add(sessionResetState);
