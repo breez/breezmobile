@@ -30,7 +30,7 @@ class ConnectedPeer extends StatelessWidget {
                 opacity: showShare && _paymentSessionData.invitationReady ? 1.0 : 0.0, duration: Duration(milliseconds: 1000), child: PulseAnimationDecorator(Container(), 55.0, 45.0))),
         Positioned(child: AnimatedOpacity(duration: Duration(milliseconds: 1000), opacity: !showShare ? 1.0 : 0.0, child: AlienAvatar())),
         Positioned(child: !showShare && !showAlien ? buildPeerAvatar(imagURL) : SizedBox()),
-        Positioned(child: showShare ? _ShareInviteWidget(!_paymentSessionData.invitationReady, _onShareInvite) : SizedBox()),
+        Positioned(child: showShare ? _ShareInviteWidget(!_paymentSessionData.invitationReady || _paymentSessionData.sessionSecret == null, _onShareInvite) : SizedBox()),
         _paymentSessionData.invitationReady || _renderPayer ? Positioned(
             bottom: 25.0,
             right: 25.0,

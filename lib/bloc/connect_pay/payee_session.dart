@@ -38,11 +38,14 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
   BreezUserModel _currentUser;
   var sessionState = Map<String, dynamic>();
   SessionLinkModel sessionLink;
-  String get sessionID => sessionLink.sessionID;
+  String get sessionID => sessionLink?.sessionID;
 
-  PayeeRemoteSession(this._currentUser, this.sessionLink) : super(_currentUser);
+  PayeeRemoteSession(this._currentUser) : super(_currentUser) {
+    _paymentSessionController.add(PaymentSessionState.payeeStart(sessionID, _currentUser.name, _currentUser.avatarURL));
+  }
 
-  Future start() async{        
+  Future start(SessionLinkModel sessionLink) async{    
+    this.sessionLink = sessionLink;
     _channel = new PaymentSessionChannel(sessionID, false, interceptor: new SessionEncryption(_breezLib, sessionID));
     _resetSessionState();
     _channel.sendResetMessage();
@@ -70,7 +73,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
 
   Future _resetSessionState() {
     var sessionResetState = PaymentSessionState.payeeStart(sessionID, _currentUser.name, _currentUser.avatarURL);  
-    if (_currentSession != null) {
+    if (_currentSession != null && _currentSession.sessionSecret != null) {
       sessionResetState = _currentSession.copyWith(payeeData: sessionResetState.payeeData);
     }         
     _paymentSessionController.add(sessionResetState);
