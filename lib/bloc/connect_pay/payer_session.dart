@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:breez/bloc/connect_pay/firebase_session_channel.dart';
@@ -39,14 +40,20 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   BreezUserModel _currentUser; 
   var sessionState = Map<String, dynamic>();  
   SessionLinkModel sessionLink;
+
   String get sessionID => sessionLink?.sessionID;
 
-  PayerRemoteSession(this._currentUser) : super(_currentUser) {
-    _paymentSessionController.add(PaymentSessionState.payerStart(sessionID, _currentUser.name, _currentUser.avatarURL));
+  PayerRemoteSession(this._currentUser, {PayeeSessionData existingPayeeData}) : super(_currentUser) {
+    var initialState = PaymentSessionState.payerStart(sessionID, _currentUser.name, _currentUser.avatarURL);
+    if (existingPayeeData != null) {
+      initialState = initialState.copyWith(payeeData: existingPayeeData);
+    }
+    _paymentSessionController.add(initialState);
   }
 
   Future start(SessionLinkModel sessionLink) async{    
     this.sessionLink = sessionLink;
+    await _loadPersistedPayeeDetails();
     if (sessionLink.sessionSecret != null) {             
       _watchInviteRequests(SessionLinkModel(sessionID, sessionLink.sessionSecret, sessionLink.initiatorPubKey));
     }
@@ -54,6 +61,16 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     _resetSessionState();
     _channel.sendResetMessage();
     _handleIncomingMessages();    
+  }
+
+  _loadPersistedPayeeDetails() async{
+    var sessionInfo = await _breezLib.ratchetSessionInfo(sessionID);
+    if (sessionInfo == null || sessionInfo.userInfo.isEmpty) {
+      return null;
+    }
+    Map<String, dynamic> payeeData =  json.decode(sessionInfo.userInfo);
+    var persistedPayee = PayeeSessionData.fromJson(payeeData["payeeData"]);
+    _paymentSessionController.add(_currentSession.copyWith(payeeData: persistedPayee));
   }
 
   _handleIncomingMessages(){
@@ -75,11 +92,9 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   }
 
   Future _resetSessionState() {
-    var sessionResetState = PaymentSessionState.payerStart(sessionID, _currentUser.name, _currentUser.avatarURL);
-    if (_currentSession != null && _currentSession.sessionSecret != null) {
-      sessionResetState = _currentSession.copyWith(payerData: sessionResetState.payerData);
-    }   
-        
+    var sessionResetState = PaymentSessionState.payerStart(sessionID, _currentUser.name, _currentUser.avatarURL)
+      .copyWith(payeeData: _currentSession.payeeData);    
+
     _paymentSessionController.add(sessionResetState);
     _handleStatusUpdates();
     sessionState.clear();
@@ -126,8 +141,14 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
 
   void _watchPayeeMessages() {    
     _channel.incomingMessagesStream.listen((data) {
-      PayeeSessionData newPayeeData = PayeeSessionData.fromJson(data ?? {}).copyWith(status: _currentSession.payeeData.status);      
+      PayeeSessionData newPayeeData = PayeeSessionData.fromJson(data ?? {}).copyWith(status: _currentSession.payeeData.status);            
+      if (newPayeeData.userName == null || newPayeeData.imageURL == null) {
+        newPayeeData = newPayeeData.copyWith(userName: _currentSession.payeeData.userName);
+        newPayeeData = newPayeeData.copyWith(imageURL: _currentSession.payeeData.imageURL);
+      }
       PaymentSessionState nextState = _currentSession.copyWith(payeeData: newPayeeData);
+      _persistPayeeData(newPayeeData);
+
       String paymentRequest = nextState.payeeData.paymentRequest;
       if (paymentRequest != null) {
         _breezLib.decodePaymentRequest(paymentRequest).then((invoice) {  
@@ -147,6 +168,15 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     _channel.peerResetStream.listen((_) async{
       _resetSessionState();
     });
+  }
+
+  Future _persistPayeeData(PayeeSessionData newPayeeData){
+    return _breezLib.ratchetSessionSetInfo(sessionID, json.encode(
+      {"payeeData": {
+        "imageURL": newPayeeData.imageURL,
+        "userName": newPayeeData.userName
+      }})
+    );
   }
 
   _onPaymenetFulfilled(InvoiceMemo invoice){
