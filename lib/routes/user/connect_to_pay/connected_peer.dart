@@ -63,12 +63,11 @@ class ConnectedPeer extends StatelessWidget {
     if (_me || _renderPayer) {
       return BreezAvatar(imageURL, radius: 30.0, backgroundColor: theme.sessionAvatarBackgroundColor);
     }
-    return DelayRender(
-        duration: _me || _renderPayer ? Duration.zero : PaymentSessionState.connectionEmulationDuration,
-        child: AnimatedOpacity(
+
+    return AnimatedOpacity(
             duration: Duration(milliseconds: 1000),
             opacity: 1.0,
-            child: BreezAvatar(imageURL, radius: 30.0, backgroundColor: theme.sessionAvatarBackgroundColor)));
+            child: BreezAvatar(imageURL, radius: 30.0, backgroundColor: theme.sessionAvatarBackgroundColor));    
   }
 
   bool get _online => _renderPayer ? _paymentSessionData.payerData.status.online : _paymentSessionData.payeeData.status.online;
