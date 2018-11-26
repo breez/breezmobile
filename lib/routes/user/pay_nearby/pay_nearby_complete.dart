@@ -7,6 +7,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
+import 'package:flutter/widgets.dart';
 import 'dart:async';
 
 class PayNearbyComplete extends StatelessWidget {
@@ -29,7 +30,7 @@ class _PayNearbyComplete extends StatefulWidget {
   }
 }
 
-class PayNearbyCompleteState extends State<_PayNearbyComplete> {
+class PayNearbyCompleteState extends State<_PayNearbyComplete> with WidgetsBindingObserver {
   final String _title = "Pay Someone Nearby";
   final String _instructions =
       "To complete the payment,\nplease hold the payee's device close to yours\nas illustrated below:";
@@ -41,9 +42,28 @@ class PayNearbyCompleteState extends State<_PayNearbyComplete> {
 
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _blankInvoiceSubscription = _nfc.startP2PBeam().listen((blankInvoice) {},
+          onError: (err) =>
+              _scaffoldKey.currentState.showSnackBar(new SnackBar(
+                  duration: new Duration(seconds: 3),
+                  content: new Text(err.toString()))));
+    }
+  }
+
   @override
   initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _nfc.checkNFCSettings().then((isNfcEnabled) {
+      if (!isNfcEnabled) {
+        return new Timer(new Duration(milliseconds: 500), () {
+          _showAlertDialog();
+        });
+      }
+    });
+
     _blankInvoiceSubscription = _nfc.startP2PBeam().listen((blankInvoice) {
       // In the future perhaps show some information about the user we are paying to?
     },
@@ -68,11 +88,29 @@ class PayNearbyCompleteState extends State<_PayNearbyComplete> {
     });
   }
 
+  void _showAlertDialog() {
+    AlertDialog dialog = new AlertDialog(
+      content: new Text("Breez requires NFC to be enabled in your device in order to pay someone nearby.",
+          style: theme.alertStyle),
+      actions: <Widget>[
+        new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("CANCEL", style: theme.buttonStyle)),
+        new FlatButton(
+            onPressed: () {
+              _nfc.openSettings();
+              Navigator.pop(context);
+            },
+            child: new Text("SETTINGS", style: theme.buttonStyle))
+      ],
+    );
+    showDialog(context: context, builder: (_) => dialog);
+  }
+
   @override
   void dispose() {
     _blankInvoiceSubscription.cancel();
     _paidInvoicesSubscription.cancel();
     _sentPaymentResultSubscription.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
