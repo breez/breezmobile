@@ -137,6 +137,13 @@ class BreezBridge {
     return _invokeMethodImmediate("ratchetSessionInfo", {"argument": sessionID}).then((res) =>  new RatchetSessionInfoReply()..mergeFromBuffer(res ?? []));
   }
 
+  Future ratchetSessionSetInfo(String sessionID, String userInfo) {
+    RatchetSessionSetInfoRequest request = RatchetSessionSetInfoRequest()
+      ..sessionID = sessionID
+      ..userInfo = userInfo;
+    return _invokeMethodImmediate("ratchetSessionSetInfo", {"argument": request.writeToBuffer()});
+  }
+
   Future<String> ratchetEncrypt(String sessionID, String message) {
     var request =  RatchetEncryptRequest()
       ..message = message
