@@ -30,7 +30,7 @@ class _PayNearbyComplete extends StatefulWidget {
   }
 }
 
-class PayNearbyCompleteState extends State<_PayNearbyComplete> {
+class PayNearbyCompleteState extends State<_PayNearbyComplete> with WidgetsBindingObserver {
   final String _title = "Pay Someone Nearby";
   final String _instructions =
       "To complete the payment,\nplease hold the payee's device close to yours\nas illustrated below:";
@@ -55,6 +55,7 @@ class PayNearbyCompleteState extends State<_PayNearbyComplete> {
   @override
   initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _nfc.checkNFCSettings().then((isNfcEnabled) {
       if (!isNfcEnabled) {
         return new Timer(new Duration(milliseconds: 500), () {
@@ -109,6 +110,7 @@ class PayNearbyCompleteState extends State<_PayNearbyComplete> {
     _blankInvoiceSubscription.cancel();
     _paidInvoicesSubscription.cancel();
     _sentPaymentResultSubscription.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
