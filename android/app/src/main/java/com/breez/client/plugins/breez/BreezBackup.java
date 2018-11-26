@@ -11,9 +11,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveClient;
 import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveResourceClient;
+import com.google.android.gms.drive.MetadataBuffer;
 import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.drive.query.Filters;
+import com.google.android.gms.drive.query.Query;
+import com.google.android.gms.drive.query.SearchableField;
 import com.google.android.gms.tasks.Task;
 
 import java.io.FileInputStream;
@@ -64,19 +69,19 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
     private void getDriveClients(Task<GoogleSignInAccount> task) {
         Log.i(TAG, "Update view with sign in account task");
         task.addOnSuccessListener(
-            googleSignInAccount -> {
-                Log.i(TAG, "Sign in success");
-                m_driveClient = Drive.getDriveClient(m_activity, googleSignInAccount);
-                m_driveResourceClient =
-                        Drive.getDriveResourceClient(m_activity, googleSignInAccount);
-                m_result.success(true);
+                googleSignInAccount -> {
+                    Log.i(TAG, "Sign in success");
+                    m_driveClient = Drive.getDriveClient(m_activity, googleSignInAccount);
+                    m_driveResourceClient =
+                            Drive.getDriveResourceClient(m_activity, googleSignInAccount);
+                    m_result.success(true);
 
-            })
-            .addOnFailureListener(
-                    e -> {
-                        Log.w(TAG, "Sign in failed", e);
-                        m_result.error("Sign in failed", "Sign in failed", "Sign in failed");
-                    });
+                })
+                .addOnFailureListener(
+                        e -> {
+                            Log.w(TAG, "Sign in failed", e);
+                            m_result.error("Sign in failed", "Sign in failed", "Sign in failed");
+                        });
     }
 
     @Override
@@ -102,8 +107,12 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
             String nodeId = call.argument("nodeId").toString();
             createNodeIdFolder(paths, nodeId);
         }
+        if (call.method.equals("listNodeIds")) {
+            listNodeIds();
+        }
         if (call.method.equals("restore")) {
-
+            String nodeId = call.argument("nodeId").toString();
+            listNodeIds();
         }
     }
 
@@ -131,8 +140,8 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
                     })
                     .addOnSuccessListener(m_activity,
                             driveFile -> {
-                        Log.i(TAG, "File created!");
-                    })
+                                Log.i(TAG, "File created!");
+                            })
                     .addOnFailureListener(m_activity, e -> {
                         Log.e(TAG, "Unable to create file", e);
                         m_result.error("CREATE_FILE_FAILURE", "Unable to create file", null);
@@ -163,4 +172,66 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
                     m_result.error("CREATE_FOLDER_FAILURE", "Unable to create folder", null);
                 });
     }
+
+    private void listNodeIds() {
+        m_driveResourceClient
+                .getAppFolder()
+                .continueWithTask(task -> {
+                    DriveFolder appFolder = task.getResult();
+                    Query query = new Query.Builder()
+                            .addFilter(Filters.eq(SearchableField.MIME_TYPE, DriveFolder.MIME_TYPE))
+                            .build();
+
+                    Task<MetadataBuffer> queryTask = m_driveResourceClient.queryChildren(appFolder, query);
+                    return  queryTask
+                            .addOnSuccessListener(m_activity,
+                                    metadataBuffer -> {
+                                        Log.w(TAG, metadataBuffer.toString());
+                                        // send the list
+                                    })
+                            .addOnFailureListener(m_activity, e -> {
+                                Log.e(TAG, "Error retrieving files", e);
+                            });
+                });
+    }
+
+    private void getNodeIdFolder(String nodeId) {
+        m_driveResourceClient
+                .getAppFolder()
+                .continueWithTask(task -> {
+                    DriveFolder appFolder = task.getResult();
+                    Query query = new Query.Builder()
+                            .addFilter(Filters.eq(SearchableField.MIME_TYPE, DriveFolder.MIME_TYPE))
+                            .addFilter(Filters.eq(SearchableField.TITLE, nodeId))
+                            .build();
+
+                    Task<MetadataBuffer> queryTask = m_driveResourceClient.queryChildren(appFolder, query);
+                    return  queryTask
+                            .addOnSuccessListener(m_activity,
+                                    metadataBuffer -> {
+                                        Log.w(TAG, metadataBuffer.toString());
+                                        // got the backup folder
+                                    })
+                            .addOnFailureListener(m_activity, e -> {
+                                Log.e(TAG, "Error retrieving files", e);
+                            });
+                });
+    }
+
+    private void getBackupFiles(DriveFolder nodeIdFolder) {
+        Query query = new Query.Builder()
+                .build();
+
+        Task<MetadataBuffer> queryTask = m_driveResourceClient.queryChildren(nodeIdFolder, query);
+
+        queryTask
+                .addOnSuccessListener(m_activity,
+                        metadataBuffer -> {
+
+                        })
+                .addOnFailureListener(m_activity, e -> {
+
+                });
+    }
 }
+
