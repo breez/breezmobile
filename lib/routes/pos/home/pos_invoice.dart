@@ -55,7 +55,7 @@ class _PosNumPadState extends State<_POSNumPad> {
   int _totalAmount;
   Int64 _maxPaymentAmount;
   Int64 _maxAllowedToReceive;
-  bool _isButtonDisabled = true;
+  bool _isButtonDisabled = false;
 
   StreamSubscription<AccountModel> _accountSubscription;
   StreamSubscription<POSProfileModel> _posProfileSubscription;
