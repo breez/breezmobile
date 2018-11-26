@@ -169,7 +169,7 @@ class _PosNumPadState extends State<_POSNumPad> {
                                 textAlign: TextAlign.center,
                                 style: theme.invoiceChargeAmountStyle,
                               ),
-                              onPressed: () => onInvoiceSubmitted,
+                              onPressed: () => onInvoiceSubmitted(),
                             ),),
                         ),
                       ),
