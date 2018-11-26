@@ -80,15 +80,7 @@ class PeersConnection extends StatelessWidget {
 
   Widget buildPayeeWidget(){
     if (_sessionState.payeeData.userName != null) {
-      if (!_sessionState.payer) {
-        return _UserNameWidget(_sessionState.payeeData.userName);
-      }
-
-      return DelayRender(
-        duration: PaymentSessionState.connectionEmulationDuration,
-        initialChild: _UserNameWidget("Unknown"),
-        child: _UserNameWidget(_sessionState.payeeData.userName),
-      );
+      return _UserNameWidget(_sessionState.payeeData.userName);      
     }
 
     if (!_sessionState.invitationSent) {

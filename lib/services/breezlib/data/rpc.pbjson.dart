@@ -110,6 +110,7 @@ const NotificationEvent$json = const {
   '1': 'NotificationEvent',
   '2': const [
     const {'1': 'type', '3': 1, '4': 1, '5': 14, '6': '.data.NotificationEvent.NotificationType', '10': 'type'},
+    const {'1': 'data', '3': 2, '4': 3, '5': 9, '10': 'data'},
   ],
   '4': const [NotificationEvent_NotificationType$json],
 };
@@ -124,6 +125,7 @@ const NotificationEvent_NotificationType$json = const {
     const {'1': 'ROUTING_NODE_CONNECTION_CHANGED', '2': 4},
     const {'1': 'LIGHTNING_SERVICE_DOWN', '2': 5},
     const {'1': 'FUND_ADDRESS_UNSPENT_CHANGED', '2': 6},
+    const {'1': 'BACKUP_FILES_AVAILABLE', '2': 7},
   ],
 };
 
@@ -229,6 +231,15 @@ const RatchetSessionInfoReply$json = const {
   '2': const [
     const {'1': 'sessionID', '3': 1, '4': 1, '5': 9, '10': 'sessionID'},
     const {'1': 'initiated', '3': 2, '4': 1, '5': 8, '10': 'initiated'},
+    const {'1': 'userInfo', '3': 3, '4': 1, '5': 9, '10': 'userInfo'},
+  ],
+};
+
+const RatchetSessionSetInfoRequest$json = const {
+  '1': 'RatchetSessionSetInfoRequest',
+  '2': const [
+    const {'1': 'sessionID', '3': 1, '4': 1, '5': 9, '10': 'sessionID'},
+    const {'1': 'userInfo', '3': 2, '4': 1, '5': 9, '10': 'userInfo'},
   ],
 };
 
