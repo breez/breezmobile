@@ -24,7 +24,7 @@ class BackupService {
     return await _methodChannel.invokeMethod("backup", {"paths": paths, "nodeId": nodeId});
   }
 
-  void restore({String nodeId = ""}) async {
+  dynamic restore({String nodeId = ""}) async {
     return await _methodChannel.invokeMethod("restore", {"nodeId": nodeId});
   }
 }

@@ -2,6 +2,7 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/restore_dialog.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
@@ -24,6 +25,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   @override
   void initState() {
     super.initState();
+    widget._backupBloc.multipleRestoreStream.listen((options) {
+        showDialog(context: context, builder: (_) =>
+        new RestoreDialog(context, widget._backupBloc, options));
+    });
     _controller = new AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2720))
       ..forward(from: 0.0);

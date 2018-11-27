@@ -29,6 +29,9 @@ class BackupBloc {
   final _restoreRequestController = new StreamController<String>();
   Sink<String> get restoreRequestSink => _restoreRequestController.sink;
 
+  final _multipleRestoreController = new StreamController<Map<String, String>>.broadcast();
+  Stream<Map<String, String>> get multipleRestoreStream => _multipleRestoreController.stream;
+
   static const String BACKUP_DISABLED_PREFERENCES_KEY = "backupDisabled";
 
   BackupBloc(this._accountStream) {
@@ -107,13 +110,22 @@ class BackupBloc {
 
   void _listenRestoreRequests(BreezBridge breezLib) {
     _restoreRequestController.stream.listen((nodeId) {
-      _service.restore();
-
-      // ... and kick-off lighntinglib
-      getApplicationDocumentsDirectory().then((appDir) {
-        breezLib.bootstrap(appDir.path, /* list of all the files*/)
-        breezLib.start(appDir.path);
-      });
+      var restoreResult = _service.restore(nodeId: nodeId);
+      if (restoreResult is Map) {
+        // We need to pick from different node IDs
+        _multipleRestoreController.add(restoreResult);
+      }
+      else if (restoreResult is List) {
+        // We got a list of local files to restore from
+        // So let's kick-off lighntinglib
+        getApplicationDocumentsDirectory().then((appDir) {
+          breezLib.bootstrapFiles(appDir.path, restoreResult);
+          breezLib.start(appDir.path);
+        });
+      }
+      else if (restoreResult is bool) {
+        // We failed for some reason
+      }
     });
   }
 
@@ -122,5 +134,6 @@ class BackupBloc {
     _enableBackupController.close();
     _backupNowController.close();
     _restoreRequestController.close();
+    _multipleRestoreController.close();
   }
 }

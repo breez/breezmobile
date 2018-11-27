@@ -240,18 +240,21 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
                             Log.w(TAG, metadataBuffer.toString());
                             if (metadataBuffer.getCount() == 0) {
                                 // Notify user there is no data
-                                //m_eventsListener.success(false);
                                 m_result.success(false);
                             }
 
                             HashMap<String, String> backupsMap = new HashMap<>();
 
-                            // Get the metadata
                             for (Metadata m : metadataBuffer) {
                                 backupsMap.put(m.getTitle(), m.getModifiedDate().toString());
                             }
 
-                            m_result.success(backupsMap);
+                            if (backupsMap.values().size() == 1) {
+                                backupsMap.forEach((k, v) -> getNodeIdFolder(k));
+                            }
+                            else {
+                                m_result.success(backupsMap);
+                            }
                         })
                     .addOnFailureListener(m_activity, e -> {
                         Log.e(TAG, "Error retrieving files", e);
