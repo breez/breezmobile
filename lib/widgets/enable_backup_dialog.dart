@@ -17,7 +17,10 @@ class EnableBackupDialog extends StatelessWidget {
   Widget showEnableBackupDialog() {
     return new AlertDialog(
       titlePadding: EdgeInsets.only(top: 48.0),
-      title: new Text("Backup"),
+      title: new Text(
+        "Backup",
+        style: theme.paymentRequestSubtitleStyle,
+      ),
       contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -31,11 +34,15 @@ class EnableBackupDialog extends StatelessWidget {
           new Row(
             children: <Widget>[
               new Checkbox(
+                  activeColor: theme.messageTextColor,
                   value: false,
                   onChanged: (enabled) {
                     backupBloc.enableBackupSink.add(enabled);
                   }),
-              new Text("Don't prompt again"),
+              new Text(
+                "Don't prompt again",
+                style: theme.paymentRequestSubtitleStyle,
+              ),
             ],
           ),
           new Padding(padding: EdgeInsets.only(top: 24.0)),
