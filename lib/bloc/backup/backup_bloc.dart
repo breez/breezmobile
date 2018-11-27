@@ -13,14 +13,17 @@ class BackupBloc {
   String _currentNodeId;
   List<String> _currentBackupPaths;
 
+  final _promptEnableBackupController = new StreamController<bool>.broadcast();
+  Stream<bool> get promptEnableStream => _promptEnableBackupController.stream;
+
   final _backupDisabledController = new StreamController<bool>.broadcast();
   Stream<bool> get backupDisabledStream => _backupDisabledController.stream;
 
   final _enableBackupController = new StreamController<bool>();
   Sink<bool> get enableBackupSink => _enableBackupController.sink;
 
-  final _backupNowController = new StreamController<Null>();
-  Sink<Null> get backupNowSink => _backupNowController.sink;
+  final _backupNowController = new StreamController<bool>();
+  Sink<bool> get backupNowSink => _backupNowController.sink;
 
   static const String BACKUP_DISABLED_PREFERENCES_KEY = "backupDisabled";
 
@@ -31,8 +34,10 @@ class BackupBloc {
 
     var sharedPrefrences = SharedPreferences.getInstance();
     sharedPrefrences.then((preferences) {
-      _backupDisabledController.add(preferences.getBool(BACKUP_DISABLED_PREFERENCES_KEY) ?? true);
+      _promptEnableBackupController.add(preferences.getBool(BACKUP_DISABLED_PREFERENCES_KEY) ?? false);
     });
+
+    _listenEnableBackupNotifications(sharedPrefrences);
 
     _listenBackupPaths(breezLib);
     _listenEnableBackupRequests(sharedPrefrences);
@@ -40,6 +45,27 @@ class BackupBloc {
 
     _accountStream.listen((acc) {
       _currentNodeId = acc.id;
+    });
+  }
+
+  void _listenEnableBackupNotifications(Future<SharedPreferences> sharedPrefrences) {
+    _service.backupNotifications.listen((enabled) {
+      if (enabled) {
+        // Hide the backup disabled indicator
+        _backupDisabledController.add(false);
+        // Retry backing up
+        _service.backup(_currentBackupPaths, _currentNodeId);
+      }
+      else {
+        // Prompt to back up if not explicity disabled
+        sharedPrefrences.then((preferences) {
+          if (!(preferences.getBool(BACKUP_DISABLED_PREFERENCES_KEY) ?? false)) {
+            // Send a signal to prompt
+            _backupDisabledController.add(true);
+            _promptEnableBackupController.add(true);
+          }
+        });
+      }
     });
   }
 
@@ -56,6 +82,7 @@ class BackupBloc {
 
   void _listenBackupNowRequests() {
     _backupNowController.stream.listen((data){
+      _service.authorize();
       _service.backup(_currentBackupPaths, _currentNodeId);
     });
   }
@@ -71,7 +98,7 @@ class BackupBloc {
   }
 
   close() {
-    _backupDisabledController.close();
+    _promptEnableBackupController.close();
     _enableBackupController.close();
     _backupNowController.close();
   }

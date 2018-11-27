@@ -230,3 +230,41 @@ const OrderReply$json = const {
   '1': 'OrderReply',
 };
 
+const JoinCTPSessionRequest$json = const {
+  '1': 'JoinCTPSessionRequest',
+  '2': const [
+    const {'1': 'partyType', '3': 1, '4': 1, '5': 14, '6': '.breez.JoinCTPSessionRequest.PartyType', '10': 'partyType'},
+    const {'1': 'partyName', '3': 2, '4': 1, '5': 9, '10': 'partyName'},
+    const {'1': 'notificationToken', '3': 3, '4': 1, '5': 9, '10': 'notificationToken'},
+    const {'1': 'sessionID', '3': 4, '4': 1, '5': 9, '10': 'sessionID'},
+  ],
+  '4': const [JoinCTPSessionRequest_PartyType$json],
+};
+
+const JoinCTPSessionRequest_PartyType$json = const {
+  '1': 'PartyType',
+  '2': const [
+    const {'1': 'PAYER', '2': 0},
+    const {'1': 'PAYEE', '2': 1},
+  ],
+};
+
+const JoinCTPSessionResponse$json = const {
+  '1': 'JoinCTPSessionResponse',
+  '2': const [
+    const {'1': 'sessionID', '3': 1, '4': 1, '5': 9, '10': 'sessionID'},
+    const {'1': 'expiry', '3': 2, '4': 1, '5': 3, '10': 'expiry'},
+  ],
+};
+
+const TerminateCTPSessionRequest$json = const {
+  '1': 'TerminateCTPSessionRequest',
+  '2': const [
+    const {'1': 'sessionID', '3': 1, '4': 1, '5': 9, '10': 'sessionID'},
+  ],
+};
+
+const TerminateCTPSessionResponse$json = const {
+  '1': 'TerminateCTPSessionResponse',
+};
+

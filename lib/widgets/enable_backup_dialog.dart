@@ -49,6 +49,7 @@ class EnableBackupDialog extends StatelessWidget {
               ),
               new SimpleDialogOption(
                 onPressed: (() {
+                  backupBloc.backupNowSink.add(true);
                   Navigator.pop(context);
                 }),
                 child: new Text("BACKUP NOW", style: theme.buttonStyle),

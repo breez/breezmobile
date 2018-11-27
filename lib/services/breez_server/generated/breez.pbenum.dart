@@ -34,3 +34,21 @@ class FundReply_ReturnCode extends $pb.ProtobufEnum {
   const FundReply_ReturnCode._(int v, String n) : super(v, n);
 }
 
+class JoinCTPSessionRequest_PartyType extends $pb.ProtobufEnum {
+  static const JoinCTPSessionRequest_PartyType PAYER = const JoinCTPSessionRequest_PartyType._(0, 'PAYER');
+  static const JoinCTPSessionRequest_PartyType PAYEE = const JoinCTPSessionRequest_PartyType._(1, 'PAYEE');
+
+  static const List<JoinCTPSessionRequest_PartyType> values = const <JoinCTPSessionRequest_PartyType> [
+    PAYER,
+    PAYEE,
+  ];
+
+  static final Map<int, JoinCTPSessionRequest_PartyType> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static JoinCTPSessionRequest_PartyType valueOf(int value) => _byValue[value];
+  static void $checkItem(JoinCTPSessionRequest_PartyType v) {
+    if (v is! JoinCTPSessionRequest_PartyType) $pb.checkItemFailed(v, 'JoinCTPSessionRequest_PartyType');
+  }
+
+  const JoinCTPSessionRequest_PartyType._(int v, String n) : super(v, n);
+}
+

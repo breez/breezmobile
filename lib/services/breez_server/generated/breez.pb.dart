@@ -874,3 +874,125 @@ class OrderReply extends $pb.GeneratedMessage {
   }
 }
 
+class JoinCTPSessionRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('JoinCTPSessionRequest', package: const $pb.PackageName('breez'))
+    ..e<JoinCTPSessionRequest_PartyType>(1, 'partyType', $pb.PbFieldType.OE, JoinCTPSessionRequest_PartyType.PAYER, JoinCTPSessionRequest_PartyType.valueOf, JoinCTPSessionRequest_PartyType.values)
+    ..aOS(2, 'partyName')
+    ..aOS(3, 'notificationToken')
+    ..aOS(4, 'sessionID')
+    ..hasRequiredFields = false
+  ;
+
+  JoinCTPSessionRequest() : super();
+  JoinCTPSessionRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  JoinCTPSessionRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  JoinCTPSessionRequest clone() => new JoinCTPSessionRequest()..mergeFromMessage(this);
+  JoinCTPSessionRequest copyWith(void Function(JoinCTPSessionRequest) updates) => super.copyWith((message) => updates(message as JoinCTPSessionRequest));
+  $pb.BuilderInfo get info_ => _i;
+  static JoinCTPSessionRequest create() => new JoinCTPSessionRequest();
+  static $pb.PbList<JoinCTPSessionRequest> createRepeated() => new $pb.PbList<JoinCTPSessionRequest>();
+  static JoinCTPSessionRequest getDefault() => _defaultInstance ??= create()..freeze();
+  static JoinCTPSessionRequest _defaultInstance;
+  static void $checkItem(JoinCTPSessionRequest v) {
+    if (v is! JoinCTPSessionRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  JoinCTPSessionRequest_PartyType get partyType => $_getN(0);
+  set partyType(JoinCTPSessionRequest_PartyType v) { setField(1, v); }
+  bool hasPartyType() => $_has(0);
+  void clearPartyType() => clearField(1);
+
+  String get partyName => $_getS(1, '');
+  set partyName(String v) { $_setString(1, v); }
+  bool hasPartyName() => $_has(1);
+  void clearPartyName() => clearField(2);
+
+  String get notificationToken => $_getS(2, '');
+  set notificationToken(String v) { $_setString(2, v); }
+  bool hasNotificationToken() => $_has(2);
+  void clearNotificationToken() => clearField(3);
+
+  String get sessionID => $_getS(3, '');
+  set sessionID(String v) { $_setString(3, v); }
+  bool hasSessionID() => $_has(3);
+  void clearSessionID() => clearField(4);
+}
+
+class JoinCTPSessionResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('JoinCTPSessionResponse', package: const $pb.PackageName('breez'))
+    ..aOS(1, 'sessionID')
+    ..aInt64(2, 'expiry')
+    ..hasRequiredFields = false
+  ;
+
+  JoinCTPSessionResponse() : super();
+  JoinCTPSessionResponse.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  JoinCTPSessionResponse.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  JoinCTPSessionResponse clone() => new JoinCTPSessionResponse()..mergeFromMessage(this);
+  JoinCTPSessionResponse copyWith(void Function(JoinCTPSessionResponse) updates) => super.copyWith((message) => updates(message as JoinCTPSessionResponse));
+  $pb.BuilderInfo get info_ => _i;
+  static JoinCTPSessionResponse create() => new JoinCTPSessionResponse();
+  static $pb.PbList<JoinCTPSessionResponse> createRepeated() => new $pb.PbList<JoinCTPSessionResponse>();
+  static JoinCTPSessionResponse getDefault() => _defaultInstance ??= create()..freeze();
+  static JoinCTPSessionResponse _defaultInstance;
+  static void $checkItem(JoinCTPSessionResponse v) {
+    if (v is! JoinCTPSessionResponse) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  String get sessionID => $_getS(0, '');
+  set sessionID(String v) { $_setString(0, v); }
+  bool hasSessionID() => $_has(0);
+  void clearSessionID() => clearField(1);
+
+  Int64 get expiry => $_getI64(1);
+  set expiry(Int64 v) { $_setInt64(1, v); }
+  bool hasExpiry() => $_has(1);
+  void clearExpiry() => clearField(2);
+}
+
+class TerminateCTPSessionRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('TerminateCTPSessionRequest', package: const $pb.PackageName('breez'))
+    ..aOS(1, 'sessionID')
+    ..hasRequiredFields = false
+  ;
+
+  TerminateCTPSessionRequest() : super();
+  TerminateCTPSessionRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  TerminateCTPSessionRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  TerminateCTPSessionRequest clone() => new TerminateCTPSessionRequest()..mergeFromMessage(this);
+  TerminateCTPSessionRequest copyWith(void Function(TerminateCTPSessionRequest) updates) => super.copyWith((message) => updates(message as TerminateCTPSessionRequest));
+  $pb.BuilderInfo get info_ => _i;
+  static TerminateCTPSessionRequest create() => new TerminateCTPSessionRequest();
+  static $pb.PbList<TerminateCTPSessionRequest> createRepeated() => new $pb.PbList<TerminateCTPSessionRequest>();
+  static TerminateCTPSessionRequest getDefault() => _defaultInstance ??= create()..freeze();
+  static TerminateCTPSessionRequest _defaultInstance;
+  static void $checkItem(TerminateCTPSessionRequest v) {
+    if (v is! TerminateCTPSessionRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  String get sessionID => $_getS(0, '');
+  set sessionID(String v) { $_setString(0, v); }
+  bool hasSessionID() => $_has(0);
+  void clearSessionID() => clearField(1);
+}
+
+class TerminateCTPSessionResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('TerminateCTPSessionResponse', package: const $pb.PackageName('breez'))
+    ..hasRequiredFields = false
+  ;
+
+  TerminateCTPSessionResponse() : super();
+  TerminateCTPSessionResponse.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  TerminateCTPSessionResponse.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  TerminateCTPSessionResponse clone() => new TerminateCTPSessionResponse()..mergeFromMessage(this);
+  TerminateCTPSessionResponse copyWith(void Function(TerminateCTPSessionResponse) updates) => super.copyWith((message) => updates(message as TerminateCTPSessionResponse));
+  $pb.BuilderInfo get info_ => _i;
+  static TerminateCTPSessionResponse create() => new TerminateCTPSessionResponse();
+  static $pb.PbList<TerminateCTPSessionResponse> createRepeated() => new $pb.PbList<TerminateCTPSessionResponse>();
+  static TerminateCTPSessionResponse getDefault() => _defaultInstance ??= create()..freeze();
+  static TerminateCTPSessionResponse _defaultInstance;
+  static void $checkItem(TerminateCTPSessionResponse v) {
+    if (v is! TerminateCTPSessionResponse) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+}
+

@@ -455,3 +455,75 @@ abstract class FundManagerServiceBase extends Service {
   $async.Future<GetSwapPaymentReply> getSwapPayment(
       ServiceCall call, GetSwapPaymentRequest request);
 }
+
+class CTPClient extends Client {
+  static final _$joinCTPSession =
+      new ClientMethod<JoinCTPSessionRequest, JoinCTPSessionResponse>(
+          '/breez.CTP/JoinCTPSession',
+          (JoinCTPSessionRequest value) => value.writeToBuffer(),
+          (List<int> value) => new JoinCTPSessionResponse.fromBuffer(value));
+  static final _$terminateCTPSession =
+      new ClientMethod<TerminateCTPSessionRequest, TerminateCTPSessionResponse>(
+          '/breez.CTP/TerminateCTPSession',
+          (TerminateCTPSessionRequest value) => value.writeToBuffer(),
+          (List<int> value) =>
+              new TerminateCTPSessionResponse.fromBuffer(value));
+
+  CTPClient(ClientChannel channel, {CallOptions options})
+      : super(channel, options: options);
+
+  ResponseFuture<JoinCTPSessionResponse> joinCTPSession(
+      JoinCTPSessionRequest request,
+      {CallOptions options}) {
+    final call = $createCall(
+        _$joinCTPSession, new $async.Stream.fromIterable([request]),
+        options: options);
+    return new ResponseFuture(call);
+  }
+
+  ResponseFuture<TerminateCTPSessionResponse> terminateCTPSession(
+      TerminateCTPSessionRequest request,
+      {CallOptions options}) {
+    final call = $createCall(
+        _$terminateCTPSession, new $async.Stream.fromIterable([request]),
+        options: options);
+    return new ResponseFuture(call);
+  }
+}
+
+abstract class CTPServiceBase extends Service {
+  String get $name => 'breez.CTP';
+
+  CTPServiceBase() {
+    $addMethod(new ServiceMethod<JoinCTPSessionRequest, JoinCTPSessionResponse>(
+        'JoinCTPSession',
+        joinCTPSession_Pre,
+        false,
+        false,
+        (List<int> value) => new JoinCTPSessionRequest.fromBuffer(value),
+        (JoinCTPSessionResponse value) => value.writeToBuffer()));
+    $addMethod(new ServiceMethod<TerminateCTPSessionRequest,
+            TerminateCTPSessionResponse>(
+        'TerminateCTPSession',
+        terminateCTPSession_Pre,
+        false,
+        false,
+        (List<int> value) => new TerminateCTPSessionRequest.fromBuffer(value),
+        (TerminateCTPSessionResponse value) => value.writeToBuffer()));
+  }
+
+  $async.Future<JoinCTPSessionResponse> joinCTPSession_Pre(
+      ServiceCall call, $async.Future request) async {
+    return joinCTPSession(call, await request);
+  }
+
+  $async.Future<TerminateCTPSessionResponse> terminateCTPSession_Pre(
+      ServiceCall call, $async.Future request) async {
+    return terminateCTPSession(call, await request);
+  }
+
+  $async.Future<JoinCTPSessionResponse> joinCTPSession(
+      ServiceCall call, JoinCTPSessionRequest request);
+  $async.Future<TerminateCTPSessionResponse> terminateCTPSession(
+      ServiceCall call, TerminateCTPSessionRequest request);
+}

@@ -357,17 +357,9 @@ class Invoice extends $pb.GeneratedMessage {
   void clearAmtPaid() => clearField(3);
 }
 
-<<<<<<< HEAD
 class NotificationEvent extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('NotificationEvent', package: const $pb.PackageName('data'))
     ..e<NotificationEvent_NotificationType>(1, 'type', $pb.PbFieldType.OE, NotificationEvent_NotificationType.READY, NotificationEvent_NotificationType.valueOf, NotificationEvent_NotificationType.values)
-=======
-class _ReadonlyInvoice extends Invoice with ReadonlyMessageMixin {}
-
-class NotificationEvent extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('NotificationEvent')
-    ..e<NotificationEvent_NotificationType>(1, 'type', PbFieldType.OE, NotificationEvent_NotificationType.READY, NotificationEvent_NotificationType.valueOf, NotificationEvent_NotificationType.values)
->>>>>>> master
     ..pPS(2, 'data')
     ..hasRequiredFields = false
   ;
@@ -390,12 +382,6 @@ class NotificationEvent extends GeneratedMessage {
   set type(NotificationEvent_NotificationType v) { setField(1, v); }
   bool hasType() => $_has(0);
   void clearType() => clearField(1);
-<<<<<<< HEAD
-=======
-
-  List<String> get data => $_getList(1);
-}
->>>>>>> master
 
   List<String> get data => $_getList(1);
 }
@@ -794,33 +780,25 @@ class RatchetSessionInfoReply extends $pb.GeneratedMessage {
   void clearUserInfo() => clearField(3);
 }
 
-<<<<<<< HEAD
-class RatchetEncryptRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RatchetEncryptRequest', package: const $pb.PackageName('data'))
-=======
-class _ReadonlyRatchetSessionInfoReply extends RatchetSessionInfoReply with ReadonlyMessageMixin {}
-
-class RatchetSessionSetInfoRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('RatchetSessionSetInfoRequest')
+class RatchetSessionSetInfoRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RatchetSessionSetInfoRequest', package: const $pb.PackageName('data'))
     ..aOS(1, 'sessionID')
     ..aOS(2, 'userInfo')
     ..hasRequiredFields = false
   ;
 
   RatchetSessionSetInfoRequest() : super();
-  RatchetSessionSetInfoRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  RatchetSessionSetInfoRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RatchetSessionSetInfoRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RatchetSessionSetInfoRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   RatchetSessionSetInfoRequest clone() => new RatchetSessionSetInfoRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  RatchetSessionSetInfoRequest copyWith(void Function(RatchetSessionSetInfoRequest) updates) => super.copyWith((message) => updates(message as RatchetSessionSetInfoRequest));
+  $pb.BuilderInfo get info_ => _i;
   static RatchetSessionSetInfoRequest create() => new RatchetSessionSetInfoRequest();
-  static PbList<RatchetSessionSetInfoRequest> createRepeated() => new PbList<RatchetSessionSetInfoRequest>();
-  static RatchetSessionSetInfoRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRatchetSessionSetInfoRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<RatchetSessionSetInfoRequest> createRepeated() => new $pb.PbList<RatchetSessionSetInfoRequest>();
+  static RatchetSessionSetInfoRequest getDefault() => _defaultInstance ??= create()..freeze();
   static RatchetSessionSetInfoRequest _defaultInstance;
   static void $checkItem(RatchetSessionSetInfoRequest v) {
-    if (v is! RatchetSessionSetInfoRequest) checkItemFailed(v, 'RatchetSessionSetInfoRequest');
+    if (v is! RatchetSessionSetInfoRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get sessionID => $_getS(0, '');
@@ -834,11 +812,8 @@ class RatchetSessionSetInfoRequest extends GeneratedMessage {
   void clearUserInfo() => clearField(2);
 }
 
-class _ReadonlyRatchetSessionSetInfoRequest extends RatchetSessionSetInfoRequest with ReadonlyMessageMixin {}
-
-class RatchetEncryptRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('RatchetEncryptRequest')
->>>>>>> master
+class RatchetEncryptRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RatchetEncryptRequest', package: const $pb.PackageName('data'))
     ..aOS(1, 'sessionID')
     ..aOS(2, 'message')
     ..hasRequiredFields = false
@@ -899,5 +874,34 @@ class RatchetDecryptRequest extends $pb.GeneratedMessage {
   set encryptedMessage(String v) { $_setString(1, v); }
   bool hasEncryptedMessage() => $_has(1);
   void clearEncryptedMessage() => clearField(2);
+}
+
+class BootstrapFilesRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('BootstrapFilesRequest', package: const $pb.PackageName('data'))
+    ..aOS(1, 'workingDir')
+    ..pPS(2, 'fullPaths')
+    ..hasRequiredFields = false
+  ;
+
+  BootstrapFilesRequest() : super();
+  BootstrapFilesRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  BootstrapFilesRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  BootstrapFilesRequest clone() => new BootstrapFilesRequest()..mergeFromMessage(this);
+  BootstrapFilesRequest copyWith(void Function(BootstrapFilesRequest) updates) => super.copyWith((message) => updates(message as BootstrapFilesRequest));
+  $pb.BuilderInfo get info_ => _i;
+  static BootstrapFilesRequest create() => new BootstrapFilesRequest();
+  static $pb.PbList<BootstrapFilesRequest> createRepeated() => new $pb.PbList<BootstrapFilesRequest>();
+  static BootstrapFilesRequest getDefault() => _defaultInstance ??= create()..freeze();
+  static BootstrapFilesRequest _defaultInstance;
+  static void $checkItem(BootstrapFilesRequest v) {
+    if (v is! BootstrapFilesRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  String get workingDir => $_getS(0, '');
+  set workingDir(String v) { $_setString(0, v); }
+  bool hasWorkingDir() => $_has(0);
+  void clearWorkingDir() => clearField(1);
+
+  List<String> get fullPaths => $_getList(1);
 }
 

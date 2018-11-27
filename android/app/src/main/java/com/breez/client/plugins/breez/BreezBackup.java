@@ -27,13 +27,14 @@ import java.util.List;
 import java.io.File;
 import java.util.Date;
 
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 
 import static android.app.Activity.RESULT_OK;
 
-public class BreezBackup implements MethodChannel.MethodCallHandler,
+public class BreezBackup implements MethodChannel.MethodCallHandler, EventChannel.StreamHandler,
         PluginRegistry.ActivityResultListener {
     private static final String TAG = "BreezBackup";
     public static final String BREEZ_BACKUP_CHANNEL_NAME = "com.breez.client/backup";
@@ -41,6 +42,8 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
 
     private final int AUTHORIZE_ACTIVITY_REQUEST_CODE = 84;
     private final Activity m_activity;
+
+    private EventChannel.EventSink m_eventsListener;
     private MethodChannel m_methodChannel;
     private MethodChannel.Result m_result;
 
@@ -53,9 +56,21 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
         m_methodChannel = new MethodChannel(registrar.messenger(), BREEZ_BACKUP_CHANNEL_NAME);
         m_methodChannel.setMethodCallHandler(this);
 
+        new EventChannel(registrar.messenger(), BREEZ_BACKUP_STREAM_NAME).setStreamHandler(this);
+
         registrar.addActivityResultListener(this);
 
         m_googleSignInClient = buildGoogleSignInClient();
+    }
+
+    @Override
+    public void onListen(Object args, final EventChannel.EventSink events){
+        m_eventsListener = events;
+    }
+
+    @Override
+    public void onCancel(Object args) {
+        m_eventsListener = null;
     }
 
     private GoogleSignInClient buildGoogleSignInClient() {
@@ -80,7 +95,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
                 .addOnFailureListener(
                         e -> {
                             Log.w(TAG, "Sign in failed", e);
-                            m_result.error("Sign in failed", "Sign in failed", "Sign in failed");
+                            m_result.error("SIGN_IN_FAILURE", "Sign in failed", null);
                         });
     }
 
@@ -114,6 +129,10 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
             String nodeId = call.argument("nodeId").toString();
             listNodeIds();
         }
+    }
+
+    private void notifyEnableBackup() {
+        m_eventsListener.success(false);
     }
 
     private void updateBackupFiles(List<String> paths, DriveFolder nodeIdFolder) {
@@ -151,8 +170,16 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
     }
 
     private void createNodeIdFolder(List<String> paths, String nodeId) {
+        if (m_driveResourceClient == null) {
+            notifyEnableBackup();
+            return;
+        }
+
         m_driveResourceClient
-                .getAppFolder()
+                .getAppFolder().addOnFailureListener(m_activity, e -> {
+            Log.e(TAG, "Unable to get app folder", e);
+            m_result.error("APP_FOLDER_FAILURE", "Unable to get app folder", null);
+        })
                 .continueWithTask(task -> {
                     DriveFolder appFolder = task.getResult();
                     MetadataChangeSet changeSet = new MetadataChangeSet.Builder()

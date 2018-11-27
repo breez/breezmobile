@@ -53,7 +53,7 @@ class ServiceInjector {
   }
 
   BackupService get backupService {
-    return _backupService ??= BackupService(breezBridge);
+    return _backupService ??= BackupService();
   }
 
   DeepLinksService get deepLinks => _deepLinksService ??= new DeepLinksService();

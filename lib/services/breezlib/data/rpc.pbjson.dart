@@ -259,3 +259,11 @@ const RatchetDecryptRequest$json = const {
   ],
 };
 
+const BootstrapFilesRequest$json = const {
+  '1': 'BootstrapFilesRequest',
+  '2': const [
+    const {'1': 'WorkingDir', '3': 1, '4': 1, '5': 9, '10': 'WorkingDir'},
+    const {'1': 'FullPaths', '3': 2, '4': 3, '5': 9, '10': 'FullPaths'},
+  ],
+};
+
