@@ -245,7 +245,7 @@ class BreezBridge {
     );
   }
 
-  void bootstrap() {
+  Future<void> bootstrap() async {
     getApplicationDocumentsDirectory().then(
             (appDir) {
           var lndBootstrapper = new LNDBootstrapper();
@@ -261,11 +261,7 @@ class BreezBridge {
               },
               onDone: () {
                 _bootstrapDownloadProgressController.close();
-
-                // Don't do this here, after pressing
-                //start(appDir.path);
-
-                _readyToStart = true;
+                return;
               });
           lndBootstrapper.downloadBootstrapFiles(appDir.path);
         }

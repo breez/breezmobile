@@ -96,12 +96,15 @@ class AccountBloc {
       _listenPOSFundingRequests(server, breezLib);
       _listenMempoolTransactions(device, notificationsService, breezLib);
       _listenRoutingNodeConnectionChanges(breezLib);
-       breezLib.bootstrap();
-       _refreshAccount(breezLib);
-       _listenConnectivityChanges(breezLib);   
-       _listenReconnects(breezLib);
-       _listenRefundableDeposits(breezLib, device);
-       _listenRefundBroadcasts(breezLib);
+
+       breezLib.bootstrap().then((done) {
+         breezLib.startLightning
+         _refreshAccount(breezLib);
+         _listenConnectivityChanges(breezLib);
+         _listenReconnects(breezLib);
+         _listenRefundableDeposits(breezLib, device);
+         _listenRefundBroadcasts(breezLib);
+       });
     }
 
     void _listenRefundableDeposits(BreezBridge breezLib, Device device){
