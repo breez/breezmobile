@@ -133,6 +133,7 @@ class ConnectPayBloc {
         //if our account is not active yet, just persist the link
         if (!_currentAccount.active) {
           _pendingCTPLinkController.add(link);
+          _breezLib.registerReceivePaymentReadyNotification(_currentUser.token);
           return;
         }
 
