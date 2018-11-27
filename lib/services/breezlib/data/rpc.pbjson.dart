@@ -231,6 +231,15 @@ const RatchetSessionInfoReply$json = const {
   '2': const [
     const {'1': 'sessionID', '3': 1, '4': 1, '5': 9, '10': 'sessionID'},
     const {'1': 'initiated', '3': 2, '4': 1, '5': 8, '10': 'initiated'},
+    const {'1': 'userInfo', '3': 3, '4': 1, '5': 9, '10': 'userInfo'},
+  ],
+};
+
+const RatchetSessionSetInfoRequest$json = const {
+  '1': 'RatchetSessionSetInfoRequest',
+  '2': const [
+    const {'1': 'sessionID', '3': 1, '4': 1, '5': 9, '10': 'sessionID'},
+    const {'1': 'userInfo', '3': 2, '4': 1, '5': 9, '10': 'userInfo'},
   ],
 };
 

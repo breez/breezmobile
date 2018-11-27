@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:breez/bloc/connect_pay/firebase_session_channel.dart';
@@ -40,16 +41,31 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
   SessionLinkModel sessionLink;
   String get sessionID => sessionLink?.sessionID;
 
-  PayeeRemoteSession(this._currentUser) : super(_currentUser) {
-    _paymentSessionController.add(PaymentSessionState.payeeStart(sessionID, _currentUser.name, _currentUser.avatarURL));
+  PayeeRemoteSession(this._currentUser, {PayerSessionData existingPayerData}) : super(_currentUser) {
+    var initialState = PaymentSessionState.payeeStart(sessionID, _currentUser.name, _currentUser.avatarURL);
+    if (existingPayerData != null) {
+      initialState = initialState.copyWith(payerData: existingPayerData);
+    }
+    _paymentSessionController.add(initialState);
   }
 
   Future start(SessionLinkModel sessionLink) async{    
-    this.sessionLink = sessionLink;
+    this.sessionLink = sessionLink;  
+    await _loadPersistedPayerDetails();      
     _channel = new PaymentSessionChannel(sessionID, false, interceptor: new SessionEncryption(_breezLib, sessionID));
     _resetSessionState();
     _channel.sendResetMessage();
     _handleIncomingMessages();    
+  }
+
+  _loadPersistedPayerDetails() async{
+    var sessionInfo = await _breezLib.ratchetSessionInfo(sessionID);
+    if (sessionInfo == null || sessionInfo.userInfo.isEmpty) {
+      return null;
+    }
+    Map<String, dynamic> payerData =  json.decode(sessionInfo.userInfo);
+    var persistedPayer = PayerSessionData.fromJson(payerData["payerData"]);
+    _paymentSessionController.add(_currentSession.copyWith(payerData: persistedPayer));
   }
 
   _handleIncomingMessages(){
@@ -71,11 +87,10 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
     _watchPaymentFulfilled();  
   }
 
-  Future _resetSessionState() {
-    var sessionResetState = PaymentSessionState.payeeStart(sessionID, _currentUser.name, _currentUser.avatarURL);  
-    if (_currentSession != null && _currentSession.sessionSecret != null) {
-      sessionResetState = _currentSession.copyWith(payeeData: sessionResetState.payeeData);
-    }         
+  Future _resetSessionState() async {    
+    var sessionResetState = PaymentSessionState.payeeStart(sessionID, _currentUser.name, _currentUser.avatarURL)
+      .copyWith(payerData: _currentSession.payerData); 
+    
     _paymentSessionController.add(sessionResetState);
     _handleStatusUpdates();
     sessionState.clear();
@@ -134,8 +149,23 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
 
     _channel.incomingMessagesStream.listen((data) {      
       PayerSessionData newPayerData = PayerSessionData.fromJson(data ?? {}).copyWith(status: _currentSession.payerData.status);
+      if (newPayerData.userName == null || newPayerData.imageURL == null) {
+        newPayerData = newPayerData.copyWith(userName: _currentSession.payerData.userName);
+        newPayerData = newPayerData.copyWith(imageURL: _currentSession.payerData.imageURL);
+      }
+      _persistPayerData(newPayerData);
+
       _paymentSessionController.add(_currentSession.copyWith(payerData: newPayerData));
     });
+  }
+
+  Future _persistPayerData(PayerSessionData newPayerData) {
+    return _breezLib.ratchetSessionSetInfo(sessionID, json.encode(
+      {"payerData": {
+        "imageURL": newPayerData.imageURL,
+        "userName": newPayerData.userName
+      }})
+    );
   }
 
   void _watchPaymentFulfilled() {

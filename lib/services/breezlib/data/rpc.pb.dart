@@ -357,9 +357,17 @@ class Invoice extends $pb.GeneratedMessage {
   void clearAmtPaid() => clearField(3);
 }
 
+<<<<<<< HEAD
 class NotificationEvent extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('NotificationEvent', package: const $pb.PackageName('data'))
     ..e<NotificationEvent_NotificationType>(1, 'type', $pb.PbFieldType.OE, NotificationEvent_NotificationType.READY, NotificationEvent_NotificationType.valueOf, NotificationEvent_NotificationType.values)
+=======
+class _ReadonlyInvoice extends Invoice with ReadonlyMessageMixin {}
+
+class NotificationEvent extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('NotificationEvent')
+    ..e<NotificationEvent_NotificationType>(1, 'type', PbFieldType.OE, NotificationEvent_NotificationType.READY, NotificationEvent_NotificationType.valueOf, NotificationEvent_NotificationType.values)
+>>>>>>> master
     ..pPS(2, 'data')
     ..hasRequiredFields = false
   ;
@@ -382,6 +390,12 @@ class NotificationEvent extends $pb.GeneratedMessage {
   set type(NotificationEvent_NotificationType v) { setField(1, v); }
   bool hasType() => $_has(0);
   void clearType() => clearField(1);
+<<<<<<< HEAD
+=======
+
+  List<String> get data => $_getList(1);
+}
+>>>>>>> master
 
   List<String> get data => $_getList(1);
 }
@@ -746,6 +760,7 @@ class RatchetSessionInfoReply extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RatchetSessionInfoReply', package: const $pb.PackageName('data'))
     ..aOS(1, 'sessionID')
     ..aOB(2, 'initiated')
+    ..aOS(3, 'userInfo')
     ..hasRequiredFields = false
   ;
 
@@ -772,10 +787,58 @@ class RatchetSessionInfoReply extends $pb.GeneratedMessage {
   set initiated(bool v) { $_setBool(1, v); }
   bool hasInitiated() => $_has(1);
   void clearInitiated() => clearField(2);
+
+  String get userInfo => $_getS(2, '');
+  set userInfo(String v) { $_setString(2, v); }
+  bool hasUserInfo() => $_has(2);
+  void clearUserInfo() => clearField(3);
 }
 
+<<<<<<< HEAD
 class RatchetEncryptRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RatchetEncryptRequest', package: const $pb.PackageName('data'))
+=======
+class _ReadonlyRatchetSessionInfoReply extends RatchetSessionInfoReply with ReadonlyMessageMixin {}
+
+class RatchetSessionSetInfoRequest extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('RatchetSessionSetInfoRequest')
+    ..aOS(1, 'sessionID')
+    ..aOS(2, 'userInfo')
+    ..hasRequiredFields = false
+  ;
+
+  RatchetSessionSetInfoRequest() : super();
+  RatchetSessionSetInfoRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RatchetSessionSetInfoRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RatchetSessionSetInfoRequest clone() => new RatchetSessionSetInfoRequest()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static RatchetSessionSetInfoRequest create() => new RatchetSessionSetInfoRequest();
+  static PbList<RatchetSessionSetInfoRequest> createRepeated() => new PbList<RatchetSessionSetInfoRequest>();
+  static RatchetSessionSetInfoRequest getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRatchetSessionSetInfoRequest();
+    return _defaultInstance;
+  }
+  static RatchetSessionSetInfoRequest _defaultInstance;
+  static void $checkItem(RatchetSessionSetInfoRequest v) {
+    if (v is! RatchetSessionSetInfoRequest) checkItemFailed(v, 'RatchetSessionSetInfoRequest');
+  }
+
+  String get sessionID => $_getS(0, '');
+  set sessionID(String v) { $_setString(0, v); }
+  bool hasSessionID() => $_has(0);
+  void clearSessionID() => clearField(1);
+
+  String get userInfo => $_getS(1, '');
+  set userInfo(String v) { $_setString(1, v); }
+  bool hasUserInfo() => $_has(1);
+  void clearUserInfo() => clearField(2);
+}
+
+class _ReadonlyRatchetSessionSetInfoRequest extends RatchetSessionSetInfoRequest with ReadonlyMessageMixin {}
+
+class RatchetEncryptRequest extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('RatchetEncryptRequest')
+>>>>>>> master
     ..aOS(1, 'sessionID')
     ..aOS(2, 'message')
     ..hasRequiredFields = false
