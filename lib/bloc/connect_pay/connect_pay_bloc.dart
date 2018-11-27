@@ -10,6 +10,7 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:breez/logger.dart';
 
 /*
 Bloc that responsible for creating online payments session.
@@ -51,10 +52,13 @@ class ConnectPayBloc {
 
   Future<RemoteSession> joinSessionByLink(SessionLinkModel sessionLink) async{    
         
+    log.info('joinSessionByLink - sessionID = ${sessionLink.sessionID} sessionSecret = ${sessionLink.sessionSecret} initiatorPubKey = ${sessionLink.initiatorPubKey}');
     RatchetSessionInfoReply sessionInfo = await _breezLib.ratchetSessionInfo(sessionLink.sessionID);    
     bool existingSession = sessionInfo.sessionID.isNotEmpty;
+    log.info('joinSessionByLink - existing session = $existingSession');
 
     if (!existingSession && ( sessionLink.sessionSecret == null || sessionLink.initiatorPubKey == null) ) {
+      log.info('joinSessionByLink - SessionExpiredException because session does not exist on client');
       throw new SessionExpiredException();
     }
 
@@ -71,7 +75,8 @@ class ConnectPayBloc {
     }
     try {
       await _breezServer.joinSession(currentSession.runtimeType == PayerRemoteSession, _currentUser.name, _currentUser.token, sessionID: sessionLink.sessionID);
-    } catch(e) {
+    } catch(e) {    
+      log.info('joinSessionByLink - SessionExpiredException because session does not exist on server', e);
       throw new SessionExpiredException();
     }
 

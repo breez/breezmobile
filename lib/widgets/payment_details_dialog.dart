@@ -215,7 +215,15 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
   );
   return showDialog<Null>(
     context: context,
-    builder: (_) => _paymentDetailsDialog,
+    builder: (_) =>
+        Stack(
+            fit: StackFit.expand,
+            children: <Widget>[Row(
+              children: <Widget>[
+                Expanded(child: _paymentDetailsDialog),
+              ],
+            ),
+            ])
   );
 }
 
