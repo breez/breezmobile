@@ -28,10 +28,12 @@ class ConnectPayBloc {
   final BehaviorSubject<String> _pendingCTPLinkController = new BehaviorSubject<String>();
   Stream<String> get pendingCTPLinkStream => _pendingCTPLinkController.stream;
 
+  Stream<BreezUserModel> _userStream;
   BreezUserModel _currentUser;
   AccountModel _currentAccount;  
 
   ConnectPayBloc(Stream<BreezUserModel> userStream, Stream<AccountModel> accountStream) {
+    _userStream = userStream;
     userStream.listen((user) => _currentUser = user);
     accountStream.listen(onAccountChanged);
     _monitorSessionInvites();
@@ -133,8 +135,14 @@ class ConnectPayBloc {
         //if our account is not active yet, just persist the link
         if (!_currentAccount.active) {
           _pendingCTPLinkController.add(link);
-          _breezLib.registerReceivePaymentReadyNotification(_currentUser.token);
-          return;
+          StreamSubscription<BreezUserModel> userSubscription;
+          userSubscription = _userStream.listen((user) {
+            if (user.token != null) {
+              _breezLib.registerReceivePaymentReadyNotification(user.token);
+              userSubscription.cancel(); 
+            }
+          });          
+          return;          
         }
 
         //othersise push the link to the invites stream.   
