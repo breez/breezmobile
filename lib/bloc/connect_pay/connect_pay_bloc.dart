@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payee_session.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
@@ -17,20 +18,47 @@ Bloc that responsible for creating online payments session.
 The handling of the session itself is not done here but within the concrete session implementation.
 */
 class ConnectPayBloc {
+  static const String PENDING_CTP_LINK = 'pending_ctp_link';
   BreezBridge _breezLib = ServiceInjector().breezBridge;
-  BreezServer _breezServer = ServiceInjector().breezServer;
+  BreezServer _breezServer = ServiceInjector().breezServer;  
   RemoteSession _currentSession;
   final StreamController _sessionInvitesController = new BehaviorSubject<SessionLinkModel>();
   Stream<SessionLinkModel> get sessionInvites => _sessionInvitesController.stream;
-  BreezUserModel _currentUser;  
 
-  ConnectPayBloc(Stream<BreezUserModel> userStream) {
+  final BehaviorSubject<String> _pendingCTPLinkController = new BehaviorSubject<String>();
+  Stream<String> get pendingCTPLinkStream => _pendingCTPLinkController.stream;
+
+  BreezUserModel _currentUser;
+  AccountModel _currentAccount;  
+
+  ConnectPayBloc(Stream<BreezUserModel> userStream, Stream<AccountModel> accountStream) {
     userStream.listen((user) => _currentUser = user);
+    accountStream.listen(onAccountChanged);
     _monitorSessionInvites();
     _monitorSessionNotifications();
+    _monitorPendingCTPLinks();
   }
 
+  void onAccountChanged(AccountModel acc) async {
+    _currentAccount = acc;
+    if (_currentAccount.active && !_pendingCTPLinkController.isClosed) {
+      String pendingLink = _pendingCTPLinkController.value;
+      if (pendingLink != null) {
+        SessionLinkModel sessionLink = ServiceInjector().deepLinks.parseSessionInviteLink(pendingLink);        
+        _sessionInvitesController.add(sessionLink);
+      }
+      _pendingCTPLinkController.close();
+    }
+  }
 
+  _monitorPendingCTPLinks() async {
+    var preferences = await ServiceInjector().sharedPreferences;
+    _pendingCTPLinkController.stream
+      .listen((link) async{        
+        preferences.setString(PENDING_CTP_LINK, link);
+      })
+      .onDone(() => preferences.remove(PENDING_CTP_LINK));  
+  }
 
   PayerRemoteSession startSessionAsPayer() {    
     var currentSession = new PayerRemoteSession(_currentUser);
@@ -92,14 +120,28 @@ class ConnectPayBloc {
 
   RemoteSession get currentSession => _currentSession;
 
-  _monitorSessionInvites() {
+  _monitorSessionInvites() async {
+    var preferenes = await ServiceInjector().sharedPreferences;
+    var pendingLink = preferenes.getString(PENDING_CTP_LINK);
+    if (pendingLink != null) {
+      _pendingCTPLinkController.add(pendingLink);
+    }
+
     DeepLinksService deepLinks = ServiceInjector().deepLinks;
-    deepLinks.linksNotifications.listen((link) {      
-      SessionLinkModel sessionLink = deepLinks.parseSessionInviteLink(link);
-      if (sessionLink != null && sessionLink.sessionID != null) {        
-        _sessionInvitesController.add(sessionLink);
-      }
-    });
+    deepLinks.linksNotifications
+      .listen((link) async {      
+        //if our account is not active yet, just persist the link
+        if (!_currentAccount.active) {
+          _pendingCTPLinkController.add(link);
+          return;
+        }
+
+        //othersise push the link to the invites stream.   
+        SessionLinkModel sessionLink = deepLinks.parseSessionInviteLink(link);
+        if (sessionLink != null && sessionLink.sessionID != null) {                     
+          _sessionInvitesController.add(sessionLink);
+        }
+      });          
   }
 
   _monitorSessionNotifications() {

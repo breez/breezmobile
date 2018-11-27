@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/home/floating_actions_bar.dart';
@@ -26,15 +27,16 @@ const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) => new _AccountPage(blocs.accountBloc, blocs.userProfileBloc));
+    return new BlocConnector<AppBlocs>((context, blocs) => new _AccountPage(blocs.accountBloc, blocs.userProfileBloc, blocs.connectPayBloc));
   }
 }
 
 class _AccountPage extends StatefulWidget {
   final AccountBloc _accountBloc;
   final UserProfileBloc _userProfileBloc;  
+  final ConnectPayBloc _connectPayBloc;
 
-  _AccountPage(this._accountBloc, this._userProfileBloc);
+  _AccountPage(this._accountBloc, this._userProfileBloc, this._connectPayBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -186,25 +188,34 @@ class _AccountPageState extends State<_AccountPage> {
             widget._accountBloc.paymentFilterSink.add(PaymentFilterModel(filter.paymentType, null,
                 null)),),)],);
   }
-}
 
-Widget _buildEmptyHomeScreen(AccountModel account) {
-  return new Stack(
-    fit: StackFit.expand,
-    children: <Widget>[
-      new Padding(
-        padding: EdgeInsets.only(top: 130.0, left: 40.0, right: 40.0),
-        // new status widget
-        child: new StatusText(account.statusMessage),
-      ),
-      new Image.asset(
-        "src/images/waves-home.png",
-        fit: BoxFit.contain,
-        width: double.infinity,
-        alignment: Alignment.bottomCenter,
-      )
-    ],
-  );
+  Widget _buildEmptyHomeScreen(AccountModel account) {
+    return new Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        new Padding(
+          padding: EdgeInsets.only(top: 130.0, left: 40.0, right: 40.0),
+          // new status widget
+          child: StreamBuilder(
+            stream: widget._connectPayBloc.pendingCTPLinkStream,
+            builder: (context, pendingLinkSnapshot) {
+              String message = account.statusMessage;
+              if (pendingLinkSnapshot.connectionState == ConnectionState.active && pendingLinkSnapshot.hasData) {
+                message = "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";
+              }
+              return StatusText(message);
+            }
+          )
+        ),
+        new Image.asset(
+          "src/images/waves-home.png",
+          fit: BoxFit.contain,
+          width: double.infinity,
+          alignment: Alignment.bottomCenter,
+        )
+      ],
+    );
+  }
 }
 
 class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
