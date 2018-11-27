@@ -1,12 +1,14 @@
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
+  final BackupBloc _backupBloc;
   final bool _isPos;
 
-  InitialWalkthroughPage(this._registrationBloc, this._isPos);
+  InitialWalkthroughPage(this._registrationBloc, this._backupBloc, this._isPos);
 
   @override
   State createState() => new InitialWalkthroughPageState();
@@ -97,6 +99,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                           elevation: 0.0,
                           shape: const StadiumBorder(),
                           onPressed: () {
+                            // start lightninglib
                             widget._registrationBloc.registerSink.add(null);
                             if (widget._isPos) {
                               Navigator.of(context).pop();
@@ -107,7 +110,19 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                             }
                           },
                         ))),
-                new Expanded(flex: 40, child: new Container())
+                new Expanded(
+                    flex: 40,
+                    child: new Padding(
+                        padding: EdgeInsets.only(top: 10.0),
+                        child: new GestureDetector(
+                          onTap: () {
+                            // backup then start lightninglib
+                            widget._backupBloc.restoreRequestSink.add("");
+                          },
+                          child: new Text("Restore from backup", style: theme.restoreLinkStyle,)
+                    )
+                  ),
+                ),
               ],
             )
           ])),

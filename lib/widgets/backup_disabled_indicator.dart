@@ -32,11 +32,14 @@ class BackupDisabledIndicatorState extends State<BackupDisabledIndicator> {
     return new StreamBuilder<bool>(
         stream: widget._backupBloc.backupDisabledStream,
         builder: (context, snapshot) {
-          if (!snapshot.hasData || snapshot.data) {
+          if (!snapshot.hasData || !snapshot.data) {
             return Container();
           } else {
             return GestureDetector(
-              onTap: () => new EnableBackupDialog(context, widget._backupBloc),
+              onTap: () {
+                showDialog(context: context, builder: (_) =>
+                new EnableBackupDialog(context, widget._backupBloc));
+              },
               child:
             SvgPicture.asset(
               "src/icon/warning.svg",

@@ -95,7 +95,7 @@ class BreezAppState extends State<BreezApp> {
             );
           case '/intro':
             return new FadeInRoute(
-              builder: (_) => new InitialWalkthroughPage(widget._blocs.userProfileBloc, false),
+              builder: (_) => new InitialWalkthroughPage(widget._blocs.userProfileBloc, widget._blocs.backupBloc, false),
               settings: settings,
             );
           case '/order_card':

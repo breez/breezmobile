@@ -14,15 +14,22 @@ import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveResourceClient;
+import com.google.android.gms.drive.Metadata;
 import com.google.android.gms.drive.MetadataBuffer;
 import com.google.android.gms.drive.MetadataChangeSet;
 import com.google.android.gms.drive.query.Filters;
 import com.google.android.gms.drive.query.Query;
 import com.google.android.gms.drive.query.SearchableField;
+import com.google.android.gms.drive.query.SortOrder;
+import com.google.android.gms.drive.query.SortableField;
 import com.google.android.gms.tasks.Task;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.io.File;
 import java.util.Date;
@@ -61,6 +68,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
         registrar.addActivityResultListener(this);
 
         m_googleSignInClient = buildGoogleSignInClient();
+        getDriveClients(m_googleSignInClient.silentSignIn());
     }
 
     @Override
@@ -75,28 +83,26 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
 
     private GoogleSignInClient buildGoogleSignInClient() {
         GoogleSignInOptions signInOptions =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestScopes(Drive.SCOPE_APPFOLDER)
-                        .build();
+            new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestScopes(Drive.SCOPE_APPFOLDER)
+                .build();
         return GoogleSignIn.getClient(m_activity, signInOptions);
     }
 
     private void getDriveClients(Task<GoogleSignInAccount> task) {
-        Log.i(TAG, "Update view with sign in account task");
+        Log.i(TAG, "Trying to execute sign in task");
         task.addOnSuccessListener(
-                googleSignInAccount -> {
-                    Log.i(TAG, "Sign in success");
-                    m_driveClient = Drive.getDriveClient(m_activity, googleSignInAccount);
-                    m_driveResourceClient =
-                            Drive.getDriveResourceClient(m_activity, googleSignInAccount);
-                    m_result.success(true);
+            googleSignInAccount -> {
+                Log.i(TAG, "Sign in success");
+                m_driveClient = Drive.getDriveClient(m_activity, googleSignInAccount);
+                m_driveResourceClient =
+                        Drive.getDriveResourceClient(m_activity, googleSignInAccount);
 
-                })
-                .addOnFailureListener(
-                        e -> {
-                            Log.w(TAG, "Sign in failed", e);
-                            m_result.error("SIGN_IN_FAILURE", "Sign in failed", null);
-                        });
+            })
+            .addOnFailureListener(
+                e -> {
+                    Log.w(TAG, "Sign in failed", e);
+                });
     }
 
     @Override
@@ -110,24 +116,38 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
         return false;
     }
 
+    private void promptToAuthorize() {
+        Intent signInIntent = m_googleSignInClient.getSignInIntent();
+        m_activity.startActivityForResult(signInIntent, AUTHORIZE_ACTIVITY_REQUEST_CODE);
+    }
+
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         if (call.method.equals("authorize")) {
-            Intent signInIntent = m_googleSignInClient.getSignInIntent();
-            m_result = result;
-            m_activity.startActivityForResult(signInIntent, AUTHORIZE_ACTIVITY_REQUEST_CODE);
+            if (m_driveResourceClient == null) {
+                promptToAuthorize();
+            }
+            else {
+                m_result.success(true);
+            }
         }
         if (call.method.equals("backup")) {
             List<String> paths = call.argument("paths");
             String nodeId = call.argument("nodeId").toString();
             createNodeIdFolder(paths, nodeId);
         }
-        if (call.method.equals("listNodeIds")) {
-            listNodeIds();
+        if (call.method.equals("listBackupFolders")) {
+            listBackupFolders();
         }
         if (call.method.equals("restore")) {
+            m_result = result;
             String nodeId = call.argument("nodeId").toString();
-            listNodeIds();
+            if (nodeId.isEmpty()) {
+                listBackupFolders();
+            }
+            else {
+                getNodeIdFolder(nodeId);
+            }
         }
     }
 
@@ -138,34 +158,34 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
     private void updateBackupFiles(List<String> paths, DriveFolder nodeIdFolder) {
         for (String path: paths) {
             m_driveResourceClient.createContents()
-                    .continueWithTask(task -> {
-                        DriveContents contents = task.getResult();
-                        OutputStream outputStream = contents.getOutputStream();
+                .continueWithTask(task -> {
+                    DriveContents contents = task.getResult();
+                    OutputStream outputStream = contents.getOutputStream();
 
-                        File file = new File(path);
-                        FileInputStream inputStream = new FileInputStream(file);
+                    File file = new File(path);
+                    FileInputStream inputStream = new FileInputStream(file);
 
-                        byte[] buffer = new byte[inputStream.available()];
-                        inputStream.read(buffer, 0, inputStream.available());
-                        outputStream.write(buffer);
+                    byte[] buffer = new byte[inputStream.available()];
+                    inputStream.read(buffer, 0, inputStream.available());
+                    outputStream.write(buffer);
 
-                        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                                .setTitle(file.getName())
-                                .setMimeType("text/plain")
-                                .setStarred(true)
-                                .build();
+                    MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                            .setTitle(file.getName())
+                            .setMimeType("text/plain")
+                            .setStarred(true)
+                            .build();
 
-                        return m_driveResourceClient.createFile(nodeIdFolder, changeSet, contents);
-                    })
-                    .addOnSuccessListener(m_activity,
-                            driveFile -> {
-                                Log.i(TAG, "File created!");
-                            })
-                    .addOnFailureListener(m_activity, e -> {
-                        Log.e(TAG, "Unable to create file", e);
-                        m_result.error("CREATE_FILE_FAILURE", "Unable to create file", null);
-                        return;
-                    });
+                    return m_driveResourceClient.createFile(nodeIdFolder, changeSet, contents);
+                })
+                .addOnSuccessListener(m_activity,
+                        driveFile -> {
+                            Log.i(TAG, "File created!");
+                        })
+                .addOnFailureListener(m_activity, e -> {
+                    Log.e(TAG, "Unable to create file", e);
+                    m_result.error("CREATE_FILE_FAILURE", "Unable to create file", null);
+                    return;
+                });
         }
     }
 
@@ -180,84 +200,129 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
             Log.e(TAG, "Unable to get app folder", e);
             m_result.error("APP_FOLDER_FAILURE", "Unable to get app folder", null);
         })
-                .continueWithTask(task -> {
-                    DriveFolder appFolder = task.getResult();
-                    MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                            .setTitle(nodeId)
-                            .setMimeType(DriveFolder.MIME_TYPE)
-                            .setStarred(true)
-                            .setLastViewedByMeDate(new Date())
-                            .build();
-                    return m_driveResourceClient.createFolder(appFolder, changeSet);
-                })
-                .addOnSuccessListener(m_activity,
-                        driveFolder -> {
-                            updateBackupFiles(paths, driveFolder);
-                        })
-                .addOnFailureListener(m_activity, e -> {
-                    Log.e(TAG, "Unable to create folder", e);
-                    m_result.error("CREATE_FOLDER_FAILURE", "Unable to create folder", null);
-                });
+            .continueWithTask(task -> {
+                DriveFolder appFolder = task.getResult();
+                MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                        .setTitle(nodeId)
+                        .setMimeType(DriveFolder.MIME_TYPE)
+                        .setStarred(true)
+                        .setLastViewedByMeDate(new Date())
+                        .build();
+                return m_driveResourceClient.createFolder(appFolder, changeSet);
+            })
+            .addOnSuccessListener(m_activity,
+                    driveFolder -> {
+                        updateBackupFiles(paths, driveFolder);
+                    })
+            .addOnFailureListener(m_activity, e -> {
+                Log.e(TAG, "Unable to create folder", e);
+                m_result.error("CREATE_FOLDER_FAILURE", "Unable to create folder", null);
+            });
     }
 
-    private void listNodeIds() {
+    private void listBackupFolders() {
         m_driveResourceClient
-                .getAppFolder()
-                .continueWithTask(task -> {
-                    DriveFolder appFolder = task.getResult();
-                    Query query = new Query.Builder()
-                            .addFilter(Filters.eq(SearchableField.MIME_TYPE, DriveFolder.MIME_TYPE))
-                            .build();
+            .getAppFolder()
+            .continueWithTask(task -> {
+                DriveFolder appFolder = task.getResult();
 
-                    Task<MetadataBuffer> queryTask = m_driveResourceClient.queryChildren(appFolder, query);
-                    return  queryTask
-                            .addOnSuccessListener(m_activity,
-                                    metadataBuffer -> {
-                                        Log.w(TAG, metadataBuffer.toString());
-                                        // send the list
-                                    })
-                            .addOnFailureListener(m_activity, e -> {
-                                Log.e(TAG, "Error retrieving files", e);
-                            });
-                });
+                SortOrder ascendingDateOrder = new SortOrder.Builder().addSortAscending(SortableField.MODIFIED_DATE).build();
+                Query query = new Query.Builder()
+                    .addFilter(Filters.eq(SearchableField.MIME_TYPE, DriveFolder.MIME_TYPE))
+                    .setSortOrder(ascendingDateOrder)
+                    .build();
+
+                Task<MetadataBuffer> queryTask = m_driveResourceClient.queryChildren(appFolder, query);
+
+                return  queryTask
+                    .addOnSuccessListener(m_activity,
+                        metadataBuffer -> {
+                            Log.w(TAG, metadataBuffer.toString());
+                            if (metadataBuffer.getCount() == 0) {
+                                // Notify user there is no data
+                                //m_eventsListener.success(false);
+                                m_result.success(false);
+                            }
+
+                            HashMap<String, String> backupsMap = new HashMap<>();
+
+                            // Get the metadata
+                            for (Metadata m : metadataBuffer) {
+                                backupsMap.put(m.getTitle(), m.getModifiedDate().toString());
+                            }
+
+                            m_result.success(backupsMap);
+                        })
+                    .addOnFailureListener(m_activity, e -> {
+                        Log.e(TAG, "Error retrieving files", e);
+                        m_result.success(false);
+                    });
+            });
     }
 
     private void getNodeIdFolder(String nodeId) {
         m_driveResourceClient
-                .getAppFolder()
-                .continueWithTask(task -> {
-                    DriveFolder appFolder = task.getResult();
-                    Query query = new Query.Builder()
-                            .addFilter(Filters.eq(SearchableField.MIME_TYPE, DriveFolder.MIME_TYPE))
-                            .addFilter(Filters.eq(SearchableField.TITLE, nodeId))
-                            .build();
+            .getAppFolder()
+            .continueWithTask(task -> {
+                DriveFolder appFolder = task.getResult();
+                SortOrder descendingDateOrder = new SortOrder.Builder().addSortDescending(SortableField.MODIFIED_DATE).build();
 
-                    Task<MetadataBuffer> queryTask = m_driveResourceClient.queryChildren(appFolder, query);
-                    return  queryTask
-                            .addOnSuccessListener(m_activity,
-                                    metadataBuffer -> {
-                                        Log.w(TAG, metadataBuffer.toString());
-                                        // got the backup folder
-                                    })
-                            .addOnFailureListener(m_activity, e -> {
-                                Log.e(TAG, "Error retrieving files", e);
-                            });
-                });
+                Query query = new Query.Builder()
+                    .addFilter(Filters.eq(SearchableField.MIME_TYPE, DriveFolder.MIME_TYPE))
+                    .addFilter(Filters.eq(SearchableField.TITLE, nodeId))
+                    .setSortOrder(descendingDateOrder)
+                    .build();
+
+                Task<MetadataBuffer> queryTask = m_driveResourceClient.queryChildren(appFolder, query);
+                return  queryTask
+                    .addOnSuccessListener(m_activity,
+                        metadataBuffer -> {
+                            Log.w(TAG, metadataBuffer.toString());
+                            if (metadataBuffer.getCount() == 0) {
+                                m_result.success(false);
+                            }
+
+                            fetchBackupFiles(metadataBuffer.get(0).getDriveId().asDriveFolder());
+                        })
+                    .addOnFailureListener(m_activity, e -> {
+                        Log.e(TAG, "Error retrieving files", e);
+                        m_result.success(false);
+                    });
+            });
     }
 
-    private void getBackupFiles(DriveFolder nodeIdFolder) {
+    private void fetchBackupFiles(DriveFolder nodeIdFolder) {
         Query query = new Query.Builder()
                 .build();
 
         Task<MetadataBuffer> queryTask = m_driveResourceClient.queryChildren(nodeIdFolder, query);
 
         queryTask
-                .addOnSuccessListener(m_activity,
-                        metadataBuffer -> {
+            .addOnSuccessListener(m_activity,
+                metadataBuffer -> {
+                List<String> backupPathsList = new ArrayList<>();
+                    for (Metadata m : metadataBuffer) {
+                        m_driveResourceClient.openFile(m.getDriveId().asDriveFile(), DriveFile.MODE_READ_ONLY).continueWithTask(task -> {
+                            DriveContents fileContents = task.getResult();
+                            InputStream remoteFileInputStream = fileContents.getInputStream();
 
-                        })
+                            File file = new File(m_activity.getCacheDir().getPath() + "/" + m.getTitle());
+                            FileOutputStream outputStream = new FileOutputStream(file);
+
+                            byte[] buffer = new byte[remoteFileInputStream.available()];
+                            remoteFileInputStream.read(buffer, 0, remoteFileInputStream.available());
+                            outputStream.write(buffer);
+
+                            backupPathsList.add(file.getAbsolutePath());
+
+                            return null;
+                        });
+
+                        m_result.success(backupPathsList);
+                    }
+                })
                 .addOnFailureListener(m_activity, e -> {
-
+                    m_result.success(false);
                 });
     }
 }

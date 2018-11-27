@@ -96,7 +96,7 @@ class AccountBloc {
       _listenPOSFundingRequests(server, breezLib);
       _listenMempoolTransactions(device, notificationsService, breezLib);
       _listenRoutingNodeConnectionChanges(breezLib);
-       breezLib.bootstrapAndStart();      
+       breezLib.bootstrap();
        _refreshAccount(breezLib);
        _listenConnectivityChanges(breezLib);   
        _listenReconnects(breezLib);

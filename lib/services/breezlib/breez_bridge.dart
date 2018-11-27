@@ -25,6 +25,7 @@ class BreezBridge {
   StreamController _eventsController = new StreamController<NotificationEvent>.broadcast();
   Stream<NotificationEvent> get notificationStream => _eventsController.stream;
   bool ready = false;
+  bool _readyToStart = false;
 
   BreezBridge(){
     _eventChannel.receiveBroadcastStream().listen((event){
@@ -79,6 +80,13 @@ class BreezBridge {
 
   Future sendPaymentForRequest(String bolt11PaymentRequest) {
     return _invokeMethodWhenReady("sendPaymentForRequest", {"argument": bolt11PaymentRequest});
+  }
+
+  Future bootstrapFiles(String workingDir, List<String> bootstrapFilesPaths) {
+    BootstrapFilesRequest bootstrap = new BootstrapFilesRequest();
+    bootstrap.workingDir = workingDir;
+    bootstrap.fullPaths..clear()..addAll(bootstrapFilesPaths);
+    return _invokeMethodWhenReady("bootstrapFiles", {"argument": bootstrap});
   }
 
   Future payBlankInvoice(String blankInvoicePaymentRequest, Int64 amount) {
@@ -237,7 +245,7 @@ class BreezBridge {
     );
   }
 
-  void bootstrapAndStart() {
+  void bootstrap() {
     getApplicationDocumentsDirectory().then(
             (appDir) {
           var lndBootstrapper = new LNDBootstrapper();
@@ -253,7 +261,11 @@ class BreezBridge {
               },
               onDone: () {
                 _bootstrapDownloadProgressController.close();
-                start(appDir.path);
+
+                // Don't do this here, after pressing
+                //start(appDir.path);
+
+                _readyToStart = true;
               });
           lndBootstrapper.downloadBootstrapFiles(appDir.path);
         }
