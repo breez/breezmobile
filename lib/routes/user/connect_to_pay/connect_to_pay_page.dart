@@ -46,8 +46,7 @@ class _ConnectToPayPage extends StatefulWidget {
   }
 }
 
-class _ConnectToPayState extends State<_ConnectToPayPage> {
-  bool _warnAreYouSure = false;
+class _ConnectToPayState extends State<_ConnectToPayPage> {  
   bool _payer;
   String _remoteUserName;
   String _title = "";
@@ -81,9 +80,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
         _remoteUserName =
             (_payer ? s.payeeData?.userName : s.payerData?.userName);
       }
-      if (s.invitationSent) {
-        _warnAreYouSure = true;
-      }
+      
       var error = !_payer ? s.payerData?.error : s.payeeData?.error;
       if (error != null) {
         _popWithMessage(error);
@@ -101,8 +98,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
     });
   }
 
-  void _popWithMessage(message) {
-    _warnAreYouSure = false;
+  void _popWithMessage(message) {    
     Navigator.pop(_key.currentContext);
     if (message != null) {
       showFlushbar(_key.currentContext, message: message);
@@ -118,8 +114,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   }
 
   Future _clearSession() async {
-    _remoteUserName = null;
-    _warnAreYouSure = false;
+    _remoteUserName = null;    
     await cancelSessionSubscription.cancel();
     await _errorsSubscription.cancel();
   }
@@ -133,25 +128,20 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
     super.dispose();
   }
 
-  Future<bool> _onWillPop() async {
-    if (!_warnAreYouSure) {
-      return true;
-    }
-
+  void _onTerminateSession() async {
     TextStyle textStyle = TextStyle(color: Colors.black);
     String exitSessionMessage =
-        'Are you sure you want to leave this payment session?';
-    bool result = await promptAreYouSure(
+        'Are you sure you want to cancel this payment session?';
+    bool cancel = await promptAreYouSure(
         _key.currentContext, null, Text(exitSessionMessage, style: textStyle),
         textStyle: textStyle);
-    return result;
+    if (cancel) {
+      _currentSession.terminate(permanent: true);      
+    }
   }
 
   void _onBackPressed() async {
-    bool shouldPop = await _onWillPop();
-    if (shouldPop) {
-      Navigator.pop(_key.currentContext);
-    }
+    Navigator.pop(_key.currentContext);
   }
 
   @override
@@ -159,6 +149,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
     return new Scaffold(
         key: _key,
         appBar: new AppBar(
+          actions: <Widget>[IconButton( onPressed: () => _onTerminateSession(), icon: Icon(Icons.close))],
           iconTheme: theme.appBarIconTheme,
           textTheme: theme.appBarTextTheme,
           backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
@@ -181,33 +172,33 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
       return Center(child: Loader());
     }
 
-    return WillPopScope(
-        onWillPop: _onWillPop,
-        child: _currentSession == null
-            ? Container()
-            : StreamBuilder<PaymentSessionState>(
-                stream: _currentSession.paymentSessionStateStream,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return Center(child: Loader());
-                  }
+    if (_currentSession == null) {
+      return Container();
+    }
 
-                  return StreamBuilder(
-                      stream: widget._accountBloc.accountStream,
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Center(child: Loader());
-                        }
-                        if (_currentSession.runtimeType == PayerRemoteSession) {
-                          return PayerSessionWidget(
-                              _currentSession, snapshot.data, _resetSession);
-                        } else {
-                          return PayeeSessionWidget(
-                              _currentSession, snapshot.data);
-                        }
-                      });
-                },
-              ));
+    return StreamBuilder<PaymentSessionState>(
+            stream: _currentSession.paymentSessionStateStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Center(child: Loader());
+              }
+
+              return StreamBuilder(
+                  stream: widget._accountBloc.accountStream,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: Loader());
+                    }
+                    if (_currentSession.runtimeType == PayerRemoteSession) {
+                      return PayerSessionWidget(
+                          _currentSession, snapshot.data, _resetSession);
+                    } else {
+                      return PayeeSessionWidget(
+                          _currentSession, snapshot.data);
+                    }
+                  });
+            },
+          );
   }
 }
 
