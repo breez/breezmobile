@@ -52,19 +52,3 @@ class JoinCTPSessionRequest_PartyType extends $pb.ProtobufEnum {
   const JoinCTPSessionRequest_PartyType._(int v, String n) : super(v, n);
 }
 
-class RegisterTransactionConfirmationRequest_NotificationType extends ProtobufEnum {
-  static const RegisterTransactionConfirmationRequest_NotificationType READY_RECEIVE_PAYMENT = const RegisterTransactionConfirmationRequest_NotificationType._(0, 'READY_RECEIVE_PAYMENT');
-
-  static const List<RegisterTransactionConfirmationRequest_NotificationType> values = const <RegisterTransactionConfirmationRequest_NotificationType> [
-    READY_RECEIVE_PAYMENT,
-  ];
-
-  static final Map<int, dynamic> _byValue = ProtobufEnum.initByValue(values);
-  static RegisterTransactionConfirmationRequest_NotificationType valueOf(int value) => _byValue[value] as RegisterTransactionConfirmationRequest_NotificationType;
-  static void $checkItem(RegisterTransactionConfirmationRequest_NotificationType v) {
-    if (v is! RegisterTransactionConfirmationRequest_NotificationType) checkItemFailed(v, 'RegisterTransactionConfirmationRequest_NotificationType');
-  }
-
-  const RegisterTransactionConfirmationRequest_NotificationType._(int v, String n) : super(v, n);
-}
-
