@@ -17,6 +17,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
       Container(
         color: theme.BreezColors.blue[900],
         height: 64.0,
+        width: MediaQuery.of(context).size.width,
       ),
       Padding(
         padding: EdgeInsets.only(top: 32.0),
@@ -216,14 +217,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
   return showDialog<Null>(
     context: context,
     builder: (_) =>
-        Stack(
-            fit: StackFit.expand,
-            children: <Widget>[Row(
-              children: <Widget>[
-                Expanded(child: _paymentDetailsDialog),
-              ],
-            ),
-            ])
+    _paymentDetailsDialog,
   );
 }
 
