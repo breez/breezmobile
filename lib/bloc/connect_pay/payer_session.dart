@@ -59,7 +59,10 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     if (sessionLink.sessionSecret != null) {             
       _watchInviteRequests(SessionLinkModel(sessionID, sessionLink.sessionSecret, sessionLink.initiatorPubKey));
     }
-    _channel = new PaymentSessionChannel(sessionID, true, interceptor: new SessionEncryption(_breezLib, sessionID));
+    _channel = new PaymentSessionChannel(sessionID, true, interceptor: new SessionEncryption(_breezLib, sessionID));    
+    _channel.peerTerminatedStream.listen((_){
+      terminate(permanent: true);
+    });
     _resetSessionState();
     _channel.sendResetMessage();
     _handleIncomingMessages();    
@@ -112,9 +115,9 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     if (_isTerminated) {
       return Future.value(null);
     }
-
-    await _channel.terminate(destroyHistory: false);    
+    
     await stopStatusUpdates();    
+    await _channel.terminate(destroyHistory: permanent);    
     await _amountController.close();    
     await _paymentSessionController.close();    
     await _sessionErrorsController.close();    
