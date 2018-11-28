@@ -99,4 +99,12 @@ class BreezServer {
         ..sessionID = sessionID ?? ""
     );
   }
+
+  Future<TerminateCTPSessionResponse> terminateSession(String sessionID) async {
+    await initChannel();
+    return await _ctpClient.terminateCTPSession(
+      TerminateCTPSessionRequest()
+        ..sessionID = sessionID
+    );
+  }
 }

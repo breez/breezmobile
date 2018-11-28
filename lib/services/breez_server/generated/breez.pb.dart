@@ -1037,6 +1037,7 @@ class _ReadonlyJoinCTPSessionRequest extends JoinCTPSessionRequest with Readonly
 class JoinCTPSessionResponse extends GeneratedMessage {
   static final BuilderInfo _i = new BuilderInfo('JoinCTPSessionResponse')
     ..aOS(1, 'sessionID')
+    ..aInt64(2, 'expiry')
     ..hasRequiredFields = false
   ;
 
@@ -1060,7 +1061,132 @@ class JoinCTPSessionResponse extends GeneratedMessage {
   set sessionID(String v) { $_setString(0, v); }
   bool hasSessionID() => $_has(0);
   void clearSessionID() => clearField(1);
+
+  Int64 get expiry => $_getI64(1);
+  set expiry(Int64 v) { $_setInt64(1, v); }
+  bool hasExpiry() => $_has(1);
+  void clearExpiry() => clearField(2);
 }
 
 class _ReadonlyJoinCTPSessionResponse extends JoinCTPSessionResponse with ReadonlyMessageMixin {}
+
+class TerminateCTPSessionRequest extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('TerminateCTPSessionRequest')
+    ..aOS(1, 'sessionID')
+    ..hasRequiredFields = false
+  ;
+
+  TerminateCTPSessionRequest() : super();
+  TerminateCTPSessionRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  TerminateCTPSessionRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  TerminateCTPSessionRequest clone() => new TerminateCTPSessionRequest()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static TerminateCTPSessionRequest create() => new TerminateCTPSessionRequest();
+  static PbList<TerminateCTPSessionRequest> createRepeated() => new PbList<TerminateCTPSessionRequest>();
+  static TerminateCTPSessionRequest getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyTerminateCTPSessionRequest();
+    return _defaultInstance;
+  }
+  static TerminateCTPSessionRequest _defaultInstance;
+  static void $checkItem(TerminateCTPSessionRequest v) {
+    if (v is! TerminateCTPSessionRequest) checkItemFailed(v, 'TerminateCTPSessionRequest');
+  }
+
+  String get sessionID => $_getS(0, '');
+  set sessionID(String v) { $_setString(0, v); }
+  bool hasSessionID() => $_has(0);
+  void clearSessionID() => clearField(1);
+}
+
+class _ReadonlyTerminateCTPSessionRequest extends TerminateCTPSessionRequest with ReadonlyMessageMixin {}
+
+class TerminateCTPSessionResponse extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('TerminateCTPSessionResponse')
+    ..hasRequiredFields = false
+  ;
+
+  TerminateCTPSessionResponse() : super();
+  TerminateCTPSessionResponse.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  TerminateCTPSessionResponse.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  TerminateCTPSessionResponse clone() => new TerminateCTPSessionResponse()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static TerminateCTPSessionResponse create() => new TerminateCTPSessionResponse();
+  static PbList<TerminateCTPSessionResponse> createRepeated() => new PbList<TerminateCTPSessionResponse>();
+  static TerminateCTPSessionResponse getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyTerminateCTPSessionResponse();
+    return _defaultInstance;
+  }
+  static TerminateCTPSessionResponse _defaultInstance;
+  static void $checkItem(TerminateCTPSessionResponse v) {
+    if (v is! TerminateCTPSessionResponse) checkItemFailed(v, 'TerminateCTPSessionResponse');
+  }
+}
+
+class _ReadonlyTerminateCTPSessionResponse extends TerminateCTPSessionResponse with ReadonlyMessageMixin {}
+
+class RegisterTransactionConfirmationRequest extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('RegisterTransactionConfirmationRequest')
+    ..aOS(1, 'txID')
+    ..aOS(2, 'notificationToken')
+    ..e<RegisterTransactionConfirmationRequest_NotificationType>(3, 'notificationType', PbFieldType.OE, RegisterTransactionConfirmationRequest_NotificationType.READY_RECEIVE_PAYMENT, RegisterTransactionConfirmationRequest_NotificationType.valueOf, RegisterTransactionConfirmationRequest_NotificationType.values)
+    ..hasRequiredFields = false
+  ;
+
+  RegisterTransactionConfirmationRequest() : super();
+  RegisterTransactionConfirmationRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RegisterTransactionConfirmationRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RegisterTransactionConfirmationRequest clone() => new RegisterTransactionConfirmationRequest()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static RegisterTransactionConfirmationRequest create() => new RegisterTransactionConfirmationRequest();
+  static PbList<RegisterTransactionConfirmationRequest> createRepeated() => new PbList<RegisterTransactionConfirmationRequest>();
+  static RegisterTransactionConfirmationRequest getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRegisterTransactionConfirmationRequest();
+    return _defaultInstance;
+  }
+  static RegisterTransactionConfirmationRequest _defaultInstance;
+  static void $checkItem(RegisterTransactionConfirmationRequest v) {
+    if (v is! RegisterTransactionConfirmationRequest) checkItemFailed(v, 'RegisterTransactionConfirmationRequest');
+  }
+
+  String get txID => $_getS(0, '');
+  set txID(String v) { $_setString(0, v); }
+  bool hasTxID() => $_has(0);
+  void clearTxID() => clearField(1);
+
+  String get notificationToken => $_getS(1, '');
+  set notificationToken(String v) { $_setString(1, v); }
+  bool hasNotificationToken() => $_has(1);
+  void clearNotificationToken() => clearField(2);
+
+  RegisterTransactionConfirmationRequest_NotificationType get notificationType => $_getN(2);
+  set notificationType(RegisterTransactionConfirmationRequest_NotificationType v) { setField(3, v); }
+  bool hasNotificationType() => $_has(2);
+  void clearNotificationType() => clearField(3);
+}
+
+class _ReadonlyRegisterTransactionConfirmationRequest extends RegisterTransactionConfirmationRequest with ReadonlyMessageMixin {}
+
+class RegisterTransactionConfirmationResponse extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('RegisterTransactionConfirmationResponse')
+    ..hasRequiredFields = false
+  ;
+
+  RegisterTransactionConfirmationResponse() : super();
+  RegisterTransactionConfirmationResponse.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RegisterTransactionConfirmationResponse.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RegisterTransactionConfirmationResponse clone() => new RegisterTransactionConfirmationResponse()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static RegisterTransactionConfirmationResponse create() => new RegisterTransactionConfirmationResponse();
+  static PbList<RegisterTransactionConfirmationResponse> createRepeated() => new PbList<RegisterTransactionConfirmationResponse>();
+  static RegisterTransactionConfirmationResponse getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRegisterTransactionConfirmationResponse();
+    return _defaultInstance;
+  }
+  static RegisterTransactionConfirmationResponse _defaultInstance;
+  static void $checkItem(RegisterTransactionConfirmationResponse v) {
+    if (v is! RegisterTransactionConfirmationResponse) checkItemFailed(v, 'RegisterTransactionConfirmationResponse');
+  }
+}
+
+class _ReadonlyRegisterTransactionConfirmationResponse extends RegisterTransactionConfirmationResponse with ReadonlyMessageMixin {}
 

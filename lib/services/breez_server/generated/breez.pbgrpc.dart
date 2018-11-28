@@ -274,6 +274,13 @@ class FundManagerClient extends Client {
           '/breez.FundManager/GetSwapPayment',
           (GetSwapPaymentRequest value) => value.writeToBuffer(),
           (List<int> value) => new GetSwapPaymentReply.fromBuffer(value));
+  static final _$registerTransactionConfirmation = new ClientMethod<
+          RegisterTransactionConfirmationRequest,
+          RegisterTransactionConfirmationResponse>(
+      '/breez.FundManager/RegisterTransactionConfirmation',
+      (RegisterTransactionConfirmationRequest value) => value.writeToBuffer(),
+      (List<int> value) =>
+          new RegisterTransactionConfirmationResponse.fromBuffer(value));
 
   FundManagerClient(ClientChannel channel, {CallOptions options})
       : super(channel, options: options);
@@ -330,6 +337,16 @@ class FundManagerClient extends Client {
       {CallOptions options}) {
     final call = $createCall(
         _$getSwapPayment, new Stream.fromIterable([request]),
+        options: options);
+    return new ResponseFuture(call);
+  }
+
+  ResponseFuture<RegisterTransactionConfirmationResponse>
+      registerTransactionConfirmation(
+          RegisterTransactionConfirmationRequest request,
+          {CallOptions options}) {
+    final call = $createCall(
+        _$registerTransactionConfirmation, new Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -392,6 +409,16 @@ abstract class FundManagerServiceBase extends Service {
         false,
         (List<int> value) => new GetSwapPaymentRequest.fromBuffer(value),
         (GetSwapPaymentReply value) => value.writeToBuffer()));
+    $addMethod(new ServiceMethod<RegisterTransactionConfirmationRequest,
+            RegisterTransactionConfirmationResponse>(
+        'RegisterTransactionConfirmation',
+        registerTransactionConfirmation_Pre,
+        false,
+        false,
+        (List<int> value) =>
+            new RegisterTransactionConfirmationRequest.fromBuffer(value),
+        (RegisterTransactionConfirmationResponse value) =>
+            value.writeToBuffer()));
   }
 
   Future<OpenChannelReply> openChannel_Pre(
@@ -429,6 +456,12 @@ abstract class FundManagerServiceBase extends Service {
     return getSwapPayment(call, await request);
   }
 
+  Future<RegisterTransactionConfirmationResponse>
+      registerTransactionConfirmation_Pre(
+          ServiceCall call, Future request) async {
+    return registerTransactionConfirmation(call, await request);
+  }
+
   Future<OpenChannelReply> openChannel(
       ServiceCall call, OpenChannelRequest request);
   Future<UpdateChannelPolicyReply> updateChannelPolicy(
@@ -443,6 +476,9 @@ abstract class FundManagerServiceBase extends Service {
       ServiceCall call, RedeemRemovedFundsRequest request);
   Future<GetSwapPaymentReply> getSwapPayment(
       ServiceCall call, GetSwapPaymentRequest request);
+  Future<RegisterTransactionConfirmationResponse>
+      registerTransactionConfirmation(
+          ServiceCall call, RegisterTransactionConfirmationRequest request);
 }
 
 class CTPClient extends Client {
@@ -451,6 +487,12 @@ class CTPClient extends Client {
           '/breez.CTP/JoinCTPSession',
           (JoinCTPSessionRequest value) => value.writeToBuffer(),
           (List<int> value) => new JoinCTPSessionResponse.fromBuffer(value));
+  static final _$terminateCTPSession =
+      new ClientMethod<TerminateCTPSessionRequest, TerminateCTPSessionResponse>(
+          '/breez.CTP/TerminateCTPSession',
+          (TerminateCTPSessionRequest value) => value.writeToBuffer(),
+          (List<int> value) =>
+              new TerminateCTPSessionResponse.fromBuffer(value));
 
   CTPClient(ClientChannel channel, {CallOptions options})
       : super(channel, options: options);
@@ -460,6 +502,15 @@ class CTPClient extends Client {
       {CallOptions options}) {
     final call = $createCall(
         _$joinCTPSession, new Stream.fromIterable([request]),
+        options: options);
+    return new ResponseFuture(call);
+  }
+
+  ResponseFuture<TerminateCTPSessionResponse> terminateCTPSession(
+      TerminateCTPSessionRequest request,
+      {CallOptions options}) {
+    final call = $createCall(
+        _$terminateCTPSession, new Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -476,6 +527,14 @@ abstract class CTPServiceBase extends Service {
         false,
         (List<int> value) => new JoinCTPSessionRequest.fromBuffer(value),
         (JoinCTPSessionResponse value) => value.writeToBuffer()));
+    $addMethod(new ServiceMethod<TerminateCTPSessionRequest,
+            TerminateCTPSessionResponse>(
+        'TerminateCTPSession',
+        terminateCTPSession_Pre,
+        false,
+        false,
+        (List<int> value) => new TerminateCTPSessionRequest.fromBuffer(value),
+        (TerminateCTPSessionResponse value) => value.writeToBuffer()));
   }
 
   Future<JoinCTPSessionResponse> joinCTPSession_Pre(
@@ -483,6 +542,13 @@ abstract class CTPServiceBase extends Service {
     return joinCTPSession(call, await request);
   }
 
+  Future<TerminateCTPSessionResponse> terminateCTPSession_Pre(
+      ServiceCall call, Future request) async {
+    return terminateCTPSession(call, await request);
+  }
+
   Future<JoinCTPSessionResponse> joinCTPSession(
       ServiceCall call, JoinCTPSessionRequest request);
+  Future<TerminateCTPSessionResponse> terminateCTPSession(
+      ServiceCall call, TerminateCTPSessionRequest request);
 }
