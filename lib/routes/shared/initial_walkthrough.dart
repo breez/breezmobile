@@ -3,13 +3,15 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/restore_dialog.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
   final BackupBloc _backupBloc;
+  final AccountBloc _accountBloc;
   final bool _isPos;
 
-  InitialWalkthroughPage(this._registrationBloc, this._backupBloc, this._isPos);
+  InitialWalkthroughPage(this._registrationBloc, this._backupBloc, this._accountBloc, this._isPos);
 
   @override
   State createState() => new InitialWalkthroughPageState();
@@ -27,7 +29,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     super.initState();
     widget._backupBloc.multipleRestoreStream.listen((options) {
         showDialog(context: context, builder: (_) =>
-        new RestoreDialog(context, widget._backupBloc, options));
+        new RestoreDialog(context, widget._backupBloc, options, _proceedToRegister));
     });
     _controller = new AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2720))
@@ -43,6 +45,17 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _proceedToRegister() {
+    widget._registrationBloc.registerSink.add(null);
+    if (widget._isPos) {
+      Navigator.of(context).pop();
+    } else {
+      Navigator
+          .of(context)
+          .pushReplacementNamed("/order_card?skip=true");
+    }
   }
 
   @override
@@ -104,16 +117,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                           elevation: 0.0,
                           shape: const StadiumBorder(),
                           onPressed: () {
-                            // start lightninglib
-                            widget._registrationBloc.registerSink.add(null);
-                            if (widget._isPos) {
-                              Navigator.of(context).pop();
-                            } else {
-                              Navigator
-                                  .of(context)
-                                  .pushReplacementNamed("/order_card?skip=true");
-                            }
-                          },
+                            _proceedToRegister();
+                            widget._accountBloc.startLightning();
+                          }
                         ))),
                 new Expanded(
                     flex: 40,
@@ -121,7 +127,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                         padding: EdgeInsets.only(top: 10.0),
                         child: new GestureDetector(
                           onTap: () {
-                            // backup then start lightninglib
+                            // Restore then start lightninglib
                             widget._backupBloc.restoreRequestSink.add("");
                           },
                           child: new Text("Restore from backup", style: theme.restoreLinkStyle,)

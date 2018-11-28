@@ -67,6 +67,14 @@ class BreezAppState extends State<BreezApp> {
   GlobalKey<NavigatorState> _navigatorKey = new GlobalKey<NavigatorState>();
 
   @override
+  void initState() {
+    if (widget._userModel.registered) {
+      widget._blocs.accountBloc.startLightning();
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       navigatorKey: _navigatorKey,
@@ -95,7 +103,7 @@ class BreezAppState extends State<BreezApp> {
             );
           case '/intro':
             return new FadeInRoute(
-              builder: (_) => new InitialWalkthroughPage(widget._blocs.userProfileBloc, widget._blocs.backupBloc, false),
+              builder: (_) => new InitialWalkthroughPage(widget._blocs.userProfileBloc, widget._blocs.backupBloc, widget._blocs.accountBloc, false),
               settings: settings,
             );
           case '/order_card':

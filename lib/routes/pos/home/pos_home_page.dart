@@ -37,7 +37,6 @@ class PosHomeState extends State<PosHome> {
   @override
   void initState() {
     super.initState();
-    widget.accountBloc.startLightning();
     listenNoConnection(context, widget.accountBloc);
   }
 

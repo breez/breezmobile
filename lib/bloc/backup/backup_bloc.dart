@@ -110,12 +110,16 @@ class BackupBloc {
   void _listenRestoreRequests(BreezBridge breezLib) {
     _restoreRequestController.stream.listen((nodeId) {
       _service.restore(nodeId: nodeId).then((restoreResult) {
-        if (restoreResult is List<String>) {
+        if (restoreResult is List<dynamic>) {
           // We got a list of local files to restore from
           // So let's kick-off lighntinglib
-          getApplicationDocumentsDirectory().then((appDir) {
-            breezLib.bootstrapFiles(appDir.path, restoreResult).then((done) {
-              _accountBloc.startLightning();
+          breezLib.bootstrap().then((done){
+            getApplicationDocumentsDirectory().then((appDir) {
+              breezLib.copyBreezConfig(appDir.path).then((done) {
+                breezLib.bootstrapFiles(appDir.path, new List<String>.from(restoreResult)).then((done) {
+                  _accountBloc.startLightning();
+                });
+              });
             });
           });
         }

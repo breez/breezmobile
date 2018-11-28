@@ -92,7 +92,6 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    widget.accountBloc.startLightning();
     registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
     _hiddenRountes.add("/get_refund");

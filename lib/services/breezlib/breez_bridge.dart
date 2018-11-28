@@ -39,7 +39,7 @@ class BreezBridge {
   }
 
   Future start(String workingDir) async{
-    await _copyBreezConfig(workingDir);
+    await copyBreezConfig(workingDir);
     Directory tempDir = await getTemporaryDirectory();
     return _methodChannel.invokeMethod("start", {
       "workingDir": workingDir,
@@ -86,7 +86,7 @@ class BreezBridge {
     BootstrapFilesRequest bootstrap = new BootstrapFilesRequest();
     bootstrap.workingDir = workingDir;
     bootstrap.fullPaths..clear()..addAll(bootstrapFilesPaths);
-    return _invokeMethodWhenReady("bootstrapFiles", {"argument": bootstrap});
+    return _methodChannel.invokeMethod("bootstrapFiles", {"argument": bootstrap.writeToBuffer()});
   }
 
   Future payBlankInvoice(String blankInvoicePaymentRequest, Int64 amount) {
@@ -215,7 +215,7 @@ class BreezBridge {
         .then( (response) => response as String);
   }
 
-  Future _copyBreezConfig(String workingDir) async{
+  Future copyBreezConfig(String workingDir) async{
     String configString = await rootBundle.loadString('conf/breez.conf');
     File file = File(workingDir + "/breez.conf");
     file.writeAsStringSync(configString, flush: true);

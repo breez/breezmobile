@@ -7,8 +7,9 @@ class RestoreDialog extends StatefulWidget {
   final BuildContext context;
   final BackupBloc backupBloc;
   final Map<String, String> optionsMap;
+  final Function proceedFunction;
 
-  RestoreDialog(this.context, this.backupBloc, this.optionsMap);
+  RestoreDialog(this.context, this.backupBloc, this.optionsMap, this.proceedFunction);
 
   @override
   RestoreDialogState createState() {
@@ -55,9 +56,9 @@ class RestoreDialogState extends State<RestoreDialog> {
                     title: Text(widget.optionsMap[keys[index]], style: theme.alertStyle,),
                     subtitle: Text(keys[index], style: theme.bolt11Style,),
                     onTap: () {
-                      Navigator.pop(widget.context);
-                      Navigator.pop(widget.context);
                       widget.backupBloc.restoreRequestSink.add(keys[index]);
+                      Navigator.pop(widget.context);
+                      widget.proceedFunction();
                     },
                   );
                 },

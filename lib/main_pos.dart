@@ -55,7 +55,7 @@ class UserLoaderWidget extends StatelessWidget {
                   );
                 case '/intro':
                   return new FadeInRoute(
-                    builder: (_) => new InitialWalkthroughPage(_blocs.userProfileBloc, _blocs.backupBloc, true),
+                    builder: (_) => new InitialWalkthroughPage(_blocs.userProfileBloc, _blocs.backupBloc, _blocs.accountBloc, true),
                     settings: settings,
                   );
                 case '/transactions':

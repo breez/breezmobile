@@ -329,9 +329,8 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
 
                             return null;
                         });
-
-                        m_result.success(backupPathsList);
                     }
+                    m_result.success(backupPathsList);
                 })
                 .addOnFailureListener(m_activity, e -> {
                     m_result.success(false);
