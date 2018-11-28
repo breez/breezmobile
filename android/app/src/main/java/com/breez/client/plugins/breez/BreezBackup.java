@@ -151,8 +151,12 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
         }
     }
 
-    private void notifyEnableBackup() {
+    private void notifyBackupDisabled() {
         m_eventsListener.success(false);
+    }
+
+    private void notifyBackupEnabled() {
+        m_eventsListener.success(true);
     }
 
     private void updateBackupFiles(List<String> paths, DriveFolder nodeIdFolder) {
@@ -180,6 +184,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
                 .addOnSuccessListener(m_activity,
                         driveFile -> {
                             Log.i(TAG, "File created!");
+                            notifyBackupEnabled();
                         })
                 .addOnFailureListener(m_activity, e -> {
                     Log.e(TAG, "Unable to create file", e);
@@ -191,7 +196,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
 
     private void createNodeIdFolder(List<String> paths, String nodeId) {
         if (m_driveResourceClient == null) {
-            notifyEnableBackup();
+            notifyBackupDisabled();
             return;
         }
 

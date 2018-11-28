@@ -63,8 +63,6 @@ class BackupBloc {
       if (enabled) {
         // Hide the backup disabled indicator
         _backupDisabledController.add(false);
-        // Retry backing up
-        _service.backup(_currentBackupPaths, _currentNodeId);
       } else {
         // Prompt to back up if not explicity disabled
         sharedPrefrences.then((preferences) {

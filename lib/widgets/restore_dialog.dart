@@ -53,7 +53,9 @@ class RestoreDialogState extends State<RestoreDialog> {
                   subtitle: Text(keys[index]),
                   onTap: () {
                     Navigator.pop(widget.context);
+                    Navigator.pop(widget.context);
                     widget.backupBloc.restoreRequestSink.add(keys[index]);
+
                   },
                 );
               },
