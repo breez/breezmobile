@@ -25,7 +25,9 @@ import com.google.android.gms.drive.query.SortableField;
 import com.google.android.gms.tasks.Task;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -304,6 +306,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
     }
 
     private void fetchBackupFiles(DriveFolder nodeIdFolder) {
+        List<String> backupPathsList = new ArrayList<>();
         Query query = new Query.Builder()
                 .build();
 
@@ -312,25 +315,44 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
         queryTask
             .addOnSuccessListener(m_activity,
                 metadataBuffer -> {
-                List<String> backupPathsList = new ArrayList<>();
                     for (Metadata m : metadataBuffer) {
-                        m_driveResourceClient.openFile(m.getDriveId().asDriveFile(), DriveFile.MODE_READ_ONLY).continueWithTask(task -> {
-                            DriveContents fileContents = task.getResult();
+                        m_driveResourceClient.openFile(m.getDriveId().asDriveFile(), DriveFile.MODE_READ_ONLY)
+                                .addOnSuccessListener(contents -> {
+                            DriveContents fileContents = contents;
                             InputStream remoteFileInputStream = fileContents.getInputStream();
 
                             File file = new File(m_activity.getCacheDir().getPath() + "/" + m.getTitle());
-                            FileOutputStream outputStream = new FileOutputStream(file);
+                            FileOutputStream outputStream = null;
+                            try {
+                                outputStream = new FileOutputStream(file);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
 
-                            byte[] buffer = new byte[remoteFileInputStream.available()];
-                            remoteFileInputStream.read(buffer, 0, remoteFileInputStream.available());
-                            outputStream.write(buffer);
+                            byte[] buffer = new byte[0];
+                            try {
+                                buffer = new byte[remoteFileInputStream.available()];
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                                remoteFileInputStream.read(buffer, 0, remoteFileInputStream.available());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                                outputStream.write(buffer);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
 
                             backupPathsList.add(file.getAbsolutePath());
 
-                            return null;
+                            if (backupPathsList.size() == metadataBuffer.getCount()) {
+                                m_result.success(backupPathsList);
+                            }
                         });
                     }
-                    m_result.success(backupPathsList);
                 })
                 .addOnFailureListener(m_activity, e -> {
                     m_result.success(false);
