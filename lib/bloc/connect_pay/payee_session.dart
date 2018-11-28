@@ -4,6 +4,7 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:breez/bloc/connect_pay/firebase_session_channel.dart';
 import 'package:breez/bloc/connect_pay/online_status_updater.dart';
+import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
@@ -33,6 +34,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
   final _sessionErrorsController = new StreamController<PaymentSessionError>.broadcast();
   Stream<PaymentSessionError> get sessionErrors => _sessionErrorsController.stream;
 
+  BreezServer _breezServer = ServiceInjector().breezServer;
   StreamSubscription _invoicesPaidSubscription;
   PaymentSessionChannel _channel;
   BreezBridge _breezLib = ServiceInjector().breezBridge;
@@ -120,7 +122,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
     });
   }
 
-  Future terminate() async {
+  Future terminate({bool permanent=false}) async {
     if (_isTerminated) {
       return Future.value(null);
     }
@@ -131,7 +133,10 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
     await _paymentSessionController.close();
     await _sessionErrorsController.close();
     await _rejectPaymentController.close();    
-    _terminationStreamController.add(null);     
+    _terminationStreamController.add(null);    
+    if (permanent) {
+      await _breezServer.terminateSession(sessionID);
+    }      
   }
 
    bool get _isTerminated => _terminationStreamController.isClosed;

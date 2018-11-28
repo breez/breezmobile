@@ -109,8 +109,12 @@ class ConnectPayBloc {
     } catch(e) {    
       log.info('joinSessionByLink - SessionExpiredException because session does not exist on server', e);
       if (e.runtimeType == GrpcError) {
-        throw e;
-      }
+        GrpcError err = e as GrpcError;
+        if (err.code == StatusCode.unknown) {
+          throw new SessionExpiredException();
+        }
+        throw e;  
+      }      
       throw new SessionExpiredException();
     }
 
@@ -182,7 +186,7 @@ abstract class RemoteSession {
   Stream<PaymentSessionState> get paymentSessionStateStream;
   Stream<PaymentSessionError> get sessionErrors;
   Future start(SessionLinkModel sessionLink);
-  Future terminate();
+  Future terminate({bool permanent = false});
 }
 
 class SessionExpiredException implements Exception {
