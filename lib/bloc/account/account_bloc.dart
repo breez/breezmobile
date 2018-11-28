@@ -78,6 +78,7 @@ class AccountBloc {
   BreezBridge _breezLib;
   Device _device;
   bool _allowReconnect = true;
+  bool _startedLightning = false;
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
       ServiceInjector injector = new ServiceInjector();    
@@ -101,7 +102,9 @@ class AccountBloc {
     }
 
     void startLightning() {
+      if (_startedLightning) return;
       _breezLib.bootstrap().then((done) {
+        _startedLightning = true;
         _breezLib.startLightning();
         _refreshAccount(_breezLib);
         _listenConnectivityChanges(_breezLib);
