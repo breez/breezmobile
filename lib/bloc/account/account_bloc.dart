@@ -74,37 +74,41 @@ class AccountBloc {
 
 
   Stream<Map<String, DownloadFileInfo>>  chainBootstrapProgress;
-  BreezUserModel _currentUser;  
+  BreezUserModel _currentUser;
+  BreezBridge _breezLib;
+  Device _device;
   bool _allowReconnect = true;
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
       ServiceInjector injector = new ServiceInjector();    
-      BreezBridge breezLib = injector.breezBridge;  
+      _breezLib = injector.breezBridge;
       BreezServer server = injector.breezServer;
       Notifications notificationsService = injector.notifications;
-      Device device = injector.device;      
+      _device = injector.device;
 
       _accountController.add(AccountModel.initial());
       _paymentFilterController.add(PaymentFilterModel.initial());
       //listen streams      
-      _listenUserChanges(userProfileStream, breezLib);
-      _listenNewAddressRequests(breezLib);
-      _listenWithdrawalRequests(breezLib);  
-      _listenSentPayments(breezLib);
-      _listenFilterChanges(breezLib);
-      _listenAccountChanges(breezLib);
-      _listenPOSFundingRequests(server, breezLib);
-      _listenMempoolTransactions(device, notificationsService, breezLib);
-      _listenRoutingNodeConnectionChanges(breezLib);
+      _listenUserChanges(userProfileStream, _breezLib);
+      _listenNewAddressRequests(_breezLib);
+      _listenWithdrawalRequests(_breezLib);
+      _listenSentPayments(_breezLib);
+      _listenFilterChanges(_breezLib);
+      _listenAccountChanges(_breezLib);
+      _listenPOSFundingRequests(server, _breezLib);
+      _listenMempoolTransactions(_device, notificationsService, _breezLib);
+      _listenRoutingNodeConnectionChanges(_breezLib);
+    }
 
-       breezLib.bootstrap().then((done) {
-         breezLib.startLightning
-         _refreshAccount(breezLib);
-         _listenConnectivityChanges(breezLib);
-         _listenReconnects(breezLib);
-         _listenRefundableDeposits(breezLib, device);
-         _listenRefundBroadcasts(breezLib);
-       });
+    void startLightning() {
+      _breezLib.bootstrap().then((done) {
+        _breezLib.startLightning();
+        _refreshAccount(_breezLib);
+        _listenConnectivityChanges(_breezLib);
+        _listenReconnects(_breezLib);
+        _listenRefundableDeposits(_breezLib, _device);
+        _listenRefundBroadcasts(_breezLib);
+      });
     }
 
     void _listenRefundableDeposits(BreezBridge breezLib, Device device){

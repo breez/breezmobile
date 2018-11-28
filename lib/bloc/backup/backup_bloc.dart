@@ -5,12 +5,13 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/backup.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 
 class BackupBloc {
   BackupService _service;
-  Stream<AccountModel> _accountStream;
+  AccountBloc _accountBloc;
   String _currentNodeId;
   List<String> _currentBackupPaths;
 
@@ -34,7 +35,7 @@ class BackupBloc {
 
   static const String BACKUP_DISABLED_PREFERENCES_KEY = "backupDisabled";
 
-  BackupBloc(this._accountStream) {
+  BackupBloc(this._accountBloc) {
     ServiceInjector injector = new ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
     _service = BackupService();
@@ -51,7 +52,7 @@ class BackupBloc {
     _listenBackupNowRequests(sharedPrefrences);
     _listenRestoreRequests(breezLib);
 
-    _accountStream.listen((acc) {
+    _accountBloc.accountStream.listen((acc) {
       _currentNodeId = acc.id;
     });
   }
@@ -119,8 +120,9 @@ class BackupBloc {
         // We got a list of local files to restore from
         // So let's kick-off lighntinglib
         getApplicationDocumentsDirectory().then((appDir) {
-          breezLib.bootstrapFiles(appDir.path, restoreResult);
-          breezLib.start(appDir.path);
+          breezLib.bootstrapFiles(appDir.path, restoreResult).then((done) {
+            _accountBloc.startLightning();
+          });
         });
       }
       else if (restoreResult is bool) {

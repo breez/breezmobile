@@ -267,4 +267,10 @@ class BreezBridge {
         }
     );
   }
+
+  void startLightning() {
+    getApplicationDocumentsDirectory().then((appDir) {
+      start(appDir.path);
+    });
+  }
 }
