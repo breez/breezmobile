@@ -3,6 +3,7 @@ package com.breez.client.plugins.breez.breezlib;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import io.flutter.plugin.common.ActivityLifecycleListener;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.EventChannel.StreamHandler;
@@ -14,7 +15,7 @@ import java.util.*;
 import androidx.work.*;
 import java.util.concurrent.*;
 
-public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNotifier, StreamHandler {
+public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNotifier, StreamHandler, ActivityLifecycleListener {
 
     public static final String BREEZ_CHANNEL_NAME = "com.breez.client/breez_lib";
     public static final String BREEZ_STREAM_NAME = "com.breez.client/breez_lib_notifications";
@@ -23,6 +24,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
     private Map<String, Method> _bindingMethods = new HashMap<String, Method>();
 
     public Breez(PluginRegistry.Registrar registrar) {
+        registrar.view().addActivityLifecycleListener(this);
         new MethodChannel(registrar.messenger(), BREEZ_CHANNEL_NAME).setMethodCallHandler(this);
         new EventChannel(registrar.messenger(), BREEZ_STREAM_NAME).setStreamHandler(this);
         Method[] methods = Bindings.class.getDeclaredMethods();
@@ -101,6 +103,11 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
         if (m_eventsListener != null) {
             m_eventsListener.success(marshaledData);
         }
+    }
+
+    @Override
+    public void onPostResume() {
+        Bindings.onResume();
     }
 
     private class BreezTask extends AsyncTask<Object, Integer, Void> {

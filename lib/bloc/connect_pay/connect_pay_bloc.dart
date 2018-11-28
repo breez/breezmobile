@@ -10,6 +10,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
+import 'package:grpc/grpc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
 
@@ -28,10 +29,12 @@ class ConnectPayBloc {
   final BehaviorSubject<String> _pendingCTPLinkController = new BehaviorSubject<String>();
   Stream<String> get pendingCTPLinkStream => _pendingCTPLinkController.stream;
 
+  Stream<BreezUserModel> _userStream;
   BreezUserModel _currentUser;
   AccountModel _currentAccount;  
 
   ConnectPayBloc(Stream<BreezUserModel> userStream, Stream<AccountModel> accountStream) {
+    _userStream = userStream;
     userStream.listen((user) => _currentUser = user);
     accountStream.listen(onAccountChanged);
     _monitorSessionInvites();
@@ -105,6 +108,9 @@ class ConnectPayBloc {
       await _breezServer.joinSession(currentSession.runtimeType == PayerRemoteSession, _currentUser.name, _currentUser.token, sessionID: sessionLink.sessionID);
     } catch(e) {    
       log.info('joinSessionByLink - SessionExpiredException because session does not exist on server', e);
+      if (e.runtimeType == GrpcError) {
+        throw e;
+      }
       throw new SessionExpiredException();
     }
 
@@ -133,7 +139,14 @@ class ConnectPayBloc {
         //if our account is not active yet, just persist the link
         if (!_currentAccount.active) {
           _pendingCTPLinkController.add(link);
-          return;
+          StreamSubscription<BreezUserModel> userSubscription;
+          userSubscription = _userStream.listen((user) {
+            if (user.token != null) {
+              _breezLib.registerReceivePaymentReadyNotification(user.token);
+              userSubscription.cancel(); 
+            }
+          });          
+          return;          
         }
 
         //othersise push the link to the invites stream.   
