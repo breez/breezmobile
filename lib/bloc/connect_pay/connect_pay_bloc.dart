@@ -17,6 +17,7 @@ import 'package:breez/logger.dart';
 /*
 Bloc that responsible for creating online payments session.
 The handling of the session itself is not done here but within the concrete session implementation.
+
 */
 class ConnectPayBloc {
   static const String PENDING_CTP_LINK = 'pending_ctp_link';
