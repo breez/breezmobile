@@ -739,6 +739,7 @@ class CreateRatchetSessionRequest extends GeneratedMessage {
     ..aOS(1, 'secret')
     ..aOS(2, 'remotePubKey')
     ..aOS(3, 'sessionID')
+    ..a<Int64>(4, 'expiry', PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -772,6 +773,11 @@ class CreateRatchetSessionRequest extends GeneratedMessage {
   set sessionID(String v) { $_setString(2, v); }
   bool hasSessionID() => $_has(2);
   void clearSessionID() => clearField(3);
+
+  Int64 get expiry => $_getI64(3);
+  set expiry(Int64 v) { $_setInt64(3, v); }
+  bool hasExpiry() => $_has(3);
+  void clearExpiry() => clearField(4);
 }
 
 class _ReadonlyCreateRatchetSessionRequest extends CreateRatchetSessionRequest with ReadonlyMessageMixin {}
@@ -967,4 +973,37 @@ class RatchetDecryptRequest extends GeneratedMessage {
 }
 
 class _ReadonlyRatchetDecryptRequest extends RatchetDecryptRequest with ReadonlyMessageMixin {}
+
+class BootstrapFilesRequest extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('BootstrapFilesRequest')
+    ..aOS(1, 'workingDir')
+    ..pPS(2, 'fullPaths')
+    ..hasRequiredFields = false
+  ;
+
+  BootstrapFilesRequest() : super();
+  BootstrapFilesRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  BootstrapFilesRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  BootstrapFilesRequest clone() => new BootstrapFilesRequest()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static BootstrapFilesRequest create() => new BootstrapFilesRequest();
+  static PbList<BootstrapFilesRequest> createRepeated() => new PbList<BootstrapFilesRequest>();
+  static BootstrapFilesRequest getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlyBootstrapFilesRequest();
+    return _defaultInstance;
+  }
+  static BootstrapFilesRequest _defaultInstance;
+  static void $checkItem(BootstrapFilesRequest v) {
+    if (v is! BootstrapFilesRequest) checkItemFailed(v, 'BootstrapFilesRequest');
+  }
+
+  String get workingDir => $_getS(0, '');
+  set workingDir(String v) { $_setString(0, v); }
+  bool hasWorkingDir() => $_has(0);
+  void clearWorkingDir() => clearField(1);
+
+  List<String> get fullPaths => $_getList(1);
+}
+
+class _ReadonlyBootstrapFilesRequest extends BootstrapFilesRequest with ReadonlyMessageMixin {}
 
