@@ -36,7 +36,7 @@ class BreezServer {
       _invoicerClient = new InvoicerClient(_channel, options: callOptions);
       _posClient = new PosClient(_channel, options: callOptions);
       _cardOrdererClient = new CardOrdererClient(_channel, options: callOptions);
-      _ctpClient = new CTPClient(_channel, options: CallOptions(timeout: Duration(seconds: 3)));
+      _ctpClient = new CTPClient(_channel, options: CallOptions(timeout: Duration(seconds: 10)));
     }
   }
 
