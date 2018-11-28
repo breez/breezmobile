@@ -33,7 +33,7 @@ class PayerSessionWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              SessionInstructions(_PayerInstructions(sessionState, _account), actions: _getActions(sessionState), onAction: (action) => _onAction(context, action)),              
+              SessionInstructions(_PayerInstructions(sessionState, _account)),              
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                 child: PeersConnection(sessionState, onShareInvite: () {
@@ -55,19 +55,6 @@ class PayerSessionWidget extends StatelessWidget {
 
   bool waitingFormPayee(PaymentSessionState sessionState) {
     return !sessionState.payeeData.status.online && sessionState.payerData.amount == null || sessionState.payerData.amount != null;
-  }
-
-  _onAction(BuildContext context, String action){
-    if (action == "Leave Payment") {
-      _onReset();
-    }
-  }
-
-  _getActions(PaymentSessionState sessionState){
-    if (sessionState.invitationSent && sessionState.payeeData.paymentRequest == null) {
-      return ["Leave Payment"];
-    }
-    return null;
   }
 }
 

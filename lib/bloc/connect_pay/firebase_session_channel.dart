@@ -63,6 +63,8 @@ class PaymentSessionChannel {
       await _theirDataListener.cancel();
       await _sessionRootListener.cancel();
       await _peerResetListener.cancel();
+      await peerResetStreamController.close();
+      await _peerTerminatedController.close();
       if (destroyHistory) {
         await FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID').remove();
       }
@@ -96,9 +98,8 @@ class PaymentSessionChannel {
     });
   }
   
-  void _watchSessionTermination() {
-    var terminationPath = _payer ? _sessionID : '$_sessionID/payer';
-    var sessionRoot = FirebaseDatabase.instance.reference().child('remote-payments/$terminationPath');
+  void _watchSessionTermination() {    
+    var sessionRoot = FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID');
     _sessionRootListener = sessionRoot.onValue.listen((event) {
       if (event.snapshot.value == null) {        
         _peerTerminatedController.add(null);

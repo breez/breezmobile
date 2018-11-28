@@ -4,6 +4,7 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:breez/bloc/connect_pay/firebase_session_channel.dart';
 import 'package:breez/bloc/connect_pay/online_status_updater.dart';
+import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
@@ -33,6 +34,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
   final _sessionErrorsController = new StreamController<PaymentSessionError>.broadcast();
   Stream<PaymentSessionError> get sessionErrors => _sessionErrorsController.stream;
 
+  BreezServer _breezServer = ServiceInjector().breezServer;
   StreamSubscription _invoicesPaidSubscription;
   PaymentSessionChannel _channel;
   BreezBridge _breezLib = ServiceInjector().breezBridge;
@@ -53,6 +55,9 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
     this.sessionLink = sessionLink;  
     await _loadPersistedPayerDetails();      
     _channel = new PaymentSessionChannel(sessionID, false, interceptor: new SessionEncryption(_breezLib, sessionID));
+    _channel.peerTerminatedStream.listen((_){
+      terminate(permanent: true);
+    });
     _resetSessionState();
     _channel.sendResetMessage();
     _handleIncomingMessages();    
@@ -120,18 +125,21 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
     });
   }
 
-  Future terminate() async {
+  Future terminate({bool permanent=false}) async {
     if (_isTerminated) {
       return Future.value(null);
     }
     await _invoicesPaidSubscription.cancel();
-    await _channel.terminate(destroyHistory: false);
     await stopStatusUpdates();
+    await _channel.terminate(destroyHistory: permanent);    
     await _approvePaymentController.close();
     await _paymentSessionController.close();
     await _sessionErrorsController.close();
     await _rejectPaymentController.close();    
-    _terminationStreamController.add(null);     
+    _terminationStreamController.add(null);    
+    if (permanent) {
+      await _breezServer.terminateSession(sessionID);
+    }      
   }
 
    bool get _isTerminated => _terminationStreamController.isClosed;

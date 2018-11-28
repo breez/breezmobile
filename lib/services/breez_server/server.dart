@@ -36,7 +36,7 @@ class BreezServer {
       _invoicerClient = new InvoicerClient(_channel, options: callOptions);
       _posClient = new PosClient(_channel, options: callOptions);
       _cardOrdererClient = new CardOrdererClient(_channel, options: callOptions);
-      _ctpClient = new CTPClient(_channel, options: CallOptions(timeout: Duration(seconds: 10)));
+      _ctpClient = new CTPClient(_channel, options: CallOptions(timeout: Duration(seconds: 3)));
     }
   }
 
@@ -97,6 +97,14 @@ class BreezServer {
         ..partyName = userName
         ..notificationToken = notificationToken
         ..sessionID = sessionID ?? ""
+    );
+  }
+
+  Future<TerminateCTPSessionResponse> terminateSession(String sessionID) async {
+    await initChannel();
+    return await _ctpClient.terminateCTPSession(
+      TerminateCTPSessionRequest()
+        ..sessionID = sessionID
     );
   }
 }
