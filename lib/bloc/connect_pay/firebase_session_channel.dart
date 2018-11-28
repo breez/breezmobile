@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:rxdart/rxdart.dart';
 
 /*
 This class abstracts a "channel" that handles all communciation between payment session peers.
@@ -37,7 +38,7 @@ class PaymentSessionChannel {
     _theirKey = this._payer ? "payee" : "payer";
     _listenIncomingMessages();
     Future sessionCreated =
-        !_payer ? Future.value(null) : FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID').update({"payer": "created"});
+        !_payer ? Future.value(null) : FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID').update({"lastUpdated": ServerValue.timestamp});
     sessionCreated.then((res) => _watchSessionTermination);
     _watchSessionTermination();
     _watchPeerReset();
@@ -50,7 +51,9 @@ class PaymentSessionChannel {
       toSend = interceptor.transformOutgoingMessage(stateString);
     }
     return toSend.then( (valueToSend) {
-      return FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID/$_myKey').update({"state": valueToSend});
+      if (!_terminated) {
+        return FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID/$_myKey').update({"state": valueToSend});
+      }
     });    
   }
 
@@ -60,6 +63,7 @@ class PaymentSessionChannel {
 
   Future terminate({bool destroyHistory = false}) async {
     if (!_terminated) {
+      _terminated = true;
       await _theirDataListener.cancel();
       await _sessionRootListener.cancel();
       await _peerResetListener.cancel();
@@ -72,8 +76,7 @@ class PaymentSessionChannel {
       _activeChannels--;
       if (_activeChannels == 0) {
         await FirebaseDatabase.instance.goOffline();
-      }
-      _terminated = true;
+      }      
     }
   }
 
@@ -110,10 +113,12 @@ class PaymentSessionChannel {
   void _watchPeerReset(){
     var terminationPath = _payer ? '$_sessionID/payer' : '$_sessionID/payee';
     var terminationRef = FirebaseDatabase.instance.reference().child('remote-payments/$terminationPath');
-    _peerResetListener = terminationRef.onValue.listen((event) {
-      if (event.snapshot.value == null) {        
-        peerResetStreamController.add(null);
-      }      
-    });
+    _peerResetListener = Observable(terminationRef.onValue)
+      .delay(Duration(milliseconds: 500))
+      .listen((event) {
+        if (event.snapshot.value == null) {        
+          peerResetStreamController.add(null);
+        }      
+      });
   }
 }
