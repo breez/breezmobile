@@ -109,23 +109,24 @@ class BackupBloc {
 
   void _listenRestoreRequests(BreezBridge breezLib) {
     _restoreRequestController.stream.listen((nodeId) {
-      var restoreResult = _service.restore(nodeId: nodeId);
-      if (restoreResult is Map) {
-        // We need to pick from different node IDs
-        _multipleRestoreController.add(restoreResult);
-      }
-      else if (restoreResult is List) {
-        // We got a list of local files to restore from
-        // So let's kick-off lighntinglib
-        getApplicationDocumentsDirectory().then((appDir) {
-          breezLib.bootstrapFiles(appDir.path, restoreResult).then((done) {
-            _accountBloc.startLightning();
+      _service.restore(nodeId: nodeId).then((restoreResult) {
+        if (restoreResult is List<String>) {
+          // We got a list of local files to restore from
+          // So let's kick-off lighntinglib
+          getApplicationDocumentsDirectory().then((appDir) {
+            breezLib.bootstrapFiles(appDir.path, restoreResult).then((done) {
+              _accountBloc.startLightning();
+            });
           });
-        });
-      }
-      else if (restoreResult is bool) {
-        // We failed for some reason
-      }
+        }
+        else if (restoreResult is bool) {
+          // We failed for some reason
+        }
+        else {
+          // We need to pick from different node IDs
+          _multipleRestoreController.add(new Map<String, String>.from(restoreResult));
+        }
+      });
     });
   }
 

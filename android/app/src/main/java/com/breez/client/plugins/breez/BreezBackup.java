@@ -140,13 +140,17 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
             listBackupFolders();
         }
         if (call.method.equals("restore")) {
-            m_result = result;
-            String nodeId = call.argument("nodeId").toString();
-            if (nodeId.isEmpty()) {
-                listBackupFolders();
+            if (m_driveResourceClient == null) {
+                promptToAuthorize();
             }
             else {
-                getNodeIdFolder(nodeId);
+                m_result = result;
+                String nodeId = call.argument("nodeId").toString();
+                if (nodeId.isEmpty()) {
+                    listBackupFolders();
+                } else {
+                    getNodeIdFolder(nodeId);
+                }
             }
         }
     }
