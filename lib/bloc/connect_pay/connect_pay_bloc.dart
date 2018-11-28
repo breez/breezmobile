@@ -10,6 +10,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
+import 'package:grpc/grpc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
 
@@ -107,6 +108,9 @@ class ConnectPayBloc {
       await _breezServer.joinSession(currentSession.runtimeType == PayerRemoteSession, _currentUser.name, _currentUser.token, sessionID: sessionLink.sessionID);
     } catch(e) {    
       log.info('joinSessionByLink - SessionExpiredException because session does not exist on server', e);
+      if (e.runtimeType == GrpcError) {
+        throw e;
+      }
       throw new SessionExpiredException();
     }
 
