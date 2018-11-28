@@ -43,22 +43,25 @@ class RestoreDialogState extends State<RestoreDialog> {
           ),
           new Padding(
             padding: EdgeInsets.only(top: 24.0),
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: widget.optionsMap.length,
-              itemBuilder: (BuildContext context, int index) {
-                var keys = widget.optionsMap.keys.toList();
-                return ListTile(
-                  title: Text(widget.optionsMap[keys[index]]),
-                  subtitle: Text(keys[index]),
-                  onTap: () {
-                    Navigator.pop(widget.context);
-                    Navigator.pop(widget.context);
-                    widget.backupBloc.restoreRequestSink.add(keys[index]);
-
-                  },
-                );
-              },
+            child: Container(
+              width: 150.0,
+              height: 100.0,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: widget.optionsMap.length,
+                itemBuilder: (BuildContext context, int index) {
+                  var keys = widget.optionsMap.keys.toList();
+                  return ListTile(
+                    title: Text(widget.optionsMap[keys[index]], style: theme.alertStyle,),
+                    subtitle: Text(keys[index], style: theme.bolt11Style,),
+                    onTap: () {
+                      Navigator.pop(widget.context);
+                      Navigator.pop(widget.context);
+                      widget.backupBloc.restoreRequestSink.add(keys[index]);
+                    },
+                  );
+                },
+              ),
             ),
           ),
           new Row(
