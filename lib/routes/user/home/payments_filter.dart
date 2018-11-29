@@ -88,13 +88,20 @@ class PaymentsFilterState extends State<PaymentsFilter> {
             size: 24.0,
           ),
           onPressed: () =>
-              showDialog(
-                context: context,
-                builder: (_) => CalendarDialog(context, widget._paymentsModel.firstDate),
-              ).then((result) {
-                widget._accountBloc.paymentFilterSink.add(widget._paymentsModel.filter.copyWith(
-                    filter: _getFilterType(_filter), startDate: result[0], endDate: result[1]));
-              }),
+          widget._paymentsModel.firstDate != null ?
+          showDialog(
+            context: context,
+            builder: (_) =>
+                CalendarDialog(context, widget._paymentsModel.firstDate),
+          ).then((result) {
+            widget._accountBloc.paymentFilterSink.add(
+                widget._paymentsModel.filter.copyWith(
+                    filter: _getFilterType(_filter),
+                    startDate: result[0],
+                    endDate: result[1]));
+          })
+              : Scaffold.of(context).showSnackBar(new SnackBar(
+              content: new Text("Please wait while Breez is loading transactions."))),
         ),
       ),
     );
