@@ -39,66 +39,69 @@ class PaymentRequestDialog extends StatelessWidget {
               )
             ]),
       contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-        invoice.payeeName == null ? Container() : new Text(
-          "${invoice.payeeName}",
-          style: theme.paymentRequestTitleStyle,
-          textAlign: TextAlign.center,
-        ),
-        invoice.payeeName == null || invoice.payeeName.isEmpty ? new Text(
-          "You are requested to pay:",
-          style: theme.paymentRequestSubtitleStyle,
-          textAlign: TextAlign.center,
-        ) : new Text(
-          "is requesting you to pay:",
-          style: theme.paymentRequestSubtitleStyle,
-          textAlign: TextAlign.center,
-        ),
-        StreamBuilder<AccountModel>(
-            stream: accountBloc.accountStream,
-            builder: (context, snapshot) {
-              return snapshot.hasData
-                  ? new Text(
-                      snapshot.data.currency.format(invoice.amount),
-                      style: theme.paymentRequestAmountStyle,
-                      textAlign: TextAlign.center,
-                    )
-                  : new Text(
-                      invoice.amount.toRadixString(10) + " Sat",
-                      style: theme.paymentRequestAmountStyle,
-                      textAlign: TextAlign.center,
-                    );
-            }),
-        invoice.description == null || invoice.description.isEmpty
-            ? Container()
-            : Padding(padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0), child: AutoSizeText(
-          invoice.description,
-          style: theme.paymentRequestSubtitleStyle,
-          textAlign: invoice.description.length > 40 ? TextAlign.justify : TextAlign.center,
-          maxLines: 3,
-        ),),
-        new Padding(padding: EdgeInsets.only(top: 24.0)),
-        new Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.end,
+      content: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            new SimpleDialogOption(
-              onPressed: () => Navigator.pop(context),
-              child: new Text("CANCEL", style: theme.buttonStyle),
-            ),
-            new SimpleDialogOption(
-              onPressed: (() {
-                accountBloc.sentPaymentsSink.add(invoice.rawPayReq);
-                Navigator.pop(context);
+          invoice.payeeName == null ? Container() : new Text(
+            "${invoice.payeeName}",
+            style: theme.paymentRequestTitleStyle,
+            textAlign: TextAlign.center,
+          ),
+          invoice.payeeName == null || invoice.payeeName.isEmpty ? new Text(
+            "You are requested to pay:",
+            style: theme.paymentRequestSubtitleStyle,
+            textAlign: TextAlign.center,
+          ) : new Text(
+            "is requesting you to pay:",
+            style: theme.paymentRequestSubtitleStyle,
+            textAlign: TextAlign.center,
+          ),
+          StreamBuilder<AccountModel>(
+              stream: accountBloc.accountStream,
+              builder: (context, snapshot) {
+                return snapshot.hasData
+                    ? new Text(
+                        snapshot.data.currency.format(invoice.amount),
+                        style: theme.paymentRequestAmountStyle,
+                        textAlign: TextAlign.center,
+                      )
+                    : new Text(
+                        invoice.amount.toRadixString(10) + " Sat",
+                        style: theme.paymentRequestAmountStyle,
+                        textAlign: TextAlign.center,
+                      );
               }),
-              child: new Text("APPROVE", style: theme.buttonStyle),
-            ),
-          ],
-        ),
-      ],),
+          invoice.description == null || invoice.description.isEmpty
+              ? Container()
+              : Padding(padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0), child: AutoSizeText(
+            invoice.description,
+            style: theme.paymentRequestSubtitleStyle,
+            textAlign: invoice.description.length > 40 ? TextAlign.justify : TextAlign.center,
+            maxLines: 3,
+          ),),
+          new Padding(padding: EdgeInsets.only(top: 24.0)),
+          new Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              new SimpleDialogOption(
+                onPressed: () => Navigator.pop(context),
+                child: new Text("CANCEL", style: theme.buttonStyle),
+              ),
+              new SimpleDialogOption(
+                onPressed: (() {
+                  accountBloc.sentPaymentsSink.add(invoice.rawPayReq);
+                  Navigator.pop(context);
+                }),
+                child: new Text("APPROVE", style: theme.buttonStyle),
+              ),
+            ],
+          ),
+        ],),
+      ),
     );
   }
 }

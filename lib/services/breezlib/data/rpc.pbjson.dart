@@ -214,6 +214,7 @@ const CreateRatchetSessionRequest$json = const {
     const {'1': 'secret', '3': 1, '4': 1, '5': 9, '10': 'secret'},
     const {'1': 'remotePubKey', '3': 2, '4': 1, '5': 9, '10': 'remotePubKey'},
     const {'1': 'sessionID', '3': 3, '4': 1, '5': 9, '10': 'sessionID'},
+    const {'1': 'expiry', '3': 4, '4': 1, '5': 4, '10': 'expiry'},
   ],
 };
 

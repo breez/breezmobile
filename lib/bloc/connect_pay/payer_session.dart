@@ -64,7 +64,9 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       terminate(permanent: true);
     });
     _resetSessionState();
-    _channel.sendResetMessage();
+    if (_currentSession.payeeData.userName != null || _currentSession.payeeData.imageURL != null) {
+      _channel.sendResetMessage();
+    }
     _handleIncomingMessages();    
   }
 
