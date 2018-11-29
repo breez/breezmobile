@@ -62,7 +62,7 @@ class BackupBloc {
 
   void _listenBackupNowRequests(Future<SharedPreferences> sharedPrefrences) {
     _backupNowController.stream.listen((data) {
-      backup();
+      backup(_currentBackupPaths, _currentNodeId);
     });
   }
 
@@ -75,7 +75,7 @@ class BackupBloc {
       sharedPrefrences.then((preferences) {
         if (preferences.getBool(BACKUP_PROMPT_DISABLED_PREFERENCES_KEY) ?? false) {
           // Prompt is disabled so go and back up
-          backup();
+          backup(event.data, _currentNodeId);
         }
         else {
           // Prompting is enabled so show the dialog
@@ -111,8 +111,8 @@ class BackupBloc {
     });
   }
 
-  void backup() {
-    _service.backup(_currentBackupPaths, _currentNodeId).catchError((error) {
+  void backup(List<String> backupPaths, String nodeId) {
+    _service.backup(backupPaths, nodeId).catchError((error) {
       _backupDisabledIndicatorController.add(true);
     });
   }
