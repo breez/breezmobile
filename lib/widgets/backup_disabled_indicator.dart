@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -16,15 +17,23 @@ class BackupDisabledIndicator extends StatefulWidget {
 }
 
 class BackupDisabledIndicatorState extends State<BackupDisabledIndicator> {
+  StreamSubscription<bool> _promptEnableSubscription;
+
   @override
   void initState() {
-    widget._backupBloc.promptEnableStream.listen((enable) {
+    _promptEnableSubscription = widget._backupBloc.promptEnableStream.listen((enable) {
       if (enable) {
         showDialog(context: context, builder: (_) =>
             new EnableBackupDialog(context, widget._backupBloc));
       }
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _promptEnableSubscription.cancel();
+    super.dispose();
   }
 
   @override
