@@ -96,7 +96,7 @@ class ConnectPayBloc {
     
     RemoteSession currentSession;
     try {
-      var sessionResponse = await _breezServer.joinSession(currentSession.runtimeType == PayerRemoteSession, _currentUser.name, _currentUser.token, sessionID: sessionLink.sessionID);
+      var sessionResponse = await _breezServer.joinSession(sessionInfo.initiated, _currentUser.name, _currentUser.token, sessionID: sessionLink.sessionID);
       //if we have already a session and it is our intiated then we are a returning payer
       if (sessionInfo.initiated) {      
           currentSession = new PayerRemoteSession(_currentUser);
