@@ -27,191 +27,194 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
       ),
     ]),
     contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        paymentInfo.title == null || paymentInfo.title.isEmpty
-            ? Container()
-            : Padding(padding: EdgeInsets.only(left: 16.0,right: 16.0),child:AutoSizeText(
-                paymentInfo.title,
-                style: theme.paymentRequestAmountStyle,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-              ),),
-        paymentInfo.description == null || paymentInfo.description.isEmpty
-            ? Container()
-            : Padding(padding: EdgeInsets.only(left: 16.0,right: 16.0),child:AutoSizeText(
-          paymentInfo.description,
-          style: theme.paymentDetailsTitleStyle,
-          textAlign: paymentInfo.description.length > 40 ? TextAlign.justify : TextAlign.center,
-          maxLines: 3,
-        ),),
-        paymentInfo.amount == null
-            ? Container()
-            : Container(
-                height: 36.0,
-                child: ListTile(
-                  title: Text(
-                    "Amount",
-                    style: theme.paymentDetailsTitleStyle,
-                    textAlign: TextAlign.left,
-                  ),
-                  trailing: Text(
-                    (paymentInfo.type == PaymentType.SENT || paymentInfo.type == PaymentType.WITHDRAWAL ? "-" : "+") +
-                        paymentInfo.currency.format(paymentInfo.amount),
-                    style: theme.paymentDetailsSubtitleStyle,
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ),
-        paymentInfo.creationTimestamp == null
-            ? Container()
-            : Container(
-                height: 36.0,
-                child: ListTile(
-                  title: Text(
-                    "Date & Time",
-                    style: theme.paymentDetailsTitleStyle,
-                    textAlign: TextAlign.left,
-                  ),
-                  trailing: Text(
-                    DateUtils.formatYearMonthDayHourMinute(
-                        DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)),
-                    style: theme.paymentDetailsSubtitleStyle,
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ),
-        Padding(padding: EdgeInsets.only(top: 8.0)),
-        paymentInfo.destination == null || paymentInfo.destination.isEmpty
-            ? Container()
-            : Theme(
-                data: _expansionTileTheme,
-                child: ExpansionTile(
+    content: Container(
+      width: MediaQuery.of(context).size.width,      
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          paymentInfo.title == null || paymentInfo.title.isEmpty
+              ? Container()
+              : Padding(padding: EdgeInsets.only(left: 16.0,right: 16.0),child:AutoSizeText(
+                  paymentInfo.title,                
+                  style: theme.paymentRequestAmountStyle,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                ),),
+          paymentInfo.description == null || paymentInfo.description.isEmpty
+              ? Container()
+              : Padding(padding: EdgeInsets.only(left: 16.0,right: 16.0),child:AutoSizeText(
+            paymentInfo.description,
+            style: theme.paymentDetailsTitleStyle,
+            textAlign: paymentInfo.description.length > 40 ? TextAlign.justify : TextAlign.center,
+            maxLines: 3,
+          ),),
+          paymentInfo.amount == null
+              ? Container()
+              : Container(
+                  height: 36.0,
+                  child: ListTile(
                     title: Text(
-                      "Node ID",
+                      "Amount",
                       style: theme.paymentDetailsTitleStyle,
+                      textAlign: TextAlign.left,
                     ),
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 16.0, right: 0.0),
-                              child: Text('${paymentInfo.destination}',
-                                  textAlign: TextAlign.left,
-                                  overflow: TextOverflow.clip,
-                                  maxLines: 4,
-                                  style: theme.paymentDetailsNodeIdStyle),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 0,
-                            child: Padding(
-                                padding: EdgeInsets.zero,
-                                child: new Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    IconButton(
-                                      alignment: Alignment.centerRight,
-                                      tooltip: "Copy Node ID",
-                                      iconSize: 16.0,
-                                      color: theme.BreezColors.blue[500],
-                                      icon: Icon(
-                                        IconData(0xe90b, fontFamily: 'icomoon'),
-                                      ),
-                                      onPressed: () {
-                                        Clipboard.setData(ClipboardData(text: paymentInfo.destination));
-                                        Navigator.pop(context);
-                                        Scaffold.of(context).showSnackBar(_buildSnackBar("Node ID"));
-                                      },
-                                    ),
-                                    IconButton(
-                                      padding: EdgeInsets.only(right: 8.0),
-                                      tooltip: "Share Node ID",
-                                      iconSize: 16.0,
-                                      color: theme.BreezColors.blue[500],
-                                      icon: Icon(Icons.share),
-                                      onPressed: () {
-                                        Share.share(paymentInfo.destination);
-                                      },
-                                    ),
-                                  ],
-                                )),
-                          ),
-                        ],
+                    trailing: Text(
+                      (paymentInfo.type == PaymentType.SENT || paymentInfo.type == PaymentType.WITHDRAWAL ? "-" : "+") +
+                          paymentInfo.currency.format(paymentInfo.amount),
+                      style: theme.paymentDetailsSubtitleStyle,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                ),
+          paymentInfo.creationTimestamp == null
+              ? Container()
+              : Container(
+                  height: 36.0,
+                  child: ListTile(
+                    title: Text(
+                      "Date & Time",
+                      style: theme.paymentDetailsTitleStyle,
+                      textAlign: TextAlign.left,
+                    ),
+                    trailing: Text(
+                      DateUtils.formatYearMonthDayHourMinute(
+                          DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)),
+                      style: theme.paymentDetailsSubtitleStyle,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                ),
+          Padding(padding: EdgeInsets.only(top: 8.0)),
+          paymentInfo.destination == null || paymentInfo.destination.isEmpty
+              ? Container()
+              : Theme(
+                  data: _expansionTileTheme,
+                  child: ExpansionTile(
+                      title: Text(
+                        "Node ID",
+                        style: theme.paymentDetailsTitleStyle,
                       ),
-                    ]),
-              ),
-        paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
-            ? Container()
-            : Theme(
-                data: _expansionTileTheme,
-                child: ExpansionTile(
-                    title: Text(
-                      "Transaction Hash",
-                      style: theme.paymentDetailsTitleStyle,
-                    ),
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 16.0, right: 0.0),
-                              child: Text('${paymentInfo.paymentHash}',
-                                  textAlign: TextAlign.left,
-                                  overflow: TextOverflow.clip,
-                                  maxLines: 4,
-                                  style: theme.paymentDetailsNodeIdStyle),
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 16.0, right: 0.0),
+                                child: Text('${paymentInfo.destination}',
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.clip,
+                                    maxLines: 4,
+                                    style: theme.paymentDetailsNodeIdStyle),
+                              ),
                             ),
-                          ),
-                          Expanded(
-                            flex: 0,
-                            child: Padding(
-                                padding: EdgeInsets.zero,
-                                child: new Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    IconButton(
-                                      alignment: Alignment.centerRight,
-                                      padding: EdgeInsets.only(right: 8.0),
-                                      tooltip: "Copy Transaction Hash",
-                                      iconSize: 16.0,
-                                      color: theme.BreezColors.blue[500],
-                                      icon: Icon(
-                                        IconData(0xe90b, fontFamily: 'icomoon'),
+                            Expanded(
+                              flex: 0,
+                              child: Padding(
+                                  padding: EdgeInsets.zero,
+                                  child: new Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      IconButton(
+                                        alignment: Alignment.centerRight,
+                                        tooltip: "Copy Node ID",
+                                        iconSize: 16.0,
+                                        color: theme.BreezColors.blue[500],
+                                        icon: Icon(
+                                          IconData(0xe90b, fontFamily: 'icomoon'),
+                                        ),
+                                        onPressed: () {
+                                          Clipboard.setData(ClipboardData(text: paymentInfo.destination));
+                                          Navigator.pop(context);
+                                          Scaffold.of(context).showSnackBar(_buildSnackBar("Node ID"));
+                                        },
                                       ),
-                                      onPressed: () {
-                                        Clipboard.setData(ClipboardData(text: paymentInfo.paymentHash));
-                                        Navigator.pop(context);
-                                        Scaffold.of(context).showSnackBar(_buildSnackBar("Transaction Hash"));
-                                      },
-                                    ),
-                                    IconButton(
-                                      padding: EdgeInsets.only(right: 8.0),
-                                      tooltip: "Share Transaction Hash",
-                                      iconSize: 16.0,
-                                      color: theme.BreezColors.blue[500],
-                                      icon: Icon(Icons.share),
-                                      onPressed: () {
-                                        Share.share(paymentInfo.paymentHash);
-                                      },
-                                    ),
-                                  ],
-                                )),
-                          ),
-                        ],
-                      )
-                    ]),
-              ),
-      ],
+                                      IconButton(
+                                        padding: EdgeInsets.only(right: 8.0),
+                                        tooltip: "Share Node ID",
+                                        iconSize: 16.0,
+                                        color: theme.BreezColors.blue[500],
+                                        icon: Icon(Icons.share),
+                                        onPressed: () {
+                                          Share.share(paymentInfo.destination);
+                                        },
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ]),
+                ),
+          paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
+              ? Container()
+              : Theme(
+                  data: _expansionTileTheme,
+                  child: ExpansionTile(
+                      title: Text(
+                        "Transaction Hash",
+                        style: theme.paymentDetailsTitleStyle,
+                      ),
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 16.0, right: 0.0),
+                                child: Text('${paymentInfo.paymentHash}',
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.clip,
+                                    maxLines: 4,
+                                    style: theme.paymentDetailsNodeIdStyle),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 0,
+                              child: Padding(
+                                  padding: EdgeInsets.zero,
+                                  child: new Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      IconButton(
+                                        alignment: Alignment.centerRight,
+                                        padding: EdgeInsets.only(right: 8.0),
+                                        tooltip: "Copy Transaction Hash",
+                                        iconSize: 16.0,
+                                        color: theme.BreezColors.blue[500],
+                                        icon: Icon(
+                                          IconData(0xe90b, fontFamily: 'icomoon'),
+                                        ),
+                                        onPressed: () {
+                                          Clipboard.setData(ClipboardData(text: paymentInfo.paymentHash));
+                                          Navigator.pop(context);
+                                          Scaffold.of(context).showSnackBar(_buildSnackBar("Transaction Hash"));
+                                        },
+                                      ),
+                                      IconButton(
+                                        padding: EdgeInsets.only(right: 8.0),
+                                        tooltip: "Share Transaction Hash",
+                                        iconSize: 16.0,
+                                        color: theme.BreezColors.blue[500],
+                                        icon: Icon(Icons.share),
+                                        onPressed: () {
+                                          Share.share(paymentInfo.paymentHash);
+                                        },
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          ],
+                        )
+                      ]),
+                ),
+        ],
+      ),
     ),
   );
   return showDialog<Null>(
