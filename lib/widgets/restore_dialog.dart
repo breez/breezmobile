@@ -20,10 +20,10 @@ class RestoreDialog extends StatefulWidget {
 class RestoreDialogState extends State<RestoreDialog> {
   @override
   Widget build(BuildContext context) {
-    return showRestoreDialog();
+    return createRestoreDialog();
   }
 
-  Widget showRestoreDialog() {
+  Widget createRestoreDialog() {
     return new AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: new Text(

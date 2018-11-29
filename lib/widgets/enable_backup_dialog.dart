@@ -20,10 +20,10 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return showEnableBackupDialog();
+    return createEnableBackupDialog();
   }
 
-  Widget showEnableBackupDialog() {
+  Widget createEnableBackupDialog() {
     return new AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: new Text(
