@@ -96,7 +96,7 @@ class PayNearbyState extends State<_PayNearbyPage> {
                           contentPadding: EdgeInsets.only(top: 21.0, bottom: 8.0), labelText: account.currency.displayName + " Amount"),
                       style: theme.FieldTextStyle.textStyle,
                       currency: account.currency,
-                      maxAmount: account.balance,
+                      maxAmount: account.maxAllowedToPay,
                       onFieldSubmitted: (String value) {
                         _amountToSendSatoshi = account.currency.parse(value);
                       },

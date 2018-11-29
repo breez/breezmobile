@@ -45,7 +45,7 @@ class _AmountFormState extends State<AmountForm> {
                 maxPaymentAmount: widget._account.maxPaymentAmount,
                 currency: widget._account.currency,
                 controller: _amountController,
-                maxAmount: widget._account.balance,
+                maxAmount: widget._account.maxAllowedToPay,
                 decoration: new InputDecoration(labelText: widget._account.currency.displayName + " Amount"),
               ),
             )),

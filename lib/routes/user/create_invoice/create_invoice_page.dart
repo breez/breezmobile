@@ -150,6 +150,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                   new AmountFormField(
                       controller: _amountController,
                       currency: acc.currency,
+                      maxPaymentAmount: acc.maxPaymentAmount,
                       maxAmount: acc.maxAllowedToReceive,
                       decoration: new InputDecoration(
                           labelText: acc.currency.displayName + " Amount"),
