@@ -47,13 +47,13 @@ class AmountFormField extends TextFormField {
         return "Invalid amount";
       }
 
-      if (maxAmount != null && intAmount > maxAmount) {
-        return "Not enough funds";
-      } 
-
       if (maxPaymentAmount != null && intAmount > maxPaymentAmount) {
         return 'Payment exceeds the limit (${currency.format(maxPaymentAmount)})';
-      }     
+      }   
+
+      if (maxAmount != null && intAmount > maxAmount) {
+        return "Not enough funds";
+      }         
     };
   }
 }
