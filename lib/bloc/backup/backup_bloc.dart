@@ -46,7 +46,6 @@ class BackupBloc {
           .add(preferences.getBool(BACKUP_DISABLED_PREFERENCES_KEY) ?? false);
     });
 
-    _listenEnableBackupNotifications(sharedPrefrences);
     _listenBackupPaths(breezLib);
     _listenEnableBackupRequests(sharedPrefrences);
     _listenBackupNowRequests(sharedPrefrences);
@@ -54,26 +53,6 @@ class BackupBloc {
 
     _accountBloc.accountStream.listen((acc) {
       _currentNodeId = acc.id;
-    });
-  }
-
-  void _listenEnableBackupNotifications(
-      Future<SharedPreferences> sharedPrefrences) {
-    _service.backupNotifications.listen((enabled) {
-      if (enabled) {
-        // Hide the backup disabled indicator
-        _backupDisabledController.add(false);
-      } else {
-        // Prompt to back up if not explicity disabled
-        sharedPrefrences.then((preferences) {
-          if (!(preferences.getBool(BACKUP_DISABLED_PREFERENCES_KEY) ??
-              false)) {
-            // Send a signal to prompt
-            _backupDisabledController.add(true);
-            _promptEnableBackupController.add(true);
-          }
-        });
-      }
     });
   }
 
@@ -87,8 +66,9 @@ class BackupBloc {
 
   void _listenBackupNowRequests(Future<SharedPreferences> sharedPrefrences) {
     _backupNowController.stream.listen((data) {
-      _service.authorize();
-      _service.backup(_currentBackupPaths, _currentNodeId);
+      _service.backup(_currentBackupPaths, _currentNodeId).catchError((error) {
+        _backupDisabledController.add(true);
+      });
 
       sharedPrefrences.then((preferences) {
         _backupDisabledController
@@ -102,7 +82,9 @@ class BackupBloc {
       return event.type ==
           NotificationEvent_NotificationType.BACKUP_FILES_AVAILABLE;
     }).listen((event) {
-      _service.backup(event.data, _currentNodeId);
+      _service.backup(event.data, _currentNodeId).catchError((error) {
+        _backupDisabledController.add(true);
+      });
       _currentBackupPaths = event.data;
     });
   }
@@ -123,13 +105,12 @@ class BackupBloc {
             });
           });
         }
-        else if (restoreResult is bool) {
-          // We failed for some reason
-        }
         else {
           // We need to pick from different node IDs
           _multipleRestoreController.add(new Map<String, String>.from(restoreResult));
         }
+      }).catchError((error) {
+        // Notify user somehow?
       });
     });
   }
