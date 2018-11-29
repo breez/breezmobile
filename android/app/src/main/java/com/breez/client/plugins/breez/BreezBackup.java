@@ -150,9 +150,12 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
                     File file = new File(path);
                     FileInputStream inputStream = new FileInputStream(file);
 
-                    byte[] buffer = new byte[inputStream.available()];
-                    inputStream.read(buffer, 0, inputStream.available());
-                    outputStream.write(buffer);
+                    int i;
+                    do {
+                        byte[] buf = new byte[1024];
+                        i = inputStream.read(buf);
+                        outputStream.write(buf);
+                    } while (i != -1);
 
                     MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
                             .setTitle(file.getName())
@@ -296,27 +299,22 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
 
                             File file = new File(m_activity.getCacheDir().getPath() + "/" + m.getTitle());
                             FileOutputStream outputStream = null;
+
                             try {
                                 outputStream = new FileOutputStream(file);
                             } catch (FileNotFoundException e) {
-                                e.printStackTrace();
+                                result.error("CACHE_FILE_FAILURE", "Couldn't find cache file to save to", null);
                             }
 
-                            byte[] buffer = new byte[0];
                             try {
-                                buffer = new byte[remoteFileInputStream.available()];
+                                int i;
+                                do {
+                                    byte[] buf = new byte[1024];
+                                    i = remoteFileInputStream.read(buf);
+                                    outputStream.write(buf);
+                                } while (i != -1);
                             } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            try {
-                                remoteFileInputStream.read(buffer, 0, remoteFileInputStream.available());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            try {
-                                outputStream.write(buffer);
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                                result.error("IO_ERROR", "Couldn't write to cache", null);
                             }
 
                             backupPathsList.add(file.getAbsolutePath());
