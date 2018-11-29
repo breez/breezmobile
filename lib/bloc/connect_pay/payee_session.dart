@@ -58,8 +58,12 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
     _channel.peerTerminatedStream.listen((_){
       terminate(permanent: true);
     });
-    _resetSessionState();
-    _channel.sendResetMessage();
+    
+    _resetSessionState();    
+
+    if (_currentSession.payerData.userName != null || _currentSession.payerData.imageURL != null) {
+      _channel.sendResetMessage();
+    }
     _handleIncomingMessages();    
   }
 
