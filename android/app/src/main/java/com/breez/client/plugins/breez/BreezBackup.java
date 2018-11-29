@@ -43,21 +43,18 @@ import io.flutter.plugin.common.PluginRegistry;
 
 import static android.app.Activity.RESULT_OK;
 
-public class BreezBackup implements MethodChannel.MethodCallHandler, EventChannel.StreamHandler,
+public class BreezBackup implements MethodChannel.MethodCallHandler,
         PluginRegistry.ActivityResultListener {
     private static final String TAG = "BreezBackup";
     public static final String BREEZ_BACKUP_CHANNEL_NAME = "com.breez.client/backup";
-    public static final String BREEZ_BACKUP_STREAM_NAME = "com.breez.client/backup_stream";
 
     private final int AUTHORIZE_ACTIVITY_REQUEST_CODE = 84;
     private final Activity m_activity;
 
-    private EventChannel.EventSink m_eventsListener;
     private MethodChannel m_methodChannel;
     private MethodChannel.Result m_result;
 
     private GoogleSignInClient m_googleSignInClient;
-    private DriveClient m_driveClient;
     private DriveResourceClient m_driveResourceClient;
 
     public BreezBackup(PluginRegistry.Registrar registrar, Activity activity) {
@@ -65,22 +62,10 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
         m_methodChannel = new MethodChannel(registrar.messenger(), BREEZ_BACKUP_CHANNEL_NAME);
         m_methodChannel.setMethodCallHandler(this);
 
-        new EventChannel(registrar.messenger(), BREEZ_BACKUP_STREAM_NAME).setStreamHandler(this);
-
         registrar.addActivityResultListener(this);
 
         m_googleSignInClient = buildGoogleSignInClient();
         getDriveClients(m_googleSignInClient.silentSignIn());
-    }
-
-    @Override
-    public void onListen(Object args, final EventChannel.EventSink events){
-        m_eventsListener = events;
-    }
-
-    @Override
-    public void onCancel(Object args) {
-        m_eventsListener = null;
     }
 
     private GoogleSignInClient buildGoogleSignInClient() {
@@ -96,7 +81,6 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
         task.addOnSuccessListener(
             googleSignInAccount -> {
                 Log.i(TAG, "Sign in success");
-                m_driveClient = Drive.getDriveClient(m_activity, googleSignInAccount);
                 m_driveResourceClient =
                         Drive.getDriveResourceClient(m_activity, googleSignInAccount);
 
@@ -104,6 +88,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
             .addOnFailureListener(
                 e -> {
                     Log.w(TAG, "Sign in failed", e);
+                    m_result.error("SIGN_IN_FAILURE", "Unable to sign in", null);
                 });
     }
 
@@ -126,6 +111,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         if (call.method.equals("authorize")) {
+            m_result = result;
             if (m_driveResourceClient == null) {
                 promptToAuthorize();
             }
@@ -136,33 +122,25 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
         if (call.method.equals("backup")) {
             List<String> paths = call.argument("paths");
             String nodeId = call.argument("nodeId").toString();
-            createNodeIdFolder(paths, nodeId);
+            createNodeIdFolder(paths, nodeId, result);
         }
         if (call.method.equals("listBackupFolders")) {
-            listBackupFolders();
+            listBackupFolders(result);
         }
         if (call.method.equals("restore")) {
+            m_result = result;
             if (m_driveResourceClient == null) {
                 promptToAuthorize();
             }
             else {
-                m_result = result;
                 String nodeId = call.argument("nodeId").toString();
                 if (nodeId.isEmpty()) {
-                    listBackupFolders();
+                    listBackupFolders(result);
                 } else {
-                    getNodeIdFolder(nodeId);
+                    getNodeIdFolder(nodeId, result);
                 }
             }
         }
-    }
-
-    private void notifyBackupDisabled() {
-        m_eventsListener.success(false);
-    }
-
-    private void notifyBackupEnabled() {
-        m_eventsListener.success(true);
     }
 
     private void updateBackupFiles(List<String> paths, DriveFolder nodeIdFolder) {
@@ -190,26 +168,24 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
                 .addOnSuccessListener(m_activity,
                         driveFile -> {
                             Log.i(TAG, "File created!");
-                            notifyBackupEnabled();
                         })
                 .addOnFailureListener(m_activity, e -> {
                     Log.e(TAG, "Unable to create file", e);
                     m_result.error("CREATE_FILE_FAILURE", "Unable to create file", null);
-                    return;
                 });
         }
     }
 
-    private void createNodeIdFolder(List<String> paths, String nodeId) {
+    private void createNodeIdFolder(List<String> paths, String nodeId, MethodChannel.Result result) {
         if (m_driveResourceClient == null) {
-            notifyBackupDisabled();
+            result.error("DRIVE_RESOURCE_FAILURE", "Drive resource client not initialized", null);
             return;
         }
 
         m_driveResourceClient
                 .getAppFolder().addOnFailureListener(m_activity, e -> {
             Log.e(TAG, "Unable to get app folder", e);
-            m_result.error("APP_FOLDER_FAILURE", "Unable to get app folder", null);
+            result.error("APP_FOLDER_FAILURE", "Unable to get app folder", null);
         })
             .continueWithTask(task -> {
                 DriveFolder appFolder = task.getResult();
@@ -227,11 +203,11 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
                     })
             .addOnFailureListener(m_activity, e -> {
                 Log.e(TAG, "Unable to create folder", e);
-                m_result.error("CREATE_FOLDER_FAILURE", "Unable to create folder", null);
+                result.error("CREATE_FOLDER_FAILURE", "Unable to create folder", null);
             });
     }
 
-    private void listBackupFolders() {
+    private void listBackupFolders(MethodChannel.Result result) {
         m_driveResourceClient
             .getAppFolder()
             .continueWithTask(task -> {
@@ -251,7 +227,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
                             Log.w(TAG, metadataBuffer.toString());
                             if (metadataBuffer.getCount() == 0) {
                                 // Notify user there is no data
-                                m_result.success(false);
+                                result.error("NO_DATA_ERROR", "No backup folders found", null);
                             }
 
                             HashMap<String, String> backupsMap = new HashMap<>();
@@ -261,20 +237,20 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
                             }
 
                             if (backupsMap.values().size() == 1) {
-                                backupsMap.forEach((k, v) -> getNodeIdFolder(k));
+                                backupsMap.forEach((k, v) -> getNodeIdFolder(k, result));
                             }
                             else {
-                                m_result.success(backupsMap);
+                                result.success(backupsMap);
                             }
                         })
                     .addOnFailureListener(m_activity, e -> {
                         Log.e(TAG, "Error retrieving files", e);
-                        m_result.success(false);
+                        result.error("GET_DATA_FAILURE", "Error retrieving files", null);
                     });
             });
     }
 
-    private void getNodeIdFolder(String nodeId) {
+    private void getNodeIdFolder(String nodeId, MethodChannel.Result result) {
         m_driveResourceClient
             .getAppFolder()
             .continueWithTask(task -> {
@@ -293,19 +269,19 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
                         metadataBuffer -> {
                             Log.w(TAG, metadataBuffer.toString());
                             if (metadataBuffer.getCount() == 0) {
-                                m_result.success(false);
+                                result.error("NODE_ID_BACKUP_NOT_FOUND", "Couldn't find node ID backup", null);
                             }
 
-                            fetchBackupFiles(metadataBuffer.get(0).getDriveId().asDriveFolder());
+                            fetchBackupFiles(metadataBuffer.get(0).getDriveId().asDriveFolder(), result);
                         })
                     .addOnFailureListener(m_activity, e -> {
                         Log.e(TAG, "Error retrieving files", e);
-                        m_result.success(false);
+                        result.error("GET_DATA_FAILURE", "Error retrieving files", null);
                     });
             });
     }
 
-    private void fetchBackupFiles(DriveFolder nodeIdFolder) {
+    private void fetchBackupFiles(DriveFolder nodeIdFolder, MethodChannel.Result result) {
         List<String> backupPathsList = new ArrayList<>();
         Query query = new Query.Builder()
                 .build();
@@ -349,13 +325,13 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
                             backupPathsList.add(file.getAbsolutePath());
 
                             if (backupPathsList.size() == metadataBuffer.getCount()) {
-                                m_result.success(backupPathsList);
+                                result.success(backupPathsList);
                             }
                         });
                     }
                 })
                 .addOnFailureListener(m_activity, e -> {
-                    m_result.success(false);
+                    result.error("QUERY_FAILURE", "Querying folder for files failed", null);
                 });
     }
 }
