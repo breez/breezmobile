@@ -12,13 +12,10 @@ import 'package:flutter/services.dart';
 import 'package:share/share.dart';
 import 'package:flutter/gestures.dart';
 import 'package:breez/routes/shared/dev/default_commands.dart';
-import 'package:breez/services/backup.dart';
 
 final _cliInputController = TextEditingController();
 final FocusNode _cliEntryFocusNode = FocusNode();
 final FocusNode _runCommandButtonFocusNode = FocusNode();
-
-BackupService _backupService;
 
 class LinkTextSpan extends TextSpan {
   LinkTextSpan({TextStyle style, String command, String text})
@@ -42,23 +39,11 @@ class Choice {
   final Function function;
 }
 
-List<Choice> choices = <Choice>[
+const List<Choice> choices = <Choice>[
   const Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
   const Choice(
       title: 'Show Initial Screen',
       icon: Icons.phone_android,
-      function: _gotoInitialScreen),
-  Choice(
-      title: 'Authorize Drive',
-      icon: Icons.person,
-      function: _backupService.authorize),
-  Choice(
-      title: 'Backup',
-      icon: Icons.save,
-      function: _gotoInitialScreen),
-  Choice(
-      title: 'Restore',
-      icon: Icons.settings_backup_restore,
       function: _gotoInitialScreen),
 ];
 
@@ -85,7 +70,6 @@ class _DevView extends StatefulWidget {
   _DevView() {
     ServiceInjector injector = new ServiceInjector();
     _breezBridge = injector.breezBridge;
-    _backupService = injector.backupService;
   }
 
   void _select(Choice choice) {
