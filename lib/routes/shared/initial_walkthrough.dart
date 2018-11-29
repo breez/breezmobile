@@ -118,7 +118,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                           shape: const StadiumBorder(),
                           onPressed: () {
                             _proceedToRegister();
-                            widget._accountBloc.startLightning();
+                            widget._accountBloc.startLightningSink.add(true);
                           }
                         ))),
                 new Expanded(

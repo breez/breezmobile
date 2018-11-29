@@ -30,7 +30,13 @@ class UserLoaderWidget extends StatelessWidget {
   static const _platform = const MethodChannel('com.breez.client/main');
 
   final AppBlocs _blocs;
-  UserLoaderWidget(this._blocs);
+  UserLoaderWidget(this._blocs) {
+    _blocs.userProfileBloc.userStream.listen((user) {
+      if (user.registered) {
+        _blocs.accountBloc.startLightningSink.add(true);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

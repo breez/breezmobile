@@ -99,7 +99,7 @@ class BackupBloc {
             getApplicationDocumentsDirectory().then((appDir) {
               breezLib.copyBreezConfig(appDir.path).then((done) {
                 breezLib.bootstrapFiles(appDir.path, new List<String>.from(restoreResult)).then((done) {
-                  _accountBloc.startLightning();
+                  _accountBloc.startLightningSink.add(true);
                 });
               });
             });

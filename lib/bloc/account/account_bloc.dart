@@ -72,45 +72,55 @@ class AccountBloc {
   final _lightningDownController = new StreamController<bool>.broadcast();
   Stream<bool> get lightningDownStream => _lightningDownController.stream;
 
+  final _startLightningController = new StreamController<bool>();
+  Sink<bool> get startLightningSink => _startLightningController.sink;
+
 
   Stream<Map<String, DownloadFileInfo>>  chainBootstrapProgress;
   BreezUserModel _currentUser;
-  BreezBridge _breezLib;
-  Device _device;
   bool _allowReconnect = true;
   bool _startedLightning = false;
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
       ServiceInjector injector = new ServiceInjector();    
-      _breezLib = injector.breezBridge;
+      BreezBridge breezLib = injector.breezBridge;
       BreezServer server = injector.breezServer;
       Notifications notificationsService = injector.notifications;
-      _device = injector.device;
+      Device device = injector.device;
 
       _accountController.add(AccountModel.initial());
       _paymentFilterController.add(PaymentFilterModel.initial());
       //listen streams      
-      _listenUserChanges(userProfileStream, _breezLib);
-      _listenNewAddressRequests(_breezLib);
-      _listenWithdrawalRequests(_breezLib);
-      _listenSentPayments(_breezLib);
-      _listenFilterChanges(_breezLib);
-      _listenAccountChanges(_breezLib);
-      _listenPOSFundingRequests(server, _breezLib);
-      _listenMempoolTransactions(_device, notificationsService, _breezLib);
-      _listenRoutingNodeConnectionChanges(_breezLib);
+      _listenUserChanges(userProfileStream, breezLib);
+      _listenNewAddressRequests(breezLib);
+      _listenWithdrawalRequests(breezLib);
+      _listenSentPayments(breezLib);
+      _listenFilterChanges(breezLib);
+      _listenAccountChanges(breezLib);
+      _listenPOSFundingRequests(server, breezLib);
+      _listenMempoolTransactions(device, notificationsService, breezLib);
+      _listenRoutingNodeConnectionChanges(breezLib);
+      _listenStartLightningRequests(breezLib, device);
     }
 
-    void startLightning() {
-      if (_startedLightning) return;
-      _breezLib.bootstrap().then((done) {
-        _startedLightning = true;
-        _breezLib.startLightning();
-        _refreshAccount(_breezLib);
-        _listenConnectivityChanges(_breezLib);
-        _listenReconnects(_breezLib);
-        _listenRefundableDeposits(_breezLib, _device);
-        _listenRefundBroadcasts(_breezLib);
+    void _startLightning() {
+
+    }
+
+    void _listenStartLightningRequests(BreezBridge breezLib, Device device) {
+      _startLightningController.stream.listen((start) {
+        if (_startedLightning) return;
+        if (start) {
+          breezLib.bootstrap().then((done) {
+            _startedLightning = true;
+            breezLib.startLightning();
+            _refreshAccount(breezLib);
+            _listenConnectivityChanges(breezLib);
+            _listenReconnects(breezLib);
+            _listenRefundableDeposits(breezLib, device);
+            _listenRefundBroadcasts(breezLib);
+          });
+        }
       });
     }
 
@@ -370,5 +380,6 @@ class AccountBloc {
       _paymentFilterController.close();
       _lightningDownController.close();
       _reconnectStreamController.close();
+      _startLightningController.close();
     }
   }  

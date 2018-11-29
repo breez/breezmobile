@@ -69,7 +69,7 @@ class BreezAppState extends State<BreezApp> {
   @override
   void initState() {
     if (widget._userModel.registered) {
-      widget._blocs.accountBloc.startLightning();
+      widget._blocs.accountBloc.startLightningSink.add(true);
     }
     super.initState();
   }
