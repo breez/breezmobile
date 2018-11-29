@@ -36,7 +36,6 @@ import java.util.List;
 import java.io.File;
 import java.util.Date;
 
-import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
@@ -52,6 +51,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
     private final Activity m_activity;
 
     private MethodChannel m_methodChannel;
+    private MethodCall m_call;
     private MethodChannel.Result m_result;
 
     private GoogleSignInClient m_googleSignInClient;
@@ -76,19 +76,23 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
         return GoogleSignIn.getClient(m_activity, signInOptions);
     }
 
-    private void getDriveClients(Task<GoogleSignInAccount> task) {
+    private void getDriveClients(Task<GoogleSignInAccount> signInTask) {
         Log.i(TAG, "Trying to execute sign in task");
-        task.addOnSuccessListener(
+        signInTask.addOnSuccessListener(
             googleSignInAccount -> {
                 Log.i(TAG, "Sign in success");
                 m_driveResourceClient =
                         Drive.getDriveResourceClient(m_activity, googleSignInAccount);
-
+                if (m_call != null) {
+                    handleMethodCall(m_call, m_result);
+                }
             })
             .addOnFailureListener(
                 e -> {
                     Log.w(TAG, "Sign in failed", e);
-                    m_result.error("SIGN_IN_FAILURE", "Unable to sign in", null);
+                    if (m_result != null) {
+                        m_result.error("SIGN_IN_FAILURE", "Unable to sign in", null);
+                    }
                 });
     }
 
@@ -110,40 +114,33 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
 
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        if (call.method.equals("authorize")) {
+        if (m_driveResourceClient == null) {
             m_result = result;
-            if (m_driveResourceClient == null) {
-                promptToAuthorize();
-            }
-            else {
-                m_result.success(true);
-            }
+            m_call = call;
+            promptToAuthorize();
         }
+        else {
+            handleMethodCall(call, result);
+        }
+    }
+
+    private void handleMethodCall(MethodCall call, MethodChannel.Result result) {
         if (call.method.equals("backup")) {
             List<String> paths = call.argument("paths");
             String nodeId = call.argument("nodeId").toString();
             createNodeIdFolder(paths, nodeId, result);
         }
-        if (call.method.equals("listBackupFolders")) {
-            listBackupFolders(result);
-        }
         if (call.method.equals("restore")) {
-            m_result = result;
-            if (m_driveResourceClient == null) {
-                promptToAuthorize();
-            }
-            else {
-                String nodeId = call.argument("nodeId").toString();
-                if (nodeId.isEmpty()) {
-                    listBackupFolders(result);
-                } else {
-                    getNodeIdFolder(nodeId, result);
-                }
+            String nodeId = call.argument("nodeId").toString();
+            if (nodeId.isEmpty()) {
+                listBackupFolders(result);
+            } else {
+                getNodeIdFolder(nodeId, result);
             }
         }
     }
 
-    private void updateBackupFiles(List<String> paths, DriveFolder nodeIdFolder) {
+    private void updateBackupFiles(List<String> paths, DriveFolder nodeIdFolder, MethodChannel.Result result) {
         for (String path: paths) {
             m_driveResourceClient.createContents()
                 .continueWithTask(task -> {
@@ -171,7 +168,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
                         })
                 .addOnFailureListener(m_activity, e -> {
                     Log.e(TAG, "Unable to create file", e);
-                    m_result.error("CREATE_FILE_FAILURE", "Unable to create file", null);
+                    result.error("CREATE_FILE_FAILURE", "Unable to create file", null);
                 });
         }
     }
@@ -199,7 +196,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
             })
             .addOnSuccessListener(m_activity,
                     driveFolder -> {
-                        updateBackupFiles(paths, driveFolder);
+                        updateBackupFiles(paths, driveFolder, result);
                     })
             .addOnFailureListener(m_activity, e -> {
                 Log.e(TAG, "Unable to create folder", e);
