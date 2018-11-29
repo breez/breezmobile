@@ -18,11 +18,11 @@ class BackupBloc {
   final _promptEnableBackupController = new StreamController<bool>.broadcast();
   Stream<bool> get promptEnableStream => _promptEnableBackupController.stream;
 
-  final _backupDisabledController = new StreamController<bool>.broadcast();
-  Stream<bool> get backupDisabledStream => _backupDisabledController.stream;
+  final _backupDisabledIndicatorController = new StreamController<bool>.broadcast();
+  Stream<bool> get backupDisabledIndicatorStream => _backupDisabledIndicatorController.stream;
 
-  final _enableBackupController = new StreamController<bool>();
-  Sink<bool> get enableBackupSink => _enableBackupController.sink;
+  final _disableBackupPromptController = new StreamController<bool>();
+  Sink<bool> get disableBackupPromptSink => _disableBackupPromptController.sink;
 
   final _backupNowController = new StreamController<bool>();
   Sink<bool> get backupNowSink => _backupNowController.sink;
@@ -33,7 +33,7 @@ class BackupBloc {
   final _multipleRestoreController = new StreamController<Map<String, String>>.broadcast();
   Stream<Map<String, String>> get multipleRestoreStream => _multipleRestoreController.stream;
 
-  static const String BACKUP_DISABLED_PREFERENCES_KEY = "backupDisabled";
+  static const String BACKUP_PROMPT_DISABLED_PREFERENCES_KEY = "backupDisabled";
 
   BackupBloc(this._accountBloc) {
     ServiceInjector injector = new ServiceInjector();
@@ -41,12 +41,8 @@ class BackupBloc {
     _service = BackupService();
 
     var sharedPrefrences = SharedPreferences.getInstance();
-    sharedPrefrences.then((preferences) {
-      _promptEnableBackupController
-          .add(preferences.getBool(BACKUP_DISABLED_PREFERENCES_KEY) ?? false);
-    });
 
-    _listenBackupPaths(breezLib);
+    _listenBackupPaths(breezLib, sharedPrefrences);
     _listenEnableBackupRequests(sharedPrefrences);
     _listenBackupNowRequests(sharedPrefrences);
     _listenRestoreRequests(breezLib);
@@ -57,35 +53,35 @@ class BackupBloc {
   }
 
   void _listenEnableBackupRequests(Future<SharedPreferences> sharedPrefrences) {
-    _enableBackupController.stream.listen((enable) {
+    _disableBackupPromptController.stream.listen((disable) {
       sharedPrefrences.then((preferences) {
-        preferences.setBool(BACKUP_DISABLED_PREFERENCES_KEY, !enable);
+        preferences.setBool(BACKUP_PROMPT_DISABLED_PREFERENCES_KEY, disable);
       });
     });
   }
 
   void _listenBackupNowRequests(Future<SharedPreferences> sharedPrefrences) {
     _backupNowController.stream.listen((data) {
-      _service.backup(_currentBackupPaths, _currentNodeId).catchError((error) {
-        _backupDisabledController.add(true);
-      });
-
-      sharedPrefrences.then((preferences) {
-        _backupDisabledController
-            .add(preferences.getBool(BACKUP_DISABLED_PREFERENCES_KEY) ?? false);
-      });
+      backup();
     });
   }
 
-  _listenBackupPaths(BreezBridge breezLib) {
+  _listenBackupPaths(BreezBridge breezLib, Future<SharedPreferences> sharedPrefrences) {
     Observable(breezLib.notificationStream).where((event) {
       return event.type ==
           NotificationEvent_NotificationType.BACKUP_FILES_AVAILABLE;
     }).listen((event) {
-      _service.backup(event.data, _currentNodeId).catchError((error) {
-        _backupDisabledController.add(true);
-      });
       _currentBackupPaths = event.data;
+      sharedPrefrences.then((preferences) {
+        if (preferences.getBool(BACKUP_PROMPT_DISABLED_PREFERENCES_KEY) ?? false) {
+          // Prompt is disabled so go and back up
+          backup();
+        }
+        else {
+          // Prompting is enabled so show the dialog
+          _promptEnableBackupController.add(true);
+        }
+      });
     });
   }
 
@@ -115,9 +111,15 @@ class BackupBloc {
     });
   }
 
+  void backup() {
+    _service.backup(_currentBackupPaths, _currentNodeId).catchError((error) {
+      _backupDisabledIndicatorController.add(true);
+    });
+  }
+
   close() {
     _promptEnableBackupController.close();
-    _enableBackupController.close();
+    _disableBackupPromptController.close();
     _backupNowController.close();
     _restoreRequestController.close();
     _multipleRestoreController.close();

@@ -49,7 +49,6 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                   onChanged: (v) {
                     setState(() {
                       _isChecked = !_isChecked;
-                      widget.backupBloc.enableBackupSink.add(_isChecked);
                     });
                   }),
               title: Text(
@@ -70,6 +69,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
               new SimpleDialogOption(
                 onPressed: (() {
                   Navigator.pop(widget.context);
+                  widget.backupBloc.disableBackupPromptSink.add(_isChecked);
                   widget.backupBloc.backupNowSink.add(true);
                 }),
                 child: new Text("BACKUP NOW", style: theme.buttonStyle),
