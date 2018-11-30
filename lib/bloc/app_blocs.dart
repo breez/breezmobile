@@ -25,7 +25,7 @@ class AppBlocs {
     POSProfileBloc posProfileBloc = new POSProfileBloc();    
     InvoiceBloc invoicesBloc = new InvoiceBloc();
     ConnectPayBloc connectPayBloc = new ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream);
-    BackupBloc backupBloc = new BackupBloc(accountBloc);
+    BackupBloc backupBloc = new BackupBloc(accountBloc.accountStream);
 
     return AppBlocs._(      
       userProfileBloc,

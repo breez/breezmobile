@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 
 class BackupBloc {
   BackupService _service;
-  AccountBloc _accountBloc;
+  Stream<AccountModel> _accountStream;
   String _currentNodeId;
   List<String> _currentBackupPaths;
 
@@ -38,7 +38,7 @@ class BackupBloc {
 
   static const String BACKUP_PROMPT_DISABLED_PREFERENCES_KEY = "backupDisabled";
 
-  BackupBloc(this._accountBloc) {
+  BackupBloc(this._accountStream) {
     ServiceInjector injector = new ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
     _service = BackupService();
@@ -50,7 +50,7 @@ class BackupBloc {
     _listenBackupNowRequests(sharedPrefrences);
     _listenRestoreRequests(breezLib);
 
-    _accountBloc.accountStream.listen((acc) {
+    _accountStream.listen((acc) {
       _currentNodeId = acc.id;
     });
   }
