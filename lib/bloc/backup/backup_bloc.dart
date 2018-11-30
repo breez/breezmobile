@@ -109,7 +109,7 @@ class BackupBloc {
           _multipleRestoreController.add(new Map<String, String>.from(restoreResult));
         }
       }).catchError((error) {
-        // Notify user somehow?
+        _restoreFinishedController.addError(error);
       });
     });
   }
