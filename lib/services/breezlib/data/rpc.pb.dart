@@ -671,7 +671,7 @@ class CreateRatchetSessionRequest extends $pb.GeneratedMessage {
     ..aOS(1, 'secret')
     ..aOS(2, 'remotePubKey')
     ..aOS(3, 'sessionID')
-    ..a<Int64>(4, 'expiry', PbFieldType.OU6, Int64.ZERO)
+    ..a<Int64>(4, 'expiry', $pb.PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -910,37 +910,4 @@ class BootstrapFilesRequest extends $pb.GeneratedMessage {
 
   List<String> get fullPaths => $_getList(1);
 }
-
-class BootstrapFilesRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('BootstrapFilesRequest')
-    ..aOS(1, 'workingDir')
-    ..pPS(2, 'fullPaths')
-    ..hasRequiredFields = false
-  ;
-
-  BootstrapFilesRequest() : super();
-  BootstrapFilesRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  BootstrapFilesRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  BootstrapFilesRequest clone() => new BootstrapFilesRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
-  static BootstrapFilesRequest create() => new BootstrapFilesRequest();
-  static PbList<BootstrapFilesRequest> createRepeated() => new PbList<BootstrapFilesRequest>();
-  static BootstrapFilesRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyBootstrapFilesRequest();
-    return _defaultInstance;
-  }
-  static BootstrapFilesRequest _defaultInstance;
-  static void $checkItem(BootstrapFilesRequest v) {
-    if (v is! BootstrapFilesRequest) checkItemFailed(v, 'BootstrapFilesRequest');
-  }
-
-  String get workingDir => $_getS(0, '');
-  set workingDir(String v) { $_setString(0, v); }
-  bool hasWorkingDir() => $_has(0);
-  void clearWorkingDir() => clearField(1);
-
-  List<String> get fullPaths => $_getList(1);
-}
-
-class _ReadonlyBootstrapFilesRequest extends BootstrapFilesRequest with ReadonlyMessageMixin {}
 
