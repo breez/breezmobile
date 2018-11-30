@@ -150,12 +150,11 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
                     File file = new File(path);
                     FileInputStream inputStream = new FileInputStream(file);
 
-                    int i;
-                    do {
-                        byte[] buf = new byte[1024];
-                        i = inputStream.read(buf);
-                        outputStream.write(buf);
-                    } while (i != -1);
+                    int len;
+                    byte[] buf = new byte[1024];
+                    while ((len = inputStream.read(buf)) > 0) {
+                        outputStream.write(buf, 0, len);
+                    }
 
                     MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
                             .setTitle(file.getName())
@@ -307,12 +306,11 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
                             }
 
                             try {
-                                int i;
-                                do {
-                                    byte[] buf = new byte[1024];
-                                    i = remoteFileInputStream.read(buf);
-                                    outputStream.write(buf);
-                                } while (i != -1);
+                                int len;
+                                byte[] buf = new byte[1024];
+                                while ((len = remoteFileInputStream.read(buf)) > 0) {
+                                    outputStream.write(buf, 0, len);
+                                }
                             } catch (IOException e) {
                                 result.error("IO_ERROR", "Couldn't write to cache", null);
                             }
