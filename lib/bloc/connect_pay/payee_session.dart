@@ -73,7 +73,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
       return null;
     }
     Map<String, dynamic> payerData =  json.decode(sessionInfo.userInfo);
-    var persistedPayer = PayerSessionData.fromJson(payerData["payerData"]);
+    var persistedPayer = PayerSessionData.fromJson(payerData["payerData"]).copyWith(status: PeerStatus.start());
     _paymentSessionController.add(_currentSession.copyWith(payerData: persistedPayer));
   }
 
