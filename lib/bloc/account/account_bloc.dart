@@ -176,8 +176,8 @@ class AccountBloc {
         _currentUser = user;
 
         if (user.registered && !_startedLightning) {
+          _startedLightning = true;
           breezLib.bootstrap().then((done) {
-            _startedLightning = true;
             breezLib.startLightning();
             _refreshAccount(breezLib);
             _listenConnectivityChanges(breezLib);
