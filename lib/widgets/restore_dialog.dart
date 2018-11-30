@@ -8,10 +8,9 @@ class RestoreDialog extends StatefulWidget {
   final BuildContext context;
   final BackupBloc backupBloc;
   final Map<String, String> optionsMap;
-  final Function proceedFunction;
 
   RestoreDialog(
-      this.context, this.backupBloc, this.optionsMap, this.proceedFunction);
+      this.context, this.backupBloc, this.optionsMap);
 
   @override
   RestoreDialogState createState() {
@@ -34,7 +33,6 @@ class RestoreDialogState extends State<RestoreDialog> {
         widget.backupBloc.restoreFinishedStream.listen((restored) {
       if (restored) {
         Navigator.pop(widget.context);
-        widget.proceedFunction();
       }
     });
     super.initState();

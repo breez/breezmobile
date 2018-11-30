@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:flutter/material.dart';
@@ -23,13 +24,26 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   AnimationController _controller;
   Animation<int> _animation;
 
+  StreamSubscription<bool> _restoreFinishedSubscription;
+  StreamSubscription<Map<String, String>> _multipleRestoreSubscription;
+
+
   @override
   void initState() {
     super.initState();
-    widget._backupBloc.multipleRestoreStream.listen((options) {
+
+    _multipleRestoreSubscription = widget._backupBloc.multipleRestoreStream.listen((options) {
         showDialog(context: context, builder: (_) =>
-        new RestoreDialog(context, widget._backupBloc, options, _proceedToRegister));
+        new RestoreDialog(context, widget._backupBloc, options));
     });
+
+    _restoreFinishedSubscription =
+        widget._backupBloc.restoreFinishedStream.listen((restored) {
+          if (restored) {
+            _proceedToRegister();
+          }
+        });
+
     _controller = new AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2720))
       ..forward(from: 0.0);
@@ -42,6 +56,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   @override
   void dispose() {
+    _multipleRestoreSubscription.cancel();
+    _restoreFinishedSubscription.cancel();
     _controller.dispose();
     super.dispose();
   }
