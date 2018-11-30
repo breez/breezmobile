@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -18,6 +19,25 @@ class RestoreDialog extends StatefulWidget {
 }
 
 class RestoreDialogState extends State<RestoreDialog> {
+  StreamSubscription<bool> _restoreFinishedSubscription;
+
+  @override
+  void dispose() {
+    _restoreFinishedSubscription.cancel();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    _restoreFinishedSubscription = widget.backupBloc.restoreFinishedStream.listen((restored) {
+      if (restored) {
+        Navigator.pop(widget.context);
+        widget.proceedFunction();
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return createRestoreDialog();
@@ -57,8 +77,6 @@ class RestoreDialogState extends State<RestoreDialog> {
                     subtitle: Text(keys[index], style: theme.bolt11Style,),
                     onTap: () {
                       widget.backupBloc.restoreRequestSink.add(keys[index]);
-                      Navigator.pop(widget.context);
-                      widget.proceedFunction();
                     },
                   );
                 },

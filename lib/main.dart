@@ -68,9 +68,6 @@ class BreezAppState extends State<BreezApp> {
 
   @override
   void initState() {
-    if (widget._userModel.registered) {
-      widget._blocs.accountBloc.startLightningSink.add(true);
-    }
     super.initState();
   }
 
@@ -103,7 +100,7 @@ class BreezAppState extends State<BreezApp> {
             );
           case '/intro':
             return new FadeInRoute(
-              builder: (_) => new InitialWalkthroughPage(widget._blocs.userProfileBloc, widget._blocs.backupBloc, widget._blocs.accountBloc, false),
+              builder: (_) => new InitialWalkthroughPage(widget._blocs.userProfileBloc, widget._blocs.backupBloc, false),
               settings: settings,
             );
           case '/order_card':

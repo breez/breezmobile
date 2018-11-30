@@ -30,13 +30,7 @@ class UserLoaderWidget extends StatelessWidget {
   static const _platform = const MethodChannel('com.breez.client/main');
 
   final AppBlocs _blocs;
-  UserLoaderWidget(this._blocs) {
-    _blocs.userProfileBloc.userStream.listen((user) {
-      if (user.registered) {
-        _blocs.accountBloc.startLightningSink.add(true);
-      }
-    });
-  }
+  UserLoaderWidget(this._blocs);
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +55,7 @@ class UserLoaderWidget extends StatelessWidget {
                   );
                 case '/intro':
                   return new FadeInRoute(
-                    builder: (_) => new InitialWalkthroughPage(_blocs.userProfileBloc, _blocs.backupBloc, _blocs.accountBloc, true),
+                    builder: (_) => new InitialWalkthroughPage(_blocs.userProfileBloc, _blocs.backupBloc, true),
                     settings: settings,
                   );
                 case '/transactions':

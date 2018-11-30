@@ -33,6 +33,9 @@ class BackupBloc {
   final _multipleRestoreController = new StreamController<Map<String, String>>.broadcast();
   Stream<Map<String, String>> get multipleRestoreStream => _multipleRestoreController.stream;
 
+  final _restoreFinishedController = new StreamController<bool>.broadcast();
+  Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
+
   static const String BACKUP_PROMPT_DISABLED_PREFERENCES_KEY = "backupDisabled";
 
   BackupBloc(this._accountBloc) {
@@ -95,7 +98,7 @@ class BackupBloc {
             getApplicationDocumentsDirectory().then((appDir) {
               breezLib.copyBreezConfig(appDir.path).then((done) {
                 breezLib.bootstrapFiles(appDir.path, new List<String>.from(restoreResult)).then((done) {
-                  _accountBloc.startLightningSink.add(true);
+                  _restoreFinishedController.add(true);
                 });
               });
             });
@@ -123,5 +126,6 @@ class BackupBloc {
     _backupNowController.close();
     _restoreRequestController.close();
     _multipleRestoreController.close();
+    _restoreFinishedController.close();
   }
 }

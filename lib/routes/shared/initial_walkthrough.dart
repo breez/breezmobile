@@ -8,10 +8,9 @@ import 'package:breez/bloc/account/account_bloc.dart';
 class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
   final BackupBloc _backupBloc;
-  final AccountBloc _accountBloc;
   final bool _isPos;
 
-  InitialWalkthroughPage(this._registrationBloc, this._backupBloc, this._accountBloc, this._isPos);
+  InitialWalkthroughPage(this._registrationBloc, this._backupBloc, this._isPos);
 
   @override
   State createState() => new InitialWalkthroughPageState();
@@ -118,7 +117,6 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                           shape: const StadiumBorder(),
                           onPressed: () {
                             _proceedToRegister();
-                            widget._accountBloc.startLightningSink.add(true);
                           }
                         ))),
                 new Expanded(

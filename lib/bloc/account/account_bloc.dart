@@ -72,10 +72,6 @@ class AccountBloc {
   final _lightningDownController = new StreamController<bool>.broadcast();
   Stream<bool> get lightningDownStream => _lightningDownController.stream;
 
-  final _startLightningController = new StreamController<bool>();
-  Sink<bool> get startLightningSink => _startLightningController.sink;
-
-
   Stream<Map<String, DownloadFileInfo>>  chainBootstrapProgress;
   BreezUserModel _currentUser;
   bool _allowReconnect = true;
@@ -91,7 +87,7 @@ class AccountBloc {
       _accountController.add(AccountModel.initial());
       _paymentFilterController.add(PaymentFilterModel.initial());
       //listen streams      
-      _listenUserChanges(userProfileStream, breezLib);
+      _listenUserChanges(userProfileStream, breezLib, device);
       _listenNewAddressRequests(breezLib);
       _listenWithdrawalRequests(breezLib);
       _listenSentPayments(breezLib);
@@ -100,28 +96,6 @@ class AccountBloc {
       _listenPOSFundingRequests(server, breezLib);
       _listenMempoolTransactions(device, notificationsService, breezLib);
       _listenRoutingNodeConnectionChanges(breezLib);
-      _listenStartLightningRequests(breezLib, device);
-    }
-
-    void _startLightning() {
-
-    }
-
-    void _listenStartLightningRequests(BreezBridge breezLib, Device device) {
-      _startLightningController.stream.listen((start) {
-        if (_startedLightning) return;
-        if (start) {
-          breezLib.bootstrap().then((done) {
-            _startedLightning = true;
-            breezLib.startLightning();
-            _refreshAccount(breezLib);
-            _listenConnectivityChanges(breezLib);
-            _listenReconnects(breezLib);
-            _listenRefundableDeposits(breezLib, device);
-            _listenRefundBroadcasts(breezLib);
-          });
-        }
-      });
     }
 
     void _listenRefundableDeposits(BreezBridge breezLib, Device device){
@@ -197,9 +171,22 @@ class AccountBloc {
         });
     }
 
-    _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib){
-      userProfileStream.listen((user) { 
+    _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib, Device device){
+      userProfileStream.listen((user) {
         _currentUser = user;
+
+        if (user.registered && !_startedLightning) {
+          breezLib.bootstrap().then((done) {
+            _startedLightning = true;
+            breezLib.startLightning();
+            _refreshAccount(breezLib);
+            _listenConnectivityChanges(breezLib);
+            _listenReconnects(breezLib);
+            _listenRefundableDeposits(breezLib, device);
+            _listenRefundBroadcasts(breezLib);
+          });
+        }
+
         if (_accountController.value != null) {
           _accountController.add(_accountController.value.copyWith(currency: user.currency));
         }
@@ -380,6 +367,5 @@ class AccountBloc {
       _paymentFilterController.close();
       _lightningDownController.close();
       _reconnectStreamController.close();
-      _startLightningController.close();
     }
   }  
