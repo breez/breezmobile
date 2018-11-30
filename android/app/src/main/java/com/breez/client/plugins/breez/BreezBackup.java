@@ -308,7 +308,10 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
 
                             try {
                                 int i;
-                                do {
+                               byte[] buf = new byte[1024];
+                               while (i = remoteFileInputStream.read(buf) > 0) {                                  
+                                    outputStream.write(buf, 0, i);
+                                }
                                     byte[] buf = new byte[1024];
                                     i = remoteFileInputStream.read(buf);
                                     outputStream.write(buf);
