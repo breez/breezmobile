@@ -67,6 +67,11 @@ class BreezAppState extends State<BreezApp> {
   GlobalKey<NavigatorState> _navigatorKey = new GlobalKey<NavigatorState>();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       navigatorKey: _navigatorKey,
@@ -85,17 +90,17 @@ class BreezAppState extends State<BreezApp> {
         cardColor: Color.fromRGBO(5, 93, 235, 1.0),
       ),
       initialRoute: widget._userModel.registered ? null : '/splash',
-      home: new Home(widget._blocs.accountBloc, widget._blocs.invoicesBloc, widget._blocs.connectPayBloc),
+      home: new Home(widget._blocs.accountBloc, widget._blocs.invoicesBloc, widget._blocs.connectPayBloc, widget._blocs.backupBloc),
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case '/home':
             return new FadeInRoute(
-              builder: (_) => new Home(widget._blocs.accountBloc, widget._blocs.invoicesBloc, widget._blocs.connectPayBloc),
+              builder: (_) => new Home(widget._blocs.accountBloc, widget._blocs.invoicesBloc, widget._blocs.connectPayBloc, widget._blocs.backupBloc),
               settings: settings,
             );
           case '/intro':
             return new FadeInRoute(
-              builder: (_) => new InitialWalkthroughPage(widget._blocs.userProfileBloc, false),
+              builder: (_) => new InitialWalkthroughPage(widget._blocs.userProfileBloc, widget._blocs.backupBloc, false),
               settings: settings,
             );
           case '/order_card':

@@ -1,8 +1,8 @@
 ///
 //  Generated code. Do not modify.
+//  source: rpc.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes
-library data_rpc_pbjson;
+// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
 
 const ChainStatus$json = const {
   '1': 'ChainStatus',

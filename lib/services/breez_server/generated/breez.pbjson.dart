@@ -1,8 +1,8 @@
 ///
 //  Generated code. Do not modify.
+//  source: breez.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes
-library breez_breez_pbjson;
+// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
 
 const OpenChannelRequest$json = const {
   '1': 'OpenChannelRequest',
@@ -266,26 +266,5 @@ const TerminateCTPSessionRequest$json = const {
 
 const TerminateCTPSessionResponse$json = const {
   '1': 'TerminateCTPSessionResponse',
-};
-
-const RegisterTransactionConfirmationRequest$json = const {
-  '1': 'RegisterTransactionConfirmationRequest',
-  '2': const [
-    const {'1': 'txID', '3': 1, '4': 1, '5': 9, '10': 'txID'},
-    const {'1': 'notificationToken', '3': 2, '4': 1, '5': 9, '10': 'notificationToken'},
-    const {'1': 'notificationType', '3': 3, '4': 1, '5': 14, '6': '.breez.RegisterTransactionConfirmationRequest.NotificationType', '10': 'notificationType'},
-  ],
-  '4': const [RegisterTransactionConfirmationRequest_NotificationType$json],
-};
-
-const RegisterTransactionConfirmationRequest_NotificationType$json = const {
-  '1': 'NotificationType',
-  '2': const [
-    const {'1': 'READY_RECEIVE_PAYMENT', '2': 0},
-  ],
-};
-
-const RegisterTransactionConfirmationResponse$json = const {
-  '1': 'RegisterTransactionConfirmationResponse',
 };
 

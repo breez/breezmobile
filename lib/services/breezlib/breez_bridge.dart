@@ -25,6 +25,7 @@ class BreezBridge {
   StreamController _eventsController = new StreamController<NotificationEvent>.broadcast();
   Stream<NotificationEvent> get notificationStream => _eventsController.stream;
   bool ready = false;
+  bool _readyToStart = false;
 
   BreezBridge(){
     _eventChannel.receiveBroadcastStream().listen((event){
@@ -38,7 +39,7 @@ class BreezBridge {
   }
 
   Future start(String workingDir) async{
-    await _copyBreezConfig(workingDir);
+    await copyBreezConfig(workingDir);
     Directory tempDir = await getTemporaryDirectory();
     return _methodChannel.invokeMethod("start", {
       "workingDir": workingDir,
@@ -79,6 +80,13 @@ class BreezBridge {
 
   Future sendPaymentForRequest(String bolt11PaymentRequest) {
     return _invokeMethodWhenReady("sendPaymentForRequest", {"argument": bolt11PaymentRequest});
+  }
+
+  Future bootstrapFiles(String workingDir, List<String> bootstrapFilesPaths) {
+    BootstrapFilesRequest bootstrap = new BootstrapFilesRequest();
+    bootstrap.workingDir = workingDir;
+    bootstrap.fullPaths..clear()..addAll(bootstrapFilesPaths);
+    return _methodChannel.invokeMethod("bootstrapFiles", {"argument": bootstrap.writeToBuffer()});
   }
 
   Future payBlankInvoice(String blankInvoicePaymentRequest, Int64 amount) {
@@ -208,7 +216,7 @@ class BreezBridge {
         .then( (response) => response as String);
   }
 
-  Future _copyBreezConfig(String workingDir) async{
+  Future copyBreezConfig(String workingDir) async{
     String configString = await rootBundle.loadString('conf/breez.conf');
     File file = File(workingDir + "/breez.conf");
     file.writeAsStringSync(configString, flush: true);
@@ -242,7 +250,7 @@ class BreezBridge {
     );
   }
 
-  void bootstrapAndStart() {
+  Future<void> bootstrap() async {
     getApplicationDocumentsDirectory().then(
             (appDir) {
           var lndBootstrapper = new LNDBootstrapper();
@@ -258,10 +266,16 @@ class BreezBridge {
               },
               onDone: () {
                 _bootstrapDownloadProgressController.close();
-                start(appDir.path);
+                return;
               });
           lndBootstrapper.downloadBootstrapFiles(appDir.path);
         }
     );
+  }
+
+  void startLightning() {
+    getApplicationDocumentsDirectory().then((appDir) {
+      start(appDir.path);
+    });
   }
 }

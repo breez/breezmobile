@@ -72,36 +72,30 @@ class AccountBloc {
   final _lightningDownController = new StreamController<bool>.broadcast();
   Stream<bool> get lightningDownStream => _lightningDownController.stream;
 
-
   Stream<Map<String, DownloadFileInfo>>  chainBootstrapProgress;
-  BreezUserModel _currentUser;  
+  BreezUserModel _currentUser;
   bool _allowReconnect = true;
+  bool _startedLightning = false;
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
       ServiceInjector injector = new ServiceInjector();    
-      BreezBridge breezLib = injector.breezBridge;  
+      BreezBridge breezLib = injector.breezBridge;
       BreezServer server = injector.breezServer;
       Notifications notificationsService = injector.notifications;
-      Device device = injector.device;      
+      Device device = injector.device;
 
       _accountController.add(AccountModel.initial());
       _paymentFilterController.add(PaymentFilterModel.initial());
       //listen streams      
-      _listenUserChanges(userProfileStream, breezLib);
+      _listenUserChanges(userProfileStream, breezLib, device);
       _listenNewAddressRequests(breezLib);
-      _listenWithdrawalRequests(breezLib);  
+      _listenWithdrawalRequests(breezLib);
       _listenSentPayments(breezLib);
       _listenFilterChanges(breezLib);
       _listenAccountChanges(breezLib);
       _listenPOSFundingRequests(server, breezLib);
       _listenMempoolTransactions(device, notificationsService, breezLib);
       _listenRoutingNodeConnectionChanges(breezLib);
-       breezLib.bootstrapAndStart();      
-       _refreshAccount(breezLib);
-       _listenConnectivityChanges(breezLib);   
-       _listenReconnects(breezLib);
-       _listenRefundableDeposits(breezLib, device);
-       _listenRefundBroadcasts(breezLib);
     }
 
     void _listenRefundableDeposits(BreezBridge breezLib, Device device){
@@ -177,9 +171,22 @@ class AccountBloc {
         });
     }
 
-    _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib){
-      userProfileStream.listen((user) { 
+    _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib, Device device){
+      userProfileStream.listen((user) {
         _currentUser = user;
+
+        if (user.registered && !_startedLightning) {
+          _startedLightning = true;
+          breezLib.bootstrap().then((done) {
+            breezLib.startLightning();
+            _refreshAccount(breezLib);
+            _listenConnectivityChanges(breezLib);
+            _listenReconnects(breezLib);
+            _listenRefundableDeposits(breezLib, device);
+            _listenRefundBroadcasts(breezLib);
+          });
+        }
+
         if (_accountController.value != null) {
           _accountController.add(_accountController.value.copyWith(currency: user.currency));
         }

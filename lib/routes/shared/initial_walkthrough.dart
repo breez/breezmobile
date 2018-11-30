@@ -1,12 +1,17 @@
+import 'dart:async';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/restore_dialog.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
+  final BackupBloc _backupBloc;
   final bool _isPos;
 
-  InitialWalkthroughPage(this._registrationBloc, this._isPos);
+  InitialWalkthroughPage(this._registrationBloc, this._backupBloc, this._isPos);
 
   @override
   State createState() => new InitialWalkthroughPageState();
@@ -19,9 +24,33 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   AnimationController _controller;
   Animation<int> _animation;
 
+  StreamSubscription<bool> _restoreFinishedSubscription;
+  StreamSubscription<Map<String, String>> _multipleRestoreSubscription;
+
+  var _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
+
+    _multipleRestoreSubscription = widget._backupBloc.multipleRestoreStream.listen((options) {
+        showDialog(context: context, builder: (_) =>
+        new RestoreDialog(context, widget._backupBloc, options));
+    });
+
+    _restoreFinishedSubscription =
+        widget._backupBloc.restoreFinishedStream.listen((restored) {
+          if (restored) {
+            _proceedToRegister();
+          }
+        });
+
+    _restoreFinishedSubscription.onError((error){
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+          duration: new Duration(seconds: 3),
+          content: new Text(error.toString())));
+    });
+
     _controller = new AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2720))
       ..forward(from: 0.0);
@@ -34,14 +63,27 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   @override
   void dispose() {
+    _multipleRestoreSubscription.cancel();
+    _restoreFinishedSubscription.cancel();
     _controller.dispose();
     super.dispose();
+  }
+
+  void _proceedToRegister() {
+    widget._registrationBloc.registerSink.add(null);
+    if (widget._isPos) {
+      Navigator.of(context).pop();
+    } else {
+      Navigator
+          .of(context)
+          .pushReplacementNamed("/order_card?skip=true");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      key: new Key("RegistrationPage"),
+      key: _scaffoldKey,
       body: new Padding(
           padding: new EdgeInsets.only(top: 24.0),
           child: new Stack(children: <Widget>[
@@ -97,17 +139,22 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                           elevation: 0.0,
                           shape: const StadiumBorder(),
                           onPressed: () {
-                            widget._registrationBloc.registerSink.add(null);
-                            if (widget._isPos) {
-                              Navigator.of(context).pop();
-                            } else {
-                              Navigator
-                                  .of(context)
-                                  .pushReplacementNamed("/order_card?skip=true");
-                            }
-                          },
+                            _proceedToRegister();
+                          }
                         ))),
-                new Expanded(flex: 40, child: new Container())
+                new Expanded(
+                    flex: 40,
+                    child: new Padding(
+                        padding: EdgeInsets.only(top: 10.0),
+                        child: new GestureDetector(
+                          onTap: () {
+                            // Restore then start lightninglib
+                            widget._backupBloc.restoreRequestSink.add("");
+                          },
+                          child: new Text("Restore from backup", style: theme.restoreLinkStyle,)
+                    )
+                  ),
+                ),
               ],
             )
           ])),

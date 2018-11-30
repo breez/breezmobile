@@ -39,12 +39,12 @@ class Choice {
   final Function function;
 }
 
-List<Choice> choices = const <Choice>[
+const List<Choice> choices = <Choice>[
   const Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
   const Choice(
       title: 'Show Initial Screen',
       icon: Icons.phone_android,
-      function: _gotoInitialScreen)
+      function: _gotoInitialScreen),
 ];
 
 void _gotoInitialScreen() async {

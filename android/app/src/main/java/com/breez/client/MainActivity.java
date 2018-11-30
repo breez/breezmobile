@@ -7,6 +7,7 @@ import com.breez.client.plugins.breez.breezlib.Breez;
 import com.breez.client.plugins.breez.*;
 import com.breez.client.plugins.breez.ShareBreezLog;
 import com.breez.client.plugins.breez.BreezShare;
+import com.breez.client.plugins.breez.BreezBackup;
 
 import android.os.Bundle;
 
@@ -79,6 +80,7 @@ public class MainActivity extends FlutterActivity {
         new BreezCredential(this.registrarFor("com.breez.client.plugins.breez_credential"), this);
         new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
         new LightningLinks(this.registrarFor("com.breez.client.plugins.lightning_links"));
+        new BreezBackup(this.registrarFor("com.breez.client.plugins.backup"), this);
     }
 
     public void onPause() {

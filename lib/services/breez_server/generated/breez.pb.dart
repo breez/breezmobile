@@ -1,40 +1,38 @@
 ///
 //  Generated code. Do not modify.
+//  source: breez.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes
-library breez_breez;
+// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
 
 // ignore: UNUSED_SHOWN_NAME
 import 'dart:core' show int, bool, double, String, List, override;
 
 import 'package:fixnum/fixnum.dart';
-import 'package:protobuf/protobuf.dart';
+import 'package:protobuf/protobuf.dart' as $pb;
 
 import 'breez.pbenum.dart';
 
 export 'breez.pbenum.dart';
 
-class OpenChannelRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('OpenChannelRequest')
+class OpenChannelRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('OpenChannelRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'pubKey')
     ..aOS(2, 'notificationToken')
     ..hasRequiredFields = false
   ;
 
   OpenChannelRequest() : super();
-  OpenChannelRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  OpenChannelRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  OpenChannelRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  OpenChannelRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   OpenChannelRequest clone() => new OpenChannelRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  OpenChannelRequest copyWith(void Function(OpenChannelRequest) updates) => super.copyWith((message) => updates(message as OpenChannelRequest));
+  $pb.BuilderInfo get info_ => _i;
   static OpenChannelRequest create() => new OpenChannelRequest();
-  static PbList<OpenChannelRequest> createRepeated() => new PbList<OpenChannelRequest>();
-  static OpenChannelRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyOpenChannelRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<OpenChannelRequest> createRepeated() => new $pb.PbList<OpenChannelRequest>();
+  static OpenChannelRequest getDefault() => _defaultInstance ??= create()..freeze();
   static OpenChannelRequest _defaultInstance;
   static void $checkItem(OpenChannelRequest v) {
-    if (v is! OpenChannelRequest) checkItemFailed(v, 'OpenChannelRequest');
+    if (v is! OpenChannelRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get pubKey => $_getS(0, '');
@@ -48,52 +46,44 @@ class OpenChannelRequest extends GeneratedMessage {
   void clearNotificationToken() => clearField(2);
 }
 
-class _ReadonlyOpenChannelRequest extends OpenChannelRequest with ReadonlyMessageMixin {}
-
-class OpenChannelReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('OpenChannelReply')
+class OpenChannelReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('OpenChannelReply', package: const $pb.PackageName('breez'))
     ..hasRequiredFields = false
   ;
 
   OpenChannelReply() : super();
-  OpenChannelReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  OpenChannelReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  OpenChannelReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  OpenChannelReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   OpenChannelReply clone() => new OpenChannelReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  OpenChannelReply copyWith(void Function(OpenChannelReply) updates) => super.copyWith((message) => updates(message as OpenChannelReply));
+  $pb.BuilderInfo get info_ => _i;
   static OpenChannelReply create() => new OpenChannelReply();
-  static PbList<OpenChannelReply> createRepeated() => new PbList<OpenChannelReply>();
-  static OpenChannelReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyOpenChannelReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<OpenChannelReply> createRepeated() => new $pb.PbList<OpenChannelReply>();
+  static OpenChannelReply getDefault() => _defaultInstance ??= create()..freeze();
   static OpenChannelReply _defaultInstance;
   static void $checkItem(OpenChannelReply v) {
-    if (v is! OpenChannelReply) checkItemFailed(v, 'OpenChannelReply');
+    if (v is! OpenChannelReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 }
 
-class _ReadonlyOpenChannelReply extends OpenChannelReply with ReadonlyMessageMixin {}
-
-class UpdateChannelPolicyRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('UpdateChannelPolicyRequest')
+class UpdateChannelPolicyRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('UpdateChannelPolicyRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'pubKey')
     ..hasRequiredFields = false
   ;
 
   UpdateChannelPolicyRequest() : super();
-  UpdateChannelPolicyRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  UpdateChannelPolicyRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  UpdateChannelPolicyRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  UpdateChannelPolicyRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   UpdateChannelPolicyRequest clone() => new UpdateChannelPolicyRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  UpdateChannelPolicyRequest copyWith(void Function(UpdateChannelPolicyRequest) updates) => super.copyWith((message) => updates(message as UpdateChannelPolicyRequest));
+  $pb.BuilderInfo get info_ => _i;
   static UpdateChannelPolicyRequest create() => new UpdateChannelPolicyRequest();
-  static PbList<UpdateChannelPolicyRequest> createRepeated() => new PbList<UpdateChannelPolicyRequest>();
-  static UpdateChannelPolicyRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyUpdateChannelPolicyRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<UpdateChannelPolicyRequest> createRepeated() => new $pb.PbList<UpdateChannelPolicyRequest>();
+  static UpdateChannelPolicyRequest getDefault() => _defaultInstance ??= create()..freeze();
   static UpdateChannelPolicyRequest _defaultInstance;
   static void $checkItem(UpdateChannelPolicyRequest v) {
-    if (v is! UpdateChannelPolicyRequest) checkItemFailed(v, 'UpdateChannelPolicyRequest');
+    if (v is! UpdateChannelPolicyRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get pubKey => $_getS(0, '');
@@ -102,55 +92,47 @@ class UpdateChannelPolicyRequest extends GeneratedMessage {
   void clearPubKey() => clearField(1);
 }
 
-class _ReadonlyUpdateChannelPolicyRequest extends UpdateChannelPolicyRequest with ReadonlyMessageMixin {}
-
-class UpdateChannelPolicyReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('UpdateChannelPolicyReply')
+class UpdateChannelPolicyReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('UpdateChannelPolicyReply', package: const $pb.PackageName('breez'))
     ..hasRequiredFields = false
   ;
 
   UpdateChannelPolicyReply() : super();
-  UpdateChannelPolicyReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  UpdateChannelPolicyReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  UpdateChannelPolicyReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  UpdateChannelPolicyReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   UpdateChannelPolicyReply clone() => new UpdateChannelPolicyReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  UpdateChannelPolicyReply copyWith(void Function(UpdateChannelPolicyReply) updates) => super.copyWith((message) => updates(message as UpdateChannelPolicyReply));
+  $pb.BuilderInfo get info_ => _i;
   static UpdateChannelPolicyReply create() => new UpdateChannelPolicyReply();
-  static PbList<UpdateChannelPolicyReply> createRepeated() => new PbList<UpdateChannelPolicyReply>();
-  static UpdateChannelPolicyReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyUpdateChannelPolicyReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<UpdateChannelPolicyReply> createRepeated() => new $pb.PbList<UpdateChannelPolicyReply>();
+  static UpdateChannelPolicyReply getDefault() => _defaultInstance ??= create()..freeze();
   static UpdateChannelPolicyReply _defaultInstance;
   static void $checkItem(UpdateChannelPolicyReply v) {
-    if (v is! UpdateChannelPolicyReply) checkItemFailed(v, 'UpdateChannelPolicyReply');
+    if (v is! UpdateChannelPolicyReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 }
 
-class _ReadonlyUpdateChannelPolicyReply extends UpdateChannelPolicyReply with ReadonlyMessageMixin {}
-
-class AddFundInitRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('AddFundInitRequest')
+class AddFundInitRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('AddFundInitRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'nodeID')
     ..aOS(2, 'notificationToken')
-    ..a<List<int>>(3, 'pubkey', PbFieldType.OY)
-    ..a<List<int>>(4, 'hash', PbFieldType.OY)
+    ..a<List<int>>(3, 'pubkey', $pb.PbFieldType.OY)
+    ..a<List<int>>(4, 'hash', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
   AddFundInitRequest() : super();
-  AddFundInitRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  AddFundInitRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  AddFundInitRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  AddFundInitRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   AddFundInitRequest clone() => new AddFundInitRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  AddFundInitRequest copyWith(void Function(AddFundInitRequest) updates) => super.copyWith((message) => updates(message as AddFundInitRequest));
+  $pb.BuilderInfo get info_ => _i;
   static AddFundInitRequest create() => new AddFundInitRequest();
-  static PbList<AddFundInitRequest> createRepeated() => new PbList<AddFundInitRequest>();
-  static AddFundInitRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyAddFundInitRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<AddFundInitRequest> createRepeated() => new $pb.PbList<AddFundInitRequest>();
+  static AddFundInitRequest getDefault() => _defaultInstance ??= create()..freeze();
   static AddFundInitRequest _defaultInstance;
   static void $checkItem(AddFundInitRequest v) {
-    if (v is! AddFundInitRequest) checkItemFailed(v, 'AddFundInitRequest');
+    if (v is! AddFundInitRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get nodeID => $_getS(0, '');
@@ -174,12 +156,10 @@ class AddFundInitRequest extends GeneratedMessage {
   void clearHash() => clearField(4);
 }
 
-class _ReadonlyAddFundInitRequest extends AddFundInitRequest with ReadonlyMessageMixin {}
-
-class AddFundInitReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('AddFundInitReply')
+class AddFundInitReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('AddFundInitReply', package: const $pb.PackageName('breez'))
     ..aOS(1, 'address')
-    ..a<List<int>>(2, 'pubkey', PbFieldType.OY)
+    ..a<List<int>>(2, 'pubkey', $pb.PbFieldType.OY)
     ..aInt64(3, 'lockHeight')
     ..aInt64(4, 'maxAllowedDeposit')
     ..aOS(5, 'errorMessage')
@@ -187,19 +167,17 @@ class AddFundInitReply extends GeneratedMessage {
   ;
 
   AddFundInitReply() : super();
-  AddFundInitReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  AddFundInitReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  AddFundInitReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  AddFundInitReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   AddFundInitReply clone() => new AddFundInitReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  AddFundInitReply copyWith(void Function(AddFundInitReply) updates) => super.copyWith((message) => updates(message as AddFundInitReply));
+  $pb.BuilderInfo get info_ => _i;
   static AddFundInitReply create() => new AddFundInitReply();
-  static PbList<AddFundInitReply> createRepeated() => new PbList<AddFundInitReply>();
-  static AddFundInitReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyAddFundInitReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<AddFundInitReply> createRepeated() => new $pb.PbList<AddFundInitReply>();
+  static AddFundInitReply getDefault() => _defaultInstance ??= create()..freeze();
   static AddFundInitReply _defaultInstance;
   static void $checkItem(AddFundInitReply v) {
-    if (v is! AddFundInitReply) checkItemFailed(v, 'AddFundInitReply');
+    if (v is! AddFundInitReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get address => $_getS(0, '');
@@ -228,29 +206,25 @@ class AddFundInitReply extends GeneratedMessage {
   void clearErrorMessage() => clearField(5);
 }
 
-class _ReadonlyAddFundInitReply extends AddFundInitReply with ReadonlyMessageMixin {}
-
-class AddFundStatusRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('AddFundStatusRequest')
+class AddFundStatusRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('AddFundStatusRequest', package: const $pb.PackageName('breez'))
     ..pPS(1, 'addresses')
     ..aOS(2, 'notificationToken')
     ..hasRequiredFields = false
   ;
 
   AddFundStatusRequest() : super();
-  AddFundStatusRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  AddFundStatusRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  AddFundStatusRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  AddFundStatusRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   AddFundStatusRequest clone() => new AddFundStatusRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  AddFundStatusRequest copyWith(void Function(AddFundStatusRequest) updates) => super.copyWith((message) => updates(message as AddFundStatusRequest));
+  $pb.BuilderInfo get info_ => _i;
   static AddFundStatusRequest create() => new AddFundStatusRequest();
-  static PbList<AddFundStatusRequest> createRepeated() => new PbList<AddFundStatusRequest>();
-  static AddFundStatusRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyAddFundStatusRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<AddFundStatusRequest> createRepeated() => new $pb.PbList<AddFundStatusRequest>();
+  static AddFundStatusRequest getDefault() => _defaultInstance ??= create()..freeze();
   static AddFundStatusRequest _defaultInstance;
   static void $checkItem(AddFundStatusRequest v) {
-    if (v is! AddFundStatusRequest) checkItemFailed(v, 'AddFundStatusRequest');
+    if (v is! AddFundStatusRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   List<String> get addresses => $_getList(0);
@@ -261,10 +235,8 @@ class AddFundStatusRequest extends GeneratedMessage {
   void clearNotificationToken() => clearField(2);
 }
 
-class _ReadonlyAddFundStatusRequest extends AddFundStatusRequest with ReadonlyMessageMixin {}
-
-class AddFundStatusReply_AddressStatus extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('AddFundStatusReply_AddressStatus')
+class AddFundStatusReply_AddressStatus extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('AddFundStatusReply.AddressStatus', package: const $pb.PackageName('breez'))
     ..aOS(1, 'tx')
     ..aInt64(2, 'amount')
     ..aOB(3, 'confirmed')
@@ -273,19 +245,17 @@ class AddFundStatusReply_AddressStatus extends GeneratedMessage {
   ;
 
   AddFundStatusReply_AddressStatus() : super();
-  AddFundStatusReply_AddressStatus.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  AddFundStatusReply_AddressStatus.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  AddFundStatusReply_AddressStatus.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  AddFundStatusReply_AddressStatus.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   AddFundStatusReply_AddressStatus clone() => new AddFundStatusReply_AddressStatus()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  AddFundStatusReply_AddressStatus copyWith(void Function(AddFundStatusReply_AddressStatus) updates) => super.copyWith((message) => updates(message as AddFundStatusReply_AddressStatus));
+  $pb.BuilderInfo get info_ => _i;
   static AddFundStatusReply_AddressStatus create() => new AddFundStatusReply_AddressStatus();
-  static PbList<AddFundStatusReply_AddressStatus> createRepeated() => new PbList<AddFundStatusReply_AddressStatus>();
-  static AddFundStatusReply_AddressStatus getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyAddFundStatusReply_AddressStatus();
-    return _defaultInstance;
-  }
+  static $pb.PbList<AddFundStatusReply_AddressStatus> createRepeated() => new $pb.PbList<AddFundStatusReply_AddressStatus>();
+  static AddFundStatusReply_AddressStatus getDefault() => _defaultInstance ??= create()..freeze();
   static AddFundStatusReply_AddressStatus _defaultInstance;
   static void $checkItem(AddFundStatusReply_AddressStatus v) {
-    if (v is! AddFundStatusReply_AddressStatus) checkItemFailed(v, 'AddFundStatusReply_AddressStatus');
+    if (v is! AddFundStatusReply_AddressStatus) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get tx => $_getS(0, '');
@@ -309,29 +279,25 @@ class AddFundStatusReply_AddressStatus extends GeneratedMessage {
   void clearBlockHash() => clearField(4);
 }
 
-class _ReadonlyAddFundStatusReply_AddressStatus extends AddFundStatusReply_AddressStatus with ReadonlyMessageMixin {}
-
-class AddFundStatusReply_StatusesEntry extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('AddFundStatusReply_StatusesEntry')
+class AddFundStatusReply_StatusesEntry extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('AddFundStatusReply.StatusesEntry', package: const $pb.PackageName('breez'))
     ..aOS(1, 'key')
-    ..a<AddFundStatusReply_AddressStatus>(2, 'value', PbFieldType.OM, AddFundStatusReply_AddressStatus.getDefault, AddFundStatusReply_AddressStatus.create)
+    ..a<AddFundStatusReply_AddressStatus>(2, 'value', $pb.PbFieldType.OM, AddFundStatusReply_AddressStatus.getDefault, AddFundStatusReply_AddressStatus.create)
     ..hasRequiredFields = false
   ;
 
   AddFundStatusReply_StatusesEntry() : super();
-  AddFundStatusReply_StatusesEntry.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  AddFundStatusReply_StatusesEntry.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  AddFundStatusReply_StatusesEntry.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  AddFundStatusReply_StatusesEntry.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   AddFundStatusReply_StatusesEntry clone() => new AddFundStatusReply_StatusesEntry()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  AddFundStatusReply_StatusesEntry copyWith(void Function(AddFundStatusReply_StatusesEntry) updates) => super.copyWith((message) => updates(message as AddFundStatusReply_StatusesEntry));
+  $pb.BuilderInfo get info_ => _i;
   static AddFundStatusReply_StatusesEntry create() => new AddFundStatusReply_StatusesEntry();
-  static PbList<AddFundStatusReply_StatusesEntry> createRepeated() => new PbList<AddFundStatusReply_StatusesEntry>();
-  static AddFundStatusReply_StatusesEntry getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyAddFundStatusReply_StatusesEntry();
-    return _defaultInstance;
-  }
+  static $pb.PbList<AddFundStatusReply_StatusesEntry> createRepeated() => new $pb.PbList<AddFundStatusReply_StatusesEntry>();
+  static AddFundStatusReply_StatusesEntry getDefault() => _defaultInstance ??= create()..freeze();
   static AddFundStatusReply_StatusesEntry _defaultInstance;
   static void $checkItem(AddFundStatusReply_StatusesEntry v) {
-    if (v is! AddFundStatusReply_StatusesEntry) checkItemFailed(v, 'AddFundStatusReply_StatusesEntry');
+    if (v is! AddFundStatusReply_StatusesEntry) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get key => $_getS(0, '');
@@ -345,56 +311,48 @@ class AddFundStatusReply_StatusesEntry extends GeneratedMessage {
   void clearValue() => clearField(2);
 }
 
-class _ReadonlyAddFundStatusReply_StatusesEntry extends AddFundStatusReply_StatusesEntry with ReadonlyMessageMixin {}
-
-class AddFundStatusReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('AddFundStatusReply')
-    ..pp<AddFundStatusReply_StatusesEntry>(1, 'statuses', PbFieldType.PM, AddFundStatusReply_StatusesEntry.$checkItem, AddFundStatusReply_StatusesEntry.create)
+class AddFundStatusReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('AddFundStatusReply', package: const $pb.PackageName('breez'))
+    ..pp<AddFundStatusReply_StatusesEntry>(1, 'statuses', $pb.PbFieldType.PM, AddFundStatusReply_StatusesEntry.$checkItem, AddFundStatusReply_StatusesEntry.create)
     ..hasRequiredFields = false
   ;
 
   AddFundStatusReply() : super();
-  AddFundStatusReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  AddFundStatusReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  AddFundStatusReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  AddFundStatusReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   AddFundStatusReply clone() => new AddFundStatusReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  AddFundStatusReply copyWith(void Function(AddFundStatusReply) updates) => super.copyWith((message) => updates(message as AddFundStatusReply));
+  $pb.BuilderInfo get info_ => _i;
   static AddFundStatusReply create() => new AddFundStatusReply();
-  static PbList<AddFundStatusReply> createRepeated() => new PbList<AddFundStatusReply>();
-  static AddFundStatusReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyAddFundStatusReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<AddFundStatusReply> createRepeated() => new $pb.PbList<AddFundStatusReply>();
+  static AddFundStatusReply getDefault() => _defaultInstance ??= create()..freeze();
   static AddFundStatusReply _defaultInstance;
   static void $checkItem(AddFundStatusReply v) {
-    if (v is! AddFundStatusReply) checkItemFailed(v, 'AddFundStatusReply');
+    if (v is! AddFundStatusReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   List<AddFundStatusReply_StatusesEntry> get statuses => $_getList(0);
 }
 
-class _ReadonlyAddFundStatusReply extends AddFundStatusReply with ReadonlyMessageMixin {}
-
-class RemoveFundRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('RemoveFundRequest')
+class RemoveFundRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RemoveFundRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'address')
     ..aInt64(2, 'amount')
     ..hasRequiredFields = false
   ;
 
   RemoveFundRequest() : super();
-  RemoveFundRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  RemoveFundRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RemoveFundRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RemoveFundRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   RemoveFundRequest clone() => new RemoveFundRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  RemoveFundRequest copyWith(void Function(RemoveFundRequest) updates) => super.copyWith((message) => updates(message as RemoveFundRequest));
+  $pb.BuilderInfo get info_ => _i;
   static RemoveFundRequest create() => new RemoveFundRequest();
-  static PbList<RemoveFundRequest> createRepeated() => new PbList<RemoveFundRequest>();
-  static RemoveFundRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRemoveFundRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<RemoveFundRequest> createRepeated() => new $pb.PbList<RemoveFundRequest>();
+  static RemoveFundRequest getDefault() => _defaultInstance ??= create()..freeze();
   static RemoveFundRequest _defaultInstance;
   static void $checkItem(RemoveFundRequest v) {
-    if (v is! RemoveFundRequest) checkItemFailed(v, 'RemoveFundRequest');
+    if (v is! RemoveFundRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get address => $_getS(0, '');
@@ -408,29 +366,25 @@ class RemoveFundRequest extends GeneratedMessage {
   void clearAmount() => clearField(2);
 }
 
-class _ReadonlyRemoveFundRequest extends RemoveFundRequest with ReadonlyMessageMixin {}
-
-class RemoveFundReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('RemoveFundReply')
+class RemoveFundReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RemoveFundReply', package: const $pb.PackageName('breez'))
     ..aOS(1, 'paymentRequest')
     ..aOS(2, 'errorMessage')
     ..hasRequiredFields = false
   ;
 
   RemoveFundReply() : super();
-  RemoveFundReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  RemoveFundReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RemoveFundReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RemoveFundReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   RemoveFundReply clone() => new RemoveFundReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  RemoveFundReply copyWith(void Function(RemoveFundReply) updates) => super.copyWith((message) => updates(message as RemoveFundReply));
+  $pb.BuilderInfo get info_ => _i;
   static RemoveFundReply create() => new RemoveFundReply();
-  static PbList<RemoveFundReply> createRepeated() => new PbList<RemoveFundReply>();
-  static RemoveFundReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRemoveFundReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<RemoveFundReply> createRepeated() => new $pb.PbList<RemoveFundReply>();
+  static RemoveFundReply getDefault() => _defaultInstance ??= create()..freeze();
   static RemoveFundReply _defaultInstance;
   static void $checkItem(RemoveFundReply v) {
-    if (v is! RemoveFundReply) checkItemFailed(v, 'RemoveFundReply');
+    if (v is! RemoveFundReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get paymentRequest => $_getS(0, '');
@@ -444,28 +398,24 @@ class RemoveFundReply extends GeneratedMessage {
   void clearErrorMessage() => clearField(2);
 }
 
-class _ReadonlyRemoveFundReply extends RemoveFundReply with ReadonlyMessageMixin {}
-
-class RedeemRemovedFundsRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('RedeemRemovedFundsRequest')
+class RedeemRemovedFundsRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RedeemRemovedFundsRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'paymenthash')
     ..hasRequiredFields = false
   ;
 
   RedeemRemovedFundsRequest() : super();
-  RedeemRemovedFundsRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  RedeemRemovedFundsRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RedeemRemovedFundsRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RedeemRemovedFundsRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   RedeemRemovedFundsRequest clone() => new RedeemRemovedFundsRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  RedeemRemovedFundsRequest copyWith(void Function(RedeemRemovedFundsRequest) updates) => super.copyWith((message) => updates(message as RedeemRemovedFundsRequest));
+  $pb.BuilderInfo get info_ => _i;
   static RedeemRemovedFundsRequest create() => new RedeemRemovedFundsRequest();
-  static PbList<RedeemRemovedFundsRequest> createRepeated() => new PbList<RedeemRemovedFundsRequest>();
-  static RedeemRemovedFundsRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRedeemRemovedFundsRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<RedeemRemovedFundsRequest> createRepeated() => new $pb.PbList<RedeemRemovedFundsRequest>();
+  static RedeemRemovedFundsRequest getDefault() => _defaultInstance ??= create()..freeze();
   static RedeemRemovedFundsRequest _defaultInstance;
   static void $checkItem(RedeemRemovedFundsRequest v) {
-    if (v is! RedeemRemovedFundsRequest) checkItemFailed(v, 'RedeemRemovedFundsRequest');
+    if (v is! RedeemRemovedFundsRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get paymenthash => $_getS(0, '');
@@ -474,28 +424,24 @@ class RedeemRemovedFundsRequest extends GeneratedMessage {
   void clearPaymenthash() => clearField(1);
 }
 
-class _ReadonlyRedeemRemovedFundsRequest extends RedeemRemovedFundsRequest with ReadonlyMessageMixin {}
-
-class RedeemRemovedFundsReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('RedeemRemovedFundsReply')
+class RedeemRemovedFundsReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RedeemRemovedFundsReply', package: const $pb.PackageName('breez'))
     ..aOS(1, 'txid')
     ..hasRequiredFields = false
   ;
 
   RedeemRemovedFundsReply() : super();
-  RedeemRemovedFundsReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  RedeemRemovedFundsReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RedeemRemovedFundsReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RedeemRemovedFundsReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   RedeemRemovedFundsReply clone() => new RedeemRemovedFundsReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  RedeemRemovedFundsReply copyWith(void Function(RedeemRemovedFundsReply) updates) => super.copyWith((message) => updates(message as RedeemRemovedFundsReply));
+  $pb.BuilderInfo get info_ => _i;
   static RedeemRemovedFundsReply create() => new RedeemRemovedFundsReply();
-  static PbList<RedeemRemovedFundsReply> createRepeated() => new PbList<RedeemRemovedFundsReply>();
-  static RedeemRemovedFundsReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRedeemRemovedFundsReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<RedeemRemovedFundsReply> createRepeated() => new $pb.PbList<RedeemRemovedFundsReply>();
+  static RedeemRemovedFundsReply getDefault() => _defaultInstance ??= create()..freeze();
   static RedeemRemovedFundsReply _defaultInstance;
   static void $checkItem(RedeemRemovedFundsReply v) {
-    if (v is! RedeemRemovedFundsReply) checkItemFailed(v, 'RedeemRemovedFundsReply');
+    if (v is! RedeemRemovedFundsReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get txid => $_getS(0, '');
@@ -504,10 +450,8 @@ class RedeemRemovedFundsReply extends GeneratedMessage {
   void clearTxid() => clearField(1);
 }
 
-class _ReadonlyRedeemRemovedFundsReply extends RedeemRemovedFundsReply with ReadonlyMessageMixin {}
-
-class FundRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('FundRequest')
+class FundRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('FundRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'deviceID')
     ..aOS(2, 'lightningID')
     ..aInt64(3, 'amount')
@@ -515,19 +459,17 @@ class FundRequest extends GeneratedMessage {
   ;
 
   FundRequest() : super();
-  FundRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  FundRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  FundRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  FundRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   FundRequest clone() => new FundRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  FundRequest copyWith(void Function(FundRequest) updates) => super.copyWith((message) => updates(message as FundRequest));
+  $pb.BuilderInfo get info_ => _i;
   static FundRequest create() => new FundRequest();
-  static PbList<FundRequest> createRepeated() => new PbList<FundRequest>();
-  static FundRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyFundRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<FundRequest> createRepeated() => new $pb.PbList<FundRequest>();
+  static FundRequest getDefault() => _defaultInstance ??= create()..freeze();
   static FundRequest _defaultInstance;
   static void $checkItem(FundRequest v) {
-    if (v is! FundRequest) checkItemFailed(v, 'FundRequest');
+    if (v is! FundRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get deviceID => $_getS(0, '');
@@ -546,28 +488,24 @@ class FundRequest extends GeneratedMessage {
   void clearAmount() => clearField(3);
 }
 
-class _ReadonlyFundRequest extends FundRequest with ReadonlyMessageMixin {}
-
-class FundReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('FundReply')
-    ..e<FundReply_ReturnCode>(1, 'returnCode', PbFieldType.OE, FundReply_ReturnCode.SUCCESS, FundReply_ReturnCode.valueOf, FundReply_ReturnCode.values)
+class FundReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('FundReply', package: const $pb.PackageName('breez'))
+    ..e<FundReply_ReturnCode>(1, 'returnCode', $pb.PbFieldType.OE, FundReply_ReturnCode.SUCCESS, FundReply_ReturnCode.valueOf, FundReply_ReturnCode.values)
     ..hasRequiredFields = false
   ;
 
   FundReply() : super();
-  FundReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  FundReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  FundReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  FundReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   FundReply clone() => new FundReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  FundReply copyWith(void Function(FundReply) updates) => super.copyWith((message) => updates(message as FundReply));
+  $pb.BuilderInfo get info_ => _i;
   static FundReply create() => new FundReply();
-  static PbList<FundReply> createRepeated() => new PbList<FundReply>();
-  static FundReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyFundReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<FundReply> createRepeated() => new $pb.PbList<FundReply>();
+  static FundReply getDefault() => _defaultInstance ??= create()..freeze();
   static FundReply _defaultInstance;
   static void $checkItem(FundReply v) {
-    if (v is! FundReply) checkItemFailed(v, 'FundReply');
+    if (v is! FundReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   FundReply_ReturnCode get returnCode => $_getN(0);
@@ -576,28 +514,24 @@ class FundReply extends GeneratedMessage {
   void clearReturnCode() => clearField(1);
 }
 
-class _ReadonlyFundReply extends FundReply with ReadonlyMessageMixin {}
-
-class GetSwapPaymentRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('GetSwapPaymentRequest')
+class GetSwapPaymentRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('GetSwapPaymentRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'paymentRequest')
     ..hasRequiredFields = false
   ;
 
   GetSwapPaymentRequest() : super();
-  GetSwapPaymentRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  GetSwapPaymentRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  GetSwapPaymentRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  GetSwapPaymentRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   GetSwapPaymentRequest clone() => new GetSwapPaymentRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  GetSwapPaymentRequest copyWith(void Function(GetSwapPaymentRequest) updates) => super.copyWith((message) => updates(message as GetSwapPaymentRequest));
+  $pb.BuilderInfo get info_ => _i;
   static GetSwapPaymentRequest create() => new GetSwapPaymentRequest();
-  static PbList<GetSwapPaymentRequest> createRepeated() => new PbList<GetSwapPaymentRequest>();
-  static GetSwapPaymentRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyGetSwapPaymentRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<GetSwapPaymentRequest> createRepeated() => new $pb.PbList<GetSwapPaymentRequest>();
+  static GetSwapPaymentRequest getDefault() => _defaultInstance ??= create()..freeze();
   static GetSwapPaymentRequest _defaultInstance;
   static void $checkItem(GetSwapPaymentRequest v) {
-    if (v is! GetSwapPaymentRequest) checkItemFailed(v, 'GetSwapPaymentRequest');
+    if (v is! GetSwapPaymentRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get paymentRequest => $_getS(0, '');
@@ -606,28 +540,24 @@ class GetSwapPaymentRequest extends GeneratedMessage {
   void clearPaymentRequest() => clearField(1);
 }
 
-class _ReadonlyGetSwapPaymentRequest extends GetSwapPaymentRequest with ReadonlyMessageMixin {}
-
-class GetSwapPaymentReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('GetSwapPaymentReply')
+class GetSwapPaymentReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('GetSwapPaymentReply', package: const $pb.PackageName('breez'))
     ..aOS(1, 'paymentError')
     ..hasRequiredFields = false
   ;
 
   GetSwapPaymentReply() : super();
-  GetSwapPaymentReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  GetSwapPaymentReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  GetSwapPaymentReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  GetSwapPaymentReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   GetSwapPaymentReply clone() => new GetSwapPaymentReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  GetSwapPaymentReply copyWith(void Function(GetSwapPaymentReply) updates) => super.copyWith((message) => updates(message as GetSwapPaymentReply));
+  $pb.BuilderInfo get info_ => _i;
   static GetSwapPaymentReply create() => new GetSwapPaymentReply();
-  static PbList<GetSwapPaymentReply> createRepeated() => new PbList<GetSwapPaymentReply>();
-  static GetSwapPaymentReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyGetSwapPaymentReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<GetSwapPaymentReply> createRepeated() => new $pb.PbList<GetSwapPaymentReply>();
+  static GetSwapPaymentReply getDefault() => _defaultInstance ??= create()..freeze();
   static GetSwapPaymentReply _defaultInstance;
   static void $checkItem(GetSwapPaymentReply v) {
-    if (v is! GetSwapPaymentReply) checkItemFailed(v, 'GetSwapPaymentReply');
+    if (v is! GetSwapPaymentReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get paymentError => $_getS(0, '');
@@ -636,29 +566,25 @@ class GetSwapPaymentReply extends GeneratedMessage {
   void clearPaymentError() => clearField(1);
 }
 
-class _ReadonlyGetSwapPaymentReply extends GetSwapPaymentReply with ReadonlyMessageMixin {}
-
-class RegisterRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('RegisterRequest')
+class RegisterRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RegisterRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'deviceID')
     ..aOS(2, 'lightningID')
     ..hasRequiredFields = false
   ;
 
   RegisterRequest() : super();
-  RegisterRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  RegisterRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RegisterRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RegisterRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   RegisterRequest clone() => new RegisterRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  RegisterRequest copyWith(void Function(RegisterRequest) updates) => super.copyWith((message) => updates(message as RegisterRequest));
+  $pb.BuilderInfo get info_ => _i;
   static RegisterRequest create() => new RegisterRequest();
-  static PbList<RegisterRequest> createRepeated() => new PbList<RegisterRequest>();
-  static RegisterRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRegisterRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<RegisterRequest> createRepeated() => new $pb.PbList<RegisterRequest>();
+  static RegisterRequest getDefault() => _defaultInstance ??= create()..freeze();
   static RegisterRequest _defaultInstance;
   static void $checkItem(RegisterRequest v) {
-    if (v is! RegisterRequest) checkItemFailed(v, 'RegisterRequest');
+    if (v is! RegisterRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get deviceID => $_getS(0, '');
@@ -672,28 +598,24 @@ class RegisterRequest extends GeneratedMessage {
   void clearLightningID() => clearField(2);
 }
 
-class _ReadonlyRegisterRequest extends RegisterRequest with ReadonlyMessageMixin {}
-
-class RegisterReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('RegisterReply')
+class RegisterReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RegisterReply', package: const $pb.PackageName('breez'))
     ..aOS(1, 'breezID')
     ..hasRequiredFields = false
   ;
 
   RegisterReply() : super();
-  RegisterReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  RegisterReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RegisterReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RegisterReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   RegisterReply clone() => new RegisterReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  RegisterReply copyWith(void Function(RegisterReply) updates) => super.copyWith((message) => updates(message as RegisterReply));
+  $pb.BuilderInfo get info_ => _i;
   static RegisterReply create() => new RegisterReply();
-  static PbList<RegisterReply> createRepeated() => new PbList<RegisterReply>();
-  static RegisterReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRegisterReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<RegisterReply> createRepeated() => new $pb.PbList<RegisterReply>();
+  static RegisterReply getDefault() => _defaultInstance ??= create()..freeze();
   static RegisterReply _defaultInstance;
   static void $checkItem(RegisterReply v) {
-    if (v is! RegisterReply) checkItemFailed(v, 'RegisterReply');
+    if (v is! RegisterReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get breezID => $_getS(0, '');
@@ -702,10 +624,8 @@ class RegisterReply extends GeneratedMessage {
   void clearBreezID() => clearField(1);
 }
 
-class _ReadonlyRegisterReply extends RegisterReply with ReadonlyMessageMixin {}
-
-class PaymentRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('PaymentRequest')
+class PaymentRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('PaymentRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'breezID')
     ..aOS(2, 'invoice')
     ..aOS(3, 'payee')
@@ -714,19 +634,17 @@ class PaymentRequest extends GeneratedMessage {
   ;
 
   PaymentRequest() : super();
-  PaymentRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  PaymentRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  PaymentRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  PaymentRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   PaymentRequest clone() => new PaymentRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  PaymentRequest copyWith(void Function(PaymentRequest) updates) => super.copyWith((message) => updates(message as PaymentRequest));
+  $pb.BuilderInfo get info_ => _i;
   static PaymentRequest create() => new PaymentRequest();
-  static PbList<PaymentRequest> createRepeated() => new PbList<PaymentRequest>();
-  static PaymentRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyPaymentRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<PaymentRequest> createRepeated() => new $pb.PbList<PaymentRequest>();
+  static PaymentRequest getDefault() => _defaultInstance ??= create()..freeze();
   static PaymentRequest _defaultInstance;
   static void $checkItem(PaymentRequest v) {
-    if (v is! PaymentRequest) checkItemFailed(v, 'PaymentRequest');
+    if (v is! PaymentRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get breezID => $_getS(0, '');
@@ -750,28 +668,24 @@ class PaymentRequest extends GeneratedMessage {
   void clearAmount() => clearField(4);
 }
 
-class _ReadonlyPaymentRequest extends PaymentRequest with ReadonlyMessageMixin {}
-
-class InvoiceReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('InvoiceReply')
+class InvoiceReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('InvoiceReply', package: const $pb.PackageName('breez'))
     ..aOS(1, 'error')
     ..hasRequiredFields = false
   ;
 
   InvoiceReply() : super();
-  InvoiceReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  InvoiceReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  InvoiceReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  InvoiceReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   InvoiceReply clone() => new InvoiceReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  InvoiceReply copyWith(void Function(InvoiceReply) updates) => super.copyWith((message) => updates(message as InvoiceReply));
+  $pb.BuilderInfo get info_ => _i;
   static InvoiceReply create() => new InvoiceReply();
-  static PbList<InvoiceReply> createRepeated() => new PbList<InvoiceReply>();
-  static InvoiceReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyInvoiceReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<InvoiceReply> createRepeated() => new $pb.PbList<InvoiceReply>();
+  static InvoiceReply getDefault() => _defaultInstance ??= create()..freeze();
   static InvoiceReply _defaultInstance;
   static void $checkItem(InvoiceReply v) {
-    if (v is! InvoiceReply) checkItemFailed(v, 'InvoiceReply');
+    if (v is! InvoiceReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get error => $_getS(0, '');
@@ -780,28 +694,24 @@ class InvoiceReply extends GeneratedMessage {
   void clearError() => clearField(1);
 }
 
-class _ReadonlyInvoiceReply extends InvoiceReply with ReadonlyMessageMixin {}
-
-class UploadFileRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('UploadFileRequest')
-    ..a<List<int>>(1, 'content', PbFieldType.OY)
+class UploadFileRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('UploadFileRequest', package: const $pb.PackageName('breez'))
+    ..a<List<int>>(1, 'content', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
   UploadFileRequest() : super();
-  UploadFileRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  UploadFileRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  UploadFileRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  UploadFileRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   UploadFileRequest clone() => new UploadFileRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  UploadFileRequest copyWith(void Function(UploadFileRequest) updates) => super.copyWith((message) => updates(message as UploadFileRequest));
+  $pb.BuilderInfo get info_ => _i;
   static UploadFileRequest create() => new UploadFileRequest();
-  static PbList<UploadFileRequest> createRepeated() => new PbList<UploadFileRequest>();
-  static UploadFileRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyUploadFileRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<UploadFileRequest> createRepeated() => new $pb.PbList<UploadFileRequest>();
+  static UploadFileRequest getDefault() => _defaultInstance ??= create()..freeze();
   static UploadFileRequest _defaultInstance;
   static void $checkItem(UploadFileRequest v) {
-    if (v is! UploadFileRequest) checkItemFailed(v, 'UploadFileRequest');
+    if (v is! UploadFileRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   List<int> get content => $_getN(0);
@@ -810,28 +720,24 @@ class UploadFileRequest extends GeneratedMessage {
   void clearContent() => clearField(1);
 }
 
-class _ReadonlyUploadFileRequest extends UploadFileRequest with ReadonlyMessageMixin {}
-
-class UploadFileReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('UploadFileReply')
+class UploadFileReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('UploadFileReply', package: const $pb.PackageName('breez'))
     ..aOS(1, 'url')
     ..hasRequiredFields = false
   ;
 
   UploadFileReply() : super();
-  UploadFileReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  UploadFileReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  UploadFileReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  UploadFileReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   UploadFileReply clone() => new UploadFileReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  UploadFileReply copyWith(void Function(UploadFileReply) updates) => super.copyWith((message) => updates(message as UploadFileReply));
+  $pb.BuilderInfo get info_ => _i;
   static UploadFileReply create() => new UploadFileReply();
-  static PbList<UploadFileReply> createRepeated() => new PbList<UploadFileReply>();
-  static UploadFileReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyUploadFileReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<UploadFileReply> createRepeated() => new $pb.PbList<UploadFileReply>();
+  static UploadFileReply getDefault() => _defaultInstance ??= create()..freeze();
   static UploadFileReply _defaultInstance;
   static void $checkItem(UploadFileReply v) {
-    if (v is! UploadFileReply) checkItemFailed(v, 'UploadFileReply');
+    if (v is! UploadFileReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get url => $_getS(0, '');
@@ -840,52 +746,44 @@ class UploadFileReply extends GeneratedMessage {
   void clearUrl() => clearField(1);
 }
 
-class _ReadonlyUploadFileReply extends UploadFileReply with ReadonlyMessageMixin {}
-
-class PingRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('PingRequest')
+class PingRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('PingRequest', package: const $pb.PackageName('breez'))
     ..hasRequiredFields = false
   ;
 
   PingRequest() : super();
-  PingRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  PingRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  PingRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  PingRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   PingRequest clone() => new PingRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  PingRequest copyWith(void Function(PingRequest) updates) => super.copyWith((message) => updates(message as PingRequest));
+  $pb.BuilderInfo get info_ => _i;
   static PingRequest create() => new PingRequest();
-  static PbList<PingRequest> createRepeated() => new PbList<PingRequest>();
-  static PingRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyPingRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<PingRequest> createRepeated() => new $pb.PbList<PingRequest>();
+  static PingRequest getDefault() => _defaultInstance ??= create()..freeze();
   static PingRequest _defaultInstance;
   static void $checkItem(PingRequest v) {
-    if (v is! PingRequest) checkItemFailed(v, 'PingRequest');
+    if (v is! PingRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 }
 
-class _ReadonlyPingRequest extends PingRequest with ReadonlyMessageMixin {}
-
-class PingReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('PingReply')
+class PingReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('PingReply', package: const $pb.PackageName('breez'))
     ..aOS(1, 'version')
     ..hasRequiredFields = false
   ;
 
   PingReply() : super();
-  PingReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  PingReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  PingReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  PingReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   PingReply clone() => new PingReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  PingReply copyWith(void Function(PingReply) updates) => super.copyWith((message) => updates(message as PingReply));
+  $pb.BuilderInfo get info_ => _i;
   static PingReply create() => new PingReply();
-  static PbList<PingReply> createRepeated() => new PbList<PingReply>();
-  static PingReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyPingReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<PingReply> createRepeated() => new $pb.PbList<PingReply>();
+  static PingReply getDefault() => _defaultInstance ??= create()..freeze();
   static PingReply _defaultInstance;
   static void $checkItem(PingReply v) {
-    if (v is! PingReply) checkItemFailed(v, 'PingReply');
+    if (v is! PingReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get version => $_getS(0, '');
@@ -894,10 +792,8 @@ class PingReply extends GeneratedMessage {
   void clearVersion() => clearField(1);
 }
 
-class _ReadonlyPingReply extends PingReply with ReadonlyMessageMixin {}
-
-class OrderRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('OrderRequest')
+class OrderRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('OrderRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'fullName')
     ..aOS(2, 'address')
     ..aOS(3, 'city')
@@ -909,19 +805,17 @@ class OrderRequest extends GeneratedMessage {
   ;
 
   OrderRequest() : super();
-  OrderRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  OrderRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  OrderRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  OrderRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   OrderRequest clone() => new OrderRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  OrderRequest copyWith(void Function(OrderRequest) updates) => super.copyWith((message) => updates(message as OrderRequest));
+  $pb.BuilderInfo get info_ => _i;
   static OrderRequest create() => new OrderRequest();
-  static PbList<OrderRequest> createRepeated() => new PbList<OrderRequest>();
-  static OrderRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyOrderRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<OrderRequest> createRepeated() => new $pb.PbList<OrderRequest>();
+  static OrderRequest getDefault() => _defaultInstance ??= create()..freeze();
   static OrderRequest _defaultInstance;
   static void $checkItem(OrderRequest v) {
-    if (v is! OrderRequest) checkItemFailed(v, 'OrderRequest');
+    if (v is! OrderRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get fullName => $_getS(0, '');
@@ -960,35 +854,29 @@ class OrderRequest extends GeneratedMessage {
   void clearEmail() => clearField(7);
 }
 
-class _ReadonlyOrderRequest extends OrderRequest with ReadonlyMessageMixin {}
-
-class OrderReply extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('OrderReply')
+class OrderReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('OrderReply', package: const $pb.PackageName('breez'))
     ..hasRequiredFields = false
   ;
 
   OrderReply() : super();
-  OrderReply.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  OrderReply.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  OrderReply.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  OrderReply.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   OrderReply clone() => new OrderReply()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  OrderReply copyWith(void Function(OrderReply) updates) => super.copyWith((message) => updates(message as OrderReply));
+  $pb.BuilderInfo get info_ => _i;
   static OrderReply create() => new OrderReply();
-  static PbList<OrderReply> createRepeated() => new PbList<OrderReply>();
-  static OrderReply getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyOrderReply();
-    return _defaultInstance;
-  }
+  static $pb.PbList<OrderReply> createRepeated() => new $pb.PbList<OrderReply>();
+  static OrderReply getDefault() => _defaultInstance ??= create()..freeze();
   static OrderReply _defaultInstance;
   static void $checkItem(OrderReply v) {
-    if (v is! OrderReply) checkItemFailed(v, 'OrderReply');
+    if (v is! OrderReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 }
 
-class _ReadonlyOrderReply extends OrderReply with ReadonlyMessageMixin {}
-
-class JoinCTPSessionRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('JoinCTPSessionRequest')
-    ..e<JoinCTPSessionRequest_PartyType>(1, 'partyType', PbFieldType.OE, JoinCTPSessionRequest_PartyType.PAYER, JoinCTPSessionRequest_PartyType.valueOf, JoinCTPSessionRequest_PartyType.values)
+class JoinCTPSessionRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('JoinCTPSessionRequest', package: const $pb.PackageName('breez'))
+    ..e<JoinCTPSessionRequest_PartyType>(1, 'partyType', $pb.PbFieldType.OE, JoinCTPSessionRequest_PartyType.PAYER, JoinCTPSessionRequest_PartyType.valueOf, JoinCTPSessionRequest_PartyType.values)
     ..aOS(2, 'partyName')
     ..aOS(3, 'notificationToken')
     ..aOS(4, 'sessionID')
@@ -996,19 +884,17 @@ class JoinCTPSessionRequest extends GeneratedMessage {
   ;
 
   JoinCTPSessionRequest() : super();
-  JoinCTPSessionRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  JoinCTPSessionRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  JoinCTPSessionRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  JoinCTPSessionRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   JoinCTPSessionRequest clone() => new JoinCTPSessionRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  JoinCTPSessionRequest copyWith(void Function(JoinCTPSessionRequest) updates) => super.copyWith((message) => updates(message as JoinCTPSessionRequest));
+  $pb.BuilderInfo get info_ => _i;
   static JoinCTPSessionRequest create() => new JoinCTPSessionRequest();
-  static PbList<JoinCTPSessionRequest> createRepeated() => new PbList<JoinCTPSessionRequest>();
-  static JoinCTPSessionRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyJoinCTPSessionRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<JoinCTPSessionRequest> createRepeated() => new $pb.PbList<JoinCTPSessionRequest>();
+  static JoinCTPSessionRequest getDefault() => _defaultInstance ??= create()..freeze();
   static JoinCTPSessionRequest _defaultInstance;
   static void $checkItem(JoinCTPSessionRequest v) {
-    if (v is! JoinCTPSessionRequest) checkItemFailed(v, 'JoinCTPSessionRequest');
+    if (v is! JoinCTPSessionRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   JoinCTPSessionRequest_PartyType get partyType => $_getN(0);
@@ -1032,29 +918,25 @@ class JoinCTPSessionRequest extends GeneratedMessage {
   void clearSessionID() => clearField(4);
 }
 
-class _ReadonlyJoinCTPSessionRequest extends JoinCTPSessionRequest with ReadonlyMessageMixin {}
-
-class JoinCTPSessionResponse extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('JoinCTPSessionResponse')
+class JoinCTPSessionResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('JoinCTPSessionResponse', package: const $pb.PackageName('breez'))
     ..aOS(1, 'sessionID')
     ..aInt64(2, 'expiry')
     ..hasRequiredFields = false
   ;
 
   JoinCTPSessionResponse() : super();
-  JoinCTPSessionResponse.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  JoinCTPSessionResponse.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  JoinCTPSessionResponse.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  JoinCTPSessionResponse.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   JoinCTPSessionResponse clone() => new JoinCTPSessionResponse()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  JoinCTPSessionResponse copyWith(void Function(JoinCTPSessionResponse) updates) => super.copyWith((message) => updates(message as JoinCTPSessionResponse));
+  $pb.BuilderInfo get info_ => _i;
   static JoinCTPSessionResponse create() => new JoinCTPSessionResponse();
-  static PbList<JoinCTPSessionResponse> createRepeated() => new PbList<JoinCTPSessionResponse>();
-  static JoinCTPSessionResponse getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyJoinCTPSessionResponse();
-    return _defaultInstance;
-  }
+  static $pb.PbList<JoinCTPSessionResponse> createRepeated() => new $pb.PbList<JoinCTPSessionResponse>();
+  static JoinCTPSessionResponse getDefault() => _defaultInstance ??= create()..freeze();
   static JoinCTPSessionResponse _defaultInstance;
   static void $checkItem(JoinCTPSessionResponse v) {
-    if (v is! JoinCTPSessionResponse) checkItemFailed(v, 'JoinCTPSessionResponse');
+    if (v is! JoinCTPSessionResponse) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get sessionID => $_getS(0, '');
@@ -1068,28 +950,24 @@ class JoinCTPSessionResponse extends GeneratedMessage {
   void clearExpiry() => clearField(2);
 }
 
-class _ReadonlyJoinCTPSessionResponse extends JoinCTPSessionResponse with ReadonlyMessageMixin {}
-
-class TerminateCTPSessionRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('TerminateCTPSessionRequest')
+class TerminateCTPSessionRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('TerminateCTPSessionRequest', package: const $pb.PackageName('breez'))
     ..aOS(1, 'sessionID')
     ..hasRequiredFields = false
   ;
 
   TerminateCTPSessionRequest() : super();
-  TerminateCTPSessionRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  TerminateCTPSessionRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  TerminateCTPSessionRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  TerminateCTPSessionRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   TerminateCTPSessionRequest clone() => new TerminateCTPSessionRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  TerminateCTPSessionRequest copyWith(void Function(TerminateCTPSessionRequest) updates) => super.copyWith((message) => updates(message as TerminateCTPSessionRequest));
+  $pb.BuilderInfo get info_ => _i;
   static TerminateCTPSessionRequest create() => new TerminateCTPSessionRequest();
-  static PbList<TerminateCTPSessionRequest> createRepeated() => new PbList<TerminateCTPSessionRequest>();
-  static TerminateCTPSessionRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyTerminateCTPSessionRequest();
-    return _defaultInstance;
-  }
+  static $pb.PbList<TerminateCTPSessionRequest> createRepeated() => new $pb.PbList<TerminateCTPSessionRequest>();
+  static TerminateCTPSessionRequest getDefault() => _defaultInstance ??= create()..freeze();
   static TerminateCTPSessionRequest _defaultInstance;
   static void $checkItem(TerminateCTPSessionRequest v) {
-    if (v is! TerminateCTPSessionRequest) checkItemFailed(v, 'TerminateCTPSessionRequest');
+    if (v is! TerminateCTPSessionRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
   String get sessionID => $_getS(0, '');
@@ -1098,95 +976,23 @@ class TerminateCTPSessionRequest extends GeneratedMessage {
   void clearSessionID() => clearField(1);
 }
 
-class _ReadonlyTerminateCTPSessionRequest extends TerminateCTPSessionRequest with ReadonlyMessageMixin {}
-
-class TerminateCTPSessionResponse extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('TerminateCTPSessionResponse')
+class TerminateCTPSessionResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('TerminateCTPSessionResponse', package: const $pb.PackageName('breez'))
     ..hasRequiredFields = false
   ;
 
   TerminateCTPSessionResponse() : super();
-  TerminateCTPSessionResponse.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  TerminateCTPSessionResponse.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  TerminateCTPSessionResponse.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  TerminateCTPSessionResponse.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
   TerminateCTPSessionResponse clone() => new TerminateCTPSessionResponse()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
+  TerminateCTPSessionResponse copyWith(void Function(TerminateCTPSessionResponse) updates) => super.copyWith((message) => updates(message as TerminateCTPSessionResponse));
+  $pb.BuilderInfo get info_ => _i;
   static TerminateCTPSessionResponse create() => new TerminateCTPSessionResponse();
-  static PbList<TerminateCTPSessionResponse> createRepeated() => new PbList<TerminateCTPSessionResponse>();
-  static TerminateCTPSessionResponse getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyTerminateCTPSessionResponse();
-    return _defaultInstance;
-  }
+  static $pb.PbList<TerminateCTPSessionResponse> createRepeated() => new $pb.PbList<TerminateCTPSessionResponse>();
+  static TerminateCTPSessionResponse getDefault() => _defaultInstance ??= create()..freeze();
   static TerminateCTPSessionResponse _defaultInstance;
   static void $checkItem(TerminateCTPSessionResponse v) {
-    if (v is! TerminateCTPSessionResponse) checkItemFailed(v, 'TerminateCTPSessionResponse');
+    if (v is! TerminateCTPSessionResponse) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 }
-
-class _ReadonlyTerminateCTPSessionResponse extends TerminateCTPSessionResponse with ReadonlyMessageMixin {}
-
-class RegisterTransactionConfirmationRequest extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('RegisterTransactionConfirmationRequest')
-    ..aOS(1, 'txID')
-    ..aOS(2, 'notificationToken')
-    ..e<RegisterTransactionConfirmationRequest_NotificationType>(3, 'notificationType', PbFieldType.OE, RegisterTransactionConfirmationRequest_NotificationType.READY_RECEIVE_PAYMENT, RegisterTransactionConfirmationRequest_NotificationType.valueOf, RegisterTransactionConfirmationRequest_NotificationType.values)
-    ..hasRequiredFields = false
-  ;
-
-  RegisterTransactionConfirmationRequest() : super();
-  RegisterTransactionConfirmationRequest.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  RegisterTransactionConfirmationRequest.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  RegisterTransactionConfirmationRequest clone() => new RegisterTransactionConfirmationRequest()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
-  static RegisterTransactionConfirmationRequest create() => new RegisterTransactionConfirmationRequest();
-  static PbList<RegisterTransactionConfirmationRequest> createRepeated() => new PbList<RegisterTransactionConfirmationRequest>();
-  static RegisterTransactionConfirmationRequest getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRegisterTransactionConfirmationRequest();
-    return _defaultInstance;
-  }
-  static RegisterTransactionConfirmationRequest _defaultInstance;
-  static void $checkItem(RegisterTransactionConfirmationRequest v) {
-    if (v is! RegisterTransactionConfirmationRequest) checkItemFailed(v, 'RegisterTransactionConfirmationRequest');
-  }
-
-  String get txID => $_getS(0, '');
-  set txID(String v) { $_setString(0, v); }
-  bool hasTxID() => $_has(0);
-  void clearTxID() => clearField(1);
-
-  String get notificationToken => $_getS(1, '');
-  set notificationToken(String v) { $_setString(1, v); }
-  bool hasNotificationToken() => $_has(1);
-  void clearNotificationToken() => clearField(2);
-
-  RegisterTransactionConfirmationRequest_NotificationType get notificationType => $_getN(2);
-  set notificationType(RegisterTransactionConfirmationRequest_NotificationType v) { setField(3, v); }
-  bool hasNotificationType() => $_has(2);
-  void clearNotificationType() => clearField(3);
-}
-
-class _ReadonlyRegisterTransactionConfirmationRequest extends RegisterTransactionConfirmationRequest with ReadonlyMessageMixin {}
-
-class RegisterTransactionConfirmationResponse extends GeneratedMessage {
-  static final BuilderInfo _i = new BuilderInfo('RegisterTransactionConfirmationResponse')
-    ..hasRequiredFields = false
-  ;
-
-  RegisterTransactionConfirmationResponse() : super();
-  RegisterTransactionConfirmationResponse.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  RegisterTransactionConfirmationResponse.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  RegisterTransactionConfirmationResponse clone() => new RegisterTransactionConfirmationResponse()..mergeFromMessage(this);
-  BuilderInfo get info_ => _i;
-  static RegisterTransactionConfirmationResponse create() => new RegisterTransactionConfirmationResponse();
-  static PbList<RegisterTransactionConfirmationResponse> createRepeated() => new PbList<RegisterTransactionConfirmationResponse>();
-  static RegisterTransactionConfirmationResponse getDefault() {
-    if (_defaultInstance == null) _defaultInstance = new _ReadonlyRegisterTransactionConfirmationResponse();
-    return _defaultInstance;
-  }
-  static RegisterTransactionConfirmationResponse _defaultInstance;
-  static void $checkItem(RegisterTransactionConfirmationResponse v) {
-    if (v is! RegisterTransactionConfirmationResponse) checkItemFailed(v, 'RegisterTransactionConfirmationResponse');
-  }
-}
-
-class _ReadonlyRegisterTransactionConfirmationResponse extends RegisterTransactionConfirmationResponse with ReadonlyMessageMixin {}
 

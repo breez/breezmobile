@@ -1,10 +1,10 @@
 ///
 //  Generated code. Do not modify.
+//  source: breez.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes
-library breez_breez_pbgrpc;
+// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
 
-import 'dart:async';
+import 'dart:async' as $async;
 
 import 'package:grpc/grpc.dart';
 
@@ -28,14 +28,15 @@ class InvoicerClient extends Client {
   ResponseFuture<RegisterReply> registerDevice(RegisterRequest request,
       {CallOptions options}) {
     final call = $createCall(
-        _$registerDevice, new Stream.fromIterable([request]),
+        _$registerDevice, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
 
   ResponseFuture<InvoiceReply> sendInvoice(PaymentRequest request,
       {CallOptions options}) {
-    final call = $createCall(_$sendInvoice, new Stream.fromIterable([request]),
+    final call = $createCall(
+        _$sendInvoice, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -61,18 +62,20 @@ abstract class InvoicerServiceBase extends Service {
         (InvoiceReply value) => value.writeToBuffer()));
   }
 
-  Future<RegisterReply> registerDevice_Pre(
-      ServiceCall call, Future request) async {
+  $async.Future<RegisterReply> registerDevice_Pre(
+      ServiceCall call, $async.Future request) async {
     return registerDevice(call, await request);
   }
 
-  Future<InvoiceReply> sendInvoice_Pre(ServiceCall call, Future request) async {
+  $async.Future<InvoiceReply> sendInvoice_Pre(
+      ServiceCall call, $async.Future request) async {
     return sendInvoice(call, await request);
   }
 
-  Future<RegisterReply> registerDevice(
+  $async.Future<RegisterReply> registerDevice(
       ServiceCall call, RegisterRequest request);
-  Future<InvoiceReply> sendInvoice(ServiceCall call, PaymentRequest request);
+  $async.Future<InvoiceReply> sendInvoice(
+      ServiceCall call, PaymentRequest request);
 }
 
 class CardOrdererClient extends Client {
@@ -86,7 +89,7 @@ class CardOrdererClient extends Client {
 
   ResponseFuture<OrderReply> order(OrderRequest request,
       {CallOptions options}) {
-    final call = $createCall(_$order, new Stream.fromIterable([request]),
+    final call = $createCall(_$order, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -105,11 +108,12 @@ abstract class CardOrdererServiceBase extends Service {
         (OrderReply value) => value.writeToBuffer()));
   }
 
-  Future<OrderReply> order_Pre(ServiceCall call, Future request) async {
+  $async.Future<OrderReply> order_Pre(
+      ServiceCall call, $async.Future request) async {
     return order(call, await request);
   }
 
-  Future<OrderReply> order(ServiceCall call, OrderRequest request);
+  $async.Future<OrderReply> order(ServiceCall call, OrderRequest request);
 }
 
 class PosClient extends Client {
@@ -134,21 +138,23 @@ class PosClient extends Client {
   ResponseFuture<RegisterReply> registerDevice(RegisterRequest request,
       {CallOptions options}) {
     final call = $createCall(
-        _$registerDevice, new Stream.fromIterable([request]),
+        _$registerDevice, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
 
   ResponseFuture<FundReply> fundChannel(FundRequest request,
       {CallOptions options}) {
-    final call = $createCall(_$fundChannel, new Stream.fromIterable([request]),
+    final call = $createCall(
+        _$fundChannel, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
 
   ResponseFuture<UploadFileReply> uploadLogo(UploadFileRequest request,
       {CallOptions options}) {
-    final call = $createCall(_$uploadLogo, new Stream.fromIterable([request]),
+    final call = $createCall(
+        _$uploadLogo, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -181,24 +187,25 @@ abstract class PosServiceBase extends Service {
         (UploadFileReply value) => value.writeToBuffer()));
   }
 
-  Future<RegisterReply> registerDevice_Pre(
-      ServiceCall call, Future request) async {
+  $async.Future<RegisterReply> registerDevice_Pre(
+      ServiceCall call, $async.Future request) async {
     return registerDevice(call, await request);
   }
 
-  Future<FundReply> fundChannel_Pre(ServiceCall call, Future request) async {
+  $async.Future<FundReply> fundChannel_Pre(
+      ServiceCall call, $async.Future request) async {
     return fundChannel(call, await request);
   }
 
-  Future<UploadFileReply> uploadLogo_Pre(
-      ServiceCall call, Future request) async {
+  $async.Future<UploadFileReply> uploadLogo_Pre(
+      ServiceCall call, $async.Future request) async {
     return uploadLogo(call, await request);
   }
 
-  Future<RegisterReply> registerDevice(
+  $async.Future<RegisterReply> registerDevice(
       ServiceCall call, RegisterRequest request);
-  Future<FundReply> fundChannel(ServiceCall call, FundRequest request);
-  Future<UploadFileReply> uploadLogo(
+  $async.Future<FundReply> fundChannel(ServiceCall call, FundRequest request);
+  $async.Future<UploadFileReply> uploadLogo(
       ServiceCall call, UploadFileRequest request);
 }
 
@@ -212,7 +219,7 @@ class InformationClient extends Client {
       : super(channel, options: options);
 
   ResponseFuture<PingReply> ping(PingRequest request, {CallOptions options}) {
-    final call = $createCall(_$ping, new Stream.fromIterable([request]),
+    final call = $createCall(_$ping, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -231,11 +238,12 @@ abstract class InformationServiceBase extends Service {
         (PingReply value) => value.writeToBuffer()));
   }
 
-  Future<PingReply> ping_Pre(ServiceCall call, Future request) async {
+  $async.Future<PingReply> ping_Pre(
+      ServiceCall call, $async.Future request) async {
     return ping(call, await request);
   }
 
-  Future<PingReply> ping(ServiceCall call, PingRequest request);
+  $async.Future<PingReply> ping(ServiceCall call, PingRequest request);
 }
 
 class FundManagerClient extends Client {
@@ -274,20 +282,14 @@ class FundManagerClient extends Client {
           '/breez.FundManager/GetSwapPayment',
           (GetSwapPaymentRequest value) => value.writeToBuffer(),
           (List<int> value) => new GetSwapPaymentReply.fromBuffer(value));
-  static final _$registerTransactionConfirmation = new ClientMethod<
-          RegisterTransactionConfirmationRequest,
-          RegisterTransactionConfirmationResponse>(
-      '/breez.FundManager/RegisterTransactionConfirmation',
-      (RegisterTransactionConfirmationRequest value) => value.writeToBuffer(),
-      (List<int> value) =>
-          new RegisterTransactionConfirmationResponse.fromBuffer(value));
 
   FundManagerClient(ClientChannel channel, {CallOptions options})
       : super(channel, options: options);
 
   ResponseFuture<OpenChannelReply> openChannel(OpenChannelRequest request,
       {CallOptions options}) {
-    final call = $createCall(_$openChannel, new Stream.fromIterable([request]),
+    final call = $createCall(
+        _$openChannel, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -296,14 +298,15 @@ class FundManagerClient extends Client {
       UpdateChannelPolicyRequest request,
       {CallOptions options}) {
     final call = $createCall(
-        _$updateChannelPolicy, new Stream.fromIterable([request]),
+        _$updateChannelPolicy, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
 
   ResponseFuture<AddFundInitReply> addFundInit(AddFundInitRequest request,
       {CallOptions options}) {
-    final call = $createCall(_$addFundInit, new Stream.fromIterable([request]),
+    final call = $createCall(
+        _$addFundInit, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -311,14 +314,15 @@ class FundManagerClient extends Client {
   ResponseFuture<AddFundStatusReply> addFundStatus(AddFundStatusRequest request,
       {CallOptions options}) {
     final call = $createCall(
-        _$addFundStatus, new Stream.fromIterable([request]),
+        _$addFundStatus, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
 
   ResponseFuture<RemoveFundReply> removeFund(RemoveFundRequest request,
       {CallOptions options}) {
-    final call = $createCall(_$removeFund, new Stream.fromIterable([request]),
+    final call = $createCall(
+        _$removeFund, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -327,7 +331,7 @@ class FundManagerClient extends Client {
       RedeemRemovedFundsRequest request,
       {CallOptions options}) {
     final call = $createCall(
-        _$redeemRemovedFunds, new Stream.fromIterable([request]),
+        _$redeemRemovedFunds, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -336,17 +340,7 @@ class FundManagerClient extends Client {
       GetSwapPaymentRequest request,
       {CallOptions options}) {
     final call = $createCall(
-        _$getSwapPayment, new Stream.fromIterable([request]),
-        options: options);
-    return new ResponseFuture(call);
-  }
-
-  ResponseFuture<RegisterTransactionConfirmationResponse>
-      registerTransactionConfirmation(
-          RegisterTransactionConfirmationRequest request,
-          {CallOptions options}) {
-    final call = $createCall(
-        _$registerTransactionConfirmation, new Stream.fromIterable([request]),
+        _$getSwapPayment, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -409,76 +403,57 @@ abstract class FundManagerServiceBase extends Service {
         false,
         (List<int> value) => new GetSwapPaymentRequest.fromBuffer(value),
         (GetSwapPaymentReply value) => value.writeToBuffer()));
-    $addMethod(new ServiceMethod<RegisterTransactionConfirmationRequest,
-            RegisterTransactionConfirmationResponse>(
-        'RegisterTransactionConfirmation',
-        registerTransactionConfirmation_Pre,
-        false,
-        false,
-        (List<int> value) =>
-            new RegisterTransactionConfirmationRequest.fromBuffer(value),
-        (RegisterTransactionConfirmationResponse value) =>
-            value.writeToBuffer()));
   }
 
-  Future<OpenChannelReply> openChannel_Pre(
-      ServiceCall call, Future request) async {
+  $async.Future<OpenChannelReply> openChannel_Pre(
+      ServiceCall call, $async.Future request) async {
     return openChannel(call, await request);
   }
 
-  Future<UpdateChannelPolicyReply> updateChannelPolicy_Pre(
-      ServiceCall call, Future request) async {
+  $async.Future<UpdateChannelPolicyReply> updateChannelPolicy_Pre(
+      ServiceCall call, $async.Future request) async {
     return updateChannelPolicy(call, await request);
   }
 
-  Future<AddFundInitReply> addFundInit_Pre(
-      ServiceCall call, Future request) async {
+  $async.Future<AddFundInitReply> addFundInit_Pre(
+      ServiceCall call, $async.Future request) async {
     return addFundInit(call, await request);
   }
 
-  Future<AddFundStatusReply> addFundStatus_Pre(
-      ServiceCall call, Future request) async {
+  $async.Future<AddFundStatusReply> addFundStatus_Pre(
+      ServiceCall call, $async.Future request) async {
     return addFundStatus(call, await request);
   }
 
-  Future<RemoveFundReply> removeFund_Pre(
-      ServiceCall call, Future request) async {
+  $async.Future<RemoveFundReply> removeFund_Pre(
+      ServiceCall call, $async.Future request) async {
     return removeFund(call, await request);
   }
 
-  Future<RedeemRemovedFundsReply> redeemRemovedFunds_Pre(
-      ServiceCall call, Future request) async {
+  $async.Future<RedeemRemovedFundsReply> redeemRemovedFunds_Pre(
+      ServiceCall call, $async.Future request) async {
     return redeemRemovedFunds(call, await request);
   }
 
-  Future<GetSwapPaymentReply> getSwapPayment_Pre(
-      ServiceCall call, Future request) async {
+  $async.Future<GetSwapPaymentReply> getSwapPayment_Pre(
+      ServiceCall call, $async.Future request) async {
     return getSwapPayment(call, await request);
   }
 
-  Future<RegisterTransactionConfirmationResponse>
-      registerTransactionConfirmation_Pre(
-          ServiceCall call, Future request) async {
-    return registerTransactionConfirmation(call, await request);
-  }
-
-  Future<OpenChannelReply> openChannel(
+  $async.Future<OpenChannelReply> openChannel(
       ServiceCall call, OpenChannelRequest request);
-  Future<UpdateChannelPolicyReply> updateChannelPolicy(
+  $async.Future<UpdateChannelPolicyReply> updateChannelPolicy(
       ServiceCall call, UpdateChannelPolicyRequest request);
-  Future<AddFundInitReply> addFundInit(
+  $async.Future<AddFundInitReply> addFundInit(
       ServiceCall call, AddFundInitRequest request);
-  Future<AddFundStatusReply> addFundStatus(
+  $async.Future<AddFundStatusReply> addFundStatus(
       ServiceCall call, AddFundStatusRequest request);
-  Future<RemoveFundReply> removeFund(
+  $async.Future<RemoveFundReply> removeFund(
       ServiceCall call, RemoveFundRequest request);
-  Future<RedeemRemovedFundsReply> redeemRemovedFunds(
+  $async.Future<RedeemRemovedFundsReply> redeemRemovedFunds(
       ServiceCall call, RedeemRemovedFundsRequest request);
-  Future<GetSwapPaymentReply> getSwapPayment(
+  $async.Future<GetSwapPaymentReply> getSwapPayment(
       ServiceCall call, GetSwapPaymentRequest request);
-  Future<RegisterTransactionConfirmationResponse>
-      registerTransactionConfirmation(
-          ServiceCall call, RegisterTransactionConfirmationRequest request);
 }
 
 class CTPClient extends Client {
@@ -501,7 +476,7 @@ class CTPClient extends Client {
       JoinCTPSessionRequest request,
       {CallOptions options}) {
     final call = $createCall(
-        _$joinCTPSession, new Stream.fromIterable([request]),
+        _$joinCTPSession, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -510,7 +485,7 @@ class CTPClient extends Client {
       TerminateCTPSessionRequest request,
       {CallOptions options}) {
     final call = $createCall(
-        _$terminateCTPSession, new Stream.fromIterable([request]),
+        _$terminateCTPSession, new $async.Stream.fromIterable([request]),
         options: options);
     return new ResponseFuture(call);
   }
@@ -537,18 +512,18 @@ abstract class CTPServiceBase extends Service {
         (TerminateCTPSessionResponse value) => value.writeToBuffer()));
   }
 
-  Future<JoinCTPSessionResponse> joinCTPSession_Pre(
-      ServiceCall call, Future request) async {
+  $async.Future<JoinCTPSessionResponse> joinCTPSession_Pre(
+      ServiceCall call, $async.Future request) async {
     return joinCTPSession(call, await request);
   }
 
-  Future<TerminateCTPSessionResponse> terminateCTPSession_Pre(
-      ServiceCall call, Future request) async {
+  $async.Future<TerminateCTPSessionResponse> terminateCTPSession_Pre(
+      ServiceCall call, $async.Future request) async {
     return terminateCTPSession(call, await request);
   }
 
-  Future<JoinCTPSessionResponse> joinCTPSession(
+  $async.Future<JoinCTPSessionResponse> joinCTPSession(
       ServiceCall call, JoinCTPSessionRequest request);
-  Future<TerminateCTPSessionResponse> terminateCTPSession(
+  $async.Future<TerminateCTPSessionResponse> terminateCTPSession(
       ServiceCall call, TerminateCTPSessionRequest request);
 }

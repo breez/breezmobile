@@ -1,14 +1,14 @@
 ///
 //  Generated code. Do not modify.
+//  source: breez.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes
-library breez_breez_pbenum;
+// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
 
 // ignore_for_file: UNDEFINED_SHOWN_NAME,UNUSED_SHOWN_NAME
 import 'dart:core' show int, dynamic, String, List, Map;
-import 'package:protobuf/protobuf.dart';
+import 'package:protobuf/protobuf.dart' as $pb;
 
-class FundReply_ReturnCode extends ProtobufEnum {
+class FundReply_ReturnCode extends $pb.ProtobufEnum {
   static const FundReply_ReturnCode SUCCESS = const FundReply_ReturnCode._(0, 'SUCCESS');
   static const FundReply_ReturnCode UNKNOWN_ERROR = const FundReply_ReturnCode._(-1, 'UNKNOWN_ERROR');
   static const FundReply_ReturnCode NODE_BUSY = const FundReply_ReturnCode._(-2, 'NODE_BUSY');
@@ -25,16 +25,16 @@ class FundReply_ReturnCode extends ProtobufEnum {
     WRONG_AMOUNT,
   ];
 
-  static final Map<int, dynamic> _byValue = ProtobufEnum.initByValue(values);
-  static FundReply_ReturnCode valueOf(int value) => _byValue[value] as FundReply_ReturnCode;
+  static final Map<int, FundReply_ReturnCode> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static FundReply_ReturnCode valueOf(int value) => _byValue[value];
   static void $checkItem(FundReply_ReturnCode v) {
-    if (v is! FundReply_ReturnCode) checkItemFailed(v, 'FundReply_ReturnCode');
+    if (v is! FundReply_ReturnCode) $pb.checkItemFailed(v, 'FundReply_ReturnCode');
   }
 
   const FundReply_ReturnCode._(int v, String n) : super(v, n);
 }
 
-class JoinCTPSessionRequest_PartyType extends ProtobufEnum {
+class JoinCTPSessionRequest_PartyType extends $pb.ProtobufEnum {
   static const JoinCTPSessionRequest_PartyType PAYER = const JoinCTPSessionRequest_PartyType._(0, 'PAYER');
   static const JoinCTPSessionRequest_PartyType PAYEE = const JoinCTPSessionRequest_PartyType._(1, 'PAYEE');
 
@@ -43,28 +43,12 @@ class JoinCTPSessionRequest_PartyType extends ProtobufEnum {
     PAYEE,
   ];
 
-  static final Map<int, dynamic> _byValue = ProtobufEnum.initByValue(values);
-  static JoinCTPSessionRequest_PartyType valueOf(int value) => _byValue[value] as JoinCTPSessionRequest_PartyType;
+  static final Map<int, JoinCTPSessionRequest_PartyType> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static JoinCTPSessionRequest_PartyType valueOf(int value) => _byValue[value];
   static void $checkItem(JoinCTPSessionRequest_PartyType v) {
-    if (v is! JoinCTPSessionRequest_PartyType) checkItemFailed(v, 'JoinCTPSessionRequest_PartyType');
+    if (v is! JoinCTPSessionRequest_PartyType) $pb.checkItemFailed(v, 'JoinCTPSessionRequest_PartyType');
   }
 
   const JoinCTPSessionRequest_PartyType._(int v, String n) : super(v, n);
-}
-
-class RegisterTransactionConfirmationRequest_NotificationType extends ProtobufEnum {
-  static const RegisterTransactionConfirmationRequest_NotificationType READY_RECEIVE_PAYMENT = const RegisterTransactionConfirmationRequest_NotificationType._(0, 'READY_RECEIVE_PAYMENT');
-
-  static const List<RegisterTransactionConfirmationRequest_NotificationType> values = const <RegisterTransactionConfirmationRequest_NotificationType> [
-    READY_RECEIVE_PAYMENT,
-  ];
-
-  static final Map<int, dynamic> _byValue = ProtobufEnum.initByValue(values);
-  static RegisterTransactionConfirmationRequest_NotificationType valueOf(int value) => _byValue[value] as RegisterTransactionConfirmationRequest_NotificationType;
-  static void $checkItem(RegisterTransactionConfirmationRequest_NotificationType v) {
-    if (v is! RegisterTransactionConfirmationRequest_NotificationType) checkItemFailed(v, 'RegisterTransactionConfirmationRequest_NotificationType');
-  }
-
-  const RegisterTransactionConfirmationRequest_NotificationType._(int v, String n) : super(v, n);
 }
 
