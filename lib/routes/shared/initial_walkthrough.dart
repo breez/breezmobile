@@ -4,7 +4,6 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/restore_dialog.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
