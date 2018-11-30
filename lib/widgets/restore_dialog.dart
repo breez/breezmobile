@@ -10,7 +10,8 @@ class RestoreDialog extends StatefulWidget {
   final Map<String, String> optionsMap;
   final Function proceedFunction;
 
-  RestoreDialog(this.context, this.backupBloc, this.optionsMap, this.proceedFunction);
+  RestoreDialog(
+      this.context, this.backupBloc, this.optionsMap, this.proceedFunction);
 
   @override
   RestoreDialogState createState() {
@@ -29,7 +30,8 @@ class RestoreDialogState extends State<RestoreDialog> {
 
   @override
   void initState() {
-    _restoreFinishedSubscription = widget.backupBloc.restoreFinishedStream.listen((restored) {
+    _restoreFinishedSubscription =
+        widget.backupBloc.restoreFinishedStream.listen((restored) {
       if (restored) {
         Navigator.pop(widget.context);
         widget.proceedFunction();
@@ -73,8 +75,14 @@ class RestoreDialogState extends State<RestoreDialog> {
                 itemBuilder: (BuildContext context, int index) {
                   var keys = widget.optionsMap.keys.toList();
                   return ListTile(
-                    title: Text(widget.optionsMap[keys[index]], style: theme.alertStyle,),
-                    subtitle: Text(keys[index], style: theme.bolt11Style,),
+                    title: Text(
+                      widget.optionsMap[keys[index]],
+                      style: theme.alertStyle,
+                    ),
+                    subtitle: Text(
+                      keys[index],
+                      style: theme.bolt11Style,
+                    ),
                     onTap: () {
                       widget.backupBloc.restoreRequestSink.add(keys[index]);
                     },
@@ -83,6 +91,16 @@ class RestoreDialogState extends State<RestoreDialog> {
               ),
             ),
           ),
+          StreamBuilder<bool>(
+              stream: widget.backupBloc.restoreFinishedStream,
+              builder: (context, snapshot) {
+                return snapshot.hasError
+                    ? new Text(
+                        snapshot.error.toString(),
+                        style: theme.errorStyle,
+                      )
+                    : Container();
+              }),
           new Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.end,
