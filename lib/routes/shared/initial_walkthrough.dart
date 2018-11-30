@@ -27,6 +27,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   StreamSubscription<bool> _restoreFinishedSubscription;
   StreamSubscription<Map<String, String>> _multipleRestoreSubscription;
 
+  var _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -43,6 +44,12 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
             _proceedToRegister();
           }
         });
+
+    _restoreFinishedSubscription.onError((error){
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+          duration: new Duration(seconds: 3),
+          content: new Text(error.toString())));
+    });
 
     _controller = new AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2720))
@@ -76,7 +83,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      key: new Key("RegistrationPage"),
+      key: _scaffoldKey,
       body: new Padding(
           padding: new EdgeInsets.only(top: 24.0),
           child: new Stack(children: <Widget>[

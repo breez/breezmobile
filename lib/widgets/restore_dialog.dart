@@ -82,6 +82,7 @@ class RestoreDialogState extends State<RestoreDialog> {
                       style: theme.bolt11Style,
                     ),
                     onTap: () {
+                      Navigator.pop(widget.context);
                       widget.backupBloc.restoreRequestSink.add(keys[index]);
                     },
                   );
