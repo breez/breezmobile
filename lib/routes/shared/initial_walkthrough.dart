@@ -126,21 +126,19 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                   ),
                 ),
                 new Expanded(flex: 79, child: new Container()),
-                new Expanded(
-                    flex: 48,
-                    child: new Container(
-                        height: 48.0,
-                        width: 168.0,
-                        child: new RaisedButton(
-                          child: new Text("LET'S BREEZ!",
-                              style: theme.buttonStyle),
-                          color: theme.whiteColor,
-                          elevation: 0.0,
-                          shape: const StadiumBorder(),
-                          onPressed: () {
-                            _proceedToRegister();
-                          }
-                        ))),
+                new Container(
+                    height: 48.0,
+                    width: 168.0,
+                    child: new RaisedButton(
+                      child: new Text("LET'S BREEZ!",
+                          style: theme.buttonStyle),
+                      color: theme.whiteColor,
+                      elevation: 0.0,
+                      shape: const StadiumBorder(),
+                      onPressed: () {
+                        _proceedToRegister();
+                      }
+                    )),
                 new Expanded(
                     flex: 40,
                     child: new Padding(
