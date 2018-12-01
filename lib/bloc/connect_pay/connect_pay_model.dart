@@ -1,6 +1,8 @@
 /*
 This model represents the state of the payment session for both sides.
 */
+import 'package:fixnum/fixnum.dart';
+
 class PaymentSessionState {
   static const Duration connectionEmulationDuration = Duration(milliseconds:  1500);
   final bool payer;
@@ -20,10 +22,10 @@ class PaymentSessionState {
   }
 
   PaymentSessionState.payerStart(String sessionSecret, String userName, String imageURL)
-      : this(true, sessionSecret, PayerSessionData(userName, imageURL, PeerStatus.start(), null), PayeeSessionData(null, null, PeerStatus.start(), null, null),false,  false,
+      : this(true, sessionSecret, PayerSessionData(userName, imageURL, PeerStatus.start(), null, null), PayeeSessionData(null, null, PeerStatus.start(), null, null),false,  false,
             false, 0);
   PaymentSessionState.payeeStart(String sessionSecret, String userName, String imageURL)
-      : this(false, sessionSecret, PayerSessionData(null, null, PeerStatus.start(), null), PayeeSessionData(userName, imageURL, PeerStatus.start(), null, null), true, true,
+      : this(false, sessionSecret, PayerSessionData(null, null, PeerStatus.start(), null, null), PayeeSessionData(userName, imageURL, PeerStatus.start(), null, null), true, true,
             false, 0);
 }
 
@@ -32,21 +34,23 @@ class PayerSessionData {
   final String imageURL;
   final PeerStatus status;
   final int amount;
+  final String description;
   final String error;
   final bool paymentFulfilled;
 
-  PayerSessionData(this.userName, this.imageURL, this.status, this.amount, {this.error, this.paymentFulfilled = false});
+  PayerSessionData(this.userName, this.imageURL, this.status, this.amount, this.description, {this.error, this.paymentFulfilled = false});
   PayerSessionData.fromJson(Map<dynamic, dynamic> json)
       : status = json['status'] == null ? null : PeerStatus.fromJson(json['status']),
         amount = json['amount'] != null ? int.parse(json['amount'].toString()) : null,
+        description = json['description'],
         userName = json["userName"],
         imageURL = json["imageURL"],
         error = json["error"],
         paymentFulfilled = json["paymentFulfilled"] ?? false;
 
-  PayerSessionData copyWith({String userName, String imageURL, PeerStatus status, int amount, String error, bool paymentFulfilled}) {
+  PayerSessionData copyWith({String userName, String imageURL, PeerStatus status, int amount, String description, String error, bool paymentFulfilled}) {
     return new PayerSessionData(userName ?? this.userName, imageURL ?? this.imageURL, status ?? this.status, 
-        amount ?? this.amount, error: error ?? this.error, paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled);
+        amount ?? this.amount, description ?? this.description, error: error ?? this.error, paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled);
   }  
 }
 
@@ -86,6 +90,12 @@ class PeerStatus {
         lastChanged = json['lastChanged'] ?? 0;
 }
 
+class PaymentDetails {
+  final Int64 amount;
+  final String description;
+
+  PaymentDetails(this.amount, this.description);
+}
 
 enum PaymentSessionErrorType {
   PAYER_CANCELLED,

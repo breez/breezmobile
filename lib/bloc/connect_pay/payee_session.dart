@@ -81,7 +81,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
      _approvePaymentController.stream.listen((request) {     
       var payerData = _currentSession.payerData;    
       _breezLib
-          .addInvoice(Int64(payerData.amount), payeeName: _currentUser.name, payeeImageURL: _currentUser.avatarURL, payerName: payerData.userName, payerImageURL: payerData.imageURL)
+          .addInvoice(Int64(payerData.amount), payeeName: _currentUser.name, payeeImageURL: _currentUser.avatarURL, payerName: payerData.userName, payerImageURL: payerData.imageURL, description: payerData.description)
           .then((payReq) => _sendPaymentRequest(payReq))
           .catchError(_onInvoiceError);
     });

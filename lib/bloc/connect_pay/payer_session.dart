@@ -26,8 +26,8 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   final _sentInvitesController = new StreamController<String>();
   Sink<String> get sentInvitesSink => _sentInvitesController.sink;    
 
-  final _amountController = new StreamController<int>();
-  Sink<int> get amountSink => _amountController.sink;
+  final _paymentDetailsController = new StreamController<PaymentDetails>();
+  Sink<PaymentDetails> get paymentDetailsSink => _paymentDetailsController.sink;
 
   final _paymentSessionController = new BehaviorSubject<PaymentSessionState>();
   Stream<PaymentSessionState> get paymentSessionStateStream => _paymentSessionController.stream;
@@ -81,9 +81,9 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   }
 
   _handleIncomingMessages(){
-     _amountController.stream.listen((amount) {
-      _sendAmount(amount).catchError(_onError);
-    });
+     _paymentDetailsController.stream.listen((details) {
+      _sendPaymentDetails(details).catchError(_onError);
+    });        
     _watchPayeeMessages();    
   }
 
@@ -120,7 +120,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     
     await stopStatusUpdates();    
     await _channel.terminate(destroyHistory: permanent);    
-    await _amountController.close();    
+    await _paymentDetailsController.close();    
     await _paymentSessionController.close();    
     await _sessionErrorsController.close();    
     if (_sentInvitesController.hasListener) {
@@ -201,9 +201,9 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     });
   }
 
-  Future<void> _sendAmount(int amount) {
-    return pushStateUpdate({"amount": amount}).then((res){
-         _paymentSessionController.add(_currentSession.copyWith(payerData: _currentSession.payerData.copyWith(amount: amount)));
+  Future<void> _sendPaymentDetails(PaymentDetails details) {
+    return pushStateUpdate({"amount": details.amount.toInt(), "description": details.description}).then((res){
+         _paymentSessionController.add(_currentSession.copyWith(payerData: _currentSession.payerData.copyWith(amount: details.amount.toInt(), description: details.description)));
     });    
   }
 
