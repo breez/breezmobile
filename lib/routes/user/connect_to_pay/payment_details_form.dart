@@ -8,20 +8,20 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 
-class AmountForm extends StatefulWidget {
+class PaymentDetailsForm extends StatefulWidget {
   final AccountModel _account;
   final PaymentSessionState _sessionState;
   final Function(Int64 amount, {String description}) _onSubmitPayementDetails;
 
-  AmountForm(this._account, this._sessionState, this._onSubmitPayementDetails);
+  PaymentDetailsForm(this._account, this._sessionState, this._onSubmitPayementDetails);
 
   @override
   State<StatefulWidget> createState() {
-    return new _AmountFormState();
+    return new _PaymentDetailsFormState();
   }
 }
 
-class _AmountFormState extends State<AmountForm> {
+class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
   TextEditingController _invoiceDescriptionController =
       new TextEditingController();
   TextEditingController _amountController = new TextEditingController();
@@ -33,10 +33,7 @@ class _AmountFormState extends State<AmountForm> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    // return SingleChildScrollView(
-    //   child: Container(
-    //     height: 400.0,
+  Widget build(BuildContext context) {   
     return LayoutBuilder(builder: (context, constraints) {
       bool buttonVisible = constraints.maxHeight > 300.0;
       print("buttonVisible " + buttonVisible.toString());
@@ -68,7 +65,7 @@ class _AmountFormState extends State<AmountForm> {
                         maxLength: 90,
                         maxLengthEnforced: true,
                         decoration: new InputDecoration(
-                          labelText: "Description",
+                          labelText: "Note (optional)",
                         ),
                         style: theme.FieldTextStyle.textStyle,
                       ),

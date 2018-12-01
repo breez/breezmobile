@@ -191,7 +191,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
                     }
                     if (_currentSession.runtimeType == PayerRemoteSession) {
                       return PayerSessionWidget(
-                          _currentSession, snapshot.data, _resetSession);
+                          _currentSession, snapshot.data);
                     } else {
                       return PayeeSessionWidget(
                           _currentSession, snapshot.data);
