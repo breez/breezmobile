@@ -6,6 +6,7 @@ import 'package:breez/routes/user/connect_to_pay/peers_connection.dart';
 import 'package:breez/routes/user/connect_to_pay/session_instructions.dart';
 import 'package:breez/widgets/delay_render.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
+import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,9 @@ class PayerSessionWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(32.0, 0.0, 32.0, 0.0),
                     child: DelayRender(
-                      child: AmountForm(_account, sessionState, (amountToPay) => _currentSession.amountSink.add(amountToPay.toInt())),
+                      child: AmountForm(_account, sessionState, (amountToPay, {description}) => _currentSession.paymentDetailsSink.add(
+                        PaymentDetails(amountToPay, description)
+                      )),
                       duration: PaymentSessionState.connectionEmulationDuration),
                   ),
                   flex: 1)
