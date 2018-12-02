@@ -7,7 +7,7 @@ import com.breez.client.plugins.breez.breezlib.Breez;
 import com.breez.client.plugins.breez.*;
 import com.breez.client.plugins.breez.ShareBreezLog;
 import com.breez.client.plugins.breez.BreezShare;
-import com.breez.client.plugins.breez.BreezBackup;
+import com.breez.client.plugins.breez.backup.BreezBackup;
 
 import android.os.Bundle;
 
@@ -22,8 +22,6 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
 import android.util.Log;
-
-import static android.content.Intent.ACTION_VIEW;
 
 public class MainActivity extends FlutterActivity {
     private static final String TAG = "Breez";

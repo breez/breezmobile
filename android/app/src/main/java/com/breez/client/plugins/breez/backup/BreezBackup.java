@@ -1,28 +1,13 @@
-package com.breez.client.plugins.breez;
+package com.breez.client.plugins.breez.backup;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.Log;
-
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.DriveClient;
-import com.google.android.gms.drive.DriveContents;
-import com.google.android.gms.drive.DriveFile;
-import com.google.android.gms.drive.DriveFolder;
-import com.google.android.gms.drive.DriveResourceClient;
-import com.google.android.gms.drive.Metadata;
-import com.google.android.gms.drive.MetadataBuffer;
-import com.google.android.gms.drive.MetadataChangeSet;
-import com.google.android.gms.drive.query.Filters;
-import com.google.android.gms.drive.query.Query;
-import com.google.android.gms.drive.query.SearchableField;
-import com.google.android.gms.drive.query.SortOrder;
-import com.google.android.gms.drive.query.SortableField;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.auth.api.signin.*;
+import com.google.android.gms.drive.*;
+import com.google.android.gms.drive.query.*;
+import com.google.android.gms.tasks.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,86 +27,38 @@ import io.flutter.plugin.common.PluginRegistry;
 
 import static android.app.Activity.RESULT_OK;
 
-public class BreezBackup implements MethodChannel.MethodCallHandler,
-        PluginRegistry.ActivityResultListener {
+public class BreezBackup implements MethodChannel.MethodCallHandler {
     private static final String TAG = "BreezBackup";
     public static final String BREEZ_BACKUP_CHANNEL_NAME = "com.breez.client/backup";
-
-    private final int AUTHORIZE_ACTIVITY_REQUEST_CODE = 84;
     private final Activity m_activity;
-
     private MethodChannel m_methodChannel;
-    private MethodCall m_call;
-    private MethodChannel.Result m_result;
-
-    private GoogleSignInClient m_googleSignInClient;
+    private GoogleAuthenticator m_authenticator;
     private DriveResourceClient m_driveResourceClient;
 
     public BreezBackup(PluginRegistry.Registrar registrar, Activity activity) {
         this.m_activity = activity;
         m_methodChannel = new MethodChannel(registrar.messenger(), BREEZ_BACKUP_CHANNEL_NAME);
         m_methodChannel.setMethodCallHandler(this);
-
-        registrar.addActivityResultListener(this);
-
-        m_googleSignInClient = buildGoogleSignInClient();
-        getDriveClients(m_googleSignInClient.silentSignIn());
+        m_authenticator = new GoogleAuthenticator(registrar);
     }
 
-    private GoogleSignInClient buildGoogleSignInClient() {
-        GoogleSignInOptions signInOptions =
-            new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Drive.SCOPE_APPFOLDER)
-                .build();
-        return GoogleSignIn.getClient(m_activity, signInOptions);
-    }
-
-    private void getDriveClients(Task<GoogleSignInAccount> signInTask) {
-        Log.i(TAG, "Trying to execute sign in task");
-        signInTask.addOnSuccessListener(
-            googleSignInAccount -> {
-                Log.i(TAG, "Sign in success");
-                m_driveResourceClient =
-                        Drive.getDriveResourceClient(m_activity, googleSignInAccount);
-                if (m_call != null) {
-                    handleMethodCall(m_call, m_result);
+    @Override
+    public void onMethodCall(final MethodCall call, final MethodChannel.Result result) {
+        Log.i(TAG, "onMethodCall: " + call.method);
+        m_authenticator.ensureSignedIn().addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
+            @Override
+            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                if (!task.isSuccessful()) {
+                    Log.e(TAG, "ensureSignedIn failed", task.getException());
+                    result.error("Error in BreezBackup.onMethodCall " + call.method, task.getException().getMessage(), task.getException().toString());
+                    return;
                 }
-            })
-            .addOnFailureListener(
-                e -> {
-                    Log.w(TAG, "Sign in failed", e);
-                    if (m_result != null) {
-                        m_result.error("SIGN_IN_FAILURE", "Unable to sign in", null);
-                    }
-                });
-    }
-
-    @Override
-    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AUTHORIZE_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                getDriveClients(m_googleSignInClient.silentSignIn());
+                if (m_driveResourceClient == null) {
+                    m_driveResourceClient = Drive.getDriveResourceClient(m_activity, task.getResult());
+                }
+                handleMethodCall(call, result);
             }
-            return true;
-        }
-        return false;
-    }
-
-    private void promptToAuthorize() {
-        Intent signInIntent = m_googleSignInClient.getSignInIntent();
-        m_activity.startActivityForResult(signInIntent, AUTHORIZE_ACTIVITY_REQUEST_CODE);
-    }
-
-    @Override
-    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        if (m_driveResourceClient == null) {
-            m_result = result;
-            m_call = call;
-            promptToAuthorize();
-        }
-        else {
-            handleMethodCall(call, result);
-        }
+        });
     }
 
     private void handleMethodCall(MethodCall call, MethodChannel.Result result) {
@@ -141,6 +78,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
     }
 
     private void updateBackupFiles(List<String> paths, DriveFolder nodeIdFolder, MethodChannel.Result result) {
+        Log.i(TAG, "updateBackupFiles in nodeID = " + nodeIdFolder.toString());
         for (String path: paths) {
             m_driveResourceClient.createContents()
                 .continueWithTask(task -> {
@@ -166,7 +104,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
                 })
                 .addOnSuccessListener(m_activity,
                         driveFile -> {
-                            Log.i(TAG, "File created!");
+                            Log.i(TAG, "File created !" + driveFile.toString());
                         })
                 .addOnFailureListener(m_activity, e -> {
                     Log.e(TAG, "Unable to create file", e);
@@ -198,6 +136,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler,
             })
             .addOnSuccessListener(m_activity,
                     driveFolder -> {
+                        Log.i(TAG, "createNodeIdFolder succeeded");
                         updateBackupFiles(paths, driveFolder, result);
                     })
             .addOnFailureListener(m_activity, e -> {
