@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 class BackupDisabledIndicator extends StatefulWidget {
   final BackupBloc _backupBloc;
@@ -21,11 +22,16 @@ class BackupDisabledIndicatorState extends State<BackupDisabledIndicator> {
   @override
   void initState() {
     _promptEnableSubscription =
-        widget._backupBloc.promptEnableStream.listen((prompt) {
-      showDialog(
-          context: context,
-          builder: (_) => new EnableBackupDialog(context, widget._backupBloc));
-    });
+        Observable(widget._backupBloc.promptEnableStream)
+          .delay(Duration(seconds: 1))
+          .listen((prompt) {          
+            Navigator.popUntil(context, (route) {
+              return route.settings.name == "/home" || route.settings.name == "/";          
+            }); 
+            showDialog(
+                context: context,
+                builder: (_) => new EnableBackupDialog(context, widget._backupBloc));
+          });
     super.initState();
   }
 
