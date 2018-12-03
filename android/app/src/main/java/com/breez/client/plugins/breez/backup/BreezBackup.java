@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.io.File;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -45,7 +46,8 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
     @Override
     public void onMethodCall(final MethodCall call, final MethodChannel.Result result) {
         Log.i(TAG, "onMethodCall: " + call.method);
-        m_authenticator.ensureSignedIn().addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
+        boolean silent = call.argument("silent");
+        m_authenticator.ensureSignedIn(silent).addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
             @Override
             public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
                 if (!task.isSuccessful()) {
@@ -79,6 +81,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
 
     private void updateBackupFiles(List<String> paths, DriveFolder nodeIdFolder, MethodChannel.Result result) {
         Log.i(TAG, "updateBackupFiles in nodeID = " + nodeIdFolder.toString());
+        AtomicInteger successfullTasks = new AtomicInteger(paths.size());
         for (String path: paths) {
             m_driveResourceClient.createContents()
                 .continueWithTask(task -> {
@@ -105,6 +108,9 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
                 .addOnSuccessListener(m_activity,
                         driveFile -> {
                             Log.i(TAG, "File created !" + driveFile.toString());
+                            if (successfullTasks.decrementAndGet() == 0) {
+                                result.success(true);
+                            }
                         })
                 .addOnFailureListener(m_activity, e -> {
                     Log.e(TAG, "Unable to create file", e);
