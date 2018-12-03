@@ -46,8 +46,8 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
     @Override
     public void onMethodCall(final MethodCall call, final MethodChannel.Result result) {
         Log.i(TAG, "onMethodCall: " + call.method);
-        boolean silent = call.argument("silent");
-        m_authenticator.ensureSignedIn(silent).addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
+        Boolean silent = call.argument("silent");
+        m_authenticator.ensureSignedIn(silent != null && silent.booleanValue()).addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
             @Override
             public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
                 if (!task.isSuccessful()) {
