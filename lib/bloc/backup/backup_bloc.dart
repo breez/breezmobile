@@ -1,28 +1,29 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/backup.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 
 class BackupBloc {
   BackupService _service;
   Stream<AccountModel> _accountStream;
-  String _currentNodeId;
-  List<String> _currentBackupPaths;
+  String _currentNodeId;  
 
-  final _promptEnableBackupController = new StreamController<bool>.broadcast();
-  Stream<bool> get promptEnableStream => _promptEnableBackupController.stream;
+  final BehaviorSubject<List<String>> _availableBackupPathsController = new BehaviorSubject<List<String>>();
+  Stream<List<String>> get availableBackupPathsStream => _availableBackupPathsController.stream;
 
-  final _backupDisabledIndicatorController = new StreamController<bool>.broadcast();
-  Stream<bool> get backupDisabledIndicatorStream => _backupDisabledIndicatorController.stream;
+  final BehaviorSubject<DateTime> _lastBackupTimeController = new BehaviorSubject<DateTime>();
+  Stream<DateTime> get lastBackupTimeStream => _lastBackupTimeController.stream;
 
-  final _disableBackupPromptController = new StreamController<bool>();
-  Sink<bool> get disableBackupPromptSink => _disableBackupPromptController.sink;
+  final BehaviorSubject<BackupSettings> _backupSettingsController = new BehaviorSubject<BackupSettings>(seedValue: BackupSettings.start());
+  Stream<BackupSettings> get backupSettingsStream => _backupSettingsController.stream;
+  Sink<BackupSettings> get backupSettingsSink => _backupSettingsController.sink;
 
   final _backupNowController = new StreamController<bool>();
   Sink<bool> get backupNowSink => _backupNowController.sink;
@@ -36,7 +37,9 @@ class BackupBloc {
   final _restoreFinishedController = new StreamController<bool>.broadcast();
   Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
 
-  static const String BACKUP_PROMPT_DISABLED_PREFERENCES_KEY = "backupDisabled";
+  static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";
+  static const String AVAILABLE_PATHS_PREFERENCE_KEY = "backup_available_paths";
+  static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
 
   BackupBloc(this._accountStream) {
     ServiceInjector injector = new ServiceInjector();
@@ -46,26 +49,46 @@ class BackupBloc {
     var sharedPrefrences = SharedPreferences.getInstance();
 
     _listenBackupPaths(breezLib, sharedPrefrences);
-    _listenEnableBackupRequests(sharedPrefrences);
     _listenBackupNowRequests(sharedPrefrences);
     _listenRestoreRequests(breezLib);
 
     _accountStream.listen((acc) {
       _currentNodeId = acc.id;
     });
-  }
 
-  void _listenEnableBackupRequests(Future<SharedPreferences> sharedPrefrences) {
-    _disableBackupPromptController.stream.listen((disable) {
-      sharedPrefrences.then((preferences) {
-        preferences.setBool(BACKUP_PROMPT_DISABLED_PREFERENCES_KEY, disable);
+    sharedPrefrences.then((preferences){
+
+      //paths persistency
+      List<String> paths = preferences.getStringList(AVAILABLE_PATHS_PREFERENCE_KEY);
+      _availableBackupPathsController.add(paths);
+      _availableBackupPathsController.stream.listen((backupPaths){
+        preferences.setStringList(AVAILABLE_PATHS_PREFERENCE_KEY, backupPaths);
+      });
+
+      //last backup time persistency
+      int lastTime = preferences.getInt(LAST_BACKUP_TIME_PREFERENCE_KEY);
+      if (lastTime != null) {
+        _lastBackupTimeController.add(DateTime.fromMillisecondsSinceEpoch(lastTime));
+      }
+      _lastBackupTimeController.stream.listen((lastTime){
+        preferences.setInt(LAST_BACKUP_TIME_PREFERENCE_KEY, lastTime.millisecondsSinceEpoch);
+      });
+
+      //settings persistency
+      var backupSettings = preferences.getString(BACKUP_SETTINGS_PREFERENCES_KEY);
+      if (backupSettings != null) {
+        Map<String, dynamic> settings = json.decode(backupSettings);
+        _backupSettingsController.add(BackupSettings.fromJson(settings));
+      }
+      _backupSettingsController.stream.listen((settings){
+        preferences.setString(BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
       });
     });
   }
 
   void _listenBackupNowRequests(Future<SharedPreferences> sharedPrefrences) {
-    _backupNowController.stream.listen((data) {
-      backup(_currentBackupPaths, _currentNodeId);
+    _backupNowController.stream.listen((data) {      
+      backup(_availableBackupPathsController.value, _currentNodeId, false);
     });
   }
 
@@ -74,18 +97,14 @@ class BackupBloc {
       return event.type ==
           NotificationEvent_NotificationType.BACKUP_FILES_AVAILABLE;
     }).listen((event) {
-      _currentBackupPaths = event.data;
-      sharedPrefrences.then((preferences) {
-        if (preferences.getBool(BACKUP_PROMPT_DISABLED_PREFERENCES_KEY) ?? false) {
-          // Prompt is disabled so go and back up
-          backup(event.data, _currentNodeId);
-        }
-        else {
-          // Prompting is enabled so show the dialog
-          _promptEnableBackupController.add(true);
-        }
-      });
+      _availableBackupPathsController.add(event.data);      
     });
+
+    _availableBackupPathsController.stream
+      .where((paths) => paths != null)
+      .listen((paths){
+        backup(paths, _currentNodeId, true);      
+      });
   }
 
   void _listenRestoreRequests(BreezBridge breezLib) {
@@ -114,18 +133,23 @@ class BackupBloc {
     });
   }
 
-  void backup(List<String> backupPaths, String nodeId) {
-    _service.backup(backupPaths, nodeId).catchError((error) {
-      _backupDisabledIndicatorController.add(true);
-    });
+  void backup(List<String> backupPaths, String nodeId, bool silent) {
+    _service.backup(backupPaths, nodeId, silent: silent)
+      .then((_){
+        _availableBackupPathsController.add(null);
+        _lastBackupTimeController.add(DateTime.now());
+      })
+      .catchError((error) {
+        _lastBackupTimeController.addError(error);
+      });
   }
 
-  close() {
-    _promptEnableBackupController.close();
-    _disableBackupPromptController.close();
+  close() {      
     _backupNowController.close();
     _restoreRequestController.close();
     _multipleRestoreController.close();
     _restoreFinishedController.close();
+    _availableBackupPathsController.close();
+    _backupSettingsController.close();
   }
 }
