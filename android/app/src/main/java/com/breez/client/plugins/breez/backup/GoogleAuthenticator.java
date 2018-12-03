@@ -36,10 +36,10 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                         .requestScopes(Drive.SCOPE_APPFOLDER)
                         .build();
         m_signInClient = GoogleSignIn.getClient(m_breezActivity, signInOptions);
-        registrar.addActivityResultListener(this);
+        registrar.addActivityResultListener(this);        
     }
 
-    public Task<GoogleSignInAccount> ensureSignedIn() {
+    public Task<GoogleSignInAccount> ensureSignedIn(final boolean silent) {
         Task<GoogleSignInAccount> task = m_signInClient.silentSignIn();
         if (task.isSuccessful()) {
             Log.i(TAG, "silentSignIn Task is already successfull");
@@ -50,7 +50,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         return task.continueWithTask(new Continuation<GoogleSignInAccount, Task<GoogleSignInAccount>>() {
             @Override
             public Task<GoogleSignInAccount> then(@NonNull Task<GoogleSignInAccount> task) throws Exception {
-                if (task.isSuccessful()) {
+                if (task.isSuccessful() || silent) {
                     Log.i(TAG, "silentSignIn Task succeeded");
                     return task;
                 }
