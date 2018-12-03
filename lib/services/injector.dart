@@ -41,7 +41,7 @@ class ServiceInjector {
   }
 
   BreezServer get breezServer {
-    return _breezServer ??= new BreezServer()..initChannel();
+    return _breezServer ??= new BreezServer();
   }
 
   BreezBridge get breezBridge {
