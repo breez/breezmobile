@@ -110,6 +110,7 @@ class BreezServer {
     try {
       await infoClient.ping(new PingRequest());
     } catch (e) {
+      _channel.terminate();
       _createChannel();
     }
   }
