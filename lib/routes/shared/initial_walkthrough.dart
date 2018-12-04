@@ -70,13 +70,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   void _proceedToRegister() {
     widget._registrationBloc.registerSink.add(null);
-    if (widget._isPos) {
-      Navigator.of(context).pop();
-    } else {
-      Navigator
-          .of(context)
-          .pushReplacementNamed("/order_card?skip=true");
-    }
+    Navigator.of(context).pop();
   }
 
   @override
