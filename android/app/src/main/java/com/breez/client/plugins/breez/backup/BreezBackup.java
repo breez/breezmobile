@@ -98,6 +98,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
+                    m_driveResourceClient = null;
                     result.success(true);
                 } else {
                     result.error("signOut failed", task.getException().getMessage(), null);
