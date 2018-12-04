@@ -20,6 +20,8 @@ class RestoreDialog extends StatefulWidget {
 
 class RestoreDialogState extends State<RestoreDialog> {
   StreamSubscription<bool> _restoreFinishedSubscription;
+  String _selectedKey;
+
 
   @override
   void dispose() {
@@ -59,31 +61,34 @@ class RestoreDialogState extends State<RestoreDialog> {
             "You have mulitple Breez backups on your Google Drive, please choose which to restore:",
             style: theme.paymentRequestSubtitleStyle,
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-          ),
+         
           new Padding(
-            padding: EdgeInsets.only(top: 24.0),
+            padding: EdgeInsets.only(top: 16.0),
             child: Container(
               width: 150.0,
-              height: 100.0,
+              height: 200.0,
               child: ListView.builder(
-                shrinkWrap: true,
+                shrinkWrap: false,
                 itemCount: widget.optionsMap.length,
                 itemBuilder: (BuildContext context, int index) {
                   var keys = widget.optionsMap.keys.toList();
-                  return ListTile(
+                  return ListTile(          
+                    selected:        _selectedKey == keys[index]  ,
+                    trailing: _selectedKey == keys[index] ? Icon(Icons.check, color: theme.BreezColors.blue[500],) : Icon(Icons.check),
                     title: Text(
-                      widget.optionsMap[keys[index]],
-                      style: theme.alertStyle,
+                      widget.optionsMap[keys[index]],                      
+                      style: theme.bolt11Style.apply(fontSizeDelta: 1.3),
                     ),
                     subtitle: Text(
                       keys[index],
                       style: theme.bolt11Style,
                     ),
                     onTap: () {
-                      Navigator.pop(widget.context);
-                      widget.backupBloc.restoreRequestSink.add(keys[index]);
+                      setState(() {
+                        _selectedKey = keys[index];
+                      });
+                      //Navigator.pop(widget.context);
+                      //widget.backupBloc.restoreRequestSink.add(keys[index]);
                     },
                   );
                 },
@@ -99,19 +104,24 @@ class RestoreDialogState extends State<RestoreDialog> {
                         style: theme.errorStyle,
                       )
                     : Container();
-              }),
-          new Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              new SimpleDialogOption(
-                onPressed: () => Navigator.pop(widget.context),
-                child: new Text("CANCEL", style: theme.buttonStyle),
-              ),
-            ],
-          ),
+              }),          
         ],
       ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () => Navigator.pop(widget.context),
+          child: new Text("CANCEL", style: theme.buttonStyle),
+        ),
+        new FlatButton(     
+          textColor: theme.BreezColors.blue[500],
+          disabledTextColor: theme.BreezColors.blue[500].withOpacity(0.4),               
+          onPressed: _selectedKey == null ? null : () { 
+            Navigator.pop(widget.context);
+            widget.backupBloc.restoreRequestSink.add(_selectedKey);
+          },
+          child: new Text("OK"),
+        )
+      ],
     );
   }
 }

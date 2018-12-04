@@ -110,7 +110,7 @@ class BackupBloc {
   void _listenRestoreRequests(BreezBridge breezLib) {    
     _restoreRequestController.stream.listen((nodeId) {
       Future maybeSignOut = Future.value(null);    
-      if (nodeId != null) {
+      if (nodeId == null || nodeId.isEmpty) {
         maybeSignOut = _service.signOut();
       }
       maybeSignOut.then((_){
