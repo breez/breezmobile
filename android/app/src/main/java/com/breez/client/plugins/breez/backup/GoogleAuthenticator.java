@@ -31,12 +31,14 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
 
     public GoogleAuthenticator(PluginRegistry.Registrar registrar) {
         m_breezActivity = registrar.activity();
-        GoogleSignInOptions signInOptions =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestScopes(Drive.SCOPE_APPFOLDER)
-                        .build();
-        m_signInClient = GoogleSignIn.getClient(m_breezActivity, signInOptions);
+        m_signInClient = createSignInClient();
         registrar.addActivityResultListener(this);        
+    }
+
+    public Task<Void> signOut(){
+        GoogleSignInClient old = m_signInClient;
+        m_signInClient = createSignInClient();
+        return old.signOut();
     }
 
     public Task<GoogleSignInAccount> ensureSignedIn(final boolean silent) {
@@ -58,6 +60,14 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                 return signIn();
             }
         });
+    }
+
+    private GoogleSignInClient createSignInClient(){
+        GoogleSignInOptions signInOptions =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestScopes(Drive.SCOPE_APPFOLDER)
+                        .build();
+        return GoogleSignIn.getClient(m_breezActivity, signInOptions);
     }
 
     private Task<GoogleSignInAccount> signIn(){
