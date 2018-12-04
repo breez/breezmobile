@@ -107,9 +107,13 @@ class BackupBloc {
       });
   }
 
-  void _listenRestoreRequests(BreezBridge breezLib) {
+  void _listenRestoreRequests(BreezBridge breezLib) {    
     _restoreRequestController.stream.listen((nodeId) {
-      _service.signOut().then((_){
+      Future maybeSignOut = Future.value(null);    
+      if (nodeId != null) {
+        maybeSignOut = _service.signOut();
+      }
+      maybeSignOut.then((_){
         return _service.restore(nodeId: nodeId).then((restoreResult) {
           if (restoreResult is List<dynamic>) {
             // We got a list of local files to restore from
