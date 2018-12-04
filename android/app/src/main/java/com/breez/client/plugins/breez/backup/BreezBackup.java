@@ -56,7 +56,14 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
                     return;
                 }
                 if (m_driveResourceClient == null) {
-                    m_driveResourceClient = Drive.getDriveResourceClient(m_activity, task.getResult());
+                    Drive.getDriveClient(m_activity, task.getResult()).requestSync().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> syncTask) {
+                            m_driveResourceClient = Drive.getDriveResourceClient(m_activity, task.getResult());
+                            handleMethodCall(call, result);
+                        }
+                    });
+                    return;
                 }
                 handleMethodCall(call, result);
             }
@@ -172,6 +179,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
                             if (metadataBuffer.getCount() == 0) {
                                 // Notify user there is no data
                                 result.error("NO_DATA_ERROR", "No backup folders found", null);
+                                return;
                             }
 
                             HashMap<String, String> backupsMap = new HashMap<>();
@@ -185,6 +193,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
                             }
                             else {
                                 result.success(backupsMap);
+                                return;
                             }
                         })
                     .addOnFailureListener(m_activity, e -> {
@@ -248,6 +257,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
                                 outputStream = new FileOutputStream(file);
                             } catch (FileNotFoundException e) {
                                 result.error("CACHE_FILE_FAILURE", "Couldn't find cache file to save to", null);
+                                return;
                             }
 
                             try {
@@ -258,6 +268,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
                                 }
                             } catch (IOException e) {
                                 result.error("IO_ERROR", "Couldn't write to cache", null);
+                                return;
                             }
 
                             backupPathsList.add(file.getAbsolutePath());
