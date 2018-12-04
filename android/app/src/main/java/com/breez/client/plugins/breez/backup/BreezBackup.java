@@ -46,6 +46,12 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
     @Override
     public void onMethodCall(final MethodCall call, final MethodChannel.Result result) {
         Log.i(TAG, "onMethodCall: " + call.method);
+
+        if (call.method.equals("signOut")) {
+            signOut(result);
+            return;
+        }
+
         Boolean silent = call.argument("silent");
         m_authenticator.ensureSignedIn(silent != null && silent.booleanValue()).addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
             @Override
@@ -55,11 +61,12 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
                     result.error("Error in BreezBackup.onMethodCall " + call.method, task.getException().getMessage(), task.getException().toString());
                     return;
                 }
+                GoogleSignInAccount loggedInAccount = task.getResult();
                 if (m_driveResourceClient == null) {
-                    Drive.getDriveClient(m_activity, task.getResult()).requestSync().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    Drive.getDriveClient(m_activity, loggedInAccount).requestSync().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> syncTask) {
-                            m_driveResourceClient = Drive.getDriveResourceClient(m_activity, task.getResult());
+                            m_driveResourceClient = Drive.getDriveResourceClient(m_activity, loggedInAccount);
                             handleMethodCall(call, result);
                         }
                     });
@@ -84,6 +91,19 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
                 getNodeIdFolder(nodeId, result);
             }
         }
+    }
+
+    private void signOut(MethodChannel.Result result){
+        m_authenticator.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    result.success(true);
+                } else {
+                    result.error("signOut failed", task.getException().getMessage(), null);
+                }
+            }
+        });
     }
 
     private void updateBackupFiles(List<String> paths, DriveFolder nodeIdFolder, MethodChannel.Result result) {
@@ -178,7 +198,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
                             Log.w(TAG, metadataBuffer.toString());
                             if (metadataBuffer.getCount() == 0) {
                                 // Notify user there is no data
-                                result.error("NO_DATA_ERROR", "No backup folders found", null);
+                                result.error("NO_DATA_ERROR", "Could not locate backup for this account", null);
                                 return;
                             }
 
