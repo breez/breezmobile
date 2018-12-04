@@ -251,24 +251,25 @@ class BreezBridge {
   }
 
   Future<void> bootstrap() async {
-    getApplicationDocumentsDirectory().then(
+    return getApplicationDocumentsDirectory().then(
             (appDir) {
           var lndBootstrapper = new LNDBootstrapper();
-          lndBootstrapper.bootstrapProgressStreams.listen((downloadFileInfo) {
-            var aggregatedStatus = Map<String, DownloadFileInfo>();
-            aggregatedStatus.addAll(_bootstrapDownloadProgressController.value);
-            aggregatedStatus[downloadFileInfo.fileURL] = downloadFileInfo;
-            _bootstrapDownloadProgressController.add(aggregatedStatus);
-          },
-              onError: (err){
-                print("Error");
-                _bootstrapDownloadProgressController.addError(err);
-              },
-              onDone: () {
-                _bootstrapDownloadProgressController.close();
-                return;
-              });
-          lndBootstrapper.downloadBootstrapFiles(appDir.path);
+          lndBootstrapper.bootstrapProgressStreams
+            .listen((downloadFileInfo) {
+              var aggregatedStatus = Map<String, DownloadFileInfo>();
+              aggregatedStatus.addAll(_bootstrapDownloadProgressController.value);
+              aggregatedStatus[downloadFileInfo.fileURL] = downloadFileInfo;
+              _bootstrapDownloadProgressController.add(aggregatedStatus);
+            },
+            onError: (err){
+              print("Error");
+              _bootstrapDownloadProgressController.addError(err);
+            },
+            onDone: () {
+              _bootstrapDownloadProgressController.close();
+              return;
+            });
+          return lndBootstrapper.downloadBootstrapFiles(appDir.path);
         }
     );
   }
