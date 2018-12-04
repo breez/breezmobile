@@ -9,6 +9,20 @@ class BackupService {
   }
 
   Future<dynamic> restore({String nodeId = ""}) {
-    return _methodChannel.invokeMethod("restore", {"nodeId": nodeId});
+    return _methodChannel.invokeMethod("restore", {"nodeId": nodeId}).catchError((err){
+      if (err.runtimeType == PlatformException) {
+        throw (err as PlatformException).message;
+      }
+      throw err;
+    });
+  }
+
+  Future<dynamic> signOut(){
+     return _methodChannel.invokeMethod("signOut").catchError((err){
+      if (err.runtimeType == PlatformException) {
+        throw (err as PlatformException).message;
+      }
+      throw err;
+    });
   }
 }

@@ -109,25 +109,28 @@ class BackupBloc {
 
   void _listenRestoreRequests(BreezBridge breezLib) {
     _restoreRequestController.stream.listen((nodeId) {
-      _service.restore(nodeId: nodeId).then((restoreResult) {
-        if (restoreResult is List<dynamic>) {
-          // We got a list of local files to restore from
-          // So let's kick-off lighntinglib
-          breezLib.bootstrap().then((done){
-            getApplicationDocumentsDirectory().then((appDir) {
-              breezLib.copyBreezConfig(appDir.path).then((done) {
-                breezLib.bootstrapFiles(appDir.path, new List<String>.from(restoreResult)).then((done) {
-                  _restoreFinishedController.add(true);
+      _service.signOut().then((_){
+        return _service.restore(nodeId: nodeId).then((restoreResult) {
+          if (restoreResult is List<dynamic>) {
+            // We got a list of local files to restore from
+            // So let's kick-off lighntinglib
+            breezLib.bootstrap().then((done){
+              getApplicationDocumentsDirectory().then((appDir) {
+                breezLib.copyBreezConfig(appDir.path).then((done) {
+                  breezLib.bootstrapFiles(appDir.path, new List<String>.from(restoreResult)).then((done) {
+                    _restoreFinishedController.add(true);
+                  });
                 });
               });
             });
-          });
-        }
-        else {
-          // We need to pick from different node IDs
-          _multipleRestoreController.add(new Map<String, String>.from(restoreResult));
-        }
-      }).catchError((error) {
+          }
+          else {
+            // We need to pick from different node IDs
+            _multipleRestoreController.add(new Map<String, String>.from(restoreResult));
+          }
+        });
+      })
+      .catchError((error) {
         _restoreFinishedController.addError(error);
       });
     });
