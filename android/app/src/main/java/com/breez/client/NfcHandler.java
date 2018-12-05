@@ -104,6 +104,8 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
 
     private void startBolt11Beam(String bolt11) {
         m_requestingP2P = false;
+        //TODO Decode bech32 strings to byte[].
+        // Use src/main/java/com/samourai/wallet/segwit/Bech32Util.java from https://github.com/SamouraiDev/bech32/
         m_bolt11Bytes = bolt11.getBytes();
         m_adapter.enableReaderMode(m_mainActivity, this, NfcAdapter.FLAG_READER_NFC_A, null);
     }
