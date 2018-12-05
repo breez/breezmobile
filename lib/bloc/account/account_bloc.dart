@@ -171,15 +171,15 @@ class AccountBloc {
         });
     }
 
-    _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib, Device device){
+    _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib, Device device){      
       userProfileStream.listen((user) {
-        _currentUser = user;
-
+        _currentUser = user; 
+               
         if (user.registered && !_startedLightning) {
-          _startedLightning = true;
-          breezLib.bootstrap().then((done) {
-            breezLib.startLightning();
-            _refreshAccount(breezLib);
+          _startedLightning = true;          
+          breezLib.bootstrap().then((done) {            
+            breezLib.startLightning();            
+            _refreshAccount(breezLib);            
             _listenConnectivityChanges(breezLib);
             _listenReconnects(breezLib);
             _listenRefundableDeposits(breezLib, device);
@@ -192,9 +192,7 @@ class AccountBloc {
         }
         if (_paymentsController.value != null) {
           _paymentsController.add(PaymentsModel(_paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList(), _paymentFilterController.value));
-        }    
-
-        _fetchFundStatus(breezLib);                 
+        }            
       });
     }
 
@@ -250,7 +248,7 @@ class AccountBloc {
     }
 
     void _listenFilterChanges(BreezBridge breezLib) {
-      _paymentFilterController.stream.listen((filter) {
+      _paymentFilterController.stream.skip(1).listen((filter) {
         _refreshPayments(breezLib);
       });
     }
@@ -326,15 +324,15 @@ class AccountBloc {
       .listen((change) => _refreshAccount(breezLib));
     }
   
-    _refreshAccount(BreezBridge breezLib){
-      _refreshPayments(breezLib);
-      _fetchFundStatus(breezLib);
+    _refreshAccount(BreezBridge breezLib){                  
       breezLib.getAccount()
         .then((acc) {
-          log.info("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());
+          print("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());
           _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser.currency));          
         })
         .catchError(_accountController.addError);
+      _refreshPayments(breezLib);
+      _fetchFundStatus(breezLib);
     }
 
     void _listenRoutingNodeConnectionChanges(BreezBridge breezLib) {
