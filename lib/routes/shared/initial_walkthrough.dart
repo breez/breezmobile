@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/restore_dialog.dart';
@@ -33,18 +35,21 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     super.initState();
 
     _multipleRestoreSubscription = widget._backupBloc.multipleRestoreStream.listen((options) {
+        popToWalkthrough();
         showDialog(context: context, builder: (_) =>
         new RestoreDialog(context, widget._backupBloc, options));
     });
 
     _restoreFinishedSubscription =
-        widget._backupBloc.restoreFinishedStream.listen((restored) {
-          if (restored) {
-            _proceedToRegister();
-          }
-        });
+        widget._backupBloc.restoreFinishedStream.listen((restored) { 
+        popToWalkthrough();         
+        if (restored) {
+          _proceedToRegister();
+        }
+    });
 
     _restoreFinishedSubscription.onError((error){
+      popToWalkthrough();
       _scaffoldKey.currentState.showSnackBar(new SnackBar(
           duration: new Duration(seconds: 3),
           content: new Text(error.toString())));
@@ -58,6 +63,12 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       _controller.stop();
       _controller.dispose();
     }
+  }
+
+  void popToWalkthrough(){
+    Navigator.popUntil(context, (route) {
+      return route.settings.name == "/intro";          
+    }); 
   }
 
   @override
@@ -140,6 +151,16 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                         child: new GestureDetector(
                           onTap: () {
                             // Restore then start lightninglib
+                            Navigator.push(context, TransparentPageRoute((context){
+                              return Container(
+                                color: Colors.black.withOpacity(0.3),
+                                height: MediaQuery.of(context).size.height,
+                                width: MediaQuery.of(context).size.width,
+                                child: Center(
+                                  child: Loader()
+                                )
+                              );
+                            }));
                             widget._backupBloc.restoreRequestSink.add("");
                           },
                           child: new Text("Restore from backup", style: theme.restoreLinkStyle,)
