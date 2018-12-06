@@ -24,8 +24,7 @@ class BreezBridge {
   Completer _startedCompleter = new Completer();
   StreamController _eventsController = new StreamController<NotificationEvent>.broadcast();
   Stream<NotificationEvent> get notificationStream => _eventsController.stream;
-  bool ready = false;
-  bool _readyToStart = false;
+  bool ready = false;  
 
   BreezBridge(){
     _eventChannel.receiveBroadcastStream().listen((event){
@@ -214,6 +213,19 @@ class BreezBridge {
   Future<String> validateAddress(String address) {
     return _invokeMethodWhenReady("validateAddress", {"argument": address})
         .then( (response) => response as String);
+  }
+
+  Future<String> sendWalletCoins(String address, Int64 amount, Int64 satPerByteFee){
+    var request = 
+      SendWalletCoinsRequest()
+        ..address = address
+        ..amount = amount
+        ..satPerByteFee = satPerByteFee;
+    return _invokeMethodWhenReady("sendWalletCoins", {"argument": request.writeToBuffer()}).then((txid) => txid as String);        
+  }
+
+  Future<Int64> getDefaultOnChainFeeRate(){
+    return _invokeMethodImmediate("getDefaultOnChainFeeRate").then((res) => Int64( res as int));        
   }
 
   Future copyBreezConfig(String workingDir) async{

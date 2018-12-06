@@ -1,8 +1,8 @@
 ///
 //  Generated code. Do not modify.
-//  source: rpc.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
+// ignore_for_file: non_constant_identifier_names,library_prefixes
+library data_rpc_pbjson;
 
 const ChainStatus$json = const {
   '1': 'ChainStatus',
@@ -17,7 +17,7 @@ const Account$json = const {
   '2': const [
     const {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
     const {'1': 'balance', '3': 2, '4': 1, '5': 3, '10': 'balance'},
-    const {'1': 'nonDepositableBalance', '3': 3, '4': 1, '5': 3, '10': 'nonDepositableBalance'},
+    const {'1': 'walletBalance', '3': 3, '4': 1, '5': 3, '10': 'walletBalance'},
     const {'1': 'status', '3': 4, '4': 1, '5': 14, '6': '.data.Account.AccountStatus', '10': 'status'},
     const {'1': 'maxAllowedToReceive', '3': 5, '4': 1, '5': 3, '10': 'maxAllowedToReceive'},
     const {'1': 'maxAllowedToPay', '3': 6, '4': 1, '5': 3, '10': 'maxAllowedToPay'},
@@ -68,10 +68,12 @@ const PaymentsList$json = const {
   ],
 };
 
-const SendNonDepositedCoinsRequest$json = const {
-  '1': 'SendNonDepositedCoinsRequest',
+const SendWalletCoinsRequest$json = const {
+  '1': 'SendWalletCoinsRequest',
   '2': const [
     const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
+    const {'1': 'amount', '3': 2, '4': 1, '5': 3, '10': 'amount'},
+    const {'1': 'satPerByteFee', '3': 3, '4': 1, '5': 3, '10': 'satPerByteFee'},
   ],
 };
 
