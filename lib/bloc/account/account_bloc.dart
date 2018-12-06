@@ -224,9 +224,18 @@ class AccountBloc {
     void _listenWithdrawalRequests(BreezBridge breezLib) {
       _withdrawalController.stream.listen(
         (removeFundRequestModel) {
-          breezLib.removeFund(removeFundRequestModel.address, removeFundRequestModel.amount)
-          .then((res) => _withdrawalResultController.add(new RemoveFundResponseModel(res)))
-          .catchError(_withdrawalResultController.addError);          
+          Future removeFunds = Future.value(null);
+          if (removeFundRequestModel.fromWallet) {
+            removeFunds = 
+              breezLib.sendWalletCoins(removeFundRequestModel.address, removeFundRequestModel.amount, removeFundRequestModel.satPerByteFee)
+                .then((txID) => _withdrawalResultController.add(new RemoveFundResponseModel(txID)));
+          } else {
+            removeFunds = 
+              breezLib.removeFund(removeFundRequestModel.address, removeFundRequestModel.amount)
+                .then((res) => _withdrawalResultController.add(new RemoveFundResponseModel(res.txid, errorMessage: res.errorMessage)));
+          }
+                    
+          removeFunds.catchError(_withdrawalResultController.addError);          
         });    
     }
   
@@ -333,6 +342,9 @@ class AccountBloc {
         .catchError(_accountController.addError);
       _refreshPayments(breezLib);
       _fetchFundStatus(breezLib);
+      if (_accountController.value.onChainFeeRate == null) {
+        breezLib.getDefaultOnChainFeeRate().then((rate) => _accountController.add(_accountController.value.copyWith(onChainFeeRate: rate)));     
+      }
     }
 
     void _listenRoutingNodeConnectionChanges(BreezBridge breezLib) {

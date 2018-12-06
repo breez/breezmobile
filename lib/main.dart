@@ -123,6 +123,11 @@ class BreezAppState extends State<BreezApp> {
               builder: (_) => new WithdrawFundsPage(),
               settings: settings,
             );
+          case '/withdraw_funds?fromWallet=true':
+            return new FadeInRoute(
+              builder: (_) => new WithdrawFundsPage(fromWallet: true),
+              settings: settings,
+            );
           case '/get_refund':
             return new FadeInRoute(
               builder: (_) => new GetRefundPage(),

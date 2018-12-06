@@ -10,24 +10,26 @@ class AccountModel {
   final FundStatusReply_FundStatus addedFundsStatus;
   final String paymentRequestInProgress;
   final bool connected;
+  final Int64 onChainFeeRate;
   final bool initial;
 
-  AccountModel(this._accountResponse, this._currency, {this.initial = false, this.addedFundsStatus = FundStatusReply_FundStatus.NO_FUND, this.paymentRequestInProgress, this.connected = false});
+  AccountModel(this._accountResponse, this._currency, {this.initial = false, this.addedFundsStatus = FundStatusReply_FundStatus.NO_FUND, this.paymentRequestInProgress, this.connected = false, this.onChainFeeRate});
 
   AccountModel.initial() : 
     this(Account()
       ..balance = Int64(0)      
-      ..nonDepositableBalance = Int64(0)
+      ..walletBalance = Int64(0)
       ..status = Account_AccountStatus.WAITING_DEPOSIT
       ..maxAllowedToReceive = Int64(0)
       ..maxPaymentAmount = Int64(0)      
       , Currency.BTC, initial: true);
-  AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply_FundStatus addedFundsStatus, String paymentRequestInProgress, bool connected}) {
+  AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply_FundStatus addedFundsStatus, String paymentRequestInProgress, bool connected, Int64 onChainFeeRate}) {
     return AccountModel(
       accountResponse ?? this._accountResponse, 
       currency ?? this.currency, 
       addedFundsStatus: addedFundsStatus ?? this.addedFundsStatus, 
-      connected: connected ?? this.connected,
+      connected: connected ?? this.connected,      
+      onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
       paymentRequestInProgress: paymentRequestInProgress ?? this.paymentRequestInProgress);
   }
 
@@ -38,7 +40,7 @@ class AccountModel {
   bool get processingWithdrawal => _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
   bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;  
   Int64 get balance => _accountResponse.balance;  
-  Int64 get nonDepositableBalance => _accountResponse.nonDepositableBalance;
+  Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
@@ -149,16 +151,17 @@ class AddFundResponse {
 class RemoveFundRequestModel {
   final Int64 amount;
   final String address;
+  final bool fromWallet;
+  final Int64 satPerByteFee;
 
-  RemoveFundRequestModel(this.amount, this.address);
+  RemoveFundRequestModel(this.amount, this.address, {this.fromWallet = false, this.satPerByteFee});
 }
 
 class RemoveFundResponseModel {
-  final RemoveFundReply _reply;
-  String get transactionID => _reply.txid;
-  String get errorMessage => _reply.errorMessage;
+  final String transactionID;
+  final String errorMessage;
 
-  RemoveFundResponseModel(this._reply);
+  RemoveFundResponseModel(this.transactionID, {this.errorMessage});
 }
 
 class RefundableDepositModel {
