@@ -1,6 +1,7 @@
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:breez/routes/user/ctp_join_session_handler.dart';
+import 'package:breez/routes/user/home/account_required_actions.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
@@ -134,7 +135,7 @@ class HomeState extends State<Home> {
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.all(14.0),
-              child: BackupDisabledIndicator(widget.backupBloc),
+              child: AccountRequiredActionsIndicator(widget.backupBloc, widget.accountBloc),
             ),],
           leading: new IconButton(
               icon: ImageIcon(
