@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/breez_server/generated/breez.pbenum.dart';
 import 'package:breez/services/breez_server/server.dart';
@@ -19,6 +20,8 @@ import 'package:connectivity/connectivity.dart';
 
 
 class AccountBloc {  
+
+  static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
       
   final _reconnectStreamController = new StreamController<void>();
   Sink<void> get _reconnectSink => _reconnectStreamController.sink;
@@ -40,6 +43,10 @@ class AccountBloc {
     
   final _accountController = new BehaviorSubject<AccountModel>();
   Stream<AccountModel> get accountStream => _accountController.stream;
+
+  final _accountSettingsController = new BehaviorSubject<AccountSettings>();
+  Stream<AccountSettings> get accountSettingsStream => _accountSettingsController.stream;
+  Sink<AccountSettings> get accountSettingsSink => _accountSettingsController.sink;
 
   final _routingNodeConnectionController = new BehaviorSubject<bool>();
   Stream<bool> get routingNodeConnectionStream => _routingNodeConnectionController.stream;
@@ -86,7 +93,10 @@ class AccountBloc {
 
       _accountController.add(AccountModel.initial());
       _paymentFilterController.add(PaymentFilterModel.initial());
+      _accountSettingsController.add(AccountSettings.start());
+      
       //listen streams      
+      _hanleAccountSettings();
       _listenUserChanges(userProfileStream, breezLib, device);
       _listenNewAddressRequests(breezLib);
       _listenWithdrawalRequests(breezLib);
@@ -96,6 +106,19 @@ class AccountBloc {
       _listenPOSFundingRequests(server, breezLib);
       _listenMempoolTransactions(device, notificationsService, breezLib);
       _listenRoutingNodeConnectionChanges(breezLib);
+    }
+
+    //settings persistency
+    void _hanleAccountSettings() async {      
+      var preferences = await ServiceInjector().sharedPreferences;      
+      var accountSettings = preferences.getString(ACCOUNT_SETTINGS_PREFERENCES_KEY);
+      if (accountSettings != null) {
+        Map<String, dynamic> settings = json.decode(accountSettings);
+        _accountSettingsController.add(AccountSettings.fromJson(settings));
+      }
+      _accountSettingsController.stream.listen((settings){
+        preferences.setString(ACCOUNT_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
+      });
     }
 
     void _listenRefundableDeposits(BreezBridge breezLib, Device device){
