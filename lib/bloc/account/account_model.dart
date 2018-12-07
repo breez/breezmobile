@@ -4,6 +4,22 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
+class AccountSettings {
+  final bool ignoreWalletBalance;
+
+  AccountSettings(this.ignoreWalletBalance);
+  AccountSettings.start() :this(false);
+
+  AccountSettings copyWith({bool ignoreWalletBalance}) {
+    return AccountSettings(ignoreWalletBalance ?? this.ignoreWalletBalance);
+  }
+
+  AccountSettings.fromJson(Map<String, dynamic> json) : this(json["ignoreWalletBalance"] ?? false);
+  Map<String, dynamic> toJson(){
+    return {"ignoreWalletBalance": ignoreWalletBalance};
+  }
+}
+
 class AccountModel { 
   final Account _accountResponse;
   final Currency _currency;
