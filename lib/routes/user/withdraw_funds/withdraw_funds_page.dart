@@ -16,23 +16,21 @@ import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 
-class WithdrawFundsPage extends StatelessWidget {
-  final bool fromWallet;
+class WithdrawFundsPage extends StatelessWidget {  
 
-  WithdrawFundsPage({this.fromWallet = false});
+  WithdrawFundsPage();
 
   @override
   Widget build(BuildContext context) {
     return new BlocConnector<AppBlocs>(
-        (context, blocs) => _WithdrawFundsPage(blocs.accountBloc, fromWallet));
+        (context, blocs) => _WithdrawFundsPage(blocs.accountBloc));
   }
 }
 
 class _WithdrawFundsPage extends StatefulWidget {
-  final AccountBloc _accountBloc;
-  final bool fromWallet;
+  final AccountBloc _accountBloc;  
 
-  const _WithdrawFundsPage(this._accountBloc, this.fromWallet);
+  const _WithdrawFundsPage(this._accountBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -44,8 +42,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
   final _formKey = GlobalKey<FormState>();
   String _scannerErrorMessage = "";
   final TextEditingController _addressController = new TextEditingController();
-  final TextEditingController _amountController = new TextEditingController();
-  final TextEditingController _feeController = new TextEditingController();
+  final TextEditingController _amountController = new TextEditingController();  
   StreamSubscription<RemoveFundResponseModel> withdrawalResultSubscription;  
 
   BreezBridge _breezLib;
@@ -78,9 +75,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
           });
           Navigator.of(context).pop(); //remove the loading dialog
           promptError(context, null, Text(err.toString(), style: theme.alertStyle));
-      });
-
-       widget._accountBloc.accountStream.first.then((acc) => _feeController.text = acc.onChainFeeRate?.toString());
+      });       
   }
 
   @override
@@ -98,8 +93,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final String _title =
-        widget.fromWallet ? "Remove Wallet Funds" : "Remove Funds";
+    final String _title = "Remove Funds";
     return new Scaffold(
       bottomNavigationBar: StreamBuilder<AccountModel>(
           stream: widget._accountBloc.accountStream,
@@ -160,12 +154,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
               child: new Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  widget.fromWallet
-                      ? Text(
-                          "Breez detected funds in your wallet. It is recommened to remove these funds.",
-                          style: theme.warningStyle)
-                      : SizedBox(),
+                children: <Widget>[                  
                   new TextFormField(
                     controller: _addressController,
                     decoration: new InputDecoration(
@@ -204,22 +193,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
                       maxAmount: acc.maxAllowedToPay,
                       decoration: new InputDecoration(
                           labelText: acc.currency.displayName + " Amount"),
-                      style: theme.FieldTextStyle.textStyle),
-                  widget.fromWallet
-                      ? new TextFormField(
-                          controller: _feeController,
-                          inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-                          keyboardType: TextInputType.number,
-                          decoration: new InputDecoration(
-                              labelText: "Sat Per Byte Fee Rate"),
-                          style: theme.FieldTextStyle.textStyle,
-                          validator: (value) {
-                            if (_feeController.text.isEmpty) {
-                              return "Please enter a valid fee rate";
-                            }
-                          }
-                        )
-                      : SizedBox(),
+                      style: theme.FieldTextStyle.textStyle),                 
                   new Container(
                     padding: new EdgeInsets.only(top: 36.0),
                     child: _buildAvailableBTC(acc),
@@ -239,7 +213,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
         new Text("Available:", style: theme.textStyle),
         new Padding(
           padding: EdgeInsets.only(left: 3.0),
-          child: new Text(acc.currency.format(widget.fromWallet ? acc.walletBalance  : acc.balance),
+          child: new Text(acc.currency.format(acc.balance),
               style: theme.textStyle),
         )
       ],
@@ -263,9 +237,8 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
               _showLoadingDialog();
               widget._accountBloc.withdrawalSink.add(new RemoveFundRequestModel(
                   currency.parse(_amountController.text),
-                  _addressController.text, 
-                  fromWallet: widget.fromWallet, 
-                  satPerByteFee:  _feeController.text.isNotEmpty ? Int64.parseInt(_feeController.text) : Int64(0)));
+                  _addressController.text                  
+                ));
             },
             child: new Text("YES", style: theme.buttonStyle))
       ],
