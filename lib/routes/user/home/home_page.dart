@@ -17,7 +17,6 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/routes/shared/no_connection_dialog.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/widgets/backup_disabled_indicator.dart';
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
