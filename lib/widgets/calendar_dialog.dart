@@ -17,19 +17,16 @@ class CalendarDialog extends StatefulWidget {
 
 class _CalendarDialogState extends State<CalendarDialog> {
   TextEditingController _startDateController = new TextEditingController();
-  TextEditingController _endDateController = new TextEditingController();
+  TextEditingController _endDateController = new TextEditingController();  
+  DateTime _endDate = DateTime.now();
   DateTime _startDate;
-  DateTime _endDate;
 
   @override
   void initState() {
-    super.initState();
-    setState(() {
-      _startDate = widget.firstDate;
-      _endDate = DateTime.now();
-      _startDateController.text = DateUtils.formatYearMonthDay(_startDate);
-      _endDateController.text = DateUtils.formatYearMonthDay(_endDate);
-    });
+    super.initState();   
+    _startDate = widget.firstDate;     
+    _startDateController.text = DateUtils.formatYearMonthDay(widget.firstDate);
+    _endDateController.text = DateUtils.formatYearMonthDay(_endDate);
   }
 
   @override
