@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/services/backup.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
@@ -34,26 +35,34 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   void initState() {
     super.initState();
 
-    _multipleRestoreSubscription = widget._backupBloc.multipleRestoreStream.listen((options) {
+    _multipleRestoreSubscription = widget._backupBloc.multipleRestoreStream
+      .listen((options) {
+        if (options.length == 0) {
+          popToWalkthrough(error: "Could not locate backup for this account");
+          return;
+        }
+
+        if (options.length == 1) {
+          widget._backupBloc.restoreRequestSink.add(options[options.keys.elementAt(0)]);
+          return;
+        }
+
         popToWalkthrough();
         showDialog(context: context, builder: (_) =>
         new RestoreDialog(context, widget._backupBloc, options));
-    });
+      }, onError: (error){
+        popToWalkthrough(error: error.runtimeType != SignInFailedException ? error.toString() : null);
+      });
 
-    _restoreFinishedSubscription =
-        widget._backupBloc.restoreFinishedStream.listen((restored) { 
+    _restoreFinishedSubscription = widget._backupBloc.restoreFinishedStream
+      .listen((restored) { 
         popToWalkthrough();         
         if (restored) {
           _proceedToRegister();
         }
-    });
-
-    _restoreFinishedSubscription.onError((error){
-      popToWalkthrough();
-      _scaffoldKey.currentState.showSnackBar(new SnackBar(
-          duration: new Duration(seconds: 3),
-          content: new Text(error.toString())));
-    });
+      }, onError: (error){
+        popToWalkthrough(error: error.runtimeType != SignInFailedException ? error.toString() : null);
+      });    
 
     _controller = new AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2720))
@@ -65,10 +74,15 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }
   }
 
-  void popToWalkthrough(){
+  void popToWalkthrough({String error}){
     Navigator.popUntil(context, (route) {
       return route.settings.name == "/intro";          
     }); 
+    if (error != null) {
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+            duration: new Duration(seconds: 3),
+            content: new Text(error.toString())));
+    }
   }
 
   @override
