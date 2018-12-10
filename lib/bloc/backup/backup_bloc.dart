@@ -9,6 +9,7 @@ import 'package:breez/services/backup.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class BackupBloc {
   BackupService _service;
@@ -38,10 +39,12 @@ class BackupBloc {
   Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
 
   bool _needBackupAfterRestart = false;
+  String _backupBreezID;
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";
   static const String AVAILABLE_PATHS_PREFERENCE_KEY = "backup_available_paths";
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
+  static const String BACKUP_BREEZ_ID_PREFERENCE_KEY = "BACKUP_BREEZ_ID";
 
   BackupBloc(this._accountStream) {
     ServiceInjector injector = new ServiceInjector();
@@ -49,20 +52,23 @@ class BackupBloc {
     _service = BackupService();    
 
     var sharedPrefrences = SharedPreferences.getInstance();
+    _initializePersistentData(sharedPrefrences).then((_){
+      _listenBackupPaths(breezLib, sharedPrefrences);
+      _listenBackupNowRequests(sharedPrefrences);
+      _listenRestoreRequests(breezLib);
+      listenBackupChangs();
+    });          
+  }
 
-    _listenBackupPaths(breezLib, sharedPrefrences);
-    _listenBackupNowRequests(sharedPrefrences);
-    _listenRestoreRequests(breezLib);
+  Future _initializePersistentData(Future<SharedPreferences> sharedPrefrences){
+    return sharedPrefrences.then((preferences){
 
-    _accountStream.listen((acc) {
-      var existingID = _currentNodeId;
-      _currentNodeId = acc.id;
-      if (existingID == null && acc.id != null) {
-        //TODO need to backup now.        
-      }      
-    });
-
-    sharedPrefrences.then((preferences){
+      //backup breez id
+      _backupBreezID = preferences.getString(BACKUP_BREEZ_ID_PREFERENCE_KEY);
+      if (_backupBreezID == null) {
+        _backupBreezID = new Uuid().v4().toString();
+        preferences.setString(BACKUP_BREEZ_ID_PREFERENCE_KEY, _backupBreezID);
+      }
 
       //paths persistency
       List<String> paths = preferences.getStringList(AVAILABLE_PATHS_PREFERENCE_KEY);
@@ -91,6 +97,24 @@ class BackupBloc {
       _backupSettingsController.stream.listen((settings){
         preferences.setString(BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
       });
+    });
+  }
+
+  void listenBackupChangs(){
+    _accountStream.listen((acc) {
+      var existingID = _currentNodeId;
+      _currentNodeId = acc.id;
+      if ( (existingID == null || existingID.isEmpty) && _currentNodeId != null && _currentNodeId.isNotEmpty) {
+        
+        _service.getBackupChangesStream(_currentNodeId, _backupBreezID)
+          .listen((backupID){
+            if (backupID != _currentNodeId) {
+              _lastBackupTimeController.addError("Detected different backup breez id");
+            }
+
+            //TODO need to backup now.     
+          });        
+      }      
     });
   }
 
