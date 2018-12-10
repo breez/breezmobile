@@ -41,7 +41,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         return old.signOut();
     }
 
-    public Task<GoogleSignInAccount> ensureSignedIn(final boolean silent) {
+    public Task<GoogleSignInAccount> ensureSignedIn(final boolean silent) throws SignInFailedException {
         Task<GoogleSignInAccount> task = m_signInClient.silentSignIn();
         if (task.isSuccessful()) {
             Log.i(TAG, "silentSignIn Task is already successfull");
@@ -52,7 +52,10 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         return task.continueWithTask(new Continuation<GoogleSignInAccount, Task<GoogleSignInAccount>>() {
             @Override
             public Task<GoogleSignInAccount> then(@NonNull Task<GoogleSignInAccount> task) throws Exception {
-                if (task.isSuccessful() || silent) {
+                if (!task.isSuccessful() && silent) {
+                    throw new  SignInFailedException();
+                }
+                if (task.isSuccessful()) {
                     Log.i(TAG, "silentSignIn Task succeeded");
                     return task;
                 }
@@ -85,7 +88,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                 @Override
                 public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
                     if (!task.isSuccessful()) {
-                        m_signInProgressTask.setException(task.getException());
+                        m_signInProgressTask.setException(new SignInFailedException());
                         return;
                     }
 
