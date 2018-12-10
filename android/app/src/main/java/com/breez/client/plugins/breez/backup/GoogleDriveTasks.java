@@ -54,6 +54,14 @@ public class GoogleDriveTasks {
                             .build();
 
                     return m_driveResourceClient.createFile(nodeIdFolder, changeSet, contents);
+                })
+                .continueWith(file -> {
+                    if (file.isSuccessful()) {
+                        Log.i("BreezBackup", "Succesfully uploaded backup file: " + path);
+                        return file.getResult();
+                    }
+                    Log.i("BreezBackup", "Failed to uploaded backup file: " + path);
+                    throw file.getException();
                 });
     }
 
@@ -79,24 +87,17 @@ public class GoogleDriveTasks {
                     }
 
                     return file.getAbsolutePath();
+                })
+                .continueWith(path -> {
+                    if (path.isSuccessful()) {
+                        Log.i("BreezBackup", "Succesfully downloaded backup file: " + m.getTitle());
+                        return path.getResult();
+                    }
+                    Log.i("BreezBackup", "Failed to download backup file: " + m.getTitle());
+                    throw path.getException();
                 });
     }
 
-    public Task<DriveFolder> findChildByResourceID(DriveFolder parent, String resourceID) {
-        return m_driveResourceClient.queryChildren(parent, new Query.Builder().build())
-                .continueWith(queryTask -> {
-                    Metadata backupFolder = null;
-                    Iterator<Metadata> iter = queryTask.getResult().iterator();
-                    while (iter.hasNext()) {
-                        Metadata next = iter.next();
-                        if (next.getDriveId().getResourceId().equals(resourceID)) {
-                            backupFolder = next;
-                            break;
-                        }
-                    }
-                    return backupFolder.getDriveId().asDriveFolder();
-                });
-    }
 
     public Task<HashMap<String, String>> getNestedFolders(DriveFolder parent){
         SortOrder ascendingDateOrder = new SortOrder.Builder().addSortAscending(SortableField.MODIFIED_DATE).build();
@@ -117,24 +118,19 @@ public class GoogleDriveTasks {
         });
     }
 
-    public Task<DriveFolder> getFolderByTitle(String title) {
-        return m_driveResourceClient
-                .getAppFolder()
-                .continueWithTask(appFolderTask -> {
-                    DriveFolder appFolder = appFolderTask.getResult();
-                    Query query = new Query.Builder()
-                            .addFilter(Filters.eq(SearchableField.MIME_TYPE, DriveFolder.MIME_TYPE))
-                            .addFilter(Filters.eq(SearchableField.TITLE, title))
-                            .build();
+    public Task<DriveFolder> getFolderByTitle(DriveFolder parent, String title) {
+        Query query = new Query.Builder()
+                .addFilter(Filters.eq(SearchableField.MIME_TYPE, DriveFolder.MIME_TYPE))
+                .addFilter(Filters.eq(SearchableField.TITLE, title))
+                .build();
 
-                    Task<MetadataBuffer> queryTask = m_driveResourceClient.queryChildren(appFolder, query);
-                    return queryTask.continueWith(childrenTask -> {
-                        MetadataBuffer res = childrenTask.getResult();
-                        if (res.getCount() == 0) {
-                            return null;
-                        }
-                        return childrenTask.getResult().get(0).getDriveId().asDriveFolder();
-                    });
-                });
+        Task<MetadataBuffer> queryTask = m_driveResourceClient.queryChildren(parent, query);
+        return queryTask.continueWith(childrenTask -> {
+            MetadataBuffer res = childrenTask.getResult();
+            if (res.getCount() == 0) {
+                return null;
+            }
+            return childrenTask.getResult().get(0).getDriveId().asDriveFolder();
+        });
     }
 }
