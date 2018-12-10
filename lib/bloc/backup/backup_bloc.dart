@@ -41,6 +41,8 @@ class BackupBloc {
   final BehaviorSubject<void> _backupConflictController = new BehaviorSubject<void>();
   Stream<void> get backupConflictStream => _backupConflictController.stream;
 
+  BreezBridge _breezLib;
+  SharedPreferences _sharedPrefrences;
   bool _needBackupAfterRestart = false;
   String _backupBreezID;
 
@@ -51,59 +53,58 @@ class BackupBloc {
 
   BackupBloc(this._accountStream) {
     ServiceInjector injector = new ServiceInjector();
-    BreezBridge breezLib = injector.breezBridge;
+    _breezLib = injector.breezBridge;
     _service = BackupService();    
-
-    var sharedPrefrences = SharedPreferences.getInstance();
-    _initializePersistentData(sharedPrefrences).then((_){
-      _listenBackupPaths(breezLib, sharedPrefrences);
-      _listenBackupNowRequests(sharedPrefrences);
-      _listenRestoreRequests(breezLib);
-      _listenBackupChanges(breezLib);
-    });          
+    
+    SharedPreferences.getInstance()     
+      .then((sp){
+        _sharedPrefrences = sp
+        _initializePersistentData();
+        _listenBackupPaths();
+        _listenBackupNowRequests();
+        _listenRestoreRequests();
+        _listenBackupChanges();
+      });         
   }
 
-  Future _initializePersistentData(Future<SharedPreferences> sharedPrefrences){
-    return sharedPrefrences.then((preferences){
-
-      //backup breez id
-      _backupBreezID = preferences.getString(BACKUP_BREEZ_ID_PREFERENCE_KEY);
+  void _initializePersistentData(){
+    //backup breez id
+      _backupBreezID = _sharedPrefrences.getString(BACKUP_BREEZ_ID_PREFERENCE_KEY);
       if (_backupBreezID == null) {
         _backupBreezID = new Uuid().v4().toString();
-        preferences.setString(BACKUP_BREEZ_ID_PREFERENCE_KEY, _backupBreezID);
+        _sharedPrefrences.setString(BACKUP_BREEZ_ID_PREFERENCE_KEY, _backupBreezID);
       }
 
       //paths persistency
-      List<String> paths = preferences.getStringList(AVAILABLE_PATHS_PREFERENCE_KEY);
+      List<String> paths = _sharedPrefrences.getStringList(AVAILABLE_PATHS_PREFERENCE_KEY);
       if (paths != null && paths.length > 0) {
         _needBackupAfterRestart = true;
       }      
       _availableBackupPathsController.stream.listen((backupPaths){
-        preferences.setStringList(AVAILABLE_PATHS_PREFERENCE_KEY, backupPaths);
+        _sharedPrefrences.setStringList(AVAILABLE_PATHS_PREFERENCE_KEY, backupPaths);
       });
 
       //last backup time persistency
-      int lastTime = preferences.getInt(LAST_BACKUP_TIME_PREFERENCE_KEY);
+      int lastTime = _sharedPrefrences.getInt(LAST_BACKUP_TIME_PREFERENCE_KEY);
       if (lastTime != null) {
         _lastBackupTimeController.add(DateTime.fromMillisecondsSinceEpoch(lastTime));
       }
       _lastBackupTimeController.stream.listen((lastTime){
-        preferences.setInt(LAST_BACKUP_TIME_PREFERENCE_KEY, lastTime.millisecondsSinceEpoch);
+        _sharedPrefrences.setInt(LAST_BACKUP_TIME_PREFERENCE_KEY, lastTime.millisecondsSinceEpoch);
       });
 
       //settings persistency
-      var backupSettings = preferences.getString(BACKUP_SETTINGS_PREFERENCES_KEY);
+      var backupSettings = _sharedPrefrences.getString(BACKUP_SETTINGS_PREFERENCES_KEY);
       if (backupSettings != null) {
         Map<String, dynamic> settings = json.decode(backupSettings);
         _backupSettingsController.add(BackupSettings.fromJson(settings));
       }
       _backupSettingsController.stream.listen((settings){
-        preferences.setString(BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
+        _sharedPrefrences.setString(BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
       });
-    });
   }
 
-  void _listenBackupChanges(BreezBridge breeLib){
+  void _listenBackupChanges(){
     _accountStream.listen((acc) {
       var existingID = _currentNodeId;
       _currentNodeId = acc.id;
@@ -112,8 +113,7 @@ class BackupBloc {
         _service.getBackupChangesStream(_currentNodeId, _backupBreezID)
           .listen((backupID){
             if (backupID != _currentNodeId) {
-              _backupConflictController.add(null);
-              breeLib.stop();
+              _onConflictDetected();
             }
 
             //TODO need to backup now.     
@@ -122,14 +122,19 @@ class BackupBloc {
     });
   }
 
-  void _listenBackupNowRequests(Future<SharedPreferences> sharedPrefrences) {
+  void _onConflictDetected() async {
+    _breezLib.stop();
+    _backupConflictController.add(null);    
+  }
+
+  void _listenBackupNowRequests() {
     _backupNowController.stream.listen((data) {      
       backup(_availableBackupPathsController.value, _currentNodeId, false);
     });
   }
 
-  _listenBackupPaths(BreezBridge breezLib, Future<SharedPreferences> sharedPrefrences) {
-    Observable(breezLib.notificationStream).where((event) {
+  _listenBackupPaths() {
+    Observable(_breezLib.notificationStream).where((event) {
       return event.type ==
           NotificationEvent_NotificationType.BACKUP_FILES_AVAILABLE;
     }).listen((event) {
@@ -143,7 +148,7 @@ class BackupBloc {
       });
   }
 
-  void _listenRestoreRequests(BreezBridge breezLib) {    
+  void _listenRestoreRequests() {    
     _restoreRequestController.stream.listen((nodeId) {
       if (nodeId == null || nodeId.isEmpty) {
         _service.signOut()
@@ -159,11 +164,11 @@ class BackupBloc {
           return;
       }
 
-       _service.restore(nodeId: nodeId).then((restoreResult) {
-         return breezLib.bootstrap().then((done){
+       _service.restore(nodeId, _backupBreezID).then((restoreResult) {
+         return _breezLib.bootstrap().then((done){
               return getApplicationDocumentsDirectory().then((appDir) {
-                return breezLib.copyBreezConfig(appDir.path).then((done) {
-                  return breezLib.bootstrapFiles(appDir.path, new List<String>.from(restoreResult)).then((done) {
+                return _breezLib.copyBreezConfig(appDir.path).then((done) {
+                  return _breezLib.bootstrapFiles(appDir.path, new List<String>.from(restoreResult)).then((done) {
                     _restoreFinishedController.add(true);
                   });
                 });
@@ -171,18 +176,27 @@ class BackupBloc {
             });
        })
        .catchError((error) {
+         if (error.runtimeType == BackupConflictException) {
+           _onConflictDetected();
+           return;
+         }
+
          _restoreFinishedController.addError(error);
         });
     });
   }
 
   void backup(List<String> backupPaths, String nodeId, bool silent) {
-    _service.backup(backupPaths, nodeId, silent: silent)
+    _service.backup(backupPaths, nodeId, _backupBreezID, silent: silent)
       .then((_){
         _availableBackupPathsController.add(null);
         _lastBackupTimeController.add(DateTime.now());
       })
       .catchError((error) {
+        if (error.runtimeType == BackupConflictException) {
+           _onConflictDetected();
+           return;
+         }
         _lastBackupTimeController.addError(error);
       });
   }
