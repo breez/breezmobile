@@ -38,6 +38,9 @@ class BackupBloc {
   final _restoreFinishedController = new StreamController<bool>.broadcast();
   Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
 
+  final BehaviorSubject<void> _backupConflictController = new BehaviorSubject<void>();
+  Stream<void> get backupConflictStream => _backupConflictController.stream;
+
   bool _needBackupAfterRestart = false;
   String _backupBreezID;
 
@@ -56,7 +59,7 @@ class BackupBloc {
       _listenBackupPaths(breezLib, sharedPrefrences);
       _listenBackupNowRequests(sharedPrefrences);
       _listenRestoreRequests(breezLib);
-      listenBackupChangs();
+      _listenBackupChanges(breezLib);
     });          
   }
 
@@ -100,7 +103,7 @@ class BackupBloc {
     });
   }
 
-  void listenBackupChangs(){
+  void _listenBackupChanges(BreezBridge breeLib){
     _accountStream.listen((acc) {
       var existingID = _currentNodeId;
       _currentNodeId = acc.id;
@@ -109,7 +112,8 @@ class BackupBloc {
         _service.getBackupChangesStream(_currentNodeId, _backupBreezID)
           .listen((backupID){
             if (backupID != _currentNodeId) {
-              _lastBackupTimeController.addError("Detected different backup breez id");
+              _backupConflictController.add(null);
+              breeLib.stop();
             }
 
             //TODO need to backup now.     
