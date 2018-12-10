@@ -47,6 +47,10 @@ class BreezBridge {
         .then((_) => _startedCompleter.complete());
   }
 
+  Future stop(){
+    return _invokeMethodImmediate("stop");
+  }
+
   void log(String msg, String level) {
     _invokeMethodWhenReady("log", {"msg": msg, "lvl": level});
   }
