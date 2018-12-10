@@ -131,7 +131,7 @@ class HomeState extends State<Home> {
           return route.settings.name == "/home" || route.settings.name == "/";
         }
       );
-      await promptError(context, "Backup Conflict", Text("Breez has detected that your node is running somehwere else, we must exit", style: theme.alertStyle), 
+      await promptError(context, "Configuration Error", Text("Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.", style: theme.alertStyle), 
                         okText: "Exit Breez", okFunc: () => exit(0), disableBack: true );        
     });
   }
