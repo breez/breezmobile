@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:breez/routes/user/ctp_join_session_handler.dart';
@@ -94,6 +96,7 @@ class HomeState extends State<Home> {
     super.initState();
     registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
+    listenBackupConflicts();
     _hiddenRountes.add("/get_refund");
     widget.accountBloc.refundableDepositsStream.listen((addresses){
       setState(() {
@@ -106,7 +109,7 @@ class HomeState extends State<Home> {
     });
   }
 
-  registerNotificationHandlers(){
+  registerNotificationHandlers(){    
     new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
     new CTPJoinSessionHandler(widget.ctpBloc, this.context, 
       (session) {
@@ -120,6 +123,17 @@ class HomeState extends State<Home> {
         promptError(context, "Connect to Pay", Text(e.toString(), style: theme.alertStyle));
       }
     );
+  }
+
+  void listenBackupConflicts(){
+    widget.backupBloc.backupConflictStream.listen((_) async {
+      Navigator.popUntil(context, (route) {
+          return route.settings.name == "/home" || route.settings.name == "/";
+        }
+      );
+      await promptError(context, "Backup Conflict", Text("Breez has detected that your node is running somehwere else, we must exit", style: theme.alertStyle), 
+                        okText: "Exit Breez", okFunc: () => exit(0), disableBack: true );        
+    });
   }
 
   List<DrawerItemConfig> filterItems(List<DrawerItemConfig> items){
