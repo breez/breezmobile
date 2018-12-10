@@ -58,7 +58,7 @@ class BackupBloc {
     
     SharedPreferences.getInstance()     
       .then((sp){
-        _sharedPrefrences = sp
+        _sharedPrefrences = sp;
         _initializePersistentData();
         _listenBackupPaths();
         _listenBackupNowRequests();
@@ -112,7 +112,8 @@ class BackupBloc {
         
         _service.getBackupChangesStream(_currentNodeId, _backupBreezID)
           .listen((backupID){
-            if (backupID != _currentNodeId) {
+            print("Got backup change");
+            if (backupID != _backupBreezID) {
               _onConflictDetected();
             }
 
