@@ -37,6 +37,8 @@ class BackupBloc {
   final _restoreFinishedController = new StreamController<bool>.broadcast();
   Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
 
+  bool _needBackupAfterRestart = false;
+
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";
   static const String AVAILABLE_PATHS_PREFERENCE_KEY = "backup_available_paths";
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
@@ -44,7 +46,7 @@ class BackupBloc {
   BackupBloc(this._accountStream) {
     ServiceInjector injector = new ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
-    _service = BackupService();
+    _service = BackupService();    
 
     var sharedPrefrences = SharedPreferences.getInstance();
 
@@ -53,14 +55,20 @@ class BackupBloc {
     _listenRestoreRequests(breezLib);
 
     _accountStream.listen((acc) {
+      var existingID = _currentNodeId;
       _currentNodeId = acc.id;
+      if (existingID == null && acc.id != null) {
+        //TODO need to backup now.        
+      }      
     });
 
     sharedPrefrences.then((preferences){
 
       //paths persistency
       List<String> paths = preferences.getStringList(AVAILABLE_PATHS_PREFERENCE_KEY);
-      _availableBackupPathsController.add(paths);
+      if (paths != null && paths.length > 0) {
+        _needBackupAfterRestart = true;
+      }      
       _availableBackupPathsController.stream.listen((backupPaths){
         preferences.setStringList(AVAILABLE_PATHS_PREFERENCE_KEY, backupPaths);
       });
@@ -109,34 +117,34 @@ class BackupBloc {
 
   void _listenRestoreRequests(BreezBridge breezLib) {    
     _restoreRequestController.stream.listen((nodeId) {
-      Future maybeSignOut = Future.value(null);    
       if (nodeId == null || nodeId.isEmpty) {
-        maybeSignOut = _service.signOut();
+        _service.signOut()
+          .then((_){
+            return _service.getAvailableBackups();
+          })
+          .then((backups){
+             _multipleRestoreController.add(new Map<String, String>.from(backups));
+          })
+          .catchError((error) {
+             _restoreFinishedController.addError(error);
+          });
+          return;
       }
-      maybeSignOut.then((_){
-        return _service.restore(nodeId: nodeId).then((restoreResult) {
-          if (restoreResult is List<dynamic>) {
-            // We got a list of local files to restore from
-            // So let's kick-off lighntinglib
-            breezLib.bootstrap().then((done){
-              getApplicationDocumentsDirectory().then((appDir) {
-                breezLib.copyBreezConfig(appDir.path).then((done) {
-                  breezLib.bootstrapFiles(appDir.path, new List<String>.from(restoreResult)).then((done) {
+
+       _service.restore(nodeId: nodeId).then((restoreResult) {
+         return breezLib.bootstrap().then((done){
+              return getApplicationDocumentsDirectory().then((appDir) {
+                return breezLib.copyBreezConfig(appDir.path).then((done) {
+                  return breezLib.bootstrapFiles(appDir.path, new List<String>.from(restoreResult)).then((done) {
                     _restoreFinishedController.add(true);
                   });
                 });
               });
             });
-          }
-          else {
-            // We need to pick from different node IDs
-            _multipleRestoreController.add(new Map<String, String>.from(restoreResult));
-          }
+       })
+       .catchError((error) {
+         _restoreFinishedController.addError(error);
         });
-      })
-      .catchError((error) {
-        _restoreFinishedController.addError(error);
-      });
     });
   }
 
