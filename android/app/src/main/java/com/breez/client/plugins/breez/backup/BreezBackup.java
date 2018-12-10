@@ -42,7 +42,11 @@ import static android.app.Activity.RESULT_OK;
 public class BreezBackup implements MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
     public static final String BREEZ_BACKUP_CHANNEL_NAME = "com.breez.client/backup";
     public static final String SIGN_IN_FAILED_CODE = "SIGN_IN_FAILED";
+    public static final String BACKUP_CONFLICT_ERROR_CODE = "BACKUP_CONFLICT_ERROR";
     public static final String BREEZ_BACKUP_CHANGES_STREAM_NAME = "com.breez.client/breez_backup_changes_stream";
+
+    private static final CustomPropertyKey BREEZ_ID_CUSTOM_PROPERTY = new CustomPropertyKey("backupBeezID", CustomPropertyKey.PRIVATE);
+    private static final CustomPropertyKey FOLDER_ID_CUSTOM_PROPERTY = new CustomPropertyKey("backupFolderID", CustomPropertyKey.PRIVATE);
 
     private static final String TAG = "BreezBackup";
     private final Activity m_activity;
@@ -115,14 +119,16 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
             if (call.method.equals("backup")) {
                 List<String> paths = call.argument("paths");
                 String nodeId = call.argument("nodeId").toString();
-                backup(paths, nodeId, result);
+                String breezBackupID = call.argument("breezBackupID").toString();
+                backup(paths, breezBackupID, nodeId, result);
             }
             if (call.method.equals("getAvailableBackups")) {
                 listAvailableBackups(result);
             }
             if (call.method.equals("restore")) {
                 String nodeId = call.argument("nodeId").toString();
-                restore(nodeId, result);
+                String breezBackupID = call.argument("breezBackupID").toString();
+                restore(breezBackupID, nodeId, result);
             }
             return null;
         }).execute();
@@ -136,25 +142,54 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
         }
     }
 
-    private void backup(List<String> paths, String nodeId, MethodChannel.Result result) {
+    private void backup(List<String> paths, String breezBackupID, String nodeId, MethodChannel.Result result) {
         try {
             DriveFolder nodeIDFolder = getOrCreateNodeIdFolder(nodeId);
+            ensureBackupIDMatch(nodeIDFolder, breezBackupID);
             uploadBackupFiles(paths, nodeIDFolder);
             result.success(true);
-        } catch (Exception e) {
+        }
+        catch (BackupConflictException e) {
+            Log.e(TAG, e.getMessage(), e);
+            result.error(BACKUP_CONFLICT_ERROR_CODE, e.getMessage(), e.toString());
+        }
+        catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             result.error("Failed to backup", e.getMessage(), e.toString());
         }
     }
 
-    private void restore(String nodeId, MethodChannel.Result result) {
+    private void restore(String breezBackupID, String nodeId, MethodChannel.Result result) {
         try {
-            DriveFolder appFolder = Tasks.await(m_driveResourceClient.getAppFolder());
-            DriveFolder nodeIDfolder = Tasks.await(new GoogleDriveTasks(m_driveResourceClient).getFolderByTitle(appFolder, nodeId));
-            result.success(downloadBackupFiles(nodeIDfolder));
-        } catch (Exception e) {
+            DriveFolder nodeIDFolder = getOrCreateNodeIdFolder(nodeId);
+            markBackupID(nodeIDFolder, breezBackupID);
+            result.success(downloadBackupFiles(nodeIDFolder));
+        }
+        catch (BackupConflictException e) {
+            Log.e(TAG, e.getMessage(), e);
+            result.error(BACKUP_CONFLICT_ERROR_CODE, e.getMessage(), e.toString());
+        }
+        catch (Exception e) {
             result.error("Failed to restore", e.getMessage(), e.toString());
         }
+    }
+
+    private void ensureBackupIDMatch(DriveFolder nodeIDFolder, String breezBackupID) throws Exception{
+        Metadata meta = Tasks.await(m_driveResourceClient.getMetadata(nodeIDFolder));
+        String existingBreezBackupID = meta.getCustomProperties().get(BREEZ_ID_CUSTOM_PROPERTY);
+        if (!breezBackupID.equals(existingBreezBackupID)) {
+            throw new BackupConflictException();
+        }
+    }
+
+    private void markBackupID(DriveFolder nodeIDFolder, String breezBackupID) throws Exception {
+        Tasks.await(
+                m_driveResourceClient.updateMetadata(
+                    nodeIDFolder,
+                    new MetadataChangeSet.Builder()
+                            .setCustomProperty(BREEZ_ID_CUSTOM_PROPERTY, breezBackupID)
+                            .build())
+        );
     }
 
     private DriveFolder getOrCreateNodeIdFolder(String nodeId) throws ExecutionException, InterruptedException {
@@ -210,8 +245,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
             }
         }
         MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                .setCustomProperty(
-                        new CustomPropertyKey("backupFolderID", CustomPropertyKey.PRIVATE), uuid.toString())
+                .setCustomProperty(FOLDER_ID_CUSTOM_PROPERTY, uuid.toString())
                 .build();
         Tasks.await(m_driveResourceClient.updateMetadata(nodeIdFolder, changeSet));
     }
@@ -222,7 +256,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
     private List<String> downloadBackupFiles(DriveFolder nodeIdFolder) throws Exception {
         GoogleDriveTasks tasksExecutor = new GoogleDriveTasks(m_driveResourceClient);
         Metadata nodeIDFolder = Tasks.await(m_driveResourceClient.getMetadata(nodeIdFolder));
-        String backupFolderID = nodeIDFolder.getCustomProperties().get(new CustomPropertyKey("backupFolderID", CustomPropertyKey.PRIVATE));
+        String backupFolderID = nodeIDFolder.getCustomProperties().get(FOLDER_ID_CUSTOM_PROPERTY);
         DriveFolder backupFolder = Tasks.await(tasksExecutor.getFolderByTitle(nodeIdFolder, backupFolderID));
         MetadataBuffer queryBuffer = Tasks.await(m_driveResourceClient.queryChildren(backupFolder, new Query.Builder().build()));
         List<Task<String>> downloadedFiles = new ArrayList<Task<String>>();
@@ -252,7 +286,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
     public void onListen(Object args, final EventChannel.EventSink events){
         Log.i(TAG, "BreezBackup:onListen: args = " + args.toString());
         Map<String, String> streamArguments = (Map<String, String>)args;
-        m_eventsListener = new BackupChangesListener(events, streamArguments.get("nodeID"), streamArguments.get("deviceID"));
+        m_eventsListener = new BackupChangesListener(events, streamArguments.get("nodeID"));
         registerChangesListener(m_driveResourceClient);
     }
 
@@ -284,8 +318,8 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
                                     }
 
                                     Metadata meta = metadataTask.getResult();
-                                    String currentDeviceID = meta.getCustomProperties().get(new CustomPropertyKey("deviceID", CustomPropertyKey.PRIVATE));
-                                    Log.i(TAG, "registerChangesListener: current deviceID = " + currentDeviceID + " my deviceID = " + m_eventsListener.m_deviceID);
+                                    String currentDeviceID = meta.getCustomProperties().get(BREEZ_ID_CUSTOM_PROPERTY);
+                                    Log.i(TAG, "registerChangesListener: current deviceID = " + currentDeviceID);
                                     m_eventsListener.m_listener.success(currentDeviceID);
                                 });
                     }
@@ -319,13 +353,11 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
     private static class BackupChangesListener {
         public final EventChannel.EventSink m_listener;
         public final String m_nodeID;
-        public final String m_deviceID;
 
-        public BackupChangesListener(EventChannel.EventSink listener, String nodeID, String deviceID) {
-            Log.i(TAG, "BackupChangesListener creates: nodeID = " + nodeID + " deviceID " + deviceID);
+        public BackupChangesListener(EventChannel.EventSink listener, String nodeID) {
+            Log.i(TAG, "BackupChangesListener creates: nodeID = " + nodeID);
             m_listener = listener;
             m_nodeID = nodeID;
-            m_deviceID = deviceID;
         }
     }
 }
