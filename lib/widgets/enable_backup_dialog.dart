@@ -37,6 +37,9 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
           content: StreamBuilder<BackupSettings>(
               stream: widget.backupBloc.backupSettingsStream,
               builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Container();
+                }
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
