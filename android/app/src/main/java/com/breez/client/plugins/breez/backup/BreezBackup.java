@@ -72,31 +72,46 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
         }
 
         Boolean silent = call.argument("silent");
-        m_authenticator.ensureSignedIn(silent != null && silent.booleanValue()).addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
-            @Override
-            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                if (!task.isSuccessful()) {
-                    Log.e(TAG, "ensureSignedIn failed", task.getException());
-                    result.error(SIGN_IN_FAILED_CODE, task.getException().getMessage(), task.getException().toString());
-                    return;
-                }
-                GoogleSignInAccount loggedInAccount = task.getResult();
-                if (m_driveResourceClient == null) {
-                    Drive.getDriveClient(m_activity, loggedInAccount).requestSync().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> syncTask) {
-                            m_driveResourceClient = Drive.getDriveResourceClient(m_activity, loggedInAccount);
-                            if (m_driveResourceClient != null) {
-                                registerChangesListener(m_driveResourceClient);
-                            }
-                            handleMethodCall(call, result);
-                        }
-                    });
-                    return;
-                }
+        new BackupTask(t -> {
+            try
+            {
+                initDriveResourceClient(silent != null && silent.booleanValue());
                 handleMethodCall(call, result);
             }
-        });
+            catch(ExecutionException e) {
+                Log.e(TAG, "sign in failed " + e.getMessage(), e);
+                if (e.getCause() instanceof SignInFailedException) {
+                    result.error(SIGN_IN_FAILED_CODE, e.getMessage(), e.toString());
+                } else {
+                    result.error("Unhandled Error", e.getMessage(), e.toString());
+                }
+            }
+            catch(Exception e) {
+                Log.e(TAG, "Unhandled Error " + e.getMessage(), e);
+                result.error("Unhandled Error", e.getMessage(), e.toString());
+            }
+            return null;
+        }).execute();
+    }
+
+    private synchronized DriveResourceClient initDriveResourceClient(boolean silent) throws Exception{
+        if (m_driveResourceClient == null) {
+            GoogleSignInAccount loggedInAccount = Tasks.await(m_authenticator.ensureSignedIn(silent));
+            DriveClient driveClient =  Drive.getDriveClient(m_activity, loggedInAccount);
+            Tasks.await(driveClient.requestSync());
+            m_driveResourceClient = Drive.getDriveResourceClient(m_activity, loggedInAccount);
+            if (m_eventsListener != null) {
+                registerChangesListener(m_driveResourceClient);
+            }
+        }
+        return m_driveResourceClient;
+    }
+
+    private synchronized void destroyDriveResourceClient(){
+        if (m_driveResourceClient != null) {
+            clearChangesListener(m_driveResourceClient);
+            m_driveResourceClient = null;
+        }
     }
 
     private void signOut(MethodChannel.Result result){
@@ -104,8 +119,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    clearChangesListener(m_driveResourceClient);
-                    m_driveResourceClient = null;
+                    destroyDriveResourceClient();
                     result.success(true);
                 } else {
                     result.error("signOut failed", task.getException().getMessage(), null);
@@ -115,23 +129,20 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
     }
 
     private void handleMethodCall(MethodCall call, MethodChannel.Result result) {
-        new BackupTask(t -> {
-            if (call.method.equals("backup")) {
-                List<String> paths = call.argument("paths");
-                String nodeId = call.argument("nodeId").toString();
-                String breezBackupID = call.argument("breezBackupID").toString();
-                backup(paths, breezBackupID, nodeId, result);
-            }
-            if (call.method.equals("getAvailableBackups")) {
-                listAvailableBackups(result);
-            }
-            if (call.method.equals("restore")) {
-                String nodeId = call.argument("nodeId").toString();
-                String breezBackupID = call.argument("breezBackupID").toString();
-                restore(breezBackupID, nodeId, result);
-            }
-            return null;
-        }).execute();
+        if (call.method.equals("backup")) {
+            List<String> paths = call.argument("paths");
+            String nodeId = call.argument("nodeId").toString();
+            String breezBackupID = call.argument("breezBackupID").toString();
+            backup(paths, breezBackupID, nodeId, result);
+        }
+        if (call.method.equals("getAvailableBackups")) {
+            listAvailableBackups(result);
+        }
+        if (call.method.equals("restore")) {
+            String nodeId = call.argument("nodeId").toString();
+            String breezBackupID = call.argument("breezBackupID").toString();
+            restore(breezBackupID, nodeId, result);
+        }
     }
 
     private void listAvailableBackups(MethodChannel.Result result){
@@ -146,7 +157,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
         try {
             DriveFolder nodeIDFolder = getOrCreateNodeIdFolder(nodeId);
             ensureBackupIDMatch(nodeIDFolder, breezBackupID);
-            uploadBackupFiles(paths, nodeIDFolder);
+            uploadBackupFiles(paths, breezBackupID, nodeIDFolder);
             result.success(true);
         }
         catch (BackupConflictException e) {
@@ -177,7 +188,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
     private void ensureBackupIDMatch(DriveFolder nodeIDFolder, String breezBackupID) throws Exception{
         Metadata meta = Tasks.await(m_driveResourceClient.getMetadata(nodeIDFolder));
         String existingBreezBackupID = meta.getCustomProperties().get(BREEZ_ID_CUSTOM_PROPERTY);
-        if (!breezBackupID.equals(existingBreezBackupID)) {
+        if (existingBreezBackupID != null && !breezBackupID.equals(existingBreezBackupID)) {
             throw new BackupConflictException();
         }
     }
@@ -220,7 +231,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
 
     /**upload backup files**/
 
-    private void uploadBackupFiles(List<String> paths, DriveFolder nodeIdFolder) throws Exception {
+    private void uploadBackupFiles(List<String> paths, String breezBackupID, DriveFolder nodeIdFolder) throws Exception {
         Log.i(TAG, "updateBackupFiles in nodeID = " + nodeIdFolder.toString());
         GoogleDriveTasks tasksExecutor = new GoogleDriveTasks(m_driveResourceClient);
         UUID uuid = UUID.randomUUID();
@@ -244,8 +255,10 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
                 throw new Exception("Could not upload all backup files");
             }
         }
+
         MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
                 .setCustomProperty(FOLDER_ID_CUSTOM_PROPERTY, uuid.toString())
+                .setCustomProperty(BREEZ_ID_CUSTOM_PROPERTY, breezBackupID)
                 .build();
         Tasks.await(m_driveResourceClient.updateMetadata(nodeIdFolder, changeSet));
     }
@@ -283,11 +296,22 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
     }
 
     @Override
-    public void onListen(Object args, final EventChannel.EventSink events){
+    public synchronized void onListen(Object args, final EventChannel.EventSink events){
         Log.i(TAG, "BreezBackup:onListen: args = " + args.toString());
         Map<String, String> streamArguments = (Map<String, String>)args;
         m_eventsListener = new BackupChangesListener(events, streamArguments.get("nodeID"));
-        registerChangesListener(m_driveResourceClient);
+        if (m_driveResourceClient != null) {
+            registerChangesListener(m_driveResourceClient);
+            return;
+        }
+        new BackupTask(t -> {
+            try {
+                initDriveResourceClient(true);
+            } catch (Exception e) {
+                Log.e(TAG, "onListen error " + e.getMessage(), e);
+            }
+            return null;
+        }).execute();
     }
 
     @Override
@@ -296,14 +320,19 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
     }
 
     private void registerChangesListener(final DriveResourceClient resourceClient){
-        if (resourceClient == null || m_eventsListener == null) {
-            return;
-        }
+        Log.i(TAG, "registerChangesListener started");
         new BackupTask(t -> {
             try {
                 GoogleDriveTasks tasks = new GoogleDriveTasks(resourceClient);
                 DriveFolder appFolder = Tasks.await(resourceClient.getAppFolder());
                 DriveFolder nodeFolder = Tasks.await(tasks.getFolderByTitle(appFolder, m_eventsListener.m_nodeID));
+                Metadata currentMeta =  Tasks.await(resourceClient.getMetadata(nodeFolder));
+                String currentBackupID = currentMeta.getCustomProperties().get(BREEZ_ID_CUSTOM_PROPERTY);
+                Log.i(TAG, "registerChangesListener currentBackupID = " + currentBackupID);
+                if (currentBackupID != null) {
+                    m_eventsListener.m_listener.success(currentBackupID);
+                }
+
                 Task<ListenerToken> changesListenerTask = resourceClient.addChangeListener(nodeFolder, changeEvent -> {
                     if (changeEvent.hasMetadataChanged() ||changeEvent.hasBeenDeleted()) {
                         Log.i(TAG, "registerChangesListener: got metadata changes");
@@ -318,13 +347,20 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
                                     }
 
                                     Metadata meta = metadataTask.getResult();
-                                    String currentDeviceID = meta.getCustomProperties().get(BREEZ_ID_CUSTOM_PROPERTY);
-                                    Log.i(TAG, "registerChangesListener: current deviceID = " + currentDeviceID);
-                                    m_eventsListener.m_listener.success(currentDeviceID);
+                                    String backupID = meta.getCustomProperties().get(BREEZ_ID_CUSTOM_PROPERTY);
+                                    Log.i(TAG, "registerChangesListener: current deviceID = " + backupID);
+                                    if (backupID != null) {
+                                        m_eventsListener.m_listener.success(backupID);
+                                    }
                                 });
                     }
                 });
-                m_changesToken = Tasks.await(changesListenerTask);
+                ListenerToken token = Tasks.await(changesListenerTask);
+                if (resourceClient == m_driveResourceClient) {
+                    m_changesToken = token;
+                } else {
+                    resourceClient.removeChangeListener(token);
+                }
             } catch (Exception e) {
                 Log.e(TAG, "Failed to register for changes", e);
             }
@@ -334,7 +370,10 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
 
     private void clearChangesListener(final DriveResourceClient resourceClient){
         if (resourceClient != null) {
-            resourceClient.removeChangeListener(m_changesToken);
+            ListenerToken token = m_changesToken;
+            if (token != null) {
+                resourceClient.removeChangeListener(token);
+            }
         }
     }
 
