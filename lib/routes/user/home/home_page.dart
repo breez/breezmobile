@@ -126,7 +126,7 @@ class HomeState extends State<Home> {
   }
 
   void listenBackupConflicts(){
-    widget.backupBloc.backupConflictStream.listen((_) async {
+    widget.accountBloc.nodeConflictStream.listen((_) async {
       Navigator.popUntil(context, (route) {
           return route.settings.name == "/home" || route.settings.name == "/";
         }
