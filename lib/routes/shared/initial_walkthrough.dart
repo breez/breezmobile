@@ -43,7 +43,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         }
 
         if (options.length == 1) {
-          widget._backupBloc.restoreRequestSink.add(options[options.keys.elementAt(0)]);
+          widget._backupBloc.restoreRequestSink.add(options.keys.elementAt(0));
           return;
         }
 
