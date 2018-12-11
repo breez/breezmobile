@@ -41,11 +41,10 @@ import io.flutter.plugin.common.PluginRegistry;
 
 import static android.app.Activity.RESULT_OK;
 
-public class BreezBackup implements MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
+public class BreezBackup implements MethodChannel.MethodCallHandler {
     public static final String BREEZ_BACKUP_CHANNEL_NAME = "com.breez.client/backup";
     public static final String SIGN_IN_FAILED_CODE = "SIGN_IN_FAILED";
     public static final String BACKUP_CONFLICT_ERROR_CODE = "BACKUP_CONFLICT_ERROR";
-    public static final String BREEZ_BACKUP_CHANGES_STREAM_NAME = "com.breez.client/breez_backup_changes_stream";
 
     private static final CustomPropertyKey BREEZ_ID_CUSTOM_PROPERTY = new CustomPropertyKey("backupBeezID", CustomPropertyKey.PUBLIC);
     private static final CustomPropertyKey FOLDER_ID_CUSTOM_PROPERTY = new CustomPropertyKey("backupFolderID", CustomPropertyKey.PUBLIC);
@@ -59,7 +58,6 @@ public class BreezBackup implements MethodChannel.MethodCallHandler, EventChanne
     public BreezBackup(PluginRegistry.Registrar registrar, Activity activity) {
         this.m_activity = activity;
         new MethodChannel(registrar.messenger(), BREEZ_BACKUP_CHANNEL_NAME).setMethodCallHandler(this);
-        new EventChannel(registrar.messenger(), BREEZ_BACKUP_CHANGES_STREAM_NAME).setStreamHandler(this);
         m_authenticator = new GoogleAuthenticator(registrar);
     }
 

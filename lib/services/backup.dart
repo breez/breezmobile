@@ -6,8 +6,7 @@ import 'dart:async';
 class BackupService {
   static const _methodChannel = const MethodChannel("com.breez.client/backup");
   static const String _signInFaileCode = "SIGN_IN_FAILED";
-  static const String _backupConflictCode = "BACKUP_CONFLICT_ERROR";
-  static const _backupChangesChannel = const EventChannel('com.breez.client/breez_backup_changes_stream');
+  static const String _backupConflictCode = "BACKUP_CONFLICT_ERROR";  
 
   Future<dynamic> backup(List<String> paths, String nodeId, String breezBackupID, {bool silent = false}) {
     return _invokeMethod("backup", {"paths": paths, "nodeId": nodeId, "breezBackupID": breezBackupID, "silent": silent});
