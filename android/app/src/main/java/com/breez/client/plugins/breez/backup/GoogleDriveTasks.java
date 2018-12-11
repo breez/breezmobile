@@ -5,16 +5,19 @@ import android.util.Log;
 import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveResource;
 import com.google.android.gms.drive.DriveResourceClient;
 import com.google.android.gms.drive.Metadata;
 import com.google.android.gms.drive.MetadataBuffer;
 import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.drive.metadata.CustomPropertyKey;
 import com.google.android.gms.drive.query.Filters;
 import com.google.android.gms.drive.query.Query;
 import com.google.android.gms.drive.query.SearchableField;
 import com.google.android.gms.drive.query.SortOrder;
 import com.google.android.gms.drive.query.SortableField;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -110,7 +113,7 @@ public class GoogleDriveTasks {
 
         return  queryTask.continueWith(metadataBufferTask -> {
             HashMap<String, String> foldersMap = new HashMap<>();
-
+Log.i("BreezBackup", "Appfolders count = " + queryTask.getResult().getCount());
             for (Metadata m : queryTask.getResult()) {
                 foldersMap.put(m.getTitle(), m.getModifiedDate().toString());
             }
@@ -119,9 +122,11 @@ public class GoogleDriveTasks {
     }
 
     public Task<DriveFolder> getFolderByTitle(DriveFolder parent, String title) {
+        SortOrder descendingDateOrder = new SortOrder.Builder().addSortDescending(SortableField.MODIFIED_DATE).build();
         Query query = new Query.Builder()
                 .addFilter(Filters.eq(SearchableField.MIME_TYPE, DriveFolder.MIME_TYPE))
                 .addFilter(Filters.eq(SearchableField.TITLE, title))
+                .setSortOrder(descendingDateOrder)
                 .build();
 
         Task<MetadataBuffer> queryTask = m_driveResourceClient.queryChildren(parent, query);
