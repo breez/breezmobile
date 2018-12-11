@@ -25,8 +25,8 @@ class BackupService {
      return _invokeMethod("signOut");
   }
 
-  Stream<dynamic> getBackupChangesStream(String nodeID, String breezBackupID){    
-    return _backupChangesChannel.receiveBroadcastStream(HashMap.from({"nodeID": nodeID, "breezBackupID": breezBackupID}));
+  Future<bool> isSafeForBreezBackupID(String nodeId, String breezBackupID){
+    return _invokeMethod("isSafeForBreezBackupID", {"breezBackupID": breezBackupID, "nodeId": nodeId}).then((res) => res as bool);
   }
 
   Future<dynamic> _invokeMethod(String method, [dynamic arguments]) {
