@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/services/backup.dart';
 import 'package:breez/services/breez_server/generated/breez.pbenum.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -10,6 +11,8 @@ import 'package:breez/services/device.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 import 'account_model.dart';
 import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
@@ -22,8 +25,10 @@ import 'package:connectivity/connectivity.dart';
 class AccountBloc {  
 
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
+  static const String BACKUP_BREEZ_ID_PREFERENCE_KEY = "BACKUP_BREEZ_ID";
+  static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
       
-  final _reconnectStreamController = new StreamController<void>();
+  final _reconnectStreamController = new StreamController<void>.broadcast();
   Sink<void> get _reconnectSink => _reconnectStreamController.sink;
 
   final _requestAddressController = new StreamController<void>();
@@ -79,10 +84,19 @@ class AccountBloc {
   final _lightningDownController = new StreamController<bool>.broadcast();
   Stream<bool> get lightningDownStream => _lightningDownController.stream;
 
+  final BehaviorSubject<void> _nodeConflictController = new BehaviorSubject<void>();
+  Stream<void> get nodeConflictStream => _nodeConflictController.stream;
+
+  final BehaviorSubject<String> _backupBreezIDController = new BehaviorSubject<String>();
+  Stream<void> get backupBreezIDStream => _backupBreezIDController.stream;
+
   Stream<Map<String, DownloadFileInfo>>  chainBootstrapProgress;
+
+  BackupService _backupService;
   BreezUserModel _currentUser;
   bool _allowReconnect = true;
   bool _startedLightning = false;
+  String _backupBreezID;  
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
       ServiceInjector injector = new ServiceInjector();    
@@ -90,26 +104,28 @@ class AccountBloc {
       BreezServer server = injector.breezServer;
       Notifications notificationsService = injector.notifications;
       Device device = injector.device;
+      _backupService = injector.backupService;
 
       _accountController.add(AccountModel.initial());
       _paymentFilterController.add(PaymentFilterModel.initial());
       _accountSettingsController.add(AccountSettings.start());
       
       //listen streams      
-      _hanleAccountSettings();
-      _listenUserChanges(userProfileStream, breezLib, device);
-      _listenNewAddressRequests(breezLib);
-      _listenWithdrawalRequests(breezLib);
-      _listenSentPayments(breezLib);
-      _listenFilterChanges(breezLib);
-      _listenAccountChanges(breezLib);
-      _listenPOSFundingRequests(server, breezLib);
-      _listenMempoolTransactions(device, notificationsService, breezLib);
-      _listenRoutingNodeConnectionChanges(breezLib);
+      _hanleAccountSettings().then((_){
+        _listenUserChanges(userProfileStream, breezLib, device);
+        _listenNewAddressRequests(breezLib);
+        _listenWithdrawalRequests(breezLib);
+        _listenSentPayments(breezLib);
+        _listenFilterChanges(breezLib);
+        _listenAccountChanges(breezLib);
+        _listenPOSFundingRequests(server, breezLib);
+        _listenMempoolTransactions(device, notificationsService, breezLib);
+        _listenRoutingNodeConnectionChanges(breezLib);
+      });      
     }
 
     //settings persistency
-    void _hanleAccountSettings() async {      
+    Future _hanleAccountSettings() async {      
       var preferences = await ServiceInjector().sharedPreferences;      
       var accountSettings = preferences.getString(ACCOUNT_SETTINGS_PREFERENCES_KEY);
       if (accountSettings != null) {
@@ -119,6 +135,21 @@ class AccountBloc {
       _accountSettingsController.stream.listen((settings){
         preferences.setString(ACCOUNT_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
       });
+
+      _accountController.stream.listen((acc) async {
+        if (acc.id.isNotEmpty) {
+          await preferences.setString(PERSISTENT_NODE_ID_PREFERENCES_KEY, acc.id);          
+        }
+      });
+
+      _backupBreezID =
+        preferences.getString(BACKUP_BREEZ_ID_PREFERENCE_KEY);
+      if (_backupBreezID == null) {
+        _backupBreezID = new Uuid().v4().toString();
+        preferences.setString(
+            BACKUP_BREEZ_ID_PREFERENCE_KEY, _backupBreezID);
+      }
+      _backupBreezIDController.add(_backupBreezID);
     }
 
     void _listenRefundableDeposits(BreezBridge breezLib, Device device){
@@ -164,15 +195,14 @@ class AccountBloc {
     void _listenReconnects(BreezBridge breezLib){
       Future connectingFuture = Future.value(null);
       _reconnectStreamController.stream.transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
-      .listen((_) async {
-        print("inside reconnect");
-        log.info('_listenReconnects: got Reconnect request _alloReconnect=$_allowReconnect connected=${_accountController.value.connected}');                    
-        connectingFuture = connectingFuture.whenComplete((){
-          log.info("_listenReconnects after last reconnection future completed");
-          log.info('_listenReconnects: got Reconnect request _alloReconnect=$_allowReconnect connected=${_accountController.value.connected}');                    
+      .listen((_) async {                 
+        connectingFuture = connectingFuture.whenComplete(() async {             
+          log.info('_listenReconnects: got Reconnect request _alloReconnect=$_allowReconnect connected=${_accountController.value.connected}');  
           if (_allowReconnect == true && _accountController.value.connected == false) { 
-            log.info("_listenReconnects: reconnecting...");
-            return breezLib.connectAccount();
+            log.info("_listenReconnects: checking node conflicts before reconnecting...");
+            await _checkNodeConflict(breezLib);
+            log.info("_listenReconnects: no conflict detected, reconnecting...");
+            await breezLib.connectAccount();
           }
         });        
       });
@@ -187,19 +217,19 @@ class AccountBloc {
         });
 
         device.eventStream.where((e) => e == NotificationType.RESUME).listen((e){
-          log.info("App Resumed - flutter resume called");        
-          _reconnectSink.add(null);
-          print("after adding reconnect");
+          log.info("App Resumed - flutter resume called, adding reconnect request");        
+          _reconnectSink.add(null);          
           _fetchFundStatus(breezLib);
         });
     }
 
     _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib, Device device){      
-      userProfileStream.listen((user) {
+      userProfileStream.listen((user) async {
         _currentUser = user; 
                
         if (user.registered && !_startedLightning) {
           _startedLightning = true;          
+          await _checkNodeConflict(breezLib);          
           breezLib.bootstrap().then((done) {            
             breezLib.startLightning();            
             _refreshAccount(breezLib);            
@@ -217,7 +247,7 @@ class AccountBloc {
           _paymentsController.add(PaymentsModel(_paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList(), _paymentFilterController.value));
         }            
       });
-    }
+    }  
 
     void _fetchFundStatus(BreezBridge breezLib){
       if (_currentUser == null) {
@@ -378,14 +408,40 @@ class AccountBloc {
 
     _refreshRoutingNodeConnection(BreezBridge breezLib){      
       breezLib.isConnectedToRoutingNode()
-        .then((connected){
+        .then((connected) async {
           _accountController.add(_accountController.value.copyWith(connected: connected));  
-          if (!connected) {
-            log.info("Adding reconnect request from disconnect trigger connected = ${_accountController.value}");
+          if (!connected) {          
+            log.info("Node disconnected, adding reconnect request");
             _reconnectSink.add(null); //try to reconnect
           }                                      
         })
         .catchError(_routingNodeConnectionController.addError);
+    }
+
+    //detecte if safe to connect on drive.
+    //if not stop node
+    Future _checkNodeConflict(BreezBridge breezLib) async {
+      try {
+        String nodeID = await getPersistentNodeID();
+        if (nodeID == null) {
+          return true;
+        }
+        bool isSafe = await _backupService.isSafeForBreezBackupID(nodeID, _backupBreezID);                
+        log.info("_checkNodeConflict safe = " + isSafe.toString());
+      }
+      on BackupConflictException{
+        breezLib.stop(permanent: true);
+        _nodeConflictController.add(null); 
+        rethrow;
+      }
+      on Exception catch(e){
+        log.warning("_checkNodeConflict got exception " + e.toString());
+      }         
+    }
+
+    Future<String> getPersistentNodeID() async {      
+      var preferences = await ServiceInjector().sharedPreferences;
+      return preferences.getString(PERSISTENT_NODE_ID_PREFERENCES_KEY);
     }
 
   

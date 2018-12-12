@@ -19,6 +19,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
 
     public static final String BREEZ_CHANNEL_NAME = "com.breez.client/breez_lib";
     public static final String BREEZ_STREAM_NAME = "com.breez.client/breez_lib_notifications";
+    private static final String TAG = "BREEZUI";
 
     private EventChannel.EventSink m_eventsListener;
     private Map<String, Method> _bindingMethods = new HashMap<String, Method>();
@@ -37,6 +38,8 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         if (call.method.equals("start")) {
             start(call, result);
+        } else if (call.method.equals("stop")) {
+            stop(call, result);
         } else if (call.method.equals("log")) {
             log(call, result);
         } else {
@@ -74,6 +77,16 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
                         .build();
         WorkManager.getInstance().enqueueUniquePeriodicWork("chainSync", ExistingPeriodicWorkPolicy.REPLACE, periodic);
         return;
+    }
+
+    private void stop(MethodCall call, MethodChannel.Result result){
+        Log.i(TAG, "Stop breez was called on plugin");
+        Boolean permanent = call.argument("permanent");
+        if (permanent != null && permanent.booleanValue()) {
+            Log.i(TAG, "Stop breez was called with permanent flag, cancelling job");
+            WorkManager.getInstance().cancelUniqueWork("chainSync");
+        }
+        Bindings.stop();
     }
 
     private void log(MethodCall call, MethodChannel.Result result){
@@ -133,7 +146,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
             }
             catch (Exception e) {
                 Throwable breezError = e.getCause() != null ? e.getCause() : e;
-                Log.e("BREEZUI", breezError.getMessage(), breezError);
+                Log.e(TAG, breezError.getMessage(), breezError);
                 result.error("ResultError","Failed to invoke method " + ((MethodCall)call[0]).method, breezError.getMessage());
             }
             return null;

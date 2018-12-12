@@ -7,6 +7,9 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import com.google.android.gms.auth.api.signin.*;
 import com.google.android.gms.drive.*;
+import com.google.android.gms.drive.events.ChangeEvent;
+import com.google.android.gms.drive.events.ListenerToken;
+import com.google.android.gms.drive.events.OnChangeListener;
 import com.google.android.gms.drive.metadata.CustomPropertyKey;
 import com.google.android.gms.drive.query.*;
 import com.google.android.gms.tasks.*;
@@ -23,11 +26,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.io.File;
 import java.util.Date;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
@@ -35,18 +42,23 @@ import io.flutter.plugin.common.PluginRegistry;
 import static android.app.Activity.RESULT_OK;
 
 public class BreezBackup implements MethodChannel.MethodCallHandler {
-    private static final String TAG = "BreezBackup";
     public static final String BREEZ_BACKUP_CHANNEL_NAME = "com.breez.client/backup";
     public static final String SIGN_IN_FAILED_CODE = "SIGN_IN_FAILED";
+    public static final String BACKUP_CONFLICT_ERROR_CODE = "BACKUP_CONFLICT_ERROR";
+
+    private static final CustomPropertyKey BREEZ_ID_CUSTOM_PROPERTY = new CustomPropertyKey("backupBeezID", CustomPropertyKey.PUBLIC);
+    private static final CustomPropertyKey FOLDER_ID_CUSTOM_PROPERTY = new CustomPropertyKey("backupFolderID", CustomPropertyKey.PUBLIC);
+
+    private static final String TAG = "BreezBackup";
     private final Activity m_activity;
-    private MethodChannel m_methodChannel;
     private GoogleAuthenticator m_authenticator;
-    private DriveResourceClient m_driveResourceClient;
+    private volatile DriveResourceClient m_driveResourceClient;
+    DriveClient m_driveClient;
+    private long m_lastSyncTime = 0;
 
     public BreezBackup(PluginRegistry.Registrar registrar, Activity activity) {
         this.m_activity = activity;
-        m_methodChannel = new MethodChannel(registrar.messenger(), BREEZ_BACKUP_CHANNEL_NAME);
-        m_methodChannel.setMethodCallHandler(this);
+        new MethodChannel(registrar.messenger(), BREEZ_BACKUP_CHANNEL_NAME).setMethodCallHandler(this);
         m_authenticator = new GoogleAuthenticator(registrar);
     }
 
@@ -60,28 +72,42 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
         }
 
         Boolean silent = call.argument("silent");
-        m_authenticator.ensureSignedIn(silent != null && silent.booleanValue()).addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
-            @Override
-            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                if (!task.isSuccessful()) {
-                    Log.e(TAG, "ensureSignedIn failed", task.getException());
-                    result.error(SIGN_IN_FAILED_CODE, task.getException().getMessage(), task.getException().toString());
-                    return;
-                }
-                GoogleSignInAccount loggedInAccount = task.getResult();
-                if (m_driveResourceClient == null) {
-                    Drive.getDriveClient(m_activity, loggedInAccount).requestSync().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> syncTask) {
-                            m_driveResourceClient = Drive.getDriveResourceClient(m_activity, loggedInAccount);
-                            handleMethodCall(call, result);
-                        }
-                    });
-                    return;
-                }
+        new BackupTask(t -> {
+            try
+            {
+                initDriveResourceClient(silent != null && silent.booleanValue());
                 handleMethodCall(call, result);
             }
-        });
+            catch(ExecutionException e) {
+                Log.e(TAG, "sign in failed " + e.getMessage(), e);
+                if (e.getCause() instanceof SignInFailedException) {
+                    result.error(SIGN_IN_FAILED_CODE, e.getMessage(), e.toString());
+                } else {
+                    result.error("Unhandled Error", e.getMessage(), e.toString());
+                }
+            }
+            catch(Exception e) {
+                Log.e(TAG, "Unhandled Error " + e.getMessage(), e);
+                result.error("Unhandled Error", e.getMessage(), e.toString());
+            }
+            return null;
+        }).execute();
+    }
+
+    private synchronized DriveResourceClient initDriveResourceClient(boolean silent) throws Exception{
+        if (m_driveResourceClient == null) {
+            GoogleSignInAccount loggedInAccount = Tasks.await(m_authenticator.ensureSignedIn(silent));
+            m_driveClient =  Drive.getDriveClient(m_activity, loggedInAccount);
+            safeRequestSync();
+            m_driveResourceClient = Drive.getDriveResourceClient(m_activity, loggedInAccount);
+        }
+        return m_driveResourceClient;
+    }
+
+    private synchronized void destroyDriveResourceClient(){
+        if (m_driveResourceClient != null) {
+            m_driveResourceClient = null;
+        }
     }
 
     private void signOut(MethodChannel.Result result){
@@ -89,7 +115,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    m_driveResourceClient = null;
+                    destroyDriveResourceClient();
                     result.success(true);
                 } else {
                     result.error("signOut failed", task.getException().getMessage(), null);
@@ -99,21 +125,25 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
     }
 
     private void handleMethodCall(MethodCall call, MethodChannel.Result result) {
-        new BackupTask(t -> {
-            if (call.method.equals("backup")) {
-                List<String> paths = call.argument("paths");
-                String nodeId = call.argument("nodeId").toString();
-                backup(paths, nodeId, result);
-            }
-            if (call.method.equals("getAvailableBackups")) {
-                listAvailableBackups(result);
-            }
-            if (call.method.equals("restore")) {
-                String nodeId = call.argument("nodeId").toString();
-                restore(nodeId, result);
-            }
-            return null;
-        }).execute();
+        if (call.method.equals("backup")) {
+            List<String> paths = call.argument("paths");
+            String nodeId = call.argument("nodeId").toString();
+            String breezBackupID = call.argument("breezBackupID").toString();
+            backup(paths, breezBackupID, nodeId, result);
+        }
+        if (call.method.equals("getAvailableBackups")) {
+            listAvailableBackups(result);
+        }
+        if (call.method.equals("restore")) {
+            String nodeId = call.argument("nodeId").toString();
+            String breezBackupID = call.argument("breezBackupID").toString();
+            restore(breezBackupID, nodeId, result);
+        }
+        if (call.method.equals("isSafeForBreezBackupID")) {
+            String nodeId = call.argument("nodeId").toString();
+            String breezBackupID = call.argument("breezBackupID").toString();
+            isSafeForBreezBackupID(breezBackupID, nodeId, result);
+        }
     }
 
     private void listAvailableBackups(MethodChannel.Result result){
@@ -124,25 +154,83 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
         }
     }
 
-    private void backup(List<String> paths, String nodeId, MethodChannel.Result result) {
+    private void backup(List<String> paths, String breezBackupID, String nodeId, MethodChannel.Result result) {
         try {
             DriveFolder nodeIDFolder = getOrCreateNodeIdFolder(nodeId);
-            uploadBackupFiles(paths, nodeIDFolder);
+            uploadBackupFiles(paths, breezBackupID, nodeIDFolder);
             result.success(true);
-        } catch (Exception e) {
+        }
+        catch (BackupConflictException e) {
+            Log.e(TAG, e.getMessage(), e);
+            result.error(BACKUP_CONFLICT_ERROR_CODE, e.getMessage(), e.toString());
+        }
+        catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             result.error("Failed to backup", e.getMessage(), e.toString());
         }
     }
 
-    private void restore(String nodeId, MethodChannel.Result result) {
+    private void restore(String breezBackupID, String nodeId, MethodChannel.Result result) {
         try {
-            DriveFolder appFolder = Tasks.await(m_driveResourceClient.getAppFolder());
-            DriveFolder nodeIDfolder = Tasks.await(new GoogleDriveTasks(m_driveResourceClient).getFolderByTitle(appFolder, nodeId));
-            result.success(downloadBackupFiles(nodeIDfolder));
-        } catch (Exception e) {
+            DriveFolder nodeIDFolder = getOrCreateNodeIdFolder(nodeId);
+            markBackupID(nodeIDFolder, breezBackupID);
+            result.success(downloadBackupFiles(nodeIDFolder));
+        }
+        catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
             result.error("Failed to restore", e.getMessage(), e.toString());
         }
+    }
+
+    private void isSafeForBreezBackupID(String breezBackupID, String nodeId, MethodChannel.Result result){
+        try {
+            safeRequestSync();
+            DriveFolder nodeFolder = getOrCreateNodeIdFolder(nodeId);
+            Log.i(TAG, "isSafeForBreezBackupID nodeID = " + nodeId + " breezBackupID = " + breezBackupID);
+            ensureBackupIDMatch(nodeFolder, breezBackupID);
+            result.success(true);
+        }
+        catch (BackupConflictException e) {
+            Log.e(TAG, e.getMessage(), e);
+            result.error(BACKUP_CONFLICT_ERROR_CODE, e.getMessage(), e.toString());
+        }
+        catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            result.error("Failed to check isSafeForBreezBackupID", e.getMessage(), e.toString());
+        }
+    }
+
+    private void safeRequestSync(){
+        try {
+            long start = System.currentTimeMillis();
+            if (start - m_lastSyncTime > 60 * 1000) {
+                Tasks.await(m_driveClient.requestSync());
+                m_lastSyncTime = System.currentTimeMillis();
+                Log.i(TAG, "requestSync was called and took: " + (m_lastSyncTime - start) + " milliseconds");
+            }
+        }
+        catch(Exception e) {
+            Log.e(TAG, "safeRequestSync error: " + e.getMessage(), e);
+        }
+    }
+
+    private void ensureBackupIDMatch(DriveFolder nodeIDFolder, String breezBackupID) throws Exception{
+        Metadata meta = Tasks.await(m_driveResourceClient.getMetadata(nodeIDFolder));
+        String existingBreezBackupID = meta.getCustomProperties().get(BREEZ_ID_CUSTOM_PROPERTY);        
+        if (existingBreezBackupID != null && !breezBackupID.equals(existingBreezBackupID)) {
+            Log.i(TAG, "isSafeForBreezBackupID detected conflict. existingBreezBackupID = " + existingBreezBackupID + " breezBackupID = " + breezBackupID);
+            throw new BackupConflictException();
+        }
+    }
+
+    private void markBackupID(DriveFolder nodeIDFolder, String breezBackupID) throws Exception {
+        Tasks.await(
+                m_driveResourceClient.updateMetadata(
+                    nodeIDFolder,
+                    new MetadataChangeSet.Builder()
+                            .setCustomProperty(BREEZ_ID_CUSTOM_PROPERTY, breezBackupID)
+                            .build())
+        );
     }
 
     private DriveFolder getOrCreateNodeIdFolder(String nodeId) throws ExecutionException, InterruptedException {
@@ -171,9 +259,21 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
         return Tasks.await(new GoogleDriveTasks(m_driveResourceClient).getNestedFolders(appFolder));
     }
 
+    private void deleteStaleBackups(DriveFolder nodeFolder, String activeBackupFolderTitle) throws Exception{
+        Query query = new Query.Builder()
+                .addFilter(Filters.eq(SearchableField.MIME_TYPE, DriveFolder.MIME_TYPE))
+                .addFilter(Filters.not(Filters.eq(SearchableField.TITLE, activeBackupFolderTitle)))
+                .build();
+
+        MetadataBuffer metaBuffer = Tasks.await(m_driveResourceClient.queryChildren(nodeFolder, query));
+        for (Metadata metadata : metaBuffer) {
+            Tasks.await(m_driveResourceClient.delete(metadata.getDriveId().asDriveResource()));
+        }
+    }
+
     /**upload backup files**/
 
-    private void uploadBackupFiles(List<String> paths, DriveFolder nodeIdFolder) throws Exception {
+    private synchronized void uploadBackupFiles(List<String> paths, String breezBackupID, DriveFolder nodeIdFolder) throws Exception {
         Log.i(TAG, "updateBackupFiles in nodeID = " + nodeIdFolder.toString());
         GoogleDriveTasks tasksExecutor = new GoogleDriveTasks(m_driveResourceClient);
         UUID uuid = UUID.randomUUID();
@@ -197,11 +297,14 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
                 throw new Exception("Could not upload all backup files");
             }
         }
+
         MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                .setCustomProperty(
-                        new CustomPropertyKey("backupFolderID", CustomPropertyKey.PRIVATE), uuid.toString())
+                .setCustomProperty(FOLDER_ID_CUSTOM_PROPERTY, uuid.toString())
+                .setCustomProperty(BREEZ_ID_CUSTOM_PROPERTY, breezBackupID)
                 .build();
         Tasks.await(m_driveResourceClient.updateMetadata(nodeIdFolder, changeSet));
+        deleteStaleBackups(nodeIdFolder, uuid.toString());
+        Log.i(TAG, "uploadBackupFiles metadata upated for folder = " + nodeIdFolder.getDriveId().getResourceId());
     }
 
 
@@ -210,7 +313,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
     private List<String> downloadBackupFiles(DriveFolder nodeIdFolder) throws Exception {
         GoogleDriveTasks tasksExecutor = new GoogleDriveTasks(m_driveResourceClient);
         Metadata nodeIDFolder = Tasks.await(m_driveResourceClient.getMetadata(nodeIdFolder));
-        String backupFolderID = nodeIDFolder.getCustomProperties().get(new CustomPropertyKey("backupFolderID", CustomPropertyKey.PRIVATE));
+        String backupFolderID = nodeIDFolder.getCustomProperties().get(FOLDER_ID_CUSTOM_PROPERTY);
         DriveFolder backupFolder = Tasks.await(tasksExecutor.getFolderByTitle(nodeIdFolder, backupFolderID));
         MetadataBuffer queryBuffer = Tasks.await(m_driveResourceClient.queryChildren(backupFolder, new Query.Builder().build()));
         List<Task<String>> downloadedFiles = new ArrayList<Task<String>>();

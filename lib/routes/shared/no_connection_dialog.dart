@@ -12,9 +12,9 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
       Text(
           "You can try:\n• Turning off airplane mode\n• Turning on mobile data or Wi-Fi\n• Checking the signal in your area",
           style: theme.alertStyle),
-      "Proceed",
-      "Exit",
-      () => exit(0),
+      okText: "Proceed",
+      optionText: "Exit",
+      optionFunc: () => exit(0),      
     );
   });
 }
