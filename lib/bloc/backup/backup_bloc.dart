@@ -48,8 +48,7 @@ class BackupBloc {
   Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
 
   BreezBridge _breezLib;
-  SharedPreferences _sharedPrefrences;
-  bool _needBackupAfterRestart = false;
+  SharedPreferences _sharedPrefrences;  
   String _backupBreezID;
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";
@@ -77,7 +76,7 @@ class BackupBloc {
     List<String> paths =
         _sharedPrefrences.getStringList(AVAILABLE_PATHS_PREFERENCE_KEY);
     if (paths != null && paths.length > 0) {
-      _needBackupAfterRestart = true;
+      _breezLib.backup();
     }
     _availableBackupPathsController.stream.listen((backupPaths) {
       _sharedPrefrences.setStringList(
@@ -110,7 +109,7 @@ class BackupBloc {
 
   void _listenBackupNowRequests() {
     _backupNowController.stream.listen((data) {
-      backup(_availableBackupPathsController.value, _currentNodeId, false);
+      _breezLib.backup();      
     });
   }
 
