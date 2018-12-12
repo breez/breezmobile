@@ -25,7 +25,7 @@ class BackupService {
   }
 
   Future<bool> isSafeForBreezBackupID(String nodeId, String breezBackupID){
-    return _invokeMethod("isSafeForBreezBackupID", {"breezBackupID": breezBackupID, "nodeId": nodeId}).then((res) => res as bool);
+    return _invokeMethod("isSafeForBreezBackupID", {"silent": true, "breezBackupID": breezBackupID, "nodeId": nodeId}).then((res) => res as bool);
   }
 
   Future<dynamic> _invokeMethod(String method, [dynamic arguments]) {
