@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:breez/logger.dart';
+import 'package:ini/ini.dart';
 
 class LNDBootstrapper {
 
@@ -12,12 +13,14 @@ class LNDBootstrapper {
   Stream<DownloadFileInfo> get bootstrapProgressStreams => _bootstrapFilesProgress.stream;
 
   Future downloadBootstrapFiles(String lndDir) async {
-    String network = await _readNetwork();
+    Config config = await _readConfig();
+    String network = config.get('Application Options', 'network');
+    String bootstrapUrl = config.get('Application Options', 'bootstrap');
     String tempDirPath = lndDir + "/temp";
     Directory tempDir = Directory(tempDirPath);
     String targetDirPath = lndDir + '/data/chain/bitcoin/$network/';
     Directory targetDir = Directory(targetDirPath);
-    String urlPrefix = 'https://node01.breez.technology/$network';    
+    String urlPrefix = bootstrapUrl + '/$network';
 
     List<String> allFiles = 
     [ 
@@ -74,14 +77,8 @@ class LNDBootstrapper {
    return Observable.merge(allDownloadStreams);          
   }
 
-  Future<String> _readNetwork() async{
-    String defaultConfig = await rootBundle.loadString('conf/breez.conf');
-    var lines = defaultConfig.replaceAll("\r\n", "\n").split("\n");
-    for (var i = 0; i < lines.length; ++i) {      
-      if (lines[i].contains("network=")) {
-        return lines[i].split("=")[1];
-      }
-    }
-    return null;
+  Future<Config> _readConfig() async{
+    String lines = await rootBundle.loadString('conf/breez.conf');
+    return Config.fromString(lines);
   }
 }
