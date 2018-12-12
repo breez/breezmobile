@@ -138,8 +138,7 @@ class AccountBloc {
 
       _accountController.stream.listen((acc) async {
         if (acc.id.isNotEmpty) {
-          bool success = await preferences.setString(PERSISTENT_NODE_ID_PREFERENCES_KEY, acc.id);
-          print("succeed in setting persistent node id");
+          await preferences.setString(PERSISTENT_NODE_ID_PREFERENCES_KEY, acc.id);          
         }
       });
 
@@ -428,7 +427,7 @@ class AccountBloc {
           return true;
         }
         bool isSafe = await _backupService.isSafeForBreezBackupID(nodeID, _backupBreezID);                
-        print("isSafe = " + isSafe.toString());
+        log.info("_checkNodeConflict safe = " + isSafe.toString());
       }
       on BackupConflictException{
         breezLib.stop();
@@ -436,7 +435,7 @@ class AccountBloc {
         rethrow;
       }
       on Exception catch(e){
-        print("got exception " + e.toString());
+        log.warning("_checkNodeConflict got exception " + e.toString());
       }         
     }
 
