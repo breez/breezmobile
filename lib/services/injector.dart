@@ -21,6 +21,7 @@ class ServiceInjector {
   LightningLinksService _lightningLinksService;
   Device _device;
   BackupService _backupService;
+  Future<SharedPreferences> _sharedPreferences;
 
   factory ServiceInjector() {
     return _injector != null ? _injector : _singleton;
@@ -59,6 +60,5 @@ class ServiceInjector {
   DeepLinksService get deepLinks => _deepLinksService ??= new DeepLinksService();
   LightningLinksService get lightningLinks => _lightningLinksService ??= new LightningLinksService();
 
-  Future<SharedPreferences> get sharedPreferences =>
-      SharedPreferences.getInstance();
+  Future<SharedPreferences> get sharedPreferences => _sharedPreferences ??= SharedPreferences.getInstance();      
 }
