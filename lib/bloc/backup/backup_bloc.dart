@@ -76,8 +76,9 @@ class BackupBloc {
     List<String> paths =
         _sharedPrefrences.getStringList(AVAILABLE_PATHS_PREFERENCE_KEY);
     if (paths != null && paths.length > 0) {
-      _breezLib.backup();
-    }
+      _backupNow();
+    }    
+    
     _availableBackupPathsController.stream.listen((backupPaths) {
       _sharedPrefrences.setStringList(
           AVAILABLE_PATHS_PREFERENCE_KEY, backupPaths);
@@ -108,9 +109,13 @@ class BackupBloc {
   }
 
   void _listenBackupNowRequests() {
-    _backupNowController.stream.listen((data) {
-      _breezLib.backup();      
-    });
+    _backupNowController.stream.listen((_) => _backupNow());
+  }
+
+  bool _backupNowRequested = false;
+  _backupNow(){
+    _backupNowRequested = true;
+    _breezLib.backup();
   }
 
   _listenBackupPaths() {
@@ -124,7 +129,8 @@ class BackupBloc {
     _availableBackupPathsController.stream
         .where((paths) => paths != null)
         .listen((paths) {
-      backup(paths, _currentNodeId, true);
+      backup(paths, _currentNodeId, !_backupNowRequested);
+      _backupNowRequested = false;
     });
   }
 
