@@ -54,6 +54,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
     private GoogleAuthenticator m_authenticator;
     private volatile DriveResourceClient m_driveResourceClient;
     DriveClient m_driveClient;
+    private long m_lastSyncTime = 0;
 
     public BreezBackup(PluginRegistry.Registrar registrar, Activity activity) {
         this.m_activity = activity;
@@ -97,7 +98,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
         if (m_driveResourceClient == null) {
             GoogleSignInAccount loggedInAccount = Tasks.await(m_authenticator.ensureSignedIn(silent));
             m_driveClient =  Drive.getDriveClient(m_activity, loggedInAccount);
-            Tasks.await(m_driveClient.requestSync());
+            safeRequestSync();
             m_driveResourceClient = Drive.getDriveResourceClient(m_activity, loggedInAccount);
         }
         return m_driveResourceClient;
@@ -203,7 +204,12 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
 
     private void safeRequestSync(){
         try {
-            Tasks.await(m_driveClient.requestSync());
+            long start = System.currentTimeMillis();
+            if (start - m_lastSyncTime > 60 * 1000) {
+                Tasks.await(m_driveClient.requestSync());
+                m_lastSyncTime = System.currentTimeMillis();
+                Log.i(TAG, "requestSync was called and took: " + (m_lastSyncTime - start) + " milliseconds");
+            }
         }
         catch(Exception e) {
             Log.e(TAG, "safeRequestSync error: " + e.getMessage(), e);
@@ -255,6 +261,18 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
         return Tasks.await(new GoogleDriveTasks(m_driveResourceClient).getNestedFolders(appFolder));
     }
 
+    private void deleteStaleBackups(DriveFolder nodeFolder, String activeBackupFolderTitle) throws Exception{
+        Query query = new Query.Builder()
+                .addFilter(Filters.eq(SearchableField.MIME_TYPE, DriveFolder.MIME_TYPE))
+                .addFilter(Filters.not(Filters.eq(SearchableField.TITLE, activeBackupFolderTitle)))
+                .build();
+
+        MetadataBuffer metaBuffer = Tasks.await(m_driveResourceClient.queryChildren(nodeFolder, query));
+        for (Metadata metadata : metaBuffer) {
+            Tasks.await(m_driveResourceClient.delete(metadata.getDriveId().asDriveResource()));
+        }
+    }
+
     /**upload backup files**/
 
     private void uploadBackupFiles(List<String> paths, String breezBackupID, DriveFolder nodeIdFolder) throws Exception {
@@ -287,6 +305,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
                 .setCustomProperty(BREEZ_ID_CUSTOM_PROPERTY, breezBackupID)
                 .build();
         Tasks.await(m_driveResourceClient.updateMetadata(nodeIdFolder, changeSet));
+        deleteStaleBackups(nodeIdFolder, uuid.toString());
         Log.i(TAG, "uploadBackupFiles metadata upated for folder = " + nodeIdFolder.getDriveId().getResourceId());
     }
 
