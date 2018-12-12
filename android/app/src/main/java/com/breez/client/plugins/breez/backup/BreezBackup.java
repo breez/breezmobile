@@ -157,7 +157,6 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
     private void backup(List<String> paths, String breezBackupID, String nodeId, MethodChannel.Result result) {
         try {
             DriveFolder nodeIDFolder = getOrCreateNodeIdFolder(nodeId);
-            ensureBackupIDMatch(nodeIDFolder, breezBackupID);
             uploadBackupFiles(paths, breezBackupID, nodeIDFolder);
             result.success(true);
         }
@@ -274,7 +273,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
 
     /**upload backup files**/
 
-    private void uploadBackupFiles(List<String> paths, String breezBackupID, DriveFolder nodeIdFolder) throws Exception {
+    private synchronized void uploadBackupFiles(List<String> paths, String breezBackupID, DriveFolder nodeIdFolder) throws Exception {
         Log.i(TAG, "updateBackupFiles in nodeID = " + nodeIdFolder.toString());
         GoogleDriveTasks tasksExecutor = new GoogleDriveTasks(m_driveResourceClient);
         UUID uuid = UUID.randomUUID();
