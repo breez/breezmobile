@@ -113,7 +113,6 @@ public class GoogleDriveTasks {
 
         return  queryTask.continueWith(metadataBufferTask -> {
             HashMap<String, String> foldersMap = new HashMap<>();
-Log.i("BreezBackup", "Appfolders count = " + queryTask.getResult().getCount());
             for (Metadata m : queryTask.getResult()) {
                 foldersMap.put(m.getTitle(), m.getModifiedDate().toString());
             }
