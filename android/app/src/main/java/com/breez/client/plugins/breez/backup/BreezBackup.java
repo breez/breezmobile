@@ -156,7 +156,6 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
 
     private void backup(List<String> paths, String breezBackupID, String nodeId, MethodChannel.Result result) {
         try {
-            //deleteNodes();
             DriveFolder nodeIDFolder = getOrCreateNodeIdFolder(nodeId);
             ensureBackupIDMatch(nodeIDFolder, breezBackupID);
             uploadBackupFiles(paths, breezBackupID, nodeIDFolder);
