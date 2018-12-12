@@ -47,8 +47,8 @@ class BreezBridge {
         .then((_) => _startedCompleter.complete());
   }
 
-  Future stop(){
-    return _invokeMethodImmediate("stop");
+  Future stop({bool permanent = false}){
+    return _methodChannel.invokeMethod("stop", {"permanent": permanent});
   }
 
   void log(String msg, String level) {
