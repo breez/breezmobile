@@ -430,7 +430,7 @@ class AccountBloc {
         log.info("_checkNodeConflict safe = " + isSafe.toString());
       }
       on BackupConflictException{
-        breezLib.stop();
+        breezLib.stop(permanent: true);
         _nodeConflictController.add(null); 
         rethrow;
       }
