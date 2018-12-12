@@ -185,7 +185,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
 
     private void isSafeForBreezBackupID(String breezBackupID, String nodeId, MethodChannel.Result result){
         try {
-            Tasks.await(m_driveClient.requestSync());
+            safeRequestSync();
             DriveFolder nodeFolder = getOrCreateNodeIdFolder(nodeId);
             Log.i(TAG, "isSafeForBreezBackupID nodeID = " + nodeId + " breezBackupID = " + breezBackupID);
             ensureBackupIDMatch(nodeFolder, breezBackupID);
@@ -198,6 +198,15 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
         catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             result.error("Failed to check isSafeForBreezBackupID", e.getMessage(), e.toString());
+        }
+    }
+
+    private void safeRequestSync(){
+        try {
+            Tasks.await(m_driveClient.requestSync());
+        }
+        catch(Exception e) {
+            Log.e(TAG, "safeRequestSync error: " + e.getMessage(), e);
         }
     }
 
