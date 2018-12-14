@@ -229,7 +229,7 @@ class AccountBloc {
                
         if (user.registered && !_startedLightning) {
           _startedLightning = true;          
-          await _checkNodeConflict(breezLib);          
+          _checkNodeConflict(breezLib);          
           breezLib.bootstrap().then((done) {            
             breezLib.startLightning();            
             _refreshAccount(breezLib);            
