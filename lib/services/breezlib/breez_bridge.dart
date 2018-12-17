@@ -265,7 +265,7 @@ class BreezBridge {
               throw (err as PlatformException).details;
             }
             throw err;
-          });
+          });        
         }
     );
   }
@@ -294,9 +294,9 @@ class BreezBridge {
     );
   }
 
-  void startLightning() {
-    getApplicationDocumentsDirectory().then((appDir) {
-      start(appDir.path);
+  Future startLightning() {
+    return getApplicationDocumentsDirectory().then((appDir) {
+      return start(appDir.path);
     });
   }
 }
