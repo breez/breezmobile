@@ -25,6 +25,8 @@ class BreezBridge {
   StreamController _eventsController = new StreamController<NotificationEvent>.broadcast();
   Stream<NotificationEvent> get notificationStream => _eventsController.stream;
   bool ready = false;  
+  Future<Directory> _tempDirFuture;  
+  Future _copyConfigTasks;
 
   BreezBridge(){
     _eventChannel.receiveBroadcastStream().listen((event){
@@ -35,16 +37,31 @@ class BreezBridge {
       }
       _eventsController.add(new NotificationEvent()..mergeFromBuffer(event));
     });
+    _tempDirFuture = getTemporaryDirectory();    
+    initLightningDir();
   }
 
-  Future start(String workingDir) async{
-    await copyBreezConfig(workingDir);
-    Directory tempDir = await getTemporaryDirectory();
+  initLightningDir(){
+    print("initLightningDir started");
+    
+    _copyConfigTasks = getApplicationDocumentsDirectory()
+      .then((workingDir) {
+        return copyBreezConfig(workingDir.path)
+          .then((_) => workingDir);
+      });
+  }
+
+  Future start(String workingDir) async{   
+    print(" breez bridge - start...");
+    Directory tempDir = await _tempDirFuture;    
     return _methodChannel.invokeMethod("start", {
       "workingDir": workingDir,
       "tempDir": tempDir.path
     })
-        .then((_) => _startedCompleter.complete());
+        .then((_) { 
+          print(" breez bridge - start lightning finished");
+          _startedCompleter.complete(); 
+        });
   }
 
   Future stop({bool permanent = false}){
@@ -237,11 +254,20 @@ class BreezBridge {
   }
 
   Future copyBreezConfig(String workingDir) async{
-    String configString = await rootBundle.loadString('conf/breez.conf');
-    File file = File(workingDir + "/breez.conf");
-    file.writeAsStringSync(configString, flush: true);
-    String data = await rootBundle.loadString('conf/lnd.conf');
-    new File(workingDir + "/lnd.conf").writeAsStringSync(data, flush: true);
+    print("copyBreezConfig started");
+    File file = File(workingDir + "/breez.conf");    
+    if (!file.existsSync()) {
+      String configString = await rootBundle.loadString('conf/breez.conf');      
+      file.writeAsStringSync(configString, flush: true);      
+    }
+    
+    File lndConf = File(workingDir + "/lnd.conf");
+    if (!lndConf.existsSync()) {
+      String data = await rootBundle.loadString('conf/lnd.conf');      
+      lndConf.writeAsStringSync(data, flush: true);
+    }                
+    
+    print("copyBreezConfig finished");
   }
 
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
@@ -260,6 +286,7 @@ class BreezBridge {
   Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
     return _startedCompleter.future.then(
             (completed) {
+            print(" _invokeMethodImmediate - released completer method = " + methodName);
           return _methodChannel.invokeMethod(methodName, arguments).catchError((err){
             if (err.runtimeType == PlatformException) {
               throw (err as PlatformException).details;
@@ -294,8 +321,8 @@ class BreezBridge {
     );
   }
 
-  Future startLightning() {
-    return getApplicationDocumentsDirectory().then((appDir) {
+  Future startLightning() {    
+    return _copyConfigTasks.then((appDir) {
       return start(appDir.path);
     });
   }
