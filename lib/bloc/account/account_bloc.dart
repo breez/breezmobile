@@ -11,6 +11,7 @@ import 'package:breez/services/device.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'account_model.dart';
@@ -110,18 +111,18 @@ class AccountBloc {
       _paymentFilterController.add(PaymentFilterModel.initial());
       _accountSettingsController.add(AccountSettings.start());
       
+      print("Account bloc started");
       //listen streams      
-      _hanleAccountSettings().then((_){
-        _listenUserChanges(userProfileStream, breezLib, device);
-        _listenNewAddressRequests(breezLib);
-        _listenWithdrawalRequests(breezLib);
-        _listenSentPayments(breezLib);
-        _listenFilterChanges(breezLib);
-        _listenAccountChanges(breezLib);
-        _listenPOSFundingRequests(server, breezLib);
-        _listenMempoolTransactions(device, notificationsService, breezLib);
-        _listenRoutingNodeConnectionChanges(breezLib);
-      });      
+      _hanleAccountSettings();        
+      _listenUserChanges(userProfileStream, breezLib, device);
+      _listenNewAddressRequests(breezLib);
+      _listenWithdrawalRequests(breezLib);
+      _listenSentPayments(breezLib);
+      _listenFilterChanges(breezLib);
+      _listenAccountChanges(breezLib);
+      _listenPOSFundingRequests(server, breezLib);
+      _listenMempoolTransactions(device, notificationsService, breezLib);
+      _listenRoutingNodeConnectionChanges(breezLib);              
     }
 
     //settings persistency
@@ -142,14 +143,14 @@ class AccountBloc {
         }
       });
 
-      _backupBreezID =
+      String backupBreezID =
         preferences.getString(BACKUP_BREEZ_ID_PREFERENCE_KEY);
-      if (_backupBreezID == null) {
-        _backupBreezID = new Uuid().v4().toString();
+      if (backupBreezID == null) {
+        backupBreezID = new Uuid().v4().toString();
         preferences.setString(
-            BACKUP_BREEZ_ID_PREFERENCE_KEY, _backupBreezID);
+            BACKUP_BREEZ_ID_PREFERENCE_KEY, backupBreezID);
       }
-      _backupBreezIDController.add(_backupBreezID);
+      _backupBreezIDController.add(backupBreezID);
     }
 
     void _listenRefundableDeposits(BreezBridge breezLib, Device device){
@@ -228,15 +229,17 @@ class AccountBloc {
         _currentUser = user; 
                
         if (user.registered && !_startedLightning) {
+          print("Account bloc got registered user, starting lightning daemon...");        
           _startedLightning = true;                    
-          breezLib.bootstrap().then((done) {            
+          breezLib.bootstrap().then((done) async {    
+            print("Account bloc bootstrap has finished");        
             breezLib.startLightning();
             _checkNodeConflict(breezLib);            
             _refreshAccount(breezLib);            
             _listenConnectivityChanges(breezLib);
             _listenReconnects(breezLib);
             _listenRefundableDeposits(breezLib, device);
-            _listenRefundBroadcasts(breezLib);
+            _listenRefundBroadcasts(breezLib);            
           });
         }
 
@@ -326,11 +329,13 @@ class AccountBloc {
         return;
       }
 
+      print ("refreshing payments...");
       breezLib.getPayments().then( (payments) {
         List<PaymentInfo> _paymentsList =  payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList();
         if(_paymentsList.length > 0){
           _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.last.creationTimestamp.toInt() * 1000);
         }
+        print ("refresh payments finished");
         _paymentsController.add(PaymentsModel(_filterPayments(_paymentsList), _paymentFilterController.value, _firstDate ?? DateTime(DateTime.now().year)));
       })
           .catchError(_paymentsController.addError);
@@ -386,7 +391,8 @@ class AccountBloc {
       .listen((change) => _refreshAccount(breezLib));
     }
   
-    _refreshAccount(BreezBridge breezLib){                  
+    _refreshAccount(BreezBridge breezLib){    
+      print("Account bloc refreshing account...");                      
       breezLib.getAccount()
         .then((acc) {
           print("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());
@@ -420,13 +426,15 @@ class AccountBloc {
 
     //detecte if safe to connect on drive.
     //if not stop node
-    Future _checkNodeConflict(BreezBridge breezLib) async {
+    Future _checkNodeConflict(BreezBridge breezLib) async {      
       try {
         String nodeID = await getPersistentNodeID();
         if (nodeID == null) {
           return true;
         }
-        bool isSafe = await _backupService.isSafeForBreezBackupID(nodeID, _backupBreezID);                
+        String backupBreezID = await _backupBreezIDController.first;
+        print("_checkNodeConflict backupBreezID = " + backupBreezID);
+        bool isSafe = await _backupService.isSafeForBreezBackupID(nodeID, backupBreezID);                
         log.info("_checkNodeConflict safe = " + isSafe.toString());
       }
       on BackupConflictException{
