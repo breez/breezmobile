@@ -31,6 +31,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -55,6 +58,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
     private volatile DriveResourceClient m_driveResourceClient;
     DriveClient m_driveClient;
     private long m_lastSyncTime = 0;
+    private Executor _executor = Executors.newCachedThreadPool();
 
     public BreezBackup(PluginRegistry.Registrar registrar, Activity activity) {
         this.m_activity = activity;
@@ -72,26 +76,19 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
         }
 
         Boolean silent = call.argument("silent");
-        new BackupTask(t -> {
-            try
-            {
+        _executor.execute(() -> {
+            try {
                 initDriveResourceClient(silent != null && silent.booleanValue());
                 handleMethodCall(call, result);
             }
-            catch(ExecutionException e) {
-                Log.e(TAG, "sign in failed " + e.getMessage(), e);
-                if (e.getCause() instanceof SignInFailedException) {
-                    result.error(SIGN_IN_FAILED_CODE, e.getMessage(), e.toString());
-                } else {
-                    result.error("Unhandled Error", e.getMessage(), e.toString());
-                }
+            catch(SignInFailedException e) {
+                result.error(SIGN_IN_FAILED_CODE, e.getMessage(), e.toString());
             }
             catch(Exception e) {
                 Log.e(TAG, "Unhandled Error " + e.getMessage(), e);
                 result.error("Unhandled Error", e.getMessage(), e.toString());
             }
-            return null;
-        }).execute();
+        });
     }
 
     private synchronized DriveResourceClient initDriveResourceClient(boolean silent) throws Exception{
@@ -337,18 +334,6 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
         }
         return backupPathsList;
 
-    }
-
-    private static class BackupTask extends AsyncTask<Object, Integer, Void> {
-        Function<Void,Void> m_executor;
-
-        public BackupTask(Function<Void,Void> executor){
-            m_executor = executor;
-        }
-        @Override
-        protected Void doInBackground(Object... objects) {
-            return m_executor.apply(null);
-        }
     }
 }
 
