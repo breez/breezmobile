@@ -9,6 +9,8 @@ import com.breez.client.plugins.breez.ShareBreezLog;
 import com.breez.client.plugins.breez.BreezShare;
 import com.breez.client.plugins.breez.backup.BreezBackup;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.content.Intent;
@@ -21,6 +23,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 
 public class MainActivity extends FlutterActivity {
@@ -79,6 +83,7 @@ public class MainActivity extends FlutterActivity {
         new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
         new LightningLinks(this.registrarFor("com.breez.client.plugins.lightning_links"));
         new BreezBackup(this.registrarFor("com.breez.client.plugins.backup"), this);
+        new Permissions(this.registrarFor("com.breez.client.plugins.permissions"), this);
     }
 
     public void onPause() {
