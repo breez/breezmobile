@@ -73,7 +73,7 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
   void _onDismiss(AccountSettings settings) async {
     TextStyle textStyle = TextStyle(color: Colors.black);
     String exitSessionMessage =
-        'Are you sure you want to ignore the wallet balance?';
+        "Dismissing this dialog means you won't be able to to redeem these funds. Are you sure?";
     bool cancel = await promptAreYouSure(
         context, null, Text(exitSessionMessage, style: textStyle),
         textStyle: textStyle);
