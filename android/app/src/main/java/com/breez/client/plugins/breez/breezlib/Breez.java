@@ -23,6 +23,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
 
     private EventChannel.EventSink m_eventsListener;
     private Map<String, Method> _bindingMethods = new HashMap<String, Method>();
+    private Executor _executor = Executors.newCachedThreadPool();
 
     public Breez(PluginRegistry.Registrar registrar) {
         registrar.view().addActivityLifecycleListener(this);
@@ -43,7 +44,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
         } else if (call.method.equals("log")) {
             log(call, result);
         } else {
-            new BreezTask().execute(call, result);
+            _executor.execute(new BreezTask(call, result));
         }
     }
 
@@ -123,33 +124,37 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
         Bindings.onResume();
     }
 
-    private class BreezTask extends AsyncTask<Object, Integer, Void> {
-        private MethodChannel.Result result;
-        protected Void doInBackground(Object... call) {
+    private class BreezTask implements  Runnable {
+        private MethodChannel.Result m_result;
+        private MethodCall m_call;
+
+        public BreezTask(MethodCall call, MethodChannel.Result result) {
+            m_call = call;
+            m_result = result;
+        }
+        public void run() {
             //generic mechanism for calling
-            result = (MethodChannel.Result)call[1];
             try {
-                Method method = _bindingMethods.get(((MethodCall)call[0]).method);
+                Method method = _bindingMethods.get(m_call.method);
                 if (method == null) {
-                    result.error("ResultError","Failed to invoke method " + ((MethodCall)call[0]).method, "Method does not exist");
+                    m_result.error("ResultError","Failed to invoke method " + m_call.method, "Method does not exist");
                 }
-                Object arg = ((MethodCall)call[0]).argument("argument");
+                Object arg = m_call.argument("argument");
                 if (method.getParameterTypes().length > 1) {
-                    result.error("NotSupported", "Breez supports only methods with none or one arguments", "");
+                    m_result.error("NotSupported", "Breez supports only methods with none or one arguments", "");
                 }
                 else if (method.getParameterTypes().length == 1) {
-                    result.success(method.invoke(null, arg)); //static method with one arg
+                    m_result.success(method.invoke(null, arg)); //static method with one arg
                 }
                 else {
-                    result.success(method.invoke(null)); //static method with no args
+                    m_result.success(method.invoke(null)); //static method with no args
                 }
             }
             catch (Exception e) {
                 Throwable breezError = e.getCause() != null ? e.getCause() : e;
                 Log.e(TAG, breezError.getMessage(), breezError);
-                result.error("ResultError","Failed to invoke method " + ((MethodCall)call[0]).method, breezError.getMessage());
+                m_result.error("ResultError","Failed to invoke method " + m_call.method, breezError.getMessage());
             }
-            return null;
         }
     }
 }
