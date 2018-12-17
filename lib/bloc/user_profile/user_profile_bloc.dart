@@ -44,6 +44,7 @@ class UserProfileBloc {
   UserProfileBloc() {
     ServiceInjector injector = ServiceInjector();
     _nfc = injector.nfc;
+    print ("UserProfileBloc started");
 
     cardActivationStream = _nfc.cardActivationStream;
 
@@ -76,14 +77,14 @@ class UserProfileBloc {
     return File('$path/userid.txt');
   }
 
-  void _initializeWithSavedUser(ServiceInjector injector) {
+  void _initializeWithSavedUser(ServiceInjector injector) {    
     injector.sharedPreferences.then((preferences) async {
+      print ("UserProfileBloc got preferences");
       String jsonStr =
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
       Map profile = json.decode(jsonStr);
-      BreezUserModel user = BreezUserModel.fromJson(profile);
-
-      if (user.userID != null) {
+      BreezUserModel user = BreezUserModel.fromJson(profile);      
+      if (user.userID != null) {        
         saveUser(injector, preferences, user).then(_publishUser);
       }
 
@@ -177,6 +178,7 @@ class UserProfileBloc {
   }
 
   void _publishUser(BreezUserModel user) {
+    print ("UserProfileBloc before _publishUser");
     _userStreamController.add(user);
     _userStreamPreviewController.add(user);
   }
