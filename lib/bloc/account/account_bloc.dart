@@ -96,8 +96,7 @@ class AccountBloc {
   BackupService _backupService;
   BreezUserModel _currentUser;
   bool _allowReconnect = true;
-  bool _startedLightning = false;
-  String _backupBreezID;  
+  bool _startedLightning = false;  
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
       ServiceInjector injector = new ServiceInjector();    
@@ -330,15 +329,16 @@ class AccountBloc {
       }
 
       print ("refreshing payments...");
-      breezLib.getPayments().then( (payments) {
-        List<PaymentInfo> _paymentsList =  payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList();
-        if(_paymentsList.length > 0){
-          _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.last.creationTimestamp.toInt() * 1000);
-        }
-        print ("refresh payments finished");
-        _paymentsController.add(PaymentsModel(_filterPayments(_paymentsList), _paymentFilterController.value, _firstDate ?? DateTime(DateTime.now().year)));
-      })
-          .catchError(_paymentsController.addError);
+      breezLib.getPayments()
+        .then( (payments) {
+          List<PaymentInfo> _paymentsList =  payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList();
+          if(_paymentsList.length > 0){
+            _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.last.creationTimestamp.toInt() * 1000);
+          }
+          print ("refresh payments finished");
+          _paymentsController.add(PaymentsModel(_filterPayments(_paymentsList), _paymentFilterController.value, _firstDate ?? DateTime(DateTime.now().year)));
+        })
+        .catchError(_paymentsController.addError);
     }
   
     _filterPayments(List<PaymentInfo> paymentsList) {
@@ -392,7 +392,7 @@ class AccountBloc {
     }
   
     _refreshAccount(BreezBridge breezLib){    
-      print("Account bloc refreshing account...");                      
+      print("Account bloc refreshing account...");              
       breezLib.getAccount()
         .then((acc) {
           print("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());
