@@ -9,6 +9,7 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/notifications.dart';
+import 'package:breez/services/permissions.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
@@ -97,6 +98,7 @@ class AccountBloc {
   BreezUserModel _currentUser;
   bool _allowReconnect = true;
   bool _startedLightning = false;  
+  Permissions _permissionsService = ServiceInjector().permissions;
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
       ServiceInjector injector = new ServiceInjector();    
@@ -228,8 +230,9 @@ class AccountBloc {
         _currentUser = user; 
                
         if (user.registered && !_startedLightning) {
+          _askWhitelistOptimizations();          
           print("Account bloc got registered user, starting lightning daemon...");        
-          _startedLightning = true;                    
+          _startedLightning = true;                                        
           breezLib.bootstrap().then((done) async {    
             print("Account bloc bootstrap has finished");        
             breezLib.startLightning();
@@ -249,6 +252,13 @@ class AccountBloc {
           _paymentsController.add(PaymentsModel(_paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList(), _paymentFilterController.value));
         }            
       });
+    }
+
+    void _askWhitelistOptimizations() async{
+      String nodeID = await getPersistentNodeID();
+      if (nodeID == null) {
+        _permissionsService.requestOptimizationWhitelist();
+      }      
     }  
 
     void _fetchFundStatus(BreezBridge breezLib){
