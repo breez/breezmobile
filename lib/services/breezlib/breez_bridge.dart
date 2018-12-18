@@ -255,17 +255,14 @@ class BreezBridge {
 
   Future copyBreezConfig(String workingDir) async{
     print("copyBreezConfig started");
-    File file = File(workingDir + "/breez.conf");    
-    if (!file.existsSync()) {
-      String configString = await rootBundle.loadString('conf/breez.conf');      
-      file.writeAsStringSync(configString, flush: true);      
-    }
     
-    File lndConf = File(workingDir + "/lnd.conf");
-    if (!lndConf.existsSync()) {
-      String data = await rootBundle.loadString('conf/lnd.conf');      
-      lndConf.writeAsStringSync(data, flush: true);
-    }                
+    File file = File(workingDir + "/breez.conf");        
+    String configString = await rootBundle.loadString('conf/breez.conf');      
+    file.writeAsStringSync(configString, flush: true);          
+    
+    File lndConf = File(workingDir + "/lnd.conf");    
+    String data = await rootBundle.loadString('conf/lnd.conf');      
+    lndConf.writeAsStringSync(data, flush: true);    
     
     print("copyBreezConfig finished");
   }
