@@ -97,6 +97,7 @@ class HomeState extends State<Home> {
     registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
     listenBackupConflicts();
+    listenWhiltelistPermissionsRequest();
     _hiddenRountes.add("/get_refund");
     widget.accountBloc.refundableDepositsStream.listen((addresses){
       setState(() {
@@ -109,7 +110,7 @@ class HomeState extends State<Home> {
     });
   }
 
-  registerNotificationHandlers(){    
+  registerNotificationHandlers(){        
     new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
     new CTPJoinSessionHandler(widget.ctpBloc, this.context, 
       (session) {
@@ -133,6 +134,15 @@ class HomeState extends State<Home> {
       );
       await promptError(context, "Configuration Error", Text("Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.", style: theme.alertStyle), 
                         okText: "Exit Breez", okFunc: () => exit(0), disableBack: true );        
+    });
+  }
+
+  void listenWhiltelistPermissionsRequest(){
+    widget.accountBloc.optimizationWhitelistExplainStream.listen((_) async {
+      await promptError(context, "Background Synchronization", 
+        Text("In order to support instantaneous payments, Breez needs your permission in order to synchronize the information while the app is not active. Please approve the app in the next dialog.", 
+        style: theme.alertStyle), 
+        okFunc: () => widget.accountBloc.optimizationWhitelistRequestSink.add(null));      
     });
   }
 

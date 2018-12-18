@@ -5,6 +5,7 @@ import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/services/nfc.dart';
+import 'package:breez/services/permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:breez/services/lightning_links.dart';
 import 'package:breez/services/backup.dart';
@@ -22,6 +23,7 @@ class ServiceInjector {
   Device _device;
   BackupService _backupService;
   Future<SharedPreferences> _sharedPreferences;
+  Permissions _permissions;
 
   factory ServiceInjector() {
     return _injector != null ? _injector : _singleton;
@@ -60,5 +62,9 @@ class ServiceInjector {
   DeepLinksService get deepLinks => _deepLinksService ??= new DeepLinksService();
   LightningLinksService get lightningLinks => _lightningLinksService ??= new LightningLinksService();
 
-  Future<SharedPreferences> get sharedPreferences => _sharedPreferences ??= SharedPreferences.getInstance();      
+  Future<SharedPreferences> get sharedPreferences => _sharedPreferences ??= SharedPreferences.getInstance();     
+
+  Permissions get permissions  {
+    return _permissions ??= Permissions();
+  }
 }
