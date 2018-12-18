@@ -27,6 +27,15 @@ public class Permissions implements MethodChannel.MethodCallHandler {
         if (methodCall.method.equals("requestOptimizationWhitelist")) {
             requestOptimizationWhitelist();
         }
+        if (methodCall.method.equals("isInOptimizationWhitelist")) {
+            isInOptimizationWhitelist(result);
+        }
+    }
+
+    private void isInOptimizationWhitelist(MethodChannel.Result result) {
+        PowerManager pm = (PowerManager) m_activity.getSystemService(Context.POWER_SERVICE);
+        String packageName = m_activity.getApplicationContext().getPackageName();
+        result.success(pm.isIgnoringBatteryOptimizations(packageName));
     }
 
     private void requestOptimizationWhitelist(){
