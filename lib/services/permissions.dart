@@ -7,4 +7,8 @@ class Permissions {
   void requestOptimizationWhitelist() {    
     channel.invokeMethod('requestOptimizationWhitelist');
   }
+
+  Future<bool> isInOptimizationWhitelist(){
+    return channel.invokeMethod("isInOptimizationWhitelist").then((res) => res as bool);
+  }
 }
