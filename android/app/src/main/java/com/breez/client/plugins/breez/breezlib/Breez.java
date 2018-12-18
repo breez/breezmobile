@@ -51,33 +51,32 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
     private void start(MethodCall call, MethodChannel.Result result){
 
         //First cancel current pending/running sync so we don't conflict.
-        WorkManager.getInstance().cancelUniqueWork("chainSync");
+        WorkManager.getInstance().cancelUniqueWork("chainSync").addListener(() -> {
+            //Then wait for running job to shutdown gracefully
+            ChainSync.waitShutdown();
 
-        //Then wait for running job to shutdown gracefully
-        ChainSync.waitShutdown();
+            String workingDir = call.argument("workingDir").toString();
+            String tempDir = call.argument("tempDir").toString();
+            try {
+                Bindings.start(workingDir, tempDir, this);
+                result.success(true);
+            } catch (Exception e) {
+                result.error("ResultError", "Failed to Start breez library", e.getMessage());
+            }
 
-        String workingDir = call.argument("workingDir").toString();
-        String tempDir = call.argument("tempDir").toString();
-        try {
-            Bindings.start(workingDir, tempDir, this);
-            result.success(true);
-        } catch (Exception e) {
-            result.error("ResultError", "Failed to Start breez library", e.getMessage());
-        }
-
-        PeriodicWorkRequest periodic =
-                new PeriodicWorkRequest.Builder(ChainSync.class, 1, TimeUnit.HOURS)
-                        .setConstraints(
-                                new Constraints.Builder()                                       
-                                        .setRequiresBatteryNotLow(true)
-                                        .build())
-                        .setInputData(
-                                new Data.Builder()
-                                        .putString("workingDir", workingDir)
-                                        .build())
-                        .build();
-        WorkManager.getInstance().enqueueUniquePeriodicWork("chainSync", ExistingPeriodicWorkPolicy.REPLACE, periodic);
-        return;
+            PeriodicWorkRequest periodic =
+                    new PeriodicWorkRequest.Builder(ChainSync.class, 1, TimeUnit.HOURS)
+                            .setConstraints(
+                                    new Constraints.Builder()
+                                            .setRequiresBatteryNotLow(true)
+                                            .build())
+                            .setInputData(
+                                    new Data.Builder()
+                                            .putString("workingDir", workingDir)
+                                            .build())
+                            .build();
+            WorkManager.getInstance().enqueueUniquePeriodicWork("chainSync", ExistingPeriodicWorkPolicy.REPLACE, periodic);
+        }, _executor);
     }
 
     private void stop(MethodCall call, MethodChannel.Result result){
