@@ -452,7 +452,7 @@ class AccountBloc {
         _nodeConflictController.add(null); 
         rethrow;
       }
-      on Exception catch(e){
+      on Object catch(e){
         log.warning("_checkNodeConflict got exception " + e.toString());
       }         
     }
