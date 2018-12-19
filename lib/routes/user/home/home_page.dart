@@ -108,6 +108,14 @@ class HomeState extends State<Home> {
         }     
       });      
     });
+
+    widget.accountBloc.accountStream.listen((acc) {
+      var activeAccountRoutes = ["/connect_to_pay", "/scan_invoice", "/create_invoice"];
+      Function addOrRemove = acc.active ? _hiddenRountes.remove : _hiddenRountes.add;
+      setState(() {
+        activeAccountRoutes.forEach((r) => addOrRemove(r));      
+      });
+    });
   }
 
   registerNotificationHandlers(){        
