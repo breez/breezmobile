@@ -231,20 +231,25 @@ class AccountBloc {
       userProfileStream.listen((user) async {
         _currentUser = user; 
                
-        if (user.registered && !_startedLightning) {
-          _askWhitelistOptimizations();          
-          print("Account bloc got registered user, starting lightning daemon...");        
-          _startedLightning = true;                                        
-          breezLib.bootstrap().then((done) async {    
-            print("Account bloc bootstrap has finished");        
-            breezLib.startLightning();
-            _checkNodeConflict(breezLib);            
-            _refreshAccount(breezLib);            
-            _listenConnectivityChanges(breezLib);
-            _listenReconnects(breezLib);
-            _listenRefundableDeposits(breezLib, device);
-            _listenRefundBroadcasts(breezLib);            
-          });
+        if (user.registered) {
+          if (!_startedLightning) {
+            _askWhitelistOptimizations();          
+            print("Account bloc got registered user, starting lightning daemon...");        
+            _startedLightning = true;                                        
+            breezLib.bootstrap().then((done) async {    
+              print("Account bloc bootstrap has finished");        
+              breezLib.startLightning();
+              _checkNodeConflict(breezLib);            
+              _refreshAccount(breezLib);            
+              _listenConnectivityChanges(breezLib);
+              _listenReconnects(breezLib);
+              _listenRefundableDeposits(breezLib, device);
+              _listenRefundBroadcasts(breezLib);            
+            });
+          } else {
+            _accountController.add(_accountController.value.copyWith(currency: user.currency));
+           _paymentsController.add(PaymentsModel(_paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList(),_paymentFilterController.value));
+          }
         }               
       });
     }
