@@ -140,7 +140,7 @@ class _AccountPageState extends State<_AccountPage> {
             //payment filter
             PaymentFilterSliver(_scrollController, FILTER_MIN_SIZE, FILTER_MAX_SIZE, widget._accountBloc, paymentsModel),
 
-            (paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
+            (paymentsModel.filter != null && paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
                 ? SliverAppBar(
               pinned: true,
               elevation: 0.0,
