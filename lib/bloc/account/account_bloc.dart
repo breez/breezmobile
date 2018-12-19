@@ -109,6 +109,7 @@ class AccountBloc {
       _backupService = injector.backupService;      
 
       _accountController.add(AccountModel.initial());
+      _paymentsController.add(PaymentsModel.initial());
       _paymentFilterController.add(PaymentFilterModel.initial());
       _accountSettingsController.add(AccountSettings.start());
       
