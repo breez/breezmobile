@@ -28,8 +28,9 @@ class AccountModel {
   final bool connected;
   final Int64 onChainFeeRate;
   final bool initial;
+  final bool bootstraping;
 
-  AccountModel(this._accountResponse, this._currency, {this.initial = false, this.addedFundsStatus = FundStatusReply_FundStatus.NO_FUND, this.paymentRequestInProgress, this.connected = false, this.onChainFeeRate});
+  AccountModel(this._accountResponse, this._currency, {this.initial = false, this.addedFundsStatus = FundStatusReply_FundStatus.NO_FUND, this.paymentRequestInProgress, this.connected = false, this.onChainFeeRate, this.bootstraping = false});
 
   AccountModel.initial() : 
     this(Account()
@@ -39,13 +40,14 @@ class AccountModel {
       ..maxAllowedToReceive = Int64(0)
       ..maxPaymentAmount = Int64(0)      
       , Currency.BTC, initial: true);
-  AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply_FundStatus addedFundsStatus, String paymentRequestInProgress, bool connected, Int64 onChainFeeRate}) {
+  AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply_FundStatus addedFundsStatus, String paymentRequestInProgress, bool connected, Int64 onChainFeeRate, bool bootstraping}) {
     return AccountModel(
       accountResponse ?? this._accountResponse, 
       currency ?? this.currency, 
       addedFundsStatus: addedFundsStatus ?? this.addedFundsStatus, 
       connected: connected ?? this.connected,      
       onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
+      bootstraping: bootstraping ?? this.bootstraping,
       paymentRequestInProgress: paymentRequestInProgress ?? this.paymentRequestInProgress);
   }
 
@@ -64,16 +66,20 @@ class AccountModel {
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
 
   String get statusMessage {
-    if (this.waitingDepositConfirmation) {
-      return "Breez is waiting for BTC transfer to be confirmed. Confirmation usually takes ~10 minutes to be completed";
+    if (this.initial) {
+      return "";
+    }   
+
+    if (!this.active || this.bootstraping) {
+      return "Breez is opening a secure channel with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments";
     }
-    else if (depositConfirmed) {
-      if (this.processiongBreezConnection) {
-        return "Breez is opening a secure channel with our server (this usually takes ~10 minutes to be completed)";
-      }
-      if (this.active) {
-        return "Transferring funds";
-      }
+    
+    if (this.waitingDepositConfirmation) {
+      return "Breez is waiting for BTC transfer to be confirmed. This might take a while";
+    }    
+    
+    if (depositConfirmed && this.active) {
+      return "Transferring funds";
     }        
     
     return null;
@@ -87,7 +93,7 @@ class PaymentsModel {
 
   PaymentsModel(this.paymentsList, this.filter, [this.firstDate]);
 
-  PaymentsModel.initial() : this(List<PaymentInfo>(), null, DateTime(DateTime.now().year));
+  PaymentsModel.initial() : this(List<PaymentInfo>(), PaymentFilterModel.initial(), DateTime(DateTime.now().year));
 
   PaymentsModel copyWith({List<PaymentInfo> paymentsList, PaymentFilterModel filter, DateTime firstDate}) {
     return PaymentsModel(
