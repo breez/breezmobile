@@ -124,7 +124,8 @@ class AccountBloc {
       _listenAccountChanges(breezLib);
       _listenPOSFundingRequests(server, breezLib);
       _listenMempoolTransactions(device, notificationsService, breezLib);
-      _listenRoutingNodeConnectionChanges(breezLib);              
+      _listenRoutingNodeConnectionChanges(breezLib); 
+      _listenBootstrapStatus(breezLib);             
     }
 
     //settings persistency
@@ -244,15 +245,14 @@ class AccountBloc {
             _listenRefundableDeposits(breezLib, device);
             _listenRefundBroadcasts(breezLib);            
           });
-        }
-
-        if (_accountController.value != null) {
-          _accountController.add(_accountController.value.copyWith(currency: user.currency));
-        }
-        if (_paymentsController.value != null) {
-          _paymentsController.add(PaymentsModel(_paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList(), _paymentFilterController.value));
-        }            
+        }               
       });
+    }
+
+    void _listenBootstrapStatus(BreezBridge breezLib) {
+      breezLib.chainBootstrapProgress.first.then((_){
+        _accountController.add(_accountController.value.copyWith(bootstraping: true));
+      });      
     }
 
     void _askWhitelistOptimizations() async{
@@ -407,7 +407,7 @@ class AccountBloc {
       breezLib.getAccount()
         .then((acc) {
           print("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());
-          _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser.currency));          
+          _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser.currency, bootstraping: false));          
         })
         .catchError(_accountController.addError);
       _refreshPayments(breezLib);
