@@ -16,7 +16,7 @@ class BreezBridge {
   static const _methodChannel = const MethodChannel('com.breez.client/breez_lib');
   static const _eventChannel = const EventChannel('com.breez.client/breez_lib_notifications');
 
-  BehaviorSubject<Map<String, DownloadFileInfo>> _bootstrapDownloadProgressController = new BehaviorSubject<Map<String, DownloadFileInfo>>(seedValue: {});
+  BehaviorSubject<Map<String, DownloadFileInfo>> _bootstrapDownloadProgressController = new BehaviorSubject<Map<String, DownloadFileInfo>>();
   Stream<Map<String, DownloadFileInfo>> get chainBootstrapProgress => _bootstrapDownloadProgressController.stream;
 
 
@@ -301,7 +301,9 @@ class BreezBridge {
           lndBootstrapper.bootstrapProgressStreams
             .listen((downloadFileInfo) {
               var aggregatedStatus = Map<String, DownloadFileInfo>();
-              aggregatedStatus.addAll(_bootstrapDownloadProgressController.value);
+              if (_bootstrapDownloadProgressController.value != null) {
+                aggregatedStatus.addAll(_bootstrapDownloadProgressController.value);
+              }
               aggregatedStatus[downloadFileInfo.fileURL] = downloadFileInfo;
               _bootstrapDownloadProgressController.add(aggregatedStatus);
             },
