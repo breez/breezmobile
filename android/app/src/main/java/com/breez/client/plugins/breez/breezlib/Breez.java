@@ -151,7 +151,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
             }
             catch (Exception e) {
                 Throwable breezError = e.getCause() != null ? e.getCause() : e;
-                Log.e(TAG, breezError.getMessage(), breezError);
+                Log.e(TAG, "Error in method " + m_call.method + ": " + breezError.getMessage(), breezError);
                 m_result.error("ResultError","Failed to invoke method " + m_call.method, breezError.getMessage());
             }
         }
