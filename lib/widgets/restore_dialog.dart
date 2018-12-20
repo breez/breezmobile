@@ -18,27 +18,8 @@ class RestoreDialog extends StatefulWidget {
   }
 }
 
-class RestoreDialogState extends State<RestoreDialog> {
-  StreamSubscription<bool> _restoreFinishedSubscription;
+class RestoreDialogState extends State<RestoreDialog> {  
   String _selectedKey;
-
-
-  @override
-  void dispose() {
-    _restoreFinishedSubscription.cancel();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    _restoreFinishedSubscription =
-        widget.backupBloc.restoreFinishedStream.listen((restored) {
-      if (restored) {
-        Navigator.pop(widget.context);
-      }
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,14 +90,14 @@ class RestoreDialogState extends State<RestoreDialog> {
       ),
       actions: <Widget>[
         new FlatButton(
-          onPressed: () => Navigator.pop(widget.context),
+          onPressed: () =>  Navigator.pop(widget.context, false),
           child: new Text("CANCEL", style: theme.buttonStyle),
         ),
         new FlatButton(     
           textColor: theme.BreezColors.blue[500],
           disabledTextColor: theme.BreezColors.blue[500].withOpacity(0.4),               
           onPressed: _selectedKey == null ? null : () { 
-            Navigator.pop(widget.context);
+            Navigator.pop(widget.context, true);
             widget.backupBloc.restoreRequestSink.add(_selectedKey);
           },
           child: new Text("OK"),

@@ -48,8 +48,12 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         }
 
         popToWalkthrough();
-        showDialog(context: context, builder: (_) =>
-        new RestoreDialog(context, widget._backupBloc, options));
+        showDialog(context: context, builder: (_) => new RestoreDialog(context, widget._backupBloc, options))
+          .then((res){
+            if (res) {
+              Navigator.push(context, _createLoaderRoute(context, message: "Restoring data...", opacity: 0.8));
+            }
+          });
       }, onError: (error){
         popToWalkthrough(error: error.runtimeType != SignInFailedException ? error.toString() : null);
       });
@@ -164,17 +168,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                         padding: EdgeInsets.only(top: 10.0),
                         child: new GestureDetector(
                           onTap: () {
-                            // Restore then start lightninglib
-                            Navigator.push(context, TransparentPageRoute((context){
-                              return Container(
-                                color: Colors.black.withOpacity(0.3),
-                                height: MediaQuery.of(context).size.height,
-                                width: MediaQuery.of(context).size.width,
-                                child: Center(
-                                  child: Loader()
-                                )
-                              );
-                            }));
+                            // Restore then start lightninglib                            
+                            Navigator.push(context, _createLoaderRoute(context));
                             widget._backupBloc.restoreRequestSink.add("");
                           },
                           child: new Text("Restore from backup", style: theme.restoreLinkStyle,)
@@ -185,5 +180,29 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
             )
           ])),
     );
+  }
+
+  TransparentPageRoute _createLoaderRoute(BuildContext context, {String message, double opacity = 0.3}){    
+    return TransparentPageRoute((context){
+        return Material(       
+          type: MaterialType.transparency, 
+          child: Container(
+            color: Colors.black.withOpacity(opacity),
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Loader(),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: message != null ? Text(message,textAlign: TextAlign.center) : SizedBox(),
+                )
+              ],                    
+            )
+          ),
+        );
+      });
   }
 }
