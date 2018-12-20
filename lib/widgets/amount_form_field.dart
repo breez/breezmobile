@@ -52,7 +52,7 @@ class AmountFormField extends TextFormField {
       }   
 
       if (maxAmount != null && intAmount > maxAmount) {
-        return "Not enough funds";
+        return "You can't use more than ${currency.format(maxAmount)}";
       }         
     };
   }
