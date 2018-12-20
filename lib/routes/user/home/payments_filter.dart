@@ -26,9 +26,17 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
   @override
   void initState() {
     super.initState();
-    widget._controller.addListener((){
-      setState((){});
-    });
+    widget._controller.addListener(onScroll);
+  }
+
+  @override 
+  void dispose() {
+    widget._controller.removeListener(onScroll);
+    super.dispose();
+  }
+
+  void onScroll(){
+    setState((){});
   }
 
   @override
