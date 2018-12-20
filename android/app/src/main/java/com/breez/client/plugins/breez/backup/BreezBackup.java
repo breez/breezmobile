@@ -92,13 +92,21 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
     }
 
     private synchronized DriveResourceClient initDriveResourceClient(boolean silent) throws Exception{
-        if (m_driveResourceClient == null) {
-            GoogleSignInAccount loggedInAccount = Tasks.await(m_authenticator.ensureSignedIn(silent));
-            m_driveClient =  Drive.getDriveClient(m_activity, loggedInAccount);
-            safeRequestSync();
-            m_driveResourceClient = Drive.getDriveResourceClient(m_activity, loggedInAccount);
+        try {
+            if (m_driveResourceClient == null) {
+                GoogleSignInAccount loggedInAccount = Tasks.await(m_authenticator.ensureSignedIn(silent));
+                m_driveClient = Drive.getDriveClient(m_activity, loggedInAccount);
+                safeRequestSync();
+                m_driveResourceClient = Drive.getDriveResourceClient(m_activity, loggedInAccount);
+            }
+            return m_driveResourceClient;
         }
-        return m_driveResourceClient;
+        catch(ExecutionException e) {
+            if (e.getCause() instanceof Exception){
+                throw (Exception)e.getCause();
+            }
+            throw e;
+        }
     }
 
     private synchronized void destroyDriveResourceClient(){
