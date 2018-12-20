@@ -116,8 +116,7 @@ class InvoiceBloc {
       device.deviceClipboardStream
         .where((s) => s.startsWith("ln") || s.startsWith("lightning:"))
         .map((s) {
-          if (s.startsWith("ln")) return s.substring(2);
-          if (s.startsWith("lightning:")) return s.substring(10);
+          return s.startsWith("ln") ? s : s.substring(10);          
     })
     ])
     .asyncMap( (paymentRequest) {       
