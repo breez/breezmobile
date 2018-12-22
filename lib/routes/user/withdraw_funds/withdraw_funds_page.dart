@@ -46,7 +46,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
   StreamSubscription<RemoveFundResponseModel> withdrawalResultSubscription;  
 
   BreezBridge _breezLib;
-  bool _addressValidated = false;
+  String _addressValidated;
   bool _inProgress = false;
 
   @override
@@ -175,7 +175,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
                     ),
                     style: theme.FieldTextStyle.textStyle,
                     validator: (value) {
-                      if (!_addressValidated) {
+                      if (_addressValidated == null) {
                         return "Please enter a valid BTC Address";
                       }
                     },
@@ -237,7 +237,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
               _showLoadingDialog();
               widget._accountBloc.withdrawalSink.add(new RemoveFundRequestModel(
                   currency.parse(_amountController.text),
-                  _addressController.text                  
+                  _addressValidated                  
                 ));
             },
             child: new Text("YES", style: theme.buttonStyle))
@@ -305,10 +305,10 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
 
   Future<bool> _asyncValidate() {
     return _breezLib.validateAddress(_addressController.text).then((data) {
-      _addressValidated = true;
+      _addressValidated = data;
       return _formKey.currentState.validate();
     }).catchError((err) {
-      _addressValidated = false;
+      _addressValidated = null;
       return _formKey.currentState.validate();
     });
   }

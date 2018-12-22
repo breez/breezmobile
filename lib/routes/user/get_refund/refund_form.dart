@@ -20,7 +20,7 @@ class _RefundFormState extends State<RefundForm> {
   BreezBridge _breezLib = ServiceInjector().breezBridge;
   final TextEditingController _addressController = new TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool _addressValidated = false;
+  String _addressValidated;
   ScrollController _scroller = new ScrollController();
 
   @override
@@ -67,7 +67,7 @@ class _RefundFormState extends State<RefundForm> {
                         ),
                         style: theme.alertStyle,
                         validator: (value) {
-                          if (!_addressValidated) {
+                          if (_addressValidated == null) {
                             return "Please enter a valid BTC Address";
                           }
                         },
@@ -106,7 +106,7 @@ class _RefundFormState extends State<RefundForm> {
                 _asyncValidate().then((validated) {
                   if (validated) {
                     _formKey.currentState.save();
-                    widget._onRefund(_addressController.text);
+                    widget._onRefund(_addressValidated);
                   }
                 });
               },
@@ -118,10 +118,10 @@ class _RefundFormState extends State<RefundForm> {
 
   Future<bool> _asyncValidate() {
     return _breezLib.validateAddress(_addressController.text).then((data) {
-      _addressValidated = true;
+      _addressValidated = data;
       return _formKey.currentState.validate();
     }).catchError((err) {
-      _addressValidated = false;
+      _addressValidated = null;
       return _formKey.currentState.validate();
     });
   }
