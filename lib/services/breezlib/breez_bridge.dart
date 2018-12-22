@@ -236,8 +236,12 @@ class BreezBridge {
   }
 
   Future<String> validateAddress(String address) {
-    return _invokeMethodWhenReady("validateAddress", {"argument": address})
-        .then( (response) => response as String);
+    String addr = address;
+    if (addr.startsWith("bitcoin:")) {
+      addr = addr.substring(8);
+    }
+    return _invokeMethodWhenReady("validateAddress", {"argument": addr})
+        .then( (response) => addr);
   }
 
   Future<String> sendWalletCoins(String address, Int64 amount, Int64 satPerByteFee){
