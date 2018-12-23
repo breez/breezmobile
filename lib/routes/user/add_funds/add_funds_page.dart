@@ -105,7 +105,7 @@ class AddFundsState extends State<_AddFundsPage> {
           'Breez is processing your previous ${account.waitingDepositConfirmation || account.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
     } else if (response != null && response.errorMessage.isNotEmpty) {
       errorMessage = response.errorMessage;
-    }
+    }    
 
     if (errorMessage != null) {
       if (!errorMessage.endsWith('.')) {
@@ -115,9 +115,11 @@ class AddFundsState extends State<_AddFundsPage> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-               Container(
-                 padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
-                 child: Text(errorMessage, textAlign: TextAlign.center)
+               Expanded(                
+                 child: Padding(
+                   padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+                   child: Text(errorMessage, textAlign: TextAlign.center),
+                 )
               )
             ],            
       );
