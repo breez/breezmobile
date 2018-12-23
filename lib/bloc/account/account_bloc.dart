@@ -174,7 +174,7 @@ class AccountBloc {
         device.eventStream.where((e) => e == NotificationType.RESUME),
         breezLib.notificationStream.where((n) => n.type == NotificationEvent_NotificationType.FUND_ADDRESS_UNSPENT_CHANGED)
       ])
-      .listen((e) => refreshRefundableAddresses());      
+      .listen((e) => print("test"));      
     }
 
     void _listenRefundBroadcasts(BreezBridge breezLib){
