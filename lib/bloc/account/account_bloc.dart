@@ -229,6 +229,9 @@ class AccountBloc {
 
     _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib, Device device){      
       userProfileStream.listen((user) async {
+        if (user.token != _currentUser?.token) {
+          breezLib.registerChannelOpenedNotification(user.token);
+        }
         _currentUser = user; 
                
         if (user.registered) {
@@ -331,16 +334,7 @@ class AccountBloc {
     }
 
     void _refreshPayments(BreezBridge breezLib) {
-      DateTime _firstDate;
-      if (MockPaymentInfo.isMockData) {
-        List<PaymentInfo> _paymentsList = _filterPayments(MockPaymentInfo.createMockData());
-        if(_paymentsList.length > 0){
-          _firstDate = DateTime.fromMillisecondsSinceEpoch(_paymentsList.last.creationTimestamp.toInt() * 1000);
-        }
-        _paymentsController.add(PaymentsModel(_paymentsList, _paymentFilterController.value, _firstDate ?? DateTime(DateTime.now().year)));
-        return;
-      }
-
+      DateTime _firstDate;     
       print ("refreshing payments...");
       breezLib.getPayments()
         .then( (payments) {
