@@ -261,10 +261,7 @@ class AccountBloc {
     }
 
     void _askWhitelistOptimizations() async{
-      String nodeID = await getPersistentNodeID();
-      if (nodeID == null) {       
-        _permissionsHandler.triggerOptimizeWhitelistExplenation();
-      }      
+       _permissionsHandler.triggerOptimizeWhitelistExplenation();     
     }  
 
     void _fetchFundStatus(BreezBridge breezLib){
