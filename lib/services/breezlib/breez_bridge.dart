@@ -286,8 +286,7 @@ class BreezBridge {
 
   Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
     return _startedCompleter.future.then(
-            (completed) {
-            print(" _invokeMethodImmediate - released completer method = " + methodName);
+            (completed) {            
           return _methodChannel.invokeMethod(methodName, arguments).catchError((err){
             if (err.runtimeType == PlatformException) {
               throw (err as PlatformException).details;
