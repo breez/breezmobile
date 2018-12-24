@@ -11,7 +11,7 @@ class PaymentItemAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (paymentItem.type == PaymentType.DEPOSIT || paymentItem.type == PaymentType.WITHDRAWAL || paymentItem.isUnknown) {
+    if (_shouldShowLeadingIcon) {
       IconData icon = [PaymentType.DEPOSIT, PaymentType.RECEIVED].indexOf(paymentItem.type) >= 0 ? Icons.add : Icons.remove;
       return Container(
           decoration: BoxDecoration(color: Colors.white, borderRadius: new BorderRadius.all(new Radius.circular(radius))),
@@ -22,4 +22,6 @@ class PaymentItemAvatar extends StatelessWidget {
       return BreezAvatar(paymentItem.imageURL, radius: radius);
     }
   }
+
+  bool get _shouldShowLeadingIcon => paymentItem.imageURL == null &&  paymentItem.containsPaymentInfo || paymentItem.isTransferRequest;
 }
