@@ -149,8 +149,11 @@ class PaymentInfo {
     if (type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL){
       return "Bitcoin Transfer";
     }
-    String peerName = (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeName : _paymentResponse.invoiceMemo?.payerName);
-    return (peerName == null || peerName.isEmpty) ? "Unknown" : peerName;
+    String result = (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeName : _paymentResponse.invoiceMemo?.payerName);
+    if (result == null || result.isEmpty) {
+      result = _paymentResponse.invoiceMemo.description;
+    }
+    return (result == null || result.isEmpty) ? "Unknown" : result;
   }
   Currency get currency => _currency;
 
