@@ -230,6 +230,10 @@ class BreezBridge {
     return _invokeMethodWhenReady("registerReceivePaymentReadyNotification", {"argument": token});       
   }
 
+  Future registerChannelOpenedNotification(String token) {
+    return _invokeMethodWhenReady("registerChannelOpenedNotification", {"argument": token});       
+  }
+
   Future<String> sendCommand(String command) {
     return _invokeMethodWhenReady("sendCommand", {"argument": command})
         .then( (response) => response as String);
