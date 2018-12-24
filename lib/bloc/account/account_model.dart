@@ -140,6 +140,10 @@ class PaymentInfo {
   String get destination => _paymentResponse.destination;
   String get redeemTxID => _paymentResponse.redeemTxID;
   String get paymentHash => _paymentResponse.paymentHash;
+  bool get isUnknown {
+    String remoteName = (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeName : _paymentResponse.invoiceMemo?.payerName);
+    return remoteName == null || remoteName.isEmpty;
+  }
   String get description => type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL ? "Bitcoin Transfer" : _paymentResponse.invoiceMemo?.description;
   String get imageURL {    
     String url = (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeImageURL : _paymentResponse.invoiceMemo?.payerImageURL);
@@ -276,4 +280,8 @@ class MockPaymentInfo implements PaymentInfo {
   // TODO: implement redeemTxID
   @override
   String get redeemTxID => null;
+
+  @override
+  // TODO: implement isUnknown
+  bool get isUnknown => false;
 }
