@@ -11,8 +11,8 @@ class PaymentItemAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (paymentItem.type == PaymentType.DEPOSIT || paymentItem.type == PaymentType.WITHDRAWAL) {
-      IconData icon = paymentItem.type == PaymentType.DEPOSIT ? Icons.add : Icons.remove;
+    if (paymentItem.type == PaymentType.DEPOSIT || paymentItem.type == PaymentType.WITHDRAWAL || paymentItem.isUnknown) {
+      IconData icon = [PaymentType.DEPOSIT, PaymentType.RECEIVED].indexOf(paymentItem.type) >= 0 ? Icons.add : Icons.remove;
       return Container(
           decoration: BoxDecoration(color: Colors.white, borderRadius: new BorderRadius.all(new Radius.circular(radius))),
           width: radius * 2,
