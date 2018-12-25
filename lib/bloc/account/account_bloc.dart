@@ -53,10 +53,7 @@ class AccountBloc {
   Sink<AccountSettings> get accountSettingsSink => _accountSettingsController.sink;
 
   final _routingNodeConnectionController = new BehaviorSubject<bool>();
-  Stream<bool> get routingNodeConnectionStream => _routingNodeConnectionController.stream;
-
-  final _posFundingRequestController = new StreamController<Int64>.broadcast();
-  Sink<Int64> get posFundingRequestStream => _posFundingRequestController.sink;
+  Stream<bool> get routingNodeConnectionStream => _routingNodeConnectionController.stream; 
 
   final _withdrawalController = new StreamController<RemoveFundRequestModel>.broadcast();
   Sink<RemoveFundRequestModel> get withdrawalSink => _withdrawalController.sink;
@@ -121,8 +118,7 @@ class AccountBloc {
       _listenWithdrawalRequests(breezLib);
       _listenSentPayments(breezLib);
       _listenFilterChanges(breezLib);
-      _listenAccountChanges(breezLib);
-      _listenPOSFundingRequests(server, breezLib);
+      _listenAccountChanges(breezLib);      
       _listenMempoolTransactions(device, notificationsService, breezLib);
       _listenRoutingNodeConnectionChanges(breezLib); 
       _listenBootstrapStatus(breezLib);             
@@ -358,32 +354,7 @@ class AccountBloc {
         return _dateFilteredPaymentsSet.intersection(paymentsSet).toList();
       }
       return paymentsSet.toList();
-    }
-
-    void _listenPOSFundingRequests(BreezServer server, BreezBridge breezLib) {
-      _posFundingRequestController.stream.listen((amount){
-        retry(
-          () => _fundPOSChannel(server, breezLib, amount) ,
-          tryLimit: 3,
-          interval: Duration(seconds: 5)
-        )      
-        .catchError(_accountActionsController.addError);   
-      });  
-    }
-  
-    Future _fundPOSChannel(BreezServer server, BreezBridge breezLib, Int64 remoteAmount) {
-      return server.requestChannel(_accountController.value.id, remoteAmount)
-        .then((FundReply_ReturnCode res) {
-          if (res == FundReply_ReturnCode.SUCCESS) {
-            return Future.delayed(Duration(seconds: 3), () {
-              _refreshAccount(breezLib);
-            });
-          }
-          else {          
-            throw new Exception(res.toString());
-          }
-        });      
-    }
+    }  
   
     void _listenAccountChanges(BreezBridge breezLib) {
       Observable(breezLib.notificationStream)
@@ -463,8 +434,7 @@ class AccountBloc {
     close() {
       _requestAddressController.close();
       _addFundController.close();    
-      _paymentsController.close();    
-      _posFundingRequestController.close();
+      _paymentsController.close();          
       _accountActionsController.close();
       _sentPaymentsController.close();
       _withdrawalController.close();
