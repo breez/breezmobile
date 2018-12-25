@@ -1,3 +1,6 @@
+import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/routes/shared/account_required_actions.dart';
+
 import 'pos_invoice.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/widgets/navigation_drawer.dart';
@@ -7,8 +10,9 @@ import 'package:breez/bloc/account/account_bloc.dart';
 
 class PosHome extends StatefulWidget {
   final AccountBloc accountBloc;
+  final BackupBloc backupBloc;
 
-  PosHome(this.accountBloc);
+  PosHome(this.accountBloc, this.backupBloc);
 
   final List<DrawerItemConfig> _screens =
       new List<DrawerItemConfig>.unmodifiable([]);
@@ -45,6 +49,11 @@ class PosHomeState extends State<PosHome> {
     return new Scaffold(
         key: _scaffoldKey,
         appBar: new AppBar(
+           actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(14.0),
+              child: AccountRequiredActionsIndicator(widget.backupBloc, widget.accountBloc),
+            ),],
           leading: new IconButton(icon: ImageIcon(AssetImage("src/icon/hamburger.png"),size: 24.0,color: null,),
               onPressed: () => _scaffoldKey.currentState.openDrawer()),
           title: new Image.asset("src/images/logo-color.png",height: 23.5,width: 62.7,),
