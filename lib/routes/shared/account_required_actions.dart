@@ -1,7 +1,6 @@
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/routes/user/withdraw_funds/send_coins_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
