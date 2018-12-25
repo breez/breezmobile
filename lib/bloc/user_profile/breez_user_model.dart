@@ -25,7 +25,7 @@ class BreezUserModel {
   BreezUserModel.fromJson(Map<String, dynamic> json)
       : userID = json['userID'],
         token = json['token'],
-        currency = json['currency'] == null ? Currency.BTC : Currency.fromSymbol(json['currency']),
+        currency = json['currency'] == null ? Currency.SAT : Currency.fromSymbol(json['currency']),
         name = json['name'],
         color = json['color'],
         animal = json['animal'],
