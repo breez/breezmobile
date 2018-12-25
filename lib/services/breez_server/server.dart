@@ -38,19 +38,7 @@ class BreezServer {
       ..amount = amount);
     log.info('sendInvoice response: $response');
     return response.toString();
-  }
-
-  Future<FundReply_ReturnCode> requestChannel(
-      String lightningId, Int64 amount) async {
-    await _ensureValidChannel();
-    var posClient = new PosClient(_channel, options: defaultCallOptions);
-    var response = await posClient.fundChannel(new FundRequest()
-      ..lightningID = lightningId
-      ..amount = amount);
-    log.info(
-        'fundChannel response: ' + response.returnCode.value.toRadixString(10));
-    return response.returnCode;
-  }
+  }  
 
   Future<String> uploadLogo(List<int> logo) async {
     await _ensureValidChannel();
