@@ -125,6 +125,8 @@ class Payment extends GeneratedMessage {
     ..aOS(7, 'redeemTxID')
     ..aOS(8, 'paymentHash')
     ..aOS(9, 'destination')
+    ..a<int>(10, 'pendingExpirationHeight', PbFieldType.OU3)
+    ..aInt64(11, 'pendingExpirationTimestamp')
     ..hasRequiredFields = false
   ;
 
@@ -178,6 +180,16 @@ class Payment extends GeneratedMessage {
   set destination(String v) { $_setString(6, v); }
   bool hasDestination() => $_has(6);
   void clearDestination() => clearField(9);
+
+  int get pendingExpirationHeight => $_get(7, 0);
+  set pendingExpirationHeight(int v) { $_setUnsignedInt32(7, v); }
+  bool hasPendingExpirationHeight() => $_has(7);
+  void clearPendingExpirationHeight() => clearField(10);
+
+  Int64 get pendingExpirationTimestamp => $_getI64(8);
+  set pendingExpirationTimestamp(Int64 v) { $_setInt64(8, v); }
+  bool hasPendingExpirationTimestamp() => $_has(8);
+  void clearPendingExpirationTimestamp() => clearField(11);
 }
 
 class _ReadonlyPayment extends Payment with ReadonlyMessageMixin {}

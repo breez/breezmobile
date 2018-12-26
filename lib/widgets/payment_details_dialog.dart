@@ -26,7 +26,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
         ),
       ),
     ]),
-    contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+    contentPadding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
     content: Container(
       width: MediaQuery.of(context).size.width,      
       child: Column(
@@ -80,6 +80,25 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                     trailing: Text(
                       DateUtils.formatYearMonthDayHourMinute(
                           DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)),
+                      style: theme.paymentDetailsSubtitleStyle,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                ),
+          Padding(padding: EdgeInsets.only(top: 8.0)),
+          !paymentInfo.pending
+              ? Container()
+              : Container(
+                  height: 36.0,
+                  child: ListTile(
+                    title: Text(
+                      "Expiration",
+                      style: theme.paymentDetailsTitleStyle,
+                      textAlign: TextAlign.left,
+                    ),
+                    trailing: Text(
+                      DateUtils.formatYearMonthDayHourMinute(
+                          DateTime.fromMillisecondsSinceEpoch(paymentInfo.pendingExpirationTimestamp.toInt() * 1000)),
                       style: theme.paymentDetailsSubtitleStyle,
                       textAlign: TextAlign.left,
                     ),
