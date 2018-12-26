@@ -20,25 +20,36 @@ class PaymentItem extends StatelessWidget {
     }
     return new Stack(alignment: Alignment.bottomCenter, children: <Widget>[
       ListTile(
-          leading: PaymentItemAvatar(_paymentInfo),
-          title: Text(
-            title,
-            style: theme.transactionTitleStyle,
-          ),
-          subtitle: Text(
-            DateUtils.formatMonthDate(DateTime.fromMillisecondsSinceEpoch(_paymentInfo.creationTimestamp.toInt() * 1000)),
-            style: theme.transactionSubtitleStyle,
-          ),
-          trailing: Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: <Widget>[
+        leading: PaymentItemAvatar(_paymentInfo),
+        title: Text(
+          title,
+          style: theme.transactionTitleStyle,
+        ),
+        subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                DateUtils.formatMonthDate(DateTime.fromMillisecondsSinceEpoch(
+                    _paymentInfo.creationTimestamp.toInt() * 1000)),
+                style: theme.transactionSubtitleStyle,
+              ),
+              _paymentInfo.pending ? Text("(pending)", style: theme.transactionTitleStyle.copyWith(color: theme.warningStyle.color)) : SizedBox()
+            ]),
+        trailing: Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: <Widget>[
             Text(
               (_paymentInfo.type == PaymentType.SENT || _paymentInfo.type == PaymentType.WITHDRAWAL ? "- " : "+ ") +
                   _paymentInfo.currency.format(_paymentInfo.amount, includeSymbol: false),
               style: theme.transactionAmountStyle,
-            ),
-          ]),onTap: () => showPaymentDetailsDialog(context, _paymentInfo),),
+            )]),
+        onTap: () => showPaymentDetailsDialog(context, _paymentInfo),
+      ),
       new Divider(
         height: 0.0,
-        color: _lastItem ? Color.fromRGBO(255, 255, 255, 0.0) : Color.fromRGBO(255, 255, 255, 0.12),
+        color: _lastItem
+            ? Color.fromRGBO(255, 255, 255, 0.0)
+            : Color.fromRGBO(255, 255, 255, 0.12),
         indent: 72.0,
       ),
     ]);
