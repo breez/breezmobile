@@ -140,6 +140,9 @@ class PaymentInfo {
   String get destination => _paymentResponse.destination;
   String get redeemTxID => _paymentResponse.redeemTxID;
   String get paymentHash => _paymentResponse.paymentHash;
+  bool get pending => _paymentResponse.pendingExpirationHeight > 0;
+  int get pendingExpirationHeight => _paymentResponse.pendingExpirationHeight;
+  Int64 get pendingExpirationTimestamp => _paymentResponse.pendingExpirationTimestamp;
 
   bool get containsPaymentInfo {
     String remoteName = (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeName : _paymentResponse.invoiceMemo?.payerName);  
