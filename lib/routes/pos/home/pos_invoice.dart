@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/bloc/app_blocs.dart';
@@ -28,7 +31,7 @@ class POSInvoice extends StatefulWidget {
 class POSInvoiceState extends State<POSInvoice> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  AppBlocs _appBlocs;
+  
   TextEditingController _amountController = new TextEditingController();
   TextEditingController _chargeAmountController = new TextEditingController();
   TextEditingController _invoiceDescriptionController =
@@ -44,6 +47,11 @@ class POSInvoiceState extends State<POSInvoice> {
   Int64 _maxAllowedToReceive;
   bool _isButtonDisabled = false;
 
+  AccountBloc _accountBloc;
+  InvoiceBloc _invoiceBloc;
+  UserProfileBloc _userProfileBloc;
+  POSProfileBloc _posProfileBloc;
+
   StreamSubscription<AccountModel> _accountSubscription;
   StreamSubscription<POSProfileModel> _posProfileSubscription;
   StreamSubscription<String> _invoiceReadyNotificationsSubscription;
@@ -53,7 +61,11 @@ class POSInvoiceState extends State<POSInvoice> {
 
   @override
   void didChangeDependencies() {
-    _appBlocs = AppBlocsProvider.of(context);
+    _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    _posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);
+
     closeListeners();
     registerListeners();
     itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
@@ -66,9 +78,9 @@ class POSInvoiceState extends State<POSInvoice> {
     _focusNode.addListener(_onOnFocusNodeEvent);
 
     _NfcDialog _nfcDialog =
-        new _NfcDialog(_appBlocs.invoicesBloc, _scaffoldKey);
+        new _NfcDialog(_invoiceBloc, _scaffoldKey);
     _invoiceDescriptionController.text = "";
-    _accountSubscription = _appBlocs.accountBloc.accountStream.listen((acc) {
+    _accountSubscription = _accountBloc.accountStream.listen((acc) {
       setState(() {
         _currency = acc.currency;
         _maxPaymentAmount = acc.maxPaymentAmount;
@@ -82,13 +94,13 @@ class POSInvoiceState extends State<POSInvoice> {
       });
     });
     _posProfileSubscription =
-        _appBlocs.posProfileBloc.posProfileStream.listen((posProfile) {
+        _posProfileBloc.posProfileStream.listen((posProfile) {
       _posProfile = posProfile;
       cancellationTimeoutValue =
           _posProfile.cancellationTimeoutValue.toStringAsFixed(0);
     });
     _invoiceReadyNotificationsSubscription =
-        _appBlocs.invoicesBloc.readyInvoicesStream.listen((invoiceReady) {
+        _invoiceBloc.readyInvoicesStream.listen((invoiceReady) {
       // show the simple dialog with 3 states
       showDialog<bool>(
         context: context,
@@ -150,7 +162,7 @@ class POSInvoiceState extends State<POSInvoice> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       new StreamBuilder<AccountModel>(
-                          stream: _appBlocs.accountBloc.accountStream,
+                          stream: _accountBloc.accountStream,
                           builder: (context, snapshot) {
                             return new StatusIndicator(snapshot.data);
                           }),
@@ -319,7 +331,7 @@ class POSInvoiceState extends State<POSInvoice> {
                 style: theme.alertStyle));
       } else if (_totalAmount < _maxPaymentAmount.toInt() ||
           _totalAmount < _maxPaymentAmount.toInt()) {
-        _appBlocs.invoicesBloc.newInvoiceRequestSink.add(
+        _invoiceBloc.newInvoiceRequestSink.add(
             new InvoiceRequestModel(
                 _posProfile.invoiceString,
                 _invoiceDescriptionController.text,
@@ -364,7 +376,7 @@ class POSInvoiceState extends State<POSInvoice> {
   changeCurrency(value) {
     setState(() {
       _currency = Currency.fromSymbol(value);
-      _appBlocs.userProfileBloc.currencySink
+      _userProfileBloc.currencySink
           .add(Currency.currencies[Currency.currencies.indexOf(_currency)]);
     });
   }

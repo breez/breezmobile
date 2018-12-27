@@ -13,12 +13,11 @@ class AppBlocsProvider extends InheritedWidget {
     return true;
   }
 
-  static AppBlocs of(BuildContext context) {
+  static T of<T>(BuildContext context) {
     AppBlocsProvider widget = context.inheritFromWidgetOfExactType(AppBlocsProvider);
     if (widget == null) {
       return null;
     }
-
-    return widget.appBlocs;
+    return widget.appBlocs.getBloc<T>();
   }
 }
