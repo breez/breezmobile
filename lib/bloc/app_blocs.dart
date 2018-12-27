@@ -17,15 +17,26 @@ class AppBlocs {
   final ConnectPayBloc connectPayBloc;
   final StatusIndicatorBloc statusIndicatorBloc;
   final BackupBloc backupBloc;
+  final Map<Type, Object> _blocsByType;
+
+  static T _registerBloc<T>(T bloc, Map<Type, Object> blocs) {
+    blocs[bloc.runtimeType] = bloc;
+    return bloc;
+  }
+
+  T getBloc<T>() {
+    return _blocsByType[T];
+  }
 
   factory AppBlocs() {
-    StatusIndicatorBloc statusIndicatorBloc = new StatusIndicatorBloc();
-    UserProfileBloc userProfileBloc = new UserProfileBloc();
-    AccountBloc accountBloc = new AccountBloc(userProfileBloc.userStream);
-    POSProfileBloc posProfileBloc = new POSProfileBloc();    
-    InvoiceBloc invoicesBloc = new InvoiceBloc();
-    ConnectPayBloc connectPayBloc = new ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream);
-    BackupBloc backupBloc = new BackupBloc(accountBloc.accountStream, accountBloc.backupBreezIDStream);
+    var blocsByType = Map<Type, Object>();
+    StatusIndicatorBloc statusIndicatorBloc = _registerBloc(StatusIndicatorBloc(), blocsByType);
+    UserProfileBloc userProfileBloc = _registerBloc(UserProfileBloc(), blocsByType);
+    AccountBloc accountBloc = _registerBloc(AccountBloc(userProfileBloc.userStream), blocsByType);
+    POSProfileBloc posProfileBloc = _registerBloc(POSProfileBloc(), blocsByType);    
+    InvoiceBloc invoicesBloc = _registerBloc(InvoiceBloc(), blocsByType);
+    ConnectPayBloc connectPayBloc = _registerBloc(ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream), blocsByType);
+    BackupBloc backupBloc = _registerBloc(BackupBloc(accountBloc.accountStream, accountBloc.backupBreezIDStream), blocsByType);
 
     return AppBlocs._(      
       userProfileBloc,
@@ -34,9 +45,10 @@ class AppBlocs {
       invoicesBloc,
       connectPayBloc,
       statusIndicatorBloc,
-      backupBloc
+      backupBloc,
+      blocsByType
     );
-  }
+  }  
 
   AppBlocs._(    
     this.userProfileBloc, 
@@ -45,6 +57,7 @@ class AppBlocs {
     this.invoicesBloc,
     this.connectPayBloc,
     this.statusIndicatorBloc,
-    this.backupBloc
+    this.backupBloc,
+    this._blocsByType,
   );
 }

@@ -54,7 +54,7 @@ class _NavigationDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
+
     List<Widget> children = List<Widget>();
     _drawerGroupedItems.forEach((gropuItems) {
       children.addAll(_createDrawerGroupWidgets(gropuItems, context,
@@ -74,7 +74,7 @@ class _NavigationDrawer extends StatelessWidget {
       DrawerItemConfigGroup group, BuildContext context,
       {bool withDivider = false}) {
     List<Widget> groupItems = group.items
-        .map((action) => _actionTile(action, context, _onItemSelected))
+        .map((action) => _actionTile(action, context, action.onItemSelected ?? _onItemSelected))
         .toList();
     if (group.groupTitle != null && groupItems.length > 0) {
       groupItems = List<Widget>()
