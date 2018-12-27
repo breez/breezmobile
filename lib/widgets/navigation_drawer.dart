@@ -197,7 +197,7 @@ class _ExpansionTile extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          children: items,
+          children: items.map((item) => Padding(padding: EdgeInsets.only(left: 28.0), child: item)).toList(),
         ));
   }
 }
