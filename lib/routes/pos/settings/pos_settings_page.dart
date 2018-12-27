@@ -1,33 +1,24 @@
 import 'dart:async';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
 import 'package:breez/bloc/pos_profile/pos_profile_model.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/widgets/avatar_picker.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/theme_data.dart' as theme;
 
-class PosSettingsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocConnector<AppBlocs>((context, blocs) => new _ProfileLoaderWidget(blocs.posProfileBloc));
-  }
-}
-
-class _ProfileLoaderWidget extends StatelessWidget {
-  final POSProfileBloc _posProfileBloc;
-  _ProfileLoaderWidget(this._posProfileBloc);
+class PosSettingsPage extends StatelessWidget { 
 
   @override
   Widget build(BuildContext context) {
+    var posProfileBloc = AppBlocsProvider.of(context).posProfileBloc;
     return new StreamBuilder<POSProfileModel>(
-        stream: _posProfileBloc.posProfileStream,
+        stream: posProfileBloc.posProfileStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return _PosSettingsPage(_posProfileBloc, snapshot.data);
+            return _PosSettingsPage(posProfileBloc, snapshot.data);
           }
 
           return StaticLoader();
