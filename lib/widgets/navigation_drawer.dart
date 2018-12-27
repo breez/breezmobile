@@ -9,157 +9,102 @@ import 'package:breez/widgets/breez_avatar_dialog.dart';
 import 'package:breez/widgets/breez_drawer_header.dart';
 
 class DrawerItemConfig {
-  final String _name;
-  final String _title;
-  final String _icon;
+  final String name;
+  final String title;
+  final String icon;
   final void Function(String name) onItemSelected;
 
-  DrawerItemConfig(this._name, this._title, this._icon, {this.onItemSelected});
+  DrawerItemConfig(this.name, this.title, this.icon, {this.onItemSelected});
+}
 
-  String get name {
-    return _name;
-  }
+class DrawerItemConfigGroup {
+  final List<DrawerItemConfig> items;
+  final String groupTitle;
+  final String groupAssetImage;
 
-  String get title {
-    return _title;
-  }
-
-  String get icon {
-    return _title;
-  }
+  DrawerItemConfigGroup(this.items, {this.groupTitle, this.groupAssetImage});
 }
 
 class NavigationDrawer extends StatelessWidget {
   NavigationDrawer(
       this._avatar,
-      this._screensConfig,
-      this._majorActionsFundsConfig,
-      this._majorActionsPayConfig,
-      this._minorActionsCardConfig,
-      this._minorActionsInvoiceConfig,
-      this._minorActionsDevConfig,
+      //this._screensConfig,
+      this._drawerGroupedItems,
       this._onItemSelected);
   final bool _avatar;
-  final List<DrawerItemConfig> _screensConfig;
-  final List<DrawerItemConfig> _majorActionsFundsConfig;
-  final List<DrawerItemConfig> _majorActionsPayConfig;
-  final List<DrawerItemConfig> _minorActionsCardConfig;
-  final List<DrawerItemConfig> _minorActionsInvoiceConfig;
-  final List<DrawerItemConfig> _minorActionsDevConfig;
+  final List<DrawerItemConfigGroup> _drawerGroupedItems;
   final void Function(String screenName) _onItemSelected;
 
   @override
   Widget build(BuildContext context) {
     return new BlocConnector<AppBlocs>((context, blocs) =>
-    new _NavigationDrawer(
-        _avatar,
-        _screensConfig,
-        _majorActionsFundsConfig,
-        _majorActionsPayConfig,
-        _minorActionsCardConfig,
-        _minorActionsInvoiceConfig,
-        _minorActionsDevConfig,
-        _onItemSelected,
-        blocs.userProfileBloc));
+        new _NavigationDrawer(_avatar, _drawerGroupedItems, _onItemSelected,
+            blocs.userProfileBloc));
   }
 }
 
 class _NavigationDrawer extends StatelessWidget {
   final bool _avatar;
-  final List<DrawerItemConfig> _screensConfig;
-  final List<DrawerItemConfig> _majorActionsFundsConfig;
-  final List<DrawerItemConfig> _majorActionsPayConfig;
-  final List<DrawerItemConfig> _minorActionsCardConfig;
-  final List<DrawerItemConfig> _minorActionsInvoiceConfig;
-  final List<DrawerItemConfig> _minorActionsDevConfig;
+  final List<DrawerItemConfigGroup> _drawerGroupedItems;
   final void Function(String screenName) _onItemSelected;
   final UserProfileBloc _userProfileBloc;
 
-  _NavigationDrawer(
-      this._avatar,
-      this._screensConfig,
-      this._majorActionsFundsConfig,
-      this._majorActionsPayConfig,
-      this._minorActionsCardConfig,
-      this._minorActionsInvoiceConfig,
-      this._minorActionsDevConfig,
-      this._onItemSelected,
-      this._userProfileBloc);
+  _NavigationDrawer(this._avatar, this._drawerGroupedItems,
+      this._onItemSelected, this._userProfileBloc);
 
   @override
   Widget build(BuildContext context) {
-    if (_majorActionsPayConfig != null && _minorActionsCardConfig != null) {
-      return new Drawer(
+    
+    List<Widget> children = List<Widget>();
+    _drawerGroupedItems.forEach((gropuItems) {
+      children.addAll(_createDrawerGroupWidgets(gropuItems, context,
+          withDivider: children.length > 0));
+    });
+
+    children.insert(0, _breezDrawerHeader(_userProfileBloc, _avatar));
+
+    return new Drawer(
         child: new ListView(
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.only(bottom: 20.0),
-            children: <Widget>[
-              _breezDrawerHeader(_userProfileBloc, _avatar),
-            ]
-              ..addAll(_majorActionsFundsConfig
-                  .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
-                  )
-                  .toList())
-              ..add(new Padding(
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Divider()))
-              ..addAll(_majorActionsPayConfig
-                  .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
-                  )
-                  .toList())
-              ..add(new Padding(
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Divider()))
-              ..add(_expansionTile(context, "Card", AssetImage("src/icon/card.png"), _minorActionsCardConfig, _onItemSelected))
-              ..add(new Padding(
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Divider()))
-              ..addAll(_minorActionsInvoiceConfig
-                  .map(
-                    (action) => _actionTile(action, context, action.onItemSelected ?? _onItemSelected),
-              )
-                  .toList())
-              ..add(new Padding(
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Divider()))
-              ..addAll(_minorActionsDevConfig
-                  .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
-                  )
-                  .toList())),
-      );
-    } else {
-      return new Drawer(
-        child: new ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              _breezDrawerHeader(_userProfileBloc, _avatar)
-            ]
-              ..addAll(_majorActionsFundsConfig
-                  .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
-                  )
-                  .toList())
-              ..add(new Padding(
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Divider()))
-              ..addAll(_minorActionsDevConfig
-                  .map(
-                    (action) => _actionTile(action, context, _onItemSelected),
-                  )
-                  .toList())),
-      );
+            children: children));
+  }
+
+  List<Widget> _createDrawerGroupWidgets(
+      DrawerItemConfigGroup group, BuildContext context,
+      {bool withDivider = false}) {
+    List<Widget> groupItems = group.items
+        .map((action) => _actionTile(action, context, _onItemSelected))
+        .toList();
+    if (group.groupTitle != null && groupItems.length > 0) {
+      groupItems = List<Widget>()
+        ..add(_ExpansionTile(
+            items: groupItems,
+            title: group.groupTitle,
+            icon: AssetImage(group.groupAssetImage)));
     }
+
+    if (groupItems.length > 0 && withDivider) {
+      groupItems.insert(0, _ListDivider());
+    }
+    return groupItems;
+  }
+}
+
+class _ListDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.only(left: 8.0, right: 8.0), child: Divider());
   }
 }
 
 Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return new BreezDrawerHeader(
     padding: EdgeInsets.only(top: 54.0, left: 16.0),
-    child: !drawAvatar ? new Container() : new StreamBuilder<BreezUserModel>(
+    child: !drawAvatar
+        ? new Container()
+        : new StreamBuilder<BreezUserModel>(
             stream: user.userStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -184,9 +129,9 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                       child: new Row(
                         children: <Widget>[
                           new Text(
-                                snapshot.data.name ?? "No Name",
-                                style: theme.navigationDrawerHandleStyle,
-                              ),
+                            snapshot.data.name ?? "No Name",
+                            style: theme.navigationDrawerHandleStyle,
+                          ),
                         ],
                       ),
                     ),
@@ -201,12 +146,15 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
 }
 
 Widget _actionTile(
-    DrawerItemConfig action, BuildContext context, Function onItemSelected, [bool subTile]) {
+    DrawerItemConfig action, BuildContext context, Function onItemSelected,
+    [bool subTile]) {
   return new Padding(
-    padding: subTile != null ? EdgeInsets.only(left: 36.0, right: 8.0) : EdgeInsets.only(left: 8.0, right: 8.0),
+    padding: subTile != null
+        ? EdgeInsets.only(left: 36.0, right: 8.0)
+        : EdgeInsets.only(left: 8.0, right: 8.0),
     child: new ListTile(
       leading: ImageIcon(
-        AssetImage(action._icon),
+        AssetImage(action.icon),
         size: 24.0,
         color: Colors.white,
       ),
@@ -219,14 +167,37 @@ Widget _actionTile(
   );
 }
 
-Widget _expansionTile(BuildContext context, String title, AssetImage icon, List<DrawerItemConfig> config, Function onItemSelected){
-  final _expansionTileTheme = Theme.of(context).copyWith(dividerColor: Theme.of(context).canvasColor);
-  return Theme(data: _expansionTileTheme, child:ExpansionTile(
-    title: Padding(
-      padding: EdgeInsets.only(left:8.0, right: 8.0), child:Text(title,style: theme.drawerItemTextStyle,),),
-    leading: Padding(padding: EdgeInsets.only(left:8.0),child:ImageIcon(icon, size: 24.0,
-      color: Colors.white,),),
-    children:
-    config.map((action) => _actionTile(action, context, onItemSelected, true)).toList(),
-  ));
+class _ExpansionTile extends StatelessWidget {
+  final List<Widget> items;
+  final String title;
+  final AssetImage icon;
+
+  const _ExpansionTile({Key key, this.items, this.title, this.icon})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final _expansionTileTheme =
+        Theme.of(context).copyWith(dividerColor: Theme.of(context).canvasColor);
+    return Theme(
+        data: _expansionTileTheme,
+        child: ExpansionTile(
+          title: Padding(
+            padding: EdgeInsets.only(left: 8.0, right: 8.0),
+            child: Text(
+              title,
+              style: theme.drawerItemTextStyle,
+            ),
+          ),
+          leading: Padding(
+            padding: EdgeInsets.only(left: 8.0),
+            child: ImageIcon(
+              icon,
+              size: 24.0,
+              color: Colors.white,
+            ),
+          ),
+          children: items,
+        ));
+  }
 }

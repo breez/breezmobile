@@ -19,15 +19,18 @@ class PosHome extends StatefulWidget {
 
   final List<DrawerItemConfig> _majorActions =
       new List<DrawerItemConfig>.unmodifiable([
-        new DrawerItemConfig("/transactions", "Transactions","src/icon/transactions.png"),
-        new DrawerItemConfig("/withdraw_funds", "Remove Funds", "src/icon/withdraw_funds.png"),
-        new DrawerItemConfig("/settings", "Settings","src/icon/settings.png")
-      ]);
+    new DrawerItemConfig(
+        "/transactions", "Transactions", "src/icon/transactions.png"),
+    new DrawerItemConfig(
+        "/withdraw_funds", "Remove Funds", "src/icon/withdraw_funds.png"),
+    new DrawerItemConfig("/settings", "Settings", "src/icon/settings.png")
+  ]);
 
   final List<DrawerItemConfig> _minorActions =
-      new List<DrawerItemConfig>.unmodifiable([           
-          new DrawerItemConfig("/developers", "Developers","src/icon/developers.png"),
-        ]);
+      new List<DrawerItemConfig>.unmodifiable([
+    new DrawerItemConfig(
+        "/developers", "Developers", "src/icon/developers.png"),
+  ]);
 
   @override
   State<StatefulWidget> createState() {
@@ -49,20 +52,36 @@ class PosHomeState extends State<PosHome> {
     return new Scaffold(
         key: _scaffoldKey,
         appBar: new AppBar(
-           actions: <Widget>[
+          actions: <Widget>[
             Padding(
               padding: const EdgeInsets.all(14.0),
-              child: AccountRequiredActionsIndicator(widget.backupBloc, widget.accountBloc),
-            ),],
-          leading: new IconButton(icon: ImageIcon(AssetImage("src/icon/hamburger.png"),size: 24.0,color: null,),
+              child: AccountRequiredActionsIndicator(
+                  widget.backupBloc, widget.accountBloc),
+            ),
+          ],
+          leading: new IconButton(
+              icon: ImageIcon(
+                AssetImage("src/icon/hamburger.png"),
+                size: 24.0,
+                color: null,
+              ),
               onPressed: () => _scaffoldKey.currentState.openDrawer()),
-          title: new Image.asset("src/images/logo-color.png",height: 23.5,width: 62.7,),
+          title: new Image.asset(
+            "src/images/logo-color.png",
+            height: 23.5,
+            width: 62.7,
+          ),
           iconTheme: new IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
           backgroundColor: theme.whiteColor,
           elevation: 0.0,
         ),
-        drawer: new NavigationDrawer(false, widget._screens, widget._majorActions, null,
-            null, null, widget._minorActions, _onNavigationItemSelected),
+        drawer: new NavigationDrawer(
+            false,
+            [
+              DrawerItemConfigGroup(widget._majorActions),
+              DrawerItemConfigGroup(widget._minorActions),
+            ],
+            _onNavigationItemSelected),
         body: new Builder(builder: (BuildContext context) {
           return POSInvoice();
         }));

@@ -55,9 +55,7 @@ class Home extends StatefulWidget {
   final List<DrawerItemConfig> _majorActionsPay =
       new List<DrawerItemConfig>.unmodifiable([
     new DrawerItemConfig(
-        "/connect_to_pay", "Connect to Pay", "src/icon/connect_to_pay.png"),
-    new DrawerItemConfig(
-        "/pay_nearby", "Pay Someone Nearby", "src/icon/pay.png"),
+        "/connect_to_pay", "Connect to Pay", "src/icon/connect_to_pay.png")
   ]);
 
   final List<DrawerItemConfig> _minorActionsCard =
@@ -186,12 +184,13 @@ class HomeState extends State<Home> {
         ),
         drawer: new NavigationDrawer(
             true,
-            filterItems(widget._screens),
-            filterItems(widget._majorActionsFunds),
-            filterItems(widget._majorActionsPay),
-            filterItems(widget._minorActionsCard),
-            filterItems(widget._minorActionsInvoice),
-            filterItems(widget._minorActionsDev),
+            [
+              DrawerItemConfigGroup(filterItems(widget._majorActionsFunds)),
+              DrawerItemConfigGroup(filterItems(widget._majorActionsPay)),
+              DrawerItemConfigGroup(filterItems(widget._minorActionsInvoice)),
+              DrawerItemConfigGroup(filterItems(widget._minorActionsCard), groupTitle: "Card", groupAssetImage: "src/icon/card.png"),            
+              DrawerItemConfigGroup(filterItems(widget._minorActionsDev))
+            ],
             _onNavigationItemSelected),
         body: widget._screenBuilders[_activeScreen]);
   }
