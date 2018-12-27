@@ -1,6 +1,8 @@
-import 'package:breez/bloc/app_blocs.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +21,12 @@ class PosApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppBlocs appBlocs = AppBlocsProvider.of(context);
+    BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     return StreamBuilder(
-        stream: appBlocs.userProfileBloc.userStream,
+        stream: userProfileBloc.userStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: Loader());
@@ -32,19 +36,19 @@ class PosApp extends StatelessWidget {
           return MaterialApp(
             title: 'Breez POS',
             initialRoute: user.registered ? null : '/intro',
-            home: PosHome(appBlocs.accountBloc, appBlocs.backupBloc),
+            home: PosHome(accountBloc, backupBloc),
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
                 case '/home':
                   return new FadeInRoute(
                     builder: (_) =>
-                        new PosHome(appBlocs.accountBloc, appBlocs.backupBloc),
+                        new PosHome(accountBloc, backupBloc),
                     settings: settings,
                   );
                 case '/intro':
                   return new FadeInRoute(
                     builder: (_) => new InitialWalkthroughPage(
-                        appBlocs.userProfileBloc, appBlocs.backupBloc, true),
+                        userProfileBloc, backupBloc, true),
                     settings: settings,
                   );
                 case '/transactions':

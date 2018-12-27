@@ -1,6 +1,11 @@
 import 'dart:ui';
+import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
+import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/get_refund/get_refund_page.dart';
 import 'package:breez/routes/user/withdraw_funds/send_coins_dialog.dart';
 import 'package:breez/widgets/static_loader.dart';
@@ -8,7 +13,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/routes/shared/splash_page.dart';
 import 'package:breez/routes/shared/initial_walkthrough.dart';
 import 'package:breez/routes/shared/dev/dev.dart';
@@ -28,10 +32,14 @@ class UserApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppBlocs blocs = AppBlocsProvider.of(context);
+    var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    var invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    var userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    var backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    var connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
 
     return StreamBuilder(
-        stream: blocs.userProfileBloc.userStream,
+        stream: userProfileBloc.userStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return StaticLoader();
@@ -55,23 +63,23 @@ class UserApp extends StatelessWidget {
               cardColor: Color.fromRGBO(5, 93, 235, 1.0),
             ),
             initialRoute: user.registered ? null : '/splash',
-            home: new Home(blocs.accountBloc, blocs.invoicesBloc,
-                blocs.connectPayBloc, blocs.backupBloc),
+            home: new Home(accountBloc, invoiceBloc,
+                connectPayBloc, backupBloc),
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
                 case '/home':
                   return new FadeInRoute(
                     builder: (_) => new Home(
-                        blocs.accountBloc,
-                        blocs.invoicesBloc,
-                        blocs.connectPayBloc,
-                        blocs.backupBloc),
+                        accountBloc,
+                        invoiceBloc,
+                        connectPayBloc,
+                        backupBloc),
                     settings: settings,
                   );
                 case '/intro':
                   return new FadeInRoute(
                     builder: (_) => new InitialWalkthroughPage(
-                        blocs.userProfileBloc, blocs.backupBloc, false),
+                        userProfileBloc, backupBloc, false),
                     settings: settings,
                   );
                 case '/order_card':
@@ -98,7 +106,7 @@ class UserApp extends StatelessWidget {
                   return new MaterialPageRoute(
                     fullscreenDialog: true,
                     builder: (_) =>
-                        new SendWalletFundsDialog(blocs.accountBloc),
+                        new SendWalletFundsDialog(accountBloc),
                     settings: settings,
                   );
                 case '/get_refund':
