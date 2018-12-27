@@ -1,7 +1,6 @@
 import 'dart:async';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/bloc/app_blocs.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/pos/transactions/pos_payments_list.dart';
@@ -12,54 +11,50 @@ import 'package:breez/theme_data.dart' as theme;
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
-class PosTransactionsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocConnector<AppBlocs>((context, blocs) => new _PosTransactionsPage(blocs.accountBloc));
-  }
-}
-
-class _PosTransactionsPage extends StatefulWidget {
-  final AccountBloc _accountBloc;
-
-  _PosTransactionsPage(this._accountBloc);
-
+class PosTransactionsPage extends StatefulWidget {  
   @override
   State<StatefulWidget> createState() {
-    return _PosTransactionsState();
+    return PosTransactionsPageSate();
   }
 }
 
-class _PosTransactionsState extends State<_PosTransactionsPage> {
+class PosTransactionsPageSate extends State<PosTransactionsPage> {
   final String _title = "Transactions";
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final ScrollController _scrollController = new ScrollController();
 
+  AccountBloc _accountBloc;
   StreamSubscription<String> _accountActionsSubscription;
 
-  @override
-  void initState() {
-    super.initState();
-    _accountActionsSubscription = widget._accountBloc.accountActionsStream.listen((data) {}, onError: (e) {
+  @override 
+  void didChangeDependencies() {      
+      super.didChangeDependencies();
+      closeListeners();
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+      _accountActionsSubscription = _accountBloc.accountActionsStream.listen((data) {}, onError: (e) {
       _scaffoldKey.currentState
           .showSnackBar(new SnackBar(duration: new Duration(seconds: 10), content: new Text(e.toString())));
-    });
-  }
+      });
+    }
 
   @override
   dispose() {
-    _accountActionsSubscription.cancel();
+    closeListeners();
     super.dispose();
+  }
+
+  void closeListeners(){
+    _accountActionsSubscription?.cancel();    
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AccountModel>(
-            stream: widget._accountBloc.accountStream,
+            stream: _accountBloc.accountStream,
             builder: (context, snapshot) {
               AccountModel account = snapshot.data;
               return StreamBuilder<PaymentsModel>(
-                  stream: widget._accountBloc.paymentsStream,
+                  stream: _accountBloc.paymentsStream,
                   builder: (context, snapshot) {
                     PaymentsModel paymentsModel;
                     if (snapshot.hasData) {
@@ -106,7 +101,7 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
             showDialog(
                 context: context,
                 builder: (_) => CalendarDialog(context, paymentsModel.firstDate)).then(((result) =>
-                widget._accountBloc.paymentFilterSink.add(
+                _accountBloc.paymentFilterSink.add(
                     paymentsModel.filter.copyWith(startDate: result[0], endDate: result[1]))))));
   }
 
@@ -147,7 +142,7 @@ class _PosTransactionsState extends State<_PosTransactionsPage> {
       children: <Widget>[Padding(padding: EdgeInsets.only(left: 16.0),
         child: Chip(label: new Text(DateUtils.formatFilterDateRange(filter.startDate, filter.endDate)),
           onDeleted: () =>
-              widget._accountBloc.paymentFilterSink.add(PaymentFilterModel(
+              _accountBloc.paymentFilterSink.add(PaymentFilterModel(
                   filter.paymentType, null,
                   null)),),)
       ],);
