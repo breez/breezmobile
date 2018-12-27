@@ -5,7 +5,6 @@ import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/pos/transactions/pos_payments_list.dart';
-import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
