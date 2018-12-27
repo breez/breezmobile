@@ -13,7 +13,7 @@ class PosSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var posProfileBloc = AppBlocsProvider.of(context).posProfileBloc;
+    var posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);
     return new StreamBuilder<POSProfileModel>(
         stream: posProfileBloc.posProfileStream,
         builder: (context, snapshot) {
