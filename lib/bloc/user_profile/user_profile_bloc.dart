@@ -178,7 +178,11 @@ class UserProfileBloc {
   }
 
   void _publishUser(BreezUserModel user) {
-    print ("UserProfileBloc before _publishUser token = " + user?.token);
+    if (user?.token == null) {
+      print ("UserProfileBloc publish first user null token");
+    } else {
+      print ("UserProfileBloc before _publishUser token = " + user.token);
+    }
     _userStreamController.add(user);
     _userStreamPreviewController.add(user);
   }
