@@ -39,7 +39,7 @@ class AccountModel {
       ..status = Account_AccountStatus.WAITING_DEPOSIT
       ..maxAllowedToReceive = Int64(0)
       ..maxPaymentAmount = Int64(0)      
-      , Currency.BTC, initial: true);
+      , Currency.SAT, initial: true);
   AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply_FundStatus addedFundsStatus, String paymentRequestInProgress, bool connected, Int64 onChainFeeRate, bool bootstraping}) {
     return AccountModel(
       accountResponse ?? this._accountResponse, 
