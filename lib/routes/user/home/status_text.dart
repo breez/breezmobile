@@ -37,7 +37,7 @@ class _StatusTextState extends State<StatusText> {
   @override
   Widget build(BuildContext context) {
     return widget._statusMessage == null
-        ? LoadingAnimatedText("Start using Breez\nby adding funds to your balance.")
+        ? Text("Start using Breez\nby adding funds to your balance.", textAlign: TextAlign.center)
         : LoadingAnimatedText(widget._statusMessage);        
   }
 
