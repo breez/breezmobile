@@ -35,14 +35,18 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return new Stack(
-      alignment: AlignmentDirectional.center,
-      children: <Widget>[
-        Positioned(child: Text(widget._loadingMessage + "...", style: widget.textStyle.copyWith(color: Colors.transparent))),
-        Positioned(child: Text(widget._loadingMessage + loadingDots, style: widget.textStyle,), left: 0.0),        
-      ]);      
+  Widget build(BuildContext context) {   
+    return RichText(
+      text: TextSpan(
+        style: DefaultTextStyle.of(context).style,
+        text: widget._loadingMessage,
+        children:<TextSpan>[
+          TextSpan(text: loadingDots),
+          TextSpan(text: paddingDots, style: TextStyle(color: Colors.transparent))
+        ]), 
+      textAlign: TextAlign.center);    
   }
 
   String get loadingDots => '${List.filled(_timerIteration % 4, ".").join("")}';
+  String get paddingDots => '${List.filled(3 - _timerIteration % 4, ".").join("")}';
 }
