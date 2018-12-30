@@ -56,6 +56,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   RemoteSession _currentSession;
   Object _error;
   bool _destroySessionOnTerminate = true;
+  bool canceledByMe = false;
 
   @override
   void initState() {
@@ -95,7 +96,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
       }
     });
     cancelSessionSubscription.onDone(() {
-      _popWithMessage(null);
+      _popWithMessage(canceledByMe ? null : '${_remoteUserName ?? (_payer ? "Payee" : "Payer")} has cancelled the payment session');
     });
   }
 
@@ -129,6 +130,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
         _key.currentContext, null, Text(exitSessionMessage, style: textStyle),
         textStyle: textStyle);
     if (cancel) {
+      canceledByMe = true;
       _currentSession.terminate(permanent: true);      
     }
   }
