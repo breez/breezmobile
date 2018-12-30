@@ -35,7 +35,7 @@ class ConnectToPayPage extends StatelessWidget {
 class _ConnectToPayPage extends StatefulWidget {
   final ConnectPayBloc _connectPayBloc;
   final AccountBloc _accountBloc;
-  final RemoteSession _currentSession;
+  final RemoteSession _currentSession;  
 
   const _ConnectToPayPage(
       this._connectPayBloc, this._accountBloc, this._currentSession);
@@ -55,6 +55,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   RemoteSession _currentSession;
   Object _error;
+  bool _destroySessionOnTerminate = true;
 
   @override
   void initState() {
@@ -75,7 +76,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
     });
 
     cancelSessionSubscription =
-        _currentSession.paymentSessionStateStream.listen((s) {
+        _currentSession.paymentSessionStateStream.listen((s) {      
       if (_remoteUserName == null) {
         _remoteUserName =
             (_payer ? s.payeeData?.userName : s.payerData?.userName);
@@ -105,14 +106,6 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
     }
   }
 
-  void _resetSession() {
-    _clearSession().then((_) {
-      setState(() {
-        _initSession();
-      });
-    });
-  }
-
   Future _clearSession() async {
     _remoteUserName = null;    
     await cancelSessionSubscription.cancel();
@@ -122,7 +115,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   @override
   void dispose() {
     if (_currentSession != null) {
-      _currentSession.terminate();
+      _currentSession.terminate(permanent: _destroySessionOnTerminate);
       _clearSession();
     }
     super.dispose();
@@ -141,6 +134,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
   }
 
   void _onBackPressed() async {
+    _destroySessionOnTerminate = false;
     Navigator.pop(_key.currentContext);
   }
 
