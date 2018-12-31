@@ -39,21 +39,15 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        log("FCM notification received!", remoteMessage.toString());
-
+        Log.i(TAG, "FCM notification received!");
         Intent intent = new Intent(ACTION_REMOTE_MESSAGE);
         intent.putExtra(EXTRA_REMOTE_MESSAGE, remoteMessage);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         // Only show notifications if we are in the background
-        if (BreezApplication.isBackground) {
+        if (BreezApplication.isBackground || !BreezApplication.isRunning) {
             Map<String, String> data = remoteMessage.getData();
-            if (data.get("collapseKey") != null && data.get("collapseKey").equals("breez")) {
-                ShowPaymentNotification(data, remoteMessage);
-            }
-            else {
-                ShowNotification(data, remoteMessage);
-            }
+            ShowNotification(data, remoteMessage);
         }
     }
 
@@ -68,13 +62,18 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
 
+        String buttonTitle = data.get("button");
+        if (buttonTitle == null) {
+            buttonTitle = "Open";
+        }
+
         NotificationCompat.Action action =
                 new NotificationCompat.Action.Builder(ic_delete,
-                        "Open", approvePendingIntent)
+                        buttonTitle, approvePendingIntent)
                         .build();
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "channel_id")
-                .setContentTitle("Breez")
+                .setContentTitle(data.get("title"))
                 .setContentText(data.get("body"))
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
@@ -87,13 +86,11 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setSmallIcon(R.mipmap.breez_notify)
                 .addAction(action)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(data.get("body")))
                 .setPriority(2);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel notificationChannel = null;
-
-        // Cancel any other notification from Breez
-        notificationManager.cancelAll();
+        NotificationChannel notificationChannel;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String CHANNEL_ID = "channel_id";
@@ -104,60 +101,6 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
-    }
-
-    private void ShowPaymentNotification(Map<String, String> data, RemoteMessage remoteMessage) {
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-        PendingIntent approvePendingIntent = PendingIntent.getBroadcast(
-                this,
-                REQUEST_CODE_OPEN,
-                new Intent(this, NotificationActionReceiver.class)
-                        .putExtra(KEY_INTENT_APPROVE, REQUEST_CODE_OPEN)
-                        .putExtra(EXTRA_REMOTE_MESSAGE, remoteMessage),
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
-
-        NotificationCompat.Action action =
-                new NotificationCompat.Action.Builder(ic_delete,
-                        "Open", approvePendingIntent)
-                        .build();
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "channel_id")
-                .setContentTitle(data.get("payee"))
-                .setContentText("is requesting you to pay " + data.get("amount") + " Sat")
-                .setAutoCancel(true)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setContentIntent(approvePendingIntent)
-                .setContentInfo("CONTENT")
-                .setLargeIcon(icon)
-                .setColor(0xFF0089f9)
-                .setLights(0xFF0089f9, 1000, 300)
-                .setColorized(true)
-                .setDefaults(Notification.DEFAULT_VIBRATE)
-                .setSmallIcon(R.mipmap.breez_notify)
-                .addAction(action)
-                .setPriority(2);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel notificationChannel = null;
-
-        // Cancel any other notification from Breez
-        notificationManager.cancelAll();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String CHANNEL_ID = "channel_id";
-            CharSequence name = "Breez";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            notificationChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
-    }
-
-    void log(String str, String str2) {
-        Bindings.log(str, "WARNING");
-        Log.d(TAG, str + "\n" + str2);
     }
 }
 
