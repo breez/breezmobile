@@ -120,7 +120,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
 
     @Override
     public void onPostResume() {
-        Bindings.onResume();
+        _executor.execute(() -> Bindings.onResume());
     }
 
     private class BreezTask implements  Runnable {

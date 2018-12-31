@@ -47,8 +47,7 @@ class InvoiceBloc {
     _listenNFCStream(nfc, server, breezLib);
     _listenIncomingInvoices(notificationsService, breezLib, nfc, lightningLinks, device);
     _listenIncomingBlankInvoices(breezLib, nfc);
-    _listenPaidInvoices(breezLib);
-    _listenDecodeInvoiceRequests(breezLib);
+    _listenPaidInvoices(breezLib);    
   }
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
@@ -61,16 +60,6 @@ class InvoiceBloc {
           _readyInvoicesController.add(paymentRequest);
         })
         .catchError(_readyInvoicesController.addError);
-    });
-  }
-
-  void _listenDecodeInvoiceRequests(BreezBridge breezLib) {
-    _decodeInvoiceController.stream.listen((bolt11){
-      breezLib.decodePaymentRequest(bolt11)
-          .then( (paymentRequest) {
-        _receivedInvoicesController.add(PaymentRequestModel(paymentRequest, bolt11));
-      })
-          .catchError(_receivedInvoicesController.addError);
     });
   }
 
@@ -112,13 +101,18 @@ class InvoiceBloc {
           }
         }),
       nfc.receivedBolt11s(),
+      _decodeInvoiceController.stream,
       links.linksNotifications,
       device.deviceClipboardStream
-        .where((s) => s.startsWith("ln") || s.startsWith("lightning:"))
-        .map((s) {
-          return s.startsWith("ln") ? s : s.substring(10);          
-    })
+        .where((s) => s.toLowerCase().startsWith("ln") || s.toLowerCase().startsWith("lightning:"))        
     ])
+    .map((s) {
+      String lower = s.toLowerCase();
+      if (lower.startsWith("lightning:")) {
+        return s.substring(10);
+      }
+      return s;
+    })
     .asyncMap( (paymentRequest) {       
       return breezLib.decodePaymentRequest(paymentRequest)
         .then( (invoice) => new PaymentRequestModel(invoice, paymentRequest));          

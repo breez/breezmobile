@@ -12,6 +12,7 @@ public class LightningLinks implements EventChannel.StreamHandler {
     public static final String STREAM_NAME = "com.breez.client/lightning_links_stream";
 
     private EventChannel.EventSink m_eventsListener;
+    private String m_startLink;
 
     public LightningLinks(PluginRegistry.Registrar registrar) {
         new EventChannel(registrar.messenger(), STREAM_NAME).setStreamHandler(this);
@@ -21,11 +22,16 @@ public class LightningLinks implements EventChannel.StreamHandler {
                 return checkLinkOnIntent(intent);
             }
         });
+        checkLinkOnIntent(registrar.activity().getIntent());
     }
 
     @Override
     public void onListen(Object args, final EventChannel.EventSink events){
         m_eventsListener = events;
+        if (m_startLink != null) {
+            m_eventsListener.success(m_startLink);
+            m_startLink = null;
+        }
     }
 
     @Override
@@ -37,8 +43,13 @@ public class LightningLinks implements EventChannel.StreamHandler {
         if (intent != null
                 && intent.getAction().equals(ACTION_VIEW)
                 && intent.getData() != null
-                && intent.getScheme().contains("lightning")) {
-            m_eventsListener.success(intent.getDataString().substring(10));
+                && intent.getScheme().toLowerCase().contains("lightning")) {
+            String link = intent.getDataString();
+            if (m_eventsListener != null) {
+                m_eventsListener.success(link);
+            } else {
+                m_startLink = link;
+            }
             return true;
         }
         return false;
