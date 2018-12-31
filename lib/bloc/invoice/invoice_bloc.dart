@@ -91,14 +91,9 @@ class InvoiceBloc {
   void _listenIncomingInvoices(Notifications notificationService, BreezBridge breezLib, NFCService nfc, LightningLinksService links, Device device) {
     Observable<String>.merge([
       Observable(notificationService.notifications)      
-        .where((message) => message["msg"] == "Payment request" || message.containsKey("payment_request"))
-        .asyncMap((message) {
-          if (message.containsKey("payment_request")) {
-            return message["payment_request"];
-          }
-          else {
-            return message["invoice"];
-          }
+        .where((message) => message.containsKey("payment_request"))
+        .map((message) {
+          return message["payment_request"];
         }),
       nfc.receivedBolt11s(),
       _decodeInvoiceController.stream,
