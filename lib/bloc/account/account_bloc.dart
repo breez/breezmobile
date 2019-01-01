@@ -166,11 +166,10 @@ class AccountBloc {
       };
 
       refreshRefundableAddresses();
-      Observable.merge([
-        device.eventStream.where((e) => e == NotificationType.RESUME),
-        breezLib.notificationStream.where((n) => n.type == NotificationEvent_NotificationType.FUND_ADDRESS_UNSPENT_CHANGED)
-      ])
-      .listen((e) => print("test"));      
+      breezLib.notificationStream.where(
+        (n) => n.type == NotificationEvent_NotificationType.FUND_ADDRESS_UNSPENT_CHANGED
+      )
+      .listen((e) => refreshRefundableAddresses());      
     }
 
     void _listenRefundBroadcasts(BreezBridge breezLib){
@@ -196,15 +195,14 @@ class AccountBloc {
       Future connectingFuture = Future.value(null);
       _reconnectStreamController.stream.transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
       .listen((_) async {                 
-        connectingFuture = connectingFuture.whenComplete(() async {             
-          log.info('_listenReconnects: got Reconnect request _alloReconnect=$_allowReconnect connected=${_accountController.value.connected}');  
+        connectingFuture = connectingFuture.whenComplete(() async {                       
           if (_allowReconnect == true && _accountController.value.connected == false) { 
             log.info("_listenReconnects: checking node conflicts before reconnecting...");
             await _checkNodeConflict(breezLib);
             log.info("_listenReconnects: no conflict detected, reconnecting...");
             await breezLib.connectAccount();
           }
-        });        
+        }).catchError((e){});        
       });
     }
 
@@ -218,8 +216,7 @@ class AccountBloc {
 
         device.eventStream.where((e) => e == NotificationType.RESUME).listen((e){
           log.info("App Resumed - flutter resume called, adding reconnect request");        
-          _reconnectSink.add(null);          
-          _fetchFundStatus(breezLib);
+          _reconnectSink.add(null);         
         });
     }
 
@@ -242,6 +239,7 @@ class AccountBloc {
               breezLib.startLightning();
               _checkNodeConflict(breezLib);            
               _refreshAccount(breezLib);            
+              _fetchFundStatus(breezLib);
               _listenConnectivityChanges(breezLib);
               _listenReconnects(breezLib);
               _listenRefundableDeposits(breezLib, device);
@@ -372,18 +370,17 @@ class AccountBloc {
     }
   
     _refreshAccount(BreezBridge breezLib){    
-      print("Account bloc refreshing account...");              
+      print("Account bloc refreshing account...");      
       breezLib.getAccount()
         .then((acc) {
           print("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());
           _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser.currency, bootstraping: false));          
         })
         .catchError(_accountController.addError);
-      _refreshPayments(breezLib);
-      _fetchFundStatus(breezLib);
+      _refreshPayments(breezLib);      
       if (_accountController.value.onChainFeeRate == null) {
         breezLib.getDefaultOnChainFeeRate().then((rate) => _accountController.add(_accountController.value.copyWith(onChainFeeRate: rate)));     
-      }
+      }      
     }
 
     void _listenRoutingNodeConnectionChanges(BreezBridge breezLib) {
