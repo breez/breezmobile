@@ -12,12 +12,15 @@ import io.flutter.plugin.common.PluginRegistry;
 import bindings.*;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class LifecycleEvents implements StreamHandler, ActivityLifecycleListener {
 
     public static final String EVENTS_STREAM_NAME = "com.breez.client/lifecycle_events_notifications";
 
     private EventChannel.EventSink m_eventsListener;
+    private Executor _executor = Executors.newCachedThreadPool();
 
     public LifecycleEvents(PluginRegistry.Registrar registrar) {
         new EventChannel(registrar.messenger(), EVENTS_STREAM_NAME).setStreamHandler(this);
@@ -39,7 +42,12 @@ public class LifecycleEvents implements StreamHandler, ActivityLifecycleListener
     public void onPostResume() {
         Log.d("Breez", "App Resumed - OnPostResume called");
         if (m_eventsListener != null) {
-            m_eventsListener.success("resume");
+            _executor.execute(() -> {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {}
+                m_eventsListener.success("resume");
+            });
         }
     }
 }

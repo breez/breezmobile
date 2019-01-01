@@ -120,7 +120,12 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
 
     @Override
     public void onPostResume() {
-        _executor.execute(() -> Bindings.onResume());
+       _executor.execute(() -> {
+           try {
+               Thread.sleep(1000);
+           } catch (InterruptedException e) {}
+           Bindings.onResume();
+       });
     }
 
     private class BreezTask implements  Runnable {
