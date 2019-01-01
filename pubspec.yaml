@@ -11,14 +11,16 @@ dependencies:
   firebase_messaging: ^2.1.0
   shared_preferences: "^0.4.1"
   share: "^0.5.2"
-  qr_flutter: ^1.1.1
+  qr_flutter: ^1.1.5
   http: "^0.11.3+16"
   hex: "^0.1.1"
   rxdart: "^0.18.1"  
   flutter_advanced_networkimage: any
   intl: ^0.15.7
   flushbar: ^0.9.0
-  barcode_scan: ^0.0.4
+  barcode_scan:
+    git:
+       url: https://github.com/roeierez/flutter_barcode_reader.git       
   image_picker: 0.4.7
   image: any
   package_info: any  
