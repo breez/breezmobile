@@ -9,7 +9,7 @@ class BreezUserModel {
   String animal = '';
   String _image;  
 
-  BreezUserModel(this.userID, this.name, this.color, this.animal, {this.currency = Currency.BTC, String image}) {
+  BreezUserModel(this.userID, this.name, this.color, this.animal, {this.currency = Currency.SAT, String image}) {
     this._image = image;
   }
   BreezUserModel copyWith({String name, String color, String animal, Currency currency, String image}) {
