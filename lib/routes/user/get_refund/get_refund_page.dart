@@ -1,7 +1,6 @@
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/app_blocs.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/user/get_refund/refund_form.dart';
 import 'package:breez/routes/user/get_refund/wait_broadcast_dialog.dart';
 import 'package:breez/widgets/loader.dart';
@@ -10,30 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
-class GetRefundPage extends StatelessWidget {
-   @override
-  Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>(
-        (context, blocs) => GetRefund(blocs.accountBloc));
-  }
-}
-
-class GetRefund extends StatefulWidget {   
-  final AccountBloc _accountBloc;
-
-  GetRefund(this._accountBloc);
-
-  @override
-  State<StatefulWidget> createState() {
-    return _GetRefundState();
-  }
-}
-
-class _GetRefundState extends State<GetRefund> {
+class GetRefund extends StatelessWidget {
   static const String TITLE = "Get Refund";
 
   @override
   Widget build(BuildContext context) {
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return new Scaffold(
       appBar: new AppBar(
           iconTheme: theme.appBarIconTheme,
@@ -43,10 +24,10 @@ class _GetRefundState extends State<GetRefund> {
           title: new Text(TITLE, style: theme.appBarTextStyle),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
-        stream: widget._accountBloc.accountStream,
+        stream: accountBloc.accountStream,
         builder: (context, accSnapshot) =>
             StreamBuilder<List<RefundableDepositModel>>(
-                stream: widget._accountBloc.refundableDepositsStream,
+                stream: accountBloc.refundableDepositsStream,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData || !accSnapshot.hasData) {
                     return Loader();
@@ -99,7 +80,7 @@ class _GetRefundState extends State<GetRefund> {
     );
   }
 
-  onRefund(BuildContext context, RefundableDepositModel item) {
+  onRefund(BuildContext context, RefundableDepositModel item) {    
     showDialog(
         context: context,
         builder: (ctx) => RefundForm((address) {
@@ -109,9 +90,10 @@ class _GetRefundState extends State<GetRefund> {
   }
 
   broadcastAndWait(BuildContext context, String fromAddress, toAddress){
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => WaitBroadcastDialog(widget._accountBloc, fromAddress, toAddress));
+        builder: (_) => WaitBroadcastDialog(accountBloc, fromAddress, toAddress));
   }
 }
