@@ -1,10 +1,7 @@
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;

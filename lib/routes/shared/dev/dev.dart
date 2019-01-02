@@ -1,6 +1,4 @@
-import 'package:breez/bloc/app_blocs.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;

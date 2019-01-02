@@ -1,5 +1,4 @@
 import 'dart:io' show Platform;
-import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/user_app.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,5 +15,5 @@ void main() {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   initializeDateFormatting(Platform.localeName, null);
   AppBlocs blocs = AppBlocs();
-  runApp(BlocProvider<AppBlocs>(blocs, AppBlocsProvider(child: UserApp(), appBlocs: blocs)));  
+  runApp(AppBlocsProvider(child: UserApp(), appBlocs: blocs));  
 }
