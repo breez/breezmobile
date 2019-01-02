@@ -1,8 +1,7 @@
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
-import 'package:breez/bloc/app_blocs.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/user/add_funds/address_widget.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
@@ -10,23 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
-class AddFundsPage extends StatelessWidget {
-  final BreezUserModel _user;
+class AddFundsPage extends StatefulWidget {
+  final BreezUserModel _user;  
 
-  AddFundsPage(this._user);
-
-  @override
-  Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>(
-        (context, blocs) => _AddFundsPage(this._user, blocs.accountBloc));
-  }
-}
-
-class _AddFundsPage extends StatefulWidget {
-  final BreezUserModel _user;
-  final AccountBloc _accountBloc;
-
-  const _AddFundsPage(this._user, this._accountBloc);
+  const AddFundsPage(this._user);
 
   @override
   State<StatefulWidget> createState() {
@@ -34,7 +20,7 @@ class _AddFundsPage extends StatefulWidget {
   }
 }
 
-class AddFundsState extends State<_AddFundsPage> {
+class AddFundsState extends State<AddFundsPage> {
   final String _title = "Add Funds";
   AddFundsBloc _addFundsBloc;
 
@@ -53,8 +39,9 @@ class AddFundsState extends State<_AddFundsPage> {
 
   @override
   Widget build(BuildContext context) {
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return new StreamBuilder(
-        stream: widget._accountBloc.accountStream,
+        stream: accountBloc.accountStream,
         builder:
             (BuildContext context, AsyncSnapshot<AccountModel> accSnapshot) {
           return StreamBuilder(
