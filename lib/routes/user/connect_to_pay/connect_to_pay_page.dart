@@ -21,7 +21,7 @@ class ConnectToPayPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return new ConnectToPayPageState();
+    return new ConnectToPayPageState(_currentSession);
   }
 }
 
@@ -38,12 +38,16 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   bool _destroySessionOnTerminate = true;
   bool canceledByMe = false;
 
+  ConnectToPayPageState(this._currentSession);
+
   @override void didChangeDependencies(){
     super.didChangeDependencies();
     ConnectPayBloc ctpBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
     if (_currentSession == null) {
         _currentSession = ctpBloc.startSessionAsPayer();
     }
+    _payer = _currentSession.runtimeType == PayerRemoteSession;
+    _title = _payer ? "Connect To Pay" : "Receive Payment";
     registerErrorsListener();
     registerEndOfSessionListener();
   }
