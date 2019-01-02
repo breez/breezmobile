@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
-class GetRefund extends StatelessWidget {
+class GetRefundPage extends StatelessWidget {
   static const String TITLE = "Get Refund";
 
   @override
