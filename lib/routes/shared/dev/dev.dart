@@ -1,6 +1,4 @@
-import 'package:breez/bloc/app_blocs.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -55,19 +53,12 @@ void _gotoInitialScreen() async {
       .pushReplacementNamed("/splash");
 }
 
-class DevView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocConnector<AppBlocs>((context, blocs) => new _DevView());
-  }
-}
-
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-class _DevView extends StatefulWidget {
+class DevView extends StatefulWidget {
   BreezBridge _breezBridge;
 
-  _DevView() {
+  DevView() {
     ServiceInjector injector = new ServiceInjector();
     _breezBridge = injector.breezBridge;
   }
@@ -77,12 +68,12 @@ class _DevView extends StatefulWidget {
   }
 
   @override
-  _DevViewState createState() {
-    return new _DevViewState();
+  DevViewState createState() {
+    return new DevViewState();
   }
 }
 
-class _DevViewState extends State<_DevView> {
+class DevViewState extends State<DevView> {
   String _cliText = '';
   TextStyle _cliTextStyle = theme.smallTextStyle;
 

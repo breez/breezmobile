@@ -1,6 +1,5 @@
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
-import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'dart:async';
 import 'package:breez/logger.dart';
@@ -11,7 +10,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/widgets.dart';
 
-class _ActivatePageState extends State<_ActivateCardPage> with WidgetsBindingObserver {
+class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingObserver {
   final String _title = "Activate Card";
   final String _instructions = "To activate your Breez card,\nhold it close to your mobile device";
 
@@ -23,7 +22,8 @@ class _ActivatePageState extends State<_ActivateCardPage> with WidgetsBindingObs
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      widget._userBloc.cardActivationInit();
+      UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      userBloc.cardActivationInit();
     }
   }
 
@@ -38,16 +38,22 @@ class _ActivatePageState extends State<_ActivateCardPage> with WidgetsBindingObs
           _showAlertDialog();
         });
       }
-    });
-    widget._userBloc.cardActivationInit();
-    _streamSubscription = widget._userBloc.cardActivationStream.listen((bool success) {
-      if (success) {
-        Navigator.pop(context, "Your Breez card has been activated and is now ready for use!");
-      } else {
-        log.info("Card activation failed!");
-      }
-    });
+    });   
   }
+
+  @override void didChangeDependencies() {      
+      super.didChangeDependencies();
+      UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      userBloc.cardActivationInit();
+      _streamSubscription?.cancel();
+      _streamSubscription = userBloc.cardActivationStream.listen((bool success) {
+        if (success) {
+          Navigator.pop(context, "Your Breez card has been activated and is now ready for use!");
+        } else {
+          log.info("Card activation failed!");
+        }
+      });
+    }
 
   void _showAlertDialog() {
     AlertDialog dialog = new AlertDialog(
@@ -67,9 +73,8 @@ class _ActivatePageState extends State<_ActivateCardPage> with WidgetsBindingObs
   }
 
   @override
-  void dispose() {
-    new BlocConnector<AppBlocs>((context, blocs) {});
-    _streamSubscription.cancel();
+  void dispose() {    
+    _streamSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -125,20 +130,12 @@ class _ActivatePageState extends State<_ActivateCardPage> with WidgetsBindingObs
   }
 }
 
-class ActivateCardPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) => new _ActivateCardPage(blocs.userProfileBloc));
-  }
-}
-
-class _ActivateCardPage extends StatefulWidget {
-  final UserProfileBloc _userBloc;
+class ActivateCardPage extends StatefulWidget {  
   final platform = const MethodChannel('com.breez.client/nfc');
 
-  _ActivateCardPage(this._userBloc);
+  ActivateCardPage();
   @override
   State<StatefulWidget> createState() {
-    return new _ActivatePageState();
+    return new ActivateCardPageState();
   }
 }

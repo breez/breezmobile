@@ -1,7 +1,6 @@
-import 'package:breez/bloc/app_blocs.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -10,32 +9,25 @@ import 'package:breez/services/nfc.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:async';
 
-class PayNearbyComplete extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) =>
-        _PayNearbyComplete(blocs.invoicesBloc, blocs.accountBloc));
-  }
-}
-
-class _PayNearbyComplete extends StatefulWidget {
-  InvoiceBloc _invoiceBloc;
-  AccountBloc _accountBloc;
-
-  _PayNearbyComplete(this._invoiceBloc, this._accountBloc);
+class PayNearbyComplete extends StatefulWidget {  
+  PayNearbyComplete();
 
   @override
   State<StatefulWidget> createState() {
-    return new PayNearbyCompleteState();
+    return PayNearbyCompleteState();
   }
 }
 
-class PayNearbyCompleteState extends State<_PayNearbyComplete> with WidgetsBindingObserver {
+class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindingObserver {
   final String _title = "Pay Someone Nearby";
   final String _instructions =
       "To complete the payment,\nplease hold the payee's device close to yours\nas illustrated below:";
   static ServiceInjector _injector = new ServiceInjector();
   NFCService _nfc = _injector.nfc;
+
+  InvoiceBloc _invoiceBloc;
+  AccountBloc _accountBloc;
+
   StreamSubscription _blankInvoiceSubscription;
   StreamSubscription _paidInvoicesSubscription;
   StreamSubscription<String> _sentPaymentResultSubscription;
@@ -53,6 +45,46 @@ class PayNearbyCompleteState extends State<_PayNearbyComplete> with WidgetsBindi
   }
 
   @override
+  void didChangeDependencies() {    
+    super.didChangeDependencies();
+    _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    _accountBloc = AppBlocsProvider.of<AccountBloc>(context);    
+    startNFCStream();
+    registerFulfilledPayments();
+  }
+
+  void startNFCStream(){
+    _blankInvoiceSubscription?.cancel();
+    _blankInvoiceSubscription = _nfc.startP2PBeam()
+      .listen((blankInvoice) {
+        // In the future perhaps show some information about the user we are paying to?
+      },
+      onError: (err) => _scaffoldKey.currentState.showSnackBar(new SnackBar(
+          duration: new Duration(seconds: 3),
+          content: new Text(err.toString()))));
+  }
+
+  void registerFulfilledPayments(){
+    _paidInvoicesSubscription?.cancel();
+    _paidInvoicesSubscription = _invoiceBloc.paidInvoicesStream
+      .listen((paid) {
+        Navigator.of(context).pop('Payment was sent successfuly!');
+      },
+      onError: (err) => _scaffoldKey.currentState.showSnackBar(new SnackBar(
+          duration: new Duration(seconds: 3),
+          content: new Text("Failed to send payment: " + err.toString()))));
+
+    _sentPaymentResultSubscription?.cancel();
+    _sentPaymentResultSubscription = _accountBloc.fulfilledPayments
+      .listen((fulfilledPayment) {
+        _scaffoldKey.currentState.showSnackBar(new SnackBar(
+            duration: new Duration(seconds: 3),
+            content: new Text('Payment was sent successfuly!')));
+        Navigator.of(this.context).pop();
+      });
+  }
+
+  @override
   initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
@@ -62,30 +94,7 @@ class PayNearbyCompleteState extends State<_PayNearbyComplete> with WidgetsBindi
           _showAlertDialog();
         });
       }
-    });
-
-    _blankInvoiceSubscription = _nfc.startP2PBeam().listen((blankInvoice) {
-      // In the future perhaps show some information about the user we are paying to?
-    },
-        onError: (err) => _scaffoldKey.currentState.showSnackBar(new SnackBar(
-            duration: new Duration(seconds: 3),
-            content: new Text(err.toString()))));
-
-    _paidInvoicesSubscription = widget._invoiceBloc.paidInvoicesStream.listen(
-        (paid) {
-      Navigator.of(context).pop('Payment was sent successfuly!');
-    },
-        onError: (err) => _scaffoldKey.currentState.showSnackBar(new SnackBar(
-            duration: new Duration(seconds: 3),
-            content: new Text("Failed to send payment: " + err.toString()))));
-
-    _sentPaymentResultSubscription =
-        widget._accountBloc.fulfilledPayments.listen((fulfilledPayment) {
-      _scaffoldKey.currentState.showSnackBar(new SnackBar(
-          duration: new Duration(seconds: 3),
-          content: new Text('Payment was sent successfuly!')));
-      Navigator.of(this.context).pop();
-    });
+    });        
   }
 
   void _showAlertDialog() {

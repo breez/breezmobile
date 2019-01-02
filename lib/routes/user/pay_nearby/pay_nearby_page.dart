@@ -1,9 +1,7 @@
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -11,32 +9,25 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:fixnum/fixnum.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 
-class PayNearbyPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) => _PayNearbyPage(blocs.accountBloc, blocs.invoicesBloc));
-  }
-}
-
-class _PayNearbyPage extends StatefulWidget {
-  final AccountBloc _accountBloc; // Might be useful to stop payment in case we are not in sync?
-  final InvoiceBloc _invoiceBloc;
-
-  _PayNearbyPage(this._accountBloc, this._invoiceBloc);
+class PayNearbyPage extends StatefulWidget {  
+  PayNearbyPage();
 
   @override
   State<StatefulWidget> createState() {
-    return new PayNearbyState();
+    return PayNearbyPageState();
   }
 }
 
-class PayNearbyState extends State<_PayNearbyPage> {
+class PayNearbyPageState extends State<PayNearbyPage> {
   final _formKey = GlobalKey<FormState>();
   final String _title = "Pay Someone Nearby";
   Int64 _amountToSendSatoshi;
 
   @override
   Widget build(BuildContext context) {
+    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
     return new Material(
       child: new Scaffold(
         bottomNavigationBar: new Padding(
@@ -57,7 +48,7 @@ class PayNearbyState extends State<_PayNearbyPage> {
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      widget._invoiceBloc.payBlankAmount = _amountToSendSatoshi;
+                      invoiceBloc.payBlankAmount = _amountToSendSatoshi;
                       Navigator.of(context).pushNamed('/pay_nearby_complete');
                     }
                   },
@@ -76,7 +67,7 @@ class PayNearbyState extends State<_PayNearbyPage> {
           elevation: 0.0,
         ),
         body: StreamBuilder<AccountModel>(
-          stream: widget._accountBloc.accountStream,
+          stream: accountBloc.accountStream,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return StaticLoader();

@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/app_blocs.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -12,29 +11,17 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/routes/user/create_invoice/qr_code_dialog.dart';
 
-class CreateInvoicePage extends StatelessWidget {
-  CreateInvoicePage();
-
-  @override
-  Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) =>
-        _CreateInvoicePage(blocs.accountBloc, blocs.invoicesBloc));
-  }
-}
-
-class _CreateInvoicePage extends StatefulWidget {
-  final AccountBloc _accountBloc;
-  final InvoiceBloc _invoiceBloc;
-
-  const _CreateInvoicePage(this._accountBloc, this._invoiceBloc);
+class CreateInvoicePage extends StatefulWidget {
+  
+  const CreateInvoicePage();
 
   @override
   State<StatefulWidget> createState() {
-    return new _CreateInvoiceState();
+    return new CreateInvoicePageState();
   }
 }
 
-class _CreateInvoiceState extends State<_CreateInvoicePage> {
+class CreateInvoicePageState extends State<CreateInvoicePage> {
   final _formKey = GlobalKey<FormState>();
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -44,11 +31,11 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
 
   StreamSubscription<bool> _paidInvoicesSubscription;
 
-  @override
-  void initState() {
-    super.initState();
-    _paidInvoicesSubscription =
-        widget._invoiceBloc.paidInvoicesStream.listen((paid) {
+  @override void didChangeDependencies(){    
+    super.didChangeDependencies();
+    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    _paidInvoicesSubscription?.cancel();
+    _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {
           // Workaround for snackbar appearing mid air
           Navigator.pop(context, 'Payment was successfuly received!');
           Navigator.pop(context, 'Payment was successfuly received!');
@@ -64,6 +51,9 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
   @override
   Widget build(BuildContext context) {
     final String _title = "Create an Invoice";
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+
     return new Scaffold(
       key: _scaffoldKey,
       bottomNavigationBar: new Padding(
@@ -73,7 +63,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
               height: 48.0,
               width: 168.0,
               child: StreamBuilder<AccountModel>(
-                  stream: widget._accountBloc.accountStream,
+                  stream: accountBloc.accountStream,
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return StaticLoader();
@@ -92,7 +82,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                           borderRadius: new BorderRadius.circular(42.0)),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          widget._invoiceBloc.newInvoiceRequestSink.add(
+                          invoiceBloc.newInvoiceRequestSink.add(
                               new InvoiceRequestModel(
                                   null,
                                   _descriptionController.text,
@@ -100,7 +90,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                                   account.currency
                                       .parse(_amountController.text), standard: true));
                           showDialog(
-                              context: context, builder: (_) => QrCodeDialog(context, widget._invoiceBloc));
+                              context: context, builder: (_) => QrCodeDialog(context, invoiceBloc));
                         }
                       },
                     );
@@ -116,7 +106,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
         elevation: 0.0,
       ),
       body: StreamBuilder<AccountModel>(
-        stream: widget._accountBloc.accountStream,
+        stream: accountBloc.accountStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return StaticLoader();
@@ -160,7 +150,7 @@ class _CreateInvoiceState extends State<_CreateInvoicePage> {
                     child: _buildReceivableBTC(acc),
                   ),
                   StreamBuilder(
-                      stream: widget._accountBloc.accountStream,
+                      stream: accountBloc.accountStream,
                       builder: (BuildContext context,
                           AsyncSnapshot<AccountModel> accSnapshot) {
 

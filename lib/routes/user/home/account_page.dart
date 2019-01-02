@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -9,14 +10,11 @@ import 'package:breez/routes/user/home/wallet_dashboard.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:breez/widgets/scroll_watcher.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/routes/user/home/status_text.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:breez/utils/date.dart';
-import 'package:breez/logger.dart';
 
 const DASHBOARD_MAX_HEIGHT = 188.0;
 const DASHBOARD_MIN_HEIGHT = 70.0;
@@ -24,37 +22,41 @@ const FILTER_MAX_SIZE = 70.0;
 const FILTER_MIN_SIZE = 30.0;
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
-class AccountPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) => new _AccountPage(blocs.accountBloc, blocs.userProfileBloc, blocs.connectPayBloc));
-  }
-}
-
-class _AccountPage extends StatefulWidget {
-  final AccountBloc _accountBloc;
-  final UserProfileBloc _userProfileBloc;  
-  final ConnectPayBloc _connectPayBloc;
-
-  _AccountPage(this._accountBloc, this._userProfileBloc, this._connectPayBloc);
+class AccountPage extends StatefulWidget {
+  
+  AccountPage();
 
   @override
   State<StatefulWidget> createState() {
-    return new _AccountPageState();
+    return new AccountPageState();
   }
 }
 
-class _AccountPageState extends State<_AccountPage> {
+class AccountPageState extends State<AccountPage> {
   final ScrollController _scrollController = new ScrollController();
   final List<String> currencyList = Currency.currencies.map((c) => c.symbol).toList();
+
+  AccountBloc _accountBloc;
+  UserProfileBloc _userProfileBloc;  
+  ConnectPayBloc _connectPayBloc;
+
   StreamSubscription<String> _accountActionsSubscription;
   StreamSubscription<AccountModel> _statusSubscription;
   String _paymentRequestInProgress;
 
   @override
-  void initState() {
-    super.initState();
-    _statusSubscription = widget._accountBloc.accountStream.listen((acc) {
+  void didChangeDependencies() {      
+    super.didChangeDependencies();
+    _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
+    registerPaymentInProgress();
+    registerErrors();
+  }
+
+  void registerPaymentInProgress(){
+    _statusSubscription?.cancel();
+    _statusSubscription =_accountBloc.accountStream.listen((acc) {
       if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {        
         Scaffold.of(context).showSnackBar(new SnackBar(
             duration: new Duration(seconds: Int32.MAX_VALUE.toInt()), content: new Text("Processing Payment...")));
@@ -66,8 +68,11 @@ class _AccountPageState extends State<_AccountPage> {
         _paymentRequestInProgress = acc.paymentRequestInProgress;
       });
     });
+  }
 
-    _accountActionsSubscription = widget._accountBloc.accountActionsStream.listen((data) {}, onError: (e) {
+  void registerErrors(){
+    _accountActionsSubscription?.cancel();
+    _accountActionsSubscription = _accountBloc.accountActionsStream.listen((data) {}, onError: (e) {
       Scaffold.of(context).showSnackBar(new SnackBar(duration: new Duration(seconds: 10), content: new Text(e.toString())));
     });
   }
@@ -82,11 +87,11 @@ class _AccountPageState extends State<_AccountPage> {
   @override
   Widget build(BuildContext context) {    
     return StreamBuilder<AccountModel>(
-        stream: widget._accountBloc.accountStream,
+        stream: _accountBloc.accountStream,
         builder: (context, snapshot) {
           AccountModel account = snapshot.data;
           return StreamBuilder<PaymentsModel>(
-              stream: widget._accountBloc.paymentsStream,
+              stream: _accountBloc.paymentsStream,
               builder: (context, snapshot) {                
                 PaymentsModel paymentsModel;
                 if (snapshot.hasData) {
@@ -116,7 +121,7 @@ class _AccountPageState extends State<_AccountPage> {
       children: <Widget>[
         Expanded(
             flex: 0,
-            child: Container(height: DASHBOARD_MAX_HEIGHT, child: WalletDashboard(account, DASHBOARD_MAX_HEIGHT, 0.0, widget._userProfileBloc.currencySink.add, widget._accountBloc.routingNodeConnectionStream))),
+            child: Container(height: DASHBOARD_MAX_HEIGHT, child: WalletDashboard(account, DASHBOARD_MAX_HEIGHT, 0.0, _userProfileBloc.currencySink.add, _accountBloc.routingNodeConnectionStream))),
         Expanded(flex: 1, child: _buildEmptyHomeScreen(account))
       ],
     ),
@@ -135,10 +140,10 @@ class _AccountPageState extends State<_AccountPage> {
           controller: _scrollController,
           slivers: <Widget>[
             //Account dashboard header
-            SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(widget._accountBloc, widget._userProfileBloc), pinned: true),
+            SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(_accountBloc, _userProfileBloc), pinned: true),
 
             //payment filter
-            PaymentFilterSliver(_scrollController, FILTER_MIN_SIZE, FILTER_MAX_SIZE, widget._accountBloc, paymentsModel),
+            PaymentFilterSliver(_scrollController, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _accountBloc, paymentsModel),
 
             (paymentsModel.filter != null && paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
                 ? SliverAppBar(
@@ -185,7 +190,7 @@ class _AccountPageState extends State<_AccountPage> {
         children: <Widget>[Padding(padding: EdgeInsets.only(left: 16.0),
       child: Chip(label: new Text(DateUtils.formatFilterDateRange(filter.startDate, filter.endDate)),
         onDeleted: () =>
-            widget._accountBloc.paymentFilterSink.add(PaymentFilterModel(filter.paymentType, null,
+            _accountBloc.paymentFilterSink.add(PaymentFilterModel(filter.paymentType, null,
                 null)),),)],);
   }
 
@@ -197,7 +202,7 @@ class _AccountPageState extends State<_AccountPage> {
           padding: EdgeInsets.only(top: 130.0, left: 40.0, right: 40.0),
           // new status widget
           child: StreamBuilder(
-            stream: widget._connectPayBloc.pendingCTPLinkStream,
+            stream: _connectPayBloc.pendingCTPLinkStream,
             builder: (context, pendingLinkSnapshot) {
               String message = account.statusMessage;
               if (pendingLinkSnapshot.connectionState == ConnectionState.active && pendingLinkSnapshot.hasData) {

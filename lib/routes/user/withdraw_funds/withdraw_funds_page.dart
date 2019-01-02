@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/app_blocs.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/static_loader.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -16,48 +14,58 @@ import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 
-class WithdrawFundsPage extends StatelessWidget {  
+class WithdrawFundsPage extends StatefulWidget {
 
-  WithdrawFundsPage();
-
-  @override
-  Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>(
-        (context, blocs) => _WithdrawFundsPage(blocs.accountBloc));
-  }
-}
-
-class _WithdrawFundsPage extends StatefulWidget {
-  final AccountBloc _accountBloc;  
-
-  const _WithdrawFundsPage(this._accountBloc);
+  const WithdrawFundsPage();
 
   @override
   State<StatefulWidget> createState() {
-    return new _WithdrawFundsState();
+    return WithdrawFundsPageState();
   }
 }
 
-class _WithdrawFundsState extends State<_WithdrawFundsPage> {
+class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   final _formKey = GlobalKey<FormState>();
   String _scannerErrorMessage = "";
   final TextEditingController _addressController = new TextEditingController();
   final TextEditingController _amountController = new TextEditingController();  
+  
+  AccountBloc _accountBloc;
   StreamSubscription<RemoveFundResponseModel> withdrawalResultSubscription;  
-
   BreezBridge _breezLib;
   String _addressValidated;
   bool _inProgress = false;
 
   @override
+  void didChangeDependencies() {    
+    super.didChangeDependencies();
+    _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    registerWithdrawalResult();
+  }
+
+  @override
   void initState() {
-    super.initState();
+    super.initState();    
+    _breezLib = new ServiceInjector().breezBridge;       
+  }
 
-    ServiceInjector injector = new ServiceInjector();
-    _breezLib = injector.breezBridge;
+  @override
+  void dispose() {
+    withdrawalResultSubscription.cancel();
+    super.dispose();
+  }
 
-    withdrawalResultSubscription =
-        widget._accountBloc.withdrawalResultStream.listen((response) {
+  Future<bool> _onWillPop() async {
+    if (_inProgress) {
+      return false;
+    }
+    return true;
+  }
+
+  void registerWithdrawalResult(){
+    withdrawalResultSubscription?.cancel();
+    withdrawalResultSubscription = _accountBloc.withdrawalResultStream
+      .listen((response) {
           setState(() {
             _inProgress = false;
           });
@@ -75,20 +83,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
           });
           Navigator.of(context).pop(); //remove the loading dialog
           promptError(context, null, Text(err.toString(), style: theme.alertStyle));
-      });       
-  }
-
-  @override
-  void dispose() {
-    withdrawalResultSubscription.cancel();
-    super.dispose();
-  }
-
-  Future<bool> _onWillPop() async {
-    if (_inProgress) {
-      return false;
-    }
-    return true;
+      });
   }
 
   @override
@@ -96,7 +91,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
     final String _title = "Remove Funds";
     return new Scaffold(
       bottomNavigationBar: StreamBuilder<AccountModel>(
-          stream: widget._accountBloc.accountStream,
+          stream: _accountBloc.accountStream,
           builder: (context, snapshot) {
             AccountModel acc = snapshot.data;
             return new Padding(
@@ -140,7 +135,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
           title: new Text(_title, style: theme.appBarTextStyle),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
-        stream: widget._accountBloc.accountStream,
+        stream: _accountBloc.accountStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return StaticLoader();
@@ -235,7 +230,7 @@ class _WithdrawFundsState extends State<_WithdrawFundsPage> {
             onPressed: () {
               Navigator.pop(context);
               _showLoadingDialog();
-              widget._accountBloc.withdrawalSink.add(new RemoveFundRequestModel(
+              _accountBloc.withdrawalSink.add(new RemoveFundRequestModel(
                   currency.parse(_amountController.text),
                   _addressValidated                  
                 ));

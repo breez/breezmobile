@@ -1,29 +1,18 @@
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/bloc/app_blocs.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
 import 'package:breez/widgets/static_loader.dart';
 
 class LNDBootstrapProgress extends StatelessWidget {
+  
   LNDBootstrapProgress();
 
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>(
-        (context, blocs) => new _LNDBootstrapProgress(blocs.accountBloc));
-  }
-}
-
-class _LNDBootstrapProgress extends StatelessWidget {
-  final AccountBloc _accountBloc;
-
-  _LNDBootstrapProgress(this._accountBloc);
-
-  @override
-  Widget build(BuildContext context) {
+    AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
     return StreamBuilder<Map<String, DownloadFileInfo>>(
-        stream: _accountBloc.chainBootstrapProgress,
+        stream: accBloc.chainBootstrapProgress,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return _buildDownloadProgress(snapshot.data);
