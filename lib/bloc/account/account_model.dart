@@ -70,7 +70,11 @@ class AccountModel {
       return "";
     }   
 
-    if (!this.active || this.bootstraping) {
+    if (this.bootstraping) {
+      return "Please wait a minute while Breez is bootstrapping (keep the app open).";
+    }
+
+    if (!this.active) {
       return "Breez is opening a secure channel with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments";
     }
     
