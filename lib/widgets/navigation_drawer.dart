@@ -1,8 +1,7 @@
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/breez_avatar.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
-import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/widgets/breez_avatar_dialog.dart';
@@ -26,34 +25,16 @@ class DrawerItemConfigGroup {
 }
 
 class NavigationDrawer extends StatelessWidget {
-  NavigationDrawer(
-      this._avatar,
-      //this._screensConfig,
-      this._drawerGroupedItems,
+  final bool _avatar;
+  final List<DrawerItemConfigGroup> _drawerGroupedItems;
+  final void Function(String screenName) _onItemSelected;  
+
+  NavigationDrawer(this._avatar, this._drawerGroupedItems,
       this._onItemSelected);
-  final bool _avatar;
-  final List<DrawerItemConfigGroup> _drawerGroupedItems;
-  final void Function(String screenName) _onItemSelected;
 
   @override
   Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) =>
-        new _NavigationDrawer(_avatar, _drawerGroupedItems, _onItemSelected,
-            blocs.userProfileBloc));
-  }
-}
-
-class _NavigationDrawer extends StatelessWidget {
-  final bool _avatar;
-  final List<DrawerItemConfigGroup> _drawerGroupedItems;
-  final void Function(String screenName) _onItemSelected;
-  final UserProfileBloc _userProfileBloc;
-
-  _NavigationDrawer(this._avatar, this._drawerGroupedItems,
-      this._onItemSelected, this._userProfileBloc);
-
-  @override
-  Widget build(BuildContext context) {
+    UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     List<Widget> children = List<Widget>();
     _drawerGroupedItems.forEach((gropuItems) {
@@ -61,7 +42,7 @@ class _NavigationDrawer extends StatelessWidget {
           withDivider: children.length > 0));
     });
 
-    children.insert(0, _breezDrawerHeader(_userProfileBloc, _avatar));
+    children.insert(0, _breezDrawerHeader(userProfileBloc, _avatar));
 
     return new Drawer(
         child: new ListView(
