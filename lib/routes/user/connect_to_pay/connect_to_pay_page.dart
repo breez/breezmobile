@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/app_blocs.dart';
-import 'package:breez/bloc/bloc_widget_connector.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
@@ -15,89 +14,72 @@ import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
-/*
-ConnectToPayPage shows the UI for handling a remote payment session between payee and payer.
-It is reused for both sides by implementing the shared UI and creating the specific widget for the specific UI of each peer.
-*/
-class ConnectToPayPage extends StatelessWidget {
-  final RemoteSession _currentSession;
+class ConnectToPayPage extends StatefulWidget {  
+  final RemoteSession _currentSession;  
 
   const ConnectToPayPage(this._currentSession);
 
   @override
-  Widget build(BuildContext context) {
-    return new BlocConnector<AppBlocs>((context, blocs) =>
-        new _ConnectToPayPage(
-            blocs.connectPayBloc, blocs.accountBloc, this._currentSession));
-  }
-}
-
-class _ConnectToPayPage extends StatefulWidget {
-  final ConnectPayBloc _connectPayBloc;
-  final AccountBloc _accountBloc;
-  final RemoteSession _currentSession;  
-
-  const _ConnectToPayPage(
-      this._connectPayBloc, this._accountBloc, this._currentSession);
-
-  @override
   State<StatefulWidget> createState() {
-    return new _ConnectToPayState();
+    return new ConnectToPayPageState();
   }
 }
 
-class _ConnectToPayState extends State<_ConnectToPayPage> {  
+class ConnectToPayPageState extends State<ConnectToPayPage> {  
   bool _payer;
   String _remoteUserName;
   String _title = "";
   StreamSubscription _errorsSubscription;
-  StreamSubscription cancelSessionSubscription;
+  StreamSubscription _remotePartyErrorSubscription;
+  StreamSubscription _endOfSessionSubscription;
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   RemoteSession _currentSession;
   Object _error;
   bool _destroySessionOnTerminate = true;
   bool canceledByMe = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _initSession();
+  @override void didChangeDependencies(){
+    super.didChangeDependencies();
+    ConnectPayBloc ctpBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
+    if (_currentSession == null) {
+        _currentSession = ctpBloc.startSessionAsPayer();
+    }
+    registerErrorsListener();
+    registerEndOfSessionListener();
   }
 
-  _initSession() async {
-    _currentSession = widget._currentSession;
-    if (_currentSession == null) {
-        _currentSession = widget._connectPayBloc.startSessionAsPayer();
-    }
-    _payer = _currentSession.runtimeType == PayerRemoteSession;
-    _title = _payer ? "Connect To Pay" : "Receive Payment";
-
+  void registerErrorsListener() async {
+    await _errorsSubscription?.cancel();
     _errorsSubscription = _currentSession.sessionErrors.listen((error) {
       _popWithMessage(error.description);
     });
 
-    cancelSessionSubscription =
-        _currentSession.paymentSessionStateStream.listen((s) {      
-      if (_remoteUserName == null) {
-        _remoteUserName =
-            (_payer ? s.payeeData?.userName : s.payerData?.userName);
-      }
-      
+    await _remotePartyErrorSubscription?.cancel();
+    _remotePartyErrorSubscription = _currentSession.paymentSessionStateStream.listen((s) {
       var error = !_payer ? s.payerData?.error : s.payeeData?.error;
       if (error != null) {
         _popWithMessage(error);
-      } else if (s.paymentFulfilled) {
-        String formattedAmount =
-            _currentSession.currentUser.currency.format(Int64(s.settledAmount));
+      }
+    });
+  }
+
+  void registerEndOfSessionListener() async {
+    await _endOfSessionSubscription?.cancel();
+    _endOfSessionSubscription = _currentSession.paymentSessionStateStream.listen((s) {      
+      if (_remoteUserName == null) {
+        _remoteUserName = (_payer ? s.payeeData?.userName : s.payerData?.userName);
+      }
+      
+      if (s.paymentFulfilled) {
+        String formattedAmount = _currentSession.currentUser.currency.format(Int64(s.settledAmount));
         String successMessage = _payer
             ? 'You have successfully paid $_remoteUserName $formattedAmount!'
             : '$_remoteUserName have successfully paid you $formattedAmount!';
         _popWithMessage(successMessage);
       }
-    });
-    cancelSessionSubscription.onDone(() {
+    }, onDone: (){
       _popWithMessage(canceledByMe ? null : '${_remoteUserName ?? (_payer ? "Payee" : "Payer")} has cancelled the payment session');
-    });
+    }); 
   }
 
   void _popWithMessage(message) {    
@@ -109,7 +91,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
 
   Future _clearSession() async {
     _remoteUserName = null;    
-    await cancelSessionSubscription.cancel();
+    await _endOfSessionSubscription.cancel();
     await _errorsSubscription.cancel();
   }
 
@@ -172,6 +154,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
       return Container();
     }
 
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return StreamBuilder<PaymentSessionState>(
             stream: _currentSession.paymentSessionStateStream,
             builder: (context, snapshot) {
@@ -180,7 +163,7 @@ class _ConnectToPayState extends State<_ConnectToPayPage> {
               }
 
               return StreamBuilder(
-                  stream: widget._accountBloc.accountStream,
+                  stream: accountBloc.accountStream,
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Center(child: Loader());
