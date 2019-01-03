@@ -37,10 +37,7 @@ class _StatusTextState extends State<StatusText> {
   @override
   Widget build(BuildContext context) {
     return widget._statusMessage == null
-        ? Text("Start using Breez\nby adding funds to your balance.", textAlign: TextAlign.center)
+        ? Text("Start using Breez by adding funds to your balance or by receiving payments from other users.", textAlign: TextAlign.center)
         : LoadingAnimatedText(widget._statusMessage);        
   }
-
-  String get _animatedDots =>
-      '${List.filled(_timerIteration % 4, ".").join("")}';
 }
