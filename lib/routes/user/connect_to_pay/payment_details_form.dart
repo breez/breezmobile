@@ -52,7 +52,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                         maxPaymentAmount: widget._account.maxPaymentAmount,
                         currency: widget._account.currency,
                         controller: _amountController,
-                        maxAmount: widget._account.maxAllowedToPay,
+                        maxAmount: widget._account.maxAllowedToPay - widget._account.routingNodeFee,
                         decoration: new InputDecoration(
                             labelText: widget._account.currency.displayName +
                                 " Amount"),
