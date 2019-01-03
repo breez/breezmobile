@@ -72,7 +72,6 @@ public class BreezDeepLinks implements EventChannel.StreamHandler, MethodChannel
                     .setLink(Uri.parse("https://breez.technology?" + query))
                     .setDynamicLinkDomain("breez.page.link")                    
                     .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
-                            .setFallbackUrl(Uri.parse("https://play.google.com/apps/internaltest/4698115266871243990")) //hack for the beta
                             .build())
                     .buildShortDynamicLink()
                     .addOnCompleteListener(this.m_activity, new OnCompleteListener<ShortDynamicLink>() {
