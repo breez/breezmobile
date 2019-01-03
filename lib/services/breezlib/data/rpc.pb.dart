@@ -59,6 +59,7 @@ class Account extends GeneratedMessage {
     ..aInt64(5, 'maxAllowedToReceive')
     ..aInt64(6, 'maxAllowedToPay')
     ..aInt64(7, 'maxPaymentAmount')
+    ..aInt64(8, 'routingNodeFee')
     ..hasRequiredFields = false
   ;
 
@@ -112,6 +113,11 @@ class Account extends GeneratedMessage {
   set maxPaymentAmount(Int64 v) { $_setInt64(6, v); }
   bool hasMaxPaymentAmount() => $_has(6);
   void clearMaxPaymentAmount() => clearField(7);
+
+  Int64 get routingNodeFee => $_getI64(7);
+  set routingNodeFee(Int64 v) { $_setInt64(7, v); }
+  bool hasRoutingNodeFee() => $_has(7);
+  void clearRoutingNodeFee() => clearField(8);
 }
 
 class _ReadonlyAccount extends Account with ReadonlyMessageMixin {}
