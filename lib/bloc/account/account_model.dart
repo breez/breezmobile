@@ -26,7 +26,7 @@ class AccountModel {
   final FundStatusReply_FundStatus addedFundsStatus;
   final String paymentRequestInProgress;
   final bool connected;
-  final Int64 onChainFeeRate;
+  final Int64 onChainFeeRate;  
   final bool initial;
   final bool bootstraping;
 
@@ -64,6 +64,7 @@ class AccountModel {
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
   Int64 get maxAllowedToPay => Int64(min(_accountResponse.maxAllowedToPay.toInt(), _accountResponse.maxPaymentAmount.toInt()));
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
+  Int64 get routingNodeFee => _accountResponse.routingNodeFee;
 
   String get statusMessage {
     if (this.initial) {
