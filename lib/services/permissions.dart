@@ -4,8 +4,8 @@ class Permissions {
   static const MethodChannel channel =
   const MethodChannel('com.breez.client/permissions');
 
-  void requestOptimizationWhitelist() {    
-    channel.invokeMethod('requestOptimizationWhitelist');
+  Future<bool> requestOptimizationWhitelist() {    
+    return channel.invokeMethod('requestOptimizationWhitelist').then( (res) => res as bool);
   }
 
   Future<bool> isInOptimizationWhitelist(){
