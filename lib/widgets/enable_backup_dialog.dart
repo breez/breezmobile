@@ -33,7 +33,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
             "Backup",
             style: theme.alertTitleStyle,
           ),
-          contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+          contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
           content: StreamBuilder<BackupSettings>(
               stream: widget.backupBloc.backupSettingsStream,
               builder: (context, snapshot) {
@@ -41,31 +41,35 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                   return Container();
                 }
                 return Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: MainAxisSize.min,                  
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    new Text(
-                      "If you want to be able to restore your funds in case this mobile device or this app are no longer available (e.g. lost or stolen device or app uninstall), you are required to backup your information.",
-                      style: theme.paymentRequestSubtitleStyle,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 12.0),
+                      child: new Text(
+                        "If you want to be able to restore your funds in case this mobile device or this app are no longer available (e.g. lost or stolen device or app uninstall), you are required to backup your information.",
+                        style: theme.paymentRequestSubtitleStyle,
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
-                      child: new ListTile(
-                        contentPadding: const EdgeInsets.only(left: 0.0),
-                        leading: Checkbox(
-                            activeColor: theme.BreezColors.blue[500],
-                            value: !snapshot.data.promptOnError,
-                            onChanged: (v) {
-                              var currentSettings = snapshot.data;
-                              widget.backupBloc.backupSettingsSink.add(
-                                  currentSettings.copyWith(promptOnError: !v));
-                            }),
-                        title: Text(
-                          "Don't prompt again",
-                          style: theme.paymentRequestSubtitleStyle,
-                        ),
+                      child: Row(
+                        children: <Widget>[
+                          Checkbox(                            
+                              activeColor: theme.BreezColors.blue[500],
+                              value: !snapshot.data.promptOnError,
+                              onChanged: (v) {
+                                var currentSettings = snapshot.data;
+                                widget.backupBloc.backupSettingsSink.add(
+                                    currentSettings.copyWith(promptOnError: !v));
+                              }),
+                              Text(
+                            "Don't prompt again",
+                            style: theme.paymentRequestSubtitleStyle,
+                          )
+                        ],
                       ),
-                    ),
+                    ),                    
                   ],
                 );
               }),
