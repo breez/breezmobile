@@ -232,3 +232,10 @@ class BroadcastRefundResponseModel {
 
   BroadcastRefundResponseModel(this.request, this.txID);
 }
+
+class PayRequest {
+  final String paymentRequest;
+  final Int64 amount;
+
+  PayRequest(this.paymentRequest, this.amount);
+}
