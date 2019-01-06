@@ -105,7 +105,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   }
 
   Widget _buildErrorMessage(AccountModel account) {
-    if (account.maxAllowedToPay >= amountToPay || widget.invoice.amount == 0) {
+    if (account.maxAllowedToPay >= amountToPay(account) || widget.invoice.amount == 0) {
       return null;
     }
 
@@ -193,11 +193,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
       )
     ];
     
-    if (account.maxAllowedToPay >= amountToPay) {
+    if (account.maxAllowedToPay >= amountToPay(account)) {
       actions.add(SimpleDialogOption(
         onPressed: (() {
           if (widget.invoice.amount > 0 || _formKey.currentState.validate()) {           
-            widget.accountBloc.sentPaymentsSink.add(PayRequest(widget.invoice.rawPayReq, amountToPay));
+            widget.accountBloc.sentPaymentsSink.add(PayRequest(widget.invoice.rawPayReq, amountToPay(account)));
             Navigator.pop(context);
           }
         }),
@@ -214,11 +214,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     );
   } 
 
-  Int64 get amountToPay {
+  Int64 amountToPay(AccountModel acc) {
     Int64 amount = widget.invoice.amount;
     if (amount == 0) {
       try {
-        amount = Int64.parseInt(_invoiceAmountController.text);
+        amount = acc.currency.parse(_invoiceAmountController.text);      
       } catch (e) {}
     }
     return amount;
