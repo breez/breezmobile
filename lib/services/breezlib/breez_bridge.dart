@@ -104,6 +104,9 @@ class BreezBridge {
 
   Future sendPaymentForRequest(String blankInvoicePaymentRequest, {Int64 amount}) {
     PayInvoiceRequest invoice = new PayInvoiceRequest();
+    if (amount == null) {
+      amount = Int64(0);
+    }
     invoice.amount = amount;
     invoice.paymentRequest = blankInvoicePaymentRequest;
     return _invokeMethodWhenReady("sendPaymentForRequest", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
