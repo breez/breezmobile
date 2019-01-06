@@ -42,7 +42,8 @@
 - [x] End-to-end encryption of Connect-to-Pay session
 - [x] Make Connect-to-Pay links work for users that didn't yet install Breez
 - [x] Ability to Backup/Restore the ln node  
-- [ ] Mainnet support
+- [x] Mainnet support
+- [ ] Support zero-sat invoices
 - [ ] Add mobile device security
 - [ ] Use static card IDs
 - [ ] NFC card deactivation
