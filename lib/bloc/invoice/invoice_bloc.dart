@@ -84,7 +84,7 @@ class InvoiceBloc {
 
   void _listenIncomingBlankInvoices(BreezBridge breezLib, NFCService nfc) {
     nfc.receivedBlankInvoices().listen((invoice) {
-      breezLib.payBlankInvoice(invoice, payBlankAmount).catchError(_paidInvoicesController.addError);
+      breezLib.sendPaymentForRequest(invoice, amount: payBlankAmount).catchError(_paidInvoicesController.addError);
     }).onError(_paidInvoicesController.addError);
   }
 

@@ -71,8 +71,8 @@ class AccountBloc {
   final _accountActionsController = new StreamController<String>.broadcast();
   Stream<String> get accountActionsStream => _accountActionsController.stream;
 
-  final _sentPaymentsController = new StreamController<String>();
-  Sink<String> get sentPaymentsSink => _sentPaymentsController.sink;
+  final _sentPaymentsController = new StreamController<PayRequest>();
+  Sink<PayRequest> get sentPaymentsSink => _sentPaymentsController.sink;
 
   final _fulfilledPaymentsController = new StreamController<String>.broadcast();
   Stream<String> get fulfilledPayments => _fulfilledPaymentsController.stream;
@@ -308,12 +308,12 @@ class AccountBloc {
   
     void _listenSentPayments(BreezBridge breezLib) {
       _sentPaymentsController.stream.listen(
-        (bolt11) {
-          _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: bolt11));          
-          breezLib.sendPaymentForRequest(bolt11)     
+        (payRequest) {
+          _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: payRequest.paymentRequest));          
+          breezLib.sendPaymentForRequest(payRequest.paymentRequest, amount: payRequest.amount)     
           .then((response) {
             _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: ""));          
-            _fulfilledPaymentsController.add(bolt11); 
+            _fulfilledPaymentsController.add(payRequest.paymentRequest); 
           })        
           .catchError((err) {
            _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: ""));
