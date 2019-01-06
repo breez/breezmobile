@@ -88,7 +88,7 @@ class PaymentRequestDialog extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(top: 12.0),
-      child: AutoSizeText("Not enough funds to fulfill this request",
+      child: AutoSizeText("Not enough funds to complete this payment",
           maxLines: 3,
           textAlign: TextAlign.center,
           style: theme.paymentRequestSubtitleStyle.copyWith(color: Colors.red)),
