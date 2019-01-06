@@ -43,7 +43,7 @@
 - [x] Make Connect-to-Pay links work for users that didn't yet install Breez
 - [x] Ability to Backup/Restore the ln node  
 - [x] Mainnet support
-- [ ] Support zero-sat invoices
+- [x] Support zero-sat invoices
 - [ ] Add mobile device security
 - [ ] Use static card IDs
 - [ ] NFC card deactivation
