@@ -379,8 +379,12 @@ class AccountBloc {
         .catchError(_accountController.addError);
       _refreshPayments(breezLib);      
       if (_accountController.value.onChainFeeRate == null) {
-        breezLib.getDefaultOnChainFeeRate().then((rate) => _accountController.add(_accountController.value.copyWith(onChainFeeRate: rate)));     
-      }      
+        breezLib.getDefaultOnChainFeeRate().then((rate) { 
+          if (rate.toInt() > 0) {
+            _accountController.add(_accountController.value.copyWith(onChainFeeRate: rate));
+          }
+        });     
+      }     
     }
 
     void _listenRoutingNodeConnectionChanges(BreezBridge breezLib) {
