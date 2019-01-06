@@ -102,8 +102,11 @@ class BreezBridge {
         .then( (res) => new RemoveFundReply()..mergeFromBuffer(res ?? []));
   }
 
-  Future sendPaymentForRequest(String bolt11PaymentRequest) {
-    return _invokeMethodWhenReady("sendPaymentForRequest", {"argument": bolt11PaymentRequest});
+  Future sendPaymentForRequest(String blankInvoicePaymentRequest, {Int64 amount}) {
+    PayInvoiceRequest invoice = new PayInvoiceRequest();
+    invoice.amount = amount;
+    invoice.paymentRequest = blankInvoicePaymentRequest;
+    return _invokeMethodWhenReady("sendPaymentForRequest", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
 
   Future bootstrapFiles(String workingDir, List<String> bootstrapFilesPaths) {
@@ -111,13 +114,6 @@ class BreezBridge {
     bootstrap.workingDir = workingDir;
     bootstrap.fullPaths..clear()..addAll(bootstrapFilesPaths);
     return _methodChannel.invokeMethod("bootstrapFiles", {"argument": bootstrap.writeToBuffer()});
-  }
-
-  Future payBlankInvoice(String blankInvoicePaymentRequest, Int64 amount) {
-    PayInvoiceRequest invoice = new PayInvoiceRequest();
-    invoice.amount = amount;
-    invoice.paymentRequest = blankInvoicePaymentRequest;
-    return _invokeMethodWhenReady("payBlankInvoice", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
 
   Future<PaymentsList> getPayments(){
