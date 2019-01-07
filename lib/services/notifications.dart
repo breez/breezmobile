@@ -17,7 +17,7 @@ class FirebaseNotifications implements Notifications {
   final StreamController<Map<dynamic, dynamic>> _notificationController = new BehaviorSubject<Map<dynamic, dynamic>>();
   Stream<Map<dynamic, dynamic>> get notifications => _notificationController.stream;
 
-  FirebaseNotifications() {
+  FirebaseNotifications() {    
     _firebaseMessaging = new FirebaseMessaging();
     _firebaseMessaging.configure(
       onMessage: _onMessage,
@@ -26,14 +26,16 @@ class FirebaseNotifications implements Notifications {
     );
   }
 
-  Future<dynamic> _onMessage(Map<String, dynamic> message) {   
+  Future<dynamic> _onMessage(Map<String, dynamic> message) { 
+    print("_onMessge: " + message.toString());
     if (message["data"] != null) {
       _notificationController.add(message["data"]);
     }
     return null;
   }
 
-  Future<dynamic> _onResume(Map<String, dynamic> message) {       
+  Future<dynamic> _onResume(Map<String, dynamic> message) {  
+    print("_onResume: " + message.toString());     
     _notificationController.add(message);
     return null;
   }
