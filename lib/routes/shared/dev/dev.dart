@@ -1,3 +1,4 @@
+import 'package:breez/services/permissions.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -37,30 +38,16 @@ class Choice {
   final Function function;
 }
 
-const List<Choice> choices = <Choice>[
-  const Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
-  const Choice(
-      title: 'Show Initial Screen',
-      icon: Icons.phone_android,
-      function: _gotoInitialScreen),
-];
-
-void _gotoInitialScreen() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setBool('isFirstRun', true);
-  Navigator
-      .of(_scaffoldKey.currentState.context)
-      .pushReplacementNamed("/splash");
-}
-
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class DevView extends StatefulWidget {
   BreezBridge _breezBridge;
+  Permissions _permissionsService;
 
   DevView() {
     ServiceInjector injector = new ServiceInjector();
     _breezBridge = injector.breezBridge;
+    _permissionsService = injector.permissions;
   }
 
   void _select(Choice choice) {
@@ -124,7 +111,7 @@ class DevViewState extends State<DevView> {
           PopupMenuButton<Choice>(
             onSelected: widget._select,
             itemBuilder: (BuildContext context) {
-              return choices.map((Choice choice) {
+              return getChoices().map((Choice choice) {
                 return PopupMenuItem<Choice>(
                   value: choice,
                   child: Text(choice.title),
@@ -245,5 +232,35 @@ class DevViewState extends State<DevView> {
         new LNDBootstrapProgress(),
       ]),
     );
+  }
+
+  List<Choice> getChoices(){
+    List<Choice> choices = <Choice>[
+      Choice(
+        title: 'Share Logs', 
+        icon: Icons.share, 
+        function: shareLog),
+      Choice(
+        title: 'Show Initial Screen',
+        icon: Icons.phone_android,
+        function: _gotoInitialScreen),
+      Choice(
+        title: 'Optimizations Settings',
+        icon: Icons.phone_android,
+        function: _showOptimizationsSettings),
+    ];
+    return choices;
+  }  
+
+  void _gotoInitialScreen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isFirstRun', true);
+    Navigator
+        .of(_scaffoldKey.currentState.context)
+        .pushReplacementNamed("/splash");
+  }
+
+  void _showOptimizationsSettings() async {
+    widget._permissionsService.requestOptimizationSettings();
   }
 }
