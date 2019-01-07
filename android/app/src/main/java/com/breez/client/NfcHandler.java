@@ -182,7 +182,7 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
                 for (int i = 0; i < rawMessages.length; i++) {
                     messages[i] = (NdefMessage) rawMessages[i];
                 }
-
+                Log.d(TAG, "message type = " + messages[0].getRecords()[0].toMimeType());
                 if (messages[0].getRecords()[0].toMimeType().equals("application/breez")) {
                     if (m_mainActivity.isPos) { // We are a POS getting a Breez ID from the card
                         Log.d(TAG, "Discovered a Breez card...");
