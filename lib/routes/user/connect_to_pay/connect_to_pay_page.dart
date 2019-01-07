@@ -41,8 +41,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
 
   ConnectToPayPageState(this._currentSession);
 
-  @override void didChangeDependencies(){
-    super.didChangeDependencies();
+  @override void didChangeDependencies(){    
     if (!_isInit) {
       ConnectPayBloc ctpBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
       if (_currentSession == null) {
@@ -54,6 +53,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
       registerEndOfSessionListener();
       _isInit = true;
     }
+    super.didChangeDependencies();
   }
 
   void registerErrorsListener() async {    

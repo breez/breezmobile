@@ -42,8 +42,7 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
     });   
   }
 
-  @override void didChangeDependencies() {      
-      super.didChangeDependencies();
+  @override void didChangeDependencies() {            
       if (!_isInit) {
         UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
         userBloc.cardActivationInit();      
@@ -56,6 +55,7 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
         });
         _isInit = true;
       }
+      super.didChangeDependencies();
     }
 
   void _showAlertDialog() {

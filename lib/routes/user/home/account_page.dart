@@ -46,8 +46,7 @@ class AccountPageState extends State<AccountPage> {
   bool _isInit = false;
 
   @override
-  void didChangeDependencies() {      
-    super.didChangeDependencies();
+  void didChangeDependencies() {          
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
@@ -55,6 +54,7 @@ class AccountPageState extends State<AccountPage> {
       registerPaymentInProgress();
       registerErrors();
     }
+    super.didChangeDependencies();
   }
 
   void registerPaymentInProgress(){    

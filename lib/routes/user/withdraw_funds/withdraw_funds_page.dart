@@ -38,13 +38,13 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   bool _isInit = false;
 
   @override
-  void didChangeDependencies() {    
-    super.didChangeDependencies();
+  void didChangeDependencies() {        
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       registerWithdrawalResult();
       _isInit = true;
     }
+    super.didChangeDependencies();
   }
 
   @override

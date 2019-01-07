@@ -28,13 +28,13 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   bool _isInit = false;
 
   @override
-  void didChangeDependencies() {    
-    super.didChangeDependencies();
+  void didChangeDependencies() {        
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       registerAccountErrors();
       _isInit = true;
     }
+    super.didChangeDependencies();
   }
 
   @override

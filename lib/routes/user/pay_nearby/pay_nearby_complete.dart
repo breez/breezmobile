@@ -46,8 +46,7 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
   }
 
   @override
-  void didChangeDependencies() {    
-    super.didChangeDependencies();
+  void didChangeDependencies() {        
     if (!_isInit) {
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);    
@@ -55,6 +54,7 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
       registerFulfilledPayments();
       _isInit = true;
     }
+    super.didChangeDependencies();
   }
 
   void startNFCStream(){    

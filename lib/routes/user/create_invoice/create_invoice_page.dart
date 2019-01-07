@@ -32,8 +32,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   StreamSubscription<bool> _paidInvoicesSubscription;
   bool _isInit = false;
 
-  @override void didChangeDependencies(){    
-    super.didChangeDependencies();
+  @override void didChangeDependencies(){        
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     if (!_isInit) {      
       _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {
@@ -43,6 +42,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       });
       _isInit = true;
     }
+    super.didChangeDependencies();
   }
 
   @override
