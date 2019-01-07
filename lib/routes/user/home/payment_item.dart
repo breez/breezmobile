@@ -35,7 +35,7 @@ class PaymentItem extends StatelessWidget {
                     _paymentInfo.creationTimestamp.toInt() * 1000)),
                 style: theme.transactionSubtitleStyle,
               ),
-              _paymentInfo.pending ? Text("(pending)", style: theme.transactionTitleStyle.copyWith(color: theme.warningStyle.color)) : SizedBox()
+              _paymentInfo.pending ? Text(" (Pending)", style: theme.transactionTitleStyle.copyWith(color: theme.warningStyle.color)) : SizedBox()
             ]),
         trailing: Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: <Widget>[
             Text(
