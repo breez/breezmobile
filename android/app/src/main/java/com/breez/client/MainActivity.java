@@ -48,28 +48,10 @@ public class MainActivity extends FlutterActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "Breez activity created...");
         BreezApplication.isRunning = true;
-
+        isPos = this.getPackageName().equals("com.breez.client.pos");
         m_nfc = new NfcHandler(this);
 
-        mainMethodChannel = new MethodChannel(getFlutterView(), MAIN_CHANNEL);
-        mainMethodChannel.setMethodCallHandler(
-                new MethodCallHandler() {
-                    @Override
-                    public void onMethodCall(MethodCall call, Result result) {
-                        if (call.method.equals("setPos")) {
-                            try {
-                                isPos = call.argument("isPos");
-                                result.success(true);
-                            } catch (Exception e) {
-                                result.success(false);
-                            }
-                        }
-                    }
-                }
-        );
-
         registerBreezPlugins();
-
         GeneratedPluginRegistrant.registerWith(this);
         addBreezLogHandler();
     }
