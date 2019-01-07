@@ -23,25 +23,29 @@ class Device {
     var sharedPrefrences = SharedPreferences.getInstance();
     sharedPrefrences.then((preferences) {
       _lastClipping = preferences.getString(LAST_CLIPPING_PREFERENCES_KEY) ?? "";
+      fetchClipboard(preferences);
     });
 
     _notificationsChannel.receiveBroadcastStream().listen((event) {
       if (event == "resume") {
         _eventsController.add(NotificationType.RESUME);
+        sharedPrefrences.then((preferences) {
+          fetchClipboard(preferences);
+        });        
+      }
+    });
+  }
 
-        Clipboard.getData("text/plain").then((clipboardData) {
-          if (clipboardData != null) {
-            var text = clipboardData.text;
+  fetchClipboard(SharedPreferences preferences){
+    Clipboard.getData("text/plain").then((clipboardData) {
+      if (clipboardData != null) {
+        var text = clipboardData.text;
 
-            if (text != _lastClipping) {
-              _deviceClipboardController.add(text);
-              sharedPrefrences.then((preferences) {
-                preferences.setString(LAST_CLIPPING_PREFERENCES_KEY, text);
-                _lastClipping = text;
-              });
-            }
-          }
-        });
+        if (text != _lastClipping) {
+          _deviceClipboardController.add(text);
+          preferences.setString(LAST_CLIPPING_PREFERENCES_KEY, text);
+          _lastClipping = text;
+        }
       }
     });
   }
