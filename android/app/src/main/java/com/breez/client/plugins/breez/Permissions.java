@@ -16,10 +16,12 @@ import io.flutter.plugin.common.PluginRegistry;
 public class Permissions implements MethodChannel.MethodCallHandler, PluginRegistry.ActivityResultListener {
     public static final String BREEZ_PERMISSIONS_CHANNEL_NAME = "com.breez.client/permissions";
     public static final int BREEZ_PERMISSIONS_REQUEST_CODE = 9735;
+    public static final int BREEZ_PERMISSIONS_SETTINGS_CODE = 9736;
     private static final String TAG = "BreezPermissions";
     private Activity m_activity;
     private MethodChannel m_methodChannel;
     private MethodChannel.Result m_result;
+    private MethodChannel.Result m_settingsRequestResult;
 
     public Permissions(PluginRegistry.Registrar registrar, Activity activity) {
         this.m_activity = activity;
@@ -31,6 +33,9 @@ public class Permissions implements MethodChannel.MethodCallHandler, PluginRegis
     public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
         if (methodCall.method.equals("requestOptimizationWhitelist")) {
             requestOptimizationWhitelist(result);
+        }
+        if (methodCall.method.equals("requestOptimizationSettings")) {
+            requestOptimizationSettings(result);
         }
         if (methodCall.method.equals("isInOptimizationWhitelist")) {
             isInOptimizationWhitelist(result);
@@ -52,6 +57,13 @@ public class Permissions implements MethodChannel.MethodCallHandler, PluginRegis
         }
     }
 
+    private void requestOptimizationSettings(MethodChannel.Result result){
+        String packageName = m_activity.getApplicationContext().getPackageName();
+        m_settingsRequestResult = result;
+        Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+        m_activity.startActivityForResult(intent, BREEZ_PERMISSIONS_SETTINGS_CODE);
+    }
+
     private boolean isNotOptimized(){
         PowerManager pm = (PowerManager) m_activity.getSystemService(Context.POWER_SERVICE);
         String packageName = m_activity.getApplicationContext().getPackageName();
@@ -64,6 +76,13 @@ public class Permissions implements MethodChannel.MethodCallHandler, PluginRegis
             boolean notOptimized = isNotOptimized();
             Log.i(TAG, "Breez permissions activiety back with result notOptimized: " + notOptimized);
             m_result.success(notOptimized);
+            return true;
+        }
+
+        if (requestCode == BREEZ_PERMISSIONS_SETTINGS_CODE) {
+            boolean notOptimized = isNotOptimized();
+            Log.i(TAG, "Breez permissions activiety back with result notOptimized: " + notOptimized);
+            m_settingsRequestResult.success(notOptimized);
             return true;
         }
         return false;

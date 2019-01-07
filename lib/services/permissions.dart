@@ -8,6 +8,10 @@ class Permissions {
     return channel.invokeMethod('requestOptimizationWhitelist').then( (res) => res as bool);
   }
 
+  Future<bool> requestOptimizationSettings() {    
+    return channel.invokeMethod('requestOptimizationSettings').then( (res) => res as bool);
+  }
+
   Future<bool> isInOptimizationWhitelist(){
     return channel.invokeMethod("isInOptimizationWhitelist").then((res) => res as bool);
   }
