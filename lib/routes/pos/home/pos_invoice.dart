@@ -61,8 +61,7 @@ class POSInvoiceState extends State<POSInvoice> {
   bool _isInit = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void didChangeDependencies() {    
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
@@ -73,6 +72,7 @@ class POSInvoiceState extends State<POSInvoice> {
       itemWidth = (MediaQuery.of(context).size.width) / 2; 
       _isInit = true;  
     } 
+    super.didChangeDependencies();
   }
 
   void registerListeners() {    
