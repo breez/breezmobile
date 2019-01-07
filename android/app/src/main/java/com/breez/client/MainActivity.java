@@ -103,7 +103,7 @@ public class MainActivity extends FlutterActivity {
     public void onResume() {
         super.onResume();
         BreezApplication.isBackground = false;
-        //m_nfc.enableForegroundDispatch();
+        m_nfc.enableForegroundDispatch();
     }
 
     @Override
