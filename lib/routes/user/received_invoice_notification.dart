@@ -18,9 +18,13 @@ class InvoiceNotificationsHandler {
       if (_currentlyHandledRawPayReq != message.rawPayReq) {
         _currentlyHandledRawPayReq = message.rawPayReq;
         Navigator.popUntil(_context, ModalRoute.withName(Navigator.defaultRouteName));
-        showDialog(context: _context, builder: (_) => paymentRequest.PaymentRequestDialog(_context, _accountBloc, message)).then((result) {
-          _currentlyHandledRawPayReq = "";
-        });
+        showDialog(
+          context: _context, 
+          barrierDismissible: false,
+          builder: (_) => paymentRequest.PaymentRequestDialog(_context, _accountBloc, message))
+                            .then((result) {
+                              _currentlyHandledRawPayReq = "";
+                            });
       }
     }, onError: (error) {
       Navigator.popUntil(_context, ModalRoute.withName(Navigator.defaultRouteName));

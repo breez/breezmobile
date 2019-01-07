@@ -18,6 +18,7 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
   NFCService nfc = injector.nfc;
 
   StreamSubscription _streamSubscription;
+  bool _isInit = false;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -43,16 +44,18 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
 
   @override void didChangeDependencies() {      
       super.didChangeDependencies();
-      UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      userBloc.cardActivationInit();
-      _streamSubscription?.cancel();
-      _streamSubscription = userBloc.cardActivationStream.listen((bool success) {
-        if (success) {
-          Navigator.pop(context, "Your Breez card has been activated and is now ready for use!");
-        } else {
-          log.info("Card activation failed!");
-        }
-      });
+      if (!_isInit) {
+        UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+        userBloc.cardActivationInit();      
+        _streamSubscription = userBloc.cardActivationStream.listen((bool success) {
+          if (success) {
+            Navigator.pop(context, "Your Breez card has been activated and is now ready for use!");
+          } else {
+            log.info("Card activation failed!");
+          }
+        });
+        _isInit = true;
+      }
     }
 
   void _showAlertDialog() {

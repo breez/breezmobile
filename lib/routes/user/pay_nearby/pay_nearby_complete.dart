@@ -33,6 +33,7 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
   StreamSubscription<String> _sentPaymentResultSubscription;
 
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
+  bool _isInit = false;
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
@@ -47,14 +48,16 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
   @override
   void didChangeDependencies() {    
     super.didChangeDependencies();
-    _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    _accountBloc = AppBlocsProvider.of<AccountBloc>(context);    
-    startNFCStream();
-    registerFulfilledPayments();
+    if (!_isInit) {
+      _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);    
+      startNFCStream();
+      registerFulfilledPayments();
+      _isInit = true;
+    }
   }
 
-  void startNFCStream(){
-    _blankInvoiceSubscription?.cancel();
+  void startNFCStream(){    
     _blankInvoiceSubscription = _nfc.startP2PBeam()
       .listen((blankInvoice) {
         // In the future perhaps show some information about the user we are paying to?
@@ -64,8 +67,7 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
           content: new Text(err.toString()))));
   }
 
-  void registerFulfilledPayments(){
-    _paidInvoicesSubscription?.cancel();
+  void registerFulfilledPayments(){    
     _paidInvoicesSubscription = _invoiceBloc.paidInvoicesStream
       .listen((paid) {
         Navigator.of(context).pop('Payment was sent successfuly!');
@@ -73,8 +75,7 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
       onError: (err) => _scaffoldKey.currentState.showSnackBar(new SnackBar(
           duration: new Duration(seconds: 3),
           content: new Text("Failed to send payment: " + err.toString()))));
-
-    _sentPaymentResultSubscription?.cancel();
+    
     _sentPaymentResultSubscription = _accountBloc.fulfilledPayments
       .listen((fulfilledPayment) {
         _scaffoldKey.currentState.showSnackBar(new SnackBar(

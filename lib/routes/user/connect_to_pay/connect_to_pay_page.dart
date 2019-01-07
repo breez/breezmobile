@@ -37,28 +37,30 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   Object _error;
   bool _destroySessionOnTerminate = true;
   bool canceledByMe = false;
+  bool _isInit = false;
 
   ConnectToPayPageState(this._currentSession);
 
   @override void didChangeDependencies(){
     super.didChangeDependencies();
-    ConnectPayBloc ctpBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
-    if (_currentSession == null) {
-        _currentSession = ctpBloc.startSessionAsPayer();
+    if (!_isInit) {
+      ConnectPayBloc ctpBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
+      if (_currentSession == null) {
+          _currentSession = ctpBloc.startSessionAsPayer();
+      }
+      _payer = _currentSession.runtimeType == PayerRemoteSession;
+      _title = _payer ? "Connect To Pay" : "Receive Payment";
+      registerErrorsListener();
+      registerEndOfSessionListener();
+      _isInit = true;
     }
-    _payer = _currentSession.runtimeType == PayerRemoteSession;
-    _title = _payer ? "Connect To Pay" : "Receive Payment";
-    registerErrorsListener();
-    registerEndOfSessionListener();
   }
 
-  void registerErrorsListener() async {
-    await _errorsSubscription?.cancel();
+  void registerErrorsListener() async {    
     _errorsSubscription = _currentSession.sessionErrors.listen((error) {
       _popWithMessage(error.description);
     });
-
-    await _remotePartyErrorSubscription?.cancel();
+    
     _remotePartyErrorSubscription = _currentSession.paymentSessionStateStream.listen((s) {
       var error = !_payer ? s.payerData?.error : s.payeeData?.error;
       if (error != null) {
@@ -67,8 +69,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     });
   }
 
-  void registerEndOfSessionListener() async {
-    await _endOfSessionSubscription?.cancel();
+  void registerEndOfSessionListener() async {    
     _endOfSessionSubscription = _currentSession.paymentSessionStateStream.listen((s) {      
       if (_remoteUserName == null) {
         _remoteUserName = (_payer ? s.payeeData?.userName : s.payerData?.userName);

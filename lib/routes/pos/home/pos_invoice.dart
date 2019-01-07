@@ -58,19 +58,21 @@ class POSInvoiceState extends State<POSInvoice> {
   StreamSubscription<String> _invoiceNotificationsSubscription;
 
   FocusNode _focusNode;
+  bool _isInit = false;
 
   @override
   void didChangeDependencies() {
-    _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    _posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);
-
-    closeListeners();
-    registerListeners();
-    itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
-    itemWidth = (MediaQuery.of(context).size.width) / 2;
     super.didChangeDependencies();
+    if (!_isInit) {
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+      _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+      _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      _posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);      
+      registerListeners();
+      itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
+      itemWidth = (MediaQuery.of(context).size.width) / 2; 
+      _isInit = true;  
+    } 
   }
 
   void registerListeners() {    

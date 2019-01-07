@@ -30,16 +30,19 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   final TextEditingController _amountController = new TextEditingController();
 
   StreamSubscription<bool> _paidInvoicesSubscription;
+  bool _isInit = false;
 
   @override void didChangeDependencies(){    
     super.didChangeDependencies();
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    _paidInvoicesSubscription?.cancel();
-    _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {
-          // Workaround for snackbar appearing mid air
-          Navigator.pop(context, 'Payment was successfuly received!');
-          Navigator.pop(context, 'Payment was successfuly received!');
-    });
+    if (!_isInit) {      
+      _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {
+            // Workaround for snackbar appearing mid air
+            Navigator.pop(context, 'Payment was successfuly received!');
+            Navigator.pop(context, 'Payment was successfuly received!');
+      });
+      _isInit = true;
+    }
   }
 
   @override

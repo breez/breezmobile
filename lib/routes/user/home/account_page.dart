@@ -43,19 +43,21 @@ class AccountPageState extends State<AccountPage> {
   StreamSubscription<String> _accountActionsSubscription;
   StreamSubscription<AccountModel> _statusSubscription;
   String _paymentRequestInProgress;
+  bool _isInit = false;
 
   @override
   void didChangeDependencies() {      
     super.didChangeDependencies();
-    _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
-    registerPaymentInProgress();
-    registerErrors();
+    if (!_isInit) {
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+      _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
+      registerPaymentInProgress();
+      registerErrors();
+    }
   }
 
-  void registerPaymentInProgress(){
-    _statusSubscription?.cancel();
+  void registerPaymentInProgress(){    
     _statusSubscription =_accountBloc.accountStream.listen((acc) {
       if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {        
         Scaffold.of(context).showSnackBar(new SnackBar(
@@ -70,8 +72,7 @@ class AccountPageState extends State<AccountPage> {
     });
   }
 
-  void registerErrors(){
-    _accountActionsSubscription?.cancel();
+  void registerErrors(){    
     _accountActionsSubscription = _accountBloc.accountActionsStream.listen((data) {}, onError: (e) {
       Scaffold.of(context).showSnackBar(new SnackBar(duration: new Duration(seconds: 10), content: new Text(e.toString())));
     });

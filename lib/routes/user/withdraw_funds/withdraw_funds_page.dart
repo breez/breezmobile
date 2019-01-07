@@ -35,12 +35,16 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   BreezBridge _breezLib;
   String _addressValidated;
   bool _inProgress = false;
+  bool _isInit = false;
 
   @override
   void didChangeDependencies() {    
     super.didChangeDependencies();
-    _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    registerWithdrawalResult();
+    if (!_isInit) {
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+      registerWithdrawalResult();
+      _isInit = true;
+    }
   }
 
   @override
@@ -62,8 +66,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     return true;
   }
 
-  void registerWithdrawalResult(){
-    withdrawalResultSubscription?.cancel();
+  void registerWithdrawalResult(){    
     withdrawalResultSubscription = _accountBloc.withdrawalResultStream
       .listen((response) {
           setState(() {
