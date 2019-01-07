@@ -67,11 +67,11 @@ class POSInvoiceState extends State<POSInvoice> {
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);      
-      registerListeners();
-      itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
-      itemWidth = (MediaQuery.of(context).size.width) / 2; 
+      registerListeners();      
       _isInit = true;  
     } 
+    itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
+    itemWidth = (MediaQuery.of(context).size.width) / 2; 
     super.didChangeDependencies();
   }
 
