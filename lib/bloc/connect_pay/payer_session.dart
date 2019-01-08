@@ -118,7 +118,10 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       return Future.value(null);
     }
     
-    await stopStatusUpdates();    
+    await stopStatusUpdates();  
+    if (permanent) {  
+      await pushStateUpdate({"cancelled":true});
+    }
     await _channel.terminate(destroyHistory: permanent);    
     await _paymentDetailsController.close();    
     await _paymentSessionController.close();    
@@ -190,9 +193,11 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   }
 
   _onPaymenetFulfilled(InvoiceMemo invoice){
-    pushStateUpdate({"paymentFulfilled": true}).then((_){
-      _paymentSessionController.add(_currentSession.copyWith(paymentFulfilled: true, settledAmount: invoice.amount.toInt()));
-    });
+    _paymentSessionController.add(_currentSession.copyWith(
+      paymentFulfilled: true, settledAmount: invoice.amount.toInt(),
+      payerData: _currentSession.payerData.copyWith(paymentFulfilled: true))
+    );
+    pushStateUpdate({"paymentFulfilled": true});
   }
 
   _onError(err){

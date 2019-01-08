@@ -135,6 +135,9 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
     }
     await _invoicesPaidSubscription.cancel();
     await stopStatusUpdates();
+    if (permanent) {  
+      await pushStateUpdate({"cancelled":true});
+    }
     await _channel.terminate(destroyHistory: permanent);    
     await _approvePaymentController.close();
     await _paymentSessionController.close();
