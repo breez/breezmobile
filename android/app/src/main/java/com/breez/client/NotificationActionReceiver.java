@@ -32,6 +32,7 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         notificationIntent.putExtra("click_action", "FLUTTER_NOTIFICATION_CLICK");
+        notificationIntent.putExtra("user_click", "1");
 
         for (String s : remoteMessage.getData().keySet()) {
             notificationIntent.putExtra(s, remoteMessage.getData().get(s));
