@@ -22,7 +22,10 @@ dependencies:
     git:
        url: https://github.com/roeierez/flutter_barcode_reader.git       
   image_picker: 0.4.7
-  image: any
+  image:
+    git:
+      url: https://github.com/yaslama/image.git
+      ref: xml-3.2.4
   package_info: any  
   uuid: ^1.0.3
   ini: ^2.0.1
