@@ -30,8 +30,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   @override
   void didChangeDependencies() {        
     if (!_isInit) {
-      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-      registerAccountErrors();
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);      
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -41,14 +40,6 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   dispose() {
     _accountActionsSubscription.cancel();
     super.dispose();
-  }
-
-  void registerAccountErrors(){    
-    _accountActionsSubscription = _accountBloc.accountActionsStream
-      .listen((data) {}, onError: (e) {
-        _scaffoldKey.currentState
-            .showSnackBar(new SnackBar(duration: new Duration(seconds: 10), content: new Text(e.toString())));
-      });
   }
 
   @override

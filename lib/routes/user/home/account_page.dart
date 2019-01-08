@@ -51,8 +51,7 @@ class AccountPageState extends State<AccountPage> {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
-      registerPaymentInProgress();
-      registerErrors();
+      registerPaymentInProgress();      
     }
     super.didChangeDependencies();
   }
@@ -69,12 +68,6 @@ class AccountPageState extends State<AccountPage> {
       setState(() {
         _paymentRequestInProgress = acc.paymentRequestInProgress;
       });
-    });
-  }
-
-  void registerErrors(){    
-    _accountActionsSubscription = _accountBloc.accountActionsStream.listen((data) {}, onError: (e) {
-      Scaffold.of(context).showSnackBar(new SnackBar(duration: new Duration(seconds: 10), content: new Text(e.toString())));
     });
   }
 
