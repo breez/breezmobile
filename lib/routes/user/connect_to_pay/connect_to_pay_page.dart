@@ -35,8 +35,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   RemoteSession _currentSession;
   Object _error;
-  bool _destroySessionOnTerminate = true;
-  bool canceledByMe = false;
+  bool _destroySessionOnTerminate = true;  
   bool _isInit = false;
 
   ConnectToPayPageState(this._currentSession);
@@ -75,19 +74,23 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         _remoteUserName = (_payer ? s.payeeData?.userName : s.payerData?.userName);
       }
       
-      if (s.paymentFulfilled) {
+      if (s.remotePartyCancelled) {
+        _popWithMessage('${_remoteUserName ?? (_payer ? "Payee" : "Payer")} has cancelled the payment session');
+        return;
+      }
+
+      if (s.paymentConfirmed) {
         String formattedAmount = _currentSession.currentUser.currency.format(Int64(s.settledAmount));
         String successMessage = _payer
             ? 'You have successfully paid $_remoteUserName $formattedAmount!'
-            : '$_remoteUserName have successfully paid you $formattedAmount!';
-        _popWithMessage(successMessage);
+            : '$_remoteUserName have successfully paid you $formattedAmount!';        
+        _popWithMessage(successMessage, destroySession: !_payer);
       }
-    }, onDone: (){
-      _popWithMessage(canceledByMe ? null : '${_remoteUserName ?? (_payer ? "Payee" : "Payer")} has cancelled the payment session');
-    }); 
+    }, onDone: () => _popWithMessage(null, destroySession: false)); 
   }
 
-  void _popWithMessage(message) {    
+  void _popWithMessage(message, {destroySession: true}) { 
+    _destroySessionOnTerminate = destroySession;   
     Navigator.pop(_key.currentContext);
     if (message != null) {
       showFlushbar(_key.currentContext, message: message);
@@ -98,6 +101,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     _remoteUserName = null;    
     await _endOfSessionSubscription.cancel();
     await _errorsSubscription.cancel();
+    await _remotePartyErrorSubscription.cancel();
   }
 
   @override
@@ -117,14 +121,12 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         _key.currentContext, null, Text(exitSessionMessage, style: textStyle),
         textStyle: textStyle);
     if (cancel) {
-      canceledByMe = true;
-      _currentSession.terminate(permanent: true);      
+      _popWithMessage(null);           
     }
   }
 
-  void _onBackPressed() async {
-    _destroySessionOnTerminate = false;
-    Navigator.pop(_key.currentContext);
+  void _onBackPressed() async {    
+    _popWithMessage(null, destroySession: false);    
   }
 
   @override
