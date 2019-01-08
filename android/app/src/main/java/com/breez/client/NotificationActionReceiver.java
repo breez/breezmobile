@@ -31,7 +31,7 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         final Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        notificationIntent.putExtra("click_action", FirebaseMessagingPlugin.CLICK_ACTION_VALUE);
+        notificationIntent.putExtra("click_action", "FLUTTER_NOTIFICATION_CLICK");
 
         for (String s : remoteMessage.getData().keySet()) {
             notificationIntent.putExtra(s, remoteMessage.getData().get(s));
