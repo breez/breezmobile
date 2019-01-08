@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
@@ -88,14 +89,15 @@ class HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String _activeScreen = "breezHome";
   Set _hiddenRountes = Set<String>();
+  StreamSubscription<String> _accountNotificationsSubscription;
 
   @override
   void initState() {
     super.initState();
-    registerNotificationHandlers();
+    _registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
-    listenBackupConflicts();
-    listenWhiltelistPermissionsRequest();
+    _listenBackupConflicts();
+    _listenWhiltelistPermissionsRequest();
     _hiddenRountes.add("/get_refund");
     widget.accountBloc.refundableDepositsStream.listen((addresses){
       setState(() {
@@ -114,46 +116,12 @@ class HomeState extends State<Home> {
         activeAccountRoutes.forEach((r) => addOrRemove(r));      
       });
     });
-  }
+  }  
 
-  registerNotificationHandlers(){        
-    new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
-    new CTPJoinSessionHandler(widget.ctpBloc, this.context, 
-      (session) {
-        Navigator.popUntil(context, (route) {
-          return route.settings.name != "/connect_to_pay";          
-        });        
-        var ctpRoute = FadeInRoute(builder: (_) => new ConnectToPayPage(session), settings: RouteSettings(name: "/connect_to_pay"));
-        Navigator.of(context).push(ctpRoute);                    
-      },
-      (e) {
-        promptError(context, "Connect to Pay", Text(e.toString(), style: theme.alertStyle));
-      }
-    );
-  }
-
-  void listenBackupConflicts(){
-    widget.accountBloc.nodeConflictStream.listen((_) async {
-      Navigator.popUntil(context, (route) {
-          return route.settings.name == "/home" || route.settings.name == "/";
-        }
-      );
-      await promptError(context, "Configuration Error", Text("Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.", style: theme.alertStyle), 
-                        okText: "Exit Breez", okFunc: () => exit(0), disableBack: true );        
-    });
-  }
-
-  void listenWhiltelistPermissionsRequest(){
-    widget.accountBloc.optimizationWhitelistExplainStream.listen((_) async {
-      await promptError(context, "Background Synchronization", 
-        Text("In order to support instantaneous payments, Breez needs your permission in order to synchronize the information while the app is not active. Please approve the app in the next dialog.", 
-        style: theme.alertStyle), 
-        okFunc: () => widget.accountBloc.optimizationWhitelistRequestSink.add(null));      
-    });
-  }
-
-  List<DrawerItemConfig> filterItems(List<DrawerItemConfig> items){
-    return items.where( (c) => !_hiddenRountes.contains(c.name)).toList();
+  @override
+  void dispose() {
+    _accountNotificationsSubscription?.cancel();    
+    super.dispose();
   }
 
   @override
@@ -185,11 +153,11 @@ class HomeState extends State<Home> {
         drawer: new NavigationDrawer(
             true,
             [
-              DrawerItemConfigGroup(filterItems(widget._majorActionsFunds)),
-              DrawerItemConfigGroup(filterItems(widget._majorActionsPay)),
-              DrawerItemConfigGroup(filterItems(widget._minorActionsInvoice)),
-              DrawerItemConfigGroup(filterItems(widget._minorActionsCard), groupTitle: "Card", groupAssetImage: "src/icon/card.png"),            
-              DrawerItemConfigGroup(filterItems(widget._minorActionsDev))
+              DrawerItemConfigGroup(_filterItems(widget._majorActionsFunds)),
+              DrawerItemConfigGroup(_filterItems(widget._majorActionsPay)),
+              DrawerItemConfigGroup(_filterItems(widget._minorActionsInvoice)),
+              DrawerItemConfigGroup(_filterItems(widget._minorActionsCard), groupTitle: "Card", groupAssetImage: "src/icon/card.png"),            
+              DrawerItemConfigGroup(_filterItems(widget._minorActionsDev))
             ],
             _onNavigationItemSelected),
         body: widget._screenBuilders[_activeScreen]);
@@ -215,6 +183,52 @@ class HomeState extends State<Home> {
         });
       }
     }
+  }
+
+  void _registerNotificationHandlers(){        
+    new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
+    new CTPJoinSessionHandler(widget.ctpBloc, this.context, 
+      (session) {
+        Navigator.popUntil(context, (route) {
+          return route.settings.name != "/connect_to_pay";          
+        });        
+        var ctpRoute = FadeInRoute(builder: (_) => new ConnectToPayPage(session), settings: RouteSettings(name: "/connect_to_pay"));
+        Navigator.of(context).push(ctpRoute);                    
+      },
+      (e) {
+        promptError(context, "Connect to Pay", Text(e.toString(), style: theme.alertStyle));
+      }
+    );
+
+    _accountNotificationsSubscription = widget.accountBloc.accountNotificationsStream
+      .listen(
+        (data) => showFlushbar(context, message: data), 
+        onError: (e) => showFlushbar(context, message: e.toString())
+      );
+  }
+
+  void _listenBackupConflicts(){
+    widget.accountBloc.nodeConflictStream.listen((_) async {
+      Navigator.popUntil(context, (route) {
+          return route.settings.name == "/home" || route.settings.name == "/";
+        }
+      );
+      await promptError(context, "Configuration Error", Text("Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.", style: theme.alertStyle), 
+                        okText: "Exit Breez", okFunc: () => exit(0), disableBack: true );        
+    });
+  }
+
+  void _listenWhiltelistPermissionsRequest(){
+    widget.accountBloc.optimizationWhitelistExplainStream.listen((_) async {
+      await promptError(context, "Background Synchronization", 
+        Text("In order to support instantaneous payments, Breez needs your permission in order to synchronize the information while the app is not active. Please approve the app in the next dialog.", 
+        style: theme.alertStyle), 
+        okFunc: () => widget.accountBloc.optimizationWhitelistRequestSink.add(null));      
+    });
+  }
+
+  List<DrawerItemConfig> _filterItems(List<DrawerItemConfig> items){
+    return items.where( (c) => !_hiddenRountes.contains(c.name)).toList();
   }
 
   DrawerItemConfig get activeScreen {
