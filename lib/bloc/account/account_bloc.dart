@@ -3,15 +3,12 @@ import 'dart:convert';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/backup.dart';
-import 'package:breez/services/breez_server/generated/breez.pbenum.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/notifications.dart';
-import 'package:breez/utils/retry.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:uuid/uuid.dart';
 import 'account_model.dart';
 import 'package:breez/services/injector.dart';
@@ -68,8 +65,8 @@ class AccountBloc {
   Stream<PaymentFilterModel> get paymentFilterStream => _paymentFilterController.stream;
   Sink<PaymentFilterModel> get paymentFilterSink => _paymentFilterController.sink;
 
-  final _accountActionsController = new StreamController<String>.broadcast();
-  Stream<String> get accountActionsStream => _accountActionsController.stream;
+  final _accountNotificationsController = new StreamController<String>.broadcast();
+  Stream<String> get accountNotificationsStream => _accountNotificationsController.stream;
 
   final _sentPaymentsController = new StreamController<PayRequest>();
   Sink<PayRequest> get sentPaymentsSink => _sentPaymentsController.sink;
@@ -99,8 +96,7 @@ class AccountBloc {
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
       ServiceInjector injector = new ServiceInjector();    
-      BreezBridge breezLib = injector.breezBridge;
-      BreezServer server = injector.breezServer;
+      BreezBridge breezLib = injector.breezBridge;      
       Notifications notificationsService = injector.notifications;
       Device device = injector.device;
       _backupService = injector.backupService;      
@@ -169,7 +165,10 @@ class AccountBloc {
       breezLib.notificationStream.where(
         (n) => n.type == NotificationEvent_NotificationType.FUND_ADDRESS_UNSPENT_CHANGED
       )
-      .listen((e) => refreshRefundableAddresses());      
+      .listen((e) { 
+        refreshRefundableAddresses(); 
+        _fetchFundStatus(breezLib);
+      });      
     }
 
     void _listenRefundBroadcasts(BreezBridge breezLib){
@@ -211,6 +210,9 @@ class AccountBloc {
         .where((message) => message["msg"] == "Unconfirmed transaction" ||  message["msg"] == "Confirmed transaction")
         .listen((message) {
           log.severe(message.toString());
+          if (message["msg"] == "Unconfirmed transaction" && message["user_click"] == null) {
+            _accountNotificationsController.add(message["body"].toString());
+          }
           _fetchFundStatus(breezLib);         
         });
 
@@ -438,12 +440,14 @@ class AccountBloc {
       _requestAddressController.close();
       _addFundController.close();    
       _paymentsController.close();          
-      _accountActionsController.close();
+      _accountNotificationsController.close();
       _sentPaymentsController.close();
       _withdrawalController.close();
       _paymentFilterController.close();
       _lightningDownController.close();
       _reconnectStreamController.close();
+      _routingNodeConnectionController.close();
+      _broadcastRefundRequestController.close();
       _permissionsHandler.dispose();
     }
   }  
