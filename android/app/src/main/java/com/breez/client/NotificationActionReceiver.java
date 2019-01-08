@@ -37,10 +37,6 @@ public class NotificationActionReceiver extends BroadcastReceiver {
             notificationIntent.putExtra(s, remoteMessage.getData().get(s));
         }
         context.startActivity(notificationIntent);
-        // Send payment data
-        Intent dataIntent = new Intent(ACTION_REMOTE_MESSAGE);
-        dataIntent.putExtra(EXTRA_REMOTE_MESSAGE, remoteMessage);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(dataIntent);
     }
 }
 
