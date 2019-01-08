@@ -11,8 +11,11 @@ class PaymentSessionState {
   final PayeeSessionData payeeData;
   final bool invitationReady;
   final bool invitationSent;
-  final bool paymentFulfilled;
-  final int settledAmount;   
+  final bool paymentFulfilled;  
+  final int settledAmount;
+
+  bool get remotePartyCancelled => payer ? payeeData.cancelled : payerData.cancelled;
+  bool get paymentConfirmed => payer ? paymentFulfilled : paymentFulfilled && payerData.paymentFulfilled;
 
   PaymentSessionState(this.payer, this.sessionSecret, this.payerData, this.payeeData, this.invitationReady, this.invitationSent, this.paymentFulfilled, this.settledAmount);
 
@@ -22,10 +25,10 @@ class PaymentSessionState {
   }
 
   PaymentSessionState.payerStart(String sessionSecret, String userName, String imageURL)
-      : this(true, sessionSecret, PayerSessionData(userName, imageURL, PeerStatus.start(), null, null), PayeeSessionData(null, null, PeerStatus.start(), null, null),false,  false,
+      : this(true, sessionSecret, PayerSessionData(userName, imageURL, PeerStatus.start(), null, null), PayeeSessionData(null, null, PeerStatus.start(), null, null, false),false,  false,
             false, 0);
   PaymentSessionState.payeeStart(String sessionSecret, String userName, String imageURL)
-      : this(false, sessionSecret, PayerSessionData(null, null, PeerStatus.start(), null, null), PayeeSessionData(userName, imageURL, PeerStatus.start(), null, null), true, true,
+      : this(false, sessionSecret, PayerSessionData(null, null, PeerStatus.start(), null, null), PayeeSessionData(userName, imageURL, PeerStatus.start(), null, null, false), true, true,
             false, 0);
 }
 
@@ -36,9 +39,10 @@ class PayerSessionData {
   final int amount;
   final String description;
   final String error;
+  final bool cancelled;
   final bool paymentFulfilled;
 
-  PayerSessionData(this.userName, this.imageURL, this.status, this.amount, this.description, {this.error, this.paymentFulfilled = false});
+  PayerSessionData(this.userName, this.imageURL, this.status, this.amount, this.description, {this.error, this.paymentFulfilled = false, this.cancelled = false});
   PayerSessionData.fromJson(Map<dynamic, dynamic> json)
       : status = json['status'] == null ? null : PeerStatus.fromJson(json['status']),
         amount = json['amount'] != null ? int.parse(json['amount'].toString()) : null,
@@ -46,11 +50,12 @@ class PayerSessionData {
         userName = json["userName"],
         imageURL = json["imageURL"],
         error = json["error"],
+        cancelled = json["cancelled"] ?? false,
         paymentFulfilled = json["paymentFulfilled"] ?? false;
 
   PayerSessionData copyWith({String userName, String imageURL, PeerStatus status, int amount, String description, String error, bool paymentFulfilled}) {
     return new PayerSessionData(userName ?? this.userName, imageURL ?? this.imageURL, status ?? this.status, 
-        amount ?? this.amount, description ?? this.description, error: error ?? this.error, paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled);
+        amount ?? this.amount, description ?? this.description, error: error ?? this.error, paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled, cancelled: cancelled ?? this.cancelled);
   }  
 }
 
@@ -60,19 +65,21 @@ class PayeeSessionData {
   final PeerStatus status;
   final String paymentRequest;
   final String error;
+  final bool cancelled;
   bool get invitationAccepted => status.lastChanged != 0;
 
-  PayeeSessionData(this.userName, this.imageURL, this.status, this.paymentRequest, this.error);
+  PayeeSessionData(this.userName, this.imageURL, this.status, this.paymentRequest, this.error, this.cancelled);
 
   PayeeSessionData.fromJson(Map<dynamic, dynamic> json)
       : status = json['status'] == null ? null : PeerStatus.fromJson(json['status']),
         paymentRequest = json['paymentRequest'],
         userName = json["userName"],
         error = json["error"],
+        cancelled = json["cancelled"] ?? false,
         imageURL = json['imageURL'];
 
-  PayeeSessionData copyWith({String userName, String imageURL, PeerStatus status, String paymentRequest, String error}) {
-    return new PayeeSessionData(userName ?? this.userName, imageURL ?? this.imageURL, status ?? this.status, paymentRequest ?? this.paymentRequest, error ?? this.error);
+  PayeeSessionData copyWith({String userName, String imageURL, PeerStatus status, String paymentRequest, String error, bool cancelled}) {
+    return new PayeeSessionData(userName ?? this.userName, imageURL ?? this.imageURL, status ?? this.status, paymentRequest ?? this.paymentRequest, error ?? this.error, cancelled ?? this.cancelled);
   }  
 }
 
