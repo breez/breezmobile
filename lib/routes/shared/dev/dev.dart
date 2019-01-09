@@ -245,7 +245,7 @@ class DevViewState extends State<DevView> {
         icon: Icons.phone_android,
         function: _gotoInitialScreen),
       Choice(
-        title: 'Optimizations Settings',
+        title: 'Battery Optimization',
         icon: Icons.phone_android,
         function: _showOptimizationsSettings),
     ];
