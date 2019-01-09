@@ -1,4 +1,5 @@
 import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -193,12 +194,32 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
       )
     ];
     
-    if (account.maxAllowedToPay >= amountToPay(account)) {
+    Int64 toPay = amountToPay(account);
+    if (toPay > 0 && account.maxAllowedToPay >= toPay) {
       actions.add(SimpleDialogOption(
-        onPressed: (() {
-          if (widget.invoice.amount > 0 || _formKey.currentState.validate()) {           
-            widget.accountBloc.sentPaymentsSink.add(PayRequest(widget.invoice.rawPayReq, amountToPay(account)));
-            Navigator.pop(context);
+        onPressed: (() async {
+          if (widget.invoice.amount > 0 || _formKey.currentState.validate()) { 
+
+            if (widget.invoice.amount == 0) { 
+              TextStyle textStyle = theme.alertStyle;//TextStyle(color: Colors.black).copyWith(fontSize: 16.0);
+              String exitSessionMessage = 'Are you sure you want to pay ';
+              RichText content = RichText(
+                text: TextSpan(style: textStyle,
+                  text: exitSessionMessage,
+                  children:<TextSpan>[
+                    TextSpan(text: "${account.currency.format(amountToPay(account))}", style: textStyle.copyWith(fontWeight: FontWeight.bold)),
+                    TextSpan(text: "?")          
+                  ]));
+
+              Navigator.pop(context);
+              bool sure = await promptAreYouSure(context, null, content, textStyle: theme.buttonStyle);
+              if (sure) {
+                widget.accountBloc.sentPaymentsSink.add(PayRequest(widget.invoice.rawPayReq, amountToPay(account)));                  
+              }
+            } else {
+              widget.accountBloc.sentPaymentsSink.add(PayRequest(widget.invoice.rawPayReq, amountToPay(account)));                  
+              Navigator.pop(context);
+            }               
           }
         }),
         child: new Text("APPROVE", style: theme.buttonStyle),
