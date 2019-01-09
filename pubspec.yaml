@@ -36,6 +36,7 @@ dependencies:
 
 dev_dependencies:
   mockito: "^3.0.0"
+  protoc_plugin: 14.0.0
 
 
 # For information on the generic Dart part of this file, see the
