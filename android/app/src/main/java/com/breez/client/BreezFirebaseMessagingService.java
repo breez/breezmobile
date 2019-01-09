@@ -24,14 +24,13 @@ import static android.R.drawable.ic_delete;
 
 
 public class BreezFirebaseMessagingService extends FirebaseMessagingService {
-    public static final String NOTIFICATION_REPLY = "NotificationReply";
-    public static final int NOTIFICATION_ID = 200;
     public static final int REQUEST_CODE_OPEN = 101;
     public static final String KEY_INTENT_APPROVE = "keyintentaccept";
 
     public static final String ACTION_REMOTE_MESSAGE =
             "io.flutter.plugins.firebasemessaging.NOTIFICATION";
     public static final String EXTRA_REMOTE_MESSAGE = "notification";
+    public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
 
     private static final String TAG ="breez_fcm";
 
@@ -52,12 +51,14 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void ShowNotification(Map<String, String> data, RemoteMessage remoteMessage) {
+        int notificationID = (int)System.currentTimeMillis() / 1000;
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         PendingIntent approvePendingIntent = PendingIntent.getBroadcast(
                 this,
                 REQUEST_CODE_OPEN,
                 new Intent(this, NotificationActionReceiver.class)
                         .putExtra(KEY_INTENT_APPROVE, REQUEST_CODE_OPEN)
+                        .putExtra(NOTIFICATION_ID, notificationID)
                         .putExtra(EXTRA_REMOTE_MESSAGE, remoteMessage),
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
@@ -100,7 +101,7 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+        notificationManager.notify(notificationID, notificationBuilder.build());
     }
 }
 

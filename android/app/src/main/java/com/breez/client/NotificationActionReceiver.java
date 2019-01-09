@@ -37,6 +37,9 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         for (String s : remoteMessage.getData().keySet()) {
             notificationIntent.putExtra(s, remoteMessage.getData().get(s));
         }
+
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(intent.getIntExtra(BreezFirebaseMessagingService.NOTIFICATION_ID, 0));
         context.startActivity(notificationIntent);
     }
 }
