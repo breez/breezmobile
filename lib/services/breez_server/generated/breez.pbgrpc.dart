@@ -282,6 +282,13 @@ class FundManagerClient extends Client {
           '/breez.FundManager/GetSwapPayment',
           (GetSwapPaymentRequest value) => value.writeToBuffer(),
           (List<int> value) => new GetSwapPaymentReply.fromBuffer(value));
+  static final _$registerTransactionConfirmation = new ClientMethod<
+          RegisterTransactionConfirmationRequest,
+          RegisterTransactionConfirmationResponse>(
+      '/breez.FundManager/RegisterTransactionConfirmation',
+      (RegisterTransactionConfirmationRequest value) => value.writeToBuffer(),
+      (List<int> value) =>
+          new RegisterTransactionConfirmationResponse.fromBuffer(value));
 
   FundManagerClient(ClientChannel channel, {CallOptions options})
       : super(channel, options: options);
@@ -344,6 +351,16 @@ class FundManagerClient extends Client {
         options: options);
     return new ResponseFuture(call);
   }
+
+  ResponseFuture<RegisterTransactionConfirmationResponse>
+      registerTransactionConfirmation(
+          RegisterTransactionConfirmationRequest request,
+          {CallOptions options}) {
+    final call = $createCall(_$registerTransactionConfirmation,
+        new $async.Stream.fromIterable([request]),
+        options: options);
+    return new ResponseFuture(call);
+  }
 }
 
 abstract class FundManagerServiceBase extends Service {
@@ -403,6 +420,16 @@ abstract class FundManagerServiceBase extends Service {
         false,
         (List<int> value) => new GetSwapPaymentRequest.fromBuffer(value),
         (GetSwapPaymentReply value) => value.writeToBuffer()));
+    $addMethod(new ServiceMethod<RegisterTransactionConfirmationRequest,
+            RegisterTransactionConfirmationResponse>(
+        'RegisterTransactionConfirmation',
+        registerTransactionConfirmation_Pre,
+        false,
+        false,
+        (List<int> value) =>
+            new RegisterTransactionConfirmationRequest.fromBuffer(value),
+        (RegisterTransactionConfirmationResponse value) =>
+            value.writeToBuffer()));
   }
 
   $async.Future<OpenChannelReply> openChannel_Pre(
@@ -440,6 +467,12 @@ abstract class FundManagerServiceBase extends Service {
     return getSwapPayment(call, await request);
   }
 
+  $async.Future<RegisterTransactionConfirmationResponse>
+      registerTransactionConfirmation_Pre(
+          ServiceCall call, $async.Future request) async {
+    return registerTransactionConfirmation(call, await request);
+  }
+
   $async.Future<OpenChannelReply> openChannel(
       ServiceCall call, OpenChannelRequest request);
   $async.Future<UpdateChannelPolicyReply> updateChannelPolicy(
@@ -454,6 +487,9 @@ abstract class FundManagerServiceBase extends Service {
       ServiceCall call, RedeemRemovedFundsRequest request);
   $async.Future<GetSwapPaymentReply> getSwapPayment(
       ServiceCall call, GetSwapPaymentRequest request);
+  $async.Future<RegisterTransactionConfirmationResponse>
+      registerTransactionConfirmation(
+          ServiceCall call, RegisterTransactionConfirmationRequest request);
 }
 
 class CTPClient extends Client {

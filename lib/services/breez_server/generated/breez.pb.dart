@@ -5,7 +5,7 @@
 // ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
 
 // ignore: UNUSED_SHOWN_NAME
-import 'dart:core' show int, bool, double, String, List, override;
+import 'dart:core' show int, bool, double, String, List, Map, override;
 
 import 'package:fixnum/fixnum.dart';
 import 'package:protobuf/protobuf.dart' as $pb;
@@ -28,6 +28,7 @@ class OpenChannelRequest extends $pb.GeneratedMessage {
   OpenChannelRequest copyWith(void Function(OpenChannelRequest) updates) => super.copyWith((message) => updates(message as OpenChannelRequest));
   $pb.BuilderInfo get info_ => _i;
   static OpenChannelRequest create() => new OpenChannelRequest();
+  OpenChannelRequest createEmptyInstance() => create();
   static $pb.PbList<OpenChannelRequest> createRepeated() => new $pb.PbList<OpenChannelRequest>();
   static OpenChannelRequest getDefault() => _defaultInstance ??= create()..freeze();
   static OpenChannelRequest _defaultInstance;
@@ -58,6 +59,7 @@ class OpenChannelReply extends $pb.GeneratedMessage {
   OpenChannelReply copyWith(void Function(OpenChannelReply) updates) => super.copyWith((message) => updates(message as OpenChannelReply));
   $pb.BuilderInfo get info_ => _i;
   static OpenChannelReply create() => new OpenChannelReply();
+  OpenChannelReply createEmptyInstance() => create();
   static $pb.PbList<OpenChannelReply> createRepeated() => new $pb.PbList<OpenChannelReply>();
   static OpenChannelReply getDefault() => _defaultInstance ??= create()..freeze();
   static OpenChannelReply _defaultInstance;
@@ -79,6 +81,7 @@ class UpdateChannelPolicyRequest extends $pb.GeneratedMessage {
   UpdateChannelPolicyRequest copyWith(void Function(UpdateChannelPolicyRequest) updates) => super.copyWith((message) => updates(message as UpdateChannelPolicyRequest));
   $pb.BuilderInfo get info_ => _i;
   static UpdateChannelPolicyRequest create() => new UpdateChannelPolicyRequest();
+  UpdateChannelPolicyRequest createEmptyInstance() => create();
   static $pb.PbList<UpdateChannelPolicyRequest> createRepeated() => new $pb.PbList<UpdateChannelPolicyRequest>();
   static UpdateChannelPolicyRequest getDefault() => _defaultInstance ??= create()..freeze();
   static UpdateChannelPolicyRequest _defaultInstance;
@@ -104,6 +107,7 @@ class UpdateChannelPolicyReply extends $pb.GeneratedMessage {
   UpdateChannelPolicyReply copyWith(void Function(UpdateChannelPolicyReply) updates) => super.copyWith((message) => updates(message as UpdateChannelPolicyReply));
   $pb.BuilderInfo get info_ => _i;
   static UpdateChannelPolicyReply create() => new UpdateChannelPolicyReply();
+  UpdateChannelPolicyReply createEmptyInstance() => create();
   static $pb.PbList<UpdateChannelPolicyReply> createRepeated() => new $pb.PbList<UpdateChannelPolicyReply>();
   static UpdateChannelPolicyReply getDefault() => _defaultInstance ??= create()..freeze();
   static UpdateChannelPolicyReply _defaultInstance;
@@ -128,6 +132,7 @@ class AddFundInitRequest extends $pb.GeneratedMessage {
   AddFundInitRequest copyWith(void Function(AddFundInitRequest) updates) => super.copyWith((message) => updates(message as AddFundInitRequest));
   $pb.BuilderInfo get info_ => _i;
   static AddFundInitRequest create() => new AddFundInitRequest();
+  AddFundInitRequest createEmptyInstance() => create();
   static $pb.PbList<AddFundInitRequest> createRepeated() => new $pb.PbList<AddFundInitRequest>();
   static AddFundInitRequest getDefault() => _defaultInstance ??= create()..freeze();
   static AddFundInitRequest _defaultInstance;
@@ -173,6 +178,7 @@ class AddFundInitReply extends $pb.GeneratedMessage {
   AddFundInitReply copyWith(void Function(AddFundInitReply) updates) => super.copyWith((message) => updates(message as AddFundInitReply));
   $pb.BuilderInfo get info_ => _i;
   static AddFundInitReply create() => new AddFundInitReply();
+  AddFundInitReply createEmptyInstance() => create();
   static $pb.PbList<AddFundInitReply> createRepeated() => new $pb.PbList<AddFundInitReply>();
   static AddFundInitReply getDefault() => _defaultInstance ??= create()..freeze();
   static AddFundInitReply _defaultInstance;
@@ -220,6 +226,7 @@ class AddFundStatusRequest extends $pb.GeneratedMessage {
   AddFundStatusRequest copyWith(void Function(AddFundStatusRequest) updates) => super.copyWith((message) => updates(message as AddFundStatusRequest));
   $pb.BuilderInfo get info_ => _i;
   static AddFundStatusRequest create() => new AddFundStatusRequest();
+  AddFundStatusRequest createEmptyInstance() => create();
   static $pb.PbList<AddFundStatusRequest> createRepeated() => new $pb.PbList<AddFundStatusRequest>();
   static AddFundStatusRequest getDefault() => _defaultInstance ??= create()..freeze();
   static AddFundStatusRequest _defaultInstance;
@@ -251,6 +258,7 @@ class AddFundStatusReply_AddressStatus extends $pb.GeneratedMessage {
   AddFundStatusReply_AddressStatus copyWith(void Function(AddFundStatusReply_AddressStatus) updates) => super.copyWith((message) => updates(message as AddFundStatusReply_AddressStatus));
   $pb.BuilderInfo get info_ => _i;
   static AddFundStatusReply_AddressStatus create() => new AddFundStatusReply_AddressStatus();
+  AddFundStatusReply_AddressStatus createEmptyInstance() => create();
   static $pb.PbList<AddFundStatusReply_AddressStatus> createRepeated() => new $pb.PbList<AddFundStatusReply_AddressStatus>();
   static AddFundStatusReply_AddressStatus getDefault() => _defaultInstance ??= create()..freeze();
   static AddFundStatusReply_AddressStatus _defaultInstance;
@@ -279,41 +287,9 @@ class AddFundStatusReply_AddressStatus extends $pb.GeneratedMessage {
   void clearBlockHash() => clearField(4);
 }
 
-class AddFundStatusReply_StatusesEntry extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('AddFundStatusReply.StatusesEntry', package: const $pb.PackageName('breez'))
-    ..aOS(1, 'key')
-    ..a<AddFundStatusReply_AddressStatus>(2, 'value', $pb.PbFieldType.OM, AddFundStatusReply_AddressStatus.getDefault, AddFundStatusReply_AddressStatus.create)
-    ..hasRequiredFields = false
-  ;
-
-  AddFundStatusReply_StatusesEntry() : super();
-  AddFundStatusReply_StatusesEntry.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  AddFundStatusReply_StatusesEntry.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  AddFundStatusReply_StatusesEntry clone() => new AddFundStatusReply_StatusesEntry()..mergeFromMessage(this);
-  AddFundStatusReply_StatusesEntry copyWith(void Function(AddFundStatusReply_StatusesEntry) updates) => super.copyWith((message) => updates(message as AddFundStatusReply_StatusesEntry));
-  $pb.BuilderInfo get info_ => _i;
-  static AddFundStatusReply_StatusesEntry create() => new AddFundStatusReply_StatusesEntry();
-  static $pb.PbList<AddFundStatusReply_StatusesEntry> createRepeated() => new $pb.PbList<AddFundStatusReply_StatusesEntry>();
-  static AddFundStatusReply_StatusesEntry getDefault() => _defaultInstance ??= create()..freeze();
-  static AddFundStatusReply_StatusesEntry _defaultInstance;
-  static void $checkItem(AddFundStatusReply_StatusesEntry v) {
-    if (v is! AddFundStatusReply_StatusesEntry) $pb.checkItemFailed(v, _i.qualifiedMessageName);
-  }
-
-  String get key => $_getS(0, '');
-  set key(String v) { $_setString(0, v); }
-  bool hasKey() => $_has(0);
-  void clearKey() => clearField(1);
-
-  AddFundStatusReply_AddressStatus get value => $_getN(1);
-  set value(AddFundStatusReply_AddressStatus v) { setField(2, v); }
-  bool hasValue() => $_has(1);
-  void clearValue() => clearField(2);
-}
-
 class AddFundStatusReply extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('AddFundStatusReply', package: const $pb.PackageName('breez'))
-    ..pp<AddFundStatusReply_StatusesEntry>(1, 'statuses', $pb.PbFieldType.PM, AddFundStatusReply_StatusesEntry.$checkItem, AddFundStatusReply_StatusesEntry.create)
+    ..m<String, AddFundStatusReply_AddressStatus>(1, 'statuses', $pb.PbFieldType.OS, $pb.PbFieldType.OM, AddFundStatusReply_AddressStatus.create)
     ..hasRequiredFields = false
   ;
 
@@ -324,6 +300,7 @@ class AddFundStatusReply extends $pb.GeneratedMessage {
   AddFundStatusReply copyWith(void Function(AddFundStatusReply) updates) => super.copyWith((message) => updates(message as AddFundStatusReply));
   $pb.BuilderInfo get info_ => _i;
   static AddFundStatusReply create() => new AddFundStatusReply();
+  AddFundStatusReply createEmptyInstance() => create();
   static $pb.PbList<AddFundStatusReply> createRepeated() => new $pb.PbList<AddFundStatusReply>();
   static AddFundStatusReply getDefault() => _defaultInstance ??= create()..freeze();
   static AddFundStatusReply _defaultInstance;
@@ -331,7 +308,7 @@ class AddFundStatusReply extends $pb.GeneratedMessage {
     if (v is! AddFundStatusReply) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 
-  List<AddFundStatusReply_StatusesEntry> get statuses => $_getList(0);
+  Map<String, AddFundStatusReply_AddressStatus> get statuses => $_getMap(0);
 }
 
 class RemoveFundRequest extends $pb.GeneratedMessage {
@@ -348,6 +325,7 @@ class RemoveFundRequest extends $pb.GeneratedMessage {
   RemoveFundRequest copyWith(void Function(RemoveFundRequest) updates) => super.copyWith((message) => updates(message as RemoveFundRequest));
   $pb.BuilderInfo get info_ => _i;
   static RemoveFundRequest create() => new RemoveFundRequest();
+  RemoveFundRequest createEmptyInstance() => create();
   static $pb.PbList<RemoveFundRequest> createRepeated() => new $pb.PbList<RemoveFundRequest>();
   static RemoveFundRequest getDefault() => _defaultInstance ??= create()..freeze();
   static RemoveFundRequest _defaultInstance;
@@ -380,6 +358,7 @@ class RemoveFundReply extends $pb.GeneratedMessage {
   RemoveFundReply copyWith(void Function(RemoveFundReply) updates) => super.copyWith((message) => updates(message as RemoveFundReply));
   $pb.BuilderInfo get info_ => _i;
   static RemoveFundReply create() => new RemoveFundReply();
+  RemoveFundReply createEmptyInstance() => create();
   static $pb.PbList<RemoveFundReply> createRepeated() => new $pb.PbList<RemoveFundReply>();
   static RemoveFundReply getDefault() => _defaultInstance ??= create()..freeze();
   static RemoveFundReply _defaultInstance;
@@ -411,6 +390,7 @@ class RedeemRemovedFundsRequest extends $pb.GeneratedMessage {
   RedeemRemovedFundsRequest copyWith(void Function(RedeemRemovedFundsRequest) updates) => super.copyWith((message) => updates(message as RedeemRemovedFundsRequest));
   $pb.BuilderInfo get info_ => _i;
   static RedeemRemovedFundsRequest create() => new RedeemRemovedFundsRequest();
+  RedeemRemovedFundsRequest createEmptyInstance() => create();
   static $pb.PbList<RedeemRemovedFundsRequest> createRepeated() => new $pb.PbList<RedeemRemovedFundsRequest>();
   static RedeemRemovedFundsRequest getDefault() => _defaultInstance ??= create()..freeze();
   static RedeemRemovedFundsRequest _defaultInstance;
@@ -437,6 +417,7 @@ class RedeemRemovedFundsReply extends $pb.GeneratedMessage {
   RedeemRemovedFundsReply copyWith(void Function(RedeemRemovedFundsReply) updates) => super.copyWith((message) => updates(message as RedeemRemovedFundsReply));
   $pb.BuilderInfo get info_ => _i;
   static RedeemRemovedFundsReply create() => new RedeemRemovedFundsReply();
+  RedeemRemovedFundsReply createEmptyInstance() => create();
   static $pb.PbList<RedeemRemovedFundsReply> createRepeated() => new $pb.PbList<RedeemRemovedFundsReply>();
   static RedeemRemovedFundsReply getDefault() => _defaultInstance ??= create()..freeze();
   static RedeemRemovedFundsReply _defaultInstance;
@@ -465,6 +446,7 @@ class FundRequest extends $pb.GeneratedMessage {
   FundRequest copyWith(void Function(FundRequest) updates) => super.copyWith((message) => updates(message as FundRequest));
   $pb.BuilderInfo get info_ => _i;
   static FundRequest create() => new FundRequest();
+  FundRequest createEmptyInstance() => create();
   static $pb.PbList<FundRequest> createRepeated() => new $pb.PbList<FundRequest>();
   static FundRequest getDefault() => _defaultInstance ??= create()..freeze();
   static FundRequest _defaultInstance;
@@ -501,6 +483,7 @@ class FundReply extends $pb.GeneratedMessage {
   FundReply copyWith(void Function(FundReply) updates) => super.copyWith((message) => updates(message as FundReply));
   $pb.BuilderInfo get info_ => _i;
   static FundReply create() => new FundReply();
+  FundReply createEmptyInstance() => create();
   static $pb.PbList<FundReply> createRepeated() => new $pb.PbList<FundReply>();
   static FundReply getDefault() => _defaultInstance ??= create()..freeze();
   static FundReply _defaultInstance;
@@ -527,6 +510,7 @@ class GetSwapPaymentRequest extends $pb.GeneratedMessage {
   GetSwapPaymentRequest copyWith(void Function(GetSwapPaymentRequest) updates) => super.copyWith((message) => updates(message as GetSwapPaymentRequest));
   $pb.BuilderInfo get info_ => _i;
   static GetSwapPaymentRequest create() => new GetSwapPaymentRequest();
+  GetSwapPaymentRequest createEmptyInstance() => create();
   static $pb.PbList<GetSwapPaymentRequest> createRepeated() => new $pb.PbList<GetSwapPaymentRequest>();
   static GetSwapPaymentRequest getDefault() => _defaultInstance ??= create()..freeze();
   static GetSwapPaymentRequest _defaultInstance;
@@ -553,6 +537,7 @@ class GetSwapPaymentReply extends $pb.GeneratedMessage {
   GetSwapPaymentReply copyWith(void Function(GetSwapPaymentReply) updates) => super.copyWith((message) => updates(message as GetSwapPaymentReply));
   $pb.BuilderInfo get info_ => _i;
   static GetSwapPaymentReply create() => new GetSwapPaymentReply();
+  GetSwapPaymentReply createEmptyInstance() => create();
   static $pb.PbList<GetSwapPaymentReply> createRepeated() => new $pb.PbList<GetSwapPaymentReply>();
   static GetSwapPaymentReply getDefault() => _defaultInstance ??= create()..freeze();
   static GetSwapPaymentReply _defaultInstance;
@@ -580,6 +565,7 @@ class RegisterRequest extends $pb.GeneratedMessage {
   RegisterRequest copyWith(void Function(RegisterRequest) updates) => super.copyWith((message) => updates(message as RegisterRequest));
   $pb.BuilderInfo get info_ => _i;
   static RegisterRequest create() => new RegisterRequest();
+  RegisterRequest createEmptyInstance() => create();
   static $pb.PbList<RegisterRequest> createRepeated() => new $pb.PbList<RegisterRequest>();
   static RegisterRequest getDefault() => _defaultInstance ??= create()..freeze();
   static RegisterRequest _defaultInstance;
@@ -611,6 +597,7 @@ class RegisterReply extends $pb.GeneratedMessage {
   RegisterReply copyWith(void Function(RegisterReply) updates) => super.copyWith((message) => updates(message as RegisterReply));
   $pb.BuilderInfo get info_ => _i;
   static RegisterReply create() => new RegisterReply();
+  RegisterReply createEmptyInstance() => create();
   static $pb.PbList<RegisterReply> createRepeated() => new $pb.PbList<RegisterReply>();
   static RegisterReply getDefault() => _defaultInstance ??= create()..freeze();
   static RegisterReply _defaultInstance;
@@ -640,6 +627,7 @@ class PaymentRequest extends $pb.GeneratedMessage {
   PaymentRequest copyWith(void Function(PaymentRequest) updates) => super.copyWith((message) => updates(message as PaymentRequest));
   $pb.BuilderInfo get info_ => _i;
   static PaymentRequest create() => new PaymentRequest();
+  PaymentRequest createEmptyInstance() => create();
   static $pb.PbList<PaymentRequest> createRepeated() => new $pb.PbList<PaymentRequest>();
   static PaymentRequest getDefault() => _defaultInstance ??= create()..freeze();
   static PaymentRequest _defaultInstance;
@@ -681,6 +669,7 @@ class InvoiceReply extends $pb.GeneratedMessage {
   InvoiceReply copyWith(void Function(InvoiceReply) updates) => super.copyWith((message) => updates(message as InvoiceReply));
   $pb.BuilderInfo get info_ => _i;
   static InvoiceReply create() => new InvoiceReply();
+  InvoiceReply createEmptyInstance() => create();
   static $pb.PbList<InvoiceReply> createRepeated() => new $pb.PbList<InvoiceReply>();
   static InvoiceReply getDefault() => _defaultInstance ??= create()..freeze();
   static InvoiceReply _defaultInstance;
@@ -707,6 +696,7 @@ class UploadFileRequest extends $pb.GeneratedMessage {
   UploadFileRequest copyWith(void Function(UploadFileRequest) updates) => super.copyWith((message) => updates(message as UploadFileRequest));
   $pb.BuilderInfo get info_ => _i;
   static UploadFileRequest create() => new UploadFileRequest();
+  UploadFileRequest createEmptyInstance() => create();
   static $pb.PbList<UploadFileRequest> createRepeated() => new $pb.PbList<UploadFileRequest>();
   static UploadFileRequest getDefault() => _defaultInstance ??= create()..freeze();
   static UploadFileRequest _defaultInstance;
@@ -733,6 +723,7 @@ class UploadFileReply extends $pb.GeneratedMessage {
   UploadFileReply copyWith(void Function(UploadFileReply) updates) => super.copyWith((message) => updates(message as UploadFileReply));
   $pb.BuilderInfo get info_ => _i;
   static UploadFileReply create() => new UploadFileReply();
+  UploadFileReply createEmptyInstance() => create();
   static $pb.PbList<UploadFileReply> createRepeated() => new $pb.PbList<UploadFileReply>();
   static UploadFileReply getDefault() => _defaultInstance ??= create()..freeze();
   static UploadFileReply _defaultInstance;
@@ -758,6 +749,7 @@ class PingRequest extends $pb.GeneratedMessage {
   PingRequest copyWith(void Function(PingRequest) updates) => super.copyWith((message) => updates(message as PingRequest));
   $pb.BuilderInfo get info_ => _i;
   static PingRequest create() => new PingRequest();
+  PingRequest createEmptyInstance() => create();
   static $pb.PbList<PingRequest> createRepeated() => new $pb.PbList<PingRequest>();
   static PingRequest getDefault() => _defaultInstance ??= create()..freeze();
   static PingRequest _defaultInstance;
@@ -779,6 +771,7 @@ class PingReply extends $pb.GeneratedMessage {
   PingReply copyWith(void Function(PingReply) updates) => super.copyWith((message) => updates(message as PingReply));
   $pb.BuilderInfo get info_ => _i;
   static PingReply create() => new PingReply();
+  PingReply createEmptyInstance() => create();
   static $pb.PbList<PingReply> createRepeated() => new $pb.PbList<PingReply>();
   static PingReply getDefault() => _defaultInstance ??= create()..freeze();
   static PingReply _defaultInstance;
@@ -811,6 +804,7 @@ class OrderRequest extends $pb.GeneratedMessage {
   OrderRequest copyWith(void Function(OrderRequest) updates) => super.copyWith((message) => updates(message as OrderRequest));
   $pb.BuilderInfo get info_ => _i;
   static OrderRequest create() => new OrderRequest();
+  OrderRequest createEmptyInstance() => create();
   static $pb.PbList<OrderRequest> createRepeated() => new $pb.PbList<OrderRequest>();
   static OrderRequest getDefault() => _defaultInstance ??= create()..freeze();
   static OrderRequest _defaultInstance;
@@ -866,6 +860,7 @@ class OrderReply extends $pb.GeneratedMessage {
   OrderReply copyWith(void Function(OrderReply) updates) => super.copyWith((message) => updates(message as OrderReply));
   $pb.BuilderInfo get info_ => _i;
   static OrderReply create() => new OrderReply();
+  OrderReply createEmptyInstance() => create();
   static $pb.PbList<OrderReply> createRepeated() => new $pb.PbList<OrderReply>();
   static OrderReply getDefault() => _defaultInstance ??= create()..freeze();
   static OrderReply _defaultInstance;
@@ -890,6 +885,7 @@ class JoinCTPSessionRequest extends $pb.GeneratedMessage {
   JoinCTPSessionRequest copyWith(void Function(JoinCTPSessionRequest) updates) => super.copyWith((message) => updates(message as JoinCTPSessionRequest));
   $pb.BuilderInfo get info_ => _i;
   static JoinCTPSessionRequest create() => new JoinCTPSessionRequest();
+  JoinCTPSessionRequest createEmptyInstance() => create();
   static $pb.PbList<JoinCTPSessionRequest> createRepeated() => new $pb.PbList<JoinCTPSessionRequest>();
   static JoinCTPSessionRequest getDefault() => _defaultInstance ??= create()..freeze();
   static JoinCTPSessionRequest _defaultInstance;
@@ -932,6 +928,7 @@ class JoinCTPSessionResponse extends $pb.GeneratedMessage {
   JoinCTPSessionResponse copyWith(void Function(JoinCTPSessionResponse) updates) => super.copyWith((message) => updates(message as JoinCTPSessionResponse));
   $pb.BuilderInfo get info_ => _i;
   static JoinCTPSessionResponse create() => new JoinCTPSessionResponse();
+  JoinCTPSessionResponse createEmptyInstance() => create();
   static $pb.PbList<JoinCTPSessionResponse> createRepeated() => new $pb.PbList<JoinCTPSessionResponse>();
   static JoinCTPSessionResponse getDefault() => _defaultInstance ??= create()..freeze();
   static JoinCTPSessionResponse _defaultInstance;
@@ -963,6 +960,7 @@ class TerminateCTPSessionRequest extends $pb.GeneratedMessage {
   TerminateCTPSessionRequest copyWith(void Function(TerminateCTPSessionRequest) updates) => super.copyWith((message) => updates(message as TerminateCTPSessionRequest));
   $pb.BuilderInfo get info_ => _i;
   static TerminateCTPSessionRequest create() => new TerminateCTPSessionRequest();
+  TerminateCTPSessionRequest createEmptyInstance() => create();
   static $pb.PbList<TerminateCTPSessionRequest> createRepeated() => new $pb.PbList<TerminateCTPSessionRequest>();
   static TerminateCTPSessionRequest getDefault() => _defaultInstance ??= create()..freeze();
   static TerminateCTPSessionRequest _defaultInstance;
@@ -988,11 +986,72 @@ class TerminateCTPSessionResponse extends $pb.GeneratedMessage {
   TerminateCTPSessionResponse copyWith(void Function(TerminateCTPSessionResponse) updates) => super.copyWith((message) => updates(message as TerminateCTPSessionResponse));
   $pb.BuilderInfo get info_ => _i;
   static TerminateCTPSessionResponse create() => new TerminateCTPSessionResponse();
+  TerminateCTPSessionResponse createEmptyInstance() => create();
   static $pb.PbList<TerminateCTPSessionResponse> createRepeated() => new $pb.PbList<TerminateCTPSessionResponse>();
   static TerminateCTPSessionResponse getDefault() => _defaultInstance ??= create()..freeze();
   static TerminateCTPSessionResponse _defaultInstance;
   static void $checkItem(TerminateCTPSessionResponse v) {
     if (v is! TerminateCTPSessionResponse) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+}
+
+class RegisterTransactionConfirmationRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RegisterTransactionConfirmationRequest', package: const $pb.PackageName('breez'))
+    ..aOS(1, 'txID')
+    ..aOS(2, 'notificationToken')
+    ..e<RegisterTransactionConfirmationRequest_NotificationType>(3, 'notificationType', $pb.PbFieldType.OE, RegisterTransactionConfirmationRequest_NotificationType.READY_RECEIVE_PAYMENT, RegisterTransactionConfirmationRequest_NotificationType.valueOf, RegisterTransactionConfirmationRequest_NotificationType.values)
+    ..hasRequiredFields = false
+  ;
+
+  RegisterTransactionConfirmationRequest() : super();
+  RegisterTransactionConfirmationRequest.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RegisterTransactionConfirmationRequest.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RegisterTransactionConfirmationRequest clone() => new RegisterTransactionConfirmationRequest()..mergeFromMessage(this);
+  RegisterTransactionConfirmationRequest copyWith(void Function(RegisterTransactionConfirmationRequest) updates) => super.copyWith((message) => updates(message as RegisterTransactionConfirmationRequest));
+  $pb.BuilderInfo get info_ => _i;
+  static RegisterTransactionConfirmationRequest create() => new RegisterTransactionConfirmationRequest();
+  RegisterTransactionConfirmationRequest createEmptyInstance() => create();
+  static $pb.PbList<RegisterTransactionConfirmationRequest> createRepeated() => new $pb.PbList<RegisterTransactionConfirmationRequest>();
+  static RegisterTransactionConfirmationRequest getDefault() => _defaultInstance ??= create()..freeze();
+  static RegisterTransactionConfirmationRequest _defaultInstance;
+  static void $checkItem(RegisterTransactionConfirmationRequest v) {
+    if (v is! RegisterTransactionConfirmationRequest) $pb.checkItemFailed(v, _i.qualifiedMessageName);
+  }
+
+  String get txID => $_getS(0, '');
+  set txID(String v) { $_setString(0, v); }
+  bool hasTxID() => $_has(0);
+  void clearTxID() => clearField(1);
+
+  String get notificationToken => $_getS(1, '');
+  set notificationToken(String v) { $_setString(1, v); }
+  bool hasNotificationToken() => $_has(1);
+  void clearNotificationToken() => clearField(2);
+
+  RegisterTransactionConfirmationRequest_NotificationType get notificationType => $_getN(2);
+  set notificationType(RegisterTransactionConfirmationRequest_NotificationType v) { setField(3, v); }
+  bool hasNotificationType() => $_has(2);
+  void clearNotificationType() => clearField(3);
+}
+
+class RegisterTransactionConfirmationResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('RegisterTransactionConfirmationResponse', package: const $pb.PackageName('breez'))
+    ..hasRequiredFields = false
+  ;
+
+  RegisterTransactionConfirmationResponse() : super();
+  RegisterTransactionConfirmationResponse.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RegisterTransactionConfirmationResponse.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RegisterTransactionConfirmationResponse clone() => new RegisterTransactionConfirmationResponse()..mergeFromMessage(this);
+  RegisterTransactionConfirmationResponse copyWith(void Function(RegisterTransactionConfirmationResponse) updates) => super.copyWith((message) => updates(message as RegisterTransactionConfirmationResponse));
+  $pb.BuilderInfo get info_ => _i;
+  static RegisterTransactionConfirmationResponse create() => new RegisterTransactionConfirmationResponse();
+  RegisterTransactionConfirmationResponse createEmptyInstance() => create();
+  static $pb.PbList<RegisterTransactionConfirmationResponse> createRepeated() => new $pb.PbList<RegisterTransactionConfirmationResponse>();
+  static RegisterTransactionConfirmationResponse getDefault() => _defaultInstance ??= create()..freeze();
+  static RegisterTransactionConfirmationResponse _defaultInstance;
+  static void $checkItem(RegisterTransactionConfirmationResponse v) {
+    if (v is! RegisterTransactionConfirmationResponse) $pb.checkItemFailed(v, _i.qualifiedMessageName);
   }
 }
 

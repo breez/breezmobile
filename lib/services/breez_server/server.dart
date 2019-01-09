@@ -9,7 +9,7 @@ import 'package:breez/logger.dart';
 import "package:ini/ini.dart";
 
 //proto command:
-//protoc --dart_out=grpc:lib/services/breez_server/generated/ -Ilib/services/breez_server/protobuf/ lib/services/breez_server/protobuf/breez.prot
+//protoc --dart_out=grpc:lib/services/breez_server/generated/ -Ilib/services/breez_server/protobuf/ lib/services/breez_server/protobuf/breez.proto
 class BreezServer {
   static final defaultCallOptions =
       new CallOptions(timeout: Duration(seconds: 10));
