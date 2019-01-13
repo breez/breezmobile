@@ -15,6 +15,8 @@ import java.util.*;
 import androidx.work.*;
 import java.util.concurrent.*;
 
+import static com.breez.client.plugins.breez.breezlib.ChainSync.UNIQUE_WORK_NAME;
+
 public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNotifier, StreamHandler, ActivityLifecycleListener {
 
     public static final String BREEZ_CHANNEL_NAME = "com.breez.client/breez_lib";
@@ -50,12 +52,14 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
 
     private void start(MethodCall call, MethodChannel.Result result){
 
+        String workingDir = call.argument("workingDir").toString();
+
         //First cancel current pending/running sync so we don't conflict.
-        WorkManager.getInstance().cancelUniqueWork("chainSync").addListener(() -> {
+        WorkManager.getInstance().cancelUniqueWork(UNIQUE_WORK_NAME).addListener(() -> {
             //Then wait for running job to shutdown gracefully
             ChainSync.waitShutdown();
 
-            String workingDir = call.argument("workingDir").toString();
+            Log.i(TAG, "workingDir = " + workingDir);
             String tempDir = call.argument("tempDir").toString();
             try {
                 Bindings.start(workingDir, tempDir, this);
@@ -64,8 +68,9 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
                 result.error("ResultError", "Failed to Start breez library", e.getMessage());
             }
 
+            Log.i(TAG, "workingDir = " + workingDir);
             PeriodicWorkRequest periodic =
-                    new PeriodicWorkRequest.Builder(ChainSync.class, 1, TimeUnit.HOURS)
+                    new PeriodicWorkRequest.Builder(ChainSync.class, 30, TimeUnit.MINUTES)
                             .setConstraints(
                                     new Constraints.Builder()
                                             .setRequiresBatteryNotLow(true)
@@ -75,7 +80,10 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
                                             .putString("workingDir", workingDir)
                                             .build())
                             .build();
-            WorkManager.getInstance().enqueueUniquePeriodicWork("chainSync", ExistingPeriodicWorkPolicy.REPLACE, periodic);
+
+            WorkManager.getInstance().enqueueUniquePeriodicWork(UNIQUE_WORK_NAME, ExistingPeriodicWorkPolicy.REPLACE, periodic);
+
+
         }, _executor);
     }
 
