@@ -95,8 +95,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
         try {
             if (m_driveResourceClient == null) {
                 GoogleSignInAccount loggedInAccount = Tasks.await(m_authenticator.ensureSignedIn(silent));
-                m_driveClient = Drive.getDriveClient(m_activity, loggedInAccount);
-                safeRequestSync();
+                m_driveClient = Drive.getDriveClient(m_activity, loggedInAccount);                
                 m_driveResourceClient = Drive.getDriveResourceClient(m_activity, loggedInAccount);
             }
             return m_driveResourceClient;
@@ -153,6 +152,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
 
     private void listAvailableBackups(MethodChannel.Result result){
         try {
+            safeRequestSync();
             result.success(fetchAppFolders());
         } catch (Exception e) {
             result.error("Failed to backup", e.getMessage(), e.toString());
@@ -188,8 +188,7 @@ public class BreezBackup implements MethodChannel.MethodCallHandler {
     }
 
     private void isSafeForBreezBackupID(String breezBackupID, String nodeId, MethodChannel.Result result){
-        try {
-            safeRequestSync();
+        try {            
             DriveFolder nodeFolder = getOrCreateNodeIdFolder(nodeId);
             Log.i(TAG, "isSafeForBreezBackupID nodeID = " + nodeId + " breezBackupID = " + breezBackupID);
             ensureBackupIDMatch(nodeFolder, breezBackupID);
