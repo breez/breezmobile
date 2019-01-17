@@ -246,13 +246,13 @@ class DevViewState extends State<DevView> {
         icon: Icons.phone_android,
         function: _gotoInitialScreen),
       Choice(
-          title: 'Show Bitrefill Widget Screen',
-          icon: Icons.widgets,
-          function: _gotoBitrefillWidgetScreen),
-      Choice(
         title: 'Battery Optimization',
         icon: Icons.phone_android,
         function: _showOptimizationsSettings),
+      Choice(
+          title: 'Advanced',
+          icon: Icons.lock,
+          function: _gotoBitrefillWidgetScreen),
     ];
     return choices;
   }  
