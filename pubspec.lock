@@ -39,9 +39,11 @@ packages:
   barcode_scan:
     dependency: "direct main"
     description:
-      name: barcode_scan
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: f07a37a8a8956d8e667e4cad84c0db87ed6564b9
+      url: "https://github.com/roeierez/flutter_barcode_reader.git"
+    source: git
     version: "0.0.8"
   boolean_selector:
     dependency: transitive
@@ -99,6 +101,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2"
+  dart_style:
+    dependency: transitive
+    description:
+      name: dart_style
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.2"
   firebase_core:
     dependency: transitive
     description:
@@ -411,7 +420,14 @@ packages:
       name: protobuf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.5"
+    version: "0.11.0"
+  protoc_plugin:
+    dependency: "direct dev"
+    description:
+      name: protoc_plugin
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "14.0.0"
   pub_semver:
     dependency: transitive
     description:
@@ -606,6 +622,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.9"
+  webview_flutter:
+    dependency: "direct main"
+    description:
+      name: webview_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   xml:
     dependency: transitive
     description:
@@ -622,4 +645,4 @@ packages:
     version: "2.1.15"
 sdks:
   dart: ">=2.1.0-dev.5.0 <3.0.0"
-  flutter: ">=0.7.3 <2.0.0"
+  flutter: ">=0.11.9 <2.0.0"
