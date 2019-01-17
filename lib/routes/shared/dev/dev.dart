@@ -39,6 +39,7 @@ class Choice {
 }
 
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+final _formKey = GlobalKey<FormState>();
 
 class DevView extends StatefulWidget {
   BreezBridge _breezBridge;
@@ -245,6 +246,10 @@ class DevViewState extends State<DevView> {
         icon: Icons.phone_android,
         function: _gotoInitialScreen),
       Choice(
+          title: 'Show Bitrefill Widget Screen',
+          icon: Icons.widgets,
+          function: _gotoBitrefillWidgetScreen),
+      Choice(
         title: 'Battery Optimization',
         icon: Icons.phone_android,
         function: _showOptimizationsSettings),
@@ -260,7 +265,78 @@ class DevViewState extends State<DevView> {
         .pushReplacementNamed("/splash");
   }
 
+  void _gotoBitrefillWidgetScreen() async {
+    _promptPassword();
+  }
+
   void _showOptimizationsSettings() async {
     widget._permissionsService.requestOptimizationSettings();
   }
+
+  bool _validatePassword(String value) {
+    if (value == "135642") {
+      return true;
+    }
+    return false;
+  }
+
+  Future _promptPassword() {
+    return showDialog<bool>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return new AlertDialog(
+            contentPadding: EdgeInsets.only(left: 24.0, right: 24.0),
+            title: new Text(
+                "Enter credentials", style: theme.alertTitleStyle),
+            content: new SingleChildScrollView(
+              child: Form(
+          key: _formKey,
+          child: new Container(
+                child: new TextFormField(
+                  obscureText: true,
+                  decoration:
+                  new InputDecoration(
+                    hintText: "Password",
+                    hintStyle: theme.alertStyle,
+                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(
+                        color: Colors.black45,
+                        style: BorderStyle.solid,
+                        width: 2.0)),),
+                  style: theme.alertStyle,
+                  textCapitalization: TextCapitalization.none,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "Please enter password.";
+                    } else if (!_validatePassword(
+                        value)) {
+                      return "Invalid password.";
+                    }
+                  },
+                ),
+              ),)
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text("Cancel", style: theme.cancelButtonStyle),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              new FlatButton(
+                child: new Text("OK", style: theme.buttonStyle),
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    Navigator
+                        .of(_scaffoldKey.currentState.context)
+                        .pushReplacementNamed("/bitrefill");
+                  }
+
+                },
+              ),
+            ],
+          );
+        });
+  }
+
 }

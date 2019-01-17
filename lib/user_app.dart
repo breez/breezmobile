@@ -25,6 +25,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_page.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_complete.dart';
 import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
+import 'package:breez/routes/user/embedded_widgets/bitrefill_widget.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class UserApp extends StatelessWidget {
@@ -147,6 +148,11 @@ class UserApp extends StatelessWidget {
                 case '/connect_to_pay':
                   return new FadeInRoute(
                     builder: (_) => new ConnectToPayPage(null),
+                    settings: settings,
+                  );
+                case '/bitrefill':
+                  return new FadeInRoute(
+                    builder: (_) => new BitrefillPage(),
                     settings: settings,
                   );
               }
