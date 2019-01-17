@@ -13,7 +13,7 @@ class BitrefillPage extends StatefulWidget {
 class BitrefillPageState extends State<BitrefillPage> {
   final Completer<WebViewController> _webViewController =
       Completer<WebViewController>();
-  String _bgColor = 'yellow';
+  String _bgColor = 'blue';
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class BitrefillPageState extends State<BitrefillPage> {
       ),
       body: Center(
         child: WebView(
-          initialUrl: "https://cdn.bitrefill.com/refill-widget.html",
+          initialUrl: "file:////data/user/0/com.breez.client/cache/breezmobileAYKCXO/breezmobile/build/flutter_assets/src/web/index.html",
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
             _webViewController.complete(webViewController);
@@ -49,6 +49,11 @@ class BitrefillPageState extends State<BitrefillPage> {
           if (controller.hasData) {
             return FloatingActionButton(
               onPressed: () async {
+                // Use intents
+                // Show Soft Keyboard
+                //((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                // Hide Soft Keyboard
+                //((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(_pay_box_helper.getWindowToken(), 0);
                 final String url = await controller.data.currentUrl();
                 final String result = await controller.data.evaluateJavascript(
                     "document.body.style.backgroundColor = '$_bgColor'");

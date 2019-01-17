@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>  
+  <meta charset="utf-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+</head>
+
+<body>
+  <div id="widget"></div>
+  <script src="https://cdn.bitrefill.com/widget.js"></script>
+  <style>
+    #widget {
+      margin: 0 auto;
+    }
+
+    .css-3ydpya {
+      display: none;
+    }
+
+    .css-92efq3 {
+      background-color: #055deb;
+    }
+  </style>
+  <script>
+    AirfillWidget('#widget', {
+      key: 'GAj4sWRVqK3Uau1L',
+      showLogo: false,
+      paymentButtons: [{
+        title: 'Pay With Account Balance',
+        onButtonClicked: function (order) { } // Called once the user confirms the order
+      }]
+    });
+  </script>
+</body>
+
+</html>
