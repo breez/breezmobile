@@ -60,7 +60,9 @@ class BreezBridge {
     })
         .then((_) { 
           print(" breez bridge - start lightning finished");
-          _startedCompleter.complete(); 
+          if (!_startedCompleter.isCompleted) {
+            _startedCompleter.complete();
+          }
         });
   }
 
