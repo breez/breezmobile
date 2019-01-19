@@ -12,9 +12,11 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
       Text(
           "You can try:\n• Turning off airplane mode\n• Turning on mobile data or Wi-Fi\n• Checking the signal in your area",
           style: theme.alertStyle),
-      okText: "Proceed",
+      okText: "Try Again",
+      okFunc: () => accountBloc.restartLightningSink.add(null),
       optionText: "Exit",
       optionFunc: () => exit(0),      
+      disableBack: true,
     );
   });
 }
