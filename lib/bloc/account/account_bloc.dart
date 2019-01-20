@@ -110,6 +110,7 @@ class AccountBloc {
       _accountSettingsController.add(AccountSettings.start());
       
       print("Account bloc started");
+      _refreshAccount(breezLib);            
       //listen streams      
       _listenRestartLightning(breezLib);
       _hanleAccountSettings();        
@@ -243,8 +244,7 @@ class AccountBloc {
             breezLib.bootstrap().then((done) async {    
               print("Account bloc bootstrap has finished");        
               breezLib.startLightning();
-              _checkNodeConflict(breezLib);            
-              _refreshAccount(breezLib);            
+              _checkNodeConflict(breezLib);              
               _fetchFundStatus(breezLib);
               _listenConnectivityChanges(breezLib);
               _listenReconnects(breezLib);
@@ -261,7 +261,7 @@ class AccountBloc {
 
     void _listenRestartLightning(BreezBridge breezLib){
       _restartLightningController.stream.listen((_){
-        breezLib.startLightning();
+        breezLib.startLightning();                  
       });
     }
 
