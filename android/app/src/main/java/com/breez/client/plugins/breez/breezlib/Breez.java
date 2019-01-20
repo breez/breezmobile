@@ -40,7 +40,9 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         if (call.method.equals("start")) {
-            start(call, result);
+            _executor.execute(() -> {
+                start(call, result);
+            });
         } else if (call.method.equals("stop")) {
             stop(call, result);
         } else if (call.method.equals("log")) {
@@ -62,7 +64,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
             Log.i(TAG, "workingDir = " + workingDir);
             String tempDir = call.argument("tempDir").toString();
             try {
-                Bindings.start(workingDir, tempDir, this);
+                Bindings.start(tempDir, this);
                 result.success(true);
             } catch (Exception e) {
                 result.error("ResultError", "Failed to Start breez library", e.getMessage());
