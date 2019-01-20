@@ -77,6 +77,9 @@ class AccountBloc {
   final _lightningDownController = new StreamController<bool>.broadcast();
   Stream<bool> get lightningDownStream => _lightningDownController.stream;
 
+  final _restartLightningController = new StreamController<void>.broadcast();
+  Sink<void> get restartLightningSink => _restartLightningController.sink;
+
   final BehaviorSubject<void> _nodeConflictController = new BehaviorSubject<void>();
   Stream<void> get nodeConflictStream => _nodeConflictController.stream;
 
@@ -107,7 +110,9 @@ class AccountBloc {
       _accountSettingsController.add(AccountSettings.start());
       
       print("Account bloc started");
+      _refreshAccount(breezLib);            
       //listen streams      
+      _listenRestartLightning(breezLib);
       _hanleAccountSettings();        
       _listenUserChanges(userProfileStream, breezLib, device);
       _listenNewAddressRequests(breezLib);
@@ -239,8 +244,7 @@ class AccountBloc {
             breezLib.bootstrap().then((done) async {    
               print("Account bloc bootstrap has finished");        
               breezLib.startLightning();
-              _checkNodeConflict(breezLib);            
-              _refreshAccount(breezLib);            
+              _checkNodeConflict(breezLib);              
               _fetchFundStatus(breezLib);
               _listenConnectivityChanges(breezLib);
               _listenReconnects(breezLib);
@@ -252,6 +256,12 @@ class AccountBloc {
            _paymentsController.add(PaymentsModel(_paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList(),_paymentFilterController.value));
           }
         }               
+      });
+    }
+
+    void _listenRestartLightning(BreezBridge breezLib){
+      _restartLightningController.stream.listen((_){
+        breezLib.startLightning();                  
       });
     }
 
@@ -448,6 +458,7 @@ class AccountBloc {
       _reconnectStreamController.close();
       _routingNodeConnectionController.close();
       _broadcastRefundRequestController.close();
+      _restartLightningController.close();
       _permissionsHandler.dispose();
     }
   }  
