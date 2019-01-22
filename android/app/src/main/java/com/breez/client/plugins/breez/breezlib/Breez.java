@@ -67,7 +67,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
         Log.i(TAG, "workingDir = " + workingDir);
 
         PeriodicWorkRequest periodic =
-                new PeriodicWorkRequest.Builder(ChainSync.class, 15, TimeUnit.MINUTES)
+                new PeriodicWorkRequest.Builder(ChainSync.class, 30, TimeUnit.MINUTES)
                         .setConstraints(
                                 new Constraints.Builder()
                                         .setRequiresBatteryNotLow(true)
