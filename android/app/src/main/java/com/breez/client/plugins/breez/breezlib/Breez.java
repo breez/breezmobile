@@ -55,38 +55,30 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
     private void start(MethodCall call, MethodChannel.Result result){
 
         String workingDir = call.argument("workingDir").toString();
+        Log.i(TAG, "workingDir = " + workingDir);
+        String tempDir = call.argument("tempDir").toString();
+        try {
+            Bindings.start(tempDir, this);
+            result.success(true);
+        } catch (Exception e) {
+            result.error("ResultError", "Failed to Start breez library", e.getMessage());
+        }
 
-        //First cancel current pending/running sync so we don't conflict.
-        WorkManager.getInstance().cancelUniqueWork(UNIQUE_WORK_NAME).addListener(() -> {
-            //Then wait for running job to shutdown gracefully
-            ChainSync.waitShutdown();
+        Log.i(TAG, "workingDir = " + workingDir);
 
-            Log.i(TAG, "workingDir = " + workingDir);
-            String tempDir = call.argument("tempDir").toString();
-            try {
-                Bindings.start(tempDir, this);
-                result.success(true);
-            } catch (Exception e) {
-                result.error("ResultError", "Failed to Start breez library", e.getMessage());
-            }
+        PeriodicWorkRequest periodic =
+                new PeriodicWorkRequest.Builder(ChainSync.class, 15, TimeUnit.MINUTES)
+                        .setConstraints(
+                                new Constraints.Builder()
+                                        .setRequiresBatteryNotLow(true)
+                                        .build())
+                        .setInputData(
+                                new Data.Builder()
+                                        .putString("workingDir", workingDir)
+                                        .build())
+                        .build();
 
-            Log.i(TAG, "workingDir = " + workingDir);
-            PeriodicWorkRequest periodic =
-                    new PeriodicWorkRequest.Builder(ChainSync.class, 30, TimeUnit.MINUTES)
-                            .setConstraints(
-                                    new Constraints.Builder()
-                                            .setRequiresBatteryNotLow(true)
-                                            .build())
-                            .setInputData(
-                                    new Data.Builder()
-                                            .putString("workingDir", workingDir)
-                                            .build())
-                            .build();
-
-            WorkManager.getInstance().enqueueUniquePeriodicWork(UNIQUE_WORK_NAME, ExistingPeriodicWorkPolicy.REPLACE, periodic);
-
-
-        }, _executor);
+        WorkManager.getInstance().enqueueUniquePeriodicWork(UNIQUE_WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, periodic);
     }
 
     private void stop(MethodCall call, MethodChannel.Result result){
@@ -94,7 +86,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
         Boolean permanent = call.argument("permanent");
         if (permanent != null && permanent.booleanValue()) {
             Log.i(TAG, "Stop breez was called with permanent flag, cancelling job");
-            WorkManager.getInstance().cancelUniqueWork("chainSync");
+            WorkManager.getInstance().cancelUniqueWork(UNIQUE_WORK_NAME);
         }
         Bindings.stop();
     }
