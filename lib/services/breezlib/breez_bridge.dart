@@ -80,7 +80,7 @@ class BreezBridge {
   }
 
   void log(String msg, String level) {
-    _invokeMethodWhenReady("log", {"msg": msg, "lvl": level});
+    _invokeMethodImmediate("log", {"msg": msg, "lvl": level});
   }
 
   Future<String> getLogPath() {
