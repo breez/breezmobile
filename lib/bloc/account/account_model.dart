@@ -6,17 +6,29 @@ import 'package:fixnum/fixnum.dart';
 
 class AccountSettings {
   final bool ignoreWalletBalance;
+  final bool showConnectProgress;
 
-  AccountSettings(this.ignoreWalletBalance);
+  AccountSettings(this.ignoreWalletBalance, {this.showConnectProgress = false});
   AccountSettings.start() :this(false);
 
-  AccountSettings copyWith({bool ignoreWalletBalance}) {
-    return AccountSettings(ignoreWalletBalance ?? this.ignoreWalletBalance);
+  AccountSettings copyWith({bool ignoreWalletBalance, bool showConnectProgress}) {
+    return AccountSettings(
+      ignoreWalletBalance ?? this.ignoreWalletBalance,
+      showConnectProgress: showConnectProgress ?? this.showConnectProgress
+    );
   }
 
-  AccountSettings.fromJson(Map<String, dynamic> json) : this(json["ignoreWalletBalance"] ?? false);
+  AccountSettings.fromJson(Map<String, dynamic> json) : 
+    this(
+      json["ignoreWalletBalance"] ?? false, 
+      showConnectProgress: json["showConnectProgress"] ?? false
+    );
+    
   Map<String, dynamic> toJson(){
-    return {"ignoreWalletBalance": ignoreWalletBalance};
+    return {
+      "ignoreWalletBalance": ignoreWalletBalance,
+      "showConnectProgress": showConnectProgress ?? false
+    };
   }
 }
 
