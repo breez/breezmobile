@@ -60,7 +60,7 @@ class AccountPageState extends State<AccountPage> {
     _statusSubscription =_accountBloc.accountStream.listen((acc) {
       if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {        
         Scaffold.of(context).showSnackBar(new SnackBar(
-            duration: new Duration(seconds: 20), content: new Text("Processing Payment...")));
+            duration: new Duration(seconds: 30), content: new Text("Processing Payment...")));
       }
       else if (acc.paymentRequestInProgress == null || acc.paymentRequestInProgress.isEmpty){
         Scaffold.of(context).removeCurrentSnackBar();

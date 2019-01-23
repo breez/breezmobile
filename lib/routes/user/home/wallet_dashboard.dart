@@ -43,7 +43,7 @@ class WalletDashboard extends StatelessWidget {
                       fit: BoxFit.fitWidth,
                       alignment: FractionalOffset.bottomCenter,
                     )))),
-        _accSettings != null && _accSettings.showConnectProgress || _accountModel != null && !_accountModel.active ? 
+        _accSettings?.showConnectProgress == true || _accountModel?.channelRequested == false ? 
           Positioned(top: 0.0, child: StatusIndicator(_accountModel)) : SizedBox(), 
         Positioned(
             top: 10.0,

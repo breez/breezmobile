@@ -23,7 +23,7 @@ class AccountSettings {
       json["ignoreWalletBalance"] ?? false, 
       showConnectProgress: json["showConnectProgress"] ?? false
     );
-    
+
   Map<String, dynamic> toJson(){
     return {
       "ignoreWalletBalance": ignoreWalletBalance,
@@ -69,6 +69,7 @@ class AccountModel {
   bool get processiongBreezConnection => _accountResponse.status == Account_AccountStatus.PROCESSING_BREEZ_CONNECTION;
   bool get processingWithdrawal => _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
   bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;  
+  bool get channelRequested => processiongBreezConnection || active;
   Int64 get balance => _accountResponse.balance;  
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
