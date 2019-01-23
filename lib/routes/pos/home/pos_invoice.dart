@@ -171,7 +171,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                 builder: (context, snapshot) {
                                   AccountModel acc = snapshot.data;
                                   AccountSettings settings = settingSnapshot.data;
-                                  if (settings != null && settings.showConnectProgress || acc != null && !acc.active) {
+                                  if (settings?.showConnectProgress == true || acc?.channelRequested == false ) {
                                     return new StatusIndicator(snapshot.data);
                                   }
                                   return SizedBox();
