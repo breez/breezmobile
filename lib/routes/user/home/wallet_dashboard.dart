@@ -4,19 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/routes/user/home/status_indicator.dart';
 import 'dart:math';
-import 'dart:async';
 
 class WalletDashboard extends StatelessWidget {
   static const CHART_MAX_VERTICAL_OFFSET = 70.0;
   static const CHART_MAX_HORIZONTAL_OFFSET = 30.0;
   static const BALANCE_OFFSET_TRANSITION = 30.0;
   final AccountModel _accountModel;
+  final AccountSettings _accSettings;
   final double _height;
   final double _offsetFactor;
-  final Function(Currency currency) _onCurrencyChange;
-  final Stream<bool> _connectedStream;
+  final Function(Currency currency) _onCurrencyChange;  
 
-  WalletDashboard(this._accountModel, this._height, this._offsetFactor, this._onCurrencyChange, this._connectedStream);
+  WalletDashboard(this._accSettings, this._accountModel, this._height, this._offsetFactor, this._onCurrencyChange);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +43,8 @@ class WalletDashboard extends StatelessWidget {
                       fit: BoxFit.fitWidth,
                       alignment: FractionalOffset.bottomCenter,
                     )))),
-        Positioned(top: 0.0, child: StatusIndicator(_accountModel)),
+        _accSettings != null && _accSettings.showConnectProgress || _accountModel != null && !_accountModel.active ? 
+          Positioned(top: 0.0, child: StatusIndicator(_accountModel)) : SizedBox(), 
         Positioned(
             top: 10.0,
             child: Center(

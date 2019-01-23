@@ -163,10 +163,19 @@ class POSInvoiceState extends State<POSInvoice> {
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      new StreamBuilder<AccountModel>(
-                          stream: _accountBloc.accountStream,
-                          builder: (context, snapshot) {
-                            return new StatusIndicator(snapshot.data);
+                      new StreamBuilder<AccountSettings>(
+                          stream: _accountBloc.accountSettingsStream,
+                          builder: (settingCtx, settingSnapshot) {
+                            return StreamBuilder<AccountModel>(
+                                stream: _accountBloc.accountStream,
+                                builder: (context, snapshot) {
+                                  AccountModel acc = snapshot.data;
+                                  AccountSettings settings = settingSnapshot.data;
+                                  if (settings != null && settings.showConnectProgress || acc != null && !acc.active) {
+                                    return new StatusIndicator(snapshot.data);
+                                  }
+                                  return SizedBox();
+                                });
                           }),
                       new Padding(
                         padding:
