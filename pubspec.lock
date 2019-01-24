@@ -155,13 +155,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.8"
-  flutter_inappbrowser:
-    dependency: "direct main"
-    description:
-      name: flutter_inappbrowser
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.51"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -169,6 +162,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
+  flutter_webview_plugin:
+    dependency: "direct main"
+    description:
+      name: flutter_webview_plugin
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0+2"
   front_end:
     dependency: transitive
     description:
@@ -645,4 +645,4 @@ packages:
     version: "2.1.15"
 sdks:
   dart: ">=2.1.0-dev.5.0 <3.0.0"
-  flutter: ">=0.10.1 <2.0.0"
+  flutter: ">=0.7.3 <2.0.0"
