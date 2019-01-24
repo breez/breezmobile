@@ -242,7 +242,8 @@ class AccountBloc {
             print("Account bloc got registered user, starting lightning daemon...");        
             _startedLightning = true;                                        
             breezLib.bootstrap().then((done) async {    
-              print("Account bloc bootstrap has finished");        
+              print("Account bloc bootstrap has finished");   
+              _accountController.add(_accountController.value.copyWith(bootstraping: false));     
               breezLib.startLightning();
               _checkNodeConflict(breezLib);              
               _fetchFundStatus(breezLib);
