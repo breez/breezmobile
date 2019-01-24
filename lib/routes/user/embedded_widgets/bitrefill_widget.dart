@@ -6,6 +6,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:flutter/services.dart';
 
 class BitrefillPage extends StatefulWidget {
   final String _title = "Bitrefill";
@@ -17,20 +18,33 @@ class BitrefillPage extends StatefulWidget {
 }
 
 class BitrefillPageState extends State<BitrefillPage> {
+  //static const _platform = const MethodChannel('flutter_webview_plugin');
   final widgetWebview = new FlutterWebviewPlugin();
+
 
   @override
   void initState() {
     super.initState();
+    /*
+    _platform.setMethodCallHandler((call) {
+      if (call.method == "FlutterJSInterface.parseStringToJSONObject") {
+        print("Callback works!");
+      }
+      if (call.method == "parseStringToJSONObject") {
+        print("Callback works!!");
+      }
+    });
+    */
+
     widgetWebview.onStateChanged.listen((state) async {
       if (state.type == WebViewState.finishLoad) {
-        String script =
-            'window.addEventListener("message", receiveMessage, false);' +
-                'function receiveMessage(event) {console.log(event.data);}';
+        String script = 'window.addEventListener("message", receiveMessage, false);' +
+            'function receiveMessage(event) {FlutterJSInterface.parseStringToJSONObject(event.data);}';
         widgetWebview.evalJavascript(script);
       }
     });
     //Todo: Set variable to post message
+
     widgetWebview.onDestroy.listen((_) {
       if (Navigator.canPop(context)) {
         Navigator.of(context).pop();
