@@ -21,6 +21,7 @@ class WalletDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     double startHeaderSize = theme.headline.fontSize;
     double endHeaderFontSize = theme.headline.fontSize - 8.0;
+    bool showProgressBar = _accSettings?.showConnectProgress == true || _accountModel?.channelRequested == false;
 
     return Stack(
       alignment: AlignmentDirectional.topCenter,
@@ -43,7 +44,7 @@ class WalletDashboard extends StatelessWidget {
                       fit: BoxFit.fitWidth,
                       alignment: FractionalOffset.bottomCenter,
                     )))),
-        _accSettings?.showConnectProgress == true || _accountModel?.channelRequested == false ? 
+        showProgressBar ? 
           Positioned(top: 0.0, child: StatusIndicator(_accountModel)) : SizedBox(), 
         Positioned(
             top: 10.0,
