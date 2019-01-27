@@ -59,7 +59,9 @@ class LNDBootstrapper {
     //download and move all files to the destination directory on completion
     return _bootstrapFilesProgress.addStream(_startDownload(urls.toList(), tempDirPath))
     .then((res) {        
-      tempDir.list().forEach((e) => e.renameSync(targetDirPath + e.path.split('/').last)).then((value) {
+      return tempDir.list().forEach((e) {           
+          e.renameSync(targetDirPath + e.path.split('/').last);
+        }).then((value) {
         tempDir.deleteSync(recursive: true);
         _bootstrapFilesProgress.close();
       });

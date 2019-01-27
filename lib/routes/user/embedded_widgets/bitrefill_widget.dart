@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
@@ -37,6 +39,8 @@ class BitrefillPageState extends State<BitrefillPage> {
         _orderId = order['orderId'];
         _uri = order['uri'];
         widgetWebview.hide();
+        Clipboard.setData(ClipboardData(text: _uri));
+        Navigator.of(context).pushNamed('/home');
       });
     });
     widgetWebview.onStateChanged.listen((state) async {
@@ -64,6 +68,7 @@ class BitrefillPageState extends State<BitrefillPage> {
 
   @override
   Widget build(BuildContext context) {
+    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
@@ -76,6 +81,7 @@ class BitrefillPageState extends State<BitrefillPage> {
           print('Account balance: ${account.currency.format(account.balance)}');
 
           if (_orderId != null && _uri != null) {
+            //invoiceBloc.newInvoiceRequestSink.add();
             return new Scaffold(
                 appBar: new AppBar(
                   iconTheme: theme.appBarIconTheme,

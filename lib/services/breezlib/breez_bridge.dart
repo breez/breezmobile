@@ -26,7 +26,7 @@ class BreezBridge {
   Stream<NotificationEvent> get notificationStream => _eventsController.stream;
   bool ready = false;  
   Future<Directory> _tempDirFuture;  
-  Future _copyConfigTasks;
+  Future<Directory> _copyConfigTasks;
 
   BreezBridge(){
     _eventChannel.receiveBroadcastStream().listen((event){
@@ -39,6 +39,10 @@ class BreezBridge {
     });
     _tempDirFuture = getTemporaryDirectory();    
     initLightningDir();
+
+    _copyConfigTasks
+    .then((dir) => init(dir.path))    
+    .then(_startedCompleter.complete);
   }
 
   initLightningDir(){
@@ -51,17 +55,20 @@ class BreezBridge {
       });
   }
 
+  Future init(String appDir) {    
+    return _methodChannel.invokeMethod("init", {"argument": appDir});
+  }
+
   Future start(String workingDir) async{   
-    print(" breez bridge - start...");
+    print(" breez bridge - start...");  
     Directory tempDir = await _tempDirFuture;    
     return _methodChannel.invokeMethod("start", {
       "workingDir": workingDir,
       "tempDir": tempDir.path
     })
-        .then((_) { 
-          print(" breez bridge - start lightning finished");
-          _startedCompleter.complete(); 
-        });
+      .then((_) { 
+        print(" breez bridge - start lightning finished");          
+      });
   }
 
   Future stop({bool permanent = false}){
@@ -73,7 +80,7 @@ class BreezBridge {
   }
 
   void log(String msg, String level) {
-    _invokeMethodWhenReady("log", {"msg": msg, "lvl": level});
+    _invokeMethodImmediate("log", {"msg": msg, "lvl": level});
   }
 
   Future<String> getLogPath() {
@@ -327,7 +334,8 @@ class BreezBridge {
   }
 
   Future startLightning() {    
-    return _copyConfigTasks.then((appDir) {
+    return _copyConfigTasks.then((appDir) async {
+      await _startedCompleter.future; 
       return start(appDir.path);
     });
   }

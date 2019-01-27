@@ -44,13 +44,15 @@
 - [x] Ability to Backup/Restore the ln node  
 - [x] Mainnet support
 - [x] Support zero-sat invoices
-- [ ] Add mobile device security
+- [x] Startup optimizations
+- [ ] Background sync via FCM
+- [ ] Simplify P2P payments
 - [ ] Use static card IDs
 - [ ] NFC card deactivation
-- [ ] Fiat units (?)
+- [ ] Fiat units
 - [ ] Watchtower
 - [ ] Adding funds using fiat
-- [ ] lnd on iOS
+- [ ] iPhone support
 
 ## Build & Run
 1. Build `breez.aar` as decribed in https://github.com/breez/breez

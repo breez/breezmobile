@@ -60,7 +60,7 @@ class AccountPageState extends State<AccountPage> {
     _statusSubscription =_accountBloc.accountStream.listen((acc) {
       if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {        
         Scaffold.of(context).showSnackBar(new SnackBar(
-            duration: new Duration(seconds: 20), content: new Text("Processing Payment...")));
+            duration: new Duration(seconds: 30), content: new Text("Processing Payment...")));
       }
       else if (acc.paymentRequestInProgress == null || acc.paymentRequestInProgress.isEmpty){
         Scaffold.of(context).removeCurrentSnackBar();
@@ -80,34 +80,38 @@ class AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {    
-    return StreamBuilder<AccountModel>(
-        stream: _accountBloc.accountStream,
-        builder: (context, snapshot) {
-          AccountModel account = snapshot.data;
-          return StreamBuilder<PaymentsModel>(
-              stream: _accountBloc.paymentsStream,
-              builder: (context, snapshot) {                
-                PaymentsModel paymentsModel;
-                if (snapshot.hasData) {
-                  paymentsModel = snapshot.data;
-                }
+    return StreamBuilder<AccountSettings>(
+        stream: _accountBloc.accountSettingsStream,
+        builder: (settingCtx, settingSnapshot) {
+          return StreamBuilder<AccountModel>(
+              stream: _accountBloc.accountStream,
+              builder: (context, snapshot) {
+                AccountModel account = snapshot.data;
+                return StreamBuilder<PaymentsModel>(
+                    stream: _accountBloc.paymentsStream,
+                    builder: (context, snapshot) {                
+                      PaymentsModel paymentsModel;
+                      if (snapshot.hasData) {
+                        paymentsModel = snapshot.data;
+                      }
 
-                if(account == null || paymentsModel == null){
-                  return Container();
-                }
+                      if(account == null || paymentsModel == null){
+                        return Container();
+                      }
 
-                if ((account != null && !account.initial) && (paymentsModel != null && paymentsModel.paymentsList.length == 0 && paymentsModel.filter.initial)) {
-                  //build empty account page
-                  return _buildEmptyAccount(account);
-                }
+                      if ((account != null && !account.initial) && (paymentsModel != null && paymentsModel.paymentsList.length == 0 && paymentsModel.filter.initial)) {
+                        //build empty account page
+                        return _buildEmptyAccount(settingSnapshot.data, account);
+                      }
 
-                //account and payments are ready, build their widgets
-                return _buildBalanceAndPayments(paymentsModel, account);
+                      //account and payments are ready, build their widgets
+                      return _buildBalanceAndPayments(paymentsModel, account);
+                    });
               });
         });
   }
 
-  Widget _buildEmptyAccount(AccountModel account){
+  Widget _buildEmptyAccount(AccountSettings settings, AccountModel account){
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -115,7 +119,7 @@ class AccountPageState extends State<AccountPage> {
       children: <Widget>[
         Expanded(
             flex: 0,
-            child: Container(height: DASHBOARD_MAX_HEIGHT, child: WalletDashboard(account, DASHBOARD_MAX_HEIGHT, 0.0, _userProfileBloc.currencySink.add, _accountBloc.routingNodeConnectionStream))),
+            child: Container(height: DASHBOARD_MAX_HEIGHT, child: WalletDashboard(settings, account, DASHBOARD_MAX_HEIGHT, 0.0, _userProfileBloc.currencySink.add))),
         Expanded(flex: 1, child: _buildEmptyHomeScreen(account))
       ],
     ),
@@ -224,16 +228,21 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   WalletDashboardHeaderDelegate(this.accountBloc, this._userProfileBloc);
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return StreamBuilder<AccountModel>(
-        stream: accountBloc.accountStream,
-        builder: (context, snapshot) {
-          double height = (maxExtent - shrinkOffset).clamp(minExtent, maxExtent);
-          double heightFactor = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
+    return StreamBuilder<AccountSettings>(
+      stream: accountBloc.accountSettingsStream,
+      builder: (settingCtx, settingSnapshot) {
+        return StreamBuilder<AccountModel>(
+          stream: accountBloc.accountStream,
+          builder: (context, snapshot) {
+            double height = (maxExtent - shrinkOffset).clamp(minExtent, maxExtent);
+            double heightFactor = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
 
-          return Stack(overflow: Overflow.visible, children: <Widget>[
-            WalletDashboard(snapshot.data, height, heightFactor, _userProfileBloc.currencySink.add, accountBloc.routingNodeConnectionStream)
-          ]);
-        });
+            return Stack(overflow: Overflow.visible, children: <Widget>[
+              WalletDashboard(settingSnapshot.data, snapshot.data, height, heightFactor, _userProfileBloc.currencySink.add)
+            ]);
+          });
+      }
+    );    
   }
 
   @override
