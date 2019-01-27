@@ -237,7 +237,7 @@ class AccountBloc {
                
         if (user.registered) {
           if (!_startedLightning) {
-            _askWhitelistOptimizations();          
+            //_askWhitelistOptimizations();          
             print("Account bloc got registered user, starting lightning daemon...");        
             _startedLightning = true;                                        
             breezLib.bootstrap().then((done) async {    
@@ -272,9 +272,9 @@ class AccountBloc {
       });      
     }
 
-    void _askWhitelistOptimizations() async{
-       _permissionsHandler.triggerOptimizeWhitelistExplenation();     
-    }  
+    // void _askWhitelistOptimizations() async{
+    //    _permissionsHandler.triggerOptimizeWhitelistExplenation();     
+    // }  
 
     void _fetchFundStatus(BreezBridge breezLib){
       if (_currentUser == null) {

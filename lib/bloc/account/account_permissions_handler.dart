@@ -24,13 +24,13 @@ class AccountPermissionsHandler {
     var injector = ServiceInjector();
     _permissionsService = injector.permissions;
     _preferences = injector.sharedPreferences;
-    _preferences.then((p){
-      optimizationWhitelistRequestStream.listen((_){
-        _permissionsService.requestOptimizationWhitelist().then((_){
-          p.setBool(PERMISSION_DIALOG_SHOWN_KEY, true);
-        });
-      });
-    });    
+    // _preferences.then((p){
+    //   optimizationWhitelistRequestStream.listen((_){
+    //     _permissionsService.requestOptimizationWhitelist().then((_){
+    //       p.setBool(PERMISSION_DIALOG_SHOWN_KEY, true);
+    //     });
+    //   });
+    // });    
   }
 
   void triggerOptimizeWhitelistExplenation() async {
