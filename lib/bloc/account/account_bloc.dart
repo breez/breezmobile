@@ -228,8 +228,7 @@ class AccountBloc {
     }
 
     _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib, Device device){      
-      userProfileStream.listen((user) async {
-        print("user profile bloc got user token=" + user.token);
+      userProfileStream.listen((user) async {        
         if (user.token != _currentUser?.token) {
           print("user profile bloc registering for channel open notifications");
           breezLib.registerChannelOpenedNotification(user.token);
@@ -245,6 +244,7 @@ class AccountBloc {
               print("Account bloc bootstrap has finished");   
               _accountController.add(_accountController.value.copyWith(bootstraping: false));     
               breezLib.startLightning();
+              breezLib.registerPeriodicSync(user.token);
               _checkNodeConflict(breezLib);              
               _fetchFundStatus(breezLib);
               _listenConnectivityChanges(breezLib);
@@ -387,7 +387,7 @@ class AccountBloc {
       breezLib.getAccount()
         .then((acc) {
           print("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());
-          _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser.currency, bootstraping: false));          
+          _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser?.currency));          
         })
         .catchError(_accountController.addError);
       _refreshPayments(breezLib);      

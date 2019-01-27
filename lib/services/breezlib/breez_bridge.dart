@@ -267,6 +267,10 @@ class BreezBridge {
     return _invokeMethodImmediate("getDefaultOnChainFeeRate").then((res) => Int64( res as int));        
   }
 
+  Future registerPeriodicSync(String token){
+    return _invokeMethodImmediate("registerPeriodicSync", {"argument": token});        
+  }
+
   Future copyBreezConfig(String workingDir) async{
     print("copyBreezConfig started");
     

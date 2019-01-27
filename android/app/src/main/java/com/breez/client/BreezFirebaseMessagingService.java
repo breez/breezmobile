@@ -14,6 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.breez.client.job.JobManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
@@ -34,11 +35,16 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG ="breez_fcm";
 
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-
         Log.i(TAG, "FCM notification received!");
+
+        if (runJobIfNeeded(remoteMessage)) {
+            return;
+        }
+
         Intent intent = new Intent(ACTION_REMOTE_MESSAGE);
         intent.putExtra(EXTRA_REMOTE_MESSAGE, remoteMessage);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -102,6 +108,21 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         notificationManager.notify(notificationID, notificationBuilder.build());
+    }
+
+    private boolean runJobIfNeeded(RemoteMessage message){
+        String jobToRun = message.getData().get("_job");
+        if (jobToRun  != null) {
+            try {
+                JobManager.instance.enqueJob(jobToRun);
+                Log.i(TAG, "job " + jobToRun + " was enqueued succesfully");
+            } catch (Exception e) {
+                Log.e(TAG, "failed to enque job from notification " + e.getMessage(), e);
+            }
+            return true;
+        }
+
+        return false;
     }
 }
 
