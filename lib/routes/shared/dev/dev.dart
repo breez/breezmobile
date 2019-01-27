@@ -265,7 +265,7 @@ class DevViewState extends State<DevView> {
           toggleConnectProgress(accBloc, settings);
         }),
       Choice(
-        title: 'Advanced',
+        title: 'Marketplace',
         icon: Icons.lock,
         function: _gotoBitrefillWidgetScreen),
     ];
