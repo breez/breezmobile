@@ -17,6 +17,9 @@ class InvoiceBloc {
   final _newInvoiceRequestController = StreamController<InvoiceRequestModel>();
   Sink<InvoiceRequestModel> get newInvoiceRequestSink => _newInvoiceRequestController.sink;
 
+  final _newLightningLinkController = StreamController<String>();
+  Sink<String> get newLightningLinkSink => _newLightningLinkController.sink;
+
   final _readyInvoicesController = new BehaviorSubject<String>();
   Stream<String> get readyInvoicesStream => _readyInvoicesController.stream;
 
@@ -98,6 +101,7 @@ class InvoiceBloc {
         }),
       nfc.receivedBolt11s(),
       _decodeInvoiceController.stream,
+      _newLightningLinkController.stream,
       links.linksNotifications,
       device.deviceClipboardStream
         .where((s) => s.toLowerCase().startsWith("ln") || s.toLowerCase().startsWith("lightning:"))        
@@ -136,6 +140,7 @@ class InvoiceBloc {
 
   close() {    
     _newInvoiceRequestController.close();
+    _newLightningLinkController.close();
     _sentInvoicesController.close();
     _receivedInvoicesController.close();
     _paidInvoicesController.close();
