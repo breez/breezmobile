@@ -259,16 +259,15 @@ class DevViewState extends State<DevView> {
         icon: Icons.phone_android,
         function: _showOptimizationsSettings),
       Choice(
-          title: 'Advanced',
-          icon: Icons.lock,
-          function: _gotoBitrefillWidgetScreen),
-    Choice(
         title: '${settings.showConnectProgress ? "Hide" : "Show"} Connect Progress',
         icon: Icons.phone_android,
         function: (){
           toggleConnectProgress(accBloc, settings);
         }),
-
+      Choice(
+        title: 'Advanced',
+        icon: Icons.lock,
+        function: _gotoBitrefillWidgetScreen),
     ];
     return choices;
   }  
@@ -281,56 +280,54 @@ class DevViewState extends State<DevView> {
         .pushReplacementNamed("/splash");
   }
 
-  void _gotoBitrefillWidgetScreen() async {
-    _promptPassword();
-  }
-
   void _showOptimizationsSettings() async {
     widget._permissionsService.requestOptimizationSettings();
   }
 
-  bool _validatePassword(String value) {
-    if (value == "135642") {
-      return true;
-    }
-    return false;
+  void toggleConnectProgress(AccountBloc bloc, AccountSettings settings){
+    bloc.accountSettingsSink.add(settings.copyWith(showConnectProgress: !settings.showConnectProgress));
+  }
+
+  void _gotoBitrefillWidgetScreen() async {
+    _promptPassword();
   }
 
   Future _promptPassword() {
     return showDialog<bool>(
         context: context,
-        barrierDismissible: false, // user must tap button!
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return new AlertDialog(
             contentPadding: EdgeInsets.only(left: 24.0, right: 24.0),
             title: new Text(
                 "Enter credentials", style: theme.alertTitleStyle),
             content: new SingleChildScrollView(
-              child: Form(
-          key: _formKey,
-          child: new Container(
-                child: new TextFormField(
-                  obscureText: true,
-                  decoration:
-                  new InputDecoration(
-                    hintText: "Password",
-                    hintStyle: theme.alertStyle,
-                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(
-                        color: Colors.black45,
-                        style: BorderStyle.solid,
-                        width: 2.0)),),
-                  style: theme.alertStyle,
-                  textCapitalization: TextCapitalization.none,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return "Please enter password.";
-                    } else if (!_validatePassword(
-                        value)) {
-                      return "Invalid password.";
-                    }
-                  },
-                ),
-              ),)
+                child: Form(
+                  key: _formKey,
+                  child: new Container(
+                    child: new TextFormField(
+                      obscureText: true,
+                      decoration:
+                      new InputDecoration(
+                        hintText: "Password",
+                        hintStyle: theme.alertStyle,
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Colors.black45,
+                                style: BorderStyle.solid,
+                                width: 2.0)),),
+                      style: theme.alertStyle,
+                      textCapitalization: TextCapitalization.none,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Please enter password.";
+                        } else if (!_validatePassword(
+                            value)) {
+                          return "Invalid password.";
+                        }
+                      },
+                    ),
+                  ),)
             ),
             actions: <Widget>[
               new FlatButton(
@@ -347,7 +344,6 @@ class DevViewState extends State<DevView> {
                         .of(_scaffoldKey.currentState.context)
                         .pushReplacementNamed("/bitrefill");
                   }
-
                 },
               ),
             ],
@@ -355,7 +351,10 @@ class DevViewState extends State<DevView> {
         });
   }
 
-  void toggleConnectProgress(AccountBloc bloc, AccountSettings settings){
-    bloc.accountSettingsSink.add(settings.copyWith(showConnectProgress: !settings.showConnectProgress));
+  bool _validatePassword(String value) {
+    if (value == "135642") {
+      return true;
+    }
+    return false;
   }
 }
