@@ -342,7 +342,7 @@ class DevViewState extends State<DevView> {
                   if (_formKey.currentState.validate()) {
                     Navigator
                         .of(_scaffoldKey.currentState.context)
-                        .pushReplacementNamed("/bitrefill");
+                        .pushReplacementNamed("/marketplace");
                   }
                 },
               ),
