@@ -75,7 +75,7 @@ class BitrefillPageState extends State<BitrefillPage> {
         ),
         elevation: 0.0,
       ),
-      url: 'https://www.bitrefill.com/embed/lightning/?apiKey=&hideQr',
+      url: 'https://www.bitrefill.com/embed/lightning/?apiKey=GAj4sWRVqK3Uau1L&hideQr',
       withJavascript: true,
       withZoom: false,
     );
