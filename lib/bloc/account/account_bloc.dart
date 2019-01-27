@@ -228,8 +228,7 @@ class AccountBloc {
     }
 
     _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib, Device device){      
-      userProfileStream.listen((user) async {
-        print("user profile bloc got user token=" + user.token);
+      userProfileStream.listen((user) async {        
         if (user.token != _currentUser?.token) {
           print("user profile bloc registering for channel open notifications");
           breezLib.registerChannelOpenedNotification(user.token);
@@ -238,13 +237,14 @@ class AccountBloc {
                
         if (user.registered) {
           if (!_startedLightning) {
-            _askWhitelistOptimizations();          
+            //_askWhitelistOptimizations();          
             print("Account bloc got registered user, starting lightning daemon...");        
             _startedLightning = true;                                        
             breezLib.bootstrap().then((done) async {    
               print("Account bloc bootstrap has finished");   
               _accountController.add(_accountController.value.copyWith(bootstraping: false));     
               breezLib.startLightning();
+              breezLib.registerPeriodicSync(user.token);
               _checkNodeConflict(breezLib);              
               _fetchFundStatus(breezLib);
               _listenConnectivityChanges(breezLib);
@@ -272,9 +272,9 @@ class AccountBloc {
       });      
     }
 
-    void _askWhitelistOptimizations() async{
-       _permissionsHandler.triggerOptimizeWhitelistExplenation();     
-    }  
+    // void _askWhitelistOptimizations() async{
+    //    _permissionsHandler.triggerOptimizeWhitelistExplenation();     
+    // }  
 
     void _fetchFundStatus(BreezBridge breezLib){
       if (_currentUser == null) {
@@ -387,7 +387,7 @@ class AccountBloc {
       breezLib.getAccount()
         .then((acc) {
           print("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());
-          _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser.currency, bootstraping: false));          
+          _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser?.currency));          
         })
         .catchError(_accountController.addError);
       _refreshPayments(breezLib);      

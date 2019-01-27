@@ -8,7 +8,7 @@ dependencies:
   protobuf: any
   path_provider: any
   firebase_database: ^1.0.5
-  firebase_messaging: ^2.1.0
+  firebase_messaging: "2.1.0"
   shared_preferences: "^0.4.1"
   share: "^0.5.2"
   qr_flutter: ^1.1.5

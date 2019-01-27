@@ -66,19 +66,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
 
         Log.i(TAG, "workingDir = " + workingDir);
 
-        PeriodicWorkRequest periodic =
-                new PeriodicWorkRequest.Builder(ChainSync.class, 30, TimeUnit.MINUTES)
-                        .setConstraints(
-                                new Constraints.Builder()
-                                        .setRequiresBatteryNotLow(true)
-                                        .build())
-                        .setInputData(
-                                new Data.Builder()
-                                        .putString("workingDir", workingDir)
-                                        .build())
-                        .build();
-
-        WorkManager.getInstance().enqueueUniquePeriodicWork(UNIQUE_WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, periodic);
+        WorkManager.getInstance().cancelUniqueWork(UNIQUE_WORK_NAME);
     }
 
     private void stop(MethodCall call, MethodChannel.Result result){
