@@ -20,23 +20,11 @@ class BitrefillPage extends StatefulWidget {
 
 class BitrefillPageState extends State<BitrefillPage> {
   final _widgetWebview = new FlutterWebviewPlugin();
-  String _lightningLink;
   var _apiKey = "";
 
   @override
   void initState() {
     super.initState();
-    _lightningLink = null;
-
-    _widgetWebview.lightningLinkStream.listen((value) {
-      final order = JSON.jsonDecode(value);
-      setState(() {
-        _lightningLink = order['uri'];
-        _widgetWebview.hide();
-        Navigator.of(context).pushNamed('/home');
-      });
-    });
-
     _getApiKey();
     _widgetWebview.onStateChanged.listen((state) async {
       if (state.type == WebViewState.finishLoad) {
@@ -54,19 +42,27 @@ class BitrefillPageState extends State<BitrefillPage> {
     });
   }
 
+  @override void didChangeDependencies(){
+    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+
+    _widgetWebview.postMessageStream.listen((value) {
+      final order = JSON.jsonDecode(value);
+      invoiceBloc.newLightningLinkSink.add(order['uri']);
+        _widgetWebview.hide();
+        Navigator.of(context).pushNamed('/home');
+      });
+
+    super.didChangeDependencies();
+  }
+
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
     _widgetWebview.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    if (_lightningLink != null) {
-      invoiceBloc.newLightningLinkSink.add(_lightningLink);
-    }
     return new WebviewScaffold(
       appBar: new AppBar(
         leading: backBtn.BackButton(),
