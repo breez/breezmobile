@@ -19,6 +19,7 @@ class BitrefillPage extends StatefulWidget {
 }
 
 class BitrefillPageState extends State<BitrefillPage> {
+  StreamSubscription _postMessageListener;
   final _widgetWebview = new FlutterWebviewPlugin();
   var _apiKey = "";
 
@@ -42,21 +43,25 @@ class BitrefillPageState extends State<BitrefillPage> {
     });
   }
 
-  @override void didChangeDependencies(){
+  @override
+  void didChangeDependencies() {
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
 
-    _widgetWebview.postMessageStream.listen((value) {
-      final order = JSON.jsonDecode(value);
-      invoiceBloc.newLightningLinkSink.add(order['uri']);
+    _postMessageListener = _widgetWebview.onPostMessage.listen((postMessage) {
+      if (postMessage != null) {
+        final order = JSON.jsonDecode(postMessage);
+        invoiceBloc.newLightningLinkSink.add(order['uri']);
         _widgetWebview.hide();
         Navigator.of(context).pushNamed('/home');
-      });
+      }
+    });
 
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
+    _postMessageListener.cancel();
     _widgetWebview.dispose();
     super.dispose();
   }
