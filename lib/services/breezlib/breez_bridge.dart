@@ -204,7 +204,7 @@ class BreezBridge {
 
   Future<InvoiceMemo> decodePaymentRequest(String payReq) {
     return _invokeMethodWhenReady("decodePaymentRequest", {"argument": payReq})
-        .then( (result) => new InvoiceMemo()..mergeFromBuffer(result));
+        .then( (result) => new InvoiceMemo()..mergeFromBuffer(result ?? []));
   }
 
   Future<String> newAddress(String breezID) {
