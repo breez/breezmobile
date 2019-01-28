@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'package:ini/ini.dart';
+import 'package:flutter/services.dart';
 import 'dart:convert' as JSON;
 import 'package:flutter/material.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -18,6 +21,7 @@ class BitrefillPage extends StatefulWidget {
 class BitrefillPageState extends State<BitrefillPage> {
   final _widgetWebview = new FlutterWebviewPlugin();
   String _lightningLink;
+  var _apiKey = "";
 
   @override
   void initState() {
@@ -33,6 +37,7 @@ class BitrefillPageState extends State<BitrefillPage> {
       });
     });
 
+    _getApiKey();
     _widgetWebview.onStateChanged.listen((state) async {
       if (state.type == WebViewState.finishLoad) {
         String script =
@@ -75,9 +80,17 @@ class BitrefillPageState extends State<BitrefillPage> {
         ),
         elevation: 0.0,
       ),
-      url: 'https://www.bitrefill.com/embed/lightning/?apiKey=GAj4sWRVqK3Uau1L&hideQr',
+      url: 'https://www.bitrefill.com/embed/lightning/?apiKey=$_apiKey&hideQr',
       withJavascript: true,
       withZoom: false,
     );
+  }
+
+  Future _getApiKey() async {
+    String configString = await rootBundle.loadString('conf/breez.conf');
+    Config config = Config.fromString(configString);
+    setState(() {
+      _apiKey = config.get("Application Options", "bitrefillapikey");
+    });
   }
 }

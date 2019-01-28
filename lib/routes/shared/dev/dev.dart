@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:ini/ini.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -65,6 +67,7 @@ class DevView extends StatefulWidget {
 }
 
 class DevViewState extends State<DevView> {
+  String _marketplacePassword;
   String _cliText = '';
   TextStyle _cliTextStyle = theme.smallTextStyle;
 
@@ -75,6 +78,7 @@ class DevViewState extends State<DevView> {
   @override
   void initState() {
     _richCliText = defaultCliCommandsText;
+    _getMarketplacePassword();
     super.initState();
   }
 
@@ -352,9 +356,18 @@ class DevViewState extends State<DevView> {
   }
 
   bool _validatePassword(String value) {
-    if (value == "135642") {
+    if (value == _marketplacePassword) {
       return true;
     }
     return false;
+  }
+
+  Future _getMarketplacePassword() async {
+    String configString = await rootBundle.loadString('conf/breez.conf');
+    Config config = Config.fromString(configString);
+    setState(() {
+      _marketplacePassword =
+          config.get("Application Options", "marketplacepassword");
+    });
   }
 }
