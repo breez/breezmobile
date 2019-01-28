@@ -267,7 +267,7 @@ class DevViewState extends State<DevView> {
       Choice(
         title: 'Marketplace',
         icon: Icons.lock,
-        function: _gotoBitrefillWidgetScreen),
+        function: _gotoMarketplaceScreen),
     ];
     return choices;
   }  
@@ -288,7 +288,7 @@ class DevViewState extends State<DevView> {
     bloc.accountSettingsSink.add(settings.copyWith(showConnectProgress: !settings.showConnectProgress));
   }
 
-  void _gotoBitrefillWidgetScreen() async {
+  void _gotoMarketplaceScreen() async {
     _promptPassword();
   }
 
