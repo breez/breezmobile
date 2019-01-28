@@ -1,3 +1,4 @@
+import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -9,15 +10,6 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 class QrCodeDialog extends StatelessWidget {
   final BuildContext context;
   final InvoiceBloc _invoiceBloc;
-
-  final snackBar = new SnackBar(
-    content: new Text(
-      'Deposit address was copied to your clipboard.',
-      style: theme.snackBarStyle,
-    ),
-    backgroundColor: theme.snackBarBackgroundColor,
-    duration: new Duration(seconds: 4),
-  );
 
   QrCodeDialog(this.context, this._invoiceBloc);
 
@@ -57,7 +49,7 @@ class QrCodeDialog extends StatelessWidget {
                     color: theme.BreezColors.grey[500],
                     onPressed: () {
                       Clipboard.setData(new ClipboardData(text: snapshot.data));
-                      Scaffold.of(context).showSnackBar(snackBar);
+                      showFlushbar(context, message: "Invoice address was copied to your clipboard.", seconds:3);                      
                     },
                   )
                 ],
