@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/bloc/marketplace/vendor_model.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/marketplace/vendor_row.dart';
 
 class MarketplacePage extends StatefulWidget {
-  final String _title = "Marketplace";
-
   @override
   State<StatefulWidget> createState() {
     return new MarketplacePageState();
@@ -12,6 +13,11 @@ class MarketplacePage extends StatefulWidget {
 }
 
 class MarketplacePageState extends State<MarketplacePage> {
+  final String _title = "Marketplace";
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  MarketplaceBloc _marketplaceBloc;
+
   @override
   void initState() {
     super.initState();
@@ -19,54 +25,55 @@ class MarketplacePageState extends State<MarketplacePage> {
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<VendorModel>(
+        stream: _marketplaceBloc.vendorsStream,
+        builder: (context, snapshot) {
+          VendorModel vendorsModel;
+          if (snapshot.hasData) {
+            vendorsModel = snapshot.data;
+          }
+
+          if (vendorsModel == null) {
+            return Container();
+          }
+
+          if (vendorsModel != null) {
+            return _buildScaffold(Center(
+                child: Text("There are no available vendors at the moment.")));
+          }
+
+          return _buildScaffold(_buildVendors(vendorsModel));
+        });
+  }
+
+  Widget _buildScaffold(Widget body) {
     return new Scaffold(
-        appBar: new AppBar(
-          leading: backBtn.BackButton(),
-          automaticallyImplyLeading: false,
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
-          title: new Text(
-            widget._title,
-            style: theme.appBarTextStyle,
-          ),
-          elevation: 0.0,
+      key: _scaffoldKey,
+      appBar: new AppBar(
+        iconTheme: theme.appBarIconTheme,
+        textTheme: theme.appBarTextTheme,
+        backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
+        leading: backBtn.BackButton(),
+        title: new Text(
+          _title,
+          style: theme.appBarTextStyle,
         ),
-        body: ListView(
-          children: <Widget>[
-            new GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pushNamed('/bitrefill');
-                },
-                child: new Padding(
-                  padding: EdgeInsets.fromLTRB(32.0, 16.0, 32.0, 16.0),
-                  child: new Container(
-                    height: 160.0,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        color: Colors.blue),
-                    child: new Center(
-                        child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.bluetooth,
-                          size: 36.0,
-                        ),
-                        Text(
-                          "Bitrefill",
-                          style: TextStyle(
-                              fontSize: 36.0,
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 1.1,
-                              fontFamily: 'Roboto'),
-                        )
-                      ],
-                    )),
-                  ),
-                ))
-          ],
-        ));
+        elevation: 0.0,
+      ),
+      body: body,
+    );
+  }
+
+  Widget _buildVendors(VendorModel vendorModel) {
+    return ListView(
+      children: <Widget>[
+        ListView.builder(
+          itemBuilder: (context, index) =>
+              new VendorRow(vendorModel.vendorsList[index]),
+          itemCount: vendorModel.vendorsList.length,
+          itemExtent: 200.0,
+        )
+      ],
+    );
   }
 }
