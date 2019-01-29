@@ -154,6 +154,7 @@ class PaymentInfo {
 
   PaymentType get type => _typeMap[_paymentResponse.type];  
   Int64 get amount => _paymentResponse.amount;
+  Int64 get fee => _paymentResponse.fee;
   Int64 get creationTimestamp => _paymentResponse.creationTimestamp;  
   String get destination => _paymentResponse.destination;
   String get redeemTxID => _paymentResponse.redeemTxID;
