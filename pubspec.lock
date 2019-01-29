@@ -114,14 +114,14 @@ packages:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.2.5+1"
   firebase_database:
     dependency: "direct main"
     description:
       name: firebase_database
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.0+1"
   firebase_messaging:
     dependency: "direct main"
     description:
@@ -167,7 +167,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "59a4c33751d5ce71341e2e4b720c9f1553d01f8c"
+      resolved-ref: "26b300552579007a879cf915914080db2ba435d3"
       url: "git://github.com/erdemyerebasmaz/flutter_webview_plugin.git"
     source: git
     version: "0.3.0+2"
@@ -532,7 +532,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.3"
+    version: "1.5.4"
   stack_trace:
     dependency: transitive
     description:
@@ -637,7 +637,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.0"
+    version: "3.3.1"
   yaml:
     dependency: transitive
     description:

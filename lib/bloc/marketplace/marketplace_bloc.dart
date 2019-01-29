@@ -11,15 +11,28 @@ class MarketplaceBloc {
   MarketplaceBloc() {
     // ToDo
     initMarketplace();
+    _vendorController.stream.listen((vendor) async {
+      if (vendor.vendorsList.isNotEmpty) {
+        print(vendor.vendorsList[0].name);
+      }
+    });
   }
 
   Future initMarketplace() async {
     Config config = await _readConfig();
-    String marketplacePassword = config.get('Application Options', 'marketplacepassword');
-    String apiKey = config.get('Application Options', 'apikey');
+    String _marketplacePassword =
+        config.get('Application Options', 'marketplacepassword');
+    String _apiKey = config.get('Application Options', 'bitrefillapikey');
+    List<VendorInfo> vendorList = [
+      VendorInfo(
+          "https://www.bitrefill.com/embed/lightning/?apiKey=$_apiKey&hideQr",
+          "Bitrefill")
+    ];
+    _vendorController.add(VendorModel(vendorList));
+
     // ToDo
-    _setMarketplacePassword(marketplacePassword);
-    _generateURLs(apiKey);
+    //_setMarketplacePassword(_marketplacePassword);
+    //_generateURLs(_apiKey);
   }
 
   Future<Config> _readConfig() async {
@@ -27,11 +40,15 @@ class MarketplaceBloc {
     return Config.fromString(lines);
   }
 
-  void _setMarketplacePassword(String password){
+  void _setMarketplacePassword(String password) {
     // ToDO set password of marketplace
   }
 
-  void _generateURLs(String apiKey){
+  void _generateURLs(String apiKey) {
     // ToDO generate vendor urls
+  }
+
+  close() {
+    _vendorController.close();
   }
 }

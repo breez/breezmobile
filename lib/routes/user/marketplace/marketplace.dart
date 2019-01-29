@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/bloc/marketplace/vendor_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/bloc/marketplace/vendor_row.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/theme_data.dart' as theme;
 
 class MarketplacePage extends StatefulWidget {
   @override
@@ -16,8 +17,6 @@ class MarketplacePageState extends State<MarketplacePage> {
   final String _title = "Marketplace";
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  MarketplaceBloc _marketplaceBloc;
-
   @override
   void initState() {
     super.initState();
@@ -25,7 +24,8 @@ class MarketplacePageState extends State<MarketplacePage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<VendorModel>(
+    MarketplaceBloc _marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
+    return StreamBuilder(
         stream: _marketplaceBloc.vendorsStream,
         builder: (context, snapshot) {
           VendorModel vendorsModel;
@@ -34,7 +34,7 @@ class MarketplacePageState extends State<MarketplacePage> {
           }
 
           if (vendorsModel == null) {
-            return Container();
+            return Center(child: RaisedButton(onPressed: () => Navigator.of(context).pushNamed('/bitrefill')));
           }
 
           if (vendorsModel != null) {

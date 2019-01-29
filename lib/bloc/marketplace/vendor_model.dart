@@ -5,9 +5,12 @@ class VendorModel {
 }
 
 class VendorInfo {
-  final String url;
-  final String name;
+  final String _url;
+  final String _name;
   final String logo;
 
-  VendorInfo(this.url, this.name, {this.logo});
+  String get url => _url;
+  String get name => _name;
+
+  VendorInfo(this._url, this._name, {this.logo});
 }
