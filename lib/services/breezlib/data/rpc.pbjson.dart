@@ -50,6 +50,7 @@ const Payment$json = const {
     const {'1': 'destination', '3': 9, '4': 1, '5': 9, '10': 'destination'},
     const {'1': 'PendingExpirationHeight', '3': 10, '4': 1, '5': 13, '10': 'PendingExpirationHeight'},
     const {'1': 'PendingExpirationTimestamp', '3': 11, '4': 1, '5': 3, '10': 'PendingExpirationTimestamp'},
+    const {'1': 'fee', '3': 12, '4': 1, '5': 3, '10': 'fee'},
   ],
   '4': const [Payment_PaymentType$json],
 };
