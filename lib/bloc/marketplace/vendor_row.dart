@@ -3,7 +3,7 @@ import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class VendorRow extends StatelessWidget {
-  final VendorInfo _vendor;
+  final VendorModel _vendor;
 
   VendorRow(this._vendor);
 

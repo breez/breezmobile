@@ -16,6 +16,8 @@ class MarketplacePage extends StatefulWidget {
 class MarketplacePageState extends State<MarketplacePage> {
   final String _title = "Marketplace";
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  MarketplaceBloc _marketplaceBloc;
+  bool _isInit = false;
 
   @override
   void initState() {
@@ -23,18 +25,29 @@ class MarketplacePageState extends State<MarketplacePage> {
   }
 
   @override
+  void didChangeDependencies() {
+    if (!_isInit) {
+      _marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
+      _isInit = true;
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    MarketplaceBloc _marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
     return StreamBuilder(
         stream: _marketplaceBloc.vendorsStream,
         builder: (context, snapshot) {
-          VendorModel vendorsModel;
+          List<VendorModel> vendorsModel;
           if (snapshot.hasData) {
             vendorsModel = snapshot.data;
           }
 
           if (vendorsModel == null) {
-            return Center(child: RaisedButton(onPressed: () => Navigator.of(context).pushNamed('/bitrefill')));
+            return Center(
+                child: RaisedButton(
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed('/bitrefill')));
           }
 
           if (vendorsModel != null) {
@@ -64,13 +77,12 @@ class MarketplacePageState extends State<MarketplacePage> {
     );
   }
 
-  Widget _buildVendors(VendorModel vendorModel) {
+  Widget _buildVendors(List<VendorModel> vendorModel) {
     return ListView(
       children: <Widget>[
         ListView.builder(
-          itemBuilder: (context, index) =>
-              new VendorRow(vendorModel.vendorsList[index]),
-          itemCount: vendorModel.vendorsList.length,
+          itemBuilder: (context, index) => new VendorRow(vendorModel[index]),
+          itemCount: vendorModel.length,
           itemExtent: 200.0,
         )
       ],
