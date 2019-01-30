@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.breez.client.BreezApplication;
+import com.breez.client.BreezLogger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,12 +26,13 @@ public class ChainSync extends Worker {
     public static final String UNIQUE_WORK_NAME = "chainSync";
     private static final String TAG = "BREEZSYNC";
     private volatile JobController mJobController;
-    private Logger m_logger = Logger.getLogger(TAG);
+    private Logger m_logger;
     private Executor _executor = Executors.newCachedThreadPool();
 
 
     public ChainSync(Context context, WorkerParameters params) {
         super(context, params);
+        m_logger = BreezLogger.getLogger(context, TAG);
     }
 
     @Override
