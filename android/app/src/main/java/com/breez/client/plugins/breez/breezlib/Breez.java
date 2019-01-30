@@ -1,8 +1,10 @@
 package com.breez.client.plugins.breez.breezlib;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import bindings.Logger;
 import io.flutter.plugin.common.ActivityLifecycleListener;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.EventChannel;
@@ -10,6 +12,8 @@ import io.flutter.plugin.common.EventChannel.StreamHandler;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 import bindings.*;
+
+import java.io.File;
 import java.lang.reflect.*;
 import java.util.*;
 import androidx.work.*;
@@ -26,6 +30,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
     private EventChannel.EventSink m_eventsListener;
     private Map<String, Method> _bindingMethods = new HashMap<String, Method>();
     private Executor _executor = Executors.newCachedThreadPool();
+    private static Logger _breezLogger;
 
     public Breez(PluginRegistry.Registrar registrar) {
         registrar.view().addActivityLifecycleListener(this);
@@ -35,6 +40,13 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
         for (Method m : methods) {
             _bindingMethods.put(m.getName(), m);
         }
+    }
+
+    public static synchronized Logger getLogger(Context context) throws Exception {
+        if (_breezLogger == null) {
+            _breezLogger = Bindings.getLogger(getWorkingDir(context));
+        }
+        return _breezLogger;
     }
 
     @Override
@@ -50,6 +62,10 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
         } else {
             _executor.execute(new BreezTask(call, result));
         }
+    }
+
+    private static String getWorkingDir(Context context){
+        return new File(context.getDataDir(), "app_flutter").getAbsolutePath();
     }
 
     private void start(MethodCall call, MethodChannel.Result result){
