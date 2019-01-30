@@ -45,7 +45,7 @@
 - [x] Mainnet support
 - [x] Support zero-sat invoices
 - [x] Startup optimizations
-- [ ] Background sync via FCM
+- [x] Background sync via FCM
 - [ ] Simplify P2P payments
 - [ ] Use static card IDs
 - [ ] NFC card deactivation
