@@ -89,7 +89,7 @@ class AddFundsState extends State<AddFundsPage> {
     } else if (account.waitingDepositConfirmation ||
         account.processingWithdrawal) {
       errorMessage =
-          'Breez is processing your previous ${account.waitingDepositConfirmation || account.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
+          'Breez is processing your previous ${account.waitingDepositConfirmation || account.processingBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
     } else if (response != null && response.errorMessage.isNotEmpty) {
       errorMessage = response.errorMessage;
     }    

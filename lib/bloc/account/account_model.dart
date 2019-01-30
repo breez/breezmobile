@@ -66,10 +66,11 @@ class AccountModel {
   String get id => _accountResponse.id;  
   bool get waitingDepositConfirmation => addedFundsStatus == FundStatusReply_FundStatus.WAITING_CONFIRMATION;  
   bool get depositConfirmed => addedFundsStatus == FundStatusReply_FundStatus.CONFIRMED;  
-  bool get processiongBreezConnection => _accountResponse.status == Account_AccountStatus.PROCESSING_BREEZ_CONNECTION;
+  bool get processingBreezConnection => _accountResponse.status == Account_AccountStatus.PROCESSING_BREEZ_CONNECTION;
   bool get processingWithdrawal => _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
   bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;  
-  bool get channelRequested => processiongBreezConnection || active;
+  bool get isInitialBootstrap => bootstraping || (!active && !processingWithdrawal && !processingBreezConnection);
+  bool get channelRequested => processingBreezConnection || active;
   Int64 get balance => _accountResponse.balance;  
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
@@ -85,11 +86,11 @@ class AccountModel {
       return "";
     }   
 
-    if (this.bootstraping) {
+    if (this.isInitialBootstrap) {
       return "Please wait a minute while Breez is bootstrapping (keep the app open).";
     }
 
-    if (!this.active) {
+    if (this.processingBreezConnection) {
       return "Breez is opening a secure channel with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments";
     }
     
