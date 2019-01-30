@@ -15,8 +15,6 @@ import android.os.Bundle;
 
 import android.content.Intent;
 import android.nfc.NfcAdapter;
-
-import bindings.Bindings;
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -53,7 +51,6 @@ public class MainActivity extends FlutterActivity {
 
         registerBreezPlugins();
         GeneratedPluginRegistrant.registerWith(this);
-        addBreezLogHandler();
     }
 
     @Override
@@ -98,38 +95,5 @@ public class MainActivity extends FlutterActivity {
                 || intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED))) {
             m_nfc.handleIntent(intent);
         }
-    }
-
-    private void addBreezLogHandler(){
-        Logger rootLogger = Logger.getLogger("");
-        rootLogger.addHandler(new Handler() {
-            @Override
-            public void publish(LogRecord logRecord) {
-                if (logRecord.getLevel().intValue() <= Level.FINE.intValue()) {
-                    Log.d(logRecord.getLoggerName(), logRecord.getMessage());
-                    Bindings.log(logRecord.getMessage(), "FINE");
-                    return;
-                }
-                if (logRecord.getLevel().intValue() <= Level.INFO.intValue()) {
-                    Log.i(logRecord.getLoggerName(), logRecord.getMessage());
-                    Bindings.log(logRecord.getMessage(), "INFO");
-                    return;
-                }
-                if (logRecord.getLevel().intValue() <= Level.WARNING.intValue()) {
-                    Log.w(logRecord.getLoggerName(), logRecord.getMessage(), logRecord.getThrown());
-                    Bindings.log(logRecord.getMessage(), "WARNING");
-                    return;
-                }
-                Log.e(logRecord.getLoggerName(), logRecord.getMessage(), logRecord.getThrown());
-                Bindings.log(logRecord.getMessage(), "SEVERE");
-                return;
-            }
-
-            @Override
-            public void flush() {}
-
-            @Override
-            public void close() throws SecurityException {}
-        });
     }
 }
