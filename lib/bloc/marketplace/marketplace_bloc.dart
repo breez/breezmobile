@@ -1,6 +1,7 @@
 import 'dart:async';
 import "package:ini/ini.dart";
 import 'package:rxdart/rxdart.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 
@@ -9,10 +10,6 @@ class MarketplaceBloc {
   Stream<List<VendorModel>> get vendorsStream => _vendorController.stream;
 
   MarketplaceBloc() {
-    print("hello");
-    _vendorController.stream.listen((vendor) async {
-        print(vendor[0].name);
-    });
     initMarketplace();
   }
 
@@ -24,11 +21,9 @@ class MarketplaceBloc {
     List<VendorModel> vendorList = [
       VendorModel(
           "https://www.bitrefill.com/embed/lightning/?apiKey=$_apiKey&hideQr",
-          "Bitrefill")
+          "Bitrefill", bgColor: Color(0xFF3e99fa))
     ];
-    _vendorController.sink.add(vendorList);
     _vendorController.add(vendorList);
-
   }
 
   Future<Config> _readConfig() async {

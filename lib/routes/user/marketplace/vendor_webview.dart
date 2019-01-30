@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:ini/ini.dart';
-import 'package:flutter/services.dart';
 import 'dart:convert' as JSON;
 import 'package:flutter/material.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -9,24 +7,25 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
-class BitrefillPage extends StatefulWidget {
-  final String _title = "Bitrefill";
+class VendorWebViewPage extends StatefulWidget {
+  final String _url;
+  final String _title;
+
+  VendorWebViewPage(this._url, this._title);
 
   @override
   State<StatefulWidget> createState() {
-    return new BitrefillPageState();
+    return new VendorWebViewPageState();
   }
 }
 
-class BitrefillPageState extends State<BitrefillPage> {
+class VendorWebViewPageState extends State<VendorWebViewPage> {
   StreamSubscription _postMessageListener;
   final _widgetWebview = new FlutterWebviewPlugin();
-  var _apiKey = "";
 
   @override
   void initState() {
     super.initState();
-    _getApiKey();
     _widgetWebview.onStateChanged.listen((state) async {
       if (state.type == WebViewState.finishLoad) {
         String script =
@@ -81,17 +80,9 @@ class BitrefillPageState extends State<BitrefillPage> {
         ),
         elevation: 0.0,
       ),
-      url: 'https://www.bitrefill.com/embed/lightning/?apiKey=$_apiKey&hideQr',
+      url: widget._url,
       withJavascript: true,
       withZoom: false,
     );
-  }
-
-  Future _getApiKey() async {
-    String configString = await rootBundle.loadString('conf/breez.conf');
-    Config config = Config.fromString(configString);
-    setState(() {
-      _apiKey = config.get("Application Options", "bitrefillapikey");
-    });
   }
 }

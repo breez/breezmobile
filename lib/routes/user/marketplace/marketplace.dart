@@ -44,13 +44,6 @@ class MarketplacePageState extends State<MarketplacePage> {
           }
 
           if (vendorsModel == null) {
-            return Center(
-                child: RaisedButton(
-                    onPressed: () =>
-                        Navigator.of(context).pushNamed('/bitrefill')));
-          }
-
-          if (vendorsModel != null) {
             return _buildScaffold(Center(
                 child: Text("There are no available vendors at the moment.")));
           }
@@ -78,14 +71,10 @@ class MarketplacePageState extends State<MarketplacePage> {
   }
 
   Widget _buildVendors(List<VendorModel> vendorModel) {
-    return ListView(
-      children: <Widget>[
-        ListView.builder(
-          itemBuilder: (context, index) => new VendorRow(vendorModel[index]),
-          itemCount: vendorModel.length,
-          itemExtent: 200.0,
-        )
-      ],
+    return ListView.builder(
+      itemBuilder: (context, index) => new VendorRow(vendorModel[index]),
+      itemCount: vendorModel.length,
+      itemExtent: 200.0,
     );
   }
 }
