@@ -39,7 +39,7 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         Logger log = BreezLogger.getLogger(getApplicationContext(), TAG);
-        Log.i(TAG, "FCM notification received! isBackground=" + BreezApplication.isBackground + " isRunning=" + BreezApplication.isRunning);
+        log.info("FCM notification received! isBackground=" + BreezApplication.isBackground + " isRunning=" + BreezApplication.isRunning);
 
         if (runJobIfNeeded(remoteMessage)) {
             return;
