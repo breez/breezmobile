@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
-class AddFundsPage extends StatefulWidget {
+class AddFundsPage extends StatefulWidget {  
   final BreezUserModel _user;  
 
   const AddFundsPage(this._user);
@@ -21,6 +21,7 @@ class AddFundsPage extends StatefulWidget {
 }
 
 class AddFundsState extends State<AddFundsPage> {
+  static const int CHANNEL_RESERVE_SAT = 10000;
   final String _title = "Add Funds";
   AddFundsBloc _addFundsBloc;
 
@@ -114,13 +115,13 @@ class AddFundsState extends State<AddFundsPage> {
     return Column(children: <Widget>[
       AddressWidget(response?.address, response?.backupJson),
       response == null ? SizedBox() : Container(
-          padding: new EdgeInsets.only(top: 36.0),
+          padding: new EdgeInsets.only(top: 36.0, left: 12.0, right: 12.0),
           child: Text(
               "Send up to " +
                   account.currency
                       .format(response.maxAllowedDeposit, includeSymbol: true) +
-                  " to this address",
-              style: theme.warningStyle))
+                  " to this address." + "\nBreez requires you to keep $CHANNEL_RESERVE_SAT in your balance.",
+              style: theme.warningStyle, textAlign: TextAlign.center,))
     ]);   
   }
 
