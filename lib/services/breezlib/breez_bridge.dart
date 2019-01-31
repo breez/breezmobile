@@ -38,11 +38,7 @@ class BreezBridge {
       _eventsController.add(new NotificationEvent()..mergeFromBuffer(event));
     });
     _tempDirFuture = getTemporaryDirectory();    
-    initLightningDir();
-
-    _copyConfigTasks
-    .then((dir) => init(dir.path))    
-    .then(_startedCompleter.complete);
+    initLightningDir();    
   }
 
   initLightningDir(){
@@ -59,16 +55,16 @@ class BreezBridge {
     return _methodChannel.invokeMethod("init", {"argument": appDir});
   }
 
-  Future start(String workingDir) async{   
+  Future start(String workingDir) async{
     print(" breez bridge - start...");  
     Directory tempDir = await _tempDirFuture;    
     return _methodChannel.invokeMethod("start", {
       "workingDir": workingDir,
       "tempDir": tempDir.path
     })
-      .then((_) { 
-        print(" breez bridge - start lightning finished");          
-      });
+    .then((_) { 
+      print(" breez bridge - start lightning finished");          
+    });    
   }
 
   Future stop({bool permanent = false}){
@@ -303,6 +299,7 @@ class BreezBridge {
             (completed) {            
           return _methodChannel.invokeMethod(methodName, arguments).catchError((err){
             if (err.runtimeType == PlatformException) {
+              print("Error in calling method " + methodName);
               throw (err as PlatformException).details;
             }
             throw err;
@@ -339,7 +336,10 @@ class BreezBridge {
 
   Future startLightning() {    
     return _copyConfigTasks.then((appDir) async {
-      await _startedCompleter.future; 
+      if (!_startedCompleter.isCompleted) {
+        await init(appDir.path);  
+        _startedCompleter.complete(true);
+      }
       return start(appDir.path);
     });
   }
