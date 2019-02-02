@@ -147,23 +147,17 @@ class BackupBloc {
         return;
       }
 
-      _service.restore(nodeId, _backupBreezID).then((restoreResult) {
-        return _breezLib.bootstrap().then((done) {
-          return getApplicationDocumentsDirectory().then((appDir) {
-            return _breezLib.copyBreezConfig(appDir.path).then((done) {
-              return _breezLib
-                  .bootstrapFiles(
-                      appDir.path, new List<String>.from(restoreResult))
-                  .then((done) {
-                _restoreFinishedController.add(true);
-              });
-            });
-          });
-        });
-      }).catchError((error) {
-        _restoreFinishedController.addError(error);
-      });
-    });
+      _service.restore(nodeId, _backupBreezID).then((restoreResult) async {
+        try {          
+          var appDir = await getApplicationDocumentsDirectory();
+          await _breezLib.copyBreezConfig(appDir.path);          
+          await _breezLib.bootstrapFiles(appDir.path, new List<String>.from(restoreResult));
+          _restoreFinishedController.add(true);
+        } catch(error) {
+          _restoreFinishedController.addError(error);
+        }
+      });  
+    });  
   }
 
   void backup(List<String> backupPaths, String nodeId, bool silent) {

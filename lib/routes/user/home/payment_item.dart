@@ -35,14 +35,44 @@ class PaymentItem extends StatelessWidget {
                     _paymentInfo.creationTimestamp.toInt() * 1000)),
                 style: theme.transactionSubtitleStyle,
               ),
-              _paymentInfo.pending ? Text(" (Pending)", style: theme.transactionTitleStyle.copyWith(color: theme.warningStyle.color)) : SizedBox()
+              _paymentInfo.pending
+                  ? Text(" (Pending)",
+                      style: theme.transactionTitleStyle
+                          .copyWith(color: theme.warningStyle.color))
+                  : SizedBox()
             ]),
-        trailing: Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: <Widget>[
-            Text(
-              (_paymentInfo.type == PaymentType.SENT || _paymentInfo.type == PaymentType.WITHDRAWAL ? "- " : "+ ") +
-                  _paymentInfo.currency.format(_paymentInfo.amount, includeSymbol: false),
-              style: theme.transactionAmountStyle,
-            )]),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    (_paymentInfo.type == PaymentType.SENT ||
+                                _paymentInfo.type == PaymentType.WITHDRAWAL
+                            ? "- "
+                            : "+ ") +
+                        _paymentInfo.currency
+                            .format(_paymentInfo.amount, includeSymbol: false),
+                    style: theme.transactionAmountStyle,
+                  )
+                ]),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  _paymentInfo.fee == 0
+                      ? SizedBox()
+                      : Text(
+                          "FEE " +
+                              _paymentInfo.currency.format(_paymentInfo.fee,
+                                  includeSymbol: false),
+                          style: theme.transactionSubtitleStyle)
+                ]),
+          ],
+        ),
         onTap: () => showPaymentDetailsDialog(context, _paymentInfo),
       ),
       new Divider(

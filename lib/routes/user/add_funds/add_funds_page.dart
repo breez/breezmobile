@@ -5,11 +5,12 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/user/add_funds/address_widget.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
-class AddFundsPage extends StatefulWidget {
+class AddFundsPage extends StatefulWidget {  
   final BreezUserModel _user;  
 
   const AddFundsPage(this._user);
@@ -21,6 +22,7 @@ class AddFundsPage extends StatefulWidget {
 }
 
 class AddFundsState extends State<AddFundsPage> {
+  static const int CHANNEL_RESERVE_SAT = 10000;
   final String _title = "Add Funds";
   AddFundsBloc _addFundsBloc;
 
@@ -89,7 +91,7 @@ class AddFundsState extends State<AddFundsPage> {
     } else if (account.waitingDepositConfirmation ||
         account.processingWithdrawal) {
       errorMessage =
-          'Breez is processing your previous ${account.waitingDepositConfirmation || account.processiongBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
+          'Breez is processing your previous ${account.waitingDepositConfirmation || account.processingBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
     } else if (response != null && response.errorMessage.isNotEmpty) {
       errorMessage = response.errorMessage;
     }    
@@ -114,13 +116,13 @@ class AddFundsState extends State<AddFundsPage> {
     return Column(children: <Widget>[
       AddressWidget(response?.address, response?.backupJson),
       response == null ? SizedBox() : Container(
-          padding: new EdgeInsets.only(top: 36.0),
+          padding: new EdgeInsets.only(top: 36.0, left: 12.0, right: 12.0),
           child: Text(
               "Send up to " +
                   account.currency
                       .format(response.maxAllowedDeposit, includeSymbol: true) +
-                  " to this address",
-              style: theme.warningStyle))
+                  " to this address." + "\nBreez requires you to keep ${account.currency.format(Int64(CHANNEL_RESERVE_SAT))} in your balance.",
+              style: theme.warningStyle, textAlign: TextAlign.center,))
     ]);   
   }
 

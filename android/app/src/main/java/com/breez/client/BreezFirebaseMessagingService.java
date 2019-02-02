@@ -18,8 +18,7 @@ import com.breez.client.job.JobManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
-
-import bindings.Bindings;
+import java.util.logging.Logger;
 
 import static android.R.drawable.ic_delete;
 
@@ -39,7 +38,8 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.i(TAG, "FCM notification received!");
+        Logger log = BreezLogger.getLogger(getApplicationContext(), TAG);
+        log.info("FCM notification received! isBackground=" + BreezApplication.isBackground + " isRunning=" + BreezApplication.isRunning);
 
         if (runJobIfNeeded(remoteMessage)) {
             return;

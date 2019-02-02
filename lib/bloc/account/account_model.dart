@@ -66,16 +66,18 @@ class AccountModel {
   String get id => _accountResponse.id;  
   bool get waitingDepositConfirmation => addedFundsStatus == FundStatusReply_FundStatus.WAITING_CONFIRMATION;  
   bool get depositConfirmed => addedFundsStatus == FundStatusReply_FundStatus.CONFIRMED;  
-  bool get processiongBreezConnection => _accountResponse.status == Account_AccountStatus.PROCESSING_BREEZ_CONNECTION;
+  bool get processingBreezConnection => _accountResponse.status == Account_AccountStatus.PROCESSING_BREEZ_CONNECTION;
   bool get processingWithdrawal => _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
   bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;  
-  bool get channelRequested => processiongBreezConnection || active;
+  bool get isInitialBootstrap => bootstraping || (!active && !processingWithdrawal && !processingBreezConnection);
+  bool get channelRequested => processingBreezConnection || active;
   Int64 get balance => _accountResponse.balance;  
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
   Int64 get maxAllowedToPay => Int64(min(_accountResponse.maxAllowedToPay.toInt(), _accountResponse.maxPaymentAmount.toInt()));
+  Int64 get reserveAmount => balance - maxAllowedToPay;
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
   Int64 get routingNodeFee => _accountResponse.routingNodeFee;
 
@@ -84,11 +86,11 @@ class AccountModel {
       return "";
     }   
 
-    if (this.bootstraping) {
+    if (this.isInitialBootstrap) {
       return "Please wait a minute while Breez is bootstrapping (keep the app open).";
     }
 
-    if (!this.active) {
+    if (this.processingBreezConnection) {
       return "Breez is opening a secure channel with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments";
     }
     
@@ -100,6 +102,39 @@ class AccountModel {
       return "Transferring funds";
     }        
     
+    return null;
+  }
+
+  String validateOutgoingOnChainPayment(Int64 amount) {
+    if (amount > walletBalance) {
+      String message = "You can't use more than ${currency.format(amount)}.";      
+      return message;
+    }
+    return null;
+  }
+
+  String validateOutgoingPayment(Int64 amount) {
+    return validatePayment(amount, true);
+  }
+
+  String validateIncomingPayment(Int64 amount) {
+    return validatePayment(amount, false);
+  }
+
+  String validatePayment(Int64 amount, bool outgoing) {
+    Int64 maxAmount = outgoing ? maxAllowedToPay : maxAllowedToReceive;
+    if (maxPaymentAmount != null && amount > maxPaymentAmount) {
+      return 'Payment exceeds the limit (${currency.format(maxPaymentAmount)})';
+    }
+
+    if (amount > maxAmount) {
+      String message = "You can't use more than ${currency.format(maxAmount)}.";
+      if (outgoing) {
+        message += "\nBreez requires you to keep ${currency.format(reserveAmount)} in your balance.";
+      }
+      return message;
+    }
+
     return null;
   }
 }
@@ -154,6 +189,7 @@ class PaymentInfo {
 
   PaymentType get type => _typeMap[_paymentResponse.type];  
   Int64 get amount => _paymentResponse.amount;
+  Int64 get fee => _paymentResponse.fee;
   Int64 get creationTimestamp => _paymentResponse.creationTimestamp;  
   String get destination => _paymentResponse.destination;
   String get redeemTxID => _paymentResponse.redeemTxID;
