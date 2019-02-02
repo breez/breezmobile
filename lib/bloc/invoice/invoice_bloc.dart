@@ -115,6 +115,7 @@ class InvoiceBloc {
     })
     .asyncMap((paymentRequest) async { 
       //filter out our own payment requests
+      _readyInvoicesController.add(paymentRequest);
       var invoice;
       try {
         invoice = await breezLib.getRelatedInvoice(paymentRequest);
