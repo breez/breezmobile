@@ -49,10 +49,9 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                   child: Column(
                     children: [
                       AmountFormField(
-                        maxPaymentAmount: widget._account.maxPaymentAmount,
+                        validatorFn: widget._account.validateOutgoingPayment,
                         currency: widget._account.currency,
-                        controller: _amountController,
-                        maxAmount: widget._account.maxAllowedToPay - widget._account.routingNodeFee,
+                        controller: _amountController,                        
                         decoration: new InputDecoration(
                             labelText: widget._account.currency.displayName +
                                 " Amount"),

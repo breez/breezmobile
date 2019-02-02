@@ -211,8 +211,7 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
                         new AmountFormField(
                             controller: _amountController,
                             currency: acc.currency,
-                            maxPaymentAmount: acc.walletBalance,
-                            maxAmount: acc.walletBalance,
+                            validatorFn: acc.validateOutgoingOnChainPayment,                            
                             decoration: new InputDecoration(
                                 labelText:
                                     acc.currency.displayName + " Amount"),
