@@ -6,6 +6,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/loader.dart';
 
 class VendorWebViewPage extends StatefulWidget {
   final String _url;
@@ -51,7 +52,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
         final order = JSON.jsonDecode(postMessage);
         invoiceBloc.newLightningLinkSink.add(order['uri']);
         _widgetWebview.hide();
-        Navigator.of(context).popAndPushNamed('/home');
+        Navigator.of(context).push(createLoaderRoute(context));
       }
     });
 
