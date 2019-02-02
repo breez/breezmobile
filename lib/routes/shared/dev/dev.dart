@@ -42,7 +42,6 @@ class Choice {
 }
 
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-final _formKey = GlobalKey<FormState>();
 
 class DevView extends StatefulWidget {
   BreezBridge _breezBridge;
