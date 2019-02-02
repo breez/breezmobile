@@ -51,11 +51,13 @@ flutter:
     - cert/letsencrypt.cert
     - conf/lnd.conf
     - conf/breez.conf
+    - conf/marketplace.conf
     - src/json/countries.json
     - src/json/states.json
     - src/images/
     - src/icon/
     - src/icon/animals/
+    - src/icon/vendors/
     - src/animations/welcome/
 
   # The following line ensures that the Material Icons font is

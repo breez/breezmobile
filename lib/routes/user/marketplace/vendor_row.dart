@@ -14,10 +14,14 @@ class VendorRow extends StatelessWidget {
     final _vendorLogo = _vendor.logo != null
         ? Image(
             image: AssetImage(_vendor.logo),
-            height: 55.0,
-            width: 55.0,
+            height: 48.0,
+            width: 48.0,
           )
         : Container();
+
+    final _vendorBgColor = _vendor.bgColor != null
+        ? Color(int.parse('0xFF' + _vendor.bgColor))
+        : Colors.transparent;
 
     final _vendorCard = new GestureDetector(
         onTap: () {
@@ -29,10 +33,10 @@ class VendorRow extends StatelessWidget {
               ));
         },
         child: Container(
-          margin: EdgeInsets.fromLTRB(32.0, 16.0, 32.0, 16.0),
+          margin: EdgeInsets.fromLTRB(32.0, 16.0, 32.0, 0.0),
           constraints: BoxConstraints.expand(),
           decoration: BoxDecoration(
-              color: _vendor.bgColor,
+              color: _vendorBgColor,
               border: Border.all(
                   color: Colors.white, style: BorderStyle.solid, width: 1.0),
               borderRadius: BorderRadius.circular(14.0)),
@@ -41,6 +45,7 @@ class VendorRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               _vendorLogo,
+              Padding(padding: EdgeInsets.only(left: 4.0)),
               Text(_vendor.name, style: theme.vendorTitleStyle),
             ],
           ),

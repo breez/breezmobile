@@ -1,7 +1,6 @@
 import 'dart:async';
 import "package:ini/ini.dart";
 import 'package:rxdart/rxdart.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 
@@ -15,19 +14,22 @@ class MarketplaceBloc {
 
   Future initMarketplace() async {
     Config config = await _readConfig();
-    String _marketplacePassword =
-        config.get('Application Options', 'marketplacepassword');
-    String _apiKey = config.get('Application Options', 'bitrefillapikey');
-    List<VendorModel> vendorList = [
-      VendorModel(
-          "https://www.bitrefill.com/embed/lightning/?apiKey=$_apiKey&hideQr",
-          "Bitrefill", bgColor: Color(0xFF3e99fa))
-    ];
-    _vendorController.add(vendorList);
+    String _vendorsConf = config.get('Marketplace Options', 'vendors');
+    var _vendorData = _vendorsConf.split(",").toList();
+    List<VendorModel> _vendorList = [];
+    _vendorData.forEach((vendorOptions) {
+      String _url = config.get(vendorOptions, 'url');
+      String _logo = config.get(vendorOptions, 'logo');
+      String _bgColor = config.get(vendorOptions, 'bgColor');
+      VendorModel _vendorModel =
+          VendorModel(_url, vendorOptions, logo: _logo, bgColor: _bgColor);
+      _vendorList.add(_vendorModel);
+    });
+    _vendorController.add(_vendorList);
   }
 
   Future<Config> _readConfig() async {
-    String lines = await rootBundle.loadString('conf/breez.conf');
+    String lines = await rootBundle.loadString('conf/marketplace.conf');
     return Config.fromString(lines);
   }
 
