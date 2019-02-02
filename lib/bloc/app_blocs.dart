@@ -54,7 +54,7 @@ class AppBlocs {
     );
   }  
 
-  AppBlocs._(
+  AppBlocs._(    
     this.userProfileBloc, 
     this.accountBloc,     
     this.posProfileBloc,         
