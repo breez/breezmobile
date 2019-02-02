@@ -346,7 +346,7 @@ class DevViewState extends State<DevView> {
                   if (_formKey.currentState.validate()) {
                     Navigator
                         .of(_scaffoldKey.currentState.context)
-                        .pushReplacementNamed("/marketplace");
+                        .popAndPushNamed("/marketplace");
                   }
                 },
               ),
@@ -363,11 +363,11 @@ class DevViewState extends State<DevView> {
   }
 
   Future _getMarketplacePassword() async {
-    String configString = await rootBundle.loadString('conf/breez.conf');
+    String configString = await rootBundle.loadString('conf/marketplace.conf');
     Config config = Config.fromString(configString);
     setState(() {
       _marketplacePassword =
-          config.get("Application Options", "marketplacepassword");
+          config.get("Marketplace Options", "password");
     });
   }
 }
