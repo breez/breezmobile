@@ -122,7 +122,7 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                               AssetImage("src/icon/ic_market.png"),
                               color: Colors.white, size: 24.0),
                           padding: const EdgeInsets.all(12.0),
-                          fillColor: Color(0xFF0085fb),
+                          fillColor: Color.fromRGBO(229,	238,	251, 0.09),
                           shape: new CircleBorder(),
                           elevation: 0.0,
                         ),),
