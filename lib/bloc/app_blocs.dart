@@ -12,7 +12,7 @@ Bloc stands for Business Logic Component.
 */
 class AppBlocs {
   final UserProfileBloc userProfileBloc;
-  final AccountBloc accountBloc;
+  final AccountBloc accountBloc;  
   final POSProfileBloc posProfileBloc;    
   final InvoiceBloc invoicesBloc;
   final ConnectPayBloc connectPayBloc;
@@ -54,7 +54,7 @@ class AppBlocs {
     );
   }  
 
-  AppBlocs._(
+  AppBlocs._(    
     this.userProfileBloc, 
     this.accountBloc,     
     this.posProfileBloc,         
