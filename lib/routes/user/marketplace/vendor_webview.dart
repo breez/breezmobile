@@ -57,6 +57,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
           Navigator.of(context).pushNamed("/home");
         }
       });
+      _isInit = true;
     }
     super.didChangeDependencies();
   }
