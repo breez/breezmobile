@@ -46,6 +46,7 @@
 - [x] Support zero-sat invoices
 - [x] Startup optimizations
 - [x] Background sync via FCM
+- [x] Marketplace w/ Bitrefill
 - [ ] Simplify P2P payments
 - [ ] Use static card IDs
 - [ ] NFC card deactivation
