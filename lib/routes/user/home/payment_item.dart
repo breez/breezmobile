@@ -15,8 +15,8 @@ class PaymentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String title = _paymentInfo.title;
-    if (title.contains("Bitrefill")) {
-      title = title.substring(0, 10);
+    if (title.startsWith("Bitrefill")) {
+      title = "Bitrefill";
     }
     if (title.length > MAX_TITLE_LENGTH) {
       title = title.substring(0, MAX_TITLE_LENGTH) + "...";

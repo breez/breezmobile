@@ -11,7 +11,7 @@ class PaymentItemAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (paymentItem.description.contains("Bitrefill")) {
+    if (paymentItem.description.startsWith("Bitrefill")) {
       return Container(
         decoration: ShapeDecoration(color: Colors.white,
             shape: CircleBorder(side: BorderSide(color: Colors.white)),

@@ -38,8 +38,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
               : Padding(
             padding: EdgeInsets.only(left: 16.0, right: 16.0),
             child: AutoSizeText(
-              paymentInfo.title.contains("Bitrefill") ? paymentInfo.title
-                  .substring(0, 10) : paymentInfo.title,
+              paymentInfo.title.startsWith("Bitrefill") ? "Bitrefill" : paymentInfo.title,
               style: theme.paymentRequestAmountStyle,
               textAlign: TextAlign.center,
               maxLines: 1,
@@ -48,7 +47,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
               ? Container()
               : Padding(padding: EdgeInsets.only(left: 16.0, right: 16.0),
             child: AutoSizeText(
-              paymentInfo.description.contains("Bitrefill") ? paymentInfo.title
+              paymentInfo.description.startsWith("Bitrefill") ? paymentInfo.description
                   .substring(10, paymentInfo.title.length) : paymentInfo
                   .description,
               style: theme.paymentDetailsTitleStyle,
