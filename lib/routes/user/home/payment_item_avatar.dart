@@ -11,10 +11,21 @@ class PaymentItemAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (_shouldShowLeadingIcon) {
-      IconData icon = [PaymentType.DEPOSIT, PaymentType.RECEIVED].indexOf(paymentItem.type) >= 0 ? Icons.add : Icons.remove;
+    if (paymentItem.description.contains("Bitrefill")) {
       return Container(
-          decoration: BoxDecoration(color: Colors.white, borderRadius: new BorderRadius.all(new Radius.circular(radius))),
+        decoration: ShapeDecoration(color: Color(0xFF3e99fa),
+            shape: CircleBorder(side: BorderSide(color: Colors.white)),
+            image: DecorationImage(
+                image: AssetImage("src/icon/vendors/bitrefill_logo.png"))),
+        width: radius * 2,
+        height: radius * 2,
+      );
+    } else if (_shouldShowLeadingIcon) {
+      IconData icon = [PaymentType.DEPOSIT, PaymentType.RECEIVED].indexOf(
+          paymentItem.type) >= 0 ? Icons.add : Icons.remove;
+      return Container(
+          decoration: BoxDecoration(color: Colors.white,
+              borderRadius: new BorderRadius.all(new Radius.circular(radius))),
           width: radius * 2,
           height: radius * 2,
           child: Icon(icon, color: theme.BreezColors.blue[500]));
