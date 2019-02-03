@@ -35,7 +35,7 @@ dependencies:
   cupertino_icons: ^0.1.0
   flutter_webview_plugin:
     git:
-      url: git://github.com/erdemyerebasmaz/flutter_webview_plugin.git
+      url: git://github.com/breez/flutter_webview_plugin.git
 
 dev_dependencies:
   mockito: "^3.0.0"

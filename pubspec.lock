@@ -167,8 +167,8 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "26b300552579007a879cf915914080db2ba435d3"
-      url: "git://github.com/erdemyerebasmaz/flutter_webview_plugin.git"
+      resolved-ref: "4483149779b0490569e9c1ce84fa655a0b41b026"
+      url: "git://github.com/breez/flutter_webview_plugin.git"
     source: git
     version: "0.3.0+2"
   front_end:
