@@ -187,8 +187,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                   new AmountFormField(
                       controller: _amountController,                      
                       currency: acc.currency,
-                      maxPaymentAmount: acc.maxPaymentAmount,
-                      maxAmount: acc.maxAllowedToPay,
+                      validatorFn: acc.validateOutgoingPayment,
                       decoration: new InputDecoration(
                           labelText: acc.currency.displayName + " Amount"),
                       style: theme.FieldTextStyle.textStyle),                 
