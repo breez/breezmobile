@@ -21,8 +21,10 @@ class VendorWebViewPage extends StatefulWidget {
 }
 
 class VendorWebViewPageState extends State<VendorWebViewPage> {
-  StreamSubscription _postMessageListener;
   final _widgetWebview = new FlutterWebviewPlugin();
+  InvoiceBloc invoiceBloc;
+  StreamSubscription _postMessageListener;
+  bool _isInit = false;
 
   @override
   void initState() {
@@ -45,17 +47,17 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
 
   @override
   void didChangeDependencies() {
-    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-
-    _postMessageListener = _widgetWebview.onPostMessage.listen((postMessage) {
-      if (postMessage != null) {
-        final order = JSON.jsonDecode(postMessage);
-        invoiceBloc.newLightningLinkSink.add(order['uri']);
-        _widgetWebview.hide();
-        Navigator.of(context).push(createLoaderRoute(context));
-      }
-    });
-
+    if (!_isInit) {
+      invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+      _postMessageListener = _widgetWebview.onPostMessage.listen((postMessage) {
+        if (postMessage != null) {
+          final order = JSON.jsonDecode(postMessage);
+          invoiceBloc.newLightningLinkSink.add(order['uri']);
+          _widgetWebview.hide();
+          Navigator.of(context).push(createLoaderRoute(context));
+        }
+      });
+    }
     super.didChangeDependencies();
   }
 
