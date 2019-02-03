@@ -13,10 +13,12 @@ class PaymentItemAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     if (paymentItem.description.contains("Bitrefill")) {
       return Container(
-        decoration: ShapeDecoration(color: Color(0xFF3e99fa),
+        decoration: ShapeDecoration(color: Colors.white,
             shape: CircleBorder(side: BorderSide(color: Colors.white)),
             image: DecorationImage(
-                image: AssetImage("src/icon/vendors/bitrefill_logo.png"))),
+                image: AssetImage("src/icon/vendors/bitrefill_logo.png"),
+                colorFilter: ColorFilter.mode(
+                    Color(0xFF3e99fa), BlendMode.color))),
         width: radius * 2,
         height: radius * 2,
       );
