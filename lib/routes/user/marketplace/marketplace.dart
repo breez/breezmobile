@@ -20,11 +20,6 @@ class MarketplacePageState extends State<MarketplacePage> {
   bool _isInit = false;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     if (!_isInit) {
       _marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
@@ -38,10 +33,7 @@ class MarketplacePageState extends State<MarketplacePage> {
     return StreamBuilder(
         stream: _marketplaceBloc.vendorsStream,
         builder: (context, snapshot) {
-          List<VendorModel> vendorsModel;
-          if (snapshot.hasData) {
-            vendorsModel = snapshot.data;
-          }
+          List<VendorModel> vendorsModel = snapshot.data;
 
           if (vendorsModel == null) {
             return _buildScaffold(Center(
