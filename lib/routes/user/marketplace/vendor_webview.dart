@@ -54,7 +54,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
           final order = JSON.jsonDecode(postMessage);
           invoiceBloc.newLightningLinkSink.add(order['uri']);
           _widgetWebview.hide();
-          Navigator.of(context).push(createLoaderRoute(context));
+          Navigator.of(context).pushNamed("/home");
         }
       });
     }
