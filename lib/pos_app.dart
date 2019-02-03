@@ -83,9 +83,9 @@ class PosApp extends StatelessWidget {
               textSelectionHandleColor: Color(0xFF0085fb),
               dividerColor: Color(0x33ffffff),
               errorColor: theme.errorColor,
-              canvasColor: Color.fromRGBO(5, 93, 235, 1.0),
+              canvasColor: theme.BreezColors.blue[500],
               fontFamily: 'IBMPlexSansRegular',
-              cardColor: Color.fromRGBO(5, 93, 235, 1.0),
+              cardColor: theme.BreezColors.blue[500],
             ),
           );
         });

@@ -76,7 +76,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
         automaticallyImplyLeading: false,
         iconTheme: theme.appBarIconTheme,
         textTheme: theme.appBarTextTheme,
-        backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
+        backgroundColor: theme.BreezColors.blue[500],
         title: new Text(
           widget._title,
           style: theme.appBarTextStyle,

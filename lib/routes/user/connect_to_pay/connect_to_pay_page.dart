@@ -137,7 +137,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
           actions: <Widget>[IconButton( onPressed: () => _onTerminateSession(), icon: Icon(Icons.close))],
           iconTheme: theme.appBarIconTheme,
           textTheme: theme.appBarTextTheme,
-          backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
+          backgroundColor: theme.BreezColors.blue[500],
           leading: backBtn.BackButton(onPressed: _onBackPressed),
           title: new Text(
             _title,
