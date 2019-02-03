@@ -25,6 +25,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_page.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_complete.dart';
 import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
+import 'package:breez/routes/user/marketplace/marketplace.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class UserApp extends StatelessWidget {
@@ -58,9 +59,9 @@ class UserApp extends StatelessWidget {
               textSelectionHandleColor: Color(0xFF0085fb),
               dividerColor: Color(0x33ffffff),
               errorColor: theme.errorColor,
-              canvasColor: Color.fromRGBO(5, 93, 235, 1.0),
+              canvasColor: theme.BreezColors.blue[500],
               fontFamily: 'IBMPlexSansRegular',
-              cardColor: Color.fromRGBO(5, 93, 235, 1.0),
+              cardColor: theme.BreezColors.blue[500],
             ),
             initialRoute: user.registered ? null : '/splash',
             home: new Home(accountBloc, invoiceBloc,
@@ -147,6 +148,11 @@ class UserApp extends StatelessWidget {
                 case '/connect_to_pay':
                   return new FadeInRoute(
                     builder: (_) => new ConnectToPayPage(null),
+                    settings: settings,
+                  );
+                case '/marketplace':
+                  return new FadeInRoute(
+                    builder: (_) => new MarketplacePage(),
                     settings: settings,
                   );
               }

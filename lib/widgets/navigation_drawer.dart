@@ -105,16 +105,28 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                         BreezAvatar(snapshot.data.avatarURL, radius: 24.0),
                       ],
                     ),
-                    new Padding(
-                      padding: EdgeInsets.only(top: 22.0),
-                      child: new Row(
-                        children: <Widget>[
-                          new Text(
-                            snapshot.data.name ?? "No Name",
-                            style: theme.navigationDrawerHandleStyle,
-                          ),
-                        ],
-                      ),
+                    new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        new Padding(padding: EdgeInsets.only(top: 22.0), child:
+                        new Text(
+                          snapshot.data.name ?? "No Name",
+                          style: theme.navigationDrawerHandleStyle,
+                        ),),
+                        new Padding(padding: EdgeInsets.only(top: 11.0,right: 8.0), child:
+                        new RawMaterialButton(
+                          onPressed: () {
+                            Navigator.of(context).pushNamed("/marketplace");
+                          },
+                          child: ImageIcon(
+                              AssetImage("src/icon/ic_market.png"),
+                              color: Colors.white, size: 24.0),
+                          padding: const EdgeInsets.all(12.0),
+                          fillColor: theme.marketplaceButtonColor,
+                          shape: new CircleBorder(),
+                          elevation: 0.0,
+                        ),),
+                      ],
                     ),
                   ]),
                 );
