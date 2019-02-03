@@ -46,6 +46,10 @@ class BreezAvatar extends StatelessWidget {
         var queryParams = Uri.parse(avatarURL).queryParameters;        
         return _GeneratedAvatar(radius, queryParams["animal"], queryParams["color"], avatarBgColor);
       }
+
+      if(avatarURL.startsWith("src/icon/vendors/")){
+        return _VendorAvatar(radius, avatarURL);
+      }
       
       return _NetworkImageAvatar(avatarURL, radius);
     }
@@ -110,6 +114,26 @@ class _NetworkImageAvatar extends StatelessWidget {
     return CircleAvatar(
       radius: radius,
       backgroundImage: AdvancedNetworkImage(avatarURL, useDiskCache: true),
+    );
+  }
+}
+
+class _VendorAvatar extends StatelessWidget {
+  final double radius;
+  final String avatarURL;
+
+  _VendorAvatar(this.radius, this.avatarURL);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: ShapeDecoration(color: Colors.white,
+          shape: CircleBorder(side: BorderSide(color: Colors.white)),
+          image: DecorationImage(
+              image: AssetImage(avatarURL),
+              colorFilter: ColorFilter.mode(Color(0xFF3e99fa), BlendMode.color))),
+      width: radius * 2,
+      height: radius * 2,
     );
   }
 }
