@@ -16,6 +16,7 @@ import 'package:breez/routes/user/home/status_text.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 const DASHBOARD_MAX_HEIGHT = 188.0;
 const DASHBOARD_MIN_HEIGHT = 70.0;
@@ -59,9 +60,17 @@ class AccountPageState extends State<AccountPage> {
 
   void registerPaymentInProgress(){    
     _statusSubscription =_accountBloc.accountStream.listen((acc) {
-      if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {        
-        Scaffold.of(context).showSnackBar(new SnackBar(
-            duration: new Duration(seconds: 30), content: new LoadingAnimatedText("Processing Payment",textAlign: TextAlign.left,)));
+      if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {
+        final _snackBar = new SnackBar(
+          content: new LoadingAnimatedText(
+            'Processing Payment',
+            textStyle: theme.snackBarStyle,
+            textAlign: TextAlign.left,
+          ),
+          backgroundColor: theme.snackBarBackgroundColor,
+          duration: new Duration(seconds: 30),
+        );
+        Scaffold.of(context).showSnackBar(_snackBar);
       }
       else if (acc.paymentRequestInProgress == null || acc.paymentRequestInProgress.isEmpty){
         Scaffold.of(context).removeCurrentSnackBar();
