@@ -116,13 +116,13 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                         new Padding(padding: EdgeInsets.only(top: 11.0,right: 8.0), child:
                         new RawMaterialButton(
                           onPressed: () {
-                            Navigator.of(context).popAndPushNamed("/marketplace");
+                            Navigator.of(context).pushNamed("/marketplace");
                           },
                           child: ImageIcon(
                               AssetImage("src/icon/ic_market.png"),
                               color: Colors.white, size: 24.0),
                           padding: const EdgeInsets.all(12.0),
-                          fillColor: Color.fromRGBO(229,	238,	251, 0.09),
+                          fillColor: theme.marketplaceButtonColor,
                           shape: new CircleBorder(),
                           elevation: 0.0,
                         ),),

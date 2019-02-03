@@ -67,6 +67,7 @@ final Color snackBarBackgroundColor = BreezColors.blue[300];
 final Color avatarBackgroundColor = BreezColors.blue[500];
 final Color sessionAvatarBackgroundColor = BreezColors.white[500];
 final Color pulseAnimationColor = Color.fromRGBO(100, 155, 230, 1.0);
+final Color marketplaceButtonColor = Color.fromRGBO(229,	238,	251, 0.09);
 final Color errorColor = Color(0xffffe685);
 
 
