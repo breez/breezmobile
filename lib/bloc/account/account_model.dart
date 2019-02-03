@@ -206,14 +206,25 @@ class PaymentInfo {
 
   bool get isTransferRequest => _paymentResponse?.invoiceMemo?.transferRequest == true;
 
-  String get description => type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL ? "Bitcoin Transfer" : _paymentResponse.invoiceMemo?.description;
-  
-  String get imageURL {    
-    String url = (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeImageURL : _paymentResponse.invoiceMemo?.payerImageURL);
-    return (url == null || url.isEmpty) ? null : url;      
+  String get description =>
+      _paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
+          ? _paymentResponse.invoiceMemo.description
+          .substring(10, _paymentResponse.invoiceMemo.description.length)
+          : type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL
+          ? "Bitcoin Transfer"
+          : _paymentResponse.invoiceMemo?.description;
+
+  String get imageURL {
+    String url =  _paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
+        ? "src/icon/vendors/bitrefill_logo.png"
+        : (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeImageURL : _paymentResponse.invoiceMemo?.payerImageURL);
+    return (url == null || url.isEmpty) ? null : url;
   }
   
   String get title {
+    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
+      return "Bitrefill";
+    }
     if (type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL){
       return "Bitcoin Transfer";
     }

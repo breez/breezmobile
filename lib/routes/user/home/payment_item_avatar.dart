@@ -11,18 +11,7 @@ class PaymentItemAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (paymentItem.description.startsWith("Bitrefill")) {
-      return Container(
-        decoration: ShapeDecoration(color: Colors.white,
-            shape: CircleBorder(side: BorderSide(color: Colors.white)),
-            image: DecorationImage(
-                image: AssetImage("src/icon/vendors/bitrefill_logo.png"),
-                colorFilter: ColorFilter.mode(
-                    Color(0xFF3e99fa), BlendMode.color))),
-        width: radius * 2,
-        height: radius * 2,
-      );
-    } else if (_shouldShowLeadingIcon) {
+    if (_shouldShowLeadingIcon) {
       IconData icon = [PaymentType.DEPOSIT, PaymentType.RECEIVED].indexOf(
           paymentItem.type) >= 0 ? Icons.add : Icons.remove;
       return Container(
