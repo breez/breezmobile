@@ -107,7 +107,7 @@ class AccountModel {
 
   String validateOutgoingOnChainPayment(Int64 amount) {
     if (amount > walletBalance) {
-      String message = "You can't use more than ${currency.format(amount)}.";      
+      String message = "Not enough funds.";      
       return message;
     }
     return null;
@@ -122,18 +122,18 @@ class AccountModel {
   }
 
   String validatePayment(Int64 amount, bool outgoing) {
-    Int64 maxAmount = outgoing ? maxAllowedToPay : maxAllowedToReceive;
+    Int64 maxAmount = outgoing ? balance : maxAllowedToReceive;
     if (maxPaymentAmount != null && amount > maxPaymentAmount) {
       return 'Payment exceeds the limit (${currency.format(maxPaymentAmount)})';
     }
 
     if (amount > maxAmount) {
-      String message = "You can't use more than ${currency.format(maxAmount)}.";
-      if (outgoing) {
-        message += "\nBreez requires you to keep ${currency.format(reserveAmount)} in your balance.";
-      }
-      return message;
+      return "Not enough funds.";
     }
+
+    if (outgoing && amount > maxAllowedToPay ) {
+      return "Breez requires you to keep ${currency.format(reserveAmount)} in your balance.";
+    }     
 
     return null;
   }

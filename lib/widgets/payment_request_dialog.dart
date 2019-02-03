@@ -60,7 +60,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
                     fadeInDuration: new Duration(milliseconds: 200)),
               )
             ]),
-      contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      contentPadding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
       content: StreamBuilder<AccountModel>(
         stream: widget.accountBloc.accountStream,
         builder: (context, snapshot) {
@@ -106,13 +106,14 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   }
 
   Widget _buildErrorMessage(AccountModel account) {
-    if (account.maxAllowedToPay >= amountToPay(account) || widget.invoice.amount == 0) {
+    String validationError = account.validateOutgoingPayment(amountToPay(account));
+    if (validationError == null || widget.invoice.amount == 0) {
       return null;
     }
 
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
-      child: AutoSizeText("Not enough funds to complete this payment",
+      child: AutoSizeText(validationError,
           maxLines: 3,
           textAlign: TextAlign.center,
           style: theme.paymentRequestSubtitleStyle.copyWith(color: Colors.red)),
@@ -150,10 +151,9 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
                 height: 80.0,
                 child: AmountFormField(                
                   style: theme.alertStyle.copyWith(height: 1.0),
-                  maxPaymentAmount: account.maxPaymentAmount,
+                  validatorFn: account.validateOutgoingPayment,
                   currency: account.currency,
-                  controller: _invoiceAmountController,
-                  maxAmount: account.maxAllowedToPay - account.routingNodeFee,
+                  controller: _invoiceAmountController,                  
                   decoration: new InputDecoration(
                       labelText: account.currency.displayName +
                           " Amount"),

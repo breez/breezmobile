@@ -82,12 +82,11 @@ class PayNearbyPageState extends State<PayNearbyPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     new AmountFormField(
-                      maxPaymentAmount: account.maxPaymentAmount,
+                      validatorFn: account.validateOutgoingPayment,
                       decoration: new InputDecoration(
                           contentPadding: EdgeInsets.only(top: 21.0, bottom: 8.0), labelText: account.currency.displayName + " Amount"),
                       style: theme.FieldTextStyle.textStyle,
-                      currency: account.currency,
-                      maxAmount: account.maxAllowedToPay,
+                      currency: account.currency,                      
                       onFieldSubmitted: (String value) {
                         _amountToSendSatoshi = account.currency.parse(value);
                       },

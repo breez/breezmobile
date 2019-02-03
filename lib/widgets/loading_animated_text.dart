@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class LoadingAnimatedText extends StatefulWidget {
   final String _loadingMessage;
   final TextStyle textStyle;
+  final TextAlign textAlign;
 
-  LoadingAnimatedText(this._loadingMessage, {this.textStyle = const TextStyle()});
+  LoadingAnimatedText(this._loadingMessage, {this.textStyle = const TextStyle(),this.textAlign});
 
   @override
   State<StatefulWidget> createState() {
@@ -44,7 +45,7 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
           TextSpan(text: loadingDots),
           TextSpan(text: paddingDots, style: TextStyle(color: Colors.transparent))
         ]), 
-      textAlign: TextAlign.center);    
+      textAlign: widget.textAlign == null ? TextAlign.center : widget.textAlign);
   }
 
   String get loadingDots => '${List.filled(_timerIteration % 4, ".").join("")}';

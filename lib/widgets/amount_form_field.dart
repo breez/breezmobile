@@ -6,14 +6,12 @@ import 'package:fixnum/fixnum.dart';
 
 
 class AmountFormField extends TextFormField {
-  final Currency currency;
-  final Int64 maxAmount;
-  final Int64 maxPaymentAmount;  
+  final Currency currency;  
+  final String Function(Int64 amount) validatorFn;
 
-  AmountFormField({    
-    this.maxPaymentAmount,
-    this.currency,
-    this.maxAmount,
+  AmountFormField({        
+    this.currency,    
+    this.validatorFn,
     TextEditingController controller,
     Key key,
     String initialValue,
@@ -46,14 +44,11 @@ class AmountFormField extends TextFormField {
       if (intAmount <= 0) {
         return "Invalid amount";
       }
-
-      if (maxPaymentAmount != null && intAmount > maxPaymentAmount) {
-        return 'Payment exceeds the limit (${currency.format(maxPaymentAmount)})';
+      String msg;
+      if (validatorFn != null) {
+        msg = validatorFn(intAmount);
       }   
-
-      if (maxAmount != null && intAmount > maxAmount) {
-        return "You can't use more than ${currency.format(maxAmount)}";
-      }         
+      return msg;   
     };
   }
 }
