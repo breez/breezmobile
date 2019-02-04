@@ -267,6 +267,10 @@ class BreezBridge {
     return _invokeMethodImmediate("registerPeriodicSync", {"argument": token});        
   }
 
+  Future<String> getBackupIdentifier() {
+    return _invokeMethodImmediate("getBackupIdentifier").then((res) => res as String);
+  }
+
   Future copyBreezConfig(String workingDir) async{
     print("copyBreezConfig started");
     
