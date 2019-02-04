@@ -49,7 +49,7 @@ public class GoogleDriveTasks {
                     while ((len = inputStream.read(buf)) > 0) {
                         outputStream.write(buf, 0, len);
                     }
-
+                    
                     MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
                             .setTitle(file.getName())
                             .setMimeType("text/plain")
@@ -134,6 +134,7 @@ public class GoogleDriveTasks {
             if (res.getCount() == 0) {
                 return null;
             }
+            Log.i("BreezBackup", "There are " + res.getCount() + " folder with node id = " + title);
             return childrenTask.getResult().get(0).getDriveId().asDriveFolder();
         });
     }
