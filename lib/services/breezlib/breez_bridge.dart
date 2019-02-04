@@ -71,8 +71,8 @@ class BreezBridge {
     return _methodChannel.invokeMethod("stop", {"permanent": permanent});
   }
 
-  Future backup(){
-    return _invokeMethodWhenReady("backup");
+  Future requestBackup(){
+    return _invokeMethodWhenReady("requestBackup");
   }
 
   void log(String msg, String level) {
