@@ -6,22 +6,12 @@ import 'package:rxdart/rxdart.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/backup.dart';
-import 'package:breez/bloc/account/account_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:uuid/uuid.dart';
 
 class BackupBloc {
   BackupService _service;
-  Stream<AccountModel> _accountStream;
-  Stream<String> _backupIDStream;
 
-  String _currentNodeId;
-
-  final BehaviorSubject<List<String>> _availableBackupPathsController =
-      new BehaviorSubject<List<String>>();
-  Stream<List<String>> get availableBackupPathsStream =>
-      _availableBackupPathsController.stream;
 
   final BehaviorSubject<DateTime> _lastBackupTimeController =
       new BehaviorSubject<DateTime>();
@@ -55,15 +45,13 @@ class BackupBloc {
   static const String AVAILABLE_PATHS_PREFERENCE_KEY = "backup_available_paths";
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
 
-  BackupBloc(this._accountStream, this._backupIDStream) {
+  BackupBloc() {
     ServiceInjector injector = new ServiceInjector();
     _breezLib = injector.breezBridge;
     _service = injector.backupService;
 
     SharedPreferences.getInstance().then((sp) {
-      _sharedPrefrences = sp;
-      _accountStream.listen((acc) => _currentNodeId = acc.id);
-      _backupIDStream.listen((backupID) => _backupBreezID = backupID);
+      _sharedPrefrences = sp;     
       _initializePersistentData();
       _listenBackupPaths();
       _listenBackupNowRequests();
@@ -71,18 +59,7 @@ class BackupBloc {
     });
   }
 
-  void _initializePersistentData() {
-    //paths persistency
-    List<String> paths =
-        _sharedPrefrences.getStringList(AVAILABLE_PATHS_PREFERENCE_KEY);
-    if (paths != null && paths.length > 0) {
-      _backupNow();
-    }    
-    
-    _availableBackupPathsController.stream.listen((backupPaths) {
-      _sharedPrefrences.setStringList(
-          AVAILABLE_PATHS_PREFERENCE_KEY, backupPaths);
-    });
+  void _initializePersistentData() {     
 
     //last backup time persistency
     int lastTime = _sharedPrefrences.getInt(LAST_BACKUP_TIME_PREFERENCE_KEY);
@@ -111,26 +88,22 @@ class BackupBloc {
   void _listenBackupNowRequests() {
     _backupNowController.stream.listen((_) => _backupNow());
   }
-
-  bool _backupNowRequested = false;
-  _backupNow(){
-    _backupNowRequested = true;
-    _breezLib.backup();
+  
+  void _backupNow() {    
+    _service.signIn()    
+     .then((_) => _breezLib.requestBackup());    
   }
 
   _listenBackupPaths() {
-    Observable(_breezLib.notificationStream).where((event) {
-      return event.type ==
-          NotificationEvent_NotificationType.BACKUP_FILES_AVAILABLE;
-    }).listen((event) {
-      _availableBackupPathsController.add(event.data);
-    });
-
-    _availableBackupPathsController.stream
-        .where((paths) => paths != null)
-        .listen((paths) {
-      backup(paths, _currentNodeId, !_backupNowRequested);
-      _backupNowRequested = false;
+    _lastBackupTimeController.addError(null);
+    Observable(_breezLib.notificationStream)    
+    .listen((event) {
+      if (event.type == NotificationEvent_NotificationType.BACKUP_FAILED) {
+        _lastBackupTimeController.addError(null);
+      }
+      if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {        
+        _lastBackupTimeController.add(DateTime.now());
+      }      
     });
   }
 
@@ -160,23 +133,11 @@ class BackupBloc {
     });  
   }
 
-  void backup(List<String> backupPaths, String nodeId, bool silent) {
-    _service
-        .backup(backupPaths, nodeId, _backupBreezID, silent: silent)
-        .then((_) {
-      _availableBackupPathsController.add(null);
-      _lastBackupTimeController.add(DateTime.now());
-    }).catchError((error) {
-      _lastBackupTimeController.addError(error);
-    });
-  }
-
   close() {
     _backupNowController.close();
     _restoreRequestController.close();
     _multipleRestoreController.close();
-    _restoreFinishedController.close();
-    _availableBackupPathsController.close();
+    _restoreFinishedController.close();    
     _backupSettingsController.close();
   }
 }
