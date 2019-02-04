@@ -131,7 +131,8 @@ const NotificationEvent_NotificationType$json = const {
     const {'1': 'ROUTING_NODE_CONNECTION_CHANGED', '2': 4},
     const {'1': 'LIGHTNING_SERVICE_DOWN', '2': 5},
     const {'1': 'FUND_ADDRESS_UNSPENT_CHANGED', '2': 6},
-    const {'1': 'BACKUP_FILES_AVAILABLE', '2': 7},
+    const {'1': 'BACKUP_SUCCESS', '2': 7},
+    const {'1': 'BACKUP_FAILED', '2': 8},
   ],
 };
 

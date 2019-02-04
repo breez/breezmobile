@@ -62,7 +62,8 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
   static const NotificationEvent_NotificationType ROUTING_NODE_CONNECTION_CHANGED = const NotificationEvent_NotificationType._(4, 'ROUTING_NODE_CONNECTION_CHANGED');
   static const NotificationEvent_NotificationType LIGHTNING_SERVICE_DOWN = const NotificationEvent_NotificationType._(5, 'LIGHTNING_SERVICE_DOWN');
   static const NotificationEvent_NotificationType FUND_ADDRESS_UNSPENT_CHANGED = const NotificationEvent_NotificationType._(6, 'FUND_ADDRESS_UNSPENT_CHANGED');
-  static const NotificationEvent_NotificationType BACKUP_FILES_AVAILABLE = const NotificationEvent_NotificationType._(7, 'BACKUP_FILES_AVAILABLE');
+  static const NotificationEvent_NotificationType BACKUP_SUCCESS = const NotificationEvent_NotificationType._(7, 'BACKUP_SUCCESS');
+  static const NotificationEvent_NotificationType BACKUP_FAILED = const NotificationEvent_NotificationType._(8, 'BACKUP_FAILED');
 
   static const List<NotificationEvent_NotificationType> values = const <NotificationEvent_NotificationType> [
     READY,
@@ -72,7 +73,8 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
     ROUTING_NODE_CONNECTION_CHANGED,
     LIGHTNING_SERVICE_DOWN,
     FUND_ADDRESS_UNSPENT_CHANGED,
-    BACKUP_FILES_AVAILABLE,
+    BACKUP_SUCCESS,
+    BACKUP_FAILED,
   ];
 
   static final Map<int, NotificationEvent_NotificationType> _byValue = $pb.ProtobufEnum.initByValue(values);
