@@ -30,9 +30,11 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
     private EventChannel.EventSink m_eventsListener;
     private Map<String, Method> _bindingMethods = new HashMap<String, Method>();
     private Executor _executor = Executors.newCachedThreadPool();
+    private BackupService _backupService;
     private static Logger _breezLogger;
 
-    public Breez(PluginRegistry.Registrar registrar) {
+    public Breez(PluginRegistry.Registrar registrar, BackupService backupService) {
+        _backupService = backupService;
         registrar.view().addActivityLifecycleListener(this);
         new MethodChannel(registrar.messenger(), BREEZ_CHANNEL_NAME).setMethodCallHandler(this);
         new EventChannel(registrar.messenger(), BREEZ_STREAM_NAME).setStreamHandler(this);
@@ -79,6 +81,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
         } catch (Exception e) {
             result.error("ResultError", "Failed to Start breez library", e.getMessage());
         }
+        Bindings.setBackupService(_backupService);
 
         Log.i(TAG, "workingDir = " + workingDir);
 

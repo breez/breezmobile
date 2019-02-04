@@ -27,6 +27,8 @@ import android.provider.Settings;
 import android.util.Log;
 
 import java.text.Bidi;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -62,14 +64,16 @@ public class MainActivity extends FlutterActivity {
 
     void registerBreezPlugins() {
         new ImageCropper(this.registrarFor("com.breez.client.plugins.image_cropper"));
-        new Breez(this.registrarFor("com.breez.client.plugins.breez_lib"));
+        BreezBackup backupPlugin = new BreezBackup(this.registrarFor("com.breez.client.plugins.backup"), this);
+        new Breez(this.registrarFor(
+                "com.breez.client.plugins.breez_lib"),
+                (paths, breezBackupID, nodeId) -> backupPlugin.executeBackup(Arrays.asList(paths.split(",")), breezBackupID, nodeId));        
         new BreezDeepLinks(this.registrarFor("com.breez.client.plugins.breez_deep_links"));
         BreezApplication.breezShare = new BreezShare(this.registrarFor("com.breez.client.plugins.breez_share"), this);
         new ShareBreezLog(this.registrarFor("com.breez.client.plugins.share_breez_log"), this);
         new BreezCredential(this.registrarFor("com.breez.client.plugins.breez_credential"), this);
         new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
         new LightningLinks(this.registrarFor("com.breez.client.plugins.lightning_links"));
-        new BreezBackup(this.registrarFor("com.breez.client.plugins.backup"), this);
         new Permissions(this.registrarFor("com.breez.client.plugins.permissions"), this);
     }
 
