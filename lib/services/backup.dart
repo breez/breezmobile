@@ -24,6 +24,10 @@ class BackupService {
      return _invokeMethod("signOut");
   }
 
+  Future<dynamic> signIn(){
+     return _invokeMethod("signIn");
+  }
+
   Future<bool> isSafeForBreezBackupID(String nodeId, String breezBackupID){
     return _invokeMethod("isSafeForBreezBackupID", {"silent": true, "breezBackupID": breezBackupID, "nodeId": nodeId}).then((res) => res as bool);
   }
