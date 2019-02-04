@@ -64,7 +64,7 @@ class AccountPageState extends State<AccountPage> {
         final _snackBar = new SnackBar(
           content: new LoadingAnimatedText(
             'Processing Payment',
-            textStyle: theme.snackBarStyle,
+            textStyle: theme.sessionNotificationStyle,
             textAlign: TextAlign.left,
           ),
           backgroundColor: theme.snackBarBackgroundColor,
