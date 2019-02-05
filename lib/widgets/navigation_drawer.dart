@@ -113,7 +113,8 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                           snapshot.data.name ?? "No Name",
                           style: theme.navigationDrawerHandleStyle,
                         ),),
-                        new Padding(padding: EdgeInsets.only(top: 11.0,right: 8.0), child:
+                        new Spacer(),
+                        new Padding(padding: EdgeInsets.only(top: 11.0,), child:
                         new RawMaterialButton(
                           onPressed: () {
                             Navigator.of(context).pushNamed("/marketplace");
@@ -133,7 +134,7 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
               }
             }),
     decoration: new BoxDecoration(
-      image: DecorationImage(image: AssetImage("src/images/waves-drawer.png")),
+      image: DecorationImage(image: AssetImage("src/images/waves-drawer.png"),alignment: FractionalOffset(1, 0.1)),
     ),
   );
 }
