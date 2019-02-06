@@ -47,7 +47,11 @@
 - [x] Startup optimizations
 - [x] Background sync via FCM
 - [x] Marketplace w/ Bitrefill
+- [ ] Adding funds via vouchers
+- [ ] Adding funds via credit card
+- [ ] Backup improvements
 - [ ] Simplify P2P payments
+- [ ] Support zero-conf 
 - [ ] Use static card IDs
 - [ ] NFC card deactivation
 - [ ] Fiat units
