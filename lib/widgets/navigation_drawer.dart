@@ -82,7 +82,7 @@ class _ListDivider extends StatelessWidget {
 
 Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return new BreezDrawerHeader(
-    padding: EdgeInsets.only(top: 90.0, left: 16.0),
+    padding: EdgeInsets.only(top: 61.0, left: 16.0),
     child: !drawAvatar
         ? new Container()
         : new StreamBuilder<BreezUserModel>(
@@ -134,7 +134,7 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
               }
             }),
     decoration: new BoxDecoration(
-      image: DecorationImage(image: AssetImage("src/images/waves-drawer.png"),alignment: FractionalOffset(1, 0.5)),
+      image: DecorationImage(image: AssetImage("src/images/waves-drawer.png"), fit: BoxFit.scaleDown, alignment: Alignment(0, 0)),
     ),
   );
 }
