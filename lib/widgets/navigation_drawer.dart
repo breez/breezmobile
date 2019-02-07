@@ -82,7 +82,7 @@ class _ListDivider extends StatelessWidget {
 
 Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return new BreezDrawerHeader(
-    padding: EdgeInsets.only(top: 54.0, left: 16.0),
+    padding: EdgeInsets.only(top: 90.0, left: 16.0),
     child: !drawAvatar
         ? new Container()
         : new StreamBuilder<BreezUserModel>(
@@ -108,12 +108,13 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                     new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        new Padding(padding: EdgeInsets.only(top: 22.0), child:
+                        new Padding(padding: EdgeInsets.only(top: 8.0), child:
                         new Text(
                           snapshot.data.name ?? "No Name",
                           style: theme.navigationDrawerHandleStyle,
                         ),),
-                        new Padding(padding: EdgeInsets.only(top: 11.0,right: 8.0), child:
+                        new Spacer(),
+                        new Padding(padding: EdgeInsets.only(top: 4.0,), child:
                         new RawMaterialButton(
                           onPressed: () {
                             Navigator.of(context).pushNamed("/marketplace");
@@ -133,7 +134,7 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
               }
             }),
     decoration: new BoxDecoration(
-      image: DecorationImage(image: AssetImage("src/images/waves-drawer.png")),
+      image: DecorationImage(image: AssetImage("src/images/waves-drawer.png"),alignment: FractionalOffset(1, 0.5)),
     ),
   );
 }
