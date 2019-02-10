@@ -38,7 +38,7 @@ class BreezBridge {
       _eventsController.add(new NotificationEvent()..mergeFromBuffer(event));
     });
     _tempDirFuture = getTemporaryDirectory();    
-    initLightningDir();    
+    initLightningDir();     
   }
 
   initLightningDir(){
@@ -69,11 +69,7 @@ class BreezBridge {
 
   Future stop({bool permanent = false}){
     return _methodChannel.invokeMethod("stop", {"permanent": permanent});
-  }
-
-  Future requestBackup(){
-    return _invokeMethodWhenReady("requestBackup");
-  }
+  }  
 
   void log(String msg, String level) {
     _invokeMethodImmediate("log", {"msg": msg, "lvl": level});
@@ -267,8 +263,24 @@ class BreezBridge {
     return _invokeMethodImmediate("registerPeriodicSync", {"argument": token});        
   }
 
-  Future<String> getBackupIdentifier() {
-    return _invokeMethodImmediate("getBackupIdentifier").then((res) => res as String);
+  Future requestBackup(){
+    return _invokeMethodWhenReady("requestBackup");
+  }
+
+  Future<Map<String, String>> getAvailableBackups() {
+    return _methodChannel.invokeMethod("availableSnapshots").then((res) => new Map<String, String>.from(res));
+  }
+
+  Future<List<String>> restore(String nodeId) {    
+    return _methodChannel.invokeMethod("restore", {"nodeId": nodeId});
+  }
+
+  Future<dynamic> signIn(bool force){
+     return _methodChannel.invokeMethod("signIn", {"force": force});
+  }
+
+  Future<dynamic> signOut(){
+     return _methodChannel.invokeMethod("signOut");
   }
 
   Future copyBreezConfig(String workingDir) async{
