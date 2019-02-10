@@ -63,11 +63,8 @@ public class MainActivity extends FlutterActivity {
     }
 
     void registerBreezPlugins() {
-        new ImageCropper(this.registrarFor("com.breez.client.plugins.image_cropper"));
-        BreezBackup backupPlugin = new BreezBackup(this.registrarFor("com.breez.client.plugins.backup"), this);
-        new Breez(this.registrarFor(
-                "com.breez.client.plugins.breez_lib"),
-                (paths, breezBackupID, nodeId) -> backupPlugin.executeBackup(Arrays.asList(paths.split(",")), breezBackupID, nodeId));        
+        new ImageCropper(this.registrarFor("com.breez.client.plugins.image_cropper"));        
+        new Breez(this.registrarFor("com.breez.client.plugins.breez_lib"));
         new BreezDeepLinks(this.registrarFor("com.breez.client.plugins.breez_deep_links"));
         BreezApplication.breezShare = new BreezShare(this.registrarFor("com.breez.client.plugins.breez_share"), this);
         new ShareBreezLog(this.registrarFor("com.breez.client.plugins.share_breez_log"), this);
