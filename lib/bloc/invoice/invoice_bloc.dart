@@ -120,7 +120,11 @@ class InvoiceBloc {
       //filter out our own payment requests
       var invoice;
       try {
-        invoice = await breezLib.getRelatedInvoice(paymentRequest);
+        invoice = await breezLib.getRelatedInvoice(paymentRequest).then((invoice) {
+          if(invoice == null){
+            _receivedInvoicesController.addError(null);
+          }
+        });
       } catch (e) {}
       return invoice == null ? paymentRequest : null;
     })

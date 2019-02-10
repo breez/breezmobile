@@ -19,7 +19,7 @@ class InvoiceNotificationsHandler {
         _currentlyHandledRawPayReq = message.rawPayReq;
         Navigator.popUntil(_context, ModalRoute.withName(Navigator.defaultRouteName));
         showDialog(
-          context: _context, 
+          context: _context,
           barrierDismissible: false,
           builder: (_) => paymentRequest.PaymentRequestDialog(_context, _accountBloc, message))
                             .then((result) {
@@ -27,10 +27,13 @@ class InvoiceNotificationsHandler {
                             });
       }
     }, onError: (error) {
-      Navigator.popUntil(_context, ModalRoute.withName(Navigator.defaultRouteName));
-      Future.delayed(Duration(milliseconds: 300), () {
-        showFlushbar(_context, message: "Failed to send payment request: ${error.toString()}");
-      });
+      Navigator.popUntil(
+          _context, ModalRoute.withName(Navigator.defaultRouteName));
+      if (error != null)
+        Future.delayed(Duration(milliseconds: 300), () {
+          showFlushbar(_context,
+              message: "Failed to send payment request: ${error.toString()}");
+        });
     });
     _sentPaymentResultSubscription = _accountBloc.fulfilledPayments.listen((fulfilledPayment) {
       showFlushbar(_context, message: "Payment was successfuly sent!");
