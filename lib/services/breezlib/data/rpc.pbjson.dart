@@ -133,6 +133,7 @@ const NotificationEvent_NotificationType$json = const {
     const {'1': 'FUND_ADDRESS_UNSPENT_CHANGED', '2': 6},
     const {'1': 'BACKUP_SUCCESS', '2': 7},
     const {'1': 'BACKUP_FAILED', '2': 8},
+    const {'1': 'BACKUP_AUTH_FAILED', '2': 9},
   ],
 };
 

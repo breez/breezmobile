@@ -64,6 +64,7 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
   static const NotificationEvent_NotificationType FUND_ADDRESS_UNSPENT_CHANGED = const NotificationEvent_NotificationType._(6, 'FUND_ADDRESS_UNSPENT_CHANGED');
   static const NotificationEvent_NotificationType BACKUP_SUCCESS = const NotificationEvent_NotificationType._(7, 'BACKUP_SUCCESS');
   static const NotificationEvent_NotificationType BACKUP_FAILED = const NotificationEvent_NotificationType._(8, 'BACKUP_FAILED');
+  static const NotificationEvent_NotificationType BACKUP_AUTH_FAILED = const NotificationEvent_NotificationType._(9, 'BACKUP_AUTH_FAILED');
 
   static const List<NotificationEvent_NotificationType> values = const <NotificationEvent_NotificationType> [
     READY,
@@ -75,6 +76,7 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
     FUND_ADDRESS_UNSPENT_CHANGED,
     BACKUP_SUCCESS,
     BACKUP_FAILED,
+    BACKUP_AUTH_FAILED,
   ];
 
   static final Map<int, NotificationEvent_NotificationType> _byValue = $pb.ProtobufEnum.initByValue(values);
