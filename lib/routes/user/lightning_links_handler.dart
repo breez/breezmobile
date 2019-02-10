@@ -8,14 +8,8 @@ class LightningLinksHandler {
 
   LightningLinksHandler(this._context, this._receivedInvoicesStream) {
     _receivedInvoicesStream.listen((PaymentRequestModel message) async {
-      try {
-        if (!message.loaded) {
-          Navigator.of(_context).push(createLoaderRoute(_context));
-        }
-      } catch (e) {
-        Navigator.popUntil(
-            _context, ModalRoute.withName(Navigator.defaultRouteName));
-      }
+      if (!message.loaded)
+        Navigator.of(_context).push(createLoaderRoute(_context));
     });
   }
 }
