@@ -15,7 +15,7 @@ class InvoiceNotificationsHandler {
 
   InvoiceNotificationsHandler(this._context, this._accountBloc, this._receivedInvoicesStream) {
     _receivedInvoicesStream.listen((PaymentRequestModel message) {
-      if (_currentlyHandledRawPayReq != message.rawPayReq) {
+      if (message.loaded == true && _currentlyHandledRawPayReq != message.rawPayReq) {
         _currentlyHandledRawPayReq = message.rawPayReq;
         Navigator.popUntil(_context, ModalRoute.withName(Navigator.defaultRouteName));
         showDialog(
