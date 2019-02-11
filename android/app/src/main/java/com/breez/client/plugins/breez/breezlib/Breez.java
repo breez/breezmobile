@@ -71,7 +71,12 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
 
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        if (call.method.equals("start")) {
+        if (call.method.equals("init")) {
+            _executor.execute(() -> {
+                init(call, result);
+            });
+        }
+        else if (call.method.equals("start")) {
             _executor.execute(() -> {
                 start(call, result);
             });
@@ -97,20 +102,26 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
     }
 
     private void start(MethodCall call, MethodChannel.Result result){
-
-        String workingDir = call.argument("workingDir").toString();
-        Log.i(TAG, "workingDir = " + workingDir);
-        String tempDir = call.argument("tempDir").toString();
         try {
-            Bindings.start(tempDir, this);
+            Bindings.start();
             result.success(true);
         } catch (Exception e) {
             result.error("ResultError", "Failed to Start breez library", e.getMessage());
         }
 
-        Log.i(TAG, "workingDir = " + workingDir);
-
         WorkManager.getInstance().cancelUniqueWork(UNIQUE_WORK_NAME);
+    }
+
+    private void init(MethodCall call, MethodChannel.Result result){
+        String tempDir = call.argument("tempDir").toString();
+        String workingDir = call.argument("workingDir").toString();
+        Log.i(TAG, "workingDir = " + workingDir);
+        try {
+            Bindings.init(tempDir, workingDir, this);
+            result.success(true);
+        } catch (Exception e) {
+            result.error("ResultError", "Failed to Init breez library", e.getMessage());
+        }
     }
 
     private void stop(MethodCall call, MethodChannel.Result result){
@@ -214,7 +225,7 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
             catch (Exception e) {
                 Throwable breezError = e.getCause() != null ? e.getCause() : e;
                 Log.e(TAG, "Error in method " + m_call.method + ": " + breezError.getMessage(), breezError);
-                m_result.error("ResultError","Failed to invoke method " + m_call.method, breezError.getMessage());
+                m_result.error(breezError.getMessage(),"Failed to invoke method " + m_call.method, breezError.getMessage());
             }
         }
     }
