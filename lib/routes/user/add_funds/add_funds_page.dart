@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/user/add_funds/address_widget.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class AddFundsState extends State<AddFundsPage> {
   initState() {
     super.initState();
     _addFundsBloc = new AddFundsBloc(widget._user.userID);
-    _addFundsBloc.addFundRequestSink.add(null);
+    _addFundsBloc.addFundRequestSink.add(null);    
   }
 
   @override
