@@ -7,32 +7,14 @@ import com.breez.client.plugins.breez.breezlib.Breez;
 import com.breez.client.plugins.breez.*;
 import com.breez.client.plugins.breez.ShareBreezLog;
 import com.breez.client.plugins.breez.BreezShare;
-import com.breez.client.plugins.breez.backup.BreezBackup;
-
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import io.flutter.app.FlutterActivity;
-import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugins.GeneratedPluginRegistrant;
-
-import android.os.PowerManager;
-import android.provider.Settings;
 import android.util.Log;
-
-import java.text.Bidi;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 public class MainActivity extends FlutterActivity {
     private static final String TAG = "Breez";
