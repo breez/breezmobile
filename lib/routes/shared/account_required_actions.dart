@@ -1,7 +1,9 @@
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,6 +28,7 @@ class AccountRequiredActionsIndicatorState
   StreamSubscription<DateTime> _promptEnableSubscription;
   StreamSubscription<BackupSettings> _settingsSubscription;
   BackupSettings _currentSettings;
+  bool showingBackupDialog = false;
 
   @override
   void initState() {
@@ -36,15 +39,15 @@ class AccountRequiredActionsIndicatorState
         Observable(widget._backupBloc.lastBackupTimeStream)
             .delay(Duration(seconds: 1))
             .listen((lastBackup) {}, onError: (err) {
-      if (_currentSettings.promptOnError) {
-        Navigator.popUntil(context, (route) {
-          return route.settings.name == "/home" || route.settings.name == "/";
-        });
-
+      if (_currentSettings.promptOnError && !showingBackupDialog) {          
+        popFlushbars(context);
         showDialog(
             context: context,
             builder: (_) =>
-                new EnableBackupDialog(context, widget._backupBloc));
+                new EnableBackupDialog(context, widget._backupBloc)).
+                then((_){
+                  showingBackupDialog = false;
+                });
       }
     });
 
@@ -72,15 +75,17 @@ class AccountRequiredActionsIndicatorState
                       List<void Function()> warnings = List<void Function()>();
                       Int64 walletBalance =
                           accountSnapshot?.data?.walletBalance ?? Int64(0);
-                      if (walletBalance > 0  && !settingsSnapshot.data.ignoreWalletBalance) {
-                        warnings.add(() => Navigator.of(context).pushNamed("/send_coins"));
+                      if (walletBalance > 0 &&
+                          !settingsSnapshot.data.ignoreWalletBalance) {
+                        warnings.add(() =>
+                            Navigator.of(context).pushNamed("/send_coins"));
                       }
 
                       if (backupSnapshot.hasError) {
                         warnings.add(() => showDialog(
-                                  context: context,
-                                  builder: (_) => new EnableBackupDialog(
-                                      context, widget._backupBloc)));
+                            context: context,
+                            builder: (_) => new EnableBackupDialog(
+                                context, widget._backupBloc)));
                       }
 
                       if (warnings.length == 0) {
@@ -90,8 +95,10 @@ class AccountRequiredActionsIndicatorState
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         mainAxisSize: MainAxisSize.min,
-                        children: warnings.map((onTap) => WarningAction(onTap)).toList(),
-                      );                      
+                        children: warnings
+                            .map((onTap) => WarningAction(onTap))
+                            .toList(),
+                      );
                     });
               });
         });

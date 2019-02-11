@@ -17,3 +17,9 @@ showFlushbar(BuildContext context, {String title = "", String message = "", int 
     )
     ..show(context);
 }
+
+void popFlushbars(BuildContext context){
+  Navigator.popUntil(context, (route) {          
+    return route.settings.name != FLUSHBAR_ROUTE_NAME;
+  });
+}
