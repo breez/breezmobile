@@ -2,14 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/services/backup.dart';
-import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/notifications.dart';
-import 'package:uuid/uuid.dart';
 import 'account_model.dart';
 import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
@@ -20,8 +17,7 @@ import 'package:connectivity/connectivity.dart';
 
 class AccountBloc {  
 
-  static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
-  static const String BACKUP_BREEZ_ID_PREFERENCE_KEY = "BACKUP_BREEZ_ID";
+  static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";  
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
       
   final _reconnectStreamController = new StreamController<void>.broadcast();
@@ -83,16 +79,12 @@ class AccountBloc {
   final BehaviorSubject<void> _nodeConflictController = new BehaviorSubject<void>();
   Stream<void> get nodeConflictStream => _nodeConflictController.stream;
 
-  final BehaviorSubject<String> _backupBreezIDController = new BehaviorSubject<String>();
-  Stream<void> get backupBreezIDStream => _backupBreezIDController.stream;
-
   Stream<Map<String, DownloadFileInfo>>  chainBootstrapProgress;
 
   final AccountPermissionsHandler _permissionsHandler = new AccountPermissionsHandler();
   Stream<bool> get optimizationWhitelistExplainStream => _permissionsHandler.optimizationWhitelistExplainStream;  
   Sink get optimizationWhitelistRequestSink => _permissionsHandler.optimizationWhitelistRequestSink;
-
-  BackupService _backupService;
+  
   BreezUserModel _currentUser;
   bool _allowReconnect = true;
   bool _startedLightning = false;    
@@ -101,8 +93,7 @@ class AccountBloc {
       ServiceInjector injector = new ServiceInjector();    
       BreezBridge breezLib = injector.breezBridge;      
       Notifications notificationsService = injector.notifications;
-      Device device = injector.device;
-      _backupService = injector.backupService;      
+      Device device = injector.device;      
 
       _accountController.add(AccountModel.initial());
       _paymentsController.add(PaymentsModel.initial());
@@ -141,16 +132,7 @@ class AccountBloc {
         if (acc.id.isNotEmpty) {
           await preferences.setString(PERSISTENT_NODE_ID_PREFERENCES_KEY, acc.id);          
         }
-      });
-
-      String backupBreezID =
-        preferences.getString(BACKUP_BREEZ_ID_PREFERENCE_KEY);
-      if (backupBreezID == null) {
-        backupBreezID = new Uuid().v4().toString();
-        preferences.setString(
-            BACKUP_BREEZ_ID_PREFERENCE_KEY, backupBreezID);
-      }
-      _backupBreezIDController.add(backupBreezID);
+      });      
     }
 
     void _listenRefundableDeposits(BreezBridge breezLib, Device device){
@@ -201,8 +183,7 @@ class AccountBloc {
       .listen((_) async {                 
         connectingFuture = connectingFuture.whenComplete(() async {                       
           if (_allowReconnect == true && _accountController.value.connected == false) { 
-            log.info("_listenReconnects: checking node conflicts before reconnecting...");
-            await _checkNodeConflict(breezLib);
+            log.info("_listenReconnects: checking node conflicts before reconnecting...");            
             log.info("_listenReconnects: no conflict detected, reconnecting...");
             await breezLib.connectAccount();
           }
@@ -244,8 +225,7 @@ class AccountBloc {
               print("Account bloc bootstrap has finished");   
               _accountController.add(_accountController.value.copyWith(bootstraping: false));     
               breezLib.startLightning();
-              breezLib.registerPeriodicSync(user.token);
-              _checkNodeConflict(breezLib);              
+              breezLib.registerPeriodicSync(user.token);              
               _fetchFundStatus(breezLib);
               _listenConnectivityChanges(breezLib);
               _listenReconnects(breezLib);
@@ -416,29 +396,6 @@ class AccountBloc {
           }                                      
         })
         .catchError(_routingNodeConnectionController.addError);
-    }
-
-    //detecte if safe to connect on drive.
-    //if not stop node
-    Future _checkNodeConflict(BreezBridge breezLib) async {      
-      try {
-        String nodeID = await getPersistentNodeID();
-        if (nodeID == null) {
-          return true;
-        }
-        String backupBreezID = await _backupBreezIDController.first;
-        print("_checkNodeConflict backupBreezID = " + backupBreezID);
-        bool isSafe = await _backupService.isSafeForBreezBackupID(nodeID, backupBreezID);                
-        log.info("_checkNodeConflict safe = " + isSafe.toString());
-      }
-      on BackupConflictException{
-        breezLib.stop(permanent: true);
-        _nodeConflictController.add(null); 
-        rethrow;
-      }
-      on Object catch(e){
-        log.warning("_checkNodeConflict got exception " + e.toString());
-      }         
     }
 
     Future<String> getPersistentNodeID() async {      

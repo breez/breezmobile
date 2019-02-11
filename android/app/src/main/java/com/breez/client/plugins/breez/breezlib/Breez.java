@@ -1,8 +1,14 @@
 package com.breez.client.plugins.breez.breezlib;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.tasks.Tasks;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.services.drive.DriveScopes;
 
 import bindings.Logger;
 import io.flutter.plugin.common.ActivityLifecycleListener;
@@ -21,7 +27,7 @@ import java.util.concurrent.*;
 
 import static com.breez.client.plugins.breez.breezlib.ChainSync.UNIQUE_WORK_NAME;
 
-public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNotifier, StreamHandler, ActivityLifecycleListener {
+public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, ActivityLifecycleListener, AppServices {
 
     public static final String BREEZ_CHANNEL_NAME = "com.breez.client/breez_lib";
     public static final String BREEZ_STREAM_NAME = "com.breez.client/breez_lib_notifications";
@@ -30,9 +36,13 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
     private EventChannel.EventSink m_eventsListener;
     private Map<String, Method> _bindingMethods = new HashMap<String, Method>();
     private Executor _executor = Executors.newCachedThreadPool();
+    private GoogleAuthenticator m_authenticator;
+    private Activity m_activity;
     private static Logger _breezLogger;
 
     public Breez(PluginRegistry.Registrar registrar) {
+        m_authenticator = new GoogleAuthenticator(registrar);
+        m_activity = registrar.activity();
         registrar.view().addActivityLifecycleListener(this);
         new MethodChannel(registrar.messenger(), BREEZ_CHANNEL_NAME).setMethodCallHandler(this);
         new EventChannel(registrar.messenger(), BREEZ_STREAM_NAME).setStreamHandler(this);
@@ -50,8 +60,23 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
     }
 
     @Override
+    public String backupProviderName() {
+        return "gdrive";
+    }
+
+    @Override
+    public String backupProviderSignIn() throws Exception {
+        return m_authenticator.getAccessToken();
+    }
+
+    @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        if (call.method.equals("start")) {
+        if (call.method.equals("init")) {
+            _executor.execute(() -> {
+                init(call, result);
+            });
+        }
+        else if (call.method.equals("start")) {
             _executor.execute(() -> {
                 start(call, result);
             });
@@ -59,6 +84,14 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
             stop(call, result);
         } else if (call.method.equals("log")) {
             log(call, result);
+        } else if (call.method.equals("signIn")) {
+            _executor.execute(() -> {
+                signIn(call, result);
+            });
+        } else if (call.method.equals("signOut")) {
+            _executor.execute(() -> {
+                signOut(call, result);
+            });
         } else {
             _executor.execute(new BreezTask(call, result));
         }
@@ -69,20 +102,26 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
     }
 
     private void start(MethodCall call, MethodChannel.Result result){
-
-        String workingDir = call.argument("workingDir").toString();
-        Log.i(TAG, "workingDir = " + workingDir);
-        String tempDir = call.argument("tempDir").toString();
         try {
-            Bindings.start(tempDir, this);
+            Bindings.start();
             result.success(true);
         } catch (Exception e) {
             result.error("ResultError", "Failed to Start breez library", e.getMessage());
         }
 
-        Log.i(TAG, "workingDir = " + workingDir);
-
         WorkManager.getInstance().cancelUniqueWork(UNIQUE_WORK_NAME);
+    }
+
+    private void init(MethodCall call, MethodChannel.Result result){
+        String tempDir = call.argument("tempDir").toString();
+        String workingDir = call.argument("workingDir").toString();
+        Log.i(TAG, "workingDir = " + workingDir);
+        try {
+            Bindings.init(tempDir, workingDir, this);
+            result.success(true);
+        } catch (Exception e) {
+            result.error("ResultError", "Failed to Init breez library", e.getMessage());
+        }
     }
 
     private void stop(MethodCall call, MethodChannel.Result result){
@@ -105,6 +144,28 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
         }
     }
 
+    private void signIn(MethodCall call, MethodChannel.Result result){
+        try {
+            Boolean force = call.argument("force");
+            if (force != null && force.booleanValue()) {
+                m_authenticator.signOut();
+            }
+            m_authenticator.ensureSignedIn(false);
+            result.success(true);
+        } catch (Exception e) {
+            result.error("AuthError", "Failed to signIn breez library", e.getMessage());
+        }
+    }
+
+    private void signOut(MethodCall call, MethodChannel.Result result){
+        try {
+            m_authenticator.signOut();
+            result.success(true);
+        } catch (Exception e) {
+            result.error("ResultError", "Failed to sign out breez library", e.getMessage());
+        }
+    }
+
     @Override
     public void onListen(Object args, final EventChannel.EventSink events){
         m_eventsListener = events;
@@ -123,6 +184,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
             m_eventsListener.success(marshaledData);
         }
     }
+
 
     @Override
     public void onPostResume() {
@@ -163,7 +225,7 @@ public class Breez implements MethodChannel.MethodCallHandler, bindings.BreezNot
             catch (Exception e) {
                 Throwable breezError = e.getCause() != null ? e.getCause() : e;
                 Log.e(TAG, "Error in method " + m_call.method + ": " + breezError.getMessage(), breezError);
-                m_result.error("ResultError","Failed to invoke method " + m_call.method, breezError.getMessage());
+                m_result.error(breezError.getMessage(),"Failed to invoke method " + m_call.method, breezError.getMessage());
             }
         }
     }
