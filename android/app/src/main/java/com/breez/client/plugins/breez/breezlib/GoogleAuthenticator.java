@@ -42,6 +42,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         } catch (Exception e){}
         Tasks.await(m_signInClient.signOut());
         m_signInClient = createSignInClient();
+        Log.i(TAG, "Signed out");
     }
 
     public GoogleSignInAccount ensureSignedIn(final boolean silent) throws Exception {
@@ -51,7 +52,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         catch (Exception e) {
             Log.i(TAG, "silentSignIn failed");
             if (silent) {
-                throw e;
+                throw new Exception("AuthError");
             }
             Log.i(TAG, "silentSignIn continue to activity");
             return Tasks.await(signIn());
