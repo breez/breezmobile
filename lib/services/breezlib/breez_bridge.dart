@@ -16,7 +16,7 @@ import 'package:rxdart/rxdart.dart';
 class BreezBridge {
   static const _methodChannel = const MethodChannel('com.breez.client/breez_lib');
   static const _eventChannel = const EventChannel('com.breez.client/breez_lib_notifications');
-  static const String _signInFaileCode = "SIGN_IN_FAILED";
+  static const String _signInFaileCode = "AuthError";
 
   BehaviorSubject<Map<String, DownloadFileInfo>> _bootstrapDownloadProgressController = new BehaviorSubject<Map<String, DownloadFileInfo>>();
   Stream<Map<String, DownloadFileInfo>> get chainBootstrapProgress => _bootstrapDownloadProgressController.stream;
@@ -28,7 +28,6 @@ class BreezBridge {
   Stream<NotificationEvent> get notificationStream => _eventsController.stream;
   bool ready = false;  
   Future<Directory> _tempDirFuture;  
-  Future<Directory> _copyConfigTasks;
 
   BreezBridge(){
     _eventChannel.receiveBroadcastStream().listen((event){

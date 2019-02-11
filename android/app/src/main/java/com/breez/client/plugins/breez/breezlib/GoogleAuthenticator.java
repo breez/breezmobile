@@ -99,7 +99,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                         Log.i(TAG, "Sign in intent success, ,token = " + res.getAccount());
                         m_signInProgressTask.setResult(task.getResult());
                     } catch (ApiException e) {
-                        m_signInProgressTask.setException(new Exception("Sign in failed"));
+                        m_signInProgressTask.setException(new Exception("AuthError"));
                         Log.i(TAG, "Sign in Failed...");
                         return;
                     }
