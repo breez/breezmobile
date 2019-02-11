@@ -111,11 +111,14 @@ class BackupBloc {
     _restoreRequestController.stream.listen((nodeId) {
       if (nodeId == null || nodeId.isEmpty) {
         return _breezLib.getAvailableBackups()
-        .then((backups) {
+        .then((backups) {          
           List snapshotsArray = json.decode(backups) as List;
-          List<SnapshotInfo> snapshots = snapshotsArray.map((s){
-            return SnapshotInfo.fromJson(s);
-          }).toList();
+          List<SnapshotInfo> snapshots = List<SnapshotInfo>();
+          if (snapshotsArray != null) {            
+            snapshots = snapshotsArray.map((s){
+              return SnapshotInfo.fromJson(s);
+            }).toList();
+          }
           _multipleRestoreController.add(snapshots);
         }).catchError((error) {
           _restoreFinishedController.addError(error);
