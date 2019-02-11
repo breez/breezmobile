@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/services/backup.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/restore_dialog.dart';
@@ -27,7 +26,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   Animation<int> _animation;
 
   StreamSubscription<bool> _restoreFinishedSubscription;
-  StreamSubscription<Map<String, String>> _multipleRestoreSubscription;
+  StreamSubscription<List<SnapshotInfo>> _multipleRestoreSubscription;
 
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -43,7 +42,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         }
 
         if (options.length == 1) {
-          widget._backupBloc.restoreRequestSink.add(options.keys.elementAt(0));
+          widget._backupBloc.restoreRequestSink.add(options.first.nodeID);
           return;
         }
 

@@ -1,25 +1,26 @@
-package com.breez.client.plugins.breez.backup;
+package com.breez.client.plugins.breez.breezlib;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.drive.*;
-import com.google.android.gms.signin.*;
-import com.google.android.gms.auth.api.signin.*;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.services.drive.DriveScopes;
+
+import java.util.Collections;
 
 import io.flutter.plugin.common.PluginRegistry;
-
-import static android.app.Activity.RESULT_OK;
 
 public class GoogleAuthenticator implements PluginRegistry.ActivityResultListener{
     private static final String TAG = "BreezGAuthenticator";
@@ -32,43 +33,47 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
     public GoogleAuthenticator(PluginRegistry.Registrar registrar) {
         m_breezActivity = registrar.activity();
         m_signInClient = createSignInClient();
-        registrar.addActivityResultListener(this);        
+        registrar.addActivityResultListener(this);
     }
 
-    public Task<Void> signOut(){
-        GoogleSignInClient old = m_signInClient;
+    public void signOut() throws Exception{
+        try {
+            Tasks.await(m_signInClient.revokeAccess());
+        } catch (Exception e){}
+        Tasks.await(m_signInClient.signOut());
         m_signInClient = createSignInClient();
-        return old.signOut();
+        Log.i(TAG, "Signed out");
     }
 
-    public Task<GoogleSignInAccount> ensureSignedIn(final boolean silent) throws SignInFailedException {
-        Task<GoogleSignInAccount> task = m_signInClient.silentSignIn();
-        if (task.isSuccessful()) {
-            Log.i(TAG, "silentSignIn Task is already successfull");
-            return task;
+    public GoogleSignInAccount ensureSignedIn(final boolean silent) throws Exception {
+        try {
+            return Tasks.await(m_signInClient.silentSignIn());
         }
-
-
-        return task.continueWithTask(new Continuation<GoogleSignInAccount, Task<GoogleSignInAccount>>() {
-            @Override
-            public Task<GoogleSignInAccount> then(@NonNull Task<GoogleSignInAccount> task) throws Exception {
-                if (!task.isSuccessful() && silent) {
-                    throw new  SignInFailedException();
-                }
-                if (task.isSuccessful()) {
-                    Log.i(TAG, "silentSignIn Task succeeded");
-                    return task;
-                }
-
-                return signIn();
+        catch (Exception e) {
+            Log.i(TAG, "silentSignIn failed");
+            if (silent) {
+                throw new Exception("AuthError");
             }
-        });
+            Log.i(TAG, "silentSignIn continue to activity");
+            return Tasks.await(signIn());
+        }
+    }
+
+    public String getAccessToken() throws Exception{
+        GoogleSignInAccount googleAccount = ensureSignedIn(true);
+        GoogleAccountCredential credential =
+                GoogleAccountCredential.usingOAuth2(
+                        m_breezActivity.getApplicationContext(), Collections.singleton(DriveScopes.DRIVE_APPDATA));
+
+        credential.setSelectedAccount(googleAccount.getAccount());
+        return credential.getToken();
     }
 
     private GoogleSignInClient createSignInClient(){
         GoogleSignInOptions signInOptions =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestScopes(Drive.SCOPE_APPFOLDER)
+                        .requestScopes( new Scope(DriveScopes.DRIVE_APPDATA))
+                        .requestEmail()
                         .build();
         return GoogleSignIn.getClient(m_breezActivity, signInOptions);
     }
@@ -87,12 +92,17 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
             GoogleSignIn.getSignedInAccountFromIntent(intent).addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
                 @Override
                 public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                    if (!task.isSuccessful()) {
-                        m_signInProgressTask.setException(new SignInFailedException());
+                    try {
+                        task.getResult(ApiException.class);
+                        GoogleSignInAccount res = task.getResult();
+
+                        Log.i(TAG, "Sign in intent success, ,token = " + res.getAccount());
+                        m_signInProgressTask.setResult(task.getResult());
+                    } catch (ApiException e) {
+                        m_signInProgressTask.setException(new Exception("AuthError"));
+                        Log.i(TAG, "Sign in Failed...");
                         return;
                     }
-
-                    m_signInProgressTask.setResult(task.getResult());
                 }
             });
             return true;

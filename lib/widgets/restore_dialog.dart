@@ -7,10 +7,10 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 class RestoreDialog extends StatefulWidget {
   final BuildContext context;
   final BackupBloc backupBloc;
-  final Map<String, String> optionsMap;
+  final List<SnapshotInfo> snapshots;
 
   RestoreDialog(
-      this.context, this.backupBloc, this.optionsMap);
+      this.context, this.backupBloc, this.snapshots);
 
   @override
   RestoreDialogState createState() {
@@ -50,26 +50,23 @@ class RestoreDialogState extends State<RestoreDialog> {
               height: 200.0,
               child: ListView.builder(
                 shrinkWrap: false,
-                itemCount: widget.optionsMap.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var keys = widget.optionsMap.keys.toList();
+                itemCount: widget.snapshots.length,
+                itemBuilder: (BuildContext context, int index) {                  
                   return ListTile(          
-                    selected:        _selectedKey == keys[index]  ,
-                    trailing: _selectedKey == keys[index] ? Icon(Icons.check, color: theme.BreezColors.blue[500],) : Icon(Icons.check),
+                    selected: _selectedKey == widget.snapshots[index].nodeID  ,
+                    trailing: _selectedKey == widget.snapshots[index].nodeID ? Icon(Icons.check, color: theme.BreezColors.blue[500],) : Icon(Icons.check),
                     title: Text(
-                      widget.optionsMap[keys[index]],                      
+                      widget.snapshots[index].modifiedTime,                      
                       style: theme.bolt11Style.apply(fontSizeDelta: 1.3),
                     ),
                     subtitle: Text(
-                      keys[index],
+                      widget.snapshots[index].nodeID,
                       style: theme.bolt11Style,
                     ),
                     onTap: () {
                       setState(() {
-                        _selectedKey = keys[index];
-                      });
-                      //Navigator.pop(widget.context);
-                      //widget.backupBloc.restoreRequestSink.add(keys[index]);
+                        _selectedKey = widget.snapshots[index].nodeID;
+                      });                      
                     },
                   );
                 },

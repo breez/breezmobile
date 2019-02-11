@@ -7,30 +7,14 @@ import com.breez.client.plugins.breez.breezlib.Breez;
 import com.breez.client.plugins.breez.*;
 import com.breez.client.plugins.breez.ShareBreezLog;
 import com.breez.client.plugins.breez.BreezShare;
-import com.breez.client.plugins.breez.backup.BreezBackup;
-
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import io.flutter.app.FlutterActivity;
-import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugins.GeneratedPluginRegistrant;
-
-import android.os.PowerManager;
-import android.provider.Settings;
 import android.util.Log;
-
-import java.text.Bidi;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 public class MainActivity extends FlutterActivity {
     private static final String TAG = "Breez";
@@ -61,7 +45,7 @@ public class MainActivity extends FlutterActivity {
     }
 
     void registerBreezPlugins() {
-        new ImageCropper(this.registrarFor("com.breez.client.plugins.image_cropper"));
+        new ImageCropper(this.registrarFor("com.breez.client.plugins.image_cropper"));        
         new Breez(this.registrarFor("com.breez.client.plugins.breez_lib"));
         new BreezDeepLinks(this.registrarFor("com.breez.client.plugins.breez_deep_links"));
         BreezApplication.breezShare = new BreezShare(this.registrarFor("com.breez.client.plugins.breez_share"), this);
@@ -69,7 +53,6 @@ public class MainActivity extends FlutterActivity {
         new BreezCredential(this.registrarFor("com.breez.client.plugins.breez_credential"), this);
         new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
         new LightningLinks(this.registrarFor("com.breez.client.plugins.lightning_links"));
-        new BreezBackup(this.registrarFor("com.breez.client.plugins.backup"), this);
         new Permissions(this.registrarFor("com.breez.client.plugins.permissions"), this);
     }
 
