@@ -200,8 +200,8 @@ class PaymentInfo {
 
   bool get containsPaymentInfo {
     String remoteName = (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeName : _paymentResponse.invoiceMemo?.payerName);  
-    String decription = _paymentResponse.invoiceMemo?.description;  
-    return remoteName?.isNotEmpty  == true|| decription.isNotEmpty == true;     
+    String description = _paymentResponse.invoiceMemo?.description;
+    return remoteName?.isNotEmpty  == true|| description.isNotEmpty == true;
   }
 
   bool get isTransferRequest => _paymentResponse?.invoiceMemo?.transferRequest == true;
@@ -298,4 +298,11 @@ class PayRequest {
   final Int64 amount;
 
   PayRequest(this.paymentRequest, this.amount);
+}
+
+class Voucher {
+  final String code;
+  final String value;
+
+  Voucher(this.code, this.value);
 }

@@ -37,7 +37,13 @@ class AccountBloc {
 
   final _addFundController = new BehaviorSubject<AddFundResponse>();
   Stream<AddFundResponse> get addFundStream => _addFundController.stream;
-    
+
+  final _voucherController = new StreamController<Voucher>();
+  Stream<Voucher> get validateVoucherStream => _voucherController.stream;
+  Sink<Voucher> get validateVoucherSink => _voucherController.sink;
+  Stream<Voucher> get redeemVoucherStream => _voucherController.stream;
+  Sink<Voucher> get redeemVoucherSink => _voucherController.sink;
+
   final _accountController = new BehaviorSubject<AccountModel>();
   Stream<AccountModel> get accountStream => _accountController.stream;
 

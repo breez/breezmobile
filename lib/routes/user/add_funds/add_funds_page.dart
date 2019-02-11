@@ -123,7 +123,17 @@ class AddFundsState extends State<AddFundsPage> {
                   account.currency
                       .format(response.maxAllowedDeposit, includeSymbol: true) +
                   " to this address." + "\nBreez requires you to keep ${account.currency.format(Int64(CHANNEL_RESERVE_SAT))} in your balance.",
-              style: theme.warningStyle, textAlign: TextAlign.center,))
+              style: theme.warningStyle, textAlign: TextAlign.center,)),
+      response == null ? SizedBox() : Padding(
+          padding: EdgeInsets.only(top: 32.0), child:
+      Container(child: IconButton(icon: ImageIcon(
+          AssetImage("src/icon/vendors/fastbitcoins_logo.png"),
+          color: Color(0xFFff7c10)),
+          iconSize: 36.0,
+          onPressed: () => Navigator.of(context).pushNamed("/fastbitcoins")),
+          padding: EdgeInsets.all(4.0),
+          decoration: ShapeDecoration(
+              color: Color(0xFF1f2a44), shape: CircleBorder()))),
     ]);   
   }
 
