@@ -27,8 +27,8 @@ class BackupBloc {
   Sink<String> get restoreRequestSink => _restoreRequestController.sink;
 
   final _multipleRestoreController =
-      new StreamController<Map<String, String>>.broadcast();
-  Stream<Map<String, String>> get multipleRestoreStream =>
+      new StreamController<List<SnapshotInfo>>.broadcast();
+  Stream<List<SnapshotInfo>> get multipleRestoreStream =>
       _multipleRestoreController.stream;
 
   final _restoreFinishedController = new StreamController<bool>.broadcast();
@@ -36,7 +36,7 @@ class BackupBloc {
 
   BreezBridge _breezLib;
   SharedPreferences _sharedPrefrences;    
-  bool _backupServiceNeedLogin;
+  bool _backupServiceNeedLogin = false;
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";  
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
@@ -89,8 +89,7 @@ class BackupBloc {
     signInIfNeeded.then((_) => _breezLib.requestBackup());    
   }
 
-  _listenBackupPaths() {
-    _lastBackupTimeController.addError(null);
+  _listenBackupPaths() {    
     Observable(_breezLib.notificationStream)    
     .listen((event) {
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
@@ -113,22 +112,19 @@ class BackupBloc {
       if (nodeId == null || nodeId.isEmpty) {
         return _breezLib.getAvailableBackups()
         .then((backups) {
-          _multipleRestoreController.add(new Map<String, String>.from(backups));
+          List snapshotsArray = json.decode(backups) as List;
+          List<SnapshotInfo> snapshots = snapshotsArray.map((s){
+            return SnapshotInfo.fromJson(s);
+          }).toList();
+          _multipleRestoreController.add(snapshots);
         }).catchError((error) {
           _restoreFinishedController.addError(error);
         });        
       }
 
-      _breezLib.restore(nodeId).then((restoreResult) async {
-        try {          
-          var appDir = await getApplicationDocumentsDirectory();
-          await _breezLib.copyBreezConfig(appDir.path);          
-          await _breezLib.bootstrapFiles(appDir.path, new List<String>.from(restoreResult));
-          _restoreFinishedController.add(true);
-        } catch(error) {
-          _restoreFinishedController.addError(error);
-        }
-      });  
+      _breezLib.restore(nodeId)
+        .then((_) => _restoreFinishedController.add(true))
+        .catchError(_restoreFinishedController.addError);      
     });  
   }
 
@@ -139,4 +135,17 @@ class BackupBloc {
     _restoreFinishedController.close();    
     _backupSettingsController.close();
   }
+}
+
+class SnapshotInfo {
+  final String nodeID;	
+	final String modifiedTime;
+
+  SnapshotInfo(this.nodeID, this.modifiedTime);
+  
+  SnapshotInfo.fromJson(Map<String, dynamic> json) : 
+    this(
+      json["NodeID"], 
+      json["ModifiedTime"]
+    );
 }
