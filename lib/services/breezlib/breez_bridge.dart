@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/lnd_bootstrapper.dart';
@@ -15,6 +16,7 @@ import 'package:rxdart/rxdart.dart';
 class BreezBridge {
   static const _methodChannel = const MethodChannel('com.breez.client/breez_lib');
   static const _eventChannel = const EventChannel('com.breez.client/breez_lib_notifications');
+  static const String _signInFaileCode = "SIGN_IN_FAILED";
 
   BehaviorSubject<Map<String, DownloadFileInfo>> _bootstrapDownloadProgressController = new BehaviorSubject<Map<String, DownloadFileInfo>>();
   Stream<Map<String, DownloadFileInfo>> get chainBootstrapProgress => _bootstrapDownloadProgressController.stream;
@@ -44,24 +46,30 @@ class BreezBridge {
   initLightningDir(){
     print("initLightningDir started");
     
-    _copyConfigTasks = getApplicationDocumentsDirectory()
+    getApplicationDocumentsDirectory()
       .then((workingDir) {
         return copyBreezConfig(workingDir.path)
-          .then((_) => workingDir);
+          .then((_) async {
+            var tmpDir = await _tempDirFuture;
+            await init(workingDir.path, tmpDir.path);
+            _startedCompleter.complete(true);
+          });
       });
   }
 
-  Future init(String appDir) {    
-    return _methodChannel.invokeMethod("init", {"argument": appDir});
+  Future init(String appDir, String tmpDir) {    
+    return _methodChannel.invokeMethod("init", {
+      "workingDir": appDir,
+      "tempDir": tmpDir});
   }
 
-  Future start(String workingDir) async{
-    print(" breez bridge - start...");  
-    Directory tempDir = await _tempDirFuture;    
-    return _methodChannel.invokeMethod("start", {
-      "workingDir": workingDir,
-      "tempDir": tempDir.path
-    })
+  Future startLightning() {    
+    return _startedCompleter.future.then((_) =>  _start());
+  }
+
+  Future _start() async{
+    print(" breez bridge - start...");      
+    return _methodChannel.invokeMethod("start")
     .then((_) { 
       print(" breez bridge - start lightning finished");          
     });    
@@ -267,12 +275,24 @@ class BreezBridge {
     return _invokeMethodWhenReady("requestBackup");
   }
 
-  Future<Map<String, String>> getAvailableBackups() {
-    return _methodChannel.invokeMethod("availableSnapshots").then((res) => new Map<String, String>.from(res));
+  Future<String> getAvailableBackups() async {
+    try {
+      await signIn(true);
+      return await _methodChannel.invokeMethod("availableSnapshots").then((res) => res as String);     
+    } catch( err ) {
+      if (err.runtimeType == PlatformException) {
+          PlatformException e = (err as PlatformException);
+          if (e.code == _signInFaileCode) {
+            throw new SignInFailedException();
+          }        
+          throw (err as PlatformException).message;
+        }
+        throw err;
+    }      
   }
 
-  Future<List<String>> restore(String nodeId) {    
-    return _methodChannel.invokeMethod("restore", {"nodeId": nodeId});
+  Future restore(String nodeId) {    
+    return _methodChannel.invokeMethod("restoreBackup", {"argument": nodeId});   
   }
 
   Future<dynamic> signIn(bool force){
@@ -348,15 +368,11 @@ class BreezBridge {
           return lndBootstrapper.downloadBootstrapFiles(appDir.path);
         }
     );
-  }
+  }  
+}
 
-  Future startLightning() {    
-    return _copyConfigTasks.then((appDir) async {
-      if (!_startedCompleter.isCompleted) {
-        await init(appDir.path);  
-        _startedCompleter.complete(true);
-      }
-      return start(appDir.path);
-    });
+class SignInFailedException implements Exception {
+  String toString() {
+    return "Sign in failed";
   }
 }
