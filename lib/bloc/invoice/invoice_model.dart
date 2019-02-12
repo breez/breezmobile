@@ -23,4 +23,5 @@ class PaymentRequestModel {
   String get payeeName => _invoice.payeeName;
   Int64 get amount => _invoice.amount;
   String get rawPayReq => _rawPayReq;
+  bool get loaded => _invoice != null ? true : false;
 }

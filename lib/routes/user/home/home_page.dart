@@ -17,6 +17,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/routes/user/lightning_links_handler.dart';
 import 'package:breez/routes/shared/no_connection_dialog.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -199,6 +200,7 @@ class HomeState extends State<Home> {
         promptError(context, "Connect to Pay", Text(e.toString(), style: theme.alertStyle));
       }
     );
+    new LightningLinksHandler(this.context, widget.invoiceBloc.receivedInvoicesStream);
 
     _accountNotificationsSubscription = widget.accountBloc.accountNotificationsStream
       .listen(

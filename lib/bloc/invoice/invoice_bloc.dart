@@ -113,11 +113,18 @@ class InvoiceBloc {
       }
       return s;
     })
-    .asyncMap((paymentRequest) async { 
+    .asyncMap((paymentRequest) async {
+      // add stream event before processing and decoding
+      _receivedInvoicesController.add(
+          new PaymentRequestModel(null, paymentRequest));
       //filter out our own payment requests
       var invoice;
       try {
-        invoice = await breezLib.getRelatedInvoice(paymentRequest);
+        invoice = await breezLib.getRelatedInvoice(paymentRequest).then((invoice) {
+          if(invoice == null){
+            _receivedInvoicesController.addError(null);
+          }
+        });
       } catch (e) {}
       return invoice == null ? paymentRequest : null;
     })
@@ -127,7 +134,7 @@ class InvoiceBloc {
         .then( (invoice) => new PaymentRequestModel(invoice, paymentRequest));          
     })    
     .listen(_receivedInvoicesController.add)
-    .onError(_receivedInvoicesController.addError);    
+    .onError(_receivedInvoicesController.addError);
   }
 
   void _listenPaidInvoices(BreezBridge breezLib) {

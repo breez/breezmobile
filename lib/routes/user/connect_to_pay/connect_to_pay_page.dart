@@ -43,14 +43,19 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   @override void didChangeDependencies(){    
     if (!_isInit) {
       ConnectPayBloc ctpBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
-      if (_currentSession == null) {
-          _currentSession = ctpBloc.startSessionAsPayer();
+      try {
+        if (_currentSession == null) {
+            _currentSession = ctpBloc.createPayerRemoteSession();
+            ctpBloc.startSession(_currentSession);
+        }
+        _payer = _currentSession.runtimeType == PayerRemoteSession;
+        _title = _payer ? "Connect To Pay" : "Receive Payment";
+        registerErrorsListener();
+        registerEndOfSessionListener();
+        _isInit = true;        
+      } catch(error) {
+        _error = error;
       }
-      _payer = _currentSession.runtimeType == PayerRemoteSession;
-      _title = _payer ? "Connect To Pay" : "Receive Payment";
-      registerErrorsListener();
-      registerEndOfSessionListener();
-      _isInit = true;
     }
     super.didChangeDependencies();
   }
@@ -134,7 +139,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     return new Scaffold(
         key: _key,
         appBar: new AppBar(
-          actions: <Widget>[IconButton( onPressed: () => _onTerminateSession(), icon: Icon(Icons.close))],
+          actions: _error == null ? <Widget>[IconButton( onPressed: () => _onTerminateSession(), icon: Icon(Icons.close))] : null,
           iconTheme: theme.appBarIconTheme,
           textTheme: theme.appBarTextTheme,
           backgroundColor: theme.BreezColors.blue[500],
@@ -195,6 +200,9 @@ class SessionErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Failed connecting to session: ${_error.toString()}");
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Center(heightFactor: 0.0, child: Text("Failed connecting to session: ${_error.toString()}", textAlign: TextAlign.center,)),
+    );
   }
 }

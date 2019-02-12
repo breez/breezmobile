@@ -1,29 +1,13 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:breez/services/breez_server/server.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
-import 'package:breez/services/lnd/generated/rpc.pb.dart';
-import 'package:breez/services/lnd/lnd.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rxdart/rxdart.dart';
-
-class LNDMock extends Mock implements LNDService {
-  Future<GenSeedResponse> genSeed(
-      Uint8List aezeedPassphrase, Uint8List seedEntropy) {
-    GenSeedResponse response = new GenSeedResponse();
-    response.cipherSeedMnemonic.add("testMnemonics");
-    response.encipheredSeed = new Uint8List(10);
-    return Future<GenSeedResponse>.value(response);
-  }
-
-  @override
-  Future<dynamic> initialize() {
-    return Future.value(null);
-  }
-}
 
 class SharedPreferencesMock extends Mock implements SharedPreferences {
   Map<String, bool> _cache = {};
@@ -53,7 +37,8 @@ class NotificationsMock extends Mock implements Notifications {
   }
 
   @override
-  Stream<Map<String, dynamic>> get notifications => new BehaviorSubject<Map<String, dynamic>>().stream;
+  Stream<Map<String, dynamic>> get notifications =>
+      new BehaviorSubject<Map<String, dynamic>>().stream;
 }
 
 class NFCServiceMock extends Mock implements NFCService {
@@ -62,24 +47,21 @@ class NFCServiceMock extends Mock implements NFCService {
   }
 }
 
+class BreezLibMock extends Mock implements BreezBridge {
+  Future<String> addInvoice(Int64 amount,
+      {String payeeName,
+      String payeeImageURL,
+      String payerName,
+      String payerImageURL,
+      String description,
+      Int64 expiry,
+      bool standard = false}) {
+    return Future.value("lightning:test");
+  }
+}
+
 class InjectorMock extends Mock implements ServiceInjector {
-  LNDService _lnd;
-
-  @override
-  LNDService get lnd => _lnd ??= new LNDMock();
-
-  @override
-  Future<SharedPreferences> get sharedPreferences =>
-      Future<SharedPreferences>.value(new SharedPreferencesMock());
-
-  @override
-  BreezServer get breezServer => new BreezServerMock();
-
-  @override
-  Notifications get notifications => new NotificationsMock();
-
-  @override
-  NFCService get nfc {
-    return new NFCServiceMock();
+  BreezBridge get breezBridge {
+    return BreezLibMock();
   }
 }
