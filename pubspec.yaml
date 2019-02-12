@@ -11,8 +11,7 @@ dependencies:
   firebase_messaging: "2.1.0"
   shared_preferences: "^0.4.1"
   share: "^0.5.2"
-  qr_flutter: ^1.1.5
-  http: "^0.11.3+16"
+  qr_flutter: ^1.1.5  
   hex: "^0.1.1"
   rxdart: "^0.18.1"  
   flutter_advanced_networkimage: any
@@ -30,6 +29,8 @@ dependencies:
   logging: ^0.11.3+2
   auto_size_text: ^0.2.1
   flutter_svg: ^0.6.3
+  json_annotation: ^2.0.0
+  http: ^0.12.0+1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.0
@@ -40,6 +41,11 @@ dependencies:
 dev_dependencies:
   mockito: "^3.0.0"
   protoc_plugin: 14.0.0
+  build_runner: ^1.0.0
+  json_serializable: ^2.0.0
+  flutter_test:
+    sdk: flutter
+  test: ^1.5.1
 
 
 # For information on the generic Dart part of this file, see the
