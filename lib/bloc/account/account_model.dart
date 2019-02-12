@@ -299,10 +299,3 @@ class PayRequest {
 
   PayRequest(this.paymentRequest, this.amount);
 }
-
-class Voucher {
-  final String code;
-  final String value;
-
-  Voucher(this.code, this.value);
-}
