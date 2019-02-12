@@ -124,17 +124,39 @@ class AddFundsState extends State<AddFundsPage> {
                       .format(response.maxAllowedDeposit, includeSymbol: true) +
                   " to this address." + "\nBreez requires you to keep ${account.currency.format(Int64(CHANNEL_RESERVE_SAT))} in your balance.",
               style: theme.warningStyle, textAlign: TextAlign.center,)),
-      response == null ? SizedBox() : Padding(
-          padding: EdgeInsets.only(top: 32.0), child:
-      Container(child: IconButton(icon: ImageIcon(
-          AssetImage("src/icon/vendors/fastbitcoins_logo.png"),
-          color: Color(0xFFff7c10)),
-          iconSize: 36.0,
-          onPressed: () => Navigator.of(context).pushNamed("/fastbitcoins")),
-          padding: EdgeInsets.all(4.0),
-          decoration: ShapeDecoration(
-              color: Color(0xFF1f2a44), shape: CircleBorder()))),
-    ]);   
+    ]);
+  }
+
+  Widget _buildRedeemVoucherButton() {
+    return new GestureDetector(
+        onTap: () => Navigator.of(context).pushNamed("/fastbitcoins"),
+        child: Container(
+          decoration: BoxDecoration(
+              color: Color(0xFFff7c10),
+              border: Border.all(
+                  color: Colors.white, style: BorderStyle.solid, width: 1.0),
+              borderRadius: BorderRadius.circular(14.0)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image(
+                image: AssetImage("src/icon/vendors/fastbitcoins_logo.png"),
+                height: 24.0,
+                fit: BoxFit.scaleDown,
+                color: Color(0xFF1f2a44),
+              ),
+              Padding(padding: EdgeInsets.only(right: 4.0)),
+              RichText(
+                text: new TextSpan(
+                  style: theme.fastbitcoinsTextStyle,
+                  children: <TextSpan>[
+                    new TextSpan(text: 'REDEEM FASTBITCOINS VOUCHER'),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ));
   }
 
   Widget _buildBottomBar(AddFundResponse response, {hasError = false}) {
@@ -150,6 +172,15 @@ class AddFundsState extends State<AddFundsPage> {
           });
     }
 
-    return SizedBox(width: 0.0, height: 0.0);
+    return new Padding(
+        padding: new EdgeInsets.only(bottom: 40.0),
+        child: new Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new SizedBox(
+                  height: 48.0,
+                  width: 256.0,
+                  child: _buildRedeemVoucherButton())
+            ]));
   }
 }
