@@ -120,3 +120,6 @@ flutter:
     - family: Breez Logo
       fonts:
         - asset: fonts/breezlogo.ttf
+    - family: ComfortaaBold
+      fonts:
+        - asset: fonts/Comfortaa-Bold.ttf
