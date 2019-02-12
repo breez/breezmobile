@@ -13,6 +13,7 @@ import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/services/share.dart';
 import 'connect_pay_model.dart';
+import 'package:breez/logger.dart';
 
 /*
 A concrete implementation of RemoteSession from the payer side.
@@ -54,8 +55,10 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   }
 
   Future start(SessionLinkModel sessionLink) async{    
+    log.info("payer session starting...");
     this.sessionLink = sessionLink;
     await _loadPersistedPayeeDetails();
+    log.info("payer session loaded persisted payee info");
     if (sessionLink.sessionSecret != null) {             
       _watchInviteRequests(SessionLinkModel(sessionID, sessionLink.sessionSecret, sessionLink.initiatorPubKey));
     }
@@ -67,7 +70,8 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     if (_currentSession.payeeData.userName != null || _currentSession.payeeData.imageURL != null) {
       _channel.sendResetMessage();
     }
-    _handleIncomingMessages();    
+    _handleIncomingMessages(); 
+    log.info("payer session started");   
   }
 
   _loadPersistedPayeeDetails() async{
@@ -137,11 +141,14 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
 
   bool get _isTerminated => _terminationStreamController.isClosed;
 
-  void _watchInviteRequests(SessionLinkModel sessionLink){        
-    _deepLinks.generateSessionInviteLink(SessionLinkModel(sessionLink.sessionID, sessionLink.sessionSecret, sessionLink.initiatorPubKey)).then((inviteLink) {      
+  void _watchInviteRequests(SessionLinkModel sessionLink){     
+    log.info("payer session generating invite link");      
+    _deepLinks.generateSessionInviteLink(SessionLinkModel(sessionLink.sessionID, sessionLink.sessionSecret, sessionLink.initiatorPubKey)).then((inviteLink) {      log.info("payer session generating invite link completed");      
       _currentSessionInvite = inviteLink;
       _paymentSessionController.add(
             _currentSession.copyWith(invitationReady: true));
+    }).catchError((err){
+      log.info("payer session generating invite link failed: " + err.toString());      
     });  
 
     _sentInvitesController.stream.listen((inviteLink) async{      

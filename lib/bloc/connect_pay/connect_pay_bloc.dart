@@ -64,22 +64,26 @@ class ConnectPayBloc {
       .onDone(() => preferences.remove(PENDING_CTP_LINK));  
   }
 
-  PayerRemoteSession startSessionAsPayer() {    
-    var currentSession = new PayerRemoteSession(_currentUser);
-    _breezServer.joinSession(true, _currentUser.name, _currentUser.token).then((newSessionReply) async {
-      CreateRatchetSessionReply session = await _breezLib.createRatchetSession(newSessionReply.sessionID, newSessionReply.expiry);     
-      SessionLinkModel payerLink = new SessionLinkModel(session.sessionID, session.secret, session.pubKey);
-      currentSession.start(payerLink);
-    });
+  PayerRemoteSession createPayerRemoteSession() {
+    return new PayerRemoteSession(_currentUser);
+  }
 
+  Future startSession(PayerRemoteSession currentSession) {    
+    log.info("starting a remote payment sessino as payer...");  
     //clean current session on terminate
     currentSession.terminationStream.first.then((_) {
       if (_currentSession == currentSession) {
         _currentSession = null;
       }
     });
-
-    return _currentSession = currentSession;
+    _currentSession = currentSession;
+    return _breezServer.joinSession(true, _currentUser.name, _currentUser.token).then((newSessionReply) async {
+      log.info("succesfullly joined to a remote session");      
+      CreateRatchetSessionReply session = await _breezLib.createRatchetSession(newSessionReply.sessionID, newSessionReply.expiry);     
+      log.info("succesfully created an encrypted session");      
+      SessionLinkModel payerLink = new SessionLinkModel(session.sessionID, session.secret, session.pubKey);
+      currentSession.start(payerLink);
+    });    
   }
 
   Future<RemoteSession> joinSessionByLink(SessionLinkModel sessionLink) async{    
