@@ -182,9 +182,7 @@ class AccountBloc {
       _reconnectStreamController.stream.transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
       .listen((_) async {                 
         connectingFuture = connectingFuture.whenComplete(() async {                       
-          if (_allowReconnect == true && _accountController.value.connected == false) { 
-            log.info("_listenReconnects: checking node conflicts before reconnecting...");            
-            log.info("_listenReconnects: no conflict detected, reconnecting...");
+          if (_allowReconnect == true && _accountController.value.connected == false) {             
             await breezLib.connectAccount();
           }
         }).catchError((e){});        
@@ -350,16 +348,20 @@ class AccountBloc {
     }  
   
     void _listenAccountChanges(BreezBridge breezLib) {
-      Observable(breezLib.notificationStream)
-          .where((event) =>
-      event.type == NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN)
-          .listen((change) {
-            _lightningDownController.add(true);
-      });
-
-      Observable(breezLib.notificationStream)
-      .where((event) => event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED)
-      .listen((change) => _refreshAccount(breezLib));
+      StreamSubscription<NotificationEvent> eventSubscription;
+      eventSubscription = Observable(breezLib.notificationStream)
+      .listen((event) {
+        if (event.type == NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
+          _lightningDownController.add(true);
+        }
+        if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
+          _refreshAccount(breezLib);
+        }
+        if (event.type == NotificationEvent_NotificationType.BACKUP_NODE_CONFLICT) {
+          eventSubscription.cancel();
+          _nodeConflictController.add(null);
+        }
+      });     
     }
   
     _refreshAccount(BreezBridge breezLib){    
