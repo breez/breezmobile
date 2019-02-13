@@ -199,8 +199,7 @@ class HomeState extends State<Home> {
       (e) {
         promptError(context, "Connect to Pay", Text(e.toString(), style: theme.alertStyle));
       }
-    );
-    new LightningLinksHandler(this.context, widget.invoiceBloc.receivedInvoicesStream);
+    );    
 
     _accountNotificationsSubscription = widget.accountBloc.accountNotificationsStream
       .listen(
