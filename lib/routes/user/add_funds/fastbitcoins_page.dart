@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -18,7 +21,7 @@ class FastbitcoinsPage extends StatefulWidget {
 
 class FastbitcoinsPageState extends State<FastbitcoinsPage> {
   final String _title = "Fastbitcoins";
-  final String _currency = "USD";
+  String _currency = "USD";
   final _formKey = GlobalKey<FormState>();
   final _codeController = TextEditingController();
   final _valueController = TextEditingController();
@@ -28,52 +31,11 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
   StreamSubscription _validatedRequestsSubscription;
   StreamSubscription _redeemedRequestsSubscription;
   bool _isInit = false;
-  bool _isValidating = false;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    /*
-    // Testing purposes
-    _codeController.text = "a";
-    _valueController.text = "1";
-    _emailController.text = "a@a.com";
-    */
-  }
 
   @override
   void didChangeDependencies() {
     if (!_isInit) {
       _fastBitcoinsBloc = AppBlocsProvider.of<FastbitcoinsBloc>(context);
-      _validatedRequestsSubscription =
-          _fastBitcoinsBloc.validateResponseStream.listen((res) async {
-        int _error = int.parse(jsonEncode(res.toJson()['error']));
-        int _kycRequired = int.parse(jsonEncode(res.toJson()['kyc_required']));
-        if (_error == 1) {
-          _showAlertDialog(jsonEncode(res.toJson()['error_message']));
-          _isValidating = false;
-        } else if (_kycRequired == 1) {
-          _showAlertDialog("KYC Required.\nBreez does not support ...");
-          _isValidating = false;
-        } else {
-          print("Validation Successful.");
-          Text content = Text(
-              'Are you sure you want to redeem ${res.toJson()['value']} ${res.toJson()['currency']} ... ?',
-              style: theme.textStyle);
-          bool sure = await promptAreYouSure(context, null, content,
-              textStyle: theme.buttonStyle);
-          if (sure) {
-            _redeemRequest();
-          }
-        }
-      });
-      _redeemedRequestsSubscription =
-          _fastBitcoinsBloc.redeemResponseStream.listen((res) {
-        //Todo
-        print(jsonEncode(res.toJson()));
-        //_isValidating = false;
-      });
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -90,36 +52,6 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
     return RegExp(
             r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
         .hasMatch(value);
-  }
-
-  Future _validateRequest() async {
-    var _request = new ValidateRequestModel(_emailController.text,
-        _codeController.text, double.parse(_valueController.text), _currency);
-    _fastBitcoinsBloc.validateRequestSink.add(_request);
-  }
-
-  void _showAlertDialog(String message) {
-    AlertDialog dialog = new AlertDialog(
-      title: Text("Error", style: theme.alertTitleStyle),
-      content: new Text(message, style: theme.alertStyle),
-      actions: <Widget>[
-        new FlatButton(
-            onPressed: () => Navigator.pop(context),
-            child: new Text("OK", style: theme.buttonStyle))
-      ],
-    );
-    showDialog(context: context, builder: (_) => dialog);
-  }
-
-  void _redeemRequest() {
-    var redeemRequest = new RedeemRequestModel(
-        _emailController.text,
-        _codeController.text,
-        double.parse(_valueController.text),
-        _currency,
-        0,
-        "");
-    _fastBitcoinsBloc.redeemRequestSink.add(redeemRequest);
   }
 
   @override
@@ -144,30 +76,11 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                 scrollDirection: Axis.vertical,
                 children: <Widget>[
                   new Column(
-                    children: <Widget>[
-                      /*
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Color(0xFFff7c10),
-                            border: Border.all(
-                                color: Colors.white,
-                                style: BorderStyle.solid,
-                                width: 1.0),
-                            borderRadius: BorderRadius.circular(14.0)),
-                        width: 330.0,
-                        height: 96.0,
-                        child: Image(
-                          image: AssetImage(
-                              "src/icon/vendors/fastbitcoins-logo-lg.png"),
-                          color: Color(0xFF1f2a44),
-                        ),
-                      ),
-                      */
+                    children: <Widget>[                     
                       new Container(
                         padding: new EdgeInsets.only(top: 8.0),
                         child: new TextFormField(
                           controller: _codeController,
-                          enabled: !_isValidating,
                           decoration: new InputDecoration(
                               labelText: "Voucher Code",
                               hintText: "Enter your voucher code"),
@@ -180,33 +93,9 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                         ),
                       ),
                       new Container(
-                        padding: new EdgeInsets.only(top: 19.0),
-                        child: new TextFormField(
-                          controller: _valueController,
-                          inputFormatters: [
-                            WhitelistingTextInputFormatter.digitsOnly
-                          ],
-                          keyboardType: TextInputType.number,
-                          enabled: !_isValidating,
-                          decoration: new InputDecoration(
-                              labelText: "Voucher Value",
-                              hintText:
-                                  "Provide the redeemable value of your voucher",
-                              hintStyle: TextStyle(fontSize: 14.0)),
-                          style: theme.FieldTextStyle.textStyle,
-                          textCapitalization: TextCapitalization.words,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Please enter a voucher value";
-                            }
-                          },
-                        ),
-                      ),
-                      new Container(
                         padding: new EdgeInsets.only(top: 8.0),
                         child: new TextFormField(
                           controller: _emailController,
-                          enabled: !_isValidating,
                           decoration:
                               new InputDecoration(labelText: "E-mail Address"),
                           style: theme.FieldTextStyle.textStyle,
@@ -220,6 +109,81 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                           },
                         ),
                       ),
+                      new Container(
+                          padding: new EdgeInsets.only(top: 8.0),
+                          child: new Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Expanded(
+                                    flex: 10,
+                                    child: new TextFormField(
+                                      controller: _valueController,
+                                      inputFormatters: [
+                                        WhitelistingTextInputFormatter(RegExp(r'\d+\.?\d*'))
+                                      ],
+                                      keyboardType: TextInputType.number,
+                                      decoration: new InputDecoration(
+                                          labelText: "Voucher Value",
+                                          hintText:
+                                              "Provide the redeemable value of your voucher",
+                                          hintStyle: TextStyle(fontSize: 14.0)),
+                                      style: theme.FieldTextStyle.textStyle,
+                                      textCapitalization:
+                                          TextCapitalization.words,
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return "Please enter a voucher value";
+                                        }
+                                        if (double.tryParse(value) == null) {
+                                          return "Please enter a valid number";
+                                        }
+                                      },
+                                    )),
+                                SizedBox(
+                                  width: 8.0,
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: new FormField(
+                                    builder: (FormFieldState state) {
+                                      return InputDecorator(
+                                          decoration: InputDecoration(
+                                            labelText: 'Currency',
+                                          ),
+                                          child: Container(
+                                            height: 21.0,
+                                            child:
+                                                new DropdownButtonHideUnderline(
+                                              child: new DropdownButton(
+                                                value: _currency,
+                                                isDense: true,
+                                                onChanged: (String newValue) {
+                                                  setState(() {
+                                                    _currency = newValue;
+                                                    state.didChange(newValue);
+                                                  });
+                                                },
+                                                items: [
+                                                  "USD",
+                                                  "GBP",
+                                                  "EUR",
+                                                  "CAD",
+                                                  "AUD"
+                                                ].map((String value) {
+                                                  return new DropdownMenuItem(
+                                                    value: value,
+                                                    child: new Text(value),
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            ),
+                                          ));
+                                    },
+                                  ),
+                                  //),
+                                )
+                              ])),
                     ],
                   ),
                 ],
@@ -242,13 +206,118 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                     shape: const StadiumBorder(),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        _isValidating = true;
-                        _validateRequest();
+                        var _request = new ValidateRequestModel(
+                            _emailController.text.trim(),
+                            _codeController.text.trim(),
+                            double.parse(_valueController.text),
+                            _currency);
+                        Navigator.of(context).push(TransparentPageRoute(
+                            (context) => new RedeemVoucherRoute(
+                                _fastBitcoinsBloc, _request)));
                       }
                     },
                   ))
             ],
           )),
     );
+  }
+}
+
+class RedeemVoucherRoute extends StatefulWidget {
+  final FastbitcoinsBloc _fbBloc;
+  final ValidateRequestModel _voucherRequest;
+
+  const RedeemVoucherRoute(this._fbBloc, this._voucherRequest);
+
+  @override
+  State<StatefulWidget> createState() {
+    return RedeemVoucherRouteState();
+  }
+}
+
+class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    var ctx = this.context;
+    widget._fbBloc.validateRequestSink.add(widget._voucherRequest);
+
+    widget._fbBloc.validateResponseStream.listen((res) async {
+      showLoading(false);
+      if (res.error == 1) {
+        _handleValidationError(res);
+        return;
+      }
+      
+      Text content = Text(
+          'Are you sure you want to redeem ${res.value} ${widget._voucherRequest.currency}?',
+          style: theme.dialogBlackStye);
+      bool sure = await promptAreYouSure(context, null, content,
+          textStyle: theme.dialogBlackStye);
+      if (sure == true) {
+        showLoading(true);
+        _redeemRequest(res);
+        return;
+      }
+      popToForm();
+    }, onError: (err) {
+      promptError(context, "Validate Failed",
+              Text(err.toString(), style: theme.alertStyle))
+          .whenComplete(() => popToForm());
+    });
+
+    widget._fbBloc.redeemResponseStream.listen((vm) {
+      showLoading(false);      
+      Navigator.popUntil(
+          context, ModalRoute.withName(Navigator.defaultRouteName));
+      showFlushbar(context, message: "Voucher was redeemed");
+    }, onError: (err) {
+      promptError(context, "Redeem Failed", Text(err.toString(), style: theme.dialogBlackStye))
+          .whenComplete(() => popToForm());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) {
+      return Loader();
+    }
+    return SizedBox();
+  }
+
+  void _handleValidationError(ValidateResponseModel validateRes) {
+    String error = validateRes.errorMessage;
+    if (validateRes.kycRequired == 1 && error == null) {
+      error = "Breez doesn't support KYC";
+    }
+    promptError(
+            context, "Validation Failed", Text(error, style: theme.alertStyle))
+        .whenComplete(() => popToForm());
+  }
+
+  void popToForm() {
+    Navigator.popUntil(context, ModalRoute.withName("/fastbitcoins"));
+  }
+
+  void showLoading(bool enabled) {
+    if (_loading != enabled) {
+      setState(() {
+        _loading = enabled;
+      });
+    }
+  }
+
+  void _redeemRequest(ValidateResponseModel validateRes) {
+    var redeemRequest = new RedeemRequestModel(
+        widget._voucherRequest.emailAddress,
+        widget._voucherRequest.code,
+        widget._voucherRequest.value,
+        widget._voucherRequest.currency,        
+        validateRes.quotationId,
+        validateRes.quotationSecret);
+    redeemRequest.validateResponse = validateRes;
+    widget._fbBloc.redeemRequestSink.add(redeemRequest);
   }
 }
