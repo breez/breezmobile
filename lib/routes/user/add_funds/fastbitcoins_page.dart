@@ -183,6 +183,10 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                         padding: new EdgeInsets.only(top: 19.0),
                         child: new TextFormField(
                           controller: _valueController,
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ],
+                          keyboardType: TextInputType.number,
                           enabled: !_isValidating,
                           decoration: new InputDecoration(
                               labelText: "Voucher Value",
