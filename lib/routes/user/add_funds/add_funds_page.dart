@@ -146,13 +146,9 @@ class AddFundsState extends State<AddFundsPage> {
                 color: Color(0xFF1f2a44),
               ),
               Padding(padding: EdgeInsets.only(right: 4.0)),
-              RichText(
-                text: new TextSpan(
-                  style: theme.fastbitcoinsTextStyle,
-                  children: <TextSpan>[
-                    new TextSpan(text: 'REDEEM FASTBITCOINS VOUCHER'),
-                  ],
-                ),
+              Text(
+                'REDEEM FASTBITCOINS VOUCHER',
+                style: theme.fastbitcoinsTextStyle,
               )
             ],
           ),
@@ -172,7 +168,7 @@ class AddFundsState extends State<AddFundsPage> {
           });
     }
 
-    return new Padding(
+    return response == null ? SizedBox() : new Padding(
         padding: new EdgeInsets.only(bottom: 40.0),
         child: new Column(
             mainAxisSize: MainAxisSize.min,
