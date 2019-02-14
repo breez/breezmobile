@@ -9,6 +9,9 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 class FastbitcoinsBloc {  
+  static const PRODUCTION_URL = "https://wallet-api.fastbitcoins.com/w-api/v1/breez";
+  static const TESTING_URL = "https://wallet-api-test.aao-tech.com/w-api/v1/breez";
+
   final _validateRequestController =
       new StreamController<ValidateRequestModel>.broadcast();
   Sink<ValidateRequestModel> get validateRequestSink =>
@@ -29,12 +32,13 @@ class FastbitcoinsBloc {
   Stream<RedeemResponseModel> get redeemResponseStream =>
       _redeemResponseController.stream;
 
-  String _baseURL = "https://wallet-api-test.aao-tech.com/w-api/v1/breez";
+  String _baseURL = TESTING_URL;
+
   BreezBridge _breezLib;
 
-  FastbitcoinsBloc({String baseURL}) {
-    if (baseURL != null) {
-      _baseURL = baseURL;
+  FastbitcoinsBloc({bool production}) {
+    if (production == true) {
+      _baseURL = PRODUCTION_URL;
     }
     _breezLib = ServiceInjector().breezBridge;
     _listenValidateRequests();
@@ -47,8 +51,12 @@ class FastbitcoinsBloc {
         var response = await http.post(_baseURL + "/quote",            
             body: jsonEncode(request.toJson()));
         _validateResponse(response);
+        ValidateResponseModel res = ValidateResponseModel.fromJson(jsonDecode(response.body));
+        if (res.error == 1) {
+          throw res.errorMessage;
+        }
         _validateResponseController
-            .add(ValidateResponseModel.fromJson(jsonDecode(response.body)));
+            .add(res);
       } catch (error) {        
         _validateResponseController.addError(error);
       }
@@ -60,13 +68,18 @@ class FastbitcoinsBloc {
       try {
         String payreq = await _breezLib.addInvoice(
             Int64(request.validateResponse.satoshiAmount),
+            description: "Fastbitcoins.com Voucher",
             standard: true);
         request.lightningInvoice = payreq;
         var response =
             await http.post(_baseURL + "/redeem", body: jsonEncode(request.toJson()));
         _validateResponse(response);
+        RedeemResponseModel res = RedeemResponseModel.fromJson(jsonDecode(response.body));
+        if (res.error == 1) {
+          throw res.errorMessage;
+        }
         _redeemResponseController
-            .add(RedeemResponseModel.fromJson(jsonDecode(response.body)));
+            .add(res);
       } catch (error) {
         _redeemResponseController.addError(error);
       }
