@@ -84,12 +84,12 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         return;
       }
 
-      if (s.paymentConfirmed) {
+      if (s.paymentFulfilled) {
         String formattedAmount = _currentSession.currentUser.currency.format(Int64(s.settledAmount));
         String successMessage = _payer
             ? 'You have successfully paid $_remoteUserName $formattedAmount!'
             : '$_remoteUserName have successfully paid you $formattedAmount!';        
-        _popWithMessage(successMessage, destroySession: !_payer);
+        _popWithMessage(successMessage, destroySession: _payer);
       }
     }, onDone: () => _popWithMessage(null, destroySession: false)); 
   }

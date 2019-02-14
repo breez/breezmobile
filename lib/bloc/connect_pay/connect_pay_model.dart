@@ -14,8 +14,7 @@ class PaymentSessionState {
   final bool paymentFulfilled;  
   final int settledAmount;
 
-  bool get remotePartyCancelled => payer ? payeeData.cancelled : payerData.cancelled;
-  bool get paymentConfirmed => payer ? paymentFulfilled : paymentFulfilled && payerData.paymentFulfilled;
+  bool get remotePartyCancelled => payer ? payeeData.cancelled : payerData.cancelled;  
 
   PaymentSessionState(this.payer, this.sessionSecret, this.payerData, this.payeeData, this.invitationReady, this.invitationSent, this.paymentFulfilled, this.settledAmount);
 
