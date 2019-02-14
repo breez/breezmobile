@@ -42,7 +42,7 @@ class AppBlocs {
     ConnectPayBloc connectPayBloc = _registerBloc(ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream), blocsByType);
     BackupBloc backupBloc = _registerBloc(BackupBloc(), blocsByType);
     MarketplaceBloc marketplaceBloc = _registerBloc(MarketplaceBloc(), blocsByType);
-    FastbitcoinsBloc fastbitcoinsBloc = _registerBloc(FastbitcoinsBloc(), blocsByType);
+    FastbitcoinsBloc fastbitcoinsBloc = _registerBloc(FastbitcoinsBloc(production: true), blocsByType);
 
     return AppBlocs._(      
       userProfileBloc,
