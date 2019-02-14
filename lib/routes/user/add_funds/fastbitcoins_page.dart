@@ -1,5 +1,11 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
+import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
@@ -11,53 +17,74 @@ class FastbitcoinsPage extends StatefulWidget {
 }
 
 class FastbitcoinsPageState extends State<FastbitcoinsPage> {
-  String _title = "Fastbitcoins";
+  final String _title = "Fastbitcoins";
+  final String _currency = "USD";
   final _formKey = GlobalKey<FormState>();
-  ScrollController _scrollController = new ScrollController();
   final _codeController = TextEditingController();
   final _valueController = TextEditingController();
   final _emailController = TextEditingController();
-  final FocusNode _codeFocusNode = new FocusNode();
-  final FocusNode _valueFocusNode = new FocusNode();
-  final FocusNode _emailFocusNode = new FocusNode();
 
-  bool _autoValidateCode = false;
-  bool _autoValidateValue = false;
-  bool _autoValidateEmail = false;
+  FastbitcoinsBloc _fastBitcoinsBloc;
+  StreamSubscription _validatedRequestsSubscription;
+  StreamSubscription _redeemedRequestsSubscription;
+  bool _isInit = false;
+  bool _isValidating = false;
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    _codeController.addListener(_onChangeCode);
-    _valueController.addListener(_onChangeValue);
-    _emailController.addListener(_onChangeEmail);
-
-    _codeFocusNode.addListener(_onFocusCodeRow);
-    _valueFocusNode.addListener(_onFocusValueRow);
-    _emailFocusNode.addListener(_onFocusEmailRow);
+    /*
+    // Testing purposes
+    _codeController.text = "a";
+    _valueController.text = "1";
+    _emailController.text = "a@a.com";
+    */
   }
 
-  void _scroll(double value) {
-    setState(() {
-      _scrollController.animateTo(
-        value,
-        curve: Curves.easeOut,
-        duration: const Duration(milliseconds: 300),
-      );
-    });
+  @override
+  void didChangeDependencies() {
+    if (!_isInit) {
+      _fastBitcoinsBloc = AppBlocsProvider.of<FastbitcoinsBloc>(context);
+      _validatedRequestsSubscription =
+          _fastBitcoinsBloc.validateResponseStream.listen((res) async {
+        int _error = int.parse(jsonEncode(res.toJson()['error']));
+        int _kycRequired = int.parse(jsonEncode(res.toJson()['kyc_required']));
+        if (_error == 1) {
+          _showAlertDialog(jsonEncode(res.toJson()['error_message']));
+          _isValidating = false;
+        } else if (_kycRequired == 1) {
+          _showAlertDialog("KYC Required.\nBreez does not support ...");
+          _isValidating = false;
+        } else {
+          print("Validation Successful.");
+          Text content = Text(
+              'Are you sure you want to redeem ${res.toJson()['value']} ${res.toJson()['currency']} ... ?',
+              style: theme.textStyle);
+          bool sure = await promptAreYouSure(context, null, content,
+              textStyle: theme.buttonStyle);
+          if (sure) {
+            _redeemRequest();
+          }
+        }
+      });
+      _redeemedRequestsSubscription =
+          _fastBitcoinsBloc.redeemResponseStream.listen((res) {
+        //Todo
+        print(jsonEncode(res.toJson()));
+        //_isValidating = false;
+      });
+      _isInit = true;
+    }
+    super.didChangeDependencies();
   }
 
-  void _onFocusCodeRow() {}
-
-  void _onFocusValueRow() {}
-
-  void _onFocusEmailRow() {}
-
-  void _onChangeCode() {}
-
-  void _onChangeValue() {}
-
-  void _onChangeEmail() {}
+  @override
+  void dispose() {
+    _validatedRequestsSubscription?.cancel();
+    _redeemedRequestsSubscription?.cancel();
+    super.dispose();
+  }
 
   bool _validateEmail(String value) {
     return RegExp(
@@ -65,9 +92,16 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
         .hasMatch(value);
   }
 
-  void _showAlertDialog() {
+  Future _validateRequest() async {
+    var _request = new ValidateRequestModel(_emailController.text,
+        _codeController.text, double.parse(_valueController.text), _currency);
+    _fastBitcoinsBloc.validateRequestSink.add(_request);
+  }
+
+  void _showAlertDialog(String message) {
     AlertDialog dialog = new AlertDialog(
-      content: new Text("Test", style: theme.alertStyle),
+      title: Text("Error", style: theme.alertTitleStyle),
+      content: new Text(message, style: theme.alertStyle),
       actions: <Widget>[
         new FlatButton(
             onPressed: () => Navigator.pop(context),
@@ -75,6 +109,17 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
       ],
     );
     showDialog(context: context, builder: (_) => dialog);
+  }
+
+  void _redeemRequest() {
+    var redeemRequest = new RedeemRequestModel(
+        _emailController.text,
+        _codeController.text,
+        double.parse(_valueController.text),
+        _currency,
+        0,
+        "");
+    _fastBitcoinsBloc.redeemRequestSink.add(redeemRequest);
   }
 
   @override
@@ -97,16 +142,32 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
               key: _formKey,
               child: new ListView(
                 scrollDirection: Axis.vertical,
-                controller: _scrollController,
                 children: <Widget>[
                   new Column(
                     children: <Widget>[
+                      /*
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xFFff7c10),
+                            border: Border.all(
+                                color: Colors.white,
+                                style: BorderStyle.solid,
+                                width: 1.0),
+                            borderRadius: BorderRadius.circular(14.0)),
+                        width: 330.0,
+                        height: 96.0,
+                        child: Image(
+                          image: AssetImage(
+                              "src/icon/vendors/fastbitcoins-logo-lg.png"),
+                          color: Color(0xFF1f2a44),
+                        ),
+                      ),
+                      */
                       new Container(
                         padding: new EdgeInsets.only(top: 8.0),
                         child: new TextFormField(
-                          autovalidate: _autoValidateCode,
                           controller: _codeController,
-                          focusNode: _codeFocusNode,
+                          enabled: !_isValidating,
                           decoration: new InputDecoration(
                               labelText: "Voucher Code",
                               hintText: "Enter your voucher code"),
@@ -121,9 +182,8 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                       new Container(
                         padding: new EdgeInsets.only(top: 19.0),
                         child: new TextFormField(
-                          autovalidate: _autoValidateValue,
                           controller: _valueController,
-                          focusNode: _valueFocusNode,
+                          enabled: !_isValidating,
                           decoration: new InputDecoration(
                               labelText: "Voucher Value",
                               hintText:
@@ -141,9 +201,8 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                       new Container(
                         padding: new EdgeInsets.only(top: 8.0),
                         child: new TextFormField(
-                          autovalidate: _autoValidateEmail,
                           controller: _emailController,
-                          focusNode: _emailFocusNode,
+                          enabled: !_isValidating,
                           decoration:
                               new InputDecoration(labelText: "E-mail Address"),
                           style: theme.FieldTextStyle.textStyle,
@@ -179,7 +238,8 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                     shape: const StadiumBorder(),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        _showAlertDialog();
+                        _isValidating = true;
+                        _validateRequest();
                       }
                     },
                   ))
