@@ -14,7 +14,7 @@ class InvoiceNotificationsHandler {
 
   InvoiceNotificationsHandler(
       this._context, this._accountBloc, this._receivedInvoicesStream) {
-    _accountBloc.accountStream.where((acc) => !acc.active).first.then((acc) {
+    _accountBloc.accountStream.where((acc) => acc.active).first.then((acc) {
       bool loaderVisible = false;
       bool handlingRequest = false;
 
