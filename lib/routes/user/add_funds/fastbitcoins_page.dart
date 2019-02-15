@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -11,6 +12,7 @@ import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:url_launcher/url_launcher.dart';
 
 class FastbitcoinsPage extends StatefulWidget {
   @override
@@ -76,7 +78,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                 scrollDirection: Axis.vertical,
                 children: <Widget>[
                   new Column(
-                    children: <Widget>[                     
+                    children: <Widget>[
                       new Container(
                         padding: new EdgeInsets.only(top: 8.0),
                         child: new TextFormField(
@@ -120,7 +122,8 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                     child: new TextFormField(
                                       controller: _valueController,
                                       inputFormatters: [
-                                        WhitelistingTextInputFormatter(RegExp(r'\d+\.?\d*'))
+                                        WhitelistingTextInputFormatter(
+                                            RegExp(r'\d+\.?\d*'))
                                       ],
                                       keyboardType: TextInputType.number,
                                       decoration: new InputDecoration(
@@ -241,16 +244,15 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
   @override
   void initState() {
     super.initState();
-    var ctx = this.context;
     widget._fbBloc.validateRequestSink.add(widget._voucherRequest);
 
     widget._fbBloc.validateResponseStream.listen((res) async {
       showLoading(false);
-      if (res.error == 1) {
-        _handleValidationError(res);
+      if (res.kycRequired == 1) {
+        showKYCRequiredMessage();
         return;
       }
-      
+
       Text content = Text(
           'Are you sure you want to redeem ${res.value} ${widget._voucherRequest.currency}?',
           style: theme.dialogBlackStye);
@@ -262,19 +264,20 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
         return;
       }
       popToForm();
-    }, onError: (err) {
-      promptError(context, "Validate Failed",
+    }, onError: (err) {      
+      promptError(context, "Redeem Voucher",
               Text(err.toString(), style: theme.alertStyle))
           .whenComplete(() => popToForm());
     });
 
     widget._fbBloc.redeemResponseStream.listen((vm) {
-      showLoading(false);      
+      showLoading(false);
       Navigator.popUntil(
           context, ModalRoute.withName(Navigator.defaultRouteName));
       showFlushbar(context, message: "Voucher was redeemed");
-    }, onError: (err) {
-      promptError(context, "Redeem Failed", Text(err.toString(), style: theme.dialogBlackStye))
+    }, onError: (err) {      
+      promptError(context, "Redeem Voucher",
+              Text(err.toString(), style: theme.dialogBlackStye))
           .whenComplete(() => popToForm());
     });
   }
@@ -285,16 +288,6 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
       return Loader();
     }
     return SizedBox();
-  }
-
-  void _handleValidationError(ValidateResponseModel validateRes) {
-    String error = validateRes.errorMessage;
-    if (validateRes.kycRequired == 1 && error == null) {
-      error = "Breez doesn't support KYC";
-    }
-    promptError(
-            context, "Validation Failed", Text(error, style: theme.alertStyle))
-        .whenComplete(() => popToForm());
   }
 
   void popToForm() {
@@ -314,10 +307,34 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
         widget._voucherRequest.emailAddress,
         widget._voucherRequest.code,
         widget._voucherRequest.value,
-        widget._voucherRequest.currency,        
+        widget._voucherRequest.currency,
         validateRes.quotationId,
         validateRes.quotationSecret);
     redeemRequest.validateResponse = validateRes;
     widget._fbBloc.redeemRequestSink.add(redeemRequest);
   }
+
+  void showKYCRequiredMessage(){
+    promptError(
+            context,
+            "Redeem Voucher",
+            RichText(
+                text: TextSpan(children: <TextSpan>[
+              TextSpan(text: "This voucher can be redeemed only in ", style: theme.dialogBlackStye),
+              _LinkTextSpan(
+                  text: "fastbitcoins.com ", url: "https://fastbitcoins.com", style: theme.blueLinkStyle),
+              TextSpan(text: "site.", style: theme.dialogBlackStye)
+            ]))).whenComplete(() => popToForm());
+  }
+}
+
+class _LinkTextSpan extends TextSpan {
+  _LinkTextSpan({TextStyle style, String url, String text})
+      : super(
+            style: style,
+            text: text ?? url,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                launch(url, forceSafariVC: false);
+              });
 }

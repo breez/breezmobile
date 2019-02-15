@@ -52,7 +52,7 @@ class FastbitcoinsBloc {
             body: jsonEncode(request.toJson()));
         _validateResponse(response);
         ValidateResponseModel res = ValidateResponseModel.fromJson(jsonDecode(response.body));
-        if (res.error == 1) {
+        if (res.error == 1 && res.kycRequired != 1) {
           throw res.errorMessage;
         }
         _validateResponseController
