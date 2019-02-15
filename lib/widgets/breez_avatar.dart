@@ -126,15 +126,18 @@ class _VendorAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return avatarURL.contains("fastbitcoins") ? CircleAvatar(
+    return avatarURL.contains("fastbitcoins")
+      ?
+      CircleAvatar(
         backgroundColor: theme.VendorColors.fastbitcoins['background'],
         radius: radius,
         child: ImageIcon(
           AssetImage(avatarURL),
-          color: theme.VendorColors.fastbitcoins['foreground'],
-          size: 0.6 * radius * 2,
+            color: theme.VendorColors.fastbitcoins['foreground'],
+            size: 0.6 * radius * 2,
         )
-    ) : Container(
+      )
+      : Container(
       decoration: ShapeDecoration(color: Colors.white,
           shape: CircleBorder(side: BorderSide(color: Colors.white)),
           image: DecorationImage(

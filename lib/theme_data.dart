@@ -115,7 +115,7 @@ class BreezColors {
 }
 
 class VendorColors {
-  VendorColors._(); // this basically makes it so you can instantiate this class
+  VendorColors._();
 
   static const Map<String, Color> fastbitcoins = const <String, Color>{
     "foreground": const Color(0xFF1f2a44),
