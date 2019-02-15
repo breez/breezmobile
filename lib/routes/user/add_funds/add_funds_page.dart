@@ -132,7 +132,7 @@ class AddFundsState extends State<AddFundsPage> {
         onTap: () => Navigator.of(context).pushNamed("/fastbitcoins"),
         child: Container(
           decoration: BoxDecoration(
-              color: Color(0xFFff7c10),
+              color: theme.VendorColors.fastbitcoins['background'],
               border: Border.all(
                   color: Colors.white, style: BorderStyle.solid, width: 1.0),
               borderRadius: BorderRadius.circular(14.0)),
@@ -143,7 +143,7 @@ class AddFundsState extends State<AddFundsPage> {
                 image: AssetImage("src/icon/vendors/fastbitcoins_logo.png"),
                 height: 24.0,
                 fit: BoxFit.scaleDown,
-                color: Color(0xFF1f2a44),
+                color: theme.VendorColors.fastbitcoins['foreground'],
               ),
               Padding(padding: EdgeInsets.only(right: 4.0)),
               Text(

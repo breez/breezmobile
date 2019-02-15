@@ -58,7 +58,7 @@ final TextStyle sessionNotificationWarningStyle = new TextStyle(color: errorColo
 final TextStyle paymentDetailsTitleStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 14.0, letterSpacing: 0.0, height: 1.28, fontFamily:'IBMPlexSansMedium');
 final TextStyle paymentDetailsSubtitleStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 14.0, letterSpacing: 0.0, height: 1.28);
 final TextStyle paymentDetailsNodeIdStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 10.0, letterSpacing: 0.0, height: 1.28);
-final TextStyle fastbitcoinsTextStyle = new TextStyle(color: Color(0xFF1f2a44), fontSize: 11.0, letterSpacing: 0.0, fontFamily:'ComfortaaBold');
+final TextStyle fastbitcoinsTextStyle = new TextStyle(color: VendorColors.fastbitcoins['foreground'], fontSize: 11.0, letterSpacing: 0.0, fontFamily:'ComfortaaBold');
 final TextStyle vendorTitleStyle = new  TextStyle(color: BreezColors.white[500], fontSize: 36.0, fontWeight: FontWeight.w600, letterSpacing: 1.1, fontFamily: 'Roboto');
 final BoxDecoration boxDecoration = new BoxDecoration(border: new Border(bottom: new BorderSide(color: BreezColors.white[500], width: 1.5)));
 final BoxDecoration autoCompleteBoxDecoration = new BoxDecoration(color: BreezColors.white[500], borderRadius: new BorderRadius.circular(3.0));
@@ -111,5 +111,18 @@ class BreezColors {
     1: const Color.fromRGBO(0, 156, 249, 1.0),
     2: const Color.fromRGBO(0, 137, 252, 1.0),
     3: const Color.fromRGBO(0, 120, 253, 1.0),
+  };
+}
+
+class VendorColors {
+  VendorColors._(); // this basically makes it so you can instantiate this class
+
+  static const Map<String, Color> fastbitcoins = const <String, Color>{
+    "foreground": const Color(0xFF1f2a44),
+    "background": const Color(0xFFff7c10),
+  };
+
+  static const Map<String, Color> bitrefill = const <String, Color>{
+    "background": const Color(0xFF3e99fa),
   };
 }

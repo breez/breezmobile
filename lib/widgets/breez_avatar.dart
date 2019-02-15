@@ -50,7 +50,7 @@ class BreezAvatar extends StatelessWidget {
       if(avatarURL.startsWith("src/icon/vendors/")){
         return _VendorAvatar(radius, avatarURL);
       }
-      
+
       return _NetworkImageAvatar(avatarURL, radius);
     }
 
@@ -126,12 +126,20 @@ class _VendorAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return avatarURL.contains("fastbitcoins") ? CircleAvatar(
+        backgroundColor: theme.VendorColors.fastbitcoins['background'],
+        radius: radius,
+        child: ImageIcon(
+          AssetImage(avatarURL),
+          color: theme.VendorColors.fastbitcoins['foreground'],
+          size: 0.6 * radius * 2,
+        )
+    ) : Container(
       decoration: ShapeDecoration(color: Colors.white,
           shape: CircleBorder(side: BorderSide(color: Colors.white)),
           image: DecorationImage(
               image: AssetImage(avatarURL),
-              colorFilter: ColorFilter.mode(Color(0xFF3e99fa), BlendMode.color))),
+              colorFilter: ColorFilter.mode(theme.VendorColors.bitrefill['background'], BlendMode.color))),
       width: radius * 2,
       height: radius * 2,
     );
