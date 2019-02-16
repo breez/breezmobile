@@ -125,32 +125,35 @@ class _VendorAvatar extends StatelessWidget {
   _VendorAvatar(this.radius, this.avatarURL);
 
 
-  Widget _fastbitcoinsAvatar(){
+  Widget _fastbitcoinsAvatar() {
     return CircleAvatar(
-        backgroundColor: theme.VendorColors.vendor['fastbitcoins'].iconBgColor,
+        backgroundColor: theme.vendor.fastbitcoins.iconBgColor,
         radius: radius,
         child: ImageIcon(
           AssetImage(avatarURL),
-          color: theme.VendorColors.vendor['fastbitcoins'].iconFgColor,
+          color: theme.vendor.fastbitcoins.iconFgColor,
           size: 0.6 * radius * 2,
         )
     );
   }
-  Widget _bitrefillAvatar(){
+
+  Widget _bitrefillAvatar() {
     return Container(
       decoration: ShapeDecoration(color: Colors.white,
           shape: CircleBorder(side: BorderSide(color: Colors.white)),
           image: DecorationImage(
               image: AssetImage(avatarURL),
-              colorFilter: ColorFilter.mode(theme.VendorColors.vendor['bitrefill'].iconBgColor, BlendMode.color))),
+              colorFilter: ColorFilter.mode(
+                  theme.vendor.bitrefill.iconBgColor, BlendMode.color))),
       width: radius * 2,
       height: radius * 2,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return avatarURL.contains("fastbitcoins")
-      ? _fastbitcoinsAvatar()
-      : _bitrefillAvatar();
+        ? _fastbitcoinsAvatar()
+        : _bitrefillAvatar();
   }
 }
