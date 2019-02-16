@@ -230,9 +230,7 @@ class PaymentInfo {
     if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
       return "Bitrefill";
     }
-    if (_paymentResponse.invoiceMemo.description.startsWith("Fastbitcoins")) {
-      return "Fastbitcoins";
-    }
+
     if (type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL){
       return "Bitcoin Transfer";
     }
