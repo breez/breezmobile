@@ -8,6 +8,11 @@ import 'package:fixnum/fixnum.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/bloc/marketplace/vendor_model.dart';
+import 'package:flutter/material.dart';
+
+
 class FastbitcoinsBloc {  
   static const PRODUCTION_URL = "https://wallet-api.fastbitcoins.com/w-api/v1/breez";
   static const TESTING_URL = "https://wallet-api-test.aao-tech.com/w-api/v1/breez";
@@ -40,6 +45,10 @@ class FastbitcoinsBloc {
     if (production == true) {
       _baseURL = PRODUCTION_URL;
     }
+    theme.VendorColors.vendor['fastbitcoins'] = VendorTheme(
+        iconBgColor: Color(0xFFff7c10),
+        iconFgColor: Color(0xFF1f2a44),
+        textColor: Color(0xFF1f2a44));
     _breezLib = ServiceInjector().breezBridge;
     _listenValidateRequests();
     _listenRedeemRequests();

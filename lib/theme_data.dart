@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:breez/bloc/marketplace/vendor_model.dart';
 
 final ThemeData breezThemeData = new ThemeData(
   brightness: Brightness.light,
@@ -58,7 +59,7 @@ final TextStyle sessionNotificationWarningStyle = new TextStyle(color: errorColo
 final TextStyle paymentDetailsTitleStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 14.0, letterSpacing: 0.0, height: 1.28, fontFamily:'IBMPlexSansMedium');
 final TextStyle paymentDetailsSubtitleStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 14.0, letterSpacing: 0.0, height: 1.28);
 final TextStyle paymentDetailsNodeIdStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 10.0, letterSpacing: 0.0, height: 1.28);
-final TextStyle fastbitcoinsTextStyle = new TextStyle(color: VendorColors.fastbitcoins['foreground'], fontSize: 11.0, letterSpacing: 0.0, fontFamily:'ComfortaaBold');
+final TextStyle fastbitcoinsTextStyle = new TextStyle(color: VendorColors.vendor['fastbitcoins'].textColor, fontSize: 11.0, letterSpacing: 0.0, fontFamily:'ComfortaaBold');
 final TextStyle vendorTitleStyle = new  TextStyle(color: BreezColors.white[500], fontSize: 36.0, fontWeight: FontWeight.w600, letterSpacing: 1.1, fontFamily: 'Roboto');
 final BoxDecoration boxDecoration = new BoxDecoration(border: new Border(bottom: new BorderSide(color: BreezColors.white[500], width: 1.5)));
 final BoxDecoration autoCompleteBoxDecoration = new BoxDecoration(color: BreezColors.white[500], borderRadius: new BorderRadius.circular(3.0));
@@ -117,12 +118,9 @@ class BreezColors {
 class VendorColors {
   VendorColors._();
 
-  static const Map<String, Color> fastbitcoins = const <String, Color>{
-    "foreground": const Color(0xFF1f2a44),
-    "background": const Color(0xFFff7c10),
+  static Map<String, VendorTheme> vendor = <String, VendorTheme>{
+    "fastbitcoins": VendorTheme(),
+    "bitrefill": VendorTheme(),
   };
 
-  static const Map<String, Color> bitrefill = const <String, Color>{
-    "background": const Color(0xFF3e99fa),
-  };
 }

@@ -19,8 +19,8 @@ class VendorRow extends StatelessWidget {
           )
         : Container();
 
-    final _vendorBgColor = _vendor.bgColor != null
-        ? Color(int.parse('0xFF' + _vendor.bgColor))
+    final _vendorBgColor = theme.VendorColors.vendor[_vendor.name].iconBgColor != null
+        ? theme.VendorColors.vendor[_vendor.name].iconBgColor
         : Colors.transparent;
 
     final _vendorCard = new GestureDetector(

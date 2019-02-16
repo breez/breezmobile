@@ -3,6 +3,8 @@ import "package:ini/ini.dart";
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter/material.dart';
 
 class MarketplaceBloc {
   final _vendorController = new BehaviorSubject<List<VendorModel>>();
@@ -22,7 +24,8 @@ class MarketplaceBloc {
       String _logo = config.get(vendorOptions, 'logo');
       String _bgColor = config.get(vendorOptions, 'bgColor');
       VendorModel _vendorModel =
-          VendorModel(_url, vendorOptions, logo: _logo, bgColor: _bgColor);
+          VendorModel(_url, vendorOptions, logo: _logo);
+      theme.VendorColors.vendor[vendorOptions.toLowerCase()] = VendorTheme(iconBgColor: Color(int.parse('0xFF' + _bgColor)));
       _vendorList.add(_vendorModel);
     });
     _vendorController.add(_vendorList);
