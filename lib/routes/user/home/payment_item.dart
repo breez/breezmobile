@@ -20,7 +20,6 @@ class PaymentItem extends StatelessWidget {
           _paymentInfo.title,
           style: theme.transactionTitleStyle,
           overflow: TextOverflow.ellipsis,
-          maxLines: 1,
         ),
         subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.start,
