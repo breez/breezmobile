@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:fixnum/fixnum.dart';
@@ -86,9 +87,10 @@ class FastbitcoinsBloc {
     });
   }
 
-  void _validateResponse<T>(Response response) {
+  void _validateResponse<T>(Response response) {    
     if (response.statusCode != 200) {
-      throw response.body;
+      log.severe('fastbitcoins response error: ${response.body}');
+      throw "Redeem voucher failed, please try again later";
     }
   }
 
