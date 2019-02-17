@@ -72,6 +72,7 @@ class FastbitcoinsBloc {
             description: "Fastbitcoins.com Voucher",
             standard: true);
         request.lightningInvoice = payreq;
+        log.info("fastbicoins request: " + jsonEncode(request.toJson()));
         var response =
             await http.post(_baseURL + "/redeem", body: jsonEncode(request.toJson()));
         _validateResponse(response);
@@ -89,7 +90,7 @@ class FastbitcoinsBloc {
 
   void _validateResponse<T>(Response response) {    
     if (response.statusCode != 200) {
-      log.severe('fastbitcoins response error: ${response.body}');
+      log.severe('fastbitcoins response error: ${response.body.substring(0,100)}');
       throw "Service Unavailable. Please try again later.";
     }
   }
