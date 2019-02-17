@@ -127,6 +127,9 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                     ],
                                     keyboardType: TextInputType.number,
                                     decoration: new InputDecoration(
+                                        // contentPadding:
+                                        //           new EdgeInsets.only(
+                                        //               bottom: 10.74*5),
                                         labelText: "Voucher Value",
                                         hintText:
                                             "Provide the redeemable value of your voucher",
@@ -153,34 +156,36 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                     builder: (FormFieldState state) {
                                       return InputDecorator(
                                         decoration: InputDecoration(
-                                            labelText: 'Currency',
-                                            contentPadding:
-                                                new EdgeInsets.symmetric(
-                                                    vertical: 10.6)),
-                                        child: new DropdownButtonHideUnderline(
-                                          child: new DropdownButton(
-                                            value: _currency,
-                                            isDense: true,
-                                            onChanged: (String newValue) {
-                                              setState(() {
-                                                _currency = newValue;
-                                                state.didChange(newValue);
-                                              });
-                                            },
-                                            items: [
-                                              "USD",
-                                              "GBP",
-                                              "EUR",
-                                              "CAD",
-                                              "AUD"
-                                            ].map((String value) {
-                                              return new DropdownMenuItem(
-                                                value: value,
-                                                child: new Text(value,
-                                                    style: theme.FieldTextStyle
-                                                        .textStyle),
-                                              );
-                                            }).toList(),
+                                          labelText: 'Currency',
+                                        ),
+                                        child: Container(
+                                          height: 21.3,
+                                          child: DropdownButtonHideUnderline(
+                                            child: new DropdownButton(
+                                              value: _currency,
+                                              isDense: true,                                              
+                                              onChanged: (String newValue) {
+                                                setState(() {
+                                                  _currency = newValue;
+                                                  state.didChange(newValue);
+                                                });
+                                              },
+                                              items: [
+                                                "USD",
+                                                "GBP",
+                                                "EUR",
+                                                "CAD",
+                                                "AUD"
+                                              ].map((String value) {
+                                                return new DropdownMenuItem(
+                                                  value: value,
+                                                  child: new Text(value,
+                                                      style: theme
+                                                          .FieldTextStyle
+                                                          .textStyle),
+                                                );
+                                              }).toList(),
+                                            ),
                                           ),
                                         ),
                                       );
@@ -249,7 +254,8 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
     super.initState();
     widget._fbBloc.validateRequestSink.add(widget._voucherRequest);
 
-    _validateSubscription = widget._fbBloc.validateResponseStream.listen((res) async {
+    _validateSubscription =
+        widget._fbBloc.validateResponseStream.listen((res) async {
       showLoading(false);
       if (res.kycRequired == 1) {
         showKYCRequiredMessage();
@@ -268,8 +274,11 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
       }
       popToForm();
     }, onError: (err) {
-      promptError(context, "Redeem Voucher",
-              Text("Failed to redeem voucher: " + err.toString(), style: theme.alertStyle))
+      promptError(
+              context,
+              "Redeem Voucher",
+              Text("Failed to redeem voucher: " + err.toString(),
+                  style: theme.alertStyle))
           .whenComplete(() => popToForm());
     });
 
@@ -279,13 +288,16 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
           context, ModalRoute.withName(Navigator.defaultRouteName));
       showFlushbar(context, message: "Voucher was successfully redeemed!");
     }, onError: (err) {
-      promptError(context, "Redeem Voucher",
-              Text("Failed to redeem voucher: " + err.toString(), style: theme.dialogBlackStye))
+      promptError(
+              context,
+              "Redeem Voucher",
+              Text("Failed to redeem voucher: " + err.toString(),
+                  style: theme.dialogBlackStye))
           .whenComplete(() => popToForm());
     });
   }
 
-  @override 
+  @override
   void dispose() {
     _validateSubscription.cancel();
     _redeemSubscription.cancel();
