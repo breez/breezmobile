@@ -22,7 +22,7 @@ class FastbitcoinsPage extends StatefulWidget {
 }
 
 class FastbitcoinsPageState extends State<FastbitcoinsPage> {
-  final String _title = "Fastbitcoins";
+  final String _title = "FastBitcoins.com";
   String _currency = "USD";
   final _formKey = GlobalKey<FormState>();
   final _codeController = TextEditingController();
