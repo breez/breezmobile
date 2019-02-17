@@ -50,7 +50,7 @@ class BreezAvatar extends StatelessWidget {
       if(avatarURL.startsWith("src/icon/vendors/")){
         return _VendorAvatar(radius, avatarURL);
       }
-      
+
       return _NetworkImageAvatar(avatarURL, radius);
     }
 
@@ -124,16 +124,36 @@ class _VendorAvatar extends StatelessWidget {
 
   _VendorAvatar(this.radius, this.avatarURL);
 
-  @override
-  Widget build(BuildContext context) {
+
+  Widget _fastbitcoinsAvatar() {
+    return CircleAvatar(
+        backgroundColor: theme.fastbitcoins.iconBgColor,
+        radius: radius,
+        child: ImageIcon(
+          AssetImage(avatarURL),
+          color: theme.fastbitcoins.iconFgColor,
+          size: 0.6 * radius * 2,
+        )
+    );
+  }
+
+  Widget _bitrefillAvatar() {
     return Container(
       decoration: ShapeDecoration(color: Colors.white,
           shape: CircleBorder(side: BorderSide(color: Colors.white)),
           image: DecorationImage(
               image: AssetImage(avatarURL),
-              colorFilter: ColorFilter.mode(Color(0xFF3e99fa), BlendMode.color))),
+              colorFilter: ColorFilter.mode(
+                  theme.bitrefill.iconBgColor, BlendMode.color))),
       width: radius * 2,
       height: radius * 2,
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return avatarURL.contains("fastbitcoins")
+        ? _fastbitcoinsAvatar()
+        : _bitrefillAvatar();
   }
 }

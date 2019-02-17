@@ -200,8 +200,8 @@ class PaymentInfo {
 
   bool get containsPaymentInfo {
     String remoteName = (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeName : _paymentResponse.invoiceMemo?.payerName);  
-    String decription = _paymentResponse.invoiceMemo?.description;  
-    return remoteName?.isNotEmpty  == true|| decription.isNotEmpty == true;     
+    String description = _paymentResponse.invoiceMemo?.description;
+    return remoteName?.isNotEmpty  == true|| description.isNotEmpty == true;
   }
 
   bool get isTransferRequest => _paymentResponse?.invoiceMemo?.transferRequest == true;
@@ -215,9 +215,14 @@ class PaymentInfo {
           : _paymentResponse.invoiceMemo?.description;
 
   String get imageURL {
-    String url =  _paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
-        ? "src/icon/vendors/bitrefill_logo.png"
-        : (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeImageURL : _paymentResponse.invoiceMemo?.payerImageURL);
+    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
+      return "src/icon/vendors/bitrefill_logo.png";
+    }
+    if (_paymentResponse.invoiceMemo.description.startsWith("Fastbitcoins")) {
+      return "src/icon/vendors/fastbitcoins_logo.png";
+    }
+    
+    String url =  (type == PaymentType.SENT ? _paymentResponse.invoiceMemo?.payeeImageURL : _paymentResponse.invoiceMemo?.payerImageURL);
     return (url == null || url.isEmpty) ? null : url;
   }
   
@@ -225,6 +230,7 @@ class PaymentInfo {
     if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
       return "Bitrefill";
     }
+
     if (type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL){
       return "Bitcoin Transfer";
     }

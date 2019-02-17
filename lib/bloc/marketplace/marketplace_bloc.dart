@@ -20,9 +20,8 @@ class MarketplaceBloc {
     _vendorData.forEach((vendorOptions) {
       String _url = config.get(vendorOptions, 'url');
       String _logo = config.get(vendorOptions, 'logo');
-      String _bgColor = config.get(vendorOptions, 'bgColor');
       VendorModel _vendorModel =
-          VendorModel(_url, vendorOptions, logo: _logo, bgColor: _bgColor);
+      VendorModel(_url, vendorOptions, logo: _logo);
       _vendorList.add(_vendorModel);
     });
     _vendorController.add(_vendorList);

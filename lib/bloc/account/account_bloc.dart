@@ -37,7 +37,7 @@ class AccountBloc {
 
   final _addFundController = new BehaviorSubject<AddFundResponse>();
   Stream<AddFundResponse> get addFundStream => _addFundController.stream;
-    
+
   final _accountController = new BehaviorSubject<AccountModel>();
   Stream<AccountModel> get accountStream => _accountController.stream;
 

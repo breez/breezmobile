@@ -6,7 +6,6 @@ import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class PaymentItem extends StatelessWidget {
-  static const int MAX_TITLE_LENGTH = 22;
   final PaymentInfo _paymentInfo;
   final bool _lastItem;
 
@@ -14,16 +13,13 @@ class PaymentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String title = _paymentInfo.title;
-    if (title.length > MAX_TITLE_LENGTH) {
-      title = title.substring(0, MAX_TITLE_LENGTH) + "...";
-    }
     return new Stack(alignment: Alignment.bottomCenter, children: <Widget>[
       ListTile(
         leading: PaymentItemAvatar(_paymentInfo),
         title: Text(
-          title,
+          _paymentInfo.title,
           style: theme.transactionTitleStyle,
+          overflow: TextOverflow.ellipsis,
         ),
         subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.start,

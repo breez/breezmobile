@@ -18,6 +18,7 @@ import 'package:breez/routes/shared/initial_walkthrough.dart';
 import 'package:breez/routes/shared/dev/dev.dart';
 import 'package:breez/routes/user/activate_card/activate_card_page.dart';
 import 'package:breez/routes/user/add_funds/add_funds_page.dart';
+import 'package:breez/routes/user/add_funds/fastbitcoins_page.dart';
 import 'package:breez/routes/user/home/home_page.dart';
 import 'package:breez/routes/user/order_card/order_card_page.dart';
 import 'package:breez/routes/user/withdraw_funds/withdraw_funds_page.dart';
@@ -153,6 +154,12 @@ class UserApp extends StatelessWidget {
                 case '/marketplace':
                   return new FadeInRoute(
                     builder: (_) => new MarketplacePage(),
+                    settings: settings,
+                  );
+                case '/fastbitcoins':
+                  return new FadeInRoute(
+                    builder: (_) =>
+                    new FastbitcoinsPage(),
                     settings: settings,
                   );
               }
