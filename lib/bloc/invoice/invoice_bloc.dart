@@ -113,20 +113,21 @@ class InvoiceBloc {
       }
       return s;
     })
-    .asyncMap((paymentRequest) async {
+    .asyncMap((paymentRequest) {
       // add stream event before processing and decoding
       _receivedInvoicesController.add(
           new PaymentRequestModel(null, paymentRequest));
       //filter out our own payment requests
-      var invoice;
-      try {
-        invoice = await breezLib.getRelatedInvoice(paymentRequest).then((invoice) {
-          if(invoice == null){
-            _receivedInvoicesController.addError(null);
-          }
-        });
-      } catch (e) {}
-      return invoice == null ? paymentRequest : null;
+      return breezLib.getRelatedInvoice(paymentRequest)
+        .then((invoice) {
+          log.info("filtering our invoice from clipboard");
+          _receivedInvoicesController.addError(new PaymentRequestModel(null, paymentRequest));
+          return null;
+        })
+        .catchError((_) {
+          log.info("detected not ours invoice, continue to decoding");
+          return paymentRequest;
+        });      
     })
     .where((paymentRequest) => paymentRequest != null)    
     .asyncMap( (paymentRequest) {       
