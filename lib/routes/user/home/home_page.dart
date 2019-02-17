@@ -31,7 +31,7 @@ class Home extends StatefulWidget {
     _minorActionsInvoice =
     new List<DrawerItemConfig>.unmodifiable([
       new DrawerItemConfig(
-          "/scan_invoice", "Scan Invoice", "src/icon/qr_scan.png", onItemSelected: (String name) async {
+          "/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png", onItemSelected: (String name) async {
           String decodedQr = await BarcodeScanner.scan();
           invoiceBloc.decodeInvoiceSink.add(decodedQr);
       }),
@@ -110,7 +110,7 @@ class HomeState extends State<Home> {
     });
 
     widget.accountBloc.accountStream.listen((acc) {
-      var activeAccountRoutes = ["/connect_to_pay", "/scan_invoice", "/create_invoice"];
+      var activeAccountRoutes = ["/connect_to_pay", "/pay_invoice", "/create_invoice"];
       Function addOrRemove = acc.active ? _hiddenRountes.remove : _hiddenRountes.add;
       setState(() {
         activeAccountRoutes.forEach((r) => addOrRemove(r));      
