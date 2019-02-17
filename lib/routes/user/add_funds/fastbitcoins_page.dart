@@ -275,7 +275,7 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
       Navigator.popUntil(
           context, ModalRoute.withName(Navigator.defaultRouteName));
       showFlushbar(context, message: "Voucher redeemed successfully");
-    }, onError: (err) {      
+    }, onError: (err) {           
       promptError(context, "Redeem Voucher",
               Text(err.toString(), style: theme.dialogBlackStye))
           .whenComplete(() => popToForm());

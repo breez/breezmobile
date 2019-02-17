@@ -127,11 +127,11 @@ class _VendorAvatar extends StatelessWidget {
 
   Widget _fastbitcoinsAvatar() {
     return CircleAvatar(
-        backgroundColor: theme.vendor.fastbitcoins.iconBgColor,
+        backgroundColor: theme.fastbitcoins.iconBgColor,
         radius: radius,
         child: ImageIcon(
           AssetImage(avatarURL),
-          color: theme.vendor.fastbitcoins.iconFgColor,
+          color: theme.fastbitcoins.iconFgColor,
           size: 0.6 * radius * 2,
         )
     );
@@ -144,7 +144,7 @@ class _VendorAvatar extends StatelessWidget {
           image: DecorationImage(
               image: AssetImage(avatarURL),
               colorFilter: ColorFilter.mode(
-                  theme.vendor.bitrefill.iconBgColor, BlendMode.color))),
+                  theme.bitrefill.iconBgColor, BlendMode.color))),
       width: radius * 2,
       height: radius * 2,
     );

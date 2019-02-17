@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:breez/bloc/marketplace/vendor_model.dart';
 
 final ThemeData breezThemeData = new ThemeData(
   brightness: Brightness.light,
@@ -7,8 +6,8 @@ final ThemeData breezThemeData = new ThemeData(
   accentColor: BreezColors.white[500],
 );
 
-VendorTheme vendor = VendorTheme();
-
+final VendorTheme bitrefill = VendorTheme(iconBgColor: Color(0xFF3e99fa));
+final VendorTheme fastbitcoins = VendorTheme(iconBgColor: Color(0xFFff7c10), iconFgColor: Color(0xFF1f2a44), textColor: Color(0xFF1f2a44));
 final TextTheme appBarTextTheme = new TextTheme(title:appBarTextStyle);
 final IconThemeData appBarIconTheme = new IconThemeData(color: BreezColors.white[500]);
 final TextStyle drawerItemTextStyle = new TextStyle(height: 1.2, letterSpacing: 0.25, fontSize: 14.3);
@@ -61,7 +60,7 @@ final TextStyle sessionNotificationWarningStyle = new TextStyle(color: errorColo
 final TextStyle paymentDetailsTitleStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 14.0, letterSpacing: 0.0, height: 1.28, fontFamily:'IBMPlexSansMedium');
 final TextStyle paymentDetailsSubtitleStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 14.0, letterSpacing: 0.0, height: 1.28);
 final TextStyle paymentDetailsNodeIdStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 10.0, letterSpacing: 0.0, height: 1.28);
-final TextStyle fastbitcoinsTextStyle = new TextStyle(color: vendor.fastbitcoins.textColor, fontSize: 11.0, letterSpacing: 0.0, fontFamily:'ComfortaaBold');
+final TextStyle fastbitcoinsTextStyle = new TextStyle(color: fastbitcoins.textColor, fontSize: 11.0, letterSpacing: 0.0, fontFamily:'ComfortaaBold');
 final TextStyle vendorTitleStyle = new  TextStyle(color: BreezColors.white[500], fontSize: 36.0, fontWeight: FontWeight.w600, letterSpacing: 1.1, fontFamily: 'Roboto');
 final BoxDecoration boxDecoration = new BoxDecoration(border: new Border(bottom: new BorderSide(color: BreezColors.white[500], width: 1.5)));
 final BoxDecoration autoCompleteBoxDecoration = new BoxDecoration(color: BreezColors.white[500], borderRadius: new BorderRadius.circular(3.0));
@@ -115,4 +114,12 @@ class BreezColors {
     2: const Color.fromRGBO(0, 137, 252, 1.0),
     3: const Color.fromRGBO(0, 120, 253, 1.0),
   };
+}
+
+class VendorTheme {
+  final Color iconBgColor;
+  final Color iconFgColor;
+  final Color textColor;
+
+  VendorTheme({this.iconBgColor, this.iconFgColor, this.textColor});
 }
