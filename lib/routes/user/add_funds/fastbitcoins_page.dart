@@ -118,31 +118,32 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Expanded(
-                                    flex: 10,
-                                    child: new TextFormField(
-                                      controller: _valueController,
-                                      inputFormatters: [
-                                        WhitelistingTextInputFormatter(
-                                            RegExp(r'\d+\.?\d*'))
-                                      ],
-                                      keyboardType: TextInputType.number,
-                                      decoration: new InputDecoration(
-                                          labelText: "Voucher Value",
-                                          hintText:
-                                              "Provide the redeemable value of your voucher",
-                                          hintStyle: TextStyle(fontSize: 14.0)),
-                                      style: theme.FieldTextStyle.textStyle,
-                                      textCapitalization:
-                                          TextCapitalization.words,
-                                      validator: (value) {
-                                        if (value.isEmpty) {
-                                          return "Please enter a voucher value";
-                                        }
-                                        if (double.tryParse(value) == null) {
-                                          return "Please enter a valid number";
-                                        }
-                                      },
-                                    )),
+                                  flex: 10,
+                                  child: TextFormField(
+                                    controller: _valueController,
+                                    inputFormatters: [
+                                      WhitelistingTextInputFormatter(
+                                          RegExp(r'\d+\.?\d*'))
+                                    ],
+                                    keyboardType: TextInputType.number,
+                                    decoration: new InputDecoration(
+                                        labelText: "Voucher Value",
+                                        hintText:
+                                            "Provide the redeemable value of your voucher",
+                                        hintStyle: TextStyle(fontSize: 14.0)),
+                                    style: theme.FieldTextStyle.textStyle,
+                                    textCapitalization:
+                                        TextCapitalization.words,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return "Please enter a voucher value";
+                                      }
+                                      if (double.tryParse(value) == null) {
+                                        return "Please enter a valid number";
+                                      }
+                                    },
+                                  ),
+                                ),
                                 SizedBox(
                                   width: 8.0,
                                 ),
@@ -151,40 +152,40 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                   child: new FormField(
                                     builder: (FormFieldState state) {
                                       return InputDecorator(
-                                          decoration: InputDecoration(
+                                        decoration: InputDecoration(
                                             labelText: 'Currency',
+                                            contentPadding:
+                                                new EdgeInsets.symmetric(
+                                                    vertical: 10.6)),
+                                        child: new DropdownButtonHideUnderline(
+                                          child: new DropdownButton(
+                                            value: _currency,
+                                            isDense: true,
+                                            onChanged: (String newValue) {
+                                              setState(() {
+                                                _currency = newValue;
+                                                state.didChange(newValue);
+                                              });
+                                            },
+                                            items: [
+                                              "USD",
+                                              "GBP",
+                                              "EUR",
+                                              "CAD",
+                                              "AUD"
+                                            ].map((String value) {
+                                              return new DropdownMenuItem(
+                                                value: value,
+                                                child: new Text(value,
+                                                    style: theme.FieldTextStyle
+                                                        .textStyle),
+                                              );
+                                            }).toList(),
                                           ),
-                                          child: Container(
-                                            height: 21.0,
-                                            child:
-                                                new DropdownButtonHideUnderline(
-                                              child: new DropdownButton(
-                                                value: _currency,
-                                                isDense: true,
-                                                onChanged: (String newValue) {
-                                                  setState(() {
-                                                    _currency = newValue;
-                                                    state.didChange(newValue);
-                                                  });
-                                                },
-                                                items: [
-                                                  "USD",
-                                                  "GBP",
-                                                  "EUR",
-                                                  "CAD",
-                                                  "AUD"
-                                                ].map((String value) {
-                                                  return new DropdownMenuItem(
-                                                    value: value,
-                                                    child: new Text(value),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-                                          ));
+                                        ),
+                                      );
                                     },
                                   ),
-                                  //),
                                 )
                               ])),
                     ],
@@ -264,7 +265,7 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
         return;
       }
       popToForm();
-    }, onError: (err) {      
+    }, onError: (err) {
       promptError(context, "Redeem Voucher",
               Text(err.toString(), style: theme.alertStyle))
           .whenComplete(() => popToForm());
@@ -275,7 +276,7 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
       Navigator.popUntil(
           context, ModalRoute.withName(Navigator.defaultRouteName));
       showFlushbar(context, message: "Voucher redeemed successfully");
-    }, onError: (err) {           
+    }, onError: (err) {
       promptError(context, "Redeem Voucher",
               Text(err.toString(), style: theme.dialogBlackStye))
           .whenComplete(() => popToForm());
@@ -314,17 +315,21 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
     widget._fbBloc.redeemRequestSink.add(redeemRequest);
   }
 
-  void showKYCRequiredMessage(){
+  void showKYCRequiredMessage() {
     promptError(
-            context,
-            "Redeem Voucher",
-            RichText(
-                text: TextSpan(children: <TextSpan>[
-              TextSpan(text: "This voucher can be redeemed only in ", style: theme.dialogBlackStye),
-              _LinkTextSpan(
-                  text: "fastbitcoins.com ", url: "https://fastbitcoins.com", style: theme.blueLinkStyle),
-              TextSpan(text: "site.", style: theme.dialogBlackStye)
-            ]))).whenComplete(() => popToForm());
+        context,
+        "Redeem Voucher",
+        RichText(
+            text: TextSpan(children: <TextSpan>[
+          TextSpan(
+              text: "This voucher can be redeemed only in ",
+              style: theme.dialogBlackStye),
+          _LinkTextSpan(
+              text: "fastbitcoins.com ",
+              url: "https://fastbitcoins.com",
+              style: theme.blueLinkStyle),
+          TextSpan(text: "site.", style: theme.dialogBlackStye)
+        ]))).whenComplete(() => popToForm());
   }
 }
 
