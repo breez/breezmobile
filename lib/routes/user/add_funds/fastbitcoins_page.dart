@@ -241,13 +241,15 @@ class RedeemVoucherRoute extends StatefulWidget {
 
 class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
   bool _loading = true;
+  StreamSubscription<ValidateResponseModel> _validateSubscription;
+  StreamSubscription<RedeemResponseModel> _redeemSubscription;
 
   @override
   void initState() {
     super.initState();
     widget._fbBloc.validateRequestSink.add(widget._voucherRequest);
 
-    widget._fbBloc.validateResponseStream.listen((res) async {
+    _validateSubscription = widget._fbBloc.validateResponseStream.listen((res) async {
       showLoading(false);
       if (res.kycRequired == 1) {
         showKYCRequiredMessage();
@@ -257,7 +259,7 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
       Text content = Text(
           'Are you sure you want to redeem ${res.value} ${widget._voucherRequest.currency}?',
           style: theme.dialogBlackStye);
-      bool sure = await promptAreYouSure(context, null, content,
+      bool sure = await promptAreYouSure(context, "Redeem Voucher", content,
           textStyle: theme.dialogBlackStye);
       if (sure == true) {
         showLoading(true);
@@ -267,26 +269,33 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
       popToForm();
     }, onError: (err) {
       promptError(context, "Redeem Voucher",
-              Text(err.toString(), style: theme.alertStyle))
+              Text("Failed to redeem voucher: " + err.toString(), style: theme.alertStyle))
           .whenComplete(() => popToForm());
     });
 
-    widget._fbBloc.redeemResponseStream.listen((vm) {
+    _redeemSubscription = widget._fbBloc.redeemResponseStream.listen((vm) {
       showLoading(false);
       Navigator.popUntil(
           context, ModalRoute.withName(Navigator.defaultRouteName));
-      showFlushbar(context, message: "Voucher redeemed successfully");
+      showFlushbar(context, message: "Voucher was successfully redeemed!");
     }, onError: (err) {
       promptError(context, "Redeem Voucher",
-              Text(err.toString(), style: theme.dialogBlackStye))
+              Text("Failed to redeem voucher: " + err.toString(), style: theme.dialogBlackStye))
           .whenComplete(() => popToForm());
     });
+  }
+
+  @override 
+  void dispose() {
+    _validateSubscription.cancel();
+    _redeemSubscription.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return Loader();
+      return FullScreenLoader();
     }
     return SizedBox();
   }
