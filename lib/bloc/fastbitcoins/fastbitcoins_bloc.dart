@@ -90,7 +90,7 @@ class FastbitcoinsBloc {
   void _validateResponse<T>(Response response) {    
     if (response.statusCode != 200) {
       log.severe('fastbitcoins response error: ${response.body}');
-      throw "Redeem voucher failed, please try again later";
+      throw "Service Unavailable. Please try again later.";
     }
   }
 
