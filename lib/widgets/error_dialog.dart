@@ -69,7 +69,7 @@ Future promptAreYouSure(BuildContext context, String title, Widget body,
     String cancelText = "NO",
     TextStyle textStyle = const TextStyle(color: Colors.white)}) {
   
-  Widget titleWidget = title == null ? null : Text(title, style: textStyle);
+  Widget titleWidget = title == null ? null : Text(title, style: theme.alertTitleStyle);
   if (titleWidget != null && wideTitle) {
     titleWidget = Container(
       child: titleWidget,
@@ -88,13 +88,13 @@ Future promptAreYouSure(BuildContext context, String title, Widget body,
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text(cancelText, style: textStyle),
+              child: new Text(cancelText, style: theme.buttonStyle),              
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             new FlatButton(
-              child: new Text(okText, style: textStyle),
+              child: new Text(okText, style: theme.buttonStyle),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
