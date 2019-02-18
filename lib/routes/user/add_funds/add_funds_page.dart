@@ -53,7 +53,8 @@ class AddFundsState extends State<AddFundsPage> {
                   AsyncSnapshot<AddFundResponse> snapshot) {
                 return Material(
                   child: new Scaffold(
-                      bottomNavigationBar: _buildBottomBar(snapshot.data,
+                      bottomNavigationBar: _buildBottomBar(snapshot.data, 
+                          accSnapshot.data, 
                           hasError: snapshot.hasError),
                       appBar: new AppBar(
                         iconTheme: theme.appBarIconTheme,
@@ -155,7 +156,7 @@ class AddFundsState extends State<AddFundsPage> {
         ));
   }
 
-  Widget _buildBottomBar(AddFundResponse response, {hasError = false}) {
+  Widget _buildBottomBar(AddFundResponse response, AccountModel account, {hasError = false}) {
     if (hasError || response?.errorMessage?.isNotEmpty == true) {      
       return SingleButtonBottomBar(
           text: hasError ? "RETRY" : "CLOSE",
@@ -168,7 +169,7 @@ class AddFundsState extends State<AddFundsPage> {
           });
     }
 
-    return response == null ? SizedBox() : new Padding(
+    return response == null || account?.active != true ? SizedBox() : new Padding(
         padding: new EdgeInsets.only(bottom: 40.0),
         child: new Column(
             mainAxisSize: MainAxisSize.min,
