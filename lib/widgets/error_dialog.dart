@@ -64,16 +64,25 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
 
 Future promptAreYouSure(BuildContext context, String title, Widget body,
     {contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
+    bool wideTitle = false,
     String okText = "YES",
     String cancelText = "NO",
     TextStyle textStyle = const TextStyle(color: Colors.white)}) {
+  
+  Widget titleWidget = title == null ? null : Text(title, style: textStyle);
+  if (titleWidget != null && wideTitle) {
+    titleWidget = Container(
+      child: titleWidget,
+      width: MediaQuery.of(context).size.width,
+    );
+  }
   return showDialog<bool>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return new AlertDialog(
           contentPadding: contentPadding,          
-          title: title == null ? null : new Text(title, style: textStyle),
+          title: titleWidget,
           content: new SingleChildScrollView(
             child: body,
           ),
