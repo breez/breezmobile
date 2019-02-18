@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/user/add_funds/fastbitcoins_confirm.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
@@ -30,6 +33,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
   final _emailController = TextEditingController();
 
   FastbitcoinsBloc _fastBitcoinsBloc;
+  UserProfileBloc _userProfileBloc;
   StreamSubscription _validatedRequestsSubscription;
   StreamSubscription _redeemedRequestsSubscription;
   bool _isInit = false;
@@ -38,6 +42,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
   void didChangeDependencies() {
     if (!_isInit) {
       _fastBitcoinsBloc = AppBlocsProvider.of<FastbitcoinsBloc>(context);
+      _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -163,7 +168,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                           child: DropdownButtonHideUnderline(
                                             child: new DropdownButton(
                                               value: _currency,
-                                              isDense: true,                                              
+                                              isDense: true,
                                               onChanged: (String newValue) {
                                                 setState(() {
                                                   _currency = newValue;
@@ -222,7 +227,9 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                             _currency);
                         Navigator.of(context).push(TransparentPageRoute(
                             (context) => new RedeemVoucherRoute(
-                                _fastBitcoinsBloc, _request)));
+                                _userProfileBloc,
+                                _fastBitcoinsBloc,
+                                _request)));
                       }
                     },
                   ))
@@ -234,9 +241,11 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
 
 class RedeemVoucherRoute extends StatefulWidget {
   final FastbitcoinsBloc _fbBloc;
+  final UserProfileBloc _userProfileBloc;
   final ValidateRequestModel _voucherRequest;
 
-  const RedeemVoucherRoute(this._fbBloc, this._voucherRequest);
+  const RedeemVoucherRoute(
+      this._userProfileBloc, this._fbBloc, this._voucherRequest);
 
   @override
   State<StatefulWidget> createState() {
@@ -247,39 +256,41 @@ class RedeemVoucherRoute extends StatefulWidget {
 class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
   bool _loading = true;
   StreamSubscription<ValidateResponseModel> _validateSubscription;
-  StreamSubscription<RedeemResponseModel> _redeemSubscription;
+  StreamSubscription<RedeemResponseModel> _redeemSubscription;  
 
   @override
   void initState() {
     super.initState();
-    widget._fbBloc.validateRequestSink.add(widget._voucherRequest);
+    widget._userProfileBloc.userStream.first.then((user) {
+      widget._fbBloc.validateRequestSink.add(widget._voucherRequest);
 
-    _validateSubscription =
-        widget._fbBloc.validateResponseStream.listen((res) async {
-      showLoading(false);
-      if (res.kycRequired == 1) {
-        showKYCRequiredMessage();
-        return;
-      }
+      _validateSubscription =
+          widget._fbBloc.validateResponseStream.listen((res) async {
+        showLoading(false);
+        if (res.kycRequired == 1) {
+          showKYCRequiredMessage();
+          return;
+        }
 
-      Text content = Text(
-          'Are you sure you want to redeem ${res.value} ${widget._voucherRequest.currency}?',
-          style: theme.dialogBlackStye);
-      bool sure = await promptAreYouSure(context, "Redeem Voucher", content,
-          textStyle: theme.dialogBlackStye);
-      if (sure == true) {
-        showLoading(true);
-        _redeemRequest(res);
-        return;
-      }
-      popToForm();
-    }, onError: (err) {
-      promptError(
-              context,
-              "Redeem Voucher",
-              Text("Failed to redeem voucher: " + err.toString(),
-                  style: theme.alertStyle))
-          .whenComplete(() => popToForm());
+        Widget content = FastBitcoinsConfirmWidget(
+            request: widget._voucherRequest, response: res, user: user);
+        bool sure = await promptAreYouSure(context, "Redeem Voucher", content,
+            textStyle: theme.dialogBlackStye, okText: "REDEEM", cancelText: "CANCEL",
+            contentPadding: EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0));
+        if (sure == true) {
+          showLoading(true);
+          _redeemRequest(res);
+          return;
+        }
+        popToForm();
+      }, onError: (err) {
+        promptError(
+                context,
+                "Redeem Voucher",
+                Text("Failed to redeem voucher: " + err.toString(),
+                    style: theme.alertStyle))
+            .whenComplete(() => popToForm());
+      });
     });
 
     _redeemSubscription = widget._fbBloc.redeemResponseStream.listen((vm) {
