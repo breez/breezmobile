@@ -274,8 +274,8 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
 
         Widget content = FastBitcoinsConfirmWidget(
             request: widget._voucherRequest, response: res, user: user);
-        bool sure = await promptAreYouSure(context, "Redeem Voucher", content,
-            textStyle: theme.dialogBlackStye, okText: "REDEEM", cancelText: "CANCEL",
+        bool sure = await promptAreYouSure(context, "Confirm Order", content,
+            textStyle: theme.dialogBlackStye, okText: "CONFIRM", cancelText: "CANCEL",
             contentPadding: EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0));
         if (sure == true) {
           showLoading(true);
