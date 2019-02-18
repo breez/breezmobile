@@ -276,6 +276,7 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
             request: widget._voucherRequest, response: res, user: user);
         bool sure = await promptAreYouSure(context, "Confirm Order", content,
             textStyle: theme.dialogBlackStye, okText: "CONFIRM", cancelText: "CANCEL",
+            wideTitle: true,
             contentPadding: EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0));
         if (sure == true) {
           showLoading(true);
