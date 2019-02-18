@@ -17,22 +17,25 @@ class FastBitcoinsConfirmWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     String btcReceived = user.currency.format(Int64(response.satoshiAmount));
     String comissionRate =
-        (response.commissionTotal / response.value * 100).toString();
+        (response.commissionTotal / response.value * 100).toStringAsFixed(2) + "%";
 
-    return Column(
-      children: <Widget>[
-        ConfirmationItem(
-            title: "Voucher value",
-            details: '${response.value} ${request.currency}'),
-        ConfirmationItem(
-            title: "Exchange rate",
-            details: '${response.exchangeRate} ${request.currency}'),
-        ConfirmationItem(title: "Comission rate", details: comissionRate),
-        ConfirmationItem(
-            title: "Comission total",
-            details: '${response.commissionTotal} ${request.currency}'),
-        ConfirmationItem(title: "Bitcoins received", details: btcReceived),
-      ],
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: <Widget>[
+          ConfirmationItem(
+              title: "Voucher value",
+              details: '${response.value.toStringAsFixed(2)} ${request.currency}'),
+          ConfirmationItem(
+              title: "Exchange rate",
+              details: '${response.exchangeRate.toStringAsFixed(2)} ${request.currency}'),
+          ConfirmationItem(title: "Commission rate", details: comissionRate),
+          ConfirmationItem(
+              title: "Comission total",
+              details: '${response.commissionTotal.toStringAsFixed(2)} ${request.currency}'),
+          ConfirmationItem(title: "Bitcoins received", details: btcReceived),
+        ],
+      ),
     );
   }
 }
