@@ -31,7 +31,7 @@ class FastBitcoinsConfirmWidget extends StatelessWidget {
               details: '${response.exchangeRate.toStringAsFixed(2)} ${request.currency}'),
           ConfirmationItem(title: "Commission rate", details: comissionRate),
           ConfirmationItem(
-              title: "Comission total",
+              title: "Commission total",
               details: '${response.commissionTotal.toStringAsFixed(2)} ${request.currency}'),
           ConfirmationItem(title: "Bitcoins received", details: btcReceived),
         ],
