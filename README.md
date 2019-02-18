@@ -47,9 +47,9 @@
 - [x] Startup optimizations
 - [x] Background sync via FCM
 - [x] Marketplace w/ Bitrefill
-- [ ] Adding funds via vouchers
+- [x] Adding funds via vouchers
+- [x] Backup improvements
 - [ ] Adding funds via credit card
-- [ ] Backup improvements
 - [ ] Simplify P2P payments
 - [ ] Support zero-conf 
 - [ ] Use static card IDs
