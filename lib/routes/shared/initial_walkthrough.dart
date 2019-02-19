@@ -41,10 +41,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           return;
         }
 
-        // if (options.length == 1) {
-        //   widget._backupBloc.restoreRequestSink.add(options.first.nodeID);
-        //   return;
-        // }
+        if (options.length == 1) {
+          widget._backupBloc.restoreRequestSink.add(options.first.nodeID);
+          return;
+        }
 
         popToWalkthrough();
         showDialog(context: context, builder: (_) => new RestoreDialog(context, widget._backupBloc, options))
