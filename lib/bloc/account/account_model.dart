@@ -69,8 +69,7 @@ class AccountModel {
   bool get processingBreezConnection => _accountResponse.status == Account_AccountStatus.PROCESSING_BREEZ_CONNECTION;
   bool get processingWithdrawal => _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
   bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;  
-  bool get isInitialBootstrap => bootstraping || (!active && !processingWithdrawal && !processingBreezConnection);
-  bool get channelRequested => processingBreezConnection || active;
+  bool get isInitialBootstrap => bootstraping || (!active && !processingWithdrawal && !processingBreezConnection);  
   Int64 get balance => _accountResponse.balance;  
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
