@@ -12,7 +12,7 @@ class LNDBootstrapper {
   final StreamController<DownloadFileInfo> _bootstrapFilesProgress = new StreamController.broadcast();
   Stream<DownloadFileInfo> get bootstrapProgressStreams => _bootstrapFilesProgress.stream;
 
-  Future downloadBootstrapFiles(String lndDir) async {
+  Future<bool> downloadBootstrapFiles(String lndDir) async {
     Config config = await _readConfig();
     String network = config.get('Application Options', 'network');
     String bootstrapUrl = config.get('Application Options', 'bootstrap');
@@ -35,7 +35,7 @@ class LNDBootstrapper {
     //if bootstrap files already exist
     if (destinationFiles.every((f) => File(f).existsSync())) {     
       _bootstrapFilesProgress.close();
-      return Future.value(null);
+      return Future.value(false);
     }
 
     //clean temp dir and target dir.
@@ -51,7 +51,7 @@ class LNDBootstrapper {
       log.severe("Error downloading CURRENT file");
       //_bootstrapFilesProgress.add(??);
       _bootstrapFilesProgress.close();
-      return Future.value(null);
+      return Future.error("Error downloading bootstrap files");
     }
     var currentDir = response.body.trim();
     Iterable<String> urls = allFiles.map((file) => urlPrefix + '/' + currentDir + '/' + file);
@@ -64,6 +64,7 @@ class LNDBootstrapper {
         }).then((value) {
         tempDir.deleteSync(recursive: true);
         _bootstrapFilesProgress.close();
+        return true;
       });
     });   
   }
