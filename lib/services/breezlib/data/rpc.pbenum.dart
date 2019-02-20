@@ -94,11 +94,13 @@ class FundStatusReply_FundStatus extends $pb.ProtobufEnum {
   static const FundStatusReply_FundStatus NO_FUND = const FundStatusReply_FundStatus._(0, 'NO_FUND');
   static const FundStatusReply_FundStatus WAITING_CONFIRMATION = const FundStatusReply_FundStatus._(1, 'WAITING_CONFIRMATION');
   static const FundStatusReply_FundStatus CONFIRMED = const FundStatusReply_FundStatus._(2, 'CONFIRMED');
+  static const FundStatusReply_FundStatus TRANSFER_ERROR = const FundStatusReply_FundStatus._(3, 'TRANSFER_ERROR');
 
   static const List<FundStatusReply_FundStatus> values = const <FundStatusReply_FundStatus> [
     NO_FUND,
     WAITING_CONFIRMATION,
     CONFIRMED,
+    TRANSFER_ERROR,
   ];
 
   static final Map<int, FundStatusReply_FundStatus> _byValue = $pb.ProtobufEnum.initByValue(values);

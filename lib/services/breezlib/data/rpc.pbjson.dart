@@ -167,6 +167,7 @@ const FundStatusReply$json = const {
   '1': 'FundStatusReply',
   '2': const [
     const {'1': 'status', '3': 1, '4': 1, '5': 14, '6': '.data.FundStatusReply.FundStatus', '10': 'status'},
+    const {'1': 'errorMessage', '3': 2, '4': 1, '5': 9, '10': 'errorMessage'},
   ],
   '4': const [FundStatusReply_FundStatus$json],
 };
@@ -177,6 +178,7 @@ const FundStatusReply_FundStatus$json = const {
     const {'1': 'NO_FUND', '2': 0},
     const {'1': 'WAITING_CONFIRMATION', '2': 1},
     const {'1': 'CONFIRMED', '2': 2},
+    const {'1': 'TRANSFER_ERROR', '2': 3},
   ],
 };
 

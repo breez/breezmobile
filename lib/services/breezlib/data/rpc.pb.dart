@@ -539,6 +539,7 @@ class RefundRequest extends $pb.GeneratedMessage {
 class FundStatusReply extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('FundStatusReply', package: const $pb.PackageName('data'))
     ..e<FundStatusReply_FundStatus>(1, 'status', $pb.PbFieldType.OE, FundStatusReply_FundStatus.NO_FUND, FundStatusReply_FundStatus.valueOf, FundStatusReply_FundStatus.values)
+    ..aOS(2, 'errorMessage')
     ..hasRequiredFields = false
   ;
 
@@ -561,6 +562,11 @@ class FundStatusReply extends $pb.GeneratedMessage {
   set status(FundStatusReply_FundStatus v) { setField(1, v); }
   bool hasStatus() => $_has(0);
   void clearStatus() => clearField(1);
+
+  String get errorMessage => $_getS(1, '');
+  set errorMessage(String v) { $_setString(1, v); }
+  bool hasErrorMessage() => $_has(1);
+  void clearErrorMessage() => clearField(2);
 }
 
 class RemoveFundRequest extends $pb.GeneratedMessage {
