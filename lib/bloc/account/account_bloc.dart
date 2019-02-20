@@ -7,6 +7,7 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'account_model.dart';
 import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
@@ -19,6 +20,7 @@ class AccountBloc {
 
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";  
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
+  static const String BOOTSTRAPING_PREFERENCES_KEY = "BOOTSTRAPING";
       
   final _reconnectStreamController = new StreamController<void>.broadcast();
   Sink<void> get _reconnectSink => _reconnectStreamController.sink;
@@ -88,6 +90,7 @@ class AccountBloc {
   BreezUserModel _currentUser;
   bool _allowReconnect = true;
   bool _startedLightning = false;    
+  SharedPreferences _sharedPreferences;
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
       ServiceInjector injector = new ServiceInjector();    
@@ -101,19 +104,24 @@ class AccountBloc {
       _accountSettingsController.add(AccountSettings.start());
       
       print("Account bloc started");
-      _refreshAccount(breezLib);            
-      //listen streams      
-      _listenRestartLightning(breezLib);
-      _hanleAccountSettings();        
-      _listenUserChanges(userProfileStream, breezLib, device);
-      _listenNewAddressRequests(breezLib);
-      _listenWithdrawalRequests(breezLib);
-      _listenSentPayments(breezLib);
-      _listenFilterChanges(breezLib);
-      _listenAccountChanges(breezLib);      
-      _listenMempoolTransactions(device, notificationsService, breezLib);
-      _listenRoutingNodeConnectionChanges(breezLib); 
-      _listenBootstrapStatus(breezLib);             
+      ServiceInjector().sharedPreferences.then(
+        (preferences) {
+          _sharedPreferences = preferences;             
+          _refreshAccount(breezLib);            
+          //listen streams      
+          _listenRestartLightning(breezLib);
+          _hanleAccountSettings();        
+          _listenUserChanges(userProfileStream, breezLib, device);
+          _listenNewAddressRequests(breezLib);
+          _listenWithdrawalRequests(breezLib);
+          _listenSentPayments(breezLib);
+          _listenFilterChanges(breezLib);
+          _listenAccountChanges(breezLib);      
+          _listenMempoolTransactions(device, notificationsService, breezLib);
+          _listenRoutingNodeConnectionChanges(breezLib); 
+          _listenBootstrapStatus(breezLib);    
+        }
+      );               
     }
 
     //settings persistency
@@ -131,8 +139,17 @@ class AccountBloc {
       _accountController.stream.listen((acc) async {
         if (acc.id.isNotEmpty) {
           await preferences.setString(PERSISTENT_NODE_ID_PREFERENCES_KEY, acc.id);          
-        }
+        }     
       });      
+    }
+
+    void _setBootstraping(bool bootstraping) {
+      _sharedPreferences.setBool(BOOTSTRAPING_PREFERENCES_KEY, bootstraping);
+      _accountController.add(_accountController.value.copyWith(bootstraping: bootstraping));
+    }
+
+    bool _isBootstrapping() {
+      return _sharedPreferences.get(BOOTSTRAPING_PREFERENCES_KEY) == true;
     }
 
     void _listenRefundableDeposits(BreezBridge breezLib, Device device){
@@ -219,9 +236,12 @@ class AccountBloc {
             //_askWhitelistOptimizations();          
             print("Account bloc got registered user, starting lightning daemon...");        
             _startedLightning = true;                                        
-            breezLib.bootstrap().then((done) async {    
-              print("Account bloc bootstrap has finished");   
-              _accountController.add(_accountController.value.copyWith(bootstraping: false));     
+            breezLib.bootstrap().then((downloadNeeded) async {    
+              print("Account bloc bootstrap has finished");  
+              if (downloadNeeded) {
+                _setBootstraping(true);
+              }              
+              _accountController.add(_accountController.value.copyWith(bootstraping: _isBootstrapping()));
               breezLib.startLightning();
               breezLib.registerPeriodicSync(user.token);              
               _fetchFundStatus(breezLib);
@@ -368,7 +388,7 @@ class AccountBloc {
       print("Account bloc refreshing account...");      
       breezLib.getAccount()
         .then((acc) {
-          print("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());
+          print("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());          
           _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser?.currency));          
         })
         .catchError(_accountController.addError);
@@ -390,8 +410,9 @@ class AccountBloc {
 
     _refreshRoutingNodeConnection(BreezBridge breezLib){      
       breezLib.isConnectedToRoutingNode()
-        .then((connected) async {
-          _accountController.add(_accountController.value.copyWith(connected: connected));  
+        .then((connected) async {  
+          _accountController.add(_accountController.value.copyWith(connected: connected));        
+          _setBootstraping(connected ? false : _accountController.value.bootstraping);
           if (!connected) {          
             log.info("Node disconnected, adding reconnect request");
             _reconnectSink.add(null); //try to reconnect

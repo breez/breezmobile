@@ -343,7 +343,7 @@ class BreezBridge {
     );
   }
 
-  Future<void> bootstrap() async {
+  Future<bool> bootstrap() async {
     return getApplicationDocumentsDirectory().then(
             (appDir) {
           var lndBootstrapper = new LNDBootstrapper();
