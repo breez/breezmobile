@@ -36,7 +36,6 @@ class InvoiceNotificationsHandler {
             _context, ModalRoute.withName(Navigator.defaultRouteName));
         loaderVisible = false;
         handlingRequest = true;
-
         showDialog(
                 context: _context,
                 barrierDismissible: false,
@@ -45,13 +44,15 @@ class InvoiceNotificationsHandler {
             .whenComplete(() => handlingRequest = false);
       }).onError((error) {        
         handlingRequest = false;
-        Navigator.popUntil(
+        Navigator.pop(_context);
+        if (error.runtimeType != PaymentRequestModel) {
+          Navigator.popUntil(
             _context, ModalRoute.withName(Navigator.defaultRouteName));
-        if (error.runtimeType != PaymentRequestModel)
           Future.delayed(Duration(milliseconds: 300), () {
             showFlushbar(_context,
                 message: "Failed to send payment request: ${error.toString()}");
           });
+        }
       });
     });
 
