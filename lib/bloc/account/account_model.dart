@@ -86,7 +86,7 @@ class AccountModel {
   String get statusMessage {
     if (this.initial) {
       return "";
-    }   
+    }    
 
     if (this.isInitialBootstrap) {
       return "Please wait a minute while Breez is bootstrapping (keep the app open).";
@@ -104,7 +104,7 @@ class AccountModel {
       return "Transferring funds";
     }
 
-    if (transferFundsError != null) {
+    if (transferFundsError?.isNotEmpty == true) {
       return "Failed to add funds: " + transferFundsError;
     }          
     
