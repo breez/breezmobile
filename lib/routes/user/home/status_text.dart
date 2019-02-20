@@ -4,8 +4,9 @@ import 'dart:async';
 
 class StatusText extends StatefulWidget {
   final String _statusMessage;
+  final bool loading;
 
-  StatusText(this._statusMessage);
+  StatusText(this._statusMessage, {this.loading = true});
 
   @override
   State<StatefulWidget> createState() {
@@ -38,6 +39,6 @@ class _StatusTextState extends State<StatusText> {
   Widget build(BuildContext context) {
     return widget._statusMessage == null
         ? Text("Start using Breez by adding funds to your balance or by receiving payments from other users.", textAlign: TextAlign.center)
-        : LoadingAnimatedText(widget._statusMessage);        
+        : (widget.loading ? LoadingAnimatedText(widget._statusMessage) : Text(widget._statusMessage, textAlign: TextAlign.center));        
   }
 }

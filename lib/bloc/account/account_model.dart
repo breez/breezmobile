@@ -35,14 +35,16 @@ class AccountSettings {
 class AccountModel { 
   final Account _accountResponse;
   final Currency _currency;
-  final FundStatusReply_FundStatus addedFundsStatus;
+  final FundStatusReply addedFundsReply;
   final String paymentRequestInProgress;
   final bool connected;
   final Int64 onChainFeeRate;  
   final bool initial;
   final bool bootstraping;
 
-  AccountModel(this._accountResponse, this._currency, {this.initial = false, this.addedFundsStatus = FundStatusReply_FundStatus.NO_FUND, this.paymentRequestInProgress, this.connected = false, this.onChainFeeRate, this.bootstraping = false});
+  FundStatusReply_FundStatus get addedFundsStatus => addedFundsReply == null ? FundStatusReply_FundStatus.NO_FUND : addedFundsReply.status;
+
+  AccountModel(this._accountResponse, this._currency, {this.initial = false, this.addedFundsReply, this.paymentRequestInProgress, this.connected = false, this.onChainFeeRate, this.bootstraping = false});
 
   AccountModel.initial() : 
     this(Account()
@@ -52,11 +54,11 @@ class AccountModel {
       ..maxAllowedToReceive = Int64(0)
       ..maxPaymentAmount = Int64(0)      
       , Currency.SAT, initial: true, bootstraping: true);
-  AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply_FundStatus addedFundsStatus, String paymentRequestInProgress, bool connected, Int64 onChainFeeRate, bool bootstraping}) {
+  AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply addedFundsReply, String paymentRequestInProgress, bool connected, Int64 onChainFeeRate, bool bootstraping}) {
     return AccountModel(
       accountResponse ?? this._accountResponse, 
       currency ?? this.currency, 
-      addedFundsStatus: addedFundsStatus ?? this.addedFundsStatus, 
+      addedFundsReply: addedFundsReply ?? this.addedFundsReply, 
       connected: connected ?? this.connected,      
       onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
       bootstraping: bootstraping ?? this.bootstraping,
@@ -65,7 +67,8 @@ class AccountModel {
 
   String get id => _accountResponse.id;  
   bool get waitingDepositConfirmation => addedFundsStatus == FundStatusReply_FundStatus.WAITING_CONFIRMATION;  
-  bool get depositConfirmed => addedFundsStatus == FundStatusReply_FundStatus.CONFIRMED;  
+  bool get depositConfirmed => addedFundsStatus == FundStatusReply_FundStatus.CONFIRMED;
+  String get transferFundsError => addedFundsReply?.errorMessage;
   bool get processingBreezConnection => _accountResponse.status == Account_AccountStatus.PROCESSING_BREEZ_CONNECTION;
   bool get processingWithdrawal => _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
   bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;  
@@ -83,7 +86,7 @@ class AccountModel {
   String get statusMessage {
     if (this.initial) {
       return "";
-    }   
+    }    
 
     if (this.isInitialBootstrap) {
       return "Please wait a minute while Breez is bootstrapping (keep the app open).";
@@ -99,7 +102,11 @@ class AccountModel {
     
     if (depositConfirmed && this.active) {
       return "Transferring funds";
-    }        
+    }
+
+    if (transferFundsError?.isNotEmpty == true) {
+      return "Failed to add funds: " + transferFundsError;
+    }          
     
     return null;
   }

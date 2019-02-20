@@ -283,7 +283,7 @@ class AccountBloc {
       .then( (status){
         log.info("Got status " + status.status.toString());
         if (status.status != _accountController.value.addedFundsStatus) {          
-          _accountController.add(_accountController.value.copyWith(addedFundsStatus: status.status));          
+          _accountController.add(_accountController.value.copyWith(addedFundsReply: status));          
         }
       })
       .catchError((err){

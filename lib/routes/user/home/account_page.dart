@@ -216,7 +216,7 @@ class AccountPageState extends State<AccountPage> {
               if (pendingLinkSnapshot.connectionState == ConnectionState.active && pendingLinkSnapshot.hasData) {
                 message = "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";
               }
-              return StatusText(message);
+              return StatusText(message, loading: account.transferFundsError?.isNotEmpty != true);
             }
           )
         ),
