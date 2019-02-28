@@ -4,7 +4,6 @@ import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/user/add_funds/address_widget.dart';
-import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +21,7 @@ class AddFundsPage extends StatefulWidget {
   }
 }
 
-class AddFundsState extends State<AddFundsPage> {
-  static const int CHANNEL_RESERVE_SAT = 10000;
+class AddFundsState extends State<AddFundsPage> {  
   final String _title = "Add Funds";
   AddFundsBloc _addFundsBloc;
 
@@ -123,7 +121,7 @@ class AddFundsState extends State<AddFundsPage> {
               "Send up to " +
                   account.currency
                       .format(response.maxAllowedDeposit, includeSymbol: true) +
-                  " to this address." + "\nBreez requires you to keep ${account.currency.format(Int64(CHANNEL_RESERVE_SAT))} in your balance.",
+                  " to this address." + "\nBreez requires you to keep ${account.currency.format(response.requiredReserve)} in your balance.",
               style: theme.warningStyle, textAlign: TextAlign.center,)),
     ]);
   }
