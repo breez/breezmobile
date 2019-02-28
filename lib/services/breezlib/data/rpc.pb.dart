@@ -437,6 +437,7 @@ class AddFundInitReply extends $pb.GeneratedMessage {
     ..aInt64(2, 'maxAllowedDeposit')
     ..aOS(3, 'errorMessage')
     ..aOS(4, 'backupJson')
+    ..aInt64(5, 'requiredReserve')
     ..hasRequiredFields = false
   ;
 
@@ -474,6 +475,11 @@ class AddFundInitReply extends $pb.GeneratedMessage {
   set backupJson(String v) { $_setString(3, v); }
   bool hasBackupJson() => $_has(3);
   void clearBackupJson() => clearField(4);
+
+  Int64 get requiredReserve => $_getI64(4);
+  set requiredReserve(Int64 v) { $_setInt64(4, v); }
+  bool hasRequiredReserve() => $_has(4);
+  void clearRequiredReserve() => clearField(5);
 }
 
 class AddFundReply extends $pb.GeneratedMessage {
