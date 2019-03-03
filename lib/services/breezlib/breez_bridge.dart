@@ -130,7 +130,7 @@ class BreezBridge {
         .then((result) => new PaymentsList()..mergeFromBuffer(result ?? []));
   }
 
-  Future<String> addInvoice(Int64 amount, {String payeeName, String payeeImageURL, String payerName, String payerImageURL, String description, Int64 expiry, bool standard = false}){
+  Future<String> addInvoice(Int64 amount, {String payeeName, String payeeImageURL, String payerName, String payerImageURL, String description, Int64 expiry}){
     InvoiceMemo invoice = new InvoiceMemo();
     invoice.amount = amount;
     if (payeeImageURL != null) {
@@ -149,17 +149,9 @@ class BreezBridge {
       invoice.description = description;
     }
 
-    if (standard) {
-      return _invokeMethodWhenReady(
-          "addStandardInvoice", {"argument": invoice.writeToBuffer()}).then((
-          payReq) => payReq as String);
-
-    }
-    else {
-      return _invokeMethodWhenReady(
+    return _invokeMethodWhenReady(
           "addInvoice", {"argument": invoice.writeToBuffer()}).then((
           payReq) => payReq as String);
-    }
   }
 
   Future<CreateRatchetSessionReply> createRatchetSession(String sessionID, Int64 expiry, {String secret, String remotePubKey}) {
