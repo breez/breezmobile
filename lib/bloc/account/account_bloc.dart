@@ -43,6 +43,9 @@ class AccountBloc {
   final _accountController = new BehaviorSubject<AccountModel>();
   Stream<AccountModel> get accountStream => _accountController.stream;
 
+  final _accountEnableController = new StreamController<bool>.broadcast();
+  Sink<bool> get accountEnableSink => _accountEnableController.sink;
+
   final _accountSettingsController = new BehaviorSubject<AccountSettings>();
   Stream<AccountSettings> get accountSettingsStream => _accountSettingsController.stream;
   Sink<AccountSettings> get accountSettingsSink => _accountSettingsController.sink;
@@ -116,7 +119,8 @@ class AccountBloc {
           _listenWithdrawalRequests(breezLib);
           _listenSentPayments(breezLib);
           _listenFilterChanges(breezLib);
-          _listenAccountChanges(breezLib);      
+          _listenAccountChanges(breezLib);    
+          _listenEnableAccount(breezLib);
           _listenMempoolTransactions(device, notificationsService, breezLib);
           _listenRoutingNodeConnectionChanges(breezLib); 
           _listenBootstrapStatus(breezLib);    
@@ -383,6 +387,15 @@ class AccountBloc {
         }
       });     
     }
+
+    void _listenEnableAccount(BreezBridge breezLib){
+      _accountEnableController.stream.listen((enable) { 
+        _accountController.add(_accountController.value.copyWith(enableInProgress: true));
+        breezLib.enableAccount(enable).whenComplete((){
+          _accountController.add(_accountController.value.copyWith(enableInProgress: false));
+        });
+      });
+    }
   
     _refreshAccount(BreezBridge breezLib){    
       print("Account bloc refreshing account...");      
@@ -428,6 +441,7 @@ class AccountBloc {
 
   
     close() {
+      _accountEnableController.close();
       _requestAddressController.close();
       _addFundController.close();    
       _paymentsController.close();          

@@ -41,10 +41,11 @@ class AccountModel {
   final Int64 onChainFeeRate;  
   final bool initial;
   final bool bootstraping;
+  final bool enableInProgress;
 
   FundStatusReply_FundStatus get addedFundsStatus => addedFundsReply == null ? FundStatusReply_FundStatus.NO_FUND : addedFundsReply.status;
 
-  AccountModel(this._accountResponse, this._currency, {this.initial = false, this.addedFundsReply, this.paymentRequestInProgress, this.connected = false, this.onChainFeeRate, this.bootstraping = false});
+  AccountModel(this._accountResponse, this._currency, {this.initial = false, this.addedFundsReply, this.paymentRequestInProgress, this.connected = false, this.onChainFeeRate, this.bootstraping = false, this.enableInProgress = false});
 
   AccountModel.initial() : 
     this(Account()
@@ -52,9 +53,10 @@ class AccountModel {
       ..walletBalance = Int64(0)
       ..status = Account_AccountStatus.WAITING_DEPOSIT
       ..maxAllowedToReceive = Int64(0)
-      ..maxPaymentAmount = Int64(0)      
+      ..maxPaymentAmount = Int64(0)
+      ..enabled = true      
       , Currency.SAT, initial: true, bootstraping: true);
-  AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply addedFundsReply, String paymentRequestInProgress, bool connected, Int64 onChainFeeRate, bool bootstraping}) {
+  AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply addedFundsReply, String paymentRequestInProgress, bool connected, Int64 onChainFeeRate, bool bootstraping, bool enableInProgress}) {
     return AccountModel(
       accountResponse ?? this._accountResponse, 
       currency ?? this.currency, 
@@ -62,6 +64,7 @@ class AccountModel {
       connected: connected ?? this.connected,      
       onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
       bootstraping: bootstraping ?? this.bootstraping,
+      enableInProgress: enableInProgress ?? this.enableInProgress,
       paymentRequestInProgress: paymentRequestInProgress ?? this.paymentRequestInProgress);
   }
 
@@ -82,6 +85,7 @@ class AccountModel {
   Int64 get reserveAmount => balance - maxAllowedToPay;
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
   Int64 get routingNodeFee => _accountResponse.routingNodeFee;
+  bool get enabled => _accountResponse.enabled;
 
   String get statusMessage {
     if (this.initial) {
