@@ -69,8 +69,7 @@ class FastbitcoinsBloc {
       try {
         String payreq = await _breezLib.addInvoice(
             Int64(request.validateResponse.satoshiAmount),
-            description: "Fastbitcoins.com Voucher",
-            standard: true);
+            description: "Fastbitcoins.com Voucher");
         request.lightningInvoice = payreq;
         log.info("fastbicoins request: " + jsonEncode(request.toJson()));
         var response =

@@ -348,8 +348,7 @@ class POSInvoiceState extends State<POSInvoice> {
                 _invoiceDescriptionController.text,
                 _posProfile.logo,
                 Int64(_totalAmount),
-                expiry: Int64(int.parse(cancellationTimeoutValue)),
-                standard: true));
+                expiry: Int64(int.parse(cancellationTimeoutValue))));
       } else {
         promptError(
             context,
