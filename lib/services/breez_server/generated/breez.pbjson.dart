@@ -45,6 +45,7 @@ const AddFundInitReply$json = const {
     const {'1': 'lockHeight', '3': 3, '4': 1, '5': 3, '10': 'lockHeight'},
     const {'1': 'maxAllowedDeposit', '3': 4, '4': 1, '5': 3, '10': 'maxAllowedDeposit'},
     const {'1': 'errorMessage', '3': 5, '4': 1, '5': 9, '10': 'errorMessage'},
+    const {'1': 'requiredReserve', '3': 6, '4': 1, '5': 3, '10': 'requiredReserve'},
   ],
 };
 
@@ -110,35 +111,6 @@ const RedeemRemovedFundsReply$json = const {
   '1': 'RedeemRemovedFundsReply',
   '2': const [
     const {'1': 'txid', '3': 1, '4': 1, '5': 9, '10': 'txid'},
-  ],
-};
-
-const FundRequest$json = const {
-  '1': 'FundRequest',
-  '2': const [
-    const {'1': 'deviceID', '3': 1, '4': 1, '5': 9, '10': 'deviceID'},
-    const {'1': 'lightningID', '3': 2, '4': 1, '5': 9, '10': 'lightningID'},
-    const {'1': 'amount', '3': 3, '4': 1, '5': 3, '10': 'amount'},
-  ],
-};
-
-const FundReply$json = const {
-  '1': 'FundReply',
-  '2': const [
-    const {'1': 'returnCode', '3': 1, '4': 1, '5': 14, '6': '.breez.FundReply.ReturnCode', '10': 'returnCode'},
-  ],
-  '4': const [FundReply_ReturnCode$json],
-};
-
-const FundReply_ReturnCode$json = const {
-  '1': 'ReturnCode',
-  '2': const [
-    const {'1': 'SUCCESS', '2': 0},
-    const {'1': 'UNKNOWN_ERROR', '2': -1},
-    const {'1': 'NODE_BUSY', '2': -2},
-    const {'1': 'CLIENT_NOT_REGISTERED', '2': -3},
-    const {'1': 'WRONG_NODE_ID', '2': -4},
-    const {'1': 'WRONG_AMOUNT', '2': -5},
   ],
 };
 
@@ -288,5 +260,16 @@ const RegisterTransactionConfirmationRequest_NotificationType$json = const {
 
 const RegisterTransactionConfirmationResponse$json = const {
   '1': 'RegisterTransactionConfirmationResponse',
+};
+
+const RegisterPeriodicSyncRequest$json = const {
+  '1': 'RegisterPeriodicSyncRequest',
+  '2': const [
+    const {'1': 'notificationToken', '3': 1, '4': 1, '5': 9, '10': 'notificationToken'},
+  ],
+};
+
+const RegisterPeriodicSyncResponse$json = const {
+  '1': 'RegisterPeriodicSyncResponse',
 };
 

@@ -100,6 +100,10 @@ class BreezBridge {
     return _invokeMethodWhenReady("connectAccount");
   }
 
+  Future enableAccount(bool enabled) {
+    return _invokeMethodWhenReady("enableAccount", {"argument": enabled});
+  }
+
   Future<RemoveFundReply> removeFund(String address, Int64 amount){
     RemoveFundRequest request = new RemoveFundRequest()
       ..address = address
