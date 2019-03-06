@@ -14,9 +14,23 @@ class StatusIndicator extends StatelessWidget {
     }
 
     return SizedBox(
-      child: LinearProgressIndicator(backgroundColor: theme.BreezColors.blue[200]),
+      child: createStatusIndicator(),
       height: 2.0,
       width: MediaQuery.of(context).size.width,
     );
+  }
+
+  Widget createStatusIndicator() {
+    double value;
+    if (_accountModel.bootstraping && _accountModel.bootstrapProgress < 1) {
+      return LinearProgressIndicator(        
+        backgroundColor: Colors.white,
+          valueColor:
+              AlwaysStoppedAnimation<Color>(theme.BreezColors.blue[200]),
+          value: _accountModel.bootstrapProgress);
+    }
+
+    return LinearProgressIndicator(
+        backgroundColor: theme.BreezColors.blue[200], value: value);
   }
 }
