@@ -82,7 +82,7 @@ class AccountBloc {
   Sink<void> get restartLightningSink => _restartLightningController.sink;
 
   final BehaviorSubject<void> _nodeConflictController = new BehaviorSubject<void>();
-  Stream<void> get nodeConflictStream => _nodeConflictController.stream;
+  Stream<void> get nodeConflictStream => _nodeConflictController.stream;  
 
   Stream<Map<String, DownloadFileInfo>>  chainBootstrapProgress;
 
@@ -269,14 +269,24 @@ class AccountBloc {
     }
 
     void _listenBootstrapStatus(BreezBridge breezLib) {
+      breezLib.chainBootstrapProgress.listen((fileInfo){
+        double totalContentLength = 0;
+        double downloadedContentLength = 0;
+        fileInfo.forEach((s, f){
+          totalContentLength += f.contentLength;
+          downloadedContentLength += f.bytesDownloaded;
+        });
+        double progress = downloadedContentLength / totalContentLength;        
+        _accountController.add(_accountController.value.copyWith(bootstrapProgress: progress));
+      }, onDone: (){
+        _accountController.add(_accountController.value.copyWith(bootstrapProgress: 1));            
+      });
+
+
       breezLib.chainBootstrapProgress.first.then((_){
         _accountController.add(_accountController.value.copyWith(bootstraping: true));
       });      
     }
-
-    // void _askWhitelistOptimizations() async{
-    //    _permissionsHandler.triggerOptimizeWhitelistExplenation();     
-    // }  
 
     void _fetchFundStatus(BreezBridge breezLib){
       if (_currentUser == null) {

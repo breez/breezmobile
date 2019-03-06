@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:breez/logger.dart';
 
 class ProgressDownloader {
-
-  final StreamController<DownloadFileInfo> _progressController = new StreamController.broadcast();
+  final StreamController<DownloadFileInfo> _progressController =
+      new StreamController.broadcast();
   Stream<DownloadFileInfo> get progressStream => _progressController.stream;
 
   final String url;
@@ -12,34 +12,36 @@ class ProgressDownloader {
 
   ProgressDownloader(this.url, this.targetFilePath);
 
-  void download() {    
-
+  void download() {
     final HttpClient client = new HttpClient();
     int byteCount = 0;    
-    //File targetFile =  new File(targetFilePath);
     final fileSink = new File(targetFilePath).openWrite();
-
-    client.getUrl(Uri.parse(url))
-      .then((request) => request.close())
-      .then((response) {
-        response.listen((data){
-            byteCount += data.length;            
-            _progressController.add(new DownloadFileInfo(url, response.contentLength, byteCount));
-            //targetFile.writeAsBytesSync(data, mode: FileMode.append);
-            fileSink.add(data);
-          },
-          onError: (e) {
-            log.severe(e.toString());
-            _progressController.add(e);
-          },
-          onDone:() {                          
-              fileSink.flush()
-                .then((res) => fileSink.close())
-                .then((res) =>  _progressController.close());
-              //fileSink.close();
-          });                                       
+    var uri = Uri.parse(url);
+    client.headUrl(uri).then((req) {
+      req.headers.removeAll(HttpHeaders.acceptEncodingHeader);
+      return req.close();
+    }).then((resp) {
+      int contentLength = 0;
+      client.getUrl(uri).then((request) {
+        return request.close();
+      }).then((response) {
+        response.listen((data) {
+          byteCount += data.length;
+          _progressController
+              .add(new DownloadFileInfo(url, contentLength, byteCount));
+          fileSink.add(data);
+        }, onError: (e) {
+          log.severe(e.toString());
+          _progressController.add(e);
+        }, onDone: () {
+          fileSink
+              .flush()
+              .then((res) => fileSink.close())
+              .then((res) => _progressController.close());
+        });
       });
-  } 
+    });
+  }
 }
 
 class DownloadFileInfo {
