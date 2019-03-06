@@ -41,11 +41,12 @@ class AccountModel {
   final Int64 onChainFeeRate;  
   final bool initial;
   final bool bootstraping;
+  final double bootstrapProgress;
   final bool enableInProgress;
 
   FundStatusReply_FundStatus get addedFundsStatus => addedFundsReply == null ? FundStatusReply_FundStatus.NO_FUND : addedFundsReply.status;
 
-  AccountModel(this._accountResponse, this._currency, {this.initial = false, this.addedFundsReply, this.paymentRequestInProgress, this.connected = false, this.onChainFeeRate, this.bootstraping = false, this.enableInProgress = false});
+  AccountModel(this._accountResponse, this._currency, {this.initial = false, this.addedFundsReply, this.paymentRequestInProgress, this.connected = false, this.onChainFeeRate, this.bootstraping = false, this.enableInProgress = false, this.bootstrapProgress = 0});
 
   AccountModel.initial() : 
     this(Account()
@@ -56,7 +57,7 @@ class AccountModel {
       ..maxPaymentAmount = Int64(0)
       ..enabled = true      
       , Currency.SAT, initial: true, bootstraping: true);
-  AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply addedFundsReply, String paymentRequestInProgress, bool connected, Int64 onChainFeeRate, bool bootstraping, bool enableInProgress}) {
+  AccountModel copyWith({Account accountResponse, Currency currency, FundStatusReply addedFundsReply, String paymentRequestInProgress, bool connected, Int64 onChainFeeRate, bool bootstraping, bool enableInProgress, double bootstrapProgress}) {
     return AccountModel(
       accountResponse ?? this._accountResponse, 
       currency ?? this.currency, 
@@ -64,6 +65,7 @@ class AccountModel {
       connected: connected ?? this.connected,      
       onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
       bootstraping: bootstraping ?? this.bootstraping,
+      bootstrapProgress: bootstrapProgress ?? this.bootstrapProgress,
       enableInProgress: enableInProgress ?? this.enableInProgress,
       paymentRequestInProgress: paymentRequestInProgress ?? this.paymentRequestInProgress);
   }
