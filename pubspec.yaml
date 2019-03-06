@@ -4,7 +4,7 @@ description: A new Flutter project.
 dependencies:
   flutter:
     sdk: flutter
-  grpc: ^0.6.4
+  grpc: ^1.0.1
   protobuf: any
   path_provider: any
   firebase_database: ^1.0.5
@@ -41,7 +41,7 @@ dependencies:
 
 dev_dependencies:
   mockito: "^3.0.0"
-  protoc_plugin: 14.0.0
+  protoc_plugin: ^16.0.1
   build_runner: ^1.0.0
   json_serializable: ^2.0.0
   flutter_test:

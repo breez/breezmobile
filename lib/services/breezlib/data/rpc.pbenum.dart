@@ -25,9 +25,6 @@ class Account_AccountStatus extends $pb.ProtobufEnum {
 
   static final Map<int, Account_AccountStatus> _byValue = $pb.ProtobufEnum.initByValue(values);
   static Account_AccountStatus valueOf(int value) => _byValue[value];
-  static void $checkItem(Account_AccountStatus v) {
-    if (v is! Account_AccountStatus) $pb.checkItemFailed(v, 'Account_AccountStatus');
-  }
 
   const Account_AccountStatus._(int v, String n) : super(v, n);
 }
@@ -47,9 +44,6 @@ class Payment_PaymentType extends $pb.ProtobufEnum {
 
   static final Map<int, Payment_PaymentType> _byValue = $pb.ProtobufEnum.initByValue(values);
   static Payment_PaymentType valueOf(int value) => _byValue[value];
-  static void $checkItem(Payment_PaymentType v) {
-    if (v is! Payment_PaymentType) $pb.checkItemFailed(v, 'Payment_PaymentType');
-  }
 
   const Payment_PaymentType._(int v, String n) : super(v, n);
 }
@@ -83,9 +77,6 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
 
   static final Map<int, NotificationEvent_NotificationType> _byValue = $pb.ProtobufEnum.initByValue(values);
   static NotificationEvent_NotificationType valueOf(int value) => _byValue[value];
-  static void $checkItem(NotificationEvent_NotificationType v) {
-    if (v is! NotificationEvent_NotificationType) $pb.checkItemFailed(v, 'NotificationEvent_NotificationType');
-  }
 
   const NotificationEvent_NotificationType._(int v, String n) : super(v, n);
 }
@@ -105,9 +96,6 @@ class FundStatusReply_FundStatus extends $pb.ProtobufEnum {
 
   static final Map<int, FundStatusReply_FundStatus> _byValue = $pb.ProtobufEnum.initByValue(values);
   static FundStatusReply_FundStatus valueOf(int value) => _byValue[value];
-  static void $checkItem(FundStatusReply_FundStatus v) {
-    if (v is! FundStatusReply_FundStatus) $pb.checkItemFailed(v, 'FundStatusReply_FundStatus');
-  }
 
   const FundStatusReply_FundStatus._(int v, String n) : super(v, n);
 }
