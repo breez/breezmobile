@@ -25,7 +25,8 @@ public class ChainSync extends Worker {
 
     public static final String UNIQUE_WORK_NAME = "chainSync";
     private static final String TAG = "BREEZSYNC";
-    private volatile JobController mJobController;
+    private volatile JobController syncJobController;
+    private volatile JobController closedchannelsJobController;
     private Logger m_logger;
     private Executor _executor = Executors.newCachedThreadPool();
 
@@ -52,16 +53,20 @@ public class ChainSync extends Worker {
                     workingDir = new File(getApplicationContext().getDataDir(), "app_flutter").getAbsolutePath();
                 }
 
-                mJobController = Bindings.newSyncJob(workingDir);
+                syncJobController = Bindings.newSyncJob(workingDir);
+                closedchannelsJobController = Bindings.newClosedChannelsJob(workingDir);
             }
-            mJobController.run();
+            syncJobController.run();
             m_logger.info("ChainSync job finished succesfully");
+            closedchannelsJobController.run();
+            m_logger.info("ClosedChannels job finished succesfully");
             return Result.SUCCESS;
         } catch (Exception e) {
             m_logger.log(Level.SEVERE,"ChainSync job start received error: ", e);
             return Result.FAILURE;
         } finally {
-            mJobController = null;
+            syncJobController = null;
+            closedchannelsJobController = null;
         }
     }
 
@@ -73,8 +78,9 @@ public class ChainSync extends Worker {
         //The stop and start of breez daemon must not overlap, this is why the synchronized block.
         synchronized (this) {
             m_logger.info("ChainSync job onStopped in synchronized block");
-            if (mJobController != null) {
-                _executor.execute(() -> mJobController.stop());
+            if (syncJobController != null) {
+                _executor.execute(() -> syncJobController.stop());
+                _executor.execute(() -> closedchannelsJobController.stop());
             }
         }
     }
