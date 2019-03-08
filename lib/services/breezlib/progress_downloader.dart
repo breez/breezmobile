@@ -21,22 +21,25 @@ class ProgressDownloader {
       req.headers.removeAll(HttpHeaders.acceptEncodingHeader);
       return req.close();
     }).then((resp) {
-      int contentLength = resp.headers.contentLength;
+      int contentLength = resp.headers.contentLength;      
       client.getUrl(uri).then((request) {
         return request.close();
       }).then((response) {
+        int eventIndex = 0;
         response.listen((data) {
-          byteCount += data.length;
-          _progressController
-              .add(new DownloadFileInfo(url, contentLength, byteCount));
-          fileSink.add(data);
+          byteCount += data.length;                 
+          fileSink.add(data);                    
+          if (eventIndex++ % 10 ==0) {
+            _progressController
+                .add(new DownloadFileInfo(url, contentLength, byteCount));            
+          }          
         }, onError: (e) {
           log.severe(e.toString());
           _progressController.add(e);
-        }, onDone: () {
+        }, onDone: () {          
           fileSink
               .flush()
-              .then((res) => fileSink.close())
+              .then((res) => fileSink.close())              
               .then((res) => _progressController.close());
         });
       });
