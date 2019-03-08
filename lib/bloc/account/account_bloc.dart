@@ -109,8 +109,8 @@ class AccountBloc {
       print("Account bloc started");
       ServiceInjector().sharedPreferences.then(
         (preferences) {
-          _sharedPreferences = preferences;             
-          _refreshAccount(breezLib);            
+          _sharedPreferences = preferences;      
+          _refreshAccount(breezLib);
           //listen streams      
           _listenRestartLightning(breezLib);
           _hanleAccountSettings();        
@@ -410,9 +410,11 @@ class AccountBloc {
     _refreshAccount(BreezBridge breezLib){    
       print("Account bloc refreshing account...");      
       breezLib.getAccount()
-        .then((acc) {
-          print("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());          
-          _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser?.currency));          
+        .then((acc) {     
+          if (acc.id.isNotEmpty) {     
+            print("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());          
+            _accountController.add(_accountController.value.copyWith(accountResponse: acc, currency: _currentUser?.currency));          
+          }
         })
         .catchError(_accountController.addError);
       _refreshPayments(breezLib);      
