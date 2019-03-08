@@ -21,7 +21,7 @@ class ProgressDownloader {
       req.headers.removeAll(HttpHeaders.acceptEncodingHeader);
       return req.close();
     }).then((resp) {
-      int contentLength = 0;
+      int contentLength = resp.headers.contentLength;
       client.getUrl(uri).then((request) {
         return request.close();
       }).then((response) {
