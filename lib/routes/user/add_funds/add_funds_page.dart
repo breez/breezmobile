@@ -51,9 +51,6 @@ class AddFundsState extends State<AddFundsPage> {
                   AsyncSnapshot<AddFundResponse> snapshot) {
                 return Material(
                   child: new Scaffold(
-                      bottomNavigationBar: _buildBottomBar(snapshot.data, 
-                          accSnapshot.data, 
-                          hasError: snapshot.hasError),
                       appBar: new AppBar(
                         iconTheme: theme.appBarIconTheme,
                         textTheme: theme.appBarTextTheme,
@@ -115,14 +112,20 @@ class AddFundsState extends State<AddFundsPage> {
     }
     return Column(children: <Widget>[
       AddressWidget(response?.address, response?.backupJson),
-      response == null ? SizedBox() : Container(
-          padding: new EdgeInsets.only(top: 36.0, left: 12.0, right: 12.0),
-          child: Text(
-              "Send up to " +
-                  account.currency
-                      .format(response.maxAllowedDeposit, includeSymbol: true) +
-                  " to this address." + "\nBreez requires you to keep ${account.currency.format(response.requiredReserve)} in your balance.",
-              style: theme.warningStyle, textAlign: TextAlign.center,)),
+      response == null ? SizedBox() : Expanded(child: Container(
+        padding: new EdgeInsets.only(top: 36.0, left: 12.0, right: 12.0),
+        child: Text(
+          "Send up to " +
+              account.currency
+                  .format(response.maxAllowedDeposit, includeSymbol: true) +
+              " to this address." +
+              "\nBreez requires you to keep ${account.currency.format(
+                  response.requiredReserve)} in your balance.",
+          style: theme.warningStyle, textAlign: TextAlign.center,)
+        ,),),
+      _buildBottomBar(response,
+          account,
+          hasError: error != null ? true : false),
     ]);
   }
 
