@@ -112,11 +112,15 @@ class WarningAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: this.onTap,
-        child: SvgPicture.asset(
-          "src/icon/warning.svg",
-          color: Color.fromRGBO(0, 120, 253, 1.0),
-        ));
+    return IconButton(
+      padding: EdgeInsets.zero,
+      icon: new Image(
+        image: new AssetImage("src/icon/warning.png"),
+        color: Color.fromRGBO(0, 120, 253, 1.0),
+      ),
+      tooltip: 'Backup',
+      onPressed: this.onTap,
+    )
+    ;
   }
 }
