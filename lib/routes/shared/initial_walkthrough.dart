@@ -6,6 +6,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/restore_dialog.dart';
+import 'package:breez/routes/user/home/beta_warning_dialog.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
@@ -98,7 +99,12 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   void _proceedToRegister() {
     widget._registrationBloc.registerSink.add(null);
-    Navigator.of(context).pop();
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return BetaWarningDialog();
+        });
   }
 
   @override
