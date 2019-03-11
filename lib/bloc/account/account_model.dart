@@ -85,6 +85,7 @@ class AccountModel {
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
   Int64 get maxAllowedToPay => Int64(min(_accountResponse.maxAllowedToPay.toInt(), _accountResponse.maxPaymentAmount.toInt()));
   Int64 get reserveAmount => balance - maxAllowedToPay;
+  Int64 get warningMaxChanReserveAmount => _accountResponse.maxChanReserve;
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
   Int64 get routingNodeFee => _accountResponse.routingNodeFee;
   bool get enabled => _accountResponse.enabled;

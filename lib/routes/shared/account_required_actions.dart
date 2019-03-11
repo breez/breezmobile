@@ -39,7 +39,8 @@ class AccountRequiredActionsIndicatorState
         Observable(widget._backupBloc.lastBackupTimeStream)
             .delay(Duration(seconds: 1))
             .listen((lastBackup) {}, onError: (err) {
-      if (_currentSettings.promptOnError && !showingBackupDialog) {          
+      if (_currentSettings.promptOnError && !showingBackupDialog) {
+        showingBackupDialog = true;          
         popFlushbars(context);
         showDialog(
             context: context,
