@@ -50,7 +50,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
             padding: const EdgeInsets.only(
                 top: 0.0, left: 16.0, right: 16.0, bottom: 0.0),
             child: Text(
-              "Please confirm that you understand before your continue.",
+              "Please confirm that you understand before you continue.",
               style: theme.paymentRequestSubtitleStyle
                   .copyWith(fontSize: 12.0, color: Colors.red),
             )),
