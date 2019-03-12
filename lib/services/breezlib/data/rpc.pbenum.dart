@@ -52,22 +52,26 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
   static const NotificationEvent_NotificationType READY = const NotificationEvent_NotificationType._(0, 'READY');
   static const NotificationEvent_NotificationType INITIALIZATION_FAILED = const NotificationEvent_NotificationType._(1, 'INITIALIZATION_FAILED');
   static const NotificationEvent_NotificationType ACCOUNT_CHANGED = const NotificationEvent_NotificationType._(2, 'ACCOUNT_CHANGED');
-  static const NotificationEvent_NotificationType INVOICE_PAID = const NotificationEvent_NotificationType._(3, 'INVOICE_PAID');
-  static const NotificationEvent_NotificationType ROUTING_NODE_CONNECTION_CHANGED = const NotificationEvent_NotificationType._(4, 'ROUTING_NODE_CONNECTION_CHANGED');
-  static const NotificationEvent_NotificationType LIGHTNING_SERVICE_DOWN = const NotificationEvent_NotificationType._(5, 'LIGHTNING_SERVICE_DOWN');
-  static const NotificationEvent_NotificationType FUND_ADDRESS_UNSPENT_CHANGED = const NotificationEvent_NotificationType._(6, 'FUND_ADDRESS_UNSPENT_CHANGED');
-  static const NotificationEvent_NotificationType BACKUP_SUCCESS = const NotificationEvent_NotificationType._(7, 'BACKUP_SUCCESS');
-  static const NotificationEvent_NotificationType BACKUP_FAILED = const NotificationEvent_NotificationType._(8, 'BACKUP_FAILED');
-  static const NotificationEvent_NotificationType BACKUP_AUTH_FAILED = const NotificationEvent_NotificationType._(9, 'BACKUP_AUTH_FAILED');
-  static const NotificationEvent_NotificationType BACKUP_NODE_CONFLICT = const NotificationEvent_NotificationType._(10, 'BACKUP_NODE_CONFLICT');
+  static const NotificationEvent_NotificationType PAYMENT_SENT = const NotificationEvent_NotificationType._(3, 'PAYMENT_SENT');
+  static const NotificationEvent_NotificationType INVOICE_PAID = const NotificationEvent_NotificationType._(4, 'INVOICE_PAID');
+  static const NotificationEvent_NotificationType ROUTING_NODE_CONNECTION_CHANGED = const NotificationEvent_NotificationType._(5, 'ROUTING_NODE_CONNECTION_CHANGED');
+  static const NotificationEvent_NotificationType LIGHTNING_SERVICE_DOWN = const NotificationEvent_NotificationType._(6, 'LIGHTNING_SERVICE_DOWN');
+  static const NotificationEvent_NotificationType FUND_ADDRESS_CREATED = const NotificationEvent_NotificationType._(7, 'FUND_ADDRESS_CREATED');
+  static const NotificationEvent_NotificationType FUND_ADDRESS_UNSPENT_CHANGED = const NotificationEvent_NotificationType._(8, 'FUND_ADDRESS_UNSPENT_CHANGED');
+  static const NotificationEvent_NotificationType BACKUP_SUCCESS = const NotificationEvent_NotificationType._(9, 'BACKUP_SUCCESS');
+  static const NotificationEvent_NotificationType BACKUP_FAILED = const NotificationEvent_NotificationType._(10, 'BACKUP_FAILED');
+  static const NotificationEvent_NotificationType BACKUP_AUTH_FAILED = const NotificationEvent_NotificationType._(11, 'BACKUP_AUTH_FAILED');
+  static const NotificationEvent_NotificationType BACKUP_NODE_CONFLICT = const NotificationEvent_NotificationType._(12, 'BACKUP_NODE_CONFLICT');
 
   static const List<NotificationEvent_NotificationType> values = const <NotificationEvent_NotificationType> [
     READY,
     INITIALIZATION_FAILED,
     ACCOUNT_CHANGED,
+    PAYMENT_SENT,
     INVOICE_PAID,
     ROUTING_NODE_CONNECTION_CHANGED,
     LIGHTNING_SERVICE_DOWN,
+    FUND_ADDRESS_CREATED,
     FUND_ADDRESS_UNSPENT_CHANGED,
     BACKUP_SUCCESS,
     BACKUP_FAILED,
