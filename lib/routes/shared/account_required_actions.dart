@@ -44,6 +44,7 @@ class AccountRequiredActionsIndicatorState
                   showingBackupDialog = true;
                   popFlushbars(context);                  
                   showDialog(
+                      barrierDismissible: false,
                       context: context,
                       builder: (_) =>
                           new EnableBackupDialog(context, widget._backupBloc)).then((_) {
@@ -84,6 +85,7 @@ class AccountRequiredActionsIndicatorState
 
                       if (backupSnapshot.hasError) {
                         warnings.add(() => showDialog(
+                            barrierDismissible: false,
                             context: context,
                             builder: (_) => new EnableBackupDialog(
                                 context, widget._backupBloc)));
