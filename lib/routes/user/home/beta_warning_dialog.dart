@@ -1,5 +1,6 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class BetaWarningDialog extends StatefulWidget {
@@ -80,14 +81,13 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
           ),
           actions: [
             new SimpleDialogOption(
-              onPressed: () =>
-                  SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+              onPressed: () => exit(0),
               child: new Text("Exit", style: theme.buttonStyle),
             ),
             new SimpleDialogOption(
               onPressed: (() {
                 if (_isUnderstood) {
-                  Navigator.of(context).pushReplacementNamed('/home');
+                  Navigator.of(context).pop();
                 } else {
                   setState(() {
                     _showReminderText = !_isUnderstood;

@@ -97,14 +97,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     super.dispose();
   }
 
-  void _proceedToRegister() {
+  void _proceedToRegister() {    
     widget._registrationBloc.registerSink.add(null);
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return BetaWarningDialog();
-        });
+    Navigator.of(context).pop();    
   }
 
   @override
@@ -164,7 +159,12 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       elevation: 0.0,
                       shape: const StadiumBorder(),
                       onPressed: () {
-                        _proceedToRegister();
+                        showDialog(                          
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return BetaWarningDialog();
+                        }).then((_) => _proceedToRegister());                        
                       }
                     )),
                 new Expanded(
