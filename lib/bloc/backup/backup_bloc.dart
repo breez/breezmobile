@@ -6,13 +6,15 @@ import 'package:rxdart/rxdart.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:path_provider/path_provider.dart';
 
 class BackupBloc {
 
   final BehaviorSubject<DateTime> _lastBackupTimeController =
       new BehaviorSubject<DateTime>();
   Stream<DateTime> get lastBackupTimeStream => _lastBackupTimeController.stream;
+
+  final StreamController<void> _promptBackupController = new StreamController<void>.broadcast();
+  Stream<void> get promptBackupStream => _promptBackupController.stream;
 
   final BehaviorSubject<BackupSettings> _backupSettingsController =
       new BehaviorSubject<BackupSettings>(seedValue: BackupSettings.start());
@@ -37,6 +39,8 @@ class BackupBloc {
   BreezBridge _breezLib;
   SharedPreferences _sharedPrefrences;    
   bool _backupServiceNeedLogin = false;
+  bool _enableBackupPrompt = false;
+  bool _backupHasError = false;
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";  
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
@@ -61,10 +65,15 @@ class BackupBloc {
     if (lastTime != null) {
       _lastBackupTimeController
           .add(DateTime.fromMillisecondsSinceEpoch(lastTime));
-    }
+    }   
+       
     _lastBackupTimeController.stream.listen((lastTime) {
+      _backupHasError = false;
       _sharedPrefrences.setInt(
           LAST_BACKUP_TIME_PREFERENCE_KEY, lastTime.millisecondsSinceEpoch);
+    }, onError: (e){
+      _backupHasError = true;
+      _pushPromptIfNeeded();
     });
 
     //settings persistency
@@ -84,13 +93,20 @@ class BackupBloc {
     _backupNowController.stream.listen((_) => _backupNow());
   }
   
-  void _backupNow() { 
+  void _backupNow() {     
     Future signInIfNeeded = _backupServiceNeedLogin ? _breezLib.signIn(true) : Future.value(null);
-    signInIfNeeded.then((_) => _breezLib.requestBackup());    
+    signInIfNeeded
+      .then((_) => _breezLib.requestBackup());      
   }
 
-  _listenBackupPaths() {    
-    Observable(_breezLib.notificationStream)    
+  _listenBackupPaths() { 
+    var backupOperations = [
+      NotificationEvent_NotificationType.PAYMENT_SENT, 
+      NotificationEvent_NotificationType.INVOICE_PAID,
+      NotificationEvent_NotificationType.FUND_ADDRESS_CREATED
+    ];
+
+    Observable(_breezLib.notificationStream)     
     .listen((event) {
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
         _backupServiceNeedLogin = true;
@@ -103,8 +119,19 @@ class BackupBloc {
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {        
         _backupServiceNeedLogin = false;
         _lastBackupTimeController.add(DateTime.now());
+      }
+      if (backupOperations.contains(event.type)) {
+        _enableBackupPrompt = true;
+        _pushPromptIfNeeded();    
       }      
     });
+  }
+
+  _pushPromptIfNeeded(){
+    if (_enableBackupPrompt && _backupHasError) {
+      _enableBackupPrompt = false;      
+      _promptBackupController.add(null);
+    }
   }
 
   void _listenRestoreRequests() {
