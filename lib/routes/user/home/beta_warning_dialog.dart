@@ -64,39 +64,39 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
   @override
   Widget build(BuildContext context) {
     return Theme(
-        data: Theme.of(context).copyWith(
-          unselectedWidgetColor: Theme.of(context).canvasColor,
-        ),
-        child: new AlertDialog(
-          titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-          title: new Text(
-            "Beta Warning",
-            style: theme.alertTitleStyle,
+          data: Theme.of(context).copyWith(
+            unselectedWidgetColor: Theme.of(context).canvasColor,
           ),
-          contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: _getContent(),
-          ),
-          actions: [
-            new SimpleDialogOption(
-              onPressed: () => exit(0),
-              child: new Text("Exit", style: theme.buttonStyle),
+          child: new AlertDialog(
+            titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+            title: new Text(
+              "Beta Warning",
+              style: theme.alertTitleStyle,
             ),
-            new SimpleDialogOption(
-              onPressed: (() {
-                if (_isUnderstood) {
-                  Navigator.of(context).pop();
-                } else {
-                  setState(() {
-                    _showReminderText = !_isUnderstood;
-                  });
-                }
-              }),
-              child: new Text("Continue", style: theme.buttonStyle),
+            contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: _getContent(),
             ),
-          ],
-        ));
+            actions: [
+              new SimpleDialogOption(
+                onPressed: () => exit(0),
+                child: new Text("Exit", style: theme.buttonStyle),
+              ),
+              new SimpleDialogOption(
+                onPressed: (() {
+                  if (_isUnderstood) {
+                    Navigator.of(context).pop(_isUnderstood);
+                  } else {
+                    setState(() {
+                      _showReminderText = !_isUnderstood;
+                    });
+                  }
+                }),
+                child: new Text("Continue", style: theme.buttonStyle),
+              ),
+            ],
+          ));
   }
 }

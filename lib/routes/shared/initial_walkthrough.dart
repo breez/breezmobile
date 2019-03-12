@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -30,43 +32,56 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   StreamSubscription<List<SnapshotInfo>> _multipleRestoreSubscription;
 
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
+  bool _registered = false;
 
   @override
   void initState() {
-    super.initState();
+    super.initState();    
 
-    _multipleRestoreSubscription = widget._backupBloc.multipleRestoreStream
-      .listen((options) {
-        if (options.length == 0) {
-          popToWalkthrough(error: "Could not locate backup for this account");
-          return;
+    _multipleRestoreSubscription =
+        widget._backupBloc.multipleRestoreStream.listen((options) {
+      if (options.length == 0) {
+        popToWalkthrough(error: "Could not locate backup for this account");
+        return;
+      }
+
+      if (options.length == 1) {
+        widget._backupBloc.restoreRequestSink.add(options.first.nodeID);
+        return;
+      }
+
+      popToWalkthrough();
+      showDialog(
+              context: context,
+              builder: (_) =>
+                  new RestoreDialog(context, widget._backupBloc, options))
+          .then((res) {
+        if (res) {
+          Navigator.push(
+              context,
+              createLoaderRoute(context,
+                  message: "Restoring data...", opacity: 0.8));
         }
-
-        if (options.length == 1) {
-          widget._backupBloc.restoreRequestSink.add(options.first.nodeID);
-          return;
-        }
-
-        popToWalkthrough();
-        showDialog(context: context, builder: (_) => new RestoreDialog(context, widget._backupBloc, options))
-          .then((res){
-            if (res) {
-              Navigator.push(context, createLoaderRoute(context, message: "Restoring data...", opacity: 0.8));
-            }
-          });
-      }, onError: (error){
-        popToWalkthrough(error: error.runtimeType != SignInFailedException ? error.toString() : null);
       });
+    }, onError: (error) {
+      popToWalkthrough(
+          error: error.runtimeType != SignInFailedException
+              ? error.toString()
+              : null);
+    });
 
-    _restoreFinishedSubscription = widget._backupBloc.restoreFinishedStream
-      .listen((restored) { 
-        popToWalkthrough();         
-        if (restored) {
-          _proceedToRegister();
-        }
-      }, onError: (error){
-        popToWalkthrough(error: error.runtimeType != SignInFailedException ? error.toString() : null);
-      });    
+    _restoreFinishedSubscription =
+        widget._backupBloc.restoreFinishedStream.listen((restored) {
+      popToWalkthrough();
+      if (restored) {
+        _proceedToRegister();
+      }
+    }, onError: (error) {
+      popToWalkthrough(
+          error: error.runtimeType != SignInFailedException
+              ? error.toString()
+              : null);
+    });
 
     _controller = new AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2720))
@@ -78,112 +93,130 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }
   }
 
-  void popToWalkthrough({String error}){
+  void popToWalkthrough({String error}) {
     Navigator.popUntil(context, (route) {
-      return route.settings.name == "/intro";          
-    }); 
+      return route.settings.name == "/intro";
+    });
     if (error != null) {
       _scaffoldKey.currentState.showSnackBar(new SnackBar(
-            duration: new Duration(seconds: 3),
-            content: new Text(error.toString())));
+          duration: new Duration(seconds: 3),
+          content: new Text(error.toString())));
     }
   }
 
   @override
-  void dispose() {
+  void dispose() {    
     _multipleRestoreSubscription.cancel();
     _restoreFinishedSubscription.cancel();
     _controller.dispose();
     super.dispose();
   }
 
-  void _proceedToRegister() {    
+  void _proceedToRegister() {
     widget._registrationBloc.registerSink.add(null);
-    Navigator.of(context).pop();    
+    _registered = true;
+    Navigator.of(context).pop();
+  }
+
+  Future<bool> _onWillPop() async {
+    if (!_registered) {
+      exit(0);
+    }
+    return true;   
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       key: _scaffoldKey,
-      body: new Padding(
-          padding: new EdgeInsets.only(top: 24.0),
-          child: new Stack(children: <Widget>[
-            new Column(
-              children: <Widget>[
-                new Expanded(flex: 244, child: new Container()),
-                new Expanded(
-                    flex: 372,
-                    child: new Image.asset(
-                      'src/images/waves-middle.png',
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    )),
-              ],
-            ),
-            new Column(
-              children: <Widget>[
-                new Expanded(flex: 60, child: new Container()),
-                new Expanded(
-                  flex: 151,
-                  child: new AnimatedBuilder(
-                    animation: _animation,
-                    builder: (BuildContext context, Widget child) {
-                      String frame =
-                          _animation.value.toString().padLeft(2, '0');
-                      return new Image.asset(
-                        'src/animations/welcome/frame_${frame}_delay-0.04s.png',
-                        gaplessPlayback: true,
+      body: 
+      WillPopScope(
+        onWillPop: _onWillPop,
+        child: 
+        Padding(
+            padding: new EdgeInsets.only(top: 24.0),
+            child: new Stack(children: <Widget>[
+              new Column(
+                children: <Widget>[
+                  new Expanded(flex: 244, child: new Container()),
+                  new Expanded(
+                      flex: 372,
+                      child: new Image.asset(
+                        'src/images/waves-middle.png',
                         fit: BoxFit.cover,
-                      );
-                    },
+                        width: double.infinity,
+                      )),
+                ],
+              ),
+              new Column(
+                children: <Widget>[
+                  new Expanded(flex: 60, child: new Container()),
+                  new Expanded(
+                    flex: 151,
+                    child: new AnimatedBuilder(
+                      animation: _animation,
+                      builder: (BuildContext context, Widget child) {
+                        String frame =
+                            _animation.value.toString().padLeft(2, '0');
+                        return new Image.asset(
+                          'src/animations/welcome/frame_${frame}_delay-0.04s.png',
+                          gaplessPlayback: true,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
                   ),
-                ),
-                new Expanded(flex: 190, child: new Container()),
-                new Expanded(
-                  flex: 48,
-                  child: new Text(
-                    _instructions,
-                    textAlign: TextAlign.center,
-                    style: theme.welcomeTextStyle,
+                  new Expanded(flex: 190, child: new Container()),
+                  new Expanded(
+                    flex: 48,
+                    child: new Text(
+                      _instructions,
+                      textAlign: TextAlign.center,
+                      style: theme.welcomeTextStyle,
+                    ),
                   ),
-                ),
-                new Expanded(flex: 79, child: new Container()),
-                new Container(
-                    height: 48.0,
-                    width: 168.0,
-                    child: new RaisedButton(
-                      child: new Text("LET'S BREEZ!",
-                          style: theme.buttonStyle),
-                      color: theme.whiteColor,
-                      elevation: 0.0,
-                      shape: const StadiumBorder(),
-                      onPressed: () {
-                        showDialog(                          
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return BetaWarningDialog();
-                        }).then((_) => _proceedToRegister());                        
-                      }
-                    )),
-                new Expanded(
+                  new Expanded(flex: 79, child: new Container()),
+                  new Container(
+                      height: 48.0,
+                      width: 168.0,
+                      child: new RaisedButton(
+                          child: new Text("LET'S BREEZ!",
+                              style: theme.buttonStyle),
+                          color: theme.whiteColor,
+                          elevation: 0.0,
+                          shape: const StadiumBorder(),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return BetaWarningDialog();
+                                }).then((approved) { 
+                                  if (approved) {
+                                    _proceedToRegister(); 
+                                  }
+                                });
+                          })),
+                  new Expanded(
                     flex: 40,
                     child: new Padding(
                         padding: EdgeInsets.only(top: 10.0),
                         child: new GestureDetector(
-                          onTap: () {
-                            // Restore then start lightninglib                            
-                            Navigator.push(context, createLoaderRoute(context));
-                            widget._backupBloc.restoreRequestSink.add("");
-                          },
-                          child: new Text("Restore from backup", style: theme.restoreLinkStyle,)
-                    )
+                            onTap: () {
+                              // Restore then start lightninglib
+                              Navigator.push(
+                                  context, createLoaderRoute(context));
+                              widget._backupBloc.restoreRequestSink.add("");
+                            },
+                            child: new Text(
+                              "Restore from backup",
+                              style: theme.restoreLinkStyle,
+                            ))),
                   ),
-                ),
-              ],
-            )
-          ])),
+                ],
+              )
+            ])),
+      ),
     );
   }
 }
