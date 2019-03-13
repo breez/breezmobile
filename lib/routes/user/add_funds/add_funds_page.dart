@@ -35,6 +35,7 @@ class AddFundsState extends State<AddFundsPage> {
     _accountSubscription = widget._accountBloc.accountStream.listen((acc){
       if (!acc.bootstraping) {
         _addFundsBloc.addFundRequestSink.add(null);
+        _accountSubscription.cancel();
       }
     });       
   }
