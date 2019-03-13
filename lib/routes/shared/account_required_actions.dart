@@ -3,10 +3,8 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:rxdart/rxdart.dart';
@@ -25,33 +23,37 @@ class AccountRequiredActionsIndicator extends StatefulWidget {
 
 class AccountRequiredActionsIndicatorState
     extends State<AccountRequiredActionsIndicator> {
-  StreamSubscription<DateTime> _promptEnableSubscription;
+  StreamSubscription<void> _promptEnableSubscription;
   StreamSubscription<BackupSettings> _settingsSubscription;
   BackupSettings _currentSettings;
   bool showingBackupDialog = false;
+  bool _init = false;
 
   @override
-  void initState() {
-    _settingsSubscription = widget._backupBloc.backupSettingsStream
-        .listen((settings) => _currentSettings = settings);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_init) {
+      _settingsSubscription = widget._backupBloc.backupSettingsStream
+          .listen((settings) => _currentSettings = settings);
 
-    _promptEnableSubscription =
-        Observable(widget._backupBloc.lastBackupTimeStream)
-            .delay(Duration(seconds: 1))
-            .listen((lastBackup) {}, onError: (err) {
-      if (_currentSettings.promptOnError && !showingBackupDialog) {          
-        popFlushbars(context);
-        showDialog(
-            context: context,
-            builder: (_) =>
-                new EnableBackupDialog(context, widget._backupBloc)).
-                then((_){
-                  showingBackupDialog = false;
-                });
-      }
-    });
-
-    super.initState();
+      _promptEnableSubscription =
+          Observable(widget._backupBloc.promptBackupStream)
+              .delay(Duration(seconds: 1))
+              .listen((_) {                
+                if (_currentSettings.promptOnError && !showingBackupDialog) {
+                  showingBackupDialog = true;
+                  popFlushbars(context);                  
+                  showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (_) =>
+                          new EnableBackupDialog(context, widget._backupBloc)).then((_) {
+                    showingBackupDialog = false;
+                  });
+                }
+              });   
+      _init = true; 
+    }
   }
 
   @override
@@ -83,6 +85,7 @@ class AccountRequiredActionsIndicatorState
 
                       if (backupSnapshot.hasError) {
                         warnings.add(() => showDialog(
+                            barrierDismissible: false,
                             context: context,
                             builder: (_) => new EnableBackupDialog(
                                 context, widget._backupBloc)));
@@ -112,11 +115,14 @@ class WarningAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: this.onTap,
-        child: SvgPicture.asset(
-          "src/icon/warning.svg",
-          color: Color.fromRGBO(0, 120, 253, 1.0),
-        ));
+    return IconButton(
+      padding: EdgeInsets.zero,
+      icon: new Image(
+        image: new AssetImage("src/icon/warning.png"),
+        color: Color.fromRGBO(0, 120, 253, 1.0),
+      ),
+      tooltip: 'Backup',
+      onPressed: this.onTap,
+    );
   }
 }

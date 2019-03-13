@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
@@ -5,15 +7,15 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/user/add_funds/address_widget.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class AddFundsPage extends StatefulWidget {  
   final BreezUserModel _user;  
+  final AccountBloc _accountBloc;
 
-  const AddFundsPage(this._user);
+  const AddFundsPage(this._user, this._accountBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -24,17 +26,23 @@ class AddFundsPage extends StatefulWidget {
 class AddFundsState extends State<AddFundsPage> {  
   final String _title = "Add Funds";
   AddFundsBloc _addFundsBloc;
+  StreamSubscription<AccountModel> _accountSubscription;
 
   @override
   initState() {
     super.initState();
     _addFundsBloc = new AddFundsBloc(widget._user.userID);
-    _addFundsBloc.addFundRequestSink.add(null);    
+    _accountSubscription = widget._accountBloc.accountStream.listen((acc){
+      if (!acc.bootstraping) {
+        _addFundsBloc.addFundRequestSink.add(null);
+      }
+    });       
   }
 
   @override
   void dispose() {
     _addFundsBloc.addFundRequestSink.close();
+    _accountSubscription.cancel();
     super.dispose();
   }
 
@@ -51,9 +59,6 @@ class AddFundsState extends State<AddFundsPage> {
                   AsyncSnapshot<AddFundResponse> snapshot) {
                 return Material(
                   child: new Scaffold(
-                      bottomNavigationBar: _buildBottomBar(snapshot.data, 
-                          accSnapshot.data, 
-                          hasError: snapshot.hasError),
                       appBar: new AppBar(
                         iconTheme: theme.appBarIconTheme,
                         textTheme: theme.appBarTextTheme,
@@ -85,9 +90,9 @@ class AddFundsState extends State<AddFundsPage> {
     String errorMessage;
     if (error != null) {
       errorMessage = error;
-    } else if (account == null) {
+    } else if (account == null || account.bootstraping) {
       errorMessage =
-          'Bitcoin address will be available as soon as Breez is synchronized.';
+          'You\'d be able to add funds after Breez is finished bootstrapping.';
     } else if (account.waitingDepositConfirmation ||
         account.processingWithdrawal) {
       errorMessage =
@@ -115,14 +120,19 @@ class AddFundsState extends State<AddFundsPage> {
     }
     return Column(children: <Widget>[
       AddressWidget(response?.address, response?.backupJson),
-      response == null ? SizedBox() : Container(
-          padding: new EdgeInsets.only(top: 36.0, left: 12.0, right: 12.0),
-          child: Text(
-              "Send up to " +
-                  account.currency
-                      .format(response.maxAllowedDeposit, includeSymbol: true) +
-                  " to this address." + "\nBreez requires you to keep ${account.currency.format(response.requiredReserve)} in your balance.",
-              style: theme.warningStyle, textAlign: TextAlign.center,)),
+      response == null ? SizedBox() : Expanded(child: Container(
+        padding: new EdgeInsets.only(top: 36.0, left: 12.0, right: 12.0),
+        child: Text(
+          "Send up to " +
+              account.currency
+                  .format(response.maxAllowedDeposit, includeSymbol: true) +
+              " to this address." +
+              "\nBreez requires you to keep ${account.warningMaxChanReserveAmount} in your balance.",
+          style: theme.warningStyle, textAlign: TextAlign.center,)
+        ,),),
+      _buildBottomBar(response,
+          account,
+          hasError: error != null ? true : false),
     ]);
   }
 

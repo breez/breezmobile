@@ -55,6 +55,7 @@ class Account extends $pb.GeneratedMessage {
     ..aInt64(7, 'maxPaymentAmount')
     ..aInt64(8, 'routingNodeFee')
     ..aOB(9, 'enabled')
+    ..aInt64(10, 'maxChanReserve')
     ..hasRequiredFields = false
   ;
 
@@ -114,6 +115,11 @@ class Account extends $pb.GeneratedMessage {
   set enabled(bool v) { $_setBool(8, v); }
   bool hasEnabled() => $_has(8);
   void clearEnabled() => clearField(9);
+
+  Int64 get maxChanReserve => $_getI64(9);
+  set maxChanReserve(Int64 v) { $_setInt64(9, v); }
+  bool hasMaxChanReserve() => $_has(9);
+  void clearMaxChanReserve() => clearField(10);
 }
 
 class Payment extends $pb.GeneratedMessage {
