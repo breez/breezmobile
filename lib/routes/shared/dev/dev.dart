@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -7,6 +9,7 @@ import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/lnd_bootstrap_progress.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -14,6 +17,8 @@ import 'package:flutter/services.dart';
 import 'package:share/share.dart';
 import 'package:flutter/gestures.dart';
 import 'package:breez/routes/shared/dev/default_commands.dart';
+import 'package:archive/archive_io.dart';
+//import 'package:simple_share/simple_share.dart';
 
 final _cliInputController = TextEditingController();
 final FocusNode _cliEntryFocusNode = FocusNode();
@@ -273,7 +278,11 @@ class DevViewState extends State<DevView> {
           icon: Icons.phone_android,
           function: () {
             toggleConnectProgress(accBloc, settings);
-          })
+          }),
+      Choice(
+          title: 'Describe Graph',
+          icon: Icons.phone_android,
+          function: _describeGraph),
     ]);
 
     if (!account.enableInProgress && account.id.isNotEmpty) {
@@ -304,5 +313,23 @@ class DevViewState extends State<DevView> {
   void toggleConnectProgress(AccountBloc bloc, AccountSettings settings) {
     bloc.accountSettingsSink.add(
         settings.copyWith(showConnectProgress: !settings.showConnectProgress));
+  }
+
+  void _describeGraph() async {
+    var tempDir = await getTemporaryDirectory();
+    String filePath = '${tempDir.path}/graph.json';
+    widget._breezBridge.sendCommand("describegraph $filePath").then((_) {
+      var encoder = new ZipFileEncoder();
+      encoder.create('${tempDir.path}/graph.zip');
+      encoder.addFile(File(filePath));
+      encoder.close();
+      // SimpleShare.share(
+      //         uri: Uri.file("${tempDir.path}/graph.zip").toString(),
+      //         title: "Describe Graph")
+      //     .whenComplete(() {
+      //   File('${tempDir.path}/graph.zip').deleteSync();
+      //   File('${tempDir.path}/graph.json').deleteSync();
+      // });
+    });
   }
 }

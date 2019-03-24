@@ -6,38 +6,38 @@ dependencies:
     sdk: flutter
   grpc: ^1.0.1
   protobuf: any
-  path_provider: any
-  firebase_database: ^1.0.5
-  firebase_messaging: "2.1.0"
-  shared_preferences: "^0.4.1"
-  share: "^0.5.2"
+  path_provider: ^0.5.0+1
+  firebase_database: ^2.0.2
+  firebase_messaging: ^4.0.0+1
+  shared_preferences: ^0.5.1+2
+  share: ^0.6.0+1
   qr_flutter: ^2.0.0  
   hex: "^0.1.1"
   rxdart: "^0.18.1"  
   flutter_advanced_networkimage: any
   intl: ^0.15.7
   flushbar: ^0.9.0
-  barcode_scan:
-    git:
-       url: https://github.com/breez/flutter_barcode_reader.git
-  image_picker: 0.4.7
+  barcode_scan: any    
+  image_picker: ^0.5.0+9
   image: any
   package_info: any  
   uuid: ^1.0.3
   ini: ^2.0.1
-  connectivity: ^0.3.2
+  connectivity: ^0.4.2
   logging: ^0.11.3+2
-  auto_size_text: ^0.2.1
-  flutter_svg: ^0.6.3
+  auto_size_text: ^0.2.1  
   json_annotation: ^2.0.0
   http: ^0.12.0+1
   url_launcher: ^5.0.1
+  archive: ^2.0.8  
+  #simple_share: ^0.0.1+4
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.0
   flutter_webview_plugin:
     git:
       url: https://github.com/breez/flutter_webview_plugin.git
+      ref: androidx
 
 dev_dependencies:
   mockito: "^3.0.0"
