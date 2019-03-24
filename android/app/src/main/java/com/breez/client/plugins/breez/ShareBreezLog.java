@@ -30,19 +30,20 @@ public class ShareBreezLog implements MethodChannel.MethodCallHandler {
 
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        if (call.method.equals("shareLog")) {
+        if (call.method.equals("shareFile")) {
             try {
-                Intent intentShareFile = new Intent(Intent.ACTION_SEND);
-                File logFile = new File(call.argument("path").toString());
-                File shareFile = new File(activity.getFilesDir().getPath() + "/breez.log");
-                copy(logFile, shareFile);
+                String sourcePath = call.argument("path").toString();
+                File sourceFile = new File(sourcePath);
+                Object targetFileName = call.argument("targetFileName");
+                File shareFile = new File(activity.getFilesDir().getPath() + "/" + (targetFileName == null ? sourceFile.getName() : targetFileName.toString()));
+                copy(sourceFile, shareFile);
                 Uri shareUri = LogProvider.getUriForFile(activity, activity.getApplicationContext().getPackageName() + ".log", shareFile);
+                Intent intentShareFile = new Intent(Intent.ACTION_SEND);
                 intentShareFile.putExtra(Intent.EXTRA_STREAM, shareUri);
                 intentShareFile.setType("text/plain");
                 activity.startActivity(Intent.createChooser(intentShareFile, "Share File"));
                 result.success(true);
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 result.success(false);
             }
         }

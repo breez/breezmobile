@@ -17,8 +17,12 @@ Future<File> get _logFile async {
 
 void shareLog() {
   _logFile.then((file) {
-    _platform.invokeMethod("shareLog", {'path': file.path});
+    _platform.invokeMethod("shareFile", {'path': file.path, 'targetFileName': "breez.log"});
   });
+}
+
+Future shareFile(String filePath){
+  return _platform.invokeMethod("shareFile", {'path': filePath});
 }
 
 class BreezLogger {
