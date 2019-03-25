@@ -48,8 +48,7 @@ class InvoiceBloc {
 
     _listenInvoiceRequests(breezLib, nfc);
     _listenNFCStream(nfc, server, breezLib);
-    _listenIncomingInvoices(notificationsService, breezLib, nfc, lightningLinks, device);
-    _listenIncomingBlankInvoices(breezLib, nfc);
+    _listenIncomingInvoices(notificationsService, breezLib, nfc, lightningLinks, device);    
     _listenPaidInvoices(breezLib);    
   }
 
@@ -86,11 +85,11 @@ class InvoiceBloc {
     });
   }
 
-  void _listenIncomingBlankInvoices(BreezBridge breezLib, NFCService nfc) {
-    nfc.receivedBlankInvoices().listen((invoice) {
-      breezLib.sendPaymentForRequest(invoice, amount: payBlankAmount).catchError(_paidInvoicesController.addError);
-    }).onError(_paidInvoicesController.addError);
-  }
+  // void _listenIncomingBlankInvoices(BreezBridge breezLib, NFCService nfc) {
+  //   nfc.receivedBlankInvoices().listen((invoice) {
+  //     breezLib.sendPaymentForRequest(invoice, amount: payBlankAmount).catchError(_paidInvoicesController.addError);
+  //   }).onError(_paidInvoicesController.addError);
+  // }
 
   void _listenIncomingInvoices(Notifications notificationService, BreezBridge breezLib, NFCService nfc, LightningLinksService links, Device device) {
     Observable<String>.merge([
