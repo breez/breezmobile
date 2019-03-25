@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -7,6 +8,7 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/notifications.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'account_model.dart';
 import 'package:breez/services/injector.dart';
@@ -21,12 +23,13 @@ class AccountBloc {
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";  
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
   static const String BOOTSTRAPING_PREFERENCES_KEY = "BOOTSTRAPING";
+
+  final _actionsController = new StreamController.broadcast();
+  Sink get actionsSink => _actionsController.sink;
+  Map<Type, Function> _actionHandlers = Map();
       
   final _reconnectStreamController = new StreamController<void>.broadcast();
   Sink<void> get _reconnectSink => _reconnectStreamController.sink;
-
-  final _requestAddressController = new StreamController<void>();
-  Sink<void> get requestAddressSink => _requestAddressController.sink;
 
   final _broadcastRefundRequestController = new StreamController<BroadcastRefundRequestModel>.broadcast();
   Sink<BroadcastRefundRequestModel> get broadcastRefundRequestSink => _broadcastRefundRequestController.sink;
@@ -94,12 +97,18 @@ class AccountBloc {
   bool _allowReconnect = true;
   bool _startedLightning = false;    
   SharedPreferences _sharedPreferences;
+  BreezBridge _breezLib;
+  Notifications _notificationsService;
+  Device _device;
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
       ServiceInjector injector = new ServiceInjector();    
-      BreezBridge breezLib = injector.breezBridge;      
-      Notifications notificationsService = injector.notifications;
-      Device device = injector.device;      
+      _breezLib = injector.breezBridge;      
+      _notificationsService = injector.notifications;
+      _device = injector.device;   
+      _actionHandlers = {
+        SendPaymentFailureReport:_handleSendQueryRoute
+      };
 
       _accountController.add(AccountModel.initial());
       _paymentsController.add(PaymentsModel.initial());
@@ -110,23 +119,23 @@ class AccountBloc {
       ServiceInjector().sharedPreferences.then(
         (preferences) {
           _sharedPreferences = preferences;      
-          _refreshAccount(breezLib);
+          _refreshAccount();
           //listen streams      
-          _listenRestartLightning(breezLib);
+          _listenAccountActions();
+          _listenRestartLightning();
           _hanleAccountSettings();        
-          _listenUserChanges(userProfileStream, breezLib, device);
-          _listenNewAddressRequests(breezLib);
-          _listenWithdrawalRequests(breezLib);
-          _listenSentPayments(breezLib);
-          _listenFilterChanges(breezLib);
-          _listenAccountChanges(breezLib);    
-          _listenEnableAccount(breezLib);
-          _listenMempoolTransactions(device, notificationsService, breezLib);
-          _listenRoutingNodeConnectionChanges(breezLib); 
-          _listenBootstrapStatus(breezLib);    
+          _listenUserChanges(userProfileStream);          
+          _listenWithdrawalRequests();
+          _listenSentPayments();
+          _listenFilterChanges();
+          _listenAccountChanges();    
+          _listenEnableAccount();
+          _listenMempoolTransactions();
+          _listenRoutingNodeConnectionChanges(); 
+          _listenBootstrapStatus();    
         }
       );               
-    }
+    }    
 
     //settings persistency
     Future _hanleAccountSettings() async {      
@@ -156,9 +165,22 @@ class AccountBloc {
       return _sharedPreferences.get(BOOTSTRAPING_PREFERENCES_KEY) == true;
     }
 
-    void _listenRefundableDeposits(BreezBridge breezLib, Device device){
+    void _listenAccountActions(){
+      _actionsController.stream.listen((action) {
+        var handler =_actionHandlers[action.runtimeType];
+        if (handler != null) {
+          handler(action);
+        }        
+      });
+    }
+
+    Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
+      _breezLib.sendPaymentFailureBugReport(action.paymentRequest, amount: action.amount);
+    }
+
+    void _listenRefundableDeposits(){
       var refreshRefundableAddresses = (){
-        breezLib.getRefundableSwapAddresses()
+        _breezLib.getRefundableSwapAddresses()
         .then(
           (addressList){
             _refundableDepositsController.add(addressList.addresses.map((a) => RefundableDepositModel(a)).toList());
@@ -170,18 +192,18 @@ class AccountBloc {
       };
 
       refreshRefundableAddresses();
-      breezLib.notificationStream.where(
+      _breezLib.notificationStream.where(
         (n) => n.type == NotificationEvent_NotificationType.FUND_ADDRESS_UNSPENT_CHANGED
       )
       .listen((e) { 
         refreshRefundableAddresses(); 
-        _fetchFundStatus(breezLib);
+        _fetchFundStatus();
       });      
     }
 
-    void _listenRefundBroadcasts(BreezBridge breezLib){
+    void _listenRefundBroadcasts(){
       _broadcastRefundRequestController.stream.listen((request){
-        breezLib.refund(request.fromAddress, request.toAddress)
+        _breezLib.refund(request.fromAddress, request.toAddress)
           .then((txID){
             _broadcastRefundResponseController.add(new BroadcastRefundResponseModel(request, txID));
           })
@@ -189,7 +211,7 @@ class AccountBloc {
       });
     }
 
-    void _listenConnectivityChanges(BreezBridge breezLib){
+    void _listenConnectivityChanges(){
       var connectivity = Connectivity();     
       connectivity.onConnectivityChanged.skip(1).listen((connectivityResult){
           log.info("_listenConnectivityChanges: connection changed to: " + connectivityResult.toString());          
@@ -198,40 +220,40 @@ class AccountBloc {
         });
     }
     
-    void _listenReconnects(BreezBridge breezLib){
+    void _listenReconnects(){
       Future connectingFuture = Future.value(null);
       _reconnectStreamController.stream.transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
       .listen((_) async {                 
         connectingFuture = connectingFuture.whenComplete(() async {                       
           if (_allowReconnect == true && _accountController.value.connected == false) {             
-            await breezLib.connectAccount();
+            await _breezLib.connectAccount();
           }
         }).catchError((e){});        
       });
     }
 
-    void _listenMempoolTransactions(Device device, Notifications notificationService, BreezBridge breezLib) {      
-      notificationService.notifications
+    void _listenMempoolTransactions() {      
+      _notificationsService.notifications
         .where((message) => message["msg"] == "Unconfirmed transaction" ||  message["msg"] == "Confirmed transaction")
         .listen((message) {
           log.severe(message.toString());
           if (message["msg"] == "Unconfirmed transaction" && message["user_click"] == null) {
             _accountNotificationsController.add(message["body"].toString());
           }
-          _fetchFundStatus(breezLib);         
+          _fetchFundStatus();         
         });
 
-        device.eventStream.where((e) => e == NotificationType.RESUME).listen((e){
+        _device.eventStream.where((e) => e == NotificationType.RESUME).listen((e){
           log.info("App Resumed - flutter resume called, adding reconnect request");        
           _reconnectSink.add(null);         
         });
     }
 
-    _listenUserChanges(Stream<BreezUserModel> userProfileStream, BreezBridge breezLib, Device device){      
+    _listenUserChanges(Stream<BreezUserModel> userProfileStream){      
       userProfileStream.listen((user) async {        
         if (user.token != _currentUser?.token) {
           print("user profile bloc registering for channel open notifications");
-          breezLib.registerChannelOpenedNotification(user.token);
+          _breezLib.registerChannelOpenedNotification(user.token);
         }
         _currentUser = user; 
                
@@ -240,19 +262,19 @@ class AccountBloc {
             //_askWhitelistOptimizations();          
             print("Account bloc got registered user, starting lightning daemon...");        
             _startedLightning = true;                                        
-            breezLib.bootstrap().then((downloadNeeded) async {    
+            _breezLib.bootstrap().then((downloadNeeded) async {    
               print("Account bloc bootstrap has finished");  
               if (downloadNeeded) {
                 _setBootstraping(true);
               }              
               _accountController.add(_accountController.value.copyWith(bootstraping: _isBootstrapping()));
-              breezLib.startLightning();
-              breezLib.registerPeriodicSync(user.token);              
-              _fetchFundStatus(breezLib);
-              _listenConnectivityChanges(breezLib);
-              _listenReconnects(breezLib);
-              _listenRefundableDeposits(breezLib, device);
-              _listenRefundBroadcasts(breezLib);            
+              _breezLib.startLightning();
+              _breezLib.registerPeriodicSync(user.token);              
+              _fetchFundStatus();
+              _listenConnectivityChanges();
+              _listenReconnects();
+              _listenRefundableDeposits();
+              _listenRefundBroadcasts();            
             });
           } else {
             _accountController.add(_accountController.value.copyWith(currency: user.currency));
@@ -262,14 +284,14 @@ class AccountBloc {
       });
     }
 
-    void _listenRestartLightning(BreezBridge breezLib){
+    void _listenRestartLightning(){
       _restartLightningController.stream.listen((_){
-        breezLib.startLightning();                  
+        _breezLib.startLightning();                  
       });
     }
 
-    void _listenBootstrapStatus(BreezBridge breezLib) {
-      breezLib.chainBootstrapProgress.listen((fileInfo){
+    void _listenBootstrapStatus() {
+      _breezLib.chainBootstrapProgress.listen((fileInfo){
         double totalContentLength = 0;
         double downloadedContentLength = 0;
         fileInfo.forEach((s, f){
@@ -283,17 +305,17 @@ class AccountBloc {
       });
 
 
-      breezLib.chainBootstrapProgress.first.then((_){
+      _breezLib.chainBootstrapProgress.first.then((_){
         _accountController.add(_accountController.value.copyWith(bootstraping: true));
       });      
     }
 
-    void _fetchFundStatus(BreezBridge breezLib){
+    void _fetchFundStatus(){
       if (_currentUser == null) {
         return;
       }
       
-      breezLib.getFundStatus(_currentUser.userID)
+      _breezLib.getFundStatus(_currentUser.userID)
       .then( (status){
         log.info("Got status " + status.status.toString());
         if (status.status != _accountController.value.addedFundsStatus) {          
@@ -305,25 +327,17 @@ class AccountBloc {
       });
     }
   
-    void _listenNewAddressRequests(BreezBridge breezLib) {    
-      _requestAddressController.stream.listen((request){
-        breezLib.addFundsInit(_currentUser.userID)
-          .then((reply) => _addFundController.add(new AddFundResponse(reply)))
-          .catchError(_addFundController.addError);
-      });          
-    }
-  
-    void _listenWithdrawalRequests(BreezBridge breezLib) {
+    void _listenWithdrawalRequests() {
       _withdrawalController.stream.listen(
         (removeFundRequestModel) {
           Future removeFunds = Future.value(null);
           if (removeFundRequestModel.fromWallet) {
             removeFunds = 
-              breezLib.sendWalletCoins(removeFundRequestModel.address, removeFundRequestModel.amount, removeFundRequestModel.satPerByteFee)
+              _breezLib.sendWalletCoins(removeFundRequestModel.address, removeFundRequestModel.amount, removeFundRequestModel.satPerByteFee)
                 .then((txID) => _withdrawalResultController.add(new RemoveFundResponseModel(txID)));
           } else {
             removeFunds = 
-              breezLib.removeFund(removeFundRequestModel.address, removeFundRequestModel.amount)
+              _breezLib.removeFund(removeFundRequestModel.address, removeFundRequestModel.amount)
                 .then((res) => _withdrawalResultController.add(new RemoveFundResponseModel(res.txid, errorMessage: res.errorMessage)));
           }
                     
@@ -331,11 +345,11 @@ class AccountBloc {
         });    
     }
   
-    void _listenSentPayments(BreezBridge breezLib) {
+    void _listenSentPayments() {
       _sentPaymentsController.stream.listen(
         (payRequest) {
           _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: payRequest.paymentRequest));          
-          breezLib.sendPaymentForRequest(payRequest.paymentRequest, amount: payRequest.amount)     
+          _breezLib.sendPaymentForRequest(payRequest.paymentRequest, amount: payRequest.amount)     
           .then((response) {
             _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: ""));          
             _fulfilledPaymentsController.add(payRequest.paymentRequest); 
@@ -343,21 +357,24 @@ class AccountBloc {
           .catchError((err) {
            _accountController.add(_accountController.value.copyWith(paymentRequestInProgress: ""));
             log.severe(err.toString());
-            _fulfilledPaymentsController.addError(err);
+            if (_accountSettingsController.value.sendReportOnPaymentFailure) {
+              _breezLib.sendPaymentFailureBugReport(payRequest.paymentRequest, amount: payRequest.amount);
+            }
+            _fulfilledPaymentsController.addError(PaymentError(payRequest, err));
           });
         });    
     }
 
-    void _listenFilterChanges(BreezBridge breezLib) {
+    void _listenFilterChanges() {
       _paymentFilterController.stream.skip(1).listen((filter) {
-        _refreshPayments(breezLib);
+        _refreshPayments();
       });
     }
 
-    void _refreshPayments(BreezBridge breezLib) {
+    void _refreshPayments() {
       DateTime _firstDate;     
       print ("refreshing payments...");
-      breezLib.getPayments()
+      _breezLib.getPayments()
         .then( (payments) {
           List<PaymentInfo> _paymentsList =  payments.paymentsList.map((payment) => new PaymentInfo(payment, _currentUser.currency)).toList();
           if(_paymentsList.length > 0){
@@ -381,15 +398,15 @@ class AccountBloc {
       return paymentsSet.toList();
     }  
   
-    void _listenAccountChanges(BreezBridge breezLib) {
+    void _listenAccountChanges() {
       StreamSubscription<NotificationEvent> eventSubscription;
-      eventSubscription = Observable(breezLib.notificationStream)
+      eventSubscription = Observable(_breezLib.notificationStream)
       .listen((event) {
         if (event.type == NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
           _lightningDownController.add(true);
         }
         if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
-          _refreshAccount(breezLib);
+          _refreshAccount();
         }
         if (event.type == NotificationEvent_NotificationType.BACKUP_NODE_CONFLICT) {
           eventSubscription.cancel();
@@ -398,18 +415,18 @@ class AccountBloc {
       });     
     }
 
-    void _listenEnableAccount(BreezBridge breezLib){
+    void _listenEnableAccount(){
       _accountEnableController.stream.listen((enable) { 
         _accountController.add(_accountController.value.copyWith(enableInProgress: true));
-        breezLib.enableAccount(enable).whenComplete((){
+        _breezLib.enableAccount(enable).whenComplete((){
           _accountController.add(_accountController.value.copyWith(enableInProgress: false));
         });
       });
     }
   
-    _refreshAccount(BreezBridge breezLib){    
+    _refreshAccount(){    
       print("Account bloc refreshing account...");      
-      breezLib.getAccount()
+      _breezLib.getAccount()
         .then((acc) {     
           if (acc.id.isNotEmpty) {     
             print("ACCOUNT CHANGED BALANCE=" + acc.balance.toString() + " STATUS = " + acc.status.toString());          
@@ -417,9 +434,9 @@ class AccountBloc {
           }
         })
         .catchError(_accountController.addError);
-      _refreshPayments(breezLib);      
+      _refreshPayments();      
       if (_accountController.value.onChainFeeRate == null) {
-        breezLib.getDefaultOnChainFeeRate().then((rate) { 
+        _breezLib.getDefaultOnChainFeeRate().then((rate) { 
           if (rate.toInt() > 0) {
             _accountController.add(_accountController.value.copyWith(onChainFeeRate: rate));
           }
@@ -427,14 +444,14 @@ class AccountBloc {
       }     
     }
 
-    void _listenRoutingNodeConnectionChanges(BreezBridge breezLib) {
-      Observable(breezLib.notificationStream)
+    void _listenRoutingNodeConnectionChanges() {
+      Observable(_breezLib.notificationStream)
       .where((event) => event.type == NotificationEvent_NotificationType.ROUTING_NODE_CONNECTION_CHANGED)
-      .listen((change) => _refreshRoutingNodeConnection(breezLib));
+      .listen((change) => _refreshRoutingNodeConnection());
     }
 
-    _refreshRoutingNodeConnection(BreezBridge breezLib){      
-      breezLib.isConnectedToRoutingNode()
+    _refreshRoutingNodeConnection(){      
+      _breezLib.isConnectedToRoutingNode()
         .then((connected) async {  
           _accountController.add(_accountController.value.copyWith(connected: connected));        
           _setBootstraping(connected ? false : _accountController.value.bootstraping);
@@ -453,8 +470,7 @@ class AccountBloc {
 
   
     close() {
-      _accountEnableController.close();
-      _requestAddressController.close();
+      _accountEnableController.close();      
       _addFundController.close();    
       _paymentsController.close();          
       _accountNotificationsController.close();
@@ -466,6 +482,7 @@ class AccountBloc {
       _routingNodeConnectionController.close();
       _broadcastRefundRequestController.close();
       _restartLightningController.close();
-      _permissionsHandler.dispose();
+      _actionsController.close();
+      _permissionsHandler.dispose();      
     }
   }  
