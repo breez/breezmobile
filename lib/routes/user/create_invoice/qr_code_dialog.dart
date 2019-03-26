@@ -49,7 +49,7 @@ class QrCodeDialog extends StatelessWidget {
                     color: theme.BreezColors.grey[500],
                     onPressed: () {
                       Clipboard.setData(new ClipboardData(text: snapshot.data));
-                      showFlushbar(context, message: "Invoice address was copied to your clipboard.", seconds:3);                      
+                      showFlushbar(context, message: "Invoice address was copied to your clipboard.", duration:Duration(seconds: 3));                      
                     },
                   )
                 ],
