@@ -16,7 +16,7 @@ dependencies:
   rxdart: "^0.18.1"  
   flutter_advanced_networkimage: any
   intl: ^0.15.7
-  flushbar: ^0.9.0
+  flushbar: ^1.3.0
   barcode_scan:
     git:
        url: https://github.com/breez/flutter_barcode_reader.git
