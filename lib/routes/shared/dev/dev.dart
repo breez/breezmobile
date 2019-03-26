@@ -288,7 +288,7 @@ class DevViewState extends State<DevView> {
     if (settings.failePaymentBehavior != BugReportBehavior.PROMPT) {
       choices.add(Choice(
           title:
-              'Send Bug Reports',
+              'Reset Payment Report',
           icon: Icons.phone_android,
           function: () {
             _resetBugReportBehavior(accBloc, settings);
