@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,11 +8,10 @@ import 'package:breez/theme_data.dart' as theme;
 
 class PaymentFailedReportDialog extends StatefulWidget {
   final BuildContext context;
-  final AccountBloc _accountBloc;
-  final PayRequest _failedPayment;
+  final AccountBloc _accountBloc;  
 
   PaymentFailedReportDialog(
-      this.context, this._accountBloc, this._failedPayment);
+      this.context, this._accountBloc);
 
   @override
   PaymentFailedReportDialogState createState() {
@@ -43,10 +41,10 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return createEnableBackupDialog();
+    return buildFailureDialog();
   }
 
-  Widget createEnableBackupDialog() {
+  Widget buildFailureDialog() {
     return Theme(
         data: Theme.of(context).copyWith(
           unselectedWidgetColor: Theme.of(context).canvasColor,
@@ -78,7 +76,8 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                           Checkbox(
                               activeColor: theme.BreezColors.blue[500],
                               value: _doneAsk ??
-                                  _settings.dontPromptOnPaymentFailure,
+                                  _settings.failePaymentBehavior !=
+                                      BugReportBehavior.PROMPT,
                               onChanged: (v) {
                                 setState(() {
                                   _doneAsk = v;
@@ -96,35 +95,30 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
           actions: [
             new SimpleDialogOption(
               onPressed: () {
-                var dontAsk = _doneAsk ?? _settings.dontPromptOnPaymentFailure;
-                if (dontAsk) {
-                  widget._accountBloc.accountSettingsSink.add(
-                      _settings.copyWith(
-                          sendReportOnPaymentFailure: false,
-                          dontPromptOnPaymentFailure: dontAsk));
-                }
-                Navigator.pop(widget.context);
+                onSubmit(false);
+                Navigator.pop(widget.context, false);
               },
               child: new Text("No", style: theme.buttonStyle),
             ),
             new SimpleDialogOption(
-              onPressed: (() {
-                var dontAsk = _doneAsk ?? _settings.dontPromptOnPaymentFailure;
-                if (dontAsk) {
-                  widget._accountBloc.accountSettingsSink.add(
-                      _settings.copyWith(
-                          sendReportOnPaymentFailure: true,
-                          dontPromptOnPaymentFailure: dontAsk));
-                }
-
-                widget._accountBloc.actionsSink.add(SendPaymentFailureReport(
-                    widget._failedPayment.paymentRequest,
-                    amount: widget._failedPayment.amount));
-                Navigator.pop(widget.context);
+              onPressed: (() async {
+                onSubmit(true);                
+                Navigator.pop(widget.context, true);
               }),
               child: new Text("YES", style: theme.buttonStyle),
             ),
           ],
         ));
+  }
+
+  void onSubmit(bool yesNo) {
+    var dontAsk =
+        _doneAsk ?? _settings.failePaymentBehavior != BugReportBehavior.PROMPT;
+    if (dontAsk) {
+      widget._accountBloc.accountSettingsSink.add(_settings.copyWith(
+          failePaymentBehavior: yesNo
+              ? BugReportBehavior.SEND_REPORT
+              : BugReportBehavior.IGNORE));
+    }
   }
 }

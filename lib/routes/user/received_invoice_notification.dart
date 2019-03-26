@@ -17,9 +17,11 @@ class InvoiceNotificationsHandler {
 
   InvoiceNotificationsHandler(
       this._context, this._accountBloc, this._receivedInvoicesStream) {
-    
-    AccountSettings accountSettings;
+    _listenPaymentRequests();
+    _listenPaymentsResults();
+  }
 
+  _listenPaymentRequests() {
     _accountBloc.accountStream.where((acc) => acc.active).first.then((acc) {
       bool loaderVisible = false;
       bool handlingRequest = false;
@@ -46,6 +48,7 @@ class InvoiceNotificationsHandler {
             _context, ModalRoute.withName(Navigator.defaultRouteName));
         loaderVisible = false;
         handlingRequest = true;
+
         showDialog(
                 context: _context,
                 barrierDismissible: false,
@@ -54,37 +57,62 @@ class InvoiceNotificationsHandler {
             .whenComplete(() => handlingRequest = false);
       }).onError((error) {
         handlingRequest = false;
-        Navigator.pop(_context);
-        if (error.runtimeType != PaymentRequestModel) {
-          Navigator.popUntil(
-              _context, ModalRoute.withName(Navigator.defaultRouteName));
-          Future.delayed(Duration(milliseconds: 300), () {
-            showFlushbar(_context,
-                message: "Failed to send payment request: ${error.toString()}");
-          });
-        }
+        _onPaymentRequestError(error);
       });
     });
+  }
 
-    _accountBloc.accountSettingsStream.listen((settings) => accountSettings = settings);
+  _onPaymentRequestError(error) {
+    Navigator.pop(_context);
+    if (error.runtimeType != PaymentRequestModel) {
+      Navigator.popUntil(
+          _context, ModalRoute.withName(Navigator.defaultRouteName));
+      Future.delayed(Duration(milliseconds: 300), () {
+        showFlushbar(_context,
+            message: "Failed to send payment request: ${error.toString()}");
+      });
+    }
+  }
+
+  _listenPaymentsResults() {
+    AccountSettings accountSettings;
+
+    _accountBloc.accountSettingsStream
+        .listen((settings) => accountSettings = settings);
 
     _sentPaymentResultSubscription =
         _accountBloc.fulfilledPayments.listen((fulfilledPayment) {
       showFlushbar(_context, message: "Payment was successfuly sent!");
-    }, onError: (error) {
-      PayRequest payRequest = (error as PaymentError).request;      
-      bool prompt = !accountSettings.dontPromptOnPaymentFailure;
-      if (prompt ) {
-        showDialog(          
+    }, onError: (err) => _onPaymentError(accountSettings, err as PaymentError));
+  }
+
+  _onPaymentError(AccountSettings accountSettings, PaymentError error) async {
+    bool prompt =
+        accountSettings.failePaymentBehavior == BugReportBehavior.PROMPT;
+    bool send =
+        accountSettings.failePaymentBehavior == BugReportBehavior.SEND_REPORT;
+    
+    showFlushbar(_context,
+        message:
+            "Failed to send payment: ${error.toString().split("\n").first}");
+
+    if (!error.validationError && prompt) {
+      send = await showDialog(
           context: _context,
           builder: (_) => new PaymentFailedReportDialog(
-              _context, _accountBloc, payRequest));
-        return;
-      }
-      
-      showFlushbar(_context,
-          message:
-              "Failed to send payment: ${error.toString().split("\n").first}");
-    });
+              _context, _accountBloc));
+    }    
+
+    if (send) {
+      var sendAction = SendPaymentFailureReport(error.request.paymentRequest,
+          amount: error.request.amount);
+      _accountBloc.userActionsSink.add(sendAction);
+      await Navigator.push(
+          _context,
+          createLoaderRoute(_context,
+              message: "Sending Report...",
+              opacity: 0.8,
+              action: sendAction.future));
+    }
   }
 }
