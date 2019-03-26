@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
+import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/home/floating_actions_bar.dart';
@@ -8,12 +9,12 @@ import 'package:breez/routes/user/home/payments_filter.dart';
 import 'package:breez/routes/user/home/payments_list.dart';
 import 'package:breez/routes/user/home/wallet_dashboard.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/scroll_watcher.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/status_text.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -41,9 +42,11 @@ class AccountPageState extends State<AccountPage> {
   AccountBloc _accountBloc;
   UserProfileBloc _userProfileBloc;  
   ConnectPayBloc _connectPayBloc;
+  InvoiceBloc _invoiceBloc;
 
   StreamSubscription<String> _accountActionsSubscription;
   StreamSubscription<AccountModel> _statusSubscription;
+  StreamSubscription<bool> _paidInvoicesSubscription;
   String _paymentRequestInProgress;
   bool _isInit = false;
 
@@ -53,7 +56,9 @@ class AccountPageState extends State<AccountPage> {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
+      _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       registerPaymentInProgress();      
+      _isInit = true;  
     }
     super.didChangeDependencies();
   }
@@ -79,12 +84,13 @@ class AccountPageState extends State<AccountPage> {
         _paymentRequestInProgress = acc.paymentRequestInProgress;
       });
     });
-  }
+  } 
 
   @override
   dispose() {
     _accountActionsSubscription.cancel();
     _statusSubscription.cancel();
+    _paidInvoicesSubscription.cancel();
     super.dispose();
   }
 

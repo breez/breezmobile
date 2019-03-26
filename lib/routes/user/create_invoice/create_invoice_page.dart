@@ -35,10 +35,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   @override void didChangeDependencies(){        
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     if (!_isInit) {      
-      _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {
-            // Workaround for snackbar appearing mid air
-            Navigator.pop(context, 'Payment was successfuly received!');
-            Navigator.pop(context, 'Payment was successfuly received!');
+      _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {            
+            Navigator.popUntil(context, ModalRoute.withName("/create_invoice"));  
+            Navigator.pop(context, "Payment was successfuly received!");            
       });
       _isInit = true;
     }
