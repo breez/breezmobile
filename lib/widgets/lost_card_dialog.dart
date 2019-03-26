@@ -16,21 +16,23 @@ class LostCardDialog extends StatelessWidget {
     return showLostCardDialog();
   }
 
-  Widget showLostCardDialog() {
+  Widget showLostCardDialog() {    
     _lostCardFlush =
-        Flushbar() // <bool> is the type of the result passed to dismiss() and collected by show().then((result){})
-          ..titleText = new Text("", style: TextStyle(height: 0.0))
-          ..messageText = new Text("Your card has been deactivated.\nYou may order a new card now.",
-              style: theme.snackBarStyle, textAlign: TextAlign.left)
-          ..duration = Duration(seconds: 8)
-          ..backgroundColor = theme.snackBarBackgroundColor
-          ..mainButton = FlatButton(
+        Flushbar(
+          titleText: new Text("", style: TextStyle(height: 0.0)),
+          messageText: new Text("Your card has been deactivated.\nYou may order a new card now.",
+            style: theme.snackBarStyle, textAlign: TextAlign.left),
+          duration: Duration(seconds: 8),
+          backgroundColor: theme.snackBarBackgroundColor,
+          mainButton: FlatButton(
             onPressed: () {
               _lostCardFlush.dismiss(true);
               Navigator.pushReplacementNamed(context, "/order_card");
             },
             child: Text("ORDER", style: theme.validatorStyle),
-          );
+          )
+        );
+                  
     return new AlertDialog(
       title: new Text(
         "Lost or Stolen Card",

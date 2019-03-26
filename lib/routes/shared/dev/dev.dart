@@ -285,6 +285,16 @@ class DevViewState extends State<DevView> {
           function: _describeGraph),
     ]);
 
+    if (settings.failePaymentBehavior != BugReportBehavior.PROMPT) {
+      choices.add(Choice(
+          title:
+              'Reset Payment Report',
+          icon: Icons.phone_android,
+          function: () {
+            _resetBugReportBehavior(accBloc, settings);
+          }));
+    }
+
     if (!account.enableInProgress && account.id.isNotEmpty) {
       choices.add(Choice(
           title: account.enabled
@@ -315,19 +325,27 @@ class DevViewState extends State<DevView> {
         settings.copyWith(showConnectProgress: !settings.showConnectProgress));
   }
 
+  void _resetBugReportBehavior(AccountBloc bloc, AccountSettings settings) {
+    bloc.accountSettingsSink
+        .add(settings.copyWith(failePaymentBehavior: BugReportBehavior.PROMPT));
+  }
+
   void _describeGraph() async {
     Directory tempDir = await getTemporaryDirectory();
     tempDir = await tempDir.createTemp("graph");
-    bool userCancelled = false;    
+    bool userCancelled = false;
     String filePath = '${tempDir.path}/graph.json';
-    Navigator.push(context,
-        createLoaderRoute(context, message: "Generating graph data...", opacity: 0.8)).whenComplete(() => userCancelled = true);
+    Navigator.push(
+            context,
+            createLoaderRoute(context,
+                message: "Generating graph data...", opacity: 0.8))
+        .whenComplete(() => userCancelled = true);
 
     widget._breezBridge.sendCommand("describegraph $filePath").then((_) {
       var encoder = new ZipFileEncoder();
       encoder.create('${tempDir.path}/graph.zip');
       encoder.addFile(File(filePath));
-      encoder.close();      
+      encoder.close();
       if (!userCancelled) {
         return shareFile("${tempDir.path}/graph.zip");
       }

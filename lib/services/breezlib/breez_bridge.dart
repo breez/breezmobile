@@ -122,6 +122,16 @@ class BreezBridge {
     return _invokeMethodWhenReady("sendPaymentForRequest", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
   }
 
+  Future sendPaymentFailureBugReport(String paymentRequest, {Int64 amount}) {
+    PayInvoiceRequest invoice = new PayInvoiceRequest();
+    if (amount == null) {
+      amount = Int64(0);
+    }
+    invoice.amount = amount;
+    invoice.paymentRequest = paymentRequest;
+    return _invokeMethodWhenReady("sendPaymentFailureBugReport", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
+  }
+
   Future bootstrapFiles(String workingDir, List<String> bootstrapFilesPaths) {
     BootstrapFilesRequest bootstrap = new BootstrapFilesRequest();
     bootstrap.workingDir = workingDir;
