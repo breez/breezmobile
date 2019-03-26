@@ -4,42 +4,42 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
+enum BugReportBehavior {
+  PROMPT,
+  SEND_REPORT,
+  IGNORE
+}
+
 class AccountSettings {
   final bool ignoreWalletBalance;
   final bool showConnectProgress;
-  final bool sendReportOnPaymentFailure;
-  final bool dontPromptOnPaymentFailure;
+  final BugReportBehavior failePaymentBehavior;  
 
-  AccountSettings(this.ignoreWalletBalance,
+  AccountSettings(
+      this.ignoreWalletBalance,
       {this.showConnectProgress = false,
-      this.sendReportOnPaymentFailure = false,
-      this.dontPromptOnPaymentFailure = false});
+      this.failePaymentBehavior = BugReportBehavior.PROMPT});
   AccountSettings.start() : this(false);
 
   AccountSettings copyWith(
       {bool ignoreWalletBalance,
       bool showConnectProgress,
-      bool sendReportOnPaymentFailure,
-      bool dontPromptOnPaymentFailure}) {
+      BugReportBehavior failePaymentBehavior}) {
     return AccountSettings(ignoreWalletBalance ?? this.ignoreWalletBalance,
-        sendReportOnPaymentFailure:
-            sendReportOnPaymentFailure ?? this.sendReportOnPaymentFailure,
-        dontPromptOnPaymentFailure:
-            dontPromptOnPaymentFailure ?? this.dontPromptOnPaymentFailure,
+        failePaymentBehavior:
+            failePaymentBehavior ?? this.failePaymentBehavior,        
         showConnectProgress: showConnectProgress ?? this.showConnectProgress);
   }
 
   AccountSettings.fromJson(Map<String, dynamic> json)
       : this(json["ignoreWalletBalance"] ?? false,
-            sendReportOnPaymentFailure: json["sendReportOnPaymentFailure"] ?? false,
-            dontPromptOnPaymentFailure: json["dontPromptOnPaymentFailure"] ?? false,
+            failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0],            
             showConnectProgress: json["showConnectProgress"] ?? false);
 
   Map<String, dynamic> toJson() {
     return {
       "ignoreWalletBalance": ignoreWalletBalance,
-      "dontPromptOnPaymentFailure": dontPromptOnPaymentFailure ?? false,
-      "sendReportOnPaymentFailure": sendReportOnPaymentFailure ?? false,
+      "failePaymentBehavior": failePaymentBehavior.index,      
       "showConnectProgress": showConnectProgress ?? false
     };
   }
@@ -386,8 +386,10 @@ class PayRequest {
 class PaymentError implements Exception {
   final PayRequest request;
   final Object error;
+  bool get validationError => error.toString().indexOf("rpc error") >= 0;
 
   PaymentError(this.request, this.error);
-
+  
   String errMsg() => error?.toString();
+  String toString() => errMsg();
 }

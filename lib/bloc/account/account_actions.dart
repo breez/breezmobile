@@ -1,9 +1,23 @@
 
+import 'dart:async';
+
 import 'package:fixnum/fixnum.dart';
 
-class SendPaymentFailureReport  {
-  final String paymentRequest;
-  final Int64 amount;
+class AsyncAction {
+  Completer _completer = new Completer(); 
+  Future get future => _completer.future;
 
-  SendPaymentFailureReport(this.paymentRequest, {this.amount});
+  void resolve(Object value){
+    _completer.complete(value);
+  }
+  void resolveError(error) {
+    _completer.completeError(error);
+  }
+}
+
+class SendPaymentFailureReport extends AsyncAction {
+  final String paymentRequest;
+  final Int64 amount;  
+
+  SendPaymentFailureReport(this.paymentRequest, {this.amount});  
 }
