@@ -43,27 +43,30 @@ class InvoiceNotificationsHandler {
           .where(
               (payreq) => payreq != null && payreq.loaded && !handlingRequest)
           .listen((payreq) {
-        // payment request decoded pop to home and show dialog
-        Navigator.popUntil(
-            _context, ModalRoute.withName(Navigator.defaultRouteName));
-        loaderVisible = false;
-        handlingRequest = true;
+            // payment request decoded pop to home and show dialog
+            Navigator.popUntil(
+                _context, ModalRoute.withName(Navigator.defaultRouteName));
+            loaderVisible = false;
+            handlingRequest = true;
 
-        showDialog(
-                context: _context,
-                barrierDismissible: false,
-                builder: (_) => paymentRequest.PaymentRequestDialog(
-                    _context, _accountBloc, payreq))
-            .whenComplete(() => handlingRequest = false);
-      }).onError((error) {
-        handlingRequest = false;
-        _onPaymentRequestError(error);
-      });
+            showDialog(
+                    context: _context,
+                    barrierDismissible: false,
+                    builder: (_) => paymentRequest.PaymentRequestDialog(
+                        _context, _accountBloc, payreq))
+                .whenComplete(() => handlingRequest = false);
+          }).onError((error) {
+            if (loaderVisible) {
+              Navigator.pop(_context);
+            }
+            loaderVisible = false;
+            handlingRequest = false;            
+            _onPaymentRequestError(error);
+          });
     });
   }
 
-  _onPaymentRequestError(error) {
-    Navigator.pop(_context);
+  _onPaymentRequestError(error) {    
     if (error.runtimeType != PaymentRequestModel) {
       Navigator.popUntil(
           _context, ModalRoute.withName(Navigator.defaultRouteName));
@@ -91,7 +94,7 @@ class InvoiceNotificationsHandler {
         accountSettings.failePaymentBehavior == BugReportBehavior.PROMPT;
     bool send =
         accountSettings.failePaymentBehavior == BugReportBehavior.SEND_REPORT;
-    
+
     showFlushbar(_context,
         message:
             "Failed to send payment: ${error.toString().split("\n").first}");
@@ -99,9 +102,9 @@ class InvoiceNotificationsHandler {
     if (!error.validationError && prompt) {
       send = await showDialog(
           context: _context,
-          builder: (_) => new PaymentFailedReportDialog(
-              _context, _accountBloc));
-    }    
+          builder: (_) =>
+              new PaymentFailedReportDialog(_context, _accountBloc));
+    }
 
     if (send) {
       var sendAction = SendPaymentFailureReport(error.request.paymentRequest,
