@@ -102,6 +102,7 @@ class InvoiceNotificationsHandler {
     if (!error.validationError && prompt) {
       send = await showDialog(
           context: _context,
+          barrierDismissible: false,
           builder: (_) =>
               new PaymentFailedReportDialog(_context, _accountBloc));
     }

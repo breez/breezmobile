@@ -128,7 +128,7 @@ class AddFundsState extends State<AddFundsPage> {
               account.currency
                   .format(response.maxAllowedDeposit, includeSymbol: true) +
               " to this address." +
-              "\nBreez requires you to keep ${account.warningMaxChanReserveAmount} in your balance.",
+              "\nBreez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount)} in your balance.",
           style: theme.warningStyle, textAlign: TextAlign.center,)
         ,),),
       _buildBottomBar(response,
