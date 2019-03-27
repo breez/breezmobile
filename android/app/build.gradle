@@ -34,7 +34,7 @@ android {
         targetSdkVersion 27
         multiDexEnabled true
         versionCode 1
-        versionName "0.5"
+        versionName "0.5-beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
