@@ -98,7 +98,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                 onSubmit(false);
                 Navigator.pop(widget.context, false);
               },
-              child: new Text("No", style: theme.buttonStyle),
+              child: new Text("NO", style: theme.buttonStyle),
             ),
             new SimpleDialogOption(
               onPressed: (() async {
