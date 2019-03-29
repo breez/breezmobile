@@ -56,8 +56,9 @@
 - [ ] NFC card deactivation
 - [ ] Fiat units
 - [ ] Watchtower
-- [ ] Adding funds using fiat
-- [ ] iPhone support
+- [ ] iOS support
+
+
 
 ## Build & Run
 1. Build `breez.aar` as decribed in https://github.com/breez/breez
