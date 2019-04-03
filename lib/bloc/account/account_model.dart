@@ -260,6 +260,7 @@ class PaymentInfo {
   String get destination => _paymentResponse.destination;
   String get redeemTxID => _paymentResponse.redeemTxID;
   String get paymentHash => _paymentResponse.paymentHash;
+  String get preimage => _paymentResponse.preimage;
   bool get pending => _paymentResponse.pendingExpirationHeight > 0;
   int get pendingExpirationHeight => _paymentResponse.pendingExpirationHeight;
   Int64 get pendingExpirationTimestamp =>
