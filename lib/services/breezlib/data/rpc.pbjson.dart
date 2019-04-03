@@ -53,6 +53,7 @@ const Payment$json = const {
     const {'1': 'PendingExpirationHeight', '3': 10, '4': 1, '5': 13, '10': 'PendingExpirationHeight'},
     const {'1': 'PendingExpirationTimestamp', '3': 11, '4': 1, '5': 3, '10': 'PendingExpirationTimestamp'},
     const {'1': 'fee', '3': 12, '4': 1, '5': 3, '10': 'fee'},
+    const {'1': 'preimage', '3': 13, '4': 1, '5': 9, '10': 'preimage'},
   ],
   '4': const [Payment_PaymentType$json],
 };
@@ -139,6 +140,7 @@ const NotificationEvent_NotificationType$json = const {
     const {'1': 'BACKUP_FAILED', '2': 10},
     const {'1': 'BACKUP_AUTH_FAILED', '2': 11},
     const {'1': 'BACKUP_NODE_CONFLICT', '2': 12},
+    const {'1': 'BACKUP_REQUEST', '2': 13},
   ],
 };
 
