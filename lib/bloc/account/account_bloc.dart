@@ -192,8 +192,7 @@ class AccountBloc {
 
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
     return _breezLib
-        .sendPaymentFailureBugReport(action.paymentRequest,
-            amount: action.amount)
+        .sendPaymentFailureBugReport(action.traceReport)
         .then((res) => action.resolve(res));
   }
 
@@ -390,14 +389,21 @@ class AccountBloc {
           .sendPaymentForRequest(payRequest.paymentRequest,
               amount: payRequest.amount)
           .then((response) {
+        if (response.paymentError.isNotEmpty) {
+          _accountController.add(
+            _accountController.value.copyWith(paymentRequestInProgress: ""));
+          _fulfilledPaymentsController.addError(PaymentError(
+              payRequest, response.paymentError, response.traceReport));
+          return;
+        }
         _accountController.add(
             _accountController.value.copyWith(paymentRequestInProgress: ""));
         _fulfilledPaymentsController.add(payRequest.paymentRequest);
       }).catchError((err) {        
-        log.severe(err.toString());        
         _accountController.add(
             _accountController.value.copyWith(paymentRequestInProgress: ""));
-        _fulfilledPaymentsController.addError(PaymentError(payRequest, err));
+        _fulfilledPaymentsController
+            .addError(PaymentError(payRequest, err, null));
       });
     });
   }

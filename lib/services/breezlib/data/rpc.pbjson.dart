@@ -74,6 +74,14 @@ const PaymentsList$json = const {
   ],
 };
 
+const PaymentResponse$json = const {
+  '1': 'PaymentResponse',
+  '2': const [
+    const {'1': 'paymentError', '3': 1, '4': 1, '5': 9, '10': 'paymentError'},
+    const {'1': 'traceReport', '3': 2, '4': 1, '5': 9, '10': 'traceReport'},
+  ],
+};
+
 const SendWalletCoinsRequest$json = const {
   '1': 'SendWalletCoinsRequest',
   '2': const [

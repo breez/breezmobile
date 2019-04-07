@@ -112,24 +112,18 @@ class BreezBridge {
         .then( (res) => new RemoveFundReply()..mergeFromBuffer(res ?? []));
   }
 
-  Future sendPaymentForRequest(String blankInvoicePaymentRequest, {Int64 amount}) {
+  Future<PaymentResponse> sendPaymentForRequest(String blankInvoicePaymentRequest, {Int64 amount}) {
     PayInvoiceRequest invoice = new PayInvoiceRequest();
     if (amount == null) {
       amount = Int64(0);
     }
     invoice.amount = amount;
     invoice.paymentRequest = blankInvoicePaymentRequest;
-    return _invokeMethodWhenReady("sendPaymentForRequest", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
+    return _invokeMethodWhenReady("sendPaymentForRequest", {"argument": invoice.writeToBuffer()}).then((payReq) => PaymentResponse()..mergeFromBuffer(payReq ?? []));
   }
 
-  Future sendPaymentFailureBugReport(String paymentRequest, {Int64 amount}) {
-    PayInvoiceRequest invoice = new PayInvoiceRequest();
-    if (amount == null) {
-      amount = Int64(0);
-    }
-    invoice.amount = amount;
-    invoice.paymentRequest = paymentRequest;
-    return _invokeMethodWhenReady("sendPaymentFailureBugReport", {"argument": invoice.writeToBuffer()}).then((payReq) => payReq as String);
+  Future sendPaymentFailureBugReport(String traceReport) {    
+    return _invokeMethodWhenReady("sendPaymentFailureBugReport", {"argument": traceReport});
   }
 
   Future bootstrapFiles(String workingDir, List<String> bootstrapFilesPaths) {
