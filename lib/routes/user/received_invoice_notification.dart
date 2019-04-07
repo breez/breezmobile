@@ -99,24 +99,25 @@ class InvoiceNotificationsHandler {
         message:
             "Failed to send payment: ${error.toString().split("\n").first}");
 
-    if (!error.validationError && prompt) {
-      send = await showDialog(
-          context: _context,
-          barrierDismissible: false,
-          builder: (_) =>
-              new PaymentFailedReportDialog(_context, _accountBloc));
-    }
+    if (!error.validationError) {
+      if (prompt) {
+        send = await showDialog(
+            context: _context,
+            barrierDismissible: false,
+            builder: (_) =>
+                new PaymentFailedReportDialog(_context, _accountBloc));
+      }
 
-    if (send) {
-      var sendAction = SendPaymentFailureReport(error.request.paymentRequest,
-          amount: error.request.amount);
-      _accountBloc.userActionsSink.add(sendAction);
-      await Navigator.push(
-          _context,
-          createLoaderRoute(_context,
-              message: "Sending Report...",
-              opacity: 0.8,
-              action: sendAction.future));
+      if (send) {
+        var sendAction = SendPaymentFailureReport(error.traceReport);
+        _accountBloc.userActionsSink.add(sendAction);
+        await Navigator.push(
+            _context,
+            createLoaderRoute(_context,
+                message: "Sending Report...",
+                opacity: 0.8,
+                action: sendAction.future));
+      }
     }
   }
 }

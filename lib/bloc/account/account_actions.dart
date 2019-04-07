@@ -16,8 +16,7 @@ class AsyncAction {
 }
 
 class SendPaymentFailureReport extends AsyncAction {
-  final String paymentRequest;
-  final Int64 amount;  
+  final String traceReport;  
 
-  SendPaymentFailureReport(this.paymentRequest, {this.amount});  
+  SendPaymentFailureReport(this.traceReport);  
 }
