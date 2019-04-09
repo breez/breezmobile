@@ -14,6 +14,8 @@ class InvoiceNotificationsHandler {
   final AccountBloc _accountBloc;
   final Stream<PaymentRequestModel> _receivedInvoicesStream;
   StreamSubscription<String> _sentPaymentResultSubscription;
+  ModalRoute _loaderRoute;
+  bool _handlingRequest = false;
 
   InvoiceNotificationsHandler(
       this._context, this._accountBloc, this._receivedInvoicesStream) {
@@ -23,57 +25,42 @@ class InvoiceNotificationsHandler {
 
   _listenPaymentRequests() {
     _accountBloc.accountStream.where((acc) => acc.active).first.then((acc) {
-      bool loaderVisible = false;
-      bool handlingRequest = false;
-
-      // show loader for not decoded requests
-      _receivedInvoicesStream
-          .where((payreq) =>
-              payreq != null &&
-              !payreq.loaded &&
-              !loaderVisible &&
-              !handlingRequest)
-          .listen((payreq) {
-        loaderVisible = true;
-        Navigator.of(_context).push(createLoaderRoute(_context));
-      });
-
       // show payment request dialog for decoded requests
       _receivedInvoicesStream
-          .where(
-              (payreq) => payreq != null && payreq.loaded && !handlingRequest)
+          .where((payreq) => payreq != null && !_handlingRequest)
           .listen((payreq) {
-            // payment request decoded pop to home and show dialog
-            Navigator.popUntil(
-                _context, ModalRoute.withName(Navigator.defaultRouteName));
-            loaderVisible = false;
-            handlingRequest = true;
+        
+        if (!payreq.loaded) {
+          _setLoading(true);
+          return;
+        }
 
-            showDialog(
-                    context: _context,
-                    barrierDismissible: false,
-                    builder: (_) => paymentRequest.PaymentRequestDialog(
-                        _context, _accountBloc, payreq))
-                .whenComplete(() => handlingRequest = false);
-          }).onError((error) {
-            if (loaderVisible) {
-              Navigator.pop(_context);
-            }
-            loaderVisible = false;
-            handlingRequest = false;            
-            _onPaymentRequestError(error);
-          });
+        _setLoading(false);
+        _handlingRequest = true;
+
+        showDialog(
+                context: _context,
+                barrierDismissible: false,
+                builder: (_) => paymentRequest.PaymentRequestDialog(
+                    _context, _accountBloc, payreq))
+            .whenComplete(() => _handlingRequest = false);
+      }).onError((error) {
+        _setLoading(false);
+        _handlingRequest = false;        
+      });
     });
   }
 
-  _onPaymentRequestError(error) {    
-    if (error.runtimeType != PaymentRequestModel) {
-      Navigator.popUntil(
-          _context, ModalRoute.withName(Navigator.defaultRouteName));
-      Future.delayed(Duration(milliseconds: 300), () {
-        showFlushbar(_context,
-            message: "Failed to send payment request: ${error.toString()}");
-      });
+  _setLoading(bool visible) {
+    if (visible && _loaderRoute == null) {
+      _loaderRoute = createLoaderRoute(_context);
+      Navigator.of(_context).push(_loaderRoute);
+      return;
+    }
+
+    if (!visible && _loaderRoute != null) {
+      Navigator.removeRoute(_context, _loaderRoute);
+      _loaderRoute = null;
     }
   }
 
