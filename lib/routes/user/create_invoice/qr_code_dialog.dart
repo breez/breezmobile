@@ -1,8 +1,8 @@
+import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share/share.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
@@ -85,8 +85,7 @@ class QrCodeDialog extends StatelessWidget {
                   new Container(
                     width: 230.0,
                     height: 230.0,
-                    child: new QrImage(
-                      version: 20,
+                    child: new CompactQRImage(                      
                       data: snapshot.data,
                     ),
                   ),
