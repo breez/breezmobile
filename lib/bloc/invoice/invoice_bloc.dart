@@ -110,6 +110,13 @@ class InvoiceBloc {
       if (lower.startsWith("lightning:")) {
         return s.substring(10);
       }
+
+      // check bip21 with bolt11
+      RegExp bip21Format = new RegExp("bitcoin:.*\?amount=.*&lightning=(.*)");
+      Match m = bip21Format.matchAsPrefix(lower);
+      if (m != null) {
+        return m.group(1);
+      }
       return s;
     })
     .asyncMap((paymentRequest) {
