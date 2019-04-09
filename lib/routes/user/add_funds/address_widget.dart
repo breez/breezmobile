@@ -1,6 +1,6 @@
+import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share/share.dart';
 import 'package:breez/theme_data.dart' as theme;
 
@@ -71,7 +71,7 @@ class AddressWidget extends StatelessWidget {
                   decoration: theme.qrImageStyle,
                   child: new Container(
                     color: theme.whiteColor,
-                    child: new QrImage(
+                    child: new CompactQRImage(
                       data: "bitcoin:" + address,
                       size: 180.0,
                     ),
