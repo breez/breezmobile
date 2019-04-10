@@ -1,8 +1,8 @@
 String extractBolt11FromBip21(String bip21) {
-  String lowerBit21 = bip21.toLowerCase();
-  if (lowerBit21.startsWith("bitcoin:")) {
+  String lowerBip21 = bip21.toLowerCase();
+  if (lowerBip21.startsWith("bitcoin:")) {
     try {
-      Uri uri = Uri.parse(lowerBit21);
+      Uri uri = Uri.parse(lowerBip21);
       String bolt11 = uri.queryParameters["lightning"];
       if (bolt11 != null && bolt11.isNotEmpty) {
         return bolt11;
