@@ -1,0 +1,8 @@
+framework module "Bindings" {
+	header "ref.h"
+    header "Bindings.objc.h"
+    header "universe.objc.h"
+    header "Bindings.h"
+
+    export *
+}

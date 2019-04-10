@@ -13,8 +13,8 @@
 		3B80C3951E831B6300D905FE /* App.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3B80C3931E831B6300D905FE /* App.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F09D3AF225DE24E00867443 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F09D3AE225DE24E00867443 /* GoogleService-Info.plist */; };
 		6F09D3B2225DEDEC00867443 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F09D3B1225DEDEC00867443 /* AppDelegate.swift */; };
-		6F09D3D2225DF7E600867443 /* breez.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F09D3D1225DF7E600867443 /* breez.framework */; };
 		6F09D3D7225E232000867443 /* Breez.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F09D3D6225E232000867443 /* Breez.swift */; };
+		6F09D3DC225E7BBD00867443 /* bindings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F09D3DB225E7BBC00867443 /* bindings.framework */; };
 		9705A1C61CF904A100538489 /* Flutter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9740EEBA1CF902C7004384FC /* Flutter.framework */; };
 		9705A1C71CF904A300538489 /* Flutter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9740EEBA1CF902C7004384FC /* Flutter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9740EEB41CF90195004384FC /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9740EEB21CF90195004384FC /* Debug.xcconfig */; };
@@ -50,8 +50,8 @@
 		6F09D3AE225DE24E00867443 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6F09D3B0225DEDEC00867443 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		6F09D3B1225DEDEC00867443 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6F09D3D1225DF7E600867443 /* breez.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = breez.framework; path = ../../../go/src/github.com/breez/breez/build/ios/breez.framework; sourceTree = "<group>"; };
 		6F09D3D6225E232000867443 /* Breez.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Breez.swift; sourceTree = "<group>"; };
+		6F09D3DB225E7BBC00867443 /* bindings.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = bindings.framework; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
@@ -69,9 +69,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F09D3DC225E7BBD00867443 /* bindings.framework in Frameworks */,
 				9705A1C61CF904A100538489 /* Flutter.framework in Frameworks */,
 				3B80C3941E831B6300D905FE /* App.framework in Frameworks */,
-				6F09D3D2225DF7E600867443 /* breez.framework in Frameworks */,
 				C15F2F544D1981D33EDD2863 /* libPods-Runner.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -172,8 +172,8 @@
 		E5F01C87D6084F818230B447 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6F09D3D1225DF7E600867443 /* breez.framework */,
 				6199097AA20FA27574D11F46 /* libPods-Runner.a */,
+				6F09D3DB225E7BBC00867443 /* bindings.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -476,6 +476,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -504,6 +505,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
