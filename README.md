@@ -49,6 +49,7 @@
 - [x] Marketplace w/ Bitrefill
 - [x] Adding funds via vouchers
 - [x] Backup improvements
+- [ ] Add validation to background job 
 - [ ] Adding funds via credit card
 - [ ] Simplify P2P payments
 - [ ] Support zero-conf 
