@@ -87,6 +87,9 @@ fileprivate extension BindingExecutor {
         if let data = arg as? Data {
             return FlutterStandardTypedData(bytes: data);
         }
+        if let err = arg as? NSError {
+            return FlutterError(code: "Method Error", message: err.description, details: err.description);
+        }
         return arg;
     }
 }
@@ -105,7 +108,7 @@ fileprivate class SingleArgBindingExecutor<T,O> : BindingExecutor {
             var error : NSError?;
             let res = self.bindingFunc(arg as! T, &error);
             if let err = error {
-                result(err);
+                result(self.wrapOutputType(arg: err));
             } else {
                 result(self.wrapOutputType(arg: res))
             }
@@ -125,7 +128,7 @@ fileprivate class EmptyArgsBindingExecutor<O> : BindingExecutor {
             var error : NSError?;
             let res = self.bindingFunc(&error);
             if let err = error {
-                result(err);
+                result(self.wrapOutputType(arg: err));
             } else {
                 result(self.wrapOutputType(arg: res))
             }
