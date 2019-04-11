@@ -267,11 +267,7 @@ class DevViewState extends State<DevView> {
       Choice(
           title: 'Show Initial Screen',
           icon: Icons.phone_android,
-          function: _gotoInitialScreen),
-      Choice(
-          title: 'Battery Optimization',
-          icon: Icons.phone_android,
-          function: _showOptimizationsSettings),
+          function: _gotoInitialScreen),      
       Choice(
           title:
               '${settings.showConnectProgress ? "Hide" : "Show"} Connect Progress',
@@ -285,6 +281,12 @@ class DevViewState extends State<DevView> {
           function: _describeGraph),
     ]);
 
+    if (Platform.isAndroid) {
+      choices.add(Choice(
+          title: 'Battery Optimization',
+          icon: Icons.phone_android,
+          function: _showOptimizationsSettings));
+    }
     if (settings.failePaymentBehavior != BugReportBehavior.PROMPT) {
       choices.add(Choice(
           title:
