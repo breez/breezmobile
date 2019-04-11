@@ -16,6 +16,7 @@
 		6F09D3DC225E7BBD00867443 /* bindings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F09D3DB225E7BBC00867443 /* bindings.framework */; };
 		6F09D3DE225F2AD300867443 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F09D3DD225F2AD300867443 /* GoogleService-Info.plist */; };
 		6F09D3E0225F45EB00867443 /* NativeMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F09D3DF225F45EB00867443 /* NativeMethods.swift */; };
+		6F09D3E2225F584000867443 /* LifecycleEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F09D3E1225F584000867443 /* LifecycleEvents.swift */; };
 		9705A1C61CF904A100538489 /* Flutter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9740EEBA1CF902C7004384FC /* Flutter.framework */; };
 		9705A1C71CF904A300538489 /* Flutter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9740EEBA1CF902C7004384FC /* Flutter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9740EEB41CF90195004384FC /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9740EEB21CF90195004384FC /* Debug.xcconfig */; };
@@ -54,6 +55,7 @@
 		6F09D3DB225E7BBC00867443 /* bindings.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = bindings.framework; sourceTree = "<group>"; };
 		6F09D3DD225F2AD300867443 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6F09D3DF225F45EB00867443 /* NativeMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeMethods.swift; sourceTree = "<group>"; };
+		6F09D3E1225F584000867443 /* LifecycleEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleEvents.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				6F09D3D5225E230100867443 /* BreezLib */,
+				6F09D3E1225F584000867443 /* LifecycleEvents.swift */,
 			);
 			path = Breez;
 			sourceTree = "<group>";
@@ -341,6 +344,7 @@
 				6F09D3E0225F45EB00867443 /* NativeMethods.swift in Sources */,
 				6F09D3B2225DEDEC00867443 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				6F09D3E2225F584000867443 /* LifecycleEvents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
