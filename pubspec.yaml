@@ -10,7 +10,7 @@ dependencies:
   firebase_database: ^1.0.5
   firebase_messaging: "2.1.0"
   shared_preferences: "^0.4.1"
-  share: "^0.5.2"
+  share_extend: ^1.0.8
   qr_flutter: ^2.0.0  
   hex: "^0.1.1"
   rxdart: "^0.18.1"  

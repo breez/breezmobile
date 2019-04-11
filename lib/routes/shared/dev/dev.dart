@@ -11,11 +11,11 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/lnd_bootstrap_progress.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_extend/share_extend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:flutter/services.dart';
-import 'package:share/share.dart';
 import 'package:flutter/gestures.dart';
 import 'package:breez/routes/shared/dev/default_commands.dart';
 import 'package:archive/archive_io.dart';
@@ -229,7 +229,7 @@ class DevViewState extends State<DevView> {
                                             iconSize: 19.0,
                                             tooltip: 'Share',
                                             onPressed: () {
-                                              Share.share(_cliText);
+                                              ShareExtend.share(_cliText, "text");
                                             },
                                           )
                                         ],
