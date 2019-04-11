@@ -14,6 +14,11 @@ class AppDelegate : FlutterAppDelegate {
     
     override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]?) -> Bool {
         GeneratedPluginRegistrant.register(with: self);
+        registerBreezPlugins();
         return super.application(application, didFinishLaunchingWithOptions: launchOptions);
+    }
+    
+    func registerBreezPlugins(){
+        Breez.register(with: registrar(forPlugin: "com.breez.client.plugins.breez_lib"));
     }
 }
