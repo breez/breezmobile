@@ -18,3 +18,4 @@ lib/services/breezlib/rpc.proto
 pubspec.lock
 ios/Runner.xcworkspace/xcshareddata/
 ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/
+ios/Runner/GoogleService-Info.plist
