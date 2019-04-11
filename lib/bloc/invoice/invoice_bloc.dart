@@ -4,6 +4,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
+import 'package:breez/utils/bip21.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -112,11 +113,11 @@ class InvoiceBloc {
       }
 
       // check bip21 with bolt11
-      RegExp bip21Format = new RegExp("bitcoin:.*\?amount=.*&lightning=(.*)");
-      Match m = bip21Format.matchAsPrefix(lower);
-      if (m != null) {
-        return m.group(1);
+      String bolt11 = extractBolt11FromBip21(lower);
+      if (bolt11 != null) {
+        return bolt11;
       }
+               
       return s;
     })
     .asyncMap((paymentRequest) {
