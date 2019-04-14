@@ -3,9 +3,9 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
@@ -15,7 +15,6 @@ import 'package:breez/services/countdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/routes/user/home/status_indicator.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 var cancellationTimeoutValue;
 
@@ -602,8 +601,7 @@ class _NfcDialogState extends State<_NfcDialog> {
                                     height: 200.0,
                                   );
                                 }
-                                return new QrImage(
-                                  version: 20,
+                                return new CompactQRImage(                                  
                                   data: snapshot.data,
                                 );
                               })),

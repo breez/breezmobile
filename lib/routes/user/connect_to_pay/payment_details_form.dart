@@ -13,7 +13,8 @@ class PaymentDetailsForm extends StatefulWidget {
   final PaymentSessionState _sessionState;
   final Function(Int64 amount, {String description}) _onSubmitPayementDetails;
 
-  PaymentDetailsForm(this._account, this._sessionState, this._onSubmitPayementDetails);
+  PaymentDetailsForm(
+      this._account, this._sessionState, this._onSubmitPayementDetails);
 
   @override
   State<StatefulWidget> createState() {
@@ -25,6 +26,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
   TextEditingController _invoiceDescriptionController =
       new TextEditingController();
   TextEditingController _amountController = new TextEditingController();
+  double _maxHeight = 0.0;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -33,25 +35,32 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
   }
 
   @override
-  Widget build(BuildContext context) {   
+  Widget build(BuildContext context) {
+    const double bottomBarHeight = 96.0;
+    const double bottomBarTopMargin = 24.0;
+    const double formMinHeight = 250.0;
+    
     return LayoutBuilder(builder: (context, constraints) {
-      bool buttonVisible = constraints.maxHeight > 300.0;
-      print("buttonVisible " + buttonVisible.toString());
-      return SingleChildScrollView(
-        child: Container(
-          height: max(constraints.maxHeight, 205.0),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Form(
+      print("constraints biggest = " + constraints.biggest.toString());
+      _maxHeight = max(_maxHeight, constraints.maxHeight);
+      return Stack(
+        alignment: Alignment.topCenter,
+        children: <Widget>[
+          Positioned(
+            top: 0.0,        
+            bottom: 0.0,    
+            child: SingleChildScrollView(
+              child: Container(
+                height: max(formMinHeight, constraints.maxHeight - bottomBarHeight),                
+                width: constraints.maxWidth,
+                child: Form(
                   key: _formKey,
                   child: Column(
                     children: [
                       AmountFormField(
                         validatorFn: widget._account.validateOutgoingPayment,
                         currency: widget._account.currency,
-                        controller: _amountController,                        
+                        controller: _amountController,
                         decoration: new InputDecoration(
                             labelText: widget._account.currency.displayName +
                                 " Amount"),
@@ -86,29 +95,29 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                     ],
                   ),
                 ),
-                buttonVisible
-                    ? Padding(
-                        padding: const EdgeInsets.only(bottom: 36.0),
-                        child: SubmitButton(
-                            widget._sessionState.paymentFulfilled
-                                ? "Close"
-                                : "Pay", () {
-                          if (widget._sessionState.paymentFulfilled) {
-                            Navigator.pop(context);
-                          } else {
-                            if (_formKey.currentState.validate()) {
-                              Int64 satoshies = widget._account.currency
-                                  .parse(_amountController.text);
-                              widget._onSubmitPayementDetails(satoshies,
-                                  description:
-                                      _invoiceDescriptionController.text);
-                            }
-                          }
-                        }),
-                      )
-                    : SizedBox(),
-              ]),
-        ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: _maxHeight - bottomBarHeight + bottomBarTopMargin,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 36.0),
+              child: SubmitButton(
+                  widget._sessionState.paymentFulfilled ? "Close" : "Pay", () {
+                if (widget._sessionState.paymentFulfilled) {
+                  Navigator.pop(context);
+                } else {
+                  if (_formKey.currentState.validate()) {
+                    Int64 satoshies =
+                        widget._account.currency.parse(_amountController.text);
+                    widget._onSubmitPayementDetails(satoshies,
+                        description: _invoiceDescriptionController.text);
+                  }
+                }
+              }),
+            ),
+          )
+        ],
       );
     });
   }

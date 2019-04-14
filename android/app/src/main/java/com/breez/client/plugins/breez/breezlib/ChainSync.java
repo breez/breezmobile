@@ -78,9 +78,13 @@ public class ChainSync extends Worker {
         //The stop and start of breez daemon must not overlap, this is why the synchronized block.
         synchronized (this) {
             m_logger.info("ChainSync job onStopped in synchronized block");
-            if (syncJobController != null) {
-                _executor.execute(() -> syncJobController.stop());
-                _executor.execute(() -> closedchannelsJobController.stop());
+            final JobController syncController = syncJobController;
+            final JobController channelsController = closedchannelsJobController;
+            if (syncController != null) {
+                _executor.execute(() -> syncController.stop());
+            }
+            if (channelsController != null) {
+                _executor.execute(() -> channelsController.stop());
             }
         }
     }

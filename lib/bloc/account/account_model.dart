@@ -387,9 +387,10 @@ class PayRequest {
 class PaymentError implements Exception {
   final PayRequest request;
   final Object error;
-  bool get validationError => error.toString().indexOf("rpc error") >= 0;
+  final String traceReport;
+  bool get validationError => error.toString().indexOf("rpc error") >= 0 || traceReport == null || traceReport.isEmpty;
 
-  PaymentError(this.request, this.error);
+  PaymentError(this.request, this.error, this.traceReport);
   
   String errMsg() => error?.toString();
   String toString() => errMsg();

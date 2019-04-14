@@ -227,6 +227,36 @@ class PaymentsList extends $pb.GeneratedMessage {
   List<Payment> get paymentsList => $_getList(0);
 }
 
+class PaymentResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = new $pb.BuilderInfo('PaymentResponse', package: const $pb.PackageName('data'))
+    ..aOS(1, 'paymentError')
+    ..aOS(2, 'traceReport')
+    ..hasRequiredFields = false
+  ;
+
+  PaymentResponse() : super();
+  PaymentResponse.fromBuffer(List<int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  PaymentResponse.fromJson(String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  PaymentResponse clone() => new PaymentResponse()..mergeFromMessage(this);
+  PaymentResponse copyWith(void Function(PaymentResponse) updates) => super.copyWith((message) => updates(message as PaymentResponse));
+  $pb.BuilderInfo get info_ => _i;
+  static PaymentResponse create() => new PaymentResponse();
+  PaymentResponse createEmptyInstance() => create();
+  static $pb.PbList<PaymentResponse> createRepeated() => new $pb.PbList<PaymentResponse>();
+  static PaymentResponse getDefault() => _defaultInstance ??= create()..freeze();
+  static PaymentResponse _defaultInstance;
+
+  String get paymentError => $_getS(0, '');
+  set paymentError(String v) { $_setString(0, v); }
+  bool hasPaymentError() => $_has(0);
+  void clearPaymentError() => clearField(1);
+
+  String get traceReport => $_getS(1, '');
+  set traceReport(String v) { $_setString(1, v); }
+  bool hasTraceReport() => $_has(1);
+  void clearTraceReport() => clearField(2);
+}
+
 class SendWalletCoinsRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = new $pb.BuilderInfo('SendWalletCoinsRequest', package: const $pb.PackageName('data'))
     ..aOS(1, 'address')
