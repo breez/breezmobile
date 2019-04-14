@@ -34,12 +34,10 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
 
   @override
   Widget build(BuildContext context) {   
-    return LayoutBuilder(builder: (context, constraints) {
-      bool buttonVisible = constraints.maxHeight > 300.0;
-      print("buttonVisible " + buttonVisible.toString());
+    return LayoutBuilder(builder: (context, constraints) {      
       return SingleChildScrollView(
         child: Container(
-          height: max(constraints.maxHeight, 205.0),
+          height: max(constraints.maxHeight, 300.0),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
@@ -86,8 +84,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                     ],
                   ),
                 ),
-                buttonVisible
-                    ? Padding(
+                Padding(
                         padding: const EdgeInsets.only(bottom: 36.0),
                         child: SubmitButton(
                             widget._sessionState.paymentFulfilled
@@ -106,7 +103,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                           }
                         }),
                       )
-                    : SizedBox(),
+                    ,
               ]),
         ),
       );
