@@ -1,6 +1,7 @@
 package com.breez.client.plugins.breez.breezlib;
 import androidx.work.*;
 import bindings.Bindings;
+import bindings.ChannelsWatcherJobController;
 import bindings.JobController;
 
 import android.content.*;
@@ -25,7 +26,7 @@ public class ChainSync extends Worker {
 
     public static final String UNIQUE_WORK_NAME = "chainSync";
     private static final String TAG = "BREEZSYNC";
-    private volatile JobController syncJobController;
+    private volatile ChannelsWatcherJobController syncJobController;
     private volatile JobController closedchannelsJobController;
     private Logger m_logger;
     private Executor _executor = Executors.newCachedThreadPool();
@@ -56,7 +57,10 @@ public class ChainSync extends Worker {
                 syncJobController = Bindings.newSyncJob(workingDir);
                 closedchannelsJobController = Bindings.newClosedChannelsJob(workingDir);
             }
-            syncJobController.run();
+            boolean channelClosedDetected = syncJobController.run();
+            if (channelClosedDetected) {
+                Notification.showClosedChannelNotification(getApplicationContext());
+            }
             m_logger.info("ChainSync job finished succesfully");
             closedchannelsJobController.run();
             m_logger.info("ClosedChannels job finished succesfully");
@@ -78,7 +82,7 @@ public class ChainSync extends Worker {
         //The stop and start of breez daemon must not overlap, this is why the synchronized block.
         synchronized (this) {
             m_logger.info("ChainSync job onStopped in synchronized block");
-            final JobController syncController = syncJobController;
+            final ChannelsWatcherJobController syncController = syncJobController;
             final JobController channelsController = closedchannelsJobController;
             if (syncController != null) {
                 _executor.execute(() -> syncController.stop());
