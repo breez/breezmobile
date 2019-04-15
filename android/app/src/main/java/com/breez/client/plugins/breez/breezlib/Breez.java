@@ -111,7 +111,7 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
             result.error("ResultError", "Failed to Start breez library", e.getMessage());
         }
 
-        WorkManager.getInstance().cancelUniqueWork(UNIQUE_WORK_NAME);
+        ChainSync.schedule();
     }
 
     private void init(MethodCall call, MethodChannel.Result result){
