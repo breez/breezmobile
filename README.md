@@ -49,17 +49,17 @@
 - [x] Marketplace w/ Bitrefill
 - [x] Adding funds via vouchers
 - [x] Backup improvements
-- [ ] Add validation to background job 
+- [ ] Add background ChannelsWatcher job
+- [ ] Expose Bitcoin Node (BIP157) configuration
+- [ ] Expose underlying wallet seed 
+- [ ] Add password encryption to cloud backup
+- [ ] Use static card IDs
+- [ ] NFC card deactivation
+- [ ] iOS support
 - [ ] Adding funds via credit card
 - [ ] Simplify P2P payments
 - [ ] Support zero-conf 
-- [ ] Use static card IDs
-- [ ] NFC card deactivation
 - [ ] Fiat units
-- [ ] Watchtower
-- [ ] iOS support
-
-
 
 ## Build & Run
 1. Build `breez.aar` as decribed in https://github.com/breez/breez
