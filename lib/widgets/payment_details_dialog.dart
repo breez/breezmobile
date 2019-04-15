@@ -112,131 +112,13 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
           Padding(padding: EdgeInsets.only(top: 8.0)),
           paymentInfo.destination == null || paymentInfo.destination.isEmpty
               ? Container()
-              : Theme(
-                  data: _expansionTileTheme,
-                  child: ExpansionTile(
-                      title: Text(
-                        "Node ID",
-                        style: theme.paymentDetailsTitleStyle,
-                      ),
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 16.0, right: 0.0),
-                                child: Text('${paymentInfo.destination}',
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.clip,
-                                    maxLines: 4,
-                                    style: theme.paymentDetailsNodeIdStyle),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 0,
-                              child: Padding(
-                                  padding: EdgeInsets.zero,
-                                  child: new Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      IconButton(
-                                        alignment: Alignment.centerRight,
-                                        tooltip: "Copy Node ID",
-                                        iconSize: 16.0,
-                                        color: theme.BreezColors.blue[500],
-                                        icon: Icon(
-                                          IconData(0xe90b, fontFamily: 'icomoon'),
-                                        ),
-                                        onPressed: () {
-                                          Clipboard.setData(ClipboardData(text: paymentInfo.destination));
-                                          Navigator.pop(context);
-                                          Scaffold.of(context).showSnackBar(_buildSnackBar("Node ID"));
-                                        },
-                                      ),
-                                      IconButton(
-                                        padding: EdgeInsets.only(right: 8.0),
-                                        tooltip: "Share Node ID",
-                                        iconSize: 16.0,
-                                        color: theme.BreezColors.blue[500],
-                                        icon: Icon(Icons.share),
-                                        onPressed: () {
-                                          Share.share(paymentInfo.destination);
-                                        },
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ],
-                        ),
-                      ]),
-                ),
+              : ShareablePaymentRow(title: "Node ID", sharedValue: paymentInfo.destination),              
           paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
               ? Container()
-              : Theme(
-                  data: _expansionTileTheme,
-                  child: ExpansionTile(
-                      title: Text(
-                        "Transaction Hash",
-                        style: theme.paymentDetailsTitleStyle,
-                      ),
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 16.0, right: 0.0),
-                                child: Text('${paymentInfo.paymentHash}',
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.clip,
-                                    maxLines: 4,
-                                    style: theme.paymentDetailsNodeIdStyle),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 0,
-                              child: Padding(
-                                  padding: EdgeInsets.zero,
-                                  child: new Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      IconButton(
-                                        alignment: Alignment.centerRight,
-                                        padding: EdgeInsets.only(right: 8.0),
-                                        tooltip: "Copy Transaction Hash",
-                                        iconSize: 16.0,
-                                        color: theme.BreezColors.blue[500],
-                                        icon: Icon(
-                                          IconData(0xe90b, fontFamily: 'icomoon'),
-                                        ),
-                                        onPressed: () {
-                                          Clipboard.setData(ClipboardData(text: paymentInfo.paymentHash));
-                                          Navigator.pop(context);
-                                          Scaffold.of(context).showSnackBar(_buildSnackBar("Transaction Hash"));
-                                        },
-                                      ),
-                                      IconButton(
-                                        padding: EdgeInsets.only(right: 8.0),
-                                        tooltip: "Share Transaction Hash",
-                                        iconSize: 16.0,
-                                        color: theme.BreezColors.blue[500],
-                                        icon: Icon(Icons.share),
-                                        onPressed: () {
-                                          Share.share(paymentInfo.paymentHash);
-                                        },
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ],
-                        )
-                      ]),
-                ),
+              : ShareablePaymentRow(title: "Transaction Hash", sharedValue: paymentInfo.paymentHash),
+          paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
+              ? Container()
+              : ShareablePaymentRow(title: "Payment Preimage", sharedValue: paymentInfo.preimage),
         ],
       ),
     ),
@@ -246,6 +128,83 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
     builder: (_) =>
     _paymentDetailsDialog,
   );
+}
+
+
+class ShareablePaymentRow extends StatelessWidget {
+  final String title;
+  final String sharedValue;  
+
+  const ShareablePaymentRow({Key key, this.title, this.sharedValue}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final _expansionTileTheme = Theme.of(context)
+      .copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
+    return Theme(
+                  data: _expansionTileTheme,
+                  child: ExpansionTile(
+                      title: Text(
+                        title,
+                        style: theme.paymentDetailsTitleStyle,
+                      ),
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 16.0, right: 0.0),
+                                child: Text('$sharedValue',
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.clip,
+                                    maxLines: 4,
+                                    style: theme.paymentDetailsNodeIdStyle),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 0,
+                              child: Padding(
+                                  padding: EdgeInsets.zero,
+                                  child: new Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      IconButton(
+                                        alignment: Alignment.centerRight,
+                                        padding: EdgeInsets.only(right: 8.0),
+                                        tooltip: "Copy $title",
+                                        iconSize: 16.0,
+                                        color: theme.BreezColors.blue[500],
+                                        icon: Icon(
+                                          IconData(0xe90b, fontFamily: 'icomoon'),
+                                        ),
+                                        onPressed: () {
+                                          Clipboard.setData(ClipboardData(text: sharedValue));
+                                          Navigator.pop(context);
+                                          Scaffold.of(context).showSnackBar(_buildSnackBar(title));
+                                        },
+                                      ),
+                                      IconButton(
+                                        padding: EdgeInsets.only(right: 8.0),
+                                        tooltip: "Share Transaction Hash",
+                                        iconSize: 16.0,
+                                        color: theme.BreezColors.blue[500],
+                                        icon: Icon(Icons.share),
+                                        onPressed: () {
+                                          Share.share(sharedValue);
+                                        },
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          ],
+                        )
+                      ]),
+                );
+  }
+
 }
 
 _buildSnackBar(String item) {

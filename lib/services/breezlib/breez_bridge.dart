@@ -66,6 +66,10 @@ class BreezBridge {
     return _startedCompleter.future.then((_) =>  _start());
   }
 
+  Future restartLightningDaemon(){
+    return _methodChannel.invokeMethod("restartDaemon");
+  }
+
   Future _start() async{
     print(" breez bridge - start...");      
     return _methodChannel.invokeMethod("start")
@@ -291,7 +295,7 @@ class BreezBridge {
   }
 
   Future restore(String nodeId) {    
-    return _methodChannel.invokeMethod("restoreBackup", {"argument": nodeId});   
+    return _methodChannel.invokeMethod("restoreBackup", {"argument": nodeId});
   }
 
   Future<dynamic> signIn(bool force){

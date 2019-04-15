@@ -62,6 +62,7 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
   static const NotificationEvent_NotificationType BACKUP_FAILED = const NotificationEvent_NotificationType._(10, 'BACKUP_FAILED');
   static const NotificationEvent_NotificationType BACKUP_AUTH_FAILED = const NotificationEvent_NotificationType._(11, 'BACKUP_AUTH_FAILED');
   static const NotificationEvent_NotificationType BACKUP_NODE_CONFLICT = const NotificationEvent_NotificationType._(12, 'BACKUP_NODE_CONFLICT');
+  static const NotificationEvent_NotificationType BACKUP_REQUEST = const NotificationEvent_NotificationType._(13, 'BACKUP_REQUEST');
 
   static const List<NotificationEvent_NotificationType> values = const <NotificationEvent_NotificationType> [
     READY,
@@ -77,6 +78,7 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
     BACKUP_FAILED,
     BACKUP_AUTH_FAILED,
     BACKUP_NODE_CONFLICT,
+    BACKUP_REQUEST,
   ];
 
   static final Map<int, NotificationEvent_NotificationType> _byValue = $pb.ProtobufEnum.initByValue(values);

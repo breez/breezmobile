@@ -134,6 +134,7 @@ class Payment extends $pb.GeneratedMessage {
     ..a<int>(10, 'pendingExpirationHeight', $pb.PbFieldType.OU3)
     ..aInt64(11, 'pendingExpirationTimestamp')
     ..aInt64(12, 'fee')
+    ..aOS(13, 'preimage')
     ..hasRequiredFields = false
   ;
 
@@ -198,6 +199,11 @@ class Payment extends $pb.GeneratedMessage {
   set fee(Int64 v) { $_setInt64(9, v); }
   bool hasFee() => $_has(9);
   void clearFee() => clearField(12);
+
+  String get preimage => $_getS(10, '');
+  set preimage(String v) { $_setString(10, v); }
+  bool hasPreimage() => $_has(10);
+  void clearPreimage() => clearField(13);
 }
 
 class PaymentsList extends $pb.GeneratedMessage {

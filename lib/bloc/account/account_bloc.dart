@@ -292,7 +292,7 @@ class AccountBloc {
             }
             _accountController.add(_accountController.value
                 .copyWith(bootstraping: _isBootstrapping()));
-            _breezLib.startLightning();
+            await _breezLib.startLightning();
             _breezLib.registerPeriodicSync(user.token);
             _fetchFundStatus();
             _listenConnectivityChanges();
@@ -315,7 +315,7 @@ class AccountBloc {
 
   void _listenRestartLightning() {
     _restartLightningController.stream.listen((_) {
-      _breezLib.startLightning();
+      _breezLib.restartLightningDaemon();
     });
   }
 
