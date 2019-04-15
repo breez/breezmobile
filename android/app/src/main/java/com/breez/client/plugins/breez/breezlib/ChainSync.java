@@ -30,7 +30,7 @@ public class ChainSync extends Worker {
     }
 
     public static void schedule(){
-        final PeriodicWorkRequest.Builder work = new PeriodicWorkRequest.Builder(ChainSync.class, 5, TimeUnit.HOURS, 3, TimeUnit.HOURS)
+        final PeriodicWorkRequest.Builder work = new PeriodicWorkRequest.Builder(ChainSync.class, 6, TimeUnit.HOURS, 3, TimeUnit.HOURS)
                 .addTag(UNIQUE_WORK_NAME);
         WorkManager.getInstance().enqueueUniquePeriodicWork(UNIQUE_WORK_NAME, ExistingPeriodicWorkPolicy.REPLACE, work.build());
     }
