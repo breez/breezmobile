@@ -29,6 +29,8 @@ class PosHome extends StatefulWidget {
   final List<DrawerItemConfig> _minorActions =
       new List<DrawerItemConfig>.unmodifiable([
     new DrawerItemConfig(
+        "/network", "Network", "src/icon/network.png"),
+    new DrawerItemConfig(
         "/developers", "Developers", "src/icon/developers.png"),
   ]);
 
