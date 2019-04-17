@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class _NetworkData {
   String peer = '';
+  bool isDefault = false;
 }
 
 class NetworkPage extends StatefulWidget {
@@ -48,13 +50,14 @@ class NetworkPageState extends State<NetworkPage> {
   }
 
   Future _loadPeer() async {
-    List<String> peers = await _breezLib.getPeers();
+    Peers peers = await _breezLib.getPeers();
     String peer = '';
-    if (peers.length > 0) {
-      peer = peers[0];
+    if (peers.peer.length > 0) {
+      peer = peers.peer[0];
     }
     setState(() {
       _data.peer = peer;
+      _data.isDefault = peers.isDefault;
     });
     _peerController.text = peer;
   }

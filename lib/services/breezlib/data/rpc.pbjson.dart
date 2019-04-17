@@ -297,7 +297,8 @@ const BootstrapFilesRequest$json = const {
 const Peers$json = const {
   '1': 'Peers',
   '2': const [
-    const {'1': 'peer', '3': 1, '4': 3, '5': 9, '10': 'peer'},
+    const {'1': 'isDefault', '3': 1, '4': 1, '5': 8, '10': 'isDefault'},
+    const {'1': 'peer', '3': 2, '4': 3, '5': 9, '10': 'peer'},
   ],
 };
 

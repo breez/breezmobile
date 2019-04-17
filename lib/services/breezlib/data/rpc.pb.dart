@@ -960,7 +960,8 @@ class BootstrapFilesRequest extends $pb.GeneratedMessage {
 
 class Peers extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('Peers', package: const $pb.PackageName('data'))
-    ..pPS(1, 'peer')
+    ..aOB(1, 'isDefault')
+    ..pPS(2, 'peer')
     ..hasRequiredFields = false
   ;
 
@@ -976,6 +977,11 @@ class Peers extends $pb.GeneratedMessage {
   static Peers getDefault() => _defaultInstance ??= create()..freeze();
   static Peers _defaultInstance;
 
-  $core.List<$core.String> get peer => $_getList(0);
+  $core.bool get isDefault => $_get(0, false);
+  set isDefault($core.bool v) { $_setBool(0, v); }
+  $core.bool hasIsDefault() => $_has(0);
+  void clearIsDefault() => clearField(1);
+
+  $core.List<$core.String> get peer => $_getList(1);
 }
 

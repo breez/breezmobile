@@ -142,9 +142,9 @@ class BreezBridge {
         .then((result) => new PaymentsList()..mergeFromBuffer(result ?? []));
   }
 
-  Future<List<String>> getPeers(){
+  Future<Peers> getPeers(){
     return _invokeMethodImmediate("getPeers")
-        .then((result) => (new Peers()..mergeFromBuffer(result ?? [])).peer);
+        .then((result) => new Peers()..mergeFromBuffer(result ?? []));
   }
 
   Future setPeers(List<String> peers) {
