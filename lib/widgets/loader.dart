@@ -8,8 +8,7 @@ class Loader extends StatelessWidget {
       new CircularProgressIndicator(
         valueColor: new AlwaysStoppedAnimation<Color>(
           Color.fromRGBO(51, 255, 255, 0.7),
-        ),
-        backgroundColor: Colors.red,
+        ),        
       ),
     ]);
   }
