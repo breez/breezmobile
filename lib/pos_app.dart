@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:breez/routes/shared/network/network.dart';
 import 'package:breez/routes/shared/dev/dev.dart';
 import 'package:breez/routes/shared/initial_walkthrough.dart';
 import 'package:breez/routes/pos/home/pos_home_page.dart';
@@ -64,6 +65,11 @@ class PosApp extends StatelessWidget {
                 case '/settings':
                   return new FadeInRoute(
                     builder: (_) => PosSettingsPage(),
+                    settings: settings,
+                  );
+                case '/network':
+                  return new FadeInRoute(
+                    builder: (_) => new NetworkPage(),
                     settings: settings,
                   );
                 case '/developers':

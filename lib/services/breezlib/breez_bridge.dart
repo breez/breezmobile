@@ -142,6 +142,17 @@ class BreezBridge {
         .then((result) => new PaymentsList()..mergeFromBuffer(result ?? []));
   }
 
+  Future<Peers> getPeers(){
+    return _invokeMethodImmediate("getPeers")
+        .then((result) => new Peers()..mergeFromBuffer(result ?? []));
+  }
+
+  Future setPeers(List<String> peers) {
+    Peers p = new Peers();
+    p.peer..clear()..addAll(peers);
+    return _invokeMethodImmediate("setPeers", {"argument": p.writeToBuffer()});
+  }
+
   Future<String> addInvoice(Int64 amount, {String payeeName, String payeeImageURL, String payerName, String payerImageURL, String description, Int64 expiry}){
     InvoiceMemo invoice = new InvoiceMemo();
     invoice.amount = amount;

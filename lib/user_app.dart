@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/routes/shared/splash_page.dart';
 import 'package:breez/routes/shared/initial_walkthrough.dart';
+import 'package:breez/routes/shared/network/network.dart';
 import 'package:breez/routes/shared/dev/dev.dart';
 import 'package:breez/routes/user/activate_card/activate_card_page.dart';
 import 'package:breez/routes/user/add_funds/add_funds_page.dart';
@@ -134,6 +135,11 @@ class UserApp extends StatelessWidget {
                 case '/create_invoice':
                   return new FadeInRoute(
                     builder: (_) => new CreateInvoicePage(),
+                    settings: settings,
+                  );
+                case '/network':
+                  return new FadeInRoute(
+                    builder: (_) => new NetworkPage(),
                     settings: settings,
                   );
                 case '/developers':
