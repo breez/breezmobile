@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -31,7 +33,7 @@ class NetworkPageState extends State<NetworkPage> {
   @override
   void initState() {
     super.initState();
-    _breezLib = new ServiceInjector().breezBridge;
+    _breezLib = new ServiceInjector().breezBridge;    
     _loadData();
     _peerController.addListener(_onChangePeer);
   }
@@ -70,8 +72,8 @@ class NetworkPageState extends State<NetworkPage> {
     return promptAreYouSure(context, null,
             Text("Please restart Breez to switch to the new Bitcoin Node configuration.", style: theme.alertStyle),
             cancelText: "Cancel", okText: "Exit Breez")
-        .then((exit) {
-      if (exit) {
+        .then((shouldExit) {
+      if (shouldExit) {
         exit(0);
       }
       return true;
