@@ -92,10 +92,7 @@ class AccountBloc {
   Stream<String> get fulfilledPayments => _fulfilledPaymentsController.stream;
 
   final _lightningDownController = new StreamController<bool>.broadcast();
-  Stream<bool> get lightningDownStream => _lightningDownController.stream;
-
-  final _restartLightningController = new StreamController<void>.broadcast();
-  Sink<void> get restartLightningSink => _restartLightningController.sink;
+  Stream<bool> get lightningDownStream => _lightningDownController.stream;  
 
   final BehaviorSubject<void> _nodeConflictController =
       new BehaviorSubject<void>();
@@ -123,7 +120,11 @@ class AccountBloc {
     _breezLib = injector.breezBridge;
     _notificationsService = injector.notifications;
     _device = injector.device;
-    _actionHandlers = {SendPaymentFailureReport: _handleSendQueryRoute};
+    _actionHandlers = {
+      SendPaymentFailureReport: _handleSendQueryRoute,
+      ResetNetwork: _handleResetNetwork,
+      RestartDaemon: _handleRestartDaemon
+    };
 
     _accountController.add(AccountModel.initial());
     _paymentsController.add(PaymentsModel.initial());
@@ -135,8 +136,7 @@ class AccountBloc {
       _sharedPreferences = preferences;
       _refreshAccount();
       //listen streams
-      _listenAccountActions();
-      _listenRestartLightning();
+      _listenAccountActions();      
       _hanleAccountSettings();
       _listenUserChanges(userProfileStream);
       _listenWithdrawalRequests();
@@ -191,9 +191,15 @@ class AccountBloc {
   }
 
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
-    return _breezLib
-        .sendPaymentFailureBugReport(action.traceReport)
-        .then((res) => action.resolve(res));
+    action.resolve(await _breezLib.sendPaymentFailureBugReport(action.traceReport));        
+  }
+
+  Future _handleResetNetwork(ResetNetwork action) async {
+    action.resolve(await _breezLib.setPeers([]));    
+  }
+
+  Future _handleRestartDaemon(RestartDaemon action) async {
+    action.resolve(await _breezLib.restartLightningDaemon());    
   }
 
   void _listenRefundableDeposits() {
@@ -310,12 +316,6 @@ class AccountBloc {
               _paymentFilterController.value));
         }
       }
-    });
-  }
-
-  void _listenRestartLightning() {
-    _restartLightningController.stream.listen((_) {
-      _breezLib.restartLightningDaemon();
     });
   }
 
@@ -543,8 +543,7 @@ class AccountBloc {
     _lightningDownController.close();
     _reconnectStreamController.close();
     _routingNodeConnectionController.close();
-    _broadcastRefundRequestController.close();
-    _restartLightningController.close();
+    _broadcastRefundRequestController.close();    
     _userActionsController.close();
     _permissionsHandler.dispose();
   }

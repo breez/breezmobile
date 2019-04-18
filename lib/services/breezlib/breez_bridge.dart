@@ -150,7 +150,7 @@ class BreezBridge {
   Future setPeers(List<String> peers) {
     Peers p = new Peers();
     p.peer..clear()..addAll(peers);
-    return _invokeMethodWhenReady("setPeers", {"argument": p.writeToBuffer()});
+    return _invokeMethodImmediate("setPeers", {"argument": p.writeToBuffer()});
   }
 
   Future<String> addInvoice(Int64 amount, {String payeeName, String payeeImageURL, String payerName, String payerImageURL, String description, Int64 expiry}){

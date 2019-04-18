@@ -20,3 +20,7 @@ class SendPaymentFailureReport extends AsyncAction {
 
   SendPaymentFailureReport(this.traceReport);  
 }
+
+class ResetNetwork extends AsyncAction {}
+
+class RestartDaemon extends AsyncAction {}

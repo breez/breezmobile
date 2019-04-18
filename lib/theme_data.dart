@@ -17,6 +17,7 @@ final TextStyle subtitle = new TextStyle(color: BreezColors.grey[600],fontSize: 
 final TextStyle addFundsBtnStyle = new TextStyle(color: BreezColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
 final TextStyle autoCompleteStyle = new TextStyle(color: Colors.black, fontSize: 14.0);
 final TextStyle dialogBlackStye = TextStyle(color: Colors.black, fontSize: 16.0, height: 1.5);
+final TextStyle dialogGrayStyle = TextStyle(color: BreezColors.grey[500], fontSize: 16.0, height: 1.5);
 final TextStyle blueLinkStyle = new TextStyle(color: BreezColors.blue[500], fontSize: 16.0, height: 1.5);
 final TextStyle avatarDialogStyle = new TextStyle(color: BreezColors.blue[900], fontSize: 16.4, letterSpacing: 0.15, fontFamily:'IBMPlexSansMedium');
 final TextStyle errorStyle = new TextStyle(color: errorColor, fontSize: 12.0);
