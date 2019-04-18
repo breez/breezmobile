@@ -30,7 +30,7 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
               Navigator.pop(context);
               accountBloc.userActionsSink.add(RestartDaemon());
             }), 
-          TextSpan(text: "bitcoin node\n", style: theme.dialogGrayStyle),
+          TextSpan(text: "your Bitcoin node\n", style: theme.dialogGrayStyle),
         ]), 
       ),
       // Text(

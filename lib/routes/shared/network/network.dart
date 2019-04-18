@@ -110,7 +110,7 @@ class NetworkPageState extends State<NetworkPage> {
                             padding: new EdgeInsets.only(top: 8.0),
                             child: new TextFormField(                              
                               decoration: new InputDecoration(
-                                  labelText: "Bitcoin Node (BIP157)"),
+                                  labelText: "Bitcoin Node (BIP 157)"),
                               style: theme.FieldTextStyle.textStyle,
                               onSaved: (String value) {
                                 this._data.peer = value;
