@@ -149,7 +149,7 @@ Widget _actionTile(
     child: new ListTile(
       leading: ImageIcon(
         AssetImage(action.icon),
-        size: 24.0,
+        size: 26.0,
         color: Colors.white,
       ),
       title: new Text(action.title, style: theme.drawerItemTextStyle),
@@ -187,7 +187,7 @@ class _ExpansionTile extends StatelessWidget {
             padding: EdgeInsets.only(left: 8.0),
             child: ImageIcon(
               icon,
-              size: 24.0,
+              size: 26.0,
               color: Colors.white,
             ),
           ),
