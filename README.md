@@ -49,8 +49,8 @@
 - [x] Marketplace w/ Bitrefill
 - [x] Adding funds via vouchers
 - [x] Backup improvements
-- [ ] Add background ChannelsWatcher job
-- [ ] Expose Bitcoin Node (BIP157) configuration
+- [x] Add background ChannelsWatcher job
+- [x] Expose Bitcoin Node (BIP157) configuration
 - [ ] Expose underlying wallet seed 
 - [ ] Add password encryption to cloud backup
 - [ ] Use static card IDs
