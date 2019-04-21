@@ -9,7 +9,7 @@ class StatusIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (_accountModel != null && _accountModel.connected) {
+    if (_accountModel != null && _accountModel.connected && !_accountModel.isInitialBootstrap) {
       return Container();
     }
 
