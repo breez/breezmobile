@@ -553,10 +553,52 @@ class RefundRequest extends $pb.GeneratedMessage {
   void clearRefundAddress() => clearField(2);
 }
 
+class AddFundError extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddFundError', package: const $pb.PackageName('data'))
+    ..aOS(1, 'errorMessage')
+    ..aOB(2, 'fundsExceededLimit')
+    ..a<$core.int>(3, 'lockHeight', $pb.PbFieldType.OU3)
+    ..a<$core.double>(4, 'hoursToUnlock', $pb.PbFieldType.OF)
+    ..hasRequiredFields = false
+  ;
+
+  AddFundError() : super();
+  AddFundError.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  AddFundError.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  AddFundError clone() => AddFundError()..mergeFromMessage(this);
+  AddFundError copyWith(void Function(AddFundError) updates) => super.copyWith((message) => updates(message as AddFundError));
+  $pb.BuilderInfo get info_ => _i;
+  static AddFundError create() => AddFundError();
+  AddFundError createEmptyInstance() => create();
+  static $pb.PbList<AddFundError> createRepeated() => $pb.PbList<AddFundError>();
+  static AddFundError getDefault() => _defaultInstance ??= create()..freeze();
+  static AddFundError _defaultInstance;
+
+  $core.String get errorMessage => $_getS(0, '');
+  set errorMessage($core.String v) { $_setString(0, v); }
+  $core.bool hasErrorMessage() => $_has(0);
+  void clearErrorMessage() => clearField(1);
+
+  $core.bool get fundsExceededLimit => $_get(1, false);
+  set fundsExceededLimit($core.bool v) { $_setBool(1, v); }
+  $core.bool hasFundsExceededLimit() => $_has(1);
+  void clearFundsExceededLimit() => clearField(2);
+
+  $core.int get lockHeight => $_get(2, 0);
+  set lockHeight($core.int v) { $_setUnsignedInt32(2, v); }
+  $core.bool hasLockHeight() => $_has(2);
+  void clearLockHeight() => clearField(3);
+
+  $core.double get hoursToUnlock => $_getN(3);
+  set hoursToUnlock($core.double v) { $_setFloat(3, v); }
+  $core.bool hasHoursToUnlock() => $_has(3);
+  void clearHoursToUnlock() => clearField(4);
+}
+
 class FundStatusReply extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('FundStatusReply', package: const $pb.PackageName('data'))
     ..e<FundStatusReply_FundStatus>(1, 'status', $pb.PbFieldType.OE, FundStatusReply_FundStatus.NO_FUND, FundStatusReply_FundStatus.valueOf, FundStatusReply_FundStatus.values)
-    ..aOS(2, 'errorMessage')
+    ..a<AddFundError>(2, 'error', $pb.PbFieldType.OM, AddFundError.getDefault, AddFundError.create)
     ..hasRequiredFields = false
   ;
 
@@ -577,10 +619,10 @@ class FundStatusReply extends $pb.GeneratedMessage {
   $core.bool hasStatus() => $_has(0);
   void clearStatus() => clearField(1);
 
-  $core.String get errorMessage => $_getS(1, '');
-  set errorMessage($core.String v) { $_setString(1, v); }
-  $core.bool hasErrorMessage() => $_has(1);
-  void clearErrorMessage() => clearField(2);
+  AddFundError get error => $_getN(1);
+  set error(AddFundError v) { setField(2, v); }
+  $core.bool hasError() => $_has(1);
+  void clearError() => clearField(2);
 }
 
 class RemoveFundRequest extends $pb.GeneratedMessage {
