@@ -88,16 +88,16 @@ class AddFundsState extends State<AddFundsPage> {
 
   Widget getBody(BuildContext context, AccountModel account,
       AddFundResponse response, String error) {
+    var waitingDepositConfirmation = account?.swapFundsStatus?.waitingDepositConfirmation == true;
     String errorMessage;
     if (error != null) {
       errorMessage = error;
     } else if (account == null || account.bootstraping) {
       errorMessage =
           'You\'d be able to add funds after Breez is finished bootstrapping.';
-    } else if (account.waitingDepositConfirmation ||
-        account.processingWithdrawal) {
+    } else if (waitingDepositConfirmation || account.processingWithdrawal) {
       errorMessage =
-          'Breez is processing your previous ${account.waitingDepositConfirmation || account.processingBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
+          'Breez is processing your previous ${waitingDepositConfirmation || account.processingBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
     } else if (response != null && response.errorMessage.isNotEmpty) {
       errorMessage = response.errorMessage;
     }    
