@@ -43,9 +43,6 @@ class AccountBloc {
   Stream<List<RefundableDepositModel>> get refundableDepositsStream =>
       _refundableDepositsController.stream;
 
-  final _addFundController = new BehaviorSubject<AddFundResponse>();
-  Stream<AddFundResponse> get addFundStream => _addFundController.stream;
-
   final _accountController = new BehaviorSubject<AccountModel>();
   Stream<AccountModel> get accountStream => _accountController.stream;
 
@@ -533,8 +530,7 @@ class AccountBloc {
   }
 
   close() {
-    _accountEnableController.close();
-    _addFundController.close();
+    _accountEnableController.close();    
     _paymentsController.close();
     _accountNotificationsController.close();
     _sentPaymentsController.close();
