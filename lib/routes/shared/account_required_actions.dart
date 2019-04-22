@@ -1,13 +1,17 @@
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/routes/shared/funds_over_limit_dialog.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 class AccountRequiredActionsIndicator extends StatefulWidget {
   final BackupBloc _backupBloc;
@@ -89,6 +93,14 @@ class AccountRequiredActionsIndicatorState
                             context: context,
                             builder: (_) => new EnableBackupDialog(
                                 context, widget._backupBloc)));
+                      }
+
+                      var swapStatus = accountSnapshot?.data?.swapFundsStatus;
+                      if (swapStatus?.fundsExceededLimit == true) {  
+                        warnings.add(() => showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (_) => new OverLimitFundsDialog(accountBloc: widget._accountBloc)));
                       }
 
                       if (warnings.length == 0) {
