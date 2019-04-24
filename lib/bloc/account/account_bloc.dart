@@ -43,9 +43,6 @@ class AccountBloc {
   Stream<List<RefundableDepositModel>> get refundableDepositsStream =>
       _refundableDepositsController.stream;
 
-  final _addFundController = new BehaviorSubject<AddFundResponse>();
-  Stream<AddFundResponse> get addFundStream => _addFundController.stream;
-
   final _accountController = new BehaviorSubject<AccountModel>();
   Stream<AccountModel> get accountStream => _accountController.stream;
 
@@ -123,7 +120,8 @@ class AccountBloc {
     _actionHandlers = {
       SendPaymentFailureReport: _handleSendQueryRoute,
       ResetNetwork: _handleResetNetwork,
-      RestartDaemon: _handleRestartDaemon
+      RestartDaemon: _handleRestartDaemon,
+      FetchSwapFundStatus: _fetchFundStatusAction
     };
 
     _accountController.add(AccountModel.initial());
@@ -200,6 +198,10 @@ class AccountBloc {
 
   Future _handleRestartDaemon(RestartDaemon action) async {
     action.resolve(await _breezLib.restartLightningDaemon());    
+  }
+
+  Future _fetchFundStatusAction(FetchSwapFundStatus action) async {
+    action.resolve(await _fetchFundStatus());    
   }
 
   void _listenRefundableDeposits() {
@@ -341,17 +343,15 @@ class AccountBloc {
     });
   }
 
-  void _fetchFundStatus() {
+  Future _fetchFundStatus() {
     if (_currentUser == null) {
-      return;
+      return Future.value(null);
     }
 
-    _breezLib.getFundStatus(_currentUser.userID).then((status) {
+    return _breezLib.getFundStatus(_currentUser.userID).then((status) {
       log.info("Got status " + status.status.toString());
-      if (status.status != _accountController.value.addedFundsStatus) {
-        _accountController
+      _accountController
             .add(_accountController.value.copyWith(addedFundsReply: status));
-      }
     }).catchError((err) {
       log.severe("Error in getFundStatus " + err.toString());
     });
@@ -533,8 +533,7 @@ class AccountBloc {
   }
 
   close() {
-    _accountEnableController.close();
-    _addFundController.close();
+    _accountEnableController.close();    
     _paymentsController.close();
     _accountNotificationsController.close();
     _sentPaymentsController.close();

@@ -241,7 +241,7 @@ class BreezBridge {
   }
 
   Future<FundStatusReply> getFundStatus(String notificationToken) {
-    return _invokeMethodImmediate("getFundStatus", {"argument": notificationToken}).then(
+    return _invokeMethodWhenReady("getFundStatus", {"argument": notificationToken}).then(
             (result) => new FundStatusReply()..mergeFromBuffer(result ?? [])
     );
   }

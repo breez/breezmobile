@@ -178,11 +178,21 @@ const RefundRequest$json = const {
   ],
 };
 
+const AddFundError$json = const {
+  '1': 'AddFundError',
+  '2': const [
+    const {'1': 'errorMessage', '3': 1, '4': 1, '5': 9, '10': 'errorMessage'},
+    const {'1': 'FundsExceededLimit', '3': 2, '4': 1, '5': 8, '10': 'FundsExceededLimit'},
+    const {'1': 'lockHeight', '3': 3, '4': 1, '5': 13, '10': 'lockHeight'},
+    const {'1': 'hoursToUnlock', '3': 4, '4': 1, '5': 2, '10': 'hoursToUnlock'},
+  ],
+};
+
 const FundStatusReply$json = const {
   '1': 'FundStatusReply',
   '2': const [
     const {'1': 'status', '3': 1, '4': 1, '5': 14, '6': '.data.FundStatusReply.FundStatus', '10': 'status'},
-    const {'1': 'errorMessage', '3': 2, '4': 1, '5': 9, '10': 'errorMessage'},
+    const {'1': 'error', '3': 2, '4': 1, '5': 11, '6': '.data.AddFundError', '10': 'error'},
   ],
   '4': const [FundStatusReply_FundStatus$json],
 };

@@ -1,5 +1,6 @@
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 class Loader extends StatelessWidget {
   @override
@@ -7,7 +8,7 @@ class Loader extends StatelessWidget {
     return Stack(alignment: FractionalOffset.center, children: <Widget>[
       new CircularProgressIndicator(
         valueColor: new AlwaysStoppedAnimation<Color>(
-          Color.fromRGBO(51, 255, 255, 0.7),
+          theme.circularLoaderColor,
         ),        
       ),
     ]);

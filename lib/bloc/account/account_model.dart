@@ -45,6 +45,23 @@ class AccountSettings {
   }
 }
 
+class SwapFundStatus {
+  final FundStatusReply _addedFundsReply;
+
+  SwapFundStatus(this._addedFundsReply);
+  
+  bool get waitingDepositConfirmation =>
+      _addedFundsReply?.status == FundStatusReply_FundStatus.WAITING_CONFIRMATION;
+  bool get depositConfirmed =>
+      _addedFundsReply?.status == FundStatusReply_FundStatus.CONFIRMED;
+
+  // in case of status is error, these fields will be populated.
+  String get error => _addedFundsReply?.error?.errorMessage;
+  bool get fundsExceededLimit => _addedFundsReply?.error?.fundsExceededLimit;
+  int get lockHeight => _addedFundsReply?.error?.lockHeight;
+  double get hoursToUnlock => _addedFundsReply?.error?.hoursToUnlock;
+}
+
 class AccountModel {
   final Account _accountResponse;
   final Currency _currency;
@@ -55,11 +72,7 @@ class AccountModel {
   final bool initial;
   final bool bootstraping;
   final double bootstrapProgress;
-  final bool enableInProgress;
-
-  FundStatusReply_FundStatus get addedFundsStatus => addedFundsReply == null
-      ? FundStatusReply_FundStatus.NO_FUND
-      : addedFundsReply.status;
+  final bool enableInProgress;  
 
   AccountModel(this._accountResponse, this._currency,
       {this.initial = false,
@@ -105,12 +118,8 @@ class AccountModel {
             paymentRequestInProgress ?? this.paymentRequestInProgress);
   }
 
-  String get id => _accountResponse.id;
-  bool get waitingDepositConfirmation =>
-      addedFundsStatus == FundStatusReply_FundStatus.WAITING_CONFIRMATION;
-  bool get depositConfirmed =>
-      addedFundsStatus == FundStatusReply_FundStatus.CONFIRMED;
-  String get transferFundsError => addedFundsReply?.errorMessage;
+  String get id => _accountResponse.id;  
+  SwapFundStatus get swapFundsStatus => SwapFundStatus(this.addedFundsReply);
   bool get processingBreezConnection =>
       _accountResponse.status ==
       Account_AccountStatus.PROCESSING_BREEZ_CONNECTION;
@@ -147,16 +156,18 @@ class AccountModel {
       return "Breez is opening a secure channel with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments";
     }
 
-    if (this.waitingDepositConfirmation) {
+    SwapFundStatus swapStatus = this.swapFundsStatus;
+
+    if (swapStatus.waitingDepositConfirmation) {
       return "Breez is waiting for BTC transfer to be confirmed. This might take a while";
     }
 
-    if (depositConfirmed && this.active) {
+    if (swapStatus.depositConfirmed && this.active) {
       return "Transferring funds";
     }
 
-    if (transferFundsError?.isNotEmpty == true) {
-      return "Failed to add funds: " + transferFundsError;
+    if (swapStatus.error?.isNotEmpty == true) {
+      return "Failed to add funds: " + swapStatus.error;
     }
 
     return null;
