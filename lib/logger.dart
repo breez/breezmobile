@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:io';
 
+import 'package:share_extend/share_extend.dart';
+
 final Logger log = new Logger('Breez');
 const _platform = const MethodChannel('com.breez.client/share_breez_log');
 
@@ -17,12 +19,12 @@ Future<File> get _logFile async {
 
 void shareLog() {
   _logFile.then((file) {
-    _platform.invokeMethod("shareFile", {'path': file.path, 'targetFileName': "breez.log"});
+    ShareExtend.share(file.path, "file");    
   });
 }
 
 Future shareFile(String filePath){
-  return _platform.invokeMethod("shareFile", {'path': filePath});
+  ShareExtend.share(filePath, "file");  
 }
 
 class BreezLogger {
