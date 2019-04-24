@@ -127,8 +127,7 @@ class AddFundsState extends State<AddFundsPage> {
           "Send up to " +
               account.currency
                   .format(response.maxAllowedDeposit, includeSymbol: true) +
-              " to this address." +
-              "\nIf the transaction is above the specified limit, you will be able to redeem your funds after 24 hours." +
+              " to this address." +              
               "\nBreez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount)} in your balance.",
           style: theme.warningStyle, textAlign: TextAlign.center,)
         ,),),
