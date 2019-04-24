@@ -44,7 +44,18 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-    <string>Camera permission is required for QR code scanning.</string>
+	<string>Camera permission is required for QR code scanning.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>lightning.link</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>lightning</string>
+			</array>
+		</dict>
+	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>
