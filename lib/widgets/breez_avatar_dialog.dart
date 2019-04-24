@@ -4,6 +4,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
@@ -24,17 +25,20 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   Future _pickImage(BuildContext context) async {
     const _platform = const MethodChannel('com.breez.client/image-cropper');
     return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
-      return _platform
-          .invokeMethod("start", {"filePath": file.path}).then((res) {
-        if (res != null) {
-          new File(res.toString())
-              .readAsBytes()
+
+      ImageCropper.cropImage(
+        sourcePath: file.path,
+        ratioX: 1.0,
+        ratioY: 1.0        
+      ).then((file){
+          if (file != null) {
+            file.readAsBytes()
               .then(scaleAndFormatPNG)
               .then((image) {
-            userBloc.uploadImageSink.add(image);
-          });
-        }
-      });
+                userBloc.uploadImageSink.add(image);
+              });
+          }
+      });      
     }).catchError((err) {});
   }
 
