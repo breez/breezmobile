@@ -9,11 +9,13 @@
 import Foundation
 import Flutter
 import Bindings
+import GoogleSignIn
 
 
 class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStreamHandler {
     
     var eventSink : FlutterEventSink?;
+    var googleAuth = GoogleAuthenticator();
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let BREEZ_CHANNEL_NAME = "com.breez.client/breez_lib";
@@ -26,7 +28,16 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
         let eventChannel = FlutterEventChannel(name: BREEZ_STREAM_NAME, binaryMessenger: registrar.messenger());
         eventChannel.setStreamHandler(instance);
         
+        registrar.addApplicationDelegate(instance);
+        
     }
+    
+    func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        return GIDSignIn.sharedInstance().handle(url as URL?,
+                                                 sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
+                                                 annotation: options[UIApplication.OpenURLOptionsKey.annotation])
+    }
+    
     
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if (call.method == "init") {
@@ -38,8 +49,13 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             log(call: call, result: result);
         }
         
+        if (call.method == "signIn") {
+            signIn(call: call, result: result);
+        }
+        
         let executor = NativeMethods.getExecutor(forMethod: call.method);
         if executor != nil {
+            print(call.method)
             executor?.execute(call: call, result: result);
         }
     }
@@ -68,6 +84,17 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
         result(FlutterError(code: "Missing Argument", message: "Expecting a dictionary", details: nil));
     }
     
+    func signIn(call: FlutterMethodCall, result: @escaping FlutterResult){
+        DispatchQueue.global().async {
+            do {
+                let _ = try self.googleAuth.getAccessToken(silentOnly: false)
+                result(true);
+            } catch {
+                result(FlutterError(code: "AuthError", message: "Failed to signIn breez library", details: ""));
+            }
+        }
+    }
+    
     // FlutterStreamHandler protocol
     func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         eventSink = events;
@@ -85,7 +112,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     }
     
     func backupProviderSignIn() throws -> String {
-        return "";
+        return try googleAuth.getAccessToken(silentOnly: true);
     }
     
     func notify(_ notificationEvent: Data!) {
