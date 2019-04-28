@@ -98,8 +98,11 @@ class SignInOperation : Operation, GIDSignInUIDelegate, GIDSignInDelegate {
     
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
         
-        if (user != nil || silentSignInFailed || self.silentOnly) {
-            accessToken = user.authentication.accessToken;
+        if (error == nil || self.silentOnly || self.silentSignInFailed) {
+            var accessToken : String? = nil;
+            if (error == nil) {
+                accessToken = user.authentication.accessToken;
+            }
             self.onFinish(withToken: accessToken, error: error);
             return;
         }
