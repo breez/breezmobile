@@ -93,9 +93,8 @@ class BackupBloc {
     _backupNowController.stream.listen((_) => _backupNow());
   }
   
-  void _backupNow() {     
-    Future signInIfNeeded = _backupServiceNeedLogin ? _breezLib.signIn(true) : Future.value(null);
-    signInIfNeeded
+  void _backupNow() {    
+    _breezLib.signIn(true)
       .then((_) => _breezLib.requestBackup());      
   }
 
