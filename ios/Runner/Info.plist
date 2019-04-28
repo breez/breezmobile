@@ -48,6 +48,12 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>$(GOOGLE_SIGNIN_URL)</string>
+			</array>
+		</dict>
+		<dict>
 			<key>CFBundleURLName</key>
 			<string>lightning.link</string>
 			<key>CFBundleURLSchemes</key>
