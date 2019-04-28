@@ -90,6 +90,9 @@ fileprivate extension BindingExecutor {
         if let err = arg as? NSError {
             return FlutterError(code: "Method Error", message: err.description, details: err.description);
         }
+        if let _ = arg as? Void {
+            return nil;
+        }
         return arg;
     }
 }
