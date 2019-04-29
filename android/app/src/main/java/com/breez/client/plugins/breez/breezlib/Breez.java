@@ -33,6 +33,7 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
     public static final String BREEZ_STREAM_NAME = "com.breez.client/breez_lib_notifications";
     private static final String TAG = "BREEZUI";
 
+    private volatile boolean _started = false;
     private EventChannel.EventSink m_eventsListener;
     private Map<String, Method> _bindingMethods = new HashMap<String, Method>();
     private Executor _executor = Executors.newCachedThreadPool();
@@ -104,12 +105,13 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
     private void start(MethodCall call, MethodChannel.Result result){
         try {
             Bindings.start();
+            _started = true;
             result.success(true);
         } catch (Exception e) {
             result.error("ResultError", "Failed to Start breez library", e.getMessage());
         }
 
-        WorkManager.getInstance().cancelUniqueWork(UNIQUE_WORK_NAME);
+        ChainSync.schedule();
     }
 
     private void init(MethodCall call, MethodChannel.Result result){
@@ -192,7 +194,9 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
            try {
                Thread.sleep(1000);
            } catch (InterruptedException e) {}
-           Bindings.onResume();
+           if (_started) {
+               Bindings.onResume();
+           }
        });
     }
 

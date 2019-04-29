@@ -71,8 +71,10 @@ class Home extends StatefulWidget {
 
   List<DrawerItemConfig> _minorActionsInvoice;
 
-  final List<DrawerItemConfig> _minorActionsDev =
+  final List<DrawerItemConfig> _minorActionsAdvanced =
       new List<DrawerItemConfig>.unmodifiable([
+    new DrawerItemConfig(
+        "/network", "Network", "src/icon/network.png"),
     new DrawerItemConfig(
         "/developers", "Developers", "src/icon/developers.png"),
   ]);
@@ -156,8 +158,8 @@ class HomeState extends State<Home> {
               DrawerItemConfigGroup(_filterItems(widget._majorActionsFunds)),
               DrawerItemConfigGroup(_filterItems(widget._majorActionsPay)),
               DrawerItemConfigGroup(_filterItems(widget._minorActionsInvoice)),
-              DrawerItemConfigGroup(_filterItems(widget._minorActionsCard), groupTitle: "Card", groupAssetImage: "src/icon/card.png"),            
-              DrawerItemConfigGroup(_filterItems(widget._minorActionsDev))
+              DrawerItemConfigGroup(_filterItems(widget._minorActionsCard), groupTitle: "Card", groupAssetImage: "src/icon/card.png"),
+              DrawerItemConfigGroup(_filterItems(widget._minorActionsAdvanced), groupTitle: "Advanced", groupAssetImage: "src/icon/advanced.png"),
             ],
             _onNavigationItemSelected),
         body: widget._screenBuilders[_activeScreen]);

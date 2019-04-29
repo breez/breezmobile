@@ -43,9 +43,6 @@ class AccountBloc {
   Stream<List<RefundableDepositModel>> get refundableDepositsStream =>
       _refundableDepositsController.stream;
 
-  final _addFundController = new BehaviorSubject<AddFundResponse>();
-  Stream<AddFundResponse> get addFundStream => _addFundController.stream;
-
   final _accountController = new BehaviorSubject<AccountModel>();
   Stream<AccountModel> get accountStream => _accountController.stream;
 
@@ -92,10 +89,7 @@ class AccountBloc {
   Stream<String> get fulfilledPayments => _fulfilledPaymentsController.stream;
 
   final _lightningDownController = new StreamController<bool>.broadcast();
-  Stream<bool> get lightningDownStream => _lightningDownController.stream;
-
-  final _restartLightningController = new StreamController<void>.broadcast();
-  Sink<void> get restartLightningSink => _restartLightningController.sink;
+  Stream<bool> get lightningDownStream => _lightningDownController.stream;  
 
   final BehaviorSubject<void> _nodeConflictController =
       new BehaviorSubject<void>();
@@ -123,7 +117,12 @@ class AccountBloc {
     _breezLib = injector.breezBridge;
     _notificationsService = injector.notifications;
     _device = injector.device;
-    _actionHandlers = {SendPaymentFailureReport: _handleSendQueryRoute};
+    _actionHandlers = {
+      SendPaymentFailureReport: _handleSendQueryRoute,
+      ResetNetwork: _handleResetNetwork,
+      RestartDaemon: _handleRestartDaemon,
+      FetchSwapFundStatus: _fetchFundStatusAction
+    };
 
     _accountController.add(AccountModel.initial());
     _paymentsController.add(PaymentsModel.initial());
@@ -135,8 +134,7 @@ class AccountBloc {
       _sharedPreferences = preferences;
       _refreshAccount();
       //listen streams
-      _listenAccountActions();
-      _listenRestartLightning();
+      _listenAccountActions();      
       _hanleAccountSettings();
       _listenUserChanges(userProfileStream);
       _listenWithdrawalRequests();
@@ -191,9 +189,19 @@ class AccountBloc {
   }
 
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
-    return _breezLib
-        .sendPaymentFailureBugReport(action.traceReport)
-        .then((res) => action.resolve(res));
+    action.resolve(await _breezLib.sendPaymentFailureBugReport(action.traceReport));        
+  }
+
+  Future _handleResetNetwork(ResetNetwork action) async {
+    action.resolve(await _breezLib.setPeers([]));    
+  }
+
+  Future _handleRestartDaemon(RestartDaemon action) async {
+    action.resolve(await _breezLib.restartLightningDaemon());    
+  }
+
+  Future _fetchFundStatusAction(FetchSwapFundStatus action) async {
+    action.resolve(await _fetchFundStatus());    
   }
 
   void _listenRefundableDeposits() {
@@ -292,7 +300,7 @@ class AccountBloc {
             }
             _accountController.add(_accountController.value
                 .copyWith(bootstraping: _isBootstrapping()));
-            _breezLib.startLightning();
+            await _breezLib.startLightning();
             _breezLib.registerPeriodicSync(user.token);
             _fetchFundStatus();
             _listenConnectivityChanges();
@@ -310,12 +318,6 @@ class AccountBloc {
               _paymentFilterController.value));
         }
       }
-    });
-  }
-
-  void _listenRestartLightning() {
-    _restartLightningController.stream.listen((_) {
-      _breezLib.startLightning();
     });
   }
 
@@ -341,17 +343,15 @@ class AccountBloc {
     });
   }
 
-  void _fetchFundStatus() {
+  Future _fetchFundStatus() {
     if (_currentUser == null) {
-      return;
+      return Future.value(null);
     }
 
-    _breezLib.getFundStatus(_currentUser.userID).then((status) {
+    return _breezLib.getFundStatus(_currentUser.userID).then((status) {
       log.info("Got status " + status.status.toString());
-      if (status.status != _accountController.value.addedFundsStatus) {
-        _accountController
+      _accountController
             .add(_accountController.value.copyWith(addedFundsReply: status));
-      }
     }).catchError((err) {
       log.severe("Error in getFundStatus " + err.toString());
     });
@@ -533,8 +533,7 @@ class AccountBloc {
   }
 
   close() {
-    _accountEnableController.close();
-    _addFundController.close();
+    _accountEnableController.close();    
     _paymentsController.close();
     _accountNotificationsController.close();
     _sentPaymentsController.close();
@@ -543,8 +542,7 @@ class AccountBloc {
     _lightningDownController.close();
     _reconnectStreamController.close();
     _routingNodeConnectionController.close();
-    _broadcastRefundRequestController.close();
-    _restartLightningController.close();
+    _broadcastRefundRequestController.close();    
     _userActionsController.close();
     _permissionsHandler.dispose();
   }

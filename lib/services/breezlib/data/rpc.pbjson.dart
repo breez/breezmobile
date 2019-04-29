@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: rpc.proto
 ///
-// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
+// ignore_for_file: camel_case_types,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name
 
 const ChainStatus$json = const {
   '1': 'ChainStatus',
@@ -53,6 +53,7 @@ const Payment$json = const {
     const {'1': 'PendingExpirationHeight', '3': 10, '4': 1, '5': 13, '10': 'PendingExpirationHeight'},
     const {'1': 'PendingExpirationTimestamp', '3': 11, '4': 1, '5': 3, '10': 'PendingExpirationTimestamp'},
     const {'1': 'fee', '3': 12, '4': 1, '5': 3, '10': 'fee'},
+    const {'1': 'preimage', '3': 13, '4': 1, '5': 9, '10': 'preimage'},
   ],
   '4': const [Payment_PaymentType$json],
 };
@@ -147,6 +148,7 @@ const NotificationEvent_NotificationType$json = const {
     const {'1': 'BACKUP_FAILED', '2': 10},
     const {'1': 'BACKUP_AUTH_FAILED', '2': 11},
     const {'1': 'BACKUP_NODE_CONFLICT', '2': 12},
+    const {'1': 'BACKUP_REQUEST', '2': 13},
   ],
 };
 
@@ -176,11 +178,21 @@ const RefundRequest$json = const {
   ],
 };
 
+const AddFundError$json = const {
+  '1': 'AddFundError',
+  '2': const [
+    const {'1': 'errorMessage', '3': 1, '4': 1, '5': 9, '10': 'errorMessage'},
+    const {'1': 'FundsExceededLimit', '3': 2, '4': 1, '5': 8, '10': 'FundsExceededLimit'},
+    const {'1': 'lockHeight', '3': 3, '4': 1, '5': 13, '10': 'lockHeight'},
+    const {'1': 'hoursToUnlock', '3': 4, '4': 1, '5': 2, '10': 'hoursToUnlock'},
+  ],
+};
+
 const FundStatusReply$json = const {
   '1': 'FundStatusReply',
   '2': const [
     const {'1': 'status', '3': 1, '4': 1, '5': 14, '6': '.data.FundStatusReply.FundStatus', '10': 'status'},
-    const {'1': 'errorMessage', '3': 2, '4': 1, '5': 9, '10': 'errorMessage'},
+    const {'1': 'error', '3': 2, '4': 1, '5': 11, '6': '.data.AddFundError', '10': 'error'},
   ],
   '4': const [FundStatusReply_FundStatus$json],
 };
@@ -289,6 +301,14 @@ const BootstrapFilesRequest$json = const {
   '2': const [
     const {'1': 'WorkingDir', '3': 1, '4': 1, '5': 9, '10': 'WorkingDir'},
     const {'1': 'FullPaths', '3': 2, '4': 3, '5': 9, '10': 'FullPaths'},
+  ],
+};
+
+const Peers$json = const {
+  '1': 'Peers',
+  '2': const [
+    const {'1': 'isDefault', '3': 1, '4': 1, '5': 8, '10': 'isDefault'},
+    const {'1': 'peer', '3': 2, '4': 3, '5': 9, '10': 'peer'},
   ],
 };
 

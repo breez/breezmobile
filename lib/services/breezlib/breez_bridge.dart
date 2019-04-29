@@ -66,6 +66,10 @@ class BreezBridge {
     return _startedCompleter.future.then((_) =>  _start());
   }
 
+  Future restartLightningDaemon(){
+    return _methodChannel.invokeMethod("restartDaemon");
+  }
+
   Future _start() async{
     print(" breez bridge - start...");      
     return _methodChannel.invokeMethod("start")
@@ -136,6 +140,17 @@ class BreezBridge {
   Future<PaymentsList> getPayments(){
     return _invokeMethodImmediate("getPayments")
         .then((result) => new PaymentsList()..mergeFromBuffer(result ?? []));
+  }
+
+  Future<Peers> getPeers(){
+    return _invokeMethodImmediate("getPeers")
+        .then((result) => new Peers()..mergeFromBuffer(result ?? []));
+  }
+
+  Future setPeers(List<String> peers) {
+    Peers p = new Peers();
+    p.peer..clear()..addAll(peers);
+    return _invokeMethodImmediate("setPeers", {"argument": p.writeToBuffer()});
   }
 
   Future<String> addInvoice(Int64 amount, {String payeeName, String payeeImageURL, String payerName, String payerImageURL, String description, Int64 expiry}){
@@ -226,7 +241,7 @@ class BreezBridge {
   }
 
   Future<FundStatusReply> getFundStatus(String notificationToken) {
-    return _invokeMethodImmediate("getFundStatus", {"argument": notificationToken}).then(
+    return _invokeMethodWhenReady("getFundStatus", {"argument": notificationToken}).then(
             (result) => new FundStatusReply()..mergeFromBuffer(result ?? [])
     );
   }
@@ -291,7 +306,7 @@ class BreezBridge {
   }
 
   Future restore(String nodeId) {    
-    return _methodChannel.invokeMethod("restoreBackup", {"argument": nodeId});   
+    return _methodChannel.invokeMethod("restoreBackup", {"argument": nodeId});
   }
 
   Future<dynamic> signIn(bool force){

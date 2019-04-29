@@ -28,16 +28,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
 
   @override
   void initState() {
-    super.initState();
-    _widgetWebview.onStateChanged.listen((state) async {
-      if (state.type == WebViewState.finishLoad) {
-        String script =
-            'window.addEventListener("message", receiveMessage, false);' +
-                'function receiveMessage(event) {Android.getPostMessage(event.data);}';
-        _widgetWebview.evalJavascript(script);
-      }
-    });
-
+    super.initState();    
     _widgetWebview.onDestroy.listen((_) {
       if (Navigator.canPop(context)) {
         Navigator.of(context).pop();
@@ -53,8 +44,10 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
         if (postMessage != null) {
           final order = JSON.jsonDecode(postMessage);
           invoiceBloc.newLightningLinkSink.add(order['uri']);
-          _widgetWebview.hide();
-          Navigator.of(context).pushNamed("/home");
+          Navigator.popUntil(context, (route) {
+              return route.settings.name == "/home" || route.settings.name == "/";
+            }
+          );          
         }
       });
       _isInit = true;
