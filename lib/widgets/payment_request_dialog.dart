@@ -1,5 +1,4 @@
 import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/widgets/error_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,9 @@ import 'package:flutter_advanced_networkimage/flutter_advanced_networkimage.dart
 import 'package:image/image.dart' as DartImage;
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/widgets/loading_animated_text.dart';
+
+enum PaymentRequestState { PAYMENT_REQUEST, WAITING_FOR_CONFIRMATION, PROCESSING_PAYMENT}
 
 class PaymentRequestDialog extends StatefulWidget {
   final BuildContext context;
@@ -20,7 +22,7 @@ class PaymentRequestDialog extends StatefulWidget {
   PaymentRequestDialog(this.context, this.accountBloc, this.invoice);
 
   @override
-  State<StatefulWidget> createState() {    
+  State<StatefulWidget> createState() {
     return PaymentRequestDialogState();
   }
 }
@@ -28,10 +30,17 @@ class PaymentRequestDialog extends StatefulWidget {
 class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _invoiceAmountController = new TextEditingController();
+  PaymentRequestState _state;
+
+  Int64 _amountToPay;
+  String _amountToPayStr;
 
   @override
-  void initState() {    
+  void initState() {
     super.initState();
+    setState(() {
+      _state = PaymentRequestState.PAYMENT_REQUEST;
+    });
     _invoiceAmountController.addListener((){
       setState(() {});
     });
@@ -44,24 +53,42 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
 
   Widget showPaymentRequestDialog() {
     return new AlertDialog(
-      titlePadding: EdgeInsets.only(top: 48.0),
-      title: widget.invoice.payeeImageURL.isEmpty
-          ? null
-          : Stack(alignment: Alignment(0.0, 0.0), children: <Widget>[
-              CircularProgressIndicator(),
-              ClipOval(
-                child: FadeInImage(
-                    width: 64.0,
-                    height: 64.0,
-                    placeholder: MemoryImage(widget._transparentImage),
-                    image: AdvancedNetworkImage(widget.invoice.payeeImageURL,
-                        useDiskCache: true),
-                    fadeOutDuration: new Duration(milliseconds: 200),
-                    fadeInDuration: new Duration(milliseconds: 200)),
-              )
-            ]),
-      contentPadding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
-      content: StreamBuilder<AccountModel>(
+      titlePadding: _state == PaymentRequestState.PAYMENT_REQUEST ? EdgeInsets.only(top: 48.0) : EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 20.0),
+      title: _buildPaymentRequestTitle(),
+      contentPadding: _state == PaymentRequestState.PAYMENT_REQUEST ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0) : EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 0.0),
+      content: _buildPaymentRequestContent(),
+      actions: _buildPaymentRequestActions()
+    );
+  }
+
+  List<Widget> _buildPaymentRequestActions() {
+    if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
+      return <Widget>[
+        new FlatButton(
+          child: new Text("NO", style: theme.buttonStyle),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        new FlatButton(
+          child: new Text("YES", style: theme.buttonStyle),
+          onPressed: () {
+            widget.accountBloc.sentPaymentsSink.add(
+                PayRequest(widget.invoice.rawPayReq, _amountToPay));
+            setState(() {
+              _state = PaymentRequestState.PROCESSING_PAYMENT;
+            });
+          },
+        ),
+      ];
+    } else {
+      return null;
+    }
+  }
+
+  Widget _buildPaymentRequestContent() {
+    if (_state == PaymentRequestState.PAYMENT_REQUEST) {
+      return StreamBuilder<AccountModel>(
         stream: widget.accountBloc.accountStream,
         builder: (context, snapshot) {
           var account = snapshot.data;
@@ -85,8 +112,70 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
             ),
           );
         },
-      ),
-    );
+      );
+    } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
+      TextStyle textStyle = theme
+          .alertStyle; //TextStyle(color: Colors.black).copyWith(fontSize: 16.0);
+      String exitSessionMessage = 'Are you sure you want to pay ';
+      return RichText(
+          text: TextSpan(style: textStyle,
+              text: exitSessionMessage,
+              children: <TextSpan>[
+                TextSpan(text: _amountToPayStr,
+                    style: textStyle.copyWith(fontWeight: FontWeight.bold)),
+                TextSpan(text: "?")
+              ]));
+    } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          LoadingAnimatedText(
+            'Please wait while your payment is being processed',
+            textStyle: theme.alertStyle,
+            textAlign: TextAlign.left,),
+          Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: new Image.asset(
+                'src/images/breez_loader.gif',
+                gaplessPlayback: true,
+              ))
+        ],
+      );
+    }
+    return null;
+  }
+
+  Widget _buildPaymentRequestTitle() {
+    if (_state == PaymentRequestState.PAYMENT_REQUEST) {
+      return widget.invoice.payeeImageURL.isEmpty
+          ? null
+          : Stack(alignment: Alignment(0.0, 0.0), children: <Widget>[
+        CircularProgressIndicator(),
+        ClipOval(
+          child: FadeInImage(
+              width: 64.0,
+              height: 64.0,
+              placeholder: MemoryImage(widget._transparentImage),
+              image: AdvancedNetworkImage(widget.invoice.payeeImageURL,
+                  useDiskCache: true),
+              fadeOutDuration: new Duration(milliseconds: 200),
+              fadeInDuration: new Duration(milliseconds: 200)),
+        )
+      ]);
+    } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
+      return Text(
+        "Payment Confirmation",
+        style: theme.alertTitleStyle,
+      );
+    } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
+      return Text(
+        "Processing Payment",
+        style: theme.alertTitleStyle,
+        textAlign: TextAlign.center,
+      );
+    }
+    return null;
   }
 
   void _addIfNotNull(List<Widget> widgets, Widget w) {
@@ -141,25 +230,25 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
           hintColor: theme.alertStyle.color,
           accentColor: theme.BreezColors.blue[500],
           primaryColor: theme.BreezColors.blue[500],
-          errorColor: Colors.red),        
-          child: Form(            
+          errorColor: Colors.red),
+          child: Form(
             autovalidate: true,
             key: _formKey,
             child: Padding(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0),
               child: Container(
                 height: 80.0,
-                child: AmountFormField(                
+                child: AmountFormField(
                   style: theme.alertStyle.copyWith(height: 1.0),
                   validatorFn: account.validateOutgoingPayment,
                   currency: account.currency,
-                  controller: _invoiceAmountController,                  
+                  controller: _invoiceAmountController,
                   decoration: new InputDecoration(
                       labelText: account.currency.displayName +
                           " Amount"),
                 ),
               ),
-            ),          
+            ),
         ),
       );
     }
@@ -193,33 +282,25 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         child: new Text("CANCEL", style: theme.buttonStyle),
       )
     ];
-    
+
     Int64 toPay = amountToPay(account);
     if (toPay > 0 && account.maxAllowedToPay >= toPay) {
       actions.add(SimpleDialogOption(
         onPressed: (() async {
-          if (widget.invoice.amount > 0 || _formKey.currentState.validate()) { 
-
-            if (widget.invoice.amount == 0) { 
-              TextStyle textStyle = theme.alertStyle;//TextStyle(color: Colors.black).copyWith(fontSize: 16.0);
-              String exitSessionMessage = 'Are you sure you want to pay ';
-              RichText content = RichText(
-                text: TextSpan(style: textStyle,
-                  text: exitSessionMessage,
-                  children:<TextSpan>[
-                    TextSpan(text: "${account.currency.format(amountToPay(account))}", style: textStyle.copyWith(fontWeight: FontWeight.bold)),
-                    TextSpan(text: "?")          
-                  ]));
-
-              Navigator.pop(context);
-              bool sure = await promptAreYouSure(context, null, content, textStyle: theme.buttonStyle);
-              if (sure) {
-                widget.accountBloc.sentPaymentsSink.add(PayRequest(widget.invoice.rawPayReq, amountToPay(account)));                  
-              }
+          if (widget.invoice.amount > 0 || _formKey.currentState.validate()) {
+            if (widget.invoice.amount == 0) {
+              setState(() {
+                _state = PaymentRequestState.WAITING_FOR_CONFIRMATION;
+                _amountToPay = toPay;
+                _amountToPayStr = account.currency.format(amountToPay(account));
+              });
             } else {
-              widget.accountBloc.sentPaymentsSink.add(PayRequest(widget.invoice.rawPayReq, amountToPay(account)));                  
-              Navigator.pop(context);
-            }               
+              widget.accountBloc.sentPaymentsSink.add(
+                  PayRequest(widget.invoice.rawPayReq, amountToPay(account)));
+              setState(() {
+                _state = PaymentRequestState.PROCESSING_PAYMENT;
+              });
+            }
           }
         }),
         child: new Text("APPROVE", style: theme.buttonStyle),
@@ -233,13 +314,13 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         children: actions,
       ),
     );
-  } 
+  }
 
   Int64 amountToPay(AccountModel acc) {
     Int64 amount = widget.invoice.amount;
     if (amount == 0) {
       try {
-        amount = acc.currency.parse(_invoiceAmountController.text);      
+        amount = acc.currency.parse(_invoiceAmountController.text);
       } catch (e) {}
     }
     return amount;

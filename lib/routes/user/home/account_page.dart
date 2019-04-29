@@ -9,15 +9,12 @@ import 'package:breez/routes/user/home/payments_filter.dart';
 import 'package:breez/routes/user/home/payments_list.dart';
 import 'package:breez/routes/user/home/wallet_dashboard.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
-import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/scroll_watcher.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/status_text.dart';
 import 'package:breez/utils/date.dart';
-import 'package:breez/widgets/loading_animated_text.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 const DASHBOARD_MAX_HEIGHT = 188.0;
 const DASHBOARD_MIN_HEIGHT = 70.0;
@@ -45,9 +42,7 @@ class AccountPageState extends State<AccountPage> {
   InvoiceBloc _invoiceBloc;
 
   StreamSubscription<String> _accountActionsSubscription;
-  StreamSubscription<AccountModel> _statusSubscription;
   StreamSubscription<bool> _paidInvoicesSubscription;
-  String _paymentRequestInProgress;
   bool _isInit = false;
 
   @override
@@ -57,39 +52,14 @@ class AccountPageState extends State<AccountPage> {
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-      registerPaymentInProgress();      
       _isInit = true;  
     }
     super.didChangeDependencies();
   }
 
-  void registerPaymentInProgress(){    
-    _statusSubscription =_accountBloc.accountStream.listen((acc) {
-      if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {
-        final _snackBar = new SnackBar(
-          content: new LoadingAnimatedText(
-            'Processing Payment',
-            textStyle: theme.sessionNotificationStyle,
-            textAlign: TextAlign.left,
-          ),
-          backgroundColor: theme.snackBarBackgroundColor,
-          duration: new Duration(seconds: 80),
-        );
-        Scaffold.of(context).showSnackBar(_snackBar);
-      }
-      else if (acc.paymentRequestInProgress == null || acc.paymentRequestInProgress.isEmpty){
-        Scaffold.of(context).removeCurrentSnackBar();
-      }
-      setState(() {
-        _paymentRequestInProgress = acc.paymentRequestInProgress;
-      });
-    });
-  } 
-
   @override
   dispose() {
     _accountActionsSubscription.cancel();
-    _statusSubscription.cancel();
     _paidInvoicesSubscription.cancel();
     super.dispose();
   }
