@@ -26,6 +26,15 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   StreamSubscription _postMessageListener;
   bool _isInit = false;
 
+  @override
+  void initState() {
+    super.initState();    
+    _widgetWebview.onDestroy.listen((_) {
+      if (Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+    });
+  }
 
   @override
   void didChangeDependencies() {
