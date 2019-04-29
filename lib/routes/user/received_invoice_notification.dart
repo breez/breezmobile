@@ -16,6 +16,7 @@ class InvoiceNotificationsHandler {
   StreamSubscription<String> _sentPaymentResultSubscription;
   ModalRoute _loaderRoute;
   bool _handlingRequest = false;
+  bool _inProgress = false;
 
   InvoiceNotificationsHandler(
       this._context, this._accountBloc, this._receivedInvoicesStream) {
@@ -24,12 +25,20 @@ class InvoiceNotificationsHandler {
   }
 
   _listenPaymentRequests() {
+    _accountBloc.accountStream.listen((acc) {
+      if (_handlingRequest && acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty) {
+        _inProgress = true;
+      } else if (_handlingRequest && acc.paymentRequestInProgress == null || acc.paymentRequestInProgress.isEmpty){
+        _inProgress = false;
+      }
+    });
+
     _accountBloc.accountStream.where((acc) => acc.active).first.then((acc) {
       // show payment request dialog for decoded requests
       _receivedInvoicesStream
           .where((payreq) => payreq != null && !_handlingRequest)
           .listen((payreq) {
-        
+
         if (!payreq.loaded) {
           _setLoading(true);
           return;
@@ -38,15 +47,24 @@ class InvoiceNotificationsHandler {
         _setLoading(false);
         _handlingRequest = true;
 
+        Future<bool> _onWillPop() async {
+          if (_inProgress) {
+            return false;
+          }
+          return true;
+        }
+
         showDialog(
-                context: _context,
-                barrierDismissible: false,
-                builder: (_) => paymentRequest.PaymentRequestDialog(
-                    _context, _accountBloc, payreq))
+            context: _context,
+            barrierDismissible: false,
+            builder: (_) =>
+                WillPopScope(onWillPop: _onWillPop,
+                    child: paymentRequest.PaymentRequestDialog(
+                        _context, _accountBloc, payreq)))
             .whenComplete(() => _handlingRequest = false);
       }).onError((error) {
         _setLoading(false);
-        _handlingRequest = false;        
+        _handlingRequest = false;
       });
     });
   }
@@ -72,7 +90,8 @@ class InvoiceNotificationsHandler {
 
     _sentPaymentResultSubscription =
         _accountBloc.fulfilledPayments.listen((fulfilledPayment) {
-      showFlushbar(_context, message: "Payment was successfuly sent!");
+          Navigator.pop(_context);
+          showFlushbar(_context, message: "Payment was successfuly sent!");
     }, onError: (err) => _onPaymentError(accountSettings, err as PaymentError));
   }
 
@@ -82,6 +101,8 @@ class InvoiceNotificationsHandler {
     bool send =
         accountSettings.failePaymentBehavior == BugReportBehavior.SEND_REPORT;
 
+    // Close Dialog
+    Navigator.pop(_context);
     showFlushbar(_context,
         message:
             "Failed to send payment: ${error.toString().split("\n").first}");
