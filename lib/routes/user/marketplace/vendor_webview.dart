@@ -1,12 +1,10 @@
-import 'dart:async';
-import 'dart:convert' as JSON;
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/loader.dart';
 
 class VendorWebViewPage extends StatefulWidget {
   final String _url;
@@ -20,51 +18,23 @@ class VendorWebViewPage extends StatefulWidget {
   }
 }
 
-class VendorWebViewPageState extends State<VendorWebViewPage> {
-  final _widgetWebview = new FlutterWebviewPlugin();
-  InvoiceBloc invoiceBloc;
-  StreamSubscription _postMessageListener;
-  bool _isInit = false;
+class VendorWebViewPageState extends State<VendorWebViewPage> {    
+  WebViewController _controller;
+  String channelScript;
 
   @override
   void initState() {
-    super.initState();    
-    _widgetWebview.onDestroy.listen((_) {
-      if (Navigator.canPop(context)) {
-        Navigator.of(context).pop();
-      }
-    });
+    super.initState();
+    channelScript = "if (!window.breezReceiveMessage) {" +
+                    "window.breezReceiveMessage = function(event) {_breezWallet.postMessage(event.data);};" +
+                    "window.addEventListener('message', window.breezReceiveMessage, false);" +
+                "}";    
   }
 
   @override
-  void didChangeDependencies() {
-    if (!_isInit) {
-      invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-      _postMessageListener = _widgetWebview.onPostMessage.listen((postMessage) {
-        if (postMessage != null) {
-          final order = JSON.jsonDecode(postMessage);
-          invoiceBloc.newLightningLinkSink.add(order['uri']);
-          Navigator.popUntil(context, (route) {
-              return route.settings.name == "/home" || route.settings.name == "/";
-            }
-          );          
-        }
-      });
-      _isInit = true;
-    }
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    _postMessageListener.cancel();
-    _widgetWebview.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new WebviewScaffold(
+  Widget build(BuildContext context) {    
+    var invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    return new Scaffold(
       appBar: new AppBar(
         leading: backBtn.BackButton(),
         automaticallyImplyLeading: false,
@@ -77,9 +47,26 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
         ),
         elevation: 0.0,
       ),
-      url: widget._url,
-      withJavascript: true,
-      withZoom: false,
+      body:Builder(builder: (BuildContext context) {
+        return WebView(
+          initialUrl: widget._url,
+          javascriptMode: JavascriptMode.unrestricted,
+          onWebViewCreated: (controller){
+            _controller = controller;
+          },  
+          onPageFinished: (url) async {
+            _controller.evaluateJavascript(channelScript);            
+          },
+          javascriptChannels: <JavascriptChannel>[
+            JavascriptChannel(
+              name: '_breezWallet',
+              onMessageReceived: (JavascriptMessage message) {                
+                Map decodedMsg = json.decode(message.message);
+                invoiceBloc.newLightningLinkSink.add(decodedMsg['uri'].toString());                    
+              })
+          ].toSet(),        
+        );
+      }),     
     );
   }
 }
