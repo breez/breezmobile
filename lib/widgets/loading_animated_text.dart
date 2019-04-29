@@ -39,7 +39,7 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
   Widget build(BuildContext context) {   
     return RichText(
       text: TextSpan(
-        style: DefaultTextStyle.of(context).style,
+        style: widget.textStyle == TextStyle() ? DefaultTextStyle.of(context).style : widget.textStyle,
         text: widget._loadingMessage,
         children:<TextSpan>[
           TextSpan(text: loadingDots),
