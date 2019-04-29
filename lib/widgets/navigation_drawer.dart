@@ -117,6 +117,7 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                         new Padding(padding: EdgeInsets.only(top: 4.0,), child:
                         new RawMaterialButton(
                           onPressed: () {
+                            Navigator.pop(context);
                             Navigator.of(context).pushNamed("/marketplace");
                           },
                           child: ImageIcon(
