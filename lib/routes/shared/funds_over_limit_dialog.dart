@@ -53,8 +53,9 @@ class OverLimitFundsDialogState extends State<OverLimitFundsDialog> {
                       return Loader();
                     }
 
-                    String hoursToUnlock = swapStatus.hoursToUnlock > 1
-                        ? "~${swapStatus.hoursToUnlock.toInt().toString()} hours"
+                    int roundedHoursToUnlock = swapStatus.hoursToUnlock.round();
+                    String hoursToUnlock = roundedHoursToUnlock > 1
+                        ? "~${roundedHoursToUnlock.toString()} hours"
                         : "in about an hour";
                     List<TextSpan> redeemText = List<TextSpan>();
                     if (swapStatus.hoursToUnlock > 0) {
