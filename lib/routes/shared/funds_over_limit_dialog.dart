@@ -61,7 +61,7 @@ class OverLimitFundsDialogState extends State<OverLimitFundsDialog> {
                     if (swapStatus.hoursToUnlock > 0) {
                       redeemText.add(TextSpan(
                           text:
-                              "You will be able to redeem your funds in block ${swapStatus.lockHeight} ($hoursToUnlock).",
+                              "You will be able to redeem your funds after block ${swapStatus.lockHeight} ($hoursToUnlock).",
                           style: theme.dialogGrayStyle));
                     } else {
                       redeemText.addAll([
