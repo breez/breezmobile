@@ -4,21 +4,11 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.RemoteInput;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin;
-
 import static com.breez.client.BreezFirebaseMessagingService.EXTRA_REMOTE_MESSAGE;
-import static com.breez.client.BreezFirebaseMessagingService.ACTION_REMOTE_MESSAGE;
-import static com.breez.client.MainActivity.NOTIFICATION_ID;
 
 public class NotificationActionReceiver extends BroadcastReceiver {
     @Override
