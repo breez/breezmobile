@@ -73,7 +73,7 @@ class AccountPageState extends State<AccountPage> {
             textAlign: TextAlign.left,
           ),
           backgroundColor: theme.snackBarBackgroundColor,
-          duration: new Duration(seconds: 80),
+          duration: new Duration(seconds: 120),
         );
         Scaffold.of(context).showSnackBar(_snackBar);
       }
