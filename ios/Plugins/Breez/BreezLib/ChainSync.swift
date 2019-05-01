@@ -52,7 +52,8 @@ class ChainSync : NSObject {
             var res = UnsafeMutablePointer<ObjCBool>(&boolRes);
             if (boolRes.boolValue) {
                 // show notification.
-            }
+                Notifier.showClosedChannelNotification();
+            }            
             try syncJob!.run(res);
             try closedChannelsJob!.run();
         } catch {

@@ -218,7 +218,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 6481e6318c5fcabaaa8513ef8120f329055d7c10
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
   image_cropper: 88160bea3665a5fab6989ff3a6825811b8f19a3d
-  image_picker: a211f28b95a560433c00f5cd3773f4710a20404d
+  image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   MTBBarcodeScanner: 65334bba2f54f10b5a27a61f7432b180e96b6b71
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
