@@ -19,4 +19,4 @@ pubspec.lock
 ios/Runner.xcworkspace/xcshareddata/
 ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/
 ios/Runner/GoogleService-Info.plist
-ios/bindings.framework/Versions/A/Bindings
+ios/bindings.framework/*
