@@ -38,6 +38,14 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
                                                  annotation: options[UIApplication.OpenURLOptionsKey.annotation])
     }
     
+    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
+        print("background fetch started...");
+        ChainSync.run(app: application, completionHandler: {
+            completionHandler(UIBackgroundFetchResult.newData);
+        });        
+        return true;
+    }
+    
     
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if (call.method == "init") {
