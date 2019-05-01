@@ -12,8 +12,8 @@ class Notifier : NSObject {
     
     static var notificationCenter : UNUserNotificationCenter?;
     static let notificationHandler = NotifierHandler();
-    static let openBreezAction = UNNotificationAction(identifier: "openBreezAction", title: "Open Breez", options: [])
-    static let openBreezCatagory = UNNotificationCategory(identifier: "openBreezCat", actions: [openBreezAction], intentIdentifiers: [], options: [.customDismissAction])
+    static let openBreezAction = UNNotificationAction(identifier: "openBreezAction", title: "Open Breez", options: [.foreground])
+    static let openBreezCatagory = UNNotificationCategory(identifier: "openBreezCat", actions: [openBreezAction], intentIdentifiers: [], options: [])
     
     static func getNotificationCenter() -> UNUserNotificationCenter{
         if (notificationCenter == nil) {
