@@ -127,9 +127,7 @@
             android:exported="false">
         </receiver>
 
-        <receiver android:name=".plugins.breez.BreezShareReceiver" android:exported="false"/>
-
-         <receiver
+        <receiver
             android:name=".BootReceiver"
             android:enabled="true"
             android:exported="false">

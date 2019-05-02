@@ -24,7 +24,7 @@ void shareLog() {
 }
 
 Future shareFile(String filePath){
-  ShareExtend.share(filePath, "file");  
+  return ShareExtend.share(filePath, "file");  
 }
 
 class BreezLogger {

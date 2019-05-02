@@ -348,12 +348,11 @@ class DevViewState extends State<DevView> {
       encoder.create('${tempDir.path}/graph.zip');
       encoder.addFile(File(filePath));
       encoder.close();
+      File("${tempDir.path}/graph.json").deleteSync();
       if (!userCancelled) {
         return shareFile("${tempDir.path}/graph.zip");
       }
-    }).whenComplete(() {
-      File("${tempDir.path}/graph.zip").deleteSync();
-      File("${tempDir.path}/graph.json").deleteSync();
+    }).whenComplete(() {    
       if (!userCancelled) {
         Navigator.pop(context);
       }
