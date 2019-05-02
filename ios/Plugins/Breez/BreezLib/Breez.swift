@@ -46,6 +46,15 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
         return true;
     }
     
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
+        let jobName = userInfo["_job"] as? String?;
+        if (jobName == "chainSync") {
+            ChainSync.run(app: application, completionHandler: {
+                completionHandler(UIBackgroundFetchResult.newData);
+            });
+        }
+        return true;
+    }
     
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if (call.method == "init") {
