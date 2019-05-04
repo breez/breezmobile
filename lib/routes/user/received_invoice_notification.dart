@@ -48,6 +48,7 @@ class InvoiceNotificationsHandler {
         _setLoading(false);
         _handlingRequest = true;
 
+        // Do not pop dialog if there's a payment being processed
         Future<bool> _onWillPop() async {
           if (_inProgress) {
             return false;
@@ -91,6 +92,7 @@ class InvoiceNotificationsHandler {
 
     _sentPaymentResultSubscription =
         _accountBloc.fulfilledPayments.listen((fulfilledPayment) {
+          // Trigger the collapse animation and show flushbar 200ms after the animation is completed
           paymentRequest.key.currentState.controller.reverse();
           Timer(Duration(milliseconds: 800),  () =>  showFlushbar(_context, message: "Payment was successfuly sent!"));
     }, onError: (err) => _onPaymentError(accountSettings, err as PaymentError));
@@ -102,7 +104,7 @@ class InvoiceNotificationsHandler {
     bool send =
         accountSettings.failePaymentBehavior == BugReportBehavior.SEND_REPORT;
 
-    // Close Dialog
+    // Close Payment Request Dialog
     Navigator.pop(_context);
     showFlushbar(_context,
         message:

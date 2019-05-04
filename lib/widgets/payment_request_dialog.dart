@@ -151,18 +151,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
             ),
           ),
         ]));
-    /*
-    return new AlertDialog(
-        titlePadding: _state == PaymentRequestState.PAYMENT_REQUEST
-            ? EdgeInsets.only(top: 48.0)
-            : EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 20.0),
-        title: _buildPaymentRequestTitle(),
-        contentPadding: _state == PaymentRequestState.PAYMENT_REQUEST
-            ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0)
-            : EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 0.0),
-        content: _buildPaymentRequestContent(),
-        actions: _buildPaymentRequestActions());
-        */
+
   }
 
   Widget _buildPaymentRequestActions() {
