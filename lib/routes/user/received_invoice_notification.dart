@@ -8,6 +8,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/widgets/payment_request_dialog.dart' as paymentRequest;
 import 'package:breez/widgets/flushbar.dart';
+import 'dart:async';
 
 class InvoiceNotificationsHandler {
   final BuildContext _context;
@@ -60,7 +61,7 @@ class InvoiceNotificationsHandler {
             builder: (_) =>
                 WillPopScope(onWillPop: _onWillPop,
                     child: paymentRequest.PaymentRequestDialog(
-                        _context, _accountBloc, payreq)))
+                        _context, _accountBloc, payreq, paymentRequest.key)))
             .whenComplete(() => _handlingRequest = false);
       }).onError((error) {
         _setLoading(false);
@@ -90,8 +91,8 @@ class InvoiceNotificationsHandler {
 
     _sentPaymentResultSubscription =
         _accountBloc.fulfilledPayments.listen((fulfilledPayment) {
-          Navigator.pop(_context);
-          showFlushbar(_context, message: "Payment was successfuly sent!");
+          paymentRequest.key.currentState.controller.reverse();
+          Timer(Duration(milliseconds: 800),  () =>  showFlushbar(_context, message: "Payment was successfuly sent!"));
     }, onError: (err) => _onPaymentError(accountSettings, err as PaymentError));
   }
 
