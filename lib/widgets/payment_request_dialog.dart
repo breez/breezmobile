@@ -46,6 +46,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   Int64 _amountToPay;
   String _amountToPayStr;
 
+  bool _isInit = false;
+
   @override
   void initState() {
     super.initState();
@@ -58,10 +60,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
         CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn));
     opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn));
-    transitionAnimation = new RelativeRectTween(
-            begin: new RelativeRect.fromLTRB(0.0, 276.0, 0.0, 374.0),
-            end: new RelativeRect.fromLTRB(32.0, 246.0, 32.0, 200.0))
-        .animate(controller);
     colorAnimation = new ColorTween(
       begin: theme.BreezColors.blue[500],
       end: theme.BreezColors.white[500],
@@ -69,18 +67,37 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
       ..addListener(() {
         setState(() {});
       });
-
-    controller.value = 1.0;
-    controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        //return Timer(Duration(seconds: 2), () => controller.reverse());
-      } else if (status == AnimationStatus.dismissed) {
-          Navigator.pop(context);
-      }
-    });
     _invoiceAmountController.addListener(() {
       setState(() {});
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (!_isInit) {
+      var xMargin = (MediaQuery.of(context).size.height - 300.0) / 2;
+      if (widget.invoice.payeeImageURL.isNotEmpty){
+        xMargin = xMargin - 10;
+        if (widget.invoice.description.isNotEmpty){
+          var lineCount = (widget.invoice.description.length / 30).ceil();
+          xMargin = xMargin - (lineCount*24);
+        }
+      }
+      var _paymentItemStartPosition = ((MediaQuery.of(context).size.height) * 37)/100;
+      var _paymentItemEndPosition = ((MediaQuery.of(context).size.height) * 50)/100;
+      transitionAnimation = new RelativeRectTween(
+          begin: new RelativeRect.fromLTRB(0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
+          end: new RelativeRect.fromLTRB(32.0, xMargin, 32.0, xMargin))
+          .animate(controller);
+      controller.value = 1.0;
+      controller.addStatusListener((status) {
+        if (status == AnimationStatus.dismissed) {
+          Navigator.pop(context);
+        }
+      });
+      _isInit = true;
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -98,17 +115,16 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     var titlePadding = _state == PaymentRequestState.PAYMENT_REQUEST
         ? widget.invoice.payeeImageURL.isEmpty
         ? EdgeInsets.zero : EdgeInsets.only(top: 48.0)
-        : EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 20.0);
+        : EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0);
     var contentPadding = _state == PaymentRequestState.PAYMENT_REQUEST
     ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0)
-        : EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 0.0);
+        : EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0);
     return Material(
         color: Colors.transparent,
         child: Stack(children: <Widget>[
           PositionedTransition(
             rect: transitionAnimation,
             child: Container(
-              height: 280.0,
               decoration: ShapeDecoration(
                 color: colorAnimation.value,
                 shape: RoundedRectangleBorder(
@@ -207,17 +223,24 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
         },
       );
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
-      TextStyle textStyle = theme
-          .alertStyle; //TextStyle(color: Colors.black).copyWith(fontSize: 16.0);
-      String exitSessionMessage = 'Are you sure you want to pay ';
-      return RichText(
-          text: TextSpan(style: textStyle,
-              text: exitSessionMessage,
-              children: <TextSpan>[
-                TextSpan(text: _amountToPayStr,
-                    style: textStyle.copyWith(fontWeight: FontWeight.bold)),
-                TextSpan(text: "?")
-              ]));
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            AutoSizeText.rich(TextSpan(
+                text: 'Are you sure you want to pay ', children: <TextSpan>[
+              TextSpan(text: _amountToPayStr,
+                  style: theme.alertStyle.copyWith(fontSize: 20.0,
+                      fontWeight: FontWeight.bold)),
+              TextSpan(text: "?")
+            ]),
+                maxLines: 2,
+                minFontSize: 20.0,
+                textAlign: TextAlign.center,
+                style: theme.alertStyle
+            )
+          ]
+      );
     } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -280,7 +303,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
 
   Widget _buildPayeeNameWidget() {
     return widget.invoice.payeeName == null
-        ? Container()
+        ? null
         : Text(
             "${widget.invoice.payeeName}",
             style: theme.paymentRequestTitleStyle,
@@ -291,7 +314,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   Widget _buildErrorMessage(AccountModel account) {
     String validationError = account.validateOutgoingPayment(amountToPay(account));
     if (validationError == null || widget.invoice.amount == 0) {
-      return Container();
+      return null;
     }
 
     return Padding(
@@ -355,7 +378,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
 
   Widget _buildDescriptionWidget() {
     return widget.invoice.description == null || widget.invoice.description.isEmpty
-        ? Container()
+        ? null
         : Padding(
             padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
             child: AutoSizeText(
