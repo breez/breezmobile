@@ -52,18 +52,49 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   }
 
   Widget showPaymentRequestDialog() {
-    return new AlertDialog(
-      titlePadding: _state == PaymentRequestState.PAYMENT_REQUEST ? EdgeInsets.only(top: 48.0) : EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 20.0),
-      title: _buildPaymentRequestTitle(),
-      contentPadding: _state == PaymentRequestState.PAYMENT_REQUEST ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0) : EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 0.0),
-      content: _buildPaymentRequestContent(),
-      actions: _buildPaymentRequestActions()
+    var titlePadding = _state == PaymentRequestState.PAYMENT_REQUEST
+        ? widget.invoice.payeeImageURL.isEmpty
+        ? EdgeInsets.zero : EdgeInsets.only(top: 48.0)
+        : EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 20.0);
+    var contentPadding = _state == PaymentRequestState.PAYMENT_REQUEST
+    ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0)
+        : EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 0.0);
+    Dialog paymentRequestDialog = Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2.0)),
+      child: Container(
+        height: 280.0,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                  padding: titlePadding,
+                  child: _buildPaymentRequestTitle()),
+              Padding(
+                  padding: contentPadding,
+                  child: _buildPaymentRequestContent()),
+              _buildPaymentRequestActions()
+            ]),
+      ),
     );
+    return paymentRequestDialog;
+    /*
+    return new AlertDialog(
+        titlePadding: _state == PaymentRequestState.PAYMENT_REQUEST
+            ? EdgeInsets.only(top: 48.0)
+            : EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 20.0),
+        title: _buildPaymentRequestTitle(),
+        contentPadding: _state == PaymentRequestState.PAYMENT_REQUEST
+            ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0)
+            : EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 0.0),
+        content: _buildPaymentRequestContent(),
+        actions: _buildPaymentRequestActions());
+        */
   }
 
-  List<Widget> _buildPaymentRequestActions() {
+  Widget _buildPaymentRequestActions() {
     if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
-      return <Widget>[
+      List<Widget> children = <Widget>[
         new FlatButton(
           child: new Text("NO", style: theme.buttonStyle),
           onPressed: () {
@@ -73,16 +104,21 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         new FlatButton(
           child: new Text("YES", style: theme.buttonStyle),
           onPressed: () {
-            widget.accountBloc.sentPaymentsSink.add(
-                PayRequest(widget.invoice.rawPayReq, _amountToPay));
+            widget.accountBloc.sentPaymentsSink
+                .add(PayRequest(widget.invoice.rawPayReq, _amountToPay));
             setState(() {
               _state = PaymentRequestState.PROCESSING_PAYMENT;
             });
           },
         ),
       ];
+      return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: children,
+      );
     } else {
-      return null;
+      return Container();
     }
   }
 
@@ -128,12 +164,12 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           LoadingAnimatedText(
             'Please wait while your payment is being processed',
             textStyle: theme.alertStyle,
-            textAlign: TextAlign.left,),
+            textAlign: TextAlign.center,),
           Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: new Image.asset(
@@ -143,13 +179,13 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         ],
       );
     }
-    return null;
+    return Container();
   }
 
   Widget _buildPaymentRequestTitle() {
     if (_state == PaymentRequestState.PAYMENT_REQUEST) {
       return widget.invoice.payeeImageURL.isEmpty
-          ? null
+          ? Container()
           : Stack(alignment: Alignment(0.0, 0.0), children: <Widget>[
         CircularProgressIndicator(),
         ClipOval(
@@ -167,6 +203,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
       return Text(
         "Payment Confirmation",
         style: theme.alertTitleStyle,
+          textAlign: TextAlign.center,
       );
     } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return Text(
@@ -175,7 +212,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         textAlign: TextAlign.center,
       );
     }
-    return null;
+    return Container();
   }
 
   void _addIfNotNull(List<Widget> widgets, Widget w) {
@@ -186,7 +223,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
 
   Widget _buildPayeeNameWidget() {
     return widget.invoice.payeeName == null
-        ? null
+        ? Container()
         : Text(
             "${widget.invoice.payeeName}",
             style: theme.paymentRequestTitleStyle,
@@ -197,7 +234,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   Widget _buildErrorMessage(AccountModel account) {
     String validationError = account.validateOutgoingPayment(amountToPay(account));
     if (validationError == null || widget.invoice.amount == 0) {
-      return null;
+      return Container();
     }
 
     return Padding(
@@ -261,7 +298,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
 
   Widget _buildDescriptionWidget() {
     return widget.invoice.description == null || widget.invoice.description.isEmpty
-        ? null
+        ? Container()
         : Padding(
             padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
             child: AutoSizeText(
