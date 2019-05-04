@@ -10,7 +10,6 @@ import 'package:image/image.dart' as DartImage;
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
-import 'dart:async';
 
 enum PaymentRequestState { PAYMENT_REQUEST, WAITING_FOR_CONFIRMATION, PROCESSING_PAYMENT}
 final key = new GlobalKey<PaymentRequestDialogState>();
