@@ -1,11 +1,11 @@
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/payment_item_avatar.dart';
+import 'package:breez/routes/user/home/success_avatar.dart';
 import 'package:breez/utils/date.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/routes/user/home/flip_transition.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'dart:math';
 
 class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
@@ -17,30 +17,7 @@ class PaymentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Stack(alignment: Alignment.bottomCenter, children: <Widget>[
       ListTile(
-        leading: DateTime.fromMillisecondsSinceEpoch(
-            _paymentInfo.creationTimestamp.toInt() * 1000).difference(
-            DateTime.fromMillisecondsSinceEpoch(DateTime
-                .now()
-                .millisecondsSinceEpoch)) < -Duration(seconds: 10)
-            ? PaymentItemAvatar(
-            _paymentInfo)
-            : FlipTransition(
-            PaymentItemAvatar(_paymentInfo),
-            Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: new BorderRadius.all(
-                        new Radius.circular(20.0))),
-                width: 20.0 * 2,
-                height: 20.0 * 2,
-                alignment: FractionalOffset.center,
-                child: Transform(
-                    transform: Matrix4.identity()
-                      ..rotateY(pi),
-                    alignment: Alignment.center,
-                    child: Icon(Icons.check,
-                        color: theme.BreezColors.blue[500]))),
-            PaymentItemAvatar(_paymentInfo)),
+        leading: _buildPaymentItemAvatar(),
         title: Text(
           _paymentInfo.title,
           style: theme.transactionTitleStyle,
@@ -104,5 +81,23 @@ class PaymentItem extends StatelessWidget {
         indent: 72.0,
       ),
     ]);
+  }
+
+  Widget _buildPaymentItemAvatar() {
+    // Show Flip Transition if the payment item is created within last 10 seconds
+    if (_createdWithin(Duration(seconds: 10))) {
+      return PaymentItemAvatar(_paymentInfo);
+    } else {
+      return FlipTransition(PaymentItemAvatar(_paymentInfo), SuccessAvatar(),
+          PaymentItemAvatar(_paymentInfo));
+    }
+  }
+
+  bool _createdWithin(Duration duration) {
+    return DateTime.fromMillisecondsSinceEpoch(
+        _paymentInfo.creationTimestamp.toInt() * 1000)
+        .difference(DateTime.fromMillisecondsSinceEpoch(
+        DateTime.now().millisecondsSinceEpoch)) <
+        - duration;
   }
 }
