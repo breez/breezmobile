@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'dart:async';
 
 class FlipTransition extends StatefulWidget {
-  Widget firstChild;
-  Widget secondChild;
-  Widget thirdChild;
+  final Widget firstChild;
+  final Widget secondChild;
 
-  FlipTransition(this.firstChild, this.secondChild, this.thirdChild);
+  FlipTransition(this.firstChild, this.secondChild);
 
   @override
   State<StatefulWidget> createState() {
@@ -35,16 +33,6 @@ class FlipTransitionState extends State<FlipTransition>
         _flipAnimationController.reverse();
       }
     });
-    new Timer(new Duration(milliseconds: 900), () {
-      setState(() {
-        widget.firstChild = widget.secondChild;
-      });
-    });
-    new Timer(new Duration(milliseconds: 3500), () {
-      setState(() {
-        widget.firstChild = widget.thirdChild;
-      });
-    });
     _flipAnimationController.forward();
   }
 
@@ -66,7 +54,7 @@ class FlipTransitionState extends State<FlipTransition>
                 transform: Matrix4.identity()
                   ..rotateY(pi * _flipAnimation.value),
                 alignment: Alignment.center,
-                child: widget.firstChild,
+                child:_flipAnimationController.value >= 0.4 ? widget.secondChild : widget.firstChild,
               ));
         });
   }

@@ -88,8 +88,7 @@ class PaymentItem extends StatelessWidget {
     if (_createdWithin(Duration(seconds: 10))) {
       return PaymentItemAvatar(_paymentInfo);
     } else {
-      return FlipTransition(PaymentItemAvatar(_paymentInfo), SuccessAvatar(),
-          PaymentItemAvatar(_paymentInfo));
+      return FlipTransition(PaymentItemAvatar(_paymentInfo), SuccessAvatar());
     }
   }
 
