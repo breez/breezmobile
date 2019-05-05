@@ -10,9 +10,13 @@ import 'package:image/image.dart' as DartImage;
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
+import 'package:breez/bloc/account/account_actions.dart';
+import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/payment_failed_report_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
+import 'dart:async';
 
 enum PaymentRequestState { PAYMENT_REQUEST, WAITING_FOR_CONFIRMATION, PROCESSING_PAYMENT}
-final key = new GlobalKey<PaymentRequestDialogState>();
 
 class PaymentRequestDialog extends StatefulWidget {
   final BuildContext context;
@@ -20,8 +24,7 @@ class PaymentRequestDialog extends StatefulWidget {
   final PaymentRequestModel invoice;
   final _transparentImage = DartImage.encodePng(DartImage.Image(300, 300));
 
-  PaymentRequestDialog(this.context, this.accountBloc, this.invoice, Key key)
-      : super(key: key);
+  PaymentRequestDialog(this.context, this.accountBloc, this.invoice);
 
   @override
   State<StatefulWidget> createState() {
@@ -31,6 +34,7 @@ class PaymentRequestDialog extends StatefulWidget {
 
 class PaymentRequestDialogState extends State<PaymentRequestDialog>
     with SingleTickerProviderStateMixin {
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController _invoiceAmountController = new TextEditingController();
 
@@ -45,11 +49,20 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   Int64 _amountToPay;
   String _amountToPayStr;
 
+  bool _inProgress = false;
   bool _isInit = false;
 
   @override
   void initState() {
     super.initState();
+    widget.accountBloc.accountStream.listen((acc) {
+      if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty) {
+        _inProgress = true;
+      } else if (acc.paymentRequestInProgress == null || acc.paymentRequestInProgress.isEmpty){
+        _inProgress = false;
+      }
+    });
+    _listenPaymentsResults();
     setState(() {
       _state = PaymentRequestState.PAYMENT_REQUEST;
     });
@@ -66,6 +79,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
       ..addListener(() {
         setState(() {});
       });
+    controller.addStatusListener((status) {
+      if (status == AnimationStatus.dismissed) {
+        Navigator.pop(context);
+      }
+    });
     _invoiceAmountController.addListener(() {
       setState(() {});
     });
@@ -74,26 +92,21 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   @override
   void didChangeDependencies() {
     if (!_isInit) {
-      var xMargin = (MediaQuery.of(context).size.height - 300.0) / 2;
+      var _yMargin = (MediaQuery.of(context).size.height - 300.0) / 2;
       if (widget.invoice.payeeImageURL.isNotEmpty){
-        xMargin = xMargin - 10;
+        _yMargin = _yMargin - 10;
         if (widget.invoice.description.isNotEmpty){
           var lineCount = (widget.invoice.description.length / 30).ceil();
-          xMargin = xMargin - (lineCount*24);
+          _yMargin = _yMargin - (lineCount*24);
         }
       }
       var _paymentItemStartPosition = ((MediaQuery.of(context).size.height) * 37)/100;
       var _paymentItemEndPosition = ((MediaQuery.of(context).size.height) * 50)/100;
       transitionAnimation = new RelativeRectTween(
           begin: new RelativeRect.fromLTRB(0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
-          end: new RelativeRect.fromLTRB(32.0, xMargin, 32.0, xMargin))
+          end: new RelativeRect.fromLTRB(32.0, _yMargin, 32.0, _yMargin))
           .animate(controller);
       controller.value = 1.0;
-      controller.addStatusListener((status) {
-        if (status == AnimationStatus.dismissed) {
-          Navigator.pop(context);
-        }
-      });
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -105,9 +118,68 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     super.dispose();
   }
 
+  _listenPaymentsResults() {
+    AccountSettings accountSettings;
+
+    widget.accountBloc.accountSettingsStream
+        .listen((settings) => accountSettings = settings);
+
+    widget.accountBloc.fulfilledPayments.listen((fulfilledPayment) {
+      // Trigger the collapse animation and show flushbar 200ms after the animation is completed
+      controller.reverse().whenComplete(() =>
+          showFlushbar(context, message: "Payment was successfuly sent!"));
+    }, onError: (err) => _onPaymentError(accountSettings, err as PaymentError));
+  }
+
+  _onPaymentError(AccountSettings accountSettings, PaymentError error) async {
+    bool prompt =
+        accountSettings.failePaymentBehavior == BugReportBehavior.PROMPT;
+    bool send =
+        accountSettings.failePaymentBehavior == BugReportBehavior.SEND_REPORT;
+
+    // Close Payment Request Dialog
+    Navigator.pop(context);
+    showFlushbar(context,
+        message:
+        "Failed to send payment: ${error
+            .toString()
+            .split("\n")
+            .first}");
+
+    if (!error.validationError) {
+      if (prompt) {
+        send = await showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) =>
+            new PaymentFailedReportDialog(context, widget.accountBloc));
+      }
+
+      if (send) {
+        var sendAction = SendPaymentFailureReport(error.traceReport);
+        widget.accountBloc.userActionsSink.add(sendAction);
+        await Navigator.push(
+            context,
+            createLoaderRoute(context,
+                message: "Sending Report...",
+                opacity: 0.8,
+                action: sendAction.future));
+      }
+    }
+  }
+
+  // Do not pop dialog if there's a payment being processed
+  Future<bool> _onWillPop() async {
+    if (_inProgress) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return showPaymentRequestDialog();
+    return WillPopScope(onWillPop: _onWillPop,
+        child: showPaymentRequestDialog());
   }
 
   Widget showPaymentRequestDialog() {
