@@ -18,7 +18,10 @@ dependencies:
   flutter_advanced_networkimage: ^0.4.15
   intl: ^0.15.7
   flushbar: ^1.3.0
-  barcode_scan: any  
+  barcode_scan:
+    git:
+       url: https://github.com/breez/flutter_barcode_reader.git  
+       ref: ios
   image_picker: ^0.5.0+9
   image: any
   package_info: any  
