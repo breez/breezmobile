@@ -13,6 +13,9 @@ PODS:
   - Firebase/Database (5.20.1):
     - Firebase/CoreOnly
     - FirebaseDatabase (= 5.1.1)
+  - Firebase/DynamicLinks (5.20.1):
+    - Firebase/CoreOnly
+    - FirebaseDynamicLinks (= 3.4.3)
   - Firebase/Messaging (5.20.1):
     - Firebase/CoreOnly
     - FirebaseMessaging (= 3.5.0)
@@ -21,6 +24,9 @@ PODS:
     - Flutter
   - firebase_database (0.0.1):
     - Firebase/Database
+    - Flutter
+  - firebase_dynamic_links (0.1.0):
+    - Firebase/DynamicLinks
     - Flutter
   - firebase_messaging (0.0.1):
     - Firebase/Core
@@ -44,6 +50,10 @@ PODS:
     - FirebaseAuthInterop (~> 1.0)
     - FirebaseCore (~> 5.2)
     - leveldb-library (~> 1.18)
+  - FirebaseDynamicLinks (3.4.3):
+    - FirebaseAnalytics (~> 5.1)
+    - FirebaseAnalyticsInterop (~> 1.0)
+    - FirebaseCore (~> 5.2)
   - FirebaseInstanceID (3.8.1):
     - FirebaseCore (~> 5.2)
     - GoogleUtilities/Environment (~> 5.2)
@@ -129,6 +139,7 @@ DEPENDENCIES:
   - connectivity (from `Pods/.symlinks/plugins/connectivity/ios`)
   - firebase_core (from `Pods/.symlinks/plugins/firebase_core/ios`)
   - firebase_database (from `Pods/.symlinks/plugins/firebase_database/ios`)
+  - firebase_dynamic_links (from `Pods/.symlinks/plugins/firebase_dynamic_links/ios`)
   - firebase_messaging (from `Pods/.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Pods/.symlinks/flutter/ios`)
   - flutter_webview_plugin (from `Pods/.symlinks/plugins/flutter_webview_plugin/ios`)
@@ -150,6 +161,7 @@ SPEC REPOS:
     - FirebaseAuthInterop
     - FirebaseCore
     - FirebaseDatabase
+    - FirebaseDynamicLinks
     - FirebaseInstanceID
     - FirebaseMessaging
     - GoogleAppMeasurement
@@ -173,6 +185,8 @@ EXTERNAL SOURCES:
     :path: Pods/.symlinks/plugins/firebase_core/ios
   firebase_database:
     :path: Pods/.symlinks/plugins/firebase_database/ios
+  firebase_dynamic_links:
+    :path: Pods/.symlinks/plugins/firebase_dynamic_links/ios
   firebase_messaging:
     :path: Pods/.symlinks/plugins/firebase_messaging/ios
   Flutter:
@@ -202,12 +216,14 @@ SPEC CHECKSUMS:
   Firebase: 2f5235e62f141cb86181c3af0dfe4509706351ac
   firebase_core: ce5006bb48508ee4e71e0f429a3f519bb8ee2961
   firebase_database: 99b15d6a0536ee969200b6eaf69bcd0b15b7b114
+  firebase_dynamic_links: 4a583047b253e5914d5e3c3891cca337ec087d48
   firebase_messaging: b25b2fa94e685146bcf9d706ed87b4e95cd2a17d
   FirebaseAnalytics: fd72a26bf8dac84cefba2f0864366f718555a5b0
   FirebaseAnalyticsInterop: efbe45c8385ec626e29f9525e5ebd38520dfb6c1
   FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc
   FirebaseCore: f1a9a8be1aee4bf71a2fc0f4096df6788bdfda61
   FirebaseDatabase: 2c15b0ea6f2c6eb5e57413f9d6340f1e50b81ae3
+  FirebaseDynamicLinks: f7a8717e2c7ea652923882a2d60b0045d6fd99d5
   FirebaseInstanceID: a122b0c258720cf250551bb2bedf48c699f80d90
   FirebaseMessaging: 4235f949ce1c4e827aeb19705ba5c53f9b85aa10
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a

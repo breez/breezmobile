@@ -10,6 +10,7 @@ import Foundation
 
 class LifecycleEvents : NSObject, FlutterPlugin, FlutterStreamHandler {
     var eventSink : FlutterEventSink?;
+    var resumed = false;
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let BREEZ_STREAM_NAME = "com.breez.client/lifecycle_events_notifications";
@@ -36,14 +37,17 @@ class LifecycleEvents : NSObject, FlutterPlugin, FlutterStreamHandler {
         DispatchQueue.global().async {
             sleep(1);
             if let sink = self.eventSink {
-                sink("resume");
+                if (self.resumed) {
+                    sink("resume");
+                }
             }
+            self.resumed = true;
         }
     }
     
     func applicationDidEnterBackground(_ application : UIApplication) {
         DispatchQueue.global().async {           
-            if let sink = self.eventSink {
+            if let sink = self.eventSink{
                 sink("pause");
             }
         }
