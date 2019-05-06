@@ -1,7 +1,5 @@
 package com.breez.client;
 
-import com.breez.client.plugins.breez.BreezCredential;
-import com.breez.client.plugins.breez.BreezDeepLinks;
 import com.breez.client.plugins.breez.breezlib.Breez;
 import com.breez.client.plugins.breez.*;
 
@@ -44,9 +42,7 @@ public class MainActivity extends FlutterActivity {
 
     void registerBreezPlugins() {
         new Breez(this.registrarFor("com.breez.client.plugins.breez_lib"));
-        new BreezDeepLinks(this.registrarFor("com.breez.client.plugins.breez_deep_links"));
         new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
-        new LightningLinks(this.registrarFor("com.breez.client.plugins.lightning_links"));
         new Permissions(this.registrarFor("com.breez.client.plugins.permissions"), this);
     }
 

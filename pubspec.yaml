@@ -10,6 +10,11 @@ dependencies:
   path_provider: any
   firebase_database: ^2.0.2
   firebase_messaging: ^4.0.0+1
+  firebase_dynamic_links:
+    git:
+      url: https://github.com/breez/plugins.git
+      ref: running_app_link
+      path: packages/firebase_dynamic_links
   shared_preferences: ^0.5.1+2
   share_extend: ^1.0.8
   qr_flutter: ^2.0.0  

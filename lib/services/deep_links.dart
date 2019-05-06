@@ -1,20 +1,28 @@
 import 'dart:async';
-import 'package:flutter/services.dart';
+import 'package:breez/services/device.dart';
+import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 class DeepLinksService {
   static const SESSION_SECRET = "sessionSecret";
-  static const _eventChannel = const EventChannel('com.breez.client/breez_deep_links_notifications');
-  static const _methodChannel = const MethodChannel("com.breez.client/breez_deep_links");
 
   final StreamController<String> _linksNotificationsController = new BehaviorSubject<String>();
   Stream<String> get linksNotifications => _linksNotificationsController.stream;
 
   DeepLinksService(){
-    _eventChannel.receiveBroadcastStream().listen((data) { 
-      print("Got notification");
-      _linksNotificationsController.add(data); 
-    });
+
+    var fetchLink = () async {
+      var data = await FirebaseDynamicLinks.instance.retrieveDynamicLink();
+      final Uri uri = data?.link;
+        if (uri != null) {
+          _linksNotificationsController.add(uri.toString()); 
+        }
+    };
+
+    fetchLink();
+    ServiceInjector().device.eventStream.where((e) => e == NotificationType.RESUME)
+      .listen((_) => fetchLink());   
   }
 
   SessionLinkModel parseSessionInviteLink(String link) {     
@@ -22,7 +30,14 @@ class DeepLinksService {
   }
 
   Future<String> generateSessionInviteLink(SessionLinkModel link) async {
-    return await _methodChannel.invokeMethod("generateLink",{"query": link.toLinkQuery()});    
+    ShortDynamicLink shortLink = await new DynamicLinkParameters(
+      link: Uri.parse('https://breez.technology?${link.toLinkQuery()}'),
+      domain: "breez.page.link",
+      androidParameters: AndroidParameters(packageName: "com.breez.client"),
+      iosParameters: IosParameters(bundleId: "technology.breez.client")      
+    ).buildShortLink();
+
+    return shortLink.shortUrl.toString();
   }
 }
 
