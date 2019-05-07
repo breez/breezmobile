@@ -4,8 +4,7 @@ osx_image: xcode10.2.1
 before_script:
   - brew update
   - brew install --HEAD usbmuxd
-  - brew link usbmuxd
-  - brew update
+  - brew link usbmuxd  
   - brew install --HEAD libimobiledevice  
   - brew install ideviceinstaller ios-deploy cocoapods
   - pod setup
