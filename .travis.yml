@@ -10,10 +10,7 @@ before_script:
   - git clone https://github.com/flutter/flutter.git -b beta
 script:
   - ./flutter/bin/flutter build ios --no-codesign --quiet
-podfile: ios/Podfile
-cache:
-  bundler: true
-  cocoapods: true
+cache:  
   directories:
     - $HOME/.pub-cache
     - $HOME/Library/Caches/Homebrew
