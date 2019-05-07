@@ -1,8 +1,7 @@
 os: osx
 language: objective-c
 osx_image: xcode10.2.1
-before_script:
-  - brew update
+before_script:  
   - brew install --HEAD usbmuxd
   - brew link usbmuxd  
   - brew install --HEAD libimobiledevice  
