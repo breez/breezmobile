@@ -16,7 +16,5 @@ packages
 lib/services/breezlib/rpc.proto
 /android/app/libs/breez.aar
 pubspec.lock
-ios/Runner.xcworkspace/xcshareddata/
-ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/
 ios/Runner/GoogleService-Info.plist
 ios/bindings.framework/*

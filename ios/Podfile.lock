@@ -141,7 +141,7 @@ DEPENDENCIES:
   - firebase_database (from `Pods/.symlinks/plugins/firebase_database/ios`)
   - firebase_dynamic_links (from `Pods/.symlinks/plugins/firebase_dynamic_links/ios`)
   - firebase_messaging (from `Pods/.symlinks/plugins/firebase_messaging/ios`)
-  - Flutter (from `Pods/.symlinks/flutter/ios`)
+  - Flutter (from `Pods/.symlinks/flutter/ios-release`)
   - flutter_webview_plugin (from `Pods/.symlinks/plugins/flutter_webview_plugin/ios`)
   - GoogleSignIn
   - image_cropper (from `Pods/.symlinks/plugins/image_cropper/ios`)
@@ -190,7 +190,7 @@ EXTERNAL SOURCES:
   firebase_messaging:
     :path: Pods/.symlinks/plugins/firebase_messaging/ios
   Flutter:
-    :path: Pods/.symlinks/flutter/ios
+    :path: Pods/.symlinks/flutter/ios-release
   flutter_webview_plugin:
     :path: Pods/.symlinks/plugins/flutter_webview_plugin/ios
   image_cropper:
@@ -248,6 +248,6 @@ SPEC CHECKSUMS:
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
 
-PODFILE CHECKSUM: 60dcd61825a1b7d48b809aafd4e714981baffad3
+PODFILE CHECKSUM: 121fa7045a41b04cedbf3123768931ed382f7f32
 
 COCOAPODS: 1.6.1
