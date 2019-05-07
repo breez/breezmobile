@@ -1,0 +1,18 @@
+os: osx
+language: objective-c
+osx_image: xcode10.2.1
+before_script:
+  - brew update
+  - brew install --HEAD usbmuxd
+  - brew link usbmuxd
+  - brew update
+  - brew install --HEAD libimobiledevice  
+  - brew install ideviceinstaller ios-deploy cocoapods
+  - pod setup
+  - git clone https://github.com/flutter/flutter.git -b beta
+script:
+  - ./flutter/bin/flutter -v build ios --no-codesign
+
+cache:
+  directories:
+    - $HOME/.pub-cache
