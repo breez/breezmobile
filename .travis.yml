@@ -12,7 +12,7 @@ before_script:
   - git clone https://github.com/flutter/flutter.git -b beta
 script:
   - export VERBOSE_SCRIPT_LOGGING=NO
-  - ./flutter/bin/flutter -v build ios --no-codesign --quiet
+  - ./flutter/bin/flutter build ios --no-codesign --quiet
 
 cache:
   directories:
