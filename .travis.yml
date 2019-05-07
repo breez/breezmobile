@@ -1,6 +1,8 @@
 os: osx
 language: objective-c
 osx_image: xcode10.2.1
+env:
+  - VERBOSE_SCRIPT_LOGGING=NO
 before_script:  
   - brew install --HEAD usbmuxd
   - brew link usbmuxd  
@@ -9,6 +11,7 @@ before_script:
   - pod setup
   - git clone https://github.com/flutter/flutter.git -b beta
 script:
+  - export VERBOSE_SCRIPT_LOGGING=NO
   - ./flutter/bin/flutter -v build ios --no-codesign --quiet
 
 cache:
