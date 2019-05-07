@@ -9,7 +9,7 @@ before_script:
   - pod setup
   - git clone https://github.com/flutter/flutter.git -b beta
 script:
-  - ./flutter/bin/flutter -v build ios --no-codesign
+  - ./flutter/bin/flutter -v build ios --no-codesign --quiet
 
 cache:
   directories:
