@@ -6,7 +6,7 @@ before_script:
   - brew install --HEAD usbmuxd
   - brew link usbmuxd  
   - brew install --HEAD libimobiledevice  
-  - brew install ideviceinstaller ios-deploy cocoapods
+  - brew install ideviceinstaller ios-deploy
   - pod setup
   - git clone https://github.com/flutter/flutter.git -b beta
 script:
