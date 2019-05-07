@@ -56,11 +56,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   void initState() {
     super.initState();
     widget.accountBloc.accountStream.listen((acc) {
-      if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty) {
-        _inProgress = true;
-      } else if (acc.paymentRequestInProgress == null || acc.paymentRequestInProgress.isEmpty){
-        _inProgress = false;
-      }
+      _inProgress = acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty;
     });
     _listenPaymentsResults();
     setState(() {
