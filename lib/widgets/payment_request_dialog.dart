@@ -46,6 +46,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
 
   PaymentRequestState _state;
 
+  AccountSettings _accountSettings;
+  StreamSubscription<AccountModel> _paymentInProgressSubscription;
+  StreamSubscription<AccountSettings> _accountSettingsSubscription;
+  StreamSubscription<String> _sentPaymentResultSubscription;
+
   Int64 _amountToPay;
   String _amountToPayStr;
 
@@ -57,7 +62,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     super.initState();
     _state = PaymentRequestState.PAYMENT_REQUEST;
 
-    widget.accountBloc.accountStream.listen((acc) {
+    _paymentInProgressSubscription = widget.accountBloc.accountStream.listen((acc) {
       _inProgress = acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty;
     });
     _listenPaymentsResults();
@@ -110,21 +115,22 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
 
   @override
   dispose() {
+    _paymentInProgressSubscription?.cancel();
+    _accountSettingsSubscription?.cancel();
+    _sentPaymentResultSubscription?.cancel();
     controller.dispose();
     super.dispose();
   }
 
   _listenPaymentsResults() {
-    AccountSettings accountSettings;
+    _accountSettingsSubscription = widget.accountBloc.accountSettingsStream
+        .listen((settings) => _accountSettings = settings);
 
-    widget.accountBloc.accountSettingsStream
-        .listen((settings) => accountSettings = settings);
-
-    widget.accountBloc.fulfilledPayments.listen((fulfilledPayment) {
+    _sentPaymentResultSubscription = widget.accountBloc.fulfilledPayments.listen((fulfilledPayment) {
       // Trigger the collapse animation and show flushbar 200ms after the animation is completed
       controller.reverse().whenComplete(() =>
           showFlushbar(context, message: "Payment was successfuly sent!"));
-    }, onError: (err) => _onPaymentError(accountSettings, err as PaymentError));
+    }, onError: (err) => _onPaymentError(_accountSettings, err as PaymentError));
   }
 
   _onPaymentError(AccountSettings accountSettings, PaymentError error) async {
