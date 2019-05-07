@@ -55,13 +55,13 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   @override
   void initState() {
     super.initState();
+    _state = PaymentRequestState.PAYMENT_REQUEST;
+
     widget.accountBloc.accountStream.listen((acc) {
       _inProgress = acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty;
     });
     _listenPaymentsResults();
-    setState(() {
-      _state = PaymentRequestState.PAYMENT_REQUEST;
-    });
+    
     controller = AnimationController(
         vsync: this, duration: Duration(milliseconds: 600));
     borderAnimation = Tween<double>(begin: 0.0, end: 8.0).animate(
