@@ -30,6 +30,7 @@ script:
 - chmod 600 build_server_rsa
 - ssh-add build_server_rsa
 - mkdir $TRAVIS_BUILD_DIR/conf
+- cp -r $GOPATH/src/github.com/breez/breez/build/ios/binding.framework $TRAVIS_BUILD_DIR/ios/binding.framework
 - sftp builderfiles@packages.breez.technology:config/conf/lnd.conf $TRAVIS_BUILD_DIR/conf/lnd.conf
 - sftp builderfiles@packages.breez.technology:config/conf/breez.conf $TRAVIS_BUILD_DIR/conf/breez.conf
 - sftp builderfiles@packages.breez.technology:config/conf/marketplace.conf $TRAVIS_BUILD_DIR/conf/marketplace.conf
