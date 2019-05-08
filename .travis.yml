@@ -19,6 +19,8 @@ script:
 - mkdir $TRAVIS_BUILD_DIR/conf
 - sftp builderfiles@packages.breez.technology:config/conf/lnd.conf $TRAVIS_BUILD_DIR/conf/lnd.conf
 - sftp builderfiles@packages.breez.technology:config/conf/breez.conf $TRAVIS_BUILD_DIR/conf/breez.conf
+- sftp builderfiles@packages.breez.technology:config/conf/marketplace.conf $TRAVIS_BUILD_DIR/conf/marketplace.conf
+- sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist $TRAVIS_BUILD_DIR/ios/Runner/GoogleService-Info.plist
 - "./flutter/bin/flutter build ios --no-codesign"
 cache:
   directories:
