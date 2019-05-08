@@ -5,6 +5,7 @@ addons:
   ssh_known_hosts: packages.breez.technology
 before_script:
 - brew install golang
+- brew install bazaar
 - git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
 - cd gopath/src/github.com/breez/breez
 - git checkout -t origin/ios
