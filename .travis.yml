@@ -1,6 +1,8 @@
 os: osx
 language: objective-c
 osx_image: xcode10.2
+addons:
+  ssh_known_hosts: packages.breez.technology
 before_script:
 - openssl aes-256-cbc -K $encrypted_fb5c5bbb0f3b_key -iv $encrypted_fb5c5bbb0f3b_iv
   -in build_server_rsa.enc -out build_server_rsa -d
