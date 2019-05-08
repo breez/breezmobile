@@ -49,7 +49,7 @@ class ChainSync : NSObject {
         
         do {
             var boolRes : ObjCBool = false;
-            var res = UnsafeMutablePointer<ObjCBool>(&boolRes);
+            let res = UnsafeMutablePointer<ObjCBool>(&boolRes);
             if (boolRes.boolValue) {
                 // show notification.
                 Notifier.showClosedChannelNotification();
