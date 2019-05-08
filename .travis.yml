@@ -9,17 +9,16 @@ before_script:
 - eval "$(ssh-agent -s)"
 - chmod 600 build_server_rsa
 - ssh-add build_server_rsa
+- sftp builderfiles@packages.breez.technology:config/conf/lnd.conf $TRAVIS_BUILD_DIR/conf/lnd.conf
+- sftp builderfiles@packages.breez.technology:config/conf/breez.conf $TRAVIS_BUILD_DIR/conf/breez.conf
 - brew install --HEAD usbmuxd
 - brew link usbmuxd
 - brew install --HEAD libimobiledevice
 - brew install ideviceinstaller ios-deploy
 - pod setup
 - git clone https://github.com/flutter/flutter.git -b beta
-- sftp builderfiles@packages.breez.technology:config/conf/lnd.conf conf/lnd.conf
-- sftp builderfiles@packages.breez.technology:config/conf/breez.conf conf/breez.conf
 script:
 - "./flutter/bin/flutter build ios --no-codesign"
 cache:
   directories:
-  - "$HOME/.pub-cache"
-  - "$HOME/Library/Caches/Homebrew"
+  - "$HOME/.pub-cache"  
