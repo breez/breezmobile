@@ -7,10 +7,11 @@ before_script:
 - brew install golang
 - brew install bazaar
 - git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
+- export TMP_GOPATH=$(pwd)/gopath
 - cd gopath/src/github.com/breez/breez
 - git checkout -t origin/ios
 - go mod vendor
-- export GOPATH=$(pwd)/gopath
+- export GOPATH=$TMP_GOPATH
 - go get golang.org/x/mobile/cmd/gomobile
 - go get golang.org/x/mobile/cmd/gobind
 - $GOPATH/bin/gomobile init
