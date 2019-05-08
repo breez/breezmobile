@@ -1,6 +1,6 @@
 os: osx
 language: objective-c
-osx_image: xcode10.2.1
+osx_image: xcode10.2
 before_script:  
   - brew install --HEAD usbmuxd
   - brew link usbmuxd  
@@ -9,7 +9,7 @@ before_script:
   - pod setup
   - git clone https://github.com/flutter/flutter.git -b beta
 script:
-  - ./flutter/bin/flutter build ios --no-codesign
+  - ./flutter/bin/flutter build ios -v --no-codesign
 cache:  
   directories:
     - $HOME/.pub-cache
