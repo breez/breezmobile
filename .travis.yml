@@ -16,6 +16,7 @@ script:
 - eval "$(ssh-agent -s)"
 - chmod 600 build_server_rsa
 - ssh-add build_server_rsa
+- mkdir $TRAVIS_BUILD_DIR/conf
 - sftp builderfiles@packages.breez.technology:config/conf/lnd.conf $TRAVIS_BUILD_DIR/conf/lnd.conf
 - sftp builderfiles@packages.breez.technology:config/conf/breez.conf $TRAVIS_BUILD_DIR/conf/breez.conf
 - "./flutter/bin/flutter build ios --no-codesign"
