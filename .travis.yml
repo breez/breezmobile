@@ -8,7 +8,7 @@ before_script:
 - brew install bazaar
 - git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
 - export TMP_GOPATH=$(pwd)/gopath
-- cd gopath/src/github.com/breez/breez
+- pushd gopath/src/github.com/breez/breez
 - git checkout -t origin/ios
 - go mod vendor
 - export GOPATH=$TMP_GOPATH
@@ -17,6 +17,7 @@ before_script:
 - $GOPATH/bin/gomobile init
 - mkdir -p build/ios
 - PATH=$PATH:$GOPATH/bin gomobile bind -target=ios -tags="ios experimental" -o build/ios/bindings.framework github.com/breez/breez/bindings
+- popd
 - brew install --HEAD usbmuxd
 - brew link usbmuxd
 - brew install --HEAD libimobiledevice
@@ -27,11 +28,10 @@ script:
 - openssl aes-256-cbc -K $encrypted_fb5c5bbb0f3b_key -iv $encrypted_fb5c5bbb0f3b_iv
   -in build_server_rsa.enc -out build_server_rsa -d
 - eval "$(ssh-agent -s)"
-- cd $TRAVIS_BUILD_DIR
 - chmod 600 build_server_rsa
 - ssh-add build_server_rsa
 - mkdir $TRAVIS_BUILD_DIR/conf
-- cp -r $GOPATH/src/github.com/breez/breez/build/ios/binding.framework $TRAVIS_BUILD_DIR/ios/binding.framework
+- cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $TRAVIS_BUILD_DIR/ios/bindings.framework
 - sftp builderfiles@packages.breez.technology:config/conf/lnd.conf $TRAVIS_BUILD_DIR/conf/lnd.conf
 - sftp builderfiles@packages.breez.technology:config/conf/breez.conf $TRAVIS_BUILD_DIR/conf/breez.conf
 - sftp builderfiles@packages.breez.technology:config/conf/marketplace.conf $TRAVIS_BUILD_DIR/conf/marketplace.conf
