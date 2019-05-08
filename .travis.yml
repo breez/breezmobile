@@ -11,6 +11,7 @@ before_script:
 - go get golang.org/x/mobile/cmd/gobind
 - $GOPATH/bin/gomobile init
 - cd gopath/src/github.com/breez/breez
+- go mod vendor
 - mkdir -p build/ios
 - PATH=$PATH:$GOPATH/bin gomobile bind -target=ios -tags="ios experimental" -o build/ios/bindings.framework github.com/breez/breez/bindings
 - brew install --HEAD usbmuxd
