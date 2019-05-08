@@ -4,6 +4,15 @@ osx_image: xcode10.2
 addons:
   ssh_known_hosts: packages.breez.technology
 before_script:
+- brew install golang
+- git clone github.com/breez/breez gopath/src/github.com/breez/breez
+- export GOPATH=$(pwd)/gopath
+- go get golang.org/x/mobile/cmd/gomobile
+- go get golang.org/x/mobile/cmd/gobind
+- $GOPATH/bin/gomobile init
+- cd gopath/src/github.com/breez/breez
+- mkdir -p build/ios
+- PATH=$PATH:$GOPATH/bin gomobile bind -target=ios -tags="ios experimental" -o build/ios/bindings.framework github.com/breez/breez/bindings
 - brew install --HEAD usbmuxd
 - brew link usbmuxd
 - brew install --HEAD libimobiledevice
