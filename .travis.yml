@@ -6,12 +6,12 @@ addons:
 before_script:
 - brew install golang
 - git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
+- cd gopath/src/github.com/breez/breez
+- go mod vendor
 - export GOPATH=$(pwd)/gopath
 - go get golang.org/x/mobile/cmd/gomobile
 - go get golang.org/x/mobile/cmd/gobind
 - $GOPATH/bin/gomobile init
-- cd gopath/src/github.com/breez/breez
-- go mod vendor
 - mkdir -p build/ios
 - PATH=$PATH:$GOPATH/bin gomobile bind -target=ios -tags="ios experimental" -o build/ios/bindings.framework github.com/breez/breez/bindings
 - brew install --HEAD usbmuxd
