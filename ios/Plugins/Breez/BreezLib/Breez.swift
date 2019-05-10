@@ -106,7 +106,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     }
     
     // BindingsAppServicesProtocol protocol
-    func backupProviderName() -> String {
+    func backupProviderName() -> String? {
         return "gdrive"
     }
     
@@ -114,9 +114,13 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
         return try googleAuth.getAccessToken(silentOnly: true);
     }
     
-    func notify(_ notificationEvent: Data) {
-        if let sink = eventSink {                        
-            sink(FlutterStandardTypedData(bytes: notificationEvent));
+    func notify(_ notificationEvent: Data?) {
+        if let sink = eventSink {
+            var data = Data(count:0);
+            if let wrapped = notificationEvent {
+                data = wrapped;
+            }
+            sink(FlutterStandardTypedData(bytes: data));
         }
     }
 }
