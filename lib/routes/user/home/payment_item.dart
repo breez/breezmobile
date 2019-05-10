@@ -10,14 +10,17 @@ import 'package:breez/theme_data.dart' as theme;
 class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
   final bool _lastItem;
+  final bool _firstItem;
+  final GlobalKey tableKey;
 
-  PaymentItem(this._paymentInfo, this._lastItem);
+  PaymentItem(this._paymentInfo, this._lastItem, this._firstItem, this.tableKey);
 
   @override
   Widget build(BuildContext context) {
     return new Stack(alignment: Alignment.bottomCenter, children: <Widget>[
       ListTile(
         leading: _buildPaymentItemAvatar(),
+        key: _firstItem ? tableKey : null,
         title: Text(
           _paymentInfo.title,
           style: theme.transactionTitleStyle,

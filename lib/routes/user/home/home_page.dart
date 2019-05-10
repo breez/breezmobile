@@ -21,6 +21,8 @@ import 'package:breez/routes/shared/no_connection_dialog.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 
+final GlobalKey tableKey = new GlobalKey();
+
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
   final InvoiceBloc invoiceBloc;
@@ -79,7 +81,7 @@ class Home extends StatefulWidget {
         "/developers", "Developers", "src/icon/developers.png"),
   ]);
 
-  final Map<String, Widget> _screenBuilders = {"breezHome": new AccountPage()};
+  final Map<String, Widget> _screenBuilders = {"breezHome": new AccountPage(tableKey)};
 
   @override
   State<StatefulWidget> createState() {
@@ -96,6 +98,7 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+
     _registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
@@ -188,7 +191,7 @@ class HomeState extends State<Home> {
   }
 
   void _registerNotificationHandlers(){        
-    new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
+    new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream, tableKey);
     new CTPJoinSessionHandler(widget.ctpBloc, this.context, 
       (session) {
         Navigator.popUntil(context, (route) {

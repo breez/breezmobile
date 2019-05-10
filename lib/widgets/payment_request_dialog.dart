@@ -22,9 +22,10 @@ class PaymentRequestDialog extends StatefulWidget {
   final BuildContext context;
   final AccountBloc accountBloc;
   final PaymentRequestModel invoice;
+  final GlobalKey tableKey;
   final _transparentImage = DartImage.encodePng(DartImage.Image(300, 300));
 
-  PaymentRequestDialog(this.context, this.accountBloc, this.invoice);
+  PaymentRequestDialog(this.context, this.accountBloc, this.invoice, this.tableKey);
 
   @override
   State<StatefulWidget> createState() {
@@ -36,6 +37,10 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     with SingleTickerProviderStateMixin {
 
   final _formKey = GlobalKey<FormState>();
+  GlobalKey _titleKey = GlobalKey();
+  GlobalKey _contentKey = GlobalKey();
+  GlobalKey _animatedContentKey = GlobalKey();
+  GlobalKey _actionsKey = GlobalKey();
   TextEditingController _invoiceAmountController = new TextEditingController();
 
   AnimationController controller;
@@ -55,7 +60,13 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   String _amountToPayStr;
 
   bool _inProgress = false;
-  bool _isInit = false;
+
+  static const double _titleHeight = 48.0;
+  static const double _actionsHeight = 64.0;
+  double _dialogContentHeight;
+  //double _dialogTitleHeight;
+  //double _dialogActionsHeight;
+  double _dialogYMargin;
 
   @override
   void initState() {
@@ -66,51 +77,9 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
       _inProgress = acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty;
     });
     _listenPaymentsResults();
-    
-    controller = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 600));
-    borderAnimation = Tween<double>(begin: 0.0, end: 8.0).animate(
-        CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn));
-    opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn));
-    colorAnimation = new ColorTween(
-      begin: theme.BreezColors.blue[500],
-      end: theme.BreezColors.white[500],
-    ).animate(controller)
-      ..addListener(() {
-        setState(() {});
-      });
-    controller.addStatusListener((status) {
-      if (status == AnimationStatus.dismissed) {
-        Navigator.pop(context);
-      }
-    });
     _invoiceAmountController.addListener(() {
       setState(() {});
     });
-  }
-
-  @override
-  void didChangeDependencies() {
-    if (!_isInit) {
-      var _yMargin = (MediaQuery.of(context).size.height - 300.0) / 2;
-      if (widget.invoice.payeeImageURL.isNotEmpty){
-        _yMargin = _yMargin - 10;
-        if (widget.invoice.description.isNotEmpty){
-          var lineCount = (widget.invoice.description.length / 30).ceil();
-          _yMargin = _yMargin - (lineCount*24);
-        }
-      }
-      var _paymentItemStartPosition = ((MediaQuery.of(context).size.height) * 37)/100;
-      var _paymentItemEndPosition = ((MediaQuery.of(context).size.height) * 50)/100;
-      transitionAnimation = new RelativeRectTween(
-          begin: new RelativeRect.fromLTRB(0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
-          end: new RelativeRect.fromLTRB(32.0, _yMargin, 32.0, _yMargin))
-          .animate(controller);
-      controller.value = 1.0;
-      _isInit = true;
-    }
-    super.didChangeDependencies();
   }
 
   @override
@@ -127,7 +96,45 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
         .listen((settings) => _accountSettings = settings);
 
     _sentPaymentResultSubscription = widget.accountBloc.fulfilledPayments.listen((fulfilledPayment) {
-      // Trigger the collapse animation and show flushbar 200ms after the animation is completed
+      controller = AnimationController(
+          vsync: this, duration: Duration(milliseconds: 600));
+      borderAnimation = Tween<double>(begin: 0.0, end: 8.0).animate(
+          CurvedAnimation(parent: controller, curve: Curves.slowMiddle));
+      opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+          CurvedAnimation(parent: controller, curve: Curves.slowMiddle));
+      colorAnimation = new ColorTween(
+        begin: theme.BreezColors.blue[500],
+        end: theme.BreezColors.white[500],
+      ).animate(controller)
+        ..addListener(() {
+          setState(() {});
+        });
+
+      RenderBox _paymentTableBox = widget.tableKey.currentContext
+          .findRenderObject();
+      var _paymentItemStartPosition = _paymentTableBox
+          .localToGlobal(Offset.zero)
+          .dy - 32.0;
+      var _paymentItemEndPosition = (MediaQuery
+          .of(context)
+          .size
+          .height - _paymentItemStartPosition) - 72.0 - 32.0;
+      var tween = new RelativeRectTween(
+          begin: new RelativeRect.fromLTRB(
+              0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
+          end: new RelativeRect.fromLTRB(
+              32.0, (_dialogYMargin + _titleHeight + 16.0), 32.0,
+              (_dialogYMargin + _titleHeight + 16.0)));
+      transitionAnimation = tween
+          .animate(controller);
+
+      controller.value = 1.0;
+      controller.addStatusListener((status) {
+        if (status == AnimationStatus.dismissed) {
+          Navigator.pop(context);
+        }
+      });
+      // Trigger the collapse animation and show flushbar after the animation is completed
       controller.reverse().whenComplete(() =>
           showFlushbar(context, message: "Payment was successfuly sent!"));
     }, onError: (err) => _onPaymentError(_accountSettings, err as PaymentError));
@@ -192,12 +199,26 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     var contentPadding = _state == PaymentRequestState.PAYMENT_REQUEST
     ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0)
         : EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0);
-    return Material(
+    return controller == null ? new AlertDialog(
+        titlePadding: _state == PaymentRequestState.PAYMENT_REQUEST
+            ? EdgeInsets.only(top: 48.0)
+            : EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 20.0),
+        title: _buildPaymentRequestTitle(),
+        contentPadding: _state == PaymentRequestState.PAYMENT_REQUEST
+            ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0)
+            : EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 0.0),
+        content: _buildPaymentRequestContent(),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0))),
+        actions: [_buildPaymentRequestActions()]) : Material(
         color: Colors.transparent,
         child: Stack(children: <Widget>[
           PositionedTransition(
             rect: transitionAnimation,
             child: Container(
+              key: _animatedContentKey,
+              height: _dialogContentHeight - _actionsHeight,
+              width: MediaQuery.of(context).size.width,
               decoration: ShapeDecoration(
                 color: colorAnimation.value,
                 shape: RoundedRectangleBorder(
@@ -247,14 +268,57 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
           },
         ),
       ];
-      return Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: children,
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 16.0,right: 8.0),
+        child: Row(
+          key: _actionsKey,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: children,
+        ),
       );
     } else {
-      return Container();
+      return null;
     }
+  }
+
+  _afterLayout(_) {
+    _getSizes();
+    _getPositions();
+  }
+
+  _getSizes() {
+    /*
+    final RenderBox _dialogTitleBox = _titleKey.currentContext.findRenderObject();
+    final _dialogTitleSize = _dialogTitleBox.size;
+    */
+    final RenderBox _dialogContentBox = _contentKey.currentContext.findRenderObject();
+    final _dialogContentSize = _dialogContentBox.size;
+    /*
+    final RenderBox _dialogActionsBox = _actionsKey.currentContext.findRenderObject();
+    final _dialogActionsSize = _dialogActionsBox.size;
+    */
+    setState(() {
+      //_dialogTitleHeight = _dialogTitleBox.size.height;
+      _dialogContentHeight = _dialogContentSize.height;
+      //_dialogActionsHeight = _dialogActionsBox.size.height;
+
+    });
+  }
+  _getPositions() {
+    /*
+    final RenderBox _dialogTitleBox = _titleKey.currentContext.findRenderObject();
+    final _dialogTitlePosition = _dialogTitleBox..localToGlobal(Offset.zero);
+    */
+    final RenderBox _dialogContentBox = _contentKey.currentContext.findRenderObject();
+    final _dialogContentPosition = _dialogContentBox.localToGlobal(Offset.zero);
+    /*
+    final RenderBox _dialogActionsBox = _actionsKey.currentContext.findRenderObject();
+    final _dialogActionsPosition = _dialogActionsBox.localToGlobal(Offset.zero);
+    */
+    setState(() {
+      _dialogYMargin = _dialogContentPosition.dy;
+    });
   }
 
   Widget _buildPaymentRequestContent() {
@@ -264,7 +328,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
         builder: (context, snapshot) {
           var account = snapshot.data;
           if (account == null) {
-            return Container();
+            return new Container(width: 0.0, height: 0.0);
           }
           List<Widget> children = [];
           _addIfNotNull(children, _buildPayeeNameWidget());
@@ -275,6 +339,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
           _addIfNotNull(children, _buildActions(account));
 
           return Container(
+            key: _contentKey,
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -285,50 +350,61 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
         },
       );
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
-      return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            AutoSizeText.rich(TextSpan(
-                text: 'Are you sure you want to pay ', children: <TextSpan>[
-              TextSpan(text: _amountToPayStr,
-                  style: theme.alertStyle.copyWith(fontSize: 20.0,
-                      fontWeight: FontWeight.bold)),
-              TextSpan(text: "?")
-            ]),
-                maxLines: 2,
-                minFontSize: 20.0,
-                textAlign: TextAlign.center,
-                style: theme.alertStyle
-            )
-          ]
-      );
+      return Container(
+          height: _dialogContentHeight - _titleHeight - _actionsHeight,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text('Are you sure you want to pay',
+                  style: theme.alertStyle,
+                  textAlign: TextAlign.center,
+                ),
+                AutoSizeText.rich(
+                    TextSpan(children: <TextSpan>[
+                      TextSpan(text: _amountToPayStr,
+                          style: theme.alertStyle.copyWith(fontSize: 20.0,
+                              fontWeight: FontWeight.bold)),
+                      TextSpan(text: " ?")]
+                    ),
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    style: theme.alertStyle
+                ),
+              ]
+          ));
     } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          LoadingAnimatedText(
-            'Please wait while your payment is being processed',
-            textStyle: theme.alertStyle,
-            textAlign: TextAlign.center,),
-          Padding(
-              padding: EdgeInsets.only(top: 8.0),
-              child: new Image.asset(
+      return Container(
+          key: _contentKey,
+          height: _dialogContentHeight - _titleHeight,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              LoadingAnimatedText(
+                'Please wait while your payment is being processed',
+                textStyle: theme.alertStyle,
+                textAlign: TextAlign.center,),
+              Image.asset(
                 'src/images/breez_loader.gif',
+                height: 64.0,
+                colorBlendMode: BlendMode.multiply,
+                color: colorAnimation != null ? colorAnimation.value : Colors.transparent,
                 gaplessPlayback: true,
-              ))
-        ],
-      );
+              )
+            ],
+          ));
     }
-    return Container();
+    return null;
   }
 
   Widget _buildPaymentRequestTitle() {
     if (_state == PaymentRequestState.PAYMENT_REQUEST) {
       return widget.invoice.payeeImageURL.isEmpty
-          ? Container()
-          : Stack(alignment: Alignment(0.0, 0.0), children: <Widget>[
+          ? null
+          : Stack(key:_titleKey,alignment: Alignment(0.0, 0.0), children: <Widget>[
         CircularProgressIndicator(),
         ClipOval(
           child: FadeInImage(
@@ -354,7 +430,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
         textAlign: TextAlign.center,
       );
     }
-    return Container();
+    return null;
   }
 
   void _addIfNotNull(List<Widget> widgets, Widget w) {
@@ -466,6 +542,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     if (toPay > 0 && account.maxAllowedToPay >= toPay) {
       actions.add(SimpleDialogOption(
         onPressed: (() async {
+          _afterLayout(null);
           if (widget.invoice.amount > 0 || _formKey.currentState.validate()) {
             if (widget.invoice.amount == 0) {
               setState(() {
