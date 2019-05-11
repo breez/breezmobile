@@ -10,6 +10,7 @@ before_script:
 - chmod 600 build_server_rsa
 - ssh-add build_server_rsa
 - sftp builderfiles@packages.breez.technology:config/conf/dev_cert.p12 ~/dev_cert.p12
+- sftp builderfiles@packages.breez.technology:config/conf/cf59fa6b-9924-424b-af7b-0bfad4975dee.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/cf59fa6b-9924-424b-af7b-0bfad4975dee.mobileprovision
 
 - security create-keychain -p mysecretpassword build.keychain
 - security default-keychain -s build.keychain
