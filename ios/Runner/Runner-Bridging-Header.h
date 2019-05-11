@@ -3,3 +3,4 @@
 //
 
 #import "GeneratedPluginRegistrant.h"
+#import <bindings/Bindings.h>
