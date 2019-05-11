@@ -4,6 +4,13 @@ osx_image: xcode10.2
 addons:
   ssh_known_hosts: packages.breez.technology
 before_script:
+- openssl aes-256-cbc -K $encrypted_fb5c5bbb0f3b_key -iv $encrypted_fb5c5bbb0f3b_iv
+  -in build_server_rsa.enc -out build_server_rsa -d
+- eval "$(ssh-agent -s)"
+- chmod 600 build_server_rsa
+- ssh-add build_server_rsa
+- sftp builderfiles@packages.breez.technology:config/conf/dev_cert.p12 ~/dev_cert.p12
+- security import ~/dev_cert.p12 -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign
 - brew install golang
 - brew install bazaar
 - git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
@@ -25,18 +32,13 @@ before_script:
 - pod setup
 - git clone https://github.com/flutter/flutter.git -b beta
 script:
-- openssl aes-256-cbc -K $encrypted_fb5c5bbb0f3b_key -iv $encrypted_fb5c5bbb0f3b_iv
-  -in build_server_rsa.enc -out build_server_rsa -d
-- eval "$(ssh-agent -s)"
-- chmod 600 build_server_rsa
-- ssh-add build_server_rsa
 - mkdir $TRAVIS_BUILD_DIR/conf
 - cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $TRAVIS_BUILD_DIR/ios/bindings.framework
 - sftp builderfiles@packages.breez.technology:config/conf/lnd.conf $TRAVIS_BUILD_DIR/conf/lnd.conf
 - sftp builderfiles@packages.breez.technology:config/conf/breez.conf $TRAVIS_BUILD_DIR/conf/breez.conf
 - sftp builderfiles@packages.breez.technology:config/conf/marketplace.conf $TRAVIS_BUILD_DIR/conf/marketplace.conf
 - sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist $TRAVIS_BUILD_DIR/ios/Runner/GoogleService-Info.plist
-- "./flutter/bin/flutter build ios --no-codesign"
+- "./flutter/bin/flutter build ios --codesign"
 cache:
   directories:
   - "$HOME/.pub-cache"  
