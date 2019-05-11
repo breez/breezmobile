@@ -13,7 +13,7 @@ import GoogleSignIn
 
 
 class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStreamHandler {
-    
+   
     var eventSink : FlutterEventSink?;
     var googleAuth = GoogleAuthenticator();
     
@@ -113,14 +113,24 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     func backupProviderSignIn() throws -> String {
         return try googleAuth.getAccessToken(silentOnly: true);
     }
+    
+    func backupProviderSignIn() -> BindingsSignInResult! {
+        let res: BindingsSignInResult = BindingsSignInResult();
+        do {
+            res.setToken(try googleAuth.getAccessToken(silentOnly: true));
+        } catch {
+            res.setError(error);
+        }
+        return res;
+    }
 
-    func notify(_ notificationEvent: Data) {
+    func notify(_ notificationEvent: Data?) {
         if let sink = eventSink {
-//            var data = Data(count:0);
-//            if let wrapped = notificationEvent {
-//                data = wrapped;
-//            }
-            sink(FlutterStandardTypedData(bytes: notificationEvent));
+            var data = Data(count:0);
+            if let wrapped = notificationEvent {
+                data = wrapped;
+            }
+            sink(FlutterStandardTypedData(bytes: data));
         }
     }
 }
