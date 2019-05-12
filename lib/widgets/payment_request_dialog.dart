@@ -22,10 +22,10 @@ class PaymentRequestDialog extends StatefulWidget {
   final BuildContext context;
   final AccountBloc accountBloc;
   final PaymentRequestModel invoice;
-  final GlobalKey tableKey;
+  final GlobalKey firstPaymentItemKey;
   final _transparentImage = DartImage.encodePng(DartImage.Image(300, 300));
 
-  PaymentRequestDialog(this.context, this.accountBloc, this.invoice, this.tableKey);
+  PaymentRequestDialog(this.context, this.accountBloc, this.invoice, this.firstPaymentItemKey);
 
   @override
   State<StatefulWidget> createState() {
@@ -110,7 +110,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
           setState(() {});
         });
 
-      RenderBox _paymentTableBox = widget.tableKey.currentContext
+      RenderBox _paymentTableBox = widget.firstPaymentItemKey.currentContext
           .findRenderObject();
       var _paymentItemStartPosition = _paymentTableBox
           .localToGlobal(Offset.zero)

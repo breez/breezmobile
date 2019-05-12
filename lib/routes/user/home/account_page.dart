@@ -23,9 +23,9 @@ const FILTER_MIN_SIZE = 30.0;
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
 class AccountPage extends StatefulWidget {
-  final GlobalKey tableKey;
+  final GlobalKey firstPaymentItemKey;
 
-  AccountPage(this.tableKey);
+  AccountPage(this.firstPaymentItemKey);
 
   @override
   State<StatefulWidget> createState() {
@@ -141,7 +141,7 @@ class AccountPageState extends State<AccountPage> {
             ) : SliverPadding(padding: EdgeInsets.zero),
 
             // //List
-            PaymentsList(paymentsModel.paymentsList, PAYMENT_LIST_ITEM_HEIGHT, widget.tableKey),
+            PaymentsList(paymentsModel.paymentsList, PAYMENT_LIST_ITEM_HEIGHT, widget.firstPaymentItemKey),
 
             //footer
             SliverPersistentHeader(

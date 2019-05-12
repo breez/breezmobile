@@ -11,16 +11,16 @@ class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
   final bool _lastItem;
   final bool _firstItem;
-  final GlobalKey tableKey;
+  final GlobalKey firstPaymentItemKey;
 
-  PaymentItem(this._paymentInfo, this._lastItem, this._firstItem, this.tableKey);
+  PaymentItem(this._paymentInfo, this._lastItem, this._firstItem, this.firstPaymentItemKey);
 
   @override
   Widget build(BuildContext context) {
     return new Stack(alignment: Alignment.bottomCenter, children: <Widget>[
       ListTile(
         leading: _buildPaymentItemAvatar(),
-        key: _firstItem ? tableKey : null,
+        key: _firstItem ? firstPaymentItemKey : null,
         title: Text(
           _paymentInfo.title,
           style: theme.transactionTitleStyle,
