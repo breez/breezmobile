@@ -10,12 +10,13 @@ class InvoiceNotificationsHandler {
   final AccountBloc _accountBloc;
   final Stream<PaymentRequestModel> _receivedInvoicesStream;
   final GlobalKey firstPaymentItemKey;
+  final ScrollController _scrollController;
 
   ModalRoute _loaderRoute;
   bool _handlingRequest = false;
 
   InvoiceNotificationsHandler(
-      this._context, this._accountBloc, this._receivedInvoicesStream, this.firstPaymentItemKey) {
+      this._context, this._accountBloc, this._receivedInvoicesStream, this.firstPaymentItemKey, this._scrollController) {
     _listenPaymentRequests();
   }
 
@@ -38,7 +39,7 @@ class InvoiceNotificationsHandler {
             context: _context,
             barrierDismissible: false,
             builder: (_) => paymentRequest.PaymentRequestDialog(
-                        _context, _accountBloc, payreq, firstPaymentItemKey))
+                        _context, _accountBloc, payreq, firstPaymentItemKey, _scrollController))
             .whenComplete(() => _handlingRequest = false);
       }).onError((error) {
         _setLoading(false);

@@ -16,6 +16,9 @@ import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'dart:async';
 
+const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
+const PAYMENT_DIALOG_TITLE_HEIGHT = 48.0;
+const PAYMENT_DIALOG_ACTIONS_HEIGHT = 64.0;
 enum PaymentRequestState { PAYMENT_REQUEST, WAITING_FOR_CONFIRMATION, PROCESSING_PAYMENT}
 
 class PaymentRequestDialog extends StatefulWidget {
@@ -23,9 +26,10 @@ class PaymentRequestDialog extends StatefulWidget {
   final AccountBloc accountBloc;
   final PaymentRequestModel invoice;
   final GlobalKey firstPaymentItemKey;
+  final ScrollController _scrollController;
   final _transparentImage = DartImage.encodePng(DartImage.Image(300, 300));
 
-  PaymentRequestDialog(this.context, this.accountBloc, this.invoice, this.firstPaymentItemKey);
+  PaymentRequestDialog(this.context, this.accountBloc, this.invoice, this.firstPaymentItemKey, this._scrollController);
 
   @override
   State<StatefulWidget> createState() {
@@ -61,8 +65,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
 
   bool _inProgress = false;
 
-  static const double _titleHeight = 48.0;
-  static const double _actionsHeight = 64.0;
   double _dialogContentHeight;
   //double _dialogTitleHeight;
   //double _dialogActionsHeight;
@@ -97,11 +99,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
 
     _sentPaymentResultSubscription = widget.accountBloc.fulfilledPayments.listen((fulfilledPayment) {
       controller = AnimationController(
-          vsync: this, duration: Duration(milliseconds: 600));
+          vsync: this, duration: Duration(milliseconds: 300));
       borderAnimation = Tween<double>(begin: 0.0, end: 8.0).animate(
-          CurvedAnimation(parent: controller, curve: Curves.slowMiddle));
+          CurvedAnimation(parent: controller, curve: Curves.ease));
       opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-          CurvedAnimation(parent: controller, curve: Curves.slowMiddle));
+          CurvedAnimation(parent: controller, curve: Curves.ease));
       colorAnimation = new ColorTween(
         begin: theme.BreezColors.blue[500],
         end: theme.BreezColors.white[500],
@@ -109,34 +111,38 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
         ..addListener(() {
           setState(() {});
         });
+      // Scroll the payment list to top
+      widget._scrollController.animateTo(widget._scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.ease).whenComplete( () {
+        new Timer(new Duration(milliseconds: 100), () {
+          RenderBox _paymentTableBox = widget.firstPaymentItemKey.currentContext
+              .findRenderObject();
+          var _paymentItemStartPosition = _paymentTableBox
+              .localToGlobal(Offset.zero)
+              .dy - 32.0;
+          var _paymentItemEndPosition = (MediaQuery
+              .of(context)
+              .size
+              .height - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT - 32.0;
+          var tween = new RelativeRectTween(
+              begin: new RelativeRect.fromLTRB(
+                  0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
+              end: new RelativeRect.fromLTRB(
+                  32.0, (_dialogYMargin + PAYMENT_DIALOG_TITLE_HEIGHT + 16.0), 32.0,
+                  (_dialogYMargin + PAYMENT_DIALOG_TITLE_HEIGHT + 16.0)));
+          transitionAnimation = tween
+              .animate(controller);
 
-      RenderBox _paymentTableBox = widget.firstPaymentItemKey.currentContext
-          .findRenderObject();
-      var _paymentItemStartPosition = _paymentTableBox
-          .localToGlobal(Offset.zero)
-          .dy - 32.0;
-      var _paymentItemEndPosition = (MediaQuery
-          .of(context)
-          .size
-          .height - _paymentItemStartPosition) - 72.0 - 32.0;
-      var tween = new RelativeRectTween(
-          begin: new RelativeRect.fromLTRB(
-              0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
-          end: new RelativeRect.fromLTRB(
-              32.0, (_dialogYMargin + _titleHeight + 16.0), 32.0,
-              (_dialogYMargin + _titleHeight + 16.0)));
-      transitionAnimation = tween
-          .animate(controller);
-
-      controller.value = 1.0;
-      controller.addStatusListener((status) {
-        if (status == AnimationStatus.dismissed) {
-          Navigator.pop(context);
-        }
+          controller.value = 1.0;
+          controller.addStatusListener((status) {
+            if (status == AnimationStatus.dismissed) {
+              Navigator.pop(context);
+            }
+          });
+          // Trigger the collapse animation and show flushbar after the animation is completed
+          controller.reverse().whenComplete(() =>
+              showFlushbar(context, message: "Payment was successfuly sent!"));
+        });
       });
-      // Trigger the collapse animation and show flushbar after the animation is completed
-      controller.reverse().whenComplete(() =>
-          showFlushbar(context, message: "Payment was successfuly sent!"));
     }, onError: (err) => _onPaymentError(_accountSettings, err as PaymentError));
   }
 
@@ -217,7 +223,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
             rect: transitionAnimation,
             child: Container(
               key: _animatedContentKey,
-              height: _dialogContentHeight - _actionsHeight,
+              height: _dialogContentHeight - PAYMENT_DIALOG_ACTIONS_HEIGHT,
               width: MediaQuery.of(context).size.width,
               decoration: ShapeDecoration(
                 color: colorAnimation.value,
@@ -351,7 +357,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
       );
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
       return Container(
-          height: _dialogContentHeight - _titleHeight - _actionsHeight,
+          height: _dialogContentHeight - PAYMENT_DIALOG_TITLE_HEIGHT - PAYMENT_DIALOG_ACTIONS_HEIGHT,
           width: MediaQuery.of(context).size.width,
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -377,7 +383,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return Container(
           key: _contentKey,
-          height: _dialogContentHeight - _titleHeight,
+          height: _dialogContentHeight - PAYMENT_DIALOG_TITLE_HEIGHT,
           width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

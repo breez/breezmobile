@@ -24,8 +24,9 @@ const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
 class AccountPage extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
+  final ScrollController _scrollController;
 
-  AccountPage(this.firstPaymentItemKey);
+  AccountPage(this.firstPaymentItemKey, this._scrollController);
 
   @override
   State<StatefulWidget> createState() {
@@ -34,7 +35,7 @@ class AccountPage extends StatefulWidget {
 }
 
 class AccountPageState extends State<AccountPage> {
-  final ScrollController _scrollController = new ScrollController();
+  //final ScrollController _scrollController = new ScrollController();
   final List<String> currencyList = Currency.currencies.map((c) => c.symbol).toList();
 
   AccountBloc _accountBloc;
@@ -122,13 +123,13 @@ class AccountPageState extends State<AccountPage> {
       fit: StackFit.expand,
       children: [
         CustomScrollView(
-          controller: _scrollController,
+          controller: widget._scrollController,
           slivers: <Widget>[
             //Account dashboard header
             SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(_accountBloc, _userProfileBloc), pinned: true),
 
             //payment filter
-            PaymentFilterSliver(_scrollController, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _accountBloc, paymentsModel),
+            PaymentFilterSliver(widget._scrollController, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _accountBloc, paymentsModel),
 
             (paymentsModel.filter != null && paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
                 ? SliverAppBar(
@@ -154,7 +155,7 @@ class AccountPageState extends State<AccountPage> {
         ),
         //Floating actions
         ScrollWatcher(
-          controller: _scrollController,
+          controller: widget._scrollController,
           builder: (context, offset) {
             double height = (DASHBOARD_MAX_HEIGHT - offset).clamp(DASHBOARD_MIN_HEIGHT, DASHBOARD_MAX_HEIGHT);
             double heightFactor = (offset / (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT)).clamp(0.0, 1.0);

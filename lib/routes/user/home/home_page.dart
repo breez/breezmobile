@@ -22,6 +22,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 
 final GlobalKey firstPaymentItemKey = new GlobalKey();
+final ScrollController scrollController = new ScrollController();
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -81,7 +82,7 @@ class Home extends StatefulWidget {
         "/developers", "Developers", "src/icon/developers.png"),
   ]);
 
-  final Map<String, Widget> _screenBuilders = {"breezHome": new AccountPage(firstPaymentItemKey)};
+  final Map<String, Widget> _screenBuilders = {"breezHome": new AccountPage(firstPaymentItemKey, scrollController)};
 
   @override
   State<StatefulWidget> createState() {
@@ -191,7 +192,7 @@ class HomeState extends State<Home> {
   }
 
   void _registerNotificationHandlers(){        
-    new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream, firstPaymentItemKey);
+    new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream, firstPaymentItemKey, scrollController);
     new CTPJoinSessionHandler(widget.ctpBloc, this.context, 
       (session) {
         Navigator.popUntil(context, (route) {
