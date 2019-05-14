@@ -9,16 +9,7 @@ before_script:
 - eval "$(ssh-agent -s)"
 - chmod 600 build_server_rsa
 - ssh-add build_server_rsa
-- sftp builderfiles@packages.breez.technology:config/conf/dev_cert.p12 ~/dev_cert.p12
-- mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
-- sftp builderfiles@packages.breez.technology:config/conf/cf59fa6b-9924-424b-af7b-0bfad4975dee.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/cf59fa6b-9924-424b-af7b-0bfad4975dee.mobileprovision
-
-- security create-keychain -p mysecretpassword build.keychain
-- security default-keychain -s build.keychain
-- security unlock-keychain -p mysecretpassword build.keychain
-- security import ~/dev_cert.p12 -k build.keychain -P "" -T /usr/bin/codesign
-- security find-identity -v
-
+- ./travis/add-key.sh
 - brew install golang
 - brew install bazaar
 - git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
@@ -29,9 +20,10 @@ before_script:
 - export GOPATH=$TMP_GOPATH
 - go get golang.org/x/mobile/cmd/gomobile
 - go get golang.org/x/mobile/cmd/gobind
-- $GOPATH/bin/gomobile init
+- "$GOPATH/bin/gomobile init"
 - mkdir -p build/ios
-- PATH=$PATH:$GOPATH/bin gomobile bind -target=ios -tags="ios experimental" -o build/ios/bindings.framework github.com/breez/breez/bindings
+- PATH=$PATH:$GOPATH/bin gomobile bind -target=ios -tags="ios experimental" -o build/ios/bindings.framework
+  github.com/breez/breez/bindings
 - popd
 - brew install --HEAD usbmuxd
 - brew link usbmuxd
@@ -45,8 +37,14 @@ script:
 - sftp builderfiles@packages.breez.technology:config/conf/lnd.conf $TRAVIS_BUILD_DIR/conf/lnd.conf
 - sftp builderfiles@packages.breez.technology:config/conf/breez.conf $TRAVIS_BUILD_DIR/conf/breez.conf
 - sftp builderfiles@packages.breez.technology:config/conf/marketplace.conf $TRAVIS_BUILD_DIR/conf/marketplace.conf
-- sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist $TRAVIS_BUILD_DIR/ios/Runner/GoogleService-Info.plist
-- "./flutter/bin/flutter build ios --codesign"
+- sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist
+  $TRAVIS_BUILD_DIR/ios/Runner/GoogleService-Info.plist
+- "./flutter/bin/flutter build ios --no-codesign"
+after_success:
+- ./travis/sign.sh
 cache:
   directories:
-  - "$HOME/.pub-cache"  
+  - "$HOME/.pub-cache"
+env:
+  global:
+    secure: QZp8VNCEixRL0SxUJMuEpk7WEkUs8nXy44MitvIgW9VZdACL+ncAY+1/XFW/sNZLYtkZufsMFVnVizihcJtcazW8MXcuEU+AVvI12UfZ8MUAEjkdJ+BIfiKY2jg0/NqSpLyfI53z8wmDepCkD1Bta8OnfM3fCWkGw8C7LpidTfASsI1fxW3ykC8y1CyZNmzb2AWWGFSrehL6ukW1yKgK9ppXT8bdc3NPkK1/UfxwbZinx+bqEG7yZ6KmPM6J6f0KuPgWVMQDe1W4ld8+BRR1Bo4iz/v5Tv/NKYZ3jc51WhupCpjIy6harpt+cjgpQht7kNtFSclUq5+lz/+UiWiKmg/uwI0JIbuskXUM6WTgcFNXJilWvUlTVnp0VFPx1edfMAon/cwR/aXpW+ZS6CKMAJIvMyYbvpsXT9PQh1dVPqwGoA83hK9Huds0RwUPOJrZeM5atpxXR4saDgw4iys2mviP6cerAWmVHZlOyTCWitMmrdsCp04w8RwCXQLQcY0381lvYlhibflkWC5DHneQKK277pFOIKthBSJTYXyWzunOyGZVIelh9mPZz7hnP0tyCHvyqlxlLdKSo9CMRnXuL2XDt3UFXg+9jrXpDkGVR3bG2FTPMsmLvFGevaoUJic1nVVKzypDoOGFr9aA+84cu5GCErGxUA+6ZP3jA7RZcvw=
