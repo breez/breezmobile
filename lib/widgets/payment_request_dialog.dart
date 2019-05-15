@@ -43,7 +43,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   final _formKey = GlobalKey<FormState>();
   GlobalKey _titleKey = GlobalKey();
   GlobalKey _contentKey = GlobalKey();
-  GlobalKey _animatedContentKey = GlobalKey();
   GlobalKey _actionsKey = GlobalKey();
   TextEditingController _invoiceAmountController = new TextEditingController();
 
@@ -230,7 +229,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
           PositionedTransition(
             rect: transitionAnimation,
             child: Container(
-              key: _animatedContentKey,
               height: _dialogContentHeight - PAYMENT_DIALOG_ACTIONS_HEIGHT,
               width: MediaQuery.of(context).size.width,
               decoration: ShapeDecoration(
