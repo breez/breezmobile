@@ -20,9 +20,9 @@ sftp builderfiles@packages.breez.technology:config/conf/$PROFILE_NAME.mobileprov
 mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
 
 # Add certificates to keychain and allow codesign to access them
-security import ~/apple.cer -k ~/Library/Keychains/ios-build.keychain -T /usr/bin/codesign
-security import ~/ios_distribution.cer -k ~/Library/Keychains/ios-build.keychain -T /usr/bin/codesign
-security import ~/ios_distribution.p12 -k ~/Library/Keychains/ios-build.keychain -P "$PRIVATE_KEY_PASS" -T /usr/bin/codesign
+security import ~/apple.cer -k ~/Library/Keychains/ios-build.keychain -A
+security import ~/ios_distribution.cer -k ~/Library/Keychains/ios-build.keychain -A
+security import ~/ios_distribution.p12 -k ~/Library/Keychains/ios-build.keychain -P "$PRIVATE_KEY_PASS" -A
 
 
 # Put the provisioning profile in place
