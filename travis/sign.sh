@@ -13,6 +13,7 @@ OUTPUTDIR="$PWD/build/ios/Release-iphoneos"
 IDENTITY=$(security find-identity -v -p codesigning | awk '{print $2;}' | head -1)
 
 #codesign --entitlements "ios/Runner/Runner.entitlements" -s $IDENTITY "$OUTPUTDIR/$APP_NAME.app"
-cd ios
+pushd ios
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $TRAVIS_JOB_NUMBER" Runner/Info.plist
 xcodebuild -quiet -workspace Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $PWD/build/Runner.xcarchive
 xcodebuild -quiet -exportArchive -archivePath $PWD/build/Runner.xcarchive -exportOptionsPlist ../travis/export-options.plist -exportPath $PWD/build/Runner.ipa
