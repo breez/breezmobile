@@ -39,7 +39,7 @@ script:
   $TRAVIS_BUILD_DIR/ios/Runner/GoogleService-Info.plist
 - "./flutter/bin/flutter build ios --no-codesign"
 after_success:
-- "./travis/sign.sh"
+- travis_wait ./travis/sign.sh
 cache:
   directories:
   - "$HOME/.pub-cache"
