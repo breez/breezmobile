@@ -95,7 +95,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
 
     _sentPaymentResultSubscription = widget.accountBloc.fulfilledPayments.listen((fulfilledPayment) {
       controller = AnimationController(
-          vsync: this, duration: Duration(milliseconds: 300));
+          vsync: this, duration: Duration(milliseconds: 500));
       borderAnimation = Tween<double>(begin: 0.0, end: 8.0).animate(
           CurvedAnimation(parent: controller, curve: Curves.ease));
       opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
