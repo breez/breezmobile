@@ -111,39 +111,47 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
         ..addListener(() {
           setState(() {});
         });
+      controller.value = 1.0;
+      controller.addStatusListener((status) {
+        if (status == AnimationStatus.dismissed) {
+          Navigator.pop(context);
+        }
+      });
       // Scroll the payment list to top
+      widget._scrollController.hasClients ?
       widget._scrollController.animateTo(widget._scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.ease).whenComplete( () {
         new Timer(new Duration(milliseconds: 100), () {
-          RenderBox _paymentTableBox = widget.firstPaymentItemKey.currentContext
-              .findRenderObject();
-          var _paymentItemStartPosition = _paymentTableBox
-              .localToGlobal(Offset.zero)
-              .dy - 32.0;
-          var _paymentItemEndPosition = (MediaQuery
-              .of(context)
-              .size
-              .height - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT - 32.0;
-          var tween = new RelativeRectTween(
-              begin: new RelativeRect.fromLTRB(
-                  0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
-              end: new RelativeRect.fromLTRB(
-                  32.0, (_dialogYMargin + PAYMENT_DIALOG_TITLE_HEIGHT + 16.0), 32.0,
-                  (_dialogYMargin + PAYMENT_DIALOG_TITLE_HEIGHT + 16.0)));
-          transitionAnimation = tween
-              .animate(controller);
-
-          controller.value = 1.0;
-          controller.addStatusListener((status) {
-            if (status == AnimationStatus.dismissed) {
-              Navigator.pop(context);
-            }
-          });
+          _initializeTransitionAnimation();
           // Trigger the collapse animation and show flushbar after the animation is completed
           controller.reverse().whenComplete(() =>
               showFlushbar(context, message: "Payment was successfuly sent!"));
         });
-      });
+      }) :
+      _initializeTransitionAnimation();
+      // Trigger the collapse animation and show flushbar after the animation is completed
+      controller.reverse().whenComplete(() =>
+          showFlushbar(context, message: "Payment was successfuly sent!"));
     }, onError: (err) => _onPaymentError(_accountSettings, err as PaymentError));
+  }
+
+  void _initializeTransitionAnimation() {
+    RenderBox _paymentTableBox = widget.firstPaymentItemKey.currentContext
+        .findRenderObject();
+    var _paymentItemStartPosition = _paymentTableBox
+        .localToGlobal(Offset.zero)
+        .dy - 32.0;
+    var _paymentItemEndPosition = (MediaQuery
+        .of(context)
+        .size
+        .height - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT - 32.0;
+    var tween = new RelativeRectTween(
+        begin: new RelativeRect.fromLTRB(
+            0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
+        end: new RelativeRect.fromLTRB(
+            32.0, (_dialogYMargin + PAYMENT_DIALOG_TITLE_HEIGHT + 16.0), 32.0,
+            (_dialogYMargin + PAYMENT_DIALOG_TITLE_HEIGHT + 16.0)));
+    transitionAnimation = tween
+        .animate(controller);
   }
 
   _onPaymentError(AccountSettings accountSettings, PaymentError error) async {
