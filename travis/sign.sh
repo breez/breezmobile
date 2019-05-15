@@ -15,8 +15,8 @@ IDENTITY=$(security find-identity -v -p codesigning | awk '{print $2;}' | head -
 #codesign --entitlements "ios/Runner/Runner.entitlements" -s $IDENTITY "$OUTPUTDIR/$APP_NAME.app"
 pushd ios
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $TRAVIS_JOB_NUMBER" Runner/Info.plist
-xcodebuild -quiet -workspace Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $PWD/build/Runner.xcarchive
-xcodebuild -quiet -exportArchive -archivePath $PWD/build/Runner.xcarchive -exportOptionsPlist ../travis/export-options.plist -exportPath $PWD/build/Runner.ipa
+travis_wait xcodebuild -quiet -workspace Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $PWD/build/Runner.xcarchive
+travis_wait xcodebuild -quiet -exportArchive -archivePath $PWD/build/Runner.xcarchive -exportOptionsPlist ../travis/export-options.plist -exportPath $PWD/build/Runner.ipa
 
 #upload to testflight
 altool="$(dirname "$(xcode-select -p)")/Applications/Application Loader.app/Contents/Frameworks/ITunesSoftwareService.framework/Support/altool"
