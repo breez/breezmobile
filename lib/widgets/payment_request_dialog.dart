@@ -89,7 +89,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     _paymentInProgressSubscription?.cancel();
     _accountSettingsSubscription?.cancel();
     _sentPaymentResultSubscription?.cancel();
-    controller.dispose();
+    controller?.dispose();
     super.dispose();
   }
 
