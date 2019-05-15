@@ -134,23 +134,23 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   }
 
   void _initializeTransitionAnimation() {
-    RenderBox _paymentTableBox = widget.firstPaymentItemKey.currentContext
-        .findRenderObject();
-    var _paymentItemStartPosition = _paymentTableBox
-        .localToGlobal(Offset.zero)
-        .dy - 32.0;
-    var _paymentItemEndPosition = (MediaQuery
-        .of(context)
-        .size
-        .height - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT - 32.0;
+    double _dialogYMargin = _getDialogPosition();
+    RenderBox _paymentTableBox = widget.firstPaymentItemKey.currentContext.findRenderObject();
+    var _paymentItemStartPosition = _paymentTableBox.localToGlobal(Offset.zero).dy - 32.0;
+    var _paymentItemEndPosition = (MediaQuery.of(context).size.height - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT - 32.0;
     var tween = new RelativeRectTween(
-        begin: new RelativeRect.fromLTRB(
-            0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
-        end: new RelativeRect.fromLTRB(
-            32.0, (_dialogYMargin + PAYMENT_DIALOG_TITLE_HEIGHT + 16.0), 32.0,
-            (_dialogYMargin + PAYMENT_DIALOG_TITLE_HEIGHT + 16.0)));
-    transitionAnimation = tween
-        .animate(controller);
+        begin: new RelativeRect.fromLTRB(0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
+        end: new RelativeRect.fromLTRB(32.0, _dialogYMargin - _dialogTitleHeight, 32.0, _dialogYMargin - _dialogTitleHeight));
+    transitionAnimation = tween.animate(controller);
+  }
+
+  double _getDialogPosition() {
+    final RenderBox _dialogTitleBox = _titleKey.currentContext?.findRenderObject();
+    final _dialogTitlePosition = _dialogTitleBox?.localToGlobal(Offset.zero);
+    final RenderBox _dialogContentBox = _contentKey.currentContext?.findRenderObject();
+    final _dialogContentPosition = _dialogContentBox?.localToGlobal(Offset.zero);
+    var _dialogYMargin =  _dialogTitlePosition?.dy ?? _dialogContentPosition?.dy;
+    return _dialogYMargin;
   }
 
   _onPaymentError(AccountSettings accountSettings, PaymentError error) async {
@@ -290,42 +290,20 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     }
   }
 
-  _afterLayout(_) {
-    _getSizes();
-    _getPositions();
-  }
+  _getDialogSize(){
+    final RenderBox _dialogTitleBox = _titleKey.currentContext?.findRenderObject();
+    final _dialogTitleSize = _dialogTitleBox?.size;
 
-  _getSizes() {
-    /*
-    final RenderBox _dialogTitleBox = _titleKey.currentContext.findRenderObject();
-    final _dialogTitleSize = _dialogTitleBox.size;
-    */
-    final RenderBox _dialogContentBox = _contentKey.currentContext.findRenderObject();
-    final _dialogContentSize = _dialogContentBox.size;
-    /*
-    final RenderBox _dialogActionsBox = _actionsKey.currentContext.findRenderObject();
-    final _dialogActionsSize = _dialogActionsBox.size;
-    */
-    setState(() {
-      //_dialogTitleHeight = _dialogTitleBox.size.height;
-      _dialogContentHeight = _dialogContentSize.height;
-      //_dialogActionsHeight = _dialogActionsBox.size.height;
+    final RenderBox _dialogContentBox = _contentKey.currentContext?.findRenderObject();
+    final _dialogContentSize = _dialogContentBox?.size;
 
-    });
-  }
-  _getPositions() {
-    /*
-    final RenderBox _dialogTitleBox = _titleKey.currentContext.findRenderObject();
-    final _dialogTitlePosition = _dialogTitleBox..localToGlobal(Offset.zero);
-    */
-    final RenderBox _dialogContentBox = _contentKey.currentContext.findRenderObject();
-    final _dialogContentPosition = _dialogContentBox.localToGlobal(Offset.zero);
-    /*
-    final RenderBox _dialogActionsBox = _actionsKey.currentContext.findRenderObject();
-    final _dialogActionsPosition = _dialogActionsBox.localToGlobal(Offset.zero);
-    */
+    final RenderBox _dialogActionsBox = _actionsKey.currentContext?.findRenderObject();
+    final _dialogActionsSize = _dialogActionsBox?.size;
+
     setState(() {
-      _dialogYMargin = _dialogContentPosition.dy;
+      _dialogTitleHeight = _dialogTitleSize?.height ?? (widget.invoice.payeeImageURL.isEmpty ? 43.0 : 48.0); // 27 + 16.0
+      _dialogContentHeight = _dialogContentSize?.height ?? _dialogContentHeight;
+      _dialogActionsHeight = _dialogActionsSize?.height ?? 64.0; // Actions Height = 48.0 + 16.0 Bottom Padding
     });
   }
 
@@ -550,7 +528,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     if (toPay > 0 && account.maxAllowedToPay >= toPay) {
       actions.add(SimpleDialogOption(
         onPressed: (() async {
-          _afterLayout(null);
+          _getDialogSize();
           if (widget.invoice.amount > 0 || _formKey.currentState.validate()) {
             if (widget.invoice.amount == 0) {
               setState(() {
