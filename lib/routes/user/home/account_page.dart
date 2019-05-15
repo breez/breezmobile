@@ -185,18 +185,24 @@ class AccountPageState extends State<AccountPage> {
       fit: StackFit.expand,
       children: <Widget>[
         new Padding(
-          padding: EdgeInsets.only(top: 130.0, left: 40.0, right: 40.0),
-          // new status widget
-          child: StreamBuilder(
-            stream: _connectPayBloc.pendingCTPLinkStream,
-            builder: (context, pendingLinkSnapshot) {
-              String message = account.statusMessage;
-              if (pendingLinkSnapshot.connectionState == ConnectionState.active && pendingLinkSnapshot.hasData) {
-                message = "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";
-              }
-              return StatusText(message, loading: account?.swapFundsStatus?.error?.isNotEmpty != true);
-            }
-          )
+            padding: EdgeInsets.only(top: 32.0),child: SizedBox(key: widget.firstPaymentItemKey,width: 0.0,height: 0.0,),), // Location of first payment item
+        new Padding(
+            padding: EdgeInsets.only(top: 130.0, left: 40.0, right: 40.0),
+            // new status widget
+            child: StreamBuilder(
+                stream: _connectPayBloc.pendingCTPLinkStream,
+                builder: (context, pendingLinkSnapshot) {
+                  String message = account.statusMessage;
+                  if (pendingLinkSnapshot.connectionState ==
+                      ConnectionState.active && pendingLinkSnapshot.hasData) {
+                    message =
+                    "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";
+                  }
+                  return StatusText(message,
+                      loading: account?.swapFundsStatus?.error?.isNotEmpty !=
+                          true);
+                }
+            )
         ),
         new Image.asset(
           "src/images/waves-home.png",
