@@ -107,26 +107,31 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
         ..addListener(() {
           setState(() {});
         });
-      controller.value = 1.0;
       controller.addStatusListener((status) {
         if (status == AnimationStatus.dismissed) {
           Navigator.pop(context);
         }
       });
-      // Scroll the payment list to top
-      widget._scrollController.hasClients ?
-      widget._scrollController.animateTo(widget._scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.ease).whenComplete( () {
-        new Timer(new Duration(milliseconds: 100), () {
-          _initializeTransitionAnimation();
-          // Trigger the collapse animation and show flushbar after the animation is completed
-          controller.reverse().whenComplete(() =>
-              showFlushbar(context, message: "Payment was successfuly sent!"));
+      if (widget._scrollController.hasClients) {
+        widget._scrollController.animateTo(
+            widget._scrollController.position.minScrollExtent,
+            duration: Duration(milliseconds: 200), curve: Curves.ease)
+            .whenComplete(() {
+          new Timer(new Duration(milliseconds: 50), () {
+            _initializeTransitionAnimation();
+            controller.value = 1.0;
+            // Trigger the collapse animation and show flushbar after the animation is completed
+            controller.reverse().whenComplete(() =>
+                showFlushbar(context, message: "Payment was successfuly sent!"));
+          });
         });
-      }) :
-      _initializeTransitionAnimation();
-      // Trigger the collapse animation and show flushbar after the animation is completed
-      controller.reverse().whenComplete(() =>
-          showFlushbar(context, message: "Payment was successfuly sent!"));
+      } else {
+        _initializeTransitionAnimation();
+        controller.value = 1.0;
+        // Trigger the collapse animation and show flushbar after the animation is completed
+        controller.reverse().whenComplete(() =>
+            showFlushbar(context, message: "Payment was successfuly sent!"));
+      }
     }, onError: (err) => _onPaymentError(_accountSettings, err as PaymentError));
   }
 
