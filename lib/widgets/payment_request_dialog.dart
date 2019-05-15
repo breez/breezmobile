@@ -17,8 +17,6 @@ import 'package:breez/widgets/flushbar.dart';
 import 'dart:async';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
-const PAYMENT_DIALOG_TITLE_HEIGHT = 48.0;
-const PAYMENT_DIALOG_ACTIONS_HEIGHT = 64.0;
 enum PaymentRequestState { PAYMENT_REQUEST, WAITING_FOR_CONFIRMATION, PROCESSING_PAYMENT}
 
 class PaymentRequestDialog extends StatefulWidget {
@@ -65,9 +63,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   bool _inProgress = false;
 
   double _dialogContentHeight;
-  //double _dialogTitleHeight;
-  //double _dialogActionsHeight;
-  double _dialogYMargin;
+  double _dialogTitleHeight;
+  double _dialogActionsHeight;
 
   @override
   void initState() {
@@ -225,7 +222,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
           PositionedTransition(
             rect: transitionAnimation,
             child: Container(
-              height: _dialogContentHeight - PAYMENT_DIALOG_ACTIONS_HEIGHT,
+              height: widget.invoice.payeeImageURL.isEmpty
+                  ? _dialogContentHeight - _dialogTitleHeight : _dialogContentHeight + _dialogTitleHeight,
               width: MediaQuery.of(context).size.width,
               decoration: ShapeDecoration(
                 color: colorAnimation.value,
@@ -337,7 +335,9 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
       );
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
       return Container(
-          height: _dialogContentHeight - PAYMENT_DIALOG_TITLE_HEIGHT - PAYMENT_DIALOG_ACTIONS_HEIGHT,
+          key: _contentKey,
+          height: widget.invoice.payeeImageURL.isEmpty
+              ? _dialogContentHeight - _dialogActionsHeight - _dialogTitleHeight : _dialogContentHeight + _dialogTitleHeight - _dialogActionsHeight, // In reference to first dialog, this dialog had both title and actions field so we subtract those values
           width: MediaQuery.of(context).size.width,
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -363,7 +363,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return Container(
           key: _contentKey,
-          height: _dialogContentHeight - PAYMENT_DIALOG_TITLE_HEIGHT,
+          height: widget.invoice.payeeImageURL.isEmpty
+              ? _dialogContentHeight - _dialogTitleHeight : _dialogContentHeight + _dialogTitleHeight, // In reference to first dialog, this dialog had title field so we subtract that value
           width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -406,12 +407,14 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
       return Text(
         "Payment Confirmation",
+        key:_titleKey,
         style: theme.alertTitleStyle,
           textAlign: TextAlign.center,
       );
     } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return Text(
         "Processing Payment",
+        key:_titleKey,
         style: theme.alertTitleStyle,
         textAlign: TextAlign.center,
       );
