@@ -15,6 +15,7 @@ security set-keychain-settings -t 3600 -l ~/Library/Keychains/ios-build.keychain
 
 sftp builderfiles@packages.breez.technology:config/conf/ios_distribution.p12 ~/ios_distribution.p12
 sftp builderfiles@packages.breez.technology:config/conf/ios_distribution.cer ~/ios_distribution.cer
+sftp builderfiles@packages.breez.technology:config/conf/apple.cer ~/apple.cer
 sftp builderfiles@packages.breez.technology:config/conf/$PROFILE_NAME.mobileprovision ~/$PROFILE_NAME.mobileprovision
 mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
 
