@@ -205,21 +205,17 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   }
 
   Widget showPaymentRequestDialog() {
-    var titlePadding = _state == PaymentRequestState.PAYMENT_REQUEST
+    var _titlePadding = _state == PaymentRequestState.PAYMENT_REQUEST
         ? widget.invoice.payeeImageURL.isEmpty
         ? EdgeInsets.zero : EdgeInsets.only(top: 48.0)
         : EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0);
-    var contentPadding = _state == PaymentRequestState.PAYMENT_REQUEST
-    ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0)
+    var _contentPadding = _state == PaymentRequestState.PAYMENT_REQUEST
+        ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0)
         : EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0);
     return controller == null ? new AlertDialog(
-        titlePadding: _state == PaymentRequestState.PAYMENT_REQUEST
-            ? EdgeInsets.only(top: 48.0)
-            : EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 20.0),
+        titlePadding: _titlePadding,
         title: _buildPaymentRequestTitle(),
-        contentPadding: _state == PaymentRequestState.PAYMENT_REQUEST
-            ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0)
-            : EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 0.0),
+        contentPadding: _contentPadding,
         content: _buildPaymentRequestContent(),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
@@ -243,12 +239,12 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
                     Opacity(
                         opacity: opacityAnimation.value,
                         child: Padding(
-                            padding: titlePadding,
+                            padding: _titlePadding,
                             child: _buildPaymentRequestTitle())),
                     Opacity(
                         opacity: opacityAnimation.value,
                         child: Padding(
-                            padding: contentPadding,
+                            padding: _contentPadding,
                             child: _buildPaymentRequestContent())),
                     Opacity(
                         opacity: opacityAnimation.value,
