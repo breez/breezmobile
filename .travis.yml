@@ -5,7 +5,7 @@ addons:
   ssh_known_hosts: packages.breez.technology
 before_script:
 - eval "$(ssh-agent -s)"
-- chmod 600 build_server_rsa
+- chmod 600 build_server_key
 - ssh-add ./travis/build_server_key
 - "./travis/add-key.sh"
 - brew install golang
