@@ -133,8 +133,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   void _initializeTransitionAnimation() {
     double _dialogYMargin = _getDialogPosition();
     RenderBox _paymentTableBox = widget.firstPaymentItemKey.currentContext.findRenderObject();
-    var _paymentItemStartPosition = _paymentTableBox.localToGlobal(Offset.zero).dy - 32.0;
-    var _paymentItemEndPosition = (MediaQuery.of(context).size.height - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT - 32.0;
+    var _paymentItemStartPosition = _paymentTableBox.localToGlobal(Offset.zero).dy - MediaQuery.of(widget.context).padding.top;
+    var _paymentItemEndPosition = (MediaQuery.of(context).size.height - MediaQuery.of(widget.context).padding.top - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT;
     var tween = new RelativeRectTween(
         begin: new RelativeRect.fromLTRB(0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
         end: new RelativeRect.fromLTRB(32.0, _dialogYMargin - _dialogTitleHeight, 32.0, _dialogYMargin - _dialogTitleHeight));
