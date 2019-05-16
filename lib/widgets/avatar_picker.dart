@@ -94,7 +94,7 @@ class AvatarPicker extends StatelessWidget {
   List<int> scaleAndFormatPNG(List<int> imageBytes) {
     DartImage.Image image = DartImage.decodeImage(imageBytes);
     DartImage.Image resized = DartImage.copyResize(
-        image, image.width < image.height ? -1 : scaledWidth, image.width < image.height ? scaledWidth : -1);
+        image, width: image.width < image.height ? -1 : scaledWidth, height: image.width < image.height ? scaledWidth : -1);
     DartImage.Image centered = DartImage.copyInto(_transparentImage, resized,
         dstX: ((scaledWidth - resized.width) / 2).round(), dstY: ((scaledWidth - resized.height) / 2).round());
     log.info('trimmed.width ${centered.width} trimmed.height ${centered.height}');
