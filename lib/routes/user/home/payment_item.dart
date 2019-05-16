@@ -1,21 +1,26 @@
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/payment_item_avatar.dart';
+import 'package:breez/routes/user/home/success_avatar.dart';
 import 'package:breez/utils/date.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/routes/user/home/flip_transition.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
   final bool _lastItem;
+  final bool _firstItem;
+  final GlobalKey firstPaymentItemKey;
 
-  PaymentItem(this._paymentInfo, this._lastItem);
+  PaymentItem(this._paymentInfo, this._lastItem, this._firstItem, this.firstPaymentItemKey);
 
   @override
   Widget build(BuildContext context) {
     return new Stack(alignment: Alignment.bottomCenter, children: <Widget>[
       ListTile(
-        leading: PaymentItemAvatar(_paymentInfo),
+        leading: _buildPaymentItemAvatar(),
+        key: _firstItem ? firstPaymentItemKey : null,
         title: Text(
           _paymentInfo.title,
           style: theme.transactionTitleStyle,
@@ -79,5 +84,22 @@ class PaymentItem extends StatelessWidget {
         indent: 72.0,
       ),
     ]);
+  }
+
+  Widget _buildPaymentItemAvatar() {
+    // Show Flip Transition if the payment item is created within last 10 seconds
+    if (_createdWithin(Duration(seconds: 10))) {
+      return PaymentItemAvatar(_paymentInfo);
+    } else {
+      return FlipTransition(PaymentItemAvatar(_paymentInfo), SuccessAvatar());
+    }
+  }
+
+  bool _createdWithin(Duration duration) {
+    return DateTime.fromMillisecondsSinceEpoch(
+        _paymentInfo.creationTimestamp.toInt() * 1000)
+        .difference(DateTime.fromMillisecondsSinceEpoch(
+        DateTime.now().millisecondsSinceEpoch)) <
+        - duration;
   }
 }

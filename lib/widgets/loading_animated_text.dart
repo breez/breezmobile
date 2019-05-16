@@ -7,7 +7,7 @@ class LoadingAnimatedText extends StatefulWidget {
   final TextStyle textStyle;
   final TextAlign textAlign;
 
-  LoadingAnimatedText(this._loadingMessage, {this.textStyle = const TextStyle(),this.textAlign});
+  LoadingAnimatedText(this._loadingMessage, {this.textStyle, this.textAlign});
 
   @override
   State<StatefulWidget> createState() {
@@ -39,7 +39,7 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
   Widget build(BuildContext context) {   
     return RichText(
       text: TextSpan(
-        style: DefaultTextStyle.of(context).style,
+        style: widget.textStyle ?? DefaultTextStyle.of(context).style,
         text: widget._loadingMessage,
         children:<TextSpan>[
           TextSpan(text: loadingDots),
