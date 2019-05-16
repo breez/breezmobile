@@ -24,9 +24,9 @@ const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
 class AccountPage extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
-  final ScrollController _scrollController;
+  final ScrollController scrollController;
 
-  AccountPage(this.firstPaymentItemKey, this._scrollController);
+  AccountPage(this.firstPaymentItemKey, this.scrollController);
 
   @override
   State<StatefulWidget> createState() {
@@ -35,7 +35,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class AccountPageState extends State<AccountPage> {
-  //final ScrollController _scrollController = new ScrollController();
   final List<String> currencyList = Currency.currencies.map((c) => c.symbol).toList();
 
   AccountBloc _accountBloc;
@@ -123,13 +122,13 @@ class AccountPageState extends State<AccountPage> {
       fit: StackFit.expand,
       children: [
         CustomScrollView(
-          controller: widget._scrollController,
+          controller: widget.scrollController,
           slivers: <Widget>[
             //Account dashboard header
             SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(_accountBloc, _userProfileBloc), pinned: true),
 
             //payment filter
-            PaymentFilterSliver(widget._scrollController, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _accountBloc, paymentsModel),
+            PaymentFilterSliver(widget.scrollController, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _accountBloc, paymentsModel),
 
             (paymentsModel.filter != null && paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
                 ? SliverAppBar(
@@ -155,7 +154,7 @@ class AccountPageState extends State<AccountPage> {
         ),
         //Floating actions
         ScrollWatcher(
-          controller: widget._scrollController,
+          controller: widget.scrollController,
           builder: (context, offset) {
             double height = (DASHBOARD_MAX_HEIGHT - offset).clamp(DASHBOARD_MIN_HEIGHT, DASHBOARD_MAX_HEIGHT);
             double heightFactor = (offset / (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT)).clamp(0.0, 1.0);
