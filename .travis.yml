@@ -9,6 +9,8 @@ before_script:
 - ssh-add ./travis/build_server_key
 - "./travis/add-key.sh"
 - brew install go@1.11
+- export PATH="/usr/local/opt/go@1.11/bin:$PATH"
+- go version
 - brew install bazaar
 - git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
 - export TMP_GOPATH=$(pwd)/gopath
