@@ -24,10 +24,10 @@ class PaymentRequestDialog extends StatefulWidget {
   final AccountBloc accountBloc;
   final PaymentRequestModel invoice;
   final GlobalKey firstPaymentItemKey;
-  final ScrollController _scrollController;
+  final ScrollController scrollController;
   final _transparentImage = DartImage.encodePng(DartImage.Image(300, 300));
 
-  PaymentRequestDialog(this.context, this.accountBloc, this.invoice, this.firstPaymentItemKey, this._scrollController);
+  PaymentRequestDialog(this.context, this.accountBloc, this.invoice, this.firstPaymentItemKey, this.scrollController);
 
   @override
   State<StatefulWidget> createState() {
@@ -70,7 +70,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   void initState() {
     super.initState();
     _state = PaymentRequestState.PAYMENT_REQUEST;
-
     _paymentInProgressSubscription = widget.accountBloc.accountStream.listen((acc) {
       _inProgress = acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty;
     });
@@ -112,26 +111,22 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
           Navigator.pop(context);
         }
       });
-      if (widget._scrollController.hasClients) {
-        widget._scrollController.animateTo(
-            widget._scrollController.position.minScrollExtent,
+
+      Future scrollAnimationFuture = Future.value(null);
+      if (widget.scrollController.hasClients) {
+        scrollAnimationFuture = widget.scrollController.animateTo(
+            widget.scrollController.position.minScrollExtent,
             duration: Duration(milliseconds: 200), curve: Curves.ease)
-            .whenComplete(() {
-          new Timer(new Duration(milliseconds: 50), () {
-            _initializeTransitionAnimation();
-            controller.value = 1.0;
-            // Trigger the collapse animation and show flushbar after the animation is completed
-            controller.reverse().whenComplete(() =>
-                showFlushbar(context, message: "Payment was successfuly sent!"));
-          });
-        });
-      } else {
+            .whenComplete(() => Future.delayed(Duration(milliseconds: 50)));
+      }
+
+      scrollAnimationFuture.whenComplete(() {
         _initializeTransitionAnimation();
         controller.value = 1.0;
         // Trigger the collapse animation and show flushbar after the animation is completed
         controller.reverse().whenComplete(() =>
             showFlushbar(context, message: "Payment was successfuly sent!"));
-      }
+      });
     }, onError: (err) => _onPaymentError(_accountSettings, err as PaymentError));
   }
 
