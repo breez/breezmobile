@@ -10,13 +10,14 @@ class InvoiceNotificationsHandler {
   final AccountBloc _accountBloc;
   final Stream<PaymentRequestModel> _receivedInvoicesStream;
   final GlobalKey firstPaymentItemKey;
-  final ScrollController _scrollController;
+  final ScrollController scrollController;
+  final GlobalKey<ScaffoldState> scaffoldController;
 
   ModalRoute _loaderRoute;
   bool _handlingRequest = false;
 
   InvoiceNotificationsHandler(
-      this._context, this._accountBloc, this._receivedInvoicesStream, this.firstPaymentItemKey, this._scrollController) {
+      this._context, this._accountBloc, this._receivedInvoicesStream, this.firstPaymentItemKey, this.scrollController, this.scaffoldController) {
     _listenPaymentRequests();
   }
 
@@ -35,11 +36,15 @@ class InvoiceNotificationsHandler {
         _setLoading(false);
         _handlingRequest = true;
 
+        // Close the drawer before showing payment request dialog
+        if (scaffoldController.currentState.isDrawerOpen) {
+          Navigator.pop(_context);
+        }
         showDialog(
             context: _context,
             barrierDismissible: false,
             builder: (_) => paymentRequest.PaymentRequestDialog(
-                        _context, _accountBloc, payreq, firstPaymentItemKey, _scrollController))
+                        _context, _accountBloc, payreq, firstPaymentItemKey, scrollController))
             .whenComplete(() => _handlingRequest = false);
       }).onError((error) {
         _setLoading(false);

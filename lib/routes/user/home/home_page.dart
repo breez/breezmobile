@@ -23,6 +23,7 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 
 final GlobalKey firstPaymentItemKey = new GlobalKey();
 final ScrollController scrollController = new ScrollController();
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -91,7 +92,6 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String _activeScreen = "breezHome";
   Set _hiddenRountes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
@@ -192,7 +192,7 @@ class HomeState extends State<Home> {
   }
 
   void _registerNotificationHandlers(){        
-    new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream, firstPaymentItemKey, scrollController);
+    new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream, firstPaymentItemKey, scrollController, _scaffoldKey);
     new CTPJoinSessionHandler(widget.ctpBloc, this.context, 
       (session) {
         Navigator.popUntil(context, (route) {
