@@ -10,7 +10,7 @@ fi
 
 
 pushd ios
-GOOGLE_SIGN_IN_URL=$(/usr/libexec/PlistBuddy -c "Print :CLIENT_ID" Runner/GoogleService-Info.plist)
+GOOGLE_SIGN_IN_URL=$(/usr/libexec/PlistBuddy -c "Print :REVERSED_CLIENT_ID" Runner/GoogleService-Info.plist)
 /usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:0:CFBundleURLSchemes:0 $GOOGLE_SIGN_IN_URL" Runner/Info.plist
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $TRAVIS_JOB_NUMBER" Runner/Info.plist
 xcodebuild -quiet -workspace Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $PWD/build/Runner.xcarchive
