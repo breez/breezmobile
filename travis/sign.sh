@@ -8,12 +8,10 @@ fi
 #   exit 0
 # fi
 
-PROVISIONING_PROFILE="$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_NAME.mobileprovision"
-OUTPUTDIR="$PWD/build/ios/Release-iphoneos"
-IDENTITY=$(security find-identity -v -p codesigning | awk '{print $2;}' | head -1)
 
-#codesign --entitlements "ios/Runner/Runner.entitlements" -s $IDENTITY "$OUTPUTDIR/$APP_NAME.app"
 pushd ios
+GOOGLE_SIGN_IN_URL=$(/usr/libexec/PlistBuddy -c "Print :CLIENT_ID" Runner/GoogleService-Info.plist)
+/usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:0:CFBundleURLSchemes:0 $GOOGLE_SIGN_IN_URL" Runner/Info.plist
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $TRAVIS_JOB_NUMBER" Runner/Info.plist
 xcodebuild -quiet -workspace Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $PWD/build/Runner.xcarchive
 xcodebuild -quiet -exportArchive -archivePath $PWD/build/Runner.xcarchive -exportOptionsPlist ../travis/export-options.plist -exportPath $PWD/build/Runner.ipa
