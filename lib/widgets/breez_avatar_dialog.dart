@@ -46,7 +46,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
         decoration: ShapeDecoration(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(12.0))),
+                    top: Radius.circular(12.0))),
             color: theme.BreezColors.blue[900]),
       ),
       new Row(
