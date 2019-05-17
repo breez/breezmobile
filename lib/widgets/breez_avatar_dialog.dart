@@ -41,9 +41,13 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   return new AlertDialog(
     title: new Stack(children: <Widget>[
       new Container(
-        color: theme.BreezColors.blue[900],
         height: 70.0,
         width: 300.0,
+        decoration: ShapeDecoration(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(12.0))),
+            color: theme.BreezColors.blue[900]),
       ),
       new Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
