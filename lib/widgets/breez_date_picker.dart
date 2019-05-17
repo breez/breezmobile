@@ -382,8 +382,7 @@ class DayPicker extends StatelessWidget {
         BoxDecoration decoration;
         TextStyle itemStyle = TextStyle(color: Colors.black);
 
-        final bool isSelectedDay = selectedDate.year == year &&
-            selectedDate.month == month &&
+        final bool isSelectedDay = selectedDate.year == year && selectedDate.month == month && selectedDate.day == day;
         if (isSelectedDay) {
           // The selected day gets a circle background highlight, and a contrasting text color.
           itemStyle = TextStyle(color: Colors.white);
@@ -393,8 +392,8 @@ class DayPicker extends StatelessWidget {
           itemStyle = TextStyle(color: Colors.grey);
         } else if (currentDate.year == year &&
             currentDate.month == month &&
+            currentDate.day == day) {
           // The current day gets a different text color.
-          itemStyle = TextStyle(color: Colors.black,fontSize: 20.0);
           itemStyle = TextStyle(color: Colors.black, fontSize: 20.0);
         }
 
@@ -554,7 +553,6 @@ class _MonthPickerState extends State<MonthPicker> {
     final DateTime tomorrow =
         new DateTime(_todayDate.year, _todayDate.month, _todayDate.day + 1);
     Duration timeUntilTomorrow = tomorrow.difference(_todayDate);
-    timeUntilTomorrow += const Duration(seconds: 1); // so we don't miss it by rounding
     timeUntilTomorrow +=
         const Duration(seconds: 1); // so we don't miss it by rounding
     _timer?.cancel();
@@ -568,6 +566,7 @@ class _MonthPickerState extends State<MonthPicker> {
   static int _monthDelta(DateTime startDate, DateTime endDate) {
     return (endDate.year - startDate.year) * 12 +
         endDate.month -
+        startDate.month;
   }
 
   /// Add months to a month truncated date.
@@ -592,13 +591,15 @@ class _MonthPickerState extends State<MonthPicker> {
 
   void _handleNextMonth() {
     if (!_isDisplayingLastMonth) {
-      SemanticsService.announce(
+      SemanticsService.announce(localizations.formatMonthYear(_nextMonthDate), textDirection);
+      _dayPickerController.nextPage(duration: _kMonthScrollDuration, curve: Curves.ease);
     }
   }
 
   void _handlePreviousMonth() {
     if (!_isDisplayingFirstMonth) {
-      SemanticsService.announce(
+      SemanticsService.announce(localizations.formatMonthYear(_previousMonthDate), textDirection);
+      _dayPickerController.previousPage(duration: _kMonthScrollDuration, curve: Curves.ease);
     }
   }
 
@@ -619,7 +620,8 @@ class _MonthPickerState extends State<MonthPicker> {
 
   void _handleMonthPageChanged(int monthPage) {
     setState(() {
-      _previousMonthDate =
+      _previousMonthDate = _addMonthsToMonthDate(widget.firstDate, monthPage - 1);
+      _currentDisplayedMonthDate = _addMonthsToMonthDate(widget.firstDate, monthPage);
       _nextMonthDate = _addMonthsToMonthDate(widget.firstDate, monthPage + 1);
     });
   }
@@ -651,6 +653,10 @@ class _MonthPickerState extends State<MonthPicker> {
                 color: theme.BreezColors.blue[500],
                 icon: const Icon(Icons.chevron_left),
                 tooltip: _isDisplayingFirstMonth
+                    ? null
+                    : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
+                onPressed:
+                    _isDisplayingFirstMonth ? null : _handlePreviousMonth,
               ),
             ),
           ),
@@ -664,6 +670,7 @@ class _MonthPickerState extends State<MonthPicker> {
                 icon: const Icon(Icons.chevron_right),
                 tooltip: _isDisplayingLastMonth
                     ? null
+                    : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
                 onPressed: _isDisplayingLastMonth ? null : _handleNextMonth,
               ),
             ),
@@ -824,10 +831,7 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
     textDirection = Directionality.of(context);
     if (!_announcedInitialDate) {
       _announcedInitialDate = true;
-      SemanticsService.announce(
-        localizations.formatFullDate(_selectedDate),
-        textDirection,
-      );
+      SemanticsService.announce(localizations.formatFullDate(_selectedDate), textDirection,);
     }
   }
 
@@ -851,12 +855,9 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
     setState(() {
       _mode = mode;
       if (_mode == DatePickerMode.day) {
-        SemanticsService.announce(
-            localizations.formatMonthYear(_selectedDate), textDirection);
+        SemanticsService.announce(localizations.formatMonthYear(_selectedDate), textDirection);
       } else {
         SemanticsService.announce(localizations.formatYear(_selectedDate), textDirection);
-        SemanticsService.announce(
-            localizations.formatYear(_selectedDate), textDirection);
       }
     });
   }
