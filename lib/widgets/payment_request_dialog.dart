@@ -300,7 +300,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
 
     setState(() {
       _dialogTitleHeight = _dialogTitleSize?.height ?? (widget.invoice.payeeImageURL.isEmpty ? 43.0 : 48.0); // 27 + 16.0
-      _dialogContentHeight = _dialogContentSize?.height ?? _dialogContentHeight;
+      _dialogContentHeight = _dialogContentSize?.height ?? 200.0;
       _dialogActionsHeight = _dialogActionsSize?.height ?? 64.0; // Actions Height = 48.0 + 16.0 Bottom Padding
     });
   }
@@ -324,9 +324,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
 
           return Container(
             key: _contentKey,
+            constraints: BoxConstraints(minHeight: 200.0),
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: children,
             ),
