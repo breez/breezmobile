@@ -9,7 +9,7 @@ import 'package:breez/services/nfc.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:async';
 
-class PayNearbyComplete extends StatefulWidget {  
+class PayNearbyComplete extends StatefulWidget {
   PayNearbyComplete();
 
   @override
@@ -38,18 +38,17 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _blankInvoiceSubscription = _nfc.startP2PBeam().listen((blankInvoice) {},
-          onError: (err) =>
-              _scaffoldKey.currentState.showSnackBar(new SnackBar(
-                  duration: new Duration(seconds: 3),
-                  content: new Text(err.toString()))));
+          onError: (err) => _scaffoldKey.currentState.showSnackBar(new SnackBar(
+              duration: new Duration(seconds: 3),
+              content: new Text(err.toString()))));
     }
   }
 
   @override
-  void didChangeDependencies() {        
+  void didChangeDependencies() {
     if (!_isInit) {
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);    
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       startNFCStream();
       registerFulfilledPayments();
       _isInit = true;
@@ -57,32 +56,30 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
     super.didChangeDependencies();
   }
 
-  void startNFCStream(){    
-    _blankInvoiceSubscription = _nfc.startP2PBeam()
-      .listen((blankInvoice) {
-        // In the future perhaps show some information about the user we are paying to?
-      },
-      onError: (err) => _scaffoldKey.currentState.showSnackBar(new SnackBar(
-          duration: new Duration(seconds: 3),
-          content: new Text(err.toString()))));
+  void startNFCStream() {
+    _blankInvoiceSubscription = _nfc.startP2PBeam().listen((blankInvoice) {
+      // In the future perhaps show some information about the user we are paying to?
+    },
+        onError: (err) => _scaffoldKey.currentState.showSnackBar(new SnackBar(
+            duration: new Duration(seconds: 3),
+            content: new Text(err.toString()))));
   }
 
-  void registerFulfilledPayments(){    
-    _paidInvoicesSubscription = _invoiceBloc.paidInvoicesStream
-      .listen((paid) {
-        Navigator.of(context).pop('Payment was sent successfuly!');
-      },
-      onError: (err) => _scaffoldKey.currentState.showSnackBar(new SnackBar(
-          duration: new Duration(seconds: 3),
-          content: new Text("Failed to send payment: " + err.toString()))));
-    
-    _sentPaymentResultSubscription = _accountBloc.fulfilledPayments
-      .listen((fulfilledPayment) {
-        _scaffoldKey.currentState.showSnackBar(new SnackBar(
+  void registerFulfilledPayments() {
+    _paidInvoicesSubscription = _invoiceBloc.paidInvoicesStream.listen((paid) {
+      Navigator.of(context).pop('Payment was sent successfuly!');
+    },
+        onError: (err) => _scaffoldKey.currentState.showSnackBar(new SnackBar(
             duration: new Duration(seconds: 3),
-            content: new Text('Payment was sent successfuly!')));
-        Navigator.of(this.context).pop();
-      });
+            content: new Text("Failed to send payment: " + err.toString()))));
+
+    _sentPaymentResultSubscription =
+        _accountBloc.fulfilledPayments.listen((fulfilledPayment) {
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+          duration: new Duration(seconds: 3),
+          content: new Text('Payment was sent successfuly!')));
+      Navigator.of(this.context).pop();
+    });
   }
 
   @override
@@ -95,7 +92,7 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
           _showAlertDialog();
         });
       }
-    });        
+    });
   }
 
   void _showAlertDialog() {
@@ -111,6 +108,8 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
             },
             child: new Text("SETTINGS", style: theme.buttonStyle))
       ],
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(context: context, builder: (_) => dialog);
   }

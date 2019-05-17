@@ -39,7 +39,6 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   }
 
   return new AlertDialog(
-    titlePadding: EdgeInsets.all(0.0),
     title: new Stack(children: <Widget>[
       new Container(
         color: theme.BreezColors.blue[900],
@@ -80,6 +79,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
         ],
       ),
     ]),
+    titlePadding: EdgeInsets.zero,
     content: new SingleChildScrollView(
       child: new ListBody(
         children: <Widget>[
@@ -112,6 +112,8 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
         },
       ),
     ],
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12.0))),
   );
 }
 

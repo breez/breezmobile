@@ -43,7 +43,8 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
     widget._accountBloc.broadcastRefundRequestSink.add(broadcastModel);
   }
 
-  @override void dispose() {
+  @override
+  void dispose() {
     _broadcastSubscription.cancel();
     super.dispose();
   }
@@ -55,18 +56,21 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
           unselectedWidgetColor: Theme.of(context).canvasColor,
           accentColor: Theme.of(context).canvasColor),
       child: new AlertDialog(
-          title: Text(getTitleText(),
-              style: theme.alertTitleStyle, textAlign: TextAlign.center),
-          content: getContent(),
-          actions: _response == null && _error == null
-              ? []
-              : <Widget>[
-                  new FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: new Text("CLOSE", style: theme.buttonStyle)),
-                ]),
+        title: Text(getTitleText(),
+            style: theme.alertTitleStyle, textAlign: TextAlign.center),
+        content: getContent(),
+        actions: _response == null && _error == null
+            ? []
+            : <Widget>[
+                new FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: new Text("CLOSE", style: theme.buttonStyle)),
+              ],
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0))),
+      ),
     );
   }
 

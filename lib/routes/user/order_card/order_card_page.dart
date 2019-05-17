@@ -20,6 +20,7 @@ class _CustomerData {
 
 class OrderCardPage extends StatefulWidget {
   final bool showSkip;
+
   OrderCardPage({Key key, this.showSkip}) : super(key: key);
 
   @override
@@ -165,7 +166,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   void _onChangeZip() {
     setState(() {
       _autoValidateZip =
-      (_zipController.text.length > 0 && !_zipFocusNode.hasFocus);
+          (_zipController.text.length > 0 && !_zipFocusNode.hasFocus);
     });
   }
 
@@ -203,7 +204,7 @@ class OrderCardPageState extends State<OrderCardPage> {
 
   Future _loadCountries() async {
     String jsonCountries =
-    await rootBundle.loadString('src/json/countries.json');
+        await rootBundle.loadString('src/json/countries.json');
     _countriesJSON = json.decode(jsonCountries);
     _countryController.text = _countriesJSON[_userCountryShort];
   }
@@ -235,7 +236,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   bool _checkCountry(String value) {
     return _countriesJSON.values.firstWhere(
             (val) => val.toLowerCase() == _countryController.text.toLowerCase(),
-        orElse: () => null) !=
+            orElse: () => null) !=
         null;
   }
 
@@ -322,8 +323,10 @@ class OrderCardPageState extends State<OrderCardPage> {
             onPressed: () => Navigator.pop(context),
             child: new Text("OK", style: theme.buttonStyle))
       ],
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
-    showDialog(context: context,  builder: (_) => dialog);
+    showDialog(context: context, builder: (_) => dialog);
   }
 
   Widget _showLeadingButton(showSkip) {
@@ -365,7 +368,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                         padding: new EdgeInsets.only(top: 8.0),
                         child: new TextFormField(
                           decoration:
-                          new InputDecoration(labelText: "Full Name"),
+                              new InputDecoration(labelText: "Full Name"),
                           style: theme.FieldTextStyle.textStyle,
                           textCapitalization: TextCapitalization.words,
                           onSaved: (String value) {
@@ -382,7 +385,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                         padding: new EdgeInsets.only(top: 8.0),
                         child: new TextFormField(
                           decoration:
-                          new InputDecoration(labelText: "E-mail Address"),
+                              new InputDecoration(labelText: "E-mail Address"),
                           style: theme.FieldTextStyle.textStyle,
                           textCapitalization: TextCapitalization.none,
                           onSaved: (String value) {
@@ -391,8 +394,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                           validator: (value) {
                             if (value.isEmpty) {
                               return "Please enter your e-mail address";
-                            } else if (!_validateEmail(
-                                value)) {
+                            } else if (!_validateEmail(value)) {
                               return "Invalid e-mail";
                             }
                           },
@@ -458,14 +460,9 @@ class OrderCardPageState extends State<OrderCardPage> {
                                           this._data.state = value;
                                         },
                                         validator: (value) {
-                                          if (value.isEmpty &&
-                                              _specialCountriesShort.contains(
-                                                  _userCountryShort)) {
+                                          if (value.isEmpty && _specialCountriesShort.contains(_userCountryShort)) {
                                             return "Enter your state";
-                                          } else if (_specialCountriesShort
-                                              .contains(
-                                              _userCountryShort) &&
-                                              _checkStates(value)) {
+                                          } else if (_specialCountriesShort.contains(_userCountryShort) && _checkStates(value)) {
                                             return "Invalid state";
                                           }
                                         },
@@ -481,7 +478,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                   padding: new EdgeInsets.only(top: 19.0),
                                   child: new Row(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       new Expanded(
                                         flex: 200,
@@ -523,8 +520,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                               this._data.zip = value;
                                             },
                                             validator: (value) {
-                                              if (value.isNotEmpty && !_validateZip(
-                                                  value)) {
+                                              if (value.isNotEmpty && !_validateZip(value)) {
                                                 return "Invalid zip code";
                                               }
                                             },
@@ -549,39 +545,39 @@ class OrderCardPageState extends State<OrderCardPage> {
                               ]),
                               _showCountriesList
                                   ? new Container(
-                                  padding: new EdgeInsets.only(top: 77.5),
-                                  child: new Row(
-                                    children: <Widget>[
-                                      new Expanded(
-                                          flex: 200,
-                                          child: new Container(
-                                              decoration: theme
-                                                  .autoCompleteBoxDecoration,
-                                              child:
-                                              _getFutureWidgetCountries())),
-                                      new Expanded(
-                                          flex: 128, child: new Container())
-                                    ],
-                                  ))
+                                      padding: new EdgeInsets.only(top: 77.5),
+                                      child: new Row(
+                                        children: <Widget>[
+                                          new Expanded(
+                                              flex: 200,
+                                              child: new Container(
+                                                  decoration: theme
+                                                      .autoCompleteBoxDecoration,
+                                                  child:
+                                                      _getFutureWidgetCountries())),
+                                          new Expanded(
+                                              flex: 128, child: new Container())
+                                        ],
+                                      ))
                                   : new Container()
                             ]),
                           ],
                         ),
                         _showStatesList
                             ? new Container(
-                            padding: new EdgeInsets.only(top: 77.5),
-                            child: new Row(
-                              children: <Widget>[
-                                new Expanded(
-                                    flex: 208, child: new Container()),
-                                new Expanded(
-                                    flex: 120,
-                                    child: new Container(
-                                        decoration:
-                                        theme.autoCompleteBoxDecoration,
-                                        child: _getFutureWidgetStates()))
-                              ],
-                            ))
+                                padding: new EdgeInsets.only(top: 77.5),
+                                child: new Row(
+                                  children: <Widget>[
+                                    new Expanded(
+                                        flex: 208, child: new Container()),
+                                    new Expanded(
+                                        flex: 120,
+                                        child: new Container(
+                                            decoration:
+                                                theme.autoCompleteBoxDecoration,
+                                            child: _getFutureWidgetStates()))
+                                  ],
+                                ))
                             : new Container(),
                       ]),
                     ],
@@ -609,13 +605,13 @@ class OrderCardPageState extends State<OrderCardPage> {
                         _formKey.currentState.save();
                         _breezServer
                             .orderCard(
-                            _data.fullName,
-                            _data.email,
-                            _data.address,
-                            _data.city,
-                            _data.state,
-                            _data.zip,
-                            _data.country)
+                                _data.fullName,
+                                _data.email,
+                                _data.address,
+                                _data.city,
+                                _data.state,
+                                _data.zip,
+                                _data.country)
                             .then((reply) {
                           Navigator.pop(context,
                               "Breez card will be sent shortly to the address you have specified.");

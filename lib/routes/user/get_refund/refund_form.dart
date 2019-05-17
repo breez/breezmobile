@@ -37,8 +37,8 @@ class _RefundFormState extends State<RefundForm> {
           style: theme.alertTitleStyle,
         ),
         titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
-        content: Container(                        
-          constraints: BoxConstraints(minHeight: 50.0, maxHeight: 200.0, maxWidth: 500.0, minWidth: 500.0),          
+        content: Container(
+          constraints: BoxConstraints(minHeight: 50.0, maxHeight: 200.0, maxWidth: 500.0, minWidth: 500.0),
           child: LayoutBuilder(
             builder: (context, constraints) {
               var form = Form(
@@ -112,6 +112,8 @@ class _RefundFormState extends State<RefundForm> {
               },
               child: new Text("BROADCAST", style: theme.buttonStyle))
         ],
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0))),
       ),
     );
   }

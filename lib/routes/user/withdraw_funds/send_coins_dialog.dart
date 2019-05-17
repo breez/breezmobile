@@ -46,7 +46,7 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
       setState(() {
         _inProgress = false;
       });
-      Navigator.of(context).pop();      
+      Navigator.of(context).pop();
       Navigator.of(context).pop();
       showFlushbar(context, message: "The funds were successfully sent to the address you have specified.");
     }, onError: (err) {
@@ -76,7 +76,7 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
         textStyle: textStyle);
     if (cancel) {
       widget._accountBloc.accountSettingsSink.add(settings.copyWith(ignoreWalletBalance: true));
-      Navigator.pop(context);    
+      Navigator.pop(context);
     }
   }
 
@@ -211,7 +211,7 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
                         new AmountFormField(
                             controller: _amountController,
                             currency: acc.currency,
-                            validatorFn: acc.validateOutgoingOnChainPayment,                            
+                            validatorFn: acc.validateOutgoingOnChainPayment,
                             decoration: new InputDecoration(
                                 labelText:
                                     acc.currency.displayName + " Amount"),
@@ -275,8 +275,7 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
               Navigator.pop(context);
               _showLoadingDialog();
               widget._accountBloc.withdrawalSink.add(new RemoveFundRequestModel(
-                  currency.parse(_amountController.text),
-                  _addressValidated,
+                  currency.parse(_amountController.text), _addressValidated,
                   fromWallet: true,
                   satPerByteFee: _feeController.text.isNotEmpty
                       ? Int64.parseInt(_feeController.text)
@@ -284,6 +283,8 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
             },
             child: new Text("YES", style: theme.buttonStyle))
       ],
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(context: context, builder: (_) => dialog);
   }
@@ -315,6 +316,8 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
               ))
         ],
       ),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(
         context: context,

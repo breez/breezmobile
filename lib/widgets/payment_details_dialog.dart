@@ -9,15 +9,16 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:auto_size_text/auto_size_text.dart';
 
 Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentInfo) {
-  final _expansionTileTheme = Theme.of(context)
-      .copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
   AlertDialog _paymentDetailsDialog = new AlertDialog(
-    titlePadding: EdgeInsets.zero,
     title: new Stack(children: <Widget>[
       Container(
-        color: theme.BreezColors.blue[900],
         height: 64.0,
         width: MediaQuery.of(context).size.width,
+        decoration: ShapeDecoration(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
+          color: theme.BreezColors.blue[900],
+        ),
       ),
       Padding(
         padding: EdgeInsets.only(top: 32.0),
@@ -26,9 +27,9 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
         ),
       ),
     ]),
-    contentPadding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
+    titlePadding: EdgeInsets.zero,
     content: Container(
-      width: MediaQuery.of(context).size.width,      
+      width: MediaQuery.of(context).size.width,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -36,24 +37,27 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
           paymentInfo.title == null || paymentInfo.title.isEmpty
               ? Container()
               : Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: AutoSizeText(
-              paymentInfo.title,
-              style: theme.paymentRequestAmountStyle,
-              textAlign: TextAlign.center,
-              maxLines: 1,
-            ),),
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: AutoSizeText(
+                    paymentInfo.title,
+                    style: theme.paymentRequestAmountStyle,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                  ),
+                ),
           paymentInfo.description == null || paymentInfo.description.isEmpty
               ? Container()
-              : Padding(padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: AutoSizeText(
-              paymentInfo.description,
-              style: theme.paymentDetailsTitleStyle,
-              textAlign: paymentInfo.description.length > 40
-                  ? TextAlign.justify
-                  : TextAlign.center,
-              maxLines: 3,
-            ),),
+              : Padding(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: AutoSizeText(
+                    paymentInfo.description,
+                    style: theme.paymentDetailsTitleStyle,
+                    textAlign: paymentInfo.description.length > 40
+                        ? TextAlign.justify
+                        : TextAlign.center,
+                    maxLines: 3,
+                  ),
+                ),
           paymentInfo.amount == null
               ? Container()
               : Container(
@@ -122,18 +126,19 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
         ],
       ),
     ),
+    contentPadding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12.0))),
   );
   return showDialog<Null>(
     context: context,
-    builder: (_) =>
-    _paymentDetailsDialog,
+    builder: (_) => _paymentDetailsDialog,
   );
 }
 
-
 class ShareablePaymentRow extends StatelessWidget {
   final String title;
-  final String sharedValue;  
+  final String sharedValue;
 
   const ShareablePaymentRow({Key key, this.title, this.sharedValue}) : super(key: key);
 
@@ -142,69 +147,70 @@ class ShareablePaymentRow extends StatelessWidget {
     final _expansionTileTheme = Theme.of(context)
       .copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
     return Theme(
-                  data: _expansionTileTheme,
-                  child: ExpansionTile(
-                      title: Text(
-                        title,
-                        style: theme.paymentDetailsTitleStyle,
-                      ),
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 16.0, right: 0.0),
-                                child: Text('$sharedValue',
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.clip,
-                                    maxLines: 4,
-                                    style: theme.paymentDetailsNodeIdStyle),
-                              ),
+      data: _expansionTileTheme,
+      child: ExpansionTile(
+          title: Text(
+            title,
+            style: theme.paymentDetailsTitleStyle,
+          ),
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 16.0, right: 0.0),
+                    child: Text('$sharedValue',
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.clip,
+                        maxLines: 4,
+                        style: theme.paymentDetailsNodeIdStyle),
+                  ),
+                ),
+                Expanded(
+                  flex: 0,
+                  child: Padding(
+                      padding: EdgeInsets.zero,
+                      child: new Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          IconButton(
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.only(right: 8.0),
+                            tooltip: "Copy $title",
+                            iconSize: 16.0,
+                            color: theme.BreezColors.blue[500],
+                            icon: Icon(
+                              IconData(0xe90b, fontFamily: 'icomoon'),
                             ),
-                            Expanded(
-                              flex: 0,
-                              child: Padding(
-                                  padding: EdgeInsets.zero,
-                                  child: new Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      IconButton(
-                                        alignment: Alignment.centerRight,
-                                        padding: EdgeInsets.only(right: 8.0),
-                                        tooltip: "Copy $title",
-                                        iconSize: 16.0,
-                                        color: theme.BreezColors.blue[500],
-                                        icon: Icon(
-                                          IconData(0xe90b, fontFamily: 'icomoon'),
-                                        ),
-                                        onPressed: () {
-                                          Clipboard.setData(ClipboardData(text: sharedValue));
-                                          Navigator.pop(context);
-                                          Scaffold.of(context).showSnackBar(_buildSnackBar(title));
-                                        },
-                                      ),
-                                      IconButton(
-                                        padding: EdgeInsets.only(right: 8.0),
-                                        tooltip: "Share Transaction Hash",
-                                        iconSize: 16.0,
-                                        color: theme.BreezColors.blue[500],
-                                        icon: Icon(Icons.share),
-                                        onPressed: () {
-                                          Share.share(sharedValue);
-                                        },
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ],
-                        )
-                      ]),
-                );
+                            onPressed: () {
+                              Clipboard.setData(
+                                  ClipboardData(text: sharedValue));
+                              Navigator.pop(context);
+                              Scaffold.of(context)
+                                  .showSnackBar(_buildSnackBar(title));
+                            },
+                          ),
+                          IconButton(
+                            padding: EdgeInsets.only(right: 8.0),
+                            tooltip: "Share Transaction Hash",
+                            iconSize: 16.0,
+                            color: theme.BreezColors.blue[500],
+                            icon: Icon(Icons.share),
+                            onPressed: () {
+                              Share.share(sharedValue);
+                            },
+                          ),
+                        ],
+                      )),
+                ),
+              ],
+            )
+          ]),
+    );
   }
-
 }
 
 _buildSnackBar(String item) {

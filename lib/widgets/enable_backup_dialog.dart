@@ -28,12 +28,11 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
           unselectedWidgetColor: Theme.of(context).canvasColor,
         ),
         child: new AlertDialog(
-          titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: new Text(
             "Backup",
             style: theme.alertTitleStyle,
           ),
-          contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
+          titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           content: StreamBuilder<BackupSettings>(
               stream: widget.backupBloc.backupSettingsStream,
               builder: (context, snapshot) {
@@ -41,7 +40,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                   return Container();
                 }
                 return Column(
-                  mainAxisSize: MainAxisSize.min,                  
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Padding(
@@ -55,7 +54,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                       padding: const EdgeInsets.only(top: 16.0),
                       child: Row(
                         children: <Widget>[
-                          Checkbox(                            
+                          Checkbox(
                               activeColor: theme.BreezColors.blue[500],
                               value: !snapshot.data.promptOnError,
                               onChanged: (v) {
@@ -63,16 +62,17 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                                 widget.backupBloc.backupSettingsSink.add(
                                     currentSettings.copyWith(promptOnError: !v));
                               }),
-                              Text(
+                          Text(
                             "Don't prompt again",
                             style: theme.paymentRequestSubtitleStyle,
                           )
                         ],
                       ),
-                    ),                    
+                    ),
                   ],
                 );
               }),
+          contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
           actions: [
             new SimpleDialogOption(
               onPressed: () => Navigator.pop(widget.context),
@@ -86,6 +86,8 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
               child: new Text("BACKUP NOW", style: theme.buttonStyle),
             ),
           ],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.0))),
         ));
   }
 }

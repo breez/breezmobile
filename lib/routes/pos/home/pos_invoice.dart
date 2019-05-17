@@ -30,7 +30,6 @@ class POSInvoice extends StatefulWidget {
 class POSInvoiceState extends State<POSInvoice> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  
   TextEditingController _amountController = new TextEditingController();
   TextEditingController _chargeAmountController = new TextEditingController();
   TextEditingController _invoiceDescriptionController =
@@ -60,26 +59,25 @@ class POSInvoiceState extends State<POSInvoice> {
   bool _isInit = false;
 
   @override
-  void didChangeDependencies() {    
+  void didChangeDependencies() {
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      _posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);      
-      registerListeners();      
-      _isInit = true;  
-    } 
+      _posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);
+      registerListeners();
+      _isInit = true;
+    }
     itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
-    itemWidth = (MediaQuery.of(context).size.width) / 2; 
+    itemWidth = (MediaQuery.of(context).size.width) / 2;
     super.didChangeDependencies();
   }
 
-  void registerListeners() {    
+  void registerListeners() {
     _focusNode = new FocusNode();
     _focusNode.addListener(_onOnFocusNodeEvent);
 
-    _NfcDialog _nfcDialog =
-        new _NfcDialog(_invoiceBloc, _scaffoldKey);
+    _NfcDialog _nfcDialog = new _NfcDialog(_invoiceBloc, _scaffoldKey);
     _invoiceDescriptionController.text = "";
     _accountSubscription = _accountBloc.accountStream.listen((acc) {
       setState(() {
@@ -100,32 +98,32 @@ class POSInvoiceState extends State<POSInvoice> {
       cancellationTimeoutValue =
           _posProfile.cancellationTimeoutValue.toStringAsFixed(0);
     });
-    _invoiceReadyNotificationsSubscription =
-        _invoiceBloc.readyInvoicesStream.listen((invoiceReady) {
+    _invoiceReadyNotificationsSubscription = _invoiceBloc.readyInvoicesStream
+        .listen((invoiceReady) {
       // show the simple dialog with 3 states
       showDialog<bool>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return _nfcDialog;
-        }).then((result) {
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return _nfcDialog;
+          }).then((result) {
         setState(() {
-            _currentAmount = 0;
-            _totalAmount = 0;
-            _amountController.text = _currency.format((Int64(_currentAmount)),
-                fixedDecimals: true, includeSymbol: false);
-            _chargeAmountController.text = _currency.format(
-                (Int64(_totalAmount + _currentAmount)),
-                fixedDecimals: true,
-                includeSymbol: true);
-            _invoiceDescriptionController.text = "";
-          });
+          _currentAmount = 0;
+          _totalAmount = 0;
+          _amountController.text = _currency.format((Int64(_currentAmount)),
+              fixedDecimals: true, includeSymbol: false);
+          _chargeAmountController.text = _currency.format(
+              (Int64(_totalAmount + _currentAmount)),
+              fixedDecimals: true,
+              includeSymbol: true);
+          _invoiceDescriptionController.text = "";
         });
-      },
-      onError: (err) => _scaffoldKey.currentState.showSnackBar(
-          new SnackBar(
-              duration: new Duration(seconds: 10),
-              content: new Text(err.toString()))));
+      });
+    },
+            onError: (err) => _scaffoldKey.currentState.showSnackBar(
+                new SnackBar(
+                    duration: new Duration(seconds: 10),
+                    content: new Text(err.toString()))));
   }
 
   @override
@@ -139,7 +137,7 @@ class POSInvoiceState extends State<POSInvoice> {
     _accountSubscription?.cancel();
     _posProfileSubscription?.cancel();
     _invoiceReadyNotificationsSubscription?.cancel();
-    _invoiceNotificationsSubscription?.cancel();    
+    _invoiceNotificationsSubscription?.cancel();
   }
 
   @override
@@ -170,7 +168,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                 builder: (context, snapshot) {
                                   AccountModel acc = snapshot.data;
                                   AccountSettings settings = settingSnapshot.data;
-                                  if (settings?.showConnectProgress == true || acc?.isInitialBootstrap == true ) {
+                                  if (settings?.showConnectProgress == true || acc?.isInitialBootstrap == true) {
                                     return new StatusIndicator(snapshot.data);
                                   }
                                   return SizedBox();
@@ -323,6 +321,8 @@ class POSInvoiceState extends State<POSInvoice> {
                   },
                 ),
               ],
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12.0))),
             );
           });
     } else {
@@ -339,15 +339,16 @@ class POSInvoiceState extends State<POSInvoice> {
             Text(
                 "Maximum payment size you can receive is ${_currency.format(_maxAllowedToReceive, includeSymbol: true)}. Please enter a smaller value.",
                 style: theme.alertStyle));
-      } else if (_totalAmount < _maxPaymentAmount.toInt() ||
-          _totalAmount < _maxPaymentAmount.toInt()) {
+      } else if (_totalAmount < _maxPaymentAmount.toInt() || _totalAmount < _maxPaymentAmount.toInt()) {
         _invoiceBloc.newInvoiceRequestSink.add(
             new InvoiceRequestModel(
-                _posProfile.invoiceString,
-                _invoiceDescriptionController.text,
-                _posProfile.logo,
-                Int64(_totalAmount),
-                expiry: Int64(int.parse(cancellationTimeoutValue))));
+              _posProfile.invoiceString,
+              _invoiceDescriptionController.text,
+              _posProfile.logo,
+              Int64(_totalAmount),
+              expiry: Int64(int.parse(cancellationTimeoutValue)),
+            )
+        );
       } else {
         promptError(
             context,
@@ -426,8 +427,7 @@ class POSInvoiceState extends State<POSInvoice> {
         ),
         content: new Text("This will clear the current transaction.",
             style: theme.alertStyle),
-        contentPadding:
-            EdgeInsets.only(left: 24.0, right: 24.0, bottom: 12.0, top: 24.0),
+        contentPadding: EdgeInsets.fromLTRB(24.0, 24.0, 12.0, 24.0),
         actions: <Widget>[
           new FlatButton(
               onPressed: () => Navigator.pop(context),
@@ -439,6 +439,8 @@ class POSInvoiceState extends State<POSInvoice> {
               },
               child: new Text("Clear", style: theme.buttonStyle))
         ],
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0))),
       );
       showDialog(context: context, builder: (_) => dialog);
     }
@@ -572,7 +574,6 @@ class _NfcDialogState extends State<_NfcDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
       content: new SingleChildScrollView(
           child: _state == _NfcState.WAITING_FOR_NFC
               ? new ListBody(
@@ -601,7 +602,7 @@ class _NfcDialogState extends State<_NfcDialog> {
                                     height: 200.0,
                                   );
                                 }
-                                return new CompactQRImage(                                  
+                                return new CompactQRImage(
                                   data: snapshot.data,
                                 );
                               })),
@@ -667,6 +668,9 @@ class _NfcDialogState extends State<_NfcDialog> {
                         ],
                       ),
                     )),
+      contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
   }
 

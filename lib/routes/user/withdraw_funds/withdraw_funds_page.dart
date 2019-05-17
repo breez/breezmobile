@@ -15,7 +15,6 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 
 class WithdrawFundsPage extends StatefulWidget {
-
   const WithdrawFundsPage();
 
   @override
@@ -28,17 +27,17 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   final _formKey = GlobalKey<FormState>();
   String _scannerErrorMessage = "";
   final TextEditingController _addressController = new TextEditingController();
-  final TextEditingController _amountController = new TextEditingController();  
-  
+  final TextEditingController _amountController = new TextEditingController();
+
   AccountBloc _accountBloc;
-  StreamSubscription<RemoveFundResponseModel> withdrawalResultSubscription;  
+  StreamSubscription<RemoveFundResponseModel> withdrawalResultSubscription;
   BreezBridge _breezLib;
   String _addressValidated;
   bool _inProgress = false;
   bool _isInit = false;
 
   @override
-  void didChangeDependencies() {        
+  void didChangeDependencies() {
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       registerWithdrawalResult();
@@ -49,8 +48,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 
   @override
   void initState() {
-    super.initState();    
-    _breezLib = new ServiceInjector().breezBridge;       
+    super.initState();
+    _breezLib = new ServiceInjector().breezBridge;
   }
 
   @override
@@ -66,27 +65,27 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     return true;
   }
 
-  void registerWithdrawalResult(){    
-    withdrawalResultSubscription = _accountBloc.withdrawalResultStream
-      .listen((response) {
-          setState(() {
-            _inProgress = false;
-          });
-          Navigator.of(context).pop(); //remove the loading dialog
-          if (response.errorMessage?.isNotEmpty == true) {
-            promptError(context, null,
-                Text(response.errorMessage, style: theme.alertStyle));
-            return;
-          }
-          Navigator.of(context).pop(
-              "The funds were successfully sent to the address you have specified.");
-        }, onError: (err) {
-          setState(() {
-            _inProgress = false;
-          });
-          Navigator.of(context).pop(); //remove the loading dialog
-          promptError(context, null, Text(err.toString(), style: theme.alertStyle));
+  void registerWithdrawalResult() {
+    withdrawalResultSubscription =
+        _accountBloc.withdrawalResultStream.listen((response) {
+      setState(() {
+        _inProgress = false;
       });
+      Navigator.of(context).pop(); //remove the loading dialog
+      if (response.errorMessage?.isNotEmpty == true) {
+        promptError(context, null,
+            Text(response.errorMessage, style: theme.alertStyle));
+        return;
+      }
+      Navigator.of(context).pop(
+          "The funds were successfully sent to the address you have specified.");
+    }, onError: (err) {
+      setState(() {
+        _inProgress = false;
+      });
+      Navigator.of(context).pop(); //remove the loading dialog
+      promptError(context, null, Text(err.toString(), style: theme.alertStyle));
+    });
   }
 
   @override
@@ -152,7 +151,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
               child: new Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[                  
+                children: <Widget>[
                   new TextFormField(
                     controller: _addressController,
                     decoration: new InputDecoration(
@@ -185,12 +184,12 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                         )
                       : SizedBox(),
                   new AmountFormField(
-                      controller: _amountController,                      
+                      controller: _amountController,
                       currency: acc.currency,
                       validatorFn: acc.validateOutgoingPayment,
                       decoration: new InputDecoration(
                           labelText: acc.currency.displayName + " Amount"),
-                      style: theme.FieldTextStyle.textStyle),                 
+                      style: theme.FieldTextStyle.textStyle),
                   new Container(
                     padding: new EdgeInsets.only(top: 36.0),
                     child: _buildAvailableBTC(acc),
@@ -233,12 +232,12 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
               Navigator.pop(context);
               _showLoadingDialog();
               _accountBloc.withdrawalSink.add(new RemoveFundRequestModel(
-                  currency.parse(_amountController.text),
-                  _addressValidated                  
-                ));
+                  currency.parse(_amountController.text), _addressValidated));
             },
             child: new Text("YES", style: theme.buttonStyle))
       ],
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(context: context, builder: (_) => dialog);
   }
@@ -270,6 +269,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
               ))
         ],
       ),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(
         context: context,

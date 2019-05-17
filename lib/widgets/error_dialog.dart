@@ -19,7 +19,6 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
         return WillPopScope(
           onWillPop: canPopCallback,
           child: new AlertDialog(
-            contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
             title: title == null
                 ? null
                 : new Text(
@@ -29,6 +28,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
             content: new SingleChildScrollView(
               child: body,
             ),
+            contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
             actions: <Widget>[
               optionText != null
                   ? new FlatButton(
@@ -57,6 +57,8 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                 },
               ),
             ],
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12.0))),
           ),
         );
       });
@@ -68,7 +70,6 @@ Future promptAreYouSure(BuildContext context, String title, Widget body,
     String okText = "YES",
     String cancelText = "NO",
     TextStyle textStyle = const TextStyle(color: Colors.white)}) {
-  
   Widget titleWidget = title == null ? null : Text(title, style: theme.alertTitleStyle);
   if (titleWidget != null && wideTitle) {
     titleWidget = Container(
@@ -81,14 +82,14 @@ Future promptAreYouSure(BuildContext context, String title, Widget body,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return new AlertDialog(
-          contentPadding: contentPadding,          
           title: titleWidget,
           content: new SingleChildScrollView(
             child: body,
           ),
+          contentPadding: contentPadding,
           actions: <Widget>[
             new FlatButton(
-              child: new Text(cancelText, style: theme.buttonStyle),              
+              child: new Text(cancelText, style: theme.buttonStyle),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
@@ -100,6 +101,8 @@ Future promptAreYouSure(BuildContext context, String title, Widget body,
               },
             ),
           ],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.0))),
         );
       });
 }

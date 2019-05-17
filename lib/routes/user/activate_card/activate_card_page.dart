@@ -32,31 +32,34 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    
+
     nfc.checkNFCSettings().then((isNfcEnabled) {
       if (!isNfcEnabled) {
         return new Timer(new Duration(milliseconds: 500), () {
           _showAlertDialog();
         });
       }
-    });   
+    });
   }
 
-  @override void didChangeDependencies() {            
-      if (!_isInit) {
-        UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-        userBloc.cardActivationInit();      
-        _streamSubscription = userBloc.cardActivationStream.listen((bool success) {
-          if (success) {
-            Navigator.pop(context, "Your Breez card has been activated and is now ready for use!");
-          } else {
-            log.info("Card activation failed!");
-          }
-        });
-        _isInit = true;
-      }
-      super.didChangeDependencies();
+  @override
+  void didChangeDependencies() {
+    if (!_isInit) {
+      UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      userBloc.cardActivationInit();
+      _streamSubscription =
+          userBloc.cardActivationStream.listen((bool success) {
+        if (success) {
+          Navigator.pop(context,
+              "Your Breez card has been activated and is now ready for use!");
+        } else {
+          log.info("Card activation failed!");
+        }
+      });
+      _isInit = true;
     }
+    super.didChangeDependencies();
+  }
 
   void _showAlertDialog() {
     AlertDialog dialog = new AlertDialog(
@@ -71,12 +74,14 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
             },
             child: new Text("SETTINGS", style: theme.buttonStyle))
       ],
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(context: context, builder: (_) => dialog);
   }
 
   @override
-  void dispose() {    
+  void dispose() {
     _streamSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -133,10 +138,11 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
   }
 }
 
-class ActivateCardPage extends StatefulWidget {  
+class ActivateCardPage extends StatefulWidget {
   final platform = const MethodChannel('com.breez.client/nfc');
 
   ActivateCardPage();
+
   @override
   State<StatefulWidget> createState() {
     return new ActivateCardPageState();

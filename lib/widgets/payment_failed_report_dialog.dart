@@ -8,10 +8,9 @@ import 'package:breez/theme_data.dart' as theme;
 
 class PaymentFailedReportDialog extends StatefulWidget {
   final BuildContext context;
-  final AccountBloc _accountBloc;  
+  final AccountBloc _accountBloc;
 
-  PaymentFailedReportDialog(
-      this.context, this._accountBloc);
+  PaymentFailedReportDialog(this.context, this._accountBloc);
 
   @override
   PaymentFailedReportDialogState createState() {
@@ -50,12 +49,11 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
           unselectedWidgetColor: Theme.of(context).canvasColor,
         ),
         child: new AlertDialog(
-          titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: new Text(
             "Failed Payment",
             style: theme.alertTitleStyle,
           ),
-          contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
+          titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           content: _settings == null
               ? Container()
               : Column(
@@ -92,6 +90,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                     ),
                   ],
                 ),
+          contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
           actions: [
             new SimpleDialogOption(
               onPressed: () {
@@ -102,12 +101,14 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
             ),
             new SimpleDialogOption(
               onPressed: (() async {
-                onSubmit(true);                
+                onSubmit(true);
                 Navigator.pop(widget.context, true);
               }),
               child: new Text("YES", style: theme.buttonStyle),
             ),
           ],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.0))),
         ));
   }
 
