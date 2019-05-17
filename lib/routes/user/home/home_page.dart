@@ -21,6 +21,10 @@ import 'package:breez/routes/shared/no_connection_dialog.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 
+final GlobalKey firstPaymentItemKey = new GlobalKey();
+final ScrollController scrollController = new ScrollController();
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
   final InvoiceBloc invoiceBloc;
@@ -79,7 +83,7 @@ class Home extends StatefulWidget {
         "/developers", "Developers", "src/icon/developers.png"),
   ]);
 
-  final Map<String, Widget> _screenBuilders = {"breezHome": new AccountPage()};
+  final Map<String, Widget> _screenBuilders = {"breezHome": new AccountPage(firstPaymentItemKey, scrollController)};
 
   @override
   State<StatefulWidget> createState() {
@@ -88,7 +92,6 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String _activeScreen = "breezHome";
   Set _hiddenRountes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
@@ -96,6 +99,7 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+
     _registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
@@ -188,7 +192,7 @@ class HomeState extends State<Home> {
   }
 
   void _registerNotificationHandlers(){        
-    new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream);
+    new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream, firstPaymentItemKey, scrollController, _scaffoldKey);
     new CTPJoinSessionHandler(widget.ctpBloc, this.context, 
       (session) {
         Navigator.popUntil(context, (route) {

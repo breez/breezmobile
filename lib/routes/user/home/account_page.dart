@@ -9,15 +9,12 @@ import 'package:breez/routes/user/home/payments_filter.dart';
 import 'package:breez/routes/user/home/payments_list.dart';
 import 'package:breez/routes/user/home/wallet_dashboard.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
-import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/scroll_watcher.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/status_text.dart';
 import 'package:breez/utils/date.dart';
-import 'package:breez/widgets/loading_animated_text.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 const DASHBOARD_MAX_HEIGHT = 188.0;
 const DASHBOARD_MIN_HEIGHT = 70.0;
@@ -26,8 +23,10 @@ const FILTER_MIN_SIZE = 30.0;
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
 class AccountPage extends StatefulWidget {
-  
-  AccountPage();
+  final GlobalKey firstPaymentItemKey;
+  final ScrollController scrollController;
+
+  AccountPage(this.firstPaymentItemKey, this.scrollController);
 
   @override
   State<StatefulWidget> createState() {
@@ -36,7 +35,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class AccountPageState extends State<AccountPage> {
-  final ScrollController _scrollController = new ScrollController();
   final List<String> currencyList = Currency.currencies.map((c) => c.symbol).toList();
 
   AccountBloc _accountBloc;
@@ -45,9 +43,7 @@ class AccountPageState extends State<AccountPage> {
   InvoiceBloc _invoiceBloc;
 
   StreamSubscription<String> _accountActionsSubscription;
-  StreamSubscription<AccountModel> _statusSubscription;
   StreamSubscription<bool> _paidInvoicesSubscription;
-  String _paymentRequestInProgress;
   bool _isInit = false;
 
   @override
@@ -57,39 +53,14 @@ class AccountPageState extends State<AccountPage> {
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-      registerPaymentInProgress();      
       _isInit = true;  
     }
     super.didChangeDependencies();
   }
 
-  void registerPaymentInProgress(){    
-    _statusSubscription =_accountBloc.accountStream.listen((acc) {
-      if (acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty && acc.paymentRequestInProgress != _paymentRequestInProgress) {
-        final _snackBar = new SnackBar(
-          content: new LoadingAnimatedText(
-            'Processing Payment',
-            textStyle: theme.sessionNotificationStyle,
-            textAlign: TextAlign.left,
-          ),
-          backgroundColor: theme.snackBarBackgroundColor,
-          duration: new Duration(seconds: 80),
-        );
-        Scaffold.of(context).showSnackBar(_snackBar);
-      }
-      else if (acc.paymentRequestInProgress == null || acc.paymentRequestInProgress.isEmpty){
-        Scaffold.of(context).removeCurrentSnackBar();
-      }
-      setState(() {
-        _paymentRequestInProgress = acc.paymentRequestInProgress;
-      });
-    });
-  } 
-
   @override
   dispose() {
     _accountActionsSubscription.cancel();
-    _statusSubscription.cancel();
     _paidInvoicesSubscription.cancel();
     super.dispose();
   }
@@ -151,13 +122,13 @@ class AccountPageState extends State<AccountPage> {
       fit: StackFit.expand,
       children: [
         CustomScrollView(
-          controller: _scrollController,
+          controller: widget.scrollController,
           slivers: <Widget>[
             //Account dashboard header
             SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(_accountBloc, _userProfileBloc), pinned: true),
 
             //payment filter
-            PaymentFilterSliver(_scrollController, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _accountBloc, paymentsModel),
+            PaymentFilterSliver(widget.scrollController, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _accountBloc, paymentsModel),
 
             (paymentsModel.filter != null && paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
                 ? SliverAppBar(
@@ -170,7 +141,7 @@ class AccountPageState extends State<AccountPage> {
             ) : SliverPadding(padding: EdgeInsets.zero),
 
             // //List
-            PaymentsList(paymentsModel.paymentsList, PAYMENT_LIST_ITEM_HEIGHT),
+            PaymentsList(paymentsModel.paymentsList, PAYMENT_LIST_ITEM_HEIGHT, widget.firstPaymentItemKey),
 
             //footer
             SliverPersistentHeader(
@@ -183,7 +154,7 @@ class AccountPageState extends State<AccountPage> {
         ),
         //Floating actions
         ScrollWatcher(
-          controller: _scrollController,
+          controller: widget.scrollController,
           builder: (context, offset) {
             double height = (DASHBOARD_MAX_HEIGHT - offset).clamp(DASHBOARD_MIN_HEIGHT, DASHBOARD_MAX_HEIGHT);
             double heightFactor = (offset / (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT)).clamp(0.0, 1.0);
@@ -213,18 +184,24 @@ class AccountPageState extends State<AccountPage> {
       fit: StackFit.expand,
       children: <Widget>[
         new Padding(
-          padding: EdgeInsets.only(top: 130.0, left: 40.0, right: 40.0),
-          // new status widget
-          child: StreamBuilder(
-            stream: _connectPayBloc.pendingCTPLinkStream,
-            builder: (context, pendingLinkSnapshot) {
-              String message = account.statusMessage;
-              if (pendingLinkSnapshot.connectionState == ConnectionState.active && pendingLinkSnapshot.hasData) {
-                message = "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";
-              }
-              return StatusText(message, loading: account?.swapFundsStatus?.error?.isNotEmpty != true);
-            }
-          )
+            padding: EdgeInsets.only(top: 32.0),child: SizedBox(key: widget.firstPaymentItemKey,width: 0.0,height: 0.0,),), // Location of first payment item
+        new Padding(
+            padding: EdgeInsets.only(top: 130.0, left: 40.0, right: 40.0),
+            // new status widget
+            child: StreamBuilder(
+                stream: _connectPayBloc.pendingCTPLinkStream,
+                builder: (context, pendingLinkSnapshot) {
+                  String message = account.statusMessage;
+                  if (pendingLinkSnapshot.connectionState ==
+                      ConnectionState.active && pendingLinkSnapshot.hasData) {
+                    message =
+                    "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";
+                  }
+                  return StatusText(message,
+                      loading: account?.swapFundsStatus?.error?.isNotEmpty !=
+                          true);
+                }
+            )
         ),
         new Image.asset(
           "src/images/waves-home.png",
