@@ -112,6 +112,8 @@ class _RefundFormState extends State<RefundForm> {
               },
               child: new Text("BROADCAST", style: theme.buttonStyle))
         ],
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0))),
       ),
     );
   }

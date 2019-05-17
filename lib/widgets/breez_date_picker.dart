@@ -142,7 +142,8 @@ class _DatePickerHeader extends StatelessWidget {
       width: width,
       height: height,
       padding: padding,
-      color: backgroundColor,
+      decoration: ShapeDecoration(shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),color: backgroundColor,),
       child: new Column(
         mainAxisAlignment: mainAxisAlignment,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -942,7 +943,8 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
                       children: <Widget>[
                         header,
                         new Container(
-                          color: themeBg.dialogBackgroundColor,
+                          decoration: ShapeDecoration(shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(bottom: Radius.circular(12.0))),color: themeBg.dialogBackgroundColor,),
                           child: new Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.stretch,

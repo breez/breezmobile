@@ -56,6 +56,8 @@ class LostCardDialog extends StatelessWidget {
           child: new Text("DEACTIVATE", style: theme.buttonStyle),
         ),
       ],
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
   }
 }

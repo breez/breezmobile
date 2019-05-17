@@ -86,6 +86,8 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
               child: new Text("BACKUP NOW", style: theme.buttonStyle),
             ),
           ],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.0))),
         ));
   }
 }

@@ -66,7 +66,9 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                         Navigator.of(context).pop();
                       },
                       child: new Text("CLOSE", style: theme.buttonStyle)),
-                ]),
+                ],
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0))),),
     );
   }
 
