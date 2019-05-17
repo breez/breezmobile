@@ -37,64 +37,17 @@ class _RefundFormState extends State<RefundForm> {
           style: theme.alertTitleStyle,
         ),
         titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
-        content: Container(
-          constraints: BoxConstraints(minHeight: 50.0, maxHeight: 200.0, maxWidth: 500.0, minWidth: 500.0),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              var form = Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      new TextFormField(
-                        controller: _addressController,
-                        decoration: new InputDecoration(
-                          labelStyle: theme.alertStyle,
-                          labelText: "BTC Address",
-                          suffixIcon: new IconButton(
-                            padding: EdgeInsets.only(top: 21.0),
-                            alignment: Alignment.bottomRight,
-                            icon: new Image(
-                              image: new AssetImage("src/icon/qr_scan.png"),
-                              color: theme.alertStyle.color,
-                              fit: BoxFit.contain,
-                              width: 24.0,
-                              height: 24.0,
-                            ),
-                            tooltip: 'Scan Barcode',
-                            onPressed: _scanBarcode,
-                          ),
-                        ),
-                        style: theme.alertStyle,
-                        validator: (value) {
-                          if (_addressValidated == null) {
-                            return "Please enter a valid BTC Address";
-                          }
-                        },
-                      )
-                    ],
-                  ));
-              if (constraints.maxHeight < 200.0) {
-                return form;
-              }
-              return SingleChildScrollView(
-                controller: _scroller,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text(
-                          "Please enter a destination address to receive a refund. Then, broadcast the refund transaction to the Blockchain.",
-                          style: theme.alertStyle),
-                    ),
-                    form
-                  ],
-                ),
-              );
-            },
-          ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Please enter a destination address to receive a refund. Then, broadcast the refund transaction to the Blockchain.",
+              style: theme.alertStyle,
+            ),
+            _buildAddressForm(),
+          ],
         ),
+        contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
         actions: <Widget>[
           FlatButton(
               onPressed: () {
@@ -116,6 +69,39 @@ class _RefundFormState extends State<RefundForm> {
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
       ),
     );
+  }
+
+  Form _buildAddressForm() {
+    return Form(
+        key: _formKey,
+        child: TextFormField(
+          controller: _addressController,
+          decoration: new InputDecoration(
+              labelStyle: theme.alertStyle,
+              labelText: "BTC Address",
+              suffixIcon: new IconButton(
+                padding: EdgeInsets.only(top: 21.0),
+                alignment: Alignment.bottomRight,
+                icon: new Image(
+                  image: new AssetImage("src/icon/qr_scan.png"),
+                  color: theme.alertStyle.color,
+                  fit: BoxFit.contain,
+                  width: 24.0,
+                  height: 24.0,
+                ),
+                tooltip: 'Scan Barcode',
+                onPressed: _scanBarcode,
+              ),
+              border: UnderlineInputBorder(borderSide: BorderSide(
+                  width: 2.0, color: theme.BreezColors.blue[500]))
+          ),
+          style: theme.alertStyle,
+          validator: (value) {
+            if (_addressValidated == null) {
+              return "Please enter a valid BTC Address";
+            }
+          },
+        ));
   }
 
   Future<bool> _asyncValidate() {
