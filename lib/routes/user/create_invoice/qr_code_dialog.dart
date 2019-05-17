@@ -49,7 +49,10 @@ class QrCodeDialog extends StatelessWidget {
                     color: theme.BreezColors.grey[500],
                     onPressed: () {
                       Clipboard.setData(new ClipboardData(text: snapshot.data));
-                      showFlushbar(context, message: "Invoice address was copied to your clipboard.", duration:Duration(seconds: 3));                      
+                      showFlushbar(context,
+                          message:
+                              "Invoice address was copied to your clipboard.",
+                          duration: Duration(seconds: 3));
                     },
                   )
                 ],
@@ -68,24 +71,24 @@ class QrCodeDialog extends StatelessWidget {
                 return Container(
                     width: 150.0,
                     height: 150.0,
-                    child: Center(                                                
+                    child: Center(
                         child: Container(
-                          height: 48.0,
-                          width: 48.0,
-                          child: CircularProgressIndicator(
-                            valueColor: new AlwaysStoppedAnimation<Color>(
-                              theme.BreezColors.grey[500],
-                            ),
-                            backgroundColor: theme.BreezColors.grey[500],
-                          ),
-                        )));
+                      height: 48.0,
+                      width: 48.0,
+                      child: CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                          theme.BreezColors.grey[500],
+                        ),
+                        backgroundColor: theme.BreezColors.grey[500],
+                      ),
+                    )));
               }
               return new Column(
                 children: [
                   new Container(
                     width: 230.0,
                     height: 230.0,
-                    child: new CompactQRImage(                      
+                    child: new CompactQRImage(
                       data: snapshot.data,
                     ),
                   ),
@@ -108,6 +111,8 @@ class QrCodeDialog extends StatelessWidget {
         Padding(padding: EdgeInsets.only(top: 16.0)),
         _buildCloseButton()
       ],
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
   }
 
