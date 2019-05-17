@@ -160,26 +160,23 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     Navigator.pop(context);
     showFlushbar(context,
         message:
-        "Failed to send payment: ${error
-            .toString()
-            .split("\n")
-            .first}");
+        "Failed to send payment: ${error.toString().split("\n").first}");
 
     if (!error.validationError) {
       if (prompt) {
         send = await showDialog(
-            context: context,
+            context: widget.context,
             barrierDismissible: false,
             builder: (_) =>
-            new PaymentFailedReportDialog(context, widget.accountBloc));
+            new PaymentFailedReportDialog(widget.context, widget.accountBloc));
       }
 
       if (send) {
         var sendAction = SendPaymentFailureReport(error.traceReport);
         widget.accountBloc.userActionsSink.add(sendAction);
         await Navigator.push(
-            context,
-            createLoaderRoute(context,
+            widget.context,
+            createLoaderRoute(widget.context,
                 message: "Sending Report...",
                 opacity: 0.8,
                 action: sendAction.future));
