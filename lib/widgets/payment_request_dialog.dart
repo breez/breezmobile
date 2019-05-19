@@ -74,7 +74,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     _invoiceAmountController.addListener(() {
       setState(() {});
     });
-
   }
 
   @override
@@ -129,6 +128,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   }
 
   void _initializeTransitionAnimation() {
+    // We subtract dialog size from safe area and divide by half because the dialog is at the center of the screen(top and bottom distances are equal).
     double _dialogYMargin = (MediaQuery.of(context).size.height - MediaQuery.of(widget.context).padding.top - _initialDialogSize) / 2;
     RenderBox _paymentTableBox = widget.firstPaymentItemKey.currentContext.findRenderObject();
     var _paymentItemStartPosition = _paymentTableBox.localToGlobal(Offset.zero).dy - MediaQuery.of(widget.context).padding.top;
@@ -211,6 +211,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
         : CollapseAnimationDialog(context, transitionAnimation, colorAnimation, borderAnimation, opacityAnimation, _initialDialogSize, _dialogContent);
   }
 
+  void _getDialogSize() {
+    RenderBox _dialogBox = _dialogKey.currentContext.findRenderObject();
+    _initialDialogSize = _dialogBox.size.height;
+  }
+
   Widget _buildPaymentRequestContent() {
     return StreamBuilder<AccountModel>(
       stream: widget.accountBloc.accountStream,
@@ -228,13 +233,10 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
         _addIfNotNull(children, _buildActions(account));
 
         return Container(
-          width: MediaQuery
-              .of(context)
-              .size
-              .width,
+          width: MediaQuery.of(context).size.width,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: children,
           ),
         );
@@ -363,10 +365,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
               maxLines: 3,
             ),
           );
-  }
-  void _getDialogSize() {
-    RenderBox _dialogBox = _dialogKey.currentContext.findRenderObject();
-    _initialDialogSize = _dialogBox.size.height;
   }
 
   Widget _buildActions(AccountModel account) {
