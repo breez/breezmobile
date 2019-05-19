@@ -28,8 +28,9 @@ class FirebaseNotifications implements Notifications {
 
   Future<dynamic> _onMessage(Map<String, dynamic> message) { 
     print("_onMessge: " + message.toString());
-    if (message["data"] != null) {
-      _notificationController.add(message["data"]);
+    var data = message["data"] ?? message["aps"];
+    if (data != null) {
+      _notificationController.add(data);
     }
     return null;
   }
