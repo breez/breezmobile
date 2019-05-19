@@ -105,7 +105,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
       controller.addStatusListener((status) {
         if (status == AnimationStatus.dismissed) {
           Navigator.pop(context);
-          return Future.value(false); // Prevents escaping the app
         }
       });
 
