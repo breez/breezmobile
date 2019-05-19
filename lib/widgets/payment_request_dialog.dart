@@ -59,9 +59,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
 
   bool _inProgress = false;
 
-  var _titlePadding;
-  var _contentPadding;
-
   double _initialDialogSize;
 
   @override
@@ -108,6 +105,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
       controller.addStatusListener((status) {
         if (status == AnimationStatus.dismissed) {
           Navigator.pop(context);
+          return Future.value(false); // Prevents escaping the app
         }
       });
 
@@ -192,11 +190,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   }
 
   Widget showPaymentRequestDialog() {
-    _titlePadding = _state == PaymentRequestState.PAYMENT_REQUEST
+    var _titlePadding = _state == PaymentRequestState.PAYMENT_REQUEST
         ? widget.invoice.payeeImageURL.isEmpty
         ? EdgeInsets.zero : EdgeInsets.only(top: 48.0)
         : EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0);
-    _contentPadding = _state == PaymentRequestState.PAYMENT_REQUEST
+    var _contentPadding = _state == PaymentRequestState.PAYMENT_REQUEST
         ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0)
         : EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0);
 
@@ -205,17 +203,46 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     _addIfNotNull(content, _buildPaymentRequestContent());
     _addIfNotNull(content, _buildPaymentRequestActions());
 
-    return controller == null ? Dialog(child: Container(
-        key: _dialogKey,
-        constraints: BoxConstraints(minHeight: 220.0,maxHeight: 350.0),
-        height: _initialDialogSize,
-        width: MediaQuery.of(context).size.width,
-        child:Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      mainAxisSize: MainAxisSize.min,
-      children: content
-    )),shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0))) : Material(
+    return controller == null
+        ? Dialog(
+        child: Container(
+            key: _dialogKey,
+            constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
+            height: _initialDialogSize,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  if (_buildPaymentRequestTitle() != null)
+                    Container(
+                      height:
+                      (_state == PaymentRequestState.PAYMENT_REQUEST &&
+                          widget.invoice.payeeImageURL.isNotEmpty)
+                          ? 128.0
+                          : 64.0,
+                      padding: _titlePadding,
+                      child: _buildPaymentRequestTitle(),
+                    ),
+                  (_state != PaymentRequestState.PAYMENT_REQUEST)
+                      ? Expanded(
+                        flex: 1,
+                        child: Padding(
+                            padding: _contentPadding,
+                            child: _buildPaymentRequestContent()),
+                      )
+                      : Padding(
+                      padding: _contentPadding,
+                      child: _buildPaymentRequestContent()),
+                  if (_buildPaymentRequestActions() != null)
+                    Container(
+                      height: 64.0,
+                      child: _buildPaymentRequestActions(),
+                    ),
+                ])),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0)))
+        : Material(
         color: Colors.transparent,
         child: Stack(children: <Widget>[
           PositionedTransition(
@@ -292,12 +319,10 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
           _addIfNotNull(children, _buildActions(account));
 
           return Container(
-            padding: _contentPadding,
             width: MediaQuery.of(context).size.width,
             child: Column(
-              mainAxisSize: MainAxisSize.max,
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: children,
             ),
           );
@@ -305,7 +330,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
       );
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
       return Container(
-          padding: _contentPadding,
           width: MediaQuery.of(context).size.width,
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -330,7 +354,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
           ));
     } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return Container(
-          padding: _contentPadding,
           width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -357,37 +380,39 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     if (_state == PaymentRequestState.PAYMENT_REQUEST) {
       return widget.invoice.payeeImageURL.isEmpty
           ? null
-          : Padding(
-          padding: _titlePadding,
-          child: Stack(alignment: Alignment(0.0, 0.0), children: <Widget>[
-        CircularProgressIndicator(),
-        ClipOval(
-          child: FadeInImage(
-              width: 64.0,
-              height: 64.0,
-              placeholder: MemoryImage(widget._transparentImage),
-              image: AdvancedNetworkImage(widget.invoice.payeeImageURL,
-                  useDiskCache: true),
-              fadeOutDuration: new Duration(milliseconds: 200),
-              fadeInDuration: new Duration(milliseconds: 200)),
-        )
-      ]));
+          : Stack(
+              children: <Widget>[
+                Center(child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    theme.BreezColors.blue[500],
+                  ),
+                )),
+                Center(
+                    child: ClipOval(
+                      child: FadeInImage(
+                          width: 64.0,
+                          height: 64.0,
+                          placeholder: MemoryImage(widget._transparentImage),
+                          image: AdvancedNetworkImage(widget.invoice.payeeImageURL,
+                              useDiskCache: true),
+                          fadeOutDuration: new Duration(milliseconds: 200),
+                          fadeInDuration: new Duration(milliseconds: 200)),
+                    )
+                ),
+              ],
+          );
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
-      return  Padding(
-          padding: _titlePadding,
-          child: Text(
+      return  Text(
         "Payment Confirmation",
         style: theme.alertTitleStyle,
           textAlign: TextAlign.center,
-          ));
+          );
     } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
-      return Padding(
-          padding: _titlePadding,
-          child: Text(
+      return Text(
         "Processing Payment",
         style: theme.alertTitleStyle,
         textAlign: TextAlign.center,
-      ));
+      );
     }
     return null;
   }
@@ -492,7 +517,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   _getDialogSize() {
     RenderBox _dialogBox = _dialogKey.currentContext.findRenderObject();
     _initialDialogSize = _dialogBox.size.height;
-    print(_initialDialogSize);
   }
 
   Widget _buildActions(AccountModel account) {
