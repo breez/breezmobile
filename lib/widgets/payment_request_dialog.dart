@@ -37,11 +37,8 @@ class PaymentRequestDialog extends StatefulWidget {
 
 class PaymentRequestDialogState extends State<PaymentRequestDialog>
     with SingleTickerProviderStateMixin {
-
+  final _dialogKey = GlobalKey();
   final _formKey = GlobalKey<FormState>();
-  GlobalKey _titleKey = GlobalKey();
-  GlobalKey _contentKey = GlobalKey();
-  GlobalKey _actionsKey = GlobalKey();
   TextEditingController _invoiceAmountController = new TextEditingController();
 
   AnimationController controller;
@@ -62,9 +59,10 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
 
   bool _inProgress = false;
 
-  double _dialogContentHeight;
-  double _dialogTitleHeight;
-  double _dialogActionsHeight;
+  var _titlePadding;
+  var _contentPadding;
+
+  double _initialDialogSize;
 
   @override
   void initState() {
@@ -77,6 +75,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     _invoiceAmountController.addListener(() {
       setState(() {});
     });
+
   }
 
   @override
@@ -131,23 +130,14 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   }
 
   void _initializeTransitionAnimation() {
-    double _dialogYMargin = _getDialogPosition();
+    double _dialogYMargin = (MediaQuery.of(context).size.height - MediaQuery.of(widget.context).padding.top - _initialDialogSize) / 2;
     RenderBox _paymentTableBox = widget.firstPaymentItemKey.currentContext.findRenderObject();
     var _paymentItemStartPosition = _paymentTableBox.localToGlobal(Offset.zero).dy - MediaQuery.of(widget.context).padding.top;
     var _paymentItemEndPosition = (MediaQuery.of(context).size.height - MediaQuery.of(widget.context).padding.top - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT;
     var tween = new RelativeRectTween(
         begin: new RelativeRect.fromLTRB(0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
-        end: new RelativeRect.fromLTRB(32.0, _dialogYMargin - _dialogTitleHeight, 32.0, _dialogYMargin - _dialogTitleHeight));
+        end: new RelativeRect.fromLTRB(32.0, _dialogYMargin, 32.0, _dialogYMargin));
     transitionAnimation = tween.animate(controller);
-  }
-
-  double _getDialogPosition() {
-    final RenderBox _dialogTitleBox = _titleKey.currentContext?.findRenderObject();
-    final _dialogTitlePosition = _dialogTitleBox?.localToGlobal(Offset.zero);
-    final RenderBox _dialogContentBox = _contentKey.currentContext?.findRenderObject();
-    final _dialogContentPosition = _dialogContentBox?.localToGlobal(Offset.zero);
-    var _dialogYMargin =  _dialogTitlePosition?.dy ?? _dialogContentPosition?.dy;
-    return _dialogYMargin;
   }
 
   _onPaymentError(AccountSettings accountSettings, PaymentError error) async {
@@ -202,52 +192,49 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   }
 
   Widget showPaymentRequestDialog() {
-    var _titlePadding = _state == PaymentRequestState.PAYMENT_REQUEST
+    _titlePadding = _state == PaymentRequestState.PAYMENT_REQUEST
         ? widget.invoice.payeeImageURL.isEmpty
         ? EdgeInsets.zero : EdgeInsets.only(top: 48.0)
         : EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0);
-    var _contentPadding = _state == PaymentRequestState.PAYMENT_REQUEST
+    _contentPadding = _state == PaymentRequestState.PAYMENT_REQUEST
         ? EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0)
         : EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0);
-    return controller == null ? new AlertDialog(
-        titlePadding: _titlePadding,
-        title: _buildPaymentRequestTitle(),
-        contentPadding: _contentPadding,
-        content: _buildPaymentRequestContent(),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12.0))),
-        actions: [_buildPaymentRequestActions()]) : Material(
+
+    List<Widget> content = [];
+    _addIfNotNull(content, _buildPaymentRequestTitle());
+    _addIfNotNull(content, _buildPaymentRequestContent());
+    _addIfNotNull(content, _buildPaymentRequestActions());
+
+    return controller == null ? Dialog(child: Container(
+        key: _dialogKey,
+        constraints: BoxConstraints(minHeight: 220.0,maxHeight: 350.0),
+        height: _initialDialogSize,
+        width: MediaQuery.of(context).size.width,
+        child:Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisSize: MainAxisSize.min,
+      children: content
+    )),shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0))) : Material(
         color: Colors.transparent,
         child: Stack(children: <Widget>[
           PositionedTransition(
             rect: transitionAnimation,
             child: Container(
-              height: widget.invoice.payeeImageURL.isEmpty
-                  ? _dialogContentHeight - _dialogTitleHeight : _dialogContentHeight + _dialogTitleHeight,
+              height: 300.0,
               width: MediaQuery.of(context).size.width,
               decoration: ShapeDecoration(
                 color: colorAnimation.value,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(borderAnimation.value)),
               ),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Opacity(
-                        opacity: opacityAnimation.value,
-                        child: Padding(
-                            padding: _titlePadding,
-                            child: _buildPaymentRequestTitle())),
-                    Opacity(
-                        opacity: opacityAnimation.value,
-                        child: Padding(
-                            padding: _contentPadding,
-                            child: _buildPaymentRequestContent())),
-                    Opacity(
-                        opacity: opacityAnimation.value,
-                        child: _buildPaymentRequestActions())
-                  ]),
+              child: Opacity(
+                  opacity: opacityAnimation.value,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.max,
+                      children: content)),
             ),
           ),
         ]));
@@ -277,7 +264,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
       return Padding(
         padding: const EdgeInsets.only(bottom: 16.0,right: 8.0),
         child: Row(
-          key: _actionsKey,
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.end,
           children: children,
@@ -286,23 +272,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     } else {
       return null;
     }
-  }
-
-  _getDialogSize(){
-    final RenderBox _dialogTitleBox = _titleKey.currentContext?.findRenderObject();
-    final _dialogTitleSize = _dialogTitleBox?.size;
-
-    final RenderBox _dialogContentBox = _contentKey.currentContext?.findRenderObject();
-    final _dialogContentSize = _dialogContentBox?.size;
-
-    final RenderBox _dialogActionsBox = _actionsKey.currentContext?.findRenderObject();
-    final _dialogActionsSize = _dialogActionsBox?.size;
-
-    setState(() {
-      _dialogTitleHeight = _dialogTitleSize?.height ?? (widget.invoice.payeeImageURL.isEmpty ? 43.0 : 48.0); // 27 + 16.0
-      _dialogContentHeight = _dialogContentSize?.height ?? 200.0;
-      _dialogActionsHeight = _dialogActionsSize?.height ?? 64.0; // Actions Height = 48.0 + 16.0 Bottom Padding
-    });
   }
 
   Widget _buildPaymentRequestContent() {
@@ -323,12 +292,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
           _addIfNotNull(children, _buildActions(account));
 
           return Container(
-            key: _contentKey,
-            constraints: BoxConstraints(minHeight: 200.0),
+            padding: _contentPadding,
             width: MediaQuery.of(context).size.width,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: children,
             ),
@@ -337,9 +305,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
       );
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
       return Container(
-          key: _contentKey,
-          height: widget.invoice.payeeImageURL.isEmpty
-              ? _dialogContentHeight - _dialogActionsHeight - _dialogTitleHeight : _dialogContentHeight + _dialogTitleHeight - _dialogActionsHeight, // In reference to first dialog, this dialog had both title and actions field so we subtract those values
+          padding: _contentPadding,
           width: MediaQuery.of(context).size.width,
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -364,9 +330,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
           ));
     } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return Container(
-          key: _contentKey,
-          height: widget.invoice.payeeImageURL.isEmpty
-              ? _dialogContentHeight - _dialogTitleHeight : _dialogContentHeight + _dialogTitleHeight, // In reference to first dialog, this dialog had title field so we subtract that value
+          padding: _contentPadding,
           width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -393,7 +357,9 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     if (_state == PaymentRequestState.PAYMENT_REQUEST) {
       return widget.invoice.payeeImageURL.isEmpty
           ? null
-          : Stack(key:_titleKey,alignment: Alignment(0.0, 0.0), children: <Widget>[
+          : Padding(
+          padding: _titlePadding,
+          child: Stack(alignment: Alignment(0.0, 0.0), children: <Widget>[
         CircularProgressIndicator(),
         ClipOval(
           child: FadeInImage(
@@ -405,21 +371,23 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
               fadeOutDuration: new Duration(milliseconds: 200),
               fadeInDuration: new Duration(milliseconds: 200)),
         )
-      ]);
+      ]));
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
-      return Text(
+      return  Padding(
+          padding: _titlePadding,
+          child: Text(
         "Payment Confirmation",
-        key:_titleKey,
         style: theme.alertTitleStyle,
           textAlign: TextAlign.center,
-      );
+          ));
     } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
-      return Text(
+      return Padding(
+          padding: _titlePadding,
+          child: Text(
         "Processing Payment",
-        key:_titleKey,
         style: theme.alertTitleStyle,
         textAlign: TextAlign.center,
-      );
+      ));
     }
     return null;
   }
@@ -521,6 +489,12 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
           );
   }
 
+  _getDialogSize() {
+    RenderBox _dialogBox = _dialogKey.currentContext.findRenderObject();
+    _initialDialogSize = _dialogBox.size.height;
+    print(_initialDialogSize);
+  }
+
   Widget _buildActions(AccountModel account) {
     List<Widget> actions = [
       SimpleDialogOption(
@@ -533,8 +507,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     if (toPay > 0 && account.maxAllowedToPay >= toPay) {
       actions.add(SimpleDialogOption(
         onPressed: (() async {
-          _getDialogSize();
           if (widget.invoice.amount > 0 || _formKey.currentState.validate()) {
+            _getDialogSize();
             if (widget.invoice.amount == 0) {
               setState(() {
                 _state = PaymentRequestState.WAITING_FOR_CONFIRMATION;
