@@ -233,8 +233,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
                   opacity: opacityAnimation.value,
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisSize: MainAxisSize.max,
+                      mainAxisSize: MainAxisSize.min,
                       children: content)),
             ),
           ),
