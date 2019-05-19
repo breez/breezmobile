@@ -221,7 +221,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
           PositionedTransition(
             rect: transitionAnimation,
             child: Container(
-              height: 300.0,
+              constraints: BoxConstraints(minHeight: 220.0,maxHeight: 350.0),
+              height: _initialDialogSize,
               width: MediaQuery.of(context).size.width,
               decoration: ShapeDecoration(
                 color: colorAnimation.value,
