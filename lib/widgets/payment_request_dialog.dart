@@ -9,16 +9,10 @@ import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/payment_confirmation_dialog.dart';
 import 'package:breez/widgets/processsing_payment_dialog.dart';
-import 'package:breez/widgets/collapse_animation_dialog.dart';
-import 'package:breez/widgets/flushbar.dart';
 import 'dart:async';
 
-const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 enum PaymentRequestState { PAYMENT_REQUEST, WAITING_FOR_CONFIRMATION, PROCESSING_PAYMENT}
 
 class PaymentRequestDialog extends StatefulWidget {
@@ -37,24 +31,14 @@ class PaymentRequestDialog extends StatefulWidget {
   }
 }
 
-class PaymentRequestDialogState extends State<PaymentRequestDialog>
-    with SingleTickerProviderStateMixin {
+class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   final _dialogKey = GlobalKey();
   final _formKey = GlobalKey<FormState>();
   TextEditingController _invoiceAmountController = new TextEditingController();
 
-  AnimationController controller;
-  Animation<double> opacityAnimation;
-  Animation<double> borderAnimation;
-  Animation<RelativeRect> transitionAnimation;
-  Animation<Color> colorAnimation;
-
   PaymentRequestState _state;
 
-  AccountSettings _accountSettings;
   StreamSubscription<AccountModel> _paymentInProgressSubscription;
-  StreamSubscription<AccountSettings> _accountSettingsSubscription;
-  StreamSubscription<String> _sentPaymentResultSubscription;
 
   Int64 _amountToPay;
   String _amountToPayStr;
@@ -70,109 +54,14 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     _paymentInProgressSubscription = widget.accountBloc.accountStream.listen((acc) {
       _inProgress = acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty;
     });
-    _listenPaymentsResults();
     _invoiceAmountController.addListener(() {
       setState(() {});
     });
   }
 
-  _listenPaymentsResults() {
-    _accountSettingsSubscription = widget.accountBloc.accountSettingsStream
-        .listen((settings) => _accountSettings = settings);
-
-    _sentPaymentResultSubscription = widget.accountBloc.fulfilledPayments.listen((fulfilledPayment) {
-      controller = AnimationController(
-          vsync: this, duration: Duration(milliseconds: 500));
-      borderAnimation = Tween<double>(begin: 0.0, end: 8.0).animate(
-          CurvedAnimation(parent: controller, curve: Curves.ease));
-      opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-          CurvedAnimation(parent: controller, curve: Curves.ease));
-      colorAnimation = new ColorTween(
-        begin: theme.BreezColors.blue[500],
-        end: theme.BreezColors.white[500],
-      ).animate(controller)
-        ..addListener(() {
-          setState(() {});
-        });
-      controller.addStatusListener((status) {
-        if (status == AnimationStatus.dismissed) {
-          Navigator.pop(context);
-        }
-      });
-
-      Future scrollAnimationFuture = Future.value(null);
-      if (widget.scrollController.hasClients) {
-        scrollAnimationFuture = widget.scrollController.animateTo(
-            widget.scrollController.position.minScrollExtent,
-            duration: Duration(milliseconds: 200), curve: Curves.ease)
-            .whenComplete(() => Future.delayed(Duration(milliseconds: 50)));
-      }
-
-      scrollAnimationFuture.whenComplete(() {
-        _initializeTransitionAnimation();
-        controller.value = 1.0;
-        // Trigger the collapse animation and show flushbar after the animation is completed
-        controller.reverse().whenComplete(() =>
-            showFlushbar(context, message: "Payment was successfuly sent!"));
-      });
-    }, onError: (err) => _onPaymentError(_accountSettings, err as PaymentError));
-  }
-
-  void _initializeTransitionAnimation() {
-    // We subtract dialog size from safe area and divide by half because the dialog is at the center of the screen(top and bottom distances are equal).
-    double _dialogYMargin = (MediaQuery.of(context).size.height - MediaQuery.of(widget.context).padding.top - _initialDialogSize) / 2;
-    RenderBox _paymentTableBox = widget.firstPaymentItemKey.currentContext.findRenderObject();
-    var _paymentItemStartPosition = _paymentTableBox.localToGlobal(Offset.zero).dy - MediaQuery.of(widget.context).padding.top;
-    var _paymentItemEndPosition = (MediaQuery.of(context).size.height - MediaQuery.of(widget.context).padding.top - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT;
-    var tween = new RelativeRectTween(
-        begin: new RelativeRect.fromLTRB(0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
-        end: new RelativeRect.fromLTRB(32.0, _dialogYMargin, 32.0, _dialogYMargin));
-    transitionAnimation = tween.animate(controller);
-  }
-
-  _onPaymentError(AccountSettings accountSettings, PaymentError error) async {
-    bool prompt =
-        accountSettings.failePaymentBehavior == BugReportBehavior.PROMPT;
-    bool send =
-        accountSettings.failePaymentBehavior == BugReportBehavior.SEND_REPORT;
-
-    // Close Payment Request Dialog
-    Navigator.pop(context);
-    showFlushbar(context,
-        message:
-        "Failed to send payment: ${error
-            .toString()
-            .split("\n")
-            .first}");
-
-    if (!error.validationError) {
-      if (prompt) {
-        send = await showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (_) =>
-            new PaymentFailedReportDialog(context, widget.accountBloc));
-      }
-
-      if (send) {
-        var sendAction = SendPaymentFailureReport(error.traceReport);
-        widget.accountBloc.userActionsSink.add(sendAction);
-        await Navigator.push(
-            context,
-            createLoaderRoute(context,
-                message: "Sending Report...",
-                opacity: 0.8,
-                action: sendAction.future));
-      }
-    }
-  }
-
   @override
   dispose() {
     _paymentInProgressSubscription?.cancel();
-    _accountSettingsSubscription?.cancel();
-    _sentPaymentResultSubscription?.cancel();
-    controller?.dispose();
     super.dispose();
   }
 
@@ -191,36 +80,32 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
   }
 
   Widget showPaymentRequestDialog() {
-    var _dialogContent;
-    if(_state == PaymentRequestState.PAYMENT_REQUEST) {
-      _dialogContent = _buildPaymentRequestDialog();
-    } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
-      _dialogContent = PaymentConfirmationDialog(widget.accountBloc, widget.invoice, _amountToPay, _amountToPayStr, (state) => _onStateChange(state));
-    } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
-      _dialogContent = ProcessingPaymentDialog(colorAnimation);
-    }
+    return _buildDialog(_state);
+  }
 
-    return controller == null
-        ? _buildDialog(_dialogContent)
-        : CollapseAnimationDialog(transitionAnimation, colorAnimation, borderAnimation, opacityAnimation, _initialDialogSize, _dialogContent);
+  Widget _buildDialog(_state) {
+    if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
+      return ProcessingPaymentDialog(widget.context, widget.accountBloc, widget.firstPaymentItemKey, widget.scrollController, _initialDialogSize);
+    }
+    var _content = _buildPaymentRequestDialog();
+    if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
+      _content = PaymentConfirmationDialog(widget.accountBloc, widget.invoice, _amountToPay, _amountToPayStr, (state) => _onStateChange(state));
+    }
+    return Dialog(
+        child: Container(
+            key: _dialogKey,
+            height: _initialDialogSize,
+            width: MediaQuery.of(context).size.width,
+            constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
+            child: _content),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0)));
   }
 
   void _onStateChange(PaymentRequestState state) {
     setState(() {
       _state = state;
     });
-  }
-
-  Widget _buildDialog(Widget content) {
-    return Dialog(
-        child: Container(
-            key: _dialogKey,
-            constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
-            height: _initialDialogSize,
-            width: MediaQuery.of(context).size.width,
-            child: content),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0)));
   }
 
   Widget _buildPaymentRequestDialog() {
