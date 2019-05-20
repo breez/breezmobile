@@ -80,10 +80,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   }
 
   Widget showPaymentRequestDialog() {
-    return _buildDialog(_state);
-  }
-
-  Widget _buildDialog(_state) {
     if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return ProcessingPaymentDialog(widget.context, widget.accountBloc, widget.firstPaymentItemKey, widget.scrollController, _initialDialogSize);
     }
@@ -101,7 +97,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0)));
   }
-
+  
   void _onStateChange(PaymentRequestState state) {
     setState(() {
       _state = state;
