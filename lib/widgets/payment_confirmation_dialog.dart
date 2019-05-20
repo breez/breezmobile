@@ -42,12 +42,9 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
 
   List<Widget> _buildConfirmationDialog() {
     List<Widget> _confirmationDialog = <Widget>[];
-    Widget _title = _buildTitle();
-    Widget _content = _buildContent();
-    Widget _actions = _buildActions();
-    _confirmationDialog.add(_title);
-    _confirmationDialog.add(_content);
-    _confirmationDialog.add(_actions);
+    _confirmationDialog.add(_buildTitle());
+    _confirmationDialog.add(_buildContent());
+    _confirmationDialog.add(_buildActions());
     return _confirmationDialog;
   }
 

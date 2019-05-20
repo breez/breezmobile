@@ -174,10 +174,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   List<Widget> _buildProcessingPaymentDialog() {
     List<Widget> _processingPaymentDialog = <Widget>[];
-    Widget _title = _buildTitle();
-    Widget _content = _buildContent();
-    _processingPaymentDialog.add(_title);
-    _processingPaymentDialog.add(_content);
+    _processingPaymentDialog.add(_buildTitle());
+    _processingPaymentDialog.add(_buildContent());
     return _processingPaymentDialog;
   }
 
