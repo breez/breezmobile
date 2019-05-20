@@ -29,6 +29,8 @@ class Notifier : NSObject {
     }
     
     static func scheduleSyncRequiredNotification() {
+        let center =  getNotificationCenter();
+        center.removePendingNotificationRequests(withIdentifiers: ["syncwatcher"])        
         showNotification(withTitle: "Action Required", withBody: "Breez has not been synchronized for more than 24 hours. It is highly recommended you open Breez in order to ensure access to your funds.", withActionCategoryId: openBreezCatagory.identifier, withIdentifier: "syncwatcher", withDelay: 3600 * 2);
     }
     
