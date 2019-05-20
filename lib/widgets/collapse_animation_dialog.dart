@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CollapseAnimationDialog extends StatefulWidget {
-  final BuildContext context;
   final Animation<double> opacityAnimation;
   final Animation<double> borderAnimation;
   final Animation<RelativeRect> transitionAnimation;
@@ -10,7 +9,7 @@ class CollapseAnimationDialog extends StatefulWidget {
   final double _initialDialogSize;
   final Widget _dialogContent;
 
-  CollapseAnimationDialog(this.context, this.transitionAnimation, this.colorAnimation, this.borderAnimation, this.opacityAnimation, this._initialDialogSize, this._dialogContent);
+  CollapseAnimationDialog(this.transitionAnimation, this.colorAnimation, this.borderAnimation, this.opacityAnimation, this._initialDialogSize, this._dialogContent);
 
   @override
   CollapseAnimationDialogState createState() {

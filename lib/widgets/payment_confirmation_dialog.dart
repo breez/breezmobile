@@ -9,14 +9,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PaymentConfirmationDialog extends StatefulWidget {
-  final BuildContext context;
   final AccountBloc accountBloc;
   final PaymentRequestModel invoice;
   final Int64 _amountToPay;
   final String _amountToPayStr;
   final Function(PaymentRequestState state) _onStateChange;
 
-  PaymentConfirmationDialog(this.context, this.accountBloc, this.invoice, this._amountToPay, this._amountToPayStr, this._onStateChange);
+  PaymentConfirmationDialog(this.accountBloc, this.invoice, this._amountToPay, this._amountToPayStr, this._onStateChange);
 
   @override
   PaymentConfirmationDialogState createState() {
@@ -94,7 +93,7 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
       new FlatButton(
         child: new Text("NO", style: theme.buttonStyle),
         onPressed: () {
-          Navigator.pop(widget.context, false);
+          Navigator.pop(context, false);
         },
       ),
       new FlatButton(

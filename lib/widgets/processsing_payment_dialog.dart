@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProcessingPaymentDialog extends StatefulWidget {
-  final BuildContext context;
+  final Animation<Color> colorAnimation;
 
-  ProcessingPaymentDialog(this.context);
+  ProcessingPaymentDialog(this.colorAnimation);
 
   @override
   ProcessingPaymentDialogState createState() {
@@ -64,7 +64,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> {
                 'src/images/breez_loader.gif',
                 height: 64.0,
                 colorBlendMode: BlendMode.multiply,
-                color: Colors.transparent,
+                color: widget.colorAnimation?.value ?? Colors.transparent,
                 gaplessPlayback: true,
               )
             ],

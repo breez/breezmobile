@@ -195,14 +195,14 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog>
     if(_state == PaymentRequestState.PAYMENT_REQUEST) {
       _dialogContent = _buildPaymentRequestDialog();
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
-      _dialogContent = PaymentConfirmationDialog(context, widget.accountBloc, widget.invoice, _amountToPay, _amountToPayStr, (state) => _onStateChange(state));
+      _dialogContent = PaymentConfirmationDialog(widget.accountBloc, widget.invoice, _amountToPay, _amountToPayStr, (state) => _onStateChange(state));
     } else if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
-      _dialogContent = ProcessingPaymentDialog(context);
+      _dialogContent = ProcessingPaymentDialog(colorAnimation);
     }
 
     return controller == null
         ? _buildDialog(_dialogContent)
-        : CollapseAnimationDialog(context, transitionAnimation, colorAnimation, borderAnimation, opacityAnimation, _initialDialogSize, _dialogContent);
+        : CollapseAnimationDialog(transitionAnimation, colorAnimation, borderAnimation, opacityAnimation, _initialDialogSize, _dialogContent);
   }
 
   void _onStateChange(PaymentRequestState state) {
