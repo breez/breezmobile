@@ -37,15 +37,13 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   TextEditingController _invoiceAmountController = new TextEditingController();
 
   PaymentRequestState _state;
-
   StreamSubscription<AccountModel> _paymentInProgressSubscription;
-
-  Int64 _amountToPay;
-  String _amountToPayStr;
 
   bool _inProgress = false;
 
   double _initialDialogSize;
+  Int64 _amountToPay;
+  String _amountToPayStr;
 
   @override
   void initState() {
@@ -82,22 +80,13 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   Widget showPaymentRequestDialog() {
     if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return ProcessingPaymentDialog(widget.context, widget.accountBloc, widget.firstPaymentItemKey, widget.scrollController, _initialDialogSize);
+    } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
+      return PaymentConfirmationDialog(widget.accountBloc, widget.invoice, _initialDialogSize, _amountToPay, _amountToPayStr, (state) => _onStateChange(state));
+    } else {
+      return _buildPaymentRequestDialog();
     }
-    var _content = _buildPaymentRequestDialog();
-    if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
-      _content = PaymentConfirmationDialog(widget.accountBloc, widget.invoice, _amountToPay, _amountToPayStr, (state) => _onStateChange(state));
-    }
-    return Dialog(
-        child: Container(
-            key: _dialogKey,
-            height: _initialDialogSize,
-            width: MediaQuery.of(context).size.width,
-            constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
-            child: _content),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0)));
   }
-  
+
   void _onStateChange(PaymentRequestState state) {
     setState(() {
       _state = state;
@@ -106,51 +95,49 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
 
   Widget _buildPaymentRequestDialog() {
     List<Widget> _paymentRequestDialog = <Widget>[];
-    Widget _title;
-    if (_buildPaymentRequestTitle() != null) {
-      _title = Container(
-        height: (widget.invoice.payeeImageURL.isNotEmpty) ? 128.0 : 64.0,
-        padding: widget.invoice.payeeImageURL.isEmpty ? EdgeInsets.zero : EdgeInsets.only(top: 48.0),
-        child: _buildPaymentRequestTitle(),
-      );
-    }
-    Widget _content =
-    Padding(
-      padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
-      child: _buildPaymentRequestContent(),
-    );
-    _addIfNotNull(_paymentRequestDialog, _title);
-    _addIfNotNull(_paymentRequestDialog, _content);
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: _paymentRequestDialog);
+    _addIfNotNull(_paymentRequestDialog, _buildPaymentRequestTitle());
+    _addIfNotNull(_paymentRequestDialog,_buildPaymentRequestContent());
+    return Dialog(
+        child: Container(
+            key: _dialogKey,
+            height: _initialDialogSize,
+            width: MediaQuery.of(context).size.width,
+            constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: _paymentRequestDialog)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0)));
   }
 
   Widget _buildPaymentRequestTitle() {
     return widget.invoice.payeeImageURL.isEmpty
         ? null
-        : Stack(
-      children: <Widget>[
-        Center(
-            child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(
-                theme.BreezColors.blue[500],
-              ),
-            )),
-        Center(
-            child: ClipOval(
-              child: FadeInImage(
-                  width: 64.0,
-                  height: 64.0,
-                  placeholder: MemoryImage(widget._transparentImage),
-                  image: AdvancedNetworkImage(widget.invoice.payeeImageURL,
-                      useDiskCache: true),
-                  fadeOutDuration: new Duration(milliseconds: 200),
-                  fadeInDuration: new Duration(milliseconds: 200)),
-            )),
-      ],
-    );
+        : Container(
+        height: widget.invoice.payeeImageURL.isEmpty ? 64.0 : 128.0,
+        padding: widget.invoice.payeeImageURL.isEmpty ? EdgeInsets.zero : EdgeInsets.only(top: 48.0),
+        child: Stack(
+          children: <Widget>[
+            Center(
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    theme.BreezColors.blue[500],
+                  ),
+                )),
+            Center(
+                child: ClipOval(
+                  child: FadeInImage(
+                      width: 64.0,
+                      height: 64.0,
+                      placeholder: MemoryImage(widget._transparentImage),
+                      image: AdvancedNetworkImage(widget.invoice.payeeImageURL,
+                          useDiskCache: true),
+                      fadeOutDuration: new Duration(milliseconds: 200),
+                      fadeInDuration: new Duration(milliseconds: 200)),
+                )),
+          ],
+        ));
   }
 
   Widget _buildPaymentRequestContent() {
@@ -170,6 +157,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
         _addIfNotNull(children, _buildActions(account));
 
         return Container(
+          padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
           width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -209,7 +197,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
       style: theme.paymentRequestSubtitleStyle,
       textAlign: TextAlign.center,
     );
-
   }
 
   Widget _buildAmountWidget(AccountModel account) {
@@ -295,7 +282,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
             _getDialogSize();
             if (widget.invoice.amount == 0) {
               setState(() {
-                _state = PaymentRequestState.WAITING_FOR_CONFIRMATION;
+                _onStateChange(PaymentRequestState.WAITING_FOR_CONFIRMATION);
                 _amountToPay = toPay;
                 _amountToPayStr = account.currency.format(amountToPay(account));
               });
@@ -303,7 +290,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
               widget.accountBloc.sentPaymentsSink.add(
                   PayRequest(widget.invoice.rawPayReq, amountToPay(account)));
               setState(() {
-                _state = PaymentRequestState.PROCESSING_PAYMENT;
+                _onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
               });
             }
           }

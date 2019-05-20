@@ -11,11 +11,12 @@ import 'package:flutter/material.dart';
 class PaymentConfirmationDialog extends StatefulWidget {
   final AccountBloc accountBloc;
   final PaymentRequestModel invoice;
+  final double _initialDialogSize;
   final Int64 _amountToPay;
   final String _amountToPayStr;
   final Function(PaymentRequestState state) _onStateChange;
 
-  PaymentConfirmationDialog(this.accountBloc, this.invoice, this._amountToPay, this._amountToPayStr, this._onStateChange);
+  PaymentConfirmationDialog(this.accountBloc, this.invoice, this._initialDialogSize, this._amountToPay, this._amountToPayStr, this._onStateChange);
 
   @override
   PaymentConfirmationDialogState createState() {
@@ -26,10 +27,17 @@ class PaymentConfirmationDialog extends StatefulWidget {
 class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: _buildConfirmationDialog());
+    return Dialog(
+        child: Container(
+            height: widget._initialDialogSize,
+            width: MediaQuery.of(context).size.width,
+            constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: _buildConfirmationDialog())),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0)));
   }
 
   List<Widget> _buildConfirmationDialog() {
