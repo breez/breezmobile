@@ -16,6 +16,7 @@ class AppDelegate : FlutterAppDelegate {
         GeneratedPluginRegistrant.register(with: self);
         registerBreezPlugins();
         application.setMinimumBackgroundFetchInterval(3600);
+        Notifier.scheduleSyncRequiredNotification();
         return super.application(application, didFinishLaunchingWithOptions: launchOptions);
     }
     
@@ -28,6 +29,7 @@ class AppDelegate : FlutterAppDelegate {
         let jobName = userInfo["_job"] as? String?;
         if (jobName == "chainSync") {
             ChainSync.run(app: application, completionHandler: {
+                Notifier.scheduleSyncRequiredNotification();
                 completionHandler(UIBackgroundFetchResult.newData);
             });
             return;
@@ -39,6 +41,7 @@ class AppDelegate : FlutterAppDelegate {
     override func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Void {
         print("background fetch started...");
         ChainSync.run(app: application, completionHandler: {
+            Notifier.scheduleSyncRequiredNotification();
             completionHandler(UIBackgroundFetchResult.newData);
         });
     }
