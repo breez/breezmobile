@@ -25,10 +25,17 @@ class Notifier : NSObject {
     }
     
     static func showClosedChannelNotification() {
-        showNotification(withTitle: "Action Required", withBody: "Breez has identified a change in the state of one of your payment channels. It is highly recommended you open Breez in order to ensure access to your funds.", withActionCategoryId: openBreezCatagory.identifier, withIdentifier: "channelswatcher")
+        showNotification(withTitle: "Action Required", withBody: "Breez has identified a change in the state of one of your payment channels. It is highly recommended you open Breez in order to ensure access to your funds.", withActionCategoryId: openBreezCatagory.identifier, withIdentifier: "channelswatcher");
     }
     
-    static func showNotification(withTitle title: String, withBody body: String, withActionCategoryId catId: String, withIdentifier id : String){
+    static func scheduleSyncRequiredNotification() {
+        showNotification(withTitle: "Action Required", withBody: "Breez has not been synchronized for more than 24 hours. It is highly recommended you open Breez in order to ensure access to your funds.", withActionCategoryId: openBreezCatagory.identifier, withIdentifier: "syncwatcher", withDelay: 3600 * 2);
+    }
+    
+    static func showNotification(withTitle title: String, withBody body: String,
+                                 withActionCategoryId catId: String,
+                                 withIdentifier id : String,
+                                 withDelay secondsDelay: TimeInterval = 1){
         //get the notification center
         let center =  getNotificationCenter();
         
@@ -41,7 +48,7 @@ class Notifier : NSObject {
         content.categoryIdentifier = catId
         
         //notification trigger can be based on time, calendar or location
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval:1.0, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: secondsDelay, repeats: false)
         
         //create request to display
         let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
