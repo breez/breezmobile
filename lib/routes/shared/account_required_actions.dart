@@ -42,7 +42,7 @@ class AccountRequiredActionsIndicatorState
 
       _promptEnableSubscription =
           Observable(widget._backupBloc.promptBackupStream)
-              .delay(Duration(seconds: 1))
+              .delay(Duration(seconds: 4))
               .listen((_) {                
                 if (_currentSettings.promptOnError && !showingBackupDialog) {
                   showingBackupDialog = true;
