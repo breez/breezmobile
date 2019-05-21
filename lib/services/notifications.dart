@@ -26,8 +26,8 @@ class FirebaseNotifications implements Notifications {
     );
   }
 
-  Future<dynamic> _onMessage(Map<String, dynamic> message) { 
-    print("_onMessge: " + message.toString());
+  Future<dynamic> _onMessage(Map<String, dynamic> message) {
+    log.info("_onMessage = " + message.toString());     
     var data = message["data"] ?? message["aps"];
     if (data != null) {
       _notificationController.add(data);
@@ -35,9 +35,12 @@ class FirebaseNotifications implements Notifications {
     return null;
   }
 
-  Future<dynamic> _onResume(Map<String, dynamic> message) {  
-    print("_onResume: " + message.toString());     
-    _notificationController.add(message);
+  Future<dynamic> _onResume(Map<String, dynamic> message) { 
+    log.info("_onResume = " + message.toString());    
+    var data = message["data"] ?? message;
+    if (data != null) {
+      _notificationController.add(data);
+    }    
     return null;
   }
 
