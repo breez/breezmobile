@@ -63,7 +63,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
       controller.value = 1.0;
       controller.addStatusListener((status) {
         if (status == AnimationStatus.dismissed) {
-          Navigator.popUntil(context, (route) => route.isFirst);
+          Navigator.pop(context);
         }
       });
       _isInit = true;
