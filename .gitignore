@@ -19,3 +19,4 @@ ios/Runner/GoogleService-Info.plist
 ios/bindings.framework/*
 travis/config.sh
 ios/Podfile.lock
+android/key.properties
