@@ -32,12 +32,8 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
             height: widget._initialDialogSize,
             width: MediaQuery.of(context).size.width,
             constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: _buildConfirmationDialog())),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0)));
+            child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: _buildConfirmationDialog())),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)));
   }
 
   List<Widget> _buildConfirmationDialog() {
@@ -67,27 +63,21 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
         padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
         child: Container(
           width: MediaQuery.of(context).size.width,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  'Are you sure you want to pay',
-                  style: theme.alertStyle,
-                  textAlign: TextAlign.center,
-                ),
-                AutoSizeText.rich(
-                    TextSpan(children: <TextSpan>[
-                      TextSpan(
-                          text: widget._amountToPayStr,
-                          style: theme.alertStyle.copyWith(
-                              fontSize: 20.0, fontWeight: FontWeight.bold)),
-                      TextSpan(text: " ?")
-                    ]),
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    style: theme.alertStyle),
-              ]),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: <Widget>[
+            Text(
+              'Are you sure you want to pay',
+              style: theme.alertStyle,
+              textAlign: TextAlign.center,
+            ),
+            AutoSizeText.rich(
+                TextSpan(children: <TextSpan>[
+                  TextSpan(text: widget._amountToPayStr, style: theme.alertStyle.copyWith(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                  TextSpan(text: " ?")
+                ]),
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                style: theme.alertStyle),
+          ]),
         ),
       ),
     );
@@ -97,18 +87,13 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
     List<Widget> children = <Widget>[
       new FlatButton(
         child: new Text("NO", style: theme.buttonStyle),
-        onPressed: () {
-          Navigator.pop(context, false);
-        },
+        onPressed: () => Navigator.pop(context, false),
       ),
       new FlatButton(
         child: new Text("YES", style: theme.buttonStyle),
         onPressed: () {
-          widget.accountBloc.sentPaymentsSink
-              .add(PayRequest(widget.invoice.rawPayReq, widget._amountToPay));
-          setState(() {
-            widget._onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
-          });
+          widget.accountBloc.sentPaymentsSink.add(PayRequest(widget.invoice.rawPayReq, widget._amountToPay));
+          widget._onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
         },
       ),
     ];

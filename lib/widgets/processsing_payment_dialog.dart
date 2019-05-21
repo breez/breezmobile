@@ -1,14 +1,15 @@
 import 'dart:async';
+
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
+import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/payment_failed_report_dialog.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
@@ -27,8 +28,7 @@ class ProcessingPaymentDialog extends StatefulWidget {
   }
 }
 
-class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
-    with SingleTickerProviderStateMixin {
+class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<Color> colorAnimation;
   Animation<double> borderAnimation;
@@ -49,8 +49,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   void didChangeDependencies() {
     if (!_isInit) {
-      controller = AnimationController(
-          vsync: this, duration: Duration(milliseconds: 500));
+      controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
       colorAnimation = new ColorTween(
         begin: theme.BreezColors.blue[500],
         end: theme.BreezColors.white[500],
@@ -58,10 +57,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
         ..addListener(() {
           setState(() {});
         });
-      borderAnimation = Tween<double>(begin: 0.0, end: 12.0)
-          .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
-      opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
-          .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
+      borderAnimation = Tween<double>(begin: 0.0, end: 12.0).animate(CurvedAnimation(parent: controller, curve: Curves.ease));
+      opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: controller, curve: Curves.ease));
       _initializeTransitionAnimation();
       controller.value = 1.0;
       controller.addStatusListener((status) {
@@ -81,8 +78,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
       Future scrollAnimationFuture = Future.value(null);
       if (widget.scrollController.hasClients) {
         scrollAnimationFuture = widget.scrollController
-            .animateTo(widget.scrollController.position.minScrollExtent,
-                duration: Duration(milliseconds: 200), curve: Curves.ease)
+            .animateTo(widget.scrollController.position.minScrollExtent, duration: Duration(milliseconds: 200), curve: Curves.ease)
             .whenComplete(() => Future.delayed(Duration(milliseconds: 50)));
       }
       scrollAnimationFuture.whenComplete(() {
@@ -119,19 +115,14 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
         send = await showDialog(
             context: widget.context,
             barrierDismissible: false,
-            builder: (_) =>
-                new PaymentFailedReportDialog(widget.context, widget.accountBloc));
+            builder: (_) => new PaymentFailedReportDialog(widget.context, widget.accountBloc));
       }
 
       if (send) {
         var sendAction = SendPaymentFailureReport(error.traceReport);
         widget.accountBloc.userActionsSink.add(sendAction);
         await Navigator.push(
-            widget.context,
-            createLoaderRoute(widget.context,
-                message: "Sending Report...",
-                opacity: 0.8,
-                action: sendAction.future));
+            widget.context, createLoaderRoute(widget.context, message: "Sending Report...", opacity: 0.8, action: sendAction.future));
       }
     }
   }
@@ -163,8 +154,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
                     children: _buildProcessingPaymentDialog())),
             decoration: ShapeDecoration(
               color: colorAnimation.value,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderAnimation.value)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderAnimation.value)),
             ),
           ),
         ),
