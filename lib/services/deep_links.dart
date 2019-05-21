@@ -32,7 +32,7 @@ class DeepLinksService {
   Future<String> generateSessionInviteLink(SessionLinkModel link) async {
     ShortDynamicLink shortLink = await new DynamicLinkParameters(
       link: Uri.parse('https://breez.technology?${link.toLinkQuery()}'),
-      uriPrefix: "breez.page.link",
+      uriPrefix: "https://breez.page.link",
       androidParameters: AndroidParameters(packageName: "com.breez.client"),
       iosParameters: IosParameters(bundleId: "technology.breez.client")      
     ).buildShortLink();
