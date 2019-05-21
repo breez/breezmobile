@@ -11,7 +11,6 @@ import Foundation
 class Notifier : NSObject {
     
     static var notificationCenter : UNUserNotificationCenter?;
-    static let notificationHandler = NotifierHandler();
     static let openBreezAction = UNNotificationAction(identifier: "openBreezAction", title: "Open Breez", options: [.foreground])
     static let openBreezCatagory = UNNotificationCategory(identifier: "openBreezCat", actions: [openBreezAction], intentIdentifiers: [], options: [])
     
@@ -19,7 +18,6 @@ class Notifier : NSObject {
         if (notificationCenter == nil) {
             notificationCenter = UNUserNotificationCenter.current()
             notificationCenter!.setNotificationCategories([openBreezCatagory])
-            notificationCenter!.delegate = notificationHandler;
         }
         return notificationCenter!;
     }
@@ -30,7 +28,7 @@ class Notifier : NSObject {
     
     static func scheduleSyncRequiredNotification() {
         let center =  getNotificationCenter();
-        center.removePendingNotificationRequests(withIdentifiers: ["syncwatcher"])        
+        center.removePendingNotificationRequests(withIdentifiers: ["syncwatcher"])
         showNotification(withTitle: "Action Required", withBody: "Breez has not been synchronized for more than 24 hours. It is highly recommended you open Breez in order to ensure access to your funds.", withActionCategoryId: openBreezCatagory.identifier, withIdentifier: "syncwatcher", withDelay: 3600 * 2);
     }
     
@@ -61,11 +59,5 @@ class Notifier : NSObject {
                 print("error \(String(describing: error))")
             }
         }
-    }
-}
-
-class NotifierHandler : NSObject, UNUserNotificationCenterDelegate {
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        completionHandler();
     }
 }
