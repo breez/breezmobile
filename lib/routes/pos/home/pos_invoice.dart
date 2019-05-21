@@ -323,6 +323,8 @@ class POSInvoiceState extends State<POSInvoice> {
                   },
                 ),
               ],
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12.0))),
             );
           });
     } else {
@@ -439,6 +441,8 @@ class POSInvoiceState extends State<POSInvoice> {
               },
               child: new Text("Clear", style: theme.buttonStyle))
         ],
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0))),
       );
       showDialog(context: context, builder: (_) => dialog);
     }
@@ -667,6 +671,8 @@ class _NfcDialogState extends State<_NfcDialog> {
                         ],
                       ),
                     )),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
   }
 

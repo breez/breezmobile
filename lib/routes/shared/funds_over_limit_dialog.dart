@@ -92,6 +92,8 @@ class OverLimitFundsDialogState extends State<OverLimitFundsDialog> {
             onPressed: () => Navigator.pop(context),
             child: new Text("OK", style: theme.buttonStyle),
           )
-        ]);
+        ],
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0))),);
   }
 }
