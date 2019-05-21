@@ -42,9 +42,10 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     titlePadding: EdgeInsets.all(0.0),
     title: new Stack(children: <Widget>[
       new Container(
-        color: theme.BreezColors.blue[900],
         height: 70.0,
         width: 300.0,
+        decoration: ShapeDecoration(shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))), color: theme.BreezColors.blue[900],),
       ),
       new Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -112,6 +113,8 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
         },
       ),
     ],
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.vertical(bottom:Radius.circular(12.0),top:Radius.circular(13.0))
   );
 }
 
