@@ -8,8 +8,8 @@ dependencies:
   protobuf: any
 
   path_provider: any
-  firebase_database: ^2.0.2
-  firebase_messaging: ^4.0.0+1
+  firebase_database: ^3.0.0
+  firebase_messaging: ^5.0.1+1
   firebase_dynamic_links:
     git:
       url: https://github.com/breez/plugins.git
