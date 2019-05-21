@@ -87,8 +87,7 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.0.0-beta01'
     implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'com.google.firebase:firebase-invites:16.0.4'
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'    
     implementation 'com.google.android.gms:play-services-drive:16.0.0'
     implementation('com.google.api-client:google-api-client-android:1.26.0') {
         exclude group: 'org.apache.httpcomponents'        
