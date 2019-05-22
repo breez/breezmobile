@@ -22,11 +22,13 @@ class ChainSync : NSObject {
         var error : NSError?;
         let syncJob = BindingsNewSyncJob(workingDir, &error);
         if let _ = error {
+            completionHandler();
             return;
         }
         
         let closedChannelsJob = BindingsNewClosedChannelsJob(workingDir, &error);
         if let _ = error {
+            completionHandler();
             return;
         }
         
@@ -43,9 +45,9 @@ class ChainSync : NSObject {
     }
     
     func start(){
-        self.bgTask = app.beginBackgroundTask(expirationHandler: {
-            self.stopTask();
-        });
+//        self.bgTask = app.beginBackgroundTask(expirationHandler: {
+//            self.stopTask();
+//        });
         
         do {
             var boolRes : ObjCBool = false;
@@ -59,14 +61,14 @@ class ChainSync : NSObject {
         } catch {
             //log error
         }
-        stopTask();
+        //stopTask();
         return;
     }
     
-    func stopTask(){
-        syncJob!.stop();
-        closedChannelsJob!.stop();
-        app.endBackgroundTask(bgTask);
-        bgTask = UIBackgroundTaskIdentifier.invalid;
-    }
+//    func stopTask(){
+//        syncJob!.stop();
+//        closedChannelsJob!.stop();
+//        app.endBackgroundTask(bgTask);
+//        bgTask = UIBackgroundTaskIdentifier.invalid;
+//    }
 }
