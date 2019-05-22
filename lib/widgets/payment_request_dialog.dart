@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
@@ -10,7 +11,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-enum PaymentRequestState { PAYMENT_REQUEST, WAITING_FOR_CONFIRMATION, PROCESSING_PAYMENT }
+enum PaymentRequestState { PAYMENT_REQUEST, WAITING_FOR_CONFIRMATION, PROCESSING_PAYMENT, USER_CANCELLED, PAYMENT_COMPLETED }
 
 class PaymentRequestDialog extends StatefulWidget {
   final BuildContext context;
@@ -35,6 +36,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   double _initialDialogSize;
   String _amountToPayStr;
   Int64 _amountToPay;
+  ModalRoute _currentRoute;
 
   @override
   void initState() {
@@ -43,6 +45,16 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     _paymentInProgressSubscription = widget.accountBloc.accountStream.listen((acc) {
       _inProgress = acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty;
     });
+  }
+
+  @override void didChangeDependencies() {    
+    super.didChangeDependencies();
+    if (_currentRoute == null) {
+      _currentRoute = ModalRoute.of(context);
+      // widget.accountBloc.fulfilledPayments.listen((_){}, onError: (){
+      //   Navigator.of(context).removeRoute(_currentRoute);
+      // });
+    }
   }
 
   @override
@@ -66,7 +78,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
 
   Widget showPaymentRequestDialog() {
     if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
-      return ProcessingPaymentDialog(widget.context, widget.accountBloc, widget.firstPaymentItemKey, widget.scrollController, _initialDialogSize);
+      return ProcessingPaymentDialog(widget.context, widget.accountBloc, widget.firstPaymentItemKey, widget.scrollController, _initialDialogSize, _onStateChange);
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
       return PaymentConfirmationDialog(widget.accountBloc, widget.invoice, _initialDialogSize, _amountToPay, _amountToPayStr, (state) => _onStateChange(state));
     } else {
@@ -75,6 +87,15 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   }
 
   void _onStateChange(PaymentRequestState state) {
+    if (state == PaymentRequestState.PAYMENT_COMPLETED) {
+      Navigator.of(context).removeRoute(_currentRoute);
+      return;
+    }
+    if (state == PaymentRequestState.USER_CANCELLED) {
+      Navigator.of(context).removeRoute(_currentRoute);
+      widget.accountBloc.userActionsSink.add(CancelPaymentRequest(PayRequest(widget.invoice.rawPayReq, _amountToPay)));
+      return;
+    }
     setState(() {
       _state = state;
     });

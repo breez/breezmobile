@@ -8,6 +8,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/payment_failed_report_dialog.dart';
+import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -18,9 +19,10 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final AccountBloc accountBloc;
   final GlobalKey firstPaymentItemKey;
   final ScrollController scrollController;
+  final Function(PaymentRequestState state) _onStateChange;
   final double _initialDialogSize;
 
-  ProcessingPaymentDialog(this.context, this.accountBloc, this.firstPaymentItemKey, this.scrollController, this._initialDialogSize);
+  ProcessingPaymentDialog(this.context, this.accountBloc, this.firstPaymentItemKey, this.scrollController, this._initialDialogSize, this._onStateChange);
 
   @override
   ProcessingPaymentDialogState createState() {
@@ -37,9 +39,9 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
 
   AccountSettings _accountSettings;
   StreamSubscription<AccountSettings> _accountSettingsSubscription;
-  StreamSubscription<String> _sentPaymentResultSubscription;
+  StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
 
-  bool _isInit = false;
+  bool _isInit = false;  
 
   @override
   void initState() {
@@ -48,7 +50,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
   }
 
   void didChangeDependencies() {
-    if (!_isInit) {
+    if (!_isInit) {      
       controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
       colorAnimation = new ColorTween(
         begin: theme.BreezColors.blue[500],
@@ -60,10 +62,10 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
       borderAnimation = Tween<double>(begin: 0.0, end: 12.0).animate(CurvedAnimation(parent: controller, curve: Curves.ease));
       opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: controller, curve: Curves.ease));
       _initializeTransitionAnimation();
-      controller.value = 1.0;
+      controller.value = 1.0;      
       controller.addStatusListener((status) {
         if (status == AnimationStatus.dismissed) {
-          Navigator.pop(context);
+          widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
         }
       });
       _isInit = true;
@@ -74,7 +76,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
   _listenPaymentsResults() {
     _accountSettingsSubscription = widget.accountBloc.accountSettingsStream.listen((settings) => _accountSettings = settings);
 
-    _sentPaymentResultSubscription = widget.accountBloc.fulfilledPayments.listen((fulfilledPayment) {
+    _sentPaymentResultSubscription = widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
       Future scrollAnimationFuture = Future.value(null);
       if (widget.scrollController.hasClients) {
         scrollAnimationFuture = widget.scrollController
@@ -105,11 +107,9 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
   _onPaymentError(AccountSettings accountSettings, PaymentError error) async {
     bool prompt = accountSettings.failePaymentBehavior == BugReportBehavior.PROMPT;
     bool send = accountSettings.failePaymentBehavior == BugReportBehavior.SEND_REPORT;
-
-    // Close Payment Request Dialog
-    Navigator.pop(context);
-    showFlushbar(context, message: "Failed to send payment: ${error.toString().split("\n").first}");
-
+        
+    widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);    
+    showFlushbar(context, message: "Failed to send payment: ${error.toString().split("\n").first}");    
     if (!error.validationError) {
       if (prompt) {
         send = await showDialog(

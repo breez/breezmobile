@@ -1,3 +1,4 @@
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -30,7 +31,7 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
 
   StreamSubscription _blankInvoiceSubscription;
   StreamSubscription _paidInvoicesSubscription;
-  StreamSubscription<String> _sentPaymentResultSubscription;
+  StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
 
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool _isInit = false;
@@ -76,7 +77,7 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
           duration: new Duration(seconds: 3),
           content: new Text("Failed to send payment: " + err.toString()))));
     
-    _sentPaymentResultSubscription = _accountBloc.fulfilledPayments
+    _sentPaymentResultSubscription = _accountBloc.completedPaymentsStream
       .listen((fulfilledPayment) {
         _scaffoldKey.currentState.showSnackBar(new SnackBar(
             duration: new Duration(seconds: 3),
