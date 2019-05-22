@@ -80,13 +80,10 @@ class AccountBloc {
   final _accountNotificationsController =
       new StreamController<String>.broadcast();
   Stream<String> get accountNotificationsStream =>
-      _accountNotificationsController.stream;
+      _accountNotificationsController.stream;  
 
-  final _sentPaymentsController = new StreamController<PayRequest>();
-  Sink<PayRequest> get sentPaymentsSink => _sentPaymentsController.sink;
-
-  final _fulfilledPaymentsController = new StreamController<String>.broadcast();
-  Stream<String> get fulfilledPayments => _fulfilledPaymentsController.stream;
+  final _completedPaymentsController = new StreamController<CompletedPayment>.broadcast();
+  Stream<CompletedPayment> get completedPaymentsStream => _completedPaymentsController.stream;
 
   final _lightningDownController = new StreamController<bool>.broadcast();
   Stream<bool> get lightningDownStream => _lightningDownController.stream;  
@@ -121,7 +118,9 @@ class AccountBloc {
       SendPaymentFailureReport: _handleSendQueryRoute,
       ResetNetwork: _handleResetNetwork,
       RestartDaemon: _handleRestartDaemon,
-      FetchSwapFundStatus: _fetchFundStatusAction
+      FetchSwapFundStatus: _fetchFundStatusAction,
+      SendPayment: _sendPayment,
+      CancelPaymentRequest: _cancelPaymentRequest
     };
 
     _accountController.add(AccountModel.initial());
@@ -137,8 +136,7 @@ class AccountBloc {
       _listenAccountActions();      
       _hanleAccountSettings();
       _listenUserChanges(userProfileStream);
-      _listenWithdrawalRequests();
-      _listenSentPayments();
+      _listenWithdrawalRequests();      
       _listenFilterChanges();
       _listenAccountChanges();
       _listenEnableAccount();
@@ -202,6 +200,39 @@ class AccountBloc {
 
   Future _fetchFundStatusAction(FetchSwapFundStatus action) async {
     action.resolve(await _fetchFundStatus());    
+  }
+
+  Future _sendPayment(SendPayment sendPayment) {
+    var payRequest = sendPayment.paymentRequest;
+    _accountController.add(_accountController.value
+          .copyWith(paymentRequestInProgress: payRequest.paymentRequest));
+    return _breezLib
+        .sendPaymentForRequest(payRequest.paymentRequest,
+            amount: payRequest.amount)
+        .then((response) {
+      _accountController.add(
+        _accountController.value.copyWith(paymentRequestInProgress: ""));
+
+      if (response.paymentError.isNotEmpty) {         
+        return Future.error(PaymentError(payRequest, response.paymentError, response.traceReport));
+      }
+      
+      _completedPaymentsController.add(CompletedPayment(payRequest));
+      return Future.value(null);
+
+    }).catchError((err) {        
+      _accountController.add(
+          _accountController.value.copyWith(paymentRequestInProgress: ""));
+      var error = (err.runtimeType == PaymentError ? err : PaymentError(payRequest, err, null));
+      _completedPaymentsController
+          .addError(error);
+        return Future.error(error);
+    });
+  }
+
+  Future _cancelPaymentRequest(CancelPaymentRequest cancelRequest){
+    _completedPaymentsController.add(CompletedPayment(cancelRequest.paymentRequest, cancelled: true));
+    return Future.value(null);
   }
 
   void _listenRefundableDeposits() {
@@ -381,33 +412,6 @@ class AccountBloc {
     });
   }
 
-  void _listenSentPayments() {
-    _sentPaymentsController.stream.listen((payRequest) {
-      _accountController.add(_accountController.value
-          .copyWith(paymentRequestInProgress: payRequest.paymentRequest));
-      _breezLib
-          .sendPaymentForRequest(payRequest.paymentRequest,
-              amount: payRequest.amount)
-          .then((response) {
-        if (response.paymentError.isNotEmpty) {
-          _accountController.add(
-            _accountController.value.copyWith(paymentRequestInProgress: ""));
-          _fulfilledPaymentsController.addError(PaymentError(
-              payRequest, response.paymentError, response.traceReport));
-          return;
-        }
-        _accountController.add(
-            _accountController.value.copyWith(paymentRequestInProgress: ""));
-        _fulfilledPaymentsController.add(payRequest.paymentRequest);
-      }).catchError((err) {        
-        _accountController.add(
-            _accountController.value.copyWith(paymentRequestInProgress: ""));
-        _fulfilledPaymentsController
-            .addError(PaymentError(payRequest, err, null));
-      });
-    });
-  }
-
   void _listenFilterChanges() {
     _paymentFilterController.stream.skip(1).listen((filter) {
       _refreshPayments();
@@ -535,8 +539,7 @@ class AccountBloc {
   close() {
     _accountEnableController.close();    
     _paymentsController.close();
-    _accountNotificationsController.close();
-    _sentPaymentsController.close();
+    _accountNotificationsController.close();    
     _withdrawalController.close();
     _paymentFilterController.close();
     _lightningDownController.close();

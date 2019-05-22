@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
@@ -212,7 +213,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   Widget _buildActions(AccountModel account) {
     List<Widget> actions = [
       SimpleDialogOption(
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => widget._onStateChange(PaymentRequestState.USER_CANCELLED),
         child: new Text("CANCEL", style: theme.buttonStyle),
       )
     ];
@@ -229,7 +230,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
               widget._setAmountToPay(_amountToPayMap);
               widget._onStateChange(PaymentRequestState.WAITING_FOR_CONFIRMATION);
             } else {
-              widget.accountBloc.sentPaymentsSink.add(PayRequest(widget.invoice.rawPayReq, amountToPay(account)));
+              widget.accountBloc.userActionsSink.add(SendPayment(PayRequest(widget.invoice.rawPayReq, amountToPay(account))));
               widget._onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
             }
           }

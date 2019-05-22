@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
@@ -87,12 +88,12 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
     List<Widget> children = <Widget>[
       new FlatButton(
         child: new Text("NO", style: theme.buttonStyle),
-        onPressed: () => Navigator.pop(context, false),
+        onPressed: () => widget._onStateChange(PaymentRequestState.USER_CANCELLED),
       ),
       new FlatButton(
         child: new Text("YES", style: theme.buttonStyle),
         onPressed: () {
-          widget.accountBloc.sentPaymentsSink.add(PayRequest(widget.invoice.rawPayReq, widget._amountToPay));
+          widget.accountBloc.userActionsSink.add(SendPayment(PayRequest(widget.invoice.rawPayReq, widget._amountToPay)));
           widget._onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
         },
       ),
