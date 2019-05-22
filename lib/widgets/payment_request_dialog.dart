@@ -50,10 +50,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   @override void didChangeDependencies() {    
     super.didChangeDependencies();
     if (_currentRoute == null) {
-      _currentRoute = ModalRoute.of(context);
-      // widget.accountBloc.fulfilledPayments.listen((_){}, onError: (){
-      //   Navigator.of(context).removeRoute(_currentRoute);
-      // });
+      _currentRoute = ModalRoute.of(context);      
     }
   }
 
