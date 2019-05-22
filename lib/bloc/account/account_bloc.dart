@@ -213,8 +213,8 @@ class AccountBloc {
       _accountController.add(
         _accountController.value.copyWith(paymentRequestInProgress: ""));
 
-      if (response.paymentError.isNotEmpty) {        
-        return Future.error(response.paymentError);
+      if (response.paymentError.isNotEmpty) {         
+        return Future.error(PaymentError(payRequest, response.paymentError, response.traceReport));
       }
       
       _completedPaymentsController.add(CompletedPayment(payRequest));
@@ -223,9 +223,10 @@ class AccountBloc {
     }).catchError((err) {        
       _accountController.add(
           _accountController.value.copyWith(paymentRequestInProgress: ""));
+      var error = (err.runtimeType == PaymentError ? err : PaymentError(payRequest, err, null));
       _completedPaymentsController
-          .addError(PaymentError(payRequest, err, null));
-        return Future.error(err);
+          .addError(error);
+        return Future.error(error);
     });
   }
 

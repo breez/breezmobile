@@ -23,9 +23,9 @@ class InvoiceNotificationsHandler {
   }
 
   _listenCompletedPayments() {
-    _accountBloc.completedPaymentsStream.listen((completedPayment){
-      _handlingRequest = false;
-    });
+    _accountBloc.completedPaymentsStream.listen( (completedPayment){ _handlingRequest = false;}, onError: (err){
+        _handlingRequest = false;
+      });
   }
 
   _listenPaymentRequests() {
