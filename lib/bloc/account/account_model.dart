@@ -395,6 +395,13 @@ class PayRequest {
   PayRequest(this.paymentRequest, this.amount);
 }
 
+class CompletedPayment {
+  final PayRequest paymentRequest;
+  final bool cancelled;
+
+  CompletedPayment(this.paymentRequest, {this.cancelled = false});
+}
+
 class PaymentError implements Exception {
   final PayRequest request;
   final Object error;
