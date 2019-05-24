@@ -20,8 +20,9 @@ class MarketplaceBloc {
     _vendorData.forEach((vendorOptions) {
       String _url = config.get(vendorOptions, 'url');
       String _logo = config.get(vendorOptions, 'logo');
-      VendorModel _vendorModel =
-      VendorModel(_url, vendorOptions, logo: _logo);
+      String _onlyShowLogoStr = config.get(vendorOptions, 'onlyShowLogo') ?? 'false';
+      bool _onlyShowLogo = _onlyShowLogoStr.toLowerCase() == 'true';
+      VendorModel _vendorModel = VendorModel(_url, vendorOptions, logo: _logo, onlyShowLogo: _onlyShowLogo);
       _vendorList.add(_vendorModel);
     });
     _vendorController.add(_vendorList);
