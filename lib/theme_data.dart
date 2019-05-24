@@ -6,7 +6,7 @@ final ThemeData breezThemeData = new ThemeData(
   accentColor: BreezColors.white[500],
 );
 
-final VendorTheme bitrefill = VendorTheme(iconBgColor: Color(0xFF3e99fa));
+final VendorTheme bitrefill = VendorTheme(iconFgColor: Color.fromRGBO(68, 155, 247, 1.0), iconBgColor: Color(0xFFffffff),textColor: Color.fromRGBO(47, 47, 47, 1.0));
 final VendorTheme fastbitcoins = VendorTheme(iconBgColor: Color(0xFFff7c10), iconFgColor: Color(0xFF1f2a44), textColor: Color(0xFF1f2a44));
 final VendorTheme lnpizza = VendorTheme(iconBgColor:  Color(0xFF000000), iconFgColor: Color(0xFFf8e71c));
 final TextTheme appBarTextTheme = new TextTheme(title:appBarTextStyle);
