@@ -43,11 +43,17 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       _postMessageListener = _widgetWebview.onPostMessage.listen((postMessage) {
         if (postMessage != null) {
           final order = JSON.jsonDecode(postMessage);
-          invoiceBloc.newLightningLinkSink.add(order['uri']);
-          Navigator.popUntil(context, (route) {
+          if (order.containsKey("uri")) {
+            invoiceBloc.newLightningLinkSink.add(order['uri']);
+            Navigator.popUntil(context, (route) {
               return route.settings.name == "/home" || route.settings.name == "/";
-            }
-          );          
+            });
+            /* TODO: Instead of going to the home page:
+             * Hide Webview to show payment request dialog,
+             * If user cancels the payment, destroy Webview and go back to Marketplace page,
+             * If the payment is successful, show Webview again.
+             */
+          }
         }
       });
       _isInit = true;
