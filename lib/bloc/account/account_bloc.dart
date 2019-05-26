@@ -338,6 +338,7 @@ class AccountBloc {
             _listenReconnects();
             _listenRefundableDeposits();
             _listenRefundBroadcasts();
+            _pollSyncStatus();
           });
         } else {
           _accountController
@@ -350,6 +351,39 @@ class AccountBloc {
         }
       }
     });
+  }
+
+  void _pollSyncStatus(){
+    int startPollTimestamp = 0;
+    var fetchSyncStatus = (){};
+    fetchSyncStatus = (){
+      new Timer(Duration(milliseconds: 200), (){
+        _breezLib.sendCommand("getinfo").then((info){
+          Map replyJson = json.decode(info);
+          var sincedToTimestamp = int.parse(replyJson["best_header_timestamp"].toString()) * 1000;
+          var syncedToChain = replyJson["synced_to_chain"].toString() == "true";          
+          if (startPollTimestamp == 0) {
+            startPollTimestamp = sincedToTimestamp;
+          }          
+          double progress = (sincedToTimestamp - startPollTimestamp) / (DateTime.now().millisecondsSinceEpoch - startPollTimestamp);
+          if (Duration(milliseconds: sincedToTimestamp - startPollTimestamp) > Duration(days: 1)) {
+             _accountController.add(_accountController.value.copyWith(showBlockingSyncUI: true));
+          }
+          print("progress = " + progress.toString());
+          _accountController.add(_accountController.value.copyWith(syncProgress: progress));
+
+          if (syncedToChain) {
+            _accountController.add(_accountController.value.copyWith(showBlockingSyncUI: false, syncProgress: 1.0));
+            return;
+          }
+          fetchSyncStatus();
+        }).catchError((err){
+          fetchSyncStatus();
+        });
+      });
+    };  
+
+    fetchSyncStatus();  
   }
 
   void _listenBootstrapStatus() {
@@ -464,6 +498,7 @@ class AccountBloc {
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
         _lightningDownController.add(true);
+        _pollSyncStatus();
       }
       if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
         _refreshAccount();
