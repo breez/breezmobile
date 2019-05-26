@@ -120,7 +120,8 @@ class AccountBloc {
       RestartDaemon: _handleRestartDaemon,
       FetchSwapFundStatus: _fetchFundStatusAction,
       SendPayment: _sendPayment,
-      CancelPaymentRequest: _cancelPaymentRequest
+      CancelPaymentRequest: _cancelPaymentRequest,
+      ChangeSyncUIState: _collapseSyncUI,
     };
 
     _accountController.add(AccountModel.initial());
@@ -232,6 +233,11 @@ class AccountBloc {
 
   Future _cancelPaymentRequest(CancelPaymentRequest cancelRequest){
     _completedPaymentsController.add(CompletedPayment(cancelRequest.paymentRequest, cancelled: true));
+    return Future.value(null);
+  }
+
+  Future _collapseSyncUI(ChangeSyncUIState stateAction) {
+    _accountController.add(_accountController.value.copyWith(syncUIState: stateAction.nextState));
     return Future.value(null);
   }
 
@@ -353,27 +359,29 @@ class AccountBloc {
     });
   }
 
-  void _pollSyncStatus(){
+  void _pollSyncStatus(){    
     int startPollTimestamp = 0;
     var fetchSyncStatus = (){};
     fetchSyncStatus = (){
-      new Timer(Duration(milliseconds: 200), (){
-        _breezLib.sendCommand("getinfo").then((info){
+      new Timer(Duration(seconds: 1), (){        
+        _breezLib.sendCommand("getinfo").then((info){          
           Map replyJson = json.decode(info);
           var sincedToTimestamp = int.parse(replyJson["best_header_timestamp"].toString()) * 1000;
           var syncedToChain = replyJson["synced_to_chain"].toString() == "true";          
           if (startPollTimestamp == 0) {
             startPollTimestamp = sincedToTimestamp;
           }          
+          
           double progress = (sincedToTimestamp - startPollTimestamp) / (DateTime.now().millisecondsSinceEpoch - startPollTimestamp);
-          if (Duration(milliseconds: sincedToTimestamp - startPollTimestamp) > Duration(days: 1)) {
-             _accountController.add(_accountController.value.copyWith(showBlockingSyncUI: true));
+          if (Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(seconds: 1)) {
+             _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
           }
+
           print("progress = " + progress.toString());
           _accountController.add(_accountController.value.copyWith(syncProgress: progress));
 
           if (syncedToChain) {
-            _accountController.add(_accountController.value.copyWith(showBlockingSyncUI: false, syncProgress: 1.0));
+            _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.NONE, syncProgress: 1.0));
             return;
           }
           fetchSyncStatus();

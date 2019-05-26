@@ -40,3 +40,10 @@ class CancelPaymentRequest extends AsyncAction {
 
   CancelPaymentRequest(this.paymentRequest);
 }
+
+class ChangeSyncUIState extends AsyncAction {
+  final SyncUIState nextState;
+
+  ChangeSyncUIState(this.nextState);
+
+}
