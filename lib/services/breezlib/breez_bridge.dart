@@ -36,6 +36,10 @@ class BreezBridge {
         ready = true;
         _readyCompleter.complete();
       }
+      if (notification.type == NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
+        _readyCompleter = new Completer();
+        _startedCompleter = new Completer();
+      }
       _eventsController.add(new NotificationEvent()..mergeFromBuffer(event));
     });
     _tempDirFuture = getTemporaryDirectory();    

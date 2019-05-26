@@ -284,6 +284,8 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
             },
             child: new Text("YES", style: theme.buttonStyle))
       ],
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(context: context, builder: (_) => dialog);
   }
@@ -315,6 +317,8 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
               ))
         ],
       ),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(
         context: context,

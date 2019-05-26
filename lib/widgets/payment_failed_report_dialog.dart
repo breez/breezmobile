@@ -108,6 +108,8 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
               child: new Text("YES", style: theme.buttonStyle),
             ),
           ],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.0))),
         ));
   }
 

@@ -15,7 +15,8 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
     titlePadding: EdgeInsets.zero,
     title: new Stack(children: <Widget>[
       Container(
-        color: theme.BreezColors.blue[900],
+        decoration: ShapeDecoration(shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))), color: theme.BreezColors.blue[900],),
         height: 64.0,
         width: MediaQuery.of(context).size.width,
       ),
@@ -122,6 +123,8 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
         ],
       ),
     ),
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(12.0),top: Radius.circular(13.0))),
   );
   return showDialog<Null>(
     context: context,

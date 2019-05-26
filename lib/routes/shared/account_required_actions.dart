@@ -1,3 +1,4 @@
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
@@ -42,7 +43,7 @@ class AccountRequiredActionsIndicatorState
 
       _promptEnableSubscription =
           Observable(widget._backupBloc.promptBackupStream)
-              .delay(Duration(seconds: 1))
+              .delay(Duration(seconds: 4))
               .listen((_) {                
                 if (_currentSettings.promptOnError && !showingBackupDialog) {
                   showingBackupDialog = true;
@@ -103,6 +104,12 @@ class AccountRequiredActionsIndicatorState
                             builder: (_) => new OverLimitFundsDialog(accountBloc: widget._accountBloc)));
                       }
 
+                      if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED || accountSnapshot?.data?.syncUIState == SyncUIState.NONE) {
+                        warnings.add(
+                          () => widget._accountBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.BLOCKING))
+                        );
+                      }
+
                       if (warnings.length == 0) {
                         return SizedBox();
                       }
@@ -120,21 +127,58 @@ class AccountRequiredActionsIndicatorState
   }
 }
 
-class WarningAction extends StatelessWidget {
+class WarningAction extends StatefulWidget {
   final void Function() onTap;
+  final Widget iconWidget;
 
-  WarningAction(this.onTap);
+  WarningAction(this.onTap, {this.iconWidget});
+
+  @override
+  State<StatefulWidget> createState() {    
+    return WarningActionState();
+  }
+}
+
+class WarningActionState extends State<WarningAction> with SingleTickerProviderStateMixin {  
+
+  Animation<double> _animation;
+  AnimationController _animationController;
+
+  @override 
+  void initState() {  
+    super.initState();
+    _animationController = new AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        _animationController); //use Tween animation here, to animate between the values of 1.0 & 2.5.
+    _animation.addListener(() {
+      //here, a listener that rebuilds our widget tree when animation.value chnages
+      setState(() {
+        print(_animation.value.toString());
+      });
+    });
+    _animationController.forward();
+  }
+
+  @override 
+  void dispose() {
+    _animationController.dispose();  
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      iconSize: 45.0,
       padding: EdgeInsets.zero,
-      icon: new Image(
-        image: new AssetImage("src/icon/warning.png"),
-        color: Color.fromRGBO(0, 120, 253, 1.0),
+      icon: Container(
+        width: 45 * _animation.value,
+        child: widget.iconWidget ?? new Image(          
+          image: new AssetImage("src/icon/warning.png"),
+          color: Color.fromRGBO(0, 120, 253, 1.0),
+        ),
       ),
       tooltip: 'Backup',
-      onPressed: this.onTap,
+      onPressed: this.widget.onTap,
     );
   }
 }

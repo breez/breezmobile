@@ -22,8 +22,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     _currentSettings = user;
   });
 
-  Future _pickImage(BuildContext context) async {
-    const _platform = const MethodChannel('com.breez.client/image-cropper');
+  Future _pickImage(BuildContext context) async {    
     return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
 
       ImageCropper.cropImage(
@@ -46,9 +45,12 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     titlePadding: EdgeInsets.all(0.0),
     title: new Stack(children: <Widget>[
       new Container(
-        color: theme.BreezColors.blue[900],
         height: 70.0,
         width: 300.0,
+        decoration: ShapeDecoration(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
+          color: theme.BreezColors.blue[900],
+        ),
       ),
       new Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -88,9 +90,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
       child: new ListBody(
         children: <Widget>[
           new Theme(
-            data: new ThemeData(
-                primaryColor: theme.BreezColors.blue[900],
-                hintColor: theme.BreezColors.blue[900]),
+            data: new ThemeData(primaryColor: theme.BreezColors.blue[900], hintColor: theme.BreezColors.blue[900]),
             child: new TextField(
                 style: theme.avatarDialogStyle,
                 controller: _nameInputController,
@@ -110,12 +110,12 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
       new FlatButton(
         child: new Text('SAVE', style: theme.buttonStyle),
         onPressed: () {
-          userBloc.userSink
-              .add(_currentSettings.copyWith(name: _nameInputController.text));
+          userBloc.userSink.add(_currentSettings.copyWith(name: _nameInputController.text));
           Navigator.of(context).pop();
         },
       ),
     ],
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(12.0), top: Radius.circular(13.0))),
   );
 }
 
@@ -126,7 +126,6 @@ List<int> scaleAndFormatPNG(List<int> imageBytes) {
       width: image.width < image.height ? -1 : scaledWidth,
       height: image.width < image.height ? scaledWidth : -1);
   DartImage.Image centered = DartImage.copyInto(_transparentImage, resized,
-      dstX: ((scaledWidth - resized.width) / 2).round(),
-      dstY: ((scaledWidth - resized.height) / 2).round());
+      dstX: ((scaledWidth - resized.width) / 2).round(), dstY: ((scaledWidth - resized.height) / 2).round());
   return DartImage.encodePng(centered);
 }
