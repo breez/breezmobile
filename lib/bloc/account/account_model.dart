@@ -10,6 +10,12 @@ enum BugReportBehavior {
   IGNORE
 }
 
+enum SyncUIState {
+  BLOCKING,
+  COLLAPSED,
+  NONE
+}
+
 class AccountSettings {
   final bool ignoreWalletBalance;
   final bool showConnectProgress;
@@ -74,7 +80,7 @@ class AccountModel {
   final double bootstrapProgress;
   final bool enableInProgress; 
   final double syncProgress; 
-  final bool showBlockingSyncUI;
+  final SyncUIState syncUIState;  
 
   AccountModel(this._accountResponse, this._currency,
       {this.initial = false,
@@ -86,7 +92,7 @@ class AccountModel {
       this.enableInProgress = false,
       this.bootstrapProgress = 0,
       this.syncProgress = 0,
-      this.showBlockingSyncUI = false});
+      this.syncUIState = SyncUIState.NONE});
 
   AccountModel.initial()
       : this(
@@ -110,8 +116,8 @@ class AccountModel {
       bool bootstraping,
       bool enableInProgress,
       double bootstrapProgress,
-      double syncProgress, 
-      bool showBlockingSyncUI}) {
+      double syncProgress,       
+      SyncUIState syncUIState}) {
     return AccountModel(
         accountResponse ?? this._accountResponse, currency ?? this.currency,
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,
@@ -123,7 +129,7 @@ class AccountModel {
         paymentRequestInProgress:
             paymentRequestInProgress ?? this.paymentRequestInProgress,
         syncProgress: syncProgress ?? this.syncProgress,
-        showBlockingSyncUI: showBlockingSyncUI ?? this.showBlockingSyncUI);
+        syncUIState: syncUIState ?? this.syncUIState);
   }
 
   String get id => _accountResponse.id;  
