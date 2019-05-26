@@ -23,7 +23,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     
     "addFundsInit": SingleArgBindingExecutor(f: BindingsAddFundsInit),
     "addInvoice": SingleArgBindingExecutor(f: BindingsAddInvoice),
-    "availableSnapshots": SingleArgBindingExecutor(f: BindingsAvailableSnapshots),
+    "availableSnapshots": EmptyArgsBindingExecutor(f: BindingsAvailableSnapshots),
     "bootstrapFiles": SingleArgBindingExecutor(f: BindingsBootstrapFiles),
     "connectAccount": EmptyArgsBindingExecutor(f: BindingsConnectAccount),
     
