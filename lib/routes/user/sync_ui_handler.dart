@@ -123,7 +123,7 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
                     Center(child: Text("${(widget.value * 100).round().toString()}%", textAlign: TextAlign.center, style: TextStyle(fontSize: 36.0, color: Colors.white))),
                   ],),                                   
                   Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
+                    padding: const EdgeInsets.only(top: 32.0),
                     child: LoadingAnimatedText(widget.message, textAlign: TextAlign.center),
                   )
                 ],
