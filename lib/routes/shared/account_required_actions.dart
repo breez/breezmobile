@@ -105,7 +105,7 @@ class AccountRequiredActionsIndicatorState
                             builder: (_) => new OverLimitFundsDialog(accountBloc: widget._accountBloc))));
                       }
 
-                      if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED || accountSnapshot?.data?.syncUIState == SyncUIState.NONE) {
+                      if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED) {
                         warnings.add(WarningAction(
                           () => widget._accountBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.BLOCKING)),
                           iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),

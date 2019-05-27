@@ -86,7 +86,7 @@ class AccountSynchronizer {
 
   void _emitProgress(){    
     if (!_started) {
-      onStart(_startPollTimestamp, _bootstrapProgress > 0);
+      onStart(_startPollTimestamp, _bootstrapProgress != null);
       _started = true;
     }
 
