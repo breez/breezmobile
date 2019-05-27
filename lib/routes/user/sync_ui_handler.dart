@@ -1,7 +1,7 @@
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -41,8 +41,9 @@ ModalRoute _createSyncRoute(AccountBloc accBloc){
           var account = snapshot.data;
           double progress = account?.syncProgress;
           return TransparentRouteLoader(
-            message: "Synchronizing Blockchain...", 
+            message: "Please wait while Breez is synchronizing", 
             value: progress, 
+            opacity: 0.8,
             onClose: () => accBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.COLLAPSED)),
           );
         },
@@ -89,14 +90,54 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return FullScreenLoader(
-      message: "Synchronizing ${( (widget.value ?? 0) * 100).round().toString()}%", 
-      value: widget.value, 
-      bgColor: theme.BreezColors.blue[500],
-      opacity: 0.8,
-      progressColor: theme.whiteColor,
-      onClose: this.widget.onClose,
-    );    
+  Widget build(BuildContext context) {    
+    return Material(
+      type: MaterialType.transparency,
+      child: Stack(
+        children: <Widget>[                  
+          Positioned(
+            top: 0.0,
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: Container( 
+              color: theme.BreezColors.blue[500].withOpacity(widget.opacity),
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Stack(alignment: Alignment.center, children: <Widget>[
+                    Container(
+                    height: 160.0,
+                    width: 160.0,   
+                    child: new CircularProgressIndicator(        
+                      value: widget.value,
+                      semanticsLabel: widget.message,
+                      valueColor: new AlwaysStoppedAnimation<Color>(
+                        theme.whiteColor,
+                      ),        
+                    ),
+                  ),
+                    Center(child: Text("${(widget.value * 100).round().toString()}%", textAlign: TextAlign.center, style: TextStyle(fontSize: 36.0, color: Colors.white))),
+                  ],),                                   
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: LoadingAnimatedText(widget.message, textAlign: TextAlign.center),
+                  )
+                ],
+              )),
+          ),          
+          Positioned(
+            top: 25.0,
+            right: 25.0,
+            height: 30.0,
+            width: 30.0,
+            child: IconButton(color: Colors.white, onPressed: this.widget.onClose, icon: Icon(Icons.unfold_less)),
+          ),               
+        ],
+      ),
+    );   
   }
 }
