@@ -115,6 +115,7 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
                     child: new CircularProgressIndicator(        
                       value: widget.value,
                       semanticsLabel: widget.message,
+                      backgroundColor: Colors.grey.withOpacity(0.5),
                       valueColor: new AlwaysStoppedAnimation<Color>(
                         theme.whiteColor,
                       ),        
