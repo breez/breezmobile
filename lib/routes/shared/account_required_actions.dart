@@ -5,6 +5,7 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/routes/shared/funds_over_limit_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/rotator.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -79,35 +80,36 @@ class AccountRequiredActionsIndicatorState
                 return StreamBuilder<DateTime>(
                     stream: widget._backupBloc.lastBackupTimeStream,
                     builder: (context, backupSnapshot) {
-                      List<void Function()> warnings = List<void Function()>();
+                      List<Widget> warnings = List<Widget>();
                       Int64 walletBalance =
                           accountSnapshot?.data?.walletBalance ?? Int64(0);
                       if (walletBalance > 0 &&
                           !settingsSnapshot.data.ignoreWalletBalance) {
-                        warnings.add(() =>
-                            Navigator.of(context).pushNamed("/send_coins"));
+                        warnings.add(WarningAction(() =>
+                            Navigator.of(context).pushNamed("/send_coins")));
                       }
 
                       if (backupSnapshot.hasError) {
-                        warnings.add(() => showDialog(
+                        warnings.add(WarningAction(() => showDialog(
                             barrierDismissible: false,
                             context: context,
                             builder: (_) => new EnableBackupDialog(
-                                context, widget._backupBloc)));
+                                context, widget._backupBloc))));
                       }
 
                       var swapStatus = accountSnapshot?.data?.swapFundsStatus;
                       if (swapStatus?.fundsExceededLimit == true) {  
-                        warnings.add(() => showDialog(
+                        warnings.add(WarningAction(() => showDialog(
                             barrierDismissible: false,
                             context: context,
-                            builder: (_) => new OverLimitFundsDialog(accountBloc: widget._accountBloc)));
+                            builder: (_) => new OverLimitFundsDialog(accountBloc: widget._accountBloc))));
                       }
 
-                      if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED || accountSnapshot?.data?.syncUIState == SyncUIState.NONE) {
-                        warnings.add(
-                          () => widget._accountBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.BLOCKING))
-                        );
+                      if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED) {
+                        warnings.add(WarningAction(
+                          () => widget._accountBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.BLOCKING)),
+                          iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
+                        ));
                       }
 
                       if (warnings.length == 0) {
@@ -117,9 +119,7 @@ class AccountRequiredActionsIndicatorState
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         mainAxisSize: MainAxisSize.min,
-                        children: warnings
-                            .map((onTap) => WarningAction(onTap))
-                            .toList(),
+                        children: warnings                           
                       );
                     });
               });
@@ -152,9 +152,7 @@ class WarningActionState extends State<WarningAction> with SingleTickerProviderS
         _animationController); //use Tween animation here, to animate between the values of 1.0 & 2.5.
     _animation.addListener(() {
       //here, a listener that rebuilds our widget tree when animation.value chnages
-      setState(() {
-        print(_animation.value.toString());
-      });
+      setState(() {});
     });
     _animationController.forward();
   }
@@ -172,7 +170,7 @@ class WarningActionState extends State<WarningAction> with SingleTickerProviderS
       padding: EdgeInsets.zero,
       icon: Container(
         width: 45 * _animation.value,
-        child: widget.iconWidget ?? new Image(          
+        child: widget.iconWidget ??  new Image(          
           image: new AssetImage("src/icon/warning.png"),
           color: Color.fromRGBO(0, 120, 253, 1.0),
         ),

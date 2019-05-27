@@ -16,12 +16,15 @@ import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
 import 'package:connectivity/connectivity.dart';
 
+import 'account_synchronizer.dart';
+
 class AccountBloc {
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
   static const String BOOTSTRAPING_PREFERENCES_KEY = "BOOTSTRAPING";
 
   final _userActionsController = new StreamController<AsyncAction>.broadcast();
+  AccountSynchronizer _accountSynchronizer;
   Sink<AsyncAction> get userActionsSink => _userActionsController.sink;
   Map<Type, Function> _actionHandlers = Map();
 
@@ -330,6 +333,7 @@ class AccountBloc {
           print(
               "Account bloc got registered user, starting lightning daemon...");
           _startedLightning = true;
+          _pollSyncStatus();
           _breezLib.bootstrap().then((downloadNeeded) async {
             print("Account bloc bootstrap has finished");
             if (downloadNeeded) {
@@ -343,8 +347,7 @@ class AccountBloc {
             _listenConnectivityChanges();
             _listenReconnects();
             _listenRefundableDeposits();
-            _listenRefundBroadcasts();
-            _pollSyncStatus();
+            _listenRefundBroadcasts();            
           });
         } else {
           _accountController
@@ -359,41 +362,23 @@ class AccountBloc {
     });
   }
 
-  void _pollSyncStatus(){    
-    int startPollTimestamp = 0;
-    var fetchSyncStatus = (){};
-    fetchSyncStatus = (){
-      new Timer(Duration(seconds: 1), (){        
-        _breezLib.sendCommand("getinfo").then((info){          
-          Map replyJson = json.decode(info);
-          var sincedToTimestamp = int.parse(replyJson["best_header_timestamp"].toString()) * 1000;
-          var syncedToChain = replyJson["synced_to_chain"].toString() == "true";          
-          if (startPollTimestamp == 0) {
-            startPollTimestamp = sincedToTimestamp;
-          }          
-          
-          double progress = (sincedToTimestamp - startPollTimestamp) / (DateTime.now().millisecondsSinceEpoch - startPollTimestamp);
-          if (
-            Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(seconds: 1) &&
+  void _pollSyncStatus(){
+    if (_accountSynchronizer != null) {
+      _accountSynchronizer.dismiss();
+    }
+
+    _accountSynchronizer = new AccountSynchronizer(
+      _breezLib, 
+      onStart: (startPollTimestamp, bootstraping){
+        if (
+            bootstraping || Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(hours: 1) &&
             _accountController.value.syncUIState == SyncUIState.NONE) {
              _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
           }
-
-          print("progress = " + progress.toString());
-          _accountController.add(_accountController.value.copyWith(syncProgress: progress));
-
-          if (syncedToChain) {
-            _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.NONE, syncProgress: 1.0));
-            return;
-          }
-          fetchSyncStatus();
-        }).catchError((err){
-          fetchSyncStatus();
-        });
-      });
-    };  
-
-    fetchSyncStatus();  
+      },
+      onProgress: (progress) => _accountController.add(_accountController.value.copyWith(syncProgress: progress)),
+      onComplete: () => _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.NONE, syncProgress: 1.0))
+    );   
   }
 
   void _listenBootstrapStatus() {
