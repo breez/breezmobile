@@ -374,7 +374,7 @@ class AccountBloc {
           
           double progress = (sincedToTimestamp - startPollTimestamp) / (DateTime.now().millisecondsSinceEpoch - startPollTimestamp);
           if (
-            Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(seconds: 1) &&
+            Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 3) &&
             _accountController.value.syncUIState == SyncUIState.NONE) {
              _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
           }
