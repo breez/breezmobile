@@ -39,11 +39,11 @@ ModalRoute _createSyncRoute(AccountBloc accBloc){
         stream: accBloc.accountStream,
         builder: (ctx, snapshot){
           var account = snapshot.data;
-          double progress = account?.syncProgress;
+          double progress = account?.syncProgress ?? 0;
           return TransparentRouteLoader(
             message: "Please wait while Breez is synchronizing", 
             value: progress, 
-            opacity: 0.8,
+            opacity: 0.9,
             onClose: () => accBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.COLLAPSED)),
           );
         },

@@ -197,7 +197,7 @@ class AccountPageState extends State<AccountPage> {
                     message =
                     "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";
                   }
-                  return StatusText(message,
+                  return account.syncUIState == SyncUIState.BLOCKING ? SizedBox() : StatusText(message,
                       loading: account?.swapFundsStatus?.error?.isNotEmpty !=
                           true);
                 }
