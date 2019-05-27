@@ -333,6 +333,7 @@ class AccountBloc {
           print(
               "Account bloc got registered user, starting lightning daemon...");
           _startedLightning = true;
+          _pollSyncStatus();
           _breezLib.bootstrap().then((downloadNeeded) async {
             print("Account bloc bootstrap has finished");
             if (downloadNeeded) {
@@ -346,8 +347,7 @@ class AccountBloc {
             _listenConnectivityChanges();
             _listenReconnects();
             _listenRefundableDeposits();
-            _listenRefundBroadcasts();
-            _pollSyncStatus();
+            _listenRefundBroadcasts();            
           });
         } else {
           _accountController
@@ -369,9 +369,9 @@ class AccountBloc {
 
     _accountSynchronizer = new AccountSynchronizer(
       _breezLib, 
-      onStart: (startPollTimestamp){
+      onStart: (startPollTimestamp, bootstraping){
         if (
-            Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 1) &&
+            bootstraping || Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 1) &&
             _accountController.value.syncUIState == SyncUIState.NONE) {
              _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
           }
