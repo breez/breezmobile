@@ -35,6 +35,24 @@ class AccountSynchronizer {
     _bootstrapSubscription.cancel();
   }
 
+  void _listenBootstrapProgress() {
+    _bootstrapSubscription =
+        _breezLib.chainBootstrapProgress.listen((fileInfo) {
+      double totalContentLength = 0;
+      double downloadedContentLength = 0;
+      fileInfo.forEach((s, f) {
+        totalContentLength += f.contentLength;
+        downloadedContentLength += f.bytesDownloaded;
+      });
+      _bootstrapProgress = downloadedContentLength / totalContentLength;  
+      _emitProgress();    
+    }, onDone: (){
+      print("on done");
+    }, onError: (err){
+      print("error " + err.toString());
+    });
+  }
+
   void _pollSyncStatus() {
     new Timer(Duration(seconds: 1), () {
       if (_dismissed) {
@@ -45,18 +63,15 @@ class AccountSynchronizer {
         var sincedToTimestamp =
             int.parse(replyJson["best_header_timestamp"].toString()) * 1000;
         var syncedToChain = replyJson["synced_to_chain"].toString() == "true";
-        var totalChannels = replyJson["num_active_channels"] +
-            replyJson["num_inactive_channels"] +
-            replyJson["num_pending_channels"];
 
         if (_startPollTimestamp == 0) {
           _startPollTimestamp = sincedToTimestamp;
         }
 
         _chainProgress =
-            calculateChainProgress(sincedToTimestamp, totalChannels == 0);
+            _calculateChainProgress(sincedToTimestamp, _isInitialSync(replyJson));
 
-        emitProgress();
+        _emitProgress();
 
         if (syncedToChain) {
           onComplete();
@@ -69,7 +84,7 @@ class AccountSynchronizer {
     });
   }
 
-  void emitProgress(){    
+  void _emitProgress(){    
     if (!_started) {
       onStart(_startPollTimestamp, _bootstrapProgress > 0);
       _started = true;
@@ -82,25 +97,7 @@ class AccountSynchronizer {
     onProgress(totalProgress);
   }
 
-  void _listenBootstrapProgress() {
-    _bootstrapSubscription =
-        _breezLib.chainBootstrapProgress.listen((fileInfo) {
-      double totalContentLength = 0;
-      double downloadedContentLength = 0;
-      fileInfo.forEach((s, f) {
-        totalContentLength += f.contentLength;
-        downloadedContentLength += f.bytesDownloaded;
-      });
-      _bootstrapProgress = downloadedContentLength / totalContentLength;  
-      emitProgress();    
-    }, onDone: (){
-      print("on done");
-    }, onError: (err){
-      print("error " + err.toString());
-    });
-  }
-
-  double calculateChainProgress(int sincedToTimestamp, bool initialSync) {
+  double _calculateChainProgress(int sincedToTimestamp, bool initialSync) {
     double chainProgress = (sincedToTimestamp - _startPollTimestamp) /
         (DateTime.now().millisecondsSinceEpoch - _startPollTimestamp);
 
@@ -128,5 +125,12 @@ class AccountSynchronizer {
     }
     _bestHeaderTimestamp = sincedToTimestamp;
     return chainProgress;
+  }
+
+  bool _isInitialSync(Map<dynamic, dynamic> nodeInfo){
+    var totalChannels = nodeInfo["num_active_channels"] +
+            nodeInfo["num_inactive_channels"] +
+            nodeInfo["num_pending_channels"];
+    return totalChannels == 0;
   }
 }
