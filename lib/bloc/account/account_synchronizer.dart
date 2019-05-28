@@ -54,7 +54,7 @@ class AccountSynchronizer {
   }
 
   void _pollSyncStatus() {
-    new Timer(Duration(seconds: 1), () {
+    new Timer(Duration(milliseconds: 300), () {
       if (_dismissed) {
         return;
       }
