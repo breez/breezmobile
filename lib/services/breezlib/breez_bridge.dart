@@ -94,6 +94,10 @@ class BreezBridge {
     return _invokeMethodWhenReady("getLogPath").then( (logPath) => logPath as String);
   }
 
+  Future<int> lastSyncedHeaderTimestamp(){
+    return _invokeMethodImmediate("lastSyncedHeaderTimestamp").then((res) => res as int);
+  }
+
   Future<Account> getAccount() {
     return _invokeMethodImmediate("getAccountInfo")
         .then((result) => new Account()..mergeFromBuffer(result ?? []));
