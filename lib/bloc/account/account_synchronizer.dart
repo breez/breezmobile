@@ -28,6 +28,10 @@ class AccountSynchronizer {
       {this.onStart, this.onProgress, this.onComplete, this.bootstraping}) {
     _listenBootstrapProgress();
     _pollSyncStatus();
+    _breezLib.lastSyncedHeaderTimestamp().then((timestamp) {      
+      _startPollTimestamp = timestamp * 1000;      
+      _emitProgress();
+    });
   }
 
   void dismiss() {
