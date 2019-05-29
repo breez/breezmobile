@@ -16,12 +16,15 @@ import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
 import 'package:connectivity/connectivity.dart';
 
+import 'account_synchronizer.dart';
+
 class AccountBloc {
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
   static const String BOOTSTRAPING_PREFERENCES_KEY = "BOOTSTRAPING";
 
   final _userActionsController = new StreamController<AsyncAction>.broadcast();
+  AccountSynchronizer _accountSynchronizer;
   Sink<AsyncAction> get userActionsSink => _userActionsController.sink;
   Map<Type, Function> _actionHandlers = Map();
 
@@ -120,7 +123,8 @@ class AccountBloc {
       RestartDaemon: _handleRestartDaemon,
       FetchSwapFundStatus: _fetchFundStatusAction,
       SendPayment: _sendPayment,
-      CancelPaymentRequest: _cancelPaymentRequest
+      CancelPaymentRequest: _cancelPaymentRequest,
+      ChangeSyncUIState: _collapseSyncUI,
     };
 
     _accountController.add(AccountModel.initial());
@@ -235,6 +239,11 @@ class AccountBloc {
     return Future.value(null);
   }
 
+  Future _collapseSyncUI(ChangeSyncUIState stateAction) {
+    _accountController.add(_accountController.value.copyWith(syncUIState: stateAction.nextState));
+    return Future.value(null);
+  }
+
   void _listenRefundableDeposits() {
     var refreshRefundableAddresses = () {
       _breezLib.getRefundableSwapAddresses().then((addressList) {
@@ -324,6 +333,7 @@ class AccountBloc {
           print(
               "Account bloc got registered user, starting lightning daemon...");
           _startedLightning = true;
+          _pollSyncStatus();
           _breezLib.bootstrap().then((downloadNeeded) async {
             print("Account bloc bootstrap has finished");
             if (downloadNeeded) {
@@ -337,7 +347,7 @@ class AccountBloc {
             _listenConnectivityChanges();
             _listenReconnects();
             _listenRefundableDeposits();
-            _listenRefundBroadcasts();
+            _listenRefundBroadcasts();            
           });
         } else {
           _accountController
@@ -350,6 +360,25 @@ class AccountBloc {
         }
       }
     });
+  }
+
+  void _pollSyncStatus(){
+    if (_accountSynchronizer != null) {
+      _accountSynchronizer.dismiss();
+    }
+
+    _accountSynchronizer = new AccountSynchronizer(
+      _breezLib, 
+      onStart: (startPollTimestamp, bootstraping){
+        if (
+            bootstraping || Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(hours: 1) &&
+            _accountController.value.syncUIState == SyncUIState.NONE) {
+             _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
+          }
+      },
+      onProgress: (progress) => _accountController.add(_accountController.value.copyWith(syncProgress: progress)),
+      onComplete: () => _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.NONE, syncProgress: 1.0))
+    );   
   }
 
   void _listenBootstrapStatus() {
@@ -464,6 +493,7 @@ class AccountBloc {
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
         _lightningDownController.add(true);
+        _pollSyncStatus();
       }
       if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
         _refreshAccount();

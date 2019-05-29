@@ -10,6 +10,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:breez/widgets/navigation_drawer.dart';
+import '../sync_ui_handler.dart';
 import 'account_page.dart';
 import 'package:breez/routes/user/received_invoice_notification.dart';
 import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
@@ -204,7 +205,8 @@ class HomeState extends State<Home> {
       (e) {
         promptError(context, "Connect to Pay", Text(e.toString(), style: theme.alertStyle));
       }
-    );    
+    );
+    new SyncUIHandler(widget.accountBloc, context);
 
     _accountNotificationsSubscription = widget.accountBloc.accountNotificationsStream
       .listen(

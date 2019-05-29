@@ -1,9 +1,11 @@
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/routes/shared/funds_over_limit_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/rotator.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -78,29 +80,36 @@ class AccountRequiredActionsIndicatorState
                 return StreamBuilder<DateTime>(
                     stream: widget._backupBloc.lastBackupTimeStream,
                     builder: (context, backupSnapshot) {
-                      List<void Function()> warnings = List<void Function()>();
+                      List<Widget> warnings = List<Widget>();
                       Int64 walletBalance =
                           accountSnapshot?.data?.walletBalance ?? Int64(0);
                       if (walletBalance > 0 &&
                           !settingsSnapshot.data.ignoreWalletBalance) {
-                        warnings.add(() =>
-                            Navigator.of(context).pushNamed("/send_coins"));
+                        warnings.add(WarningAction(() =>
+                            Navigator.of(context).pushNamed("/send_coins")));
                       }
 
                       if (backupSnapshot.hasError) {
-                        warnings.add(() => showDialog(
+                        warnings.add(WarningAction(() => showDialog(
                             barrierDismissible: false,
                             context: context,
                             builder: (_) => new EnableBackupDialog(
-                                context, widget._backupBloc)));
+                                context, widget._backupBloc))));
                       }
 
                       var swapStatus = accountSnapshot?.data?.swapFundsStatus;
                       if (swapStatus?.fundsExceededLimit == true) {  
-                        warnings.add(() => showDialog(
+                        warnings.add(WarningAction(() => showDialog(
                             barrierDismissible: false,
                             context: context,
-                            builder: (_) => new OverLimitFundsDialog(accountBloc: widget._accountBloc)));
+                            builder: (_) => new OverLimitFundsDialog(accountBloc: widget._accountBloc))));
+                      }
+
+                      if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED) {
+                        warnings.add(WarningAction(
+                          () => widget._accountBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.BLOCKING)),
+                          iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
+                        ));
                       }
 
                       if (warnings.length == 0) {
@@ -110,9 +119,7 @@ class AccountRequiredActionsIndicatorState
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         mainAxisSize: MainAxisSize.min,
-                        children: warnings
-                            .map((onTap) => WarningAction(onTap))
-                            .toList(),
+                        children: warnings                           
                       );
                     });
               });
@@ -120,21 +127,56 @@ class AccountRequiredActionsIndicatorState
   }
 }
 
-class WarningAction extends StatelessWidget {
+class WarningAction extends StatefulWidget {
   final void Function() onTap;
+  final Widget iconWidget;
 
-  WarningAction(this.onTap);
+  WarningAction(this.onTap, {this.iconWidget});
+
+  @override
+  State<StatefulWidget> createState() {    
+    return WarningActionState();
+  }
+}
+
+class WarningActionState extends State<WarningAction> with SingleTickerProviderStateMixin {  
+
+  Animation<double> _animation;
+  AnimationController _animationController;
+
+  @override 
+  void initState() {  
+    super.initState();
+    _animationController = new AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        _animationController); //use Tween animation here, to animate between the values of 1.0 & 2.5.
+    _animation.addListener(() {
+      //here, a listener that rebuilds our widget tree when animation.value chnages
+      setState(() {});
+    });
+    _animationController.forward();
+  }
+
+  @override 
+  void dispose() {
+    _animationController.dispose();  
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      iconSize: 45.0,
       padding: EdgeInsets.zero,
-      icon: new Image(
-        image: new AssetImage("src/icon/warning.png"),
-        color: Color.fromRGBO(0, 120, 253, 1.0),
+      icon: Container(
+        width: 45 * _animation.value,
+        child: widget.iconWidget ??  new Image(          
+          image: new AssetImage("src/icon/warning.png"),
+          color: Color.fromRGBO(0, 120, 253, 1.0),
+        ),
       ),
       tooltip: 'Backup',
-      onPressed: this.onTap,
+      onPressed: this.widget.onTap,
     );
   }
 }
