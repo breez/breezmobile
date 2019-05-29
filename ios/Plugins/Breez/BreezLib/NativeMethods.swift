@@ -22,6 +22,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "stop": VoidBindingExecutor(f: BindingsStop),
     "restartDaemon": EmptyArgsBindingExecutor(f: BindingsRestartDaemon),
     
+    "lastSyncedHeaderTimestamp": VoidBindingExecutor(f: BindingsLastSyncedHeaderTimestamp),
     "addFundsInit": SingleArgBindingExecutor(f: BindingsAddFundsInit),
     "addInvoice": SingleArgBindingExecutor(f: BindingsAddInvoice),
     "availableSnapshots": EmptyArgsBindingExecutor(f: BindingsAvailableSnapshots),
