@@ -136,6 +136,7 @@ class HomeState extends State<Home> {
     return new Scaffold(
         key: _scaffoldKey,
         appBar: new AppBar(
+          centerTitle: false,
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.all(14.0),
