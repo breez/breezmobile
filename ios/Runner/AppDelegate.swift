@@ -23,6 +23,7 @@ class AppDelegate : FlutterAppDelegate {
         let workingDir = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         var error : NSError?;
         logger = BindingsGetLogger(workingDir, &error)!;
+        logger.log("application has launched!", lvl: "INFO")
         return super.application(application, didFinishLaunchingWithOptions: launchOptions);
     }
     
@@ -44,6 +45,10 @@ class AppDelegate : FlutterAppDelegate {
         }        
         super.application(application, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler);
         
+    }
+    
+    override func applicationWillTerminate(_ application: UIApplication) {
+        logger.log("application is about to terminate!", lvl: "INFO");
     }
     
     override func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Void {
