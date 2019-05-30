@@ -107,6 +107,7 @@ class AccountBloc {
   BreezUserModel _currentUser;
   bool _allowReconnect = true;
   bool _startedLightning = false;
+  bool _retryingLightningService = false;
   SharedPreferences _sharedPreferences;
   BreezBridge _breezLib;
   Notifications _notificationsService;
@@ -484,7 +485,7 @@ class AccountBloc {
       return _dateFilteredPaymentsSet.intersection(paymentsSet).toList();
     }
     return paymentsSet.toList();
-  }
+  }  
 
   void _listenAccountChanges() {
     StreamSubscription<NotificationEvent> eventSubscription;
@@ -492,8 +493,14 @@ class AccountBloc {
         Observable(_breezLib.notificationStream).listen((event) {
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
-        _lightningDownController.add(true);
-        _pollSyncStatus();
+            _pollSyncStatus();
+            if (!_retryingLightningService) {
+              _retryingLightningService = true;
+              _breezLib.restartLightningDaemon();
+              return;
+            }
+            _retryingLightningService = false;
+            _lightningDownController.add(true);         
       }
       if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
         _refreshAccount();
