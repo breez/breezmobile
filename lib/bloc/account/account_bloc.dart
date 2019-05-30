@@ -371,7 +371,7 @@ class AccountBloc {
       _breezLib, 
       onStart: (startPollTimestamp, bootstraping){
         if (
-            bootstraping || Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(hours: 1) &&
+            bootstraping || Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 1) &&
             _accountController.value.syncUIState == SyncUIState.NONE) {
              _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
           }
