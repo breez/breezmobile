@@ -11,8 +11,15 @@ import Flutter
 import Bindings
 import GoogleSignIn
 
+class EmptyLogger : NSObject, BindingsLoggerProtocol {
+    func log(_ msg: String?, lvl: String?) {
+        print(msg!);
+    }
+}
 
 class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStreamHandler {
+    static var logger : BindingsLoggerProtocol = EmptyLogger();
+    
     var eventSink : FlutterEventSink?;
     var googleAuth = GoogleAuthenticator();
     
@@ -63,10 +70,12 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             let tempDir : String = args["tempDir"] as! String;
             let workingDir : String = args["workingDir"] as! String;
             var err : NSError?
-            if (!BindingsInit(tempDir, workingDir, self, &err)){
+            if (BindingsInit(tempDir, workingDir, self, &err)){
+                var error : NSError?;
+                Breez.logger = BindingsGetLogger(workingDir, &error)!;
                 result(true)
             } else {
-                result(err);
+                result(FlutterError(code: "", message: err?.description, details: nil));
             }
         }
         result(FlutterError(code: "Missing Argument", message: "Expecting a dictionary", details: nil));
