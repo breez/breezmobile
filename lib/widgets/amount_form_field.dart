@@ -26,7 +26,8 @@ class AmountFormField extends TextFormField {
     FormFieldSetter<String> onSaved,
     bool enabled,    
   }) : super(
-            keyboardType: defaultTargetPlatform == TargetPlatform.android ? TextInputType.number : TextInputType.text,
+            focusNode: focusNode,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
             decoration: decoration,
             style: style,
             enabled: enabled,

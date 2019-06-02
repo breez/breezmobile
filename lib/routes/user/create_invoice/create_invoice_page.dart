@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/widgets/form_keyboard_actions.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -31,6 +32,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   StreamSubscription<bool> _paidInvoicesSubscription;
   bool _isInit = false;
+  final FocusNode _amountFocusNode = FocusNode();
 
   @override void didChangeDependencies(){        
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
@@ -114,81 +116,85 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             return StaticLoader();
           }
           AccountModel acc = snapshot.data;
-          return Form(
-            key: _formKey,
-            child: new Padding(
-              padding: EdgeInsets.only(
-                  left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-              child: new Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  new TextFormField(
-                    controller: _descriptionController,
-                    keyboardType: TextInputType.multiline,
-                    textInputAction: TextInputAction.done,
-                    maxLines: null,
-                    maxLength: 90,
-                    maxLengthEnforced: true,
-                    decoration: new InputDecoration(
-                      labelText: "Description",
-                    ),
-                    style: theme.FieldTextStyle.textStyle,
-                    validator: (text) {
-                      if (text.length == 0) {
-                        return "Please enter a description";
-                      }
-                    },),
-                  new AmountFormField(
-                      controller: _amountController,
-                      currency: acc.currency,
-                      validatorFn: acc.validateIncomingPayment,
+          return FormActionsWrapper(
+            numericFieldNode: _amountFocusNode,
+            child: Form(
+              key: _formKey,
+              child: new Padding(
+                padding: EdgeInsets.only(
+                    left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+                child: new Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    new TextFormField(
+                      controller: _descriptionController,
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.done,
+                      maxLines: null,
+                      maxLength: 90,
+                      maxLengthEnforced: true,
                       decoration: new InputDecoration(
-                          labelText: acc.currency.displayName + " Amount"),
-                      style: theme.FieldTextStyle.textStyle),
-                  new Container(
-                    padding: new EdgeInsets.only(top: 16.0),
-                    child: _buildReceivableBTC(acc),
-                  ),
-                  StreamBuilder(
-                      stream: accountBloc.accountStream,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<AccountModel> accSnapshot) {
-
-                        AccountModel acc = accSnapshot.data;
-
-                        String message;
-                        if (accSnapshot.hasError) {
-                          message = accSnapshot.error.toString();
-                        } else if (!accSnapshot.hasData) {
-                          message =
-                              'Receiving payments will be available as soon as Breez is synchronized.';
-                        } else if (acc.processingBreezConnection) {
-                          message =
-                              'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
+                        labelText: "Description",
+                      ),
+                      style: theme.FieldTextStyle.textStyle,
+                      validator: (text) {
+                        if (text.length == 0) {
+                          return "Please enter a description";
                         }
+                      },),
+                    new AmountFormField(
+                        focusNode: _amountFocusNode,
+                        controller: _amountController,
+                        currency: acc.currency,
+                        validatorFn: acc.validateIncomingPayment,
+                        decoration: new InputDecoration(
+                            labelText: acc.currency.displayName + " Amount"),
+                        style: theme.FieldTextStyle.textStyle),
+                    new Container(
+                      padding: new EdgeInsets.only(top: 16.0),
+                      child: _buildReceivableBTC(acc),
+                    ),
+                    StreamBuilder(
+                        stream: accountBloc.accountStream,
+                        builder: (BuildContext context,
+                            AsyncSnapshot<AccountModel> accSnapshot) {
 
-                        if (message != null) {
-                          // In case error doesn't have a trailing full stop
-                          if (!message.endsWith('.')) {
-                            message += '.';
+                          AccountModel acc = accSnapshot.data;
+
+                          String message;
+                          if (accSnapshot.hasError) {
+                            message = accSnapshot.error.toString();
+                          } else if (!accSnapshot.hasData) {
+                            message =
+                                'Receiving payments will be available as soon as Breez is synchronized.';
+                          } else if (acc.processingBreezConnection) {
+                            message =
+                                'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
                           }
-                          return Container(
-                              padding: EdgeInsets.only(
-                                  top: 50.0, left: 30.0, right: 30.0),
-                              child: Column(children: <Widget>[
-                                Text(
-                                  message,
-                                  textAlign: TextAlign.center,
-                                  style: theme.warningStyle,
-                                ),
-                              ]));
-                        }
-                        else {
-                          return Container();
-                        }
-                      })
-                ],
+
+                          if (message != null) {
+                            // In case error doesn't have a trailing full stop
+                            if (!message.endsWith('.')) {
+                              message += '.';
+                            }
+                            return Container(
+                                padding: EdgeInsets.only(
+                                    top: 50.0, left: 30.0, right: 30.0),
+                                child: Column(children: <Widget>[
+                                  Text(
+                                    message,
+                                    textAlign: TextAlign.center,
+                                    style: theme.warningStyle,
+                                  ),
+                                ]));
+                          }
+                          else {
+                            return Container();
+                          }
+                        })
+                  ],
+                ),
               ),
             ),
           );
