@@ -1,4 +1,5 @@
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
@@ -25,7 +26,7 @@ class AmountFormField extends TextFormField {
     FormFieldSetter<String> onSaved,
     bool enabled,    
   }) : super(
-            keyboardType: TextInputType.number,
+            keyboardType: defaultTargetPlatform == TargetPlatform.android ? TextInputType.number : TextInputType.text,
             decoration: decoration,
             style: style,
             enabled: enabled,
