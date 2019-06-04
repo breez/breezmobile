@@ -100,7 +100,7 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
       message =
       "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";
       showMessage = true;
-    }
+    }    
 
     List<Widget> slivers = new List<Widget>();
     slivers.add(SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(_accountBloc, _userProfileBloc), pinned: true));
@@ -161,7 +161,7 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
             builder: (context, offset) {
               double height = (DASHBOARD_MAX_HEIGHT - offset).clamp(DASHBOARD_MIN_HEIGHT, DASHBOARD_MAX_HEIGHT);
               double heightFactor = (offset / (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT)).clamp(0.0, 1.0);
-              return account != null ? FloatingActionsBar(account, height, heightFactor) : Positioned(top: 0.0, child: SizedBox());
+              return account != null && !account.initial ? FloatingActionsBar(account, height, heightFactor) : Positioned(top: 0.0, child: SizedBox());
             },
           ),
         ],

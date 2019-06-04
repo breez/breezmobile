@@ -22,7 +22,7 @@ class WalletDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     double startHeaderSize = theme.headline.fontSize;
     double endHeaderFontSize = theme.headline.fontSize - 8.0;
-    bool showProgressBar = _accSettings?.showConnectProgress == true || _accountModel?.isInitialBootstrap == true;
+    bool showProgressBar = (_accSettings?.showConnectProgress == true && !_accountModel.initial) || _accountModel?.isInitialBootstrap == true;
 
     return Stack(
       alignment: AlignmentDirectional.topCenter,
@@ -51,14 +51,14 @@ class WalletDashboard extends StatelessWidget {
         Positioned(
             top: 10.0,
             child: Center(
-              child: _accountModel != null
+              child: _accountModel != null && !_accountModel.initial
                   ? Text("Balance", style: theme.subtitle.copyWith(color: theme.subtitle.color.withOpacity( pow(1 - _offsetFactor, 8))))
                   : SizedBox(),
             )),
         Positioned(
             top: 30 - BALANCE_OFFSET_TRANSITION * _offsetFactor,
             child: Center(
-              child: _accountModel != null
+              child: _accountModel != null && !_accountModel.initial
                   ? FlatButton(
                   onPressed: () {
                     var nextCurrencyIndex = (Currency.currencies.indexOf(_accountModel.currency) + 1) % Currency.currencies.length;

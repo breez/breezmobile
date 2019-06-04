@@ -175,7 +175,7 @@ class AccountBloc {
   void _setBootstraping(bool bootstraping) {
     _sharedPreferences.setBool(BOOTSTRAPING_PREFERENCES_KEY, bootstraping);
     _accountController
-        .add(_accountController.value.copyWith(bootstraping: bootstraping));
+        .add(_accountController.value.copyWith(bootstraping: bootstraping));    
   }
 
   bool _isBootstrapping() {
@@ -404,7 +404,7 @@ class AccountBloc {
       });
       double progress = downloadedContentLength / totalContentLength;
       _accountController
-          .add(_accountController.value.copyWith(bootstrapProgress: progress));
+          .add(_accountController.value.copyWith(bootstrapProgress: progress));      
     }, onDone: () {
       _accountController
           .add(_accountController.value.copyWith(bootstrapProgress: 1));
@@ -412,7 +412,7 @@ class AccountBloc {
 
     _breezLib.chainBootstrapProgress.first.then((_) {
       _accountController
-          .add(_accountController.value.copyWith(bootstraping: true));
+          .add(_accountController.value.copyWith(bootstraping: true, initial: false));
     });
   }
 

@@ -18,7 +18,7 @@ class FadeInWidgetState extends State<FadeInWidget> with SingleTickerProviderSta
   @override
   void initState() {    
     super.initState();
-    AnimationController controller = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    AnimationController controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
     _fadeIn = CurvedAnimation(parent: controller, curve: Curves.easeIn);
     controller.forward(); 
   }
