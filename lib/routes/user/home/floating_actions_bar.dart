@@ -1,5 +1,6 @@
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/withdraw_funds/withdraw_funds_page.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'dart:math';
@@ -17,7 +18,7 @@ class FloatingActionsBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isSmallView = height < 160;
-    bool hasBalance = account.balance > 0;
+    bool hasBalance = (account?.balance ?? Int64(0)) > 0;
 
     return new Positioned(
       top: (height - 25.0),

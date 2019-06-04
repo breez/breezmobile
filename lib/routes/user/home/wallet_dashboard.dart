@@ -1,5 +1,6 @@
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/routes/user/home/status_indicator.dart';
@@ -36,14 +37,15 @@ class WalletDashboard extends StatelessWidget {
             left: CHART_MAX_HORIZONTAL_OFFSET * _offsetFactor,
             height: this._height + CHART_MAX_VERTICAL_OFFSET * _offsetFactor,
             bottom: -CHART_MAX_VERTICAL_OFFSET * _offsetFactor,
-            child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    image: DecorationImage(
-                      image: AssetImage("src/images/chart_graph.png"),
-                      fit: BoxFit.fitWidth,
-                      alignment: FractionalOffset.bottomCenter,
-                    )))),
+            child:Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  image: DecorationImage(
+                    image: AssetImage("src/images/chart_graph.png"),
+                    fit: BoxFit.fitWidth,
+                    alignment: FractionalOffset.bottomCenter,
+                  ))),
+            ),
         showProgressBar ? 
           Positioned(top: 0.0, child: StatusIndicator(_accountModel)) : SizedBox(), 
         Positioned(
@@ -65,7 +67,8 @@ class WalletDashboard extends StatelessWidget {
                   child: Text(_accountModel.currency.format(_accountModel.balance, fixedDecimals: false),
                       style: theme.headline.copyWith(fontSize: startHeaderSize - (startHeaderSize - endHeaderFontSize) * _offsetFactor)))
                   : SizedBox(),
-            ))
+              ),
+            )
       ],
     );
   }

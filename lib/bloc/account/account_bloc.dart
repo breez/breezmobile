@@ -328,6 +328,15 @@ class AccountBloc {
       }
       _currentUser = user;
 
+      //convert currency.
+      _accountController.add(_accountController.value.copyWith(currency: user.currency));
+      var updatedPayments = _paymentsController.value.copyWith(
+        nonFilteredItems: _paymentsController.value.nonFilteredItems.map((p) => p.copyWith(user.currency)).toList(),
+        paymentsList: _paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList(),
+      );
+      _paymentsController.add(updatedPayments);
+
+      //start lightning
       if (user.registered) {
         if (!_startedLightning) {
           //_askWhitelistOptimizations();
@@ -335,31 +344,34 @@ class AccountBloc {
               "Account bloc got registered user, starting lightning daemon...");
           _startedLightning = true;
           _pollSyncStatus();
-          _breezLib.bootstrap().then((downloadNeeded) async {
-            print("Account bloc bootstrap has finished");
-            if (downloadNeeded) {
-              _setBootstraping(true);
-            }
-            _accountController.add(_accountController.value
-                .copyWith(bootstraping: _isBootstrapping()));
+          _bootstrapWitRetry().then((_) async {
             await _breezLib.startLightning();
             _breezLib.registerPeriodicSync(user.token);
             _fetchFundStatus();
             _listenConnectivityChanges();
             _listenReconnects();
             _listenRefundableDeposits();
-            _listenRefundBroadcasts();            
-          });
-        } else {
-          _accountController
-              .add(_accountController.value.copyWith(currency: user.currency));
-          _paymentsController.add(PaymentsModel(
-              _paymentsController.value.paymentsList
-                  .map((p) => p.copyWith(user.currency))
-                  .toList(),
-              _paymentFilterController.value));
+            _listenRefundBroadcasts();     
+          });          
         }
       }
+    });
+  }
+
+  Future _bootstrapWitRetry(){
+    return _breezLib.bootstrap().then((downloadNeeded) async {
+      print("Account bloc bootstrap has finished");
+      if (downloadNeeded) {
+        _setBootstraping(true);
+      }
+      _accountController.add(_accountController.value
+          .copyWith(bootstraping: _isBootstrapping()));
+    })
+    .catchError((err){
+      print("bootstrap failed, retrying in 2 seconds...");
+      return Future.delayed(Duration(seconds: 2)).then((_){
+        return _bootstrapWitRetry();
+      });
     });
   }
 
@@ -461,6 +473,7 @@ class AccountBloc {
       }
       print("refresh payments finished");
       _paymentsController.add(PaymentsModel(
+          _paymentsList,
           _filterPayments(_paymentsList),
           _paymentFilterController.value,
           _firstDate ?? DateTime(DateTime.now().year)));
@@ -533,7 +546,7 @@ class AccountBloc {
             " STATUS = " +
             acc.status.toString());
         _accountController.add(_accountController.value
-            .copyWith(accountResponse: acc, currency: _currentUser?.currency));
+            .copyWith(accountResponse: acc, currency: _currentUser?.currency, initial: false));
       }
     }).catchError(_accountController.addError);
     _refreshPayments();
