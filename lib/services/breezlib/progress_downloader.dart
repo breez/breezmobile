@@ -6,6 +6,7 @@ class ProgressDownloader {
   final StreamController<DownloadFileInfo> _progressController =
       new StreamController.broadcast();
   Stream<DownloadFileInfo> get progressStream => _progressController.stream;
+  StreamSubscription<List<int>> responseListener;
 
   final String url;
   final String targetFilePath;
@@ -26,21 +27,25 @@ class ProgressDownloader {
         return request.close();
       }).then((response) {
         int eventIndex = 0;
-        response.listen((data) {
+        responseListener = response.listen((data) {
           byteCount += data.length;                 
           fileSink.add(data);                    
           if (eventIndex++ % 10 ==0) {
             _progressController
                 .add(new DownloadFileInfo(url, contentLength, byteCount));            
-          }          
+          }         
         }, onError: (e) {
-          log.severe(e.toString());
-          _progressController.add(e);
-        }, onDone: () {          
-          fileSink
-              .flush()
-              .then((res) => fileSink.close())              
-              .then((res) => _progressController.close());
+          log.severe("error in downloading, retrying..." + e.toString());          
+          responseListener.cancel();          
+          download();
+        }, onDone: () {
+          if (byteCount == contentLength) {          
+            print("done got in downloading");
+            fileSink
+                .flush()
+                .then((res) => fileSink.close())              
+                .then((res) => _progressController.close());
+          }
         });
       });
     });

@@ -6,7 +6,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:breez/logger.dart';
 import 'package:ini/ini.dart';
-
+int retruNum = 0;
 class LNDBootstrapper {
 
   final StreamController<DownloadFileInfo> _bootstrapFilesProgress = new StreamController.broadcast();
@@ -66,7 +66,7 @@ class LNDBootstrapper {
         _bootstrapFilesProgress.close();
         return true;
       });
-    });   
+    });    
   }
 
   Stream<DownloadFileInfo> _startDownload (List<String> urls, String destinationPath) {
@@ -76,8 +76,8 @@ class LNDBootstrapper {
         var downloader = new ProgressDownloader(url, destinationPath + "/" + url.split('/').last);
         downloader.download();
         return downloader.progressStream;
-      }).toList();   
-   return Observable.merge(allDownloadStreams);          
+      }).toList();  
+   return Observable.merge(allDownloadStreams).asBroadcastStream();          
   }
 
   Future<Config> _readConfig() async{
