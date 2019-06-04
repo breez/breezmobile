@@ -8,6 +8,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/get_refund/get_refund_page.dart';
 import 'package:breez/routes/user/withdraw_funds/send_coins_dialog.dart';
+import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
@@ -49,10 +50,11 @@ class UserApp extends StatelessWidget {
           }
 
           BreezUserModel user = snapshot.data;
-          return MaterialApp(
+          return MaterialApp(            
             navigatorKey: _navigatorKey,
             title: 'Breez',
             theme: ThemeData(
+              backgroundColor: theme.BreezColors.blue[500],
               brightness: Brightness.dark,
               accentColor: Color(0xFFffffff),
               dialogBackgroundColor: Colors.white,
@@ -67,9 +69,9 @@ class UserApp extends StatelessWidget {
             ),
             initialRoute: user.registered ? null : '/splash',
             home: new Home(accountBloc, invoiceBloc,
-                connectPayBloc, backupBloc),
+                  connectPayBloc, backupBloc),            
             onGenerateRoute: (RouteSettings settings) {
-              switch (settings.name) {
+              switch (settings.name) {              
                 case '/home':
                   return new FadeInRoute(
                     builder: (_) => new Home(
