@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
@@ -112,12 +113,14 @@ class AccountBloc {
   BreezBridge _breezLib;
   Notifications _notificationsService;
   Device _device;
+  BackgroundTaskService _backgroundService;
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
     ServiceInjector injector = new ServiceInjector();
     _breezLib = injector.breezBridge;
     _notificationsService = injector.notifications;
     _device = injector.device;
+    _backgroundService = injector.backgroundTaskService;
     _actionHandlers = {
       SendPaymentFailureReport: _handleSendQueryRoute,
       ResetNetwork: _handleResetNetwork,
@@ -211,7 +214,7 @@ class AccountBloc {
     var payRequest = sendPayment.paymentRequest;
     _accountController.add(_accountController.value
           .copyWith(paymentRequestInProgress: payRequest.paymentRequest));
-    return _breezLib
+    var sendPaymentFuture = _breezLib
         .sendPaymentForRequest(payRequest.paymentRequest,
             amount: payRequest.amount)
         .then((response) {
@@ -233,6 +236,10 @@ class AccountBloc {
           .addError(error);
         return Future.error(error);
     });
+    _backgroundService.runAsTask(sendPaymentFuture, (){
+      log.info("sendpayment background task finished");
+    });
+    return sendPaymentFuture;
   }
 
   Future _cancelPaymentRequest(CancelPaymentRequest cancelRequest){
@@ -344,7 +351,11 @@ class AccountBloc {
               "Account bloc got registered user, starting lightning daemon...");
           _startedLightning = true;
           _pollSyncStatus();
-          _bootstrapWitRetry().then((_) async {
+          var bootstrapFuture = _bootstrapWitRetry();
+          _backgroundService.runAsTask(bootstrapFuture, (){
+            log.info("bootstrap background task finished");
+          });
+          bootstrapFuture.then((_) async {
             await _breezLib.startLightning();
             _breezLib.registerPeriodicSync(user.token);
             _fetchFundStatus();
