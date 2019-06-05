@@ -40,7 +40,7 @@
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "667h",
-      "filename" : "logo-color-750-1334.png",
+      "filename" : "logo-color-750-1335.png",
       "minimum-system-version" : "8.0",
       "orientation" : "portrait",
       "scale" : "2x"
@@ -48,7 +48,7 @@
     {
       "orientation" : "portrait",
       "idiom" : "iphone",
-      "filename" : "logo-color-640-960.png",
+      "filename" : "logo-color-640-962.png",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
       "scale" : "2x"
@@ -65,7 +65,7 @@
     {
       "orientation" : "portrait",
       "idiom" : "iphone",
-      "filename" : "logo-color-320-480.png",
+      "filename" : "logo-color-320-481.png",
       "extent" : "full-screen",
       "scale" : "1x"
     },
