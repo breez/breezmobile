@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/services/background_task.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/form_keyboard_actions.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/routes/user/create_invoice/qr_code_dialog.dart';
+import 'package:breez/logger.dart';
 
 class CreateInvoicePage extends StatefulWidget {
   
@@ -33,6 +36,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   StreamSubscription<bool> _paidInvoicesSubscription;
   bool _isInit = false;
   final FocusNode _amountFocusNode = FocusNode();
+  final BackgroundTaskService _bgService = ServiceInjector().backgroundTaskService;
 
   @override void didChangeDependencies(){        
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
@@ -93,8 +97,12 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                   null,
                                   account.currency
                                       .parse(_amountController.text)));
-                          showDialog(
-                              context: context, builder: (_) => QrCodeDialog(context, invoiceBloc));
+                          _bgService.runAsTask(
+                            showDialog(
+                              context: context, builder: (_) => QrCodeDialog(context, invoiceBloc)),
+                            (){
+                              log.info("waiting for payment background task finished");
+                            });
                         }
                       },
                     );
