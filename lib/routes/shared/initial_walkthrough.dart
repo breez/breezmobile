@@ -186,16 +186,17 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                           elevation: 0.0,
                           shape: const StadiumBorder(),
                           onPressed: () {
-                            showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  return BetaWarningDialog();
-                                }).then((approved) { 
-                                  if (approved) {
-                                    _proceedToRegister(); 
-                                  }
-                                });
+                            _proceedToRegister(); 
+                            // showDialog(
+                            //     context: context,
+                            //     barrierDismissible: false,
+                            //     builder: (BuildContext context) {
+                            //       return BetaWarningDialog();
+                            //     }).then((approved) { 
+                            //       if (approved) {
+                            //         _proceedToRegister(); 
+                            //       }
+                            //     });
                           })),
                   new Expanded(
                     flex: 40,
