@@ -172,7 +172,7 @@ class AccountModel {
     SwapFundStatus swapStatus = this.swapFundsStatus;
 
     if (swapStatus.waitingDepositConfirmation) {
-      return "Breez is waiting for BTC transfer to be confirmed. This might take a while";
+      return "Breez is waiting for Bitcoin transfer to be confirmed. This might take a while";
     }
 
     if (swapStatus.depositConfirmed && this.active) {
