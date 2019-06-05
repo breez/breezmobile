@@ -21,7 +21,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="LaunchImage-1" highlightedImage="LaunchImage-1" translatesAutoresizingMaskIntoConstraints="NO" id="3XY-C7-rZ2">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="LaunchImage-1" highlightedImage="LaunchImage-1" translatesAutoresizingMaskIntoConstraints="NO" id="3XY-C7-rZ2">
                                 <rect key="frame" x="74" y="250" width="240" height="128"/>
                             </imageView>
                         </subviews>
