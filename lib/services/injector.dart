@@ -9,6 +9,8 @@ import 'package:breez/services/permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:breez/services/lightning_links.dart';
 
+import 'background_task.dart';
+
 class ServiceInjector {
   static final _singleton = new ServiceInjector._internal();
   static ServiceInjector _injector;
@@ -22,6 +24,7 @@ class ServiceInjector {
   Device _device;
   Future<SharedPreferences> _sharedPreferences;
   Permissions _permissions;
+  BackgroundTaskService _backroundTaskService;
 
   factory ServiceInjector() {
     return _injector != null ? _injector : _singleton;
@@ -60,5 +63,9 @@ class ServiceInjector {
 
   Permissions get permissions  {
     return _permissions ??= Permissions();
+  }
+
+  BackgroundTaskService get backgroundTaskService {
+    return _backroundTaskService ??= BackgroundTaskService();
   }
 }
