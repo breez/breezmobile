@@ -24,6 +24,7 @@ class AppDelegate : FlutterAppDelegate {
     func registerBreezPlugins(){
         Breez.register(with: registrar(forPlugin: "com.breez.client.plugins.breez_lib"));
         LifecycleEvents.register(with: registrar(forPlugin: "com.breez.client.plugins.lifecycle_events_notifications"))
+        BackgroundTask.register(with: registrar(forPlugin: "com.breez.client.background_task"))
     }
     
     override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
