@@ -114,6 +114,7 @@ class AccountBloc {
   Notifications _notificationsService;
   Device _device;
   BackgroundTaskService _backgroundService;
+  Completer _onBoardingCompleter = new Completer();
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
     ServiceInjector injector = new ServiceInjector();
@@ -151,6 +152,7 @@ class AccountBloc {
       _listenMempoolTransactions();
       _listenRoutingNodeConnectionChanges();
       _listenBootstrapStatus();
+      _trackOnBoardingStatus();
     });
   }
 
@@ -255,6 +257,12 @@ class AccountBloc {
     return Future.value(null);
   }
 
+  void _trackOnBoardingStatus(){
+    _accountController.where((acc) => !acc.initial && !acc.isInitialBootstrap).first.then((_){
+      _onBoardingCompleter.complete();
+    });
+  }
+
   void _listenRefundableDeposits() {
     var refreshRefundableAddresses = () {
       _breezLib.getRefundableSwapAddresses().then((addressList) {
@@ -356,12 +364,11 @@ class AccountBloc {
           print(
               "Account bloc got registered user, starting lightning daemon...");
           _startedLightning = true;
-          _pollSyncStatus();
-          var bootstrapFuture = _bootstrapWitRetry();
-          _backgroundService.runAsTask(bootstrapFuture, (){
-            log.info("bootstrap background task finished");
+          _pollSyncStatus();          
+          _backgroundService.runAsTask(_onBoardingCompleter.future, (){
+            log.info("onboarding background task finished");
           });
-          bootstrapFuture.then((_) async {
+          _bootstrapWitRetry().then((_) async {
             await _breezLib.startLightning();
             _breezLib.registerPeriodicSync(user.token);
             _fetchFundStatus();
