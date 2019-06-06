@@ -10,7 +10,13 @@ int retruNum = 0;
 class LNDBootstrapper {
 
   final StreamController<DownloadFileInfo> _bootstrapFilesProgress = new StreamController.broadcast();
-  Stream<DownloadFileInfo> get bootstrapProgressStreams => _bootstrapFilesProgress.stream;
+  Stream<DownloadFileInfo> get bootstrapProgressStreams => _bootstrapFilesProgress.stream;  
+
+  static Future<bool> needsBootstrap(String lndDir) async {
+    var existingFiles = await _existingBootstrapFiles(lndDir);  
+    var missingFile = existingFiles.firstWhere((f) => !f.existsSync(), orElse: null);
+    return missingFile != null;
+  }
 
   Future<bool> downloadBootstrapFiles(String lndDir) async {
     Config config = await _readConfig();
@@ -27,19 +33,19 @@ class LNDBootstrapper {
       '$network/neutrino.db',
       '$network/block_headers.bin',
       '$network/reg_filter_headers.bin'
-    ];
-    Iterable<String> destinationFiles = allFiles.map((file) => targetDirPath + file.split('/').last);    
+    ];    
     
     targetDir.createSync(recursive: true);
 
     //if bootstrap files already exist
-    if (destinationFiles.every((f) => File(f).existsSync())) {     
+    Iterable<File> destFiles = await _existingBootstrapFiles(lndDir);
+    if (destFiles.every((f) => f.existsSync())) {     
       _bootstrapFilesProgress.close();
       return Future.value(false);
     }
 
     //clean temp dir and target dir.
-    destinationFiles.map((file) => File(file).deleteSync());
+    destFiles.map((file) => file.deleteSync());
     if (tempDir.existsSync()) {
       tempDir.deleteSync(recursive: true);
     }
@@ -80,8 +86,24 @@ class LNDBootstrapper {
    return Observable.merge(allDownloadStreams).asBroadcastStream();          
   }
 
-  Future<Config> _readConfig() async{
+  static Future<Config> _readConfig() async{
     String lines = await rootBundle.loadString('conf/breez.conf');
     return Config.fromString(lines);
   }
+
+  static Future<Iterable<File>> _existingBootstrapFiles(String lndDir) async {
+    Config config = await _readConfig();
+    String network = config.get('Application Options', 'network');            
+    String targetDirPath = lndDir + '/data/chain/bitcoin/$network/';       
+
+    List<String> allFiles = 
+    [ 
+      '$network/neutrino.db',
+      '$network/block_headers.bin',
+      '$network/reg_filter_headers.bin'
+    ];
+    Iterable<String> destinationFiles = allFiles.map((file) => targetDirPath + file.split('/').last);      
+    return destinationFiles.map((f) => File(f));
+  }
+
 }
