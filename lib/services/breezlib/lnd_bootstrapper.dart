@@ -14,7 +14,7 @@ class LNDBootstrapper {
 
   static Future<bool> needsBootstrap(String lndDir) async {
     var existingFiles = await _existingBootstrapFiles(lndDir);  
-    var missingFile = existingFiles.firstWhere((f) => !f.existsSync(), orElse: null);
+    var missingFile = existingFiles.firstWhere((f) => !f.existsSync(), orElse: () => null);
     return missingFile != null;
   }
 
