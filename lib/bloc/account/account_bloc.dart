@@ -178,7 +178,10 @@ class AccountBloc {
   void _setBootstraping(bool bootstraping) {
     _sharedPreferences.setBool(BOOTSTRAPING_PREFERENCES_KEY, bootstraping);
     _accountController
-        .add(_accountController.value.copyWith(bootstraping: bootstraping));    
+        .add(_accountController.value.copyWith(bootstraping: bootstraping, initial: false));  
+    if (bootstraping && _accountController.value.syncUIState == SyncUIState.NONE) {
+      _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
+    }
   }
 
   bool _isBootstrapping() {
@@ -346,6 +349,9 @@ class AccountBloc {
       //start lightning
       if (user.registered) {
         if (!_startedLightning) {
+          _breezLib.needsBootstrap().then((need){
+              _setBootstraping(need || _isBootstrapping());
+          });
           //_askWhitelistOptimizations();
           print(
               "Account bloc got registered user, starting lightning daemon...");
@@ -369,14 +375,9 @@ class AccountBloc {
     });
   }
 
-  Future _bootstrapWitRetry(){
+  Future _bootstrapWitRetry(){    
     return _breezLib.bootstrap().then((downloadNeeded) async {
-      print("Account bloc bootstrap has finished");
-      if (downloadNeeded) {
-        _setBootstraping(true);
-      }
-      _accountController.add(_accountController.value
-          .copyWith(bootstraping: _isBootstrapping()));
+      print("Account bloc bootstrap has finished");      
     })
     .catchError((err){
       print("bootstrap failed, retrying in 2 seconds...");
@@ -405,7 +406,7 @@ class AccountBloc {
     );   
   }
 
-  void _listenBootstrapStatus() {
+  void _listenBootstrapStatus() {    
     _breezLib.chainBootstrapProgress.listen((fileInfo) {
       double totalContentLength = 0;
       double downloadedContentLength = 0;
@@ -419,12 +420,7 @@ class AccountBloc {
     }, onDone: () {
       _accountController
           .add(_accountController.value.copyWith(bootstrapProgress: 1));
-    });
-
-    _breezLib.chainBootstrapProgress.first.then((_) {
-      _accountController
-          .add(_accountController.value.copyWith(bootstraping: true, initial: false));
-    });
+    });    
   }
 
   Future _fetchFundStatus() {
