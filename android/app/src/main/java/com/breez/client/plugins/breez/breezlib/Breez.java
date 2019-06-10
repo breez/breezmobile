@@ -106,9 +106,9 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
         try {
             Bindings.start();
             _started = true;
-            result.success(true);
+            success(result,true);
         } catch (Exception e) {
-            result.error("ResultError", "Failed to Start breez library", e.getMessage());
+            fail(result, "ResultError", "Failed to Start breez library", e.getMessage());
         }
 
         ChainSync.schedule();
@@ -120,9 +120,9 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
         Log.i(TAG, "workingDir = " + workingDir);
         try {
             Bindings.init(tempDir, workingDir, this);
-            result.success(true);
+            success(result,true);
         } catch (Exception e) {
-            result.error("ResultError", "Failed to Init breez library", e.getMessage());
+            fail(result, "ResultError", "Failed to Init breez library", e.getMessage());
         }
     }
 
@@ -139,10 +139,10 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
     private void log(MethodCall call, MethodChannel.Result result){
         try {
             Bindings.log(call.argument("msg").toString(), call.argument("lvl").toString());
-            result.success(true);
+            success(result,true);
         }
         catch(Exception e) {
-            result.error("ResultError", "Failed to call breez logger", e.getMessage());
+            fail(result,"ResultError", "Failed to call breez logger", e.getMessage());
         }
     }
 
@@ -153,18 +153,18 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
                 m_authenticator.signOut();
             }
             m_authenticator.ensureSignedIn(false);
-            result.success(true);
+            success(result,true);
         } catch (Exception e) {
-            result.error("AuthError", "Failed to signIn breez library", e.getMessage());
+            fail(result,"AuthError", "Failed to signIn breez library", e.getMessage());
         }
     }
 
     private void signOut(MethodCall call, MethodChannel.Result result){
         try {
             m_authenticator.signOut();
-            result.success(true);
+            success(result,true);
         } catch (Exception e) {
-            result.error("ResultError", "Failed to sign out breez library", e.getMessage());
+            fail(result,"ResultError", "Failed to sign out breez library", e.getMessage());
         }
     }
 
@@ -183,7 +183,9 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
         //JNI pass here null in the case of empty byte array
         byte[] marshaledData = bytes == null ? new byte[0] : bytes;
         if (m_eventsListener != null) {
-            m_eventsListener.success(marshaledData);
+            m_activity.runOnUiThread(() -> {
+                m_eventsListener.success(marshaledData);
+            });
         }
     }
 
@@ -200,6 +202,14 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
        });
     }
 
+    private void success(MethodChannel.Result res, Object result) {
+        this.m_activity.runOnUiThread(() -> res.success(result));
+    }
+
+    private void fail(MethodChannel.Result res, String code, String message, Object err) {
+        this.m_activity.runOnUiThread(() -> res.error(code, message, err));
+    }
+
     private class BreezTask implements  Runnable {
         private MethodChannel.Result m_result;
         private MethodCall m_call;
@@ -213,23 +223,27 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
             try {
                 Method method = _bindingMethods.get(m_call.method);
                 if (method == null) {
-                    m_result.error("ResultError","Failed to invoke method " + m_call.method, "Method does not exist");
+                    Breez.this.fail(m_result, "ResultError","Failed to invoke method " + m_call.method, "Method does not exist");
+                    return;
                 }
                 Object arg = m_call.argument("argument");
                 if (method.getParameterTypes().length > 1) {
-                    m_result.error("NotSupported", "Breez supports only methods with none or one arguments", "");
+                    Breez.this.fail(m_result, "NotSupported", "Breez supports only methods with none or one arguments", "");
+                    return;
                 }
-                else if (method.getParameterTypes().length == 1) {
-                    m_result.success(method.invoke(null, arg)); //static method with one arg
+                Object bindingResult;
+                if (method.getParameterTypes().length == 1) {
+                    bindingResult = method.invoke(null, arg);
                 }
                 else {
-                    m_result.success(method.invoke(null)); //static method with no args
+                    bindingResult = method.invoke(null);
                 }
+                Breez.this.success(m_result, bindingResult); //static method with one arg
             }
             catch (Exception e) {
                 Throwable breezError = e.getCause() != null ? e.getCause() : e;
                 Log.e(TAG, "Error in method " + m_call.method + ": " + breezError.getMessage(), breezError);
-                m_result.error(breezError.getMessage(),"Failed to invoke method " + m_call.method, breezError.getMessage());
+                Breez.this.fail(m_result, breezError.getMessage(),"Failed to invoke method " + m_call.method, breezError.getMessage());
             }
         }
     }
