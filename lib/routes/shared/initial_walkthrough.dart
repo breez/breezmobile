@@ -185,18 +185,17 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                           color: theme.whiteColor,
                           elevation: 0.0,
                           shape: const StadiumBorder(),
-                          onPressed: () {
-                            _proceedToRegister(); 
-                            // showDialog(
-                            //     context: context,
-                            //     barrierDismissible: false,
-                            //     builder: (BuildContext context) {
-                            //       return BetaWarningDialog();
-                            //     }).then((approved) { 
-                            //       if (approved) {
-                            //         _proceedToRegister(); 
-                            //       }
-                            //     });
+                          onPressed: () {                            
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return BetaWarningDialog();
+                                }).then((approved) { 
+                                  if (approved) {
+                                    _proceedToRegister(); 
+                                  }
+                                });
                           })),
                   new Expanded(
                     flex: 40,
