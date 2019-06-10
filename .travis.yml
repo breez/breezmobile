@@ -15,7 +15,6 @@ before_script:
 - git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
 - export TMP_GOPATH=$(pwd)/gopath
 - pushd gopath/src/github.com/breez/breez
-- git checkout -t origin/ios
 - go mod vendor
 - export GOPATH=$TMP_GOPATH
 - go get golang.org/x/mobile/cmd/gomobile
