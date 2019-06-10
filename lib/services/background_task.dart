@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class BackgroundTaskService{
@@ -7,15 +8,22 @@ class BackgroundTaskService{
   Map<dynamic, Function()> _tasksCallbacks = Map<dynamic, Function()>();
 
   BackgroundTaskService(){
-    _eventsChannel.receiveBroadcastStream().listen((taskID){
-      var callback = _tasksCallbacks.remove(taskID);
-      if (callback != null) {        
-        callback();
-      }
-    });
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      _eventsChannel.receiveBroadcastStream().listen((taskID){
+        var callback = _tasksCallbacks.remove(taskID);
+        if (callback != null) {        
+          callback();
+        }
+      });
+    }
   }
 
   Future<void> runAsTask(Future future, Function() onEnd) {
+    if (defaultTargetPlatform != TargetPlatform.iOS) {
+      future.whenComplete(onEnd);
+      return Future.value(null);
+    }
+    
     return _methodChannel.invokeMethod("startBackgroundTask")
       .then((taskID){
         _tasksCallbacks[taskID] = onEnd;
