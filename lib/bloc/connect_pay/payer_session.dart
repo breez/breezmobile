@@ -156,9 +156,11 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     });  
 
     _sentInvitesController.stream.listen((inviteLink) async{      
-      await ShareExtend.share('${_currentUser.name} wants to pay you via Breez...\nFollow this link to receive payment: ${Uri.encodeFull(_currentSessionInvite)}', "text");
-      _paymentSessionController.add(
-            _currentSession.copyWith(invitationSent: true));
+      bool shared = await ShareExtend.share('${_currentUser.name} wants to pay you via Breez...\nFollow this link to receive payment: ${Uri.encodeFull(_currentSessionInvite)}', "text");
+      if (shared) {
+        _paymentSessionController.add(
+              _currentSession.copyWith(invitationSent: true));
+      }
     });
   }
 

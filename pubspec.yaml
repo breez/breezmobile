@@ -16,7 +16,9 @@ dependencies:
       ref: running_app_link
       path: packages/firebase_dynamic_links
   shared_preferences: ^0.5.1+2
-  share_extend: ^1.0.8
+  share_extend:
+    git:
+      url: https://github.com/breez/ShareExtend.git
   qr_flutter: ^2.0.0  
   hex: "^0.1.1"
   rxdart: "^0.18.1"  
