@@ -83,7 +83,7 @@ class AccountModel {
   final SyncUIState syncUIState;  
 
   AccountModel(this._accountResponse, this._currency,
-      {this.initial = false,
+      {this.initial = true,
       this.addedFundsReply,
       this.paymentRequestInProgress,
       this.connected = false,
@@ -116,7 +116,8 @@ class AccountModel {
       bool bootstraping,
       bool enableInProgress,
       double bootstrapProgress,
-      double syncProgress,       
+      double syncProgress,
+      bool initial,       
       SyncUIState syncUIState}) {
     return AccountModel(
         accountResponse ?? this._accountResponse, currency ?? this.currency,
@@ -129,7 +130,8 @@ class AccountModel {
         paymentRequestInProgress:
             paymentRequestInProgress ?? this.paymentRequestInProgress,
         syncProgress: syncProgress ?? this.syncProgress,
-        syncUIState: syncUIState ?? this.syncUIState);
+        syncUIState: syncUIState ?? this.syncUIState,
+        initial: initial ?? this.initial);
   }
 
   String get id => _accountResponse.id;  
@@ -141,8 +143,8 @@ class AccountModel {
       _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
   bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;
   bool get isInitialBootstrap =>
-      bootstraping ||
-      (!active && !processingWithdrawal && !processingBreezConnection);
+      (bootstraping ||
+      (!active && !processingWithdrawal && !processingBreezConnection)) && !initial;
   Int64 get balance => _accountResponse.balance;
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
@@ -158,10 +160,7 @@ class AccountModel {
   bool get enabled => _accountResponse.enabled;
 
   String get statusMessage {
-    if (this.initial) {
-      return "";
-    }
-
+    
     if (this.isInitialBootstrap) {
       return "Please wait a minute while Breez is bootstrapping (keep the app open).";
     }
@@ -173,7 +172,7 @@ class AccountModel {
     SwapFundStatus swapStatus = this.swapFundsStatus;
 
     if (swapStatus.waitingDepositConfirmation) {
-      return "Breez is waiting for BTC transfer to be confirmed. This might take a while";
+      return "Breez is waiting for Bitcoin transfer to be confirmed. This might take a while";
     }
 
     if (swapStatus.depositConfirmed && this.active) {
@@ -222,21 +221,23 @@ class AccountModel {
 }
 
 class PaymentsModel {
+  final List<PaymentInfo> nonFilteredItems;
   final List<PaymentInfo> paymentsList;
   final PaymentFilterModel filter;
   final DateTime firstDate;
 
-  PaymentsModel(this.paymentsList, this.filter, [this.firstDate]);
+  PaymentsModel(this.nonFilteredItems, this.paymentsList, this.filter, [this.firstDate]);
 
   PaymentsModel.initial()
-      : this(List<PaymentInfo>(), PaymentFilterModel.initial(),
+      : this(List<PaymentInfo>(), List<PaymentInfo>(), PaymentFilterModel.initial(),
             DateTime(DateTime.now().year));
 
   PaymentsModel copyWith(
-      {List<PaymentInfo> paymentsList,
+      {List<PaymentInfo> nonFilteredItems,
+      List<PaymentInfo> paymentsList,
       PaymentFilterModel filter,
       DateTime firstDate}) {
-    return PaymentsModel(paymentsList ?? this.paymentsList,
+    return PaymentsModel(nonFilteredItems ?? this.nonFilteredItems, paymentsList ?? this.paymentsList,
         filter ?? this.filter, firstDate ?? this.firstDate);
   }
 }

@@ -5,15 +5,16 @@ import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:breez/bloc/connect_pay/firebase_session_channel.dart';
 import 'package:breez/bloc/connect_pay/online_status_updater.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:breez/services/share.dart';
 import 'connect_pay_model.dart';
 import 'package:breez/logger.dart';
+import 'package:share_extend/share_extend.dart';
 
 /*
 A concrete implementation of RemoteSession from the payer side.
@@ -40,9 +41,11 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   PaymentSessionChannel _channel;  
   BreezBridge _breezLib = ServiceInjector().breezBridge; 
   DeepLinksService _deepLinks = ServiceInjector().deepLinks;
+  BackgroundTaskService _backgroundService = ServiceInjector().backgroundTaskService;
   BreezUserModel _currentUser; 
   var sessionState = Map<String, dynamic>();  
   SessionLinkModel sessionLink;
+  Completer _sessionCompleter = new Completer();
 
   String get sessionID => sessionLink?.sessionID;
 
@@ -121,6 +124,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     if (_isTerminated) {
       return Future.value(null);
     }
+    _sessionCompleter.complete();
     
     await stopStatusUpdates();  
     if (permanent &&  !_currentSession.paymentFulfilled) {  
@@ -152,9 +156,10 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     });  
 
     _sentInvitesController.stream.listen((inviteLink) async{      
-      if (await Share.share('${_currentUser.name} wants to pay you via Breez...\nFollow this link to receive payment: ${Uri.encodeFull(_currentSessionInvite)}')) {
+      bool shared = await ShareExtend.share('${_currentUser.name} wants to pay you via Breez...\nFollow this link to receive payment: ${Uri.encodeFull(_currentSessionInvite)}', "text");
+      if (shared) {
         _paymentSessionController.add(
-            _currentSession.copyWith(invitationSent: true));
+              _currentSession.copyWith(invitationSent: true));
       }
     });
   }
@@ -171,15 +176,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
 
       String paymentRequest = nextState.payeeData.paymentRequest;
       if (paymentRequest != null) {
-        _breezLib.decodePaymentRequest(paymentRequest).then((invoice) {  
-          if (invoice.amount.toInt() != _currentSession.payerData.amount) {
-            throw new Exception("Wrong amount in payment request");
-          }        
-          _paymentSessionController.add(nextState);
-          return _breezLib.sendPaymentForRequest(paymentRequest)
-          .then((res) => _onPaymenetFulfilled(invoice));
-        })
-        .catchError(_onError);
+       _sendPayment(paymentRequest, nextState);
       } else {        
         _paymentSessionController.add(nextState);
       }
@@ -188,6 +185,21 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     _channel.peerResetStream.listen((_) async{
       _resetSessionState();
     });
+  }
+
+  void _sendPayment(String paymentRequest, PaymentSessionState nextState){
+    _breezLib.decodePaymentRequest(paymentRequest).then((invoice) {  
+      if (invoice.amount.toInt() != _currentSession.payerData.amount) {
+        throw new Exception("Wrong amount in payment request");
+      }        
+      _paymentSessionController.add(nextState);
+      _backgroundService.runAsTask(_sessionCompleter.future, (){
+        log.info("payer session background task finished");
+      });
+      return _breezLib.sendPaymentForRequest(paymentRequest)
+      .then((res) => _onPaymenetFulfilled(invoice));
+    })
+    .catchError(_onError);    
   }
 
   Future _persistPayeeData(PayeeSessionData newPayeeData){

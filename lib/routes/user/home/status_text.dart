@@ -14,26 +14,7 @@ class StatusText extends StatefulWidget {
   }
 }
 
-class _StatusTextState extends State<StatusText> {
-  Timer _loadingTimer;
-  int _timerIteration = 0;    
-
-  @override
-  void initState() {
-    super.initState();    
-
-    _loadingTimer = Timer.periodic(Duration(milliseconds: 400), (timer) {
-      setState(() {
-        _timerIteration++;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _loadingTimer.cancel();    
-    super.dispose();
-  }
+class _StatusTextState extends State<StatusText> { 
 
   @override
   Widget build(BuildContext context) {

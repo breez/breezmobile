@@ -4,6 +4,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
@@ -21,16 +22,22 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     _currentSettings = user;
   });
 
-  Future _pickImage(BuildContext context) async {
-    const _platform = const MethodChannel('com.breez.client/image-cropper');
+  Future _pickImage(BuildContext context) async {    
     return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
-      return _platform.invokeMethod("start", {"filePath": file.path}).then((res) {
-        if (res != null) {
-          new File(res.toString()).readAsBytes().then(scaleAndFormatPNG).then((image) {
-            userBloc.uploadImageSink.add(image);
-          });
-        }
-      });
+
+      ImageCropper.cropImage(
+        sourcePath: file.path,
+        ratioX: 1.0,
+        ratioY: 1.0        
+      ).then((file){
+          if (file != null) {
+            file.readAsBytes()
+              .then(scaleAndFormatPNG)
+              .then((image) {
+                userBloc.uploadImageSink.add(image);
+              });
+          }
+      });      
     }).catchError((err) {});
   }
 
@@ -113,9 +120,11 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
 }
 
 List<int> scaleAndFormatPNG(List<int> imageBytes) {
-  DartImage.Image image = DartImage.decodeImage(imageBytes);
-  DartImage.Image resized = DartImage.copyResize(image,
-      width: image.width < image.height ? -1 : scaledWidth, height: image.width < image.height ? scaledWidth : -1);
+  DartImage.Image image = DartImage.decodeImage(imageBytes);  
+  DartImage.Image resized = DartImage.copyResize(
+      image,
+      width: image.width < image.height ? -1 : scaledWidth,
+      height: image.width < image.height ? scaledWidth : -1);
   DartImage.Image centered = DartImage.copyInto(_transparentImage, resized,
       dstX: ((scaledWidth - resized.width) / 2).round(), dstY: ((scaledWidth - resized.height) / 2).round());
   return DartImage.encodePng(centered);

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
@@ -107,16 +108,20 @@ class AccountBloc {
   BreezUserModel _currentUser;
   bool _allowReconnect = true;
   bool _startedLightning = false;
+  bool _retryingLightningService = false;
   SharedPreferences _sharedPreferences;
   BreezBridge _breezLib;
   Notifications _notificationsService;
   Device _device;
+  BackgroundTaskService _backgroundService;
+  Completer _onBoardingCompleter = new Completer();
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
     ServiceInjector injector = new ServiceInjector();
     _breezLib = injector.breezBridge;
     _notificationsService = injector.notifications;
     _device = injector.device;
+    _backgroundService = injector.backgroundTaskService;
     _actionHandlers = {
       SendPaymentFailureReport: _handleSendQueryRoute,
       ResetNetwork: _handleResetNetwork,
@@ -147,6 +152,7 @@ class AccountBloc {
       _listenMempoolTransactions();
       _listenRoutingNodeConnectionChanges();
       _listenBootstrapStatus();
+      _trackOnBoardingStatus();
     });
   }
 
@@ -173,8 +179,12 @@ class AccountBloc {
 
   void _setBootstraping(bool bootstraping) {
     _sharedPreferences.setBool(BOOTSTRAPING_PREFERENCES_KEY, bootstraping);
+    bool initial = bootstraping ? false : _accountController.value.initial;
     _accountController
-        .add(_accountController.value.copyWith(bootstraping: bootstraping));
+        .add(_accountController.value.copyWith(bootstraping: bootstraping, initial: initial));  
+    if (bootstraping && _accountController.value.syncUIState == SyncUIState.NONE) {
+      _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
+    }
   }
 
   bool _isBootstrapping() {
@@ -210,7 +220,7 @@ class AccountBloc {
     var payRequest = sendPayment.paymentRequest;
     _accountController.add(_accountController.value
           .copyWith(paymentRequestInProgress: payRequest.paymentRequest));
-    return _breezLib
+    var sendPaymentFuture = _breezLib
         .sendPaymentForRequest(payRequest.paymentRequest,
             amount: payRequest.amount)
         .then((response) {
@@ -232,6 +242,10 @@ class AccountBloc {
           .addError(error);
         return Future.error(error);
     });
+    _backgroundService.runAsTask(sendPaymentFuture, (){
+      log.info("sendpayment background task finished");
+    });
+    return sendPaymentFuture;
   }
 
   Future _cancelPaymentRequest(CancelPaymentRequest cancelRequest){
@@ -242,6 +256,12 @@ class AccountBloc {
   Future _collapseSyncUI(ChangeSyncUIState stateAction) {
     _accountController.add(_accountController.value.copyWith(syncUIState: stateAction.nextState));
     return Future.value(null);
+  }
+
+  void _trackOnBoardingStatus(){
+    _accountController.where((acc) => !acc.initial && !acc.isInitialBootstrap).first.then((_){
+      _onBoardingCompleter.complete();
+    });
   }
 
   void _listenRefundableDeposits() {
@@ -327,38 +347,51 @@ class AccountBloc {
       }
       _currentUser = user;
 
+      //convert currency.
+      _accountController.add(_accountController.value.copyWith(currency: user.currency));
+      var updatedPayments = _paymentsController.value.copyWith(
+        nonFilteredItems: _paymentsController.value.nonFilteredItems.map((p) => p.copyWith(user.currency)).toList(),
+        paymentsList: _paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList(),
+      );
+      _paymentsController.add(updatedPayments);
+
+      //start lightning
       if (user.registered) {
         if (!_startedLightning) {
+          _breezLib.needsBootstrap().then((need){
+              _setBootstraping(need || _isBootstrapping());
+          });
           //_askWhitelistOptimizations();
           print(
               "Account bloc got registered user, starting lightning daemon...");
           _startedLightning = true;
-          _pollSyncStatus();
-          _breezLib.bootstrap().then((downloadNeeded) async {
-            print("Account bloc bootstrap has finished");
-            if (downloadNeeded) {
-              _setBootstraping(true);
-            }
-            _accountController.add(_accountController.value
-                .copyWith(bootstraping: _isBootstrapping()));
+          _pollSyncStatus();          
+          _backgroundService.runAsTask(_onBoardingCompleter.future, (){
+            log.info("onboarding background task finished");
+          });
+          _bootstrapWitRetry().then((_) async {
             await _breezLib.startLightning();
             _breezLib.registerPeriodicSync(user.token);
             _fetchFundStatus();
             _listenConnectivityChanges();
             _listenReconnects();
             _listenRefundableDeposits();
-            _listenRefundBroadcasts();            
-          });
-        } else {
-          _accountController
-              .add(_accountController.value.copyWith(currency: user.currency));
-          _paymentsController.add(PaymentsModel(
-              _paymentsController.value.paymentsList
-                  .map((p) => p.copyWith(user.currency))
-                  .toList(),
-              _paymentFilterController.value));
+            _listenRefundBroadcasts();     
+          });          
         }
       }
+    });
+  }
+
+  Future _bootstrapWitRetry(){    
+    return _breezLib.bootstrap().then((downloadNeeded) async {
+      print("Account bloc bootstrap has finished");      
+    })
+    .catchError((err){
+      print("bootstrap failed, retrying in 2 seconds...");
+      return Future.delayed(Duration(seconds: 2)).then((_){
+        return _bootstrapWitRetry();
+      });
     });
   }
 
@@ -381,7 +414,7 @@ class AccountBloc {
     );   
   }
 
-  void _listenBootstrapStatus() {
+  void _listenBootstrapStatus() {    
     _breezLib.chainBootstrapProgress.listen((fileInfo) {
       double totalContentLength = 0;
       double downloadedContentLength = 0;
@@ -391,16 +424,11 @@ class AccountBloc {
       });
       double progress = downloadedContentLength / totalContentLength;
       _accountController
-          .add(_accountController.value.copyWith(bootstrapProgress: progress));
+          .add(_accountController.value.copyWith(bootstrapProgress: progress));      
     }, onDone: () {
       _accountController
           .add(_accountController.value.copyWith(bootstrapProgress: 1));
-    });
-
-    _breezLib.chainBootstrapProgress.first.then((_) {
-      _accountController
-          .add(_accountController.value.copyWith(bootstraping: true));
-    });
+    });    
   }
 
   Future _fetchFundStatus() {
@@ -460,6 +488,7 @@ class AccountBloc {
       }
       print("refresh payments finished");
       _paymentsController.add(PaymentsModel(
+          _paymentsList,
           _filterPayments(_paymentsList),
           _paymentFilterController.value,
           _firstDate ?? DateTime(DateTime.now().year)));
@@ -484,7 +513,7 @@ class AccountBloc {
       return _dateFilteredPaymentsSet.intersection(paymentsSet).toList();
     }
     return paymentsSet.toList();
-  }
+  }  
 
   void _listenAccountChanges() {
     StreamSubscription<NotificationEvent> eventSubscription;
@@ -492,8 +521,14 @@ class AccountBloc {
         Observable(_breezLib.notificationStream).listen((event) {
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
-        _lightningDownController.add(true);
-        _pollSyncStatus();
+            _pollSyncStatus();
+            if (!_retryingLightningService) {
+              _retryingLightningService = true;
+              _breezLib.restartLightningDaemon();
+              return;
+            }
+            _retryingLightningService = false;
+            _lightningDownController.add(true);         
       }
       if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
         _refreshAccount();
@@ -526,7 +561,7 @@ class AccountBloc {
             " STATUS = " +
             acc.status.toString());
         _accountController.add(_accountController.value
-            .copyWith(accountResponse: acc, currency: _currentUser?.currency));
+            .copyWith(accountResponse: acc, currency: _currentUser?.currency, initial: false));
       }
     }).catchError(_accountController.addError);
     _refreshPayments();

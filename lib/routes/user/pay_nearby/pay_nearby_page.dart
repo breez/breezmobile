@@ -2,6 +2,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/widgets/form_keyboard_actions.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -22,6 +23,7 @@ class PayNearbyPageState extends State<PayNearbyPage> {
   final _formKey = GlobalKey<FormState>();
   final String _title = "Pay Someone Nearby";
   Int64 _amountToSendSatoshi;
+  final FocusNode _amountFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -73,37 +75,41 @@ class PayNearbyPageState extends State<PayNearbyPage> {
               return StaticLoader();
             }
             var account = snapshot.data;
-            return Form(
-              key: _formKey,
-              child: new Padding(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-                child: new Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new AmountFormField(
-                      validatorFn: account.validateOutgoingPayment,
-                      decoration: new InputDecoration(
-                          contentPadding: EdgeInsets.only(top: 21.0, bottom: 8.0), labelText: account.currency.displayName + " Amount"),
-                      style: theme.FieldTextStyle.textStyle,
-                      currency: account.currency,                      
-                      onFieldSubmitted: (String value) {
-                        _amountToSendSatoshi = account.currency.parse(value);
-                      },
-                    ),
-                    new Container(
-                      padding: new EdgeInsets.only(top: 32.0),
-                      child: new Row(
-                        children: <Widget>[
-                          new Text("Available:", style: theme.textStyle),
-                          new Padding(
-                            padding: EdgeInsets.only(left: 3.0),
-                            child: new Text(account.currency.format(account.balance), style: theme.textStyle),
-                          )
-                        ],
+            return FormActionsWrapper(
+              numericFieldNode: _amountFocusNode,
+              child: Form(
+                key: _formKey,
+                child: new Padding(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+                  child: new Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new AmountFormField(
+                        focusNode: _amountFocusNode,
+                        validatorFn: account.validateOutgoingPayment,
+                        decoration: new InputDecoration(
+                            contentPadding: EdgeInsets.only(top: 21.0, bottom: 8.0), labelText: account.currency.displayName + " Amount"),
+                        style: theme.FieldTextStyle.textStyle,
+                        currency: account.currency,                      
+                        onFieldSubmitted: (String value) {
+                          _amountToSendSatoshi = account.currency.parse(value);
+                        },
                       ),
-                    )
-                  ],
+                      new Container(
+                        padding: new EdgeInsets.only(top: 32.0),
+                        child: new Row(
+                          children: <Widget>[
+                            new Text("Available:", style: theme.textStyle),
+                            new Padding(
+                              padding: EdgeInsets.only(left: 3.0),
+                              child: new Text(account.currency.format(account.balance), style: theme.textStyle),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             );

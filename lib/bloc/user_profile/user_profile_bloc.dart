@@ -100,8 +100,8 @@ class UserProfileBloc {
     }
     String currentToken = user.token;
     try {
-      String token = await injector.notifications.getToken();
-      if (token != currentToken) {
+      String token = await injector.notifications.getToken();      
+      if (token != currentToken || user.userID == null || user.userID.isEmpty) {
         user.userID = await injector.breezServer.registerDevice(token);
         File file = await _userIdFile;
         file.writeAsString(user.userID);

@@ -70,6 +70,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     if (_inProgress) {
       return false;
     }
+    widget.accountBloc.userActionsSink.add(CancelPaymentRequest(PayRequest(widget.invoice.rawPayReq, _amountToPay)));
     return true;
   }
 

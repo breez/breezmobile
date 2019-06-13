@@ -1,5 +1,6 @@
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/routes/user/home/status_indicator.dart';
@@ -21,7 +22,7 @@ class WalletDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     double startHeaderSize = theme.headline.fontSize;
     double endHeaderFontSize = theme.headline.fontSize - 8.0;
-    bool showProgressBar = _accSettings?.showConnectProgress == true || _accountModel?.isInitialBootstrap == true;
+    bool showProgressBar = (_accSettings?.showConnectProgress == true && !_accountModel.initial) || _accountModel?.isInitialBootstrap == true;
 
     return Stack(
       alignment: AlignmentDirectional.topCenter,
@@ -36,27 +37,28 @@ class WalletDashboard extends StatelessWidget {
             left: CHART_MAX_HORIZONTAL_OFFSET * _offsetFactor,
             height: this._height + CHART_MAX_VERTICAL_OFFSET * _offsetFactor,
             bottom: -CHART_MAX_VERTICAL_OFFSET * _offsetFactor,
-            child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    image: DecorationImage(
-                      image: AssetImage("src/images/chart_graph.png"),
-                      fit: BoxFit.fitWidth,
-                      alignment: FractionalOffset.bottomCenter,
-                    )))),
+            child:Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  image: DecorationImage(
+                    image: AssetImage("src/images/chart_graph.png"),
+                    fit: BoxFit.fitWidth,
+                    alignment: FractionalOffset.bottomCenter,
+                  ))),
+            ),
         showProgressBar ? 
           Positioned(top: 0.0, child: StatusIndicator(_accountModel)) : SizedBox(), 
         Positioned(
             top: 10.0,
             child: Center(
-              child: _accountModel != null
+              child: _accountModel != null && !_accountModel.initial
                   ? Text("Balance", style: theme.subtitle.copyWith(color: theme.subtitle.color.withOpacity( pow(1 - _offsetFactor, 8))))
                   : SizedBox(),
             )),
         Positioned(
             top: 30 - BALANCE_OFFSET_TRANSITION * _offsetFactor,
             child: Center(
-              child: _accountModel != null
+              child: _accountModel != null && !_accountModel.initial
                   ? FlatButton(
                   onPressed: () {
                     var nextCurrencyIndex = (Currency.currencies.indexOf(_accountModel.currency) + 1) % Currency.currencies.length;
@@ -65,7 +67,8 @@ class WalletDashboard extends StatelessWidget {
                   child: Text(_accountModel.currency.format(_accountModel.balance, fixedDecimals: false),
                       style: theme.headline.copyWith(fontSize: startHeaderSize - (startHeaderSize - endHeaderFontSize) * _offsetFactor)))
                   : SizedBox(),
-            ))
+              ),
+            )
       ],
     );
   }

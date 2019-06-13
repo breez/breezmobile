@@ -6,11 +6,20 @@ dependencies:
     sdk: flutter
   grpc: ^1.0.1
   protobuf: any
+
   path_provider: any
-  firebase_database: ^1.0.5
-  firebase_messaging: "2.1.0"
-  shared_preferences: "^0.4.1"
-  share: "^0.5.2"
+  firebase_core: 0.4.0+3
+  firebase_database: ^3.0.0
+  firebase_messaging: ^5.0.1+1
+  firebase_dynamic_links:
+    git:
+      url: https://github.com/breez/plugins.git
+      ref: running_app_link
+      path: packages/firebase_dynamic_links
+  shared_preferences: ^0.5.1+2
+  share_extend:
+    git:
+      url: https://github.com/breez/ShareExtend.git
   qr_flutter: ^2.0.0  
   hex: "^0.1.1"
   rxdart: "^0.18.1"  
@@ -19,25 +28,31 @@ dependencies:
   flushbar: ^1.3.0
   barcode_scan:
     git:
-       url: https://github.com/breez/flutter_barcode_reader.git
-  image_picker: 0.4.7
+       url: https://github.com/breez/flutter_barcode_reader.git  
+       ref: ios
+  image_picker: ^0.5.0+9
   image: any
   package_info: any  
   uuid: ^1.0.3
   ini: ^2.0.1
-  connectivity: ^0.3.2
+  connectivity: ^0.4.2
   logging: ^0.11.3+2
   auto_size_text: ^0.2.1
-  flutter_svg: any
+  flutter_svg: "^0.13.0"
   json_annotation: ^2.0.0
   http: ^0.12.0+1
   url_launcher: ^5.0.1
+  archive: ^2.0.8  
+  #simple_share: ^0.0.1+4
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.0
+  image_cropper: ^1.0.2
+  uni_links: ^0.2.0
   flutter_webview_plugin:
     git:
       url: https://github.com/breez/flutter_webview_plugin.git
+  keyboard_actions: ^2.1.1
 
 dev_dependencies:
   mockito: "^3.0.0"

@@ -7,7 +7,6 @@ lib/services/breez_server/protobuf/breez.proto
 .packages
 .pub/
 build/
-ios/.generated/
 packages
 .flutter-plugins
 /conf/
@@ -16,7 +15,7 @@ packages
 lib/services/breezlib/rpc.proto
 /android/app/libs/breez.aar
 pubspec.lock
-ios/bindings.framework/
-android/key.properties
 ios/Runner/GoogleService-Info.plist
+ios/bindings.framework/*
 travis/config.sh
+android/key.properties

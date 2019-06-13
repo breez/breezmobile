@@ -1,15 +1,13 @@
 package com.breez.client.plugins.breez.breezlib;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import androidx.core.app.*;
+import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
 
 import com.breez.client.MainActivity;
 import com.breez.client.R;

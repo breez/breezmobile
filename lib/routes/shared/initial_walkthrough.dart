@@ -185,7 +185,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                           color: theme.whiteColor,
                           elevation: 0.0,
                           shape: const StadiumBorder(),
-                          onPressed: () {
+                          onPressed: () {                            
                             showDialog(
                                 context: context,
                                 barrierDismissible: false,

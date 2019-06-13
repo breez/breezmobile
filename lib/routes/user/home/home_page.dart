@@ -6,6 +6,7 @@ import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:breez/routes/user/ctp_join_session_handler.dart';
 import 'package:breez/routes/shared/account_required_actions.dart';
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -133,41 +134,51 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        key: _scaffoldKey,
-        appBar: new AppBar(
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: AccountRequiredActionsIndicator(widget.backupBloc, widget.accountBloc),
-            ),],
-          leading: new IconButton(
-              icon: ImageIcon(
-                AssetImage("src/icon/hamburger.png"),
-                size: 24.0,
-                color: null,
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      decoration: new BoxDecoration(
+        color: theme.BreezColors.blue[500],        
+      ),
+      child: FadeInWidget(
+        child: new Scaffold(
+            key: _scaffoldKey,
+            appBar: new AppBar(
+              centerTitle: false,
+              actions: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(14.0),
+                  child: AccountRequiredActionsIndicator(widget.backupBloc, widget.accountBloc),
+                ),],
+              leading: new IconButton(
+                  icon: ImageIcon(
+                    AssetImage("src/icon/hamburger.png"),
+                    size: 24.0,
+                    color: null,
+                  ),
+                  onPressed: () => _scaffoldKey.currentState.openDrawer()),
+              title: new Image.asset(
+                "src/images/logo-color.png",
+                height: 23.5,
+                width: 62.7,
               ),
-              onPressed: () => _scaffoldKey.currentState.openDrawer()),
-          title: new Image.asset(
-            "src/images/logo-color.png",
-            height: 23.5,
-            width: 62.7,
-          ),
-          iconTheme: new IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
-          backgroundColor: theme.whiteColor,
-          elevation: 0.0,
-        ),
-        drawer: new NavigationDrawer(
-            true,
-            [
-              DrawerItemConfigGroup(_filterItems(widget._majorActionsFunds)),
-              DrawerItemConfigGroup(_filterItems(widget._majorActionsPay)),
-              DrawerItemConfigGroup(_filterItems(widget._minorActionsInvoice)),
-              DrawerItemConfigGroup(_filterItems(widget._minorActionsCard), groupTitle: "Card", groupAssetImage: "src/icon/card.png"),
-              DrawerItemConfigGroup(_filterItems(widget._minorActionsAdvanced), groupTitle: "Advanced", groupAssetImage: "src/icon/advanced.png"),
-            ],
-            _onNavigationItemSelected),
-        body: widget._screenBuilders[_activeScreen]);
+              iconTheme: new IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
+              backgroundColor: theme.whiteColor,
+              elevation: 0.0,
+            ),
+            drawer: new NavigationDrawer(
+                true,
+                [
+                  DrawerItemConfigGroup(_filterItems(widget._majorActionsFunds)),
+                  DrawerItemConfigGroup(_filterItems(widget._majorActionsPay)),
+                  DrawerItemConfigGroup(_filterItems(widget._minorActionsInvoice)),
+                  DrawerItemConfigGroup(_filterItems(widget._minorActionsCard), groupTitle: "Card", groupAssetImage: "src/icon/card.png"),
+                  DrawerItemConfigGroup(_filterItems(widget._minorActionsAdvanced), groupTitle: "Advanced", groupAssetImage: "src/icon/advanced.png"),
+                ],
+                _onNavigationItemSelected),
+            body: widget._screenBuilders[_activeScreen]),
+      ),
+    );
   }
 
   _onNavigationItemSelected(String itemName) {

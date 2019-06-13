@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/form_keyboard_actions.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
   TextEditingController _amountController = new TextEditingController();
   double _maxHeight = 0.0;
   final _formKey = GlobalKey<FormState>();
+  final FocusNode _amountFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -53,46 +55,50 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
               child: Container(
                 height: max(formMinHeight, constraints.maxHeight - bottomBarHeight),                
                 width: constraints.maxWidth,
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      AmountFormField(
-                        validatorFn: widget._account.validateOutgoingPayment,
-                        currency: widget._account.currency,
-                        controller: _amountController,
-                        decoration: new InputDecoration(
-                            labelText: widget._account.currency.displayName +
-                                " Amount"),
-                      ),
-                      TextFormField(
-                        controller: _invoiceDescriptionController,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.done,
-                        maxLines: null,
-                        maxLength: 90,
-                        maxLengthEnforced: true,
-                        decoration: new InputDecoration(
-                          labelText: "Note (optional)",
+                child: FormActionsWrapper(
+                  numericFieldNode: _amountFocusNode,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        AmountFormField(
+                          focusNode: _amountFocusNode,
+                          validatorFn: widget._account.validateOutgoingPayment,
+                          currency: widget._account.currency,
+                          controller: _amountController,
+                          decoration: new InputDecoration(
+                              labelText: widget._account.currency.displayName +
+                                  " Amount"),
                         ),
-                        style: theme.FieldTextStyle.textStyle,
-                      ),
-                      Container(
-                        padding: new EdgeInsets.only(top: 36.0),
-                        child: new Row(
-                          children: <Widget>[
-                            new Text("Available:", style: theme.textStyle),
-                            new Padding(
-                              padding: EdgeInsets.only(left: 3.0),
-                              child: new Text(
-                                  widget._account.currency
-                                      .format(widget._account.balance),
-                                  style: theme.textStyle),
-                            )
-                          ],
+                        TextFormField(
+                          controller: _invoiceDescriptionController,
+                          keyboardType: TextInputType.multiline,
+                          textInputAction: TextInputAction.done,
+                          maxLines: null,
+                          maxLength: 90,
+                          maxLengthEnforced: true,
+                          decoration: new InputDecoration(
+                            labelText: "Note (optional)",
+                          ),
+                          style: theme.FieldTextStyle.textStyle,
                         ),
-                      )
-                    ],
+                        Container(
+                          padding: new EdgeInsets.only(top: 36.0),
+                          child: new Row(
+                            children: <Widget>[
+                              new Text("Available:", style: theme.textStyle),
+                              new Padding(
+                                padding: EdgeInsets.only(left: 3.0),
+                                child: new Text(
+                                    widget._account.currency
+                                        .format(widget._account.balance),
+                                    style: theme.textStyle),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

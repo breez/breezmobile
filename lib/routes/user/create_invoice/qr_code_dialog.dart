@@ -3,9 +3,9 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:share/share.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:share_extend/share_extend.dart';
 
 class QrCodeDialog extends StatelessWidget {
   final BuildContext context;
@@ -40,7 +40,7 @@ class QrCodeDialog extends StatelessWidget {
                     icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
                     color: theme.BreezColors.grey[500],
                     onPressed: () {
-                      Share.share("lightning:" + snapshot.data);
+                      ShareExtend.share("lightning:" + snapshot.data, "text");
                     },
                   ),
                   new IconButton(
@@ -91,7 +91,7 @@ class QrCodeDialog extends StatelessWidget {
                   ),
                   new GestureDetector(
                     onTap: () {
-                      Share.share(snapshot.data);
+                      ShareExtend.share(snapshot.data, "text");
                     },
                     child: new Container(
                       child: new Text(

@@ -11,11 +11,11 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/lnd_bootstrap_progress.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_extend/share_extend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:flutter/services.dart';
-import 'package:share/share.dart';
 import 'package:flutter/gestures.dart';
 import 'package:breez/routes/shared/dev/default_commands.dart';
 import 'package:archive/archive_io.dart';
@@ -229,7 +229,7 @@ class DevViewState extends State<DevView> {
                                             iconSize: 19.0,
                                             tooltip: 'Share',
                                             onPressed: () {
-                                              Share.share(_cliText);
+                                              ShareExtend.share(_cliText, "text");
                                             },
                                           )
                                         ],
@@ -267,11 +267,7 @@ class DevViewState extends State<DevView> {
       Choice(
           title: 'Show Initial Screen',
           icon: Icons.phone_android,
-          function: _gotoInitialScreen),
-      Choice(
-          title: 'Battery Optimization',
-          icon: Icons.phone_android,
-          function: _showOptimizationsSettings),
+          function: _gotoInitialScreen),      
       Choice(
           title:
               '${settings.showConnectProgress ? "Hide" : "Show"} Connect Progress',
@@ -285,6 +281,12 @@ class DevViewState extends State<DevView> {
           function: _describeGraph),
     ]);
 
+    if (Platform.isAndroid) {
+      choices.add(Choice(
+          title: 'Battery Optimization',
+          icon: Icons.phone_android,
+          function: _showOptimizationsSettings));
+    }
     if (settings.failePaymentBehavior != BugReportBehavior.PROMPT) {
       choices.add(Choice(
           title:
@@ -346,12 +348,11 @@ class DevViewState extends State<DevView> {
       encoder.create('${tempDir.path}/graph.zip');
       encoder.addFile(File(filePath));
       encoder.close();
+      File("${tempDir.path}/graph.json").deleteSync();
       if (!userCancelled) {
         return shareFile("${tempDir.path}/graph.zip");
       }
-    }).whenComplete(() {
-      File("${tempDir.path}/graph.zip").deleteSync();
-      File("${tempDir.path}/graph.json").deleteSync();
+    }).whenComplete(() {    
       if (!userCancelled) {
         Navigator.pop(context);
       }

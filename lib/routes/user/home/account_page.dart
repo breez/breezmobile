@@ -34,7 +34,7 @@ class AccountPage extends StatefulWidget {
   }
 }
 
-class AccountPageState extends State<AccountPage> {
+class AccountPageState extends State<AccountPage> with SingleTickerProviderStateMixin{
   final List<String> currencyList = Currency.currencies.map((c) => c.symbol).toList();
 
   AccountBloc _accountBloc;
@@ -44,7 +44,7 @@ class AccountPageState extends State<AccountPage> {
 
   StreamSubscription<String> _accountActionsSubscription;
   StreamSubscription<bool> _paidInvoicesSubscription;
-  bool _isInit = false;
+  bool _isInit = false;  
 
   @override
   void didChangeDependencies() {          
@@ -77,92 +77,95 @@ class AccountPageState extends State<AccountPage> {
                 return StreamBuilder<PaymentsModel>(
                     stream: _accountBloc.paymentsStream,
                     builder: (context, snapshot) {                
-                      PaymentsModel paymentsModel;
-                      if (snapshot.hasData) {
-                        paymentsModel = snapshot.data;
-                      }
-
-                      if(account == null || paymentsModel == null){
-                        return Container();
-                      }
-
-                      if ((account != null && !account.initial) && (paymentsModel != null && paymentsModel.paymentsList.length == 0 && paymentsModel.filter.initial)) {
-                        //build empty account page
-                        return _buildEmptyAccount(settingSnapshot.data, account);
-                      }
-
-                      //account and payments are ready, build their widgets
-                      return _buildBalanceAndPayments(paymentsModel, account);
+                      PaymentsModel paymentsModel = snapshot.data ?? PaymentsModel.initial();
+                      return StreamBuilder<String>(
+                        stream: _connectPayBloc.pendingCTPLinkStream,
+                        builder: (ctx, ctpSnapshot){
+                          //account and payments are ready, build their widgets
+                          return _buildBalanceAndPayments(paymentsModel, account, ctpSnapshot.data);  
+                        }
+                      );                      
                     });
               });
         });
   }
 
-  Widget _buildEmptyAccount(AccountSettings settings, AccountModel account){
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-      Column(
-      children: <Widget>[
-        Expanded(
-            flex: 0,
-            child: Container(height: DASHBOARD_MAX_HEIGHT, child: WalletDashboard(settings, account, DASHBOARD_MAX_HEIGHT, 0.0, _userProfileBloc.currencySink.add))),
-        Expanded(flex: 1, child: _buildEmptyHomeScreen(account))
-      ],
-    ),
-    FloatingActionsBar(account, DASHBOARD_MAX_HEIGHT, 0.0)
-    ]);
-  }
-
-  Widget _buildBalanceAndPayments(PaymentsModel paymentsModel, AccountModel account) {
+  Widget _buildBalanceAndPayments(PaymentsModel paymentsModel, AccountModel account, String pendingCTPLink) {
     double listHeightSpace = MediaQuery.of(context).size.height - DASHBOARD_MIN_HEIGHT - kToolbarHeight - FILTER_MAX_SIZE - 25.0;
     double bottomPlaceholderSpace = paymentsModel.paymentsList == null || paymentsModel.paymentsList.length == 0 ? 0.0 : (listHeightSpace - PAYMENT_LIST_ITEM_HEIGHT * paymentsModel.paymentsList.length).clamp(0.0, listHeightSpace);
+
+    String message = account?.statusMessage;
+    bool showMessage = account?.syncUIState != SyncUIState.BLOCKING && (account != null && !account.initial || account?.isInitialBootstrap == true);
+    if (pendingCTPLink != null) {
+      message =
+      "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";
+      showMessage = true;
+    }    
+
+    List<Widget> slivers = new List<Widget>();
+    slivers.add(SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(_accountBloc, _userProfileBloc), pinned: true));
+    if (paymentsModel.nonFilteredItems.length > 0) {
+      slivers.add(PaymentFilterSliver(widget.scrollController, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _accountBloc, paymentsModel));
+    }
+    if (paymentsModel?.filter?.startDate != null && paymentsModel?.filter?.endDate != null) {
+      slivers.add(SliverAppBar(
+        pinned: true,
+        elevation: 0.0,
+        expandedHeight: 32.0,
+        automaticallyImplyLeading: false,
+        backgroundColor: Theme.of(context).canvasColor,
+        flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
+      ));
+    }
+
+    if (paymentsModel.nonFilteredItems.length > 0) {
+      slivers.add(PaymentsList(paymentsModel.paymentsList, PAYMENT_LIST_ITEM_HEIGHT, widget.firstPaymentItemKey));
+      slivers.add(SliverPersistentHeader(pinned: true, delegate: new FixedSliverDelegate(
+        bottomPlaceholderSpace,
+        child: Container()
+      )));
+    } else if (showMessage) {
+      slivers.add(SliverPersistentHeader(              
+        delegate: new FixedSliverDelegate(200.0,
+            builder: (context, shrinkedHeight, overlapContent) {
+          return Container(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 130.0, left: 40.0, right: 40.0),
+              child: (
+                    StatusText(message,
+                    loading: account?.swapFundsStatus?.error?.isNotEmpty !=
+                        true)),
+            ),
+          );
+        }),
+      ));
+    }
+
     return Stack(
-      key: Key("account_sliver"),
-      fit: StackFit.expand,
-      children: [
-        CustomScrollView(
-          controller: widget.scrollController,
-          slivers: <Widget>[
-            //Account dashboard header
-            SliverPersistentHeader(floating: false, delegate: WalletDashboardHeaderDelegate(_accountBloc, _userProfileBloc), pinned: true),
-
-            //payment filter
-            PaymentFilterSliver(widget.scrollController, FILTER_MIN_SIZE, FILTER_MAX_SIZE, _accountBloc, paymentsModel),
-
-            (paymentsModel.filter != null && paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
-                ? SliverAppBar(
-              pinned: true,
-              elevation: 0.0,
-              expandedHeight: 32.0,
-              automaticallyImplyLeading: false,
-              backgroundColor: Theme.of(context).canvasColor,
-              flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
-            ) : SliverPadding(padding: EdgeInsets.zero),
-
-            // //List
-            PaymentsList(paymentsModel.paymentsList, PAYMENT_LIST_ITEM_HEIGHT, widget.firstPaymentItemKey),
-
-            //footer
-            SliverPersistentHeader(
-                pinned: true,
-                delegate: new FixedSliverDelegate(
-                  bottomPlaceholderSpace,
-                  child: Container(),
-                ))
-          ],
-        ),
-        //Floating actions
-        ScrollWatcher(
-          controller: widget.scrollController,
-          builder: (context, offset) {
-            double height = (DASHBOARD_MAX_HEIGHT - offset).clamp(DASHBOARD_MIN_HEIGHT, DASHBOARD_MAX_HEIGHT);
-            double heightFactor = (offset / (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT)).clamp(0.0, 1.0);
-            return account != null ? FloatingActionsBar(account, height, heightFactor) : Positioned(top: 0.0, child: SizedBox());
-          },
-        ),
-      ],
-    );
+        key: Key("account_sliver"),
+        fit: StackFit.expand,
+        children: [
+          CustomScrollView(
+            controller: widget.scrollController,
+            slivers: slivers          
+          ),
+          paymentsModel.nonFilteredItems.length == 0 ? new Image.asset(
+            "src/images/waves-home.png",
+            fit: BoxFit.contain,
+            width: double.infinity,
+            alignment: Alignment.bottomCenter,
+          ) : SizedBox(),
+          //Floating actions
+          ScrollWatcher(
+            controller: widget.scrollController,
+            builder: (context, offset) {
+              double height = (DASHBOARD_MAX_HEIGHT - offset).clamp(DASHBOARD_MIN_HEIGHT, DASHBOARD_MAX_HEIGHT);
+              double heightFactor = (offset / (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT)).clamp(0.0, 1.0);
+              return account != null && !account.initial ? FloatingActionsBar(account, height, heightFactor) : Positioned(top: 0.0, child: SizedBox());
+            },
+          ),
+        ],
+      );
   }
 
   _buildDateFilterChip(PaymentFilterModel filter) {
@@ -177,40 +180,6 @@ class AccountPageState extends State<AccountPage> {
         onDeleted: () =>
             _accountBloc.paymentFilterSink.add(PaymentFilterModel(filter.paymentType, null,
                 null)),),)],);
-  }
-
-  Widget _buildEmptyHomeScreen(AccountModel account) {
-    return new Stack(
-      fit: StackFit.expand,
-      children: <Widget>[
-        new Padding(
-            padding: EdgeInsets.only(top: 32.0),child: SizedBox(key: widget.firstPaymentItemKey,width: 0.0,height: 0.0,),), // Location of first payment item
-        new Padding(
-            padding: EdgeInsets.only(top: 130.0, left: 40.0, right: 40.0),
-            // new status widget
-            child: StreamBuilder(
-                stream: _connectPayBloc.pendingCTPLinkStream,
-                builder: (context, pendingLinkSnapshot) {
-                  String message = account.statusMessage;
-                  if (pendingLinkSnapshot.connectionState ==
-                      ConnectionState.active && pendingLinkSnapshot.hasData) {
-                    message =
-                    "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";
-                  }
-                  return account.syncUIState == SyncUIState.BLOCKING ? SizedBox() : StatusText(message,
-                      loading: account?.swapFundsStatus?.error?.isNotEmpty !=
-                          true);
-                }
-            )
-        ),
-        new Image.asset(
-          "src/images/waves-home.png",
-          fit: BoxFit.contain,
-          width: double.infinity,
-          alignment: Alignment.bottomCenter,
-        )
-      ],
-    );
   }
 }
 

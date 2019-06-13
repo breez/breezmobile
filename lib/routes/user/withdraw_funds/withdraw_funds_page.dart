@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/form_keyboard_actions.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -36,6 +37,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   String _addressValidated;
   bool _inProgress = false;
   bool _isInit = false;
+  final FocusNode _amountFocusNode = FocusNode();
 
   @override
   void didChangeDependencies() {        
@@ -144,58 +146,62 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
             return StaticLoader();
           }
           AccountModel acc = snapshot.data;
-          return Form(
-            key: _formKey,
-            child: new Padding(
-              padding: EdgeInsets.only(
-                  left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-              child: new Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[                  
-                  new TextFormField(
-                    controller: _addressController,
-                    decoration: new InputDecoration(
-                      labelText: "BTC Address",
-                      suffixIcon: new IconButton(
-                        padding: EdgeInsets.only(top: 21.0),
-                        alignment: Alignment.bottomRight,
-                        icon: new Image(
-                          image: new AssetImage("src/icon/qr_scan.png"),
-                          color: theme.BreezColors.white[500],
-                          fit: BoxFit.contain,
-                          width: 24.0,
-                          height: 24.0,
-                        ),
-                        tooltip: 'Scan Barcode',
-                        onPressed: _scanBarcode,
-                      ),
-                    ),
-                    style: theme.FieldTextStyle.textStyle,
-                    validator: (value) {
-                      if (_addressValidated == null) {
-                        return "Please enter a valid BTC Address";
-                      }
-                    },
-                  ),
-                  _scannerErrorMessage.length > 0
-                      ? new Text(
-                          _scannerErrorMessage,
-                          style: theme.validatorStyle,
-                        )
-                      : SizedBox(),
-                  new AmountFormField(
-                      controller: _amountController,                      
-                      currency: acc.currency,
-                      validatorFn: acc.validateOutgoingPayment,
+          return FormActionsWrapper(
+            numericFieldNode: _amountFocusNode,
+            child: Form(
+              key: _formKey,
+              child: new Padding(
+                padding: EdgeInsets.only(
+                    left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+                child: new Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[                  
+                    new TextFormField(
+                      controller: _addressController,
                       decoration: new InputDecoration(
-                          labelText: acc.currency.displayName + " Amount"),
-                      style: theme.FieldTextStyle.textStyle),                 
-                  new Container(
-                    padding: new EdgeInsets.only(top: 36.0),
-                    child: _buildAvailableBTC(acc),
-                  ),
-                ],
+                        labelText: "BTC Address",
+                        suffixIcon: new IconButton(
+                          padding: EdgeInsets.only(top: 21.0),
+                          alignment: Alignment.bottomRight,
+                          icon: new Image(
+                            image: new AssetImage("src/icon/qr_scan.png"),
+                            color: theme.BreezColors.white[500],
+                            fit: BoxFit.contain,
+                            width: 24.0,
+                            height: 24.0,
+                          ),
+                          tooltip: 'Scan Barcode',
+                          onPressed: _scanBarcode,
+                        ),
+                      ),
+                      style: theme.FieldTextStyle.textStyle,
+                      validator: (value) {
+                        if (_addressValidated == null) {
+                          return "Please enter a valid BTC Address";
+                        }
+                      },
+                    ),
+                    _scannerErrorMessage.length > 0
+                        ? new Text(
+                            _scannerErrorMessage,
+                            style: theme.validatorStyle,
+                          )
+                        : SizedBox(),
+                    new AmountFormField(
+                        focusNode: _amountFocusNode,
+                        controller: _amountController,                      
+                        currency: acc.currency,
+                        validatorFn: acc.validateOutgoingPayment,
+                        decoration: new InputDecoration(
+                            labelText: acc.currency.displayName + " Amount"),
+                        style: theme.FieldTextStyle.textStyle),                 
+                    new Container(
+                      padding: new EdgeInsets.only(top: 36.0),
+                      child: _buildAvailableBTC(acc),
+                    ),
+                  ],
+                ),
               ),
             ),
           );

@@ -70,7 +70,7 @@ class AccountSynchronizer {
             int.parse(replyJson["best_header_timestamp"].toString()) * 1000;
         var syncedToChain = replyJson["synced_to_chain"].toString() == "true";
 
-        if (_startPollTimestamp == 0) {
+        if (_startPollTimestamp > sincedToTimestamp) {
           _startPollTimestamp = sincedToTimestamp;
         }
 

@@ -11,7 +11,7 @@ class Device {
 
   final StreamController _eventsController =
       new StreamController<NotificationType>.broadcast();
-  Stream get eventStream => _eventsController.stream;
+  Stream<NotificationType> get eventStream => _eventsController.stream;
 
   final _deviceClipboardController = new BehaviorSubject<String>();
   Stream get deviceClipboardStream => _deviceClipboardController.stream;

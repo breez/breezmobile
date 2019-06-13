@@ -4,6 +4,7 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:breez/bloc/connect_pay/firebase_session_channel.dart';
 import 'package:breez/bloc/connect_pay/online_status_updater.dart';
+import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/deep_links.dart';
@@ -13,6 +14,7 @@ import 'package:rxdart/rxdart.dart';
 import 'connect_pay_model.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/logger.dart';
 
 
 /*
@@ -38,10 +40,12 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
   StreamSubscription _invoicesPaidSubscription;
   PaymentSessionChannel _channel;
   BreezBridge _breezLib = ServiceInjector().breezBridge;
+  BackgroundTaskService _backgroundService = ServiceInjector().backgroundTaskService;
   BreezUserModel _currentUser;
   var sessionState = Map<String, dynamic>();
   SessionLinkModel sessionLink;
   String get sessionID => sessionLink?.sessionID;
+  Completer _sessionCompleter = new Completer();
 
   PayeeRemoteSession(this._currentUser, {PayerSessionData existingPayerData}) : super(_currentUser) {
     var initialState = PaymentSessionState.payeeStart(sessionID, _currentUser.name, _currentUser.avatarURL);
@@ -83,6 +87,11 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
       _breezLib
           .addInvoice(Int64(payerData.amount), payeeName: _currentUser.name, payeeImageURL: _currentUser.avatarURL, payerName: payerData.userName, payerImageURL: payerData.imageURL, description: payerData.description)
           .then((payReq) => _sendPaymentRequest(payReq))
+          .then((_){
+            _backgroundService.runAsTask(_sessionCompleter.future, (){
+              log.info("payee session background task finished");
+            });
+          })
           .catchError(_onInvoiceError);
     });
 
@@ -129,10 +138,11 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
     });
   }
 
-  Future terminate({bool permanent=false}) async {
+  Future terminate({bool permanent=false}) async {    
     if (_isTerminated) {
       return Future.value(null);
     }
+    _sessionCompleter.complete();
     await _invoicesPaidSubscription.cancel();
     await stopStatusUpdates();
     if (permanent &&  !_currentSession.paymentFulfilled) {  

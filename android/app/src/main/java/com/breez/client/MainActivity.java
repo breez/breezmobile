@@ -1,12 +1,8 @@
 package com.breez.client;
 
-import com.breez.client.plugins.*;
-import com.breez.client.plugins.breez.BreezCredential;
-import com.breez.client.plugins.breez.BreezDeepLinks;
 import com.breez.client.plugins.breez.breezlib.Breez;
 import com.breez.client.plugins.breez.*;
-import com.breez.client.plugins.breez.ShareBreezLog;
-import com.breez.client.plugins.breez.BreezShare;
+
 import android.os.Bundle;
 
 import android.content.Intent;
@@ -45,14 +41,8 @@ public class MainActivity extends FlutterActivity {
     }
 
     void registerBreezPlugins() {
-        new ImageCropper(this.registrarFor("com.breez.client.plugins.image_cropper"));        
         new Breez(this.registrarFor("com.breez.client.plugins.breez_lib"));
-        new BreezDeepLinks(this.registrarFor("com.breez.client.plugins.breez_deep_links"));
-        BreezApplication.breezShare = new BreezShare(this.registrarFor("com.breez.client.plugins.breez_share"), this);
-        new ShareBreezLog(this.registrarFor("com.breez.client.plugins.share_breez_log"), this);
-        new BreezCredential(this.registrarFor("com.breez.client.plugins.breez_credential"), this);
         new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
-        new LightningLinks(this.registrarFor("com.breez.client.plugins.lightning_links"));
         new Permissions(this.registrarFor("com.breez.client.plugins.permissions"), this);
     }
 

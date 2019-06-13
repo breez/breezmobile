@@ -1,5 +1,6 @@
 package com.breez.client.plugins.breez;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -21,8 +22,10 @@ public class LifecycleEvents implements StreamHandler, ActivityLifecycleListener
 
     private EventChannel.EventSink m_eventsListener;
     private Executor _executor = Executors.newCachedThreadPool();
+    private Activity m_activity;
 
     public LifecycleEvents(PluginRegistry.Registrar registrar) {
+        m_activity = registrar.activity();
         new EventChannel(registrar.messenger(), EVENTS_STREAM_NAME).setStreamHandler(this);
         registrar.view().addActivityLifecycleListener(this);
     }
@@ -46,7 +49,9 @@ public class LifecycleEvents implements StreamHandler, ActivityLifecycleListener
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {}
-                m_eventsListener.success("resume");
+                m_activity.runOnUiThread(() -> {
+                    m_eventsListener.success("resume");
+                });
             });
         }
     }

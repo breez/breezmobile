@@ -66,6 +66,12 @@ class BreezBridge {
       "tempDir": tmpDir});
   }
 
+  Future<bool> needsBootstrap(){
+    return getApplicationDocumentsDirectory().then((dir){
+      return LNDBootstrapper.needsBootstrap(dir.path);
+    });
+  }
+
   Future startLightning() {    
     return _startedCompleter.future.then((_) =>  _start());
   }
