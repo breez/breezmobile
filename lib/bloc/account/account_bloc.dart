@@ -179,8 +179,9 @@ class AccountBloc {
 
   void _setBootstraping(bool bootstraping) {
     _sharedPreferences.setBool(BOOTSTRAPING_PREFERENCES_KEY, bootstraping);
+    bool initial = bootstraping ? false : _accountController.value.initial;
     _accountController
-        .add(_accountController.value.copyWith(bootstraping: bootstraping, initial: false));  
+        .add(_accountController.value.copyWith(bootstraping: bootstraping, initial: initial));  
     if (bootstraping && _accountController.value.syncUIState == SyncUIState.NONE) {
       _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
     }

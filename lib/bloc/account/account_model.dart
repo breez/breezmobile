@@ -143,8 +143,8 @@ class AccountModel {
       _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
   bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;
   bool get isInitialBootstrap =>
-      bootstraping ||
-      (!active && !processingWithdrawal && !processingBreezConnection && !initial);
+      (bootstraping ||
+      (!active && !processingWithdrawal && !processingBreezConnection)) && !initial;
   Int64 get balance => _accountResponse.balance;
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
