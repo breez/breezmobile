@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import  'package:keyboard_actions/keyboard_actions.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -31,7 +32,9 @@ class _KeyboardActionsWrapperState extends State<_KeyboardActionsWrapper> {
   @override
   void initState() {
     // Configure keyboard actions
-    FormKeyboardActions.setKeyboardActions(context, _buildActionsConfig(context));
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      FormKeyboardActions.setKeyboardActions(context, _buildActionsConfig(context));
+    }
     super.initState();
   }
 
