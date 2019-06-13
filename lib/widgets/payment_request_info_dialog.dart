@@ -160,22 +160,25 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           accentColor: theme.BreezColors.blue[500],
           primaryColor: theme.BreezColors.blue[500],
           errorColor: Colors.red),
-          child: FormActionsWrapper(
-            numericFieldNode: _amountFocusNode,
-            child: Form(
-              autovalidate: true,
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                child: Container(
-                  height: 80.0,
-                  child: AmountFormField(
-                    focusNode: _amountFocusNode,
-                    style: theme.alertStyle.copyWith(height: 1.0),
-                    validatorFn: account.validateOutgoingPayment,
-                    currency: account.currency,
-                    controller: _invoiceAmountController,
-                    decoration: new InputDecoration(labelText: account.currency.displayName + " Amount"),
+          child: Container(
+            height: 100.0,
+            child: FormActionsWrapper(
+              numericFieldNode: _amountFocusNode,
+              child: Form(
+                autovalidate: true,
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: Container(
+                    height: 80.0,
+                    child: AmountFormField(
+                      focusNode: _amountFocusNode,
+                      style: theme.alertStyle.copyWith(height: 1.0),
+                      validatorFn: account.validateOutgoingPayment,
+                      currency: account.currency,
+                      controller: _invoiceAmountController,
+                      decoration: new InputDecoration(labelText: account.currency.displayName + " Amount"),
+                    ),
                   ),
                 ),
               ),

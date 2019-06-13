@@ -162,84 +162,87 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
             AccountModel acc = snapshot.data;
             return LayoutBuilder(builder: (context, constraints) {
               return SingleChildScrollView(
-                child: FormActionsWrapper(
-                  numericFieldNode: _amountFocusNode,
-                  child: Form(
-                    key: _formKey,
-                    child: new Padding(
-                      padding: EdgeInsets.only(
-                          left: 16.0, right: 16.0, bottom: 0.0, top: 12.0),
-                      child: new Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          constraints.maxHeight > 400.0
-                              ? Text(
-                                  "Breez found unexpected funds in its underlying  wallet. These funds cannot be used for Breez payments, so it is highly recommended you send them to an external address as soon as possible.",
-                                  style: new TextStyle(
-                                      color: theme.BreezColors.grey[500],
-                                      fontSize: 16.0,
-                                      height: 1.2))
-                              : SizedBox(),
-                          new TextFormField(
-                            controller: _addressController,
-                            decoration: new InputDecoration(
-                              labelText: "BTC Address",
-                              suffixIcon: new IconButton(
-                                padding: EdgeInsets.only(top: 21.0),
-                                alignment: Alignment.bottomRight,
-                                icon: new Image(
-                                  image: new AssetImage("src/icon/qr_scan.png"),
-                                  color: theme.alertStyle.color,
-                                  fit: BoxFit.contain,
-                                  width: 24.0,
-                                  height: 24.0,
+                child: Container(
+                  height: constraints.maxHeight,
+                  child: FormActionsWrapper(
+                    numericFieldNode: _amountFocusNode,
+                    child: Form(
+                      key: _formKey,
+                      child: new Padding(
+                        padding: EdgeInsets.only(
+                            left: 16.0, right: 16.0, bottom: 0.0, top: 12.0),
+                        child: new Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            constraints.maxHeight > 400.0
+                                ? Text(
+                                    "Breez found unexpected funds in its underlying  wallet. These funds cannot be used for Breez payments, so it is highly recommended you send them to an external address as soon as possible.",
+                                    style: new TextStyle(
+                                        color: theme.BreezColors.grey[500],
+                                        fontSize: 16.0,
+                                        height: 1.2))
+                                : SizedBox(),
+                            new TextFormField(
+                              controller: _addressController,
+                              decoration: new InputDecoration(
+                                labelText: "BTC Address",
+                                suffixIcon: new IconButton(
+                                  padding: EdgeInsets.only(top: 21.0),
+                                  alignment: Alignment.bottomRight,
+                                  icon: new Image(
+                                    image: new AssetImage("src/icon/qr_scan.png"),
+                                    color: theme.alertStyle.color,
+                                    fit: BoxFit.contain,
+                                    width: 24.0,
+                                    height: 24.0,
+                                  ),
+                                  tooltip: 'Scan Barcode',
+                                  onPressed: _scanBarcode,
                                 ),
-                                tooltip: 'Scan Barcode',
-                                onPressed: _scanBarcode,
                               ),
-                            ),
-                            style: theme.alertStyle,
-                            validator: (value) {
-                              if (_addressValidated == null) {
-                                return "Please enter a valid BTC Address";
-                              }
-                            },
-                          ),
-                          _scannerErrorMessage.length > 0
-                              ? new Text(
-                                  _scannerErrorMessage,
-                                  style: theme.validatorStyle,
-                                )
-                              : SizedBox(),
-                          new AmountFormField(
-                              focusNode: _amountFocusNode,
-                              controller: _amountController,
-                              currency: acc.currency,
-                              validatorFn: acc.validateOutgoingOnChainPayment,                            
-                              decoration: new InputDecoration(
-                                  labelText:
-                                      acc.currency.displayName + " Amount"),
-                              style: theme.alertStyle),
-                          new TextFormField(
-                              controller: _feeController,
-                              inputFormatters: [
-                                WhitelistingTextInputFormatter.digitsOnly
-                              ],
-                              keyboardType: TextInputType.number,
-                              decoration: new InputDecoration(
-                                  labelText: "Sat Per Byte Fee Rate"),
                               style: theme.alertStyle,
                               validator: (value) {
-                                if (_feeController.text.isEmpty) {
-                                  return "Please enter a valid fee rate";
+                                if (_addressValidated == null) {
+                                  return "Please enter a valid BTC Address";
                                 }
-                              }),
-                          new Container(
-                            padding: new EdgeInsets.only(top: 12.0),
-                            child: _buildAvailableBTC(acc),
-                          ),
-                        ],
+                              },
+                            ),
+                            _scannerErrorMessage.length > 0
+                                ? new Text(
+                                    _scannerErrorMessage,
+                                    style: theme.validatorStyle,
+                                  )
+                                : SizedBox(),
+                            new AmountFormField(
+                                focusNode: _amountFocusNode,
+                                controller: _amountController,
+                                currency: acc.currency,
+                                validatorFn: acc.validateOutgoingOnChainPayment,                            
+                                decoration: new InputDecoration(
+                                    labelText:
+                                        acc.currency.displayName + " Amount"),
+                                style: theme.alertStyle),
+                            new TextFormField(
+                                controller: _feeController,
+                                inputFormatters: [
+                                  WhitelistingTextInputFormatter.digitsOnly
+                                ],
+                                keyboardType: TextInputType.number,
+                                decoration: new InputDecoration(
+                                    labelText: "Sat Per Byte Fee Rate"),
+                                style: theme.alertStyle,
+                                validator: (value) {
+                                  if (_feeController.text.isEmpty) {
+                                    return "Please enter a valid fee rate";
+                                  }
+                                }),
+                            new Container(
+                              padding: new EdgeInsets.only(top: 12.0),
+                              child: _buildAvailableBTC(acc),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
