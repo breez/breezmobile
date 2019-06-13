@@ -8,6 +8,7 @@ dependencies:
   protobuf: any
 
   path_provider: any
+  firebase_core: 0.4.0+3
   firebase_database: ^3.0.0
   firebase_messaging: ^5.0.1+1
   firebase_dynamic_links:
