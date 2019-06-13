@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert' as JSON;
 import 'package:flutter/material.dart';
+import 'dart:typed_data';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -34,6 +35,8 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   StreamSubscription _postMessageListener;
   bool _isInit = false;
 
+  Uint8List _screenshotData;
+
   @override
   void initState() {
     super.initState();
@@ -51,6 +54,9 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     _sentPaymentResultSubscription = widget.accountBloc.completedPaymentsStream.listen((payment) {
       // If user cancels or fulfills the payment show Webview again.
       _widgetWebview.show();
+      setState(() {
+        _screenshotData = null;
+      });
     }, onError: (_) {
       Navigator.popUntil(context, (route) {
         return route.settings.name == "/home" || route.settings.name == "/";
@@ -66,15 +72,23 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
         if (postMessage != null) {
           final order = JSON.jsonDecode(postMessage);
           if (order.containsKey("uri")) {
-            invoiceBloc.newLightningLinkSink.add(order['uri']);
-            Navigator.popUntil(context, (route) {
-              return route.settings.name == "/home" || route.settings.name == "/";
+            // Hide keyboard
+            FocusScope.of(context).requestFocus(FocusNode());
+            // Wait for keyboard and screen animations to settle
+            Timer(Duration(milliseconds: 750), () {
+              // Take screenshot and show payment request dialog
+              _takeScreenshot().then((imageData) {
+                setState(() {
+                  _screenshotData = imageData;
+                });
+                // Wait for memory image to load
+                Timer(Duration(milliseconds: 200), () {
+                  // Hide Webview to interact with payment request dialog
+                  _widgetWebview.hide();
+                  invoiceBloc.newLightningLinkSink.add(order['uri']);
+                });
+              });
             });
-            /* TODO: Instead of going to the home page:
-             * Hide Webview to show payment request dialog,
-             * If user cancels the payment, destroy Webview and go back to Marketplace page,
-             * If the payment is successful, show Webview again.
-             */
           }
         }
       });
@@ -110,6 +124,12 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       url: widget._url,
       withJavascript: true,
       withZoom: false,
+      initialChild: _screenshotData != null ? Image.memory(_screenshotData) : null,
     );
+  }
+
+  Future _takeScreenshot() async {
+    Uint8List _imageData = await _widgetWebview.takeScreenshot();
+    return _imageData;
   }
 }
