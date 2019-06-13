@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert' as JSON;
 import 'package:flutter/material.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
@@ -9,10 +11,11 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
 
 class VendorWebViewPage extends StatefulWidget {
+  final AccountBloc accountBloc;
   final String _url;
   final String _title;
 
-  VendorWebViewPage(this._url, this._title);
+  VendorWebViewPage(this.accountBloc, this._url, this._title);
 
   @override
   State<StatefulWidget> createState() {
@@ -22,17 +25,36 @@ class VendorWebViewPage extends StatefulWidget {
 
 class VendorWebViewPageState extends State<VendorWebViewPage> {
   final _widgetWebview = new FlutterWebviewPlugin();
+
+  AccountSettings _accountSettings;
+  StreamSubscription<AccountSettings> _accountSettingsSubscription;
+  StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
+
   InvoiceBloc invoiceBloc;
   StreamSubscription _postMessageListener;
   bool _isInit = false;
 
   @override
   void initState() {
-    super.initState();    
+    super.initState();
+    _listenPaymentsResults();
     _widgetWebview.onDestroy.listen((_) {
       if (Navigator.canPop(context)) {
         Navigator.of(context).pop();
       }
+    });
+  }
+
+  _listenPaymentsResults() {
+    _accountSettingsSubscription = widget.accountBloc.accountSettingsStream.listen((settings) => _accountSettings = settings);
+
+    _sentPaymentResultSubscription = widget.accountBloc.completedPaymentsStream.listen((payment) {
+      // If user cancels or fulfills the payment show Webview again.
+      _widgetWebview.show();
+    }, onError: (_) {
+      Navigator.popUntil(context, (route) {
+        return route.settings.name == "/home" || route.settings.name == "/";
+      });
     });
   }
 
@@ -63,6 +85,8 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
 
   @override
   void dispose() {
+    _accountSettingsSubscription.cancel();
+    _sentPaymentResultSubscription.cancel();
     _postMessageListener.cancel();
     _widgetWebview.dispose();
     super.dispose();

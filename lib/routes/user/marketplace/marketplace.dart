@@ -5,6 +5,7 @@ import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/routes/user/marketplace/vendor_row.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/bloc/account/account_bloc.dart';
 
 class MarketplacePage extends StatefulWidget {
   @override
@@ -16,12 +17,14 @@ class MarketplacePage extends StatefulWidget {
 class MarketplacePageState extends State<MarketplacePage> {
   final String _title = "Marketplace";
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  AccountBloc _accountBloc;
   MarketplaceBloc _marketplaceBloc;
   bool _isInit = false;
 
   @override
   void didChangeDependencies() {
     if (!_isInit) {
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
       _isInit = true;
     }
@@ -64,7 +67,7 @@ class MarketplacePageState extends State<MarketplacePage> {
 
   Widget _buildVendors(List<VendorModel> vendorModel) {
     return ListView.builder(
-      itemBuilder: (context, index) => new VendorRow(vendorModel[index]),
+      itemBuilder: (context, index) => new VendorRow(_accountBloc, vendorModel[index]),
       itemCount: vendorModel.length,
       itemExtent: 200.0,
     );

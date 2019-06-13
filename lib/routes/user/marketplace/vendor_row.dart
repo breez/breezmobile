@@ -3,11 +3,13 @@ import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/routes/user/marketplace/vendor_webview.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/bloc/account/account_bloc.dart';
 
 class VendorRow extends StatelessWidget {
+  final AccountBloc accountBloc;
   final VendorModel _vendor;
 
-  VendorRow(this._vendor);
+  VendorRow(this.accountBloc,this._vendor);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class VendorRow extends StatelessWidget {
           Navigator.push(
               context,
               FadeInRoute(
-                builder: (_) => new VendorWebViewPage(_vendor.url, _vendor.name),
+                builder: (_) => new VendorWebViewPage(accountBloc, _vendor.url, _vendor.name),
               ));
         },
         child: Container(
