@@ -8,7 +8,10 @@ class LightningLinksService {
   Stream<String> get linksNotifications => _linksNotificationsController.stream;
 
   LightningLinksService(){
-    getLinksStream()
+    Observable.merge([
+      getInitialLink().asStream(),
+      getLinksStream()
+    ])    
       .where((l) => l.startsWith("lightning:"))
       .listen(_linksNotificationsController.add);    
   }
