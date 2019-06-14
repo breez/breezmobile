@@ -93,6 +93,7 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
+        inputDecorationTheme: InputDecorationTheme(enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide)),
           hintColor: theme.alertStyle.color,
           accentColor: theme.BreezColors.blue[500],
           primaryColor: theme.BreezColors.blue[500],

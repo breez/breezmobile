@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -44,7 +46,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     super.initState();
     _invoiceAmountController.addListener(() {
       setState(() {});
-    });
+    });     
   }
 
   @override
@@ -156,6 +158,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     if (widget.invoice.amount == 0) {
       return Theme(
         data: Theme.of(context).copyWith(
+          inputDecorationTheme: InputDecorationTheme(enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide)),
           hintColor: theme.alertStyle.color,
           accentColor: theme.BreezColors.blue[500],
           primaryColor: theme.BreezColors.blue[500],
