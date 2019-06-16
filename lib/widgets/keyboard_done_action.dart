@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 
@@ -8,7 +9,9 @@ class KeyboardDoneAction {
   OverlayEntry _overlayEntry;
 
   KeyboardDoneAction(this.focusNode) {
-    focusNode.addListener(_onFocus);    
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      focusNode.addListener(_onFocus);    
+    }
   }
 
   void dispose(){
@@ -39,8 +42,8 @@ class KeyboardDoneAction {
             width: MediaQuery.of(context).size.width,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-
                 InkWell(
                   onTap: (){
                     FocusScope.of(context).requestFocus(new FocusNode());
