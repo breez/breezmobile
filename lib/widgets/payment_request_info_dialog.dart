@@ -15,6 +15,7 @@ import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:image/image.dart' as DartImage;
 
 import 'form_keyboard_actions.dart';
+import 'keyboard_done_action.dart';
 
 class PaymentRequestInfoDialog extends StatefulWidget {
   final BuildContext context;
@@ -38,6 +39,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _invoiceAmountController = new TextEditingController();
   final FocusNode _amountFocusNode = FocusNode();
+  KeyboardDoneAction _doneAction;
 
   Map<String, dynamic> _amountToPayMap = new Map<String, dynamic>();
 
@@ -46,7 +48,13 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     super.initState();
     _invoiceAmountController.addListener(() {
       setState(() {});
-    });     
+    });
+    _doneAction = new KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
+  }
+
+  @override void dispose() {
+    _doneAction.dispose();    
+    super.dispose();
   }
 
   @override
@@ -162,31 +170,25 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           hintColor: theme.alertStyle.color,
           accentColor: theme.BreezColors.blue[500],
           primaryColor: theme.BreezColors.blue[500],
-          errorColor: Colors.red),
-          child: Container(
-            height: 100.0,
-            child: FormActionsWrapper(
-              numericFieldNode: _amountFocusNode,
-              child: Form(
-                autovalidate: true,
-                key: _formKey,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: Container(
-                    height: 80.0,
-                    child: AmountFormField(
-                      focusNode: _amountFocusNode,
-                      style: theme.alertStyle.copyWith(height: 1.0),
-                      validatorFn: account.validateOutgoingPayment,
-                      currency: account.currency,
-                      controller: _invoiceAmountController,
-                      decoration: new InputDecoration(labelText: account.currency.displayName + " Amount"),
-                    ),
-                  ),
+          errorColor: Colors.red),         
+          child: Form(
+            autovalidate: true,
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Container(                                        
+                  height: 80.0,
+                child: AmountFormField(
+                  focusNode: _amountFocusNode,
+                  style: theme.alertStyle.copyWith(height: 1.0),
+                  validatorFn: account.validateOutgoingPayment,
+                  currency: account.currency,
+                  controller: _invoiceAmountController,
+                  decoration: new InputDecoration(labelText: account.currency.displayName + " Amount"),
                 ),
               ),
             ),
-          ),
+          ),        
       );
     }
     return Text(

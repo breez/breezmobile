@@ -5,22 +5,23 @@ import 'package:breez/theme_data.dart' as theme;
 const double _kBarSize = 45.0;
 
 class KeyboardDoneAction {
-  final FocusNode focusNode;
+  final List<FocusNode> focusNodes;
   OverlayEntry _overlayEntry;
 
-  KeyboardDoneAction(this.focusNode) {
+  KeyboardDoneAction(this.focusNodes) {
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      focusNode.addListener(_onFocus);    
+      focusNodes.forEach((f) => f.addListener(_onFocus));      
     }
   }
 
   void dispose(){
-    focusNode.removeListener(_onFocus);
+    focusNodes.forEach((f) => f.removeListener(_onFocus));    
     _overlayEntry?.remove();
   }
 
   void _onFocus(){
-    if (focusNode.hasFocus) {
+    bool hasFocus = focusNodes.any((f) => f.hasFocus);
+    if (hasFocus && _overlayEntry == null) {
       _showOverlay();
     } else {
       _hideOverlay();
@@ -28,7 +29,7 @@ class KeyboardDoneAction {
   }
 
   void _showOverlay(){
-    OverlayState os = Overlay.of(focusNode.context);
+    OverlayState os = Overlay.of(focusNodes[0].context);
     _overlayEntry = OverlayEntry(builder: (context) {
       // Update and build footer, if any      
       return Positioned(
