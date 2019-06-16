@@ -2,7 +2,6 @@ package com.breez.client;
 
 import com.breez.client.plugins.breez.breezlib.Breez;
 import com.breez.client.plugins.breez.*;
-
 import android.os.Bundle;
 
 import android.content.Intent;
@@ -41,9 +40,10 @@ public class MainActivity extends FlutterActivity {
     }
 
     void registerBreezPlugins() {
+        BreezApplication.breezShare = new BreezShare(this.registrarFor("com.breez.client.plugins.breez_share"), this);
         new Breez(this.registrarFor("com.breez.client.plugins.breez_lib"));
         new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
-        new Permissions(this.registrarFor("com.breez.client.plugins.permissions"), this);
+        new Permissions(this.registrarFor("com.breez.client.plugins.permissions"), this);        
     }
 
     public void onPause() {

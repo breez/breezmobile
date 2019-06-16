@@ -10,6 +10,7 @@ import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/deep_links.dart';
+import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
 import 'connect_pay_model.dart';
@@ -40,6 +41,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   BreezServer _breezServer = ServiceInjector().breezServer;
   PaymentSessionChannel _channel;  
   BreezBridge _breezLib = ServiceInjector().breezBridge; 
+  Device _device = ServiceInjector().device;
   DeepLinksService _deepLinks = ServiceInjector().deepLinks;
   BackgroundTaskService _backgroundService = ServiceInjector().backgroundTaskService;
   BreezUserModel _currentUser; 
@@ -155,9 +157,10 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       log.info("payer session generating invite link failed: " + err.toString());      
     });  
 
-    _sentInvitesController.stream.listen((inviteLink) async{      
-      bool shared = await ShareExtend.share('${_currentUser.name} wants to pay you via Breez...\nFollow this link to receive payment: ${Uri.encodeFull(_currentSessionInvite)}', "text");
-      if (shared) {
+    _sentInvitesController.stream.listen((inviteLink) async{     
+      var shared = await _device.shareText('${_currentUser.name} wants to pay you via Breez...\nFollow this link to receive payment: ${Uri.encodeFull(_currentSessionInvite)}');    
+
+      if (shared == true) {
         _paymentSessionController.add(
               _currentSession.copyWith(invitationSent: true));
       }
