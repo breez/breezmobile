@@ -12,7 +12,7 @@ class LightningLinksService {
       getInitialLink().asStream(),
       getLinksStream()
     ])    
-      .where((l) => l.startsWith("lightning:"))
+      .where((l) => l != null && l.startsWith("lightning:"))
       .listen(_linksNotificationsController.add);    
   }
 }
