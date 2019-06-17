@@ -51,15 +51,17 @@
 - [x] Backup improvements
 - [x] Add background ChannelsWatcher job
 - [x] Expose Bitcoin Node (BIP157) configuration
+- [x] iOS support
+- [ ] Add webLN support
+- [ ] Fiat units
 - [ ] Expose underlying wallet seed 
 - [ ] Add password encryption to cloud backup
 - [ ] Use static card IDs
 - [ ] NFC card deactivation
-- [ ] iOS support
 - [ ] Adding funds via credit card
 - [ ] Simplify P2P payments
 - [ ] Support zero-conf 
-- [ ] Fiat units
+
 
 ## Build & Run
 1. Build `breez.aar` as decribed in https://github.com/breez/breez
