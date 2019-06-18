@@ -38,6 +38,8 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
 
   Uint8List _screenshotData;
 
+  var requestId;
+
   @override
   void initState() {
     super.initState();
@@ -62,6 +64,10 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       setState(() {
         _screenshotData = null;
       });
+      if (requestId != null) {
+        !payment.cancelled ? _widgetWebview.evalJavascript("resolveRequest($requestId, true)") : _widgetWebview.evalJavascript("resolveRequest($requestId, false)");
+      }
+      requestId = null;
     }, onError: (_) {
       Navigator.popUntil(context, (route) {
         return route.settings.name == "/home" || route.settings.name == "/";
@@ -87,6 +93,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
         if (postMessage != null) {
           final order = (widget._title == "ln.pizza") ? postMessage : JSON.jsonDecode(postMessage);
           if ((widget._title == "ln.pizza") || order.containsKey("pay_req")) {
+            requestId = (widget._title == "ln.pizza") ? null :  order['req_id'];
             var _request = (widget._title == "ln.pizza") ? order : order['pay_req'];
             // Hide keyboard
             FocusScope.of(context).requestFocus(FocusNode());
