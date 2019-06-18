@@ -53,6 +53,7 @@
 - [x] Expose Bitcoin Node (BIP157) configuration
 - [x] iOS support
 - [ ] Add webLN support
+- [ ] iCloud backup option
 - [ ] Fiat units
 - [ ] Expose underlying wallet seed 
 - [ ] Add password encryption to cloud backup
