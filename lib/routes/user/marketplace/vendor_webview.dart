@@ -10,6 +10,7 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class VendorWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -48,6 +49,10 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     });
   }
 
+  Future<String> loadAsset(String path) async {
+    return await rootBundle.loadString(path);
+  }
+
   _listenPaymentsResults() {
     _accountSettingsSubscription = widget.accountBloc.accountSettingsStream.listen((settings) => _accountSettings = settings);
 
@@ -64,69 +69,9 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     });
   }
 
-  _injectWebLNLibrary() {
-    String includeWebLN = "var webLNLib = document.createElement('script');\n" +
-        "webLNLib.src = 'https://unpkg.com/webln@0.2.0/dist/webln.min.js';\n" +
-        "webLNLib.integrity = 'sha384-mTReBqbhPO7ljQeIoFaD1NYS2KiYMwFJhUNpdwLj+VIuhhjvHQlZ1XpwzAvd93nQ';\n" +
-        "webLNLib.crossOrigin = 'anonymous';\n" +
-        "document.body.appendChild(webLNLib);";
-    _widgetWebview.evalJavascript(includeWebLN).whenComplete(() => _initializeWebLN());
-  }
-
-  _initializeWebLN() {
-    String initWebLN = "   var processedInvoices = [];\n" +
-        "       webln = {\n" +
-        "   enable: function () {\n" +
-        "       window.postMessage(JSON.stringify({ enable: true }));\n" +
-        "       return new Promise(function (resolve, reject) {resolve(true);});\n" +
-        "   },\n" +
-        "   sendPayment: function (paymentRequest) {\n" +
-        "       window.postMessage(JSON.stringify({ uri: paymentRequest }));\n" +
-        "       processedInvoices.push(paymentRequest);\n" +
-        "       return new Promise(function (resolve, reject) { });\n" +
-        "   },\n" +
-        "};\n" +
-        "setTimeout(function () { WebLN.requestProvider().catch(e => console.log(e));},450);";
-    _widgetWebview.evalJavascript(initWebLN).whenComplete(() => _findBolt11Links());
-  }
-
-  _findBolt11Links() {
-    String listenLNLinks = "setInterval(function () {\n" +
-        "   var searchText = \"lnbc\";\n" +
-        "   var aTags = document.getElementsByTagName(\"span\");\n" +
-        "   var i;\n" +
-        "   for (i = 0; i < aTags.length; i++) {\n" +
-        "       if (aTags[i].textContent.indexOf(searchText) === 0) {\n" +
-        "           var paymentRequest = aTags[i].textContent;\n" +
-        "           if(!processedInvoices.includes(paymentRequest)){\n" +
-        "               webln.sendPayment(paymentRequest);\n" +
-        "           }\n" +
-        "       }\n" +
-        "   }\n" +
-        "   /* ------------------------- */\n" +
-        "   aTags = document.getElementsByTagName(\"input\");\n" +
-        "   for (i = 0; i < aTags.length; i++) {\n" +
-        "       if (aTags[i].value.indexOf(searchText) === 0) {\n" +
-        "           var paymentRequest = aTags[i].value;\n" +
-        "           if(!processedInvoices.includes(paymentRequest)){\n" +
-        "               webln.sendPayment(paymentRequest);\n" +
-        "           }\n" +
-        "       }\n" +
-        "   }\n" +
-        "   /* ------------------------- */\n" +
-        "   aTags = document.getElementsByTagName(\"a\");\n" +
-        "   searchText = \"lightning:lnbc\";\n" +
-        "   for (i = 0; i < aTags.length; i++) {\n" +
-        "       var href = aTags[i].getAttribute('href') + '';\n" +
-        "       if (href.indexOf(searchText) === 0) {\n" +
-        "           var paymentRequest = href.replace('lightning:', '');\n" +
-        "           if(!processedInvoices.includes(paymentRequest)){\n" +
-        "               webln.sendPayment(paymentRequest);\n" +
-        "           }\n" +
-        "       }\n" +
-        "   }\n" +
-        "}, 1000);";
-    _widgetWebview.evalJavascript(listenLNLinks);
+  _initializeWebLN() async {
+    String initWebLN = await loadAsset('src/scripts/initializeWebLN.js');
+    _widgetWebview.evalJavascript(initWebLN);
   }
 
   @override
@@ -134,14 +79,14 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     if (!_isInit) {
       invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       _widgetWebview.onStateChanged.listen((state) async {
-        if(state.type == WebViewState.finishLoad) {
-          _injectWebLNLibrary();
+        if (state.type == WebViewState.finishLoad) {
+          _initializeWebLN();
         }
       });
       _postMessageListener = _widgetWebview.onPostMessage.listen((postMessage) {
         if (postMessage != null) {
           final order = JSON.jsonDecode(postMessage);
-          if (order.containsKey("uri")) {
+          if (order.containsKey("pay_req")) {
             // Hide keyboard
             FocusScope.of(context).requestFocus(FocusNode());
             // Wait for keyboard and screen animations to settle
@@ -155,7 +100,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
                 Timer(Duration(milliseconds: 200), () {
                   // Hide Webview to interact with payment request dialog
                   _widgetWebview.hide();
-                  invoiceBloc.newLightningLinkSink.add(order['uri']);
+                  invoiceBloc.newLightningLinkSink.add(order['pay_req']);
                 });
               });
             });
