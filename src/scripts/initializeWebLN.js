@@ -1,4 +1,5 @@
-var processedInvoices = [];
+var requestId = 0;
+var pendingPromise = null;
 
 webln = {
     enable: function () {
@@ -6,9 +7,21 @@ webln = {
         return new Promise(function (resolve, reject) { resolve(true); });
     },
     sendPayment: function (paymentRequest) {
-        window.postMessage(JSON.stringify({ pay_req: paymentRequest }), "*");
-        processedInvoices.push(paymentRequest);
-        return new Promise(function (resolve, reject) { });
+        if ((pendingPromise == null || pendingPromise != requestId)) {
+            window.postMessage(JSON.stringify({ pay_req: paymentRequest, req_id: requestId }), "*");
+            pendingPromise == requestId;
+            return new Promise(function (resolve, reject) {
+                window.addEventListener(requestId, (event) => {
+                    if (event.detail) {
+                        resolve();
+                        console.log("resolved");
+                    } else {
+                        reject(new Error('Request cancelled'));
+                        console.log("rejected");
+                    }
+                });
+            });
+        }
     },
     getInfo: function () {
         window.postMessage('getInfo', "*");
@@ -36,3 +49,9 @@ webln = {
         });
     },
 };
+
+function resolveRequest(reqId, res) {
+    window.dispatchEvent(new CustomEvent(reqId, { detail: res }));
+    requestId++;
+    pendingPromise = null;
+}

@@ -85,8 +85,9 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       });
       _postMessageListener = _widgetWebview.onPostMessage.listen((postMessage) {
         if (postMessage != null) {
-          final order = JSON.jsonDecode(postMessage);
-          if (order.containsKey("pay_req")) {
+          final order = (widget._title == "ln.pizza") ? postMessage : JSON.jsonDecode(postMessage);
+          if ((widget._title == "ln.pizza") || order.containsKey("pay_req")) {
+            var _request = (widget._title == "ln.pizza") ? order : order['pay_req'];
             // Hide keyboard
             FocusScope.of(context).requestFocus(FocusNode());
             // Wait for keyboard and screen animations to settle
@@ -100,7 +101,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
                 Timer(Duration(milliseconds: 200), () {
                   // Hide Webview to interact with payment request dialog
                   _widgetWebview.hide();
-                  invoiceBloc.newLightningLinkSink.add(order['pay_req']);
+                  invoiceBloc.newLightningLinkSink.add(_request);
                 });
               });
             });
