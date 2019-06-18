@@ -70,13 +70,13 @@ class QrCodeDialog extends StatelessWidget {
                     height: 150.0,
                     child: Center(                                                
                         child: Container(
-                          height: 48.0,
-                          width: 48.0,
+                          height: 80.0,
+                          width: 80.0,
                           child: CircularProgressIndicator(
                             valueColor: new AlwaysStoppedAnimation<Color>(
                               theme.BreezColors.grey[500],
                             ),
-                            backgroundColor: theme.BreezColors.grey[500],
+                            backgroundColor: theme.whiteColor,
                           ),
                         )));
               }

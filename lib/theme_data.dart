@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 final ThemeData breezThemeData = new ThemeData(
   brightness: Brightness.light,
@@ -77,6 +78,7 @@ final Color pulseAnimationColor = Color.fromRGBO(100, 155, 230, 1.0);
 final Color marketplaceButtonColor = Color.fromRGBO(229,	238,	251, 0.09);
 final Color errorColor = Color(0xffffe685);
 final Color circularLoaderColor = BreezColors.blue[200].withOpacity(0.7);
+final BorderSide greyBorderSide = BorderSide(color: BreezColors.grey[500]);
 
 class FieldTextStyle {
   FieldTextStyle._();

@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:share_extend/share_extend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum NotificationType { RESUME }
@@ -8,6 +10,8 @@ enum NotificationType { RESUME }
 class Device {
   static const EventChannel _notificationsChannel =
       const EventChannel('com.breez.client/lifecycle_events_notifications');
+  static const MethodChannel _breezShareChannel =
+      const MethodChannel('com.breez.client/share_breez');
 
   final StreamController _eventsController =
       new StreamController<NotificationType>.broadcast();
@@ -34,6 +38,13 @@ class Device {
         });        
       }
     });
+  }
+
+  Future shareText(String text) {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return _breezShareChannel.invokeMethod("share", {"text": text});
+    }
+    return ShareExtend.share(text, "text");
   }
 
   fetchClipboard(SharedPreferences preferences){

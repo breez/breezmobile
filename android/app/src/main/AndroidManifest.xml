@@ -126,7 +126,11 @@
             android:enabled="true"
             android:exported="false">
         </receiver>
-
+        <receiver 
+            android:enabled="true" 
+            android:name=".BreezShareReceiver" 
+            android:exported="false">
+        </receiver>
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"
