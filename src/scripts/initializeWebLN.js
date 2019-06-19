@@ -1,57 +1,48 @@
 var requestId = 0;
-var pendingPromise = null;
+var requestCallbacks = {}
+
+function invokeWeblnAction(actionData){
+    var newReqID = requestId++;
+    actionData['requestId'] = newReqID;
+    window.postMessage(JSON.stringify(actionData), "*");
+    return new Promise(function (resolve, reject) {
+        requestCallbacks[newReqID] = {resolve: resolve, reject: reject};                
+    });
+}
 
 webln = {
     enable: function () {
-        window.postMessage(JSON.stringify({ enable: true }), "*");
-        return new Promise(function (resolve, reject) { resolve(true); });
+        return invokeWeblnAction({ action: 'enable', enable: true });        
     },
     sendPayment: function (paymentRequest) {
-        if ((pendingPromise == null || pendingPromise != requestId)) {
-            window.postMessage(JSON.stringify({ pay_req: paymentRequest, req_id: requestId }), "*");
-            pendingPromise == requestId;
-            return new Promise(function (resolve, reject) {
-                window.addEventListener(requestId, (event) => {
-                    if (event.detail) {
-                        resolve();
-                        console.log("resolved");
-                    } else {
-                        reject(new Error('Request cancelled'));
-                        console.log("rejected");
-                    }
-                });
-            });
-        }
+        return invokeWeblnAction({ action: 'sendPayment', payReq: paymentRequest});        
     },
     getInfo: function () {
-        window.postMessage('getInfo', "*");
-        return new Promise(function (resolve, reject) {
-            reject(new Error('not implemented'));
-        });
+        return invokeWeblnAction({ action: 'getInfo'});        
     },
-    makeInvoice: function (RequestInvoiceArgs) {
-        var id = Math.random();
-        window.postMessage(JSON.stringify({ makeInvoice: RequestInvoiceArgs, id: id }), "*");
-        return new Promise(function (resolve, reject) {
-            reject(new Error('not implemented'));
-        });
+    makeInvoice: function (invoiceArgs) {
+        return invokeWeblnAction({ action: 'makeInvoice', invoiceArgs: invoiceArgs});        
     },
-    signMessage: function () {
-        window.postMessage('signMessage', "*");
-        return new Promise(function (resolve, reject) {
-            reject(new Error('not implemented'));
-        });
+    signMessage: function (msg) {
+        return invokeWeblnAction({ action: 'signMessage', msg: msg});        
     },
-    verifyMessage: function () {
-        window.postMessage('verifyMessage', "*");
-        return new Promise(function (resolve, reject) {
-            reject(new Error('not implemented'));
-        });
+    verifyMessage: function (msg) {
+        return invokeWeblnAction({ action: 'verifyMessage', msg: msg});        
     },
 };
 
 function resolveRequest(reqId, res) {
-    window.dispatchEvent(new CustomEvent(reqId, { detail: res }));
-    requestId++;
-    pendingPromise = null;
+    var callbacks = requestCallbacks[reqId];
+    if (callbacks && callbacks.resolve) {
+        callbacks.resolve(res);
+    }
+    delete requestCallbacks[reqId];
+}
+
+function rejectRequest(reqId, res) {
+    var callbacks = requestCallbacks[reqId];
+    if (callbacks && callbacks.reject) {
+        callbacks.reject(res);
+    }
+    delete requestCallbacks[reqId];
 }
