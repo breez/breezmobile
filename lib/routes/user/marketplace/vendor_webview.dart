@@ -86,8 +86,8 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
 
       _postMessageListener = _widgetWebview.onPostMessage.listen((msg) {
         if (msg != null) {
-          var postMessage = (widget._title == "ln.pizza") ? {"action": "sendPayment", "data": msg} : msg;          
-          _weblnHandlers.handleMessage(JSON.jsonDecode(postMessage))
+          var postMessage = (widget._title == "ln.pizza") ? {"action": "sendPayment", "payReq": msg} : JSON.jsonDecode(msg);          
+          _weblnHandlers.handleMessage(postMessage)
             .then((resScript){
               if (resScript != null) {
                 _widgetWebview.evalJavascript(resScript);
