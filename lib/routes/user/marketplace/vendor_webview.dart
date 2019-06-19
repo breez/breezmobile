@@ -38,6 +38,8 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
 
   Uint8List _screenshotData;
 
+  var requestId;
+
   @override
   void initState() {
     super.initState();
@@ -62,6 +64,10 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       setState(() {
         _screenshotData = null;
       });
+      if (requestId != null) {
+        !payment.cancelled ? _widgetWebview.evalJavascript("resolveRequest($requestId, true)") : _widgetWebview.evalJavascript("resolveRequest($requestId, false)");
+      }
+      requestId = null;
     }, onError: (_) {
       Navigator.popUntil(context, (route) {
         return route.settings.name == "/home" || route.settings.name == "/";
@@ -85,8 +91,10 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       });
       _postMessageListener = _widgetWebview.onPostMessage.listen((postMessage) {
         if (postMessage != null) {
-          final order = JSON.jsonDecode(postMessage);
-          if (order.containsKey("pay_req")) {
+          final order = (widget._title == "ln.pizza") ? postMessage : JSON.jsonDecode(postMessage);
+          if ((widget._title == "ln.pizza") || order.containsKey("pay_req")) {
+            requestId = (widget._title == "ln.pizza") ? null :  order['req_id'];
+            var _request = (widget._title == "ln.pizza") ? order : order['pay_req'];
             // Hide keyboard
             FocusScope.of(context).requestFocus(FocusNode());
             // Wait for keyboard and screen animations to settle
@@ -100,7 +108,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
                 Timer(Duration(milliseconds: 200), () {
                   // Hide Webview to interact with payment request dialog
                   _widgetWebview.hide();
-                  invoiceBloc.newLightningLinkSink.add(order['pay_req']);
+                  invoiceBloc.newLightningLinkSink.add(_request);
                 });
               });
             });
