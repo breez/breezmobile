@@ -20,7 +20,7 @@ class VendorRow extends StatelessWidget {
       _vendorFgColor = theme.lnpizza.iconFgColor != null ? theme.lnpizza.iconFgColor : Colors.transparent;
     }
 
-    Color _vendorBgColor = Colors.transparent;
+    Color _vendorBgColor = Colors.white;
     if (_vendor.name.toLowerCase() == "bitrefill") {
       _vendorBgColor = theme.bitrefill.iconBgColor != null ? theme.bitrefill.iconBgColor : Colors.transparent;
     } else if (_vendor.name.toLowerCase() == "ln.pizza") {
