@@ -130,6 +130,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       url: widget._url,
       withJavascript: true,
       withZoom: false,
+      clearCache: true,
       initialChild: _screenshotData != null ? Image.memory(_screenshotData) : null,
     );
   }
