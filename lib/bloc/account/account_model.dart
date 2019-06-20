@@ -318,6 +318,9 @@ class PaymentInfo {
     if (_paymentResponse.invoiceMemo.description.startsWith("Fastbitcoins")) {
       return "src/icon/vendors/fastbitcoins_logo.png";
     }
+    if (_paymentResponse.invoiceMemo.description.startsWith("LN.pizza")) {
+      return "src/icon/vendors/lnpizza_logo.png";
+    }
 
     String url = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeImageURL
@@ -328,6 +331,9 @@ class PaymentInfo {
   String get title {
     if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
       return "Bitrefill";
+    }
+    if (_paymentResponse.invoiceMemo.description.startsWith("LN.pizza")) {
+      return "ln.pizza";
     }
 
     if (type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL) {

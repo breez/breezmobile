@@ -139,21 +139,37 @@ class _VendorAvatar extends StatelessWidget {
 
   Widget _bitrefillAvatar() {
     return Container(
-      decoration: ShapeDecoration(color: Colors.white,
-          shape: CircleBorder(side: BorderSide(color: Colors.white)),
+      decoration: ShapeDecoration(color: theme.bitrefill.iconBgColor,
+          shape: CircleBorder(side: BorderSide(color: theme.bitrefill.iconBgColor)),
           image: DecorationImage(
               image: AssetImage(avatarURL),
               colorFilter: ColorFilter.mode(
-                  theme.bitrefill.iconBgColor, BlendMode.color))),
+                  theme.bitrefill.iconFgColor, BlendMode.color))),
       width: radius * 2,
       height: radius * 2,
     );
   }
 
+  Widget _lnpizzaAvatar() {
+    return CircleAvatar(
+        backgroundColor: theme.lnpizza.iconBgColor,
+        radius: radius,
+        child: ImageIcon(
+          AssetImage("src/icon/vendors/lnpizza_logo.png"),
+          color: theme.lnpizza.iconFgColor,
+          size: 0.8 * radius * 2,
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return avatarURL.contains("fastbitcoins")
-        ? _fastbitcoinsAvatar()
-        : _bitrefillAvatar();
+    if(avatarURL.contains("fastbitcoins")){
+      return _fastbitcoinsAvatar();
+    } else if(avatarURL.contains("lnpizza")){
+      return _lnpizzaAvatar();
+    } else {
+      return _bitrefillAvatar();
+    }
   }
 }
