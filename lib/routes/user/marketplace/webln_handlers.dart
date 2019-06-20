@@ -3,16 +3,39 @@ import 'dart:async';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/widgets/error_dialog.dart';
+import 'package:fixnum/fixnum.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:breez/theme_data.dart' as theme;
 import 'dart:convert' as JSON;
 
-class WeblnHandlers {
+import 'make_invoice_request.dart';
+
+class WeblnHandlers {  
+  final BuildContext context;
   final AccountBloc accountBloc;
   final InvoiceBloc invoiceBloc;
   final Future Function(String handlerName) onBeforeCallHandler;
   StreamSubscription<CompletedPayment> _sentPaymentResultSubscription; 
+  StreamSubscription<String> _readyInvoicesSubscription;
+  StreamSubscription<AccountModel> _accountModelSubscription;
+  Completer<String> _currentInovoiceRequestCompleter; 
+  AccountModel _account;
 
-  WeblnHandlers(this.accountBloc, this.invoiceBloc, this.onBeforeCallHandler);   
+  WeblnHandlers(this.context, this.accountBloc, this.invoiceBloc, this.onBeforeCallHandler){
+    _readyInvoicesSubscription = invoiceBloc.readyInvoicesStream.asBroadcastStream()
+      .where((p) => p != null).listen((bolt11){
+        _currentInovoiceRequestCompleter?.complete(bolt11);
+        _currentInovoiceRequestCompleter = null;
+      }, onError: (_){
+        _currentInovoiceRequestCompleter?.completeError("Failed");
+        _currentInovoiceRequestCompleter = null;
+      });
+
+      _accountModelSubscription = accountBloc.accountStream.listen((acc) => _account = acc);
+  }   
 
   Future<String> get initWeblnScript => rootBundle.loadString('src/scripts/initializeWebLN.js');
 
@@ -50,12 +73,34 @@ class WeblnHandlers {
     return _trackPayment(bolt11).then((_) => Future.value({}));
   }
 
-  Future<Map<String, dynamic>> _makeInvoice(postMessage) {
-    return Future.error("Not Implemented");
+  Future<Map<String, dynamic>> _makeInvoice(postMessage) async{
+    Map<String, dynamic> invoiceArgs = postMessage["invoiceArgs"];
+    if (invoiceArgs == null) {
+      return Future.error("no invoice arguements");
+    }
+    String memo = invoiceArgs["defaultMemo"];
+    int amount = invoiceArgs["amount"];
+    
+    bool accept = await showDialog<bool>(context: context, barrierDismissible: false, builder: (ctx){
+      return MakeInvoiceRequest(amount: amount, description: memo, account: _account);
+    });
+
+    if (accept == true) {
+      invoiceBloc.newInvoiceRequestSink.add(InvoiceRequestModel(null, memo, null, Int64(amount)));   
+      return _trackInvoice().then((bolt11) => {"paymentRequest": bolt11});
+    }
+    return Future.error("Request denied");   
   }
 
   void dispose(){
     _sentPaymentResultSubscription?.cancel();
+    _readyInvoicesSubscription?.cancel();
+    _accountModelSubscription?.cancel();
+  }
+
+  Future<String> _trackInvoice() {
+    _currentInovoiceRequestCompleter = Completer<String>();
+    return _currentInovoiceRequestCompleter.future;
   }
 
   Future _trackPayment(String bolt11) {    

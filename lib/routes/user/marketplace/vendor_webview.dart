@@ -46,7 +46,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   }
 
   Future onBeforeCallHandler(String handlerName){
-    if (handlerName != "sendPayment"){
+    if (!["makeInvoice", "sendPayment"].contains(handlerName)){
       return Future.value(null);
     }
 
@@ -76,7 +76,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     if (!_isInit) {
       var invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-      _weblnHandlers = WeblnHandlers(accountBloc, invoiceBloc, onBeforeCallHandler);
+      _weblnHandlers = WeblnHandlers(context, accountBloc, invoiceBloc, onBeforeCallHandler);
 
       _widgetWebview.onStateChanged.listen((state) async {
         if (state.type == WebViewState.finishLoad) {          
@@ -86,7 +86,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
 
       _postMessageListener = _widgetWebview.onPostMessage.listen((msg) {
         if (msg != null) {
-          var postMessage = (widget._title == "ln.pizza") ? {"action": "sendPayment", "payReq": msg} : JSON.jsonDecode(msg);          
+          var postMessage = (widget._title == "ln.pizza") ? {"action": "sendPayment", "payReq": msg} : JSON.jsonDecode(msg);                    
           _weblnHandlers.handleMessage(postMessage)
             .then((resScript){
               if (resScript != null) {
