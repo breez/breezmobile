@@ -4,6 +4,7 @@ var requestCallbacks = {}
 function invokeWeblnAction(actionData){
     var newReqID = requestId++;
     actionData['requestId'] = newReqID;
+    //console.error('invoking webln action ' + actionData.action + " " + JSON.stringify(actionData));    
     window.postMessage(JSON.stringify(actionData), "*");
     return new Promise(function (resolve, reject) {
         requestCallbacks[newReqID] = {resolve: resolve, reject: reject};                

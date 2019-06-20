@@ -61,7 +61,7 @@ class WeblnHandlers {
           return "resolveRequest($requestId, $resultData)";
         }
       } catch (e) {
-        return "rejectRequest($requestId, ${e.toString()})";
+        return "rejectRequest($requestId, '${e.toString()}')";
       }
     }
     return null;
@@ -80,7 +80,7 @@ class WeblnHandlers {
     }
     String memo = invoiceArgs["defaultMemo"];
     int amount = invoiceArgs["amount"];
-    
+
     bool accept = await showDialog<bool>(context: context, barrierDismissible: false, builder: (ctx){
       return MakeInvoiceRequest(amount: amount, description: memo, account: _account);
     });
