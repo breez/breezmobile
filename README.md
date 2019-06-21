@@ -52,7 +52,7 @@
 - [x] Add background ChannelsWatcher job
 - [x] Expose Bitcoin Node (BIP157) configuration
 - [x] iOS support
-- [ ] Add webLN support
+- [x] Add webLN support
 - [ ] iCloud backup option
 - [ ] Fiat units
 - [ ] Expose underlying wallet seed 
