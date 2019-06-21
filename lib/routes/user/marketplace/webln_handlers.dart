@@ -70,6 +70,9 @@ class WeblnHandlers {
   Future<Map<String, dynamic>> _sendPayment(postMessage) {
     String bolt11 = postMessage["payReq"];
     invoiceBloc.newLightningLinkSink.add(bolt11);
+    if (bolt11.toLowerCase().startsWith("lightning:")) {
+      bolt11 = bolt11.toLowerCase().substring(10);
+    }
     return _trackPayment(bolt11).then((_) => Future.value({}));
   }
 
