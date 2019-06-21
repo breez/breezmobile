@@ -150,15 +150,17 @@ class _VendorAvatar extends StatelessWidget {
     );
   }
 
-  Widget _lnpizzaAvatar() {
-    return CircleAvatar(
-        backgroundColor: theme.lnpizza.iconBgColor,
-        radius: radius,
-        child: ImageIcon(
-          AssetImage("src/icon/vendors/lnpizza_logo.png"),
-          color: theme.lnpizza.iconFgColor,
-          size: 0.8 * radius * 2,
-        )
+  Widget _vendorAvatar() {
+    var _bgColor = avatarURL.contains("lnpizza") ? theme.lnpizza.iconBgColor : theme.bitrefill.iconBgColor;
+    var _fgColor = avatarURL.contains("lnpizza") ? theme.lnpizza.iconFgColor : theme.bitrefill.iconFgColor;
+    return Container(
+      decoration: ShapeDecoration(color: _bgColor,
+          shape: CircleBorder(side: BorderSide(color: _bgColor)),
+          image: DecorationImage(
+              image: AssetImage(avatarURL),
+              colorFilter: ColorFilter.mode(_fgColor, BlendMode.color))),
+      width: radius * 2,
+      height: radius * 2,
     );
   }
 
@@ -166,10 +168,8 @@ class _VendorAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     if(avatarURL.contains("fastbitcoins")){
       return _fastbitcoinsAvatar();
-    } else if(avatarURL.contains("lnpizza")){
-      return _lnpizzaAvatar();
     } else {
-      return _bitrefillAvatar();
+      return _vendorAvatar();
     }
   }
 }
