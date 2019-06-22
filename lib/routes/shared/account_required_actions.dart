@@ -15,6 +15,8 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/theme_data.dart' as theme;
 
+import 'backup_in_progress_dialog.dart';
+
 class AccountRequiredActionsIndicator extends StatefulWidget {
   final BackupBloc _backupBloc;
   final AccountBloc _accountBloc;
@@ -77,8 +79,8 @@ class AccountRequiredActionsIndicatorState
           return StreamBuilder<AccountModel>(
               stream: widget._accountBloc.accountStream,
               builder: (context, accountSnapshot) {
-                return StreamBuilder<DateTime>(
-                    stream: widget._backupBloc.lastBackupTimeStream,
+                return StreamBuilder<BackupState>(
+                    stream: widget._backupBloc.backupStateStream,
                     builder: (context, backupSnapshot) {
                       List<Widget> warnings = List<Widget>();
                       Int64 walletBalance =
@@ -95,6 +97,15 @@ class AccountRequiredActionsIndicatorState
                             context: context,
                             builder: (_) => new EnableBackupDialog(
                                 context, widget._backupBloc))));
+                      } else if (backupSnapshot.data?.inProgress == true) {
+                        warnings.add(WarningAction(
+                          (){
+                            showDialog(
+                              context: context,                              
+                              builder: (_) => buildBackupInProgressDialog(context, widget._backupBloc.backupStateStream));
+                          },
+                          iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
+                        ));
                       }
 
                       var swapStatus = accountSnapshot?.data?.swapFundsStatus;

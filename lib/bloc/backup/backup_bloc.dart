@@ -10,9 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class BackupBloc {
 
-  final BehaviorSubject<DateTime> _lastBackupTimeController =
-      new BehaviorSubject<DateTime>();
-  Stream<DateTime> get lastBackupTimeStream => _lastBackupTimeController.stream;
+  final BehaviorSubject<BackupState> _backupStateController =
+      new BehaviorSubject<BackupState>();
+  Stream<BackupState> get backupStateStream => _backupStateController.stream;
 
   final StreamController<void> _promptBackupController = new StreamController<void>.broadcast();
   Stream<void> get promptBackupStream => _promptBackupController.stream;
@@ -66,15 +66,13 @@ class BackupBloc {
 
     //last backup time persistency
     int lastTime = _sharedPrefrences.getInt(LAST_BACKUP_TIME_PREFERENCE_KEY);
-    if (lastTime != null) {
-      _lastBackupTimeController
-          .add(DateTime.fromMillisecondsSinceEpoch(lastTime));
-    }   
+    _backupStateController
+          .add(BackupState(DateTime.fromMillisecondsSinceEpoch(lastTime ?? 0), false)); 
        
-    _lastBackupTimeController.stream.listen((lastTime) {
+    _backupStateController.stream.listen((state) {
       _backupHasError = false;
       _sharedPrefrences.setInt(
-          LAST_BACKUP_TIME_PREFERENCE_KEY, lastTime.millisecondsSinceEpoch);
+          LAST_BACKUP_TIME_PREFERENCE_KEY, state.lastBackupTime.millisecondsSinceEpoch);
     }, onError: (e){
       _backupHasError = true;
       _pushPromptIfNeeded();
@@ -104,7 +102,7 @@ class BackupBloc {
     Observable(_breezLib.notificationStream)     
     .listen((event) {
       if (taskCompleter == null && event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
-        taskCompleter = new Completer();
+        taskCompleter = new Completer();        
         _tasksService.runAsTask(taskCompleter.future, (){
           taskCompleter?.complete();
           taskCompleter = null;
@@ -137,17 +135,20 @@ class BackupBloc {
 
     Observable(_breezLib.notificationStream)     
     .listen((event) {
+      if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
+        _backupStateController.add((BackupState(_backupStateController.value.lastBackupTime, true)));
+      }      
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
         _backupServiceNeedLogin = true;
-        _lastBackupTimeController.addError(null);
+        _backupStateController.addError(null);
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_FAILED) {
         _backupServiceNeedLogin = false;
-        _lastBackupTimeController.addError(null);
+        _backupStateController.addError(null);
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {        
         _backupServiceNeedLogin = false;
-        _lastBackupTimeController.add(DateTime.now());
+        _backupStateController.add(BackupState(DateTime.now(), false));
       }
       if (backupOperations.contains(event.type)) {
         _enableBackupPrompt = true;

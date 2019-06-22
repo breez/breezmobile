@@ -13,3 +13,10 @@ class BackupSettings {
     return {"promptOnError": promptOnError};
   }
 }
+
+class BackupState {
+  final DateTime lastBackupTime;
+  final bool inProgress;
+
+  BackupState(this.lastBackupTime, this.inProgress);
+}
