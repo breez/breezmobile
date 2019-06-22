@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -36,7 +37,8 @@ class BackupBloc {
   final _restoreFinishedController = new StreamController<bool>.broadcast();
   Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
 
-  BreezBridge _breezLib;
+  BreezBridge _breezLib;  
+  BackgroundTaskService _tasksService;
   SharedPreferences _sharedPrefrences;    
   bool _backupServiceNeedLogin = false;
   bool _enableBackupPrompt = false;
@@ -48,6 +50,7 @@ class BackupBloc {
   BackupBloc() {
     ServiceInjector injector = new ServiceInjector();
     _breezLib = injector.breezBridge;
+    _tasksService = injector.backgroundTaskService;
 
     SharedPreferences.getInstance().then((sp) {
       _sharedPrefrences = sp;     
@@ -55,6 +58,7 @@ class BackupBloc {
       _listenBackupPaths();
       _listenBackupNowRequests();
       _listenRestoreRequests();
+      _scheduleBackgroundTasks();
     });
   }
 
@@ -86,6 +90,32 @@ class BackupBloc {
     _backupSettingsController.stream.listen((settings) {
       _sharedPrefrences.setString(
           BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
+    });
+  }
+
+  _scheduleBackgroundTasks(){
+    var backupFinishedEvents = [
+      NotificationEvent_NotificationType.BACKUP_SUCCESS,
+      NotificationEvent_NotificationType.BACKUP_AUTH_FAILED,
+      NotificationEvent_NotificationType.BACKUP_FAILED
+    ];
+    Completer taskCompleter;
+
+    Observable(_breezLib.notificationStream)     
+    .listen((event) {
+      if (taskCompleter == null && event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
+        taskCompleter = new Completer();
+        _tasksService.runAsTask(taskCompleter.future, (){
+          taskCompleter?.complete();
+          taskCompleter = null;
+        });
+        return;
+      }
+
+      if (taskCompleter != null && backupFinishedEvents.contains(event.type)) {
+        taskCompleter?.complete();
+        taskCompleter = null;
+      }
     });
   }
 
