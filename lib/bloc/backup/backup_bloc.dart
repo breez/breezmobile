@@ -41,8 +41,7 @@ class BackupBloc {
   BackgroundTaskService _tasksService;
   SharedPreferences _sharedPrefrences;    
   bool _backupServiceNeedLogin = false;
-  bool _enableBackupPrompt = false;
-  bool _backupHasError = false;
+  bool _enableBackupPrompt = false;  
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";  
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
@@ -69,12 +68,10 @@ class BackupBloc {
     _backupStateController
           .add(BackupState(DateTime.fromMillisecondsSinceEpoch(lastTime ?? 0), false)); 
        
-    _backupStateController.stream.listen((state) {
-      _backupHasError = false;
+    _backupStateController.stream.listen((state) {      
       _sharedPrefrences.setInt(
           LAST_BACKUP_TIME_PREFERENCE_KEY, state.lastBackupTime.millisecondsSinceEpoch);
-    }, onError: (e){
-      _backupHasError = true;
+    }, onError: (e){      
       _pushPromptIfNeeded();
     });
 
@@ -136,29 +133,29 @@ class BackupBloc {
     Observable(_breezLib.notificationStream)     
     .listen((event) {
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
+        _backupServiceNeedLogin = false;
         _backupStateController.add((BackupState(_backupStateController.value.lastBackupTime, true)));
       }      
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
         _backupServiceNeedLogin = true;
         _backupStateController.addError(null);
       }
-      if (event.type == NotificationEvent_NotificationType.BACKUP_FAILED) {
-        _backupServiceNeedLogin = false;
+      if (event.type == NotificationEvent_NotificationType.BACKUP_FAILED) {        
         _backupStateController.addError(null);
       }
-      if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {        
-        _backupServiceNeedLogin = false;
+      if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
+        _backupServiceNeedLogin = false;      
         _backupStateController.add(BackupState(DateTime.now(), false));
-      }
+      } 
       if (backupOperations.contains(event.type)) {
         _enableBackupPrompt = true;
         _pushPromptIfNeeded();    
-      }      
+      }       
     });
   }
 
   _pushPromptIfNeeded(){
-    if (_enableBackupPrompt && _backupHasError) {
+    if (_enableBackupPrompt && _backupServiceNeedLogin) {
       _enableBackupPrompt = false;      
       _promptBackupController.add(null);
     }
