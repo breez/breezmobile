@@ -1027,3 +1027,54 @@ class Peers extends $pb.GeneratedMessage {
   $core.List<$core.String> get peer => $_getList(1);
 }
 
+class rate extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('rate', package: const $pb.PackageName('data'))
+    ..aOS(1, 'coin')
+    ..a<$core.double>(2, 'value', $pb.PbFieldType.OD)
+    ..hasRequiredFields = false
+  ;
+
+  rate() : super();
+  rate.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  rate.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  rate clone() => rate()..mergeFromMessage(this);
+  rate copyWith(void Function(rate) updates) => super.copyWith((message) => updates(message as rate));
+  $pb.BuilderInfo get info_ => _i;
+  static rate create() => rate();
+  rate createEmptyInstance() => create();
+  static $pb.PbList<rate> createRepeated() => $pb.PbList<rate>();
+  static rate getDefault() => _defaultInstance ??= create()..freeze();
+  static rate _defaultInstance;
+
+  $core.String get coin => $_getS(0, '');
+  set coin($core.String v) { $_setString(0, v); }
+  $core.bool hasCoin() => $_has(0);
+  void clearCoin() => clearField(1);
+
+  $core.double get value => $_getN(1);
+  set value($core.double v) { $_setDouble(1, v); }
+  $core.bool hasValue() => $_has(1);
+  void clearValue() => clearField(2);
+}
+
+class Rates extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('Rates', package: const $pb.PackageName('data'))
+    ..pc<rate>(1, 'rates', $pb.PbFieldType.PM,rate.create)
+    ..hasRequiredFields = false
+  ;
+
+  Rates() : super();
+  Rates.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  Rates.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  Rates clone() => Rates()..mergeFromMessage(this);
+  Rates copyWith(void Function(Rates) updates) => super.copyWith((message) => updates(message as Rates));
+  $pb.BuilderInfo get info_ => _i;
+  static Rates create() => Rates();
+  Rates createEmptyInstance() => create();
+  static $pb.PbList<Rates> createRepeated() => $pb.PbList<Rates>();
+  static Rates getDefault() => _defaultInstance ??= create()..freeze();
+  static Rates _defaultInstance;
+
+  $core.List<rate> get rates => $_getList(0);
+}
+
