@@ -119,7 +119,7 @@ class BackupBloc {
   }
   
   void _backupNow() {    
-    _breezLib.signIn(true)
+    _breezLib.signIn(_backupServiceNeedLogin)
       .then((_) => _breezLib.requestBackup());      
   }
 
