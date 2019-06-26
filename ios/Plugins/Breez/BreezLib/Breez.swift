@@ -127,7 +127,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             return try googleAuth.getAccessToken(silentOnly: true);
         }
         catch {
-            err?.pointee = NSError(domain: error.localizedDescription, code: 0, userInfo: nil);
+            err?.pointee = NSError(domain: "AuthError " + error.localizedDescription, code: 0, userInfo: nil);
         }
         return "";
     }
