@@ -73,7 +73,7 @@ class BreezBridge {
   }
 
   Future<Rates> rate(){
-    return _invokeMethodImmediate("rate");
+    return _invokeMethodImmediate("rate").then((result) => new Rates()..mergeFromBuffer(result ?? []));
   }
 
   Future startLightning() {    
