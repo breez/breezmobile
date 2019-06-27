@@ -349,6 +349,7 @@ class AccountBloc {
 
       //convert currency.
       _accountController.add(_accountController.value.copyWith(currency: user.currency));
+      _accountController.add(_accountController.value.copyWith(fiatCurrency: user.fiatCurrency));
       var updatedPayments = _paymentsController.value.copyWith(
         nonFilteredItems: _paymentsController.value.nonFilteredItems.map((p) => p.copyWith(user.currency)).toList(),
         paymentsList: _paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList(),
@@ -561,7 +562,7 @@ class AccountBloc {
             " STATUS = " +
             acc.status.toString());
         _accountController.add(_accountController.value
-            .copyWith(accountResponse: acc, currency: _currentUser?.currency, initial: false));
+            .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatCurrency: _currentUser?.fiatCurrency, initial: false));
       }
     }).catchError(_accountController.addError);
     _refreshPayments();

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/bloc/user_profile/fiat_currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -71,6 +72,7 @@ class SwapFundStatus {
 class AccountModel {
   final Account _accountResponse;
   final Currency _currency;
+  final FiatCurrency _fiatCurrency;
   final FundStatusReply addedFundsReply;
   final String paymentRequestInProgress;
   final bool connected;
@@ -82,7 +84,7 @@ class AccountModel {
   final double syncProgress; 
   final SyncUIState syncUIState;  
 
-  AccountModel(this._accountResponse, this._currency,
+  AccountModel(this._accountResponse, this._currency, this._fiatCurrency,
       {this.initial = true,
       this.addedFundsReply,
       this.paymentRequestInProgress,
@@ -109,6 +111,7 @@ class AccountModel {
   AccountModel copyWith(
       {Account accountResponse,
       Currency currency,
+      FiatCurrency fiatCurrency,
       FundStatusReply addedFundsReply,
       String paymentRequestInProgress,
       bool connected,
@@ -121,6 +124,7 @@ class AccountModel {
       SyncUIState syncUIState}) {
     return AccountModel(
         accountResponse ?? this._accountResponse, currency ?? this.currency,
+        fiatCurrency ?? this._fiatCurrency,
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,
         connected: connected ?? this.connected,
         onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
@@ -149,6 +153,7 @@ class AccountModel {
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
+  FiatCurrency get fiatCurrency => _fiatCurrency;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
   Int64 get maxAllowedToPay => Int64(min(
       _accountResponse.maxAllowedToPay.toInt(),
