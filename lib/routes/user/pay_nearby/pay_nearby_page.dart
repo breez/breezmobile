@@ -10,6 +10,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:fixnum/fixnum.dart';
 import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/currency_converter_dialog.dart';
 
 class PayNearbyPage extends StatefulWidget {  
   PayNearbyPage();
@@ -101,7 +102,15 @@ class PayNearbyPageState extends State<PayNearbyPage> {
                       focusNode: _amountFocusNode,
                       validatorFn: account.validateOutgoingPayment,
                       decoration: new InputDecoration(
-                          contentPadding: EdgeInsets.only(top: 21.0, bottom: 8.0), labelText: account.currency.displayName + " Amount"),
+                        contentPadding: EdgeInsets.only(top: 21.0, bottom: 8.0),
+                        labelText: account.currency.displayName + " Amount",
+                        suffixIcon: IconButton(icon: Icon(Icons.loop, color: theme.BreezColors.white[500],),
+                          padding: EdgeInsets.only(top: 21.0),
+                          alignment: Alignment.bottomRight,
+                          onPressed: () =>
+                              showDialog(context: context,
+                                  builder: (_) =>
+                                      CurrencyConverterDialog((value) => _amountToSendSatoshi = account.currency.parse(value))),),),
                       style: theme.FieldTextStyle.textStyle,
                       currency: account.currency,                      
                       onFieldSubmitted: (String value) {

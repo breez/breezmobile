@@ -7,6 +7,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/currency_converter_dialog.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
@@ -184,7 +185,13 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                   validatorFn: account.validateOutgoingPayment,
                   currency: account.currency,
                   controller: _invoiceAmountController,
-                  decoration: new InputDecoration(labelText: account.currency.displayName + " Amount"),
+                  decoration: new InputDecoration(labelText: account.currency.displayName + " Amount",
+                    suffixIcon: IconButton(icon: Icon(Icons.loop, color: theme.BreezColors.white[500],),
+                      padding: EdgeInsets.only(top: 21.0),
+                      alignment: Alignment.bottomRight,
+                      onPressed: () =>
+                          showDialog(context: context,
+                              builder: (_) => CurrencyConverterDialog((value) => _invoiceAmountController.text = value)),),),
                 ),
               ),
             ),

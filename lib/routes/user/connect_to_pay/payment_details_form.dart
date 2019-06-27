@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/currency_converter_dialog.dart';
 import 'package:breez/widgets/form_keyboard_actions.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
@@ -74,8 +75,13 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                         currency: widget._account.currency,
                         controller: _amountController,
                         decoration: new InputDecoration(
-                            labelText: widget._account.currency.displayName +
-                                " Amount"),
+                          labelText: widget._account.currency.displayName +
+                              " Amount", suffixIcon: IconButton(icon: Icon(Icons.loop, color: theme.BreezColors.white[500],),
+                          padding: EdgeInsets.only(top: 21.0),
+                          alignment: Alignment.bottomRight,
+                          onPressed: () =>
+                              showDialog(context: context,
+                                  builder: (_) => CurrencyConverterDialog((value) => _amountController.text = value)),),),
                       ),
                       TextFormField(
                         controller: _invoiceDescriptionController,
