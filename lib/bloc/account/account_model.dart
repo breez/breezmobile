@@ -106,6 +106,7 @@ class AccountModel {
               ..maxPaymentAmount = Int64(0)
               ..enabled = true,
             Currency.SAT,
+            FiatCurrency.USD,
             initial: true,
             bootstraping: true);
   AccountModel copyWith(
