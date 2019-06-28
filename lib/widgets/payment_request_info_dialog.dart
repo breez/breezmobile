@@ -10,7 +10,6 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/widgets/currency_converter_dialog.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
@@ -203,18 +202,12 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
               child: Container(                                        
                   height: 80.0,
                 child: AmountFormField(
+                  context: context,
+                  accountModel: account,
+                  iconColor: theme.BreezColors.blue[500],
                   focusNode: _amountFocusNode,
-                  style: theme.alertStyle.copyWith(height: 1.0),
-                  validatorFn: account.validateOutgoingPayment,
-                  currency: account.currency,
                   controller: _invoiceAmountController,
-                  decoration: new InputDecoration(labelText: account.currency.displayName + " Amount",
-                    suffixIcon: IconButton(icon: new Image.asset(account.fiatCurrency.logoPath, color: theme.BreezColors.blue[500],),
-                      padding: EdgeInsets.only(top: 21.0),
-                      alignment: Alignment.bottomRight,
-                      onPressed: () =>
-                          showDialog(context: context,
-                              builder: (_) => CurrencyConverterDialog((value) => _invoiceAmountController.text = value)),),),
+                  style: theme.alertStyle.copyWith(height: 1.0),
                 ),
               ),
             ),

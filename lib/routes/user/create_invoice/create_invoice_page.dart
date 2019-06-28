@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/widgets/currency_converter_dialog.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/routes/user/create_invoice/qr_code_dialog.dart';
@@ -160,18 +159,10 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                       }
                     },),
                   new AmountFormField(
+                      context: context,
+                      accountModel: acc,
                       focusNode: _amountFocusNode,
                       controller: _amountController,
-                      currency: acc.currency,
-                      validatorFn: acc.validateIncomingPayment,
-                      decoration: new InputDecoration(
-                        labelText: acc.currency.displayName + " Amount",
-                        suffixIcon: IconButton(icon: new Image.asset(acc.fiatCurrency.logoPath, color: theme.BreezColors.white[500],),
-                          padding: EdgeInsets.only(top: 21.0),
-                          alignment: Alignment.bottomRight,
-                          onPressed: () =>
-                              showDialog(context: context,
-                                  builder: (_) => CurrencyConverterDialog((value) => _amountController.text = value)),),),
                       style: theme.FieldTextStyle.textStyle),
                   new Container(
                     padding: new EdgeInsets.only(top: 16.0),

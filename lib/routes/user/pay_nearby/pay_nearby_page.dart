@@ -100,19 +100,8 @@ class PayNearbyPageState extends State<PayNearbyPage> {
                   children: <Widget>[
                     new AmountFormField(
                       focusNode: _amountFocusNode,
-                      validatorFn: account.validateOutgoingPayment,
-                      decoration: new InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 21.0, bottom: 8.0),
-                        labelText: account.currency.displayName + " Amount",
-                        suffixIcon: IconButton(icon: new Image.asset(account.fiatCurrency.logoPath, color: theme.BreezColors.white[500],),
-                          padding: EdgeInsets.only(top: 21.0),
-                          alignment: Alignment.bottomRight,
-                          onPressed: () =>
-                              showDialog(context: context,
-                                  builder: (_) =>
-                                      CurrencyConverterDialog((value) => _amountToSendSatoshi = account.currency.parse(value))),),),
+                      returnFN: (value) => _amountToSendSatoshi = account.currency.parse(value),
                       style: theme.FieldTextStyle.textStyle,
-                      currency: account.currency,                      
                       onFieldSubmitted: (String value) {
                         _amountToSendSatoshi = account.currency.parse(value);
                       },

@@ -14,7 +14,6 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/widgets/currency_converter_dialog.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 
 class SendWalletFundsDialog extends StatefulWidget {
@@ -218,19 +217,10 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
                               )
                             : SizedBox(),
                         new AmountFormField(
+                            context: context,
+                            accountModel: acc,
                             focusNode: _amountFocusNode,
                             controller: _amountController,
-                            currency: acc.currency,
-                            validatorFn: acc.validateOutgoingOnChainPayment,                            
-                            decoration: new InputDecoration(
-                              labelText:
-                              acc.currency.displayName + " Amount",
-                              suffixIcon: IconButton(icon: new Image.asset(acc.fiatCurrency.logoPath, color: theme.BreezColors.white[500],),
-                                padding: EdgeInsets.only(top: 21.0),
-                                alignment: Alignment.bottomRight,
-                                onPressed: () =>
-                                    showDialog(context: context,
-                                        builder: (_) => CurrencyConverterDialog((value) => _amountController.text = value)),),),
                             style: theme.alertStyle),
                         new TextFormField(
                             focusNode: _feeFocusNode,

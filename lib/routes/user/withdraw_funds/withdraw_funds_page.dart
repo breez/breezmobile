@@ -13,7 +13,6 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/widgets/currency_converter_dialog.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 
@@ -192,18 +191,10 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                         )
                       : SizedBox(),
                   new AmountFormField(
+                      context: context,
+                      accountModel: acc,
                       focusNode: _amountFocusNode,
-                      controller: _amountController,                      
-                      currency: acc.currency,
-                      validatorFn: acc.validateOutgoingPayment,
-                      decoration: new InputDecoration(
-                        labelText: acc.currency.displayName + " Amount",
-                        suffixIcon: IconButton(icon: new Image.asset(acc.fiatCurrency.logoPath, color: theme.BreezColors.white[500],),
-                          padding: EdgeInsets.only(top: 21.0),
-                          alignment: Alignment.bottomRight,
-                          onPressed: () =>
-                              showDialog(context: context,
-                                  builder: (_) => CurrencyConverterDialog((value) => _amountController.text = value)),),),
+                      controller: _amountController,
                       style: theme.FieldTextStyle.textStyle),                 
                   new Container(
                     padding: new EdgeInsets.only(top: 36.0),
