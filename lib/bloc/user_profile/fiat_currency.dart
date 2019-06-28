@@ -15,14 +15,20 @@ class FiatCurrency extends Object {
   }
 
   String get shortName {
-    if (symbol == "€") {
-      return "EUR";
-    } else if (symbol == "£") {
-      return "GBP";
-    } else if (symbol == "¥") {
-      return "JPY";
-    } else {
-      return "USD";
+    switch (symbol) {
+      case "€":
+        return "EUR";
+      case "£":
+        return "GBP";
+      case "¥":
+        return "JPY";
+      case "\$":
+        return "USD";
+      default:
+        return "USD";
+    }
+  }
+
   String get logoPath {
     switch (symbol) {
       case "€":
