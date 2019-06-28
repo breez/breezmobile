@@ -209,7 +209,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                   currency: account.currency,
                   controller: _invoiceAmountController,
                   decoration: new InputDecoration(labelText: account.currency.displayName + " Amount",
-                    suffixIcon: IconButton(icon: new Image.asset(account.fiatCurrency.logoPath, color: theme.BreezColors.white[500],),
+                    suffixIcon: IconButton(icon: new Image.asset(account.fiatCurrency.logoPath, color: theme.BreezColors.blue[500],),
                       padding: EdgeInsets.only(top: 21.0),
                       alignment: Alignment.bottomRight,
                       onPressed: () =>
