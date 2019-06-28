@@ -25,29 +25,50 @@ class CurrencyConverterDialog extends StatefulWidget {
   }
 }
 
-class CurrencyConverterDialogState extends State<CurrencyConverterDialog> {
+class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  Animation<Color> _colorAnimation;
+
   AccountBloc _accountBloc;
   UserProfileBloc _userProfileBloc;
   StreamSubscription<AccountModel> _accountSubscription;
+  BreezBridge _breezLib;
 
   Currency _currency = Currency.BTC;
   FiatCurrency _fiatCurrency = FiatCurrency.USD;
-  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController _fiatAmountController = new TextEditingController();
   final FocusNode _fiatAmountFocusNode = FocusNode();
-  String _amount;
 
-  BreezBridge _breezLib;
+  String _amount;
   double _exchangeRate;
   Timer _exchangeRateTimer;
+
   bool _isInit = false;
 
   @override
   void initState() {
     super.initState();
     _breezLib = new ServiceInjector().breezBridge;
-    _fiatAmountController.addListener(_convertCurrency);
     _amount = _currency.format(Int64(0), includeSymbol: false);
+    _fiatAmountController.addListener(_convertCurrency);
+
+    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    _colorAnimation = new ColorTween(
+      begin: Colors.black45,
+      end: theme.BreezColors.blue[500],
+    ).animate(_controller)
+      ..addListener(() {
+        setState(() {});
+      });
+    // Loop back to start and stop
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _controller.reverse();
+      } else if (status == AnimationStatus.dismissed) {
+        _controller.stop();
+      }
+    });
   }
 
   @override
@@ -78,6 +99,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> {
     _fiatAmountController.dispose();
     _accountSubscription?.cancel();
     _exchangeRateTimer?.cancel();
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -89,11 +111,18 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> {
 
   _getExchangeRate() async {
     Rates _rate = await _breezLib.rate();
-    // get conversion rate for _currency
     _rate.rates.forEach((rate) {
+      // set _exchangeRate for users _fiatCurrency
       if (rate.coin == _fiatCurrency.shortName) {
         setState(() {
-          _exchangeRate = rate.value;
+          // Only change _exchangeRate if the exchange rate has changed
+          if (_exchangeRate != rate.value) {
+            // Blink exchange rate label when exchange rate changes (also switches between fiat currencies, excluding initialization)
+            if (_exchangeRate != null && !_controller.isAnimating) {
+              _controller.forward();
+            }
+            _exchangeRate = rate.value;
+          }
         });
         _convertCurrency();
       }
@@ -201,7 +230,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> {
     // Empty string widget is returned so that the dialogs height is not changed when the exchange rate is shown
     return _exchangeRate == null
         ? Text("", style: theme.smallTextStyle)
-        : Text("1 BTC = $_exchangeRate ${_fiatCurrency.shortName}", style: theme.smallTextStyle.copyWith(color: Colors.black45));
+        : Text("1 BTC = $_exchangeRate ${_fiatCurrency.shortName}", style: theme.smallTextStyle.copyWith(color: _colorAnimation.value));
   }
 
   _selectFiatCurrency(value) {
