@@ -5,6 +5,9 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/currency_converter_dialog.dart';
@@ -14,6 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:image/image.dart' as DartImage;
+import 'package:breez/bloc/user_profile/fiat_currency.dart';
 
 import 'form_keyboard_actions.dart';
 import 'keyboard_done_action.dart';
@@ -43,10 +47,29 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   KeyboardDoneAction _doneAction;
 
   Map<String, dynamic> _amountToPayMap = new Map<String, dynamic>();
+  BreezBridge _breezLib;
+  double _convertedBalance = 0.0;
+  bool _showFiatCurrency = false;
+  bool _isPressed = false;
+  bool _exchangeRateLoaded = false;
+
+  void _getExchangeRates(AccountModel account) async {
+    Rates _rate = await _breezLib.rate();
+    // get conversion rate for _currency
+    _rate.rates.forEach((rate) {
+      if (rate.coin == account.fiatCurrency.shortName) {
+        setState(() {
+          _convertedBalance = account.balance.toDouble() / rate.value;
+          _exchangeRateLoaded = true;
+        });
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    _breezLib = new ServiceInjector().breezBridge;
     _invoiceAmountController.addListener(() {
       setState(() {});
     });
@@ -198,11 +221,34 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           ),        
       );
     }
-    return Text(
-      account.currency.format(widget.invoice.amount),
-      style: theme.paymentRequestAmountStyle,
-      textAlign: TextAlign.center,
-    );
+    return Listener(
+        child: new ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: double.infinity),
+          child: Text(
+            _showFiatCurrency ? "${account.fiatCurrency.symbol}${_convertedBalance.toStringAsFixed(2)}" : account.currency.format(
+                widget.invoice.amount),
+            style: theme.paymentRequestAmountStyle,
+            textAlign: TextAlign.center,
+          ),), behavior: HitTestBehavior.translucent,
+        onPointerDown: (details) {
+          _getExchangeRates(account);
+          setState(() {
+            _isPressed = true;
+          });
+          Future.delayed(Duration(milliseconds: 600), () {
+            if (_isPressed && _exchangeRateLoaded) {
+              setState(() {
+                _showFiatCurrency = true;
+              });
+            }
+          });
+        },
+        onPointerUp: (details) {
+          setState(() {
+            _isPressed = false;
+            _showFiatCurrency = false;
+          });
+        });
   }
 
   Widget _buildDescriptionWidget() {
