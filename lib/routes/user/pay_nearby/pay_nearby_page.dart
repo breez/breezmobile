@@ -104,7 +104,7 @@ class PayNearbyPageState extends State<PayNearbyPage> {
                       decoration: new InputDecoration(
                         contentPadding: EdgeInsets.only(top: 21.0, bottom: 8.0),
                         labelText: account.currency.displayName + " Amount",
-                        suffixIcon: IconButton(icon: Icon(Icons.loop, color: theme.BreezColors.white[500],),
+                        suffixIcon: IconButton(icon: new Image.asset(account.fiatCurrency.logoPath, color: theme.BreezColors.white[500],),
                           padding: EdgeInsets.only(top: 21.0),
                           alignment: Alignment.bottomRight,
                           onPressed: () =>

@@ -23,6 +23,18 @@ class FiatCurrency extends Object {
       return "JPY";
     } else {
       return "USD";
+  String get logoPath {
+    switch (symbol) {
+      case "€":
+        return "src/icon/btc_eur.png";
+      case "£":
+        return "src/icon/btc_gbp.png";
+      case "¥":
+        return "src/icon/btc_yen.png";
+      case "\$":
+        return "src/icon/btc_usd.png";
+      default:
+        return "src/icon/btc_usd.png";
     }
   }
 }

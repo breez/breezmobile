@@ -75,8 +75,8 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                         currency: widget._account.currency,
                         controller: _amountController,
                         decoration: new InputDecoration(
-                          labelText: widget._account.currency.displayName +
-                              " Amount", suffixIcon: IconButton(icon: Icon(Icons.loop, color: theme.BreezColors.white[500],),
+                          labelText: widget._account.currency.displayName + " Amount",
+                          suffixIcon: IconButton(icon: new Image.asset(widget._account.fiatCurrency.logoPath, color: theme.BreezColors.white[500],),
                           padding: EdgeInsets.only(top: 21.0),
                           alignment: Alignment.bottomRight,
                           onPressed: () =>
