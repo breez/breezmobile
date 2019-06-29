@@ -624,6 +624,7 @@ class AccountBloc {
         _accountController.add(_accountController.value.copyWith(fiatBalance: _accountController.value.balance.toDouble() / rate.value));
       }
     });
+  }
 
   close() {
     _accountEnableController.close();    
