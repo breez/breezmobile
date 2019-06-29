@@ -24,6 +24,8 @@ class AccountBloc {
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
   static const String BOOTSTRAPING_PREFERENCES_KEY = "BOOTSTRAPING";
 
+  Timer _exchangeRateTimer;
+
   final _userActionsController = new StreamController<AsyncAction>.broadcast();
   AccountSynchronizer _accountSynchronizer;
   Sink<AsyncAction> get userActionsSink => _userActionsController.sink;
@@ -104,6 +106,9 @@ class AccountBloc {
       _permissionsHandler.optimizationWhitelistExplainStream;
   Sink get optimizationWhitelistRequestSink =>
       _permissionsHandler.optimizationWhitelistRequestSink;
+
+  final _exchangeRateController = new BehaviorSubject<Rates>();
+  Stream<Rates> get exchangeRateStream => _exchangeRateController.stream;
 
   BreezUserModel _currentUser;
   bool _allowReconnect = true;
@@ -377,8 +382,9 @@ class AccountBloc {
             _listenConnectivityChanges();
             _listenReconnects();
             _listenRefundableDeposits();
-            _listenRefundBroadcasts();     
-          });          
+            _updateExchangeRates();
+            _listenRefundBroadcasts();
+          });
         }
       }
     });
@@ -601,6 +607,23 @@ class AccountBloc {
     var preferences = await ServiceInjector().sharedPreferences;
     return preferences.getString(PERSISTENT_NODE_ID_PREFERENCES_KEY);
   }
+  _updateExchangeRates() {
+    _getExchangeRate();
+    _exchangeRateTimer = Timer.periodic(Duration(seconds: 30), (_) async {
+      _getExchangeRate();
+    });
+  }
+
+  Future _getExchangeRate() async {
+    Rates _rate = await _breezLib.rate();
+    _exchangeRateController.add(_rate);
+    // get conversion rate for _currency
+    _rate.rates.forEach((rate) {
+      if (rate.coin == _accountController.value.fiatCurrency.shortName) {
+        // set accounts fiatBalance
+        _accountController.add(_accountController.value.copyWith(fiatBalance: _accountController.value.balance.toDouble() / rate.value));
+      }
+    });
 
   close() {
     _accountEnableController.close();    
@@ -614,5 +637,6 @@ class AccountBloc {
     _broadcastRefundRequestController.close();    
     _userActionsController.close();
     _permissionsHandler.dispose();
+    _exchangeRateController.close();
   }
 }

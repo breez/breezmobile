@@ -7,9 +7,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/fiat_currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,7 +30,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   AccountBloc _accountBloc;
   UserProfileBloc _userProfileBloc;
   StreamSubscription<AccountModel> _accountSubscription;
-  BreezBridge _breezLib;
+  StreamSubscription<Rates> _exchangeRateSubscription;
 
   Currency _currency = Currency.BTC;
   FiatCurrency _fiatCurrency = FiatCurrency.USD;
@@ -40,16 +38,15 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   final TextEditingController _fiatAmountController = new TextEditingController();
   final FocusNode _fiatAmountFocusNode = FocusNode();
 
+  Rates _rates;
   String _amount;
   double _exchangeRate;
-  Timer _exchangeRateTimer;
 
   bool _isInit = false;
 
   @override
   void initState() {
     super.initState();
-    _breezLib = new ServiceInjector().breezBridge;
     _amount = _currency.format(Int64(0), includeSymbol: false);
     _fiatAmountController.addListener(_convertCurrency);
 
@@ -77,8 +74,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       registerListeners();
-      _getExchangeRate();
-      _updateExchangeRates();
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -89,29 +84,19 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
       setState(() {
         _currency = acc.currency;
         _fiatCurrency = acc.fiatCurrency;
-        _amount = _currency.format(Int64(0), includeSymbol: false);
       });
     });
-  }
-
-  @override
-  void dispose() {
-    _fiatAmountController.dispose();
-    _accountSubscription?.cancel();
-    _exchangeRateTimer?.cancel();
-    _controller?.dispose();
-    super.dispose();
-  }
-
-  _updateExchangeRates() {
-    _exchangeRateTimer = Timer.periodic(Duration(seconds: 3), (_) async {
+    _exchangeRateSubscription = _accountBloc.exchangeRateStream.listen((rates) {
+      setState(() {
+        _rates = rates;
+      });
       _getExchangeRate();
+      _convertCurrency();
     });
   }
 
-  _getExchangeRate() async {
-    Rates _rate = await _breezLib.rate();
-    _rate.rates.forEach((rate) {
+  _getExchangeRate(){
+    _rates.rates.forEach((rate) {
       // set _exchangeRate for users _fiatCurrency
       if (rate.coin == _fiatCurrency.shortName) {
         setState(() {
@@ -124,9 +109,17 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
             _exchangeRate = rate.value;
           }
         });
-        _convertCurrency();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _fiatAmountController.dispose();
+    _accountSubscription?.cancel();
+    _exchangeRateSubscription?.cancel();
+    _controller?.dispose();
+    super.dispose();
   }
 
   _convertCurrency() {

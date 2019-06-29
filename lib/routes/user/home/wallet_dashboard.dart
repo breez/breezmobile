@@ -1,14 +1,10 @@
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/bloc/user_profile/fiat_currency.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/routes/user/home/status_indicator.dart';
 import 'dart:math';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/injector.dart';
 
 class WalletDashboard extends StatefulWidget {
   final AccountModel _accountModel;
@@ -31,26 +27,6 @@ class WalletDashboardState extends State<WalletDashboard> {
   static const BALANCE_OFFSET_TRANSITION = 30.0;
   bool _showFiatCurrency = false;
 
-  BreezBridge _breezLib;
-  double _convertedBalance = 0.0;
-
-  @override
-  void initState() {
-    super.initState();
-    _breezLib = new ServiceInjector().breezBridge;
-  }
-
-  void _getExchangeRates() async {
-    Rates _rate = await _breezLib.rate();
-    // get conversion rate for _currency
-    _rate.rates.forEach((rate) {
-      if (rate.coin == widget._accountModel.fiatCurrency.shortName) {
-        setState(() {
-          _convertedBalance = widget._accountModel.balance.toDouble() / rate.value;
-        });
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +74,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                           widget._onCurrencyChange(Currency.currencies[nextCurrencyIndex]);
                         },
                         child: _showFiatCurrency
-                            ? Text("${widget._accountModel.fiatCurrency.symbol}${_convertedBalance.toStringAsFixed(2)}",
+                            ? Text("${widget._accountModel.fiatCurrency.symbol}${widget._accountModel.fiatBalance.toStringAsFixed(2)}",
                                 style: theme.headline
                                     .copyWith(fontSize: startHeaderSize - (startHeaderSize - endHeaderFontSize) * widget._offsetFactor))
                             : Text(widget._accountModel.currency.format(widget._accountModel.balance, fixedDecimals: false),

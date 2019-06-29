@@ -73,6 +73,7 @@ class AccountModel {
   final Account _accountResponse;
   final Currency _currency;
   final FiatCurrency _fiatCurrency;
+  final double _fiatBalance;
   final FundStatusReply addedFundsReply;
   final String paymentRequestInProgress;
   final bool connected;
@@ -84,7 +85,7 @@ class AccountModel {
   final double syncProgress; 
   final SyncUIState syncUIState;  
 
-  AccountModel(this._accountResponse, this._currency, this._fiatCurrency,
+  AccountModel(this._accountResponse, this._currency, this._fiatCurrency, this._fiatBalance,
       {this.initial = true,
       this.addedFundsReply,
       this.paymentRequestInProgress,
@@ -107,12 +108,14 @@ class AccountModel {
               ..enabled = true,
             Currency.SAT,
             FiatCurrency.USD,
+            0.0,
             initial: true,
             bootstraping: true);
   AccountModel copyWith(
       {Account accountResponse,
       Currency currency,
       FiatCurrency fiatCurrency,
+      double fiatBalance,
       FundStatusReply addedFundsReply,
       String paymentRequestInProgress,
       bool connected,
@@ -126,6 +129,7 @@ class AccountModel {
     return AccountModel(
         accountResponse ?? this._accountResponse, currency ?? this.currency,
         fiatCurrency ?? this._fiatCurrency,
+        fiatBalance ?? this._fiatBalance,
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,
         connected: connected ?? this.connected,
         onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
@@ -151,6 +155,7 @@ class AccountModel {
       (bootstraping ||
       (!active && !processingWithdrawal && !processingBreezConnection)) && !initial;
   Int64 get balance => _accountResponse.balance;
+  double get fiatBalance => _fiatBalance;
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
