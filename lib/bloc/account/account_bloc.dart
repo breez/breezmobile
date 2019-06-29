@@ -620,7 +620,7 @@ class AccountBloc {
     // get conversion rate for _currency
     _rate.rates.forEach((rate) {
       if (rate.coin == _accountController.value.fiatCurrency.shortName) {
-        // set accounts fiatBalance
+        // set fiatBalance based on the btc balance and the conversion rate.
         _accountController.add(_accountController.value.copyWith(fiatBalance: _accountController.value.balance.toDouble() / rate.value));
       }
     });
