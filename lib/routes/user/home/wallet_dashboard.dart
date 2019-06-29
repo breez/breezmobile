@@ -30,7 +30,6 @@ class WalletDashboardState extends State<WalletDashboard> {
   static const CHART_MAX_HORIZONTAL_OFFSET = 30.0;
   static const BALANCE_OFFSET_TRANSITION = 30.0;
   bool _showFiatCurrency = false;
-  bool _isPressed = false;
 
   BreezBridge _breezLib;
   double _convertedBalance = 0.0;
@@ -60,7 +59,7 @@ class WalletDashboardState extends State<WalletDashboard> {
     bool showProgressBar = (widget._accSettings?.showConnectProgress == true && !widget._accountModel.initial) ||
         widget._accountModel?.isInitialBootstrap == true;
 
-    return Listener(
+    return GestureDetector(
         child: Stack(
           alignment: AlignmentDirectional.topCenter,
           children: <Widget>[
@@ -111,24 +110,16 @@ class WalletDashboardState extends State<WalletDashboard> {
           ],
         ),
         behavior: HitTestBehavior.translucent,
-        onPointerDown: (details) {
-          _getExchangeRates();
+        onLongPressStart: (_) {
           setState(() {
-            _isPressed = true;
-          });
-          Future.delayed(Duration(milliseconds: 600), () {
-            if (_isPressed) {
-              setState(() {
-                _showFiatCurrency = true;
-              });
-            }
+            _showFiatCurrency = true;
           });
         },
-        onPointerUp: (details) {
+        onLongPressEnd: (_) {
           setState(() {
-            _isPressed = false;
             _showFiatCurrency = false;
           });
-        });
+        },
+    );
   }
 }

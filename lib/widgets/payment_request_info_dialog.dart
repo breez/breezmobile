@@ -49,7 +49,6 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   BreezBridge _breezLib;
   double _convertedBalance = 0.0;
   bool _showFiatCurrency = false;
-  bool _isPressed = false;
   bool _exchangeRateLoaded = false;
 
   void _getExchangeRates(AccountModel account) async {
@@ -211,37 +210,32 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                 ),
               ),
             ),
-          ),        
+          ),
       );
     }
-    return Listener(
-        child: new ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: double.infinity),
-          child: Text(
-            _showFiatCurrency ? "${account.fiatCurrency.symbol}${_convertedBalance.toStringAsFixed(2)}" : account.currency.format(
-                widget.invoice.amount),
-            style: theme.paymentRequestAmountStyle,
-            textAlign: TextAlign.center,
-          ),), behavior: HitTestBehavior.translucent,
-        onPointerDown: (details) {
-          _getExchangeRates(account);
-          setState(() {
-            _isPressed = true;
-          });
-          Future.delayed(Duration(milliseconds: 600), () {
-            if (_isPressed && _exchangeRateLoaded) {
-              setState(() {
-                _showFiatCurrency = true;
-              });
-            }
-          });
-        },
-        onPointerUp: (details) {
-          setState(() {
-            _isPressed = false;
-            _showFiatCurrency = false;
-          });
+    return GestureDetector(
+      child: new ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: double.infinity),
+        child: Text(
+          _showFiatCurrency
+              ? "${account.fiatCurrency.symbol}${_convertedBalance.toStringAsFixed(2)}"
+              : account.currency.format(widget.invoice.amount),
+          style: theme.paymentRequestAmountStyle,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      behavior: HitTestBehavior.translucent,
+      onLongPressStart: (_) {
+        setState(() {
+          _showFiatCurrency = true;
         });
+      },
+      onLongPressEnd: (_) {
+        setState(() {
+          _showFiatCurrency = false;
+        });
+      },
+    );
   }
 
   Widget _buildDescriptionWidget() {
