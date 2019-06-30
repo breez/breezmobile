@@ -607,7 +607,9 @@ class AccountBloc {
     var preferences = await ServiceInjector().sharedPreferences;
     return preferences.getString(PERSISTENT_NODE_ID_PREFERENCES_KEY);
   }
+
   _updateExchangeRates() {
+    //TODO: stop/resume timer when app is in background/foreground
     _getExchangeRate();
     _exchangeRateTimer = Timer.periodic(Duration(seconds: 30), (_) async {
       _getExchangeRate();
