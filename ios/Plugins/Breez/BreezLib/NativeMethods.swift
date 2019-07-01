@@ -39,6 +39,8 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     
     "getRelatedInvoice": SingleArgBindingExecutor(f: BindingsGetRelatedInvoice),
     "getLogger": SingleArgBindingExecutor(f: BindingsGetLogger),
+    "setPeers": SingleArgBindingExecutor(f: BindingsSetPeers),
+    "getPeers": EmptyArgsBindingExecutor(f: BindingsGetPeers),
     "createRatchetSession": SingleArgBindingExecutor(f: BindingsCreateRatchetSession),
     "ratchetDecrypt": SingleArgBindingExecutor(f: BindingsRatchetDecrypt),
     "ratchetEncrypt": SingleArgBindingExecutor(f: BindingsRatchetEncrypt),
@@ -61,7 +63,9 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "isConnectedToRoutingNode": VoidBindingExecutor(f: BindingsIsConnectedToRoutingNode),
     "onResume": VoidBindingExecutor(f: BindingsOnResume),
     "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),    
-    "getLogPath": VoidBindingExecutor(f: BindingsGetLogPath)
+    "getLogPath": VoidBindingExecutor(f: BindingsGetLogPath),
+    "needsBootstrap": SingleArgBindingExecutor(f: BindingsNeedsBootstrap),
+    "bootstrapHeaders": SingleArgBindingExecutor(f: BindingsBootstrapFiles)
     
     //jobs
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewClosedChannelsJob(NSString* workingDir, NSError** error);
