@@ -27,6 +27,7 @@ class FiatConversion {
 
   String format(double amount) {
     // TODO: Add '>' prefix if the converted value is below 1 and trailing digits without zeros exceed fractionSize
-    return convert(amount).toStringAsFixed(this.currencyData.fractionSize);
+    String _formattedAmount = convert(amount).toStringAsFixed(this.currencyData.fractionSize);
+    return "${this.currencyData.symbol}$_formattedAmount";
   }
 }
