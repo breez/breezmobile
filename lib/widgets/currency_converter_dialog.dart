@@ -87,17 +87,17 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
       });
     });
     _exchangeRateSubscription = _accountBloc.exchangeRateStream.listen((rates) {
-      _getExchangeRate();
+      _updateExchangeLabel();
       _convertCurrency();
     });
   }
 
-  _getExchangeRate(){
+  _updateExchangeLabel() {
     double exchangeRate = _fiatConversionList
-        .firstWhere((fiatConversion) => fiatConversion.currencyData.symbol == _fiatCurrency.symbol)
+        .firstWhere((fiatConversion) => fiatConversion.currencyData.symbol == _fiatCurrency.currencyData.symbol)
         .exchangeRate;
     if (_exchangeRate != exchangeRate) {
-      // Blink exchange rate label when exchange rate changes (also switches between fiat currencies, excluding initialization)
+      // Blink exchange rate label when exchange rate changes (also switches between fiat currencies)
       if (_exchangeRate != null && !_controller.isAnimating) {
         _controller.forward();
       }
@@ -221,9 +221,9 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
 
   _selectFiatCurrency(shortName) {
     setState(() {
-      _getExchangeRate();
       _fiatCurrency = _fiatConversionList.firstWhere((f) => f.currencyData.shortName == shortName);
       _userProfileBloc.fiatConversionSink.add(shortName);
+      _updateExchangeLabel();
       _convertCurrency();
     });
   }
