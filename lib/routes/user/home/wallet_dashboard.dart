@@ -74,7 +74,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                           widget._onCurrencyChange(Currency.currencies[nextCurrencyIndex]);
                         },
                         child: _showFiatCurrency
-                            ? Text("${widget._accountModel.fiatCurrency.symbol}${widget._accountModel.fiatBalance}",
+                            ? Text("${widget._accountModel.fiatCurrency.currencyData.symbol}${widget._accountModel.fiatBalance}",
                                 style: theme.headline
                                     .copyWith(fontSize: startHeaderSize - (startHeaderSize - endHeaderFontSize) * widget._offsetFactor))
                             : Text(widget._accountModel.currency.format(widget._accountModel.balance, fixedDecimals: false),

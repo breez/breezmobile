@@ -3,6 +3,7 @@ import 'package:breez/bloc/user_profile/currency_data.dart';
 class FiatConversion {
   CurrencyData currencyData;
   double exchangeRate;
+
   FiatConversion(this.currencyData, this.exchangeRate);
 
   String get logoPath {
@@ -18,5 +19,13 @@ class FiatConversion {
       default:
         return "src/icon/btc_usd.png";
     }
+  }
+
+  double convert(double amount) {
+    return amount / this.exchangeRate;
+  }
+
+  String format(double amount) {
+    return amount.toStringAsFixed(this.currencyData.fractionSize);
   }
 }

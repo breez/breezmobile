@@ -5,7 +5,6 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/bloc/user_profile/fiat_currency.dart';
 import 'package:breez/bloc/user_profile/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
@@ -34,8 +33,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   StreamSubscription<Rates> _exchangeRateSubscription;
 
   Currency _currency = Currency.BTC;
-  FiatCurrency _fiatCurrency = FiatCurrency.USD;
-  List<FiatConversion>_fiatConversionList = List<FiatConversion>();
+  FiatConversion _fiatCurrency;
+  List<FiatConversion> _fiatConversionList = List<FiatConversion>();
   final TextEditingController _fiatAmountController = new TextEditingController();
   final FocusNode _fiatAmountFocusNode = FocusNode();
 
@@ -147,13 +146,13 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                   alignedDropdown: true,
                   child: new DropdownButton(
                     onChanged: (value) => _selectFiatCurrency(value),
-                    value: _fiatCurrency.shortName,
+                    value: _fiatCurrency.currencyData.shortName,
                     style: theme.alertTitleStyle,
-                    items: FiatCurrency.currencies.map((FiatCurrency value) {
+                    items: _fiatConversionList.map((FiatConversion value) {
                       return new DropdownMenuItem<String>(
-                        value: value.shortName,
+                        value: value.currencyData.shortName,
                         child: new Text(
-                          value.shortName,
+                          value.currencyData.shortName,
                           textAlign: TextAlign.left,
                           style: theme.alertTitleStyle,
                         ),
@@ -174,7 +173,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                   enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide),
                   focusedBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide),
                   prefix: Text(
-                    _fiatCurrency.symbol,
+                    _fiatCurrency.currencyData.symbol,
                     style: theme.alertStyle,
                   )),
               inputFormatters: [WhitelistingTextInputFormatter(RegExp(r'\d+\.?\d*'))],
@@ -183,7 +182,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
               controller: _fiatAmountController,
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Please enter amount in ${_fiatCurrency.shortName}';
+                  return 'Please enter amount in ${_fiatCurrency.currencyData.shortName}';
                 }
                 return null;
               },
@@ -216,14 +215,15 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
     // Empty string widget is returned so that the dialogs height is not changed when the exchange rate is shown
     return _exchangeRate == null
         ? Text("", style: theme.smallTextStyle)
-        : Text("1 BTC = $_exchangeRate ${_fiatCurrency.shortName}", style: theme.smallTextStyle.copyWith(color: _colorAnimation.value));
+        : Text("1 BTC = $_exchangeRate ${_fiatCurrency.currencyData.shortName}",
+            style: theme.smallTextStyle.copyWith(color: _colorAnimation.value));
   }
 
-  _selectFiatCurrency(value) {
+  _selectFiatCurrency(shortName) {
     setState(() {
-      _fiatCurrency = FiatCurrency.fromSymbol(value);
-      _userProfileBloc.fiatCurrencySink.add(FiatCurrency.currencies[FiatCurrency.currencies.indexOf(_fiatCurrency)]);
       _getExchangeRate();
+      _fiatCurrency = _fiatConversionList.firstWhere((f) => f.currencyData.shortName == shortName);
+      _userProfileBloc.fiatConversionSink.add(shortName);
       _convertCurrency();
     });
   }

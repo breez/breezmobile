@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/fiat_conversion.dart';
-import 'package:breez/bloc/user_profile/fiat_currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -73,7 +72,8 @@ class SwapFundStatus {
 class AccountModel {
   final Account _accountResponse;
   final Currency _currency;
-  final FiatCurrency _fiatCurrency;
+  final String _fiatShortName;
+  final FiatConversion _fiatCurrency;
   final List<FiatConversion> _fiatConversionList;
   final FundStatusReply addedFundsReply;
   final String paymentRequestInProgress;
@@ -86,7 +86,7 @@ class AccountModel {
   final double syncProgress; 
   final SyncUIState syncUIState;  
 
-  AccountModel(this._accountResponse, this._currency, this._fiatCurrency, this._fiatConversionList,
+  AccountModel(this._accountResponse, this._currency, this._fiatShortName,this._fiatCurrency, this._fiatConversionList,
       {this.initial = true,
       this.addedFundsReply,
       this.paymentRequestInProgress,
@@ -108,14 +108,16 @@ class AccountModel {
               ..maxPaymentAmount = Int64(0)
               ..enabled = true,
             Currency.SAT,
-            FiatCurrency.USD,
-            List(),
+            "USD",
+            null,
+            null,
             initial: true,
             bootstraping: true);
   AccountModel copyWith(
       {Account accountResponse,
       Currency currency,
-      FiatCurrency fiatCurrency,
+      String fiatShortName,
+      FiatConversion fiatCurrency,
       List<FiatConversion> fiatConversionList,
       FundStatusReply addedFundsReply,
       String paymentRequestInProgress,
@@ -129,6 +131,7 @@ class AccountModel {
       SyncUIState syncUIState}) {
     return AccountModel(
         accountResponse ?? this._accountResponse, currency ?? this.currency,
+        fiatShortName ?? this._fiatShortName,
         fiatCurrency ?? this._fiatCurrency,
         fiatConversionList ?? this._fiatConversionList,
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,
@@ -156,14 +159,11 @@ class AccountModel {
       (bootstraping ||
       (!active && !processingWithdrawal && !processingBreezConnection)) && !initial;
   Int64 get balance => _accountResponse.balance;
-  String get fiatBalance =>
-      format(convert(
-          _accountResponse.balance.toDouble(), _fiatConversionList.firstWhere((fiatCurrency) => fiatCurrency.currencyData.name == "US Dollar")),
-          _fiatConversionList.firstWhere((fiatCurrency) => fiatCurrency.currencyData.name == "US Dollar"));
+  String get fiatBalance => _fiatCurrency.format(_fiatCurrency.convert(balance.toDouble()));
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
-  FiatCurrency get fiatCurrency => _fiatCurrency;
+  FiatConversion get fiatCurrency => _fiatConversionList.firstWhere((f) => f.currencyData.shortName == _fiatShortName);
   List<FiatConversion> get fiatConversionList => _fiatConversionList;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
   Int64 get maxAllowedToPay => Int64(min(
@@ -235,13 +235,6 @@ class AccountModel {
     return null;
   }
 
-  double convert(double amount, FiatConversion fiatConversion){
-    return amount / fiatConversion.exchangeRate;
-  }
-
-  String format(double amount, FiatConversion fiatConversion){
-    return amount.toStringAsFixed(fiatConversion.currencyData.fractionSize);
-  }
 }
 
 class PaymentsModel {

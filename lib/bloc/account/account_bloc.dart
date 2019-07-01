@@ -9,6 +9,7 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/notifications.dart';
+import 'package:breez/services/currency_service.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'account_model.dart';
@@ -123,6 +124,7 @@ class AccountBloc {
   Notifications _notificationsService;
   Device _device;
   BackgroundTaskService _backgroundService;
+  CurrencyService _currencyService;
   Completer _onBoardingCompleter = new Completer();
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
@@ -131,6 +133,7 @@ class AccountBloc {
     _notificationsService = injector.notifications;
     _device = injector.device;
     _backgroundService = injector.backgroundTaskService;
+    _currencyService = injector.currencyService;
     _actionHandlers = {
       SendPaymentFailureReport: _handleSendQueryRoute,
       ResetNetwork: _handleResetNetwork,
@@ -153,7 +156,6 @@ class AccountBloc {
       //listen streams
       _listenAccountActions();      
       _hanleAccountSettings();
-      _loadCurrencies();
       _listenUserChanges(userProfileStream);
       _listenWithdrawalRequests();      
       _listenFilterChanges();
@@ -166,10 +168,7 @@ class AccountBloc {
     });
   }
 
-  Future _loadCurrencies() async {
-    String jsonCurrencies = await rootBundle.loadString('src/json/currencies.json');
-    _currencyData = currencyDataFromJson(jsonCurrencies);
-  }
+
 
   //settings persistency
   Future _hanleAccountSettings() async {
@@ -356,6 +355,7 @@ class AccountBloc {
 
   _listenUserChanges(Stream<BreezUserModel> userProfileStream) {
     userProfileStream.listen((user) async {
+      _currencyData = await _currencyService.currencies();
       if (user.token != _currentUser?.token) {
         print("user profile bloc registering for channel open notifications");
         _breezLib.registerChannelOpenedNotification(user.token);
@@ -364,7 +364,7 @@ class AccountBloc {
 
       //convert currency.
       _accountController.add(_accountController.value.copyWith(currency: user.currency));
-      _accountController.add(_accountController.value.copyWith(fiatCurrency: user.fiatCurrency));
+
       var updatedPayments = _paymentsController.value.copyWith(
         nonFilteredItems: _paymentsController.value.nonFilteredItems.map((p) => p.copyWith(user.currency)).toList(),
         paymentsList: _paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList(),
@@ -394,6 +394,8 @@ class AccountBloc {
             _listenRefundableDeposits();
             _updateExchangeRates();
             _listenRefundBroadcasts();
+            double _exchangeRate = _accountController.value.fiatConversionList.firstWhere((f) => f.currencyData.shortName == _currentUser?.fiatCurrency).exchangeRate;
+            _accountController.add(_accountController.value.copyWith(fiatCurrency: FiatConversion(_currencyData[_currentUser?.fiatCurrency], _exchangeRate)));
           });
         }
       }
@@ -577,8 +579,11 @@ class AccountBloc {
             acc.balance.toString() +
             " STATUS = " +
             acc.status.toString());
-        _accountController.add(_accountController.value
-            .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatCurrency: _currentUser?.fiatCurrency, initial: false));
+        if(_accountController.value.fiatConversionList != null){
+          double _exchangeRate = _accountController.value.fiatConversionList.firstWhere((f) => f.currencyData.shortName == _currentUser?.fiatCurrency).exchangeRate;
+          _accountController.add(_accountController.value
+              .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatCurrency: FiatConversion(_currencyData[_currentUser?.fiatCurrency], _exchangeRate), initial: false));
+        }
       }
     }).catchError(_accountController.addError);
     _refreshPayments();
@@ -627,13 +632,16 @@ class AccountBloc {
   }
 
   Future _getExchangeRate() async {
+    _currencyData = await _currencyService.currencies();
     Rates _rate = await _breezLib.rate();
     _exchangeRateController.add(_rate);
     List<FiatConversion> _fiatConversionList = _rate.rates
         .map((rate) => new FiatConversion(_currencyData[rate.coin], rate.value))
         .toList();
     _accountController.add(_accountController.value
-        .copyWith(fiatConversionList: _fiatConversionList));
+        .copyWith(
+        fiatConversionList: _fiatConversionList,
+        fiatCurrency: _fiatConversionList.firstWhere((f) => f.currencyData.shortName == _currentUser?.fiatCurrency)));
   }
 
   close() {

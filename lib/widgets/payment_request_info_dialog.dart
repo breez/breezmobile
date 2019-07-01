@@ -16,7 +16,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:image/image.dart' as DartImage;
-import 'package:breez/bloc/user_profile/fiat_currency.dart';
 
 import 'form_keyboard_actions.dart';
 import 'keyboard_done_action.dart';
@@ -55,7 +54,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     Rates _rate = await _breezLib.rate();
     // get conversion rate for _currency
     _rate.rates.forEach((rate) {
-      if (rate.coin == account.fiatCurrency.shortName) {
+      if (rate.coin == account.fiatCurrency.currencyData.shortName) {
         setState(() {
           _convertedBalance = account.balance.toDouble() / rate.value;
           _exchangeRateLoaded = true;
@@ -218,7 +217,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         constraints: const BoxConstraints(minWidth: double.infinity),
         child: Text(
           _showFiatCurrency
-              ? "${account.fiatCurrency.symbol}${_convertedBalance.toStringAsFixed(2)}"
+              ? "${account.fiatCurrency.currencyData.symbol}${_convertedBalance.toStringAsFixed(2)}"
               : account.currency.format(widget.invoice.amount),
           style: theme.paymentRequestAmountStyle,
           textAlign: TextAlign.center,
