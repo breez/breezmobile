@@ -6,6 +6,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/fiat_currency.dart';
+import 'package:breez/bloc/user_profile/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -34,11 +35,10 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
 
   Currency _currency = Currency.BTC;
   FiatCurrency _fiatCurrency = FiatCurrency.USD;
-
+  List<FiatConversion>_fiatConversionList = List<FiatConversion>();
   final TextEditingController _fiatAmountController = new TextEditingController();
   final FocusNode _fiatAmountFocusNode = FocusNode();
 
-  Rates _rates;
   String _amount;
   double _exchangeRate;
 
@@ -84,33 +84,26 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
       setState(() {
         _currency = acc.currency;
         _fiatCurrency = acc.fiatCurrency;
+        _fiatConversionList = acc.fiatConversionList;
       });
     });
     _exchangeRateSubscription = _accountBloc.exchangeRateStream.listen((rates) {
-      setState(() {
-        _rates = rates;
-      });
       _getExchangeRate();
       _convertCurrency();
     });
   }
 
   _getExchangeRate(){
-    _rates.rates.forEach((rate) {
-      // set _exchangeRate for users _fiatCurrency
-      if (rate.coin == _fiatCurrency.shortName) {
-        setState(() {
-          // Only change _exchangeRate if the exchange rate has changed
-          if (_exchangeRate != rate.value) {
-            // Blink exchange rate label when exchange rate changes (also switches between fiat currencies, excluding initialization)
-            if (_exchangeRate != null && !_controller.isAnimating) {
-              _controller.forward();
-            }
-            _exchangeRate = rate.value;
-          }
-        });
+    double exchangeRate = _fiatConversionList
+        .firstWhere((fiatConversion) => fiatConversion.currencyData.symbol.grapheme == _fiatCurrency.symbol)
+        .exchangeRate;
+    if (_exchangeRate != exchangeRate) {
+      // Blink exchange rate label when exchange rate changes (also switches between fiat currencies, excluding initialization)
+      if (_exchangeRate != null && !_controller.isAnimating) {
+        _controller.forward();
       }
-    });
+      _exchangeRate = exchangeRate;
+    }
   }
 
   @override
