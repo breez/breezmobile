@@ -64,8 +64,8 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "onResume": VoidBindingExecutor(f: BindingsOnResume),
     "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),    
     "getLogPath": VoidBindingExecutor(f: BindingsGetLogPath),
-    "needsBootstrap": SingleArgBindingExecutor(f: BindingsNeedsBootstrap),
-    "bootstrapHeaders": SingleArgBindingExecutor(f: BindingsBootstrapFiles)
+    "needsBootstrap": VoidBindingExecutor(f: BindingsNeedsBootstrap),
+    "bootstrapHeaders": SingleArgBindingExecutor(f: BindingsBootstrapHeaders)
     
     //jobs
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewClosedChannelsJob(NSString* workingDir, NSError** error);

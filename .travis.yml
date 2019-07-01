@@ -33,8 +33,8 @@ before_script:
 script:
 - mkdir $TRAVIS_BUILD_DIR/conf
 - cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $TRAVIS_BUILD_DIR/ios/bindings.framework
-- sftp builderfiles@packages.breez.technology:config/conf/lnd.conf $TRAVIS_BUILD_DIR/conf/lnd.conf
-- sftp builderfiles@packages.breez.technology:config/conf/breez.conf $TRAVIS_BUILD_DIR/conf/breez.conf
+- sftp builderfiles@packages.breez.technology:config/conf/lnd_merge.conf $TRAVIS_BUILD_DIR/conf/lnd.conf
+- sftp builderfiles@packages.breez.technology:config/conf/breez_merge.conf $TRAVIS_BUILD_DIR/conf/breez.conf
 - sftp builderfiles@packages.breez.technology:config/conf/marketplace.conf $TRAVIS_BUILD_DIR/conf/marketplace.conf
 - sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist
   $TRAVIS_BUILD_DIR/ios/Runner/GoogleService-Info.plist
