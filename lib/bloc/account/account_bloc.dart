@@ -16,6 +16,8 @@ import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:breez/bloc/user_profile/currency_data.dart';
+import 'package:flutter/services.dart';
 
 import 'account_synchronizer.dart';
 
@@ -25,6 +27,7 @@ class AccountBloc {
   static const String BOOTSTRAPING_PREFERENCES_KEY = "BOOTSTRAPING";
 
   Timer _exchangeRateTimer;
+  Map<String, CurrencyData> _currencyData;
 
   final _userActionsController = new StreamController<AsyncAction>.broadcast();
   AccountSynchronizer _accountSynchronizer;
@@ -149,6 +152,7 @@ class AccountBloc {
       //listen streams
       _listenAccountActions();      
       _hanleAccountSettings();
+      _loadCurrencies();
       _listenUserChanges(userProfileStream);
       _listenWithdrawalRequests();      
       _listenFilterChanges();
@@ -159,6 +163,11 @@ class AccountBloc {
       _listenBootstrapStatus();
       _trackOnBoardingStatus();
     });
+  }
+
+  Future _loadCurrencies() async {
+    String jsonCurrencies = await rootBundle.loadString('src/json/currencies.json');
+    _currencyData = currencyDataFromJson(jsonCurrencies);
   }
 
   //settings persistency
