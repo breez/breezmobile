@@ -8,7 +8,6 @@ import 'package:breez/logger.dart';
 import 'package:ini/ini.dart';
 int retruNum = 0;
 class LNDBootstrapper {
-
   final StreamController<DownloadFileInfo> _bootstrapFilesProgress = new StreamController.broadcast();
   Stream<DownloadFileInfo> get bootstrapProgressStreams => _bootstrapFilesProgress.stream;    
 
