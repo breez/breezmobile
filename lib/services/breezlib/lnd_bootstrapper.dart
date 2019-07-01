@@ -10,40 +10,28 @@ int retruNum = 0;
 class LNDBootstrapper {
 
   final StreamController<DownloadFileInfo> _bootstrapFilesProgress = new StreamController.broadcast();
-  Stream<DownloadFileInfo> get bootstrapProgressStreams => _bootstrapFilesProgress.stream;  
+  Stream<DownloadFileInfo> get bootstrapProgressStreams => _bootstrapFilesProgress.stream;    
 
-  static Future<bool> needsBootstrap(String lndDir) async {
-    var existingFiles = await _existingBootstrapFiles(lndDir);  
-    var missingFile = existingFiles.firstWhere((f) => !f.existsSync(), orElse: () => null);
-    return missingFile != null;
-  }
-
-  Future<bool> downloadBootstrapFiles(String lndDir) async {
+  Future<String> downloadBootstrapFiles(String lndDir) async {
     Config config = await _readConfig();
     String network = config.get('Application Options', 'network');
     String bootstrapUrl = config.get('Application Options', 'bootstrap');
     String tempDirPath = lndDir + "/temp";
     Directory tempDir = Directory(tempDirPath);
-    String targetDirPath = lndDir + '/data/chain/bitcoin/$network/';
+    String targetDirPath = lndDir + '/bootstrap/$network/';
     Directory targetDir = Directory(targetDirPath);
     String urlPrefix = bootstrapUrl + '/$network';
 
     List<String> allFiles = 
-    [ 
-      '$network/neutrino.db',
+    [      
       '$network/block_headers.bin',
       '$network/reg_filter_headers.bin'
     ];    
     
     targetDir.createSync(recursive: true);
 
-    //if bootstrap files already exist
-    Iterable<File> destFiles = await _existingBootstrapFiles(lndDir);
-    if (destFiles.every((f) => f.existsSync())) {     
-      _bootstrapFilesProgress.close();
-      return Future.value(false);
-    }
-
+    Iterable<File> destFiles = await _existingBootstrapFiles(lndDir);    
+    print("bootstrap starting...");
     //clean temp dir and target dir.
     destFiles.map((file) => file.deleteSync());
     if (tempDir.existsSync()) {
@@ -70,7 +58,7 @@ class LNDBootstrapper {
         }).then((value) {
         tempDir.deleteSync(recursive: true);
         _bootstrapFilesProgress.close();
-        return true;
+        return targetDirPath;
       });
     });    
   }
@@ -97,8 +85,7 @@ class LNDBootstrapper {
     String targetDirPath = lndDir + '/data/chain/bitcoin/$network/';       
 
     List<String> allFiles = 
-    [ 
-      '$network/neutrino.db',
+    [      
       '$network/block_headers.bin',
       '$network/reg_filter_headers.bin'
     ];

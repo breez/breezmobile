@@ -53,8 +53,8 @@ class BreezBridge {
       .then((workingDir) {
         return copyBreezConfig(workingDir.path)
           .then((_) async {
-            var tmpDir = await _tempDirFuture;
-            await init(workingDir.path, tmpDir.path);
+            var tmpDir = await _tempDirFuture;            
+            await init(workingDir.path, tmpDir.path);            
             _startedCompleter.complete(true);
           });
       });
@@ -66,9 +66,11 @@ class BreezBridge {
       "tempDir": tmpDir});
   }
 
-  Future<bool> needsBootstrap(){
-    return getApplicationDocumentsDirectory().then((dir){
-      return LNDBootstrapper.needsBootstrap(dir.path);
+  Future<bool> needsBootstrap(){        
+    return _startedCompleter.future.then((_) {       
+      return getApplicationDocumentsDirectory().then((dir){
+        return _invokeMethodImmediate("needsBootstrap", {"argument": dir.path}).then((res) => res as bool);        
+      });
     });
   }
 
@@ -373,29 +375,38 @@ class BreezBridge {
   }
 
   Future<bool> bootstrap() async {
-    return getApplicationDocumentsDirectory().then(
-            (appDir) {
-          var lndBootstrapper = new LNDBootstrapper();
-          lndBootstrapper.bootstrapProgressStreams
-            .listen((downloadFileInfo) {
-              var aggregatedStatus = Map<String, DownloadFileInfo>();
-              if (_bootstrapDownloadProgressController.value != null) {
-                aggregatedStatus.addAll(_bootstrapDownloadProgressController.value);
-              }
-              aggregatedStatus[downloadFileInfo.fileURL] = downloadFileInfo;
-              _bootstrapDownloadProgressController.add(aggregatedStatus);
-            },
-            onError: (err){
-              print("Error");
-              _bootstrapDownloadProgressController.addError(err);
-            },
-            onDone: () {
-              _bootstrapDownloadProgressController.close();
-              return;
-            });
-          return lndBootstrapper.downloadBootstrapFiles(appDir.path);
-        }
-    );
+    var bootstrapNeeded = await needsBootstrap();
+    if (!bootstrapNeeded) {
+      return false;
+    }
+
+    Directory appDir = await getApplicationDocumentsDirectory();
+    var lndBootstrapper = new LNDBootstrapper();
+      lndBootstrapper.bootstrapProgressStreams
+        .listen((downloadFileInfo) {
+          var aggregatedStatus = Map<String, DownloadFileInfo>();
+          if (_bootstrapDownloadProgressController.value != null) {
+            aggregatedStatus.addAll(_bootstrapDownloadProgressController.value);
+          }
+          aggregatedStatus[downloadFileInfo.fileURL] = downloadFileInfo;
+          _bootstrapDownloadProgressController.add(aggregatedStatus);
+        },
+        onError: (err){
+          print("Error");
+          _bootstrapDownloadProgressController.addError(err);
+        },
+        onDone: () {
+          _bootstrapDownloadProgressController.close();
+          return;
+        });
+
+    String targetDir = await lndBootstrapper.downloadBootstrapFiles(appDir.path);
+    if (targetDir == null) {
+      return false;
+    }
+
+    await _invokeMethodImmediate("bootstrapHeaders", {"argument": targetDir});
+    return true;   
   }  
 }
 
