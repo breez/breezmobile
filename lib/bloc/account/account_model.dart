@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/bloc/user_profile/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/fiat_currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
@@ -73,7 +74,7 @@ class AccountModel {
   final Account _accountResponse;
   final Currency _currency;
   final FiatCurrency _fiatCurrency;
-  final double _fiatBalance;
+  final List<FiatConversion> _fiatConversionList;
   final FundStatusReply addedFundsReply;
   final String paymentRequestInProgress;
   final bool connected;
@@ -85,7 +86,7 @@ class AccountModel {
   final double syncProgress; 
   final SyncUIState syncUIState;  
 
-  AccountModel(this._accountResponse, this._currency, this._fiatCurrency, this._fiatBalance,
+  AccountModel(this._accountResponse, this._currency, this._fiatCurrency, this._fiatConversionList,
       {this.initial = true,
       this.addedFundsReply,
       this.paymentRequestInProgress,
@@ -108,14 +109,14 @@ class AccountModel {
               ..enabled = true,
             Currency.SAT,
             FiatCurrency.USD,
-            0.0,
+            List(),
             initial: true,
             bootstraping: true);
   AccountModel copyWith(
       {Account accountResponse,
       Currency currency,
       FiatCurrency fiatCurrency,
-      double fiatBalance,
+      List<FiatConversion> fiatConversionList,
       FundStatusReply addedFundsReply,
       String paymentRequestInProgress,
       bool connected,
@@ -129,7 +130,7 @@ class AccountModel {
     return AccountModel(
         accountResponse ?? this._accountResponse, currency ?? this.currency,
         fiatCurrency ?? this._fiatCurrency,
-        fiatBalance ?? this._fiatBalance,
+        fiatConversionList ?? this._fiatConversionList,
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,
         connected: connected ?? this.connected,
         onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
@@ -160,6 +161,7 @@ class AccountModel {
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
   FiatCurrency get fiatCurrency => _fiatCurrency;
+  List<FiatConversion> get fiatConversionList => _fiatConversionList;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
   Int64 get maxAllowedToPay => Int64(min(
       _accountResponse.maxAllowedToPay.toInt(),
