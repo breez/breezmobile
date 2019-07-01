@@ -355,7 +355,6 @@ class AccountBloc {
 
   _listenUserChanges(Stream<BreezUserModel> userProfileStream) {
     userProfileStream.listen((user) async {
-      _currencyData = await _currencyService.currencies();
       if (user.token != _currentUser?.token) {
         print("user profile bloc registering for channel open notifications");
         _breezLib.registerChannelOpenedNotification(user.token);
