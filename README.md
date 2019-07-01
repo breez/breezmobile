@@ -63,6 +63,8 @@
 - [ ] Simplify P2P payments
 - [ ] Support zero-conf 
 
+## System Requirements
+* Android 7+ 64bit
 
 ## Build & Run
 1. Build `breez.aar` as decribed in https://github.com/breez/breez
