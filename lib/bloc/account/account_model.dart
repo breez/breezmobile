@@ -20,7 +20,7 @@ enum SyncUIState {
 class AccountSettings {
   final bool ignoreWalletBalance;
   final bool showConnectProgress;
-  final BugReportBehavior failePaymentBehavior;  
+  final BugReportBehavior failePaymentBehavior;
 
   AccountSettings(
       this.ignoreWalletBalance,
@@ -34,19 +34,19 @@ class AccountSettings {
       BugReportBehavior failePaymentBehavior}) {
     return AccountSettings(ignoreWalletBalance ?? this.ignoreWalletBalance,
         failePaymentBehavior:
-            failePaymentBehavior ?? this.failePaymentBehavior,        
+            failePaymentBehavior ?? this.failePaymentBehavior,
         showConnectProgress: showConnectProgress ?? this.showConnectProgress);
   }
 
   AccountSettings.fromJson(Map<String, dynamic> json)
       : this(json["ignoreWalletBalance"] ?? false,
-            failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0],            
+            failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0],
             showConnectProgress: json["showConnectProgress"] ?? false);
 
   Map<String, dynamic> toJson() {
     return {
       "ignoreWalletBalance": ignoreWalletBalance,
-      "failePaymentBehavior": failePaymentBehavior.index,      
+      "failePaymentBehavior": failePaymentBehavior.index,
       "showConnectProgress": showConnectProgress ?? false
     };
   }
@@ -56,7 +56,7 @@ class SwapFundStatus {
   final FundStatusReply _addedFundsReply;
 
   SwapFundStatus(this._addedFundsReply);
-  
+
   bool get waitingDepositConfirmation =>
       _addedFundsReply?.status == FundStatusReply_FundStatus.WAITING_CONFIRMATION;
   bool get depositConfirmed =>
@@ -82,11 +82,11 @@ class AccountModel {
   final bool initial;
   final bool bootstraping;
   final double bootstrapProgress;
-  final bool enableInProgress; 
-  final double syncProgress; 
-  final SyncUIState syncUIState;  
+  final bool enableInProgress;
+  final double syncProgress;
+  final SyncUIState syncUIState;
 
-  AccountModel(this._accountResponse, this._currency, this._fiatShortName,this._fiatCurrency, this._fiatConversionList,
+  AccountModel(this._accountResponse, this._currency, this._fiatShortName, this._fiatCurrency, this._fiatConversionList,
       {this.initial = true,
       this.addedFundsReply,
       this.paymentRequestInProgress,
@@ -127,7 +127,7 @@ class AccountModel {
       bool enableInProgress,
       double bootstrapProgress,
       double syncProgress,
-      bool initial,       
+      bool initial,
       SyncUIState syncUIState}) {
     return AccountModel(
         accountResponse ?? this._accountResponse, currency ?? this.currency,
@@ -147,7 +147,7 @@ class AccountModel {
         initial: initial ?? this.initial);
   }
 
-  String get id => _accountResponse.id;  
+  String get id => _accountResponse.id;
   SwapFundStatus get swapFundsStatus => SwapFundStatus(this.addedFundsReply);
   bool get processingBreezConnection =>
       _accountResponse.status ==
@@ -176,7 +176,7 @@ class AccountModel {
   bool get enabled => _accountResponse.enabled;
 
   String get statusMessage {
-    
+
     if (this.isInitialBootstrap) {
       return "Please wait a minute while Breez is bootstrapping (keep the app open).";
     }
@@ -234,7 +234,6 @@ class AccountModel {
 
     return null;
   }
-
 }
 
 class PaymentsModel {
@@ -447,7 +446,7 @@ class PaymentError implements Exception {
   bool get validationError => error.toString().indexOf("rpc error") >= 0 || traceReport == null || traceReport.isEmpty;
 
   PaymentError(this.request, this.error, this.traceReport);
-  
+
   String errMsg() => error?.toString();
   String toString() => errMsg();
 }

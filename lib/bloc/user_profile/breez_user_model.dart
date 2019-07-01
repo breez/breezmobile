@@ -13,7 +13,6 @@ class BreezUserModel {
   BreezUserModel(this.userID, this.name, this.color, this.animal, {this.currency = Currency.SAT, this.fiatCurrency = "USD", String image}) {
     this._image = image;
   }
-
   BreezUserModel copyWith({String name, String color, String animal, Currency currency, String fiatCurrency, String image}) {
     return new BreezUserModel(this.userID, name ?? this.name, color ?? this.color, animal ?? this.animal, currency: currency ?? this.currency, fiatCurrency: fiatCurrency ?? this.fiatCurrency, image: image ?? this._image);
   }

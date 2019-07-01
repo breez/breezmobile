@@ -168,8 +168,6 @@ class AccountBloc {
     });
   }
 
-
-
   //settings persistency
   Future _hanleAccountSettings() async {
     var preferences = await ServiceInjector().sharedPreferences;
