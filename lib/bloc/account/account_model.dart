@@ -156,7 +156,10 @@ class AccountModel {
       (bootstraping ||
       (!active && !processingWithdrawal && !processingBreezConnection)) && !initial;
   Int64 get balance => _accountResponse.balance;
-  double get fiatBalance => _fiatBalance;
+  String get fiatBalance =>
+      format(convert(
+          _accountResponse.balance.toDouble(), _fiatConversionList.firstWhere((fiatCurrency) => fiatCurrency.currencyData.name == "US Dollar")),
+          _fiatConversionList.firstWhere((fiatCurrency) => fiatCurrency.currencyData.name == "US Dollar"));
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
@@ -230,6 +233,14 @@ class AccountModel {
     }
 
     return null;
+  }
+
+  double convert(double amount, FiatConversion fiatConversion){
+    return amount / fiatConversion.exchangeRate;
+  }
+
+  String format(double amount, FiatConversion fiatConversion){
+    return amount.toStringAsFixed(fiatConversion.currencyData.fractionSize);
   }
 }
 
