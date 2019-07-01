@@ -26,6 +26,6 @@ class FiatConversion {
   }
 
   String format(double amount) {
-    return amount.toStringAsFixed(this.currencyData.fractionSize);
+    return convert(amount).toStringAsFixed(this.currencyData.fractionSize);
   }
 }
