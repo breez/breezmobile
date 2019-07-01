@@ -95,7 +95,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
 
   _getExchangeRate(){
     double exchangeRate = _fiatConversionList
-        .firstWhere((fiatConversion) => fiatConversion.currencyData.symbol.grapheme == _fiatCurrency.symbol)
+        .firstWhere((fiatConversion) => fiatConversion.currencyData.symbol == _fiatCurrency.symbol)
         .exchangeRate;
     if (_exchangeRate != exchangeRate) {
       // Blink exchange rate label when exchange rate changes (also switches between fiat currencies, excluding initialization)

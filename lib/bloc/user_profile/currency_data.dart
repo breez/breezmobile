@@ -7,7 +7,7 @@ class CurrencyData {
   String name;
   String shortName;
   int fractionSize;
-  Symbol symbol;
+  String symbol;
 
   CurrencyData({
     this.name,
@@ -20,18 +20,6 @@ class CurrencyData {
         name: json["name"],
         shortName: shortName,
         fractionSize: json["fractionSize"],
-        symbol: json["symbol"] == null ? null : Symbol.fromJson(json["symbol"]),
-      );
-}
-
-class Symbol {
-  String grapheme;
-
-  Symbol({
-    this.grapheme,
-  });
-
-  factory Symbol.fromJson(Map<String, dynamic> json) => new Symbol(
-        grapheme: json["grapheme"],
+        symbol: json["symbol"] != null ? json["symbol"]["grapheme"] : shortName,
       );
 }

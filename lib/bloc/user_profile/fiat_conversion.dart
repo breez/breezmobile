@@ -6,7 +6,7 @@ class FiatConversion {
   FiatConversion(this.currencyData, this.exchangeRate);
 
   String get logoPath {
-    switch (currencyData.symbol.grapheme) {
+    switch (currencyData.symbol) {
       case "€":
         return "src/icon/btc_eur.png";
       case "£":
