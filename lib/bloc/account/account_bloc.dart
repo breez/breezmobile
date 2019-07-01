@@ -364,7 +364,7 @@ class AccountBloc {
 
       //convert currency.
       _accountController.add(_accountController.value.copyWith(currency: user.currency));
-
+      _accountController.add(_accountController.value.copyWith(fiatShortName: user.fiatCurrency));
       var updatedPayments = _paymentsController.value.copyWith(
         nonFilteredItems: _paymentsController.value.nonFilteredItems.map((p) => p.copyWith(user.currency)).toList(),
         paymentsList: _paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList(),
@@ -394,8 +394,6 @@ class AccountBloc {
             _listenRefundableDeposits();
             _updateExchangeRates();
             _listenRefundBroadcasts();
-            double _exchangeRate = _accountController.value.fiatConversionList.firstWhere((f) => f.currencyData.shortName == _currentUser?.fiatCurrency).exchangeRate;
-            _accountController.add(_accountController.value.copyWith(fiatCurrency: FiatConversion(_currencyData[_currentUser?.fiatCurrency], _exchangeRate)));
           });
         }
       }
@@ -579,11 +577,8 @@ class AccountBloc {
             acc.balance.toString() +
             " STATUS = " +
             acc.status.toString());
-        if(_accountController.value.fiatConversionList != null){
-          double _exchangeRate = _accountController.value.fiatConversionList.firstWhere((f) => f.currencyData.shortName == _currentUser?.fiatCurrency).exchangeRate;
-          _accountController.add(_accountController.value
-              .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatCurrency: FiatConversion(_currencyData[_currentUser?.fiatCurrency], _exchangeRate), initial: false));
-        }
+        _accountController.add(_accountController.value
+            .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatShortName: _currentUser?.fiatCurrency, initial: false));
       }
     }).catchError(_accountController.addError);
     _refreshPayments();
@@ -640,8 +635,8 @@ class AccountBloc {
         .toList();
     _accountController.add(_accountController.value
         .copyWith(
-        fiatConversionList: _fiatConversionList,
-        fiatCurrency: _fiatConversionList.firstWhere((f) => f.currencyData.shortName == _currentUser?.fiatCurrency)));
+      fiatConversionList: _fiatConversionList,
+      fiatShortName: _currentUser?.fiatCurrency,));
   }
 
   close() {
