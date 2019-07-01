@@ -12,7 +12,7 @@ before_script:
 - export PATH="/usr/local/opt/go@1.11/bin:$PATH"
 - go version
 - brew install bazaar
-- git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
+- git clone https://github.com/breez/breez.git --branch merge-lnd7-rc2 gopath/src/github.com/breez/breez
 - export TMP_GOPATH=$(pwd)/gopath
 - pushd gopath/src/github.com/breez/breez
 - go mod vendor
