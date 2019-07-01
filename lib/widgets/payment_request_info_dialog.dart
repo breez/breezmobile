@@ -5,9 +5,6 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
@@ -45,28 +42,12 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   KeyboardDoneAction _doneAction;
 
   Map<String, dynamic> _amountToPayMap = new Map<String, dynamic>();
-  BreezBridge _breezLib;
-  double _convertedBalance = 0.0;
-  bool _showFiatCurrency = false;
-  bool _exchangeRateLoaded = false;
 
-  void _getExchangeRates(AccountModel account) async {
-    Rates _rate = await _breezLib.rate();
-    // get conversion rate for _currency
-    _rate.rates.forEach((rate) {
-      if (rate.coin == account.fiatCurrency.currencyData.shortName) {
-        setState(() {
-          _convertedBalance = account.balance.toDouble() / rate.value;
-          _exchangeRateLoaded = true;
-        });
-      }
-    });
-  }
+  bool _showFiatCurrency = false;
 
   @override
   void initState() {
     super.initState();
-    _breezLib = new ServiceInjector().breezBridge;
     _invoiceAmountController.addListener(() {
       setState(() {});
     });
@@ -217,7 +198,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         constraints: const BoxConstraints(minWidth: double.infinity),
         child: Text(
           _showFiatCurrency
-              ? "${account.fiatCurrency.currencyData.symbol}${_convertedBalance.toStringAsFixed(2)}"
+              ? "${account.fiatCurrency.currencyData.symbol}${account.fiatCurrency.format(widget.invoice.amount.toDouble())}"
               : account.currency.format(widget.invoice.amount),
           style: theme.paymentRequestAmountStyle,
           textAlign: TextAlign.center,
