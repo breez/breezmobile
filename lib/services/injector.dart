@@ -8,6 +8,7 @@ import 'package:breez/services/nfc.dart';
 import 'package:breez/services/permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:breez/services/lightning_links.dart';
+import 'package:breez/services/currency_service.dart';
 
 import 'background_task.dart';
 
@@ -25,6 +26,7 @@ class ServiceInjector {
   Future<SharedPreferences> _sharedPreferences;
   Permissions _permissions;
   BackgroundTaskService _backroundTaskService;
+  CurrencyService _currencyService;
 
   factory ServiceInjector() {
     return _injector != null ? _injector : _singleton;
@@ -67,5 +69,9 @@ class ServiceInjector {
 
   BackgroundTaskService get backgroundTaskService {
     return _backroundTaskService ??= BackgroundTaskService();
+  }
+
+  CurrencyService get currencyService {
+    return _currencyService ??= CurrencyService();
   }
 }
