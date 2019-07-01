@@ -17,7 +17,7 @@ class FiatConversion {
       case "\$":
         return "src/icon/btc_usd.png";
       default:
-        return "src/icon/btc_usd.png";
+        return "src/icon/btc_convert.png";
     }
   }
 
