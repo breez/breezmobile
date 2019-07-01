@@ -17,6 +17,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:breez/bloc/user_profile/currency_data.dart';
+import 'package:breez/bloc/user_profile/fiat_conversion.dart';
 import 'package:flutter/services.dart';
 
 import 'account_synchronizer.dart';
@@ -628,13 +629,9 @@ class AccountBloc {
   Future _getExchangeRate() async {
     Rates _rate = await _breezLib.rate();
     _exchangeRateController.add(_rate);
-    // get conversion rate for _currency
-    _rate.rates.forEach((rate) {
-      if (rate.coin == _accountController.value.fiatCurrency.shortName) {
-        // set fiatBalance based on the btc balance and the conversion rate.
-        _accountController.add(_accountController.value.copyWith(fiatBalance: _accountController.value.balance.toDouble() / rate.value));
-      }
-    });
+    List<FiatConversion> _fiatConversionList = _rate.rates
+        .map((rate) => new FiatConversion(_currencyData[rate.coin], rate.value))
+        .toList();
   }
 
   close() {
