@@ -171,19 +171,24 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                 ),
               ],
             ),
-            actions: <Widget>[
-              new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("Cancel", style: theme.buttonStyle)),
-              new FlatButton(
-                  onPressed: () {
-                    // Remove all whitespace
-                    widget._onConvert(
-                        _currency.format(Int64.parseInt(_amount), includeSymbol: false).replaceAll(new RegExp(r"\s+\b|\b\s"), ""));
-                    Navigator.pop(context);
-                  },
-                  child: new Text("Done", style: theme.buttonStyle))
-            ],
+            actions: _buildActions(),
           );
         });
+  }
+
+  List<Widget> _buildActions() {
+    List<Widget> actions = [new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("Cancel", style: theme.buttonStyle))];
+
+    if (_amount != null && _currency.parse(_amount.replaceAll(new RegExp(r"\s+\b|\b\s"), "")) > 0) {
+      actions.add(new FlatButton(
+          onPressed: () {
+            // Remove all whitespace
+            widget._onConvert(_amount.replaceAll(new RegExp(r"\s+\b|\b\s"), ""));
+            Navigator.pop(context);
+          },
+          child: new Text("Done", style: theme.buttonStyle)));
+    }
+    return actions;
   }
 
   _updateExchangeLabel(double exchangeRate) {
