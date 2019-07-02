@@ -630,11 +630,9 @@ class AccountBloc {
   }
 
   _startExchangeRateTimer() {
-    if (!_exchangeRateTimer.isActive) {
-      _exchangeRateTimer = Timer.periodic(Duration(seconds: 30), (_) async {
-        _getExchangeRate();
-      });
-    }
+    _exchangeRateTimer = Timer.periodic(Duration(seconds: 30), (_) async {
+      _getExchangeRate();
+    });
   }
 
   Future _getExchangeRate() async {
