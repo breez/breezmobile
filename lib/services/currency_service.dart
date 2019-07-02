@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:breez/bloc/user_profile/currency_data.dart';
+import 'package:breez/services/currency_data.dart';
 
 class CurrencyService {
   CurrencyService();

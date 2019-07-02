@@ -17,8 +17,8 @@ import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:breez/bloc/user_profile/currency_data.dart';
-import 'package:breez/bloc/user_profile/fiat_conversion.dart';
+import 'package:breez/services/currency_data.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:flutter/services.dart';
 
 import 'account_synchronizer.dart';
@@ -111,9 +111,6 @@ class AccountBloc {
       _permissionsHandler.optimizationWhitelistExplainStream;
   Sink get optimizationWhitelistRequestSink =>
       _permissionsHandler.optimizationWhitelistRequestSink;
-
-  final _exchangeRateController = new BehaviorSubject<Rates>();
-  Stream<Rates> get exchangeRateStream => _exchangeRateController.stream;
 
   BreezUserModel _currentUser;
   bool _allowReconnect = true;
@@ -641,7 +638,6 @@ class AccountBloc {
   Future _getExchangeRate() async {
     _currencyData = await _currencyService.currencies();
     Rates _rate = await _breezLib.rate();
-    _exchangeRateController.add(_rate);
     List<FiatConversion> _fiatConversionList = _rate.rates
         .map((rate) => new FiatConversion(_currencyData[rate.coin], rate.value))
         .toList();
@@ -663,6 +659,5 @@ class AccountBloc {
     _broadcastRefundRequestController.close();    
     _userActionsController.close();
     _permissionsHandler.dispose();
-    _exchangeRateController.close();
   }
 }

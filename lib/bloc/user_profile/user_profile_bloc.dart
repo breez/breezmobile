@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/bloc/user_profile/fiat_conversion.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/currency_service.dart';
@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:breez/bloc/user_profile/default_profile_generator.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/logger.dart';
-import 'package:breez/bloc/user_profile/currency_data.dart';
+import 'package:breez/services/currency_data.dart';
 
 class UserProfileBloc {
   static const PROFILE_DATA_FOLDER_PATH = "profile";

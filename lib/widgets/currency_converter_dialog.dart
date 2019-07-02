@@ -5,7 +5,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/bloc/user_profile/fiat_conversion.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -30,7 +30,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   AccountBloc _accountBloc;
   UserProfileBloc _userProfileBloc;
   StreamSubscription<AccountModel> _accountSubscription;
-  StreamSubscription<Rates> _exchangeRateSubscription;
 
   Currency _currency = Currency.BTC;
   FiatConversion _fiatCurrency;
@@ -84,11 +83,9 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
         _currency = acc.currency;
         _fiatCurrency = acc.fiatCurrency;
         _fiatConversionList = acc.fiatConversionList;
+        _updateExchangeLabel();
+        _convertCurrency();
       });
-    });
-    _exchangeRateSubscription = _accountBloc.exchangeRateStream.listen((rates) {
-      _updateExchangeLabel();
-      _convertCurrency();
     });
   }
 
@@ -109,7 +106,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   void dispose() {
     _fiatAmountController.dispose();
     _accountSubscription?.cancel();
-    _exchangeRateSubscription?.cancel();
     _controller?.dispose();
     super.dispose();
   }
