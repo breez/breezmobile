@@ -149,7 +149,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                           style: theme.alertStyle,
                         )),
                     inputFormatters: [WhitelistingTextInputFormatter(RegExp(r'\d+\.?\d*'))],
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.numberWithOptions(decimal: true),
                     focusNode: _fiatAmountFocusNode,
                     controller: _fiatAmountController,
                     validator: (value) {
