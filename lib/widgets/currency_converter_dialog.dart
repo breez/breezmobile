@@ -163,7 +163,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                   padding: const EdgeInsets.only(top: 24.0),
                   child: Column(
                     children: <Widget>[
-                      Text("${_fiatAmountController.text.isNotEmpty ? _amount : 0.0} ${_currency.symbol}",
+                      Text("${_fiatAmountController.text.isNotEmpty ? _amount : 0} ${_currency.symbol}",
                           style: theme.headline.copyWith(fontSize: 16.0)),
                       _buildExchangeRateLabel()
                     ],
@@ -197,7 +197,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   }
 
   _convertCurrency() {
-    var _bitcoinEquivalent = _fiatAmountController.text.isNotEmpty ? _fiatCurrency.convert(double.parse(_fiatAmountController.text)) : 0.0;
+    var _bitcoinEquivalent = _fiatAmountController.text.isNotEmpty ? _fiatCurrency.convert(double.parse(_fiatAmountController.text)) : 0;
     var _satoshies = (_bitcoinEquivalent * 100000000).toStringAsFixed(0);
     setState(() {
       _amount = _currency.format(Int64.parseInt(_satoshies), includeSymbol: false);
