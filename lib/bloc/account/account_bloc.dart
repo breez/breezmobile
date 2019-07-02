@@ -621,7 +621,8 @@ class AccountBloc {
           _startExchangeRateTimer();
           break;
         default:
-        // cancel timer when AppLifecycleState is paused, inactive or suspending
+          // cancel timer when AppLifecycleState is paused, inactive or suspending
+          _exchangeRateTimer?.cancel();
           break;
       }
     });
