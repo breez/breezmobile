@@ -614,6 +614,7 @@ class AccountBloc {
 
   _updateExchangeRates() {
     _getExchangeRate();
+    _startExchangeRateTimer();
     SystemChannels.lifecycle.setMessageHandler((msg) {
       switch (msg) {
         case "AppLifecycleState.resumed":
