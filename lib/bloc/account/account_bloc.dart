@@ -616,11 +616,26 @@ class AccountBloc {
   }
 
   _updateExchangeRates() {
-    //TODO: stop/resume timer when app is in background/foreground
     _getExchangeRate();
-    _exchangeRateTimer = Timer.periodic(Duration(seconds: 30), (_) async {
-      _getExchangeRate();
+    SystemChannels.lifecycle.setMessageHandler((msg) {
+      switch (msg) {
+        case "AppLifecycleState.resumed":
+          _getExchangeRate();
+          _startExchangeRateTimer();
+          break;
+        default:
+        // cancel timer when AppLifecycleState is paused, inactive or suspending
+          break;
+      }
     });
+  }
+
+  _startExchangeRateTimer() {
+    if (!_exchangeRateTimer.isActive) {
+      _exchangeRateTimer = Timer.periodic(Duration(seconds: 30), (_) async {
+        _getExchangeRate();
+      });
+    }
   }
 
   Future _getExchangeRate() async {

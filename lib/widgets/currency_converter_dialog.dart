@@ -176,7 +176,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                     _fiatCurrency.currencyData.symbol,
                     style: theme.alertStyle,
                   )),
-              inputFormatters: [WhitelistingTextInputFormatter(RegExp(r'\d+\.?\d*'))],
+              inputFormatters: [WhitelistingTextInputFormatter(RegExp(r'\d+\.?\d*'))], // TODO: Limit decimal points to fiat currencies fractionSize
               keyboardType: TextInputType.number,
               focusNode: _fiatAmountFocusNode,
               controller: _fiatAmountController,
