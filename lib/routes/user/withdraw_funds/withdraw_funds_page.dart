@@ -195,7 +195,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                       accountModel: acc,
                       focusNode: _amountFocusNode,
                       controller: _amountController,
-                      style: theme.FieldTextStyle.textStyle),                 
+                      validatorFn: acc.validateOutgoingPayment,
+                      style: theme.FieldTextStyle.textStyle),
                   new Container(
                     padding: new EdgeInsets.only(top: 36.0),
                     child: _buildAvailableBTC(acc),

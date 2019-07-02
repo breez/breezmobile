@@ -221,6 +221,7 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
                             accountModel: acc,
                             focusNode: _amountFocusNode,
                             controller: _amountController,
+                            validatorFn: acc.validateOutgoingOnChainPayment,
                             style: theme.alertStyle),
                         new TextFormField(
                             focusNode: _feeFocusNode,

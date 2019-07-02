@@ -101,6 +101,7 @@ class PayNearbyPageState extends State<PayNearbyPage> {
                     new AmountFormField(
                       focusNode: _amountFocusNode,
                       returnFN: (value) => _amountToSendSatoshi = account.currency.parse(value),
+                      validatorFn: account.validateOutgoingPayment,
                       style: theme.FieldTextStyle.textStyle,
                       onFieldSubmitted: (String value) {
                         _amountToSendSatoshi = account.currency.parse(value);

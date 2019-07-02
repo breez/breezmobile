@@ -186,6 +186,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                   iconColor: theme.BreezColors.blue[500],
                   focusNode: _amountFocusNode,
                   controller: _invoiceAmountController,
+                  validatorFn: account.validateOutgoingPayment,
                   style: theme.alertStyle.copyWith(height: 1.0),
                 ),
               ),

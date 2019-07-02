@@ -163,6 +163,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                       accountModel: acc,
                       focusNode: _amountFocusNode,
                       controller: _amountController,
+                      validatorFn: acc.validateIncomingPayment,
                       style: theme.FieldTextStyle.textStyle),
                   new Container(
                     padding: new EdgeInsets.only(top: 16.0),

@@ -73,6 +73,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                         accountModel: widget._account,
                         focusNode: _amountFocusNode,
                         controller: _amountController,
+                        validatorFn: widget._account.validateOutgoingPayment,
                       ),
                       TextFormField(
                         controller: _invoiceDescriptionController,

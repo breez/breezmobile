@@ -13,12 +13,14 @@ class AmountFormField extends TextFormField {
   final AccountModel accountModel;
   final Color iconColor;
   final Function(String amount) returnFN;
+  final String Function(Int64 amount) validatorFn;
 
   AmountFormField({
     this.context,
     this.accountModel,
     this.iconColor,
     this.returnFN,
+    this.validatorFn,
     TextEditingController controller,
     Key key,
     String initialValue,
@@ -68,8 +70,8 @@ class AmountFormField extends TextFormField {
         return "Invalid amount";
       }
       String msg;
-      if (accountModel.validateOutgoingOnChainPayment != null) {
-        msg = accountModel.validateOutgoingOnChainPayment(intAmount);
+      if (validatorFn != null) {
+        msg = validatorFn(intAmount);
       }
       return msg;
     };
