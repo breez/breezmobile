@@ -5,6 +5,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,6 +96,11 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
           _currency = account.currency;
           _fiatCurrency = account.fiatCurrency;
           _fiatConversionList = account.fiatConversionList;
+
+          if (_fiatConversionList == null && _fiatCurrency == null) {
+            return Loader();
+          }
+
           double exchangeRate = _fiatConversionList
               .firstWhere((fiatConversion) => fiatConversion.currencyData.symbol == _fiatCurrency.currencyData.symbol)
               .exchangeRate;
