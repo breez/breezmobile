@@ -47,7 +47,7 @@ class AmountFormField extends TextFormField {
                 alignment: Alignment.bottomRight,
                 onPressed: () => showDialog(
                     context: context,
-                    builder: (_) => CurrencyConverterDialog(returnFN != null ? returnFN : (value) => controller.text = value)),
+                    builder: (_) => CurrencyConverterDialog(returnFN != null ? returnFN : (value) => controller.text = value, validatorFn),),
               ),
             ),
             style: style,

@@ -11,8 +11,9 @@ import 'package:flutter/services.dart';
 
 class CurrencyConverterDialog extends StatefulWidget {
   final Function(String string) _onConvert;
+  final String Function(Int64 amount) validatorFn;
 
-  CurrencyConverterDialog(this._onConvert);
+  CurrencyConverterDialog(this._onConvert, this.validatorFn);
 
   @override
   CurrencyConverterDialogState createState() {
@@ -21,6 +22,10 @@ class CurrencyConverterDialog extends StatefulWidget {
 }
 
 class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with SingleTickerProviderStateMixin {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _fiatAmountController = new TextEditingController();
+  final FocusNode _fiatAmountFocusNode = FocusNode();
+
   AnimationController _controller;
   Animation<Color> _colorAnimation;
 
@@ -30,8 +35,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   Currency _currency = Currency.BTC;
   FiatConversion _fiatCurrency;
   List<FiatConversion> _fiatConversionList = List<FiatConversion>();
-  final TextEditingController _fiatAmountController = new TextEditingController();
-  final FocusNode _fiatAmountFocusNode = FocusNode();
 
   String _amount;
   double _exchangeRate;
@@ -140,25 +143,37 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                TextFormField(
-                    decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide),
-                        focusedBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide),
-                        prefix: Text(
-                          _fiatCurrency.currencyData.symbol,
-                          style: theme.alertStyle,
-                        )),
-                    inputFormatters: [WhitelistingTextInputFormatter(_fiatCurrency.currencyData.fractionSize == 0 ? RegExp(r'\d+') : RegExp("^\\d+\\.?\\d{0,${_fiatCurrency.currencyData.fractionSize ?? 2}}"))],
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
-                    focusNode: _fiatAmountFocusNode,
-                    controller: _fiatAmountController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter amount in ${_fiatCurrency.currencyData.shortName}';
-                      }
-                      return null;
-                    },
-                    style: theme.alertStyle),
+                Form(
+                  key: _formKey,
+                  child: TextFormField(
+                      decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide),
+                          focusedBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide),
+                          errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+                          focusedErrorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+                          errorMaxLines: 2,
+                          errorStyle: theme.errorStyle.copyWith(color: Colors.red),
+                          prefix: Text(
+                            _fiatCurrency.currencyData.symbol,
+                            style: theme.alertStyle,
+                          )),
+                      // Do not allow '.' when fractionSize is 0 and only allow fiat currencies fractionSize number of digits after decimal point
+                      inputFormatters: [
+                        WhitelistingTextInputFormatter(_fiatCurrency.currencyData.fractionSize == 0
+                            ? RegExp(r'\d+')
+                            : RegExp("^\\d+\\.?\\d{0,${_fiatCurrency.currencyData.fractionSize ?? 2}}"))
+                      ],
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      focusNode: _fiatAmountFocusNode,
+                      controller: _fiatAmountController,
+                      validator: (_) {
+                        if (widget.validatorFn != null) {
+                          return widget.validatorFn(_currency.parse(_amount));
+                        }
+                        return null;
+                      },
+                      style: theme.alertStyle),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 24.0),
                   child: Column(
@@ -182,9 +197,11 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
     if (_amount != null && _currency.parse(_amount.replaceAll(new RegExp(r"\s+\b|\b\s"), "")) > 0) {
       actions.add(new FlatButton(
           onPressed: () {
-            // Remove all whitespace
-            widget._onConvert(_amount.replaceAll(new RegExp(r"\s+\b|\b\s"), ""));
-            Navigator.pop(context);
+            if (_formKey.currentState.validate()) {
+              // Remove all whitespace from converted amount
+              widget._onConvert(_amount.replaceAll(new RegExp(r"\s+\b|\b\s"), ""));
+              Navigator.pop(context);
+            }
           },
           child: new Text("Done", style: theme.buttonStyle)));
     }
