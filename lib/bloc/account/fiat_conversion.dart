@@ -21,15 +21,28 @@ class FiatConversion {
     }
   }
 
-  double convert(double amount) {
-    return amount / this.exchangeRate;
+  double convertToBTC(double fiatAmount) {
+    return fiatAmount / this.exchangeRate;
   }
 
-  String format(double amount) {
-    String _formattedAmount = convert(amount).toStringAsFixed(this.currencyData.fractionSize);
-    // Add '<' prefix if the converted value is below 0.01
-    if(convert(amount) < 0.01){
-      return "< ${this.currencyData.symbol}0.01";
+  double convertToFiat(double satoshies) {
+    return satoshies / 100000000 * this.exchangeRate;
+  }
+
+  String format(double amount, {bool toFiat}) {
+    String _formattedAmount;
+    if (toFiat ?? false) {
+      _formattedAmount = convertToFiat(amount).toStringAsFixed(this.currencyData.fractionSize);
+      // Add '<' prefix if the converted value is below 0.01
+      if (convertToFiat(amount) < 0.01) {
+        return "< ${this.currencyData.symbol}0.01";
+      }
+    } else {
+      _formattedAmount = convertToBTC(amount).toStringAsFixed(this.currencyData.fractionSize);
+      // Add '<' prefix if the converted value is below 0.01
+      if (convertToBTC(amount) < 0.01) {
+        return "< ${this.currencyData.symbol}0.01";
+      }
     }
     return "${this.currencyData.symbol}$_formattedAmount";
   }

@@ -159,7 +159,7 @@ class AccountModel {
       (bootstraping ||
       (!active && !processingWithdrawal && !processingBreezConnection)) && !initial;
   Int64 get balance => _accountResponse.balance;
-  String get formattedFiatBalance => fiatCurrency.format(balance.toDouble());
+  String get formattedFiatBalance => fiatCurrency.format(balance.toDouble(), toFiat: true);
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;

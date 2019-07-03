@@ -202,7 +202,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   }
 
   _convertCurrency() {
-    var _bitcoinEquivalent = _fiatAmountController.text.isNotEmpty ? _fiatCurrency.convert(double.parse(_fiatAmountController.text)) : 0;
+    var _bitcoinEquivalent = _fiatAmountController.text.isNotEmpty ? _fiatCurrency.convertToBTC(double.parse(_fiatAmountController.text ?? 0)) : 0;
     var _satoshies = (_bitcoinEquivalent * 100000000).toStringAsFixed(0);
     setState(() {
       _amount = _currency.format(Int64.parseInt(_satoshies), includeSymbol: false);
