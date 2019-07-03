@@ -194,6 +194,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   List<Widget> _buildActions() {
     List<Widget> actions = [new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("Cancel", style: theme.buttonStyle))];
 
+    // Show done button only when the converted amount is bigger than 0
     if (_amount != null && _currency.parse(_amount.replaceAll(new RegExp(r"\s+\b|\b\s"), "")) > 0) {
       actions.add(new FlatButton(
           onPressed: () {
@@ -236,7 +237,12 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
 
   _selectFiatCurrency(shortName) {
     setState(() {
+      int _oldFractionSize = _fiatCurrency.currencyData.fractionSize;
       _fiatCurrency = _fiatConversionList.firstWhere((f) => f.currencyData.shortName == shortName);
+      // Remove decimal points to match the selected fiat currencies fractionSize
+      if (_oldFractionSize > _fiatCurrency.currencyData.fractionSize) {
+        _fiatAmountController.text = double.parse(_fiatAmountController.text).toStringAsFixed(_fiatCurrency.currencyData.fractionSize);
+      }
       _userProfileBloc.fiatConversionSink.add(shortName);
       _updateExchangeLabel(_exchangeRate);
       _convertCurrency();
