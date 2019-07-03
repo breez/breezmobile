@@ -641,6 +641,7 @@ class AccountBloc {
     List<FiatConversion> _fiatConversionList = _rate.rates
         .map((rate) => new FiatConversion(_currencyData[rate.coin], rate.value))
         .toList();
+    _fiatConversionList.sort((a, b) => a.currencyData.shortName.compareTo(b.currencyData.shortName));
     _accountController.add(_accountController.value
         .copyWith(
       fiatConversionList: _fiatConversionList,
