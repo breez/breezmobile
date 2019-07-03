@@ -148,7 +148,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                           _fiatCurrency.currencyData.symbol,
                           style: theme.alertStyle,
                         )),
-                    inputFormatters: [WhitelistingTextInputFormatter(RegExp(r'\d+\.?\d*'))],
+                    inputFormatters: [WhitelistingTextInputFormatter(_fiatCurrency.currencyData.fractionSize == 0 ? RegExp(r'\d+') : RegExp("^\\d+\\.?\\d{0,${_fiatCurrency.currencyData.fractionSize ?? 2}}"))],
                     keyboardType: TextInputType.numberWithOptions(decimal: true),
                     focusNode: _fiatAmountFocusNode,
                     controller: _fiatAmountController,

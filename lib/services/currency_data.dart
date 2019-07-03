@@ -19,7 +19,7 @@ class CurrencyData {
   factory CurrencyData.fromJson(String shortName, Map<String, dynamic> json) => new CurrencyData(
         name: json["name"],
         shortName: shortName,
-        fractionSize: json["fractionSize"],
+        fractionSize: json["fractionSize"] ?? 0,
         symbol: json["symbol"] != null ? json["symbol"]["grapheme"] : shortName,
       );
 }
