@@ -168,7 +168,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                       controller: _fiatAmountController,
                       validator: (_) {
                         if (widget.validatorFn != null) {
-                          return widget.validatorFn(_currency.parse(_amount));
+                          return widget.validatorFn(_currency.parse(_amount.replaceAll(new RegExp(r"\s+\b|\b\s"), "")));
                         }
                         return null;
                       },
