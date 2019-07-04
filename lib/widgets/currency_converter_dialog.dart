@@ -37,8 +37,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   FiatConversion _fiatCurrency;
   List<FiatConversion> _fiatConversionList = List<FiatConversion>();
 
-  String _amount;
-  String _formattedAmount;
+  Int64 _satoshies;
   double _exchangeRate;
 
   bool _isInit = false;
@@ -175,7 +174,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                       controller: _fiatAmountController,
                       validator: (_) {
                         if (widget.validatorFn != null) {
-                          return widget.validatorFn(_currency.parse(_amount));
+                          return widget.validatorFn(_satoshies);
                         }
                         return null;
                       },
@@ -185,7 +184,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                   padding: const EdgeInsets.only(top: 24.0),
                   child: Column(
                     children: <Widget>[
-                      Text("${_fiatAmountController.text.isNotEmpty ? _formattedAmount : 0} ${_currency.symbol}",
+                      Text("${_fiatAmountController.text.isNotEmpty ? _currency.format(_satoshies, includeSymbol: false) : 0} ${_currency.symbol}",
                           style: theme.headline.copyWith(fontSize: 16.0)),
                       _buildExchangeRateLabel()
                     ],
@@ -202,11 +201,11 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
     List<Widget> actions = [new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("Cancel", style: theme.buttonStyle))];
 
     // Show done button only when the converted amount is bigger than 0
-    if (_formattedAmount != null && _currency.parse(_amount) > 0) {
+    if (_fiatAmountController.text.isNotEmpty && _satoshies > 0) {
       actions.add(new FlatButton(
           onPressed: () {
             if (_formKey.currentState.validate()) {
-              widget._onConvert(_amount);
+              widget._onConvert(_currency.format(_satoshies, includeSymbol: false, userInput: true));
               Navigator.pop(context);
             }
           },
@@ -227,10 +226,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
 
   _convertCurrency() {
     var _bitcoinEquivalent = _fiatAmountController.text.isNotEmpty ? _fiatCurrency.convertToBTC(double.parse(_fiatAmountController.text ?? 0)) : 0;
-    var _satoshies = (_bitcoinEquivalent * 100000000).toStringAsFixed(0);
     setState(() {
-      _formattedAmount = _currency.format(Int64.parseInt(_satoshies), includeSymbol: false);
-      _amount = _currency.format(Int64.parseInt(_satoshies), includeSymbol: false, userInput: true);
+      _satoshies = Int64((_bitcoinEquivalent * 100000000).toInt());
     });
   }
 
