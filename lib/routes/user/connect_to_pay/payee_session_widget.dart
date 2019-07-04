@@ -79,7 +79,10 @@ class _PayeeInstructions extends StatelessWidget {
       return LoadingAnimatedText('Waiting for ${_sessionState.payerData.userName ?? "payer"} to enter an amount', textStyle: theme.sessionNotificationStyle);
     }
     else if (_sessionState.payerData.amount != null && _sessionState.payeeData.paymentRequest == null) {
-      message = '${_sessionState.payerData.userName} wants to pay you ${_account.currency.format(Int64(_sessionState.payerData.amount))} (${_account.fiatCurrency.format(Int64(_sessionState.payerData.amount).toDouble())}).';
+      message = '${_sessionState.payerData.userName} wants to pay you ${_account.currency.format(Int64(_sessionState.payerData.amount))}';
+      if (_account.fiatCurrency != null) {
+        message = "$message"  " (${_account.fiatCurrency.format(Int64(_sessionState.payerData.amount).toDouble())}).";
+      }
       if (_account.maxAllowedToReceive < Int64(_sessionState.payerData.amount)) {
         return Column(
           children: <Widget>[
