@@ -312,3 +312,18 @@ const Peers$json = const {
   ],
 };
 
+const rate$json = const {
+  '1': 'rate',
+  '2': const [
+    const {'1': 'coin', '3': 1, '4': 1, '5': 9, '10': 'coin'},
+    const {'1': 'value', '3': 2, '4': 1, '5': 1, '10': 'value'},
+  ],
+};
+
+const Rates$json = const {
+  '1': 'Rates',
+  '2': const [
+    const {'1': 'rates', '3': 1, '4': 3, '5': 11, '6': '.data.rate', '10': 'rates'},
+  ],
+};
+

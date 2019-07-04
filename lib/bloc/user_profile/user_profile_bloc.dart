@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
+import 'package:breez/services/currency_service.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:path_provider/path_provider.dart';
@@ -11,13 +13,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:breez/bloc/user_profile/default_profile_generator.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/services/currency_data.dart';
 
 class UserProfileBloc {
   static const PROFILE_DATA_FOLDER_PATH = "profile";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   NFCService _nfc;
-
+  CurrencyService _currencyService;
+  Map<String, CurrencyData> _currencyData;
   final _registrationController = new StreamController<void>();
   Sink<void> get registerSink => _registrationController.sink;
 
@@ -32,6 +36,9 @@ class UserProfileBloc {
   final _currencyController = new BehaviorSubject<Currency>();
   Sink<Currency> get currencySink => _currencyController.sink;
 
+  final _fiatConversionController = new BehaviorSubject<String>();
+  Sink<String> get fiatConversionSink => _fiatConversionController.sink;
+
   final _userController = new BehaviorSubject<BreezUserModel>();
   Sink<BreezUserModel> get userSink => _userController.sink;
 
@@ -44,6 +51,7 @@ class UserProfileBloc {
   UserProfileBloc() {
     ServiceInjector injector = ServiceInjector();
     _nfc = injector.nfc;
+    _currencyService = injector.currencyService;
     print ("UserProfileBloc started");
 
     cardActivationStream = _nfc.cardActivationStream;
@@ -56,6 +64,7 @@ class UserProfileBloc {
 
     //listen to changes in user preferences
     _listenCurrencyChange(injector);
+    _listenFiatCurrencyChange(injector);
 
     //listen to changes in user avatar
     _listenUserChange(injector);
@@ -128,6 +137,13 @@ class UserProfileBloc {
     });
   }
 
+  void _listenFiatCurrencyChange(ServiceInjector injector) {
+    _fiatConversionController.stream.listen((shortName) async {
+      var preferences = await injector.sharedPreferences;
+      _saveChanges(preferences, _currentUser.copyWith(fiatCurrency: shortName));
+    });
+  }
+
   void _listenUserChange(ServiceInjector injector) {
     _userController.stream.listen((userData) async {
       var preferences = await injector.sharedPreferences;
@@ -196,6 +212,7 @@ class UserProfileBloc {
   close() {
     _registrationController.close();
     _currencyController.close();
+    _fiatConversionController.close();
     _userController.close();
     _uploadImageController.close();
     _randomizeController.close();

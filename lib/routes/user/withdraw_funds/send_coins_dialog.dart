@@ -217,13 +217,11 @@ class SendWalletFundsDialogState extends State<SendWalletFundsDialog> {
                               )
                             : SizedBox(),
                         new AmountFormField(
+                            context: context,
+                            accountModel: acc,
                             focusNode: _amountFocusNode,
                             controller: _amountController,
-                            currency: acc.currency,
-                            validatorFn: acc.validateOutgoingOnChainPayment,                            
-                            decoration: new InputDecoration(
-                                labelText:
-                                    acc.currency.displayName + " Amount"),
+                            validatorFn: acc.validateOutgoingOnChainPayment,
                             style: theme.alertStyle),
                         new TextFormField(
                             focusNode: _feeFocusNode,

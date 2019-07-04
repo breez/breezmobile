@@ -159,12 +159,11 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                       }
                     },),
                   new AmountFormField(
+                      context: context,
+                      accountModel: acc,
                       focusNode: _amountFocusNode,
                       controller: _amountController,
-                      currency: acc.currency,
                       validatorFn: acc.validateIncomingPayment,
-                      decoration: new InputDecoration(
-                          labelText: acc.currency.displayName + " Amount"),
                       style: theme.FieldTextStyle.textStyle),
                   new Container(
                     padding: new EdgeInsets.only(top: 16.0),
