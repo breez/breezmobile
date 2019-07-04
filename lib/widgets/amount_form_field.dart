@@ -40,7 +40,7 @@ class AmountFormField extends TextFormField {
               labelText: accountModel.currency.displayName + " Amount",
               suffixIcon: IconButton(
                 icon: new Image.asset(
-                  accountModel.fiatCurrency.logoPath,
+                  (accountModel.fiatCurrency != null) ? accountModel.fiatCurrency.logoPath : "src/icon/btc_convert.png",
                   color: iconColor != null ? iconColor : theme.BreezColors.white[500],
                 ),
                 padding: EdgeInsets.only(top: 21.0),
