@@ -86,7 +86,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
             return Container();
           }
 
-          if (account.fiatConversionList == null && account.fiatCurrency == null) {
+          if (account.fiatConversionList.isEmpty && account.fiatCurrency == null) {
             return Loader();
           }
 
