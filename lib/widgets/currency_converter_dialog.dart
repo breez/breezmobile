@@ -230,8 +230,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
     var _satoshies = (_bitcoinEquivalent * 100000000).toStringAsFixed(0);
     setState(() {
       _formattedAmount = _currency.format(Int64.parseInt(_satoshies), includeSymbol: false);
-      // Remove all whitespace from formatted, converted amount
-      _amount = _formattedAmount.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+      _amount = _currency.format(Int64.parseInt(_satoshies), includeSymbol: false, userInput: true);
     });
   }
 
