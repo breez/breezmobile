@@ -38,7 +38,7 @@ class AmountFormField extends TextFormField {
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             decoration: new InputDecoration(
               labelText: accountModel.currency.displayName + " Amount",
-              suffixIcon: IconButton(
+              suffixIcon: accountModel.fiatCurrency != null ? IconButton(
                 icon: new Image.asset(
                   (accountModel.fiatCurrency != null) ? accountModel.fiatCurrency.logoPath : "src/icon/btc_convert.png",
                   color: iconColor != null ? iconColor : theme.BreezColors.white[500],
@@ -48,7 +48,7 @@ class AmountFormField extends TextFormField {
                 onPressed: () => showDialog(
                     context: context,
                     builder: (_) => CurrencyConverterDialog(returnFN != null ? returnFN : (value) => controller.text = value, validatorFn),),
-              ),
+              ) : null,
             ),
             style: style,
             enabled: enabled,

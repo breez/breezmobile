@@ -2,7 +2,6 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
@@ -217,9 +216,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   }
 
   _convertedSatoshies(AccountModel account) {
-    var _bitcoinEquivalent =
-        _fiatAmountController.text.isNotEmpty ? account.fiatCurrency.convertToBTC(double.parse(_fiatAmountController.text ?? 0)) : 0;
-    return Int64((_bitcoinEquivalent * 100000000).toInt());
+    return _fiatAmountController.text.isNotEmpty ? account.fiatCurrency.fiatToSat(double.parse(_fiatAmountController.text ?? 0)) : 0;
   }
 
   Widget _buildExchangeRateLabel(FiatConversion fiatConversion) {

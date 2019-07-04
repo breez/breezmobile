@@ -1,4 +1,5 @@
 import 'package:breez/services/currency_data.dart';
+import 'package:fixnum/fixnum.dart';
 
 class FiatConversion {
   CurrencyData currencyData;
@@ -21,26 +22,26 @@ class FiatConversion {
     }
   }
 
-  double convertToBTC(double fiatAmount) {
-    return fiatAmount / this.exchangeRate;
+  Int64 fiatToSat(double fiatAmount) {
+    return Int64((fiatAmount / this.exchangeRate * 100000000).round());
   }
 
-  double convertToFiat(double satoshies) {
-    return satoshies / 100000000 * this.exchangeRate;
+  double satToFiat(Int64 satoshies) {
+    return satoshies.toDouble() / 100000000 * this.exchangeRate;
   }
 
-  String format(double amount, {bool toFiat}) {
+  String format(Int64 amount, {bool toFiat}) {
     String _formattedAmount;
     if (toFiat ?? false) {
-      _formattedAmount = convertToFiat(amount).toStringAsFixed(this.currencyData.fractionSize);
+      _formattedAmount = satToFiat(amount).toStringAsFixed(this.currencyData.fractionSize);
       // Add '<' prefix if the converted value is below 0.01
-      if (convertToFiat(amount) < 0.01) {
+      if (satToFiat(amount) < 0.01) {
         return "< ${this.currencyData.symbol}0.01";
       }
     } else {
-      _formattedAmount = convertToBTC(amount).toStringAsFixed(this.currencyData.fractionSize);
+      _formattedAmount = fiatToSat(amount.toDouble()).toString();
       // Add '<' prefix if the converted value is below 0.01
-      if (convertToBTC(amount) < 0.01) {
+      if (fiatToSat(amount.toDouble()) < 0.01) {
         return "< ${this.currencyData.symbol}0.01";
       }
     }
