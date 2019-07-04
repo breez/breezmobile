@@ -110,7 +110,7 @@ class AccountModel {
             Currency.SAT,
             "USD",
             null,
-            null,
+            List(),
             initial: true,
             bootstraping: true);
   AccountModel copyWith(
