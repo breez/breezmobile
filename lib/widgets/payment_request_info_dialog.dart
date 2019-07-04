@@ -110,7 +110,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       stream: widget.accountBloc.accountStream,
       builder: (context, snapshot) {
         var account = snapshot.data;
-        if (account == null) {
+        if (account == null || account.fiatCurrency == null) {
           return new Container(width: 0.0, height: 0.0);
         }
         List<Widget> children = [];
