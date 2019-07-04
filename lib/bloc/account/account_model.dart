@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -19,7 +20,7 @@ enum SyncUIState {
 class AccountSettings {
   final bool ignoreWalletBalance;
   final bool showConnectProgress;
-  final BugReportBehavior failePaymentBehavior;  
+  final BugReportBehavior failePaymentBehavior;
 
   AccountSettings(
       this.ignoreWalletBalance,
@@ -33,19 +34,19 @@ class AccountSettings {
       BugReportBehavior failePaymentBehavior}) {
     return AccountSettings(ignoreWalletBalance ?? this.ignoreWalletBalance,
         failePaymentBehavior:
-            failePaymentBehavior ?? this.failePaymentBehavior,        
+            failePaymentBehavior ?? this.failePaymentBehavior,
         showConnectProgress: showConnectProgress ?? this.showConnectProgress);
   }
 
   AccountSettings.fromJson(Map<String, dynamic> json)
       : this(json["ignoreWalletBalance"] ?? false,
-            failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0],            
+            failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0],
             showConnectProgress: json["showConnectProgress"] ?? false);
 
   Map<String, dynamic> toJson() {
     return {
       "ignoreWalletBalance": ignoreWalletBalance,
-      "failePaymentBehavior": failePaymentBehavior.index,      
+      "failePaymentBehavior": failePaymentBehavior.index,
       "showConnectProgress": showConnectProgress ?? false
     };
   }
@@ -55,7 +56,7 @@ class SwapFundStatus {
   final FundStatusReply _addedFundsReply;
 
   SwapFundStatus(this._addedFundsReply);
-  
+
   bool get waitingDepositConfirmation =>
       _addedFundsReply?.status == FundStatusReply_FundStatus.WAITING_CONFIRMATION;
   bool get depositConfirmed =>
@@ -71,6 +72,9 @@ class SwapFundStatus {
 class AccountModel {
   final Account _accountResponse;
   final Currency _currency;
+  final String _fiatShortName;
+  final FiatConversion _fiatCurrency;
+  final List<FiatConversion> _fiatConversionList;
   final FundStatusReply addedFundsReply;
   final String paymentRequestInProgress;
   final bool connected;
@@ -78,11 +82,11 @@ class AccountModel {
   final bool initial;
   final bool bootstraping;
   final double bootstrapProgress;
-  final bool enableInProgress; 
-  final double syncProgress; 
-  final SyncUIState syncUIState;  
+  final bool enableInProgress;
+  final double syncProgress;
+  final SyncUIState syncUIState;
 
-  AccountModel(this._accountResponse, this._currency,
+  AccountModel(this._accountResponse, this._currency, this._fiatShortName, this._fiatCurrency, this._fiatConversionList,
       {this.initial = true,
       this.addedFundsReply,
       this.paymentRequestInProgress,
@@ -104,11 +108,17 @@ class AccountModel {
               ..maxPaymentAmount = Int64(0)
               ..enabled = true,
             Currency.SAT,
+            "USD",
+            null,
+            List(),
             initial: true,
             bootstraping: true);
   AccountModel copyWith(
       {Account accountResponse,
       Currency currency,
+      String fiatShortName,
+      FiatConversion fiatCurrency,
+      List<FiatConversion> fiatConversionList,
       FundStatusReply addedFundsReply,
       String paymentRequestInProgress,
       bool connected,
@@ -117,10 +127,13 @@ class AccountModel {
       bool enableInProgress,
       double bootstrapProgress,
       double syncProgress,
-      bool initial,       
+      bool initial,
       SyncUIState syncUIState}) {
     return AccountModel(
         accountResponse ?? this._accountResponse, currency ?? this.currency,
+        fiatShortName ?? this._fiatShortName,
+        fiatCurrency ?? this._fiatCurrency,
+        fiatConversionList ?? this._fiatConversionList,
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,
         connected: connected ?? this.connected,
         onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
@@ -134,7 +147,7 @@ class AccountModel {
         initial: initial ?? this.initial);
   }
 
-  String get id => _accountResponse.id;  
+  String get id => _accountResponse.id;
   SwapFundStatus get swapFundsStatus => SwapFundStatus(this.addedFundsReply);
   bool get processingBreezConnection =>
       _accountResponse.status ==
@@ -146,9 +159,12 @@ class AccountModel {
       (bootstraping ||
       (!active && !processingWithdrawal && !processingBreezConnection)) && !initial;
   Int64 get balance => _accountResponse.balance;
+  String get formattedFiatBalance => fiatCurrency?.format(balance, toFiat: true);
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
+  FiatConversion get fiatCurrency => _fiatConversionList.firstWhere((f) => f.currencyData.shortName == _fiatShortName, orElse: () => null);
+  List<FiatConversion> get fiatConversionList => _fiatConversionList;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
   Int64 get maxAllowedToPay => Int64(min(
       _accountResponse.maxAllowedToPay.toInt(),
@@ -160,7 +176,7 @@ class AccountModel {
   bool get enabled => _accountResponse.enabled;
 
   String get statusMessage {
-    
+
     if (this.isInitialBootstrap) {
       return "Please wait a minute while Breez is bootstrapping (keep the app open).";
     }
@@ -430,7 +446,7 @@ class PaymentError implements Exception {
   bool get validationError => error.toString().indexOf("rpc error") >= 0 || traceReport == null || traceReport.isEmpty;
 
   PaymentError(this.request, this.error, this.traceReport);
-  
+
   String errMsg() => error?.toString();
   String toString() => errMsg();
 }

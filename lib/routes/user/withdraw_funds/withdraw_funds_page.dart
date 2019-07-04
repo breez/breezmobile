@@ -191,13 +191,12 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                         )
                       : SizedBox(),
                   new AmountFormField(
+                      context: context,
+                      accountModel: acc,
                       focusNode: _amountFocusNode,
-                      controller: _amountController,                      
-                      currency: acc.currency,
+                      controller: _amountController,
                       validatorFn: acc.validateOutgoingPayment,
-                      decoration: new InputDecoration(
-                          labelText: acc.currency.displayName + " Amount"),
-                      style: theme.FieldTextStyle.textStyle),                 
+                      style: theme.FieldTextStyle.textStyle),
                   new Container(
                     padding: new EdgeInsets.only(top: 36.0),
                     child: _buildAvailableBTC(acc),

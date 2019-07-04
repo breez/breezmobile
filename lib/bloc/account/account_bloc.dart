@@ -9,6 +9,7 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/notifications.dart';
+import 'package:breez/services/currency_service.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'account_model.dart';
@@ -16,6 +17,9 @@ import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:breez/services/currency_data.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
+import 'package:flutter/services.dart';
 
 import 'account_synchronizer.dart';
 
@@ -23,6 +27,9 @@ class AccountBloc {
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
   static const String BOOTSTRAPING_PREFERENCES_KEY = "BOOTSTRAPING";
+
+  Timer _exchangeRateTimer;
+  Map<String, CurrencyData> _currencyData;
 
   final _userActionsController = new StreamController<AsyncAction>.broadcast();
   AccountSynchronizer _accountSynchronizer;
@@ -114,6 +121,7 @@ class AccountBloc {
   Notifications _notificationsService;
   Device _device;
   BackgroundTaskService _backgroundService;
+  CurrencyService _currencyService;
   Completer _onBoardingCompleter = new Completer();
 
   AccountBloc(Stream<BreezUserModel> userProfileStream) {
@@ -122,6 +130,7 @@ class AccountBloc {
     _notificationsService = injector.notifications;
     _device = injector.device;
     _backgroundService = injector.backgroundTaskService;
+    _currencyService = injector.currencyService;
     _actionHandlers = {
       SendPaymentFailureReport: _handleSendQueryRoute,
       ResetNetwork: _handleResetNetwork,
@@ -349,6 +358,7 @@ class AccountBloc {
 
       //convert currency.
       _accountController.add(_accountController.value.copyWith(currency: user.currency));
+      _accountController.add(_accountController.value.copyWith(fiatShortName: user.fiatCurrency));
       var updatedPayments = _paymentsController.value.copyWith(
         nonFilteredItems: _paymentsController.value.nonFilteredItems.map((p) => p.copyWith(user.currency)).toList(),
         paymentsList: _paymentsController.value.paymentsList.map((p) => p.copyWith(user.currency)).toList(),
@@ -376,8 +386,9 @@ class AccountBloc {
             _listenConnectivityChanges();
             _listenReconnects();
             _listenRefundableDeposits();
-            _listenRefundBroadcasts();     
-          });          
+            _updateExchangeRates();
+            _listenRefundBroadcasts();
+          });
         }
       }
     });
@@ -561,7 +572,7 @@ class AccountBloc {
             " STATUS = " +
             acc.status.toString());
         _accountController.add(_accountController.value
-            .copyWith(accountResponse: acc, currency: _currentUser?.currency, initial: false));
+            .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatShortName: _currentUser?.fiatCurrency, initial: false));
       }
     }).catchError(_accountController.addError);
     _refreshPayments();
@@ -599,6 +610,42 @@ class AccountBloc {
   Future<String> getPersistentNodeID() async {
     var preferences = await ServiceInjector().sharedPreferences;
     return preferences.getString(PERSISTENT_NODE_ID_PREFERENCES_KEY);
+  }
+
+  _updateExchangeRates() {
+    _getExchangeRate();
+    _startExchangeRateTimer();
+    SystemChannels.lifecycle.setMessageHandler((msg) {
+      switch (msg) {
+        case "AppLifecycleState.resumed":
+          _getExchangeRate();
+          _startExchangeRateTimer();
+          break;
+        default:
+          // cancel timer when AppLifecycleState is paused, inactive or suspending
+          _exchangeRateTimer?.cancel();
+          break;
+      }
+    });
+  }
+
+  _startExchangeRateTimer() {
+    _exchangeRateTimer = Timer.periodic(Duration(seconds: 30), (_) async {
+      _getExchangeRate();
+    });
+  }
+
+  Future _getExchangeRate() async {
+    _currencyData = await _currencyService.currencies();
+    Rates _rate = await _breezLib.rate();
+    List<FiatConversion> _fiatConversionList = _rate.rates
+        .map((rate) => new FiatConversion(_currencyData[rate.coin], rate.value))
+        .toList();
+    _fiatConversionList.sort((a, b) => a.currencyData.shortName.compareTo(b.currencyData.shortName));
+    _accountController.add(_accountController.value
+        .copyWith(
+      fiatConversionList: _fiatConversionList,
+      fiatShortName: _currentUser?.fiatCurrency,));
   }
 
   close() {

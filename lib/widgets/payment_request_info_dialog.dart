@@ -43,6 +43,8 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
 
   Map<String, dynamic> _amountToPayMap = new Map<String, dynamic>();
 
+  bool _showFiatCurrency = false;
+
   @override
   void initState() {
     super.initState();
@@ -108,7 +110,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       stream: widget.accountBloc.accountStream,
       builder: (context, snapshot) {
         var account = snapshot.data;
-        if (account == null) {
+        if (account == null || account.fiatCurrency == null) {
           return new Container(width: 0.0, height: 0.0);
         }
         List<Widget> children = [];
@@ -179,22 +181,41 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
               child: Container(                                        
                   height: 80.0,
                 child: AmountFormField(
+                  context: context,
+                  accountModel: account,
+                  iconColor: theme.BreezColors.blue[500],
                   focusNode: _amountFocusNode,
-                  style: theme.alertStyle.copyWith(height: 1.0),
-                  validatorFn: account.validateOutgoingPayment,
-                  currency: account.currency,
                   controller: _invoiceAmountController,
-                  decoration: new InputDecoration(labelText: account.currency.displayName + " Amount"),
+                  validatorFn: account.validateOutgoingPayment,
+                  style: theme.alertStyle.copyWith(height: 1.0),
                 ),
               ),
             ),
-          ),        
+          ),
       );
     }
-    return Text(
-      account.currency.format(widget.invoice.amount),
-      style: theme.paymentRequestAmountStyle,
-      textAlign: TextAlign.center,
+    return GestureDetector(
+      child: new ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: double.infinity),
+        child: Text(
+          _showFiatCurrency
+              ? "${account.fiatCurrency.format(widget.invoice.amount, toFiat: true)}"
+              : account.currency.format(widget.invoice.amount),
+          style: theme.paymentRequestAmountStyle,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      behavior: HitTestBehavior.translucent,
+      onLongPressStart: (_) {
+        setState(() {
+          _showFiatCurrency = true;
+        });
+      },
+      onLongPressEnd: (_) {
+        setState(() {
+          _showFiatCurrency = false;
+        });
+      },
     );
   }
 

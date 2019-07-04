@@ -10,6 +10,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:fixnum/fixnum.dart';
 import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/currency_converter_dialog.dart';
 
 class PayNearbyPage extends StatefulWidget {  
   PayNearbyPage();
@@ -99,11 +100,9 @@ class PayNearbyPageState extends State<PayNearbyPage> {
                   children: <Widget>[
                     new AmountFormField(
                       focusNode: _amountFocusNode,
+                      returnFN: (value) => _amountToSendSatoshi = account.currency.parse(value),
                       validatorFn: account.validateOutgoingPayment,
-                      decoration: new InputDecoration(
-                          contentPadding: EdgeInsets.only(top: 21.0, bottom: 8.0), labelText: account.currency.displayName + " Amount"),
                       style: theme.FieldTextStyle.textStyle,
-                      currency: account.currency,                      
                       onFieldSubmitted: (String value) {
                         _amountToSendSatoshi = account.currency.parse(value);
                       },

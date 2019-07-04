@@ -17,7 +17,7 @@ class Currency extends Object{
     return currencies.firstWhere((c) => c.symbol == symbol);
   }
 
-  String format(Int64 sat, {includeSymbol = true, fixedDecimals = true}) => _CurrencyFormatter().format(sat, this, addCurrencySuffix: includeSymbol, fixedDecimals: fixedDecimals);
+  String format(Int64 sat, {includeSymbol = true, fixedDecimals = true, userInput = false}) => _CurrencyFormatter().format(sat, this, addCurrencySuffix: includeSymbol, fixedDecimals: fixedDecimals, userInput: userInput);
   Int64 parse(String amountStr) =>  _CurrencyFormatter().parse(amountStr, this);
   String get displayName => symbol;
 }
@@ -48,7 +48,7 @@ class _CurrencyFormatter {
     return formatter;
   }
 
-  String format(satoshies, Currency currency, {bool addCurrencySuffix = true, fixedDecimals = true}) {
+  String format(satoshies, Currency currency, {bool addCurrencySuffix = true, fixedDecimals = true, userInput = false}) {
     String formattedAmount = formatter.format(satoshies);
     switch (currency) {
       case Currency.BTC:
@@ -69,6 +69,11 @@ class _CurrencyFormatter {
     if (addCurrencySuffix) {
       formattedAmount += ' ${currency.displayName}';
     }
+
+    if (userInput) {
+      return formattedAmount.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+    }
+
     return formattedAmount;
   }
 
