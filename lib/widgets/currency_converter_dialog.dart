@@ -33,7 +33,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   AccountBloc _accountBloc;
   UserProfileBloc _userProfileBloc;
 
-  Int64 _satoshies;
   double _exchangeRate;
 
   bool _isInit = false;
@@ -96,7 +95,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                   orElse: () => null)
               .exchangeRate;
           _updateExchangeLabel(exchangeRate);
-          _satoshies = _convertedSatoshies(account);
 
           return AlertDialog(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
@@ -167,7 +165,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                       controller: _fiatAmountController,
                       validator: (_) {
                         if (widget.validatorFn != null) {
-                          return widget.validatorFn(_satoshies);
+                          return widget.validatorFn(_convertedSatoshies(account));
                         }
                         return null;
                       },
@@ -178,7 +176,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                   child: Column(
                     children: <Widget>[
                       Text(
-                          "${_fiatAmountController.text.isNotEmpty ? account.currency.format(_satoshies, includeSymbol: false) : 0} ${account.currency.symbol}",
+                          "${_fiatAmountController.text.isNotEmpty ? account.currency.format(_convertedSatoshies(account), includeSymbol: false) : 0} ${account.currency.symbol}",
                           style: theme.headline.copyWith(fontSize: 16.0)),
                       _buildExchangeRateLabel(account.fiatCurrency)
                     ],
@@ -186,20 +184,20 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                 ),
               ],
             ),
-            actions: _buildActions(account.currency),
+            actions: _buildActions(account),
           );
         });
   }
 
-  List<Widget> _buildActions(Currency currency) {
+  List<Widget> _buildActions(AccountModel account) {
     List<Widget> actions = [new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("Cancel", style: theme.buttonStyle))];
 
     // Show done button only when the converted amount is bigger than 0
-    if (_fiatAmountController.text.isNotEmpty && _satoshies > 0) {
+    if (_fiatAmountController.text.isNotEmpty && _convertedSatoshies(account) > 0) {
       actions.add(new FlatButton(
           onPressed: () {
             if (_formKey.currentState.validate()) {
-              widget._onConvert(currency.format(_satoshies, includeSymbol: false, userInput: true));
+              widget._onConvert(account.currency.format(_convertedSatoshies(account), includeSymbol: false, userInput: true));
               Navigator.pop(context);
             }
           },
