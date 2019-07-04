@@ -102,7 +102,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
           }
 
           double exchangeRate = _fiatConversionList
-              .firstWhere((fiatConversion) => fiatConversion.currencyData.symbol == _fiatCurrency.currencyData.symbol)
+              .firstWhere((fiatConversion) => fiatConversion.currencyData.symbol == _fiatCurrency.currencyData.symbol, orElse: () => null)
               .exchangeRate;
           _updateExchangeLabel(exchangeRate);
 
