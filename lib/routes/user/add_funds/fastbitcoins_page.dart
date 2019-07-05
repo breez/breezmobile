@@ -16,6 +16,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 
 class FastbitcoinsPage extends StatefulWidget {
   @override
@@ -28,6 +29,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
   final String _title = "FastBitcoins.com";
   String _currency = "USD";
   final _formKey = GlobalKey<FormState>();
+  String _scannerErrorMessage = "";
   final _codeController = TextEditingController();
   final _valueController = TextEditingController();
   final _emailController = TextEditingController();
@@ -61,6 +63,30 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
         .hasMatch(value);
   }
 
+  Future _scanBarcode() async {
+    try {
+      FocusScope.of(context).requestFocus(FocusNode());
+      String barcode = await BarcodeScanner.scan();
+      setState(() {
+        _codeController.text = barcode;
+        _scannerErrorMessage = "";
+      });
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        setState(() {
+          this._scannerErrorMessage =
+          'Please grant Breez camera permission to scan QR codes.';
+        });
+      } else {
+        setState(() => this._scannerErrorMessage = '');
+      }
+    } on FormatException {
+      setState(() => this._scannerErrorMessage = '');
+    } catch (e) {
+      setState(() => this._scannerErrorMessage = '');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -83,6 +109,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                 scrollDirection: Axis.vertical,
                 children: <Widget>[
                   new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       new Container(
                         padding: new EdgeInsets.only(top: 8.0),
@@ -90,7 +117,21 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                           controller: _codeController,
                           decoration: new InputDecoration(
                               labelText: "Voucher Code",
-                              hintText: "Enter your voucher code"),
+                              hintText: "Enter your voucher code",
+                            suffixIcon: new IconButton(
+                              padding: EdgeInsets.only(top: 21.0),
+                              alignment: Alignment.bottomRight,
+                              icon: new Image(
+                                image: new AssetImage("src/icon/qr_scan.png"),
+                                color: theme.BreezColors.white[500],
+                                fit: BoxFit.contain,
+                                width: 24.0,
+                                height: 24.0,
+                              ),
+                              tooltip: 'Scan Barcode',
+                              onPressed: _scanBarcode,
+                            ),
+                          ),
                           style: theme.FieldTextStyle.textStyle,
                           validator: (value) {
                             if (value.isEmpty) {
@@ -99,6 +140,12 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                           },
                         ),
                       ),
+                      _scannerErrorMessage.length > 0
+                          ? new Text(
+                        _scannerErrorMessage,
+                        style: theme.validatorStyle,
+                      )
+                          : SizedBox(),
                       new Container(
                         padding: new EdgeInsets.only(top: 8.0),
                         child: new TextFormField(
