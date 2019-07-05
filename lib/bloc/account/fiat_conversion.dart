@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:breez/services/currency_data.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -30,21 +32,18 @@ class FiatConversion {
     return satoshies.toDouble() / 100000000 * this.exchangeRate;
   }
 
-  String format(Int64 amount, {bool toFiat}) {
-    String _formattedAmount;
-    if (toFiat ?? false) {
-      _formattedAmount = satToFiat(amount).toStringAsFixed(this.currencyData.fractionSize);
-      // Add '<' prefix if the converted value is below 0.01
-      if (satToFiat(amount) < 0.01) {
-        return "< ${this.currencyData.symbol}0.01";
-      }
-    } else {
-      _formattedAmount = fiatToSat(amount.toDouble()).toString();
-      // Add '<' prefix if the converted value is below 0.01
-      if (fiatToSat(amount.toDouble()) < 0.01) {
-        return "< ${this.currencyData.symbol}0.01";
-      }
+  String format(Int64 amount) {
+    int fractionSize = this.currencyData.fractionSize;
+    double minimumAmount = 1 / (pow(10, fractionSize));
+    double fiatValue = satToFiat(amount);
+
+    // if conversion result is less than the minimum it doesn't make sence to display
+    // it.
+    if (fiatValue < minimumAmount) {
+      return "< ${this.currencyData.symbol}${minimumAmount.toStringAsFixed(fractionSize)}";
     }
-    return "${this.currencyData.symbol}$_formattedAmount";
+
+    // Otherwise just show the formatted value.
+    return "${this.currencyData.symbol}${fiatValue.toStringAsFixed(fractionSize)}";
   }
 }

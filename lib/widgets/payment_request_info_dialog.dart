@@ -199,7 +199,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         constraints: const BoxConstraints(minWidth: double.infinity),
         child: Text(
           _showFiatCurrency
-              ? "${account.fiatCurrency.format(widget.invoice.amount, toFiat: true)}"
+              ? "${account.fiatCurrency.format(widget.invoice.amount)}"
               : account.currency.format(widget.invoice.amount),
           style: theme.paymentRequestAmountStyle,
           textAlign: TextAlign.center,
