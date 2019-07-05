@@ -111,15 +111,15 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                   ),
                 ),
           Padding(padding: EdgeInsets.only(top: 8.0)),
+          paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
+              ? Container()
+              : ShareablePaymentRow(title: "Payment Preimage", sharedValue: paymentInfo.preimage),
           paymentInfo.destination == null || paymentInfo.destination.isEmpty
               ? Container()
               : ShareablePaymentRow(title: "Node ID", sharedValue: paymentInfo.destination),              
           paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
               ? Container()
               : ShareablePaymentRow(title: "Transaction Hash", sharedValue: paymentInfo.paymentHash),
-          paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
-              ? Container()
-              : ShareablePaymentRow(title: "Payment Preimage", sharedValue: paymentInfo.preimage),
         ],
       ),
     ),
