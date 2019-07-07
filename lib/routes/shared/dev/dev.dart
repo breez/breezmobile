@@ -293,7 +293,7 @@ class DevViewState extends State<DevView> {
       Choice(
           title: 'Describe Graph',
           icon: Icons.phone_android,
-          function: _describeGraph),
+          function: _describeGraph),      
     ]);
 
     if (Platform.isAndroid) {
@@ -301,6 +301,12 @@ class DevViewState extends State<DevView> {
           title: 'Battery Optimization',
           icon: Icons.phone_android,
           function: _showOptimizationsSettings));
+    }
+    if (settings.ignoreWalletBalance) {
+      choices.add(Choice(
+          title: "Show Excess Funds",
+          icon: Icons.phone_android,
+          function: () => _setShowExcessFunds(accBloc, settings)));
     }
     if (settings.failePaymentBehavior != BugReportBehavior.PROMPT) {
       choices.add(Choice(
@@ -345,6 +351,11 @@ class DevViewState extends State<DevView> {
   void _resetBugReportBehavior(AccountBloc bloc, AccountSettings settings) {
     bloc.accountSettingsSink
         .add(settings.copyWith(failePaymentBehavior: BugReportBehavior.PROMPT));
+  }
+
+  void _setShowExcessFunds(AccountBloc bloc, AccountSettings settings, {bool ignore = false}) {
+    bloc.accountSettingsSink
+        .add(settings.copyWith(ignoreWalletBalance: ignore));
   }
 
   void _describeGraph() async {
