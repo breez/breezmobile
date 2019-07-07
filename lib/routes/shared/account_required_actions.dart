@@ -13,7 +13,7 @@ import 'dart:async';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/logger.dart';
 
 import 'backup_in_progress_dialog.dart';
 
@@ -82,13 +82,21 @@ class AccountRequiredActionsIndicatorState
                 return StreamBuilder<BackupState>(
                     stream: widget._backupBloc.backupStateStream,
                     builder: (context, backupSnapshot) {
-                      List<Widget> warnings = List<Widget>();
+                      List<Widget> warnings = List<Widget>();                      
+
                       Int64 walletBalance =
                           accountSnapshot?.data?.walletBalance ?? Int64(0);
+                      log.info("Account required actions walletBalance = " + walletBalance.toString());
+                      var ignoreBalance = settingsSnapshot?.data?.ignoreWalletBalance?.toString() ?? "empty";
+                      log.info("Account required actions ignoreWalletBalance = " + ignoreBalance);
+
                       if (walletBalance > 0 &&
                           !settingsSnapshot.data.ignoreWalletBalance) {
+                        log.info("Account required adding warning icon");
                         warnings.add(WarningAction(() =>
                             Navigator.of(context).pushNamed("/send_coins")));
+                      } else {
+                        log.info("Account required no warning icon is needed for excess funds");
                       }
 
                       if (backupSnapshot.hasError) {

@@ -172,8 +172,11 @@ class AccountBloc {
     var accountSettings =
         preferences.getString(ACCOUNT_SETTINGS_PREFERENCES_KEY);
     if (accountSettings != null) {
+      log.info("Initializing account settings with json: " + accountSettings);
       Map<String, dynamic> settings = json.decode(accountSettings);
       _accountSettingsController.add(AccountSettings.fromJson(settings));
+    } else {
+      log.info("Initializing account settings with default");
     }
     _accountSettingsController.stream.listen((settings) {
       preferences.setString(
@@ -185,6 +188,9 @@ class AccountBloc {
         await preferences.setString(PERSISTENT_NODE_ID_PREFERENCES_KEY, acc.id);
       }
     });
+
+    var ignoreBalance = _accountSettingsController.value?.ignoreWalletBalance?.toString() ?? "empty";
+    log.info("Settings initialied ignoreWalletBalance = " + ignoreBalance);
   }
 
   void _setBootstraping(bool bootstraping) {
@@ -573,10 +579,10 @@ class AccountBloc {
     print("Account bloc refreshing account...");
     _breezLib.getAccount().then((acc) {
       if (acc.id.isNotEmpty) {
-        print("ACCOUNT CHANGED BALANCE=" +
-            acc.balance.toString() +
-            " STATUS = " +
-            acc.status.toString());
+        log.info("Account Changed " + 
+            "channelBalance=" + acc.balance.toString() +
+            " walletBalance = " + acc.walletBalance.toString() +
+            " STATUS = " + acc.status.toString());
         _accountController.add(_accountController.value
             .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatShortName: _currentUser?.fiatCurrency, initial: false));
       }
