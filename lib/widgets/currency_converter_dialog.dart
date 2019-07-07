@@ -176,6 +176,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                       ],
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
                       focusNode: _fiatAmountFocusNode,
+                      autofocus: true,
                       controller: _fiatAmountController,
                       validator: (_) {
                         if (widget.validatorFn != null) {
