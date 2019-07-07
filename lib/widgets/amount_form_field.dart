@@ -38,16 +38,22 @@ class AmountFormField extends TextFormField {
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             decoration: new InputDecoration(
               labelText: accountModel.currency.displayName + " Amount",
-              suffixIcon: IconButton(
-                icon: new Image.asset(
-                  (accountModel.fiatCurrency != null) ? accountModel.fiatCurrency.logoPath : "src/icon/btc_convert.png",
-                  color: iconColor != null ? iconColor : theme.BreezColors.white[500],
-                ),
-                padding: EdgeInsets.only(top: 21.0),
-                alignment: Alignment.bottomRight,
-                onPressed: () => showDialog(
-                    context: context,
-                    builder: (_) => CurrencyConverterDialog(returnFN != null ? returnFN : (value) => controller.text = value, validatorFn),),
+              contentPadding: EdgeInsets.zero,
+              suffixIcon: 
+              Container(                
+                width: 50.0,                
+                child: 
+                IconButton(
+                  icon: new Image.asset(
+                    (accountModel.fiatCurrency != null) ? accountModel.fiatCurrency.logoPath : "src/icon/btc_convert.png",
+                    color: iconColor != null ? iconColor : theme.BreezColors.white[500],                    
+                  ),
+                  padding: EdgeInsets.only(top: 21.0, bottom: 8.0),
+                  alignment: Alignment.bottomRight,
+                  onPressed: () => showDialog(
+                      context: context,
+                      builder: (_) => CurrencyConverterDialog(returnFN != null ? returnFN : (value) => controller.text = value, validatorFn),),
+                ),                
               ),
             ),
             style: style,
