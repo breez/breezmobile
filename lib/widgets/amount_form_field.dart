@@ -47,8 +47,10 @@ class AmountFormField extends TextFormField {
                   icon: new Image.asset(
                     (accountModel.fiatCurrency != null) ? accountModel.fiatCurrency.logoPath : "src/icon/btc_convert.png",
                     color: iconColor != null ? iconColor : theme.BreezColors.white[500],                    
-                  ),
-                  padding: EdgeInsets.only(top: 21.0, bottom: 8.0),
+                    width: 24.0,
+                    height: 24.0,
+                  ),                  
+                  padding: EdgeInsets.only(bottom: 12.0, top: 21.0),
                   alignment: Alignment.bottomRight,
                   onPressed: () => showDialog(
                       context: context,
