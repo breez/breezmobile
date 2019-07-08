@@ -8,6 +8,27 @@
 import 'dart:core' as $core show int, dynamic, String, List, Map;
 import 'package:protobuf/protobuf.dart' as $pb;
 
+class SwapError extends $pb.ProtobufEnum {
+  static const SwapError NO_ERROR = SwapError._(0, 'NO_ERROR');
+  static const SwapError FUNDS_EXCEED_LIMIT = SwapError._(1, 'FUNDS_EXCEED_LIMIT');
+  static const SwapError TX_TOO_SMALL = SwapError._(2, 'TX_TOO_SMALL');
+  static const SwapError INVOICE_AMOUNT_MISMATCH = SwapError._(3, 'INVOICE_AMOUNT_MISMATCH');
+  static const SwapError SWAP_EXPIRED = SwapError._(4, 'SWAP_EXPIRED');
+
+  static const $core.List<SwapError> values = <SwapError> [
+    NO_ERROR,
+    FUNDS_EXCEED_LIMIT,
+    TX_TOO_SMALL,
+    INVOICE_AMOUNT_MISMATCH,
+    SWAP_EXPIRED,
+  ];
+
+  static final $core.Map<$core.int, SwapError> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static SwapError valueOf($core.int value) => _byValue[value];
+
+  const SwapError._($core.int v, $core.String n) : super(v, n);
+}
+
 class Account_AccountStatus extends $pb.ProtobufEnum {
   static const Account_AccountStatus WAITING_DEPOSIT = Account_AccountStatus._(0, 'WAITING_DEPOSIT');
   static const Account_AccountStatus WAITING_DEPOSIT_CONFIRMATION = Account_AccountStatus._(1, 'WAITING_DEPOSIT_CONFIRMATION');

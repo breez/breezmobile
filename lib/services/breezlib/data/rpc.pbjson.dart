@@ -4,6 +4,17 @@
 ///
 // ignore_for_file: camel_case_types,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name
 
+const SwapError$json = const {
+  '1': 'SwapError',
+  '2': const [
+    const {'1': 'NO_ERROR', '2': 0},
+    const {'1': 'FUNDS_EXCEED_LIMIT', '2': 1},
+    const {'1': 'TX_TOO_SMALL', '2': 2},
+    const {'1': 'INVOICE_AMOUNT_MISMATCH', '2': 3},
+    const {'1': 'SWAP_EXPIRED', '2': 4},
+  ],
+};
+
 const ChainStatus$json = const {
   '1': 'ChainStatus',
   '2': const [
@@ -181,10 +192,8 @@ const RefundRequest$json = const {
 const AddFundError$json = const {
   '1': 'AddFundError',
   '2': const [
-    const {'1': 'errorMessage', '3': 1, '4': 1, '5': 9, '10': 'errorMessage'},
-    const {'1': 'FundsExceededLimit', '3': 2, '4': 1, '5': 8, '10': 'FundsExceededLimit'},
-    const {'1': 'lockHeight', '3': 3, '4': 1, '5': 13, '10': 'lockHeight'},
-    const {'1': 'hoursToUnlock', '3': 4, '4': 1, '5': 2, '10': 'hoursToUnlock'},
+    const {'1': 'swapAddressInfo', '3': 1, '4': 1, '5': 11, '6': '.data.SwapAddressInfo', '10': 'swapAddressInfo'},
+    const {'1': 'hoursToUnlock', '3': 2, '4': 1, '5': 2, '10': 'hoursToUnlock'},
   ],
 };
 
@@ -234,6 +243,7 @@ const SwapAddressInfo$json = const {
     const {'1': 'lockHeight', '3': 6, '4': 1, '5': 13, '10': 'lockHeight'},
     const {'1': 'errorMessage', '3': 7, '4': 1, '5': 9, '10': 'errorMessage'},
     const {'1': 'lastRefundTxID', '3': 8, '4': 1, '5': 9, '10': 'lastRefundTxID'},
+    const {'1': 'swapError', '3': 9, '4': 1, '5': 14, '6': '.data.SwapError', '10': 'swapError'},
   ],
 };
 

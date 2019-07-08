@@ -6,18 +6,18 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 
-class OverLimitFundsDialog extends StatefulWidget {
+class SwapRefundDialog extends StatefulWidget {
   final AccountBloc accountBloc;
 
-  const OverLimitFundsDialog({Key key, this.accountBloc}) : super(key: key);
+  const SwapRefundDialog({Key key, this.accountBloc}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return OverLimitFundsDialogState();
+    return SwapRefundDialogState();
   }
 }
 
-class OverLimitFundsDialogState extends State<OverLimitFundsDialog> {
+class SwapRefundDialogState extends State<SwapRefundDialog> {
   Future _fetchFuture;
 
   @override
@@ -45,47 +45,59 @@ class OverLimitFundsDialogState extends State<OverLimitFundsDialog> {
                 return Loader();
               }
 
-              return StreamBuilder<AccountModel>(
-                  stream: widget.accountBloc.accountStream,
-                  builder: (ctx, snapshot) {
-                    var swapStatus = snapshot?.data?.swapFundsStatus;
-                    if (swapStatus == null) {
-                      return Loader();
-                    }
+              return StreamBuilder<List<RefundableDepositModel>>(
+                stream: widget.accountBloc.refundableDepositsStream,
+                builder: (context, refundables) => StreamBuilder<AccountModel>(
+                    stream: widget.accountBloc.accountStream,
+                    builder: (ctx, snapshot) {
+                      var swapStatus = snapshot?.data?.swapFundsStatus;
+                      if (swapStatus == null && refundables.data?.isEmpty == true) {
+                        return Loader();
+                      }
 
-                    int roundedHoursToUnlock = swapStatus.hoursToUnlock.round();
-                    String hoursToUnlock = roundedHoursToUnlock > 1
-                        ? "~${roundedHoursToUnlock.toString()} hours"
-                        : "in about an hour";
-                    List<TextSpan> redeemText = List<TextSpan>();
-                    if (swapStatus.hoursToUnlock > 0) {
-                      redeemText.add(TextSpan(
-                          text:
-                              "You will be able to redeem your funds after block ${swapStatus.lockHeight} ($hoursToUnlock).",
-                          style: theme.dialogGrayStyle));
-                    } else {
-                      redeemText.addAll([
-                        TextSpan(
-                            text: "You can ", style: theme.dialogGrayStyle),
-                        TextSpan(
-                            text: "get a refund ",
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () async {
-                                Navigator.pop(context);
-                                Navigator.pushNamed(context, "/get_refund");
-                              },
-                            style: theme.blueLinkStyle),
-                        TextSpan(text: "now.", style: theme.dialogGrayStyle),
-                      ]);
-                    }
+                      double hoursToUnlock = 0;
+                      int lockHeight = 0;
+                      String reason = "";
+                      if (swapStatus != null) {
+                        hoursToUnlock = swapStatus.hoursToUnlock;
+                        lockHeight = swapStatus.lockHeight;
+                        reason = "since " + swapStatus.refundableError;
+                      }
 
-                    return RichText(
-                        text: TextSpan(
-                            style: theme.dialogGrayStyle,
+                      int roundedHoursToUnlock = hoursToUnlock.round();
+                      String hoursToUnlockStr = roundedHoursToUnlock > 1
+                          ? "~${roundedHoursToUnlock.toString()} hours"
+                          : "in about an hour";
+                      List<TextSpan> redeemText = List<TextSpan>();
+                      if (hoursToUnlock > 0) {
+                        redeemText.add(TextSpan(
                             text:
-                                "Breez was not able to transfer the funds to your balance since the executed transaction was above the specified limit.\n",
-                            children: redeemText));
-                  });
+                                "You will be able to redeem your funds after block $lockHeight ($hoursToUnlockStr).",
+                            style: theme.dialogGrayStyle));
+                      } else {
+                        redeemText.addAll([
+                          TextSpan(
+                              text: "You can ", style: theme.dialogGrayStyle),
+                          TextSpan(
+                              text: "get a refund ",
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  Navigator.pop(context);
+                                  Navigator.pushNamed(context, "/get_refund");
+                                },
+                              style: theme.blueLinkStyle),
+                          TextSpan(text: "now.", style: theme.dialogGrayStyle),
+                        ]);
+                      }
+
+                      return RichText(
+                          text: TextSpan(
+                              style: theme.dialogGrayStyle,
+                              text:
+                                  "Breez was not able to transfer the funds to your balance $reason\n",
+                              children: redeemText));
+                    }),
+              );
             }),
         actions: [
           new SimpleDialogOption(
