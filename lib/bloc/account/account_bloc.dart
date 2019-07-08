@@ -139,6 +139,7 @@ class AccountBloc {
       SendPayment: _sendPayment,
       CancelPaymentRequest: _cancelPaymentRequest,
       ChangeSyncUIState: _collapseSyncUI,
+      FetchRates: _fetchRates,
     };
 
     _accountController.add(AccountModel.initial());
@@ -207,6 +208,13 @@ class AccountBloc {
         handler(action).catchError((e) => action.resolveError(e));
       }
     });
+  }
+
+  Future _fetchRates(FetchRates rates) async {
+    if (this._accountController.value.fiatConversionList.isEmpty) {
+      await _getExchangeRate();  
+    }
+    rates.resolve(this._accountController.value.fiatConversionList);
   }
 
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
@@ -400,9 +408,7 @@ class AccountBloc {
     })
     .catchError((err){
       print("bootstrap failed, retrying in 2 seconds...");
-      return Future.delayed(Duration(seconds: 2)).then((_){
-        return _bootstrapWitRetry();
-      });
+      return Future.delayed(Duration(seconds: 2), () => _bootstrapWitRetry());
     });
   }
 
@@ -635,7 +641,7 @@ class AccountBloc {
     });
   }
 
-  Future _getExchangeRate() async {
+  Future _getExchangeRate() async {    
     _currencyData = await _currencyService.currencies();
     Rates _rate = await _breezLib.rate();
     List<FiatConversion> _fiatConversionList = _rate.rates

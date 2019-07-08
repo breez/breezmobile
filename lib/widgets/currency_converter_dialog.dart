@@ -1,3 +1,4 @@
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -8,6 +9,8 @@ import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'flushbar.dart';
 
 class CurrencyConverterDialog extends StatefulWidget {
   final Function(String string) _onConvert;
@@ -32,7 +35,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   AccountBloc _accountBloc;
   UserProfileBloc _userProfileBloc;
 
-  double _exchangeRate;
+  double _exchangeRate;  
 
   bool _isInit = false;
 
@@ -62,7 +65,19 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   void didChangeDependencies() {
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-      _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);  
+      FetchRates fetchRatesAction = FetchRates();      
+      _accountBloc.userActionsSink.add(fetchRatesAction);
+
+      fetchRatesAction.future.catchError((err){
+        if (this.mounted) {
+          setState((){          
+            Navigator.pop(context);
+            showFlushbar(context, message: "Failed to retrieve BTC exchange rate.");
+          });
+        }        
+      });
+      
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -85,7 +100,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
             return Container();
           }
 
-          if (account.fiatConversionList.isEmpty && account.fiatCurrency == null) {
+          if (account.fiatConversionList.isEmpty || account.fiatCurrency == null) {
             return Loader();
           }
 
@@ -161,6 +176,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                       ],
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
                       focusNode: _fiatAmountFocusNode,
+                      autofocus: true,
                       controller: _fiatAmountController,
                       validator: (_) {
                         if (widget.validatorFn != null) {

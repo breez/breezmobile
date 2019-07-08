@@ -1,15 +1,14 @@
 
 import 'dart:async';
-
-import 'package:fixnum/fixnum.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
 
 import 'account_model.dart';
 
 class AsyncAction {
   Completer _completer = new Completer(); 
-  Future get future => _completer.future;
+  Future get future => _completer.future;  
 
-  void resolve(Object value){
+  void resolve(Object value){    
     _completer.complete(value);
   }
   void resolveError(error) {
@@ -45,5 +44,6 @@ class ChangeSyncUIState extends AsyncAction {
   final SyncUIState nextState;
 
   ChangeSyncUIState(this.nextState);
-
 }
+
+class FetchRates extends AsyncAction {}
