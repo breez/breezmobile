@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:breez/services/breezlib/breez_bridge.dart';
 
 class AccountSynchronizer {
   static const IN_MEMORY_SYNC_RATE = 100;
+  static const BOOTSTRAP_FILES_FRACTION = 0.7;
 
   final BreezBridge _breezLib;
 
@@ -13,7 +15,8 @@ class AccountSynchronizer {
   int _startPollTimestamp = 0;
 
   double _chainProgress;
-  double _bootstrapProgress;
+  double _bootstrapProgress;  
+  Timer _lndWaitTimer;
 
   bool _started = false;
   bool _dismissed = false;
@@ -50,7 +53,14 @@ class AccountSynchronizer {
         totalContentLength += f.contentLength;
         downloadedContentLength += f.bytesDownloaded;
       });
-      _bootstrapProgress = downloadedContentLength / totalContentLength;  
+      var downloadProgress = downloadedContentLength / totalContentLength;      
+      if (downloadProgress == 1.0 && _lndWaitTimer == null) {        
+        _lndWaitTimer = Timer.periodic(Duration(seconds: 3), (t){
+          _bootstrapProgress = min(_bootstrapProgress +  0.02, 1.0);
+          _emitProgress();
+        });
+      }
+      _bootstrapProgress = 0.6 * downloadProgress;  
       _emitProgress();    
     }, onDone: (){
       print("on done");
@@ -65,6 +75,12 @@ class AccountSynchronizer {
         return;
       }
       _breezLib.sendCommand("getinfo").then((info) {
+        if (_lndWaitTimer != null && _lndWaitTimer.isActive) {
+          _lndWaitTimer.cancel();
+          _lndWaitTimer = null;
+          _bootstrapProgress = 1.0;
+        }
+
         Map replyJson = json.decode(info);
         var sincedToTimestamp =
             int.parse(replyJson["best_header_timestamp"].toString()) * 1000;
@@ -101,7 +117,7 @@ class AccountSynchronizer {
 
     var totalProgress = _chainProgress ?? 0.0;
     if (_bootstrapProgress != null) {
-      totalProgress = (_bootstrapProgress * 0.1 + totalProgress * 0.9);
+      totalProgress = (_bootstrapProgress * BOOTSTRAP_FILES_FRACTION + totalProgress * (1- BOOTSTRAP_FILES_FRACTION));
     }
     onProgress(totalProgress);
   }
