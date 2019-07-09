@@ -30,7 +30,7 @@ class ProgressDownloader {
         responseListener = response.listen((data) {
           byteCount += data.length;                 
           fileSink.add(data);                    
-          if (eventIndex++ % 10 ==0) {
+          if (eventIndex++ % 10 ==0 || contentLength == byteCount) {
             _progressController
                 .add(new DownloadFileInfo(url, contentLength, byteCount));            
           }         
