@@ -110,7 +110,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       stream: widget.accountBloc.accountStream,
       builder: (context, snapshot) {
         var account = snapshot.data;
-        if (account == null || account.fiatCurrency == null) {
+        if (account == null) {
           return new Container(width: 0.0, height: 0.0);
         }
         List<Widget> children = [];
@@ -198,7 +198,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       child: new ConstrainedBox(
         constraints: const BoxConstraints(minWidth: double.infinity),
         child: Text(
-          _showFiatCurrency
+          _showFiatCurrency && account.fiatCurrency != null
               ? "${account.fiatCurrency.format(widget.invoice.amount)}"
               : account.currency.format(widget.invoice.amount),
           style: theme.paymentRequestAmountStyle,
