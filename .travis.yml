@@ -55,3 +55,5 @@ env:
 before_install:
 - openssl aes-256-cbc -K $encrypted_fb5c5bbb0f3b_key -iv $encrypted_fb5c5bbb0f3b_iv
   -in build_server_key.enc -out ./travis/build_server_key -d
+install:
+  - echo "git.schwanenlied.me ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDIoJdRyAOgnrts3+LYGRsy0lirj1XdP9ykvX5uDc1eSUx0miFF99zPUj9Vqh9Uqpn1943nd2OQSOZwsdqEYEaDgjiup3FGpKyYA5f1ifA5hK/xRCl9tJqfU7GK6l8kPQJPYIakUJstEWmYexivZKDeQUGGsXfsYJSmv+UBHIBt/JVfuHMzTQ03gaSzLcmjxKaLCoyxRG2dpXvaHLIjA+VOGA5VfxBgV2n3A9S7NoPG9GFIUvebfKE3XG/7Wpru5gOy7EwUXBoK6wAwtZbslRtPKIerJfVH0WWNj2Oy8br4/PSP1WarcLThvOSaGh9E791UzJHNZ0OZn8H65CmNTl3j" >> $HOME/.ssh/known_hosts
