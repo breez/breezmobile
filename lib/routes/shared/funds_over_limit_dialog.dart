@@ -58,7 +58,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
                       double hoursToUnlock = 0;
                       int lockHeight = 0;
                       String reason = "";
-                      if (swapStatus != null) {
+                      if (swapStatus?.refundableError != null) {
                         hoursToUnlock = swapStatus.hoursToUnlock;
                         lockHeight = swapStatus.lockHeight;
                         reason = "since " + swapStatus.refundableError;
