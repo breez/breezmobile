@@ -63,9 +63,30 @@ class SwapFundStatus {
       _addedFundsReply?.status == FundStatusReply_FundStatus.CONFIRMED;
 
   // in case of status is error, these fields will be populated.
-  String get error => _addedFundsReply?.error?.errorMessage;
-  bool get fundsExceededLimit => _addedFundsReply?.error?.fundsExceededLimit;
-  int get lockHeight => _addedFundsReply?.error?.lockHeight;
+  String get error {    
+    return refundableError ?? _addedFundsReply?.error?.swapAddressInfo?.errorMessage;
+  }
+
+  String get refundableError {
+    SwapAddressInfo address = _addedFundsReply?.error?.swapAddressInfo;
+    if (address == null) {
+      return null;
+    }
+    switch(address.swapError) {
+      case SwapError.FUNDS_EXCEED_LIMIT:
+        return "the executed transaction was above the specified limit.";
+      case SwapError.INVOICE_AMOUNT_MISMATCH:
+        return "the requested amount doesn't match the original transaction.";
+      case SwapError.SWAP_EXPIRED:
+        return " the transaction had expired.";
+      case SwapError.TX_TOO_SMALL:
+        return "the transaction size was too small to process.";
+      default:
+        return null;
+    }
+  }
+    
+  int get lockHeight => _addedFundsReply?.error?.swapAddressInfo?.lockHeight;
   double get hoursToUnlock => _addedFundsReply?.error?.hoursToUnlock;
 }
 

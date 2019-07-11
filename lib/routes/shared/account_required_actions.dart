@@ -79,60 +79,63 @@ class AccountRequiredActionsIndicatorState
           return StreamBuilder<AccountModel>(
               stream: widget._accountBloc.accountStream,
               builder: (context, accountSnapshot) {
-                return StreamBuilder<BackupState>(
-                    stream: widget._backupBloc.backupStateStream,
-                    builder: (context, backupSnapshot) {
-                      List<Widget> warnings = List<Widget>();
-                      Int64 walletBalance =
-                          accountSnapshot?.data?.walletBalance ?? Int64(0);
-                      if (walletBalance > 0 &&
-                          !settingsSnapshot.data.ignoreWalletBalance) {
-                        warnings.add(WarningAction(() =>
-                            Navigator.of(context).pushNamed("/send_coins")));
-                      }
+                return StreamBuilder<List<RefundableDepositModel>>(
+                  stream: widget._accountBloc.refundableDepositsStream,
+                  builder: (context, refundables) => StreamBuilder<BackupState>(
+                      stream: widget._backupBloc.backupStateStream,
+                      builder: (context, backupSnapshot) {
+                        List<Widget> warnings = List<Widget>();
+                        Int64 walletBalance =
+                            accountSnapshot?.data?.walletBalance ?? Int64(0);
+                        if (walletBalance > 0 &&
+                            !settingsSnapshot.data.ignoreWalletBalance) {
+                          warnings.add(WarningAction(() =>
+                              Navigator.of(context).pushNamed("/send_coins")));
+                        }
 
-                      if (backupSnapshot.hasError) {
-                        warnings.add(WarningAction(() => showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (_) => new EnableBackupDialog(
-                                context, widget._backupBloc))));
-                      } else if (backupSnapshot.data?.inProgress == true) {
-                        warnings.add(WarningAction(
-                          (){
-                            showDialog(
-                              context: context,                              
-                              builder: (_) => buildBackupInProgressDialog(context, widget._backupBloc.backupStateStream));
-                          },
-                          iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
-                        ));
-                      }
+                        if (backupSnapshot.hasError) {
+                          warnings.add(WarningAction(() => showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (_) => new EnableBackupDialog(
+                                  context, widget._backupBloc))));
+                        } else if (backupSnapshot.data?.inProgress == true) {
+                          warnings.add(WarningAction(
+                            (){
+                              showDialog(
+                                context: context,                              
+                                builder: (_) => buildBackupInProgressDialog(context, widget._backupBloc.backupStateStream));
+                            },
+                            iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
+                          ));
+                        }
 
-                      var swapStatus = accountSnapshot?.data?.swapFundsStatus;
-                      if (swapStatus?.fundsExceededLimit == true) {  
-                        warnings.add(WarningAction(() => showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (_) => new OverLimitFundsDialog(accountBloc: widget._accountBloc))));
-                      }
+                        var swapStatus = accountSnapshot?.data?.swapFundsStatus;
+                        if (swapStatus?.refundableError != null || refundables.data?.isNotEmpty == true) {  
+                          warnings.add(WarningAction(() => showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (_) => new SwapRefundDialog(accountBloc: widget._accountBloc))));
+                        }
 
-                      if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED) {
-                        warnings.add(WarningAction(
-                          () => widget._accountBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.BLOCKING)),
-                          iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
-                        ));
-                      }
+                        if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED) {
+                          warnings.add(WarningAction(
+                            () => widget._accountBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.BLOCKING)),
+                            iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
+                          ));
+                        }
 
-                      if (warnings.length == 0) {
-                        return SizedBox();
-                      }
+                        if (warnings.length == 0) {
+                          return SizedBox();
+                        }
 
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        children: warnings                           
-                      );
-                    });
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: warnings                           
+                        );
+                      }),
+                );
               });
         });
   }

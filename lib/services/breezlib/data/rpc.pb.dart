@@ -555,10 +555,8 @@ class RefundRequest extends $pb.GeneratedMessage {
 
 class AddFundError extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddFundError', package: const $pb.PackageName('data'))
-    ..aOS(1, 'errorMessage')
-    ..aOB(2, 'fundsExceededLimit')
-    ..a<$core.int>(3, 'lockHeight', $pb.PbFieldType.OU3)
-    ..a<$core.double>(4, 'hoursToUnlock', $pb.PbFieldType.OF)
+    ..a<SwapAddressInfo>(1, 'swapAddressInfo', $pb.PbFieldType.OM, SwapAddressInfo.getDefault, SwapAddressInfo.create)
+    ..a<$core.double>(2, 'hoursToUnlock', $pb.PbFieldType.OF)
     ..hasRequiredFields = false
   ;
 
@@ -574,25 +572,15 @@ class AddFundError extends $pb.GeneratedMessage {
   static AddFundError getDefault() => _defaultInstance ??= create()..freeze();
   static AddFundError _defaultInstance;
 
-  $core.String get errorMessage => $_getS(0, '');
-  set errorMessage($core.String v) { $_setString(0, v); }
-  $core.bool hasErrorMessage() => $_has(0);
-  void clearErrorMessage() => clearField(1);
+  SwapAddressInfo get swapAddressInfo => $_getN(0);
+  set swapAddressInfo(SwapAddressInfo v) { setField(1, v); }
+  $core.bool hasSwapAddressInfo() => $_has(0);
+  void clearSwapAddressInfo() => clearField(1);
 
-  $core.bool get fundsExceededLimit => $_get(1, false);
-  set fundsExceededLimit($core.bool v) { $_setBool(1, v); }
-  $core.bool hasFundsExceededLimit() => $_has(1);
-  void clearFundsExceededLimit() => clearField(2);
-
-  $core.int get lockHeight => $_get(2, 0);
-  set lockHeight($core.int v) { $_setUnsignedInt32(2, v); }
-  $core.bool hasLockHeight() => $_has(2);
-  void clearLockHeight() => clearField(3);
-
-  $core.double get hoursToUnlock => $_getN(3);
-  set hoursToUnlock($core.double v) { $_setFloat(3, v); }
-  $core.bool hasHoursToUnlock() => $_has(3);
-  void clearHoursToUnlock() => clearField(4);
+  $core.double get hoursToUnlock => $_getN(1);
+  set hoursToUnlock($core.double v) { $_setFloat(1, v); }
+  $core.bool hasHoursToUnlock() => $_has(1);
+  void clearHoursToUnlock() => clearField(2);
 }
 
 class FundStatusReply extends $pb.GeneratedMessage {
@@ -695,6 +683,7 @@ class SwapAddressInfo extends $pb.GeneratedMessage {
     ..a<$core.int>(6, 'lockHeight', $pb.PbFieldType.OU3)
     ..aOS(7, 'errorMessage')
     ..aOS(8, 'lastRefundTxID')
+    ..e<SwapError>(9, 'swapError', $pb.PbFieldType.OE, SwapError.NO_ERROR, SwapError.valueOf, SwapError.values)
     ..hasRequiredFields = false
   ;
 
@@ -746,6 +735,11 @@ class SwapAddressInfo extends $pb.GeneratedMessage {
   set lastRefundTxID($core.String v) { $_setString(7, v); }
   $core.bool hasLastRefundTxID() => $_has(7);
   void clearLastRefundTxID() => clearField(8);
+
+  SwapError get swapError => $_getN(8);
+  set swapError(SwapError v) { setField(9, v); }
+  $core.bool hasSwapError() => $_has(8);
+  void clearSwapError() => clearField(9);
 }
 
 class SwapAddressList extends $pb.GeneratedMessage {
