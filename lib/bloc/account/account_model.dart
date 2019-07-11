@@ -212,7 +212,7 @@ class AccountModel {
       return "Breez is waiting for Bitcoin transfer to be confirmed. This might take a while";
     }
 
-    if (swapStatus.depositConfirmed && this.active) {
+    if (this.transferringOnChainDeposit) {
       return "Transferring funds";
     }
 
@@ -222,6 +222,8 @@ class AccountModel {
 
     return null;
   }
+
+  bool get transferringOnChainDeposit => swapFundsStatus.depositConfirmed && this.active;  
 
   String validateOutgoingOnChainPayment(Int64 amount) {
     if (amount > walletBalance) {
