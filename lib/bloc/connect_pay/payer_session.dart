@@ -200,7 +200,15 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
         log.info("payer session background task finished");
       });
       return _breezLib.sendPaymentForRequest(paymentRequest)
-      .then((res) => _onPaymenetFulfilled(invoice));
+      .then((res) { 
+        if (res.paymentError.isNotEmpty) {
+          throw res.paymentError;          
+        }
+        _onPaymenetFulfilled(invoice);
+      })
+      .catchError((err){
+        _onError(err);
+      });
     })
     .catchError(_onError);    
   }
