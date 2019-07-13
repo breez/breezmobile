@@ -16,6 +16,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 import 'backup_in_progress_dialog.dart';
+import 'transfer_funds_in_progress_dialog.dart';
 
 class AccountRequiredActionsIndicator extends StatefulWidget {
   final BackupBloc _backupBloc;
@@ -71,6 +72,30 @@ class AccountRequiredActionsIndicatorState
     super.dispose();
   }
 
+  Widget _buildLoader(BackupState backupState, AccountModel account){
+    Widget Function(BuildContext) dialogBuilder;
+
+    if (backupState?.inProgress == true) {
+      dialogBuilder = (_) => buildBackupInProgressDialog(context, widget._backupBloc.backupStateStream);      
+    } else if (account?.transferringOnChainDeposit == true) {
+      dialogBuilder = (_) => buildTransferFundsInProgressDialog(context, widget._accountBloc.accountStream);      
+    }
+
+    if (dialogBuilder != null) {
+      return WarningAction(
+        (){
+          showDialog(
+            context: context,                              
+            builder: dialogBuilder
+          );
+        },
+        iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
+      );
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AccountSettings>(
@@ -99,15 +124,11 @@ class AccountRequiredActionsIndicatorState
                               context: context,
                               builder: (_) => new EnableBackupDialog(
                                   context, widget._backupBloc))));
-                        } else if (backupSnapshot.data?.inProgress == true) {
-                          warnings.add(WarningAction(
-                            (){
-                              showDialog(
-                                context: context,                              
-                                builder: (_) => buildBackupInProgressDialog(context, widget._backupBloc.backupStateStream));
-                            },
-                            iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
-                          ));
+                        }
+
+                        var loaderIcon = _buildLoader(backupSnapshot.data, accountSnapshot.data);
+                        if (loaderIcon != null) {
+                          warnings.add(loaderIcon);
                         }
 
                         var swapStatus = accountSnapshot?.data?.swapFundsStatus;
