@@ -67,8 +67,9 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await BarcodeScanner.scan();
+      String _voucherCode = barcode.substring(barcode.lastIndexOf("/") + 1);
       setState(() {
-        _codeController.text = barcode;
+        _codeController.text = _voucherCode;
         _scannerErrorMessage = "";
       });
     } on PlatformException catch (e) {
