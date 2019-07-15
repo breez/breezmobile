@@ -55,8 +55,7 @@
 - [x] Add webLN support
 - [x] Fiat units
 - [ ] iCloud backup option
-- [ ] Expose underlying wallet seed 
-- [ ] Add password encryption to cloud backup
+- [ ] Add encryption to cloud backup
 - [ ] Use static card IDs
 - [ ] NFC card deactivation
 - [ ] Adding funds via credit card
