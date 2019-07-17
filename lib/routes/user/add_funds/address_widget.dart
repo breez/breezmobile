@@ -37,27 +37,7 @@ class AddressWidget extends StatelessWidget {
               ),
               new Container(
                 child: Row(
-                  children: <Widget>[
-                    new IconButton(
-                      icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
-                      color: theme.whiteColor,
-                      onPressed: () {
-                        final RenderBox box = context.findRenderObject();
-                        ShareExtend.share(address,
-                            "text",
-                            sharePositionOrigin:
-                                box.localToGlobal(Offset.zero) & box.size);
-                      },
-                    ),
-                    new IconButton(
-                      icon: new Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-                      color: theme.whiteColor,
-                      onPressed: () {
-                        Clipboard.setData(new ClipboardData(text: address));
-                        Scaffold.of(context).showSnackBar(snackBar);
-                      },
-                    )
-                  ],
+                  children: _buildShareAndCopyIcons(context, snackBar),
                 ),
               ),
             ],
@@ -112,4 +92,33 @@ class AddressWidget extends StatelessWidget {
     );
   }
 
+  List<Widget> _buildShareAndCopyIcons(BuildContext context, SnackBar snackBar) {
+    List<Widget> _icons = List();
+    if (address == null) {
+      _icons.add(SizedBox(height: 48.0,));
+      return _icons;
+    }
+    Widget _shareIcon = new IconButton(
+      icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
+      color: theme.whiteColor,
+      onPressed: () {
+        final RenderBox box = context.findRenderObject();
+        ShareExtend.share(address,
+            "text",
+            sharePositionOrigin:
+            box.localToGlobal(Offset.zero) & box.size);
+      },
+    );
+    Widget _copyIcon = new IconButton(
+      icon: new Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+      color: theme.whiteColor,
+      onPressed: () {
+        Clipboard.setData(new ClipboardData(text: address));
+        Scaffold.of(context).showSnackBar(snackBar);
+      },
+    );
+    _icons.add(_shareIcon);
+    _icons.add(_copyIcon);
+    return _icons;
+  }
 }
