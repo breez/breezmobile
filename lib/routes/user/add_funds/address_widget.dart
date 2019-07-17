@@ -1,4 +1,5 @@
 import 'package:breez/widgets/compact_qr_image.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,15 +16,6 @@ class AddressWidget extends StatelessWidget {
   @override
   Widget build(
       BuildContext context) {
-    final snackBar = new SnackBar(
-      content: new Text(
-        'Deposit address was copied to your clipboard.',
-        style: theme.snackBarStyle,
-      ),
-      backgroundColor: theme.snackBarBackgroundColor,
-      duration: new Duration(seconds: 4),
-    );
-
     return new Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -38,7 +30,7 @@ class AddressWidget extends StatelessWidget {
               ),
               new Container(
                 child: Row(
-                  children: _buildShareAndCopyIcons(context, snackBar),
+                  children: _buildShareAndCopyIcons(context),
                 ),
               ),
             ],
@@ -67,7 +59,7 @@ class AddressWidget extends StatelessWidget {
                   child: new GestureDetector(
                     onTap: () {
                       Clipboard.setData(new ClipboardData(text: address));
-                      Scaffold.of(context).showSnackBar(snackBar);
+                      showFlushbar(context, message: "Deposit address was copied to your clipboard.");
                     },
                     child: new Text(
                       address,
@@ -93,7 +85,7 @@ class AddressWidget extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildShareAndCopyIcons(BuildContext context, SnackBar snackBar) {
+  List<Widget> _buildShareAndCopyIcons(BuildContext context) {
     List<Widget> _icons = List();
     if (address == null) {
       _icons.add(SizedBox(height: 48.0,));
@@ -115,7 +107,7 @@ class AddressWidget extends StatelessWidget {
       color: theme.whiteColor,
       onPressed: () {
         Clipboard.setData(new ClipboardData(text: address));
-        Scaffold.of(context).showSnackBar(snackBar);
+        showFlushbar(context, message: "Deposit address was copied to your clipboard.");
       },
     );
     _icons.add(_shareIcon);
