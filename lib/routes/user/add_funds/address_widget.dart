@@ -62,11 +62,8 @@ class AddressWidget extends StatelessWidget {
                   padding: EdgeInsets.only(top: 16.0),
                   child: new GestureDetector(
                     onTap: () {
-                      final RenderBox box = context.findRenderObject();
-                      ShareExtend.share(backupJson,
-                          "text",
-                          sharePositionOrigin:
-                              box.localToGlobal(Offset.zero) & box.size);
+                      Clipboard.setData(new ClipboardData(text: address));
+                      Scaffold.of(context).showSnackBar(snackBar);
                     },
                     child: new Text(
                       address,
