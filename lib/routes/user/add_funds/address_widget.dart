@@ -1,4 +1,5 @@
 import 'package:breez/widgets/compact_qr_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -46,17 +47,20 @@ class AddressWidget extends StatelessWidget {
         address == null
             ? _buildQRPlaceholder()
             : new Column(children: <Widget>[
-                new Container(
-                  margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
-                  padding: const EdgeInsets.all(8.6),
-                  decoration: theme.qrImageStyle,
+                new GestureDetector(
                   child: new Container(
-                    color: theme.whiteColor,
-                    child: new CompactQRImage(
-                      data: "bitcoin:" + address,
-                      size: 180.0,
+                    margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
+                    padding: const EdgeInsets.all(8.6),
+                    decoration: theme.qrImageStyle,
+                    child: new Container(
+                      color: theme.whiteColor,
+                      child: new CompactQRImage(
+                        data: "bitcoin:" + address,
+                        size: 180.0,
+                      ),
                     ),
                   ),
+                  onLongPress: () => _showAlertDialog(context),
                 ),
                 new Container(
                   padding: EdgeInsets.only(top: 16.0),
@@ -117,5 +121,37 @@ class AddressWidget extends StatelessWidget {
     _icons.add(_shareIcon);
     _icons.add(_copyIcon);
     return _icons;
+  }
+
+  void _showAlertDialog(BuildContext context) {
+    AlertDialog dialog = new AlertDialog(
+      contentPadding: EdgeInsets.fromLTRB(20.0,20.0,20.0,4.0),
+      content: RichText(
+        text: TextSpan(
+            style: theme.alertStyle,
+            text: "Breez is using Submarine Swaps to execute on-chain transactions. Click ",
+            children: <TextSpan>[
+              TextSpan(
+                text: "here",
+                style: TextStyle(color: Colors.blue),
+                recognizer: new TapGestureRecognizer()
+                  ..onTap = () {
+                    final RenderBox box = context.findRenderObject();
+                    ShareExtend.share(backupJson, "text", sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+                  },
+              ),
+              TextSpan(text: " to view the script associated with this address.")
+            ]),
+      ),
+      actions: <Widget>[
+        new FlatButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: new Text("OK", style: theme.buttonStyle))
+      ],
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
+    );
+    showDialog(context: context, builder: (_) => dialog);
   }
 }
