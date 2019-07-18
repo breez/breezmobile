@@ -17,6 +17,7 @@ final TextStyle notificationTextStyle = new TextStyle(color: BreezColors.grey[50
 final TextStyle headline = new TextStyle(color: BreezColors.grey[600],fontSize: 26.0);
 final TextStyle subtitle = new TextStyle(color: BreezColors.grey[600],fontSize: 14.3,letterSpacing: 0.2);
 final TextStyle addFundsBtnStyle = new TextStyle(color: BreezColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
+final TextStyle bottomSheetMenuItemStyle = new TextStyle(color: BreezColors.white[400], fontSize: 14.3, letterSpacing: 0.55);
 final TextStyle autoCompleteStyle = new TextStyle(color: Colors.black, fontSize: 14.0);
 final TextStyle dialogBlackStye = TextStyle(color: Colors.black, fontSize: 16.0, height: 1.5);
 final TextStyle dialogGrayStyle = TextStyle(color: BreezColors.grey[500], fontSize: 16.0, height: 1.5);
