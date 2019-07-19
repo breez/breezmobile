@@ -25,7 +25,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-        transform: isExpanded ? Matrix4.translationValues(0, 112.0, 0) : Matrix4.translationValues(0, 0, 0),
+        transform: isExpanded ? Matrix4.translationValues(0, 0, 0) : Matrix4.translationValues(0, 112.0, 0),
         duration: Duration(milliseconds: 150),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
