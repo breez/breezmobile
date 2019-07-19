@@ -5,6 +5,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/home/floating_actions_bar.dart';
+import 'package:breez/routes/user/home/invoice_bottom_sheet.dart';
 import 'package:breez/routes/user/home/payments_filter.dart';
 import 'package:breez/routes/user/home/payments_list.dart';
 import 'package:breez/routes/user/home/wallet_dashboard.dart';
@@ -162,6 +163,13 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
               double height = (DASHBOARD_MAX_HEIGHT - offset).clamp(DASHBOARD_MIN_HEIGHT, DASHBOARD_MAX_HEIGHT);
               double heightFactor = (offset / (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT)).clamp(0.0, 1.0);
               return account != null && !account.initial ? FloatingActionsBar(account, height, heightFactor) : Positioned(top: 0.0, child: SizedBox());
+            },
+          ),
+          ScrollWatcher(
+            controller: widget.scrollController,
+            builder: (context, offset) {
+              double height = (DASHBOARD_MAX_HEIGHT - offset).clamp(DASHBOARD_MIN_HEIGHT, DASHBOARD_MAX_HEIGHT);
+              return (account?.active ?? false) ? InvoiceBottomSheet(_invoiceBloc, height < 160.0) : Positioned(top: 0.0, child: SizedBox());
             },
           ),
         ],
