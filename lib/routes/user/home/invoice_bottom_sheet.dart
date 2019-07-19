@@ -32,23 +32,22 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              _buildInvoiceMenuItem(widget.isSmallView, "INVOICE", "src/icon/invoice.png", () {
+              _buildInvoiceMenuItem("INVOICE", "src/icon/invoice.png", () {
                 setState(() {
                   isExpanded = !isExpanded;
                 });
               }, isFirst: true),
-              _buildInvoiceMenuItem(widget.isSmallView, "PAY", "src/icon/qr_scan.png", () async {
+              _buildInvoiceMenuItem("PAY", "src/icon/qr_scan.png", () async {
                 String decodedQr = await BarcodeScanner.scan();
                 widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
               }),
-              _buildInvoiceMenuItem(
-                  widget.isSmallView, "CREATE", "src/icon/paste.png", () => Navigator.of(context).pushNamed('/create_invoice')),
+              _buildInvoiceMenuItem("CREATE", "src/icon/paste.png", () => Navigator.of(context).pushNamed('/create_invoice')),
             ]));
   }
 
-  Widget _buildInvoiceMenuItem(bool isSmallView, String title, String iconPath, Function function, {bool isFirst = false}) {
+  Widget _buildInvoiceMenuItem(String title, String iconPath, Function function, {bool isFirst = false}) {
     return AnimatedContainer(
-      width: isSmallView ? 56.0 : 126.0,
+      width: widget.isSmallView ? 56.0 : 126.0,
       height: isFirst ? 50.0 : 56.0,
       duration: Duration(milliseconds: 150),
       child: RaisedButton(
@@ -60,7 +59,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
             : Border(top: BorderSide(color: Color.fromRGBO(255, 255, 255, 0.12), width: 1, style: BorderStyle.solid)),
         child: Row(
             mainAxisSize: MainAxisSize.max,
-            children: isSmallView
+            children: widget.isSmallView
                 ? <Widget>[
                     ImageIcon(
                       AssetImage(iconPath),
