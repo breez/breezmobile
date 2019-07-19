@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -32,6 +33,8 @@ class NavigationDrawer extends StatelessWidget {
   NavigationDrawer(this._avatar, this._drawerGroupedItems,
       this._onItemSelected);
 
+  final ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
@@ -46,6 +49,7 @@ class NavigationDrawer extends StatelessWidget {
 
     return new Drawer(
         child: new ListView(
+            controller: _scrollController,
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.only(bottom: 20.0),
             children: children));
@@ -62,7 +66,8 @@ class NavigationDrawer extends StatelessWidget {
         ..add(_ExpansionTile(
             items: groupItems,
             title: group.groupTitle,
-            icon: AssetImage(group.groupAssetImage)));
+            icon: AssetImage(group.groupAssetImage),
+            controller: _scrollController));
     }
 
     if (groupItems.length > 0 && withDivider) {
@@ -166,8 +171,9 @@ class _ExpansionTile extends StatelessWidget {
   final List<Widget> items;
   final String title;
   final AssetImage icon;
+  final ScrollController controller;
 
-  const _ExpansionTile({Key key, this.items, this.title, this.icon})
+  const _ExpansionTile({Key key, this.items, this.title, this.icon, this.controller})
       : super(key: key);
 
   @override
@@ -193,6 +199,12 @@ class _ExpansionTile extends StatelessWidget {
             ),
           ),
           children: items.map((item) => Padding(padding: EdgeInsets.only(left: 28.0), child: item)).toList(),
+          onExpansionChanged: (isExpanded) {
+            if (isExpanded) Timer(Duration(milliseconds: 200), () =>
+                controller.animateTo(
+                    controller.position.maxScrollExtent + 28.0, duration: Duration(milliseconds: 400), curve: Curves.ease));
+            // 28 = bottom padding of list + intrinsic bottom padding
+          },
         ));
   }
 }
