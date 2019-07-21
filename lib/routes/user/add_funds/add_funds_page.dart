@@ -93,7 +93,7 @@ class AddFundsState extends State<AddFundsPage> {
 
   Widget getBody(BuildContext context, AccountModel account,
       AddFundResponse response, String error) {
-    var unconfirmedTxID = account?.swapFundsStatus?.unconfirmedTxID ?? "asdfadsfdfwerewrewfsdvcvcvdfdferwerrr";
+    var unconfirmedTxID = account?.swapFundsStatus?.unconfirmedTxID;
     bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
 
     String errorMessage;
