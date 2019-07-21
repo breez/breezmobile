@@ -585,8 +585,9 @@ class AddFundError extends $pb.GeneratedMessage {
 
 class FundStatusReply extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('FundStatusReply', package: const $pb.PackageName('data'))
-    ..e<FundStatusReply_FundStatus>(1, 'status', $pb.PbFieldType.OE, FundStatusReply_FundStatus.NO_FUND, FundStatusReply_FundStatus.valueOf, FundStatusReply_FundStatus.values)
-    ..a<AddFundError>(2, 'error', $pb.PbFieldType.OM, AddFundError.getDefault, AddFundError.create)
+    ..pc<SwapAddressInfo>(1, 'unConfirmedAddresses', $pb.PbFieldType.PM,SwapAddressInfo.create)
+    ..pc<SwapAddressInfo>(2, 'confirmedAddresses', $pb.PbFieldType.PM,SwapAddressInfo.create)
+    ..pc<SwapAddressInfo>(3, 'refundableAddresses', $pb.PbFieldType.PM,SwapAddressInfo.create)
     ..hasRequiredFields = false
   ;
 
@@ -602,15 +603,11 @@ class FundStatusReply extends $pb.GeneratedMessage {
   static FundStatusReply getDefault() => _defaultInstance ??= create()..freeze();
   static FundStatusReply _defaultInstance;
 
-  FundStatusReply_FundStatus get status => $_getN(0);
-  set status(FundStatusReply_FundStatus v) { setField(1, v); }
-  $core.bool hasStatus() => $_has(0);
-  void clearStatus() => clearField(1);
+  $core.List<SwapAddressInfo> get unConfirmedAddresses => $_getList(0);
 
-  AddFundError get error => $_getN(1);
-  set error(AddFundError v) { setField(2, v); }
-  $core.bool hasError() => $_has(1);
-  void clearError() => clearField(2);
+  $core.List<SwapAddressInfo> get confirmedAddresses => $_getList(1);
+
+  $core.List<SwapAddressInfo> get refundableAddresses => $_getList(2);
 }
 
 class RemoveFundRequest extends $pb.GeneratedMessage {
@@ -684,6 +681,8 @@ class SwapAddressInfo extends $pb.GeneratedMessage {
     ..aOS(7, 'errorMessage')
     ..aOS(8, 'lastRefundTxID')
     ..e<SwapError>(9, 'swapError', $pb.PbFieldType.OE, SwapError.NO_ERROR, SwapError.valueOf, SwapError.values)
+    ..aOS(10, 'fundingTxID')
+    ..a<$core.double>(11, 'hoursToUnlock', $pb.PbFieldType.OF)
     ..hasRequiredFields = false
   ;
 
@@ -740,6 +739,16 @@ class SwapAddressInfo extends $pb.GeneratedMessage {
   set swapError(SwapError v) { setField(9, v); }
   $core.bool hasSwapError() => $_has(8);
   void clearSwapError() => clearField(9);
+
+  $core.String get fundingTxID => $_getS(9, '');
+  set fundingTxID($core.String v) { $_setString(9, v); }
+  $core.bool hasFundingTxID() => $_has(9);
+  void clearFundingTxID() => clearField(10);
+
+  $core.double get hoursToUnlock => $_getN(10);
+  set hoursToUnlock($core.double v) { $_setFloat(10, v); }
+  $core.bool hasHoursToUnlock() => $_has(10);
+  void clearHoursToUnlock() => clearField(11);
 }
 
 class SwapAddressList extends $pb.GeneratedMessage {

@@ -108,22 +108,3 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
   const NotificationEvent_NotificationType._($core.int v, $core.String n) : super(v, n);
 }
 
-class FundStatusReply_FundStatus extends $pb.ProtobufEnum {
-  static const FundStatusReply_FundStatus NO_FUND = FundStatusReply_FundStatus._(0, 'NO_FUND');
-  static const FundStatusReply_FundStatus WAITING_CONFIRMATION = FundStatusReply_FundStatus._(1, 'WAITING_CONFIRMATION');
-  static const FundStatusReply_FundStatus CONFIRMED = FundStatusReply_FundStatus._(2, 'CONFIRMED');
-  static const FundStatusReply_FundStatus TRANSFER_ERROR = FundStatusReply_FundStatus._(3, 'TRANSFER_ERROR');
-
-  static const $core.List<FundStatusReply_FundStatus> values = <FundStatusReply_FundStatus> [
-    NO_FUND,
-    WAITING_CONFIRMATION,
-    CONFIRMED,
-    TRANSFER_ERROR,
-  ];
-
-  static final $core.Map<$core.int, FundStatusReply_FundStatus> _byValue = $pb.ProtobufEnum.initByValue(values);
-  static FundStatusReply_FundStatus valueOf($core.int value) => _byValue[value];
-
-  const FundStatusReply_FundStatus._($core.int v, $core.String n) : super(v, n);
-}
-
