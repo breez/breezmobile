@@ -57,22 +57,55 @@ class SwapFundStatus {
 
   SwapFundStatus(this._addedFundsReply);
 
-  bool get waitingDepositConfirmation =>
-      _addedFundsReply?.status == FundStatusReply_FundStatus.WAITING_CONFIRMATION;
-  bool get depositConfirmed =>
-      _addedFundsReply?.status == FundStatusReply_FundStatus.CONFIRMED;
-
-  // in case of status is error, these fields will be populated.
-  String get error {    
-    return refundableError ?? _addedFundsReply?.error?.swapAddressInfo?.errorMessage;
+  String get unconfirmedTxID {
+      if (_addedFundsReply == null || _addedFundsReply.unConfirmedAddresses.length == 0) {
+        return null;
+      }
+      return _addedFundsReply.unConfirmedAddresses[0].fundingTxID;
   }
 
-  String get refundableError {
-    SwapAddressInfo address = _addedFundsReply?.error?.swapAddressInfo;
-    if (address == null) {
+  bool get depositConfirmed {
+      var waitingPaymentAddresses = _addedFundsReply?.confirmedAddresses?.where((a) => a.errorMessage.isEmpty);
+      return waitingPaymentAddresses != null && waitingPaymentAddresses.length > 0;
+  }
+
+  // in case of status is error, these fields will be populated.
+  String get error {
+    var refundAddresses = refundableAddresses;
+    if (refundAddresses.isNotEmpty) {
+      return refundAddresses[0].refundableError;
+    }
+
+    var errorAddresses = _addedFundsReply?.confirmedAddresses?.where((a) => a.errorMessage.isNotEmpty);    
+    if (errorAddresses == null || errorAddresses.isEmpty) {
       return null;
     }
-    switch(address.swapError) {
+
+    return errorAddresses.first.errorMessage;
+  }
+
+  List<RefundableAddress> get refundableAddresses {
+    var refundableAddresses = _addedFundsReply?.refundableAddresses ?? List<RefundableAddress>();
+    return refundableAddresses.map((a) => RefundableAddress(a)).toList();
+  }
+
+  List<RefundableAddress> get maturedRefundableAddresses {
+    return refundableAddresses.where((a) => a.hoursToUnlock <= 0).toList();
+  }
+}
+
+class RefundableAddress {
+  final SwapAddressInfo _refundableInfo;
+
+  RefundableAddress(this._refundableInfo);
+
+  String get address => _refundableInfo.address;
+  String get lastRefundTxID => _refundableInfo.lastRefundTxID;
+  Int64 get confirmedAmount => _refundableInfo.confirmedAmount;
+  int get lockHeight => _refundableInfo.lockHeight;
+  double get hoursToUnlock => _refundableInfo.hoursToUnlock;
+  String get refundableError {
+    switch(_refundableInfo.swapError) {
       case SwapError.FUNDS_EXCEED_LIMIT:
         return "the executed transaction was above the specified limit.";
       case SwapError.INVOICE_AMOUNT_MISMATCH:
@@ -85,9 +118,6 @@ class SwapFundStatus {
         return null;
     }
   }
-    
-  int get lockHeight => _addedFundsReply?.error?.swapAddressInfo?.lockHeight;
-  double get hoursToUnlock => _addedFundsReply?.error?.hoursToUnlock;
 }
 
 class AccountModel {
@@ -208,7 +238,7 @@ class AccountModel {
 
     SwapFundStatus swapStatus = this.swapFundsStatus;
 
-    if (swapStatus.waitingDepositConfirmation) {
+    if (swapStatus.unconfirmedTxID != null) {
       return "Breez is waiting for Bitcoin transfer to be confirmed. This might take a while";
     }
 

@@ -248,10 +248,6 @@ class BreezBridge {
     return _invokeMethodWhenReady("addFundsInit", {"argument": breezID}).then((reply) => new AddFundInitReply()..mergeFromBuffer(reply ?? []));
   }
 
-  Future<SwapAddressList> getRefundableSwapAddresses() {
-    return _invokeMethodWhenReady("getRefundableSwapAddresses").then((reply) => new SwapAddressList()..mergeFromBuffer(reply ?? []));
-  }
-
   Future<String> refund(String address, String refundAddress) {
     var refundRequest = RefundRequest()
       ..address = address
@@ -317,7 +313,7 @@ class BreezBridge {
           PlatformException e = (err as PlatformException);
           if (e.code == _signInFaileCode) {
             throw new SignInFailedException();
-          }        
+          }          
           throw (err as PlatformException).message;
         }
         throw err;
