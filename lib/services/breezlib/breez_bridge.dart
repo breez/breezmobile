@@ -102,7 +102,7 @@ class BreezBridge {
   }
 
   Future<String> getLogPath() {
-    return _invokeMethodWhenReady("getLogPath").then( (logPath) => logPath as String);
+    return _invokeMethodImmediate("getLogPath").then( (logPath) => logPath as String);
   }
 
   Future<int> lastSyncedHeaderTimestamp(){
