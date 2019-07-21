@@ -49,11 +49,6 @@ class AccountBloc {
   Stream<BroadcastRefundResponseModel> get broadcastRefundResponseStream =>
       _broadcastRefundResponseController.stream;
 
-  final _refundableDepositsController =
-      new BehaviorSubject<List<RefundableDepositModel>>();
-  Stream<List<RefundableDepositModel>> get refundableDepositsStream =>
-      _refundableDepositsController.stream;
-
   final _accountController = new BehaviorSubject<AccountModel>();
   Stream<AccountModel> get accountStream => _accountController.stream;
 
@@ -281,24 +276,12 @@ class AccountBloc {
     });
   }
 
-  void _listenRefundableDeposits() {
-    var refreshRefundableAddresses = () {
-      _breezLib.getRefundableSwapAddresses().then((addressList) {
-        _refundableDepositsController.add(addressList.addresses
-            .map((a) => RefundableDepositModel(a))
-            .toList());
-      }).catchError((err) {
-        _refundableDepositsController.addError(err);
-      });
-    };
-
-    refreshRefundableAddresses();
+  void _listenRefundableDeposits() {    
     _breezLib.notificationStream
         .where((n) =>
             n.type ==
             NotificationEvent_NotificationType.FUND_ADDRESS_UNSPENT_CHANGED)
-        .listen((e) {
-      refreshRefundableAddresses();
+        .listen((e) {      
       _fetchFundStatus();
     });
   }
@@ -453,8 +436,7 @@ class AccountBloc {
       return Future.value(null);
     }
 
-    return _breezLib.getFundStatus(_currentUser.userID).then((status) {
-      log.info("Got status " + status.status.toString());
+    return _breezLib.getFundStatus(_currentUser.userID).then((status) {      
       _accountController
             .add(_accountController.value.copyWith(addedFundsReply: status));
     }).catchError((err) {

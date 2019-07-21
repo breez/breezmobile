@@ -200,19 +200,9 @@ const AddFundError$json = const {
 const FundStatusReply$json = const {
   '1': 'FundStatusReply',
   '2': const [
-    const {'1': 'status', '3': 1, '4': 1, '5': 14, '6': '.data.FundStatusReply.FundStatus', '10': 'status'},
-    const {'1': 'error', '3': 2, '4': 1, '5': 11, '6': '.data.AddFundError', '10': 'error'},
-  ],
-  '4': const [FundStatusReply_FundStatus$json],
-};
-
-const FundStatusReply_FundStatus$json = const {
-  '1': 'FundStatus',
-  '2': const [
-    const {'1': 'NO_FUND', '2': 0},
-    const {'1': 'WAITING_CONFIRMATION', '2': 1},
-    const {'1': 'CONFIRMED', '2': 2},
-    const {'1': 'TRANSFER_ERROR', '2': 3},
+    const {'1': 'unConfirmedAddresses', '3': 1, '4': 3, '5': 11, '6': '.data.SwapAddressInfo', '10': 'unConfirmedAddresses'},
+    const {'1': 'confirmedAddresses', '3': 2, '4': 3, '5': 11, '6': '.data.SwapAddressInfo', '10': 'confirmedAddresses'},
+    const {'1': 'refundableAddresses', '3': 3, '4': 3, '5': 11, '6': '.data.SwapAddressInfo', '10': 'refundableAddresses'},
   ],
 };
 
@@ -244,6 +234,8 @@ const SwapAddressInfo$json = const {
     const {'1': 'errorMessage', '3': 7, '4': 1, '5': 9, '10': 'errorMessage'},
     const {'1': 'lastRefundTxID', '3': 8, '4': 1, '5': 9, '10': 'lastRefundTxID'},
     const {'1': 'swapError', '3': 9, '4': 1, '5': 14, '6': '.data.SwapError', '10': 'swapError'},
+    const {'1': 'FundingTxID', '3': 10, '4': 1, '5': 9, '10': 'FundingTxID'},
+    const {'1': 'hoursToUnlock', '3': 11, '4': 1, '5': 2, '10': 'hoursToUnlock'},
   ],
 };
 

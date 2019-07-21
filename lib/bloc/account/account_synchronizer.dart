@@ -70,7 +70,7 @@ class AccountSynchronizer {
   }
 
   void _pollSyncStatus() {
-    new Timer(Duration(milliseconds: 300), () {
+    new Timer(Duration(milliseconds: 2000), () {
       if (_dismissed) {
         return;
       }

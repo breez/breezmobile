@@ -107,9 +107,9 @@ class HomeState extends State<Home> {
     _listenBackupConflicts();
     _listenWhiltelistPermissionsRequest();
     _hiddenRountes.add("/get_refund");
-    widget.accountBloc.refundableDepositsStream.listen((addresses){
-      setState(() {
-        if (addresses.length > 0) {
+    widget.accountBloc.accountStream.listen((acc){
+      setState(() {        
+        if (acc != null && acc.swapFundsStatus.maturedRefundableAddresses.length > 0) {
           _hiddenRountes.remove("/get_refund");
         } else {
           _hiddenRountes.add("/get_refund");
