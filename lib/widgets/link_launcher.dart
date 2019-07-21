@@ -3,26 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class LinkLauncher extends StatelessWidget {
+class LinkLauncher extends StatelessWidget {  
   final String linkName;
   final String linkAddress;
+  final Function onCopy;
 
-  const LinkLauncher({Key key, this.linkName, this.linkAddress})
+  const LinkLauncher({Key key, this.linkName, this.linkAddress, this.onCopy})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Expanded(
           flex: 1,
-          child: Text(
-            '$linkName',
-            textAlign: TextAlign.left,
-            overflow: TextOverflow.clip,
-            maxLines: 4,
+          child: GestureDetector(
+            onTap: (){
+              this.onCopy();
+            },
+            child: Text(
+              '$linkName',
+              textAlign: TextAlign.left,
+              overflow: TextOverflow.clip,
+              maxLines: 4,
+            ),
           ),
         ),
         Expanded(
@@ -42,11 +48,7 @@ class LinkLauncher extends StatelessWidget {
                       IconData(0xe90b, fontFamily: 'icomoon'),
                     ),
                     onPressed: () {
-                      Clipboard.setData(ClipboardData(text: linkName));
-                      showFlushbar(context,
-                          message:
-                              "Transaction ID was copied to your clipboard.",
-                          duration: Duration(seconds: 3));
+                      this.onCopy();
                     },
                   ),
                   IconButton(

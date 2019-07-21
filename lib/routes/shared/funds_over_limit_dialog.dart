@@ -52,14 +52,12 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
                     if (swapStatus == null) {
                       return Loader();
                     }
-
-                    double hoursToUnlock = 0;
-                    int lockHeight = 0;
-                    String reason = "";
+                    
+                    String reason = "";                    
                     RefundableAddress swapAddress = swapStatus.refundableAddresses[0];
-                    if (swapAddress.refundableError != null) {
-                      hoursToUnlock = swapAddress.hoursToUnlock;
-                      lockHeight = swapAddress.lockHeight;
+                    int lockHeight = swapAddress.lockHeight;
+                    double hoursToUnlock = swapAddress.hoursToUnlock;
+                    if (swapAddress.refundableError != null) {                      
                       reason = "since " + swapAddress.refundableError;
                     }
 

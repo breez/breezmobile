@@ -6,12 +6,14 @@ import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/user/add_funds/address_widget.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AddFundsPage extends StatefulWidget {
@@ -91,7 +93,7 @@ class AddFundsState extends State<AddFundsPage> {
 
   Widget getBody(BuildContext context, AccountModel account,
       AddFundResponse response, String error) {
-    var unconfirmedTxID = account?.swapFundsStatus?.unconfirmedTxID;
+    var unconfirmedTxID = account?.swapFundsStatus?.unconfirmedTxID ?? "asdfadsfdfwerewrewfsdvcvcvdfdferwerrr";
     bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
 
     String errorMessage;
@@ -131,11 +133,18 @@ class AddFundsState extends State<AddFundsPage> {
                     ),
                     Padding(
                       padding:
-                          EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
+                          EdgeInsets.only(top: 10.0, left: 30.0, right: 22.0),
                           child: 
                           LinkLauncher(
                             linkName: unconfirmedTxID,
                             linkAddress: "https://blockstream.info/tx/$unconfirmedTxID",
+                            onCopy: (){
+                              Clipboard.setData(ClipboardData(text: unconfirmedTxID));
+                              showFlushbar(context,
+                                  message:
+                                      "Transaction ID was copied to your clipboard.",
+                                  duration: Duration(seconds: 3));
+                            },
                           )
                   )
                   ])                      
