@@ -36,13 +36,13 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
           TextSpan(text: "your Bitcoin node\n", style: theme.dialogGrayStyle),
           TextSpan(text: "• ", style: theme.dialogGrayStyle),  
           TextSpan(
-            text: "Share ", 
+            text: "View ", 
             style: theme.blueLinkStyle,
             recognizer: TapGestureRecognizer()..onTap = () async {
               var logPath = await ServiceInjector().breezBridge.getLogPath();
               ShareExtend.share(logPath, "file");
             }), 
-          TextSpan(text: "logs \n", style: theme.dialogGrayStyle),
+          TextSpan(text: "your logs \n", style: theme.dialogGrayStyle),
         ]), 
       ),
       // Text(
