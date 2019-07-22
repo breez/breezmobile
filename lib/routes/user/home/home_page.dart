@@ -82,6 +82,8 @@ class Home extends StatefulWidget {
     new DrawerItemConfig(
         "/network", "Network", "src/icon/network.png"),
     new DrawerItemConfig(
+        "/security", "Security PIN", "src/icon/security.png"),
+    new DrawerItemConfig(
         "/developers", "Developers", "src/icon/developers.png"),
   ]);
 
