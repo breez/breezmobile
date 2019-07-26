@@ -166,6 +166,7 @@ class SecurityPageState extends State<SecurityPage> {
         new MaterialPageRoute(builder: (BuildContext context) {
           return LockScreen(
               title: "Enter your current PIN",
+              dismissible: true,
               onSuccess: (value) {
                 Navigator.pop(context);
                 Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {

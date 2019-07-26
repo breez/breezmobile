@@ -56,70 +56,73 @@ class _LockScreenState extends State<LockScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: widget.dismissible
-          ? new AppBar(
-              iconTheme: theme.appBarIconTheme,
-              textTheme: theme.appBarTextTheme,
-              backgroundColor: theme.BreezColors.blue[500],
-              leading: backBtn.BackButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
+    return WillPopScope(
+      onWillPop: () => Future.value(widget.dismissible),
+      child: Scaffold(
+        appBar: widget.dismissible
+            ? new AppBar(
+                iconTheme: theme.appBarIconTheme,
+                textTheme: theme.appBarTextTheme,
+                backgroundColor: theme.BreezColors.blue[500],
+                leading: backBtn.BackButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                ),
+                elevation: 0.0,
+              )
+            : null,
+        body: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              new Container(
+                child: new Column(children: <Widget>[
+                  new Container(
+                    child: Image.asset(
+                      "src/images/logo-color.png",
+                      height: 47,
+                      width: 125.4,
+                      color: Colors.white,
+                    ),
+                    padding: EdgeInsets.only(top: widget.dismissible ? kToolbarHeight : 96.0, bottom: 96.0),
+                  ),
+                  Text(_title),
+                  Container(
+                    margin: const EdgeInsets.only(
+                      top: 16,
+                      left: 64,
+                      right: 64,
+                    ),
+                    height: 48,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: _buildCircles(),
+                    ),
+                  ),
+                  _hasError
+                      ? Padding(
+                          padding: EdgeInsets.only(bottom: 64.0),
+                          child: Text(
+                            _errorMessage,
+                            style: theme.errorStyle,
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(bottom: 64.0),
+                          child: Text(
+                            "",
+                            style: theme.errorStyle,
+                          ),
+                        )
+                ]),
               ),
-              elevation: 0.0,
-            )
-          : null,
-      body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            new Container(
-              child: new Column(children: <Widget>[
-                new Container(
-                  child: Image.asset(
-                    "src/images/logo-color.png",
-                    height: 47,
-                    width: 125.4,
-                    color: Colors.white,
-                  ),
-                  padding: EdgeInsets.only(top: widget.dismissible ? kToolbarHeight : 96.0, bottom: 96.0),
-                ),
-                Text(_title),
-                Container(
-                  margin: const EdgeInsets.only(
-                    top: 16,
-                    left: 64,
-                    right: 64,
-                  ),
-                  height: 48,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: _buildCircles(),
-                  ),
-                ),
-                _hasError
-                    ? Padding(
-                        padding: EdgeInsets.only(bottom: 64.0),
-                        child: Text(
-                          _errorMessage,
-                          style: theme.errorStyle,
-                        ),
-                      )
-                    : Padding(
-                        padding: EdgeInsets.only(bottom: 64.0),
-                        child: Text(
-                          "",
-                          style: theme.errorStyle,
-                        ),
-                      )
-              ]),
-            ),
-            new Expanded(
-              child: _numPad(),
-            ),
-          ],
+              new Expanded(
+                child: _numPad(),
+              ),
+            ],
+          ),
         ),
       ),
     );
