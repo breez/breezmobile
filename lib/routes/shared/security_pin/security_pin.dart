@@ -175,10 +175,10 @@ class SecurityPageState extends State<SecurityPage> {
             );
           }));
           if (_isValid) {
-            Navigator.pop(context);
             bool isValid = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
               return LockScreen(
                 title: "Enter your new PIN",
+                dismissible: true,
                 changePassword: true,
               );
             }));
