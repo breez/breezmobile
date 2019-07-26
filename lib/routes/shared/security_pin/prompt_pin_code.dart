@@ -9,7 +9,7 @@ class LockScreen extends StatefulWidget {
   final bool changePassword;
   final bool setPassword;
 
-  LockScreen({Key key, this.dismissible = false, this.title, this.changePassword = false, this.setPassword = false}) : super(key: key);
+  LockScreen({Key key, this.title, this.dismissible = false, this.changePassword = false, this.setPassword = false}) : super(key: key);
 
   @override
   _LockScreenState createState() => new _LockScreenState();
@@ -18,15 +18,13 @@ class LockScreen extends StatefulWidget {
 class _LockScreenState extends State<LockScreen> {
   final storage = new FlutterSecureStorage();
   String _title;
-
+  int _securityPIN;
   int _passwordLength = 6;
   String _enteredPassword = "";
   String _tmpPassword = "";
 
   bool _hasError = false;
   String _errorMessage = "";
-
-  int _securityPIN;
 
   @override
   void initState() {
@@ -64,8 +62,7 @@ class _LockScreenState extends State<LockScreen> {
                 backgroundColor: theme.BreezColors.blue[500],
                 leading: backBtn.BackButton(
                   onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
+                    Navigator.pop(context, false);
                   },
                 ),
                 elevation: 0.0,

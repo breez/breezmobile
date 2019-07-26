@@ -40,7 +40,7 @@ class SecurityPageState extends State<SecurityPage> {
       bool _isValid = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
         return LockScreen(dismissible: true);
       }));
-      if (_isValid) {
+      if (!_isValid) {
         Navigator.pop(context);
       }
     } else {
