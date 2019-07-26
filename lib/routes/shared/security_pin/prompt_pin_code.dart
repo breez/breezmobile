@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LockScreen extends StatefulWidget {
-  final Function(bool success) onSuccess;
   final String title;
   final bool dismissible;
   final bool changePassword;
   final bool setPassword;
 
-  LockScreen({Key key, this.dismissible = false, this.onSuccess, this.title, this.changePassword = false, this.setPassword = false})
-      : super(key: key);
+  LockScreen({Key key, this.dismissible = false, this.title, this.changePassword = false, this.setPassword = false}) : super(key: key);
 
   @override
   _LockScreenState createState() => new _LockScreenState();
@@ -57,7 +55,7 @@ class _LockScreenState extends State<LockScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => Future.value(widget.dismissible),
+      onWillPop: () => Future.value(false),
       child: Scaffold(
         appBar: widget.dismissible
             ? new AppBar(
@@ -184,9 +182,8 @@ class _LockScreenState extends State<LockScreen> {
   void _validatePassword() {
     if (widget.setPassword || widget.changePassword) {
       if (_enteredPassword == _tmpPassword) {
-        widget.onSuccess(true);
         _setSecurityPIN(int.parse(_enteredPassword)).then((_) => _readSecurityPIN());
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       } else {
         setState(() {
           _tmpPassword = "";
@@ -198,7 +195,7 @@ class _LockScreenState extends State<LockScreen> {
       }
     } else {
       if (_enteredPassword == _securityPIN.toString()) {
-        widget.onSuccess(true);
+        Navigator.pop(context, true);
       } else {
         setState(() {
           _enteredPassword = "";

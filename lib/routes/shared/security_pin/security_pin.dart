@@ -37,9 +37,12 @@ class SecurityPageState extends State<SecurityPage> {
     _useInBackupRestore = (prefs.getBool('useInBackupRestore') ?? false);
     if (_hasSecurityPIN) {
       _setHasSecurityPIN(true);
-      Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
-        return LockScreen(dismissible: true, onSuccess: (value) => Navigator.pop(context));
+      bool _isValid = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
+        return LockScreen(dismissible: true);
       }));
+      if (_isValid) {
+        Navigator.pop(context);
+      }
     } else {
       prefs.setBool('hasSecurityPIN', false);
     }
@@ -112,14 +115,16 @@ class SecurityPageState extends State<SecurityPage> {
             : Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
         onTap: _hasSecurityPIN
             ? null
-            : () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
+            : () async {
+                bool _isValid = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
                   return LockScreen(
                     title: "Enter your new PIN",
                     dismissible: true,
                     setPassword: true,
-                    onSuccess: (value) => _setHasSecurityPIN(value),
                   );
-                })));
+                }));
+                if (_isValid) _setHasSecurityPIN(true);
+              });
 
     final _useInBackupRestoreTile = ListTile(
         title: Text(
@@ -157,29 +162,29 @@ class SecurityPageState extends State<SecurityPage> {
           },
         ));
     final _changeSecurityPIN = ListTile(
-      title: Text(
-        "Change PIN",
-        style: TextStyle(color: Colors.white),
-      ),
-      trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-      onTap: () => Navigator.of(context).push(
-        new MaterialPageRoute(builder: (BuildContext context) {
-          return LockScreen(
+        title: Text(
+          "Change PIN",
+          style: TextStyle(color: Colors.white),
+        ),
+        trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+        onTap: () async {
+          bool _isValid = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
+            return LockScreen(
               title: "Enter your current PIN",
               dismissible: true,
-              onSuccess: (value) {
-                Navigator.pop(context);
-                Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
-                  return LockScreen(
-                    title: "Enter your new PIN",
-                    changePassword: true,
-                    onSuccess: (value) => _setHasSecurityPIN(value),
-                  );
-                }));
-              });
-        }),
-      ),
-    );
+            );
+          }));
+          if (_isValid) {
+            Navigator.pop(context);
+            bool isValid = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
+              return LockScreen(
+                title: "Enter your new PIN",
+                changePassword: true,
+              );
+            }));
+            if (isValid) _setHasSecurityPIN(true);
+          }
+        });
     _tiles..add(_disableSecurityPIN);
     if (_hasSecurityPIN) {
       _tiles..add(Divider())..add(_useInBackupRestoreTile)..add(Divider())..add(_changeSecurityPIN);
