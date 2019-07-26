@@ -1,21 +1,24 @@
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class PassCodeScreen extends StatefulWidget {
+class LockScreen extends StatefulWidget {
   final Function(bool success) onSuccess;
-  final Function(int password) setSecurityPIN;
   final String title;
-  final int password;
   final bool dismissible;
+  final bool changePassword;
+  final bool setPassword;
 
-  PassCodeScreen(this.password, {Key key, this.dismissible = false, this.onSuccess, this.setSecurityPIN, this.title}) : super(key: key);
+  LockScreen({Key key, this.dismissible = false, this.onSuccess, this.title, this.changePassword = false, this.setPassword = false})
+      : super(key: key);
 
   @override
-  _PassCodeScreenState createState() => new _PassCodeScreenState();
+  _LockScreenState createState() => new _LockScreenState();
 }
 
-class _PassCodeScreenState extends State<PassCodeScreen> {
+class _LockScreenState extends State<LockScreen> {
+  final storage = new FlutterSecureStorage();
   String _title;
 
   int _passwordLength = 6;
@@ -25,22 +28,30 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
   bool _hasError = false;
   String _errorMessage = "";
 
-  double itemHeight;
-  double itemWidth;
+  int _securityPIN;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _title = widget.title ?? "Enter your PIN";
+    _readSecurityPIN();
   }
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
-    itemWidth = (MediaQuery.of(context).size.width) / 2;
+  }
+
+  Future _setSecurityPIN(int securityPIN) async {
+    // Write value
+    await storage.write(key: 'securityPIN', value: securityPIN.toString());
+  }
+
+  _readSecurityPIN() async {
+    // Read value
+    _securityPIN = int.parse(await storage.read(key: 'securityPIN'));
   }
 
   @override
@@ -51,7 +62,12 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
               iconTheme: theme.appBarIconTheme,
               textTheme: theme.appBarTextTheme,
               backgroundColor: theme.BreezColors.blue[500],
-              leading: backBtn.BackButton(),
+              leading: backBtn.BackButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+              ),
               elevation: 0.0,
             )
           : null,
@@ -134,7 +150,7 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
         _enteredPassword = _enteredPassword + numberText;
       }
       if (_enteredPassword.length == _passwordLength) {
-        if (widget.password == null && _tmpPassword.isEmpty) {
+        if ((widget.changePassword || widget.setPassword) && _tmpPassword.isEmpty) {
           Future.delayed(Duration(milliseconds: 300), () => _setPassword());
         } else {
           Future.delayed(Duration(milliseconds: 300), () => _validatePassword());
@@ -163,10 +179,10 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
   }
 
   void _validatePassword() {
-    if (widget.password == null) {
+    if (widget.setPassword || widget.changePassword) {
       if (_enteredPassword == _tmpPassword) {
         widget.onSuccess(true);
-        widget.setSecurityPIN(int.parse(_enteredPassword));
+        _setSecurityPIN(int.parse(_enteredPassword)).then((_) => _readSecurityPIN());
         Navigator.pop(context);
       } else {
         setState(() {
@@ -178,7 +194,7 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
         });
       }
     } else {
-      if (_enteredPassword == widget.password.toString()) {
+      if (_enteredPassword == _securityPIN.toString()) {
         widget.onSuccess(true);
       } else {
         setState(() {

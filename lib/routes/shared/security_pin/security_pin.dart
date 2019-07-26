@@ -23,7 +23,6 @@ class SecurityPageState extends State<SecurityPage> {
 
   bool _hasSecurityPIN = false;
   bool _useInBackupRestore = false;
-  int _securityPIN;
 
   @override
   void initState() {
@@ -37,10 +36,9 @@ class SecurityPageState extends State<SecurityPage> {
     _hasSecurityPIN = (prefs.getBool('hasSecurityPIN') ?? false);
     _useInBackupRestore = (prefs.getBool('useInBackupRestore') ?? false);
     if (_hasSecurityPIN) {
-      _readSecurityPIN();
       _setHasSecurityPIN(true);
       Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
-        return PassCodeScreen(_securityPIN, dismissible: true, onSuccess: (value) => Navigator.pop(context));
+        return LockScreen(dismissible: true, onSuccess: (value) => Navigator.pop(context));
       }));
     } else {
       prefs.setBool('hasSecurityPIN', false);
@@ -54,23 +52,9 @@ class SecurityPageState extends State<SecurityPage> {
     });
   }
 
-  _setSecurityPIN(int securityPIN) async {
-    // Write value
-    await storage.write(key: 'securityPIN', value: securityPIN.toString());
-    _readSecurityPIN();
-  }
-
-  _readSecurityPIN() async {
-    // Read value
-    _securityPIN = int.parse(await storage.read(key: 'securityPIN'));
-  }
-
   _deleteSecurityPIN() async {
     // Delete value
     await storage.delete(key: 'securityPIN');
-    setState(() {
-      _securityPIN = null;
-    });
   }
 
   @override
@@ -116,9 +100,11 @@ class SecurityPageState extends State<SecurityPage> {
                     setState(() {
                       _hasSecurityPIN = value;
                       prefs.setBool('hasSecurityPIN', value);
-                      prefs.setBool('useInBackupRestore', false);
-                      _useInBackupRestore = false;
-                      _deleteSecurityPIN();
+                      if (!value) {
+                        prefs.setBool('useInBackupRestore', false);
+                        _useInBackupRestore = false;
+                        _deleteSecurityPIN();
+                      }
                     });
                   }
                 },
@@ -127,11 +113,10 @@ class SecurityPageState extends State<SecurityPage> {
         onTap: _hasSecurityPIN
             ? null
             : () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
-                  return PassCodeScreen(
-                    _securityPIN,
+                  return LockScreen(
                     title: "Enter your new PIN",
                     dismissible: true,
-                    setSecurityPIN: (password) => _setSecurityPIN(password),
+                    setPassword: true,
                     onSuccess: (value) => _setHasSecurityPIN(value),
                   );
                 })));
@@ -179,29 +164,24 @@ class SecurityPageState extends State<SecurityPage> {
       trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
       onTap: () => Navigator.of(context).push(
         new MaterialPageRoute(builder: (BuildContext context) {
-          return PassCodeScreen(_securityPIN, title: "Enter your current PIN", onSuccess: (value) {
-            Navigator.pop(context);
-            Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
-              return PassCodeScreen(
-                null,
-                title: "Enter your new PIN",
-                setSecurityPIN: (password) => _setSecurityPIN(password),
-                onSuccess: (value) => _setHasSecurityPIN(value),
-              );
-            }));
-          });
+          return LockScreen(
+              title: "Enter your current PIN",
+              onSuccess: (value) {
+                Navigator.pop(context);
+                Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
+                  return LockScreen(
+                    title: "Enter your new PIN",
+                    changePassword: true,
+                    onSuccess: (value) => _setHasSecurityPIN(value),
+                  );
+                }));
+              });
         }),
       ),
     );
-
     _tiles..add(_disableSecurityPIN);
-
     if (_hasSecurityPIN) {
-      _tiles
-        ..add(Divider())
-        ..add(_useInBackupRestoreTile)
-        ..add(Divider())
-        ..add(_changeSecurityPIN);
+      _tiles..add(Divider())..add(_useInBackupRestoreTile)..add(Divider())..add(_changeSecurityPIN);
     }
     return _tiles;
   }
