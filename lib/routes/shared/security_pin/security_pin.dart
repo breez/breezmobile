@@ -23,7 +23,6 @@ class SecurityPageState extends State<SecurityPage> {
 
   bool _hasSecurityPIN = false;
   bool _useInBackupRestore = false;
-  bool _enableBiometrics = false;
   int _securityPIN;
 
   @override
@@ -37,7 +36,6 @@ class SecurityPageState extends State<SecurityPage> {
     prefs = await SharedPreferences.getInstance();
     _hasSecurityPIN = (prefs.getBool('hasSecurityPIN') ?? false);
     _useInBackupRestore = (prefs.getBool('useInBackupRestore') ?? false);
-    _enableBiometrics = (prefs.getBool('enableBiometrics') ?? false);
     if (_hasSecurityPIN) {
       _readSecurityPIN();
       _setHasSecurityPIN(true);
@@ -173,23 +171,6 @@ class SecurityPageState extends State<SecurityPage> {
             }
           },
         ));
-    final _enableBiometricsTile = ListTile(
-        title: Text(
-          "Enable Fingerprint/Face",
-          style: TextStyle(color: Colors.white),
-        ),
-        trailing: Switch(
-          value: _enableBiometrics,
-          activeColor: Colors.white,
-          onChanged: (bool value) {
-            if (this.mounted) {
-              setState(() {
-                _enableBiometrics = value;
-                prefs.setBool('enableBiometrics', value);
-              });
-            }
-          },
-        ));
     final _changeSecurityPIN = ListTile(
       title: Text(
         "Change PIN",
@@ -219,8 +200,6 @@ class SecurityPageState extends State<SecurityPage> {
       _tiles
         ..add(Divider())
         ..add(_useInBackupRestoreTile)
-        //..add(Divider())
-        //..add(_enableBiometricsTile)
         ..add(Divider())
         ..add(_changeSecurityPIN);
     }
