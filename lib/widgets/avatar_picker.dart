@@ -1,16 +1,13 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:breez/logger.dart';
 
 class AvatarPicker extends StatelessWidget {
-  static const _platform = const MethodChannel('com.breez.client/image-cropper');
-
   final String imagePath;
   final bool renderLoading;
   final Function(List<int> selectedImage) onImageSelected;
@@ -20,7 +17,11 @@ class AvatarPicker extends StatelessWidget {
   DartImage.Image _transparentImage;
 
   AvatarPicker(this.imagePath, this.onImageSelected,
-      {key, this.radius = 100.0, this.scaledWidth = -1, this.renderLoading = false, this.renderedWidth = 100})
+      {key,
+      this.radius = 100.0,
+      this.scaledWidth = -1,
+      this.renderLoading = false,
+      this.renderedWidth = 100})
       : super(key: key) {
     _transparentImage = DartImage.Image(scaledWidth, scaledWidth);
   }
@@ -39,8 +40,12 @@ class AvatarPicker extends StatelessWidget {
   }
 
   _getPickerWidget() {
-    Color _overlayColor = imagePath == null ? Color.fromRGBO(5, 93, 235, 0.8) : Color.fromRGBO(51, 69, 96, 0.4);
-    var _posAvatar = imagePath == null ? AssetImage("src/images/avatarbg.png") : new FileImage(new File(imagePath));
+    Color _overlayColor = imagePath == null
+        ? Color.fromRGBO(5, 93, 235, 0.8)
+        : Color.fromRGBO(51, 69, 96, 0.4);
+    var _posAvatar = imagePath == null
+        ? AssetImage("src/images/avatarbg.png")
+        : new FileImage(new File(imagePath));
 
     return new Container(
         child: new Column(
@@ -68,7 +73,10 @@ class AvatarPicker extends StatelessWidget {
         height: renderedWidth.roundToDouble(),
         decoration: new BoxDecoration(
             shape: BoxShape.circle,
-            border: imagePath == null ? Border.all(color: Colors.white, width: 2.0, style: BorderStyle.solid) : null,
+            border: imagePath == null
+                ? Border.all(
+                    color: Colors.white, width: 2.0, style: BorderStyle.solid)
+                : null,
             image: new DecorationImage(
                 colorFilter: ColorFilter.mode(_overlayColor, BlendMode.srcATop),
                 image: _posAvatar,
@@ -77,13 +85,15 @@ class AvatarPicker extends StatelessWidget {
 
   Future _pickImage(BuildContext context) async {
     return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
-      return AvatarPicker._platform.invokeMethod("start", {"filePath": file.path}).then((res) {
-        if (res != null) {
-          new File(res.toString())
+      ImageCropper.cropImage(sourcePath: file.path, ratioX: 1.0, ratioY: 1.0)
+          .then((file) {
+        if (file != null) {
+          file
               .readAsBytes()
               .then(scaleAndFormatPNG)
               .then(onImageSelected)
-              .catchError((e) => promptError(context, "Failed to Select Image", Text(e.toString())));
+              .catchError((e) => promptError(
+                  context, "Failed to Select Image", Text(e.toString())));
         }
       });
     }).catchError((err) {
@@ -93,11 +103,14 @@ class AvatarPicker extends StatelessWidget {
 
   List<int> scaleAndFormatPNG(List<int> imageBytes) {
     DartImage.Image image = DartImage.decodeImage(imageBytes);
-    DartImage.Image resized = DartImage.copyResize(
-        image, width: image.width < image.height ? -1 : scaledWidth, height: image.width < image.height ? scaledWidth : -1);
+    DartImage.Image resized = DartImage.copyResize(image,
+        width: image.width < image.height ? -1 : scaledWidth,
+        height: image.width < image.height ? scaledWidth : -1);
     DartImage.Image centered = DartImage.copyInto(_transparentImage, resized,
-        dstX: ((scaledWidth - resized.width) / 2).round(), dstY: ((scaledWidth - resized.height) / 2).round());
-    log.info('trimmed.width ${centered.width} trimmed.height ${centered.height}');
+        dstX: ((scaledWidth - resized.width) / 2).round(),
+        dstY: ((scaledWidth - resized.height) / 2).round());
+    log.info(
+        'trimmed.width ${centered.width} trimmed.height ${centered.height}');
     return DartImage.encodePng(centered);
   }
 }
