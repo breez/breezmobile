@@ -25,27 +25,17 @@ class SecurityPageState extends State<SecurityPage> {
   bool _hasSecurityPIN = false;
   bool _useInBackupRestore = false;
 
-  bool _isInit = false;
-
   @override
   void initState() {
     super.initState();
     loadPreferences();
   }
 
-  @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      if (_hasSecurityPIN) _showLockScreen();
-      _isInit = true;
-    }
-    super.didChangeDependencies();
-  }
-
   Future loadPreferences() async {
     prefs = await SharedPreferences.getInstance();
     _setHasSecurityPIN(prefs.getBool('hasSecurityPIN') ?? false);
     _setUseInBackupRestore(prefs.getBool('useInBackupRestore') ?? false);
+    if (_hasSecurityPIN) _showLockScreen();
   }
 
   Future _showLockScreen() async {
@@ -165,18 +155,10 @@ class SecurityPageState extends State<SecurityPage> {
             return LockScreen(
               title: "Enter your current PIN",
               dismissible: true,
+              changePassword: true,
             );
           }));
-          if (_isValid) {
-            bool isValid = await Navigator.of(context).push(new FadeInRoute(builder: (BuildContext context) {
-              return LockScreen(
-                title: "Enter your new PIN",
-                dismissible: true,
-                changePassword: true,
-              );
-            }));
-            if (isValid) _setHasSecurityPIN(true);
-          }
+          if (_isValid) _setHasSecurityPIN(true);
         });
     _tiles..add(_disableSecurityPIN);
     if (_hasSecurityPIN) {

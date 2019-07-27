@@ -29,6 +29,7 @@ class _LockScreenState extends State<LockScreen> {
   bool _hasError = false;
   String _errorMessage = "";
   Uint8List image;
+  bool _validated = false;
 
   @override
   void initState() {
@@ -196,7 +197,10 @@ class _LockScreenState extends State<LockScreen> {
         _enteredPassword = _enteredPassword + numberText;
       }
       if (_enteredPassword.length == _passwordLength) {
-        if ((widget.changePassword || widget.setPassword) && _tmpPassword.isEmpty) {
+        // Validate current PIN before changing PIN
+        // If a new PIN is being set
+        // Prompt user to enter the PIN again
+        if (((widget.changePassword && _validated) || widget.setPassword) && _tmpPassword.isEmpty) {
           // Wait for scale animation
           Future.delayed(Duration(milliseconds: 300), () => _setPassword());
         } else {
@@ -217,14 +221,22 @@ class _LockScreenState extends State<LockScreen> {
   }
 
   void _validatePassword() {
-    (widget.setPassword || widget.changePassword)
+    (widget.setPassword || (widget.changePassword && _validated))
         ? _matchPINs(_enteredPassword == _tmpPassword) // Check if PINs match if a new PIN is being set or current PIN being changed
         : _validatePIN(_enteredPassword == _securityPIN.toString());
   }
 
   void _validatePIN(bool isValid) {
     if (isValid) {
-      Navigator.pop(context, true);
+      if (widget.changePassword && !_validated) {
+        setState(() {
+          _validated = isValid;
+          _enteredPassword = "";
+          _title = "Enter your new PIN";
+        });
+      } else {
+        Navigator.pop(context, true);
+      }
     } else {
       setState(() {
         _enteredPassword = "";
