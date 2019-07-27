@@ -18,6 +18,7 @@ import 'package:breez/routes/user/home/status_text.dart';
 import 'package:breez/utils/date.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:breez/routes/shared/security_pin/prompt_pin_code.dart';
+import 'package:breez/widgets/route.dart';
 
 const DASHBOARD_MAX_HEIGHT = 188.0;
 const DASHBOARD_MIN_HEIGHT = 70.0;
@@ -59,7 +60,7 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
       Future<SharedPreferences> sharedPreferences = SharedPreferences.getInstance();
       sharedPreferences.then((preferences) {
         if (preferences.getBool('hasSecurityPIN') ?? false) {
-          Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
+          Navigator.of(context).push(new FadeInRoute(builder: (BuildContext context) {
             return LockScreen();
           }));
         }

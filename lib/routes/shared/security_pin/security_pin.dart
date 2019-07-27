@@ -4,6 +4,7 @@ import 'package:breez/routes/shared/security_pin/prompt_pin_code.dart';
 import 'package:breez/routes/shared/security_pin/security_pin_warning_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,46 +25,52 @@ class SecurityPageState extends State<SecurityPage> {
   bool _hasSecurityPIN = false;
   bool _useInBackupRestore = false;
 
+  bool _isInit = false;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     loadPreferences();
   }
 
-  Future loadPreferences() async {
-    prefs = await SharedPreferences.getInstance();
-    _hasSecurityPIN = (prefs.getBool('hasSecurityPIN') ?? false);
-    _useInBackupRestore = (prefs.getBool('useInBackupRestore') ?? false);
-    if (_hasSecurityPIN) {
-      _setHasSecurityPIN(true);
-      bool _isValid = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
-        return LockScreen(dismissible: true);
-      }));
-      if (!_isValid) {
-        Navigator.pop(context);
-      }
-    } else {
-      prefs.setBool('hasSecurityPIN', false);
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      if (_hasSecurityPIN) _showLockScreen();
+      _isInit = true;
     }
+    super.didChangeDependencies();
   }
 
-  _setHasSecurityPIN(bool value) {
+  Future loadPreferences() async {
+    prefs = await SharedPreferences.getInstance();
+    _setHasSecurityPIN(prefs.getBool('hasSecurityPIN') ?? false);
+    _setUseInBackupRestore(prefs.getBool('useInBackupRestore') ?? false);
+  }
+
+  Future _showLockScreen() async {
+    bool _isValid = await Navigator.of(context).push(new FadeInRoute(builder: (BuildContext context) {
+      return LockScreen(dismissible: true);
+    }));
+    if (!_isValid) Navigator.pop(context);
+  }
+
+  void _setHasSecurityPIN(bool value) {
     prefs.setBool('hasSecurityPIN', value);
     setState(() {
       _hasSecurityPIN = value;
     });
   }
 
-  _deleteSecurityPIN() async {
-    // Delete value
-    await storage.delete(key: 'securityPIN');
+  void _setUseInBackupRestore(bool value) {
+    prefs.setBool('useInBackupRestore', value);
+    setState(() {
+      _useInBackupRestore = value;
+    });
   }
 
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
+  _deleteSecurityPIN() async {
+    await storage.delete(key: 'securityPIN');
   }
 
   @override
@@ -100,15 +107,11 @@ class SecurityPageState extends State<SecurityPage> {
                 activeColor: Colors.white,
                 onChanged: (bool value) {
                   if (this.mounted) {
-                    setState(() {
-                      _hasSecurityPIN = value;
-                      prefs.setBool('hasSecurityPIN', value);
-                      if (!value) {
-                        prefs.setBool('useInBackupRestore', false);
-                        _useInBackupRestore = false;
-                        _deleteSecurityPIN();
-                      }
-                    });
+                    _setHasSecurityPIN(value);
+                    if (!value) {
+                      _setUseInBackupRestore(value);
+                      _deleteSecurityPIN();
+                    }
                   }
                 },
               )
@@ -116,7 +119,7 @@ class SecurityPageState extends State<SecurityPage> {
         onTap: _hasSecurityPIN
             ? null
             : () async {
-                bool _isValid = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
+                bool _isValid = await Navigator.of(context).push(new FadeInRoute(builder: (BuildContext context) {
                   return LockScreen(
                     title: "Enter your new PIN",
                     dismissible: true,
@@ -136,28 +139,18 @@ class SecurityPageState extends State<SecurityPage> {
           activeColor: Colors.white,
           onChanged: (bool value) {
             if (this.mounted) {
-              setState(() {
-                if (value) {
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return SecurityPINWarningDialog();
-                      }).then((approved) {
-                    if (approved) {
-                      setState(() {
-                        _useInBackupRestore = approved;
-                      });
-                      prefs.setBool('useInBackupRestore', approved);
-                    }
-                  });
-                } else {
-                  setState(() {
-                    _useInBackupRestore = value;
-                  });
-                  prefs.setBool('useInBackupRestore', value);
-                }
-              });
+              if (value) {
+                showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return SecurityPINWarningDialog();
+                    }).then((approved) {
+                  _setUseInBackupRestore(approved);
+                });
+              } else {
+                _setUseInBackupRestore(value);
+              }
             }
           },
         ));
@@ -168,14 +161,14 @@ class SecurityPageState extends State<SecurityPage> {
         ),
         trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
         onTap: () async {
-          bool _isValid = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
+          bool _isValid = await Navigator.of(context).push(new FadeInRoute(builder: (BuildContext context) {
             return LockScreen(
               title: "Enter your current PIN",
               dismissible: true,
             );
           }));
           if (_isValid) {
-            bool isValid = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
+            bool isValid = await Navigator.of(context).push(new FadeInRoute(builder: (BuildContext context) {
               return LockScreen(
                 title: "Enter your new PIN",
                 dismissible: true,
