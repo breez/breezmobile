@@ -36,14 +36,17 @@ class _LockScreenState extends State<LockScreen> {
     super.initState();
     _title = widget.title ?? "Enter your PIN";
     _readSecurityPIN();
-    _loadBreezLogo();
   }
 
-  _loadBreezLogo() async {
-    ByteData bytes = await rootBundle.load('src/images/logo-color.png');
-    setState(() {
-      image = bytes.buffer.asUint8List();
-    });
+  @override
+  void didChangeDependencies() {
+    _loadBreezLogo();
+    super.didChangeDependencies();
+  }
+
+  _readSecurityPIN() async {
+    // Read value
+    _securityPIN = int.parse(await storage.read(key: 'securityPIN'));
   }
 
   Future _setSecurityPIN(int securityPIN) async {
@@ -51,9 +54,11 @@ class _LockScreenState extends State<LockScreen> {
     await storage.write(key: 'securityPIN', value: securityPIN.toString());
   }
 
-  _readSecurityPIN() async {
-    // Read value
-    _securityPIN = int.parse(await storage.read(key: 'securityPIN'));
+  _loadBreezLogo() async {
+    ByteData bytes = await rootBundle.load('src/images/logo-color.png');
+    setState(() {
+      image = bytes.buffer.asUint8List();
+    });
   }
 
   @override
@@ -147,80 +152,6 @@ class _LockScreenState extends State<LockScreen> {
     return list;
   }
 
-  onNumButtonPressed(String numberText) {
-    setState(() {
-      _errorMessage = "";
-      if (_enteredPassword.length < _passwordLength) {
-        _enteredPassword = _enteredPassword + numberText;
-      }
-      if (_enteredPassword.length == _passwordLength) {
-        if ((widget.changePassword || widget.setPassword) && _tmpPassword.isEmpty) {
-          Future.delayed(Duration(milliseconds: 300), () => _setPassword());
-        } else {
-          Future.delayed(Duration(milliseconds: 300), () => _validatePassword());
-        }
-      }
-    });
-  }
-
-  Container _numberButton(String number) {
-    return Container(
-      child: new FlatButton(
-        onPressed: () => onNumButtonPressed(number),
-        child: new Text(number, textAlign: TextAlign.center, style: theme.numPadNumberStyle),
-      ),
-    );
-  }
-
-  _setPassword() {
-    if (_tmpPassword.isEmpty) {
-      setState(() {
-        _tmpPassword = _enteredPassword;
-        _enteredPassword = "";
-        _title = "Re-enter your new PIN";
-      });
-    }
-  }
-
-  void _validatePassword() {
-    if (widget.setPassword || widget.changePassword) {
-      if (_enteredPassword == _tmpPassword) {
-        _setSecurityPIN(int.parse(_enteredPassword)).then((_) => _readSecurityPIN());
-        Navigator.pop(context, true);
-      } else {
-        setState(() {
-          _tmpPassword = "";
-          _enteredPassword = "";
-          _title = "Enter your new PIN";
-          _hasError = true;
-          _errorMessage = "PIN does not match";
-        });
-      }
-    } else {
-      if (_enteredPassword == _securityPIN.toString()) {
-        Navigator.pop(context, true);
-      } else {
-        setState(() {
-          _enteredPassword = "";
-          _hasError = true;
-          _errorMessage = "Incorrect PIN";
-        });
-      }
-    }
-  }
-
-  _resetPassword() {
-    setState(() {
-      _enteredPassword = "";
-    });
-  }
-
-  _erasePassword() {
-    setState(() {
-      _enteredPassword = _enteredPassword.substring(0, _enteredPassword.length - 1);
-    });
-  }
-
   Widget _numPad() {
     return new GridView.count(
         crossAxisCount: 3,
@@ -247,5 +178,86 @@ class _LockScreenState extends State<LockScreen> {
             ),
           ),
         ]).toList());
+  }
+
+  Container _numberButton(String number) {
+    return Container(
+      child: new FlatButton(
+        onPressed: () => _onNumButtonPressed(number),
+        child: new Text(number, textAlign: TextAlign.center, style: theme.numPadNumberStyle),
+      ),
+    );
+  }
+
+  _onNumButtonPressed(String numberText) {
+    setState(() {
+      _errorMessage = "";
+      if (_enteredPassword.length < _passwordLength) {
+        _enteredPassword = _enteredPassword + numberText;
+      }
+      if (_enteredPassword.length == _passwordLength) {
+        if ((widget.changePassword || widget.setPassword) && _tmpPassword.isEmpty) {
+          // Wait for scale animation
+          Future.delayed(Duration(milliseconds: 300), () => _setPassword());
+        } else {
+          Future.delayed(Duration(milliseconds: 300), () => _validatePassword());
+        }
+      }
+    });
+  }
+
+  _setPassword() {
+    if (_tmpPassword.isEmpty) {
+      setState(() {
+        _tmpPassword = _enteredPassword;
+        _enteredPassword = "";
+        _title = "Re-enter your new PIN";
+      });
+    }
+  }
+
+  void _validatePassword() {
+    (widget.setPassword || widget.changePassword)
+        ? _matchPINs(_enteredPassword == _tmpPassword) // Check if PINs match if a new PIN is being set or current PIN being changed
+        : _validatePIN(_enteredPassword == _securityPIN.toString());
+  }
+
+  void _validatePIN(bool isValid) {
+    if (isValid) {
+      Navigator.pop(context, true);
+    } else {
+      setState(() {
+        _enteredPassword = "";
+        _hasError = true;
+        _errorMessage = "Incorrect PIN";
+      });
+    }
+  }
+
+  void _matchPINs(bool isMatched) {
+    if (isMatched) {
+      _setSecurityPIN(int.parse(_enteredPassword)).then((_) => _readSecurityPIN());
+      Navigator.pop(context, true);
+    } else {
+      setState(() {
+        _tmpPassword = "";
+        _enteredPassword = "";
+        _title = "Enter your new PIN";
+        _hasError = true;
+        _errorMessage = "PIN does not match";
+      });
+    }
+  }
+
+  _resetPassword() {
+    setState(() {
+      _enteredPassword = "";
+    });
+  }
+
+  _erasePassword() {
+    setState(() {
+      _enteredPassword = _enteredPassword.substring(0, _enteredPassword.length - 1);
+    });
   }
 }
