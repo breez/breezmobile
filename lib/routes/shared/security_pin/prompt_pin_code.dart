@@ -21,6 +21,8 @@ class LockScreen extends StatefulWidget {
 class _LockScreenState extends State<LockScreen> {
   final storage = new FlutterSecureStorage();
   String _title;
+  Uint8List image;
+  
   int _securityPIN;
   int _passwordLength = 6;
   String _enteredPassword = "";
@@ -28,12 +30,11 @@ class _LockScreenState extends State<LockScreen> {
 
   bool _hasError = false;
   String _errorMessage = "";
-  Uint8List image;
+
   bool _validated = false;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _title = widget.title ?? "Enter your PIN";
     _readSecurityPIN();
@@ -41,17 +42,15 @@ class _LockScreenState extends State<LockScreen> {
 
   @override
   void didChangeDependencies() {
-    _loadBreezLogo();
     super.didChangeDependencies();
+    _loadBreezLogo();
   }
 
   _readSecurityPIN() async {
-    // Read value
     _securityPIN = int.parse(await storage.read(key: 'securityPIN'));
   }
 
   Future _setSecurityPIN(int securityPIN) async {
-    // Write value
     await storage.write(key: 'securityPIN', value: securityPIN.toString());
   }
 
@@ -198,52 +197,55 @@ class _LockScreenState extends State<LockScreen> {
       }
       if (_enteredPassword.length == _passwordLength) {
         // Validate current PIN before changing PIN
-        // If a new PIN is being set
-        // Prompt user to enter the PIN again
         if (((widget.changePassword && _validated) || widget.setPassword) && _tmpPassword.isEmpty) {
-          // Wait for scale animation
-          Future.delayed(Duration(milliseconds: 300), () => _setPassword());
+          // If a new PIN is being set prompt user to enter the PIN again
+          Future.delayed(Duration(milliseconds: 300), () => _setPINForValidation()); // Wait 300ms for scale animation to end
         } else {
-          Future.delayed(Duration(milliseconds: 300), () => _validatePassword());
+          // Check if PINs match if a new PIN is being set or current PIN is being changed
+          Future.delayed(
+              Duration(milliseconds: 300),
+              () => (widget.setPassword || (widget.changePassword && _validated))
+                  ? _matchPINs(_enteredPassword == _tmpPassword)
+                  : _validatePIN(_enteredPassword == _securityPIN.toString()));
         }
       }
     });
   }
 
-  _setPassword() {
-    if (_tmpPassword.isEmpty) {
-      setState(() {
-        _tmpPassword = _enteredPassword;
-        _enteredPassword = "";
-        _title = "Re-enter your new PIN";
-      });
-    }
-  }
-
-  void _validatePassword() {
-    (widget.setPassword || (widget.changePassword && _validated))
-        ? _matchPINs(_enteredPassword == _tmpPassword) // Check if PINs match if a new PIN is being set or current PIN being changed
-        : _validatePIN(_enteredPassword == _securityPIN.toString());
+  _setPINForValidation() {
+    setState(() {
+      _tmpPassword = _enteredPassword;
+      _enteredPassword = "";
+      _title = "Re-enter your new PIN";
+    });
   }
 
   void _validatePIN(bool isValid) {
     if (isValid) {
       if (widget.changePassword && !_validated) {
-        setState(() {
-          _validated = isValid;
-          _enteredPassword = "";
-          _title = "Enter your new PIN";
-        });
+        _promptUserToEnterNewPIN(isValid);
       } else {
         Navigator.pop(context, true);
       }
     } else {
-      setState(() {
-        _enteredPassword = "";
-        _hasError = true;
-        _errorMessage = "Incorrect PIN";
-      });
+      _incorrectPIN();
     }
+  }
+
+  void _incorrectPIN() {
+    setState(() {
+      _enteredPassword = "";
+      _hasError = true;
+      _errorMessage = "Incorrect PIN";
+    });
+  }
+
+  void _promptUserToEnterNewPIN(bool isValid) {
+    setState(() {
+      _validated = isValid;
+      _enteredPassword = "";
+      _title = "Enter your new PIN";
+    });
   }
 
   void _matchPINs(bool isMatched) {
