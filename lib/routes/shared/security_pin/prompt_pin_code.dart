@@ -36,14 +36,14 @@ class _LockScreenState extends State<LockScreen> {
     super.initState();
     _title = widget.title ?? "Enter your PIN";
     _readSecurityPIN();
+    _loadBreezLogo();
   }
 
-  @override
-  void didChangeDependencies() async {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
+  _loadBreezLogo() async {
     ByteData bytes = await rootBundle.load('src/images/logo-color.png');
-    image = bytes.buffer.asUint8List();
+    setState(() {
+      image = bytes.buffer.asUint8List();
+    });
   }
 
   Future _setSecurityPIN(int securityPIN) async {
