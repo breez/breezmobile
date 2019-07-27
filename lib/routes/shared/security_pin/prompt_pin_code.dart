@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LockScreen extends StatefulWidget {
@@ -25,6 +28,7 @@ class _LockScreenState extends State<LockScreen> {
 
   bool _hasError = false;
   String _errorMessage = "";
+  Uint8List image;
 
   @override
   void initState() {
@@ -35,9 +39,11 @@ class _LockScreenState extends State<LockScreen> {
   }
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
+    ByteData bytes = await rootBundle.load('src/images/logo-color.png');
+    image = bytes.buffer.asUint8List();
   }
 
   Future _setSecurityPIN(int securityPIN) async {
@@ -75,8 +81,8 @@ class _LockScreenState extends State<LockScreen> {
               new Container(
                 child: new Column(children: <Widget>[
                   new Container(
-                    child: Image.asset(
-                      "src/images/logo-color.png",
+                    child: Image.memory(
+                      image,
                       height: 47,
                       width: 125.4,
                       color: Colors.white,
