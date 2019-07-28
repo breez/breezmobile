@@ -217,6 +217,7 @@ class AccountBloc {
   Future _setPinCode(SetPinCode action) async {
     final storage = new FlutterSecureStorage();
     await storage.write(key: 'pinCode', value: action.pinCode.toString());
+    _accountController.add(_accountController.value.copyWith(pinCode: action.pinCode));
     action.resolve(this._accountController.value.pinCode);
   }
 
