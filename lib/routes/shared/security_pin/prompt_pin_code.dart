@@ -6,8 +6,6 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LockScreen extends StatefulWidget {
   final String title;
@@ -23,7 +21,6 @@ class LockScreen extends StatefulWidget {
 }
 
 class _LockScreenState extends State<LockScreen> {
-  final storage = new FlutterSecureStorage();
   AccountBloc _accountBloc;
   String _title;
   Image _breezLogo;
@@ -59,9 +56,8 @@ class _LockScreenState extends State<LockScreen> {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _lockAccount(true);
       _accountBloc.accountStream.listen((account) {
-        // Todo: Remove usage of storage
-        setState(() async {
-          _securityPIN = account.pinCode ?? int.parse(await storage.read(key: 'securityPIN'));
+        setState(() {
+          _securityPIN = account.pinCode;
         });
       });
       precacheImage(_breezLogo.image, context);
