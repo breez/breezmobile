@@ -1,7 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:breez/bloc/account/account_actions.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -22,6 +26,7 @@ class LockScreen extends StatefulWidget {
 
 class _LockScreenState extends State<LockScreen> {
   final storage = new FlutterSecureStorage();
+  AccountBloc _accountBloc;
   String _title;
   Uint8List image;
   
@@ -35,25 +40,43 @@ class _LockScreenState extends State<LockScreen> {
 
   bool _validated = false;
 
+  bool _isInit = false;
+
   @override
   void initState() {
     super.initState();
     _title = widget.title ?? "Enter your PIN";
-    _readSecurityPIN();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loadBreezLogo();
-  }
-
-  _readSecurityPIN() async {
-    _securityPIN = int.parse(await storage.read(key: 'securityPIN'));
+    if (!_isInit) {
+      _loadBreezLogo();
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+      // Todo: Lock Account
+      _accountBloc.accountStream.listen((account) {
+        // Todo: Remove usage of storage
+        setState(() async {
+          _securityPIN = account.pinCode ?? int.parse(await storage.read(key: 'securityPIN'));
+        });
+      });
+      _isInit = true;
+    }
   }
 
   Future _setSecurityPIN(int securityPIN) async {
-    await storage.write(key: 'securityPIN', value: securityPIN.toString());
+    SetPinCode setPinCodeAction = SetPinCode(securityPIN);
+    _accountBloc.userActionsSink.add(setPinCodeAction);
+
+    setPinCodeAction.future.then((_) => Navigator.pop(context, true))
+      ..catchError((err) {
+        if (this.mounted) {
+          setState(() {
+            showFlushbar(context, message: "Failed to set PIN");
+          });
+        }
+      });
   }
 
   _loadBreezLogo() async {
@@ -227,6 +250,7 @@ class _LockScreenState extends State<LockScreen> {
       if (widget.changePassword && !_validated) {
         _promptUserToEnterNewPIN(isValid);
       } else {
+        // Todo: Unlock Account
         if (widget.route != null) {
           Navigator.of(context).pushReplacement(
             new FadeInRoute(
@@ -262,8 +286,7 @@ class _LockScreenState extends State<LockScreen> {
 
   void _matchPINs(bool isMatched) {
     if (isMatched) {
-      _setSecurityPIN(int.parse(_enteredPassword)).then((_) => _readSecurityPIN());
-      Navigator.pop(context, true);
+      _setSecurityPIN(int.parse(_enteredPassword));
     } else {
       setState(() {
         _tmpPassword = "";

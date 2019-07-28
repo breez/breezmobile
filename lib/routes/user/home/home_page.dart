@@ -103,7 +103,7 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-
+    // Todo: Call _registerNotificationHandlers if the account is unlocked
     _registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
