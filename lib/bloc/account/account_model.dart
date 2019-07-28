@@ -136,6 +136,8 @@ class AccountModel {
   final bool enableInProgress;
   final double syncProgress;
   final SyncUIState syncUIState;
+  final bool accountLocked;
+  final int pinCode;
 
   AccountModel(this._accountResponse, this._currency, this._fiatShortName, this._fiatCurrency, this._fiatConversionList,
       {this.initial = true,
@@ -147,7 +149,9 @@ class AccountModel {
       this.enableInProgress = false,
       this.bootstrapProgress = 0,
       this.syncProgress = 0,
-      this.syncUIState = SyncUIState.NONE});
+      this.syncUIState = SyncUIState.NONE,
+      this.accountLocked = false,
+      this.pinCode,});
 
   AccountModel.initial()
       : this(
@@ -163,7 +167,9 @@ class AccountModel {
             null,
             List(),
             initial: true,
-            bootstraping: true);
+            bootstraping: true,
+            accountLocked: false,
+            pinCode: null);
   AccountModel copyWith(
       {Account accountResponse,
       Currency currency,
@@ -179,7 +185,9 @@ class AccountModel {
       double bootstrapProgress,
       double syncProgress,
       bool initial,
-      SyncUIState syncUIState}) {
+      SyncUIState syncUIState,
+      bool accountLocked,
+      int pinCode}) {
     return AccountModel(
         accountResponse ?? this._accountResponse, currency ?? this.currency,
         fiatShortName ?? this._fiatShortName,
@@ -195,6 +203,8 @@ class AccountModel {
             paymentRequestInProgress ?? this.paymentRequestInProgress,
         syncProgress: syncProgress ?? this.syncProgress,
         syncUIState: syncUIState ?? this.syncUIState,
+        accountLocked: accountLocked ?? this.accountLocked,
+        pinCode: pinCode ?? this.pinCode,
         initial: initial ?? this.initial);
   }
 
