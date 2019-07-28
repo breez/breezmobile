@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -28,8 +26,8 @@ class _LockScreenState extends State<LockScreen> {
   final storage = new FlutterSecureStorage();
   AccountBloc _accountBloc;
   String _title;
-  Uint8List image;
-  
+  Image _breezLogo;
+
   int _securityPIN;
   int _passwordLength = 6;
   String _enteredPassword = "";
@@ -46,13 +44,18 @@ class _LockScreenState extends State<LockScreen> {
   void initState() {
     super.initState();
     _title = widget.title ?? "Enter your PIN";
+    _breezLogo = new Image.asset(
+      "src/images/logo-color.png",
+      height: 47,
+      width: 125.4,
+      color: Colors.white,
+    );
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_isInit) {
-      _loadBreezLogo();
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _lockAccount(true);
       _accountBloc.accountStream.listen((account) {
@@ -61,6 +64,7 @@ class _LockScreenState extends State<LockScreen> {
           _securityPIN = account.pinCode ?? int.parse(await storage.read(key: 'securityPIN'));
         });
       });
+      precacheImage(_breezLogo.image, context);
       _isInit = true;
     }
   }
@@ -84,11 +88,6 @@ class _LockScreenState extends State<LockScreen> {
       });
   }
 
-  _loadBreezLogo() async {
-    ByteData bytes = await rootBundle.load('src/images/logo-color.png');
-    setState(() {
-      image = bytes.buffer.asUint8List();
-    });
   }
 
   @override
@@ -116,12 +115,7 @@ class _LockScreenState extends State<LockScreen> {
               new Container(
                 child: new Column(children: <Widget>[
                   new Container(
-                    child: Image.memory(
-                      image,
-                      height: 47,
-                      width: 125.4,
-                      color: Colors.white,
-                    ),
+                    child: _breezLogo,
                     padding: EdgeInsets.only(top: widget.dismissible ? kToolbarHeight : 96.0, bottom: 96.0),
                   ),
                   Text(_title),
