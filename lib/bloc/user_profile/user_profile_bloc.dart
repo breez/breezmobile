@@ -7,6 +7,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/currency_service.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +31,10 @@ class UserProfileBloc {
 
   final _userStreamPreviewController = BehaviorSubject<BreezUserModel>();
   Stream<BreezUserModel> get userPreviewStream => _userStreamPreviewController.stream;
+
+  final _securityController = BehaviorSubject<SecurityModel>();
+  Stream<SecurityModel> get securityStream => _securityController.stream;
+  Sink<SecurityModel> get securitySink => _securityController.sink;
 
   Stream<bool> cardActivationStream;
 
@@ -65,6 +70,9 @@ class UserProfileBloc {
     //listen to changes in user preferences
     _listenCurrencyChange(injector);
     _listenFiatCurrencyChange(injector);
+
+    //listen to changes in security model
+    _listenSecurityChange(injector);
 
     //listen to changes in user avatar
     _listenUserChange(injector);
@@ -144,6 +152,13 @@ class UserProfileBloc {
     });
   }
 
+  void _listenSecurityChange(ServiceInjector injector) {
+    _securityController.stream.listen((securityModel) async {
+      var preferences = await injector.sharedPreferences;
+      _saveChanges(preferences, _currentUser.copyWith(securityModel: securityModel));
+    });
+  }
+
   void _listenUserChange(ServiceInjector injector) {
     _userController.stream.listen((userData) async {
       var preferences = await injector.sharedPreferences;
@@ -213,6 +228,7 @@ class UserProfileBloc {
     _registrationController.close();
     _currencyController.close();
     _fiatConversionController.close();
+    _securityController.close();
     _userController.close();
     _uploadImageController.close();
     _randomizeController.close();
