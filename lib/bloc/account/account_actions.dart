@@ -47,3 +47,9 @@ class ChangeSyncUIState extends AsyncAction {
 }
 
 class FetchRates extends AsyncAction {}
+
+class SetPinCode extends AsyncAction {
+  final int pinCode;
+
+  SetPinCode(this.pinCode);
+}
