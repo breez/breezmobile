@@ -54,7 +54,7 @@ class _LockScreenState extends State<LockScreen> {
     if (!_isInit) {
       _loadBreezLogo();
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-      // Todo: Lock Account
+      _lockAccount(true);
       _accountBloc.accountStream.listen((account) {
         // Todo: Remove usage of storage
         setState(() async {
@@ -63,6 +63,11 @@ class _LockScreenState extends State<LockScreen> {
       });
       _isInit = true;
     }
+  }
+
+  Future _lockAccount(bool isLocked) async {
+    LockAccount lockAccountAction = LockAccount(isLocked);
+    _accountBloc.userActionsSink.add(lockAccountAction);
   }
 
   Future _setSecurityPIN(int securityPIN) async {
@@ -250,7 +255,7 @@ class _LockScreenState extends State<LockScreen> {
       if (widget.changePassword && !_validated) {
         _promptUserToEnterNewPIN(isValid);
       } else {
-        // Todo: Unlock Account
+        _lockAccount(false);
         if (widget.route != null) {
           Navigator.of(context).pushReplacement(
             new FadeInRoute(

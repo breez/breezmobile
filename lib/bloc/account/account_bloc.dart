@@ -136,6 +136,7 @@ class AccountBloc {
       CancelPaymentRequest: _cancelPaymentRequest,
       ChangeSyncUIState: _collapseSyncUI,
       FetchRates: _fetchRates,
+      LockAccount: _lockAccount,
       SetPinCode: _setPinCode,
     };
 
@@ -212,6 +213,11 @@ class AccountBloc {
       await _getExchangeRate();  
     }
     rates.resolve(this._accountController.value.fiatConversionList);
+  }
+
+  Future _lockAccount(LockAccount action) async {
+    _accountController.add(_accountController.value.copyWith(accountLocked: action.isLocked));
+    action.resolve(this._accountController.value.accountLocked);
   }
 
   Future _setPinCode(SetPinCode action) async {
