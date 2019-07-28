@@ -16,7 +16,6 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/status_text.dart';
 import 'package:breez/utils/date.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:breez/routes/shared/security_pin/prompt_pin_code.dart';
 import 'package:breez/widgets/route.dart';
 
@@ -57,14 +56,6 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-      Future<SharedPreferences> sharedPreferences = SharedPreferences.getInstance();
-      sharedPreferences.then((preferences) {
-        if (preferences.getBool('hasSecurityPIN') ?? false) {
-          Navigator.of(context).push(new FadeInRoute(builder: (BuildContext context) {
-            return LockScreen();
-          }));
-        }
-      });
       _isInit = true;
     }
     super.didChangeDependencies();
