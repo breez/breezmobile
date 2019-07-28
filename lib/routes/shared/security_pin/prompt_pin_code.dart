@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -11,8 +12,9 @@ class LockScreen extends StatefulWidget {
   final bool dismissible;
   final bool changePassword;
   final bool setPassword;
+  final Widget route;
 
-  LockScreen({Key key, this.title, this.dismissible = false, this.changePassword = false, this.setPassword = false}) : super(key: key);
+  LockScreen({Key key, this.title, this.dismissible = false, this.changePassword = false, this.setPassword = false, this.route}) : super(key: key);
 
   @override
   _LockScreenState createState() => new _LockScreenState();
@@ -225,7 +227,17 @@ class _LockScreenState extends State<LockScreen> {
       if (widget.changePassword && !_validated) {
         _promptUserToEnterNewPIN(isValid);
       } else {
-        Navigator.pop(context, true);
+        if (widget.route != null) {
+          Navigator.of(context).pushReplacement(
+            new FadeInRoute(
+              builder: (BuildContext context) {
+                return widget.route;
+              },
+            ),
+          );
+        } else {
+          Navigator.pop(context, true);
+        }
       }
     } else {
       _incorrectPIN();
