@@ -227,6 +227,12 @@ class AccountBloc {
     action.resolve(this._accountController.value.pinCode);
   }
 
+  Future _getPinCode() async {
+    final storage = new FlutterSecureStorage();
+    int _pinCode = int.parse(await storage.read(key: 'pinCode'));
+    _accountController.add(_accountController.value.copyWith(pinCode: _pinCode));
+  }
+
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
     action.resolve(await _breezLib.sendPaymentFailureBugReport(action.traceReport));        
   }
@@ -576,6 +582,7 @@ class AccountBloc {
             acc.status.toString());
         _accountController.add(_accountController.value
             .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatShortName: _currentUser?.fiatCurrency, initial: false));
+        if(_currentUser.securityModel.hasSecurityPIN) _getPinCode();
       }
     }).catchError(_accountController.addError);
     _refreshPayments();
