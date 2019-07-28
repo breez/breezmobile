@@ -17,7 +17,8 @@ import 'package:flutter/services.dart';
 import 'package:breez/routes/shared/splash_page.dart';
 import 'package:breez/routes/shared/initial_walkthrough.dart';
 import 'package:breez/routes/shared/network/network.dart';
-import 'package:breez/routes/shared/security_pin//security_pin.dart';
+import 'package:breez/routes/shared/security_pin/security_pin.dart';
+import 'package:breez/routes/shared/security_pin/prompt_pin_code.dart';
 import 'package:breez/routes/shared/dev/dev.dart';
 import 'package:breez/routes/user/activate_card/activate_card_page.dart';
 import 'package:breez/routes/user/add_funds/add_funds_page.dart';
@@ -68,11 +69,16 @@ class UserApp extends StatelessWidget {
               fontFamily: 'IBMPlexSansRegular',
               cardColor: theme.BreezColors.blue[500],
             ),
-            initialRoute: user.registered ? null : '/splash',
+            initialRoute: user.registered ? (user.securityModel.hasSecurityPIN ? '/lockscreen' : null) : '/splash',
             home: new Home(accountBloc, invoiceBloc,
                   connectPayBloc, backupBloc),            
             onGenerateRoute: (RouteSettings settings) {
-              switch (settings.name) {              
+              switch (settings.name) {
+                case '/lockscreen':
+                  return new FadeInRoute(
+                      builder: (_) => new LockScreen(),
+                      settings: settings
+                  );
                 case '/home':
                   return new FadeInRoute(
                     builder: (_) => new Home(
@@ -147,7 +153,7 @@ class UserApp extends StatelessWidget {
                   );
                 case '/security':
                   return new FadeInRoute(
-                    builder: (_) => new SecurityPage(),
+                    builder: (_) => (user.securityModel.hasSecurityPIN) ? new LockScreen(dismissible: true, route: new SecurityPage(),) : new SecurityPage(),
                     settings: settings,
                   );
                 case '/developers':
