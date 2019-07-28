@@ -7,7 +7,6 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecurityPage extends StatefulWidget {
   SecurityPage({Key key}) : super(key: key);
@@ -19,7 +18,6 @@ class SecurityPage extends StatefulWidget {
 }
 
 class SecurityPageState extends State<SecurityPage> {
-  final storage = new FlutterSecureStorage();
   UserProfileBloc _userProfileBloc;
 
   bool _isInit = false;
@@ -45,10 +43,6 @@ class SecurityPageState extends State<SecurityPage> {
 
   void _setHasSecurityPIN(SecurityModel _securityModel, bool value) {
     _userProfileBloc.securitySink.add(_securityModel.copyWith(hasSecurityPIN: value));
-  }
-
-  _deleteSecurityPIN() async {
-    await storage.delete(key: 'securityPIN');
   }
 
   @override
@@ -94,9 +88,6 @@ class SecurityPageState extends State<SecurityPage> {
                 onChanged: (bool value) {
                   if (this.mounted) {
                     _setHasSecurityPIN(securityModel, value);
-                    if (!value) {
-                      _deleteSecurityPIN();
-                    }
                   }
                 },
               )

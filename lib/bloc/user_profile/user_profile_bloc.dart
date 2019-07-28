@@ -15,6 +15,7 @@ import 'package:breez/bloc/user_profile/default_profile_generator.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/currency_data.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class UserProfileBloc {
   static const PROFILE_DATA_FOLDER_PATH = "profile";
@@ -153,8 +154,10 @@ class UserProfileBloc {
   }
 
   void _listenSecurityChange(ServiceInjector injector) {
+    final storage = new FlutterSecureStorage();
     _securityController.stream.listen((securityModel) async {
       var preferences = await injector.sharedPreferences;
+      if(!securityModel.hasSecurityPIN) await storage.delete(key: 'pinCode');
       _saveChanges(preferences, _currentUser.copyWith(securityModel: securityModel));
     });
   }
