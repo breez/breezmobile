@@ -84,8 +84,6 @@ class _LockScreenState extends State<LockScreen> {
       });
   }
 
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
