@@ -582,7 +582,7 @@ class AccountBloc {
             acc.status.toString());
         _accountController.add(_accountController.value
             .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatShortName: _currentUser?.fiatCurrency, initial: false));
-        if(_currentUser.securityModel.hasSecurityPIN) _getPinCode();
+        if(_currentUser?.securityModel?.hasSecurityPIN ?? false) _getPinCode();
       }
     }).catchError(_accountController.addError);
     _refreshPayments();
