@@ -99,12 +99,18 @@ class HomeState extends State<Home> {
   String _activeScreen = "breezHome";
   Set _hiddenRountes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
+  StreamSubscription _streamSubscription;
 
   @override
   void initState() {
     super.initState();
-    // Todo: Call _registerNotificationHandlers if the account is unlocked
-    _registerNotificationHandlers();
+
+    _streamSubscription = widget.accountBloc.accountStream.listen((acc){
+      if(acc != null && !acc.accountLocked){
+        _registerNotificationHandlers();
+        _streamSubscription.cancel();
+      }
+    });
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
     _listenWhiltelistPermissionsRequest();
@@ -130,6 +136,7 @@ class HomeState extends State<Home> {
 
   @override
   void dispose() {
+    _streamSubscription?.cancel();
     _accountNotificationsSubscription?.cancel();    
     super.dispose();
   }
