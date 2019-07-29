@@ -148,7 +148,7 @@ class UserApp extends StatelessWidget {
                   );
                 case '/security':
                   return new FadeInRoute(
-                    builder: (_) => (user.waitingForPin) ? new LockScreen(dismissible: true, route: new SecurityPage(),) : new SecurityPage(),
+                    builder: (_) => (user.securityModel.pinCode != null) ? new LockScreen(dismissible: true, route: new SecurityPage(),) : new SecurityPage(),
                     settings: settings,
                   );
                 case '/developers':
