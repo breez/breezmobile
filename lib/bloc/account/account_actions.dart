@@ -48,8 +48,9 @@ class ChangeSyncUIState extends AsyncAction {
 
 class FetchRates extends AsyncAction {}
 
-class SetPinCode extends AsyncAction {
+class UpdateSecurityModel extends AsyncAction {
   final String pinCode;
+  final bool secureBackupWithPin;
 
-  SetPinCode(this.pinCode);
+  UpdateSecurityModel({this.pinCode, this.secureBackupWithPin});
 }
