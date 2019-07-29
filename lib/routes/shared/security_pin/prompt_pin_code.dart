@@ -237,6 +237,7 @@ class _LockScreenState extends State<LockScreen> {
       if (widget.changePassword && !_validated) {
         _promptUserToEnterNewPinCode(isValid);
       } else {
+        _userProfileBloc.userSink.add(_user.copyWith(waitingForPin: false));
         if (widget.route != null) {
           Navigator.of(context).pushReplacement(
             new FadeInRoute(

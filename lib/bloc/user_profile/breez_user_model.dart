@@ -11,12 +11,13 @@ class BreezUserModel {
   String animal = '';
   String _image;
   SecurityModel securityModel;
+  bool waitingForPin;
 
-  BreezUserModel(this.userID, this.name, this.color, this.animal, {this.currency = Currency.SAT, this.fiatCurrency = "USD", String image, this.securityModel}) {
+  BreezUserModel(this.userID, this.name, this.color, this.animal, {this.currency = Currency.SAT, this.fiatCurrency = "USD", String image, this.securityModel, this.waitingForPin}) {
     this._image = image;
   }
-  BreezUserModel copyWith({String name, String color, String animal, Currency currency, String fiatCurrency, String image, SecurityModel securityModel}) {
-    return new BreezUserModel(this.userID, name ?? this.name, color ?? this.color, animal ?? this.animal, currency: currency ?? this.currency, fiatCurrency: fiatCurrency ?? this.fiatCurrency, image: image ?? this._image, securityModel: securityModel ?? this.securityModel);
+  BreezUserModel copyWith({String name, String color, String animal, Currency currency, String fiatCurrency, String image, SecurityModel securityModel, bool waitingForPin}) {
+    return new BreezUserModel(this.userID, name ?? this.name, color ?? this.color, animal ?? this.animal, currency: currency ?? this.currency, fiatCurrency: fiatCurrency ?? this.fiatCurrency, image: image ?? this._image, securityModel: securityModel ?? this.securityModel, waitingForPin: waitingForPin ?? this.waitingForPin);
   }
 
   bool get registered {
@@ -24,8 +25,6 @@ class BreezUserModel {
   }
 
   String get avatarURL => _image == null || _image.isEmpty ? 'breez://profile_image?animal=$animal&color=$color' : _image;
-
-  bool get waitingForPin => securityModel?.pinCode != null ?? false;
 
   BreezUserModel.fromJson(Map<String, dynamic> json)
       : userID = json['userID'],
@@ -36,7 +35,8 @@ class BreezUserModel {
         color = json['color'],
         animal = json['animal'],
         _image = json['image'],
-        securityModel = SecurityModel.fromJson(json['securityModel']);
+        securityModel = SecurityModel.fromJson(json['securityModel']),
+        waitingForPin = SecurityModel.fromJson(json['securityModel']).pinCode != null;
 
   Map<String, dynamic> toJson() => {
         'userID': userID,

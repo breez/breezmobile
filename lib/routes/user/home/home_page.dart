@@ -22,6 +22,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/routes/shared/no_connection_dialog.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 
 final GlobalKey firstPaymentItemKey = new GlobalKey();
 final ScrollController scrollController = new ScrollController();
@@ -30,10 +31,11 @@ final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
   final InvoiceBloc invoiceBloc;
+  final UserProfileBloc userProfileBloc;
   final ConnectPayBloc ctpBloc;
   final BackupBloc backupBloc;
 
-  Home(this.accountBloc, this.invoiceBloc, this.ctpBloc, this.backupBloc) {
+  Home(this.accountBloc, this.invoiceBloc, this.userProfileBloc, this.ctpBloc, this.backupBloc) {
     _minorActionsInvoice =
     new List<DrawerItemConfig>.unmodifiable([
       new DrawerItemConfig(
@@ -99,12 +101,18 @@ class HomeState extends State<Home> {
   String _activeScreen = "breezHome";
   Set _hiddenRountes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
+  StreamSubscription _accountLockSubscription;
 
   @override
   void initState() {
     super.initState();
 
-    _registerNotificationHandlers();
+    _accountLockSubscription = widget.userProfileBloc.userStream.listen((user) {
+      if(!user.waitingForPin) {
+        _registerNotificationHandlers();
+        _accountLockSubscription.cancel();
+      }
+    });
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
     _listenWhiltelistPermissionsRequest();
@@ -130,7 +138,8 @@ class HomeState extends State<Home> {
 
   @override
   void dispose() {
-    _accountNotificationsSubscription?.cancel();    
+    _accountNotificationsSubscription?.cancel();
+    _accountLockSubscription?.cancel();
     super.dispose();
   }
 
