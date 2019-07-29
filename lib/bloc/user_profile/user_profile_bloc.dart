@@ -108,7 +108,7 @@ class UserProfileBloc {
       BreezUserModel user = BreezUserModel.fromJson(profile);
       // Read the pin from the secure storage and initialize the breez user model appropriately
       String _pinCode = await _secureStorage.read(key: 'pinCode');
-      if(_pinCode != null) user.copyWith(securityModel: user.securityModel.copyWith(pinCode: _pinCode));
+      if(_pinCode != null) user.securityModel = SecurityModel(pinCode: _pinCode);
       if (user.userID != null) {
         saveUser(injector, preferences, user).then(_publishUser);
       }
@@ -170,9 +170,9 @@ class UserProfileBloc {
   }
 
   Future _setPinCode(SetPinCode setPinCode) async {
-    if (setPinCode.pinCode.isNotEmpty) {
+    if (setPinCode.pinCode != null) {
       await _secureStorage.write(key: 'pinCode', value: setPinCode.pinCode);
-      _userController.add(_currentUser.copyWith(securityModel: _currentUser.securityModel.copyWith(pinCode: setPinCode.pinCode)));
+      _userController.add(_currentUser.copyWith(securityModel: SecurityModel(pinCode: setPinCode.pinCode)));
     } else {
       await _secureStorage.delete(key: 'pinCode');
       _userController.add(_currentUser.copyWith(securityModel: SecurityModel()));
