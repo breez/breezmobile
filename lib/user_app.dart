@@ -17,7 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:breez/routes/shared/splash_page.dart';
 import 'package:breez/routes/shared/initial_walkthrough.dart';
 import 'package:breez/routes/shared/network/network.dart';
-import 'package:breez/routes/shared/security_pin/security_pin.dart';
+import 'package:breez/routes/shared/security_pin/security_pin_page.dart';
 import 'package:breez/routes/shared/security_pin/prompt_pin_code.dart';
 import 'package:breez/routes/shared/dev/dev.dart';
 import 'package:breez/routes/user/activate_card/activate_card_page.dart';
