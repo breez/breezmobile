@@ -1,9 +1,9 @@
 class SecurityModel {
-  bool hasSecurityPIN;
+  final String pinCode;
 
-  SecurityModel({this.hasSecurityPIN});
+  SecurityModel({this.pinCode});
 
-  SecurityModel copyWith({bool hasSecurityPIN}) {
-    return new SecurityModel(hasSecurityPIN: hasSecurityPIN ?? this.hasSecurityPIN);
+  SecurityModel copyWith({String pinCode}) {
+    return new SecurityModel(pinCode: pinCode ?? this.pinCode);
   }
 }
