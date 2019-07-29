@@ -36,7 +36,7 @@ class BreezUserModel {
         color = json['color'],
         animal = json['animal'],
         _image = json['image'],
-        securityModel = SecurityModel.fromJson(json);
+        securityModel = SecurityModel.fromJson(json['securityModel']);
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -47,6 +47,6 @@ class BreezUserModel {
         'color': color,
         'animal': animal,
         'image': _image,
-        'securityModel': securityModel,
+        'securityModel': securityModel.toJson(),
       };
 }
