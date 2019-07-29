@@ -28,6 +28,7 @@ class UserProfileBloc {
   Map<String, CurrencyData> _currencyData;
   Map<Type, Function> _actionHandlers = Map();
   final _userActionsController = new StreamController<AsyncAction>.broadcast();
+  Sink<AsyncAction> get userActionsSink => _userActionsController.sink;
   final _registrationController = new StreamController<void>();
   Sink<void> get registerSink => _registrationController.sink;
 

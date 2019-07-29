@@ -39,6 +39,7 @@ class SecurityPageState extends State<SecurityPage> {
 
   void _deleteSecurityModel() {
     SetPinCode setPinCodeAction = SetPinCode(null);
+    _userProfileBloc.userActionsSink.add(setPinCodeAction);
     setPinCodeAction.future.then((_) {
       if (this.mounted) {
         Navigator.pop(context);

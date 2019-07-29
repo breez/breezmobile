@@ -63,6 +63,7 @@ class _LockScreenState extends State<LockScreen> {
 
   _setPinCode(String securityPIN) {
     SetPinCode setPinCodeAction = SetPinCode(securityPIN);
+    _userProfileBloc.userActionsSink.add(setPinCodeAction);
     setPinCodeAction.future.then((_) {
       if (this.mounted) {
         Navigator.pop(context);
