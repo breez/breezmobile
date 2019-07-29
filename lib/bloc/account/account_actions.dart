@@ -48,12 +48,6 @@ class ChangeSyncUIState extends AsyncAction {
 
 class FetchRates extends AsyncAction {}
 
-class LockAccount extends AsyncAction {
-  final bool isLocked;
-
-  LockAccount(this.isLocked);
-}
-
 class SetPinCode extends AsyncAction {
   final int pinCode;
 

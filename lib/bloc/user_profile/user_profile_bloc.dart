@@ -16,14 +16,18 @@ import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/currency_data.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:breez/bloc/account/account_actions.dart';
 
 class UserProfileBloc {
   static const PROFILE_DATA_FOLDER_PATH = "profile";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   NFCService _nfc;
   CurrencyService _currencyService;
   Map<String, CurrencyData> _currencyData;
+  Map<Type, Function> _actionHandlers = Map();
+  final _userActionsController = new StreamController<AsyncAction>.broadcast();
   final _registrationController = new StreamController<void>();
   Sink<void> get registerSink => _registrationController.sink;
 
@@ -32,10 +36,6 @@ class UserProfileBloc {
 
   final _userStreamPreviewController = BehaviorSubject<BreezUserModel>();
   Stream<BreezUserModel> get userPreviewStream => _userStreamPreviewController.stream;
-
-  final _securityController = BehaviorSubject<SecurityModel>();
-  Stream<SecurityModel> get securityStream => _securityController.stream;
-  Sink<SecurityModel> get securitySink => _securityController.sink;
 
   Stream<bool> cardActivationStream;
 
@@ -58,6 +58,9 @@ class UserProfileBloc {
     ServiceInjector injector = ServiceInjector();
     _nfc = injector.nfc;
     _currencyService = injector.currencyService;
+    _actionHandlers = {
+      SetPinCode: _setPinCode,
+    };
     print ("UserProfileBloc started");
 
     cardActivationStream = _nfc.cardActivationStream;
@@ -65,15 +68,15 @@ class UserProfileBloc {
     //push already saved user to the stream
     _initializeWithSavedUser(injector);
 
+    //listen to user actions
+    _listenUserActions();
+
     //listen to registration requests
     _listenRegistrationRequests(injector);
 
     //listen to changes in user preferences
     _listenCurrencyChange(injector);
     _listenFiatCurrencyChange(injector);
-
-    //listen to changes in security model
-    _listenSecurityChange(injector);
 
     //listen to changes in user avatar
     _listenUserChange(injector);
@@ -101,8 +104,11 @@ class UserProfileBloc {
       String jsonStr =
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
       Map profile = json.decode(jsonStr);
-      BreezUserModel user = BreezUserModel.fromJson(profile);      
-      if (user.userID != null) {        
+      BreezUserModel user = BreezUserModel.fromJson(profile);
+      // Read the pin from the secure storage and initialize the breez user model appropriately
+      String _pinCode = await _secureStorage.read(key: 'pinCode');
+      if(_pinCode != null) user.copyWith(securityModel: user.securityModel.copyWith(pinCode: _pinCode));
+      if (user.userID != null) {
         saveUser(injector, preferences, user).then(_publishUser);
       }
 
@@ -132,6 +138,15 @@ class UserProfileBloc {
     return user;
   }
 
+  void _listenUserActions() {
+    _userActionsController.stream.listen((action) {
+      var handler = _actionHandlers[action.runtimeType];
+      if (handler != null) {
+        handler(action).catchError((e) => action.resolveError(e));
+      }
+    });
+  }
+
   void _listenRegistrationRequests(ServiceInjector injector) {
     _registrationController.stream.listen((request) async {
       var preferences = await injector.sharedPreferences;
@@ -153,13 +168,15 @@ class UserProfileBloc {
     });
   }
 
-  void _listenSecurityChange(ServiceInjector injector) {
-    final storage = new FlutterSecureStorage();
-    _securityController.stream.listen((securityModel) async {
-      var preferences = await injector.sharedPreferences;
-      if(!securityModel.hasSecurityPIN) await storage.delete(key: 'pinCode');
-      _saveChanges(preferences, _currentUser.copyWith(securityModel: securityModel));
-    });
+  Future _setPinCode(SetPinCode setPinCode) async {
+    if (setPinCode.pinCode.isNotEmpty) {
+      await _secureStorage.write(key: 'pinCode', value: setPinCode.pinCode);
+      _userController.add(_currentUser.copyWith(securityModel: _currentUser.securityModel.copyWith(pinCode: setPinCode.pinCode)));
+    } else {
+      await _secureStorage.delete(key: 'pinCode');
+      _userController.add(_currentUser.copyWith(securityModel: SecurityModel()));
+    }
+    setPinCode.resolve(this._userController.value.securityModel.pinCode);
   }
 
   void _listenUserChange(ServiceInjector injector) {
@@ -231,7 +248,6 @@ class UserProfileBloc {
     _registrationController.close();
     _currencyController.close();
     _fiatConversionController.close();
-    _securityController.close();
     _userController.close();
     _uploadImageController.close();
     _randomizeController.close();

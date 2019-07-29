@@ -20,7 +20,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:breez/services/currency_data.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'account_synchronizer.dart';
 
@@ -136,8 +135,6 @@ class AccountBloc {
       CancelPaymentRequest: _cancelPaymentRequest,
       ChangeSyncUIState: _collapseSyncUI,
       FetchRates: _fetchRates,
-      LockAccount: _lockAccount,
-      SetPinCode: _setPinCode,
     };
 
     _accountController.add(AccountModel.initial());
@@ -213,24 +210,6 @@ class AccountBloc {
       await _getExchangeRate();  
     }
     rates.resolve(this._accountController.value.fiatConversionList);
-  }
-
-  Future _lockAccount(LockAccount action) async {
-    _accountController.add(_accountController.value.copyWith(accountLocked: action.isLocked));
-    action.resolve(this._accountController.value.accountLocked);
-  }
-
-  Future _setPinCode(SetPinCode action) async {
-    final storage = new FlutterSecureStorage();
-    await storage.write(key: 'pinCode', value: action.pinCode.toString());
-    _accountController.add(_accountController.value.copyWith(pinCode: action.pinCode));
-    action.resolve(this._accountController.value.pinCode);
-  }
-
-  Future _getPinCode() async {
-    final storage = new FlutterSecureStorage();
-    int _pinCode = int.parse(await storage.read(key: 'pinCode'));
-    _accountController.add(_accountController.value.copyWith(pinCode: _pinCode));
   }
 
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
@@ -582,7 +561,6 @@ class AccountBloc {
             acc.status.toString());
         _accountController.add(_accountController.value
             .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatShortName: _currentUser?.fiatCurrency, initial: false));
-        if(_currentUser?.securityModel?.hasSecurityPIN ?? false) _getPinCode();
       }
     }).catchError(_accountController.addError);
     _refreshPayments();
