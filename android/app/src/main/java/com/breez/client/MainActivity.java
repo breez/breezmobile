@@ -49,13 +49,11 @@ public class MainActivity extends FlutterActivity {
     public void onPause() {
         super.onPause();
         BreezApplication.isBackground = true;
-        m_nfc.disableForegroundDispatch();
     }
 
     public void onResume() {
         super.onResume();
         BreezApplication.isBackground = false;
-        m_nfc.enableForegroundDispatch();
     }
 
     @Override
