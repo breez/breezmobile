@@ -1,3 +1,4 @@
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
@@ -36,13 +37,13 @@ class SecurityPageState extends State<SecurityPage> {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  void _setHasSecurityPIN(SecurityModel _securityModel, bool value) {
-    _userProfileBloc.securitySink.add(_securityModel.copyWith(hasSecurityPIN: value));
+  void _deleteSecurityModel() {
+    SetPinCode setPinCodeAction = SetPinCode(null);
+    setPinCodeAction.future.then((_) {
+      if (this.mounted) {
+        Navigator.pop(context);
+      }
+    });
   }
 
   @override
@@ -76,55 +77,68 @@ class SecurityPageState extends State<SecurityPage> {
 
   List<Widget> _buildSecurityPINTiles(SecurityModel securityModel) {
     List<Widget> _tiles = List();
-    final _disableSecurityPIN = ListTile(
-        title: Text(
-          securityModel.hasSecurityPIN ? "Activate PIN" : "Create PIN",
-          style: TextStyle(color: Colors.white),
-        ),
-        trailing: securityModel.hasSecurityPIN
-            ? Switch(
-                value: securityModel.hasSecurityPIN,
-                activeColor: Colors.white,
-                onChanged: (bool value) {
-                  if (this.mounted) {
-                    _setHasSecurityPIN(securityModel, value);
-                  }
-                },
-              )
-            : Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-        onTap: securityModel.hasSecurityPIN
-            ? null
-            : () async {
-                bool _isValid = await Navigator.of(context).push(new FadeInRoute(builder: (BuildContext context) {
-                  return LockScreen(
-                    title: "Enter your new PIN",
-                    dismissible: true,
-                    setPassword: true,
-                  );
-                }));
-                if (_isValid) _setHasSecurityPIN(securityModel, true);
-              });
-
-    final _changeSecurityPIN = ListTile(
-        title: Text(
-          "Change PIN",
-          style: TextStyle(color: Colors.white),
-        ),
-        trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-        onTap: () async {
-          bool _isValid = await Navigator.of(context).push(new FadeInRoute(builder: (BuildContext context) {
-            return LockScreen(
-              title: "Enter your current PIN",
-              dismissible: true,
-              changePassword: true,
-            );
-          }));
-          if (_isValid) _setHasSecurityPIN(securityModel, true);
-        });
-    _tiles..add(_disableSecurityPIN);
-    if (securityModel.hasSecurityPIN) {
-      _tiles..add(Divider())..add(_changeSecurityPIN);
-    }
+    final _disablePINTile = _buildDisablePINTile(securityModel);
+    final _changePINTile = _buildChangePINTile();
+    _tiles..add(_disablePINTile);
+    if (securityModel != null) _tiles..add(Divider())..add(_changePINTile);
     return _tiles;
+  }
+
+  ListTile _buildChangePINTile() {
+    return ListTile(
+      title: Text(
+        "Change PIN",
+        style: TextStyle(color: Colors.white),
+      ),
+      trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+      onTap: () {
+        Navigator.of(context).push(
+          new FadeInRoute(
+            builder: (BuildContext context) {
+              return LockScreen(
+                label: "Enter your current PIN",
+                dismissible: true,
+                changePassword: true,
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  ListTile _buildDisablePINTile(SecurityModel securityModel) {
+    return ListTile(
+      title: Text(
+        securityModel != null ? "Activate PIN" : "Create PIN",
+        style: TextStyle(color: Colors.white),
+      ),
+      trailing: securityModel != null
+          ? Switch(
+              value: securityModel != null,
+              activeColor: Colors.white,
+              onChanged: (bool value) {
+                if (this.mounted) {
+                  if (!value) _deleteSecurityModel();
+                }
+              },
+            )
+          : Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+      onTap: securityModel != null
+          ? null
+          : () {
+              Navigator.of(context).push(
+                new FadeInRoute(
+                  builder: (BuildContext context) {
+                    return LockScreen(
+                      label: "Enter your new PIN",
+                      dismissible: true,
+                      setPassword: true,
+                    );
+                  },
+                ),
+              );
+            },
+    );
   }
 }
