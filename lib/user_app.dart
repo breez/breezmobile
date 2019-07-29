@@ -69,7 +69,7 @@ class UserApp extends StatelessWidget {
               fontFamily: 'IBMPlexSansRegular',
               cardColor: theme.BreezColors.blue[500],
             ),
-            initialRoute: user.registered ? (user.securityModel.hasSecurityPIN ? '/lockscreen' : null) : '/splash',
+            initialRoute: user.registered ? (user.waitingForPin ? '/lockscreen' : null) : '/splash',
             home: new Home(accountBloc, invoiceBloc,
                   connectPayBloc, backupBloc),            
             onGenerateRoute: (RouteSettings settings) {
@@ -153,7 +153,7 @@ class UserApp extends StatelessWidget {
                   );
                 case '/security':
                   return new FadeInRoute(
-                    builder: (_) => (user.securityModel.hasSecurityPIN) ? new LockScreen(dismissible: true, route: new SecurityPage(),) : new SecurityPage(),
+                    builder: (_) => (user.waitingForPin) ? new LockScreen(dismissible: true, route: new SecurityPage(),) : new SecurityPage(),
                     settings: settings,
                   );
                 case '/developers':

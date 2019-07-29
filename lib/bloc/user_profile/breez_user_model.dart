@@ -25,6 +25,8 @@ class BreezUserModel {
 
   String get avatarURL => _image == null || _image.isEmpty ? 'breez://profile_image?animal=$animal&color=$color' : _image;
 
+  bool get waitingForPin => securityModel?.pinCode != null ?? false;
+
   BreezUserModel.fromJson(Map<String, dynamic> json)
       : userID = json['userID'],
         token = json['token'],
@@ -33,8 +35,7 @@ class BreezUserModel {
         name = json['name'],
         color = json['color'],
         animal = json['animal'],
-        _image = json['image'],
-        securityModel = json['hasSecurityPIN'] == null ? SecurityModel(hasSecurityPIN: false) : SecurityModel(hasSecurityPIN: json['hasSecurityPIN'] == 'true');
+        _image = json['image'];
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -45,6 +46,5 @@ class BreezUserModel {
         'color': color,
         'animal': animal,
         'image': _image,
-        'hasSecurityPIN': securityModel.hasSecurityPIN.toString()
       };
 }
