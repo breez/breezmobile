@@ -4,6 +4,7 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
@@ -62,7 +63,8 @@ class _LockScreenState extends State<LockScreen> {
   }
 
   _setPinCode(String securityPIN) {
-    UpdateSecurityModel updateSecurityModelAction = UpdateSecurityModel(pinCode: securityPIN, secureBackupWithPin: _user.securityModel.secureBackupWithPin);
+    UpdateSecurityModel updateSecurityModelAction =
+        UpdateSecurityModel(pinCode: securityPIN, secureBackupWithPin: _user.securityModel.secureBackupWithPin);
     _userProfileBloc.userActionsSink.add(updateSecurityModelAction);
     updateSecurityModelAction.future.then((_) {
       if (this.mounted) {
@@ -89,114 +91,15 @@ class _LockScreenState extends State<LockScreen> {
                 elevation: 0.0,
               )
             : null,
-        body: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              new Container(
-                child: new Column(children: <Widget>[_buildBreezLogo(), Text(_label), _buildPinCircles(), _buildErrorMessage()]),
-              ),
-              new Expanded(
-                child: _numPad(),
-              ),
-            ],
-          ),
+        body: PinCodeWidget(
+          _breezLogo,
+          _label,
+          _enteredPinCode,
+          widget.dismissible,
+          _errorMessage,
+          (numberText) => _onNumButtonPressed(numberText),
+          (enteredPinCode) => _setPinCodeInput(enteredPinCode),
         ),
-      ),
-    );
-  }
-
-  Padding _buildBreezLogo() {
-    return Padding(
-      child: _breezLogo,
-      padding: EdgeInsets.only(top: widget.dismissible ? kToolbarHeight : 96.0, bottom: 96.0),
-    );
-  }
-
-  Container _buildPinCircles() {
-    return Container(
-      margin: const EdgeInsets.only(
-        top: 16,
-        left: 64,
-        right: 64,
-      ),
-      height: 48,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: _buildCircles(),
-      ),
-    );
-  }
-
-  Padding _buildErrorMessage() {
-    return _errorMessage.isNotEmpty
-        ? Padding(
-            padding: EdgeInsets.only(bottom: 64.0),
-            child: Text(
-              _errorMessage,
-              style: theme.errorStyle,
-            ),
-          )
-        : Padding(
-            padding: EdgeInsets.only(bottom: 64.0),
-            child: Text(
-              "",
-              style: theme.errorStyle,
-            ),
-          );
-  }
-
-  List<Widget> _buildCircles() {
-    var list = <Widget>[];
-    for (int i = 0; i < _passwordLength; i++) {
-      list.add(AnimatedContainer(
-        duration: Duration(milliseconds: 200),
-        padding: EdgeInsets.only(top: 24.0),
-        margin: EdgeInsets.only(bottom: 0),
-        width: _enteredPinCode.length == _passwordLength ? 28 : 24,
-        height: _enteredPinCode.length == _passwordLength ? 28 : 24,
-        decoration: BoxDecoration(
-            color: i < _enteredPinCode.length ? Colors.white : Colors.transparent,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 2.0)),
-      ));
-    }
-    return list;
-  }
-
-  Widget _numPad() {
-    return new GridView.count(
-        crossAxisCount: 3,
-        childAspectRatio: 5 / 3,
-        padding: EdgeInsets.zero,
-        children: List<int>.generate(9, (i) => i).map((index) => _numberButton((index + 1).toString())).followedBy([
-          Container(
-            child: new IconButton(
-              onPressed: () => _setPinCodeInput(""),
-              icon: Icon(
-                Icons.delete_forever,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          _numberButton("0"),
-          Container(
-            child: new IconButton(
-              onPressed: () => _setPinCodeInput(_enteredPinCode.substring(0, _enteredPinCode.length - 1)),
-              icon: Icon(
-                Icons.backspace,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ]).toList());
-  }
-
-  Container _numberButton(String number) {
-    return Container(
-      child: new FlatButton(
-        onPressed: () => _onNumButtonPressed(number),
-        child: new Text(number, textAlign: TextAlign.center, style: theme.numPadNumberStyle),
       ),
     );
   }
@@ -209,7 +112,7 @@ class _LockScreenState extends State<LockScreen> {
       }
       if (_enteredPinCode.length == _passwordLength) {
         // Validate current PIN before changing PIN
-        if (((widget.changePassword && _validated) || widget.setPassword) &&  _tmpPassword.isEmpty) {
+        if (((widget.changePassword && _validated) || widget.setPassword) && _tmpPassword.isEmpty) {
           // If a new PIN is being set prompt user to enter the PIN again
           Future.delayed(Duration(milliseconds: 300), () => _setPinCodeForValidation()); // Wait 300ms for scale animation to end
         } else {
