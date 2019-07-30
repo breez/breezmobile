@@ -556,6 +556,7 @@ class _NfcDialogState extends State<_NfcDialog> {
     _timerSubscription?.cancel();
     _paidInvoicesSubscription?.cancel();
     _sentInvoicesSubscription?.cancel();
+    widget._invoiceBloc.newInvoiceRequestSink.add(null);
     super.dispose();
   }
 

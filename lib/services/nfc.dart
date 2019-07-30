@@ -54,6 +54,7 @@ class NFCService {
   }
 
   void stopBeam() {
+    _bolt11BeamController.close();
     _p2pBeamController.close();
     _platform.invokeMethod("stopBeam");
   }

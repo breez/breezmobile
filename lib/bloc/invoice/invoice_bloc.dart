@@ -55,15 +55,24 @@ class InvoiceBloc {
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
     _newInvoiceRequestController.stream.listen((invoiceRequest){
-      _readyInvoicesController.add(null);
-      breezLib.addInvoice(invoiceRequest.amount, payeeName: invoiceRequest.payeeName, payeeImageURL: invoiceRequest.logo, description: invoiceRequest.description, expiry: invoiceRequest.expiry)
-        .then( (paymentRequest) { 
+      if (invoiceRequest == null) {
+        nfc.stopBeam();
+      }
+      else {
+        _readyInvoicesController.add(null);
+        breezLib.addInvoice(
+            invoiceRequest.amount, payeeName: invoiceRequest.payeeName,
+            payeeImageURL: invoiceRequest.logo,
+            description: invoiceRequest.description,
+            expiry: invoiceRequest.expiry)
+            .then((paymentRequest) {
           nfc.startBolt11Beam(paymentRequest);
           log.info("Payment Request");
           log.info(paymentRequest);
           _readyInvoicesController.add(paymentRequest);
         })
-        .catchError(_readyInvoicesController.addError);
+            .catchError(_readyInvoicesController.addError);
+      }
     });
   }
 
