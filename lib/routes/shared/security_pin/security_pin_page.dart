@@ -1,7 +1,7 @@
-import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/security_pin/prompt_pin_code.dart';
 import 'package:breez/routes/shared/security_pin/security_pin_warning_dialog.dart';

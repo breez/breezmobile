@@ -1,20 +1,6 @@
-
-import 'dart:async';
-import 'package:breez/bloc/account/fiat_conversion.dart';
+import 'package:breez/bloc/async_action.dart';
 
 import 'account_model.dart';
-
-class AsyncAction {
-  Completer _completer = new Completer(); 
-  Future get future => _completer.future;  
-
-  void resolve(Object value){    
-    _completer.complete(value);
-  }
-  void resolveError(error) {
-    _completer.completeError(error);
-  }
-}
 
 class SendPaymentFailureReport extends AsyncAction {
   final String traceReport;  
@@ -47,10 +33,3 @@ class ChangeSyncUIState extends AsyncAction {
 }
 
 class FetchRates extends AsyncAction {}
-
-class UpdateSecurityModel extends AsyncAction {
-  final String pinCode;
-  final bool secureBackupWithPin;
-
-  UpdateSecurityModel({this.pinCode, this.secureBackupWithPin});
-}

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:breez/bloc/account/account_actions.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/default_profile_generator.dart';
