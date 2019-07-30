@@ -6,7 +6,7 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.NFC"/>
+    <!--<uses-permission android:name="android.permission.NFC"/>-->
     <uses-permission android:name="android.permission.CAMERA"/>    
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>    
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -91,22 +91,22 @@
 
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" android:theme="@style/Base.Theme.AppCompat"/>
 
-        <service android:name="com.breez.client.BreezApduService" android:label="@string/breez_apdu_service" android:exported="true" android:permission="android.permission.BIND_NFC_SERVICE">
-            <intent-filter>
-                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
+        <!--<service android:name="com.breez.client.BreezApduService" android:label="@string/breez_apdu_service" android:exported="true" android:permission="android.permission.BIND_NFC_SERVICE">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE"/>-->
+                <!--<category android:name="android.intent.category.DEFAULT"/>-->
+            <!--</intent-filter>-->
 
-            <meta-data android:name="android.nfc.cardemulation.host_apdu_service" android:resource="@xml/breezapduservice"/>
-        </service>
+            <!--<meta-data android:name="android.nfc.cardemulation.host_apdu_service" android:resource="@xml/breezapduservice"/>-->
+        <!--</service>-->
 
-        <activity android:name=".DummyNfcActivity" android:label="@string/breez_nfc_service" android:theme="@android:style/Theme.NoDisplay">
-            <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="application/breez"/>
-            </intent-filter>
-        </activity>
+        <!--<activity android:name=".DummyNfcActivity" android:label="@string/breez_nfc_service" android:theme="@android:style/Theme.NoDisplay">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.nfc.action.NDEF_DISCOVERED"/>-->
+                <!--<category android:name="android.intent.category.DEFAULT"/>-->
+                <!--<data android:mimeType="application/breez"/>-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
         <activity android:name="com.apptreesoftware.barcodescan.BarcodeScannerActivity" ></activity>
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
