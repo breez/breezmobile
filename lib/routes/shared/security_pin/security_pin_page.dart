@@ -38,13 +38,6 @@ class SecurityPageState extends State<SecurityPage> {
     }
   }
 
-  void _updateSecurityModel(SecurityModel securityModel, {String pinCode, bool secureBackupWithPin, bool delete = false}) {
-    UpdateSecurityModel updateSecurityModelAction = UpdateSecurityModel(
-        pinCode: (delete) ? null : (pinCode ?? securityModel.pinCode),
-        secureBackupWithPin: (delete) ? false : (secureBackupWithPin ?? securityModel.secureBackupWithPin));
-    _userProfileBloc.userActionsSink.add(updateSecurityModelAction);
-  }
-
   @override
   Widget build(BuildContext context) {
     String _title = "Security PIN";
@@ -99,10 +92,10 @@ class SecurityPageState extends State<SecurityPage> {
                   builder: (BuildContext context) {
                     return SecurityPINWarningDialog();
                   }).then((approved) {
-                _updateSecurityModel(securityModel, secureBackupWithPin: approved);
+                _userProfileBloc.userActionsSink.add(UpdateSecurityModel(pinCode: securityModel.pinCode, secureBackupWithPin: approved));
               });
             } else {
-              _updateSecurityModel(securityModel, secureBackupWithPin: value);
+              _userProfileBloc.userActionsSink.add(UpdateSecurityModel(pinCode: securityModel.pinCode, secureBackupWithPin: value));
             }
           }
         },
@@ -145,7 +138,7 @@ class SecurityPageState extends State<SecurityPage> {
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
-                  _updateSecurityModel(securityModel, pinCode: null, secureBackupWithPin: false, delete: !value);
+                  _userProfileBloc.userActionsSink.add(UpdateSecurityModel(pinCode: null, secureBackupWithPin: false));
                 }
               },
             )
