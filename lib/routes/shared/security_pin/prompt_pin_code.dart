@@ -218,7 +218,7 @@ class _LockScreenState extends State<LockScreen> {
               Duration(milliseconds: 300),
               () => (widget.setPassword || (widget.changePassword && _validated))
                   ? _matchPinCodes(_enteredPinCode == _tmpPassword)
-                  : _validatePinCode(_enteredPinCode == _user.securityModel.pinCode));
+                  : _onPinCodeValidation(_enteredPinCode == _user.securityModel.pinCode));
         }
       }
     });
@@ -232,7 +232,7 @@ class _LockScreenState extends State<LockScreen> {
     _setLabel("Re-enter your new PIN");
   }
 
-  void _validatePinCode(bool isValid) {
+  void _onPinCodeValidation(bool isValid) {
     if (isValid) {
       if (widget.changePassword && !_validated) {
         _promptUserToEnterNewPinCode(isValid);
