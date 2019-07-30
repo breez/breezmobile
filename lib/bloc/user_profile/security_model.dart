@@ -8,6 +8,8 @@ class SecurityModel {
     return new SecurityModel(pinCode: pinCode, secureBackupWithPin: secureBackupWithPin ?? this.secureBackupWithPin);
   }
 
+  SecurityModel.initial() : this(pinCode: null, secureBackupWithPin: false);
+
   SecurityModel.fromJson(Map<String, dynamic> json)
       : pinCode = null,
         secureBackupWithPin = json['secureBackupWithPin'];

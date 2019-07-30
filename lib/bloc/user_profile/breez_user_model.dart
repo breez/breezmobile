@@ -35,8 +35,8 @@ class BreezUserModel {
         color = json['color'],
         animal = json['animal'],
         _image = json['image'],
-        securityModel = SecurityModel.fromJson(json['securityModel']),
-        waitingForPin = SecurityModel.fromJson(json['securityModel']).pinCode != null;
+        securityModel = json['securityModel'] == null ? SecurityModel.initial() : SecurityModel.fromJson(json['securityModel']),
+        waitingForPin = json['securityModel'] == null ? false : SecurityModel.fromJson(json['securityModel']).pinCode != null;
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
