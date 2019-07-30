@@ -10,7 +10,7 @@ class BreezUserModel {
   String color = '';
   String animal = '';
   String _image;
-  SecurityModel securityModel;
+  final SecurityModel securityModel;
   bool waitingForPin;
 
   BreezUserModel(this.userID, this.name, this.color, this.animal, {this.currency = Currency.SAT, this.fiatCurrency = "USD", String image, this.securityModel, this.waitingForPin}) {

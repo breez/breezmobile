@@ -117,7 +117,7 @@ class UserProfileBloc {
       // Read the pin from the secure storage and initialize the breez user model appropriately
       String _pinCode = await _secureStorage.read(key: 'pinCode');
       if (_pinCode != null) {
-        user.securityModel = user.securityModel.copyWith(pinCode: _pinCode);
+        user = user.copyWith(securityModel: user.securityModel.copyWith(pinCode: _pinCode));
         user.waitingForPin = true;
       }
       if (user.userID != null) {
