@@ -11,12 +11,10 @@ import 'package:flutter/material.dart';
 class LockScreen extends StatefulWidget {
   final String label;
   final bool dismissible;
-  final bool changePassword;
-  final bool setPassword;
+  final bool changePin;
   final Widget route;
 
-  LockScreen({Key key, this.label, this.dismissible = false, this.changePassword = false, this.setPassword = false, this.route})
-      : super(key: key);
+  LockScreen({Key key, this.label, this.dismissible = false, this.changePin = false, this.route}) : super(key: key);
 
   @override
   _LockScreenState createState() => new _LockScreenState();
@@ -32,8 +30,6 @@ class _LockScreenState extends State<LockScreen> {
   String _enteredPinCode = "";
   String _errorMessage = "";
   String _tmpPassword = "";
-
-  bool _validated = false;
 
   bool _isInit = false;
 
@@ -60,17 +56,6 @@ class _LockScreenState extends State<LockScreen> {
       precacheImage(_breezLogo.image, context);
       _isInit = true;
     }
-  }
-
-  _setPinCode(String securityPIN) {
-    UpdateSecurityModel updateSecurityModelAction =
-        UpdateSecurityModel(pinCode: securityPIN, secureBackupWithPin: _user.securityModel.secureBackupWithPin);
-    _userProfileBloc.userActionsSink.add(updateSecurityModelAction);
-    updateSecurityModelAction.future.then((_) {
-      if (this.mounted) {
-        Navigator.pop(context);
-      }
-    });
   }
 
   @override
@@ -105,26 +90,23 @@ class _LockScreenState extends State<LockScreen> {
   }
 
   _onNumButtonPressed(String numberText) {
-    setState(() {
-      _setErrorMessage("");
-      if (_enteredPinCode.length < _passwordLength) {
-        _setPinCodeInput(_enteredPinCode + numberText);
+    _setErrorMessage("");
+    if (_enteredPinCode.length < _passwordLength) {
+      _setPinCodeInput(_enteredPinCode + numberText);
+    }
+    if (_enteredPinCode.length == _passwordLength) {
+      if ((widget.changePin) && _tmpPassword.isEmpty) {
+        // If a new PIN is being set prompt user to enter the PIN again
+        Future.delayed(Duration(milliseconds: 300), () => _setPinCodeForValidation()); // Wait 300ms for scale animation to end
+      } else {
+        // Check if PINs match if a new PIN is being set or current PIN is being changed
+        Future.delayed(
+            Duration(milliseconds: 300),
+            () => (widget.changePin && _tmpPassword.isNotEmpty)
+                ? _matchPinCodes(_enteredPinCode == _tmpPassword)
+                : _onPinCodeValidation(_enteredPinCode == _user.securityModel.pinCode));
       }
-      if (_enteredPinCode.length == _passwordLength) {
-        // Validate current PIN before changing PIN
-        if (((widget.changePassword && _validated) || widget.setPassword) && _tmpPassword.isEmpty) {
-          // If a new PIN is being set prompt user to enter the PIN again
-          Future.delayed(Duration(milliseconds: 300), () => _setPinCodeForValidation()); // Wait 300ms for scale animation to end
-        } else {
-          // Check if PINs match if a new PIN is being set or current PIN is being changed
-          Future.delayed(
-              Duration(milliseconds: 300),
-              () => (widget.setPassword || (widget.changePassword && _validated))
-                  ? _matchPinCodes(_enteredPinCode == _tmpPassword)
-                  : _onPinCodeValidation(_enteredPinCode == _user.securityModel.pinCode));
-        }
-      }
-    });
+    }
   }
 
   _setPinCodeForValidation() {
@@ -137,21 +119,17 @@ class _LockScreenState extends State<LockScreen> {
 
   void _onPinCodeValidation(bool isValid) {
     if (isValid) {
-      if (widget.changePassword && !_validated) {
-        _promptUserToEnterNewPinCode(isValid);
+      _userProfileBloc.userSink.add(_user.copyWith(waitingForPin: false));
+      if (widget.route != null) {
+        Navigator.of(context).pushReplacement(
+          new FadeInRoute(
+            builder: (BuildContext context) {
+              return widget.route;
+            },
+          ),
+        );
       } else {
-        _userProfileBloc.userSink.add(_user.copyWith(waitingForPin: false));
-        if (widget.route != null) {
-          Navigator.of(context).pushReplacement(
-            new FadeInRoute(
-              builder: (BuildContext context) {
-                return widget.route;
-              },
-            ),
-          );
-        } else {
-          Navigator.pop(context, true);
-        }
+        Navigator.pop(context, true);
       }
     } else {
       _incorrectPinCode();
@@ -163,14 +141,6 @@ class _LockScreenState extends State<LockScreen> {
     _setErrorMessage("Incorrect PIN");
   }
 
-  void _promptUserToEnterNewPinCode(bool isValid) {
-    _setPinCodeInput("");
-    _setLabel("Enter your new PIN");
-    setState(() {
-      _validated = isValid;
-    });
-  }
-
   void _matchPinCodes(bool isMatched) {
     if (isMatched) {
       _setPinCode(_enteredPinCode);
@@ -179,6 +149,17 @@ class _LockScreenState extends State<LockScreen> {
       _setLabel("Enter your new PIN");
       _setErrorMessage("PIN does not match");
     }
+  }
+
+  _setPinCode(String securityPIN) {
+    UpdateSecurityModel updateSecurityModelAction =
+        UpdateSecurityModel(pinCode: securityPIN, secureBackupWithPin: _user.securityModel.secureBackupWithPin);
+    _userProfileBloc.userActionsSink.add(updateSecurityModelAction);
+    updateSecurityModelAction.future.then((_) {
+      if (this.mounted) {
+        Navigator.pop(context);
+      }
+    });
   }
 
   void _setLabel(String label) {

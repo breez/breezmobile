@@ -121,9 +121,9 @@ class SecurityPageState extends State<SecurityPage> {
           new FadeInRoute(
             builder: (BuildContext context) {
               return LockScreen(
-                label: "Enter your current PIN",
+                label: "Enter your new PIN",
                 dismissible: true,
-                changePassword: true,
+                changePin: true,
               );
             },
           ),
@@ -158,7 +158,7 @@ class SecurityPageState extends State<SecurityPage> {
                     return LockScreen(
                       label: "Enter your new PIN",
                       dismissible: true,
-                      setPassword: true,
+                      changePin: true,
                     );
                   },
                 ),
