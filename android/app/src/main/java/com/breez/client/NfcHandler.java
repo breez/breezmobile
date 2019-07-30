@@ -35,18 +35,12 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
 
     private NfcAdapter m_adapter;
 
-    private PendingIntent m_pendingIntent;
-    private IntentFilter[] m_intentFiltersArray;
-
     private MethodChannel m_methodChannel;
 
     private static final String TAG = "Breez-NFC";
 
     public NfcHandler(MainActivity mainActivity) {
         m_adapter = NfcAdapter.getDefaultAdapter(mainActivity);
-
-        m_pendingIntent = PendingIntent.getActivity(
-                mainActivity, 0, new Intent(mainActivity, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
         IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
 
@@ -56,7 +50,6 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
             throw new RuntimeException("fail", e);
         }
 
-        m_intentFiltersArray = new IntentFilter[]{ndef};
         m_mainActivity = mainActivity;
         m_methodChannel = new MethodChannel(mainActivity.getFlutterView(), NFC_CHANNEL);
         m_methodChannel.setMethodCallHandler(this);
@@ -64,14 +57,6 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
 
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        if (call.method.equals("startCardActivation")) {
-            activateNfcForWriting(call.argument("breezId").toString());
-            result.success(true);
-        }
-        if (call.method.equals("stopCardActivation")) {
-            disableNfcForWriting();
-            result.success(true);
-        }
         if (call.method.equals("startBolt11Beam")) {
             startBolt11Beam(call.argument("bolt11").toString());
             result.success(true);
@@ -145,32 +130,12 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
         }
     }
 
-    public void disableForegroundDispatch() {
-        if (m_adapter != null) {
-            m_adapter.disableForegroundDispatch(m_mainActivity);
-        }
-    }
-
-    public void enableForegroundDispatch() {
-        if (m_adapter != null) {
-            m_adapter.enableForegroundDispatch(m_mainActivity, m_pendingIntent, m_intentFiltersArray, null);
-        }
-    }
-
     public void handleIntent(Intent intent) {
         if (intent.getAction().equals(BreezApduService.ACTION_BOLT11_RECEIVED)) {
             String bolt11 = intent.getStringExtra("bolt11");
             if (bolt11 != null) {
                 m_methodChannel.invokeMethod("receivedBolt11", bolt11);
             }
-        }
-
-        if (intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
-            Log.d(TAG, "Discovered a tag");
-            String nfcMessage = intent.getStringExtra("breezId");
-            Log.d(TAG, "Writing Breez ID to tag!");
-            Tag tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            writeToBreezCard(tagFromIntent, nfcMessage);
         }
 
         if (intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
@@ -316,58 +281,6 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
 
             if (reply != null && !Arrays.equals(reply, BreezApduService.DATA_RESPONSE_OK)) {
                 return;
-            }
-        }
-    }
-
-    private void activateNfcForWriting(String breezId) {
-        Intent nfcIntent = new Intent(m_mainActivity, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        nfcIntent.putExtra("breezId", breezId);
-        PendingIntent pi = PendingIntent.getActivity(m_mainActivity, 0, nfcIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
-
-        if (m_adapter != null) {
-            m_adapter.enableForegroundDispatch(m_mainActivity, pi, new IntentFilter[]{tagDetected}, null);
-        }
-    }
-
-    private void disableNfcForWriting() {
-        if (m_adapter != null) {
-            m_adapter.disableForegroundDispatch(m_mainActivity);
-        }
-    }
-
-    private void writeToBreezCard(Tag tag, String breezId) {
-        if (!breezId.isEmpty()) {
-            Ndef ndefCard = Ndef.get(tag);
-            try {
-                NdefRecord breezRecord = NdefRecord.createMime("application/breez", breezId.getBytes());
-                NdefMessage msg = new NdefMessage(breezRecord);
-                ndefCard.connect();
-                try {
-                    ndefCard.writeNdefMessage(msg);
-                    m_methodChannel.invokeMethod("cardActivation", true);
-                } catch (FormatException fe) {
-                    logError("FormatException while writing to Breez card", fe.getMessage());
-                    m_methodChannel.invokeMethod("cardActivation", false);
-                } catch (TagLostException tle) {
-
-                    logError("TagLostException while writing to Breez card", tle.getMessage());
-                    m_methodChannel.invokeMethod("cardActivation", false);
-                } catch (IOException ioe) {
-                    logError("IOException while writing to Breez card", ioe.getMessage());
-                    m_methodChannel.invokeMethod("cardActivation", false);
-                }
-            } catch (IOException e) {
-                logError("IOException while writing to Breez card", e.getMessage());
-                m_methodChannel.invokeMethod("cardActivation", false);
-            } finally {
-                try {
-                    ndefCard.close();
-                    //m_methodChannel.invokeMethod("cardActivation", true);
-                } catch (IOException e) {
-                    logError("IOException while closing connection to Breez card", e.getMessage());
-                }
             }
         }
     }
