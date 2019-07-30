@@ -47,13 +47,13 @@ class NFCService {
   Stream<String> startP2PBeam() {
     _p2pBeamController = new StreamController<String>();
     _p2pBeamController.onCancel = () {
-      stopP2PBeam();
+      stopBeam();
     };
     _platform.invokeMethod("startP2PBeam");
     return _p2pBeamController.stream;
   }
 
-  void stopP2PBeam() {
+  void stopBeam() {
     _p2pBeamController.close();
     _platform.invokeMethod("stopBeam");
   }
