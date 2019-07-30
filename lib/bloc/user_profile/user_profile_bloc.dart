@@ -47,10 +47,6 @@ class UserProfileBloc {
   final _fiatConversionController = new BehaviorSubject<String>();
   Sink<String> get fiatConversionSink => _fiatConversionController.sink;
 
-  final _securityModelController = new BehaviorSubject<SecurityModel>();
-  Sink<SecurityModel> get securityModelSink => _securityModelController.sink;
-
-
   final _userController = new BehaviorSubject<BreezUserModel>();
   Sink<BreezUserModel> get userSink => _userController.sink;
 
@@ -83,9 +79,6 @@ class UserProfileBloc {
     //listen to changes in user preferences
     _listenCurrencyChange(injector);
     _listenFiatCurrencyChange(injector);
-
-    //listen to changes in security model
-    _listenSecurityModelChange(injector);
 
     //listen to changes in user avatar
     _listenUserChange(injector);
@@ -165,7 +158,9 @@ class UserProfileBloc {
     } else {
       await _secureStorage.delete(key: 'pinCode');
     }
-    _securityModelController.add(_currentUser.securityModel.copyWith(pinCode: updateSecurityModelAction.pinCode, secureBackupWithPin: updateSecurityModelAction.secureBackupWithPin));
+    SecurityModel _securityModel = _currentUser.securityModel.copyWith(
+        pinCode: updateSecurityModelAction.pinCode, secureBackupWithPin: updateSecurityModelAction.secureBackupWithPin);
+    _userController.add(_currentUser.copyWith(securityModel: _securityModel));
     updateSecurityModelAction.resolve(this._currentUser.securityModel);
   }
 
@@ -187,13 +182,6 @@ class UserProfileBloc {
     _fiatConversionController.stream.listen((shortName) async {
       var preferences = await injector.sharedPreferences;
       _saveChanges(preferences, _currentUser.copyWith(fiatCurrency: shortName));
-    });
-  }
-
-  void _listenSecurityModelChange(ServiceInjector injector) {
-    _securityModelController.stream.listen((securityModel) async {
-      var preferences = await injector.sharedPreferences;
-      _saveChanges(preferences, _currentUser.copyWith(securityModel: securityModel));
     });
   }
 
@@ -266,7 +254,6 @@ class UserProfileBloc {
     _registrationController.close();
     _currencyController.close();
     _fiatConversionController.close();
-    _securityModelController.close();
     _userController.close();
     _uploadImageController.close();
     _randomizeController.close();
