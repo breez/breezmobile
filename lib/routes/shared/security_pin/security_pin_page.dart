@@ -40,7 +40,8 @@ class SecurityPageState extends State<SecurityPage> {
 
   void _updateSecurityModel(SecurityModel securityModel, {String pinCode, bool secureBackupWithPin, bool delete = false}) {
     UpdateSecurityModel updateSecurityModelAction = UpdateSecurityModel(
-        pinCode: (delete) ? null : (pinCode ?? securityModel.pinCode), secureBackupWithPin: (delete) ? false : (secureBackupWithPin ?? securityModel.secureBackupWithPin));
+        pinCode: (delete) ? null : (pinCode ?? securityModel.pinCode),
+        secureBackupWithPin: (delete) ? false : (secureBackupWithPin ?? securityModel.secureBackupWithPin));
     _userProfileBloc.userActionsSink.add(updateSecurityModelAction);
   }
 
@@ -74,12 +75,8 @@ class SecurityPageState extends State<SecurityPage> {
   }
 
   List<Widget> _buildSecurityPINTiles(SecurityModel securityModel) {
-    List<Widget> _tiles = List();
-    final _disablePINTile = _buildDisablePINTile(securityModel);
-    final _secureBackupWithPinTile = _buildSecureBackupWithPinTile(securityModel);
-    final _changePINTile = _buildChangePINTile();
-    _tiles..add(_disablePINTile);
-    if (securityModel.pinCode != null) _tiles..add(Divider())..add(_secureBackupWithPinTile)..add(Divider())..add(_changePINTile);
+    List<Widget> _tiles = <Widget>[_buildDisablePINTile(securityModel)];
+    if (securityModel.pinCode != null) _tiles..add(Divider())..add(_buildSecureBackupWithPinTile(securityModel))..add(Divider())..add(_buildChangePINTile());
     return _tiles;
   }
 
