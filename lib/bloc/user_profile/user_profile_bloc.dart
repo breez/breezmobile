@@ -153,7 +153,7 @@ class UserProfileBloc {
   }
 
   Future _updateSecurityModel(UpdateSecurityModel updateSecurityModelAction) async {
-    if (updateSecurityModelAction.pinCode != null) {
+    if (updateSecurityModelAction.pinCode != null && _currentUser.securityModel.pinCode != updateSecurityModelAction.pinCode) {
       await _secureStorage.write(key: 'pinCode', value: updateSecurityModelAction.pinCode);
     } else {
       await _secureStorage.delete(key: 'pinCode');
