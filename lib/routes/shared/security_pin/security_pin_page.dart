@@ -39,9 +39,9 @@ class SecurityPageState extends State<SecurityPage> {
   }
 
   void _updateSecurityModel(SecurityModel securityModel, {String pinCode, bool secureBackupWithPin, bool delete = false}) {
-    UpdateSecurityModel setPinCodeAction = UpdateSecurityModel(
+    UpdateSecurityModel updateSecurityModelAction = UpdateSecurityModel(
         pinCode: (delete) ? null : (pinCode ?? securityModel.pinCode), secureBackupWithPin: (delete) ? false : (secureBackupWithPin ?? securityModel.secureBackupWithPin));
-    _userProfileBloc.userActionsSink.add(setPinCodeAction);
+    _userProfileBloc.userActionsSink.add(updateSecurityModelAction);
   }
 
   @override
