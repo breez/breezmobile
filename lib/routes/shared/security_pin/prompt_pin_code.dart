@@ -87,17 +87,21 @@ class _LockScreenState extends State<LockScreen> {
       _setPinCodeInput(_enteredPinCode + numberText);
     }
     if (_enteredPinCode.length == PIN_CODE_LENGTH) {
-      if ((widget.changePin) && _tmpPinCode.isEmpty) {
-        // If a new PIN is being set prompt user to enter the PIN again
-        Future.delayed(Duration(milliseconds: 300), () => _setPinCodeForValidation()); // Wait 300ms for scale animation to end
+      if (widget.changePin) {
+        _handleChangePin();
       } else {
-        // Check if PINs match if a new PIN is being set or current PIN is being changed
-        Future.delayed(
-            Duration(milliseconds: 300),
-            () => (widget.changePin && _tmpPinCode.isNotEmpty)
-                ? _matchPinCodes(_enteredPinCode == _tmpPinCode)
-                : _onPinCodeValidation(_enteredPinCode == _user.securityModel.pinCode));
+        _handleUnlockPin();
       }
+    }
+  }
+
+  _handleChangePin() {
+    if (_tmpPinCode.isEmpty) {
+      // If a new PIN is being set prompt user to enter the PIN again
+      Future.delayed(Duration(milliseconds: 300), () => _setPinCodeForValidation()); // Wait 300ms for scale animation to end
+    } else {
+      // Check if PINs match if a new PIN is being set or current PIN is being changed
+      Future.delayed(Duration(milliseconds: 300), () => _matchPinCodes(_enteredPinCode == _tmpPinCode));
     }
   }
 
@@ -105,12 +109,33 @@ class _LockScreenState extends State<LockScreen> {
     setState(() {
       _tmpPinCode = _enteredPinCode;
     });
-    _setPinCodeInput("");
     _setLabel("Re-enter your new PIN");
+    _setPinCodeInput("");
   }
 
-  void _onPinCodeValidation(bool isValid) {
-    if (isValid) {
+  void _matchPinCodes(bool isMatched) {
+    if (isMatched) {
+      _setPinCode(_enteredPinCode);
+    } else {
+      _setLabel("Enter your new PIN");
+      _setPinCodeInput("");
+      _setErrorMessage("PIN does not match");
+    }
+  }
+
+  _setPinCode(String securityPIN) {
+    UpdateSecurityModel updateSecurityModelAction =
+        UpdateSecurityModel(pinCode: securityPIN, secureBackupWithPin: _user.securityModel.secureBackupWithPin);
+    _userProfileBloc.userActionsSink.add(updateSecurityModelAction);
+    updateSecurityModelAction.future.then((_) {
+      if (this.mounted) {
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  void _handleUnlockPin() {
+    if (_enteredPinCode == _user.securityModel.pinCode) {
       _userProfileBloc.userSink.add(_user.copyWith(waitingForPin: false));
       if (widget.route != null) {
         Navigator.of(context).pushReplacement(
@@ -131,27 +156,6 @@ class _LockScreenState extends State<LockScreen> {
   void _incorrectPinCode() {
     _setPinCodeInput("");
     _setErrorMessage("Incorrect PIN");
-  }
-
-  void _matchPinCodes(bool isMatched) {
-    if (isMatched) {
-      _setPinCode(_enteredPinCode);
-    } else {
-      _setPinCodeInput("");
-      _setLabel("Enter your new PIN");
-      _setErrorMessage("PIN does not match");
-    }
-  }
-
-  _setPinCode(String securityPIN) {
-    UpdateSecurityModel updateSecurityModelAction =
-        UpdateSecurityModel(pinCode: securityPIN, secureBackupWithPin: _user.securityModel.secureBackupWithPin);
-    _userProfileBloc.userActionsSink.add(updateSecurityModelAction);
-    updateSecurityModelAction.future.then((_) {
-      if (this.mounted) {
-        Navigator.pop(context);
-      }
-    });
   }
 
   void _setLabel(String label) {
