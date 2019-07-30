@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 const PIN_CODE_LENGTH = 6;
 
 class PinCodeWidget extends StatelessWidget {
-  final Image breezLogo;
   final String label;
   final String enteredPinCode;
   final bool dismissible;
@@ -12,14 +11,7 @@ class PinCodeWidget extends StatelessWidget {
   final Function(String numberText) onNumButtonPressed;
   final Function(String numberText) setPinCodeInput;
 
-  PinCodeWidget(
-      this.breezLogo,
-      this.label,
-      this.enteredPinCode,
-      this.dismissible,
-      this.errorMessage,
-      this.onNumButtonPressed,
-      this.setPinCodeInput);
+  PinCodeWidget(this.label, this.enteredPinCode, this.dismissible, this.errorMessage, this.onNumButtonPressed, this.setPinCodeInput);
 
   Widget build(BuildContext context) {
     return SafeArea(
@@ -39,7 +31,12 @@ class PinCodeWidget extends StatelessWidget {
 
   Padding _buildBreezLogo() {
     return Padding(
-      child: breezLogo,
+      child: new Image.asset(
+        "src/images/logo-color.png",
+        height: 47,
+        width: 125.4,
+        color: Colors.white,
+      ),
       padding: EdgeInsets.only(top: dismissible ? kToolbarHeight : 96.0, bottom: 96.0),
     );
   }

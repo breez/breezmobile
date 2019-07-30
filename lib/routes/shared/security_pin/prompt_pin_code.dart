@@ -8,6 +8,8 @@ import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
+const PIN_CODE_LENGTH = 6;
+
 class LockScreen extends StatefulWidget {
   final String label;
   final bool dismissible;
@@ -24,12 +26,10 @@ class _LockScreenState extends State<LockScreen> {
   UserProfileBloc _userProfileBloc;
   BreezUserModel _user;
   String _label;
-  Image _breezLogo;
 
-  int _passwordLength = 6;
   String _enteredPinCode = "";
   String _errorMessage = "";
-  String _tmpPassword = "";
+  String _tmpPinCode = "";
 
   bool _isInit = false;
 
@@ -37,12 +37,6 @@ class _LockScreenState extends State<LockScreen> {
   void initState() {
     super.initState();
     _setLabel(widget.label ?? "Enter your PIN");
-    _breezLogo = new Image.asset(
-      "src/images/logo-color.png",
-      height: 47,
-      width: 125.4,
-      color: Colors.white,
-    );
   }
 
   @override
@@ -53,7 +47,6 @@ class _LockScreenState extends State<LockScreen> {
       _userProfileBloc.userStream.listen((user) {
         _user = user;
       });
-      precacheImage(_breezLogo.image, context);
       _isInit = true;
     }
   }
@@ -77,7 +70,6 @@ class _LockScreenState extends State<LockScreen> {
               )
             : null,
         body: PinCodeWidget(
-          _breezLogo,
           _label,
           _enteredPinCode,
           widget.dismissible,
@@ -91,19 +83,19 @@ class _LockScreenState extends State<LockScreen> {
 
   _onNumButtonPressed(String numberText) {
     _setErrorMessage("");
-    if (_enteredPinCode.length < _passwordLength) {
+    if (_enteredPinCode.length < PIN_CODE_LENGTH) {
       _setPinCodeInput(_enteredPinCode + numberText);
     }
-    if (_enteredPinCode.length == _passwordLength) {
-      if ((widget.changePin) && _tmpPassword.isEmpty) {
+    if (_enteredPinCode.length == PIN_CODE_LENGTH) {
+      if ((widget.changePin) && _tmpPinCode.isEmpty) {
         // If a new PIN is being set prompt user to enter the PIN again
         Future.delayed(Duration(milliseconds: 300), () => _setPinCodeForValidation()); // Wait 300ms for scale animation to end
       } else {
         // Check if PINs match if a new PIN is being set or current PIN is being changed
         Future.delayed(
             Duration(milliseconds: 300),
-            () => (widget.changePin && _tmpPassword.isNotEmpty)
-                ? _matchPinCodes(_enteredPinCode == _tmpPassword)
+            () => (widget.changePin && _tmpPinCode.isNotEmpty)
+                ? _matchPinCodes(_enteredPinCode == _tmpPinCode)
                 : _onPinCodeValidation(_enteredPinCode == _user.securityModel.pinCode));
       }
     }
@@ -111,7 +103,7 @@ class _LockScreenState extends State<LockScreen> {
 
   _setPinCodeForValidation() {
     setState(() {
-      _tmpPassword = _enteredPinCode;
+      _tmpPinCode = _enteredPinCode;
     });
     _setPinCodeInput("");
     _setLabel("Re-enter your new PIN");

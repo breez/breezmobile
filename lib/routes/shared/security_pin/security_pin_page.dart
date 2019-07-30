@@ -76,7 +76,8 @@ class SecurityPageState extends State<SecurityPage> {
 
   List<Widget> _buildSecurityPINTiles(SecurityModel securityModel) {
     List<Widget> _tiles = <Widget>[_buildDisablePINTile(securityModel)];
-    if (securityModel.pinCode != null) _tiles..add(Divider())..add(_buildSecureBackupWithPinTile(securityModel))..add(Divider())..add(_buildChangePINTile());
+    if (securityModel.pinCode != null)
+      _tiles..add(Divider())..add(_buildSecureBackupWithPinTile(securityModel))..add(Divider())..add(_buildChangePINTile());
     return _tiles;
   }
 
