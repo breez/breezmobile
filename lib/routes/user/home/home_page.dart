@@ -101,18 +101,12 @@ class HomeState extends State<Home> {
   String _activeScreen = "breezHome";
   Set _hiddenRountes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
-  StreamSubscription _accountLockSubscription;
 
   @override
   void initState() {
     super.initState();
 
-    _accountLockSubscription = widget.userProfileBloc.userStream.listen((user) {
-      if(!user.waitingForPin) {
-        _registerNotificationHandlers();
-        _accountLockSubscription.cancel();
-      }
-    });
+    widget.userProfileBloc.userStream.firstWhere((user) => !user.waitingForPin).then((_) => _registerNotificationHandlers());
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
     _listenWhiltelistPermissionsRequest();
@@ -139,7 +133,6 @@ class HomeState extends State<Home> {
   @override
   void dispose() {
     _accountNotificationsSubscription?.cancel();
-    _accountLockSubscription?.cancel();
     super.dispose();
   }
 
