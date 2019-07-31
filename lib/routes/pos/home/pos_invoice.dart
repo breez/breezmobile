@@ -76,9 +76,6 @@ class POSInvoiceState extends State<POSInvoice> {
   void registerListeners() {    
     _focusNode = new FocusNode();
     _focusNode.addListener(_onOnFocusNodeEvent);
-
-    PosPaymentDialog _posPaymentDialog =
-        new PosPaymentDialog(_invoiceBloc, _posProfileBloc, _scaffoldKey);
     _invoiceDescriptionController.text = "";
     _accountSubscription = _accountBloc.accountStream.listen((acc) {
       setState(() {
@@ -107,7 +104,7 @@ class POSInvoiceState extends State<POSInvoice> {
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
-              return _posPaymentDialog;
+              return new PosPaymentDialog(_invoiceBloc, _posProfileBloc, _scaffoldKey);
             }).then((result) {
           setState(() {
             _currentAmount = 0;
