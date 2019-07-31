@@ -1,8 +1,9 @@
 import 'package:breez/bloc/async_action.dart';
 
-class UpdateSecurityModel extends AsyncAction {
-  final String pinCode;
-  final bool secureBackupWithPin;
+import 'security_model.dart';
 
-  UpdateSecurityModel({this.pinCode, this.secureBackupWithPin});
+class UpdateSecurityModel extends AsyncAction {
+  final SecurityModel newModel;
+
+  UpdateSecurityModel(this.newModel);
 }

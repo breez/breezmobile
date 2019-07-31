@@ -152,15 +152,15 @@ class UserProfileBloc {
   }
 
   Future _updateSecurityModel(UpdateSecurityModel updateSecurityModelAction) async {
-    if (updateSecurityModelAction.pinCode != null) {
-      // Write to storage if the new pin code is different from current pin code
-      if (updateSecurityModelAction.pinCode != _currentUser.securityModel.pinCode) await _secureStorage.write(key: 'pinCode', value: updateSecurityModelAction.pinCode);
-    } else {
+    if (updateSecurityModelAction.newModel.pinCode == null) {
       await _secureStorage.delete(key: 'pinCode');
+    } else if (updateSecurityModelAction.newModel.pinCode != _currentUser.securityModel.pinCode) {
+      // Write to storage if the new pin code is different from current pin code
+      await _secureStorage.write(key: 'pinCode', value: updateSecurityModelAction.newModel.pinCode);
     }
-    SecurityModel _securityModel = _currentUser.securityModel.copyWith(
-        pinCode: updateSecurityModelAction.pinCode, secureBackupWithPin: updateSecurityModelAction.secureBackupWithPin);
-    _userController.add(_currentUser.copyWith(securityModel: _securityModel));
+    SecurityModel securityModel = _currentUser.securityModel.copyWith(
+        pinCode: updateSecurityModelAction.newModel.pinCode, secureBackupWithPin: updateSecurityModelAction.newModel.secureBackupWithPin);
+    _userController.add(_currentUser.copyWith(securityModel: securityModel));
     updateSecurityModelAction.resolve(this._currentUser.securityModel);
   }
 

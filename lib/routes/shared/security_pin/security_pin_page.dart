@@ -92,10 +92,12 @@ class SecurityPageState extends State<SecurityPage> {
                   builder: (BuildContext context) {
                     return SecurityPINWarningDialog();
                   }).then((approved) {
-                _userProfileBloc.userActionsSink.add(UpdateSecurityModel(pinCode: securityModel.pinCode, secureBackupWithPin: approved));
+                _userProfileBloc.userActionsSink
+                    .add(UpdateSecurityModel(SecurityModel(pinCode: securityModel.pinCode, secureBackupWithPin: approved)));
               });
             } else {
-              _userProfileBloc.userActionsSink.add(UpdateSecurityModel(pinCode: securityModel.pinCode, secureBackupWithPin: value));
+              _userProfileBloc.userActionsSink
+                  .add(UpdateSecurityModel(SecurityModel(pinCode: securityModel.pinCode, secureBackupWithPin: value)));
             }
           }
         },
@@ -138,7 +140,7 @@ class SecurityPageState extends State<SecurityPage> {
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
-                  _userProfileBloc.userActionsSink.add(UpdateSecurityModel(pinCode: null, secureBackupWithPin: false));
+                  _userProfileBloc.userActionsSink.add(UpdateSecurityModel(SecurityModel(pinCode: null, secureBackupWithPin: false)));
                 }
               },
             )

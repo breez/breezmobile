@@ -1,5 +1,6 @@
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -125,7 +126,7 @@ class _LockScreenState extends State<LockScreen> {
 
   _setPinCode(String securityPIN) {
     UpdateSecurityModel updateSecurityModelAction =
-        UpdateSecurityModel(pinCode: securityPIN, secureBackupWithPin: _user.securityModel.secureBackupWithPin);
+        UpdateSecurityModel(SecurityModel(pinCode: securityPIN, secureBackupWithPin: _user.securityModel.secureBackupWithPin));
     _userProfileBloc.userActionsSink.add(updateSecurityModelAction);
     updateSecurityModelAction.future.then((_) {
       if (this.mounted) {
