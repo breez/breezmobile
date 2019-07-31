@@ -130,12 +130,16 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                                   width: 230.0,
                                 );
                               }
-                              return Container(
-                                  height: 200.0,
-                                  width: 230.0,
-                                  child: CompactQRImage(
-                                    data: snapshot.data,
-                                  ));
+                              return AspectRatio(
+                                  aspectRatio: 1.0,
+                                  child: Container(
+                                      height: 230.0,
+                                      width: 230.0,
+                                      child: AspectRatio(
+                                          aspectRatio: 1.0,
+                                          child: CompactQRImage(
+                                            data: snapshot.data,
+                                          ))));
                             })),
                     new Padding(
                         padding: EdgeInsets.only(top: 15.0),
