@@ -225,6 +225,7 @@ class AccountModel {
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
   Int64 get routingNodeFee => _accountResponse.routingNodeFee;
   bool get enabled => _accountResponse.enabled;
+  bool get synced => syncProgress == 1.0;
 
   String get statusMessage {
 
