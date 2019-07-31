@@ -12,12 +12,11 @@ import 'package:flutter/material.dart';
 const PIN_CODE_LENGTH = 6;
 
 class LockScreen extends StatefulWidget {
-  final String label;
   final bool dismissible;
   final bool changePin;
   final Widget route;
 
-  LockScreen({Key key, this.label, this.dismissible = false, this.changePin = false, this.route}) : super(key: key);
+  LockScreen({Key key, this.dismissible = false, this.changePin = false, this.route}) : super(key: key);
 
   @override
   _LockScreenState createState() => new _LockScreenState();
@@ -26,7 +25,7 @@ class LockScreen extends StatefulWidget {
 class _LockScreenState extends State<LockScreen> {
   UserProfileBloc _userProfileBloc;
   BreezUserModel _user;
-  String _label;
+  String _label = "Enter your PIN";
 
   String _enteredPinCode = "";
   String _errorMessage = "";
@@ -37,7 +36,7 @@ class _LockScreenState extends State<LockScreen> {
   @override
   void initState() {
     super.initState();
-    _setLabel(widget.label ?? "Enter your PIN");
+    if (widget.changePin) _setLabel("Enter your new PIN");
   }
 
   @override
