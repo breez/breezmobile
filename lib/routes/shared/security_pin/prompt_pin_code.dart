@@ -117,6 +117,9 @@ class _LockScreenState extends State<LockScreen> {
     if (isMatched) {
       _setPinCode(_enteredPinCode);
     } else {
+      setState(() {
+        _tmpPinCode = "";
+      });
       _setLabel("Enter your new PIN");
       _setPinCodeInput("");
       _setErrorMessage("PIN does not match");
