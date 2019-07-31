@@ -24,7 +24,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   void initState() {
     super.initState();
 
-    _posProfileSubscription = widget._posProfileBloc.posProfileStream.listen((posProfile) {
+    _posProfileSubscription = widget._posProfileBloc.posProfileStream.asBroadcastStream().listen((posProfile) {
       _paymentTimer = CountDown(
           new Duration(seconds: posProfile.cancellationTimeoutValue.toInt()));
       _timerSubscription = _paymentTimer.stream.listen(null);
@@ -44,7 +44,6 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         }
       });
 
-      _timerSubscription = _paymentTimer.stream.listen(null);
       _timerSubscription.onData((Duration d) {
         setState(() {
           _countdownString = d.inMinutes.toRadixString(10) +
