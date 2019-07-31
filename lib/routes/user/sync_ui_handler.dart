@@ -24,9 +24,15 @@ class SyncUIHandler {
         _syncUIRoute = _createSyncRoute(_accountBloc);
         Navigator.of(_context).push(_syncUIRoute);
       }
-    } else {
-      if (_syncUIRoute != null) {        
-        Navigator.of(this._context).pop();
+    } else {            
+      if (_syncUIRoute != null) {
+        // If we are no top of the stack let's pop to get the animation
+        if (_syncUIRoute.isCurrent) {
+          Navigator.of(this._context).pop();
+        } else {
+          // If we are hidden just remote the route;
+          Navigator.of(this._context).removeRoute(_syncUIRoute);
+        }
         _syncUIRoute = null;
       }
     }
