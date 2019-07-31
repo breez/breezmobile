@@ -61,7 +61,7 @@ class UserProfileBloc {
     _nfc = injector.nfc;
     _currencyService = injector.currencyService;
     _actionHandlers = {
-      UpdateSecurityModel: _updateSecurityModel,
+      UpdateSecurityModel: _updateSecurityModelAction,
     };
     print ("UserProfileBloc started");
 
@@ -151,6 +151,10 @@ class UserProfileBloc {
     });
   }
 
+  Future _updateSecurityModelAction(UpdateSecurityModel updateSecurityModelAction) async {
+    updateSecurityModelAction.resolve(await _updateSecurityModel(updateSecurityModelAction));
+  }
+
   Future _updateSecurityModel(UpdateSecurityModel updateSecurityModelAction) async {
     if (updateSecurityModelAction.newModel.pinCode == null) {
       await _secureStorage.delete(key: 'pinCode');
@@ -158,10 +162,8 @@ class UserProfileBloc {
       // Write to storage if the new pin code is different from current pin code
       await _secureStorage.write(key: 'pinCode', value: updateSecurityModelAction.newModel.pinCode);
     }
-    SecurityModel securityModel = _currentUser.securityModel.copyWith(
-        pinCode: updateSecurityModelAction.newModel.pinCode, secureBackupWithPin: updateSecurityModelAction.newModel.secureBackupWithPin);
-    _userController.add(_currentUser.copyWith(securityModel: securityModel));
-    updateSecurityModelAction.resolve(this._currentUser.securityModel);
+    _userController.add(_currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
+    return _currentUser.securityModel;
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {
