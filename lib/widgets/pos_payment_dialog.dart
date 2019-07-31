@@ -131,7 +131,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                                 );
                               }
                               return Container(
-                                  height: 230.0,
+                                  height: 200.0,
                                   width: 230.0,
                                   child: CompactQRImage(
                                     data: snapshot.data,
@@ -181,7 +181,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         textAlign: TextAlign.center,
         style: theme.paymentRequestTitleStyle,
       ),
-      body
+      new Padding(
+        padding: EdgeInsets.only(top: 15.0),
+        child: body,
+      )
     ]);
   }
 }
