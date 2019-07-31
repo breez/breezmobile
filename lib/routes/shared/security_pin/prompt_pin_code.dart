@@ -36,7 +36,7 @@ class _LockScreenState extends State<LockScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.changePin) _setLabel("Enter your new PIN");
+    if (widget.changePin) _label = "Enter your new PIN";
   }
 
   @override
@@ -108,8 +108,8 @@ class _LockScreenState extends State<LockScreen> {
   _setPinCodeForValidation() {
     setState(() {
       _tmpPinCode = _enteredPinCode;
+      _label = "Re-enter your new PIN";
     });
-    _setLabel("Re-enter your new PIN");
     _setPinCodeInput("");
   }
 
@@ -119,8 +119,8 @@ class _LockScreenState extends State<LockScreen> {
     } else {
       setState(() {
         _tmpPinCode = "";
+        _label = "Enter your new PIN";
       });
-      _setLabel("Enter your new PIN");
       _setPinCodeInput("");
       _setErrorMessage("PIN does not match");
     }
@@ -159,12 +159,6 @@ class _LockScreenState extends State<LockScreen> {
   void _incorrectPinCode() {
     _setPinCodeInput("");
     _setErrorMessage("Incorrect PIN");
-  }
-
-  void _setLabel(String label) {
-    setState(() {
-      _label = label;
-    });
   }
 
   void _setPinCodeInput(String enteredPinCode) {
