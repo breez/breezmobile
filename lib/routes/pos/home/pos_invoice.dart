@@ -248,28 +248,50 @@ class POSInvoiceState extends State<POSInvoice> {
                               brightness: Brightness.light,
                               canvasColor: theme.BreezColors.white[500],
                             ),
-                            child: new DropdownButtonHideUnderline(
-                              child: ButtonTheme(
-                                alignedDropdown: true,
-                                child: new DropdownButton(
-                                  onChanged: (value) => changeCurrency(value),
-                                  value: _currency.displayName,
-                                  style: theme.invoiceAmountStyle,
-                                  items:
-                                      Currency.currencies.map((Currency value) {
-                                    return new DropdownMenuItem<String>(
-                                      value: value.displayName,
-                                      child: new Text(
-                                        value.displayName,
-                                        textAlign: TextAlign.right,
-                                        style: theme.invoiceAmountStyle,
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                          ),
+                            child: new StreamBuilder<AccountSettings>(
+                                stream: _accountBloc.accountSettingsStream,
+                                builder: (settingCtx, settingSnapshot) {
+                                  return StreamBuilder<AccountModel>(
+                                    stream: _accountBloc.accountStream,
+                                    builder: (context, snapshot) {
+                                      AccountModel acc = snapshot.data;
+                                      return new DropdownButtonHideUnderline(
+                                        child: ButtonTheme(
+                                          alignedDropdown: true,
+                                          child: new DropdownButton(
+                                            onChanged: (value) =>
+                                                changeCurrency(value),
+                                            value: _currency.displayName,
+                                            style: theme.invoiceAmountStyle,
+                                            items: Currency.currencies
+                                                .map((Currency value) {
+                                              return new DropdownMenuItem<
+                                                  String>(
+                                                value: value.displayName,
+                                                child: new Text(
+                                                  value.displayName,
+                                                  textAlign: TextAlign.right,
+                                                  style:
+                                                      theme.invoiceAmountStyle,
+                                                ),
+                                              );
+                                            }).toList().addAll(acc.fiatConversionList.map(FiatConversion value) {
+                                            return new DropdownMenuItem<String>(
+                                            value: value.currencyData.shortName,
+                                            child: new Text(
+                                            value.currencyData.shortName,
+                                            textAlign: TextAlign.left,
+                                            style: theme.alertTitleStyle,
+                                            ),
+                                            );
+                                            }).toList(),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }),
+                          )
                         ]),
                       ),
                     ],
