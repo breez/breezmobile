@@ -48,6 +48,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   var sessionState = Map<String, dynamic>();  
   SessionLinkModel sessionLink;
   Completer _sessionCompleter = new Completer();
+  bool _paymentSent = false;  
 
   String get sessionID => sessionLink?.sessionID;
 
@@ -62,7 +63,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   Future start(SessionLinkModel sessionLink) async{    
     log.info("payer session starting...");
     this.sessionLink = sessionLink;
-    await _loadPersistedPayeeDetails();
+    await _loadPersistedSessionInfo();
     log.info("payer session loaded persisted payee info");
     if (sessionLink.sessionSecret != null) {             
       _watchInviteRequests(SessionLinkModel(sessionID, sessionLink.sessionSecret, sessionLink.initiatorPubKey));
@@ -79,13 +80,16 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     log.info("payer session started");   
   }
 
-  _loadPersistedPayeeDetails() async{
+  _loadPersistedSessionInfo() async {    
     var sessionInfo = await _breezLib.ratchetSessionInfo(sessionID);
     if (sessionInfo == null || sessionInfo.userInfo.isEmpty) {
-      return null;
+      return;
     }
-    Map<String, dynamic> payeeData =  json.decode(sessionInfo.userInfo);
-    var persistedPayee = PayeeSessionData.fromJson(payeeData["payeeData"]).copyWith(status: PeerStatus.start());
+    Map<String, dynamic> decodedSessionInfo =  json.decode(sessionInfo.userInfo);
+    if (decodedSessionInfo["paymentSent"] == true) {
+      _sessionErrorsController.add(PaymentSessionError.unknown(SessionExpiredException().toString()));
+    }
+    var persistedPayee = PayeeSessionData.fromJson(decodedSessionInfo["payeeData"]).copyWith(status: PeerStatus.start());
     _paymentSessionController.add(_currentSession.copyWith(payeeData: persistedPayee));
   }
 
@@ -173,16 +177,20 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       if (newPayeeData.userName == null || newPayeeData.imageURL == null) {
         newPayeeData = newPayeeData.copyWith(userName: _currentSession.payeeData.userName);
         newPayeeData = newPayeeData.copyWith(imageURL: _currentSession.payeeData.imageURL);
-      }
-      PaymentSessionState nextState = _currentSession.copyWith(payeeData: newPayeeData);
-      _persistPayeeData(newPayeeData);
+      }      
+      PaymentSessionState nextState = _currentSession.copyWith(payeeData: newPayeeData);      
 
       String paymentRequest = nextState.payeeData.paymentRequest;
       if (paymentRequest != null) {
-       _sendPayment(paymentRequest, nextState);
+        if (!this._paymentSent) {
+          this._paymentSent = true;          
+          _sendPayment(paymentRequest, nextState);
+        }
       } else {        
         _paymentSessionController.add(nextState);
       }
+
+      _persistSessionInfo(newPayeeData);
     });   
 
     _channel.peerResetStream.listen((_) async{
@@ -213,12 +221,15 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     .catchError(_onError);    
   }
 
-  Future _persistPayeeData(PayeeSessionData newPayeeData){
+  Future _persistSessionInfo(PayeeSessionData newPayeeData){
     return _breezLib.ratchetSessionSetInfo(sessionID, json.encode(
-      {"payeeData": {
-        "imageURL": newPayeeData.imageURL,
-        "userName": newPayeeData.userName
-      }})
+      {
+        "payeeData": {
+          "imageURL": newPayeeData.imageURL,
+          "userName": newPayeeData.userName,        
+        },
+        "paymentSent": this._paymentSent
+      })
     );
   }
 
