@@ -81,19 +81,19 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater{
     _paymentSessionController.add(_currentSession.copyWith(payerData: persistedPayer));
   }
 
-  _handleIncomingMessages(){
-     _approvePaymentController.stream.listen((request) {     
-      var payerData = _currentSession.payerData;    
+  _handleIncomingMessages(){    
+    _approvePaymentController.stream.first.then((request){
+      var payerData = _currentSession.payerData;
       _breezLib
-          .addInvoice(Int64(payerData.amount), payeeName: _currentUser.name, payeeImageURL: _currentUser.avatarURL, payerName: payerData.userName, payerImageURL: payerData.imageURL, description: payerData.description)
-          .then((payReq) => _sendPaymentRequest(payReq))
-          .then((_){
-            _backgroundService.runAsTask(_sessionCompleter.future, (){
-              log.info("payee session background task finished");
-            });
-          })
-          .catchError(_onInvoiceError);
-    });
+        .addInvoice(Int64(payerData.amount), payeeName: _currentUser.name, payeeImageURL: _currentUser.avatarURL, payerName: payerData.userName, payerImageURL: payerData.imageURL, description: payerData.description)
+        .then((payReq) => _sendPaymentRequest(payReq))
+        .then((_){
+          _backgroundService.runAsTask(_sessionCompleter.future, (){
+            log.info("payee session background task finished");
+          });
+        });
+    })
+    .catchError(_onInvoiceError);
 
     _rejectPaymentController.stream.listen((_){
       pushStateUpdate({"error": "Payment rejected"}).then((res) {
