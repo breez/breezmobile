@@ -50,8 +50,10 @@ class PayeeSessionWidget extends StatelessWidget {
   }
 
   _getActions(PaymentSessionState sessionState){
-    if (sessionState.payerData.amount != null && sessionState.payeeData.paymentRequest == null) {
-      return ["Reject", "Approve"];
+    if (_account.synced) {
+      if (sessionState.payerData.amount != null && sessionState.payeeData.paymentRequest == null) {
+        return ["Reject", "Approve"];
+      }
     }
     return null;
   }
@@ -72,11 +74,13 @@ class _PayeeInstructions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String message = "";
+    String message = "";    
     if (_sessionState.paymentFulfilled) {
             message = "You've successfully got " + _account.currency.format(Int64(_sessionState.settledAmount));
     } else if (_sessionState.payerData.amount == null) {
       return LoadingAnimatedText('Waiting for ${_sessionState.payerData.userName ?? "payer"} to enter an amount', textStyle: theme.sessionNotificationStyle);
+    } else if (!_account.synced) {
+      return LoadingAnimatedText('Please wait while Breez is synchronizing');
     }
     else if (_sessionState.payerData.amount != null && _sessionState.payeeData.paymentRequest == null) {
       message = '${_sessionState.payerData.userName} wants to pay you ${_account.currency.format(Int64(_sessionState.payerData.amount))}';

@@ -3,7 +3,6 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -11,10 +10,10 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/pos_profile/pos_profile_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/services/countdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/routes/user/home/status_indicator.dart';
+import 'package:breez/widgets/pos_payment_dialog.dart';
 
 var cancellationTimeoutValue;
 
@@ -77,9 +76,6 @@ class POSInvoiceState extends State<POSInvoice> {
   void registerListeners() {    
     _focusNode = new FocusNode();
     _focusNode.addListener(_onOnFocusNodeEvent);
-
-    _NfcDialog _nfcDialog =
-        new _NfcDialog(_invoiceBloc, _scaffoldKey);
     _invoiceDescriptionController.text = "";
     _accountSubscription = _accountBloc.accountStream.listen((acc) {
       setState(() {
@@ -103,13 +99,14 @@ class POSInvoiceState extends State<POSInvoice> {
     _invoiceReadyNotificationsSubscription =
         _invoiceBloc.readyInvoicesStream.listen((invoiceReady) {
       // show the simple dialog with 3 states
-      showDialog<bool>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return _nfcDialog;
-        }).then((result) {
-        setState(() {
+      if (invoiceReady != null) {
+        showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return new PosPaymentDialog(_invoiceBloc, _posProfileBloc, _scaffoldKey);
+            }).then((result) {
+          setState(() {
             _currentAmount = 0;
             _totalAmount = 0;
             _amountController.text = _currency.format((Int64(_currentAmount)),
@@ -121,6 +118,7 @@ class POSInvoiceState extends State<POSInvoice> {
             _invoiceDescriptionController.text = "";
           });
         });
+      }
       },
       onError: (err) => _scaffoldKey.currentState.showSnackBar(
           new SnackBar(
@@ -485,233 +483,5 @@ class POSInvoiceState extends State<POSInvoice> {
                   onPressed: onAddition,
                   child: new Text("+", style: theme.numPadAdditionStyle))),
         ]).toList());
-  }
-}
-
-enum _NfcState { WAITING_FOR_NFC, WAITING_FOR_PAYMENT, PAYMENT_RECEIVED }
-
-class _NfcDialogState extends State<_NfcDialog> {
-  _NfcState _state = _NfcState.WAITING_FOR_NFC;
-  bool _scanQr = false;
-  CountDown _paymentTimer;
-  StreamSubscription<Duration> _timerSubscription;
-  String _countdownString = "3:00";
-  String _debugMessage = "";
-
-  StreamSubscription<String> _sentInvoicesSubscription;
-  StreamSubscription<bool> _paidInvoicesSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _paymentTimer =
-        CountDown(new Duration(seconds: int.parse(cancellationTimeoutValue)));
-    _timerSubscription = _paymentTimer.stream.listen(null);
-    _timerSubscription.onData((Duration d) {
-      setState(() {
-        _countdownString = d.inMinutes.toRadixString(10) +
-            ":" +
-            (d.inSeconds - (d.inMinutes * 60))
-                .toRadixString(10)
-                .padLeft(2, '0');
-      });
-    });
-
-    _timerSubscription.onDone(() {
-      if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop(false);
-      }
-    });
-
-    _sentInvoicesSubscription =
-        widget._invoiceBloc.sentInvoicesStream.listen((message) {
-      _debugMessage = message;
-
-      setState(() {
-        _state = _NfcState.WAITING_FOR_PAYMENT;
-      });
-    }, onError: (err) {
-      Navigator.of(context).pop(false);
-      widget._scaffoldKey.currentState.showSnackBar(new SnackBar(
-          duration: new Duration(seconds: 3),
-          content: new Text(err.toString())));
-    });
-
-    _paidInvoicesSubscription =
-        widget._invoiceBloc.paidInvoicesStream.listen((paid) {
-      setState(() {
-        _state = _NfcState.PAYMENT_RECEIVED;
-      });
-    }, onError: (err) {
-      Navigator.of(context).pop(false);
-      widget._scaffoldKey.currentState.showSnackBar(new SnackBar(
-          duration: new Duration(seconds: 3),
-          content: new Text(err.toString())));
-    });
-  }
-
-  @override
-  void dispose() {
-    _timerSubscription?.cancel();
-    _paidInvoicesSubscription?.cancel();
-    _sentInvoicesSubscription?.cancel();
-    super.dispose();
-  }
-
-  Widget _cancelButton() {
-    return new FlatButton(
-      padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
-      child: new Text(
-        'CANCEL PAYMENT',
-        textAlign: TextAlign.center,
-        style: theme.cancelButtonStyle,
-      ),
-      onPressed: () {
-        Navigator.of(context).pop(false);
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
-      content: new SingleChildScrollView(
-          child: _state == _NfcState.WAITING_FOR_NFC
-              ? new ListBody(
-                  children: <Widget>[
-                    AnimatedCrossFade(
-                      duration: const Duration(milliseconds: 200),
-                      firstCurve: Cubic(1.0, 2.0, 1.0, 2.0),
-                      secondCurve: Cubic(2.0, 1.0, 2.0, 1.0),
-                      sizeCurve: Curves.easeInOut,
-                      firstChild: _buildDialogBody(
-                          'Hold a Breez card closely to process this payment.',
-                          'qr_scan',
-                          new Padding(
-                            padding: EdgeInsets.only(
-                                top: 13.0, left: 12.0, right: 12.0),
-                            child: new Image.asset('src/images/breez_nfc.png'),
-                          )),
-                      secondChild: _buildDialogBody(
-                          'Scan the QR code to process this payment.',
-                          'card',
-                          StreamBuilder<String>(
-                              stream: widget._invoiceBloc.readyInvoicesStream,
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Container(
-                                    height: 200.0,
-                                  );
-                                }
-                                return new CompactQRImage(                                  
-                                  data: snapshot.data,
-                                );
-                              })),
-                      crossFadeState: !_scanQr
-                          ? CrossFadeState.showFirst
-                          : CrossFadeState.showSecond,
-                    ),
-                    new Padding(
-                        padding: EdgeInsets.only(top: 15.0),
-                        child: new Text(_countdownString,
-                            textAlign: TextAlign.center,
-                            style: theme.paymentRequestTitleStyle)),
-                    _cancelButton(),
-                  ],
-                )
-              : _state == _NfcState.WAITING_FOR_PAYMENT
-                  ? new ListBody(
-                      children: <Widget>[
-                        new Text(
-                          'Payment request was successfully sent.',
-                          textAlign: TextAlign.center,
-                          style: theme.paymentRequestTitleStyle,
-                        ),
-                        new Text('DEBUG: ' + _debugMessage),
-                        new Text('Waiting for customer approval...',
-                            textAlign: TextAlign.center,
-                            style: theme.paymentRequestSubtitleStyle),
-                        new Padding(
-                            padding: EdgeInsets.only(top: 15.0),
-                            child: new Text(_countdownString,
-                                textAlign: TextAlign.center,
-                                style: theme.paymentRequestTitleStyle)),
-                        new Padding(
-                            padding: EdgeInsets.only(top: 8.0),
-                            child: new Image.asset(
-                              'src/images/breez_loader.gif',
-                              gaplessPlayback: true,
-                            )),
-                        _cancelButton(),
-                      ],
-                    )
-                  : new GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop(true);
-                      },
-                      child: new ListBody(
-                        children: <Widget>[
-                          new Padding(
-                            padding: EdgeInsets.only(bottom: 40.0),
-                            child: new Text(
-                              'Payment approved!',
-                              textAlign: TextAlign.center,
-                              style: theme.paymentRequestTitleStyle,
-                            ),
-                          ),
-                          new Padding(
-                              padding: EdgeInsets.only(bottom: 40.0),
-                              child: ImageIcon(
-                                AssetImage("src/icon/ic_done.png"),
-                                size: 48.0,
-                                color: Color.fromRGBO(0, 133, 251, 1.0),
-                              )),
-                        ],
-                      ),
-                    )),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
-    );
-  }
-
-  ListBody _buildDialogBody(String title, String iconName, Widget body) {
-    return new ListBody(children: <Widget>[
-      new Text(
-        title,
-        textAlign: TextAlign.center,
-        style: theme.paymentRequestTitleStyle,
-      ),
-      new IconButton(
-        highlightColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        alignment: Alignment.bottomRight,
-        icon: Image(
-          image: AssetImage("src/icon/$iconName.png"),
-          color: theme.BreezColors.blue[500],
-          width: 24.0,
-          height: 24.0,
-        ),
-        onPressed: () {
-          setState(() {
-            _scanQr = !_scanQr;
-          });
-        },
-      ),
-      body
-    ]);
-  }
-}
-
-class _NfcDialog extends StatefulWidget {
-  final InvoiceBloc _invoiceBloc;
-  final GlobalKey<ScaffoldState> _scaffoldKey;
-
-  _NfcDialog(this._invoiceBloc, this._scaffoldKey);
-
-  @override
-  _NfcDialogState createState() {
-    return _NfcDialogState();
   }
 }
