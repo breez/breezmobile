@@ -304,6 +304,10 @@ class BreezBridge {
     return _invokeMethodWhenReady("requestBackup");
   }
 
+  Future setPinCode(String pinCode){
+    return _invokeMethodImmediate("setPinCode", {"argument": pinCode ?? ""});
+  }
+
   Future<String> getAvailableBackups() async {
     try {
       await signIn(true);
