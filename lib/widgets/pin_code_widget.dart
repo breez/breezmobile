@@ -21,24 +21,26 @@ class PinCodeWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           new Container(
+              child: Center(
+                child: _buildBreezLogo(context),
+              ),
+              height: pageHeight * 0.29),
+          new Container(
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[_buildBreezLogo(context), Text(label), _buildPinCircles(), _buildErrorMessage()]),
-              height: pageHeight * 0.49),
+                  mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[Text(label), _buildPinCircles(), _buildErrorMessage()]),
+              height: pageHeight * 0.20),
           new Container(child: _numPad(context), height: pageHeight * 0.50)
         ],
       ),
     );
   }
 
-  Padding _buildBreezLogo(BuildContext context) {
-    return Padding(
-        child: new Image.asset(
-          "src/images/logo-color.png",
-          width: (MediaQuery.of(context).size.width) / 3,
-          color: Colors.white,
-        ),
-        padding: EdgeInsets.only(bottom: 48.0));
+  Image _buildBreezLogo(BuildContext context) {
+    return Image.asset(
+      "src/images/logo-color.png",
+      width: (MediaQuery.of(context).size.width) / 3,
+      color: Colors.white,
+    );
   }
 
   Container _buildPinCircles() {
