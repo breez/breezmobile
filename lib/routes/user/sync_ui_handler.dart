@@ -26,11 +26,11 @@ class SyncUIHandler {
       }
     } else {            
       if (_syncUIRoute != null) {
-        // If we are no top of the stack let's pop to get the animation
+        // If we are not on top of the stack let's pop to get the animation
         if (_syncUIRoute.isCurrent) {
           Navigator.of(this._context).pop();
         } else {
-          // If we are hidden just remote the route;
+          // If we are hidden, just remove the route.
           Navigator.of(this._context).removeRoute(_syncUIRoute);
         }
         _syncUIRoute = null;
