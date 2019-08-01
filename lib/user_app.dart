@@ -5,10 +5,11 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/shared/security_pin/lock_screen.dart';
 import 'package:breez/routes/user/get_refund/get_refund_page.dart';
 import 'package:breez/routes/user/withdraw_funds/send_coins_dialog.dart';
-import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
@@ -18,7 +19,6 @@ import 'package:breez/routes/shared/splash_page.dart';
 import 'package:breez/routes/shared/initial_walkthrough.dart';
 import 'package:breez/routes/shared/network/network.dart';
 import 'package:breez/routes/shared/security_pin/security_pin_page.dart';
-import 'package:breez/routes/shared/security_pin/prompt_pin_code.dart';
 import 'package:breez/routes/shared/dev/dev.dart';
 import 'package:breez/routes/user/activate_card/activate_card_page.dart';
 import 'package:breez/routes/user/add_funds/add_funds_page.dart';
@@ -75,7 +75,10 @@ class UserApp extends StatelessWidget {
               switch (settings.name) {
                 case '/lockscreen':
                   return new FadeInRoute(
-                      builder: (_) => new LockScreen(),
+                      builder: (_) => new AppLockScreen(user.securityModel, onUnlock: (){
+                        _navigatorKey.currentState.pop();                        
+                        userProfileBloc.userSink.add(user.copyWith(waitingForPin: false));
+                      },),
                       settings: settings
                   );
                 case '/home':
@@ -148,7 +151,7 @@ class UserApp extends StatelessWidget {
                   );
                 case '/security':
                   return new FadeInRoute(
-                    builder: (_) => (user.securityModel.pinCode != null) ? new LockScreen(dismissible: true, route: new SecurityPage(),) : new SecurityPage(),
+                    builder: (_) => new SecurityPage(),
                     settings: settings,
                   );
                 case '/developers':

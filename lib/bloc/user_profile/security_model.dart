@@ -5,7 +5,7 @@ class SecurityModel {
   SecurityModel({this.pinCode, this.secureBackupWithPin});
 
   SecurityModel copyWith({String pinCode, bool secureBackupWithPin}) {
-    return new SecurityModel(pinCode: pinCode, secureBackupWithPin: secureBackupWithPin ?? this.secureBackupWithPin);
+    return new SecurityModel(pinCode: pinCode ?? this.pinCode, secureBackupWithPin: secureBackupWithPin ?? this.secureBackupWithPin);
   }
 
   SecurityModel.initial() : this(pinCode: null, secureBackupWithPin: false);

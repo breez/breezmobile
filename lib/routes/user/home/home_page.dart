@@ -199,7 +199,7 @@ class HomeState extends State<Home> {
                 ));
       } else {
         Navigator.of(context).pushNamed(itemName).then((message) {
-          if (message != null) {
+          if (message != null && message.runtimeType == String) {
             showFlushbar(context, message: message);
           }
         });

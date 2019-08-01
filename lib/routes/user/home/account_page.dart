@@ -16,8 +16,6 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/status_text.dart';
 import 'package:breez/utils/date.dart';
-import 'package:breez/routes/shared/security_pin/prompt_pin_code.dart';
-import 'package:breez/widgets/route.dart';
 
 const DASHBOARD_MAX_HEIGHT = 188.0;
 const DASHBOARD_MIN_HEIGHT = 70.0;

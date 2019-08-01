@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
@@ -108,7 +110,7 @@ class PinCodeWidget extends StatelessWidget {
           _numberButton("0"),
           Container(
             child: new IconButton(
-              onPressed: () => setPinCodeInput(enteredPinCode.substring(0, enteredPinCode.length - 1)),
+              onPressed: () => setPinCodeInput(enteredPinCode.substring(0, max(enteredPinCode.length, 1) - 1)),
               icon: Icon(
                 Icons.backspace,
                 color: Colors.white,
