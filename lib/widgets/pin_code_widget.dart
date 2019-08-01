@@ -14,37 +14,36 @@ class PinCodeWidget extends StatelessWidget {
   PinCodeWidget(this.label, this.enteredPinCode, this.dismissible, this.errorMessage, this.onNumButtonPressed, this.setPinCodeInput);
 
   Widget build(BuildContext context) {
+    double pageHeight =
+        dismissible ? (MediaQuery.of(context).size.height - kToolbarHeight - 24) : (MediaQuery.of(context).size.height - 24);
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           new Container(
-            child: new Column(children: <Widget>[_buildBreezLogo(), Text(label), _buildPinCircles(), _buildErrorMessage()]),
-          ),
-          new Expanded(
-            child: _numPad(),
-          )
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[_buildBreezLogo(context), Text(label), _buildPinCircles(), _buildErrorMessage()]),
+              height: pageHeight * 0.49),
+          new Container(child: _numPad(context), height: pageHeight * 0.50)
         ],
       ),
     );
   }
 
-  Padding _buildBreezLogo() {
+  Padding _buildBreezLogo(BuildContext context) {
     return Padding(
-      child: new Image.asset(
-        "src/images/logo-color.png",
-        height: 47,
-        width: 125.4,
-        color: Colors.white,
-      ),
-      padding: EdgeInsets.only(top: dismissible ? kToolbarHeight : 96.0, bottom: 96.0),
-    );
+        child: new Image.asset(
+          "src/images/logo-color.png",
+          width: (MediaQuery.of(context).size.width) / 3,
+          color: Colors.white,
+        ),
+        padding: EdgeInsets.only(bottom: 48.0));
   }
 
   Container _buildPinCircles() {
     return Container(
       margin: const EdgeInsets.only(
-        top: 16,
         left: 64,
         right: 64,
       ),
@@ -74,28 +73,25 @@ class PinCodeWidget extends StatelessWidget {
     return list;
   }
 
-  Padding _buildErrorMessage() {
+  Text _buildErrorMessage() {
     return errorMessage.isNotEmpty
-        ? Padding(
-            padding: EdgeInsets.only(bottom: 64.0),
-            child: Text(
-              errorMessage,
-              style: theme.errorStyle,
-            ),
+        ? Text(
+            errorMessage,
+            style: theme.errorStyle,
           )
-        : Padding(
-            padding: EdgeInsets.only(bottom: 64.0),
-            child: Text(
-              "",
-              style: theme.errorStyle,
-            ),
+        : Text(
+            "",
+            style: theme.errorStyle,
           );
   }
 
-  Widget _numPad() {
+  Widget _numPad(BuildContext context) {
+    var _aspectRatio = dismissible
+        ? (MediaQuery.of(context).size.width / 3) / ((MediaQuery.of(context).size.height - kToolbarHeight - 24) / 8)
+        : (MediaQuery.of(context).size.width / 3) / ((MediaQuery.of(context).size.height - 24) / 8);
     return new GridView.count(
         crossAxisCount: 3,
-        childAspectRatio: 5 / 3,
+        childAspectRatio: _aspectRatio,
         padding: EdgeInsets.zero,
         children: List<int>.generate(9, (i) => i).map((index) => _numberButton((index + 1).toString())).followedBy([
           Container(
