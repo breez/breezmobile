@@ -10,6 +10,7 @@ import 'package:breez/bloc/user_profile/default_profile_generator.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/currency_data.dart';
 import 'package:breez/services/currency_service.dart';
 import 'package:breez/services/injector.dart';
@@ -24,6 +25,7 @@ class UserProfileBloc {
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+  BreezBridge _breezLib;
   NFCService _nfc;
   CurrencyService _currencyService;
   Map<String, CurrencyData> _currencyData;
@@ -60,6 +62,7 @@ class UserProfileBloc {
     ServiceInjector injector = ServiceInjector();
     _nfc = injector.nfc;
     _currencyService = injector.currencyService;
+    _breezLib = injector.breezBridge;
     _actionHandlers = {
       UpdateSecurityModel: _updateSecurityModelAction,
     };
@@ -109,9 +112,9 @@ class UserProfileBloc {
       BreezUserModel user = BreezUserModel.fromJson(profile);
       // Read the pin from the secure storage and initialize the breez user model appropriately
       String _pinCode = await _secureStorage.read(key: 'pinCode');
-      if (_pinCode != null) {
-        user = user.copyWith(securityModel: user.securityModel.copyWith(pinCode: _pinCode), waitingForPin: true);
-      }
+      user = user.copyWith(securityModel: user.securityModel.copyWith(pinCode: _pinCode), waitingForPin: _pinCode != null);      
+      await _breezLib.setPinCode(user.securityModel.secureBackupWithPin ? user.securityModel.pinCode : null);
+
       if (user.userID != null) {
         saveUser(injector, preferences, user).then(_publishUser);
       }
@@ -156,12 +159,15 @@ class UserProfileBloc {
   }
 
   Future _updateSecurityModel(UpdateSecurityModel updateSecurityModelAction) async {
-    if (updateSecurityModelAction.newModel.pinCode == null) {
+    SecurityModel newModel = updateSecurityModelAction.newModel;
+    if (newModel.pinCode == null) {
       await _secureStorage.delete(key: 'pinCode');
-    } else if (updateSecurityModelAction.newModel.pinCode != _currentUser.securityModel.pinCode) {
+    } else if (newModel.pinCode != _currentUser.securityModel.pinCode) {
       // Write to storage if the new pin code is different from current pin code
       await _secureStorage.write(key: 'pinCode', value: updateSecurityModelAction.newModel.pinCode);
     }
+    await _breezLib.setPinCode(newModel.secureBackupWithPin ? newModel.pinCode : null);
+    
     _userController.add(_currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return _currentUser.securityModel;
   }
