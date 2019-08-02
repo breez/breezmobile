@@ -1,5 +1,6 @@
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/routes/shared/account_required_actions.dart';
+import 'package:breez/routes/user/sync_ui_handler.dart';
 
 import 'pos_invoice.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,7 @@ class PosHomeState extends State<PosHome> {
   @override
   void initState() {
     super.initState();
+    new SyncUIHandler(widget.accountBloc, context);
     listenNoConnection(context, widget.accountBloc);
   }
 
