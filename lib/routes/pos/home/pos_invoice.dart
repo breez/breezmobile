@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/routes/user/home/status_indicator.dart';
 import 'package:breez/widgets/pos_payment_dialog.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
 
 var cancellationTimeoutValue;
 
@@ -29,7 +31,6 @@ class POSInvoice extends StatefulWidget {
 class POSInvoiceState extends State<POSInvoice> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  
   TextEditingController _amountController = new TextEditingController();
   TextEditingController _chargeAmountController = new TextEditingController();
   TextEditingController _invoiceDescriptionController =
@@ -37,9 +38,12 @@ class POSInvoiceState extends State<POSInvoice> {
 
   POSProfileModel _posProfile;
   Currency _currency = Currency.BTC;
+  bool _usingFiat = false;
+  FiatConversion _fiatCurrencyConversion;
   double itemHeight;
   double itemWidth;
   int _currentAmount = 0;
+  double _currentFiatAmount = 0;
   int _totalAmount = 0;
   Int64 _maxPaymentAmount;
   Int64 _maxAllowedToReceive;
@@ -80,14 +84,10 @@ class POSInvoiceState extends State<POSInvoice> {
     _accountSubscription = _accountBloc.accountStream.listen((acc) {
       setState(() {
         _currency = acc.currency;
+        _fiatCurrencyConversion = acc.fiatCurrency;
         _maxPaymentAmount = acc.maxPaymentAmount;
         _maxAllowedToReceive = acc.maxAllowedToReceive;
-        _amountController.text = _currency.format((Int64(_currentAmount)),
-            fixedDecimals: true, includeSymbol: false);
-        _chargeAmountController.text = _currency.format(
-            (Int64(_totalAmount + _currentAmount)),
-            fixedDecimals: true,
-            includeSymbol: true);
+        updateAmountControllers();
       });
     });
     _posProfileSubscription =
@@ -107,14 +107,9 @@ class POSInvoiceState extends State<POSInvoice> {
               return new PosPaymentDialog(_invoiceBloc, _posProfileBloc, _scaffoldKey);
             }).then((result) {
           setState(() {
-            _currentAmount = 0;
+            clearCurrentAmounts();
             _totalAmount = 0;
-            _amountController.text = _currency.format((Int64(_currentAmount)),
-                fixedDecimals: true, includeSymbol: false);
-            _chargeAmountController.text = _currency.format(
-                (Int64(_totalAmount + _currentAmount)),
-                fixedDecimals: true,
-                includeSymbol: true);
+            updateAmountControllers();
             _invoiceDescriptionController.text = "";
           });
         });
@@ -246,27 +241,60 @@ class POSInvoiceState extends State<POSInvoice> {
                               brightness: Brightness.light,
                               canvasColor: theme.BreezColors.white[500],
                             ),
-                            child: new DropdownButtonHideUnderline(
-                              child: ButtonTheme(
-                                alignedDropdown: true,
-                                child: new DropdownButton(
-                                  onChanged: (value) => changeCurrency(value),
-                                  value: _currency.displayName,
-                                  style: theme.invoiceAmountStyle,
-                                  items:
-                                      Currency.currencies.map((Currency value) {
-                                    return new DropdownMenuItem<String>(
-                                      value: value.displayName,
-                                      child: new Text(
-                                        value.displayName,
-                                        textAlign: TextAlign.right,
-                                        style: theme.invoiceAmountStyle,
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
+                            child: new StreamBuilder<AccountSettings>(
+                                stream: _accountBloc.accountSettingsStream,
+                                builder: (settingCtx, settingSnapshot) {
+                                  return StreamBuilder<AccountModel>(
+                                    stream: _accountBloc.accountStream,
+                                    builder: (context, snapshot) {
+                                      AccountModel acc = snapshot.data;
+                                      return new DropdownButtonHideUnderline(
+                                        child: ButtonTheme(
+                                          alignedDropdown: true,
+                                          child: new DropdownButton(
+                                              onChanged: (value) =>
+                                                  changeCurrency(value),
+                                              value: _usingFiat
+                                                  ? _fiatCurrencyConversion
+                                                      .currencyData.shortName
+                                                  : _currency.displayName,
+                                              style: theme.invoiceAmountStyle,
+                                              items: Currency.currencies.map(
+                                                  (Currency value) {
+                                                return new DropdownMenuItem<
+                                                    String>(
+                                                  value: value.displayName,
+                                                  child: new Text(
+                                                    value.displayName,
+                                                    textAlign: TextAlign.right,
+                                                    style: theme
+                                                        .invoiceAmountStyle,
+                                                  ),
+                                                );
+                                              }).toList()
+                                                ..addAll(
+                                                  acc.fiatConversionList.map(
+                                                      (FiatConversion fiat) {
+                                                    return new DropdownMenuItem<
+                                                        String>(
+                                                      value: fiat.currencyData
+                                                          .shortName,
+                                                      child: new Text(
+                                                        fiat.currencyData
+                                                            .shortName,
+                                                        textAlign:
+                                                            TextAlign.right,
+                                                        style: theme
+                                                            .invoiceAmountStyle,
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                )),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }),
                           ),
                         ]),
                       ),
@@ -362,56 +390,88 @@ class POSInvoiceState extends State<POSInvoice> {
   onAddition() {
     setState(() {
       _totalAmount += _currentAmount;
-      _chargeAmountController.text = _currency.format((Int64(_totalAmount)),
-          fixedDecimals: true, includeSymbol: true);
-      _currentAmount = 0;
-      _amountController.text = _currency.format((Int64(_currentAmount)),
-          fixedDecimals: true, includeSymbol: false);
+      clearCurrentAmounts();
+      updateAmountControllers();
     });
   }
 
   onNumButtonPressed(String numberText) {
     setState(() {
-      _currentAmount = (_currentAmount * 10) + int.parse(numberText);
-      _amountController.text = _currency.format((Int64(_currentAmount)),
-          fixedDecimals: true, includeSymbol: false);
-      _chargeAmountController.text = _currency.format(
-          (Int64(_totalAmount + _currentAmount)),
-          fixedDecimals: true,
-          includeSymbol: true);
+      if (!_usingFiat) {
+        _currentAmount = (_currentAmount * 10) + int.parse(numberText);
+      } else {
+        _currentFiatAmount = _currentFiatAmount * 10 +
+            int.parse(numberText) /
+                pow(10, _fiatCurrencyConversion.currencyData.fractionSize);
+        _currentAmount =
+            _fiatCurrencyConversion.fiatToSat(_currentFiatAmount).toInt();
+      }
+      updateAmountControllers();
     });
   }
 
   changeCurrency(value) {
     setState(() {
-      _currency = Currency.fromSymbol(value);
-      _userProfileBloc.currencySink
-          .add(Currency.currencies[Currency.currencies.indexOf(_currency)]);
+      bool usingFiat = true;
+      Currency.currencies.forEach((currency) {
+        if (currency.symbol == value) {
+          usingFiat = false;
+          _currency = Currency.fromSymbol(value);
+          if (_usingFiat) {
+            // We are switching back from fiat
+            _usingFiat = false;
+            clearCurrentAmounts();
+            _totalAmount = 0;
+          }
+          _userProfileBloc.currencySink
+              .add(Currency.currencies[Currency.currencies.indexOf(_currency)]);
+        }
+      });
+
+      if (usingFiat) {
+        _usingFiat = true;
+        clearCurrentAmounts();
+        _totalAmount = 0;
+        _userProfileBloc.fiatConversionSink.add(value);
+      }
     });
+  }
+
+  clearCurrentAmounts() {
+    setState(() {
+      _currentAmount = 0;
+      _currentFiatAmount = 0;
+      updateAmountControllers();
+    });
+  }
+
+  updateAmountControllers() {
+    if (!_usingFiat) {
+      _amountController.text = _currency.format((Int64(_currentAmount)),
+          fixedDecimals: true, includeSymbol: false);
+    } else {
+      _amountController.text = _currentFiatAmount
+          .toStringAsFixed(_fiatCurrencyConversion.currencyData.fractionSize);
+    }
+
+    _chargeAmountController.text = _currency.format(
+        (Int64(_totalAmount + _currentAmount)),
+        fixedDecimals: true,
+        includeSymbol: true);
   }
 
   onClear() {
     setState(() {
-      _currentAmount = 0;
-      _amountController.text = _currency.format((Int64(_currentAmount)),
-          fixedDecimals: true, includeSymbol: false);
-      _chargeAmountController.text = _currency.format(
-          (Int64(_totalAmount + _currentAmount)),
-          fixedDecimals: true,
-          includeSymbol: true);
+      clearCurrentAmounts();
+      updateAmountControllers();
     });
   }
 
   clearSale() {
     setState(() {
-      _currentAmount = 0;
+      clearCurrentAmounts();
       _totalAmount = 0;
-      _amountController.text = _currency.format((Int64(_currentAmount)),
-          fixedDecimals: true, includeSymbol: false);
-      _chargeAmountController.text = _currency.format(
-          (Int64(_totalAmount + _currentAmount)),
-          fixedDecimals: true,
-          includeSymbol: true);
+      updateAmountControllers();
       _invoiceDescriptionController.text = "";
     });
   }
