@@ -164,7 +164,7 @@ class SecurityPageState extends State<SecurityPage> {
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
     return action.future.catchError((err){
-      promptError(context, "Failed", Text("Failed"));
+      promptError(context, "Internal Error", Text("Failed to update security settings"));
     });
   }
 }
