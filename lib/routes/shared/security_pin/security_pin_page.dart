@@ -16,7 +16,10 @@ import 'change_pin_code.dart';
 import 'lock_screen.dart';
 
 class SecurityPage extends StatefulWidget {
-  SecurityPage({Key key}) : super(key: key);
+  final UserProfileBloc userProfileBloc;
+  final BackupBloc backupBloc;
+
+  SecurityPage(this.userProfileBloc, this.backupBloc, {Key key}) : super(key: key);
 
   @override
   SecurityPageState createState() {
@@ -24,32 +27,14 @@ class SecurityPage extends StatefulWidget {
   }
 }
 
-class SecurityPageState extends State<SecurityPage> {
-  UserProfileBloc _userProfileBloc;
-  BackupBloc _backupBloc;
-  bool _isInit = false;
+class SecurityPageState extends State<SecurityPage> {  
   bool _screenLocked = true;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInit) {
-      _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context); 
-      _backupBloc = AppBlocsProvider.of<BackupBloc>(context); 
-      _isInit = true;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     String _title = "Security PIN";
     return StreamBuilder<BreezUserModel>(
-        stream: _userProfileBloc.userStream,
+        stream: widget.userProfileBloc.userStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Container();
@@ -112,12 +97,12 @@ class SecurityPageState extends State<SecurityPage> {
               }                                                
             }
             await _updateSecurityModel(securityModel.copyWith(secureBackupWithPin: value));
-            _backupBloc.backupNowSink.add(true);                        
-            _backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s){
+            widget.backupBloc.backupNowSink.add(true);                        
+            widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s){
               if (mounted) {
                 showDialog(
                 context: context,
-                builder: (ctx) => buildBackupInProgressDialog(ctx, _backupBloc.backupStateStream));
+                builder: (ctx) => buildBackupInProgressDialog(ctx, widget.backupBloc.backupStateStream));
               }
             });            
           }
@@ -177,7 +162,7 @@ class SecurityPageState extends State<SecurityPage> {
   Future _updateSecurityModel(SecurityModel newModel) {
     _screenLocked = false;
     var action = UpdateSecurityModel(newModel);
-    _userProfileBloc.userActionsSink.add(action);
+    widget.userProfileBloc.userActionsSink.add(action);
     return action.future.catchError((err){
       promptError(context, "Failed", Text("Failed"));
     });
