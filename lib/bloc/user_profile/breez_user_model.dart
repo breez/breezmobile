@@ -13,7 +13,7 @@ class BreezUserModel {
   final SecurityModel securityModel;
   bool waitingForPin;
 
-  BreezUserModel(this.userID, this.name, this.color, this.animal, {this.currency = Currency.SAT, this.fiatCurrency = "USD", String image, this.securityModel, this.waitingForPin}) {
+  BreezUserModel(this.userID, this.name, this.color, this.animal, {this.currency = Currency.SAT, this.fiatCurrency = "USD", String image, this.securityModel, this.waitingForPin = true}) {
     this._image = image;
   }
   BreezUserModel copyWith({String name, String color, String animal, Currency currency, String fiatCurrency, String image, SecurityModel securityModel, bool waitingForPin}) {
@@ -46,6 +46,6 @@ class BreezUserModel {
         'color': color,
         'animal': animal,
         'image': _image,
-        'securityModel': securityModel.toJson(),
+        'securityModel': securityModel?.toJson(),
       };
 }
