@@ -1,8 +1,10 @@
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
 import 'package:breez/routes/shared/security_pin/security_pin_warning_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -24,6 +26,7 @@ class SecurityPage extends StatefulWidget {
 
 class SecurityPageState extends State<SecurityPage> {
   UserProfileBloc _userProfileBloc;
+  BackupBloc _backupBloc;
   bool _isInit = false;
   bool _screenLocked = true;
 
@@ -36,7 +39,8 @@ class SecurityPageState extends State<SecurityPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_isInit) {
-      _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);      
+      _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context); 
+      _backupBloc = AppBlocsProvider.of<BackupBloc>(context); 
       _isInit = true;
     }
   }
@@ -107,7 +111,15 @@ class SecurityPageState extends State<SecurityPage> {
                 return;
               }                                                
             }
-            _updateSecurityModel(securityModel.copyWith(secureBackupWithPin: value));              
+            await _updateSecurityModel(securityModel.copyWith(secureBackupWithPin: value));
+            _backupBloc.backupNowSink.add(true);                        
+            _backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s){
+              if (mounted) {
+                showDialog(
+                context: context,
+                builder: (ctx) => buildBackupInProgressDialog(ctx, _backupBloc.backupStateStream));
+              }
+            });            
           }
         },
       ),
