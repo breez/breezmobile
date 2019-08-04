@@ -26,8 +26,8 @@ class BackupBloc {
   final _backupNowController = new StreamController<bool>();
   Sink<bool> get backupNowSink => _backupNowController.sink;
 
-  final _restoreRequestController = new StreamController<String>();
-  Sink<String> get restoreRequestSink => _restoreRequestController.sink;
+  final _restoreRequestController = new StreamController<RestoreRequest>();
+  Sink<RestoreRequest> get restoreRequestSink => _restoreRequestController.sink;
 
   final _multipleRestoreController =
       new StreamController<List<SnapshotInfo>>.broadcast();
@@ -162,9 +162,9 @@ class BackupBloc {
   }
 
   void _listenRestoreRequests() {
-    _restoreRequestController.stream.listen((nodeId) {
-      if (nodeId == null || nodeId.isEmpty) {
-        return _breezLib.getAvailableBackups()
+    _restoreRequestController.stream.listen((request) {
+      if (request == null) {
+        _breezLib.getAvailableBackups()
         .then((backups) {          
           List snapshotsArray = json.decode(backups) as List;
           List<SnapshotInfo> snapshots = List<SnapshotInfo>();
@@ -176,10 +176,12 @@ class BackupBloc {
           _multipleRestoreController.add(snapshots);
         }).catchError((error) {
           _restoreFinishedController.addError(error);
-        });        
+        });
+
+        return;     
       }
 
-      _breezLib.restore(nodeId)
+      _breezLib.restore(request.snapshot.nodeID, request.pinCode)
         .then((_) => _restoreFinishedController.add(true))
         .catchError(_restoreFinishedController.addError);      
     });  
@@ -197,12 +199,21 @@ class BackupBloc {
 class SnapshotInfo {
   final String nodeID;	
 	final String modifiedTime;
+  final bool encrypted;
 
-  SnapshotInfo(this.nodeID, this.modifiedTime);
+  SnapshotInfo(this.nodeID, this.modifiedTime, this.encrypted);
   
   SnapshotInfo.fromJson(Map<String, dynamic> json) : 
     this(
       json["NodeID"], 
-      json["ModifiedTime"]
+      json["ModifiedTime"],      
+      json["Encrypted"] == true,
     );
+}
+
+class RestoreRequest {
+  final SnapshotInfo snapshot;
+  final String pinCode;
+
+  RestoreRequest(this.snapshot, this.pinCode);
 }
