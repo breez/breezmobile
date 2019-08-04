@@ -151,7 +151,7 @@ class UserApp extends StatelessWidget {
                   );
                 case '/security':
                   return new FadeInRoute(
-                    builder: (_) => new SecurityPage(),
+                    builder: (_) => new SecurityPage(userProfileBloc, backupBloc),
                     settings: settings,
                   );
                 case '/developers':
