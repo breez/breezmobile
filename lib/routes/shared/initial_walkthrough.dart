@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/routes/shared/security_pin/restore_pin.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/restore_dialog.dart';
@@ -36,33 +37,39 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   @override
   void initState() {
-    super.initState();    
+    super.initState();
 
     _multipleRestoreSubscription =
-        widget._backupBloc.multipleRestoreStream.listen((options) {
+        widget._backupBloc.multipleRestoreStream.listen((options) async {
       if (options.length == 0) {
         popToWalkthrough(error: "Could not locate backup for this account");
         return;
       }
 
+
+      SnapshotInfo toRestore;
       if (options.length == 1) {
-        widget._backupBloc.restoreRequestSink.add(options.first.nodeID);
-        return;
+        toRestore = options.first;
+      } else {
+        popToWalkthrough();
+        toRestore = await showDialog<SnapshotInfo>(
+            context: context,
+            builder: (_) =>
+                new RestoreDialog(context, widget._backupBloc, options));
       }
 
-      popToWalkthrough();
-      showDialog(
-              context: context,
-              builder: (_) =>
-                  new RestoreDialog(context, widget._backupBloc, options))
-          .then((res) {
-        if (res) {
-          Navigator.push(
-              context,
-              createLoaderRoute(context,
-                  message: "Restoring data...", opacity: 0.8));
+      String restorePIN;
+      if (toRestore != null) {
+        if (toRestore.encrypted) {
+          restorePIN = await getRestorePIN();
         }
-      });
+        widget._backupBloc.restoreRequestSink
+            .add(RestoreRequest(toRestore, restorePIN));
+        Navigator.push(
+            context,
+            createLoaderRoute(context,
+                message: "Restoring data...", opacity: 0.8));
+      }
     }, onError: (error) {
       popToWalkthrough(
           error: error.runtimeType != SignInFailedException
@@ -93,6 +100,14 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }
   }
 
+  Future<String> getRestorePIN() {
+    return Navigator.of(context).push(new FadeInRoute(
+      builder: (BuildContext context) {
+        return RestorePinCode();
+      },
+    ));
+  }
+
   void popToWalkthrough({String error}) {
     Navigator.popUntil(context, (route) {
       return route.settings.name == "/intro";
@@ -105,7 +120,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   @override
-  void dispose() {    
+  void dispose() {
     _multipleRestoreSubscription.cancel();
     _restoreFinishedSubscription.cancel();
     _controller.dispose();
@@ -122,18 +137,16 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     if (!_registered) {
       exit(0);
     }
-    return true;   
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       key: _scaffoldKey,
-      body: 
-      WillPopScope(
+      body: WillPopScope(
         onWillPop: _onWillPop,
-        child: 
-        Padding(
+        child: Padding(
             padding: new EdgeInsets.only(top: 24.0),
             child: new Stack(children: <Widget>[
               new Column(
@@ -185,17 +198,17 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                           color: theme.whiteColor,
                           elevation: 0.0,
                           shape: const StadiumBorder(),
-                          onPressed: () {                            
+                          onPressed: () {
                             showDialog(
                                 context: context,
                                 barrierDismissible: false,
                                 builder: (BuildContext context) {
                                   return BetaWarningDialog();
-                                }).then((approved) { 
-                                  if (approved) {
-                                    _proceedToRegister(); 
-                                  }
-                                });
+                                }).then((approved) {
+                              if (approved) {
+                                _proceedToRegister();
+                              }
+                            });
                           })),
                   new Expanded(
                     flex: 40,
@@ -206,7 +219,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                               // Restore then start lightninglib
                               Navigator.push(
                                   context, createLoaderRoute(context));
-                              widget._backupBloc.restoreRequestSink.add("");
+                              widget._backupBloc.restoreRequestSink.add(null);
                             },
                             child: new Text(
                               "Restore from backup",
