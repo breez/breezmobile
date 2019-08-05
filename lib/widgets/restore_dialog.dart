@@ -1,8 +1,9 @@
-import 'dart:async';
+import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:intl/intl.dart';
 
 class RestoreDialog extends StatefulWidget {
   final BuildContext context;
@@ -19,7 +20,7 @@ class RestoreDialog extends StatefulWidget {
 }
 
 class RestoreDialogState extends State<RestoreDialog> {  
-  String _selectedKey;
+  SnapshotInfo _selectedSnapshot;
 
   @override
   Widget build(BuildContext context) {
@@ -48,15 +49,17 @@ class RestoreDialogState extends State<RestoreDialog> {
             child: Container(
               width: 150.0,
               height: 200.0,
-              child: ListView.builder(
+              child: ListView.builder(                
                 shrinkWrap: false,
                 itemCount: widget.snapshots.length,
                 itemBuilder: (BuildContext context, int index) {                  
-                  return ListTile(          
-                    selected: _selectedKey == widget.snapshots[index].nodeID  ,
-                    trailing: _selectedKey == widget.snapshots[index].nodeID ? Icon(Icons.check, color: theme.BreezColors.blue[500],) : Icon(Icons.check),
-                    title: Text(
-                      widget.snapshots[index].modifiedTime,                      
+                  return ListTile(  
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0),                    
+                    selected: _selectedSnapshot?.nodeID == widget.snapshots[index].nodeID  ,
+                    trailing: _selectedSnapshot?.nodeID == widget.snapshots[index].nodeID ? Icon(Icons.check, color: theme.BreezColors.blue[500],) : Icon(Icons.check),
+                    title: Text( 
+                      DateUtils.formatYearMonthDayHourMinute(DateTime.parse(widget.snapshots[index].modifiedTime)) + 
+                        (widget.snapshots[index].encrypted ? " - (PIN required)" : ""), 
                       style: theme.bolt11Style.apply(fontSizeDelta: 1.3),
                     ),
                     subtitle: Text(
@@ -65,7 +68,7 @@ class RestoreDialogState extends State<RestoreDialog> {
                     ),
                     onTap: () {
                       setState(() {
-                        _selectedKey = widget.snapshots[index].nodeID;
+                        _selectedSnapshot = widget.snapshots[index];
                       });                      
                     },
                   );
@@ -87,15 +90,14 @@ class RestoreDialogState extends State<RestoreDialog> {
       ),
       actions: <Widget>[
         new FlatButton(
-          onPressed: () =>  Navigator.pop(widget.context, false),
+          onPressed: () =>  Navigator.pop(widget.context, null),
           child: new Text("CANCEL", style: theme.buttonStyle),
         ),
         new FlatButton(     
           textColor: theme.BreezColors.blue[500],
           disabledTextColor: theme.BreezColors.blue[500].withOpacity(0.4),               
-          onPressed: _selectedKey == null ? null : () { 
-            Navigator.pop(widget.context, true);
-            widget.backupBloc.restoreRequestSink.add(_selectedKey);
+          onPressed: _selectedSnapshot == null ? null : () {
+            Navigator.pop(widget.context, _selectedSnapshot);
           },
           child: new Text("OK"),
         )

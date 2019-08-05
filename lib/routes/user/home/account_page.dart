@@ -54,7 +54,7 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-      _isInit = true;  
+      _isInit = true;
     }
     super.didChangeDependencies();
   }

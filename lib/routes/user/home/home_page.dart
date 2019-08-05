@@ -22,6 +22,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/routes/shared/no_connection_dialog.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 
 final GlobalKey firstPaymentItemKey = new GlobalKey();
 final ScrollController scrollController = new ScrollController();
@@ -30,10 +31,11 @@ final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
   final InvoiceBloc invoiceBloc;
+  final UserProfileBloc userProfileBloc;
   final ConnectPayBloc ctpBloc;
   final BackupBloc backupBloc;
 
-  Home(this.accountBloc, this.invoiceBloc, this.ctpBloc, this.backupBloc) {
+  Home(this.accountBloc, this.invoiceBloc, this.userProfileBloc, this.ctpBloc, this.backupBloc) {
     _minorActionsInvoice =
     new List<DrawerItemConfig>.unmodifiable([
       new DrawerItemConfig(
@@ -82,6 +84,8 @@ class Home extends StatefulWidget {
     new DrawerItemConfig(
         "/network", "Network", "src/icon/network.png"),
     new DrawerItemConfig(
+        "/security", "Security PIN", "src/icon/security.png"),
+    new DrawerItemConfig(
         "/developers", "Developers", "src/icon/developers.png"),
   ]);
 
@@ -102,7 +106,7 @@ class HomeState extends State<Home> {
   void initState() {
     super.initState();
 
-    _registerNotificationHandlers();
+    widget.userProfileBloc.userStream.firstWhere((user) => !user.waitingForPin).then((_) => _registerNotificationHandlers());
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
     _listenWhiltelistPermissionsRequest();
@@ -128,7 +132,7 @@ class HomeState extends State<Home> {
 
   @override
   void dispose() {
-    _accountNotificationsSubscription?.cancel();    
+    _accountNotificationsSubscription?.cancel();
     super.dispose();
   }
 
@@ -195,7 +199,7 @@ class HomeState extends State<Home> {
                 ));
       } else {
         Navigator.of(context).pushNamed(itemName).then((message) {
-          if (message != null) {
+          if (message != null && message.runtimeType == String) {
             showFlushbar(context, message: message);
           }
         });

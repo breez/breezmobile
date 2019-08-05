@@ -1,27 +1,34 @@
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/bloc/user_profile/security_model.dart';
+
+import 'default_profile_generator.dart';
 
 class BreezUserModel {
-  String userID;
+  final String userID;
   final Currency currency;
   final String fiatCurrency;
-  String token = '';
-  String name = '';
-  String color = '';
-  String animal = '';
-  String _image;
+  final String token;
+  final String name;
+  final String color;
+  final String animal;
+  final String image;
+  final SecurityModel securityModel;
+  final bool waitingForPin;
 
-  BreezUserModel(this.userID, this.name, this.color, this.animal, {this.currency = Currency.SAT, this.fiatCurrency = "USD", String image}) {
-    this._image = image;
-  }
-  BreezUserModel copyWith({String name, String color, String animal, Currency currency, String fiatCurrency, String image}) {
-    return new BreezUserModel(this.userID, name ?? this.name, color ?? this.color, animal ?? this.animal, currency: currency ?? this.currency, fiatCurrency: fiatCurrency ?? this.fiatCurrency, image: image ?? this._image);
+  BreezUserModel._(this.userID, this.name, this.color, this.animal, {
+    this.currency = Currency.SAT, this.fiatCurrency = "USD", this.image, this.securityModel, this.waitingForPin, this.token = ''});
+
+  BreezUserModel copyWith({
+    String name, String color, String animal, Currency currency, String fiatCurrency, 
+    String image, SecurityModel securityModel, bool waitingForPin, String token, String userID}) {
+      return new BreezUserModel._(userID ?? this.userID, name ?? this.name, color ?? this.color, animal ?? this.animal, currency: currency ?? this.currency, fiatCurrency: fiatCurrency ?? this.fiatCurrency, image: image ?? this.image, securityModel: securityModel ?? this.securityModel, waitingForPin: waitingForPin ?? this.waitingForPin, token: token ?? this.token);
   }
 
   bool get registered {
     return userID != null;
   }
 
-  String get avatarURL => _image == null || _image.isEmpty ? 'breez://profile_image?animal=$animal&color=$color' : _image;
+  String get avatarURL => image == null || image.isEmpty ? 'breez://profile_image?animal=$animal&color=$color' : image;
 
   BreezUserModel.fromJson(Map<String, dynamic> json)
       : userID = json['userID'],
@@ -31,7 +38,9 @@ class BreezUserModel {
         name = json['name'],
         color = json['color'],
         animal = json['animal'],
-        _image = json['image'];
+        image = json['image'],
+        waitingForPin = true,      
+        securityModel = json['securityModel'] == null ? SecurityModel.initial() : SecurityModel.fromJson(json['securityModel'],);        
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -41,8 +50,7 @@ class BreezUserModel {
         'name': name,
         'color': color,
         'animal': animal,
-        'image': _image
+        'image': image,
+        'securityModel': securityModel?.toJson(),
       };
 }
-
-

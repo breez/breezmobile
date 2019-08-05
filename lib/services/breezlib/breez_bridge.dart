@@ -304,6 +304,10 @@ class BreezBridge {
     return _invokeMethodWhenReady("requestBackup");
   }
 
+  Future setPinCode(String pinCode){
+    return _invokeMethodImmediate("setPinCode", {"argument": pinCode ?? ""});
+  }
+
   Future<String> getAvailableBackups() async {
     try {
       await signIn(true);
@@ -320,8 +324,12 @@ class BreezBridge {
     }      
   }
 
-  Future restore(String nodeId) {    
-    return _methodChannel.invokeMethod("restoreBackup", {"argument": nodeId});
+  Future restore(String nodeId, String restorePIN) async {    
+    try {
+      await _methodChannel.invokeMethod("restoreBackup", {"nodeID": nodeId, "restorePIN": restorePIN ?? ""});
+    } on PlatformException catch(e) {
+      throw e.message;
+    }    
   }
 
   Future<dynamic> signIn(bool force){

@@ -58,6 +58,10 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             signIn(call: call, result: result);
         }
         
+        if (call.method == "restoreBackup") {
+            restoreBackup(call: call, result: result)
+        }
+        
         let executor = NativeMethods.getExecutor(forMethod: call.method);
         if executor != nil {
             print(call.method)
@@ -98,6 +102,24 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
                 result(true);
             } catch {
                 result(FlutterError(code: "AuthError", message: "Failed to signIn breez library", details: ""));
+            }
+        }
+    }
+    
+    func restoreBackup(call: FlutterMethodCall, result: @escaping FlutterResult){
+        DispatchQueue.global().async {
+            do {
+                if let args = call.arguments as? Dictionary<String,Any> {
+                    let nodeID : String = args["nodeID"] as! String;
+                    let restorePIN : String = args["restorePIN"] as! String;
+                    var error : NSError?;
+                    if (BindingsRestoreBackup(nodeID, restorePIN, &error)) {
+                        result(true);
+                    } else {
+                        result(FlutterError(code: "", message: error?.localizedDescription, details: nil));
+                    }
+                }
+                result(FlutterError(code: "Missing Argument", message: "Expecting a dictionary", details: nil));
             }
         }
     }
