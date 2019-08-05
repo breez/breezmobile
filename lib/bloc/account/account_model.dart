@@ -234,7 +234,7 @@ class AccountModel {
     }
 
     if (this.processingBreezConnection) {
-      return "Breez is opening a secure channel with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments";
+      return "Breez is opening a secure channel with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments. Confirming the opening transaction on chain might take up to one hour.";
     }
 
     SwapFundStatus swapStatus = this.swapFundsStatus;
