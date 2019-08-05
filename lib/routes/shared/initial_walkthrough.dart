@@ -24,8 +24,7 @@ class InitialWalkthroughPage extends StatefulWidget {
 
 class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     with TickerProviderStateMixin {
-  final String _instructions =
-      "The simplest, fastest & safest way\nto spend your bitcoins";
+  String _instructions;
   AnimationController _controller;
   Animation<int> _animation;
 
@@ -38,6 +37,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   @override
   void initState() {
     super.initState();
+
+    _instructions = widget._isPos ?
+    "The simplest, fastest & safest way\nto earn bitcoin" :
+    "The simplest, fastest & safest way\nto spend your bitcoins";
 
     _multipleRestoreSubscription =
         widget._backupBloc.multipleRestoreStream.listen((options) async {
