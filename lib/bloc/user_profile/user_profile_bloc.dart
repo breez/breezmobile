@@ -11,8 +11,6 @@ import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/currency_data.dart';
-import 'package:breez/services/currency_service.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -27,8 +25,8 @@ class UserProfileBloc {
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   BreezBridge _breezLib;
   NFCService _nfc;
-  CurrencyService _currencyService;
-  Map<String, CurrencyData> _currencyData;
+  Future<SharedPreferences> _preferences;
+  
   Map<Type, Function> _actionHandlers = Map();
   final _userActionsController = new StreamController<AsyncAction>.broadcast();
   Sink<AsyncAction> get userActionsSink => _userActionsController.sink;
@@ -60,9 +58,9 @@ class UserProfileBloc {
 
   UserProfileBloc() {
     ServiceInjector injector = ServiceInjector();
-    _nfc = injector.nfc;
-    _currencyService = injector.currencyService;
+    _nfc = injector.nfc;    
     _breezLib = injector.breezBridge;
+    _preferences = injector.sharedPreferences;
     _actionHandlers = {
       UpdateSecurityModel: _updateSecurityModelAction,
     };
@@ -110,6 +108,13 @@ class UserProfileBloc {
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
       Map profile = json.decode(jsonStr);
       BreezUserModel user = BreezUserModel.fromJson(profile);
+
+      // First time we create a user, initialize with random data.
+      if (profile.isEmpty) {
+        List randomName = generateDefaultProfile();
+        user = user.copyWith(name: randomName[0] + ' ' + randomName[1], color: randomName[0], animal: randomName[1]);          
+      }
+
       // Read the pin from the secure storage and initialize the breez user model appropriately
       String pinCode;
       if (user.securityModel.requiresPin) {
@@ -126,20 +131,13 @@ class UserProfileBloc {
     });
   }
 
-  Future<BreezUserModel> saveUser(ServiceInjector injector, SharedPreferences preferences, BreezUserModel user) async {
-    if (user == null) {
-      var randomName = generateDefaultProfile();
-      user = BreezUserModel('', randomName[0] + ' ' + randomName[1],
-        randomName[0], randomName[1]);
-    }
+  Future<BreezUserModel> saveUser(ServiceInjector injector, SharedPreferences preferences, BreezUserModel user) async {    
     String currentToken = user.token;
     try {
       String token = await injector.notifications.getToken();      
       if (token != currentToken || user.userID == null || user.userID.isEmpty) {
-        user.userID = "";//await injector.breezServer.registerDevice(token);
-        File file = await _userIdFile;
-        file.writeAsString(user.userID);
-        user.token = token;
+        var userID = await injector.breezServer.registerDevice(token);                
+        user = user.copyWith(token: token, userID: userID);        
       }
       _saveChanges(preferences, user);
     } catch(e) {
@@ -169,16 +167,15 @@ class UserProfileBloc {
       // Write to storage if the new pin code is different from current pin code
       await _secureStorage.write(key: 'pinCode', value: updateSecurityModelAction.newModel.pinCode);
     }
-    await _breezLib.setPinCode(newModel.secureBackupWithPin ? newModel.pinCode : null);
-    
-    _userController.add(_currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
-    return _currentUser.securityModel;
+    await _breezLib.setPinCode(newModel.secureBackupWithPin ? newModel.pinCode : null);    
+    _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
+    return updateSecurityModelAction.newModel;
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {
     _registrationController.stream.listen((request) async {
       var preferences = await injector.sharedPreferences;
-      saveUser(injector, preferences, null);
+      saveUser(injector, preferences, _userStreamController.value);
     });
   }
 
