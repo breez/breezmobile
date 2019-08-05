@@ -134,7 +134,7 @@ class SecurityPageState extends State<SecurityPage> {
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
-                  _updateSecurityModel(SecurityModel(pinCode: null, secureBackupWithPin: false));                  
+                  _updateSecurityModel(SecurityModel(requiresPin: false, pinCode: null, secureBackupWithPin: false));                  
                 }
               },
             )
@@ -154,7 +154,7 @@ class SecurityPageState extends State<SecurityPage> {
       ),
     ).then((newPIN){
       if (newPIN != null) {
-        _updateSecurityModel(securityModel.copyWith(pinCode: newPIN));            
+        _updateSecurityModel(securityModel.copyWith(pinCode: newPIN, requiresPin: true));            
       }
     });
   }

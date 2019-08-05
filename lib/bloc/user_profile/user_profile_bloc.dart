@@ -111,8 +111,11 @@ class UserProfileBloc {
       Map profile = json.decode(jsonStr);
       BreezUserModel user = BreezUserModel.fromJson(profile);
       // Read the pin from the secure storage and initialize the breez user model appropriately
-      String _pinCode = await _secureStorage.read(key: 'pinCode');
-      user = user.copyWith(securityModel: user.securityModel.copyWith(pinCode: _pinCode), waitingForPin: _pinCode != null);      
+      String pinCode;
+      if (user.securityModel.requiresPin) {
+        pinCode = await _secureStorage.read(key: 'pinCode');
+      }
+      user = user.copyWith(securityModel: user.securityModel.copyWith(pinCode: pinCode), waitingForPin: user.securityModel.requiresPin);      
       await _breezLib.setPinCode(user.securityModel.secureBackupWithPin ? user.securityModel.pinCode : null);
 
       if (user.userID != null) {
@@ -133,7 +136,7 @@ class UserProfileBloc {
     try {
       String token = await injector.notifications.getToken();      
       if (token != currentToken || user.userID == null || user.userID.isEmpty) {
-        user.userID = await injector.breezServer.registerDevice(token);
+        user.userID = "";//await injector.breezServer.registerDevice(token);
         File file = await _userIdFile;
         file.writeAsString(user.userID);
         user.token = token;
@@ -160,7 +163,7 @@ class UserProfileBloc {
 
   Future _updateSecurityModel(UpdateSecurityModel updateSecurityModelAction) async {
     SecurityModel newModel = updateSecurityModelAction.newModel;
-    if (newModel.pinCode == null) {
+    if (!newModel.requiresPin) {
       await _secureStorage.delete(key: 'pinCode');
     } else if (newModel.pinCode != _currentUser.securityModel.pinCode) {
       // Write to storage if the new pin code is different from current pin code
