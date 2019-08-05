@@ -96,15 +96,7 @@ class SecurityPageState extends State<SecurityPage> {
                 return;
               }                                                
             }
-            await _updateSecurityModel(securityModel.copyWith(secureBackupWithPin: value));
-            widget.backupBloc.backupNowSink.add(true);                        
-            widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s){
-              if (mounted) {
-                showDialog(
-                context: context,
-                builder: (ctx) => buildBackupInProgressDialog(ctx, widget.backupBloc.backupStateStream));
-              }
-            });            
+            _updateSecurityModel(securityModel.copyWith(secureBackupWithPin: value));                        
           }
         },
       ),
@@ -159,12 +151,25 @@ class SecurityPageState extends State<SecurityPage> {
     });
   }
 
-  Future _updateSecurityModel(SecurityModel newModel) {
+  Future _updateSecurityModel(SecurityModel newModel) async {
     _screenLocked = false;
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
-    return action.future.catchError((err){
-      promptError(context, "Internal Error", Text(err.toString()));
-    });
+    action.future
+    .then((_){
+      if (newModel.secureBackupWithPin) {
+        widget.backupBloc.backupNowSink.add(true);                        
+        widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s){
+          if (mounted) {
+            showDialog(
+            context: context,
+            builder: (ctx) => buildBackupInProgressDialog(ctx, widget.backupBloc.backupStateStream));
+          }
+        });
+      }
+    })
+    .catchError((err){
+      promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+    });    
   }
 }
