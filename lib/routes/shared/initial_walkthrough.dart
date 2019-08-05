@@ -62,6 +62,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       if (toRestore != null) {
         if (toRestore.encrypted) {
           restorePIN = await getRestorePIN();
+          if (restorePIN == null) {
+            return;
+          }
         }
         widget._backupBloc.restoreRequestSink
             .add(RestoreRequest(toRestore, restorePIN));
