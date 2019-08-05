@@ -14,7 +14,7 @@ class ChangePinCode extends StatefulWidget {
 }
 
 class _ChangePinCodeState extends State<ChangePinCode> {  
-  String _label = "Enter your PIN";
+  String _label = "Enter your new PIN";
 
   String _enteredPinCode = "";
   String _errorMessage = "";
@@ -65,8 +65,7 @@ class _ChangePinCodeState extends State<ChangePinCode> {
           Navigator.pop(context, _enteredPinCode);
         } else {
           setState(() {
-            _tmpPinCode = "";
-            _label = "Enter your new PIN";
+            _tmpPinCode = "";            
             _enteredPinCode = "";
             _errorMessage = "PIN does not match";
           });          
