@@ -28,7 +28,9 @@ class _AppLockScreenState extends State<AppLockScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => Future.value(false),      
+      onWillPop: () { 
+        return Future.value(false);
+      },      
       child: Scaffold(
         appBar: widget.canCancel == true
             ? new AppBar(
