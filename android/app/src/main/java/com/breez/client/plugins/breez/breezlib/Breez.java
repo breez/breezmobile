@@ -93,6 +93,10 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
             _executor.execute(() -> {
                 signOut(call, result);
             });
+        } else if (call.method.equals("restoreBackup")) {
+            _executor.execute(() -> {
+                restoreBackup(call, result);
+            });
         } else {
             _executor.execute(new BreezTask(call, result));
         }
@@ -167,6 +171,18 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
             fail(result,"ResultError", "Failed to sign out breez library", e.getMessage());
         }
     }
+
+    private void restoreBackup(MethodCall call, MethodChannel.Result result){
+        try {
+            String nodeID = call.argument("nodeID");
+            String restorePIN = call.argument("restorePIN");
+            Bindings.restoreBackup(nodeID, restorePIN);
+            success(result,true);
+        } catch (Exception e) {
+            fail(result,"ResultError", e.getMessage(), e.getMessage());
+        }
+    }
+
 
     @Override
     public void onListen(Object args, final EventChannel.EventSink events){
