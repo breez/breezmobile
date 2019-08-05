@@ -1,7 +1,9 @@
+import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:intl/intl.dart';
 
 class RestoreDialog extends StatefulWidget {
   final BuildContext context;
@@ -52,12 +54,12 @@ class RestoreDialogState extends State<RestoreDialog> {
                 itemCount: widget.snapshots.length,
                 itemBuilder: (BuildContext context, int index) {                  
                   return ListTile(  
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
-                    leading: widget.snapshots[index].encrypted ? Icon(Icons.lock, color: theme.BreezColors.blue[500], size: 18.0,) : SizedBox(),        
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0),                    
                     selected: _selectedSnapshot?.nodeID == widget.snapshots[index].nodeID  ,
                     trailing: _selectedSnapshot?.nodeID == widget.snapshots[index].nodeID ? Icon(Icons.check, color: theme.BreezColors.blue[500],) : Icon(Icons.check),
-                    title: Text(
-                      widget.snapshots[index].modifiedTime,                      
+                    title: Text( 
+                      DateUtils.formatYearMonthDayHourMinute(DateTime.parse(widget.snapshots[index].modifiedTime)) + 
+                        (widget.snapshots[index].encrypted ? " - (PIN required)" : ""), 
                       style: theme.bolt11Style.apply(fontSizeDelta: 1.3),
                     ),
                     subtitle: Text(
