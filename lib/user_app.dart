@@ -77,7 +77,7 @@ class UserApp extends StatelessWidget {
                   return new FadeInRoute(
                       builder: (_) => new AppLockScreen(user.securityModel, onUnlock: (){
                         _navigatorKey.currentState.pop();                        
-                        userProfileBloc.userSink.add(user.copyWith(waitingForPin: false));
+                        userProfileBloc.userSink.add(user.copyWith(locked: false));
                       },),
                       settings: settings
                   );

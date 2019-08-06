@@ -11,6 +11,7 @@ import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -25,6 +26,7 @@ class UserProfileBloc {
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   BreezBridge _breezLib;
   NFCService _nfc;
+  Device _deviceService;
   Future<SharedPreferences> _preferences;
   
   Map<Type, Function> _actionHandlers = Map();
@@ -57,9 +59,10 @@ class UserProfileBloc {
   Sink<List<int>> get uploadImageSink => _uploadImageController.sink;
 
   UserProfileBloc() {
-    ServiceInjector injector = ServiceInjector();
+    ServiceInjector injector = ServiceInjector();    
     _nfc = injector.nfc;    
     _breezLib = injector.breezBridge;
+    _deviceService = injector.device;
     _preferences = injector.sharedPreferences;
     _actionHandlers = {
       UpdateSecurityModel: _updateSecurityModelAction,
@@ -89,16 +92,28 @@ class UserProfileBloc {
 
     //listen upload image requests
     _listenUploadImageRequests(injector);
+
+    startPINIntervalWatcher();
   }
 
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
-  }
+  void startPINIntervalWatcher(){
+    Timer watcher;
 
-  Future<File> get _userIdFile async {
-    final path = await _localPath;
-    return File('$path/userid.txt');
+    _deviceService.eventStream.listen((e){      
+      if (e == NotificationType.PAUSE) {
+        watcher?.cancel();
+        watcher = Timer(Duration(seconds: 10), (){
+          var currentUser = _userStreamController.value;
+          if (currentUser.securityModel.requiresPin) {
+            _userStreamController.add(currentUser.copyWith(locked: true));
+          }
+        });
+      }
+
+      if (e == NotificationType.RESUME) {
+        watcher?.cancel();
+      }       
+    });
   }
 
   void _initializeWithSavedUser(ServiceInjector injector) {    
@@ -120,7 +135,7 @@ class UserProfileBloc {
       if (user.securityModel.requiresPin) {
         pinCode = await _secureStorage.read(key: 'pinCode');
       }
-      user = user.copyWith(securityModel: user.securityModel.copyWith(pinCode: pinCode), waitingForPin: user.securityModel.requiresPin);      
+      user = user.copyWith(securityModel: user.securityModel.copyWith(pinCode: pinCode), locked: user.securityModel.requiresPin);      
       await _breezLib.setPinCode(user.securityModel.secureBackupWithPin ? user.securityModel.pinCode : null);
 
       if (user.userID != null) {

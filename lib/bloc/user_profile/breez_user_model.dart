@@ -20,8 +20,8 @@ class BreezUserModel {
 
   BreezUserModel copyWith({
     String name, String color, String animal, Currency currency, String fiatCurrency, 
-    String image, SecurityModel securityModel, bool waitingForPin, String token, String userID}) {
-      return new BreezUserModel._(userID ?? this.userID, name ?? this.name, color ?? this.color, animal ?? this.animal, currency: currency ?? this.currency, fiatCurrency: fiatCurrency ?? this.fiatCurrency, image: image ?? this.image, securityModel: securityModel ?? this.securityModel, locked: waitingForPin ?? this.locked, token: token ?? this.token);
+    String image, SecurityModel securityModel, bool locked, String token, String userID}) {
+      return new BreezUserModel._(userID ?? this.userID, name ?? this.name, color ?? this.color, animal ?? this.animal, currency: currency ?? this.currency, fiatCurrency: fiatCurrency ?? this.fiatCurrency, image: image ?? this.image, securityModel: securityModel ?? this.securityModel, locked: locked ?? this.locked, token: token ?? this.token);
   }
 
   bool get registered {
