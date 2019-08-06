@@ -1,4 +1,3 @@
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -28,7 +27,9 @@ class _AppLockScreenState extends State<AppLockScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => Future.value(false),      
+      onWillPop: () { 
+        return Future.value(widget.canCancel);
+      },      
       child: Scaffold(
         appBar: widget.canCancel == true
             ? new AppBar(
@@ -62,16 +63,18 @@ class _AppLockScreenState extends State<AppLockScreen> {
       _setPinCodeInput(_enteredPinCode + numberText);
     }
     if (_enteredPinCode.length == PIN_CODE_LENGTH) {
-      if (_enteredPinCode == widget.securityModel.pinCode) {
-        if (widget.onUnlock != null) {
-          widget.onUnlock();
-          return;
-        }    
-        Navigator.pop(context, true);
-      } else {
-        _setPinCodeInput("");
-        _setErrorMessage("Incorrect PIN");
-      }
+      Future.delayed(Duration(milliseconds: 200), () {
+        if (_enteredPinCode == widget.securityModel.pinCode) {
+          if (widget.onUnlock != null) {
+            widget.onUnlock();
+            return;
+          }
+          Navigator.pop(context, true);
+        } else {
+          _setPinCodeInput("");
+          _setErrorMessage("Incorrect PIN");
+        }
+      });
     }
   }
 
