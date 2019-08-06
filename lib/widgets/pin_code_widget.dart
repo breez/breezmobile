@@ -63,7 +63,7 @@ class PinCodeWidget extends StatelessWidget {
     var list = <Widget>[];
     for (int i = 0; i < PIN_CODE_LENGTH; i++) {
       list.add(AnimatedContainer(
-        duration: Duration(milliseconds: 200),
+        duration: Duration(milliseconds: 150),
         padding: EdgeInsets.only(top: 24.0),
         margin: EdgeInsets.only(bottom: 0),
         width: enteredPinCode.length == PIN_CODE_LENGTH ? 28 : 24,
