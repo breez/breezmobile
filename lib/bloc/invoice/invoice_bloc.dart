@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/nfc.dart';
@@ -37,8 +38,9 @@ class InvoiceBloc {
   Stream<bool> get paidInvoicesStream => _paidInvoicesController.stream;
 
   Int64 payBlankAmount = Int64(-1);
+  UserProfileBloc _userProfileBloc;
 
-  InvoiceBloc() {
+  InvoiceBloc(this._userProfileBloc) {
     ServiceInjector injector = new ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;    
     NFCService nfc = injector.nfc;
@@ -92,7 +94,7 @@ class InvoiceBloc {
   //   }).onError(_paidInvoicesController.addError);
   // }
 
-  void _listenIncomingInvoices(Notifications notificationService, BreezBridge breezLib, NFCService nfc, LightningLinksService links, Device device) {
+  void _listenIncomingInvoices(Notifications notificationService, BreezBridge breezLib, NFCService nfc, LightningLinksService links, Device device) {    
     Observable<String>.merge([
       Observable(notificationService.notifications)      
         .where((message) => message.containsKey("payment_request"))
@@ -120,21 +122,24 @@ class InvoiceBloc {
                
       return s;
     })
-    .asyncMap((paymentRequest) {
+    .asyncMap((paymentRequest) async {
+      await _userProfileBloc.userStream.where((u) => u.locked == false).first;
+      
       // add stream event before processing and decoding
       _receivedInvoicesController.add(
           new PaymentRequestModel(null, paymentRequest));
+
       //filter out our own payment requests
-      return breezLib.getRelatedInvoice(paymentRequest)
-        .then((invoice) {
-          log.info("filtering our invoice from clipboard");
-          _receivedInvoicesController.addError(new PaymentRequestModel(null, paymentRequest));
-          return null;
-        })
-        .catchError((_) {
-          log.info("detected not ours invoice, continue to decoding");
-          return paymentRequest;
-        });      
+      try {
+        await breezLib.getRelatedInvoice(paymentRequest);
+        log.info("filtering our invoice from clipboard");
+        _receivedInvoicesController.addError(new PaymentRequestModel(null, paymentRequest));
+        return null;
+      }
+      catch(e) {
+        log.info("detected not ours invoice, continue to decoding");
+        return paymentRequest;
+      }     
     })
     .where((paymentRequest) => paymentRequest != null)    
     .asyncMap( (paymentRequest) {       

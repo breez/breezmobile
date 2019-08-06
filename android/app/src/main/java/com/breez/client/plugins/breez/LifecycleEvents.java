@@ -47,10 +47,21 @@ public class LifecycleEvents implements StreamHandler, ActivityLifecycleListener
         if (m_eventsListener != null) {
             _executor.execute(() -> {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {}
                 m_activity.runOnUiThread(() -> {
                     m_eventsListener.success("resume");
+                });
+            });
+        }
+    }
+
+    public void onPause() {
+        Log.d("Breez", "App Paused - onPause called");
+        if (m_eventsListener != null) {
+            _executor.execute(() -> {
+                m_activity.runOnUiThread(() -> {
+                    m_eventsListener.success("pause");
                 });
             });
         }

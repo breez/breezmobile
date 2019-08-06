@@ -119,8 +119,9 @@ class AccountBloc {
   BackgroundTaskService _backgroundService;
   CurrencyService _currencyService;
   Completer _onBoardingCompleter = new Completer();
+  Stream<BreezUserModel> userProfileStream;
 
-  AccountBloc(Stream<BreezUserModel> userProfileStream) {
+  AccountBloc(this.userProfileStream) {
     ServiceInjector injector = new ServiceInjector();
     _breezLib = injector.breezBridge;
     _notificationsService = injector.notifications;
@@ -183,12 +184,13 @@ class AccountBloc {
     });
   }
 
-  void _setBootstraping(bool bootstraping) {
+  void _setBootstraping(bool bootstraping) async {
     _sharedPreferences.setBool(BOOTSTRAPING_PREFERENCES_KEY, bootstraping);
     bool initial = bootstraping ? false : _accountController.value.initial;
     _accountController
         .add(_accountController.value.copyWith(bootstraping: bootstraping, initial: initial));  
     if (bootstraping && _accountController.value.syncUIState == SyncUIState.NONE) {
+      await userProfileStream.where((u) => u.locked == false).first;
       _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
     }
   }
@@ -403,10 +405,11 @@ class AccountBloc {
 
     _accountSynchronizer = new AccountSynchronizer(
       _breezLib, 
-      onStart: (startPollTimestamp, bootstraping){
+      onStart: (startPollTimestamp, bootstraping) async {
         if (
             bootstraping || Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 1) &&
             _accountController.value.syncUIState == SyncUIState.NONE) {
+              await userProfileStream.where((u) => u.locked == false).first;
              _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
           }
       },
