@@ -46,9 +46,6 @@ public class LifecycleEvents implements StreamHandler, ActivityLifecycleListener
         Log.d("Breez", "App Resumed - OnPostResume called");
         if (m_eventsListener != null) {
             _executor.execute(() -> {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {}
                 m_activity.runOnUiThread(() -> {
                     m_eventsListener.success("resume");
                 });

@@ -33,8 +33,7 @@ class LifecycleEvents : NSObject, FlutterPlugin, FlutterStreamHandler {
         return nil;
     }
     
-    func applicationDidBecomeActive(_ application : UIApplication) {
-        sleep(1);
+    func applicationDidBecomeActive(_ application : UIApplication) {        
         DispatchQueue.global().async {            
             if let sink = self.eventSink {
                 if (self.resumed) {
