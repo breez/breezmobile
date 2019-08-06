@@ -65,7 +65,8 @@ class _ChangePinCodeState extends State<ChangePinCode> {
           Navigator.pop(context, _enteredPinCode);
         } else {
           setState(() {
-            _tmpPinCode = "";            
+            _tmpPinCode = "";
+            _label = "Enter your new PIN";
             _enteredPinCode = "";
             _errorMessage = "PIN does not match";
           });          
