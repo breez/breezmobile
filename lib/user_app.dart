@@ -69,7 +69,7 @@ class UserApp extends StatelessWidget {
               fontFamily: 'IBMPlexSansRegular',
               cardColor: theme.BreezColors.blue[500],
             ),
-            initialRoute: user.registered ? (user.waitingForPin ? '/lockscreen' : null) : '/splash',
+            initialRoute: user.registered ? (user.locked ? '/lockscreen' : null) : '/splash',
             home: new Home(accountBloc, invoiceBloc, userProfileBloc, connectPayBloc, backupBloc),
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {

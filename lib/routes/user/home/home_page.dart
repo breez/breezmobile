@@ -104,9 +104,8 @@ class HomeState extends State<Home> {
 
   @override
   void initState() {
-    super.initState();
-
-    widget.userProfileBloc.userStream.firstWhere((user) => !user.waitingForPin).then((_) => _registerNotificationHandlers());
+    super.initState();    
+    _registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
     _listenWhiltelistPermissionsRequest();

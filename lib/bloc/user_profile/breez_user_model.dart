@@ -13,15 +13,15 @@ class BreezUserModel {
   final String animal;
   final String image;
   final SecurityModel securityModel;
-  final bool waitingForPin;
+  final bool locked;
 
   BreezUserModel._(this.userID, this.name, this.color, this.animal, {
-    this.currency = Currency.SAT, this.fiatCurrency = "USD", this.image, this.securityModel, this.waitingForPin, this.token = ''});
+    this.currency = Currency.SAT, this.fiatCurrency = "USD", this.image, this.securityModel, this.locked, this.token = ''});
 
   BreezUserModel copyWith({
     String name, String color, String animal, Currency currency, String fiatCurrency, 
     String image, SecurityModel securityModel, bool waitingForPin, String token, String userID}) {
-      return new BreezUserModel._(userID ?? this.userID, name ?? this.name, color ?? this.color, animal ?? this.animal, currency: currency ?? this.currency, fiatCurrency: fiatCurrency ?? this.fiatCurrency, image: image ?? this.image, securityModel: securityModel ?? this.securityModel, waitingForPin: waitingForPin ?? this.waitingForPin, token: token ?? this.token);
+      return new BreezUserModel._(userID ?? this.userID, name ?? this.name, color ?? this.color, animal ?? this.animal, currency: currency ?? this.currency, fiatCurrency: fiatCurrency ?? this.fiatCurrency, image: image ?? this.image, securityModel: securityModel ?? this.securityModel, locked: waitingForPin ?? this.locked, token: token ?? this.token);
   }
 
   bool get registered {
@@ -39,7 +39,7 @@ class BreezUserModel {
         color = json['color'],
         animal = json['animal'],
         image = json['image'],
-        waitingForPin = true,      
+        locked = true,      
         securityModel = json['securityModel'] == null ? SecurityModel.initial() : SecurityModel.fromJson(json['securityModel'],);        
 
   Map<String, dynamic> toJson() => {
