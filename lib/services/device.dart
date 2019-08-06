@@ -5,7 +5,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum NotificationType { RESUME }
+enum NotificationType { RESUME, PAUSE }
 
 class Device {
   static const EventChannel _notificationsChannel =
@@ -36,6 +36,9 @@ class Device {
         sharedPrefrences.then((preferences) {
           fetchClipboard(preferences);
         });        
+      }
+      if (event == "pause") {
+        _eventsController.add(NotificationType.PAUSE);
       }
     });
   }
