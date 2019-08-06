@@ -61,6 +61,7 @@ class _ChangePinCodeState extends State<ChangePinCode> {
         } else {
           setState(() {
             _tmpPinCode = "";
+            _label = "Enter your new PIN";
             _enteredPinCode = "";
             _errorMessage = "PIN does not match";
           });
