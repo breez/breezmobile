@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 const PIN_CODE_LENGTH = 6;
 
 class ChangePinCode extends StatefulWidget {
-
   ChangePinCode({Key key}) : super(key: key);
 
   @override
@@ -54,23 +53,26 @@ class _ChangePinCodeState extends State<ChangePinCode> {
       _setPinCodeInput(_enteredPinCode + numberText);
     }
     if (_enteredPinCode.length == PIN_CODE_LENGTH) {
-      if (_tmpPinCode.isEmpty) {
-        setState(() {
-          _tmpPinCode = _enteredPinCode;
-          _label = "Re-enter your new PIN";
-          _enteredPinCode = "";
-        });        
-      } else {
-        if (_enteredPinCode == _tmpPinCode) {
-          Navigator.pop(context, _enteredPinCode);
-        } else {
+      Future.delayed(Duration(milliseconds: 200), () {
+        if (_tmpPinCode.isEmpty) {
           setState(() {
-            _tmpPinCode = "";            
+            _tmpPinCode = _enteredPinCode;
+            _label = "Re-enter your new PIN";
             _enteredPinCode = "";
-            _errorMessage = "PIN does not match";
-          });          
+          });
+        } else {
+          if (_enteredPinCode == _tmpPinCode) {
+            Navigator.pop(context, _enteredPinCode);
+          } else {
+            setState(() {
+              _tmpPinCode = "";
+              _label = "Enter your new PIN";
+              _enteredPinCode = "";
+              _errorMessage = "PIN does not match";
+            });
+          }
         }
-      }
+      });
     }
   }
 
