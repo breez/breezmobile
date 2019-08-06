@@ -5,6 +5,7 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:breez/routes/user/ctp_join_session_handler.dart';
 import 'package:breez/routes/shared/account_required_actions.dart';
+import 'package:breez/routes/user/showPinHandler.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/route.dart';
@@ -221,12 +222,13 @@ class HomeState extends State<Home> {
       }
     );
     new SyncUIHandler(widget.accountBloc, context);
+    new ShowPinHandler(widget.userProfileBloc, context);
 
     _accountNotificationsSubscription = widget.accountBloc.accountNotificationsStream
       .listen(
         (data) => showFlushbar(context, message: data), 
         onError: (e) => showFlushbar(context, message: e.toString())
-      );
+      );    
   }
 
   void _listenBackupConflicts(){
