@@ -162,8 +162,9 @@ class SecurityPageState extends State<SecurityPage> {
         widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s){
           if (mounted) {
             showDialog(
-            context: context,
-            builder: (ctx) => buildBackupInProgressDialog(ctx, widget.backupBloc.backupStateStream));
+              barrierDismissible: false,
+              context: context,
+              builder: (ctx) => buildBackupInProgressDialog(ctx, widget.backupBloc.backupStateStream));
           }
         });
       }
