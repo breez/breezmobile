@@ -12,7 +12,7 @@ class ChangePinCode extends StatefulWidget {
   _ChangePinCodeState createState() => new _ChangePinCodeState();
 }
 
-class _ChangePinCodeState extends State<ChangePinCode> {  
+class _ChangePinCodeState extends State<ChangePinCode> {
   String _label = "Enter your new PIN";
 
   String _enteredPinCode = "";
@@ -21,9 +21,7 @@ class _ChangePinCodeState extends State<ChangePinCode> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => Future.value(false),
-      child: Scaffold(
+    return Scaffold(
         appBar: new AppBar(
           iconTheme: theme.appBarIconTheme,
           textTheme: theme.appBarTextTheme,
@@ -42,9 +40,7 @@ class _ChangePinCodeState extends State<ChangePinCode> {
           _errorMessage,
           (numberText) => _onNumButtonPressed(numberText),
           (enteredPinCode) => _setPinCodeInput(enteredPinCode),
-        ),
-      ),
-    );
+        ));
   }
 
   _onNumButtonPressed(String numberText) {
