@@ -1,5 +1,4 @@
 import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
@@ -29,6 +28,7 @@ class SecurityPage extends StatefulWidget {
 
 class SecurityPageState extends State<SecurityPage> {  
   bool _screenLocked = true;
+  bool _verifyPin = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,25 @@ class SecurityPageState extends State<SecurityPage> {
               return AppLockScreen(
                 snapshot.data.securityModel, 
                 canCancel: true,
-                onUnlock: () => setState((){ this._screenLocked = false; }),
+                onUnlock: () => setState(() {
+                  if (_verifyPin) {
+                    Navigator.of(context).push(
+                      new FadeInRoute(
+                        builder: (BuildContext context) {
+                          return ChangePinCode();
+                        },
+                      ),
+                    ).then((newPIN) {
+                      if (newPIN != null) {
+                        _updateSecurityModel(snapshot.data.securityModel.copyWith(pinCode: newPIN, requiresPin: true));
+                      }
+                      _verifyPin = false;
+                      this._screenLocked = false;
+                    });
+                  } else {
+                    this._screenLocked = false;
+                  }
+                }),
               );
             }
             return Scaffold(
@@ -110,7 +128,7 @@ class SecurityPageState extends State<SecurityPage> {
         style: TextStyle(color: Colors.white),
       ),
       trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-      onTap: () => _onChangePinSelected(securityModel),
+      onTap: () => _onChangePinSelected(securityModel, true),
     );
   }
 
@@ -131,24 +149,29 @@ class SecurityPageState extends State<SecurityPage> {
               },
             )
           : Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-      onTap: securityModel.pinCode != null
-          ? null
-          : () => _onChangePinSelected(securityModel),
+      onTap: securityModel.pinCode != null ? null : () => _onChangePinSelected(securityModel, false),
     );
   }
 
-  void _onChangePinSelected(SecurityModel securityModel){
-    Navigator.of(context).push(
-      new FadeInRoute(
-        builder: (BuildContext context) {
-          return ChangePinCode();
-        },
-      ),
-    ).then((newPIN){
-      if (newPIN != null) {
-        _updateSecurityModel(securityModel.copyWith(pinCode: newPIN, requiresPin: true));            
-      }
-    });
+  void _onChangePinSelected(SecurityModel securityModel, bool lockScreen) {
+    if (lockScreen) {
+      setState(() {
+        _screenLocked = true;
+        _verifyPin = true;
+      });
+    } else {
+      Navigator.of(context).push(
+        new FadeInRoute(
+          builder: (BuildContext context) {
+            return ChangePinCode();
+          },
+        ),
+      ).then((newPIN) {
+        if (newPIN != null) {
+          _updateSecurityModel(securityModel.copyWith(pinCode: newPIN, requiresPin: true));
+        }
+      });
+    }
   }
 
   Future _updateSecurityModel(SecurityModel newModel) async {
