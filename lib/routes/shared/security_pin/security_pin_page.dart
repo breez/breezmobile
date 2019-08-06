@@ -96,7 +96,7 @@ class SecurityPageState extends State<SecurityPage> {
                 return;
               }                                                
             }
-            _updateSecurityModel(securityModel.copyWith(secureBackupWithPin: value));                        
+            _updateSecurityModel(securityModel, securityModel.copyWith(secureBackupWithPin: value));                        
           }
         },
       ),
@@ -126,7 +126,7 @@ class SecurityPageState extends State<SecurityPage> {
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
-                  _updateSecurityModel(SecurityModel(requiresPin: false, pinCode: null, secureBackupWithPin: false));                  
+                  _updateSecurityModel(securityModel, SecurityModel(requiresPin: false, pinCode: null, secureBackupWithPin: false));                  
                 }
               },
             )
@@ -146,18 +146,20 @@ class SecurityPageState extends State<SecurityPage> {
       ),
     ).then((newPIN){
       if (newPIN != null) {
-        _updateSecurityModel(securityModel.copyWith(pinCode: newPIN, requiresPin: true));            
+        _updateSecurityModel(securityModel, securityModel.copyWith(pinCode: newPIN, requiresPin: true));            
       }
     });
   }
 
-  Future _updateSecurityModel(SecurityModel newModel) async {
+  Future _updateSecurityModel(SecurityModel oldModel, SecurityModel newModel) async {
     _screenLocked = false;
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
     action.future
     .then((_){
-      if (newModel.secureBackupWithPin) {
+      if (
+        newModel.secureBackupWithPin != oldModel.secureBackupWithPin ||
+        newModel.secureBackupWithPin && newModel.pinCode != oldModel.pinCode) {
         widget.backupBloc.backupNowSink.add(true);                        
         widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s){
           if (mounted) {
