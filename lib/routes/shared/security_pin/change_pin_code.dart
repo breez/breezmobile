@@ -6,14 +6,13 @@ import 'package:flutter/material.dart';
 const PIN_CODE_LENGTH = 6;
 
 class ChangePinCode extends StatefulWidget {
-
   ChangePinCode({Key key}) : super(key: key);
 
   @override
   _ChangePinCodeState createState() => new _ChangePinCodeState();
 }
 
-class _ChangePinCodeState extends State<ChangePinCode> {  
+class _ChangePinCodeState extends State<ChangePinCode> {
   String _label = "Enter your new PIN";
 
   String _enteredPinCode = "";
@@ -22,9 +21,7 @@ class _ChangePinCodeState extends State<ChangePinCode> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => Future.value(false),
-      child: Scaffold(
+    return Scaffold(
         appBar: new AppBar(
           iconTheme: theme.appBarIconTheme,
           textTheme: theme.appBarTextTheme,
@@ -43,9 +40,7 @@ class _ChangePinCodeState extends State<ChangePinCode> {
           _errorMessage,
           (numberText) => _onNumButtonPressed(numberText),
           (enteredPinCode) => _setPinCodeInput(enteredPinCode),
-        ),
-      ),
-    );
+        ));
   }
 
   _onNumButtonPressed(String numberText) {
@@ -59,7 +54,7 @@ class _ChangePinCodeState extends State<ChangePinCode> {
           _tmpPinCode = _enteredPinCode;
           _label = "Re-enter your new PIN";
           _enteredPinCode = "";
-        });        
+        });
       } else {
         if (_enteredPinCode == _tmpPinCode) {
           Navigator.pop(context, _enteredPinCode);
@@ -69,7 +64,7 @@ class _ChangePinCodeState extends State<ChangePinCode> {
             _label = "Enter your new PIN";
             _enteredPinCode = "";
             _errorMessage = "PIN does not match";
-          });          
+          });
         }
       }
     }
