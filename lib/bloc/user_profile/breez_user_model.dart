@@ -1,8 +1,6 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 
-import 'default_profile_generator.dart';
-
 class BreezUserModel {
   final String userID;
   final Currency currency;
