@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 const PIN_CODE_LENGTH = 6;
 
 class AppLockScreen extends StatefulWidget {
-
   final SecurityModel securityModel;
   final bool canCancel;
   final Function onUnlock;
@@ -18,18 +17,16 @@ class AppLockScreen extends StatefulWidget {
   _AppLockScreenState createState() => new _AppLockScreenState();
 }
 
-class _AppLockScreenState extends State<AppLockScreen> {  
+class _AppLockScreenState extends State<AppLockScreen> {
+  final GlobalKey<PinCodeWidgetState> _key = GlobalKey();
   String _label = "Enter your PIN";
-
-  String _enteredPinCode = "";
-  String _errorMessage = "";  
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () { 
+      onWillPop: () {
         return Future.value(widget.canCancel);
-      },      
+      },
       child: Scaffold(
         appBar: widget.canCancel == true
             ? new AppBar(
@@ -43,50 +40,27 @@ class _AppLockScreenState extends State<AppLockScreen> {
                 ),
                 elevation: 0.0,
               )
-            : null, 
+            : null,
         body: PinCodeWidget(
           _label,
-          _enteredPinCode,
           widget.canCancel,
-          _errorMessage,
-          (numberText) => _onNumButtonPressed(numberText),
-          (enteredPinCode) => _setPinCodeInput(enteredPinCode),
+          (enteredPinCode) => _onPinEntered(enteredPinCode),
+          key: _key,
         ),
       ),
     );
   }
 
-  _onNumButtonPressed(String numberText) {
-    _setErrorMessage("");
-
-    if (_enteredPinCode.length < PIN_CODE_LENGTH) {
-      _setPinCodeInput(_enteredPinCode + numberText);
+  _onPinEntered(String enteredPinCode) {
+    if (enteredPinCode == widget.securityModel.pinCode) {
+      if (widget.onUnlock != null) {
+        widget.onUnlock();
+        return;
+      }
+      Navigator.pop(context, true);
+    } else {
+      _key.currentState.setPinCodeInput("");
+      _key.currentState.setErrorMessage("Incorrect PIN");
     }
-    if (_enteredPinCode.length == PIN_CODE_LENGTH) {
-      Future.delayed(Duration(milliseconds: 200), () {
-        if (_enteredPinCode == widget.securityModel.pinCode) {
-          if (widget.onUnlock != null) {
-            widget.onUnlock();
-            return;
-          }
-          Navigator.pop(context, true);
-        } else {
-          _setPinCodeInput("");
-          _setErrorMessage("Incorrect PIN");
-        }
-      });
-    }
-  }
-
-  void _setPinCodeInput(String enteredPinCode) {
-    setState(() {
-      _enteredPinCode = enteredPinCode;
-    });
-  }
-
-  void _setErrorMessage(String errorMessage) {
-    setState(() {
-      _errorMessage = errorMessage;
-    });
   }
 }

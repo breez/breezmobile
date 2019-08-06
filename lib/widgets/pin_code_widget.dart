@@ -5,19 +5,35 @@ import 'package:flutter/material.dart';
 
 const PIN_CODE_LENGTH = 6;
 
-class PinCodeWidget extends StatelessWidget {
+class PinCodeWidget extends StatefulWidget {
   final String label;
-  final String enteredPinCode;
   final bool dismissible;
-  final String errorMessage;
-  final Function(String numberText) onNumButtonPressed;
-  final Function(String numberText) setPinCodeInput;
+  final Function(String pinEntered) onPinEntered;
 
-  PinCodeWidget(this.label, this.enteredPinCode, this.dismissible, this.errorMessage, this.onNumButtonPressed, this.setPinCodeInput);
+  PinCodeWidget(this.label, this.dismissible, this.onPinEntered, {Key key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return PinCodeWidgetState();
+  }
+}
+
+class PinCodeWidgetState extends State<PinCodeWidget> {
+  String _label;
+  String _enteredPinCode;
+  String _errorMessage;
+
+  @override
+  initState() {
+    super.initState();
+    setLabel(widget.label);
+    setPinCodeInput("");
+    setErrorMessage("");
+  }
 
   Widget build(BuildContext context) {
     double pageHeight =
-        dismissible ? (MediaQuery.of(context).size.height - kToolbarHeight - 24) : (MediaQuery.of(context).size.height - 24);
+        widget.dismissible ? (MediaQuery.of(context).size.height - kToolbarHeight - 24) : (MediaQuery.of(context).size.height - 24);
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -29,7 +45,7 @@ class PinCodeWidget extends StatelessWidget {
               height: pageHeight * 0.29),
           new Container(
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[Text(label), _buildPinCircles(), _buildErrorMessage()]),
+                  mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[Text(_label), _buildPinCircles(), _buildErrorMessage()]),
               height: pageHeight * 0.20),
           new Container(child: _numPad(context), height: pageHeight * 0.50)
         ],
@@ -66,10 +82,10 @@ class PinCodeWidget extends StatelessWidget {
         duration: Duration(milliseconds: 150),
         padding: EdgeInsets.only(top: 24.0),
         margin: EdgeInsets.only(bottom: 0),
-        width: enteredPinCode.length == PIN_CODE_LENGTH ? 28 : 24,
-        height: enteredPinCode.length == PIN_CODE_LENGTH ? 28 : 24,
+        width: _enteredPinCode.length == PIN_CODE_LENGTH ? 28 : 24,
+        height: _enteredPinCode.length == PIN_CODE_LENGTH ? 28 : 24,
         decoration: BoxDecoration(
-            color: i < enteredPinCode.length ? Colors.white : Colors.transparent,
+            color: i < _enteredPinCode.length ? Colors.white : Colors.transparent,
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white, width: 2.0)),
       ));
@@ -78,9 +94,9 @@ class PinCodeWidget extends StatelessWidget {
   }
 
   Text _buildErrorMessage() {
-    return errorMessage.isNotEmpty
+    return _errorMessage.isNotEmpty
         ? Text(
-            errorMessage,
+            _errorMessage,
             style: theme.errorStyle,
           )
         : Text(
@@ -90,7 +106,7 @@ class PinCodeWidget extends StatelessWidget {
   }
 
   Widget _numPad(BuildContext context) {
-    var _aspectRatio = dismissible
+    var _aspectRatio = widget.dismissible
         ? (MediaQuery.of(context).size.width / 3) / ((MediaQuery.of(context).size.height - kToolbarHeight - 24) / 8)
         : (MediaQuery.of(context).size.width / 3) / ((MediaQuery.of(context).size.height - 24) / 8);
     return new GridView.count(
@@ -110,7 +126,7 @@ class PinCodeWidget extends StatelessWidget {
           _numberButton("0"),
           Container(
             child: new IconButton(
-              onPressed: () => setPinCodeInput(enteredPinCode.substring(0, max(enteredPinCode.length, 1) - 1)),
+              onPressed: () => setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
               icon: Icon(
                 Icons.backspace,
                 color: Colors.white,
@@ -123,9 +139,37 @@ class PinCodeWidget extends StatelessWidget {
   Container _numberButton(String number) {
     return Container(
       child: new FlatButton(
-        onPressed: () => onNumButtonPressed(number),
+        onPressed: () => _onNumButtonPressed(number),
         child: new Text(number, textAlign: TextAlign.center, style: theme.numPadNumberStyle),
       ),
     );
+  }
+
+  _onNumButtonPressed(String numberText) {
+    setErrorMessage("");
+    if (_enteredPinCode.length < PIN_CODE_LENGTH) {
+      setPinCodeInput(_enteredPinCode + numberText);
+    }
+    if (_enteredPinCode.length == PIN_CODE_LENGTH) {
+      Future.delayed(Duration(milliseconds: 200), () => widget.onPinEntered(_enteredPinCode));
+    }
+  }
+
+  void setLabel(String label) {
+    setState(() {
+      _label = label;
+    });
+  }
+
+  void setPinCodeInput(String enteredPinCode) {
+    setState(() {
+      _enteredPinCode = enteredPinCode;
+    });
+  }
+
+  void setErrorMessage(String errorMessage) {
+    setState(() {
+      _errorMessage = errorMessage;
+    });
   }
 }
