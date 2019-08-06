@@ -1,7 +1,7 @@
 class SecurityModel {
 
   static List<int> lockIntervals = List.unmodifiable([0, 30, 120, 300, 600, 1800, 3600]);
-  static const int _defaultLockInterval = 5;
+  static const int _defaultLockInterval = 120;
 
   final bool requiresPin;
   final String pinCode;
