@@ -1,6 +1,6 @@
 class SecurityModel {
 
-  static List<int> lockIntervals = List.unmodifiable([0, 5, 15, 30, 60, 120, 300, 600, 1800]);
+  static List<int> lockIntervals = List.unmodifiable([0, 30, 120, 300, 600, 1800, 3600]);
   static const int _defaultLockInterval = 5;
 
   final bool requiresPin;
