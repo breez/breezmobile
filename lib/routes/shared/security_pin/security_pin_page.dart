@@ -69,7 +69,13 @@ class SecurityPageState extends State<SecurityPage> {
   List<Widget> _buildSecurityPINTiles(SecurityModel securityModel) {
     List<Widget> _tiles = <Widget>[_buildDisablePINTile(securityModel)];
     if (securityModel.pinCode != null)
-      _tiles..add(Divider())..add(_buildSecureBackupWithPinTile(securityModel))..add(Divider())..add(_buildChangePINTile(securityModel));
+      _tiles..add(
+        Divider())
+        ..add(_buildSecureBackupWithPinTile(securityModel))
+        ..add(Divider())
+        ..add(_buildChangePINTile(securityModel))
+        ..add(Divider())
+        ..add(_buildPINIntervalTile(securityModel));
     return _tiles;
   }
 
@@ -101,6 +107,48 @@ class SecurityPageState extends State<SecurityPage> {
         },
       ),
     );
+  }
+
+  ListTile _buildPINIntervalTile(SecurityModel securityModel) {
+    return ListTile(
+      title: Text(
+        "Lock Automatically",
+        style: TextStyle(color: Colors.white),
+      ),
+      trailing: DropdownButtonHideUnderline(
+        child: new DropdownButton(
+          value: securityModel.automaticallyLockInterval,
+          isDense: true,
+          onChanged: (int newValue) {
+            _updateSecurityModel(securityModel, securityModel.copyWith(automaticallyLockInterval: newValue));
+          },
+          items: SecurityModel.lockIntervals.map((int seconds) {
+            return new DropdownMenuItem(
+              value: seconds,
+              child: new Text(_formatSeconds(seconds),
+                  style: theme
+                      .FieldTextStyle
+                      .textStyle),
+            );
+          }).toList(),
+        ),
+      ),
+      onTap: () => _onChangePinSelected(securityModel),
+    );
+  }
+
+  String _formatSeconds(int seconds) {
+    if (seconds == 0) {
+      return "Immediately";
+    }
+    if (seconds < 60) {
+      return "$seconds seconds";
+    }
+    if (seconds == 60) {
+      return "1 minute";
+    }
+    var secondsRemaining = seconds % 60;
+    return "${seconds ~/ 60} minutes" + (secondsRemaining == 0 ? "" : " $secondsRemaining seconds");
   }
 
   ListTile _buildChangePINTile(SecurityModel securityModel) {
