@@ -102,7 +102,7 @@ class UserProfileBloc {
     _deviceService.eventStream.listen((e){      
       if (e == NotificationType.PAUSE) {
         watcher?.cancel();
-        watcher = Timer(Duration(seconds: 10), (){
+        watcher = Timer(Duration(seconds: _userStreamController.value.securityModel.automaticallyLockInterval), (){
           var currentUser = _userStreamController.value;
           if (currentUser.securityModel.requiresPin) {
             _userStreamController.add(currentUser.copyWith(locked: true));
