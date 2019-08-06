@@ -10,6 +10,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 
 import 'change_pin_code.dart';
@@ -73,9 +74,9 @@ class SecurityPageState extends State<SecurityPage> {
         Divider())
         ..add(_buildSecureBackupWithPinTile(securityModel))
         ..add(Divider())
-        ..add(_buildChangePINTile(securityModel))
+        ..add(_buildPINIntervalTile(securityModel))
         ..add(Divider())
-        ..add(_buildPINIntervalTile(securityModel));
+        ..add(_buildChangePINTile(securityModel));        
     return _tiles;
   }
 
@@ -139,16 +140,9 @@ class SecurityPageState extends State<SecurityPage> {
 
   String _formatSeconds(int seconds) {
     if (seconds == 0) {
-      return "Immediately";
+      return "Immediate";
     }
-    if (seconds < 60) {
-      return "$seconds seconds";
-    }
-    if (seconds == 60) {
-      return "1 minute";
-    }
-    var secondsRemaining = seconds % 60;
-    return "${seconds ~/ 60} minutes" + (secondsRemaining == 0 ? "" : " $secondsRemaining seconds");
+    return printDuration(Duration(seconds: seconds));    
   }
 
   ListTile _buildChangePINTile(SecurityModel securityModel) {
