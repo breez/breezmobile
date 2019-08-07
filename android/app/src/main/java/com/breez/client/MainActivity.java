@@ -53,11 +53,6 @@ public class MainActivity extends FlutterActivity {
         BreezApplication.isBackground = false;
     }
 
-    protected void onStop() {
-        super.onStop();
-        _lifecycleEventsPlugin.onPause();
-    }
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
