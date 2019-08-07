@@ -168,7 +168,7 @@ class SecurityPageState extends State<SecurityPage> {
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
-                  _updateSecurityModel(securityModel, SecurityModel(requiresPin: false, pinCode: null, secureBackupWithPin: false));                  
+                  _updateSecurityModel(securityModel, SecurityModel.initial());                  
                 }
               },
             )

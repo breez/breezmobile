@@ -483,7 +483,7 @@ class AccountBloc {
     print("refreshing payments...");
     _breezLib.getPayments().then((payments) {
       List<PaymentInfo> _paymentsList = payments.paymentsList
-          .map((payment) => new PaymentInfo(payment, _currentUser.currency))
+          .map((payment) => new PaymentInfo(payment, _currentUser?.currency))
           .toList();
       if (_paymentsList.length > 0) {
         _firstDate = DateTime.fromMillisecondsSinceEpoch(
