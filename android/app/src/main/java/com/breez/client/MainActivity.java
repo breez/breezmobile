@@ -46,12 +46,16 @@ public class MainActivity extends FlutterActivity {
     public void onPause() {
         super.onPause();
         BreezApplication.isBackground = true;
-        _lifecycleEventsPlugin.onPause();
     }
 
     public void onResume() {
         super.onResume();
         BreezApplication.isBackground = false;
+    }
+
+    protected void onStop() {
+        super.onStop();
+        _lifecycleEventsPlugin.onPause();
     }
 
     @Override
