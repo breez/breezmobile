@@ -34,8 +34,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "getAccountInfo": EmptyArgsBindingExecutor(f: BindingsGetAccountInfo),
     
     "getFundStatus": SingleArgBindingExecutor(f: BindingsGetFundStatus),
-    "getPayments": EmptyArgsBindingExecutor(f: BindingsGetPayments),
-    "getRefundableSwapAddresses": EmptyArgsBindingExecutor(f: BindingsGetRefundableSwapAddresses),
+    "getPayments": EmptyArgsBindingExecutor(f: BindingsGetPayments),    
     
     "getRelatedInvoice": SingleArgBindingExecutor(f: BindingsGetRelatedInvoice),
     "getLogger": SingleArgBindingExecutor(f: BindingsGetLogger),
