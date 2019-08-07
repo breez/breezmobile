@@ -19,16 +19,14 @@ class PinCodeWidget extends StatefulWidget {
 }
 
 class PinCodeWidgetState extends State<PinCodeWidget> {
-  String _label;
   String _enteredPinCode;
   String _errorMessage;
 
   @override
   initState() {
     super.initState();
-    setLabel(widget.label);
-    setPinCodeInput("");
-    setErrorMessage("");
+    _enteredPinCode = "";
+    _errorMessage = "";
   }
 
   Widget build(BuildContext context) {
@@ -45,7 +43,8 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
               height: pageHeight * 0.29),
           new Container(
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[Text(_label), _buildPinCircles(), _buildErrorMessage()]),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[Text(widget.label), _buildPinCircles(), _buildErrorMessage()]),
               height: pageHeight * 0.20),
           new Container(child: _numPad(context), height: pageHeight * 0.50)
         ],
@@ -116,7 +115,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
         children: List<int>.generate(9, (i) => i).map((index) => _numberButton((index + 1).toString())).followedBy([
           Container(
             child: new IconButton(
-              onPressed: () => setPinCodeInput(""),
+              onPressed: () => _setPinCodeInput(""),
               icon: Icon(
                 Icons.delete_forever,
                 color: Colors.white,
@@ -126,7 +125,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
           _numberButton("0"),
           Container(
             child: new IconButton(
-              onPressed: () => setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
+              onPressed: () => _setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
               icon: Icon(
                 Icons.backspace,
                 color: Colors.white,
@@ -146,37 +145,25 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
   }
 
   _onNumButtonPressed(String numberText) {
-    setErrorMessage("");
+    _errorMessage = "";
     if (_enteredPinCode.length < PIN_CODE_LENGTH) {
-      setPinCodeInput(_enteredPinCode + numberText);
+      _setPinCodeInput(_enteredPinCode + numberText);
     }
     if (_enteredPinCode.length == PIN_CODE_LENGTH) {
       Future.delayed(Duration(milliseconds: 200), () {
         try {
           widget.onPinEntered(_enteredPinCode);
         } catch (error) {
-          setErrorMessage(error.toString().substring(10));
+          _errorMessage = error.toString().substring(10);
         }
-        setPinCodeInput("");
+        _setPinCodeInput("");
       });
     }
   }
 
-  void setLabel(String label) {
-    setState(() {
-      _label = label;
-    });
-  }
-
-  void setPinCodeInput(String enteredPinCode) {
+  void _setPinCodeInput(String enteredPinCode) {
     setState(() {
       _enteredPinCode = enteredPinCode;
-    });
-  }
-
-  void setErrorMessage(String errorMessage) {
-    setState(() {
-      _errorMessage = errorMessage;
     });
   }
 }
