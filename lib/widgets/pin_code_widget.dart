@@ -10,7 +10,7 @@ class PinCodeWidget extends StatefulWidget {
   final bool dismissible;
   final Function(String pinEntered) onPinEntered;
 
-  PinCodeWidget(this.label, this.dismissible, this.onPinEntered, {Key key}) : super(key: key);
+  PinCodeWidget(this.label, this.dismissible, this.onPinEntered);
 
   @override
   State<StatefulWidget> createState() {

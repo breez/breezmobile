@@ -18,7 +18,6 @@ class AppLockScreen extends StatefulWidget {
 }
 
 class _AppLockScreenState extends State<AppLockScreen> {
-  final GlobalKey<PinCodeWidgetState> _key = GlobalKey();
   String _label = "Enter your PIN";
 
   @override
@@ -45,7 +44,6 @@ class _AppLockScreenState extends State<AppLockScreen> {
           _label,
           widget.canCancel,
           (enteredPinCode) => _onPinEntered(enteredPinCode),
-          key: _key,
         ),
       ),
     );

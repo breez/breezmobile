@@ -13,7 +13,6 @@ class ChangePinCode extends StatefulWidget {
 }
 
 class _ChangePinCodeState extends State<ChangePinCode> {
-  final GlobalKey<PinCodeWidgetState> _key = GlobalKey();
   String _label = "Enter your new PIN";
 
   String _tmpPinCode = "";
@@ -36,7 +35,6 @@ class _ChangePinCodeState extends State<ChangePinCode> {
           _label,
           true,
           (enteredPinCode) => _onPinEntered(enteredPinCode),
-          key: _key,
         ));
   }
 
