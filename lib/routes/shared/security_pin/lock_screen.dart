@@ -59,7 +59,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
       }
       Navigator.pop(context, true);
     } else {
-      _key.currentState.setErrorMessage("Incorrect PIN");
+      throw Exception("Incorrect PIN");
     }
   }
 }

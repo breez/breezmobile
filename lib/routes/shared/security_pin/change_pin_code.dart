@@ -53,8 +53,8 @@ class _ChangePinCodeState extends State<ChangePinCode> {
         setState(() {
           _tmpPinCode = "";
           _key.currentState.setLabel("Enter your new PIN");
-          _key.currentState.setErrorMessage("PIN does not match");
         });
+        throw Exception("PIN does not match");
       }
     }
   }
