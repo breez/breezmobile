@@ -151,7 +151,10 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
       setPinCodeInput(_enteredPinCode + numberText);
     }
     if (_enteredPinCode.length == PIN_CODE_LENGTH) {
-      Future.delayed(Duration(milliseconds: 200), () => widget.onPinEntered(_enteredPinCode));
+      Future.delayed(Duration(milliseconds: 200), () {
+        widget.onPinEntered(_enteredPinCode);
+        setPinCodeInput("");
+      });
     }
   }
 

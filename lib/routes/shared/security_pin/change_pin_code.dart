@@ -45,7 +45,6 @@ class _ChangePinCodeState extends State<ChangePinCode> {
       setState(() {
         _tmpPinCode = enteredPinCode;
         _key.currentState.setLabel("Re-enter your new PIN");
-        _key.currentState.setPinCodeInput("");
       });
     } else {
       if (enteredPinCode == _tmpPinCode) {
@@ -54,7 +53,6 @@ class _ChangePinCodeState extends State<ChangePinCode> {
         setState(() {
           _tmpPinCode = "";
           _key.currentState.setLabel("Enter your new PIN");
-          _key.currentState.setPinCodeInput("");
           _key.currentState.setErrorMessage("PIN does not match");
         });
       }
