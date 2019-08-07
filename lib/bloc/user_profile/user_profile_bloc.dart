@@ -104,7 +104,7 @@ class UserProfileBloc {
         watcher?.cancel();
         watcher = Timer(Duration(seconds: _userStreamController.value.securityModel.automaticallyLockInterval), (){
           var currentUser = _userStreamController.value;
-          if (currentUser.securityModel.requiresPin) {
+          if (currentUser.securityModel.requiresPin && !currentUser.locked) {
             _userStreamController.add(currentUser.copyWith(locked: true));
           }
         });
