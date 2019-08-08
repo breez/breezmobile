@@ -9,8 +9,11 @@ class DeepLinksService {
   final StreamController<String> _linksNotificationsController = new BehaviorSubject<String>();
   Stream<String> get linksNotifications => _linksNotificationsController.stream;
 
-  DeepLinksService(){
+  DeepLinksService(){    
+    Timer(Duration(seconds: 2), listen);
+  }
 
+  void listen() async {
     var publishLink = (PendingDynamicLinkData data) async {      
       final Uri uri = data?.link;
         if (uri != null) {
@@ -18,14 +21,12 @@ class DeepLinksService {
         }
     };
 
-    FirebaseDynamicLinks.instance.getInitialLink()
-    .then((data) {
-      publishLink(data);
-    });
+    var data = await FirebaseDynamicLinks.instance.getInitialLink();
+    publishLink(data);
 
     FirebaseDynamicLinks.instance.onLink(onSuccess: publishLink, onError: (err) async {
       log.severe("Failed to fetch dynamic link " + err.toString());
-    });   
+    });     
   }
 
   SessionLinkModel parseSessionInviteLink(String link) {     
