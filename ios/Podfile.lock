@@ -67,6 +67,8 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 6.0)
     - Protobuf (~> 3.1)
   - Flutter (1.0.0)
+  - flutter_secure_storage (3.2.0):
+    - Flutter
   - flutter_webview_plugin (0.0.1):
     - Flutter
   - GoogleAppMeasurement (6.0.1):
@@ -142,6 +144,7 @@ DEPENDENCIES:
   - firebase_dynamic_links (from `Pods/.symlinks/plugins/firebase_dynamic_links/ios`)
   - firebase_messaging (from `Pods/.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Pods/.symlinks/flutter/ios`)
+  - flutter_secure_storage (from `Pods/.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_webview_plugin (from `Pods/.symlinks/plugins/flutter_webview_plugin/ios`)
   - GoogleSignIn
   - image_cropper (from `Pods/.symlinks/plugins/image_cropper/ios`)
@@ -191,6 +194,8 @@ EXTERNAL SOURCES:
     :path: Pods/.symlinks/plugins/firebase_messaging/ios
   Flutter:
     :path: Pods/.symlinks/flutter/ios
+  flutter_secure_storage:
+    :path: Pods/.symlinks/plugins/flutter_secure_storage/ios
   flutter_webview_plugin:
     :path: Pods/.symlinks/plugins/flutter_webview_plugin/ios
   image_cropper:
@@ -215,9 +220,9 @@ SPEC CHECKSUMS:
   connectivity: c72716e202a1225ec4810740d5cb56b8ae3bf4cc
   Firebase: 8d77bb33624ae9b62d745d82ec023de5f70f7e4f
   firebase_core: ce5006bb48508ee4e71e0f429a3f519bb8ee2961
-  firebase_database: 99b15d6a0536ee969200b6eaf69bcd0b15b7b114
-  firebase_dynamic_links: 4a583047b253e5914d5e3c3891cca337ec087d48
-  firebase_messaging: b25b2fa94e685146bcf9d706ed87b4e95cd2a17d
+  firebase_database: 3b672d70a667701be3758e08a47b272e99569329
+  firebase_dynamic_links: de8575bb5e9f2bb42a6c71c842d84aec82c45f35
+  firebase_messaging: 4e6f6e9826e41858d819bd85936eb315a5d1abfb
   FirebaseAnalytics: 629301c2b9925f3537d4093a17a72751ae5b7084
   FirebaseAnalyticsInterop: efbe45c8385ec626e29f9525e5ebd38520dfb6c1
   FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc
@@ -227,6 +232,7 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: 27bed93a59b6685f5c3e0c028a878a764fd75c33
   FirebaseMessaging: 31377e05331d16dc6c9fd82554f9a5c49aa70aed
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  flutter_secure_storage: 0c5779648ff644110e507909b77a57e620cbbf8b
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   GoogleAppMeasurement: 51d8d9ea48f0ca44484d29cfbdef976fbd4fc336
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
