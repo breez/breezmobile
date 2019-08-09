@@ -54,8 +54,9 @@
 - [x] iOS support
 - [x] Add webLN support
 - [x] Fiat units
+- [x] Optional PIN
+- [x] Add encryption to cloud backup
 - [ ] iCloud backup option
-- [ ] Add encryption to cloud backup
 - [ ] Use static card IDs
 - [ ] NFC card deactivation
 - [ ] Adding funds via credit card
