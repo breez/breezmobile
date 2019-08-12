@@ -70,7 +70,7 @@ class UserApp extends StatelessWidget {
               cardColor: theme.BreezColors.blue[500],
             ),
             initialRoute: user.registered ? (user.locked ? '/lockscreen' : null) : '/splash',
-            home: new Home(accountBloc, invoiceBloc, userProfileBloc, connectPayBloc, backupBloc, _navigatorKey),
+            home: new Home(accountBloc, invoiceBloc, userProfileBloc, connectPayBloc, backupBloc),
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
                 case '/lockscreen':
@@ -83,7 +83,7 @@ class UserApp extends StatelessWidget {
                   );
                 case '/home':
                   return new FadeInRoute(
-                    builder: (_) => new Home(accountBloc,invoiceBloc,userProfileBloc,connectPayBloc,backupBloc, _navigatorKey),
+                    builder: (_) => new Home(accountBloc,invoiceBloc,userProfileBloc,connectPayBloc,backupBloc),
                     settings: settings,
                   );
                 case '/intro':

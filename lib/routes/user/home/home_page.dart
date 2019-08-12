@@ -38,25 +38,8 @@ class Home extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final ConnectPayBloc ctpBloc;
   final BackupBloc backupBloc;
-  final GlobalKey<NavigatorState> navigatorKey;
 
-  Home(this.accountBloc, this.invoiceBloc, this.userProfileBloc, this.ctpBloc, this.backupBloc, this.navigatorKey) {
-    _minorActionsInvoice = new List<DrawerItemConfig>.unmodifiable([
-      new DrawerItemConfig("/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png", onItemSelected: (String name) async {
-        Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.camera]);
-        if (permissions[PermissionGroup.camera] == PermissionStatus.granted ||
-            permissions[PermissionGroup.camera] == PermissionStatus.unknown) {
-          BarcodeScanner.scan().then((decodedQr) {
-            invoiceBloc.decodeInvoiceSink.add(decodedQr);
-          }).catchError((_) => navigatorKey.currentState.push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(invoiceBloc))));
-        } else {
-          navigatorKey.currentState.push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(invoiceBloc)));
-        }
-      }),
-      new DrawerItemConfig(
-          "/create_invoice", "Create Invoice", "src/icon/paste.png"),
-    ]);
-  }
+  Home(this.accountBloc, this.invoiceBloc, this.userProfileBloc, this.ctpBloc, this.backupBloc);
 
   final List<DrawerItemConfig> _screens =
       new List<DrawerItemConfig>.unmodifiable(
@@ -86,8 +69,6 @@ class Home extends StatefulWidget {
     new DrawerItemConfig(
         "/lost_card", "Lost or Stolen", "src/icon/lost_card.png"),
   ]);
-
-  List<DrawerItemConfig> _minorActionsInvoice;
 
   final List<DrawerItemConfig> _minorActionsAdvanced =
       new List<DrawerItemConfig>.unmodifiable([
@@ -184,7 +165,7 @@ class HomeState extends State<Home> {
                 [
                   DrawerItemConfigGroup(_filterItems(widget._majorActionsFunds)),
                   DrawerItemConfigGroup(_filterItems(widget._majorActionsPay)),
-                  DrawerItemConfigGroup(_filterItems(widget._minorActionsInvoice)),
+                  _buildMinorActionsInvoice(context),
                   DrawerItemConfigGroup(_filterItems(widget._minorActionsCard), groupTitle: "Card", groupAssetImage: "src/icon/card.png"),
                   DrawerItemConfigGroup(_filterItems(widget._minorActionsAdvanced), groupTitle: "Advanced", groupAssetImage: "src/icon/advanced.png"),
                 ],
@@ -192,6 +173,24 @@ class HomeState extends State<Home> {
             body: widget._screenBuilders[_activeScreen]),
       ),
     );
+  }
+
+  DrawerItemConfigGroup _buildMinorActionsInvoice(BuildContext context) {
+    List<DrawerItemConfig> minorActionsInvoice = new List<DrawerItemConfig>.unmodifiable([
+      new DrawerItemConfig("/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png", onItemSelected: (String name) async {
+        Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.camera]);
+        if (permissions[PermissionGroup.camera] == PermissionStatus.granted ||
+            permissions[PermissionGroup.camera] == PermissionStatus.unknown) {
+          BarcodeScanner.scan().then((decodedQr) {
+            widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
+          }).catchError((_) => Navigator.of(context).push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc))));
+        } else {
+          Navigator.of(context).push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc)));
+        }
+      }),
+      new DrawerItemConfig("/create_invoice", "Create Invoice", "src/icon/paste.png"),
+    ]);
+    return DrawerItemConfigGroup(_filterItems(minorActionsInvoice));
   }
 
   _onNavigationItemSelected(String itemName) {
