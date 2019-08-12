@@ -54,17 +54,7 @@ class AmountFormField extends TextFormField {
             enabled: enabled,
             controller: controller,
             inputFormatters: accountModel.currency != Currency.SAT
-                ? [TextInputFormatter.withFunction( (TextEditingValue oldValue, TextEditingValue newValue){
-                  if (newValue.text.isEmpty) {
-                    return newValue;
-                  }
-                  try {
-                    accountModel.currency.parse(newValue.text);
-                    return newValue;
-                  } catch(e){
-                    return oldValue;
-                  }
-                })]
+                ? [WhitelistingTextInputFormatter(RegExp(r'\d+\.?\d*'))]
                 : [WhitelistingTextInputFormatter.digitsOnly],
             onFieldSubmitted: onFieldSubmitted,
             onSaved: onSaved);
