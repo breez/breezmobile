@@ -35,7 +35,7 @@ class AmountFormField extends TextFormField {
     bool enabled,
   }) : super(
             focusNode: focusNode,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            keyboardType: TextInputType.numberWithOptions(decimal: accountModel.currency != Currency.SAT),
             decoration: new InputDecoration(
               labelText: accountModel.currency.displayName + " Amount",
               suffixIcon: IconButton(
@@ -54,7 +54,17 @@ class AmountFormField extends TextFormField {
             enabled: enabled,
             controller: controller,
             inputFormatters: accountModel.currency != Currency.SAT
-                ? [WhitelistingTextInputFormatter(RegExp(r'\d+\.?\d*'))]
+                ? [TextInputFormatter.withFunction( (TextEditingValue oldValue, TextEditingValue newValue){
+                  if (newValue.text.isEmpty) {
+                    return newValue;
+                  }
+                  try {
+                    accountModel.currency.parse(newValue.text);
+                    return newValue;
+                  } catch(e){
+                    return oldValue;
+                  }
+                })]
                 : [WhitelistingTextInputFormatter.digitsOnly],
             onFieldSubmitted: onFieldSubmitted,
             onSaved: onSaved);
