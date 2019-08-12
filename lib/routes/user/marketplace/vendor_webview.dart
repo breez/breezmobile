@@ -104,14 +104,8 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
           }
         });
       } else {
-        String loadedURL;
-        _widgetWebview.onStateChanged.listen((state) async {
-          if (state.type == WebViewState.finishLoad && loadedURL != state.url) {
-            loadedURL = state.url;
-            if (loadedURL == widget.redirectURL) {
-              Navigator.of(context).pop();
-            }
-          }
+        _widgetWebview.onUrlChanged.listen((String url) {
+          if (url == Uri.decodeFull(widget.redirectURL)) Navigator.of(context).pop();
         });
       }
       _isInit = true;
@@ -120,8 +114,8 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   }
 
   @override
-  void dispose() {    
-    _postMessageListener.cancel();
+  void dispose() {
+    _postMessageListener?.cancel();
     _widgetWebview.dispose();
     _weblnHandlers?.dispose();
     super.dispose();

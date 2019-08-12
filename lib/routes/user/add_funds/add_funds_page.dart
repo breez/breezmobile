@@ -195,12 +195,11 @@ class AddFundsState extends State<AddFundsPage> {
     String apiKey = "pk_test_AZskxvTXb0rpsI7o2GCdmzs8jeST9d";
     String currencyCode = "btc";
     String walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF";
-    String redirectURL = "breez.technology";
+    String redirectURL = "https%3A%2F%2Fbreez.technology";
     String maxQuoteCurrencyAmount = response?.maxAllowedDeposit.toString();
     String colorCode = "%23055DEB";
     String moonPayURL =
-        "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&walletAdress=$walletAddress&redirectUrl=$redirectURL&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount&colorCode=$colorCode";
-    print(moonPayURL);
+        "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&walletAddress=$walletAddress&redirectURL=$redirectURL&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount&colorCode=$colorCode";
     return _isIpAllowed
         ? new GestureDetector(
             onTap: () => Navigator.push(
@@ -286,7 +285,8 @@ class AddFundsState extends State<AddFundsPage> {
             padding: new EdgeInsets.only(bottom: 40.0),
             child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
               new SizedBox(
-                  height: 48.0, width: 256.0, child: Padding(padding: EdgeInsets.only(bottom: 16.0), child: _buildMoonPayButton(response))),
+                  height: 48.0, width: 256.0, child: _buildMoonPayButton(response)),
+              Padding(padding: EdgeInsets.only(bottom: _isIpAllowed ? 16.0 : 0)),
               new SizedBox(height: 48.0, width: 256.0, child: _buildRedeemVoucherButton())
             ]));
   }
