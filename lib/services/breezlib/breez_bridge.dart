@@ -124,12 +124,12 @@ class BreezBridge {
   }
 
   Future<LSPList> getLSPList(){
-    return _invokeMethodImmediate("lSPList")
+    return _invokeMethodWhenReady("lSPList")
       .then((result) => LSPList()..mergeFromBuffer(result ?? []));
   }
 
   Future connectToLSP(String lspID){
-    return _invokeMethodImmediate("connectToLSP");      
+    return _invokeMethodWhenReady("connectToLSP");      
   }
 
   Future<RemoveFundReply> removeFund(String address, Int64 amount){
