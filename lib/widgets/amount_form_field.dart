@@ -35,7 +35,7 @@ class AmountFormField extends TextFormField {
     bool enabled,
   }) : super(
             focusNode: focusNode,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            keyboardType: TextInputType.numberWithOptions(decimal: accountModel.currency != Currency.SAT),
             decoration: new InputDecoration(
               labelText: accountModel.currency.displayName + " Amount",
               suffixIcon: IconButton(
