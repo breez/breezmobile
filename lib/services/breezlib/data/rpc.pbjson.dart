@@ -43,10 +43,10 @@ const Account$json = const {
 const Account_AccountStatus$json = const {
   '1': 'AccountStatus',
   '2': const [
-    const {'1': 'NO_CONNECTION', '2': 0},
+    const {'1': 'DISCONNECTED', '2': 0},
     const {'1': 'PROCESSING_CONNECTION', '2': 1},
-    const {'1': 'PROCESSING_WITHDRAWAL', '2': 2},
-    const {'1': 'ACTIVE', '2': 3},
+    const {'1': 'CLOSING_CONNECTION', '2': 2},
+    const {'1': 'CONNECTED', '2': 3},
   ],
 };
 

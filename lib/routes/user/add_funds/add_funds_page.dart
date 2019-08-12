@@ -103,9 +103,9 @@ class AddFundsState extends State<AddFundsPage> {
       errorMessage =
           'You\'d be able to add funds after Breez is finished bootstrapping.';
     } else if (unconfirmedTxID?.isNotEmpty == true ||
-        account.processingWithdrawal) {
+        account.closingConnection) {
       errorMessage =
-          'Breez is processing your previous ${waitingDepositConfirmation || account.processingBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
+          'Breez is processing your previous ${waitingDepositConfirmation || account.processingConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
     } else if (response != null && response.errorMessage.isNotEmpty) {
       errorMessage = response.errorMessage;
     }
@@ -218,7 +218,7 @@ class AddFundsState extends State<AddFundsPage> {
           });
     }
 
-    return response == null || account?.active != true
+    return response == null || account?.connected != true
         ? SizedBox()
         : new Padding(
             padding: new EdgeInsets.only(bottom: 40.0),

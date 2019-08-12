@@ -48,7 +48,7 @@ class Account extends $pb.GeneratedMessage {
     ..aOS(1, 'id')
     ..aInt64(2, 'balance')
     ..aInt64(3, 'walletBalance')
-    ..e<Account_AccountStatus>(4, 'status', $pb.PbFieldType.OE, Account_AccountStatus.NO_CONNECTION, Account_AccountStatus.valueOf, Account_AccountStatus.values)
+    ..e<Account_AccountStatus>(4, 'status', $pb.PbFieldType.OE, Account_AccountStatus.DISCONNECTED, Account_AccountStatus.valueOf, Account_AccountStatus.values)
     ..aInt64(5, 'maxAllowedToReceive')
     ..aInt64(6, 'maxAllowedToPay')
     ..aInt64(7, 'maxPaymentAmount')

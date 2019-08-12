@@ -30,16 +30,16 @@ class SwapError extends $pb.ProtobufEnum {
 }
 
 class Account_AccountStatus extends $pb.ProtobufEnum {
-  static const Account_AccountStatus NO_CONNECTION = Account_AccountStatus._(0, 'NO_CONNECTION');
+  static const Account_AccountStatus DISCONNECTED = Account_AccountStatus._(0, 'DISCONNECTED');
   static const Account_AccountStatus PROCESSING_CONNECTION = Account_AccountStatus._(1, 'PROCESSING_CONNECTION');
-  static const Account_AccountStatus PROCESSING_WITHDRAWAL = Account_AccountStatus._(2, 'PROCESSING_WITHDRAWAL');
-  static const Account_AccountStatus ACTIVE = Account_AccountStatus._(3, 'ACTIVE');
+  static const Account_AccountStatus CLOSING_CONNECTION = Account_AccountStatus._(2, 'CLOSING_CONNECTION');
+  static const Account_AccountStatus CONNECTED = Account_AccountStatus._(3, 'CONNECTED');
 
   static const $core.List<Account_AccountStatus> values = <Account_AccountStatus> [
-    NO_CONNECTION,
+    DISCONNECTED,
     PROCESSING_CONNECTION,
-    PROCESSING_WITHDRAWAL,
-    ACTIVE,
+    CLOSING_CONNECTION,
+    CONNECTED,
   ];
 
   static final $core.Map<$core.int, Account_AccountStatus> _byValue = $pb.ProtobufEnum.initByValue(values);

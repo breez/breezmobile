@@ -29,7 +29,7 @@ class InvoiceNotificationsHandler {
   }
 
   _listenPaymentRequests() {
-    _accountBloc.accountStream.where((acc) => acc.active).first.then((acc) {
+    _accountBloc.accountStream.where((acc) => acc.connected).first.then((acc) {
       // show payment request dialog for decoded requests
       _receivedInvoicesStream
           .where((payreq) => payreq != null && !_handlingRequest)

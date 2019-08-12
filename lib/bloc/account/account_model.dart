@@ -127,8 +127,7 @@ class AccountModel {
   final FiatConversion _fiatCurrency;
   final List<FiatConversion> _fiatConversionList;
   final FundStatusReply addedFundsReply;
-  final String paymentRequestInProgress;
-  final bool connected;
+  final String paymentRequestInProgress;  
   final Int64 onChainFeeRate;
   final bool initial;
   final bool bootstraping;
@@ -140,8 +139,7 @@ class AccountModel {
   AccountModel(this._accountResponse, this._currency, this._fiatShortName, this._fiatCurrency, this._fiatConversionList,
       {this.initial = true,
       this.addedFundsReply,
-      this.paymentRequestInProgress,
-      this.connected = false,
+      this.paymentRequestInProgress,      
       this.onChainFeeRate,
       this.bootstraping = false,
       this.enableInProgress = false,
@@ -154,7 +152,7 @@ class AccountModel {
             Account()
               ..balance = Int64(0)
               ..walletBalance = Int64(0)
-              ..status = Account_AccountStatus.NO_CONNECTION
+              ..status = Account_AccountStatus.DISCONNECTED
               ..maxAllowedToReceive = Int64(0)
               ..maxPaymentAmount = Int64(0),              
             Currency.SAT,
@@ -170,8 +168,7 @@ class AccountModel {
       FiatConversion fiatCurrency,
       List<FiatConversion> fiatConversionList,
       FundStatusReply addedFundsReply,
-      String paymentRequestInProgress,
-      bool connected,
+      String paymentRequestInProgress,      
       Int64 onChainFeeRate,
       bool bootstraping,
       bool enableInProgress,
@@ -184,8 +181,7 @@ class AccountModel {
         fiatShortName ?? this._fiatShortName,
         fiatCurrency ?? this._fiatCurrency,
         fiatConversionList ?? this._fiatConversionList,
-        addedFundsReply: addedFundsReply ?? this.addedFundsReply,
-        connected: connected ?? this.connected,
+        addedFundsReply: addedFundsReply ?? this.addedFundsReply,        
         onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
         bootstraping: bootstraping ?? this.bootstraping,
         bootstrapProgress: bootstrapProgress ?? this.bootstrapProgress,
@@ -199,15 +195,16 @@ class AccountModel {
 
   String get id => _accountResponse.id;
   SwapFundStatus get swapFundsStatus => SwapFundStatus(this.addedFundsReply);
-  bool get processingBreezConnection =>
+  bool get disconnected => _accountResponse.status == Account_AccountStatus.DISCONNECTED;
+  bool get processingConnection =>
       _accountResponse.status ==
       Account_AccountStatus.PROCESSING_CONNECTION;
-  bool get processingWithdrawal =>
-      _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
-  bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;
+  bool get closingConnection =>
+      _accountResponse.status == Account_AccountStatus.CLOSING_CONNECTION;
+  bool get connected => _accountResponse.status == Account_AccountStatus.CONNECTED;
   bool get isInitialBootstrap =>
       (bootstraping ||
-      (!active && !processingWithdrawal && !processingBreezConnection)) && !initial;
+      (!connected && !closingConnection && !processingConnection)) && !initial;
   Int64 get balance => _accountResponse.balance;
   String get formattedFiatBalance => fiatCurrency?.format(balance);
   Int64 get walletBalance => _accountResponse.walletBalance;
@@ -232,7 +229,7 @@ class AccountModel {
       return "Please wait a minute while Breez is bootstrapping (keep the app open).";
     }
 
-    if (this.processingBreezConnection) {
+    if (this.processingConnection) {
       return "Breez is opening a secure channel with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments";
     }
 
@@ -253,7 +250,7 @@ class AccountModel {
     return null;
   }
 
-  bool get transferringOnChainDeposit => swapFundsStatus.depositConfirmed && this.active;  
+  bool get transferringOnChainDeposit => swapFundsStatus.depositConfirmed && this.connected;  
 
   String validateOutgoingOnChainPayment(Int64 amount) {
     if (amount > walletBalance) {

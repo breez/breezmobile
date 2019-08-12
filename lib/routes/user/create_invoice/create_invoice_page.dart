@@ -182,7 +182,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                         } else if (!accSnapshot.hasData) {
                           message =
                               'Receiving payments will be available as soon as Breez is synchronized.';
-                        } else if (acc.processingBreezConnection) {
+                        } else if (acc.processingConnection) {
                           message =
                               'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
                         }

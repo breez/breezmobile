@@ -314,7 +314,7 @@ class AccountBloc {
         .listen((_) async {
       connectingFuture = connectingFuture.whenComplete(() async {
         if (_allowReconnect == true &&
-            _accountController.value.connected == false) {
+            _accountController.value.readyForPayments == false) {
           await _breezLib.connectAccount();
         }
       }).catchError((e) {});
@@ -568,11 +568,10 @@ class AccountBloc {
   }
 
   void _listenRoutingConnectionChanges() {
-    Observable(_accountController.stream)
-        .where((acc) => !acc.readyForPayments && !acc.initial)
+    Observable(_accountController.stream)        
         .listen((acc) { 
           _setBootstraping(acc.readyForPayments ? false : _accountController.value.bootstraping);
-          if (!acc.readyForPayments) {
+          if (!acc.readyForPayments && acc.closingConnection) {
             _reconnectSink.add(null); 
           }          
         });
