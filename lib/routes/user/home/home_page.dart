@@ -1,29 +1,31 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
+import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/shared/account_required_actions.dart';
+import 'package:breez/routes/shared/no_connection_dialog.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:breez/routes/user/ctp_join_session_handler.dart';
-import 'package:breez/routes/shared/account_required_actions.dart';
+import 'package:breez/routes/user/received_invoice_notification.dart';
 import 'package:breez/routes/user/showPinHandler.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
-import 'package:breez/widgets/route.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
 import 'package:breez/widgets/navigation_drawer.dart';
+import 'package:breez/widgets/route.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 import '../sync_ui_handler.dart';
 import 'account_page.dart';
-import 'package:breez/routes/user/received_invoice_notification.dart';
-import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/routes/shared/no_connection_dialog.dart';
-import 'package:barcode_scan/barcode_scan.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 
 final GlobalKey firstPaymentItemKey = new GlobalKey();
 final ScrollController scrollController = new ScrollController();
@@ -36,18 +38,7 @@ class Home extends StatefulWidget {
   final ConnectPayBloc ctpBloc;
   final BackupBloc backupBloc;
 
-  Home(this.accountBloc, this.invoiceBloc, this.userProfileBloc, this.ctpBloc, this.backupBloc) {
-    _minorActionsInvoice =
-    new List<DrawerItemConfig>.unmodifiable([
-      new DrawerItemConfig(
-          "/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png", onItemSelected: (String name) async {
-          String decodedQr = await BarcodeScanner.scan();
-          invoiceBloc.decodeInvoiceSink.add(decodedQr);
-      }),
-      new DrawerItemConfig(
-          "/create_invoice", "Create Invoice", "src/icon/paste.png"),
-    ]);
-  }
+  Home(this.accountBloc, this.invoiceBloc, this.userProfileBloc, this.ctpBloc, this.backupBloc);
 
   final List<DrawerItemConfig> _screens =
       new List<DrawerItemConfig>.unmodifiable(
@@ -77,8 +68,6 @@ class Home extends StatefulWidget {
     new DrawerItemConfig(
         "/lost_card", "Lost or Stolen", "src/icon/lost_card.png"),
   ]);
-
-  List<DrawerItemConfig> _minorActionsInvoice;
 
   final List<DrawerItemConfig> _minorActionsAdvanced =
       new List<DrawerItemConfig>.unmodifiable([
@@ -175,7 +164,7 @@ class HomeState extends State<Home> {
                 [
                   DrawerItemConfigGroup(_filterItems(widget._majorActionsFunds)),
                   DrawerItemConfigGroup(_filterItems(widget._majorActionsPay)),
-                  DrawerItemConfigGroup(_filterItems(widget._minorActionsInvoice)),
+                  _buildMinorActionsInvoice(context),
                   DrawerItemConfigGroup(_filterItems(widget._minorActionsCard), groupTitle: "Card", groupAssetImage: "src/icon/card.png"),
                   DrawerItemConfigGroup(_filterItems(widget._minorActionsAdvanced), groupTitle: "Advanced", groupAssetImage: "src/icon/advanced.png"),
                 ],
@@ -183,6 +172,18 @@ class HomeState extends State<Home> {
             body: widget._screenBuilders[_activeScreen]),
       ),
     );
+  }
+
+  DrawerItemConfigGroup _buildMinorActionsInvoice(BuildContext context) {
+    List<DrawerItemConfig> minorActionsInvoice = new List<DrawerItemConfig>.unmodifiable([
+      new DrawerItemConfig("/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png", onItemSelected: (String name) async {
+        BarcodeScanner.scan().then((decodedQr) {
+          widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
+        }).catchError((_) => Navigator.of(context).push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc))));
+      }),
+      new DrawerItemConfig("/create_invoice", "Create Invoice", "src/icon/paste.png"),
+    ]);
+    return DrawerItemConfigGroup(_filterItems(minorActionsInvoice));
   }
 
   _onNavigationItemSelected(String itemName) {
