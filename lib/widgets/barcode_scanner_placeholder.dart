@@ -83,9 +83,7 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
                 elevation: 0.0,
                 shape: const StadiumBorder(),
                 onPressed: () async {
-                  PermissionHandler().openAppSettings().then((isOpened) {
-                    if (isOpened) Navigator.pop(context);
-                  });
+                  
                 },
               ),
             ],
