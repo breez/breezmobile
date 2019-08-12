@@ -154,10 +154,9 @@ class AccountModel {
             Account()
               ..balance = Int64(0)
               ..walletBalance = Int64(0)
-              ..status = Account_AccountStatus.WAITING_DEPOSIT
+              ..status = Account_AccountStatus.NO_CONNECTION
               ..maxAllowedToReceive = Int64(0)
-              ..maxPaymentAmount = Int64(0)
-              ..enabled = true,
+              ..maxPaymentAmount = Int64(0),              
             Currency.SAT,
             "USD",
             null,
@@ -202,7 +201,7 @@ class AccountModel {
   SwapFundStatus get swapFundsStatus => SwapFundStatus(this.addedFundsReply);
   bool get processingBreezConnection =>
       _accountResponse.status ==
-      Account_AccountStatus.PROCESSING_BREEZ_CONNECTION;
+      Account_AccountStatus.PROCESSING_CONNECTION;
   bool get processingWithdrawal =>
       _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
   bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;
@@ -223,9 +222,9 @@ class AccountModel {
   Int64 get reserveAmount => balance - maxAllowedToPay;
   Int64 get warningMaxChanReserveAmount => _accountResponse.maxChanReserve;
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
-  Int64 get routingNodeFee => _accountResponse.routingNodeFee;
-  bool get enabled => _accountResponse.enabled;
+  Int64 get routingNodeFee => _accountResponse.routingNodeFee;  
   bool get synced => syncProgress == 1.0;
+  bool get readyForPayments => _accountResponse.readyForPayments;
 
   String get statusMessage {
 

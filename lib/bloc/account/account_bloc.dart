@@ -154,10 +154,9 @@ class AccountBloc {
       _listenUserChanges(userProfileStream);
       _listenWithdrawalRequests();      
       _listenFilterChanges();
-      _listenAccountChanges();
-      _listenEnableAccount();
+      _listenAccountChanges();      
       _listenMempoolTransactions();
-      _listenRoutingNodeConnectionChanges();
+      _listenRoutingConnectionChanges();
       _listenBootstrapStatus();
       _trackOnBoardingStatus();
     });
@@ -544,17 +543,6 @@ class AccountBloc {
     });
   }
 
-  void _listenEnableAccount() {
-    _accountEnableController.stream.listen((enable) {
-      _accountController
-          .add(_accountController.value.copyWith(enableInProgress: true));
-      _breezLib.enableAccount(enable).whenComplete(() {
-        _accountController
-            .add(_accountController.value.copyWith(enableInProgress: false));
-      });
-    });
-  }
-
   _refreshAccount() {
     print("Account bloc refreshing account...");
     _breezLib.getAccount().then((acc) {
@@ -567,6 +555,7 @@ class AccountBloc {
             .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatShortName: _currentUser?.fiatCurrency, initial: false));
       }
     }).catchError(_accountController.addError);
+
     _refreshPayments();
     if (_accountController.value.onChainFeeRate == null) {
       _breezLib.getDefaultOnChainFeeRate().then((rate) {
@@ -578,26 +567,16 @@ class AccountBloc {
     }
   }
 
-  void _listenRoutingNodeConnectionChanges() {
-    Observable(_breezLib.notificationStream)
-        .where((event) =>
-            event.type ==
-            NotificationEvent_NotificationType.ROUTING_NODE_CONNECTION_CHANGED)
-        .listen((change) => _refreshRoutingNodeConnection());
-  }
-
-  _refreshRoutingNodeConnection() {
-    _breezLib.isConnectedToRoutingNode().then((connected) async {
-      _accountController
-          .add(_accountController.value.copyWith(connected: connected));
-      _setBootstraping(
-          connected ? false : _accountController.value.bootstraping);
-      if (!connected) {
-        log.info("Node disconnected, adding reconnect request");
-        _reconnectSink.add(null); //try to reconnect
-      }
-    }).catchError(_routingNodeConnectionController.addError);
-  }
+  void _listenRoutingConnectionChanges() {
+    Observable(_accountController.stream)
+        .where((acc) => !acc.readyForPayments && !acc.initial)
+        .listen((acc) { 
+          _setBootstraping(acc.readyForPayments ? false : _accountController.value.bootstraping);
+          if (!acc.readyForPayments) {
+            _reconnectSink.add(null); 
+          }          
+        });
+  }  
 
   Future<String> getPersistentNodeID() async {
     var preferences = await ServiceInjector().sharedPreferences;

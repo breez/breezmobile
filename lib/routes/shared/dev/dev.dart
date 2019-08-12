@@ -318,17 +318,6 @@ class DevViewState extends State<DevView> {
           }));
     }
 
-    if (!account.enableInProgress && account.id.isNotEmpty) {
-      choices.add(Choice(
-          title: account.enabled
-              ? "Disable Automatic Channel"
-              : "Enable Automatic Channel",
-          icon: Icons.phone_android,
-          function: () {
-            accBloc.accountEnableSink.add(!account.enabled);
-          }));
-    }   
-
     return choices;
   }
 
