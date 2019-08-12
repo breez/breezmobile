@@ -15,8 +15,10 @@ class VendorWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;
   final String _url;
   final String _title;
+  final bool listenInvoices;
+  final String redirectURL;
 
-  VendorWebViewPage(this.accountBloc, this._url, this._title);
+  VendorWebViewPage(this.accountBloc, this._url, this._title, {this.listenInvoices = true, this.redirectURL});
 
   @override
   State<StatefulWidget> createState() {
@@ -76,21 +78,21 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     if (!_isInit) {
       var invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-      _weblnHandlers = WeblnHandlers(context, accountBloc, invoiceBloc, onBeforeCallHandler);
+      if (widget.listenInvoices) {
+        _weblnHandlers = WeblnHandlers(context, accountBloc, invoiceBloc, onBeforeCallHandler);
 
-      String loadedURL;
-      _widgetWebview.onStateChanged.listen((state) async {
-        if (state.type == WebViewState.finishLoad && loadedURL != state.url) {          
-          loadedURL = state.url;
-          _widgetWebview.evalJavascript(await _weblnHandlers.initWeblnScript);
-        }
-      });
-      
-      _postMessageListener = _widgetWebview.onPostMessage.listen((msg) {        
-        if (msg != null ) {         
-          var postMessage = (widget._title == "ln.pizza") ? {"action": "sendPayment", "payReq": msg} : JSON.jsonDecode(msg);                    
-          _weblnHandlers.handleMessage(postMessage)
-            .then((resScript){
+        String loadedURL;
+        _widgetWebview.onStateChanged.listen((state) async {
+          if (state.type == WebViewState.finishLoad && loadedURL != state.url) {
+            loadedURL = state.url;
+            _widgetWebview.evalJavascript(await _weblnHandlers.initWeblnScript);
+          }
+        });
+
+        _postMessageListener = _widgetWebview.onPostMessage.listen((msg) {
+          if (msg != null) {
+            var postMessage = (widget._title == "ln.pizza") ? {"action": "sendPayment", "payReq": msg} : JSON.jsonDecode(msg);
+            _weblnHandlers.handleMessage(postMessage).then((resScript) {
               if (resScript != null) {
                 _widgetWebview.evalJavascript(resScript);
                 _widgetWebview.show();
@@ -98,9 +100,20 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
                   _screenshotData = null;
                 });
               }
-            });            
-        }
-      });
+            });
+          }
+        });
+      } else {
+        String loadedURL;
+        _widgetWebview.onStateChanged.listen((state) async {
+          if (state.type == WebViewState.finishLoad && loadedURL != state.url) {
+            loadedURL = state.url;
+            if (loadedURL == widget.redirectURL) {
+              Navigator.of(context).pop();
+            }
+          }
+        });
+      }
       _isInit = true;
     }
     super.didChangeDependencies();

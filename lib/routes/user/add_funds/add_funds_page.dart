@@ -1,20 +1,23 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/routes/user/add_funds/address_widget.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/link_launcher.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:breez/routes/user/marketplace/vendor_webview.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/link_launcher.dart';
+import 'package:breez/widgets/route.dart';
+import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 
 class AddFundsPage extends StatefulWidget {
   final BreezUserModel _user;
@@ -32,6 +35,7 @@ class AddFundsState extends State<AddFundsPage> {
   final String _title = "Add Funds";
   AddFundsBloc _addFundsBloc;
   StreamSubscription<AccountModel> _accountSubscription;
+  bool _isIpAllowed = false;
 
   @override
   initState() {
@@ -43,6 +47,16 @@ class AddFundsState extends State<AddFundsPage> {
         _accountSubscription.cancel();
       }
     });
+    isIpAllowed();
+  }
+
+  isIpAllowed() async {
+    var response = await http.get("https://api.moonpay.io/v2/ip_address");
+    if (response.statusCode != 200) {
+      log.severe('moonpay response error: ${response.body.substring(0, 100)}');
+      throw "Service Unavailable. Please try again later.";
+    }
+    _isIpAllowed = jsonDecode(response.body)['isAllowed'];
   }
 
   @override
@@ -176,6 +190,54 @@ class AddFundsState extends State<AddFundsPage> {
     ]);
   }
 
+  Widget _buildMoonPayButton(AddFundResponse response) {
+    String baseUrl = "https://buy-staging.moonpay.io";
+    String apiKey = "pk_test_AZskxvTXb0rpsI7o2GCdmzs8jeST9d";
+    String currencyCode = "btc";
+    String walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF";
+    String redirectURL = "breez.technology";
+    String maxQuoteCurrencyAmount = response?.maxAllowedDeposit.toString();
+    String colorCode = "%23055DEB";
+    String moonPayURL =
+        "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&walletAdress=$walletAddress&redirectUrl=$redirectURL&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount&colorCode=$colorCode";
+    print(moonPayURL);
+    return _isIpAllowed
+        ? new GestureDetector(
+            onTap: () => Navigator.push(
+                context,
+                FadeInRoute(
+                    builder: (_) => new VendorWebViewPage(
+                          null,
+                          moonPayURL,
+                          "MoonPay",
+                          listenInvoices: false,
+                          redirectURL: redirectURL,
+                        ))),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.white, style: BorderStyle.solid, width: 1.0),
+                  borderRadius: BorderRadius.circular(14.0)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.credit_card,
+                    color: theme.fastbitcoins.iconFgColor,
+                    size: 24.0,
+                  ),
+                  Padding(padding: EdgeInsets.only(right: 4.0)),
+                  Text('Buy Bitcoin',
+                      style: theme.textStyle.copyWith(
+                        color: theme.fastbitcoins.iconFgColor,
+                      ))
+                ],
+              ),
+            ),
+          )
+        : null;
+  }
+
   Widget _buildRedeemVoucherButton() {
     return new GestureDetector(
         onTap: () => Navigator.of(context).pushNamed("/fastbitcoins"),
@@ -222,13 +284,10 @@ class AddFundsState extends State<AddFundsPage> {
         ? SizedBox()
         : new Padding(
             padding: new EdgeInsets.only(bottom: 40.0),
-            child: new Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  new SizedBox(
-                      height: 48.0,
-                      width: 256.0,
-                      child: _buildRedeemVoucherButton())
-                ]));
+            child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              new SizedBox(
+                  height: 48.0, width: 256.0, child: Padding(padding: EdgeInsets.only(bottom: 16.0), child: _buildMoonPayButton(response))),
+              new SizedBox(height: 48.0, width: 256.0, child: _buildRedeemVoucherButton())
+            ]));
   }
 }
