@@ -123,6 +123,15 @@ class BreezBridge {
     return _invokeMethodWhenReady("connectAccount");
   }
 
+  Future<LSPList> getLSPList(){
+    return _invokeMethodImmediate("lSPList")
+      .then((result) => LSPList()..mergeFromBuffer(result ?? []));
+  }
+
+  Future connectToLSP(String lspID){
+    return _invokeMethodImmediate("connectToLSP");      
+  }
+
   Future<RemoveFundReply> removeFund(String address, Int64 amount){
     RemoveFundRequest request = new RemoveFundRequest()
       ..address = address

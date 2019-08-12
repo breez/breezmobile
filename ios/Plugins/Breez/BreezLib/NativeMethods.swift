@@ -30,8 +30,9 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "connectAccount": EmptyArgsBindingExecutor(f: BindingsConnectAccount),
     
     "decodePaymentRequest": SingleArgBindingExecutor(f: BindingsDecodePaymentRequest),
-    "enableAccount": SingleArgBindingExecutor(f: BindingsEnableAccount),
     "getAccountInfo": EmptyArgsBindingExecutor(f: BindingsGetAccountInfo),
+    "lSPList": EmptyArgsBindingExecutor(f: BindingsLSPList),
+    "connectToLSP": SingleArgBindingExecutor(f: BindingsConnectToLSP),
     
     "getFundStatus": SingleArgBindingExecutor(f: BindingsGetFundStatus),
     "getPayments": EmptyArgsBindingExecutor(f: BindingsGetPayments),    
@@ -59,7 +60,6 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "daemonReady": VoidBindingExecutor(f: BindingsDaemonReady),
     "getDefaultOnChainFeeRate": VoidBindingExecutor(f: BindingsGetDefaultOnChainFeeRate),
     "rate": EmptyArgsBindingExecutor(f: BindingsRate),
-    "isConnectedToRoutingNode": VoidBindingExecutor(f: BindingsIsConnectedToRoutingNode),
     "onResume": VoidBindingExecutor(f: BindingsOnResume),
     "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),
     "setPinCode": SingleArgBindingExecutor(f: BindingsSetPinCode),
