@@ -46,8 +46,9 @@ class Home extends StatefulWidget {
         Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.camera]);
         if (permissions[PermissionGroup.camera] == PermissionStatus.granted ||
             permissions[PermissionGroup.camera] == PermissionStatus.unknown) {
-          String decodedQr = await BarcodeScanner.scan();
-          invoiceBloc.decodeInvoiceSink.add(decodedQr);
+          BarcodeScanner.scan().then((decodedQr) {
+            invoiceBloc.decodeInvoiceSink.add(decodedQr);
+          }).catchError((_) => navigatorKey.currentState.push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(invoiceBloc))));
         } else {
           navigatorKey.currentState.push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(invoiceBloc)));
         }
