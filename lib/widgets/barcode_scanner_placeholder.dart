@@ -1,6 +1,5 @@
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -48,22 +47,49 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
         ),
         backgroundColor: Colors.black,
         body: Padding(
-          padding: EdgeInsets.only(left: 24.0, right: 24.0),
-          child: Center(
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(style: theme.alertStyle.copyWith(color: Colors.white), text: "Please grant Breez ", children: <TextSpan>[
-                TextSpan(
-                  text: "access to your camera",
-                  style: TextStyle(color: Colors.blue),
-                  recognizer: new TapGestureRecognizer()
-                    ..onTap = () async {
-                      bool isOpened = await PermissionHandler().openAppSettings();
-                      if (isOpened) Navigator.pop(context);
-                    },
+          padding: EdgeInsets.only(left: 16.0, right: 16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "For QR scan, please grant Breez access to your camera.",
+                style: theme.alertStyle.copyWith(
+                  color: Colors.white,
                 ),
-              ]),
-            ),
+                textAlign: TextAlign.center,
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 16.0),
+              ),
+              RaisedButton(
+                padding: EdgeInsets.only(top: 8.0, bottom: 8.0, right: 12.0, left: 12.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(
+                      Icons.settings,
+                      color: theme.buttonStyle.color,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 8.0),
+                    ),
+                    Text(
+                      "App Settings",
+                      style: theme.buttonStyle,
+                    )
+                  ],
+                ),
+                color: theme.BreezColors.white[500],
+                elevation: 0.0,
+                shape: const StadiumBorder(),
+                onPressed: () async {
+                  PermissionHandler().openAppSettings().then((isOpened) {
+                    if (isOpened) Navigator.pop(context);
+                  });
+                },
+              ),
+            ],
           ),
         ),
       ),
