@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:convert' as JSON;
-import 'package:breez/routes/user/marketplace/webln_handlers.dart';
-import 'package:flutter/material.dart';
 import 'dart:typed_data';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:breez/routes/user/marketplace/webln_handlers.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class VendorWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -118,7 +118,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   Widget build(BuildContext context) {
     return new WebviewScaffold(
       appBar: new AppBar(
-        leading: backBtn.BackButton(),
+        actions: <Widget>[IconButton(icon: new Icon(Icons.close), onPressed: () => Navigator.pop(context))],
         automaticallyImplyLeading: false,
         iconTheme: theme.appBarIconTheme,
         textTheme: theme.appBarTextTheme,
