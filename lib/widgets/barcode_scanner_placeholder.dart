@@ -2,7 +2,6 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class BarcodeScannerPlaceholder extends StatefulWidget {
   final InvoiceBloc invoiceBloc;

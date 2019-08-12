@@ -23,7 +23,6 @@ import 'package:breez/widgets/navigation_drawer.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../sync_ui_handler.dart';
 import 'account_page.dart';
@@ -178,15 +177,9 @@ class HomeState extends State<Home> {
   DrawerItemConfigGroup _buildMinorActionsInvoice(BuildContext context) {
     List<DrawerItemConfig> minorActionsInvoice = new List<DrawerItemConfig>.unmodifiable([
       new DrawerItemConfig("/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png", onItemSelected: (String name) async {
-        Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.camera]);
-        if (permissions[PermissionGroup.camera] == PermissionStatus.granted ||
-            permissions[PermissionGroup.camera] == PermissionStatus.unknown) {
-          BarcodeScanner.scan().then((decodedQr) {
-            widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
-          }).catchError((_) => Navigator.of(context).push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc))));
-        } else {
-          Navigator.of(context).push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc)));
-        }
+        BarcodeScanner.scan().then((decodedQr) {
+          widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
+        }).catchError((_) => Navigator.of(context).push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc))));
       }),
       new DrawerItemConfig("/create_invoice", "Create Invoice", "src/icon/paste.png"),
     ]);
