@@ -30,16 +30,14 @@ class SwapError extends $pb.ProtobufEnum {
 }
 
 class Account_AccountStatus extends $pb.ProtobufEnum {
-  static const Account_AccountStatus WAITING_DEPOSIT = Account_AccountStatus._(0, 'WAITING_DEPOSIT');
-  static const Account_AccountStatus WAITING_DEPOSIT_CONFIRMATION = Account_AccountStatus._(1, 'WAITING_DEPOSIT_CONFIRMATION');
-  static const Account_AccountStatus PROCESSING_BREEZ_CONNECTION = Account_AccountStatus._(2, 'PROCESSING_BREEZ_CONNECTION');
-  static const Account_AccountStatus PROCESSING_WITHDRAWAL = Account_AccountStatus._(3, 'PROCESSING_WITHDRAWAL');
-  static const Account_AccountStatus ACTIVE = Account_AccountStatus._(4, 'ACTIVE');
+  static const Account_AccountStatus NO_CONNECTION = Account_AccountStatus._(0, 'NO_CONNECTION');
+  static const Account_AccountStatus PROCESSING_CONNECTION = Account_AccountStatus._(1, 'PROCESSING_CONNECTION');
+  static const Account_AccountStatus PROCESSING_WITHDRAWAL = Account_AccountStatus._(2, 'PROCESSING_WITHDRAWAL');
+  static const Account_AccountStatus ACTIVE = Account_AccountStatus._(3, 'ACTIVE');
 
   static const $core.List<Account_AccountStatus> values = <Account_AccountStatus> [
-    WAITING_DEPOSIT,
-    WAITING_DEPOSIT_CONFIRMATION,
-    PROCESSING_BREEZ_CONNECTION,
+    NO_CONNECTION,
+    PROCESSING_CONNECTION,
     PROCESSING_WITHDRAWAL,
     ACTIVE,
   ];
@@ -75,15 +73,14 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
   static const NotificationEvent_NotificationType ACCOUNT_CHANGED = NotificationEvent_NotificationType._(2, 'ACCOUNT_CHANGED');
   static const NotificationEvent_NotificationType PAYMENT_SENT = NotificationEvent_NotificationType._(3, 'PAYMENT_SENT');
   static const NotificationEvent_NotificationType INVOICE_PAID = NotificationEvent_NotificationType._(4, 'INVOICE_PAID');
-  static const NotificationEvent_NotificationType ROUTING_NODE_CONNECTION_CHANGED = NotificationEvent_NotificationType._(5, 'ROUTING_NODE_CONNECTION_CHANGED');
-  static const NotificationEvent_NotificationType LIGHTNING_SERVICE_DOWN = NotificationEvent_NotificationType._(6, 'LIGHTNING_SERVICE_DOWN');
-  static const NotificationEvent_NotificationType FUND_ADDRESS_CREATED = NotificationEvent_NotificationType._(7, 'FUND_ADDRESS_CREATED');
-  static const NotificationEvent_NotificationType FUND_ADDRESS_UNSPENT_CHANGED = NotificationEvent_NotificationType._(8, 'FUND_ADDRESS_UNSPENT_CHANGED');
-  static const NotificationEvent_NotificationType BACKUP_SUCCESS = NotificationEvent_NotificationType._(9, 'BACKUP_SUCCESS');
-  static const NotificationEvent_NotificationType BACKUP_FAILED = NotificationEvent_NotificationType._(10, 'BACKUP_FAILED');
-  static const NotificationEvent_NotificationType BACKUP_AUTH_FAILED = NotificationEvent_NotificationType._(11, 'BACKUP_AUTH_FAILED');
-  static const NotificationEvent_NotificationType BACKUP_NODE_CONFLICT = NotificationEvent_NotificationType._(12, 'BACKUP_NODE_CONFLICT');
-  static const NotificationEvent_NotificationType BACKUP_REQUEST = NotificationEvent_NotificationType._(13, 'BACKUP_REQUEST');
+  static const NotificationEvent_NotificationType LIGHTNING_SERVICE_DOWN = NotificationEvent_NotificationType._(5, 'LIGHTNING_SERVICE_DOWN');
+  static const NotificationEvent_NotificationType FUND_ADDRESS_CREATED = NotificationEvent_NotificationType._(6, 'FUND_ADDRESS_CREATED');
+  static const NotificationEvent_NotificationType FUND_ADDRESS_UNSPENT_CHANGED = NotificationEvent_NotificationType._(7, 'FUND_ADDRESS_UNSPENT_CHANGED');
+  static const NotificationEvent_NotificationType BACKUP_SUCCESS = NotificationEvent_NotificationType._(8, 'BACKUP_SUCCESS');
+  static const NotificationEvent_NotificationType BACKUP_FAILED = NotificationEvent_NotificationType._(9, 'BACKUP_FAILED');
+  static const NotificationEvent_NotificationType BACKUP_AUTH_FAILED = NotificationEvent_NotificationType._(10, 'BACKUP_AUTH_FAILED');
+  static const NotificationEvent_NotificationType BACKUP_NODE_CONFLICT = NotificationEvent_NotificationType._(11, 'BACKUP_NODE_CONFLICT');
+  static const NotificationEvent_NotificationType BACKUP_REQUEST = NotificationEvent_NotificationType._(12, 'BACKUP_REQUEST');
 
   static const $core.List<NotificationEvent_NotificationType> values = <NotificationEvent_NotificationType> [
     READY,
@@ -91,7 +88,6 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
     ACCOUNT_CHANGED,
     PAYMENT_SENT,
     INVOICE_PAID,
-    ROUTING_NODE_CONNECTION_CHANGED,
     LIGHTNING_SERVICE_DOWN,
     FUND_ADDRESS_CREATED,
     FUND_ADDRESS_UNSPENT_CHANGED,
