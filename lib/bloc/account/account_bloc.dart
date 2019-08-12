@@ -570,8 +570,11 @@ class AccountBloc {
   void _listenRoutingConnectionChanges() {
     Observable(_accountController.stream)        
         .listen((acc) { 
-          _setBootstraping(acc.readyForPayments ? false : _accountController.value.bootstraping);
-          if (!acc.readyForPayments && acc.closingConnection) {
+          var bootstraping = acc.readyForPayments ? false : _accountController.value.bootstraping;
+          if (bootstraping != _isBootstrapping()) {
+            _setBootstraping(acc.readyForPayments ? false : _accountController.value.bootstraping);
+          }
+          if (!acc.readyForPayments && acc.connected) {
             _reconnectSink.add(null); 
           }          
         });
