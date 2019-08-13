@@ -116,6 +116,12 @@ class AccountRequiredActionsIndicatorState
                             Navigator.of(context).pushNamed("/send_coins")));
                       }
 
+                      if (accountSnapshot?.data?.synced == true && 
+                        accountSnapshot?.data?.connected == false &&
+                        accountSnapshot?.data?.processingConnection == false) {
+                          warnings.add(WarningAction(() => Navigator.of(context).pushNamed("/select_lsp")));
+                      }
+
                       if (backupSnapshot.hasError) {
                         warnings.add(WarningAction(() => showDialog(
                             barrierDismissible: false,

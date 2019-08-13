@@ -7,6 +7,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/shared/lsp/select_lsp_page.dart';
 import 'package:breez/routes/shared/security_pin/lock_screen.dart';
 import 'package:breez/routes/user/get_refund/get_refund_page.dart';
 import 'package:breez/routes/user/withdraw_funds/send_coins_dialog.dart';
@@ -178,6 +179,11 @@ class UserApp extends StatelessWidget {
                   return new FadeInRoute(
                     builder: (_) =>
                     new FastbitcoinsPage(),
+                    settings: settings,
+                  );
+                case '/select_lsp':
+                  return new FadeInRoute(
+                    builder: (_) => SelectLSPPage(),
                     settings: settings,
                   );
               }
