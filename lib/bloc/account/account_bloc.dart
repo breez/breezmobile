@@ -363,7 +363,7 @@ class AccountBloc {
         if (!_startedLightning) {
           _breezLib.needsBootstrap().then((need){
               _setBootstraping(need || _isBootstrapping());
-          });
+          });          
           //_askWhitelistOptimizations();
           print(
               "Account bloc got registered user, starting lightning daemon...");
@@ -568,13 +568,13 @@ class AccountBloc {
   }
 
   void _listenRoutingConnectionChanges() {
-    Observable(_accountController.stream)        
-        .listen((acc) { 
-          var bootstraping = acc.readyForPayments ? false : _accountController.value.bootstraping;
-          if (bootstraping != _isBootstrapping()) {
-            _setBootstraping(acc.readyForPayments ? false : _accountController.value.bootstraping);
+    Observable(_accountController.stream)
+      .where( (acc) => acc.connected || acc.processingConnection) 
+        .listen((acc) {           
+          if (_isBootstrapping() && acc.readyForPayments) {
+            _setBootstraping(false);
           }
-          if (!acc.readyForPayments && acc.connected) {
+          if (!acc.readyForPayments) {
             _reconnectSink.add(null); 
           }          
         });
