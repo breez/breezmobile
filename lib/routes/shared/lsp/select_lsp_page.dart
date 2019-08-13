@@ -94,6 +94,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
               text: "SELECT",
               onPressed: () {
                 _bloc.actionsSink.add(ConnectLSP(_selectedLSPId));
+                Navigator.of(context).pop();           
               })
           : null,
     );
