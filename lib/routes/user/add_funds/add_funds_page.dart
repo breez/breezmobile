@@ -18,7 +18,7 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:breez/bloc/user_profile/currency.dart';
 class AddFundsPage extends StatefulWidget {
   final BreezUserModel _user;
   final AccountBloc _accountBloc;
@@ -196,7 +196,7 @@ class AddFundsState extends State<AddFundsPage> {
     String currencyCode = "btc";
     String walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF";
     String redirectURL = "https%3A%2F%2Fbreez.technology";
-    String maxQuoteCurrencyAmount = response?.maxAllowedDeposit.toString();
+    String maxQuoteCurrencyAmount = Currency.BTC.format(response?.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
     String colorCode = "%23055DEB";
     String moonPayURL =
         "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&walletAddress=$walletAddress&redirectURL=$redirectURL&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount&colorCode=$colorCode";
