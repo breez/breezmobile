@@ -520,7 +520,9 @@ class AccountBloc {
   void _listenAccountChanges() {
     StreamSubscription<NotificationEvent> eventSubscription;
     eventSubscription =
-        Observable(_breezLib.notificationStream).listen((event) {
+        Observable(_breezLib.notificationStream)
+        //.transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
+        .listen((event) {
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
             _pollSyncStatus();
@@ -571,7 +573,7 @@ class AccountBloc {
     Observable(_accountController.stream)
       .where( (acc) => acc.connected || acc.processingConnection) 
         .listen((acc) {           
-          if (_isBootstrapping() && acc.readyForPayments) {
+          if (_isBootstrapping()) {
             _setBootstraping(false);
           }
           if (!acc.readyForPayments) {
