@@ -313,8 +313,8 @@ class AccountBloc {
         .transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
         .listen((_) async {
       connectingFuture = connectingFuture.whenComplete(() async {
-        if (_allowReconnect == true &&
-            _accountController.value.readyForPayments == false) {
+        var acc = _accountController.value;
+        if (_allowReconnect == true && acc.connected && acc.readyForPayments == false) {
           await _breezLib.connectAccount();
         }
       }).catchError((e) {});
