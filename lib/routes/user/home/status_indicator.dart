@@ -9,7 +9,7 @@ class StatusIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (_accountModel != null && _accountModel.readyForPayments && !_accountModel.isInitialBootstrap) {
+    if (_accountModel?.readyForPayments == true || _accountModel?.processingConnection == true) {
       return Container();
     }
 
