@@ -51,6 +51,7 @@ dependencies:
       url: https://github.com/breez/flutter_webview_plugin.git
   keyboard_actions: ^2.1.1
   flutter_secure_storage: ^3.2.1+1
+  app_settings: 1.0.6+1
 
 dev_dependencies:
   mockito: "^3.0.0"
