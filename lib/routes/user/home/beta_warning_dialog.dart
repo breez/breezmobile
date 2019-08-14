@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter/material.dart';
 
 class BetaWarningDialog extends StatefulWidget {
   @override
@@ -82,7 +83,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
             actions: [
               new SimpleDialogOption(
                 onPressed: () => exit(0),
-                child: new Text("Exit", style: theme.buttonStyle),
+                child: new AutoSizeText("Exit", style: theme.buttonStyle),
               ),
               new SimpleDialogOption(
                 onPressed: (() {
@@ -94,7 +95,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
                     });
                   }
                 }),
-                child: new Text("Continue", style: theme.buttonStyle),
+                child: new AutoSizeText("Continue", style: theme.buttonStyle),
               ),
             ],
             shape: RoundedRectangleBorder(

@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/widgets/breez_avatar.dart';
-import 'package:image/image.dart' as DartImage;
-import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'dart:async';
-import 'dart:io';
-import 'package:flutter/services.dart';
+
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/breez_avatar.dart';
+import 'package:flutter/material.dart';
+import 'package:image/image.dart' as DartImage;
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 int scaledWidth = 200;
 var _transparentImage = DartImage.Image(scaledWidth, scaledWidth);
@@ -58,7 +58,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
         children: <Widget>[
           FlatButton(
             padding: EdgeInsets.only(bottom: 20.0, top: 26.0),
-            child: new Text('RANDOM', style: theme.whiteButtonStyle),
+            child: new AutoSizeText('RANDOM', style: theme.whiteButtonStyle),
             onPressed: () {
               userBloc.randomizeSink.add(null);
               FocusScope.of(context).requestFocus(new FocusNode());
@@ -78,7 +78,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
               }),
           FlatButton(
             padding: EdgeInsets.only(bottom: 20.0, top: 26.0),
-            child: new Text('GALLERY', style: theme.whiteButtonStyle),
+            child: new AutoSizeText('GALLERY', style: theme.whiteButtonStyle),
             onPressed: () {
               _pickImage(context);
             },

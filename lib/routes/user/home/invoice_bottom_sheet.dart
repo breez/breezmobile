@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -74,7 +75,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                       size: 24.0,
                     ),
                     Padding(padding: EdgeInsets.only(left: 8.0)),
-                    Text(
+                    AutoSizeText(
                       title.toUpperCase(),
                       style: theme.bottomSheetMenuItemStyle.copyWith(
                         color: isFirst ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white,

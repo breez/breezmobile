@@ -1,8 +1,8 @@
-import 'dart:async';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flushbar/flushbar.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 Flushbar _lostCardFlush;
 
@@ -46,14 +46,14 @@ class LostCardDialog extends StatelessWidget {
       actions: <Widget>[
         new FlatButton(
           onPressed: () => Navigator.pop(context),
-          child: new Text("CANCEL", style: theme.buttonStyle),
+          child: new AutoSizeText("CANCEL", style: theme.buttonStyle),
         ),
         new FlatButton(
           onPressed: (() {
             Navigator.pop(context);
             _lostCardFlush.show(context);
           }),
-          child: new Text("DEACTIVATE", style: theme.buttonStyle),
+          child: new AutoSizeText("DEACTIVATE", style: theme.buttonStyle),
         ),
       ],
       shape: RoundedRectangleBorder(

@@ -1,15 +1,17 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/security_pin/restore_pin.dart';
+import 'package:breez/routes/user/home/beta_warning_dialog.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/restore_dialog.dart';
-import 'package:breez/routes/user/home/beta_warning_dialog.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
@@ -188,7 +190,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                   new Expanded(flex: 190, child: new Container()),
                   new Expanded(
                     flex: 48,
-                    child: new Text(
+                    child: new AutoSizeText(
                       _instructions,
                       textAlign: TextAlign.center,
                       style: theme.welcomeTextStyle,

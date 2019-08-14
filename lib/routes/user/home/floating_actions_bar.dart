@@ -1,9 +1,8 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/routes/user/withdraw_funds/withdraw_funds_page.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'dart:math';
 
 class FloatingActionsBar extends StatelessWidget {
   static const double SHIRINKED_BUTTON_SIZE = 56.0;
@@ -60,7 +59,7 @@ class FloatingActionsBar extends StatelessWidget {
                             )
                           : Icon(Icons.add),
                       Padding(padding: EdgeInsets.only(left: 8.0)),
-                      Text(hasBalance ? "CONNECT TO PAY" : "ADD FUNDS", style: theme.addFundsBtnStyle)
+                      AutoSizeText(hasBalance ? "CONNECT TO PAY" : "ADD FUNDS", style: theme.addFundsBtnStyle)
                     ],
             ),
           )),

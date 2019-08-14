@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -120,7 +121,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
               child: Row(
                 children: <Widget>[
                   Padding(
-                    child: Text(
+                    child: AutoSizeText(
                       "Enter amount in",
                       style: theme.alertTitleStyle,
                     ),
@@ -136,7 +137,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                         items: account.fiatConversionList.map((FiatConversion value) {
                           return new DropdownMenuItem<String>(
                             value: value.currencyData.shortName,
-                            child: new Text(
+                            child: new AutoSizeText(
                               value.currencyData.shortName,
                               textAlign: TextAlign.left,
                               style: theme.alertTitleStyle,

@@ -1,8 +1,9 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/bloc/backup/backup_bloc.dart';
 
 class EnableBackupDialog extends StatefulWidget {
   final BuildContext context;
@@ -76,14 +77,14 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
           actions: [
             new SimpleDialogOption(
               onPressed: () => Navigator.pop(widget.context),
-              child: new Text("LATER", style: theme.buttonStyle),
+              child: new AutoSizeText("LATER", style: theme.buttonStyle),
             ),
             new SimpleDialogOption(
               onPressed: (() {
                 Navigator.pop(widget.context);
                 widget.backupBloc.backupNowSink.add(true);
               }),
-              child: new Text("BACKUP NOW", style: theme.buttonStyle),
+              child: new AutoSizeText("BACKUP NOW", style: theme.buttonStyle),
             ),
           ],
           shape: RoundedRectangleBorder(
