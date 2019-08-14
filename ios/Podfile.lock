@@ -1,4 +1,6 @@
 PODS:
+  - "app_settings (1.0.6+2)":
+    - Flutter
   - barcode_scan (0.0.1):
     - Flutter
     - MTBBarcodeScanner
@@ -137,6 +139,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - app_settings (from `Pods/.symlinks/plugins/app_settings/ios`)
   - barcode_scan (from `Pods/.symlinks/plugins/barcode_scan/ios`)
   - connectivity (from `Pods/.symlinks/plugins/connectivity/ios`)
   - firebase_core (from `Pods/.symlinks/plugins/firebase_core/ios`)
@@ -180,6 +183,8 @@ SPEC REPOS:
     - TOCropViewController
 
 EXTERNAL SOURCES:
+  app_settings:
+    :path: Pods/.symlinks/plugins/app_settings/ios
   barcode_scan:
     :path: Pods/.symlinks/plugins/barcode_scan/ios
   connectivity:
@@ -216,6 +221,7 @@ EXTERNAL SOURCES:
     :path: Pods/.symlinks/plugins/url_launcher/ios
 
 SPEC CHECKSUMS:
+  app_settings: 72b0ab4369ff445589e275506896bca9bf321944
   barcode_scan: 33f586d02270046fc6559135038b34b5754eaa4f
   connectivity: c72716e202a1225ec4810740d5cb56b8ae3bf4cc
   Firebase: 8d77bb33624ae9b62d745d82ec023de5f70f7e4f
@@ -254,6 +260,6 @@ SPEC CHECKSUMS:
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
 
-PODFILE CHECKSUM: 740a5c9a8028f240641d96e762d90ca00d97add4
+PODFILE CHECKSUM: 31a941cc61eea4b797a004267fb2cf2ea11a6105
 
 COCOAPODS: 1.6.1
