@@ -23,6 +23,7 @@ import 'package:breez/widgets/navigation_drawer.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../sync_ui_handler.dart';
 import 'account_page.dart';
@@ -177,9 +178,14 @@ class HomeState extends State<Home> {
   DrawerItemConfigGroup _buildMinorActionsInvoice(BuildContext context) {
     List<DrawerItemConfig> minorActionsInvoice = new List<DrawerItemConfig>.unmodifiable([
       new DrawerItemConfig("/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png", onItemSelected: (String name) async {
-        BarcodeScanner.scan().then((decodedQr) {
+        try {
+          String decodedQr = await BarcodeScanner.scan();
           widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
-        }).catchError((_) => Navigator.of(context).push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc))));
+        } on PlatformException catch (e) {
+          if (e.code == BarcodeScanner.CameraAccessDenied) {
+            Navigator.of(context).push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc)));
+          }
+        }
       }),
       new DrawerItemConfig("/create_invoice", "Create Invoice", "src/icon/paste.png"),
     ]);
