@@ -60,7 +60,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
               : Container(
                   height: 36.0,
                   child: ListTile(
-                    title: Text(
+                    title: AutoSizeText(
                       "Amount",
                       style: theme.paymentDetailsTitleStyle,
                       textAlign: TextAlign.left,
@@ -78,7 +78,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
               : Container(
                   height: 36.0,
                   child: ListTile(
-                    title: Text(
+                    title: AutoSizeText(
                       "Date & Time",
                       style: theme.paymentDetailsTitleStyle,
                       textAlign: TextAlign.left,
@@ -97,7 +97,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
               : Container(
                   height: 36.0,
                   child: ListTile(
-                    title: Text(
+                    title: AutoSizeText(
                       "Expiration",
                       style: theme.paymentDetailsTitleStyle,
                       textAlign: TextAlign.left,
