@@ -119,13 +119,17 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                 canvasColor: theme.BreezColors.white[500],
               ),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Padding(
-                    child: AutoSizeText(
-                      "Enter amount in",
-                      style: theme.alertTitleStyle,
+                  Expanded(
+                    child: Padding(
+                      child: AutoSizeText(
+                        "Enter amount in",
+                        style: theme.alertTitleStyle,
+                        maxLines: 1,
+                      ),
+                      padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
                     ),
-                    padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
                   ),
                   new DropdownButtonHideUnderline(
                     child: ButtonTheme(
@@ -141,6 +145,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                               value.currencyData.shortName,
                               textAlign: TextAlign.left,
                               style: theme.alertTitleStyle,
+                              maxLines: 1,
                             ),
                           );
                         }).toList(),
