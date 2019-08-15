@@ -117,7 +117,7 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                       children: <Widget>[
                         new Padding(
                           padding: EdgeInsets.only(top: 8.0),
-                          child: new AutoSizeText(
+                          child: AutoSizeText(
                             snapshot.data.name ?? "No Name",
                             style: theme.navigationDrawerHandleStyle,
                           ),

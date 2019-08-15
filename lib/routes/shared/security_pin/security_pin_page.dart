@@ -1,5 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
@@ -28,7 +28,8 @@ class SecurityPage extends StatefulWidget {
   }
 }
 
-class SecurityPageState extends State<SecurityPage> {  
+class SecurityPageState extends State<SecurityPage> {
+  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
 
   @override
@@ -82,9 +83,13 @@ class SecurityPageState extends State<SecurityPage> {
 
   ListTile _buildSecureBackupWithPinTile(SecurityModel securityModel) {
     return ListTile(
-      title: Text(
-        "Use in Backup/Restore",
-        style: TextStyle(color: Colors.white),
+      title: Container(
+        child: AutoSizeText(
+          "Use in Backup/Restore",
+          style: TextStyle(color: Colors.white),
+          maxLines: 1,
+          group: _autoSizeGroup,
+        ),
       ),
       trailing: Switch(
         value: securityModel.secureBackupWithPin,
@@ -112,9 +117,13 @@ class SecurityPageState extends State<SecurityPage> {
 
   ListTile _buildPINIntervalTile(SecurityModel securityModel) {
     return ListTile(
-      title: Text(
-        "Lock Automatically",
-        style: TextStyle(color: Colors.white),
+      title: Container(
+        child: AutoSizeText(
+          "Lock Automatically",
+          style: TextStyle(color: Colors.white),
+          maxLines: 1,
+          group: _autoSizeGroup,
+        ),
       ),
       trailing: DropdownButtonHideUnderline(
         child: new DropdownButton(
@@ -126,10 +135,11 @@ class SecurityPageState extends State<SecurityPage> {
           items: SecurityModel.lockIntervals.map((int seconds) {
             return new DropdownMenuItem(
               value: seconds,
-              child: new Text(_formatSeconds(seconds),
-                  style: theme
-                      .FieldTextStyle
-                      .textStyle),
+              child: AutoSizeText(
+                _formatSeconds(seconds),
+                style: theme.FieldTextStyle.textStyle,
+                group: _autoSizeGroup,
+              ),
             );
           }).toList(),
         ),
@@ -147,9 +157,13 @@ class SecurityPageState extends State<SecurityPage> {
 
   ListTile _buildChangePINTile(SecurityModel securityModel) {
     return ListTile(
-      title: Text(
-        "Change PIN",
-        style: TextStyle(color: Colors.white),
+      title: Container(
+        child: AutoSizeText(
+          "Change PIN",
+          style: TextStyle(color: Colors.white),
+          maxLines: 1,
+          group: _autoSizeGroup,
+        ),
       ),
       trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
       onTap: () => _onChangePinSelected(securityModel),
@@ -158,9 +172,13 @@ class SecurityPageState extends State<SecurityPage> {
 
   ListTile _buildDisablePINTile(SecurityModel securityModel) {
     return ListTile(
-      title: Text(
-        securityModel.pinCode != null ? "Activate PIN" : "Create PIN",
-        style: TextStyle(color: Colors.white),
+      title: Container(
+        child: AutoSizeText(
+          securityModel.pinCode != null ? "Activate PIN" : "Create PIN",
+          style: TextStyle(color: Colors.white),
+          maxLines: 1,
+          group: securityModel.pinCode != null ? _autoSizeGroup : null,
+        ),
       ),
       trailing: securityModel.pinCode != null
           ? Switch(

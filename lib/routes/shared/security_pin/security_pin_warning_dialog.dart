@@ -71,11 +71,11 @@ class _SecurityPINWarningDialogState extends State<SecurityPINWarningDialog> {
             children: _getContent(),
           ),
           actions: [
-            new SimpleDialogOption(
+            new FlatButton(
               onPressed: () => Navigator.of(context).pop(false),
               child: new Text("Cancel", style: theme.buttonStyle),
             ),
-            new SimpleDialogOption(
+            new FlatButton(
               onPressed: (() {
                 if (_isUnderstood) {
                   Navigator.of(context).pop(_isUnderstood);

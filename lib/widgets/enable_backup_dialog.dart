@@ -64,10 +64,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                                 widget.backupBloc.backupSettingsSink.add(
                                     currentSettings.copyWith(promptOnError: !v));
                               }),
-                          AutoSizeText(
-                            "Don't prompt again",
-                            style: theme.paymentRequestSubtitleStyle,
-                          )
+                          Expanded(child: AutoSizeText("Don't prompt again", style: theme.paymentRequestSubtitleStyle, maxLines: 1,))
                         ],
                       ),
                     ),                    
@@ -76,15 +73,15 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
               }),
           actions: [
             new FlatButton(
-              onPressed: () => Navigator.pop(widget.context),
-              child: new AutoSizeText("LATER", style: theme.buttonStyle),
+                onPressed: () => Navigator.pop(widget.context),
+                child: Text("LATER", style: theme.buttonStyle,)
             ),
             new FlatButton(
-              onPressed: (() {
-                Navigator.pop(widget.context);
-                widget.backupBloc.backupNowSink.add(true);
-              }),
-              child: new AutoSizeText("BACKUP NOW", style: theme.buttonStyle),
+                onPressed: (() {
+                  Navigator.pop(widget.context);
+                  widget.backupBloc.backupNowSink.add(true);
+                }),
+                child: Text("BACKUP NOW", style: theme.buttonStyle,)
             ),
           ],
           shape: RoundedRectangleBorder(

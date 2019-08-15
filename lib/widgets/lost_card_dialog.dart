@@ -46,14 +46,14 @@ class LostCardDialog extends StatelessWidget {
       actions: <Widget>[
         new FlatButton(
           onPressed: () => Navigator.pop(context),
-          child: new AutoSizeText("CANCEL", style: theme.buttonStyle),
+          child: new Text("CANCEL", style: theme.buttonStyle),
         ),
         new FlatButton(
           onPressed: (() {
             Navigator.pop(context);
             _lostCardFlush.show(context);
           }),
-          child: new AutoSizeText("DEACTIVATE", style: theme.buttonStyle),
+          child: new Text("DEACTIVATE", style: theme.buttonStyle),
         ),
       ],
       shape: RoundedRectangleBorder(

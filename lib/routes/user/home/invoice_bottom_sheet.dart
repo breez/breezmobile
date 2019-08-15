@@ -48,7 +48,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
 
   Widget _buildInvoiceMenuItem(String title, String iconPath, Function function, {bool isFirst = false}) {
     return AnimatedContainer(
-      width: widget.isSmallView ? 56.0 : 126.0,
+      width: widget.isSmallView ? 56.0 : 136.0,
       height: isFirst ? 50.0 : 56.0,
       duration: Duration(milliseconds: 150),
       child: RaisedButton(
@@ -75,12 +75,15 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                       size: 24.0,
                     ),
                     Padding(padding: EdgeInsets.only(left: 8.0)),
-                    AutoSizeText(
-                      title.toUpperCase(),
-                      style: theme.bottomSheetMenuItemStyle.copyWith(
-                        color: isFirst ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white,
+                    Expanded(
+                      child: AutoSizeText(
+                        title.toUpperCase(),
+                        style: theme.bottomSheetMenuItemStyle.copyWith(
+                          color: isFirst ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white,
+                        ),
+                        maxLines: 1,
                       ),
-                    ),
+                    )
                   ]),
       ),
     );

@@ -33,7 +33,7 @@ dependencies:
   ini: ^2.0.1
   connectivity: ^0.4.2
   logging: ^0.11.3+2
-  auto_size_text: ^0.2.1
+  auto_size_text: ^1.1.2
   flutter_svg: "^0.13.0"
   json_annotation: ^2.0.0
   http: ^0.12.0+1

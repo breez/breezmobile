@@ -81,11 +81,11 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
               children: _getContent(),
             ),
             actions: [
-              new SimpleDialogOption(
+              new FlatButton(
                 onPressed: () => exit(0),
-                child: new AutoSizeText("Exit", style: theme.buttonStyle),
+                child: new Text("Exit", style: theme.buttonStyle),
               ),
-              new SimpleDialogOption(
+              new FlatButton(
                 onPressed: (() {
                   if (_isUnderstood) {
                     Navigator.of(context).pop(_isUnderstood);
@@ -95,7 +95,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
                     });
                   }
                 }),
-                child: new AutoSizeText("Continue", style: theme.buttonStyle),
+                child: new Text("Continue", style: theme.buttonStyle),
               ),
             ],
             shape: RoundedRectangleBorder(

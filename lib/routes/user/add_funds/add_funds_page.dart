@@ -159,7 +159,7 @@ class AddFundsState extends State<AddFundsPage> {
               child: Container(
                 padding:
                     new EdgeInsets.only(top: 36.0, left: 12.0, right: 12.0),
-                child: Text(
+                child: AutoSizeText(
                   "Send up to " +
                       account.currency.format(response.maxAllowedDeposit,
                           includeSymbol: true) +
@@ -179,24 +179,33 @@ class AddFundsState extends State<AddFundsPage> {
     return new GestureDetector(
         onTap: () => Navigator.of(context).pushNamed("/fastbitcoins"),
         child: Container(
+          height: 48,
           decoration: BoxDecoration(
               color: theme.fastbitcoins.iconBgColor,
               border: Border.all(
                   color: Colors.white, style: BorderStyle.solid, width: 1.0),
               borderRadius: BorderRadius.circular(14.0)),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Image(
-                image: AssetImage("src/icon/vendors/fastbitcoins_logo.png"),
-                height: 24.0,
-                fit: BoxFit.scaleDown,
-                color: theme.fastbitcoins.iconFgColor,
+              Padding(
+                padding: EdgeInsets.only(left:16.0, right: 4.0),
+                child: Image(
+                  image: AssetImage("src/icon/vendors/fastbitcoins_logo.png"),
+                  height: 24.0,
+                  fit: BoxFit.scaleDown,
+                  color: theme.fastbitcoins.iconFgColor,
+                ),
               ),
-              Padding(padding: EdgeInsets.only(right: 4.0)),
-              AutoSizeText(
-                'REDEEM FASTBITCOINS VOUCHER',
-                style: theme.fastbitcoinsTextStyle,
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: 16.0),
+                  child: AutoSizeText(
+                    'REDEEM FASTBITCOINS VOUCHER',
+                    style: theme.fastbitcoinsTextStyle,
+                    maxLines: 1,
+                  ),
+                ),
               )
             ],
           ),
@@ -219,15 +228,6 @@ class AddFundsState extends State<AddFundsPage> {
 
     return response == null || account?.active != true
         ? SizedBox()
-        : new Padding(
-            padding: new EdgeInsets.only(bottom: 40.0),
-            child: new Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  new SizedBox(
-                      height: 48.0,
-                      width: 256.0,
-                      child: _buildRedeemVoucherButton())
-                ]));
+        : new Padding(padding: new EdgeInsets.only(bottom: 40.0, left: 16.0, right: 16.0), child:_buildRedeemVoucherButton());
   }
 }

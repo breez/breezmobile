@@ -38,6 +38,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
 
   double _exchangeRate;  
 
+  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+
   bool _isInit = false;
 
   @override
@@ -127,6 +129,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                         "Enter amount in",
                         style: theme.alertTitleStyle,
                         maxLines: 1,
+                        group: _autoSizeGroup,
                       ),
                       padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
                     ),
@@ -141,11 +144,12 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                         items: account.fiatConversionList.map((FiatConversion value) {
                           return new DropdownMenuItem<String>(
                             value: value.currencyData.shortName,
-                            child: new AutoSizeText(
+                            child: AutoSizeText(
                               value.currencyData.shortName,
                               textAlign: TextAlign.left,
                               style: theme.alertTitleStyle,
                               maxLines: 1,
+                              group: _autoSizeGroup,
                             ),
                           );
                         }).toList(),

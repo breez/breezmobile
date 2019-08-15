@@ -58,7 +58,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
         children: <Widget>[
           FlatButton(
             padding: EdgeInsets.only(bottom: 20.0, top: 26.0),
-            child: new AutoSizeText('RANDOM', style: theme.whiteButtonStyle),
+            child: new Text('RANDOM', style: theme.whiteButtonStyle),
             onPressed: () {
               userBloc.randomizeSink.add(null);
               FocusScope.of(context).requestFocus(new FocusNode());
@@ -78,7 +78,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
               }),
           FlatButton(
             padding: EdgeInsets.only(bottom: 20.0, top: 26.0),
-            child: new AutoSizeText('GALLERY', style: theme.whiteButtonStyle),
+            child: new Text('GALLERY', style: theme.whiteButtonStyle),
             onPressed: () {
               _pickImage(context);
             },
