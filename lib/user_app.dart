@@ -55,14 +55,6 @@ class UserApp extends StatelessWidget {
           return MaterialApp(
             navigatorKey: _navigatorKey,
             title: 'Breez',
-            builder: (BuildContext context, Widget child) {
-              final MediaQueryData data = MediaQuery.of(context);
-              return MediaQuery(
-                  data: data.copyWith(
-                    textScaleFactor: (data.textScaleFactor >= 1.2) ? 1.2 : data.textScaleFactor,
-                  ),
-                  child: child);
-            },
             theme: ThemeData(
               backgroundColor: theme.BreezColors.blue[500],
               brightness: Brightness.dark,
