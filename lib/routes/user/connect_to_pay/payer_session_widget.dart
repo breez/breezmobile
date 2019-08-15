@@ -32,7 +32,7 @@ class PayerSessionWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              SessionInstructions(_PayerInstructions(sessionState, _account)),              
+              Scrollbar(child: SingleChildScrollView(scrollDirection: Axis.vertical, child: SessionInstructions(_PayerInstructions(sessionState, _account)),),),
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                 child: PeersConnection(sessionState, onShareInvite: () {
