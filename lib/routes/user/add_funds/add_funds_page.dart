@@ -186,6 +186,7 @@ class AddFundsState extends State<AddFundsPage> {
                   color: Colors.white, style: BorderStyle.solid, width: 1.0),
               borderRadius: BorderRadius.circular(14.0)),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Padding(
@@ -198,6 +199,7 @@ class AddFundsState extends State<AddFundsPage> {
                 ),
               ),
               Expanded(
+                flex: 0,
                 child: Padding(
                   padding: EdgeInsets.only(right: 16.0),
                   child: AutoSizeText(
