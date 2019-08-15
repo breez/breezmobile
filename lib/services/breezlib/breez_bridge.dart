@@ -1,6 +1,6 @@
 
 import 'dart:async';
-import 'dart:convert';
+import 'package:breez/logger.dart' as logger;
 import 'dart:io';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/lnd_bootstrapper.dart';
@@ -46,14 +46,15 @@ class BreezBridge {
   }
 
   initLightningDir(){
-    print("initLightningDir started");
+    logger.log.info("initLightningDir started");
     
     getApplicationDocumentsDirectory()
       .then((workingDir) {
         return copyBreezConfig(workingDir.path)
           .then((_) async {
             var tmpDir = await _tempDirFuture;            
-            await init(workingDir.path, tmpDir.path);            
+            await init(workingDir.path, tmpDir.path); 
+            logger.log.info("breez library init finished");
             _startedCompleter.complete(true);
           });
       });
@@ -346,7 +347,7 @@ class BreezBridge {
   }
 
   Future copyBreezConfig(String workingDir) async{
-    print("copyBreezConfig started");
+    logger.log.info("copyBreezConfig started");
     
     File file = File(workingDir + "/breez.conf");        
     String configString = await rootBundle.loadString('conf/breez.conf');      
@@ -356,7 +357,7 @@ class BreezBridge {
     String data = await rootBundle.loadString('conf/lnd.conf');      
     lndConf.writeAsStringSync(data, flush: true);    
     
-    print("copyBreezConfig finished");
+    logger.log.info("copyBreezConfig finished");
   }
 
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
@@ -387,8 +388,11 @@ class BreezBridge {
   }
 
   Future<bool> bootstrap() async {
+    logger.log.info("breezLib: bootstrap started");
     var bootstrapNeeded = await needsBootstrap();
     if (!bootstrapNeeded) {
+      logger.log.info("breezLib: not bootstrap is needed, exiting");
+      _bootstrapDownloadProgressController.close();
       return false;
     }
 
@@ -412,12 +416,15 @@ class BreezBridge {
           return;
         });
 
+    logger.log.info("breezLib: before downloadBootstrapFiles");
     String targetDir = await lndBootstrapper.downloadBootstrapFiles(appDir.path);
+    logger.log.info("breezLib: after downloadBootstrapFiles targetDir = ${targetDir ?? 'null'}");
     if (targetDir == null) {
       return false;
     }
 
     await _invokeMethodImmediate("bootstrapHeaders", {"argument": targetDir});
+    logger.log.info("breezLib: bootstrapHeaders finished");
     return true;   
   }  
 }

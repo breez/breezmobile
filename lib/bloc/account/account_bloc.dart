@@ -184,6 +184,7 @@ class AccountBloc {
   }
 
   void _setBootstraping(bool bootstraping) async {
+    log.info("account: _setBootstraping = $bootstraping");
     _sharedPreferences.setBool(BOOTSTRAPING_PREFERENCES_KEY, bootstraping);
     bool initial = bootstraping ? false : _accountController.value.initial;
     _accountController
@@ -344,11 +345,11 @@ class AccountBloc {
   _listenUserChanges(Stream<BreezUserModel> userProfileStream) {
     userProfileStream.listen((user) async {
       if (user.token != _currentUser?.token) {
-        print("user profile bloc registering for channel open notifications");
+        log.info("user profile bloc registering for channel open notifications");
         _breezLib.registerChannelOpenedNotification(user.token);
       }
       _currentUser = user;
-
+      log.info("account: got new user $user");
       //convert currency.
       _accountController.add(_accountController.value.copyWith(currency: user.currency));
       _accountController.add(_accountController.value.copyWith(fiatShortName: user.fiatCurrency));
@@ -362,18 +363,22 @@ class AccountBloc {
       if (user.registered) {
         if (!_startedLightning) {
           _breezLib.needsBootstrap().then((need){
+              log.info("account: needsBootstrap = $need");
               _setBootstraping(need || _isBootstrapping());
           });          
           //_askWhitelistOptimizations();
-          print(
+          log.info(
               "Account bloc got registered user, starting lightning daemon...");
           _startedLightning = true;
           _pollSyncStatus();          
           _backgroundService.runAsTask(_onBoardingCompleter.future, (){
             log.info("onboarding background task finished");
           });
+          log.info("account: before _bootstrapWitRetry");
           _bootstrapWitRetry().then((_) async {
+            log.info("account: starting lightning...");
             await _breezLib.startLightning();
+            log.info("account: lightning started");
             _breezLib.registerPeriodicSync(user.token);
             _fetchFundStatus();
             _listenConnectivityChanges();
@@ -389,10 +394,10 @@ class AccountBloc {
 
   Future _bootstrapWitRetry(){    
     return _breezLib.bootstrap().then((downloadNeeded) async {
-      print("Account bloc bootstrap has finished");      
+      log.info("Account bloc bootstrap has finished");      
     })
     .catchError((err){
-      print("bootstrap failed, retrying in 2 seconds...");
+      log.severe("bootstrap failed, retrying in 2 seconds...");
       return Future.delayed(Duration(seconds: 2), () => _bootstrapWitRetry());
     });
   }
