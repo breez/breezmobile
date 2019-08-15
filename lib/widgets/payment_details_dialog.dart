@@ -1,16 +1,13 @@
+import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/routes/user/home/payment_item_avatar.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/routes/user/home/payment_item_avatar.dart';
-import 'package:breez/utils/date.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:share_extend/share_extend.dart';
 
 Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentInfo) {
-  final _expansionTileTheme = Theme.of(context)
-      .copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
   AlertDialog _paymentDetailsDialog = new AlertDialog(
     titlePadding: EdgeInsets.zero,
     title: new Stack(children: <Widget>[
@@ -37,86 +34,115 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
           paymentInfo.title == null || paymentInfo.title.isEmpty
               ? Container()
               : Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: AutoSizeText(
-              paymentInfo.title,
-              style: theme.paymentRequestAmountStyle,
-              textAlign: TextAlign.center,
-              maxLines: 1,
-            ),),
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: Text(
+                    paymentInfo.title,
+                    style: theme.paymentRequestAmountStyle,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                  ),
+                ),
           paymentInfo.description == null || paymentInfo.description.isEmpty
               ? Container()
-              : Padding(padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: AutoSizeText(
-              paymentInfo.description,
-              style: theme.paymentDetailsTitleStyle,
-              textAlign: paymentInfo.description.length > 40
-                  ? TextAlign.justify
-                  : TextAlign.center,
-              maxLines: 3,
-            ),),
+              : Padding(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: Text(
+                    paymentInfo.description,
+                    style: theme.paymentDetailsTitleStyle,
+                    textAlign: paymentInfo.description.length > 40 ? TextAlign.justify : TextAlign.center,
+                    maxLines: 3,
+                  ),
+                ),
           paymentInfo.amount == null
               ? Container()
               : Container(
                   height: 36.0,
-                  child: ListTile(
-                    title: AutoSizeText(
-                      "Amount",
-                      style: theme.paymentDetailsTitleStyle,
-                      textAlign: TextAlign.left,
-                      maxLines: 1,
-                    ),
-                    trailing: AutoSizeText(
-                      (paymentInfo.type == PaymentType.SENT || paymentInfo.type == PaymentType.WITHDRAWAL ? "-" : "+") +
-                          paymentInfo.currency.format(paymentInfo.amount),
-                      style: theme.paymentDetailsSubtitleStyle,
-                      textAlign: TextAlign.left,
-                      maxFontSize: 13,
-                    ),
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Text(
+                        "Amount",
+                        style: theme.paymentDetailsTitleStyle,
+                        textAlign: TextAlign.left,
+                        maxLines: 1,
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            (paymentInfo.type == PaymentType.SENT || paymentInfo.type == PaymentType.WITHDRAWAL ? "-" : "+") +
+                                paymentInfo.currency.format(paymentInfo.amount),
+                            style: theme.paymentDetailsSubtitleStyle,
+                            textAlign: TextAlign.right,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
           paymentInfo.creationTimestamp == null
               ? Container()
               : Container(
                   height: 36.0,
-                  child: ListTile(
-                    title: AutoSizeText(
-                      "Date & Time",
-                      style: theme.paymentDetailsTitleStyle,
-                      textAlign: TextAlign.left,
-                      maxLines: 1,
-                    ),
-                    trailing: AutoSizeText(
-                      DateUtils.formatYearMonthDayHourMinute(
-                          DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)),
-                      style: theme.paymentDetailsSubtitleStyle,
-                      textAlign: TextAlign.left,
-                      maxFontSize: 13,
-                    ),
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Text(
+                        "Date & Time",
+                        style: theme.paymentDetailsTitleStyle,
+                        textAlign: TextAlign.left,
+                        maxLines: 1,
+                      ),
+                      Expanded(
+                        child: new SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            DateUtils.formatYearMonthDayHourMinute(
+                                DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)),
+                            style: theme.paymentDetailsSubtitleStyle,
+                            textAlign: TextAlign.right,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-          Padding(padding: EdgeInsets.only(top: 8.0)),
           !paymentInfo.pending
               ? Container()
               : Container(
                   height: 36.0,
-                  child: ListTile(
-                    title: AutoSizeText(
-                      "Expiration",
-                      style: theme.paymentDetailsTitleStyle,
-                      textAlign: TextAlign.left,
-                      maxLines: 1,
-                    ),
-                    trailing: AutoSizeText(
-                      DateUtils.formatYearMonthDayHourMinute(
-                          DateTime.fromMillisecondsSinceEpoch(paymentInfo.pendingExpirationTimestamp.toInt() * 1000)),
-                      style: theme.paymentDetailsSubtitleStyle,
-                      textAlign: TextAlign.left,
-                      maxFontSize: 13,
-                    ),
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Text(
+                        "Expiration",
+                        style: theme.paymentDetailsTitleStyle,
+                        textAlign: TextAlign.left,
+                        maxLines: 1,
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            DateUtils.formatYearMonthDayHourMinute(
+                                DateTime.fromMillisecondsSinceEpoch(paymentInfo.pendingExpirationTimestamp.toInt() * 1000)),
+                            style: theme.paymentDetailsSubtitleStyle,
+                            textAlign: TextAlign.right,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-          Padding(padding: EdgeInsets.only(top: 8.0)),
           paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
               ? Container()
               : ShareablePaymentRow(title: "Payment Preimage", sharedValue: paymentInfo.preimage),
@@ -139,7 +165,6 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
   );
 }
 
-
 class ShareablePaymentRow extends StatelessWidget {
   final String title;
   final String sharedValue;  
@@ -153,7 +178,7 @@ class ShareablePaymentRow extends StatelessWidget {
     return Theme(
       data: _expansionTileTheme,
       child: ExpansionTile(
-          title: AutoSizeText(
+          title: Text(
             title,
             style: theme.paymentDetailsTitleStyle,
             maxLines: 1,

@@ -22,21 +22,24 @@ class SessionInstructions extends StatelessWidget {
           height: 100.0,           
           color: theme.massageBackgroundColor,
           padding: new EdgeInsets.only(left: 16.0, top: 0.0, right: 16.0, bottom: hasActions ? 0.0 : 0.0),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-            Row(              
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: hasActions ? const EdgeInsets.only(bottom: 36.0) : const EdgeInsets.only(),
-                    child: Center(
-                      child: _child,
+          child: Scrollbar(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: hasActions ? const EdgeInsets.only(bottom: 36.0) : const EdgeInsets.only(),
+                        child: Center(child: _child),
+                      ),
                     ),
-                  ),
-                )
-              ],
-            ),            
-          ]),
+                  ],
+                ),
+              ]),
+            ),
+          ),
         ),
         Positioned(
               bottom: 10.0,
