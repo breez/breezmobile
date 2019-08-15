@@ -21,7 +21,7 @@ class SessionInstructions extends StatelessWidget {
         Container(
           height: 100.0,           
           color: theme.massageBackgroundColor,
-          padding: new EdgeInsets.only(left: 16.0, top: 0.0, right: 16.0, bottom: hasActions ? 0.0 : 0.0),
+          padding: new EdgeInsets.only(left: 16.0, top: 8.0, right: 16.0, bottom: hasActions ? 0.0 : 0.0),
           child: Scrollbar(
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
