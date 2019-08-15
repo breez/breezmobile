@@ -64,12 +64,14 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                       "Amount",
                       style: theme.paymentDetailsTitleStyle,
                       textAlign: TextAlign.left,
+                      maxLines: 1,
                     ),
-                    trailing: Text(
+                    trailing: AutoSizeText(
                       (paymentInfo.type == PaymentType.SENT || paymentInfo.type == PaymentType.WITHDRAWAL ? "-" : "+") +
                           paymentInfo.currency.format(paymentInfo.amount),
                       style: theme.paymentDetailsSubtitleStyle,
                       textAlign: TextAlign.left,
+                      maxFontSize: 13,
                     ),
                   ),
                 ),
@@ -82,12 +84,14 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                       "Date & Time",
                       style: theme.paymentDetailsTitleStyle,
                       textAlign: TextAlign.left,
+                      maxLines: 1,
                     ),
-                    trailing: Text(
+                    trailing: AutoSizeText(
                       DateUtils.formatYearMonthDayHourMinute(
                           DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)),
                       style: theme.paymentDetailsSubtitleStyle,
                       textAlign: TextAlign.left,
+                      maxFontSize: 13,
                     ),
                   ),
                 ),
@@ -101,12 +105,14 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                       "Expiration",
                       style: theme.paymentDetailsTitleStyle,
                       textAlign: TextAlign.left,
+                      maxLines: 1,
                     ),
-                    trailing: Text(
+                    trailing: AutoSizeText(
                       DateUtils.formatYearMonthDayHourMinute(
                           DateTime.fromMillisecondsSinceEpoch(paymentInfo.pendingExpirationTimestamp.toInt() * 1000)),
                       style: theme.paymentDetailsSubtitleStyle,
                       textAlign: TextAlign.left,
+                      maxFontSize: 13,
                     ),
                   ),
                 ),
@@ -145,69 +151,66 @@ class ShareablePaymentRow extends StatelessWidget {
     final _expansionTileTheme = Theme.of(context)
       .copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
     return Theme(
-                  data: _expansionTileTheme,
-                  child: ExpansionTile(
-                      title: Text(
-                        title,
-                        style: theme.paymentDetailsTitleStyle,
-                      ),
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 16.0, right: 0.0),
-                                child: Text('$sharedValue',
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.clip,
-                                    maxLines: 4,
-                                    style: theme.paymentDetailsNodeIdStyle),
-                              ),
+      data: _expansionTileTheme,
+      child: ExpansionTile(
+          title: AutoSizeText(
+            title,
+            style: theme.paymentDetailsTitleStyle,
+            maxLines: 1,
+          ),
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 16.0, right: 0.0),
+                    child: Text('$sharedValue',
+                        textAlign: TextAlign.left, overflow: TextOverflow.clip, maxLines: 4, style: theme.paymentDetailsNodeIdStyle),
+                  ),
+                ),
+                Expanded(
+                  flex: 0,
+                  child: Padding(
+                      padding: EdgeInsets.zero,
+                      child: new Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          IconButton(
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.only(right: 8.0),
+                            tooltip: "Copy $title",
+                            iconSize: 16.0,
+                            color: theme.BreezColors.blue[500],
+                            icon: Icon(
+                              IconData(0xe90b, fontFamily: 'icomoon'),
                             ),
-                            Expanded(
-                              flex: 0,
-                              child: Padding(
-                                  padding: EdgeInsets.zero,
-                                  child: new Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      IconButton(
-                                        alignment: Alignment.centerRight,
-                                        padding: EdgeInsets.only(right: 8.0),
-                                        tooltip: "Copy $title",
-                                        iconSize: 16.0,
-                                        color: theme.BreezColors.blue[500],
-                                        icon: Icon(
-                                          IconData(0xe90b, fontFamily: 'icomoon'),
-                                        ),
-                                        onPressed: () {
-                                          Clipboard.setData(ClipboardData(text: sharedValue));
-                                          Navigator.pop(context);
-                                          Scaffold.of(context).showSnackBar(_buildSnackBar(title));
-                                        },
-                                      ),
-                                      IconButton(
-                                        padding: EdgeInsets.only(right: 8.0),
-                                        tooltip: "Share Transaction Hash",
-                                        iconSize: 16.0,
-                                        color: theme.BreezColors.blue[500],
-                                        icon: Icon(Icons.share),
-                                        onPressed: () {
-                                          ShareExtend.share(sharedValue, "text");
-                                        },
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ],
-                        )
-                      ]),
-                );
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: sharedValue));
+                              Navigator.pop(context);
+                              Scaffold.of(context).showSnackBar(_buildSnackBar(title));
+                            },
+                          ),
+                          IconButton(
+                            padding: EdgeInsets.only(right: 8.0),
+                            tooltip: "Share Transaction Hash",
+                            iconSize: 16.0,
+                            color: theme.BreezColors.blue[500],
+                            icon: Icon(Icons.share),
+                            onPressed: () {
+                              ShareExtend.share(sharedValue, "text");
+                            },
+                          ),
+                        ],
+                      )),
+                ),
+              ],
+            )
+          ]),
+    );
   }
-
 }
 
 _buildSnackBar(String item) {
