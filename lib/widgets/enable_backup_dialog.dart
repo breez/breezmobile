@@ -64,7 +64,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                                 widget.backupBloc.backupSettingsSink.add(
                                     currentSettings.copyWith(promptOnError: !v));
                               }),
-                              Text(
+                          AutoSizeText(
                             "Don't prompt again",
                             style: theme.paymentRequestSubtitleStyle,
                           )
@@ -75,11 +75,11 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                 );
               }),
           actions: [
-            new SimpleDialogOption(
+            new FlatButton(
               onPressed: () => Navigator.pop(widget.context),
               child: new AutoSizeText("LATER", style: theme.buttonStyle),
             ),
-            new SimpleDialogOption(
+            new FlatButton(
               onPressed: (() {
                 Navigator.pop(widget.context);
                 widget.backupBloc.backupNowSink.add(true);
