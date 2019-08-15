@@ -110,8 +110,6 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
           Padding(
             padding: EdgeInsets.only(top: 48.0, left: 16.0, right: 16.0),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 AutoSizeText(
                   "To activate your Breez card,",

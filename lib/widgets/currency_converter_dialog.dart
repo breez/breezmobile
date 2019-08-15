@@ -144,12 +144,15 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                         items: account.fiatConversionList.map((FiatConversion value) {
                           return new DropdownMenuItem<String>(
                             value: value.currencyData.shortName,
-                            child: AutoSizeText(
-                              value.currencyData.shortName,
-                              textAlign: TextAlign.left,
-                              style: theme.alertTitleStyle,
-                              maxLines: 1,
-                              group: _autoSizeGroup,
+                            child: SizedBox(
+                              width: 32.0,
+                              child: AutoSizeText(
+                                value.currencyData.shortName,
+                                textAlign: TextAlign.left,
+                                style: theme.alertTitleStyle,
+                                maxLines: 1,
+                                group: _autoSizeGroup,
+                              ),
                             ),
                           );
                         }).toList(),

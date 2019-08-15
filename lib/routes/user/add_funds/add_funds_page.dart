@@ -201,7 +201,7 @@ class AddFundsState extends State<AddFundsPage> {
               Expanded(
                 flex: 0,
                 child: Padding(
-                  padding: EdgeInsets.only(right: 16.0),
+                  padding: EdgeInsets.only(right: 8.0),
                   child: AutoSizeText(
                     'REDEEM FASTBITCOINS VOUCHER',
                     style: theme.fastbitcoinsTextStyle,
