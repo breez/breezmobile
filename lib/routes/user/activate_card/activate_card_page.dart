@@ -1,19 +1,21 @@
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'dart:async';
+
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/injector.dart';
-import 'package:flutter/services.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingObserver {
   final String _title = "Activate Card";
-  final String _instructions = "To activate your Breez card,\nhold it close to your mobile device";
-
+  final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+  
   static ServiceInjector injector = new ServiceInjector();
   NFCService nfc = injector.nfc;
 
@@ -106,11 +108,26 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
         fit: StackFit.expand,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(top: 48.0),
-            child: new Text(
-              _instructions,
-              textAlign: TextAlign.center,
-              style: theme.textStyle,
+            padding: EdgeInsets.only(top: 48.0, left: 16.0, right: 16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                AutoSizeText(
+                  "To activate your Breez card,",
+                  textAlign: TextAlign.center,
+                  style: theme.textStyle,
+                  maxLines: 1,
+                  group: _autoSizeGroup,
+                ),
+                AutoSizeText(
+                  "hold it close to your mobile device",
+                  textAlign: TextAlign.center,
+                  style: theme.textStyle,
+                  maxLines: 1,
+                  group: _autoSizeGroup,
+                )
+              ],
             ),
           ),
           Positioned.fill(
