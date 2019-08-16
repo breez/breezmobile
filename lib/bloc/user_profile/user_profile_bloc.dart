@@ -135,6 +135,7 @@ class UserProfileBloc {
       if (user.securityModel.requiresPin) {
         pinCode = await _secureStorage.read(key: 'pinCode');
       }
+      log.info("reading pincode from keychain $pinCode");
       user = user.copyWith(securityModel: user.securityModel.copyWith(pinCode: pinCode), locked: user.securityModel.requiresPin);      
       await _breezLib.setPinCode(user.securityModel.secureBackupWithPin ? user.securityModel.pinCode : null);
 
