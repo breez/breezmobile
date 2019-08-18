@@ -29,7 +29,6 @@
 - [x] BTC, Bit & Satoshi units
 - [x] Random avatars
 - [x] Connect to Pay: simple interface to execute payments between users
-- [x] POS interface
 - [x] Pay someone nearby: pay to another Breez user using NFC
 - [x] NFC card support: activate an NFC card to be used by POS
 - [x] A full lncli interface to query and execute ln commands
@@ -55,12 +54,15 @@
 - [x] Add webLN support
 - [x] Fiat units
 - [x] Optional PIN
-- [x] Add encryption to cloud backup
+- [ ] Add stronger encryption to cloud backup
 - [ ] iCloud backup option
-- [ ] Use static card IDs
-- [ ] NFC card deactivation
 - [ ] Adding funds via credit card
-- [ ] Simplify P2P payments
+- [ ] Support 3rd-party LSPs
+- [ ] Support SD storage
+- [ ] NFC device support
+- [ ] POS POC release
+- [ ] Save C2P contacts
+- [ ] NFC card support
 - [ ] Support zero-conf 
 
 ## System Requirements
