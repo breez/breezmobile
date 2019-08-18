@@ -18,6 +18,8 @@ class EnableBackupDialog extends StatefulWidget {
 }
 
 class EnableBackupDialogState extends State<EnableBackupDialog> {
+  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+  AutoSizeGroup _autoSizeActionBtnGroup = AutoSizeGroup();
   @override
   Widget build(BuildContext context) {
     return createEnableBackupDialog();
@@ -47,9 +49,10 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(left: 15.0, right: 12.0),
-                      child: new Text(
+                      child: new AutoSizeText(
                         "If you want to be able to restore your funds in case this mobile device or this app are no longer available (e.g. lost or stolen device or app uninstall), you are required to backup your information.",
                         style: theme.paymentRequestSubtitleStyle,
+                        group: _autoSizeGroup,
                       ),
                     ),
                     Padding(
@@ -64,7 +67,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                                 widget.backupBloc.backupSettingsSink.add(
                                     currentSettings.copyWith(promptOnError: !v));
                               }),
-                          Expanded(child: AutoSizeText("Don't prompt again", style: theme.paymentRequestSubtitleStyle, maxLines: 1,))
+                          Expanded(child: AutoSizeText("Don't prompt again", style: theme.paymentRequestSubtitleStyle, maxLines: 1, group: _autoSizeGroup,))
                         ],
                       ),
                     ),                    
@@ -72,16 +75,26 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                 );
               }),
           actions: [
-            new FlatButton(
-                onPressed: () => Navigator.pop(widget.context),
-                child: Text("LATER", style: theme.buttonStyle,)
+            FlatButton(
+              onPressed: () => Navigator.pop(widget.context),
+              child: AutoSizeText(
+                "LATER",
+                style: theme.buttonStyle,
+                maxLines: 1,
+                group: _autoSizeActionBtnGroup,
+              ),
             ),
-            new FlatButton(
-                onPressed: (() {
-                  Navigator.pop(widget.context);
-                  widget.backupBloc.backupNowSink.add(true);
-                }),
-                child: Text("BACKUP NOW", style: theme.buttonStyle,)
+            FlatButton(
+              onPressed: (() {
+                Navigator.pop(widget.context);
+                widget.backupBloc.backupNowSink.add(true);
+              }),
+              child: AutoSizeText(
+                "BACKUP NOW",
+                style: theme.buttonStyle,
+                maxLines: 1,
+                group: _autoSizeActionBtnGroup,
+              ),
             ),
           ],
           shape: RoundedRectangleBorder(
