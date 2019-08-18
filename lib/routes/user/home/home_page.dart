@@ -180,7 +180,9 @@ class HomeState extends State<Home> {
       new DrawerItemConfig("/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png", onItemSelected: (String name) async {
         try {
           String decodedQr = await BarcodeScanner.scan();
-          widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
+          (decodedQr.toLowerCase().startsWith("ln") || decodedQr.toLowerCase().startsWith("lightning:"))
+              ? widget.invoiceBloc.decodeInvoiceSink.add(decodedQr)
+              : showFlushbar(context, message: "Lightning Invoice wasn’t detected.");
         } on PlatformException catch (e) {
           if (e.code == BarcodeScanner.CameraAccessDenied) {
             Navigator.of(context).push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc)));

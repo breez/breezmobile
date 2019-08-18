@@ -1,7 +1,11 @@
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/barcode_scanner_placeholder.dart';
+import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InvoiceBottomSheet extends StatefulWidget {
   final InvoiceBloc invoiceBloc;
@@ -38,8 +42,16 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                 });
               }, isFirst: true),
               _buildInvoiceMenuItem("PAY", "src/icon/qr_scan.png", () async {
-                String decodedQr = await BarcodeScanner.scan();
-                widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
+                try {
+                  String decodedQr = await BarcodeScanner.scan();
+                  (decodedQr.toLowerCase().startsWith("ln") || decodedQr.toLowerCase().startsWith("lightning:"))
+                      ? widget.invoiceBloc.decodeInvoiceSink.add(decodedQr)
+                      : showFlushbar(context, message: "Lightning Invoice wasn’t detected.");
+                } on PlatformException catch (e) {
+                  if (e.code == BarcodeScanner.CameraAccessDenied) {
+                    Navigator.of(context).push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc)));
+                  }
+                }
               }),
               _buildInvoiceMenuItem("CREATE", "src/icon/paste.png", () => Navigator.of(context).pushNamed('/create_invoice')),
             ]));
