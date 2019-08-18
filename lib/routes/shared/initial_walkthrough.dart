@@ -200,27 +200,25 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                     ),
                   ),
                   new Expanded(flex: 79, child: new Container()),
-                  new Container(
-                      height: 48.0,
-                      width: 168.0,
-                      child: new RaisedButton(
-                          child: new Text("LET'S BREEZ!",
-                              style: theme.buttonStyle),
-                          color: theme.whiteColor,
-                          elevation: 0.0,
-                          shape: const StadiumBorder(),
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  return BetaWarningDialog();
-                                }).then((approved) {
-                              if (approved) {
-                                _proceedToRegister();
-                              }
-                            });
-                          })),
+                  RaisedButton(
+                    padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+                    child: Text("LET'S BREEZ!", style: theme.buttonStyle),
+                    color: theme.whiteColor,
+                    elevation: 0.0,
+                    shape: const StadiumBorder(),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return BetaWarningDialog();
+                          }).then((approved) {
+                        if (approved) {
+                          _proceedToRegister();
+                        }
+                      });
+                    },
+                  ),
                   new Expanded(
                     flex: 40,
                     child: new Padding(

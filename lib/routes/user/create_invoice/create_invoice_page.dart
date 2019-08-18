@@ -87,8 +87,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                     }
                     var account = snapshot.data;
                     return RaisedButton(
-                      padding: EdgeInsets.only(
-                          top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
                       child: new Text(
                         "CREATE",
                         style: theme.buttonStyle,
