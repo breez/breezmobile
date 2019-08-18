@@ -82,6 +82,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                           color: isFirst ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white,
                         ),
                         maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     )
                   ]),

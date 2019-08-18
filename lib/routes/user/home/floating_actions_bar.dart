@@ -59,7 +59,7 @@ class FloatingActionsBar extends StatelessWidget {
                             )
                           : Icon(Icons.add),
                       Padding(padding: EdgeInsets.only(left: 8.0)),
-                      Expanded(child: AutoSizeText(hasBalance ? "CONNECT TO PAY" : "ADD FUNDS", style: theme.addFundsBtnStyle, maxLines: 1,))
+                      Expanded(child: AutoSizeText(hasBalance ? "CONNECT TO PAY" : "ADD FUNDS", style: theme.addFundsBtnStyle, maxLines: 1, overflow: TextOverflow.ellipsis),)
                     ],
             ),
           )),
