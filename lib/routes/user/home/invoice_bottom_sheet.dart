@@ -44,9 +44,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
               _buildInvoiceMenuItem("PAY", "src/icon/qr_scan.png", () async {
                 try {
                   String decodedQr = await BarcodeScanner.scan();
-                  (decodedQr.toLowerCase().startsWith("ln") || decodedQr.toLowerCase().startsWith("lightning:"))
-                      ? widget.invoiceBloc.decodeInvoiceSink.add(decodedQr)
-                      : showFlushbar(context, message: "Lightning Invoice wasn’t detected.");
+                  widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
                 } on PlatformException catch (e) {
                   if (e.code == BarcodeScanner.CameraAccessDenied) {
                     Navigator.of(context).push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc)));

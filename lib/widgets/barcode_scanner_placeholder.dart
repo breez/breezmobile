@@ -30,12 +30,8 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
             onTap: () {
               Clipboard.getData("text/plain").then((clipboardData) {
                 if (clipboardData != null) {
+                  widget.invoiceBloc.decodeInvoiceSink.add(clipboardData.text);
                   Navigator.pop(context);
-                  if (clipboardData.text.toLowerCase().startsWith("ln") || clipboardData.text.toLowerCase().startsWith("lightning:")) {
-                    widget.invoiceBloc.decodeInvoiceSink.add(clipboardData.text);
-                  } else {
-                    showFlushbar(context, message: "Lightning Invoice wasn’t detected.");
-                  }
                 }
               });
             },
