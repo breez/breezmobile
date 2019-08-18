@@ -135,10 +135,9 @@ class SecurityPageState extends State<SecurityPage> {
           items: SecurityModel.lockIntervals.map((int seconds) {
             return new DropdownMenuItem(
               value: seconds,
-              child: SizedBox(width: 84,child: AutoSizeText(
+              child: Container(child: AutoSizeText(
                 _formatSeconds(seconds),
                 style: theme.FieldTextStyle.textStyle,
-                group: _autoSizeGroup,
                 maxLines: 1,
               ),),
             );
