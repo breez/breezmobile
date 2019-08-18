@@ -11,6 +11,8 @@ class LostCardDialog extends StatelessWidget {
 
   LostCardDialog({this.context});
 
+  final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+
   @override
   Widget build(BuildContext context) {
     return showLostCardDialog();
@@ -34,26 +36,27 @@ class LostCardDialog extends StatelessWidget {
         );
                   
     return new AlertDialog(
-      title: new Text(
+      title: new AutoSizeText(
         "Lost or Stolen Card",
         style: theme.alertTitleStyle,
+        maxLines: 1,
       ),
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
-      content: new Text(
+      content: AutoSizeText(
           "If your card has been lost or stolen, you should deactivate it now to prevent it from being used by others. Deactivate means you won't be able to use any of your existing cards until you re-activate them.",
           style: theme.alertStyle),
       contentPadding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 8.0),
       actions: <Widget>[
         new FlatButton(
           onPressed: () => Navigator.pop(context),
-          child: new Text("CANCEL", style: theme.buttonStyle),
+          child: new AutoSizeText("CANCEL", style: theme.buttonStyle, group: _autoSizeGroup,),
         ),
         new FlatButton(
           onPressed: (() {
             Navigator.pop(context);
             _lostCardFlush.show(context);
           }),
-          child: new Text("DEACTIVATE", style: theme.buttonStyle),
+          child: new AutoSizeText("DEACTIVATE", style: theme.buttonStyle, group: _autoSizeGroup,),
         ),
       ],
       shape: RoundedRectangleBorder(
