@@ -183,6 +183,7 @@ class AddFundsState extends State<AddFundsPage> {
         onTap: () => Navigator.of(context).pushNamed("/fastbitcoins"),
         child: Container(
           height: 48,
+          width: 256,
           decoration: BoxDecoration(
               color: theme.fastbitcoins.iconBgColor,
               border: Border.all(
@@ -201,14 +202,16 @@ class AddFundsState extends State<AddFundsPage> {
                   color: theme.fastbitcoins.iconFgColor,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(right: 8.0),
-                child: AutoSizeText(
-                  'REDEEM FASTBITCOINS VOUCHER',
-                  style: theme.fastbitcoinsTextStyle,
-                  maxLines: 1,
-                  minFontSize: MinFontSize(context, fontSize: theme.fastbitcoinsTextStyle.fontSize).minFontSize,
-                  stepGranularity: 0.1,
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: 8.0),
+                  child: AutoSizeText(
+                    'REDEEM FASTBITCOINS VOUCHER',
+                    style: theme.fastbitcoinsTextStyle,
+                    maxLines: 1,
+                    minFontSize: MinFontSize(context, fontSize: theme.fastbitcoinsTextStyle.fontSize).minFontSize,
+                    stepGranularity: 0.1,
+                  ),
                 ),
               )
             ],
