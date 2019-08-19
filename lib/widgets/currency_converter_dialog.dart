@@ -148,6 +148,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                           return new DropdownMenuItem<String>(
                             value: value.currencyData.shortName,
                             child: Container(
+                              width: 36,
                               child: AutoSizeText(
                                 value.currencyData.shortName,
                                 textAlign: TextAlign.left,
