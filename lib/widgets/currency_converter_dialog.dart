@@ -121,50 +121,54 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                 brightness: Brightness.light,
                 canvasColor: theme.BreezColors.white[500],
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Expanded(
-                    child: Padding(
-                      child: AutoSizeText(
-                        "Enter amount in",
-                        style: theme.alertTitleStyle,
-                        maxLines: 1,
-                        minFontSize: MinFontSize(context).minFontSize,
-                        stepGranularity: 0.1,
-                        group: _autoSizeGroup,
+              child: Container(                                
+                width: MediaQuery.of(context).size.width,
+                height: 50.0,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        child: AutoSizeText(
+                          "Enter amount in",
+                          style: theme.alertTitleStyle,
+                          maxLines: 1,
+                          minFontSize: MinFontSize(context).minFontSize,
+                          stepGranularity: 0.1,
+                          group: _autoSizeGroup,
+                        ),
+                        padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
                       ),
-                      padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
                     ),
-                  ),
-                  new DropdownButtonHideUnderline(
-                    child: ButtonTheme(
-                      alignedDropdown: true,
-                      child: new DropdownButton(
-                        onChanged: (value) => _selectFiatCurrency(account, value),
-                        value: account.fiatCurrency.currencyData.shortName,
-                        style: theme.alertTitleStyle,
-                        items: account.fiatConversionList.map((FiatConversion value) {
-                          return new DropdownMenuItem<String>(
-                            value: value.currencyData.shortName,
-                            child: Container(
-                              width: 36,
-                              child: AutoSizeText(
-                                value.currencyData.shortName,
-                                textAlign: TextAlign.left,
-                                style: theme.alertTitleStyle,
-                                maxLines: 1,
-                                minFontSize: MinFontSize(context).minFontSize,
-                                stepGranularity: 0.1,
-                                group: _autoSizeGroup,
+                    new DropdownButtonHideUnderline(
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: new DropdownButton(
+                          onChanged: (value) => _selectFiatCurrency(account, value),
+                          value: account.fiatCurrency.currencyData.shortName,
+                          style: theme.alertTitleStyle,
+                          items: account.fiatConversionList.map((FiatConversion value) {
+                            return new DropdownMenuItem<String>(
+                              value: value.currencyData.shortName,
+                              child: Container(
+                                width: 36,
+                                child: AutoSizeText(
+                                  value.currencyData.shortName,
+                                  textAlign: TextAlign.left,
+                                  style: theme.alertTitleStyle,
+                                  maxLines: 1,
+                                  minFontSize: MinFontSize(context).minFontSize,
+                                  stepGranularity: 0.1,
+                                  group: _autoSizeGroup,
+                                ),
                               ),
-                            ),
-                          );
-                        }).toList(),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             titlePadding: EdgeInsets.fromLTRB(24.0, 16.0, 16.0, 8.0),
