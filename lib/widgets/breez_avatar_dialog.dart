@@ -52,48 +52,52 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
           color: theme.BreezColors.blue[900],
         ),
       ),
-      new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: FlatButton(
-              padding: EdgeInsets.only(bottom: 20.0, top: 26.0,),
-              child: new AutoSizeText('RANDOM', style: theme.whiteButtonStyle, maxLines: 1, minFontSize: MinFontSize(context).minFontSize, stepGranularity: 0.1,),
-              onPressed: () {
-                userBloc.randomizeSink.add(null);
-                FocusScope.of(context).requestFocus(new FocusNode());
-              },
-            ),
-          ),
-          StreamBuilder<BreezUserModel>(
-              stream: userBloc.userPreviewStream,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Container();
-                } else {
-                  return Padding(
-                    child: BreezAvatar(snapshot.data.avatarURL, radius: 44.0),
-                    padding: EdgeInsets.only(top: 26.0),
-                  );
-                }
-              }),
-          Expanded(
-            child: FlatButton(
-              padding: EdgeInsets.only(bottom: 20.0, top: 26.0,),
-              child: new AutoSizeText(
-                'GALLERY',
-                style: theme.whiteButtonStyle,
-                maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
+      Container(
+        width: MediaQuery.of(context).size.width,
+        height: 100.0,
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: FlatButton(
+                padding: EdgeInsets.only(bottom: 20.0, top: 26.0,),
+                child: new AutoSizeText('RANDOM', style: theme.whiteButtonStyle, maxLines: 1, minFontSize: MinFontSize(context).minFontSize, stepGranularity: 0.1,),
+                onPressed: () {
+                  userBloc.randomizeSink.add(null);
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                },
               ),
-              onPressed: () {
-                _pickImage(context);
-              },
             ),
-          ),
-        ],
+            StreamBuilder<BreezUserModel>(
+                stream: userBloc.userPreviewStream,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container();
+                  } else {
+                    return Padding(
+                      child: BreezAvatar(snapshot.data.avatarURL, radius: 44.0),
+                      padding: EdgeInsets.only(top: 26.0),
+                    );
+                  }
+                }),
+            Expanded(
+              child: FlatButton(
+                padding: EdgeInsets.only(bottom: 20.0, top: 26.0,),
+                child: new AutoSizeText(
+                  'GALLERY',
+                  style: theme.whiteButtonStyle,
+                  maxLines: 1,
+                  minFontSize: MinFontSize(context).minFontSize,
+                  stepGranularity: 0.1,
+                ),
+                onPressed: () {
+                  _pickImage(context);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     ]),
     content: new SingleChildScrollView(
