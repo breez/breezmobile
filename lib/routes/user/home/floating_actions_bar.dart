@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +60,15 @@ class FloatingActionsBar extends StatelessWidget {
                             )
                           : Icon(Icons.add),
                       Padding(padding: EdgeInsets.only(left: 8.0)),
-                      Expanded(child: AutoSizeText(hasBalance ? "CONNECT TO PAY" : "ADD FUNDS", style: theme.addFundsBtnStyle, maxLines: 1, overflow: TextOverflow.ellipsis),)
+                      Expanded(
+                        child: AutoSizeText(
+                          hasBalance ? "CONNECT TO PAY" : "ADD FUNDS",
+                          style: theme.addFundsBtnStyle,
+                          maxLines: 1,
+                          minFontSize: MinFontSize(context).minFontSize,
+                          stepGranularity: 0.1,
+                        ),
+                      )
                     ],
             ),
           )),

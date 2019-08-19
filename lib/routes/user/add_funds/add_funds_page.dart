@@ -8,6 +8,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/user/add_funds/address_widget.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
@@ -167,6 +168,8 @@ class AddFundsState extends State<AddFundsPage> {
                       "\nBreez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount)} in your balance.",
                   style: theme.warningStyle,
                   textAlign: TextAlign.center,
+                  minFontSize: MinFontSize(context).minFontSize,
+                  stepGranularity: 0.1,
                 ),
               ),
             ),
@@ -206,6 +209,8 @@ class AddFundsState extends State<AddFundsPage> {
                     'REDEEM FASTBITCOINS VOUCHER',
                     style: theme.fastbitcoinsTextStyle,
                     maxLines: 1,
+                    minFontSize: MinFontSize(context).minFontSize,
+                    stepGranularity: 0.1,
                   ),
                 ),
               )

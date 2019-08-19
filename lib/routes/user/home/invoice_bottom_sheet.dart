@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/material.dart';
 
 class InvoiceBottomSheet extends StatefulWidget {
@@ -48,7 +49,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
 
   Widget _buildInvoiceMenuItem(String title, String iconPath, Function function, {bool isFirst = false}) {
     return AnimatedContainer(
-      width: widget.isSmallView ? 56.0 : 136.0,
+      width: widget.isSmallView ? 56.0 : 126.0,
       height: isFirst ? 50.0 : 56.0,
       duration: Duration(milliseconds: 150),
       child: RaisedButton(
@@ -82,7 +83,8 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                           color: isFirst ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white,
                         ),
                         maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        minFontSize: MinFontSize(context).minFontSize,
+                        stepGranularity: 0.1,
                       ),
                     )
                   ]),

@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:breez/utils/min_font_size.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -59,7 +59,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
           Expanded(
             child: FlatButton(
               padding: EdgeInsets.only(bottom: 20.0, top: 26.0, left: 4, right: 4),
-              child: new AutoSizeText('RANDOM', style: theme.whiteButtonStyle, maxLines: 1),
+              child: new AutoSizeText('RANDOM', style: theme.whiteButtonStyle, maxLines: 1, minFontSize: MinFontSize(context).minFontSize, stepGranularity: 0.1,),
               onPressed: () {
                 userBloc.randomizeSink.add(null);
                 FocusScope.of(context).requestFocus(new FocusNode());
@@ -85,6 +85,8 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                 'GALLERY',
                 style: theme.whiteButtonStyle,
                 maxLines: 1,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
               ),
               onPressed: () {
                 _pickImage(context);

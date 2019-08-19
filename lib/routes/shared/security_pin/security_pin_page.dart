@@ -7,6 +7,7 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
 import 'package:breez/routes/shared/security_pin/security_pin_warning_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/route.dart';
@@ -88,6 +89,8 @@ class SecurityPageState extends State<SecurityPage> {
           "Use in Backup/Restore",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
           group: _autoSizeGroup,
         ),
       ),
@@ -122,6 +125,8 @@ class SecurityPageState extends State<SecurityPage> {
           "Lock Automatically",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
           group: _autoSizeGroup,
         ),
       ),
@@ -135,11 +140,15 @@ class SecurityPageState extends State<SecurityPage> {
           items: SecurityModel.lockIntervals.map((int seconds) {
             return new DropdownMenuItem(
               value: seconds,
-              child: Container(child: AutoSizeText(
-                _formatSeconds(seconds),
-                style: theme.FieldTextStyle.textStyle,
-                maxLines: 1,
-              ),),
+              child: Container(
+                child: AutoSizeText(
+                  _formatSeconds(seconds),
+                  style: theme.FieldTextStyle.textStyle,
+                  maxLines: 1,
+                  minFontSize: MinFontSize(context).minFontSize,
+                  stepGranularity: 0.1,
+                ),
+              ),
             );
           }).toList(),
         ),
@@ -162,6 +171,8 @@ class SecurityPageState extends State<SecurityPage> {
           "Change PIN",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
           group: _autoSizeGroup,
         ),
       ),
@@ -177,6 +188,8 @@ class SecurityPageState extends State<SecurityPage> {
           securityModel.pinCode != null ? "Activate PIN" : "Create PIN",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
           group: securityModel.pinCode != null ? _autoSizeGroup : null,
         ),
       ),

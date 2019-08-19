@@ -6,6 +6,7 @@ import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -129,6 +130,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                         "Enter amount in",
                         style: theme.alertTitleStyle,
                         maxLines: 1,
+                        minFontSize: MinFontSize(context).minFontSize,
+                        stepGranularity: 0.1,
                         group: _autoSizeGroup,
                       ),
                       padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
@@ -144,13 +147,14 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                         items: account.fiatConversionList.map((FiatConversion value) {
                           return new DropdownMenuItem<String>(
                             value: value.currencyData.shortName,
-                            child: SizedBox(
-                              width: 32.0,
+                            child: Container(
                               child: AutoSizeText(
                                 value.currencyData.shortName,
                                 textAlign: TextAlign.left,
                                 style: theme.alertTitleStyle,
                                 maxLines: 1,
+                                minFontSize: MinFontSize(context).minFontSize,
+                                stepGranularity: 0.1,
                                 group: _autoSizeGroup,
                               ),
                             ),
