@@ -16,6 +16,7 @@ class InvoiceBottomSheet extends StatefulWidget {
 }
 
 class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProviderStateMixin {
+  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   bool isExpanded;
 
   @override
@@ -85,6 +86,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                         maxLines: 1,
                         minFontSize: MinFontSize(context).minFontSize,
                         stepGranularity: 0.1,
+                        group: _autoSizeGroup,
                       ),
                     )
                   ]),
