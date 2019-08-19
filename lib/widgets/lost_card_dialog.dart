@@ -36,15 +36,19 @@ class LostCardDialog extends StatelessWidget {
         );
                   
     return new AlertDialog(
-      title: new AutoSizeText(
-        "Lost or Stolen Card",
-        style: theme.alertTitleStyle,
-        maxLines: 1,
-      ),
+      title:        
+        new Text(
+          "Lost or Stolen Card",
+          style: theme.alertTitleStyle,
+          maxLines: 2,
+        ),      
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
-      content: AutoSizeText(
-          "If your card has been lost or stolen, you should deactivate it now to prevent it from being used by others. Deactivate means you won't be able to use any of your existing cards until you re-activate them.",
-          style: theme.alertStyle),
+      content: Container(
+        width: MediaQuery.of(context).size.width,
+        child: AutoSizeText(
+            "If your card has been lost or stolen, you should deactivate it now to prevent it from being used by others. Deactivate means you won't be able to use any of your existing cards until you re-activate them.",
+            style: theme.alertStyle),
+      ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 8.0),
       actions: <Widget>[
         FlatButton(
