@@ -57,9 +57,8 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(
-            flex: 0,
             child: FlatButton(
-              padding: EdgeInsets.only(bottom: 20.0, top: 26.0, left: 4, right: 4),
+              padding: EdgeInsets.only(bottom: 20.0, top: 26.0,),
               child: new AutoSizeText('RANDOM', style: theme.whiteButtonStyle, maxLines: 1, minFontSize: MinFontSize(context).minFontSize, stepGranularity: 0.1,),
               onPressed: () {
                 userBloc.randomizeSink.add(null);
@@ -80,9 +79,8 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                 }
               }),
           Expanded(
-            flex: 0,
             child: FlatButton(
-              padding: EdgeInsets.only(bottom: 20.0, top: 26.0, left: 4, right: 4),
+              padding: EdgeInsets.only(bottom: 20.0, top: 26.0,),
               child: new AutoSizeText(
                 'GALLERY',
                 style: theme.whiteButtonStyle,
