@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'package:breez/utils/min_font_size.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as DartImage;
@@ -14,6 +15,7 @@ int scaledWidth = 200;
 var _transparentImage = DartImage.Image(scaledWidth, scaledWidth);
 
 Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
+  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   BreezUserModel _currentSettings;
 
   final _nameInputController = TextEditingController();
@@ -62,7 +64,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
             Expanded(
               child: FlatButton(
                 padding: EdgeInsets.only(bottom: 20.0, top: 26.0,),
-                child: new AutoSizeText('RANDOM', style: theme.whiteButtonStyle, maxLines: 1, minFontSize: MinFontSize(context).minFontSize, stepGranularity: 0.1,),
+                child: new AutoSizeText('RANDOM', style: theme.whiteButtonStyle, maxLines: 1, minFontSize: MinFontSize(context).minFontSize, stepGranularity: 0.1, group: _autoSizeGroup,),
                 onPressed: () {
                   userBloc.randomizeSink.add(null);
                   FocusScope.of(context).requestFocus(new FocusNode());
@@ -90,6 +92,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                   maxLines: 1,
                   minFontSize: MinFontSize(context).minFontSize,
                   stepGranularity: 0.1,
+                  group: _autoSizeGroup,
                 ),
                 onPressed: () {
                   _pickImage(context);
