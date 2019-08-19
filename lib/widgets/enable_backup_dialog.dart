@@ -44,45 +44,48 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                 if (!snapshot.hasData) {
                   return Container();
                 }
-                return Column(
-                  mainAxisSize: MainAxisSize.min,                  
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 12.0),
-                      child: new AutoSizeText(
-                        "If you want to be able to restore your funds in case this mobile device or this app are no longer available (e.g. lost or stolen device or app uninstall), you are required to backup your information.",
-                        style: theme.paymentRequestSubtitleStyle,
-                        minFontSize: MinFontSize(context).minFontSize,
-                        stepGranularity: 0.1,
-                        group: _autoSizeGroup,
+                return Container(
+                  width: MediaQuery.of(context).size.width,                  
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,                  
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 12.0),
+                        child: new AutoSizeText(
+                          "If you want to be able to restore your funds in case this mobile device or this app are no longer available (e.g. lost or stolen device or app uninstall), you are required to backup your information.",
+                          style: theme.paymentRequestSubtitleStyle,
+                          minFontSize: MinFontSize(context).minFontSize,
+                          stepGranularity: 0.1,
+                          group: _autoSizeGroup,
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Row(
-                        children: <Widget>[
-                          Checkbox(                            
-                              activeColor: theme.BreezColors.blue[500],
-                              value: !snapshot.data.promptOnError,
-                              onChanged: (v) {
-                                var currentSettings = snapshot.data;
-                                widget.backupBloc.backupSettingsSink.add(
-                                    currentSettings.copyWith(promptOnError: !v));
-                              }),
-                          Expanded(
-                              child: AutoSizeText(
-                            "Don't prompt again",
-                            style: theme.paymentRequestSubtitleStyle,
-                            maxLines: 1,
-                            minFontSize: MinFontSize(context).minFontSize,
-                            stepGranularity: 0.1,
-                            group: _autoSizeGroup,
-                          ))
-                        ],
-                      ),
-                    ),                    
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Row(
+                          children: <Widget>[
+                            Checkbox(                            
+                                activeColor: theme.BreezColors.blue[500],
+                                value: !snapshot.data.promptOnError,
+                                onChanged: (v) {
+                                  var currentSettings = snapshot.data;
+                                  widget.backupBloc.backupSettingsSink.add(
+                                      currentSettings.copyWith(promptOnError: !v));
+                                }),
+                            Expanded(
+                                child: AutoSizeText(
+                              "Don't prompt again",
+                              style: theme.paymentRequestSubtitleStyle,
+                              maxLines: 1,
+                              minFontSize: MinFontSize(context).minFontSize,
+                              stepGranularity: 0.1,
+                              group: _autoSizeGroup,
+                            ))
+                          ],
+                        ),
+                      ),                    
+                    ],
+                  ),
                 );
               }),
           actions: [
