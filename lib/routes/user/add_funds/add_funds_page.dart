@@ -190,10 +190,10 @@ class AddFundsState extends State<AddFundsPage> {
               borderRadius: BorderRadius.circular(14.0)),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(left:16.0, right: 4.0),
+                padding: EdgeInsets.only(left: 8.0, right: 4.0),
                 child: Image(
                   image: AssetImage("src/icon/vendors/fastbitcoins_logo.png"),
                   height: 24.0,
@@ -201,16 +201,14 @@ class AddFundsState extends State<AddFundsPage> {
                   color: theme.fastbitcoins.iconFgColor,
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(right: 8.0),
-                  child: AutoSizeText(
-                    'REDEEM FASTBITCOINS VOUCHER',
-                    style: theme.fastbitcoinsTextStyle,
-                    maxLines: 1,
-                    minFontSize: MinFontSize(context).minFontSize,
-                    stepGranularity: 0.1,
-                  ),
+              Padding(
+                padding: EdgeInsets.only(right: 8.0),
+                child: AutoSizeText(
+                  'REDEEM FASTBITCOINS VOUCHER',
+                  style: theme.fastbitcoinsTextStyle,
+                  maxLines: 1,
+                  minFontSize: theme.fastbitcoinsTextStyle.fontSize,
+                  stepGranularity: 0.1,
                 ),
               )
             ],
