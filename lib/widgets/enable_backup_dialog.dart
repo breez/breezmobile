@@ -86,40 +86,24 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                 );
               }),
           actions: [
-            Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 0,
-                  child: FlatButton(
-                    onPressed: () => Navigator.pop(widget.context),
-                    child: AutoSizeText(
-                      "LATER",
-                      style: theme.buttonStyle,
-                      maxLines: 1,
-                      minFontSize: MinFontSize(context).minFontSize,
-                      stepGranularity: 0.1,
-                      group: _autoSizeActionBtnGroup,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 0,
-                  child: FlatButton(
-                    onPressed: (() {
-                      Navigator.pop(widget.context);
-                      widget.backupBloc.backupNowSink.add(true);
-                    }),
-                    child: AutoSizeText(
-                      "BACKUP NOW",
-                      style: theme.buttonStyle,
-                      maxLines: 1,
-                      minFontSize: MinFontSize(context).minFontSize,
-                      stepGranularity: 0.1,
-                      group: _autoSizeActionBtnGroup,
-                    ),
-                  ),
-                ),
-              ],
+            FlatButton(
+              onPressed: () => Navigator.pop(widget.context),
+              child: Text(
+                "LATER",
+                style: theme.buttonStyle,
+                maxLines: 1,
+              ),
+            ),
+            FlatButton(
+              onPressed: (() {
+                Navigator.pop(widget.context);
+                widget.backupBloc.backupNowSink.add(true);
+              }),
+              child: Text(
+                "BACKUP NOW",
+                style: theme.buttonStyle,
+                maxLines: 1,
+              ),
             ),
           ],
           shape: RoundedRectangleBorder(
