@@ -207,7 +207,7 @@ class AddFundsState extends State<AddFundsPage> {
                   'REDEEM FASTBITCOINS VOUCHER',
                   style: theme.fastbitcoinsTextStyle,
                   maxLines: 1,
-                  minFontSize: theme.fastbitcoinsTextStyle.fontSize,
+                  minFontSize: MinFontSize(context, fontSize: theme.fastbitcoinsTextStyle.fontSize).minFontSize,
                   stepGranularity: 0.1,
                 ),
               )
