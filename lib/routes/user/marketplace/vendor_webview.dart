@@ -104,8 +104,37 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
           }
         });
       } else {
-        _widgetWebview.onUrlChanged.listen((String url) {
-          if (url == Uri.decodeFull(widget.redirectURL)) Navigator.of(context).pop();
+        String loadedURL;
+        _widgetWebview.onStateChanged.listen((state) async {
+          if (state.type == WebViewState.finishLoad && loadedURL != state.url) {
+            loadedURL = state.url;
+            var script = "function getParameterByName(name) {    \n" +
+                "    name = name.replace(/[\\[\\]]/g, '\\\\\$&');\n" +
+                "    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|\$)'),\n" +
+                "        results = regex.exec(window.location.href);\n" +
+                "    if (!results) return null;\n" +
+                "    if (!results[2]) return '';\n" +
+                "    return decodeURIComponent(results[2].replace(/\\+/g, ' '));\n" +
+                "}\n" +
+                "\n" +
+                "var alertInterval = setInterval(function () {\n" +
+                "    if (document.URL.indexOf(\"${widget.redirectURL}\") >= 0 && getParameterByName('transactionId') != null) {\n" +
+                "        window.postMessage(JSON.stringify({ status: 'completed'}), \"*\");\n" +
+                "        clearInterval(alertInterval);\n" +
+                "    }\n" +
+                "}, 50);";
+            _widgetWebview.evalJavascript(script);
+          }
+        });
+        _postMessageListener = _widgetWebview.onPostMessage.listen((msg) {
+          if (msg != null) {
+            var postMessage = JSON.jsonDecode(msg);
+            if (postMessage['status'] == "completed") {
+              Navigator.popUntil(context, (route) {
+                return route.settings.name == "/home" || route.settings.name == "/";
+              });
+            }
+          }
         });
       }
       _isInit = true;

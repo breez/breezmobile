@@ -180,9 +180,9 @@ class AddFundsState extends State<AddFundsPage> {
     String walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF";
     String maxQuoteCurrencyAmount = Currency.BTC.format(response?.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
     String colorCode = "%23055DEB";
-    String redirectURL = "https%3A%2F%2Fbreez.technology";
+    String redirectURL = "https://breez.technology";
     String moonPayURL =
-        "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&walletAddress=$walletAddress&colorCode=$colorCode&redirectURL=$redirectURL";
+        "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&walletAddress=$walletAddress&colorCode=$colorCode&redirectURL=${Uri.encodeFull(redirectURL)}";
     if (response != null) {
       moonPayURL += "&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
     }
@@ -218,6 +218,7 @@ class AddFundsState extends State<AddFundsPage> {
                   null,
                   moonPayURL,
                   "MoonPay",
+                  redirectURL: redirectURL,
                   listenInvoices: false,
                 ),
               ),
