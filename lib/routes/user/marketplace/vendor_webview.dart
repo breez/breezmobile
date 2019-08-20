@@ -114,7 +114,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
                 "\n" +
                 "var alertInterval = setInterval(function () {\n" +
                 "    if (document.URL.indexOf(\"${widget.redirectURL}\") >= 0 && getParameterByName('transactionId') != null) {\n" +
-                "        window.postMessage(JSON.stringify({ status: 'completed'}), \"*\");\n" +
+                "        window.postMessage(JSON.stringify({ status: 'completed', transactionId: getParameterByName('transactionId')}), \"*\");\n" +
                 "        clearInterval(alertInterval);\n" +
                 "    }\n" +
                 "}, 50);";
@@ -125,9 +125,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
           if (msg != null) {
             var postMessage = JSON.jsonDecode(msg);
             if (postMessage['status'] == "completed") {
-              Navigator.popUntil(context, (route) {
-                return route.settings.name == "/home" || route.settings.name == "/";
-              });
+              _widgetWebview.reloadUrl("https://buy-staging.moonpay.io/transaction_receipt?transactionId=${postMessage['transactionId']}");
             }
           }
         });
