@@ -8,7 +8,6 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/routes/user/marketplace/webln_handlers.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class VendorWebViewPage extends StatefulWidget {
@@ -42,11 +41,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       }
     });    
   }
-
-  Future<String> loadAsset(String path) async {
-    return await rootBundle.loadString(path);
-  }
-
+  
   Future onBeforeCallHandler(String handlerName){
     if (_screenshotData != null || !["makeInvoice", "sendPayment"].contains(handlerName)){
       return Future.value(null);
