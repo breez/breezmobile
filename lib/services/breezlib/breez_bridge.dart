@@ -252,8 +252,9 @@ class BreezBridge {
     return _invokeMethodWhenReady("addFundsInit", {"argument": breezID}).then((reply) => new AddFundInitReply()..mergeFromBuffer(reply ?? []));
   }
 
-  Future<String> refund(String address, String refundAddress) {
+  Future<String> refund(String address, String refundAddress, Int64 feeRate) {
     var refundRequest = RefundRequest()
+      ..satPerByte = feeRate
       ..address = address
       ..refundAddress = refundAddress;
     return _invokeMethodWhenReady("refund",  {"argument": refundRequest.writeToBuffer()}).then((txID) => txID as String);
