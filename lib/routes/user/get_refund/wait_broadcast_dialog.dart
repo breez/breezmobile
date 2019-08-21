@@ -63,7 +63,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
               : <Widget>[
                   new FlatButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pop(_error != null && _response?.txID?.isNotEmpty == true);
                       },
                       child: new Text("CLOSE", style: theme.buttonStyle)),
                 ],

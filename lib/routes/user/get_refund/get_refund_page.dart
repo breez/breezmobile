@@ -1,10 +1,9 @@
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/routes/user/get_refund/refund_form.dart';
 import 'package:breez/routes/user/get_refund/wait_broadcast_dialog.dart';
-import 'package:breez/services/breezlib/data/rpc.pbserver.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/send_onchain.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -63,7 +62,7 @@ class GetRefundPage extends StatelessWidget {
                                     item.lastRefundTxID.isNotEmpty ? "BROADCASTED" : "REFUND",
                                     item.lastRefundTxID.isNotEmpty
                                         ? null
-                                        : () => onRefund(context, item))),
+                                        : () => onRefund(context, account, item))),
                           )
                         ]),
                     new Divider(
@@ -76,18 +75,19 @@ class GetRefundPage extends StatelessWidget {
     );
   }
 
-  onRefund(BuildContext context, RefundableAddress item) {    
-    showDialog(
-        context: context,
-        builder: (ctx) => RefundForm((address) {
-          Navigator.of(context).pop();        
-          broadcastAndWait(context, item.address, address);
-        }));
+  onRefund(BuildContext context, AccountModel account, RefundableAddress item) {
+    Navigator.push(context, MaterialPageRoute(
+      fullscreenDialog: true,
+      builder: (_) =>
+          new SendOnchain(account, item.confirmedAmount, "Refund Transaction",  (destAddress, fee){
+            return broadcastAndWait(context, item.address, destAddress);
+          })      
+    ));    
   }
 
-  broadcastAndWait(BuildContext context, String fromAddress, toAddress){
+  Future<bool> broadcastAndWait(BuildContext context, String fromAddress, toAddress){
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    showDialog(
+    return showDialog<bool>(
         context: context,
         barrierDismissible: false,
         builder: (_) => WaitBroadcastDialog(accountBloc, fromAddress, toAddress));
