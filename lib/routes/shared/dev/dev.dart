@@ -7,12 +7,12 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/services/permissions.dart';
 import 'package:breez/utils/date.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/lnd_bootstrap_progress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,7 +25,6 @@ import 'package:archive/archive_io.dart';
 
 final _cliInputController = TextEditingController();
 final FocusNode _cliEntryFocusNode = FocusNode();
-final FocusNode _runCommandButtonFocusNode = FocusNode();
 
 class LinkTextSpan extends TextSpan {
   LinkTextSpan({TextStyle style, String command, String text})
@@ -71,6 +70,7 @@ class DevView extends StatefulWidget {
 }
 
 class DevViewState extends State<DevView> {
+  static const FORCE_RESCAN_FILE_NAME = "FORCE_RESCAN";
   String _cliText = '';
   TextStyle _cliTextStyle = theme.smallTextStyle;
 
@@ -327,7 +327,18 @@ class DevViewState extends State<DevView> {
           function: () {
             accBloc.accountEnableSink.add(!account.enabled);
           }));
-    }   
+    }
+    choices.add(Choice(
+      title: "Force Rescan",
+      icon: Icons.phone_android,
+      function: () async {
+        var workingDir = await widget._breezBridge.getWorkingDir();
+        var rescanFile = File(workingDir.path + "/$FORCE_RESCAN_FILE_NAME");
+        await rescanFile.create(recursive: true);
+        _promptForRestart();
+
+      }
+    ));
 
     return choices;
   }
@@ -382,6 +393,19 @@ class DevViewState extends State<DevView> {
       if (!userCancelled) {
         Navigator.pop(context);
       }
+    });
+  }
+
+
+  Future _promptForRestart() {
+    return promptAreYouSure(context, null,
+            Text("Please restart to resynchronize Breez.", style: theme.alertStyle),
+            cancelText: "Cancel", okText: "Exit Breez")
+        .then((shouldExit) {
+      if (shouldExit) {
+        exit(0);
+      }
+      return;
     });
   }
 }
