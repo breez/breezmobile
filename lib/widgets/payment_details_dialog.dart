@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/payment_item_avatar.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -7,13 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_extend/share_extend.dart';
 
+final AutoSizeGroup _labelGroup = AutoSizeGroup();
+final AutoSizeGroup _valueGroup = AutoSizeGroup();
+
 Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentInfo) {
   AlertDialog _paymentDetailsDialog = new AlertDialog(
     titlePadding: EdgeInsets.zero,
     title: new Stack(children: <Widget>[
       Container(
-        decoration: ShapeDecoration(shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))), color: theme.BreezColors.blue[900],),
+        decoration: ShapeDecoration(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
+          color: theme.BreezColors.blue[900],
+        ),
         height: 64.0,
         width: MediaQuery.of(context).size.width,
       ),
@@ -26,7 +32,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
     ]),
     contentPadding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
     content: Container(
-      width: MediaQuery.of(context).size.width,      
+      width: MediaQuery.of(context).size.width,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -34,8 +40,9 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
           paymentInfo.title == null || paymentInfo.title.isEmpty
               ? Container()
               : Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: Text(
+                  padding: EdgeInsets.only(
+                      left: 16.0, right: 16.0, bottom: (paymentInfo.description == null || paymentInfo.description.isEmpty) ? 16 : 8),
+                  child: AutoSizeText(
                     paymentInfo.title,
                     style: theme.paymentRequestAmountStyle,
                     textAlign: TextAlign.center,
@@ -46,7 +53,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
               ? Container()
               : Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: Text(
+                  child: AutoSizeText(
                     paymentInfo.description,
                     style: theme.paymentDetailsTitleStyle,
                     textAlign: paymentInfo.description.length > 40 ? TextAlign.justify : TextAlign.center,
@@ -61,22 +68,27 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      Text(
-                        "Amount",
-                        style: theme.paymentDetailsTitleStyle,
-                        textAlign: TextAlign.left,
-                        maxLines: 1,
+                      Padding(
+                        padding: const EdgeInsets.only(right:8.0),
+                        child: AutoSizeText(
+                          "Amount",
+                          style: theme.paymentDetailsTitleStyle,
+                          textAlign: TextAlign.left,
+                          maxLines: 1,
+                          group: _labelGroup,
+                        ),
                       ),
                       Expanded(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          padding: EdgeInsets.only(left: 8.0),
-                          child: Text(
+                          reverse: true,
+                          child: AutoSizeText(
                             (paymentInfo.type == PaymentType.SENT || paymentInfo.type == PaymentType.WITHDRAWAL ? "-" : "+") +
                                 paymentInfo.currency.format(paymentInfo.amount),
                             style: theme.paymentDetailsSubtitleStyle,
                             textAlign: TextAlign.right,
                             maxLines: 1,
+                            group: _valueGroup,
                           ),
                         ),
                       ),
@@ -91,22 +103,28 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      Text(
-                        "Date & Time",
-                        style: theme.paymentDetailsTitleStyle,
-                        textAlign: TextAlign.left,
-                        maxLines: 1,
+                      Padding(
+                        padding: const EdgeInsets.only(right:8.0),
+                        child: AutoSizeText(
+                          "Date & Time",
+                          style: theme.paymentDetailsTitleStyle,
+                          textAlign: TextAlign.left,
+                          maxLines: 1,
+                          group: _labelGroup,
+                        ),
                       ),
                       Expanded(
                         child: new SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
+                          reverse: true,
                           padding: EdgeInsets.only(left: 8.0),
-                          child: Text(
+                          child: AutoSizeText(
                             DateUtils.formatYearMonthDayHourMinute(
                                 DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)),
                             style: theme.paymentDetailsSubtitleStyle,
                             textAlign: TextAlign.right,
                             maxLines: 1,
+                            group: _valueGroup,
                           ),
                         ),
                       ),
@@ -121,22 +139,28 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      Text(
-                        "Expiration",
-                        style: theme.paymentDetailsTitleStyle,
-                        textAlign: TextAlign.left,
-                        maxLines: 1,
+                      Padding(
+                        padding: const EdgeInsets.only(right:8.0),
+                        child: AutoSizeText(
+                          "Expiration",
+                          style: theme.paymentDetailsTitleStyle,
+                          textAlign: TextAlign.left,
+                          maxLines: 1,
+                          group: _labelGroup,
+                        ),
                       ),
                       Expanded(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
+                          reverse: true,
                           padding: EdgeInsets.only(left: 8.0),
-                          child: Text(
+                          child: AutoSizeText(
                             DateUtils.formatYearMonthDayHourMinute(
                                 DateTime.fromMillisecondsSinceEpoch(paymentInfo.pendingExpirationTimestamp.toInt() * 1000)),
                             style: theme.paymentDetailsSubtitleStyle,
                             textAlign: TextAlign.right,
                             maxLines: 1,
+                            group: _valueGroup,
                           ),
                         ),
                       ),
@@ -148,40 +172,39 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
               : ShareablePaymentRow(title: "Payment Preimage", sharedValue: paymentInfo.preimage),
           paymentInfo.destination == null || paymentInfo.destination.isEmpty
               ? Container()
-              : ShareablePaymentRow(title: "Node ID", sharedValue: paymentInfo.destination),              
+              : ShareablePaymentRow(title: "Node ID", sharedValue: paymentInfo.destination),
           paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
               ? Container()
               : ShareablePaymentRow(title: "Transaction Hash", sharedValue: paymentInfo.paymentHash),
         ],
       ),
     ),
-    shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(12.0),top: Radius.circular(13.0))),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(12.0), top: Radius.circular(13.0))),
   );
   return showDialog<Null>(
     context: context,
-    builder: (_) =>
-    _paymentDetailsDialog,
+    builder: (_) => _paymentDetailsDialog,
   );
 }
 
 class ShareablePaymentRow extends StatelessWidget {
   final String title;
-  final String sharedValue;  
+  final String sharedValue;
 
   const ShareablePaymentRow({Key key, this.title, this.sharedValue}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _expansionTileTheme = Theme.of(context)
-      .copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
+    final _expansionTileTheme =
+        Theme.of(context).copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
     return Theme(
       data: _expansionTileTheme,
       child: ExpansionTile(
-          title: Text(
+          title: AutoSizeText(
             title,
             style: theme.paymentDetailsTitleStyle,
             maxLines: 1,
+            group: _labelGroup,
           ),
           children: [
             Row(
