@@ -33,6 +33,8 @@ import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
 import 'package:breez/routes/user/marketplace/marketplace.dart';
 import 'package:breez/theme_data.dart' as theme;
 
+import 'logger.dart';
+
 class UserApp extends StatelessWidget {
   GlobalKey<NavigatorState> _navigatorKey = new GlobalKey<NavigatorState>();
 
@@ -49,9 +51,10 @@ class UserApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return StaticLoader();
-          }
+          }          
 
           BreezUserModel user = snapshot.data;
+          log.info("Got breez user: pincode = ${user?.securityModel?.pinCode ?? "null"}");
           return MaterialApp(
             navigatorKey: _navigatorKey,
             title: 'Breez',
@@ -83,10 +86,14 @@ class UserApp extends StatelessWidget {
               switch (settings.name) {
                 case '/lockscreen':
                   return new FadeInRoute(
-                      builder: (_) => new AppLockScreen(user.securityModel, onUnlock: (){
+                      builder: (_) {
+                        log.info("showing pin code page: ${user.securityModel.pinCode}");
+                        return new AppLockScreen(user.securityModel, onUnlock: (){
                         _navigatorKey.currentState.pop();                        
                         userProfileBloc.userSink.add(user.copyWith(locked: false));
-                      },),
+                      }
+                      );
+              },
                       settings: settings
                   );
                 case '/home':

@@ -4,6 +4,8 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../../../logger.dart';
+
 const PIN_CODE_LENGTH = 6;
 
 class AppLockScreen extends StatefulWidget {
@@ -50,6 +52,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
   }
 
   _onPinEntered(String enteredPinCode) {
+    log.info("_onPinEntered enteredPinCode=$enteredPinCode widget.securityModel.pinCode=${widget.securityModel.pinCode}");
     if (enteredPinCode == widget.securityModel.pinCode) {
       if (widget.onUnlock != null) {
         widget.onUnlock();
@@ -57,6 +60,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
       }
       Navigator.pop(context, true);
     } else {
+      log.info("wrong pin code");
       throw Exception("Incorrect PIN");
     }
   }
