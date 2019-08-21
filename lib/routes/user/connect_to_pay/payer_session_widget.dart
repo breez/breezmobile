@@ -74,7 +74,7 @@ class _PayerInstructions extends StatelessWidget {
       if (sessionState.payeeData.status.online) {
         message = '${sessionState.payeeData.userName} joined the session.\nPlease enter an amount and tap Pay to proceed.';
       } else if (!sessionState.invitationSent && sessionState.payeeData.userName == null) {
-        message = "Tap the Share button to share a link with a person that you want to pay.\nThen, please wait while this person clicks the link and joins the session.";
+        message = "Tap the Share button to share a link with a person that you want to pay. Then, please wait while this person clicks the link and joins the session.";
       } else {
         return LoadingAnimatedText('Waiting for ${sessionState.payeeData.userName ?? "someone"} to join this session', textStyle: theme.sessionNotificationStyle);
       }
