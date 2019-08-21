@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/services.dart';
@@ -11,8 +12,9 @@ class WaitBroadcastDialog extends StatefulWidget {
   final AccountBloc _accountBloc;
   final String _fromAddress;
   final String _toAddress;
+  final Int64 _feeRate;
 
-  WaitBroadcastDialog(this._accountBloc, this._fromAddress, this._toAddress);
+  WaitBroadcastDialog(this._accountBloc, this._fromAddress, this._toAddress, this._feeRate);
 
   @override
   State<StatefulWidget> createState() {
@@ -39,7 +41,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
       });
     });
 
-    var broadcastModel = new BroadcastRefundRequestModel(widget._fromAddress, widget._toAddress);                             
+    var broadcastModel = new BroadcastRefundRequestModel(widget._fromAddress, widget._toAddress, widget._feeRate);                             
     widget._accountBloc.broadcastRefundRequestSink.add(broadcastModel);
   }
 

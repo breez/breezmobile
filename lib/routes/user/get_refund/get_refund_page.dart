@@ -5,6 +5,7 @@ import 'package:breez/routes/user/get_refund/wait_broadcast_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/send_onchain.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -79,17 +80,17 @@ class GetRefundPage extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(
       fullscreenDialog: true,
       builder: (_) =>
-          new SendOnchain(account, item.confirmedAmount, "Refund Transaction",  (destAddress, fee){
-            return broadcastAndWait(context, item.address, destAddress);
+          new SendOnchain(account, item.confirmedAmount, "Refund Transaction",  (destAddress, feeRate){
+            return broadcastAndWait(context, item.address, destAddress, feeRate);
           })      
-    ));    
+    ));
   }
 
-  Future<bool> broadcastAndWait(BuildContext context, String fromAddress, toAddress){
+  Future<bool> broadcastAndWait(BuildContext context, String fromAddress, String toAddress, Int64 feeRate){
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return showDialog<bool>(
         context: context,
         barrierDismissible: false,
-        builder: (_) => WaitBroadcastDialog(accountBloc, fromAddress, toAddress));
+        builder: (_) => WaitBroadcastDialog(accountBloc, fromAddress, toAddress, feeRate));
   }
 }
