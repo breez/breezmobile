@@ -413,7 +413,15 @@ class AccountBloc {
              _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
           }
       },
-      onProgress: (progress) => _accountController.add(_accountController.value.copyWith(syncProgress: progress)),
+      onProgress: (startPollTimestamp, progress) async {
+        if (
+            Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 1) &&
+            _accountController.value.syncUIState == SyncUIState.NONE) {
+              await userProfileStream.where((u) => u.locked == false).first;
+             _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
+          }
+        _accountController.add(_accountController.value.copyWith(syncProgress: progress));
+      },
       onComplete: () => _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.NONE, syncProgress: 1.0))
     );   
   }
