@@ -41,6 +41,7 @@ class FloatingActionsBar extends StatelessWidget {
             padding: isSmallView ? EdgeInsets.all(16.0) : EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
             child: Row(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: isSmallView
                   ? <Widget>[
                       hasBalance
@@ -60,7 +61,8 @@ class FloatingActionsBar extends StatelessWidget {
                             )
                           : Icon(Icons.add),
                       Padding(padding: EdgeInsets.only(left: 8.0)),
-                      Expanded(
+                      Container(
+                        width: (hasBalance ? CTP_MAX_WIDTH - 64 : ADD_FUNDS_MAX_WIDTH - 64),
                         child: AutoSizeText(
                           hasBalance ? "CONNECT TO PAY" : "ADD FUNDS",
                           style: theme.addFundsBtnStyle,
