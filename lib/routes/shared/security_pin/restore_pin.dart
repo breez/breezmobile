@@ -41,6 +41,7 @@ class _RestorePinCodeState extends State<RestorePinCode> {
   }
 
   _onPinEntered(String enteredPinCode) {
-    return Navigator.pop(context, enteredPinCode);
+    Navigator.pop(context, enteredPinCode);
+    return Future.value(null);
   }
 }
