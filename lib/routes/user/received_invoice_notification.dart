@@ -1,9 +1,11 @@
 import 'dart:async';
-import 'package:breez/widgets/loader.dart';
-import 'package:flutter/material.dart';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_request_dialog.dart' as paymentRequest;
+import 'package:flutter/material.dart';
 
 class InvoiceNotificationsHandler {
   final BuildContext _context;
@@ -55,6 +57,7 @@ class InvoiceNotificationsHandler {
       }).onError((error) {
         _setLoading(false);
         _handlingRequest = false;
+        showFlushbar(_context, message: error.toString().substring(10));
       });
     });
   }

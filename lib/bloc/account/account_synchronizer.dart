@@ -24,7 +24,7 @@ class AccountSynchronizer {
 
   final bool bootstraping;
   final Function(int startTimestamp, bool bootstraping) onStart;
-  final Function(double progress) onProgress;
+  final Function(int startTimestamp, double progress) onProgress;
   final Function onComplete;
 
   AccountSynchronizer(this._breezLib,
@@ -119,7 +119,7 @@ class AccountSynchronizer {
     if (_bootstrapProgress != null) {
       totalProgress = (_bootstrapProgress * BOOTSTRAP_FILES_FRACTION + totalProgress * (1- BOOTSTRAP_FILES_FRACTION));
     }
-    onProgress(totalProgress);
+    onProgress(_startPollTimestamp, totalProgress);
   }
 
   DateTime _lastChainCalcChangeTime;

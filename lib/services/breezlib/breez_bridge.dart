@@ -60,6 +60,10 @@ class BreezBridge {
       });
   }
 
+  Future<Directory> getWorkingDir(){
+    return getApplicationDocumentsDirectory();
+  }
+
   Future init(String appDir, String tmpDir) {    
     return _methodChannel.invokeMethod("init", {
       "workingDir": appDir,
