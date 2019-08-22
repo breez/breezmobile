@@ -40,11 +40,16 @@ class SecurityPageState extends State<SecurityPage> {
           if (!snapshot.hasData) {
             return Container();
           } else {
-            if (snapshot.data.securityModel.pinCode != null && this._screenLocked) {
+            if (snapshot.data.securityModel.requiresPin && this._screenLocked) {
               return AppLockScreen(
-                snapshot.data.securityModel, 
-                canCancel: true,
-                onUnlock: () => setState((){ this._screenLocked = false; }),
+                (pinEntered) { 
+                  var validateAction = ValidatePinCode(pinEntered);
+                    widget.userProfileBloc.userActionsSink.add(validateAction);
+                    return validateAction.future.then((_){
+                      setState((){ this._screenLocked = false; });
+                    });
+                },
+                canCancel: true,               
               );
             }
             return Scaffold(
@@ -69,7 +74,7 @@ class SecurityPageState extends State<SecurityPage> {
 
   List<Widget> _buildSecurityPINTiles(SecurityModel securityModel) {
     List<Widget> _tiles = <Widget>[_buildDisablePINTile(securityModel)];
-    if (securityModel.pinCode != null)
+    if (securityModel.requiresPin)
       _tiles..add(
         Divider())
         ..add(_buildSecureBackupWithPinTile(securityModel))
@@ -159,12 +164,12 @@ class SecurityPageState extends State<SecurityPage> {
   ListTile _buildDisablePINTile(SecurityModel securityModel) {
     return ListTile(
       title: Text(
-        securityModel.pinCode != null ? "Activate PIN" : "Create PIN",
+        securityModel.requiresPin ? "Activate PIN" : "Create PIN",
         style: TextStyle(color: Colors.white),
       ),
-      trailing: securityModel.pinCode != null
+      trailing: securityModel.requiresPin
           ? Switch(
-              value: securityModel.pinCode != null,
+              value: securityModel.requiresPin,
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
@@ -173,7 +178,7 @@ class SecurityPageState extends State<SecurityPage> {
               },
             )
           : Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-      onTap: securityModel.pinCode != null
+      onTap: securityModel.requiresPin
           ? null
           : () => _onChangePinSelected(securityModel),
     );
@@ -186,14 +191,20 @@ class SecurityPageState extends State<SecurityPage> {
           return ChangePinCode();
         },
       ),
-    ).then((newPIN){
+    ).then((newPIN) async{
       if (newPIN != null) {
-        _updateSecurityModel(securityModel, securityModel.copyWith(pinCode: newPIN, requiresPin: true));            
+        var updatePinAction = UpdatePinCode(newPIN);
+        widget.userProfileBloc.userActionsSink.add(updatePinAction);
+        updatePinAction.future.then((_) => 
+          _updateSecurityModel(securityModel, securityModel.copyWith(requiresPin: true), pinCodeChanged: true))
+          .catchError((err){
+            promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+          });
       }
     });
   }
 
-  Future _updateSecurityModel(SecurityModel oldModel, SecurityModel newModel) async {
+  Future _updateSecurityModel(SecurityModel oldModel, SecurityModel newModel, {bool pinCodeChanged = false}) async {
     _screenLocked = false;
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
@@ -201,7 +212,7 @@ class SecurityPageState extends State<SecurityPage> {
     .then((_){
       if (
         newModel.secureBackupWithPin != oldModel.secureBackupWithPin ||
-        newModel.secureBackupWithPin && newModel.pinCode != oldModel.pinCode) {
+        newModel.secureBackupWithPin && pinCodeChanged) {
         widget.backupBloc.backupNowSink.add(true);                        
         widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s){
           if (mounted) {
