@@ -130,7 +130,12 @@ class AccountRequiredActionsIndicatorState
                       }
 
                       var swapStatus = accountSnapshot?.data?.swapFundsStatus;
-                      if (swapStatus != null && swapStatus.refundableAddresses.length > 0) {  
+
+                      // only warn on refundable addresses that weren't refunded in the past.
+                      var shouldWarnRefund = swapStatus != null &&
+                        swapStatus.refundableAddresses.where((r) => r.lastRefundTxID.isEmpty).length > 0;
+
+                      if (shouldWarnRefund) {  
                         warnings.add(WarningAction(() => showDialog(
                             barrierDismissible: false,
                             context: context,
