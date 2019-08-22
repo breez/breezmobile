@@ -66,6 +66,8 @@ class UserProfileBloc {
     _preferences = injector.sharedPreferences;
     _actionHandlers = {
       UpdateSecurityModel: _updateSecurityModelAction,
+      UpdatePinCode: _updatePinCode,
+      ValidatePinCode: _validatePinCode,
     };
     print ("UserProfileBloc started");
 
@@ -134,9 +136,8 @@ class UserProfileBloc {
       String pinCode;
       if (user.securityModel.requiresPin) {
         pinCode = await _secureStorage.read(key: 'pinCode');
-      }
-      user = user.copyWith(securityModel: user.securityModel.copyWith(pinCode: pinCode), locked: user.securityModel.requiresPin);      
-      await _breezLib.setPinCode(user.securityModel.secureBackupWithPin ? user.securityModel.pinCode : null);
+      }      
+      await _breezLib.setPinCode(user.securityModel.secureBackupWithPin ? pinCode : null);
 
       if (user.userID != null) {
         saveUser(injector, preferences, user).then(_publishUser);
@@ -170,6 +171,21 @@ class UserProfileBloc {
     });
   }
 
+  Future _updatePinCode(UpdatePinCode action) async {
+    await _secureStorage.write(key: 'pinCode', value: action.newPin);
+    var currentUser = _userController.value;
+    await _breezLib.setPinCode(currentUser.securityModel.secureBackupWithPin ? action.newPin : null);
+    action.resolve(null);
+  }
+
+  Future _validatePinCode(ValidatePinCode action) async {
+    var pinCode = await _secureStorage.read(key: 'pinCode');
+    if (pinCode != action.enteredPin) {
+      throw new Exception("pin mismatch");
+    }
+    action.resolve(pinCode == action.enteredPin);
+  }
+
   Future _updateSecurityModelAction(UpdateSecurityModel updateSecurityModelAction) async {
     updateSecurityModelAction.resolve(await _updateSecurityModel(updateSecurityModelAction));
   }
@@ -178,11 +194,12 @@ class UserProfileBloc {
     SecurityModel newModel = updateSecurityModelAction.newModel;
     if (!newModel.requiresPin) {
       await _secureStorage.delete(key: 'pinCode');
-    } else if (newModel.pinCode != _currentUser.securityModel.pinCode) {
-      // Write to storage if the new pin code is different from current pin code
-      await _secureStorage.write(key: 'pinCode', value: updateSecurityModelAction.newModel.pinCode);
     }
-    await _breezLib.setPinCode(newModel.secureBackupWithPin ? newModel.pinCode : null);    
+    var backupPIN;
+    if (newModel.secureBackupWithPin) {
+      backupPIN = await _secureStorage.read(key: 'pinCode');
+    }
+    await _breezLib.setPinCode(backupPIN);
     _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
   }
