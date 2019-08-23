@@ -181,7 +181,7 @@ class UserProfileBloc {
   Future _validatePinCode(ValidatePinCode action) async {
     var pinCode = await _secureStorage.read(key: 'pinCode');
     if (pinCode != action.enteredPin) {
-      throw new Exception("pin mismatch");
+      throw new Exception("Incorrect PIN");
     }
     action.resolve(pinCode == action.enteredPin);
   }
