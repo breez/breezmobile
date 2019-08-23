@@ -47,8 +47,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     titlePadding: EdgeInsets.all(0.0),
     title: new Stack(children: <Widget>[
       new Container(
-        height: 70.0,
-        width: 300.0,
+        height: 70.0,        
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
           color: theme.BreezColors.blue[900],
