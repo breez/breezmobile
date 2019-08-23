@@ -1,5 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
@@ -7,6 +7,7 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
 import 'package:breez/routes/shared/security_pin/security_pin_warning_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/route.dart';
@@ -28,7 +29,8 @@ class SecurityPage extends StatefulWidget {
   }
 }
 
-class SecurityPageState extends State<SecurityPage> {  
+class SecurityPageState extends State<SecurityPage> {
+  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
 
   @override
@@ -40,11 +42,16 @@ class SecurityPageState extends State<SecurityPage> {
           if (!snapshot.hasData) {
             return Container();
           } else {
-            if (snapshot.data.securityModel.pinCode != null && this._screenLocked) {
+            if (snapshot.data.securityModel.requiresPin && this._screenLocked) {
               return AppLockScreen(
-                snapshot.data.securityModel, 
-                canCancel: true,
-                onUnlock: () => setState((){ this._screenLocked = false; }),
+                (pinEntered) { 
+                  var validateAction = ValidatePinCode(pinEntered);
+                    widget.userProfileBloc.userActionsSink.add(validateAction);
+                    return validateAction.future.then((_){
+                      setState((){ this._screenLocked = false; });
+                    });
+                },
+                canCancel: true,               
               );
             }
             return Scaffold(
@@ -69,7 +76,7 @@ class SecurityPageState extends State<SecurityPage> {
 
   List<Widget> _buildSecurityPINTiles(SecurityModel securityModel) {
     List<Widget> _tiles = <Widget>[_buildDisablePINTile(securityModel)];
-    if (securityModel.pinCode != null)
+    if (securityModel.requiresPin)
       _tiles..add(
         Divider())
         ..add(_buildSecureBackupWithPinTile(securityModel))
@@ -82,9 +89,15 @@ class SecurityPageState extends State<SecurityPage> {
 
   ListTile _buildSecureBackupWithPinTile(SecurityModel securityModel) {
     return ListTile(
-      title: Text(
-        "Use in Backup/Restore",
-        style: TextStyle(color: Colors.white),
+      title: Container(
+        child: AutoSizeText(
+          "Use in Backup/Restore",
+          style: TextStyle(color: Colors.white),
+          maxLines: 1,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
+          group: _autoSizeGroup,
+        ),
       ),
       trailing: Switch(
         value: securityModel.secureBackupWithPin,
@@ -112,9 +125,15 @@ class SecurityPageState extends State<SecurityPage> {
 
   ListTile _buildPINIntervalTile(SecurityModel securityModel) {
     return ListTile(
-      title: Text(
-        "Lock Automatically",
-        style: TextStyle(color: Colors.white),
+      title: Container(
+        child: AutoSizeText(
+          "Lock Automatically",
+          style: TextStyle(color: Colors.white),
+          maxLines: 1,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
+          group: _autoSizeGroup,
+        ),
       ),
       trailing: DropdownButtonHideUnderline(
         child: new DropdownButton(
@@ -126,10 +145,15 @@ class SecurityPageState extends State<SecurityPage> {
           items: SecurityModel.lockIntervals.map((int seconds) {
             return new DropdownMenuItem(
               value: seconds,
-              child: new Text(_formatSeconds(seconds),
-                  style: theme
-                      .FieldTextStyle
-                      .textStyle),
+              child: Container(
+                child: AutoSizeText(
+                  _formatSeconds(seconds),
+                  style: theme.FieldTextStyle.textStyle,
+                  maxLines: 1,
+                  minFontSize: MinFontSize(context).minFontSize,
+                  stepGranularity: 0.1,
+                ),
+              ),
             );
           }).toList(),
         ),
@@ -147,9 +171,15 @@ class SecurityPageState extends State<SecurityPage> {
 
   ListTile _buildChangePINTile(SecurityModel securityModel) {
     return ListTile(
-      title: Text(
-        "Change PIN",
-        style: TextStyle(color: Colors.white),
+      title: Container(
+        child: AutoSizeText(
+          "Change PIN",
+          style: TextStyle(color: Colors.white),
+          maxLines: 1,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
+          group: _autoSizeGroup,
+        ),
       ),
       trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
       onTap: () => _onChangePinSelected(securityModel),
@@ -158,13 +188,17 @@ class SecurityPageState extends State<SecurityPage> {
 
   ListTile _buildDisablePINTile(SecurityModel securityModel) {
     return ListTile(
-      title: Text(
-        securityModel.pinCode != null ? "Activate PIN" : "Create PIN",
+      title: AutoSizeText(
+        securityModel.requiresPin ? "Activate PIN" : "Create PIN",
         style: TextStyle(color: Colors.white),
+        maxLines: 1,
+        minFontSize: MinFontSize(context).minFontSize,
+        stepGranularity: 0.1,
+        group: securityModel.requiresPin ? _autoSizeGroup : null,
       ),
-      trailing: securityModel.pinCode != null
+      trailing: securityModel.requiresPin
           ? Switch(
-              value: securityModel.pinCode != null,
+              value: securityModel.requiresPin,
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
@@ -173,7 +207,7 @@ class SecurityPageState extends State<SecurityPage> {
               },
             )
           : Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-      onTap: securityModel.pinCode != null
+      onTap: securityModel.requiresPin
           ? null
           : () => _onChangePinSelected(securityModel),
     );
@@ -186,14 +220,20 @@ class SecurityPageState extends State<SecurityPage> {
           return ChangePinCode();
         },
       ),
-    ).then((newPIN){
+    ).then((newPIN) async{
       if (newPIN != null) {
-        _updateSecurityModel(securityModel, securityModel.copyWith(pinCode: newPIN, requiresPin: true));            
+        var updatePinAction = UpdatePinCode(newPIN);
+        widget.userProfileBloc.userActionsSink.add(updatePinAction);
+        updatePinAction.future.then((_) => 
+          _updateSecurityModel(securityModel, securityModel.copyWith(requiresPin: true), pinCodeChanged: true))
+          .catchError((err){
+            promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+          });
       }
     });
   }
 
-  Future _updateSecurityModel(SecurityModel oldModel, SecurityModel newModel) async {
+  Future _updateSecurityModel(SecurityModel oldModel, SecurityModel newModel, {bool pinCodeChanged = false}) async {
     _screenLocked = false;
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
@@ -201,7 +241,7 @@ class SecurityPageState extends State<SecurityPage> {
     .then((_){
       if (
         newModel.secureBackupWithPin != oldModel.secureBackupWithPin ||
-        newModel.secureBackupWithPin && newModel.pinCode != oldModel.pinCode) {
+        newModel.secureBackupWithPin && pinCodeChanged) {
         widget.backupBloc.backupNowSink.add(true);                        
         widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s){
           if (mounted) {

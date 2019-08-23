@@ -279,7 +279,7 @@ class AccountModel {
     }
 
     if (amount > maxAmount) {
-      return "Not enough funds.";
+      return outgoing ? "Not enough funds" : "Amount exceeds available capacity";      
     }
 
     if (outgoing && amount > maxAllowedToPay) {

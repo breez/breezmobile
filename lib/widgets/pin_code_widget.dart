@@ -8,7 +8,7 @@ const PIN_CODE_LENGTH = 6;
 class PinCodeWidget extends StatefulWidget {
   final String label;
   final bool dismissible;
-  final Function(String pinEntered) onPinEntered;
+  final Future Function(String pinEntered) onPinEntered;
 
   PinCodeWidget(this.label, this.dismissible, this.onPinEntered);
 
@@ -170,12 +170,9 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     }
     if (_enteredPinCode.length == PIN_CODE_LENGTH) {
       Future.delayed(Duration(milliseconds: 200), () {
-        try {
-          widget.onPinEntered(_enteredPinCode);
-        } catch (error) {
-          _errorMessage = error.toString().substring(10);
-        }
-        _setPinCodeInput("");
+        widget.onPinEntered(_enteredPinCode)   
+          .catchError((err) => _errorMessage = err.toString().substring(10))
+          .whenComplete(() => _setPinCodeInput(""));        
       });
     }
   }
