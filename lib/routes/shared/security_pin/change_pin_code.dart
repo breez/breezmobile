@@ -38,7 +38,7 @@ class _ChangePinCodeState extends State<ChangePinCode> {
         ));
   }
 
-  _onPinEntered(String enteredPinCode) {
+  _onPinEntered(String enteredPinCode) async {
     if (_tmpPinCode.isEmpty) {
       setState(() {
         _tmpPinCode = enteredPinCode;
