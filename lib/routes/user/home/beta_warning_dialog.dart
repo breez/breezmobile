@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter/material.dart';
 
 class BetaWarningDialog extends StatefulWidget {
   @override
@@ -80,11 +81,11 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
               children: _getContent(),
             ),
             actions: [
-              new SimpleDialogOption(
+              new FlatButton(
                 onPressed: () => exit(0),
                 child: new Text("Exit", style: theme.buttonStyle),
               ),
-              new SimpleDialogOption(
+              new FlatButton(
                 onPressed: (() {
                   if (_isUnderstood) {
                     Navigator.of(context).pop(_isUnderstood);

@@ -69,6 +69,14 @@ class UserApp extends StatelessWidget {
               fontFamily: 'IBMPlexSansRegular',
               cardColor: theme.BreezColors.blue[500],
             ),
+            builder: (BuildContext context, Widget child) {
+              final MediaQueryData data = MediaQuery.of(context);
+              return MediaQuery(
+                  data: data.copyWith(
+                    textScaleFactor: (data.textScaleFactor >= 1.3) ? 1.3 : data.textScaleFactor,
+                  ),
+                  child: child);
+            },
             initialRoute: user.registered ? (user.locked ? '/lockscreen' : null) : '/splash',
             home: new Home(accountBloc, invoiceBloc, userProfileBloc, connectPayBloc, backupBloc),
             onGenerateRoute: (RouteSettings settings) {

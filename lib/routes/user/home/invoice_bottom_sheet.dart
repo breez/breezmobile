@@ -1,8 +1,9 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
-import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +19,7 @@ class InvoiceBottomSheet extends StatefulWidget {
 }
 
 class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProviderStateMixin {
+  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   bool isExpanded;
 
   @override
@@ -84,12 +86,18 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                       size: 24.0,
                     ),
                     Padding(padding: EdgeInsets.only(left: 8.0)),
-                    Text(
-                      title.toUpperCase(),
-                      style: theme.bottomSheetMenuItemStyle.copyWith(
-                        color: isFirst ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white,
+                    Expanded(
+                      child: AutoSizeText(
+                        title.toUpperCase(),
+                        style: theme.bottomSheetMenuItemStyle.copyWith(
+                          color: isFirst ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white,
+                        ),
+                        maxLines: 1,
+                        minFontSize: MinFontSize(context).minFontSize,
+                        stepGranularity: 0.1,
+                        group: _autoSizeGroup,
                       ),
-                    ),
+                    )
                   ]),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -5,6 +6,7 @@ import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   UserProfileBloc _userProfileBloc;
 
   double _exchangeRate;  
+
+  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
 
   bool _isInit = false;
 
@@ -117,36 +121,54 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                 brightness: Brightness.light,
                 canvasColor: theme.BreezColors.white[500],
               ),
-              child: Row(
-                children: <Widget>[
-                  Padding(
-                    child: Text(
-                      "Enter amount in",
-                      style: theme.alertTitleStyle,
-                    ),
-                    padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
-                  ),
-                  new DropdownButtonHideUnderline(
-                    child: ButtonTheme(
-                      alignedDropdown: true,
-                      child: new DropdownButton(
-                        onChanged: (value) => _selectFiatCurrency(account, value),
-                        value: account.fiatCurrency.currencyData.shortName,
-                        style: theme.alertTitleStyle,
-                        items: account.fiatConversionList.map((FiatConversion value) {
-                          return new DropdownMenuItem<String>(
-                            value: value.currencyData.shortName,
-                            child: new Text(
-                              value.currencyData.shortName,
-                              textAlign: TextAlign.left,
-                              style: theme.alertTitleStyle,
-                            ),
-                          );
-                        }).toList(),
+              child: Container(                                
+                width: MediaQuery.of(context).size.width,
+                height: 50.0,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        child: AutoSizeText(
+                          "Enter amount in",
+                          style: theme.alertTitleStyle,
+                          maxLines: 1,
+                          minFontSize: MinFontSize(context).minFontSize,
+                          stepGranularity: 0.1,
+                          group: _autoSizeGroup,
+                        ),
+                        padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
                       ),
                     ),
-                  ),
-                ],
+                    new DropdownButtonHideUnderline(
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: new DropdownButton(
+                          onChanged: (value) => _selectFiatCurrency(account, value),
+                          value: account.fiatCurrency.currencyData.shortName,
+                          style: theme.alertTitleStyle,
+                          items: account.fiatConversionList.map((FiatConversion value) {
+                            return new DropdownMenuItem<String>(
+                              value: value.currencyData.shortName,
+                              child: Container(
+                                width: 36,
+                                child: AutoSizeText(
+                                  value.currencyData.shortName,
+                                  textAlign: TextAlign.left,
+                                  style: theme.alertTitleStyle,
+                                  maxLines: 1,
+                                  minFontSize: MinFontSize(context).minFontSize,
+                                  stepGranularity: 0.1,
+                                  group: _autoSizeGroup,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             titlePadding: EdgeInsets.fromLTRB(24.0, 16.0, 16.0, 8.0),

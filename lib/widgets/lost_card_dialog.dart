@@ -1,8 +1,8 @@
-import 'dart:async';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flushbar/flushbar.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 Flushbar _lostCardFlush;
 
@@ -10,6 +10,8 @@ class LostCardDialog extends StatelessWidget {
   final BuildContext context;
 
   LostCardDialog({this.context});
+
+  final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -34,26 +36,31 @@ class LostCardDialog extends StatelessWidget {
         );
                   
     return new AlertDialog(
-      title: new Text(
-        "Lost or Stolen Card",
-        style: theme.alertTitleStyle,
-      ),
+      title:        
+        new Text(
+          "Lost or Stolen Card",
+          style: theme.alertTitleStyle,
+          maxLines: 2,
+        ),      
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
-      content: new Text(
-          "If your card has been lost or stolen, you should deactivate it now to prevent it from being used by others. Deactivate means you won't be able to use any of your existing cards until you re-activate them.",
-          style: theme.alertStyle),
+      content: Container(
+        width: MediaQuery.of(context).size.width,
+        child: AutoSizeText(
+            "If your card has been lost or stolen, you should deactivate it now to prevent it from being used by others. Deactivate means you won't be able to use any of your existing cards until you re-activate them.",
+            style: theme.alertStyle),
+      ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 8.0),
       actions: <Widget>[
-        new FlatButton(
+        FlatButton(
           onPressed: () => Navigator.pop(context),
-          child: new Text("CANCEL", style: theme.buttonStyle),
+          child: Text("CANCEL", style: theme.buttonStyle),
         ),
-        new FlatButton(
+        FlatButton(
           onPressed: (() {
             Navigator.pop(context);
             _lostCardFlush.show(context);
           }),
-          child: new Text("DEACTIVATE", style: theme.buttonStyle),
+          child: Text("DEACTIVATE", style: theme.buttonStyle),
         ),
       ],
       shape: RoundedRectangleBorder(
