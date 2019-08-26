@@ -30,15 +30,14 @@ class SendOnchainState extends State<SendOnchain> {
   final TextEditingController _feeController = new TextEditingController();  
 
   BreezBridge _breezLib = ServiceInjector().breezBridge;
-  String _addressValidated;  
-  final FocusNode _amountFocusNode = FocusNode();
+  String _addressValidated;    
   final FocusNode _feeFocusNode = FocusNode();
   KeyboardDoneAction _doneAction;
 
   @override
   void initState() {
     super.initState();
-    _doneAction = new KeyboardDoneAction(<FocusNode>[_amountFocusNode, _feeFocusNode]);    
+    _doneAction = new KeyboardDoneAction(<FocusNode>[_feeFocusNode]);    
   }
 
   @override void didChangeDependencies() {
@@ -84,13 +83,8 @@ class SendOnchainState extends State<SendOnchain> {
           child: Padding(
             padding: const EdgeInsets.only(right: 12.0),
             child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[                  
-                  FlatButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("CANCEL", style: theme.buttonStyle)),
                   FlatButton(
                     onPressed: () {
                       _asyncValidate().then((validated) {
