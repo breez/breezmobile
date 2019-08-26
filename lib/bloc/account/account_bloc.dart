@@ -291,7 +291,7 @@ class AccountBloc {
 
   void _listenRefundBroadcasts() {
     _broadcastRefundRequestController.stream.listen((request) {
-      _breezLib.refund(request.fromAddress, request.toAddress).then((txID) {
+      _breezLib.refund(request.fromAddress, request.toAddress, request.feeRate).then((txID) {
         _broadcastRefundResponseController
             .add(new BroadcastRefundResponseModel(request, txID));
       }).catchError(_broadcastRefundResponseController.addError);

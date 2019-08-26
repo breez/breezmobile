@@ -252,11 +252,12 @@ class BreezBridge {
     return _invokeMethodWhenReady("addFundsInit", {"argument": breezID}).then((reply) => new AddFundInitReply()..mergeFromBuffer(reply ?? []));
   }
 
-  Future<String> refund(String address, String refundAddress) {
+  Future<String> refund(String address, String refundAddress, Int64 feeRate) {
     var refundRequest = RefundRequest()
+      ..satPerByte = feeRate
       ..address = address
       ..refundAddress = refundAddress;
-    return _invokeMethodWhenReady("refund",  {"argument": refundRequest.writeToBuffer()}).then((txID) => txID as String);
+    return _invokeMethodWhenReady("refund",  {"argument": refundRequest.writeToBuffer()}).then((txID) => txID as String);      
   }
 
   Future<FundStatusReply> getFundStatus(String notificationToken) {
@@ -363,7 +364,7 @@ class BreezBridge {
             (completed) {
           return _methodChannel.invokeMethod(methodName, arguments).catchError((err){
             if (err.runtimeType == PlatformException) {
-              throw (err as PlatformException).details;
+              throw (err as PlatformException).message;
             }
             throw err;
           });
@@ -377,7 +378,7 @@ class BreezBridge {
           return _methodChannel.invokeMethod(methodName, arguments).catchError((err){
             if (err.runtimeType == PlatformException) {
               print("Error in calling method " + methodName);
-              throw (err as PlatformException).details;
+              throw (err as PlatformException).message;
             }
             throw err;
           });        

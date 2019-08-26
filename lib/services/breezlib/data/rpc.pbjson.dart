@@ -186,6 +186,8 @@ const RefundRequest$json = const {
   '2': const [
     const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
     const {'1': 'refundAddress', '3': 2, '4': 1, '5': 9, '10': 'refundAddress'},
+    const {'1': 'target_conf', '3': 3, '4': 1, '5': 5, '10': 'targetConf'},
+    const {'1': 'sat_per_byte', '3': 4, '4': 1, '5': 3, '10': 'satPerByte'},
   ],
 };
 
