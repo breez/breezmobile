@@ -9,6 +9,7 @@ import 'package:breez/routes/user/marketplace/webln_handlers.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VendorWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -16,8 +17,9 @@ class VendorWebViewPage extends StatefulWidget {
   final String _title;
   final bool listenInvoices;
   final String redirectURL;
+  final String walletAddress;
 
-  VendorWebViewPage(this.accountBloc, this._url, this._title, {this.listenInvoices = true, this.redirectURL});
+  VendorWebViewPage(this.accountBloc, this._url, this._title, {this.listenInvoices = true, this.redirectURL, this.walletAddress});
 
   @override
   State<StatefulWidget> createState() {
@@ -113,8 +115,8 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
                 "}\n" +
                 "\n" +
                 "var alertInterval = setInterval(function () {\n" +
-                "    if (document.URL.indexOf(\"${widget.redirectURL}\") >= 0 && getParameterByName('transactionId') != null) {\n" +
-                "        window.postMessage(JSON.stringify({ status: 'completed', transactionId: getParameterByName('transactionId')}), \"*\");\n" +
+                "    if (document.URL.indexOf(\"${widget.redirectURL}\") >= 0 && getParameterByName('transactionId') != null && getParameterByName('addFunds') == 'true') {\n" +
+                "        window.postMessage(JSON.stringify({ status: 'completed'}), \"*\");\n" +
                 "        clearInterval(alertInterval);\n" +
                 "    }\n" +
                 "}, 50);";
@@ -125,7 +127,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
           if (msg != null) {
             var postMessage = JSON.jsonDecode(msg);
             if (postMessage['status'] == "completed") {
-              _widgetWebview.reloadUrl("https://buy-staging.moonpay.io/transaction_receipt?transactionId=${postMessage['transactionId']}");
+              _saveOrderAddress();
             }
           }
         });
@@ -133,6 +135,12 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       _isInit = true;
     }
     super.didChangeDependencies();
+  }
+
+  _saveOrderAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('pendingMoonpayOrderAddress', widget.walletAddress);
+    prefs.setInt('pendingMoonpayOrderTimestamp', DateTime.now().millisecondsSinceEpoch);
   }
 
   @override
