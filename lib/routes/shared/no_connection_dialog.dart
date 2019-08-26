@@ -24,13 +24,19 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
           TextSpan(text: "• Checking the signal in your area\n", style: theme.dialogGrayStyle),
           TextSpan(text: "• ", style: theme.dialogGrayStyle),
           TextSpan(
-            text: "Reset ",
+            text: "Recover ",
             style: theme.blueLinkStyle,
-            recognizer: TapGestureRecognizer()..onTap = () async {              
-              ResetChainService resetAction = ResetChainService();
-              accountBloc.userActionsSink.add(resetAction);
-              await resetAction.future;
-              _promptForRestart(context);
+            recognizer: TapGestureRecognizer()..onTap = () async {                            
+              _promptForRestart(context).then(
+                (ok) async {
+                  if (ok) {
+                    ResetChainService resetAction = ResetChainService();
+                    accountBloc.userActionsSink.add(resetAction);
+                    await resetAction.future;
+                    exit(0);
+                  }
+                }
+              );
             }),
           TextSpan(text: "chain information\n", style: theme.dialogGrayStyle),
           TextSpan(text: "• ", style: theme.dialogGrayStyle),  
@@ -69,13 +75,7 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
 }
 
 Future _promptForRestart(BuildContext context) {
-    return promptAreYouSure(context, null,
-            Text("Please restart to reset chain information.", style: theme.alertStyle),
-            cancelText: "Cancel", okText: "Exit Breez")
-        .then((shouldExit) {
-      if (shouldExit) {
-        exit(0);
-      }
-      return;
-    });
-  }
+  return promptAreYouSure(context, null,
+          Text("Restoring chain information might take several minutes.", style: theme.alertStyle),
+          cancelText: "Cancel", okText: "Exit Breez");    
+}
