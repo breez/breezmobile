@@ -112,7 +112,7 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
             _started = true;
             success(result,true);
         } catch (Exception e) {
-            fail(result, "ResultError", e.getMessage(), "Failed to Start breez library";
+            fail(result, "ResultError", e.getMessage(), "Failed to Start breez library");
         }
 
         ChainSync.schedule();
