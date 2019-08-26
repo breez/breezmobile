@@ -1,9 +1,10 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/routes/user/connect_to_pay/connected_peer.dart';
 import 'package:breez/routes/user/connect_to_pay/connection_status.dart';
-import 'package:breez/widgets/delay_render.dart';
 import 'package:breez/widgets/layouts.dart';
 import 'package:flutter/material.dart';
+
 import 'connection_status.dart' as sessionConnection;
 
 class PeersConnection extends StatelessWidget {
@@ -98,7 +99,7 @@ class _UserNameWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: <Widget>[Container(width: 60.0), Text(userName)],
+      children: <Widget>[Container(width: 60.0), AutoSizeText(userName, maxLines: 1,)],
     );
   }
 }

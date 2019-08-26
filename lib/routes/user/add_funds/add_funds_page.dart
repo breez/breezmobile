@@ -186,6 +186,7 @@ class AddFundsState extends State<AddFundsPage> {
     if (response != null) {
       moonPayURL += "&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
     }
+
     return !_isIpAllowed
         ? GestureDetector(
             child: Container(

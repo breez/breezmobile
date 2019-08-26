@@ -1,7 +1,12 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/widgets/barcode_scanner_placeholder.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InvoiceBottomSheet extends StatefulWidget {
   final InvoiceBloc invoiceBloc;
@@ -14,6 +19,7 @@ class InvoiceBottomSheet extends StatefulWidget {
 }
 
 class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProviderStateMixin {
+  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   bool isExpanded;
 
   @override
@@ -38,8 +44,14 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                 });
               }, isFirst: true),
               _buildInvoiceMenuItem("PAY", "src/icon/qr_scan.png", () async {
-                String decodedQr = await BarcodeScanner.scan();
-                widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
+                try {
+                  String decodedQr = await BarcodeScanner.scan();
+                  widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
+                } on PlatformException catch (e) {
+                  if (e.code == BarcodeScanner.CameraAccessDenied) {
+                    Navigator.of(context).push(FadeInRoute(builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc)));
+                  }
+                }
               }),
               _buildInvoiceMenuItem("CREATE", "src/icon/paste.png", () => Navigator.of(context).pushNamed('/create_invoice')),
             ]));
@@ -74,12 +86,18 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                       size: 24.0,
                     ),
                     Padding(padding: EdgeInsets.only(left: 8.0)),
-                    Text(
-                      title.toUpperCase(),
-                      style: theme.bottomSheetMenuItemStyle.copyWith(
-                        color: isFirst ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white,
+                    Expanded(
+                      child: AutoSizeText(
+                        title.toUpperCase(),
+                        style: theme.bottomSheetMenuItemStyle.copyWith(
+                          color: isFirst ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white,
+                        ),
+                        maxLines: 1,
+                        minFontSize: MinFontSize(context).minFontSize,
+                        stepGranularity: 0.1,
+                        group: _autoSizeGroup,
                       ),
-                    ),
+                    )
                   ]),
       ),
     );

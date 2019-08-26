@@ -8,7 +8,7 @@ const PIN_CODE_LENGTH = 6;
 class PinCodeWidget extends StatefulWidget {
   final String label;
   final bool dismissible;
-  final Function(String pinEntered) onPinEntered;
+  final Future Function(String pinEntered) onPinEntered;
 
   PinCodeWidget(this.label, this.dismissible, this.onPinEntered);
 
@@ -29,24 +29,32 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     _errorMessage = "";
   }
 
-  Widget build(BuildContext context) {
-    double pageHeight =
-        widget.dismissible ? (MediaQuery.of(context).size.height - kToolbarHeight - 24) : (MediaQuery.of(context).size.height - 24);
+  Widget build(BuildContext context) {    
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          new Container(
-              child: Center(
-                child: _buildBreezLogo(context),
+          Flexible(
+            flex: 1,
+            child: new Container(
+                child: Center(
+                  child: _buildBreezLogo(context),
+                ),                
               ),
-              height: pageHeight * 0.29),
-          new Container(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[Text(widget.label), _buildPinCircles(), _buildErrorMessage()]),
-              height: pageHeight * 0.20),
-          new Container(child: _numPad(context), height: pageHeight * 0.50)
+          ),
+          Flexible(
+            flex: 1,
+            child: new Container(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[Text(widget.label), _buildPinCircles(), _buildErrorMessage()]),                
+                ),
+          ),
+          Flexible(
+            flex: 2,
+            child: Container(
+              child: _numPad(context)            
+          ))
         ],
       ),
     );
@@ -105,23 +113,33 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
   }
 
   Widget _numPad(BuildContext context) {
-    var _aspectRatio = widget.dismissible
-        ? (MediaQuery.of(context).size.width / 3) / ((MediaQuery.of(context).size.height - kToolbarHeight - 24) / 8)
-        : (MediaQuery.of(context).size.width / 3) / ((MediaQuery.of(context).size.height - 24) / 8);
-    return new GridView.count(
-        crossAxisCount: 3,
-        childAspectRatio: _aspectRatio,
-        padding: EdgeInsets.zero,
-        children: List<int>.generate(9, (i) => i).map((index) => _numberButton((index + 1).toString())).followedBy([
-          Container(
-            child: new IconButton(
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,            
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+          mainAxisSize: MainAxisSize.max, 
+          children: List<Widget>.generate(3, (i) => _numberButton( (i+1).toString())),),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+          mainAxisSize: MainAxisSize.max, 
+          children: List<Widget>.generate(3, (i) => _numberButton( (i+4).toString())),),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+          mainAxisSize: MainAxisSize.max, 
+          children: List<Widget>.generate(3, (i) => _numberButton( (i+7).toString())),),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+          mainAxisSize: MainAxisSize.max, 
+          children: <Widget>[
+            IconButton(
               onPressed: () => _setPinCodeInput(""),
               icon: Icon(
                 Icons.delete_forever,
                 color: Colors.white,
               ),
             ),
-          ),
           _numberButton("0"),
           Container(
             child: new IconButton(
@@ -131,17 +149,18 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
                 color: Colors.white,
               ),
             ),
-          ),
-        ]).toList());
+          )
+          ]
+        )
+      ],
+    );
   }
 
-  Container _numberButton(String number) {
-    return Container(
-      child: new FlatButton(
+  Widget _numberButton(String number) {
+    return FlatButton(
         onPressed: () => _onNumButtonPressed(number),
         child: new Text(number, textAlign: TextAlign.center, style: theme.numPadNumberStyle),
-      ),
-    );
+      );
   }
 
   _onNumButtonPressed(String numberText) {
@@ -151,12 +170,9 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     }
     if (_enteredPinCode.length == PIN_CODE_LENGTH) {
       Future.delayed(Duration(milliseconds: 200), () {
-        try {
-          widget.onPinEntered(_enteredPinCode);
-        } catch (error) {
-          _errorMessage = error.toString().substring(10);
-        }
-        _setPinCodeInput("");
+        widget.onPinEntered(_enteredPinCode)   
+          .catchError((err) => _errorMessage = err.toString().substring(10))
+          .whenComplete(() => _setPinCodeInput(""));        
       });
     }
   }

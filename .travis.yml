@@ -19,6 +19,11 @@ before_script:
 - export GOPATH=$TMP_GOPATH
 - go get golang.org/x/mobile/cmd/gomobile
 - go get golang.org/x/mobile/cmd/gobind
+- pushd $GOPATH/src/golang.org/x/mobile/
+- git reset --hard 597adff16ade9d88626f8caea514bb189b8c74ee
+- popd
+- go install golang.org/x/mobile/cmd/gomobile
+- go install golang.org/x/mobile/cmd/gobind
 - "$GOPATH/bin/gomobile init"
 - mkdir -p build/ios
 - PATH=$PATH:$GOPATH/bin gomobile bind -target=ios -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.framework

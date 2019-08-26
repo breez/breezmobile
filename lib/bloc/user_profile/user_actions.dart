@@ -7,3 +7,15 @@ class UpdateSecurityModel extends AsyncAction {
 
   UpdateSecurityModel(this.newModel);
 }
+
+class UpdatePinCode extends AsyncAction {
+  final String newPin;
+
+  UpdatePinCode(this.newPin);
+}
+
+class ValidatePinCode extends AsyncAction {
+  final String enteredPin;
+
+  ValidatePinCode(this.enteredPin);
+}

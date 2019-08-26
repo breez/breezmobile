@@ -1,12 +1,14 @@
 import 'dart:async';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/breez_avatar.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/breez_avatar.dart';
 import 'package:breez/widgets/breez_avatar_dialog.dart';
 import 'package:breez/widgets/breez_drawer_header.dart';
+import 'package:flutter/material.dart';
 
 class DrawerItemConfig {
   final String name;
@@ -113,11 +115,13 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                     new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        new Padding(padding: EdgeInsets.only(top: 8.0), child:
-                        new Text(
-                          snapshot.data.name ?? "No Name",
-                          style: theme.navigationDrawerHandleStyle,
-                        ),),
+                        new Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: AutoSizeText(
+                            snapshot.data.name ?? "No Name",
+                            style: theme.navigationDrawerHandleStyle,
+                          ),
+                        ),
                         new Spacer(),
                         new Padding(padding: EdgeInsets.only(top: 4.0,), child:
                         new RawMaterialButton(
