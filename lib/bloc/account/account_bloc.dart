@@ -538,7 +538,7 @@ class AccountBloc {
   void _listenAccountChanges() {
     StreamSubscription<NotificationEvent> eventSubscription;
     eventSubscription =
-        Observable(_breezLib.notificationStream).listen((event) {
+        Observable(_breezLib.notificationStream).listen((event) async {
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
             _pollSyncStatus();
@@ -548,6 +548,7 @@ class AccountBloc {
               return;
             }
             _retryingLightningService = false;
+            await userProfileStream.where((u) => u.locked == false).first;
             _lightningDownController.add(true);         
       }
       if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
