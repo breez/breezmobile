@@ -21,7 +21,18 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
         children:<TextSpan>[
           TextSpan(text: "• Turning off airplane mode\n", style: theme.dialogGrayStyle),
           TextSpan(text: "• Turning on mobile data or Wi-Fi\n", style: theme.dialogGrayStyle),
-          TextSpan(text: "• Checking the signal in your area\n", style: theme.dialogGrayStyle),        
+          TextSpan(text: "• Checking the signal in your area\n", style: theme.dialogGrayStyle),
+          TextSpan(text: "• ", style: theme.dialogGrayStyle),
+          TextSpan(
+            text: "Reset ",
+            style: theme.blueLinkStyle,
+            recognizer: TapGestureRecognizer()..onTap = () async {              
+              ResetChainService resetAction = ResetChainService();
+              accountBloc.userActionsSink.add(resetAction);
+              await resetAction.future;
+              _promptForRestart(context);
+            }),
+          TextSpan(text: "chain information\n", style: theme.dialogGrayStyle),
           TextSpan(text: "• ", style: theme.dialogGrayStyle),  
           TextSpan(
             text: "Reset ", 
@@ -56,3 +67,15 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
     );
   });
 }
+
+Future _promptForRestart(BuildContext context) {
+    return promptAreYouSure(context, null,
+            Text("Please restart to reset chain information.", style: theme.alertStyle),
+            cancelText: "Cancel", okText: "Exit Breez")
+        .then((shouldExit) {
+      if (shouldExit) {
+        exit(0);
+      }
+      return;
+    });
+  }
