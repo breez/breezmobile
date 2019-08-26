@@ -183,4 +183,14 @@ var defaultCliCommandsText = <TextSpan>[
     command: 'fwdinghistory',
   ),
   new TextSpan(text: "\n"),
+  new LinkTextSpan(
+    style: theme.linkStyle,
+    command: 'querymc',
+  ),
+  new TextSpan(text: "\n"),
+  new LinkTextSpan(
+    style: theme.linkStyle,
+    command: 'resetmc',
+  ),
+  new TextSpan(text: "\n"),
 ];
