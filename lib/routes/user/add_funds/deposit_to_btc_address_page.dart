@@ -10,9 +10,11 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
+import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DepositToBTCAddressPage extends StatefulWidget {
   final BreezUserModel _user;
@@ -31,6 +33,8 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   AddFundsBloc _addFundsBloc;
   StreamSubscription<AccountModel> _accountSubscription;
 
+  String _moonPayAddress = "";
+
   @override
   initState() {
     super.initState();
@@ -41,6 +45,22 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
         _accountSubscription.cancel();
       }
     });
+    _checkMoonpayOrder();
+  }
+
+  void _checkMoonpayOrder() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _moonPayAddress = prefs.getString('pendingMoonpayOrderAddress');
+    });
+    if (_moonPayAddress != null &&
+        DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(prefs.getInt('pendingMoonpayOrderTimestamp'))).inMinutes >= 10) {
+      prefs.remove('pendingMoonpayOrderAddress');
+      prefs.remove('pendingMoonpayOrderTimestamp');
+      setState(() {
+        _moonPayAddress = "";
+      });
+    }
   }
 
   @override
@@ -101,6 +121,11 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
           'Breez is processing your previous ${waitingDepositConfirmation || account.processingBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
     } else if (response != null && response.errorMessage.isNotEmpty) {
       errorMessage = response.errorMessage;
+    } else if (_moonPayAddress != null &&
+        account?.addedFundsReply?.unConfirmedAddresses
+                ?.firstWhere((swapAddressInfo) => swapAddressInfo.address == _moonPayAddress, orElse: () => null) !=
+            null) {
+      errorMessage = 'Your MoonPay order is being processed';
     }
 
     if (errorMessage != null) {
@@ -113,7 +138,12 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
-            child: Text(errorMessage, textAlign: TextAlign.center),
+            child: _moonPayAddress.isNotEmpty
+                ? LoadingAnimatedText(
+                    errorMessage,
+                    textAlign: TextAlign.center,
+                  )
+                : Text(errorMessage, textAlign: TextAlign.center),
           ),
           waitingDepositConfirmation
               ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
