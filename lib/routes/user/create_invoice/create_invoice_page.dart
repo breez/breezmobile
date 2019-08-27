@@ -1,23 +1,24 @@
 import 'dart:async';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/logger.dart';
+import 'package:breez/routes/user/create_invoice/qr_code_dialog.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
-import 'package:breez/widgets/form_keyboard_actions.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/routes/user/create_invoice/qr_code_dialog.dart';
-import 'package:breez/logger.dart';
 
 class CreateInvoicePage extends StatefulWidget {
-  
   const CreateInvoicePage();
 
   @override
@@ -87,8 +88,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                     }
                     var account = snapshot.data;
                     return RaisedButton(
-                      padding: EdgeInsets.only(
-                          top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
                       child: new Text(
                         "CREATE",
                         style: theme.buttonStyle,
@@ -166,22 +165,21 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                       validatorFn: acc.validateIncomingPayment,
                       style: theme.FieldTextStyle.textStyle),
                   new Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 48,
                     padding: new EdgeInsets.only(top: 16.0),
                     child: _buildReceivableBTC(acc),
                   ),
                   StreamBuilder(
                       stream: accountBloc.accountStream,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<AccountModel> accSnapshot) {
-
+                      builder: (BuildContext context, AsyncSnapshot<AccountModel> accSnapshot) {
                         AccountModel acc = accSnapshot.data;
 
                         String message;
                         if (accSnapshot.hasError) {
                           message = accSnapshot.error.toString();
                         } else if (!accSnapshot.hasData) {
-                          message =
-                              'Receiving payments will be available as soon as Breez is synchronized.';
+                          message = 'Receiving payments will be available as soon as Breez is synchronized.';
                         } else if (acc.processingConnection) {
                           message =
                               'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
@@ -193,8 +191,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             message += '.';
                           }
                           return Container(
-                              padding: EdgeInsets.only(
-                                  top: 50.0, left: 30.0, right: 30.0),
+                              padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
                               child: Column(children: <Widget>[
                                 Text(
                                   message,
@@ -202,14 +199,13 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                   style: theme.warningStyle,
                                 ),
                               ]));
-                        }
-                        else {
+                        } else {
                           return Container();
                         }
                       })
                 ],
               ),
-            ),            
+            ),
           );
         },
       ),
@@ -217,15 +213,11 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   Widget _buildReceivableBTC(AccountModel acc) {
-    return new Row(
-      children: <Widget>[
-        new Text("Receive up to:", style: theme.textStyle),
-        new Padding(
-          padding: EdgeInsets.only(left: 3.0),
-          child: new Text(acc.currency.format(acc.maxAllowedToReceive),
-              style: theme.textStyle),
-        )
-      ],
+    return AutoSizeText(
+      "Receive up to: ${acc.currency.format(acc.maxAllowedToReceive)}",
+      style: theme.textStyle,
+      maxLines: 1,
+      minFontSize: MinFontSize(context).minFontSize,
     );
   }
 }

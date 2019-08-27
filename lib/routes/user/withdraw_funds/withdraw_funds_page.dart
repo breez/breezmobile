@@ -112,8 +112,6 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                         height: 48.0,
                         width: 168.0,
                         child: RaisedButton(
-                          padding: EdgeInsets.only(
-                              top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
                           child: new Text(
                             "REMOVE",
                             style: theme.buttonStyle,

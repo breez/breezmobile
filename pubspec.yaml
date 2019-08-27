@@ -33,7 +33,6 @@ dependencies:
   ini: ^2.0.1
   connectivity: ^0.4.2
   logging: ^0.11.3+2
-  auto_size_text: ^0.2.1
   flutter_svg: "^0.13.0"
   json_annotation: ^2.0.0
   http: ^0.12.0+1
@@ -52,7 +51,9 @@ dependencies:
       url: https://github.com/breez/flutter_webview_plugin.git
   keyboard_actions: ^2.1.1
   flutter_secure_storage: ^3.2.1+1
+  auto_size_text: 2.0.2+1
   app_settings: ^1.0.6+2
+
 dev_dependencies:
   mockito: "^3.0.0"
   protoc_plugin: ^16.0.1

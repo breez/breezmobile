@@ -1,15 +1,17 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/security_pin/restore_pin.dart';
+import 'package:breez/routes/user/home/beta_warning_dialog.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/restore_dialog.dart';
-import 'package:breez/routes/user/home/beta_warning_dialog.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
@@ -188,34 +190,35 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                   new Expanded(flex: 190, child: new Container()),
                   new Expanded(
                     flex: 48,
-                    child: new Text(
-                      _instructions,
-                      textAlign: TextAlign.center,
-                      style: theme.welcomeTextStyle,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 24, right: 24),
+                      child: AutoSizeText(
+                        _instructions,
+                        textAlign: TextAlign.center,
+                        style: theme.welcomeTextStyle,
+                      ),
                     ),
                   ),
                   new Expanded(flex: 79, child: new Container()),
-                  new Container(
-                      height: 48.0,
-                      width: 168.0,
-                      child: new RaisedButton(
-                          child: new Text("LET'S BREEZ!",
-                              style: theme.buttonStyle),
-                          color: theme.whiteColor,
-                          elevation: 0.0,
-                          shape: const StadiumBorder(),
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  return BetaWarningDialog();
-                                }).then((approved) {
-                              if (approved) {
-                                _proceedToRegister();
-                              }
-                            });
-                          })),
+                  RaisedButton(
+                    padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+                    child: Text("LET'S BREEZ!", style: theme.buttonStyle),
+                    color: theme.whiteColor,
+                    elevation: 0.0,
+                    shape: const StadiumBorder(),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return BetaWarningDialog();
+                          }).then((approved) {
+                        if (approved) {
+                          _proceedToRegister();
+                        }
+                      });
+                    },
+                  ),
                   new Expanded(
                     flex: 40,
                     child: new Padding(

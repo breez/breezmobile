@@ -93,7 +93,7 @@ fileprivate extension BindingExecutor {
             return FlutterStandardTypedData(bytes: data);
         }
         if let err = arg as? NSError {
-            return FlutterError(code: "Method Error", message: err.description, details: err.description);
+            return FlutterError(code: "Method Error", message: err.localizedDescription, details: err.description);
         }
         if let _ = arg as? Void {
             return nil;

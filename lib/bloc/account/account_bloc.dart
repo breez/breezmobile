@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
@@ -25,6 +26,7 @@ import 'package:flutter/services.dart';
 import 'account_synchronizer.dart';
 
 class AccountBloc {
+  static const FORCE_BOOTSTRAP_FILE_NAME = "FORCE_BOOTSTRAP";
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
   static const String BOOTSTRAPING_PREFERENCES_KEY = "BOOTSTRAPING";
@@ -137,6 +139,7 @@ class AccountBloc {
       CancelPaymentRequest: _cancelPaymentRequest,
       ChangeSyncUIState: _collapseSyncUI,
       FetchRates: _fetchRates,
+      ResetChainService: _handleResetChainService,
     };
 
     _accountController.add(AccountModel.initial());
@@ -223,6 +226,12 @@ class AccountBloc {
     action.resolve(await _breezLib.setPeers([]));    
   }
 
+  Future _handleResetChainService(ResetChainService action) async {
+    var workingDir = await _breezLib.getWorkingDir();
+    var bootstrapFile = File(workingDir.path + "/$FORCE_BOOTSTRAP_FILE_NAME");    
+    action.resolve(await bootstrapFile.create(recursive: true));
+  }
+
   Future _handleRestartDaemon(RestartDaemon action) async {
     action.resolve(await _breezLib.restartLightningDaemon());    
   }
@@ -291,7 +300,7 @@ class AccountBloc {
 
   void _listenRefundBroadcasts() {
     _broadcastRefundRequestController.stream.listen((request) {
-      _breezLib.refund(request.fromAddress, request.toAddress).then((txID) {
+      _breezLib.refund(request.fromAddress, request.toAddress, request.feeRate).then((txID) {
         _broadcastRefundResponseController
             .add(new BroadcastRefundResponseModel(request, txID));
       }).catchError(_broadcastRefundResponseController.addError);
@@ -533,9 +542,7 @@ class AccountBloc {
   void _listenAccountChanges() {
     StreamSubscription<NotificationEvent> eventSubscription;
     eventSubscription =
-        Observable(_breezLib.notificationStream)
-        //.transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
-        .listen((event) {
+        Observable(_breezLib.notificationStream).listen((event) async {
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
             _pollSyncStatus();
@@ -545,6 +552,7 @@ class AccountBloc {
               return;
             }
             _retryingLightningService = false;
+            await userProfileStream.where((u) => u.locked == false).first;
             _lightningDownController.add(true);         
       }
       if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {

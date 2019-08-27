@@ -275,7 +275,7 @@ class AccountModel {
     }
 
     if (amount > maxAmount) {
-      return "Not enough funds.";
+      return outgoing ? "Not enough funds" : "Amount exceeds available capacity";      
     }
 
     if (outgoing && amount > maxAllowedToPay) {
@@ -464,8 +464,9 @@ class RefundableDepositModel {
 class BroadcastRefundRequestModel {
   final String fromAddress;
   final String toAddress;
+  final Int64 feeRate;
 
-  BroadcastRefundRequestModel(this.fromAddress, this.toAddress);
+  BroadcastRefundRequestModel(this.fromAddress, this.toAddress, this.feeRate);
 }
 
 class BroadcastRefundResponseModel {

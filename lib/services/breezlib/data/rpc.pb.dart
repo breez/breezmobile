@@ -527,6 +527,8 @@ class RefundRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('RefundRequest', package: const $pb.PackageName('data'))
     ..aOS(1, 'address')
     ..aOS(2, 'refundAddress')
+    ..a<$core.int>(3, 'targetConf', $pb.PbFieldType.O3)
+    ..aInt64(4, 'satPerByte')
     ..hasRequiredFields = false
   ;
 
@@ -551,6 +553,16 @@ class RefundRequest extends $pb.GeneratedMessage {
   set refundAddress($core.String v) { $_setString(1, v); }
   $core.bool hasRefundAddress() => $_has(1);
   void clearRefundAddress() => clearField(2);
+
+  $core.int get targetConf => $_get(2, 0);
+  set targetConf($core.int v) { $_setSignedInt32(2, v); }
+  $core.bool hasTargetConf() => $_has(2);
+  void clearTargetConf() => clearField(3);
+
+  Int64 get satPerByte => $_getI64(3);
+  set satPerByte(Int64 v) { $_setInt64(3, v); }
+  $core.bool hasSatPerByte() => $_has(3);
+  void clearSatPerByte() => clearField(4);
 }
 
 class AddFundError extends $pb.GeneratedMessage {

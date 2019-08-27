@@ -1,20 +1,20 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/user/add_funds/address_widget.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AddFundsPage extends StatefulWidget {
   final BreezUserModel _user;
@@ -160,7 +160,7 @@ class AddFundsState extends State<AddFundsPage> {
               child: Container(
                 padding:
                     new EdgeInsets.only(top: 36.0, left: 12.0, right: 12.0),
-                child: Text(
+                child: AutoSizeText(
                   "Send up to " +
                       account.currency.format(response.maxAllowedDeposit,
                           includeSymbol: true) +
@@ -168,6 +168,8 @@ class AddFundsState extends State<AddFundsPage> {
                       "\nBreez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount)} in your balance.",
                   style: theme.warningStyle,
                   textAlign: TextAlign.center,
+                  minFontSize: MinFontSize(context).minFontSize,
+                  stepGranularity: 0.1,
                 ),
               ),
             ),
@@ -180,24 +182,37 @@ class AddFundsState extends State<AddFundsPage> {
     return new GestureDetector(
         onTap: () => Navigator.of(context).pushNamed("/fastbitcoins"),
         child: Container(
+          height: 48,
+          width: 256,
           decoration: BoxDecoration(
               color: theme.fastbitcoins.iconBgColor,
               border: Border.all(
                   color: Colors.white, style: BorderStyle.solid, width: 1.0),
               borderRadius: BorderRadius.circular(14.0)),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Image(
-                image: AssetImage("src/icon/vendors/fastbitcoins_logo.png"),
-                height: 24.0,
-                fit: BoxFit.scaleDown,
-                color: theme.fastbitcoins.iconFgColor,
+              Padding(
+                padding: EdgeInsets.only(left: 8.0, right: 4.0),
+                child: Image(
+                  image: AssetImage("src/icon/vendors/fastbitcoins_logo.png"),
+                  height: 24.0,
+                  fit: BoxFit.scaleDown,
+                  color: theme.fastbitcoins.iconFgColor,
+                ),
               ),
-              Padding(padding: EdgeInsets.only(right: 4.0)),
-              Text(
-                'REDEEM FASTBITCOINS VOUCHER',
-                style: theme.fastbitcoinsTextStyle,
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: 8.0),
+                  child: AutoSizeText(
+                    'REDEEM FASTBITCOINS VOUCHER',
+                    style: theme.fastbitcoinsTextStyle,
+                    maxLines: 1,
+                    minFontSize: MinFontSize(context, fontSize: theme.fastbitcoinsTextStyle.fontSize).minFontSize,
+                    stepGranularity: 0.1,
+                  ),
+                ),
               )
             ],
           ),
@@ -220,15 +235,6 @@ class AddFundsState extends State<AddFundsPage> {
 
     return response == null || account?.connected != true
         ? SizedBox()
-        : new Padding(
-            padding: new EdgeInsets.only(bottom: 40.0),
-            child: new Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  new SizedBox(
-                      height: 48.0,
-                      width: 256.0,
-                      child: _buildRedeemVoucherButton())
-                ]));
+        : new Padding(padding: new EdgeInsets.only(bottom: 40.0, left: 16.0, right: 16.0), child:_buildRedeemVoucherButton());
   }
 }

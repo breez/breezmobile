@@ -70,15 +70,27 @@ class UserApp extends StatelessWidget {
               fontFamily: 'IBMPlexSansRegular',
               cardColor: theme.BreezColors.blue[500],
             ),
+            builder: (BuildContext context, Widget child) {
+              final MediaQueryData data = MediaQuery.of(context);
+              return MediaQuery(
+                  data: data.copyWith(
+                    textScaleFactor: (data.textScaleFactor >= 1.3) ? 1.3 : data.textScaleFactor,
+                  ),
+                  child: child);
+            },
             initialRoute: user.registered ? (user.locked ? '/lockscreen' : null) : '/splash',
             home: new Home(accountBloc, invoiceBloc, userProfileBloc, connectPayBloc, backupBloc),
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
                 case '/lockscreen':
                   return new FadeInRoute(
-                      builder: (_) => new AppLockScreen(user.securityModel, onUnlock: (){
-                        _navigatorKey.currentState.pop();                        
-                        userProfileBloc.userSink.add(user.copyWith(locked: false));
+                      builder: (ctx) => new AppLockScreen((pinEntered) {
+                        var validateAction = ValidatePinCode(pinEntered);
+                        userProfileBloc.userActionsSink.add(validateAction);
+                        return validateAction.future.then((_){
+                          Navigator.pop(ctx);                          
+                          userProfileBloc.userSink.add(user.copyWith(locked: false));
+                        });                        
                       },),
                       settings: settings
                   );

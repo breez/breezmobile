@@ -212,11 +212,10 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                           labelText: 'Currency',
                                         ),
                                         child: Container(
-                                          height: 21.3,
+                                          height: 28.3,
                                           child: DropdownButtonHideUnderline(
                                             child: new DropdownButton(
                                               value: _currency,
-                                              isDense: true,
                                               onChanged: (String newValue) {
                                                 setState(() {
                                                   _currency = newValue;
