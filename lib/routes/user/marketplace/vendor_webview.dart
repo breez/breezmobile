@@ -3,13 +3,14 @@ import 'dart:convert' as JSON;
 import 'dart:typed_data';
 
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/add_funds_bloc.dart';
+import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/routes/user/marketplace/webln_handlers.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class VendorWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -18,8 +19,10 @@ class VendorWebViewPage extends StatefulWidget {
   final bool listenInvoices;
   final String redirectURL;
   final String walletAddress;
+  final AddFundsBloc addFundsBloc;
 
-  VendorWebViewPage(this.accountBloc, this._url, this._title, {this.listenInvoices = true, this.redirectURL, this.walletAddress});
+  VendorWebViewPage(this.accountBloc, this._url, this._title,
+      {this.listenInvoices = true, this.redirectURL, this.walletAddress, this.addFundsBloc});
 
   @override
   State<StatefulWidget> createState() {
@@ -28,30 +31,30 @@ class VendorWebViewPage extends StatefulWidget {
 }
 
 class VendorWebViewPageState extends State<VendorWebViewPage> {
-  final _widgetWebview = new FlutterWebviewPlugin();    
-  StreamSubscription _postMessageListener;  
+  final _widgetWebview = new FlutterWebviewPlugin();
+  StreamSubscription _postMessageListener;
   WeblnHandlers _weblnHandlers;
   bool _isInit = false;
   Uint8List _screenshotData;
 
   @override
   void initState() {
-    super.initState();    
+    super.initState();
     _widgetWebview.onDestroy.listen((_) {
       if (Navigator.canPop(context)) {
         Navigator.of(context).pop();
       }
-    });    
+    });
   }
-  
-  Future onBeforeCallHandler(String handlerName){
-    if (_screenshotData != null || !["makeInvoice", "sendPayment"].contains(handlerName)){
+
+  Future onBeforeCallHandler(String handlerName) {
+    if (_screenshotData != null || !["makeInvoice", "sendPayment"].contains(handlerName)) {
       return Future.value(null);
     }
 
-    Completer beforeCompleter = Completer(); 
+    Completer beforeCompleter = Completer();
     FocusScope.of(context).requestFocus(FocusNode());
-      // Wait for keyboard and screen animations to settle
+    // Wait for keyboard and screen animations to settle
     Timer(Duration(milliseconds: 750), () {
       // Take screenshot and show payment request dialog
       _takeScreenshot().then((imageData) {
@@ -61,13 +64,13 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
         // Wait for memory image to load
         Timer(Duration(milliseconds: 200), () {
           // Hide Webview to interact with payment request dialog
-          _widgetWebview.hide(); 
+          _widgetWebview.hide();
           beforeCompleter.complete();
         });
       });
-    }); 
+    });
 
-    return beforeCompleter.future; 
+    return beforeCompleter.future;
   }
 
   @override
@@ -127,7 +130,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
           if (msg != null) {
             var postMessage = JSON.jsonDecode(msg);
             if (postMessage['status'] == "completed") {
-              _saveOrderAddress();
+              widget.addFundsBloc.orderSink.add(MoonpayOrder(widget.walletAddress, DateTime.now().millisecondsSinceEpoch));
             }
           }
         });
@@ -135,12 +138,6 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       _isInit = true;
     }
     super.didChangeDependencies();
-  }
-
-  _saveOrderAddress() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('pendingMoonpayOrderAddress', widget.walletAddress);
-    prefs.setInt('pendingMoonpayOrderTimestamp', DateTime.now().millisecondsSinceEpoch);
   }
 
   @override

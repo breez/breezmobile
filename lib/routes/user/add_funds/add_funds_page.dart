@@ -13,14 +13,13 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/route.dart';
-import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:breez/bloc/account/moonpay_order.dart';
 import 'deposit_to_btc_address_page.dart';
 
 class AddFundsPage extends StatefulWidget {
@@ -39,9 +38,10 @@ class AddFundsState extends State<AddFundsPage> {
   final String _title = "Add Funds";
   AddFundsBloc _addFundsBloc;
   StreamSubscription<AccountModel> _accountSubscription;
+  StreamSubscription<MoonpayOrder> _moonPaySubscription;
   bool _isIpAllowed = false;
 
-  String _moonPayAddress = "";
+  MoonpayOrder _moonPayOrder;
   Timer moonPayTimer;
 
   @override
@@ -55,12 +55,12 @@ class AddFundsState extends State<AddFundsPage> {
       }
     });
     isIpAllowed();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _checkMoonpayOrder();
+    _moonPaySubscription = _addFundsBloc.moonPayOrderStream.listen((order) {
+      setState(() {
+        _moonPayOrder = order;
+      });
+    });
+    _checkMoonpayOrderExpiration();
   }
 
   isIpAllowed() async {
@@ -72,30 +72,11 @@ class AddFundsState extends State<AddFundsPage> {
     _isIpAllowed = jsonDecode(response.body)['isAllowed'];
   }
 
-  void _checkMoonpayOrder() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _moonPayAddress = prefs.getString('pendingMoonpayOrderAddress');
-    });
-    _startTimer();
-  }
-
-  void _startTimer() {
-    moonPayTimer?.cancel();
+  void _checkMoonpayOrderExpiration() {
     moonPayTimer = Timer.periodic(new Duration(seconds: 15), (_) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      setState(() {
-        _moonPayAddress = prefs.getString('pendingMoonpayOrderAddress');
-      });
-      var orderDate = prefs.getInt('pendingMoonpayOrderTimestamp') != null
-          ? DateTime.fromMillisecondsSinceEpoch(prefs.getInt('pendingMoonpayOrderTimestamp'))
-          : null;
-      if (_moonPayAddress != null && DateTime.now().difference(orderDate).inMinutes >= 1) {
-        prefs.remove('pendingMoonpayOrderAddress');
-        prefs.remove('pendingMoonpayOrderTimestamp');
-        setState(() {
-          _moonPayAddress = "";
-        });
+      if (_moonPayOrder?.timestamp != null &&
+          DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(_moonPayOrder.timestamp)).inMinutes >= 15) {
+        _addFundsBloc.moonPayOrderSink.add(MoonpayOrder(null, null));
       }
     });
   }
@@ -104,6 +85,7 @@ class AddFundsState extends State<AddFundsPage> {
   void dispose() {
     _addFundsBloc.addFundRequestSink.close();
     _accountSubscription.cancel();
+    _moonPaySubscription?.cancel();
     moonPayTimer?.cancel();
     super.dispose();
   }
@@ -160,9 +142,9 @@ class AddFundsState extends State<AddFundsPage> {
           'Breez is processing your previous ${waitingDepositConfirmation || account.processingBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
     } else if (response != null && response.errorMessage.isNotEmpty) {
       errorMessage = response.errorMessage;
-    } else if (_moonPayAddress != null ||
+    } else if (_moonPayOrder?.address != null &&
         account?.addedFundsReply?.unConfirmedAddresses
-                ?.firstWhere((swapAddressInfo) => swapAddressInfo.address == _moonPayAddress, orElse: () => null) !=
+                ?.firstWhere((swapAddressInfo) => swapAddressInfo.address == _moonPayOrder.address, orElse: () => null) !=
             null) {
       errorMessage = 'Your MoonPay order is being processed';
     }
@@ -177,7 +159,7 @@ class AddFundsState extends State<AddFundsPage> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
-            child: _moonPayAddress != null
+            child: _moonPayOrder?.address != null
                 ? LoadingAnimatedText(
                     errorMessage.substring(0, errorMessage.length - 1),
                     textAlign: TextAlign.center,
@@ -227,7 +209,7 @@ class AddFundsState extends State<AddFundsPage> {
       ..add(Divider(
         indent: 72,
       ))
-      ..add(_buildMoonPayButton(response))
+      ..add(_buildMoonpayButton(response))
       ..add(Divider(indent: 72))
       ..add(_buildRedeemVoucherButton())
       ..add(Divider(indent: 72));
@@ -282,7 +264,7 @@ class AddFundsState extends State<AddFundsPage> {
     );
   }
 
-  Widget _buildMoonPayButton(AddFundResponse response) {
+  Widget _buildMoonpayButton(AddFundResponse response) {
     String baseUrl = "https://buy-staging.moonpay.io";
     String apiKey = "pk_test_AZskxvTXb0rpsI7o2GCdmzs8jeST9d";
     String currencyCode = "btc";
@@ -330,6 +312,7 @@ class AddFundsState extends State<AddFundsPage> {
                   "MoonPay",
                   redirectURL: redirectURL,
                   walletAddress: walletAddress,
+                  addFundsBloc: _addFundsBloc,
                   listenInvoices: false,
                 ),
               ),
