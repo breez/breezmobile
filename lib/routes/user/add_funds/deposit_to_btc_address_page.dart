@@ -140,16 +140,19 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
       AddressWidget(response?.address, response?.backupJson),
       response == null
           ? SizedBox()
-          : Expanded(
+          : Padding(
+              padding: const EdgeInsets.all(16),
               child: Container(
-                padding: new EdgeInsets.only(top: 36.0, left: 12.0, right: 12.0),
+                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: theme.errorColor)),
+                padding: new EdgeInsets.all(16),
                 child: Text(
                   "Send up to " + account.currency.format(response.maxAllowedDeposit, includeSymbol: true) + " to this address.",
-                  style: theme.warningStyle,
+                  style: theme.reserveAmountWarningStyle,
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
+      Expanded(child: SizedBox()),
       _buildBottomBar(response, account, hasError: error != null ? true : false),
     ]);
   }
