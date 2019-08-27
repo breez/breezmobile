@@ -11,9 +11,13 @@ import 'package:breez/logger.dart';
 import 'package:breez/routes/user/marketplace/vendor_webview.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/link_launcher.dart';
+import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import 'deposit_to_btc_address_page.dart';
@@ -36,6 +40,7 @@ class AddFundsState extends State<AddFundsPage> {
   StreamSubscription<AccountModel> _accountSubscription;
   bool _isIpAllowed = false;
 
+  String _moonPayAddress = "";
   @override
   initState() {
     super.initState();
@@ -69,46 +74,112 @@ class AddFundsState extends State<AddFundsPage> {
   Widget build(BuildContext context) {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return new StreamBuilder(
-        stream: accountBloc.accountStream,
-        builder: (BuildContext context, AsyncSnapshot<AccountModel> account) {
-          if (!account.hasData) {
-            return StaticLoader();
-          }
-          return StreamBuilder(
-              stream: _addFundsBloc.addFundResponseStream,
-              builder: (BuildContext context, AsyncSnapshot<AddFundResponse> response) {
-                if (!response.hasData) {
-                  return StaticLoader();
-                }
-                return Material(
-                  child: new Scaffold(
-                      appBar: new AppBar(
-                        iconTheme: theme.appBarIconTheme,
-                        textTheme: theme.appBarTextTheme,
-                        backgroundColor: theme.BreezColors.blue[500],
-                        leading: backBtn.BackButton(),
-                        title: new Text(
-                          _title,
-                          style: theme.appBarTextStyle,
-                        ),
-                        elevation: 0.0,
-                      ),
-                      body: Stack(
-                        children: <Widget>[
-                          ListView(
-                            children: _buildList(response.data),
-                          ),
-                          Positioned(
-                            child: _buildReserveAmountWarning(account.data, response.data),
-                            bottom: 72,
-                            right: 22,
-                            left: 22,
-                          )
-                        ],
-                      )),
-                );
-              });
-        });
+      stream: accountBloc.accountStream,
+      builder: (BuildContext context, AsyncSnapshot<AccountModel> account) {
+        if (!account.hasData) {
+          return StaticLoader();
+        }
+        return StreamBuilder(
+          stream: _addFundsBloc.addFundResponseStream,
+          builder: (BuildContext context, AsyncSnapshot<AddFundResponse> response) {
+            if (!response.hasData) {
+              return StaticLoader();
+            }
+            return Material(
+              child: new Scaffold(
+                appBar: new AppBar(
+                  iconTheme: theme.appBarIconTheme,
+                  textTheme: theme.appBarTextTheme,
+                  backgroundColor: theme.BreezColors.blue[500],
+                  leading: backBtn.BackButton(),
+                  title: new Text(
+                    _title,
+                    style: theme.appBarTextStyle,
+                  ),
+                  elevation: 0.0,
+                ),
+                body: getBody(context, account.data, response.data,
+                    response.hasError ? "Failed to retrieve an address from Breez server\nPlease check your internet connection." : null),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget getBody(BuildContext context, AccountModel account, AddFundResponse response, String error) {
+    var unconfirmedTxID = account?.swapFundsStatus?.unconfirmedTxID;
+    bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
+
+    String errorMessage;
+    if (error != null) {
+      errorMessage = error;
+    } else if (account == null || account.bootstraping) {
+      errorMessage = 'You\'d be able to add funds after Breez is finished bootstrapping.';
+    } else if (unconfirmedTxID?.isNotEmpty == true || account.processingWithdrawal) {
+      errorMessage =
+          'Breez is processing your previous ${waitingDepositConfirmation || account.processingBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
+    } else if (response != null && response.errorMessage.isNotEmpty) {
+      errorMessage = response.errorMessage;
+    } else if (_moonPayAddress != null ||
+        account?.addedFundsReply?.unConfirmedAddresses
+                ?.firstWhere((swapAddressInfo) => swapAddressInfo.address == _moonPayAddress, orElse: () => null) !=
+            null) {
+      errorMessage = 'Your MoonPay order is being processed';
+    }
+
+    if (errorMessage != null) {
+      if (!errorMessage.endsWith('.')) {
+        errorMessage += '.';
+      }
+      return Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+            child: _moonPayAddress != null
+                ? LoadingAnimatedText(
+                    errorMessage.substring(0, errorMessage.length - 1),
+                    textAlign: TextAlign.center,
+                  )
+                : Text(errorMessage, textAlign: TextAlign.center),
+          ),
+          waitingDepositConfirmation
+              ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                    child: Text("Transaction ID:", textAlign: TextAlign.start),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(top: 10.0, left: 30.0, right: 22.0),
+                      child: LinkLauncher(
+                        linkName: unconfirmedTxID,
+                        linkAddress: "https://blockstream.info/tx/$unconfirmedTxID",
+                        onCopy: () {
+                          Clipboard.setData(ClipboardData(text: unconfirmedTxID));
+                          showFlushbar(context, message: "Transaction ID was copied to your clipboard.", duration: Duration(seconds: 3));
+                        },
+                      ))
+                ])
+              : SizedBox()
+        ],
+      );
+    }
+    return Stack(
+      children: <Widget>[
+        ListView(
+          children: _buildList(response),
+        ),
+        Positioned(
+          child: _buildReserveAmountWarning(account, response),
+          bottom: 72,
+          right: 22,
+          left: 22,
+        )
+      ],
+    );
   }
 
   List<Widget> _buildList(AddFundResponse response) {
