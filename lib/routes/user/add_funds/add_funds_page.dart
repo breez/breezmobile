@@ -93,38 +93,38 @@ class AddFundsState extends State<AddFundsPage> {
   @override
   Widget build(BuildContext context) {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    return new StreamBuilder(
-      stream: accountBloc.accountStream,
-      builder: (BuildContext context, AsyncSnapshot<AccountModel> account) {
-        if (!account.hasData) {
-          return StaticLoader();
-        }
-        return StreamBuilder(
-          stream: _addFundsBloc.addFundResponseStream,
-          builder: (BuildContext context, AsyncSnapshot<AddFundResponse> response) {
-            if (!response.hasData) {
-              return StaticLoader();
+    return Material(
+      child: new Scaffold(
+        appBar: new AppBar(
+          iconTheme: theme.appBarIconTheme,
+          textTheme: theme.appBarTextTheme,
+          backgroundColor: theme.BreezColors.blue[500],
+          leading: backBtn.BackButton(),
+          title: new Text(
+            _title,
+            style: theme.appBarTextStyle,
+          ),
+          elevation: 0.0,
+        ),
+        body: StreamBuilder(
+          stream: accountBloc.accountStream,
+          builder: (BuildContext context, AsyncSnapshot<AccountModel> account) {
+            if (!account.hasData) {
+              return Center(child: Loader(color: theme.BreezColors.white[400]));
             }
-            return Material(
-              child: new Scaffold(
-                appBar: new AppBar(
-                  iconTheme: theme.appBarIconTheme,
-                  textTheme: theme.appBarTextTheme,
-                  backgroundColor: theme.BreezColors.blue[500],
-                  leading: backBtn.BackButton(),
-                  title: new Text(
-                    _title,
-                    style: theme.appBarTextStyle,
-                  ),
-                  elevation: 0.0,
-                ),
-                body: getBody(context, account.data, response.data,
-                    response.hasError ? "Failed to retrieve an address from Breez server\nPlease check your internet connection." : null),
-              ),
+            return StreamBuilder(
+              stream: _addFundsBloc.addFundResponseStream,
+              builder: (BuildContext context, AsyncSnapshot<AddFundResponse> response) {
+                if (!response.hasData && !response.hasError) {
+                  return Center(child: Loader(color: theme.BreezColors.white[400]));
+                }
+                return getBody(context, account.data, response.data,
+                    response.hasError ? "Failed to retrieve an address from Breez server\nPlease check your internet connection." : null);
+              },
             );
           },
-        );
-      },
+        ),
+      ),
     );
   }
 
