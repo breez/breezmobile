@@ -232,6 +232,7 @@ class AddFundsState extends State<AddFundsPage> {
 
   Widget _buildDepositToBTCAddress() {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       child: Container(
         height: 72,
         width: MediaQuery.of(context).size.width,
@@ -280,6 +281,7 @@ class AddFundsState extends State<AddFundsPage> {
 
     return !_isIpAllowed
         ? GestureDetector(
+            behavior: HitTestBehavior.translucent,
             child: Container(
               height: 72,
               width: MediaQuery.of(context).size.width,
@@ -323,6 +325,7 @@ class AddFundsState extends State<AddFundsPage> {
 
   Widget _buildRedeemVoucherButton() {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       child: Container(
         height: 72,
         width: MediaQuery.of(context).size.width,
