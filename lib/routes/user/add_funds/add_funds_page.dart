@@ -248,7 +248,7 @@ class AddFundsState extends State<AddFundsPage> {
           ),
           Expanded(
             child: Text(
-              'DEPOSIT TO BITCOIN ADDRESS',
+              'DEPOSIT TO BTC ADDRESS',
               style: theme.addFundsItemsStyle,
             ),
           ),
