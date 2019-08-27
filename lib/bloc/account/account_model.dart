@@ -129,8 +129,7 @@ class AccountModel {
   final FundStatusReply addedFundsReply;
   final String paymentRequestInProgress;  
   final Int64 onChainFeeRate;
-  final bool initial;
-  final bool bootstraping;
+  final bool initial;  
   final double bootstrapProgress;
   final bool enableInProgress;
   final double syncProgress;
@@ -140,8 +139,7 @@ class AccountModel {
       {this.initial = true,
       this.addedFundsReply,
       this.paymentRequestInProgress,      
-      this.onChainFeeRate,
-      this.bootstraping = false,
+      this.onChainFeeRate,      
       this.enableInProgress = false,
       this.bootstrapProgress = 0,
       this.syncProgress = 0,
@@ -159,8 +157,7 @@ class AccountModel {
             "USD",
             null,
             List(),
-            initial: true,
-            bootstraping: true);
+            initial: true);
   AccountModel copyWith(
       {Account accountResponse,
       Currency currency,
@@ -169,8 +166,7 @@ class AccountModel {
       List<FiatConversion> fiatConversionList,
       FundStatusReply addedFundsReply,
       String paymentRequestInProgress,      
-      Int64 onChainFeeRate,
-      bool bootstraping,
+      Int64 onChainFeeRate,      
       bool enableInProgress,
       double bootstrapProgress,
       double syncProgress,
@@ -182,8 +178,7 @@ class AccountModel {
         fiatCurrency ?? this._fiatCurrency,
         fiatConversionList ?? this._fiatConversionList,
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,        
-        onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
-        bootstraping: bootstraping ?? this.bootstraping,
+        onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,        
         bootstrapProgress: bootstrapProgress ?? this.bootstrapProgress,
         enableInProgress: enableInProgress ?? this.enableInProgress,
         paymentRequestInProgress:
@@ -202,9 +197,7 @@ class AccountModel {
   bool get closingConnection =>
       _accountResponse.status == Account_AccountStatus.CLOSING_CONNECTION;
   bool get connected => _accountResponse.status == Account_AccountStatus.CONNECTED;
-  bool get isInitialBootstrap =>
-      (bootstraping ||
-      (!connected && !closingConnection && !processingConnection)) && !initial;
+  bool get isInitialBootstrap => !processingConnection && !connected && !initial;
   Int64 get balance => _accountResponse.balance;
   String get formattedFiatBalance => fiatCurrency?.format(balance);
   Int64 get walletBalance => _accountResponse.walletBalance;

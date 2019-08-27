@@ -186,18 +186,6 @@ class AccountBloc {
     });
   }
 
-  void _setBootstraping(bool bootstraping) async {
-    log.info("account: _setBootstraping = $bootstraping");
-    _sharedPreferences.setBool(BOOTSTRAPING_PREFERENCES_KEY, bootstraping);
-    bool initial = bootstraping ? false : _accountController.value.initial;
-    _accountController
-        .add(_accountController.value.copyWith(bootstraping: bootstraping, initial: initial));  
-    if (bootstraping && _accountController.value.syncUIState == SyncUIState.NONE) {
-      await userProfileStream.where((u) => u.locked == false).first;
-      _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
-    }
-  }
-
   bool _isBootstrapping() {
     return _sharedPreferences.get(BOOTSTRAPING_PREFERENCES_KEY) == true;
   }
@@ -324,7 +312,8 @@ class AccountBloc {
         .listen((_) async {
       connectingFuture = connectingFuture.whenComplete(() async {
         var acc = _accountController.value;
-        if (_allowReconnect == true && acc.connected && acc.readyForPayments == false) {
+        if (_allowReconnect == true && 
+              (acc.connected && acc.readyForPayments == false || acc.processingConnection)) {
           await _breezLib.connectAccount();
         }
       }).catchError((e) {});
@@ -371,11 +360,15 @@ class AccountBloc {
       //start lightning
       if (user.registered) {
         if (!_startedLightning) {
-          _breezLib.needsBootstrap().then((need){
+
+          _breezLib.needsBootstrap().then((need) async {
               log.info("account: needsBootstrap = $need");
-              _setBootstraping(need || _isBootstrapping());
+              if (need && _accountController.value.syncUIState == SyncUIState.NONE) {
+                await userProfileStream.where((u) => u.locked == false).first;
+                _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
+              }
           });          
-          //_askWhitelistOptimizations();
+          
           log.info(
               "Account bloc got registered user, starting lightning daemon...");
           _startedLightning = true;
@@ -416,6 +409,7 @@ class AccountBloc {
       _accountSynchronizer.dismiss();
     }
 
+    bool blockingPrompted = false;
     _accountSynchronizer = new AccountSynchronizer(
       _breezLib, 
       onStart: (startPollTimestamp, bootstraping) async {
@@ -423,14 +417,16 @@ class AccountBloc {
             bootstraping || Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 1) &&
             _accountController.value.syncUIState == SyncUIState.NONE) {
               await userProfileStream.where((u) => u.locked == false).first;
+              blockingPrompted = true;
              _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
           }
       },
       onProgress: (startPollTimestamp, progress) async {
         if (
             Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 1) &&
-            _accountController.value.syncUIState == SyncUIState.NONE) {
+            _accountController.value.syncUIState == SyncUIState.NONE && !blockingPrompted) {
               await userProfileStream.where((u) => u.locked == false).first;
+              blockingPrompted = true;
              _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
           }
         _accountController.add(_accountController.value.copyWith(syncProgress: progress));
@@ -576,6 +572,9 @@ class AccountBloc {
             acc.status.toString());
         _accountController.add(_accountController.value
             .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatShortName: _currentUser?.fiatCurrency, initial: false));
+      } else {
+        _accountController.add(_accountController.value
+            .copyWith(initial: false));
       }
     }).catchError(_accountController.addError);
 
@@ -593,10 +592,7 @@ class AccountBloc {
   void _listenRoutingConnectionChanges() {
     Observable(_accountController.stream)
       .where( (acc) => acc.connected || acc.processingConnection) 
-        .listen((acc) {           
-          if (_isBootstrapping()) {
-            _setBootstraping(false);
-          }
+        .listen((acc) {          
           if (!acc.readyForPayments) {
             _reconnectSink.add(null); 
           }          

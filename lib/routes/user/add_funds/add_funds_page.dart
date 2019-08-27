@@ -38,7 +38,7 @@ class AddFundsState extends State<AddFundsPage> {
     super.initState();
     _addFundsBloc = new AddFundsBloc(widget._user.userID);
     _accountSubscription = widget._accountBloc.accountStream.listen((acc) {
-      if (!acc.bootstraping) {
+      if (!acc.isInitialBootstrap) {
         _addFundsBloc.addFundRequestSink.add(null);
         _accountSubscription.cancel();
       }
@@ -99,7 +99,7 @@ class AddFundsState extends State<AddFundsPage> {
     String errorMessage;
     if (error != null) {
       errorMessage = error;
-    } else if (account == null || account.bootstraping) {
+    } else if (account == null || account.isInitialBootstrap) {
       errorMessage =
           'You\'d be able to add funds after Breez is finished bootstrapping.';
     } else if (unconfirmedTxID?.isNotEmpty == true ||

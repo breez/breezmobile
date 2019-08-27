@@ -22,7 +22,7 @@ class StatusIndicator extends StatelessWidget {
 
   Widget createStatusIndicator() {
     double value;
-    if (_accountModel.bootstraping && _accountModel.bootstrapProgress < 1) {
+    if (_accountModel.isInitialBootstrap && _accountModel.bootstrapProgress < 1) {
       return LinearProgressIndicator(        
         backgroundColor: Colors.white,
           valueColor:
