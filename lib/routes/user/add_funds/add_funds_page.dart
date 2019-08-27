@@ -19,6 +19,7 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'deposit_to_btc_address_page.dart';
 
@@ -41,6 +42,8 @@ class AddFundsState extends State<AddFundsPage> {
   bool _isIpAllowed = false;
 
   String _moonPayAddress = "";
+  Timer moonPayTimer;
+
   @override
   initState() {
     super.initState();
@@ -54,6 +57,12 @@ class AddFundsState extends State<AddFundsPage> {
     isIpAllowed();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _checkMoonpayOrder();
+  }
+
   isIpAllowed() async {
     var response = await http.get("https://api.moonpay.io/v2/ip_address");
     if (response.statusCode != 200) {
@@ -63,10 +72,39 @@ class AddFundsState extends State<AddFundsPage> {
     _isIpAllowed = jsonDecode(response.body)['isAllowed'];
   }
 
+  void _checkMoonpayOrder() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _moonPayAddress = prefs.getString('pendingMoonpayOrderAddress');
+    });
+    _startTimer();
+  }
+
+  void _startTimer() {
+    moonPayTimer?.cancel();
+    moonPayTimer = Timer.periodic(new Duration(seconds: 15), (_) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        _moonPayAddress = prefs.getString('pendingMoonpayOrderAddress');
+      });
+      var orderDate = prefs.getInt('pendingMoonpayOrderTimestamp') != null
+          ? DateTime.fromMillisecondsSinceEpoch(prefs.getInt('pendingMoonpayOrderTimestamp'))
+          : null;
+      if (_moonPayAddress != null && DateTime.now().difference(orderDate).inMinutes >= 1) {
+        prefs.remove('pendingMoonpayOrderAddress');
+        prefs.remove('pendingMoonpayOrderTimestamp');
+        setState(() {
+          _moonPayAddress = "";
+        });
+      }
+    });
+  }
+
   @override
   void dispose() {
     _addFundsBloc.addFundRequestSink.close();
     _accountSubscription.cancel();
+    moonPayTimer?.cancel();
     super.dispose();
   }
 
