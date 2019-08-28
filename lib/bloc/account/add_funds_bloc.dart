@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -6,12 +7,14 @@ import 'package:breez/services/injector.dart';
 import 'package:flutter/services.dart';
 import "package:ini/ini.dart";
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'account_model.dart';
 import 'moonpay_order.dart';
 
 class AddFundsBloc {
+  static const String PENDING_MOONPAY_ORDER_KEY = "pending_moonpay_order";
   String _moonPayURL;
+
   final _addFundRequestController = new StreamController<void>();
 
   Sink<void> get addFundRequestSink => _addFundRequestController.sink;
@@ -20,15 +23,11 @@ class AddFundsBloc {
 
   Stream<AddFundResponse> get addFundResponseStream => _addFundResponseController.stream;
 
-  final _moonPayOrderController = new StreamController<MoonpayOrder>();
-
-  Sink<MoonpayOrder> get moonPayOrderSink => _moonPayOrderController.sink;
+  final _moonPayOrderController = new BehaviorSubject<MoonpayOrder>();
 
   Stream<MoonpayOrder> get moonPayOrderStream => _moonPayOrderController.stream;
 
-  final _orderController = new BehaviorSubject<MoonpayOrder>();
-
-  Sink<MoonpayOrder> get orderSink => _orderController.sink;
+  Sink<MoonpayOrder> get moonPayOrderSink => _moonPayOrderController.sink;
 
   AddFundsBloc(String userID) {
     ServiceInjector injector = ServiceInjector();
@@ -41,9 +40,10 @@ class AddFundsBloc {
           .catchError(_addFundResponseController.addError);
     }).onDone(_dispose);
     _createMoonpayUrl();
-    _initializeWithMoonpayOrder(injector);
-    _listenToMoonpayOrder(injector);
+    _handleMoonpayOrders(injector);
   }
+
+  String get moonPayURL => _moonPayURL;
 
   Future _createMoonpayUrl() async {
     Config config = await _readConfig();
@@ -60,45 +60,23 @@ class AddFundsBloc {
     return Config.fromString(lines);
   }
 
-  String get moonPayURL => _moonPayURL;
-
-  _initializeWithMoonpayOrder(ServiceInjector injector) {
-    injector.sharedPreferences.then((preferences) {
-      DateTime orderDate = DateTime.fromMillisecondsSinceEpoch(preferences.getInt("pendingMoonpayOrderTimestamp") ?? 0);
-      // Expire order that lasted longer than 15 minutes
-      if (DateTime.now().difference(orderDate).inMinutes >= 15) {
-        _removeMoonpayOrder(preferences);
-        _moonPayOrderController.add(MoonpayOrder(null, null));
-      } else {
-        _moonPayOrderController.add(MoonpayOrder(
-            preferences.getString("pendingMoonpayOrderAddress") ?? null, preferences.getInt("pendingMoonpayOrderTimestamp") ?? null));
-      }
-    });
-  }
-
-  _removeMoonpayOrder(SharedPreferences preferences) {
-    preferences.remove("pendingMoonpayOrderAddress");
-    preferences.remove("pendingMoonpayOrderTimestamp");
-  }
-
-  _listenToMoonpayOrder(ServiceInjector injector) {
-    _orderController.stream.listen((order) async {
+  Future _handleMoonpayOrders(ServiceInjector injector) async {
+    var preferences = await injector.sharedPreferences;
+    var pendingOrder = preferences.getString(PENDING_MOONPAY_ORDER_KEY);
+    if (pendingOrder != null) {
+      Map<String, dynamic> settings = json.decode(pendingOrder);
+      _moonPayOrderController.add(MoonpayOrder.fromJson(settings));
+    }
+    _moonPayOrderController.stream.listen((order) async {
       injector.sharedPreferences.then((preferences) {
-        _saveMoonpayOrder(preferences, order);
-        _moonPayOrderController.add(order);
+        preferences.setString(PENDING_MOONPAY_ORDER_KEY, json.encode(order.toJson()));
       });
     });
   }
 
-  _saveMoonpayOrder(SharedPreferences preferences, MoonpayOrder order) {
-    preferences.setString("pendingMoonpayOrderAddress", order.address);
-    preferences.setInt("pendingMoonpayOrderTimestamp", order.timestamp);
-  }
-
-  _dispose(){
+  _dispose() {
     _addFundRequestController.close();
     _addFundResponseController.close();
     _moonPayOrderController.close();
-    _orderController.close();
   }
 }

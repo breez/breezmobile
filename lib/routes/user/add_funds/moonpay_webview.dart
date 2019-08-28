@@ -49,7 +49,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
         if (msg != null) {
           var postMessage = JSON.jsonDecode(msg);
           if (postMessage['status'] == "completed") {
-            widget.addFundsBloc.orderSink.add(MoonpayOrder(widget.walletAddress, DateTime.now().millisecondsSinceEpoch));
+            widget.addFundsBloc.moonPayOrderSink.add(MoonpayOrder(widget.walletAddress, DateTime.now().millisecondsSinceEpoch));
           }
         }
       });
