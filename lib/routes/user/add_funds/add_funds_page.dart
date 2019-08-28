@@ -318,7 +318,6 @@ class AddFundsState extends State<AddFundsPage> {
         FadeInRoute(
           builder: (_) => new MoonpayWebView(
             moonPayURL,
-            redirectURL: redirectURL,
             walletAddress: walletAddress,
             addFundsBloc: _addFundsBloc,
           ),
