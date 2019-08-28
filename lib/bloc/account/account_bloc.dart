@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
+import 'package:breez/bloc/lsp/lsp_actions.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -12,7 +15,6 @@ import 'package:breez/services/breezlib/progress_downloader.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/services/currency_service.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'account_model.dart';
 import 'package:breez/services/injector.dart';
@@ -29,7 +31,6 @@ class AccountBloc {
   static const FORCE_BOOTSTRAP_FILE_NAME = "FORCE_BOOTSTRAP";
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
-  static const String BOOTSTRAPING_PREFERENCES_KEY = "BOOTSTRAPING";
 
   Timer _exchangeRateTimer;
   Map<String, CurrencyData> _currencyData;
@@ -162,6 +163,43 @@ class AccountBloc {
       _listenRoutingConnectionChanges();
       _listenBootstrapStatus();
       _trackOnBoardingStatus();
+      _openAutomaticLSPConnection();
+    });
+  }
+
+  void _openAutomaticLSPConnection(){
+    bool pendingConnection = false;
+    _accountController.stream  
+    .where((acc) => acc.synced)  
+    .listen((acc) async {
+
+        // If we have a channel opened or pending, then it is a sign that our pending
+        // connection request has completed and we are now connected to lsp.
+        if (acc.connected || acc.processingConnection) {
+          pendingConnection = false;
+          return;
+        }
+
+        // we already have a pending connection, let's skip this.
+        if (pendingConnection) {
+          return;
+        }
+
+        // Mark a pending connection and try to connect to a single LSP if exists.
+        pendingConnection = true;
+        Future.doWhile(() async {
+          try {
+            var list = await _breezLib.getLSPList();
+            var lspID = list.lsps.keys.elementAt(0);
+            log.info("connecting to lsp with id $lspID");
+            await _breezLib.connectToLSP(lspID);            
+            return false;
+          } catch(e) {
+            log.severe("failed to open automatic lsp connection, trying again");
+            await Future.delayed(Duration(seconds: 5));            
+          }
+          return true;
+        });             
     });
   }
 
@@ -184,10 +222,6 @@ class AccountBloc {
         await preferences.setString(PERSISTENT_NODE_ID_PREFERENCES_KEY, acc.id);
       }
     });
-  }
-
-  bool _isBootstrapping() {
-    return _sharedPreferences.get(BOOTSTRAPING_PREFERENCES_KEY) == true;
   }
 
   void _listenAccountActions() {
@@ -571,7 +605,7 @@ class AccountBloc {
             " STATUS = " +
             acc.status.toString());
         _accountController.add(_accountController.value
-            .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatShortName: _currentUser?.fiatCurrency, initial: false));
+            .copyWith(accountResponse: acc, currency: _currentUser?.currency, fiatShortName: _currentUser?.fiatCurrency, initial: false));            
       } else {
         _accountController.add(_accountController.value
             .copyWith(initial: false));

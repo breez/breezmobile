@@ -1,7 +1,6 @@
 import 'package:breez/bloc/lsp/lsp_actions.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
