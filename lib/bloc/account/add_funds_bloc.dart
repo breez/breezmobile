@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import "package:ini/ini.dart";
 import 'package:rxdart/rxdart.dart';
 
@@ -12,6 +14,7 @@ import 'account_model.dart';
 import 'moonpay_order.dart';
 
 class AddFundsBloc {
+  static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PENDING_MOONPAY_ORDER_KEY = "pending_moonpay_order";
   String _moonPayURL;
 
@@ -39,11 +42,33 @@ class AddFundsBloc {
           .then((reply) => _addFundResponseController.add(new AddFundResponse(reply)))
           .catchError(_addFundResponseController.addError);
     }).onDone(_dispose);
-    _createMoonpayUrl();
+    _listenAccountSettings(injector);
     _handleMoonpayOrders(injector);
   }
 
   String get moonPayURL => _moonPayURL;
+
+  _listenAccountSettings(ServiceInjector injector) async {
+    var preferences = await injector.sharedPreferences;
+    var accountSettings = preferences.getString(ACCOUNT_SETTINGS_PREFERENCES_KEY);
+    if (accountSettings != null) {
+      Map<String, dynamic> settings = json.decode(accountSettings);
+      if (settings["moonpayIpCheck"]) {
+        _isIpAllowed().then((ipIsAllowed) {
+          if (ipIsAllowed) _createMoonpayUrl();
+        });
+      }
+    }
+  }
+
+  Future<bool> _isIpAllowed() async {
+    var response = await http.get("https://api.moonpay.io/v2/ip_address");
+    if (response.statusCode != 200) {
+      log.severe('moonpay response error: ${response.body.substring(0, 100)}');
+      throw "Service Unavailable. Please try again later.";
+    }
+    return jsonDecode(response.body)['isAllowed'];
+  }
 
   Future _createMoonpayUrl() async {
     Config config = await _readConfig();

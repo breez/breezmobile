@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -8,7 +7,6 @@ import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
@@ -18,7 +16,6 @@ import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 
 import 'deposit_to_btc_address_page.dart';
 import 'moonpay_webview.dart';
@@ -40,8 +37,6 @@ class AddFundsState extends State<AddFundsPage> {
   AddFundsBloc _addFundsBloc;
   StreamSubscription<AccountModel> _accountSubscription;
   StreamSubscription<MoonpayOrder> _moonPaySubscription;
-  StreamSubscription<AccountSettings> _settingsSubscription;
-  bool _isIpAllowed = false;
 
   MoonpayOrder _moonPayOrder;
   Timer moonPayTimer;
@@ -56,28 +51,12 @@ class AddFundsState extends State<AddFundsPage> {
         _accountSubscription.cancel();
       }
     });
-    _settingsSubscription = widget._accountBloc.accountSettingsStream.listen((settings) {
-      isIpAllowed(settings.moonpayIpCheck);
-    });
     _moonPaySubscription = _addFundsBloc.moonPayOrderStream.listen((order) {
       setState(() {
         _moonPayOrder = order;
       });
     });
     _checkMoonpayOrderExpiration();
-  }
-
-  isIpAllowed(bool ipCheckSetting) async {
-    if (ipCheckSetting) {
-      var response = await http.get("https://api.moonpay.io/v2/ip_address");
-      if (response.statusCode != 200) {
-        log.severe('moonpay response error: ${response.body.substring(0, 100)}');
-        throw "Service Unavailable. Please try again later.";
-      }
-      _isIpAllowed = jsonDecode(response.body)['isAllowed'];
-    } else {
-      _isIpAllowed = true;
-    }
   }
 
   void _checkMoonpayOrderExpiration() {
@@ -93,7 +72,6 @@ class AddFundsState extends State<AddFundsPage> {
   void dispose() {
     _addFundsBloc.addFundRequestSink.close();
     _accountSubscription.cancel();
-    _settingsSubscription.cancel();
     _moonPaySubscription?.cancel();
     moonPayTimer?.cancel();
     super.dispose();
@@ -218,7 +196,8 @@ class AddFundsState extends State<AddFundsPage> {
       ..add(Divider(
         indent: 72,
       ));
-    if (_isIpAllowed) {
+    print(_addFundsBloc.moonPayURL);
+    if (_addFundsBloc.moonPayURL != null) {
       list..add(_buildMoonpayButton(response))..add(Divider(indent: 72));
     }
     list..add(_buildRedeemVoucherButton())..add(Divider(indent: 72));
