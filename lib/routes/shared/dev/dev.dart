@@ -329,6 +329,10 @@ class DevViewState extends State<DevView> {
           }));
     }
     choices.add(Choice(
+        title: "${settings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
+        icon: Icons.network_check,
+        function: () => _enableMoonpayIpCheck(accBloc, settings)));
+    choices.add(Choice(
       title: "Force Rescan",
       icon: Icons.phone_android,
       function: () async {
@@ -367,6 +371,10 @@ class DevViewState extends State<DevView> {
   void _setShowExcessFunds(AccountBloc bloc, AccountSettings settings, {bool ignore = false}) {
     bloc.accountSettingsSink
         .add(settings.copyWith(ignoreWalletBalance: ignore));
+  }
+
+  void _enableMoonpayIpCheck(AccountBloc bloc, AccountSettings settings) {
+    bloc.accountSettingsSink.add(settings.copyWith(moonpayIpCheck: !settings.moonpayIpCheck));
   }
 
   void _describeGraph() async {
