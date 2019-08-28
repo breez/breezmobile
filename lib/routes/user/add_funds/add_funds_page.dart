@@ -9,7 +9,6 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/logger.dart';
-import 'package:breez/routes/user/marketplace/vendor_webview.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
@@ -22,6 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import 'deposit_to_btc_address_page.dart';
+import 'moonpay_webview.dart';
 
 class AddFundsPage extends StatefulWidget {
   final BreezUserModel _user;
@@ -316,14 +316,11 @@ class AddFundsState extends State<AddFundsPage> {
       onTap: () => Navigator.push(
         context,
         FadeInRoute(
-          builder: (_) => new VendorWebViewPage(
-            null,
+          builder: (_) => new MoonpayWebView(
             moonPayURL,
-            "MoonPay",
             redirectURL: redirectURL,
             walletAddress: walletAddress,
             addFundsBloc: _addFundsBloc,
-            listenInvoices: false,
           ),
         ),
       ),

@@ -3,8 +3,6 @@ import 'dart:convert' as JSON;
 import 'dart:typed_data';
 
 import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/add_funds_bloc.dart';
-import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/routes/user/marketplace/webln_handlers.dart';
@@ -16,13 +14,12 @@ class VendorWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;
   final String _url;
   final String _title;
-  final bool listenInvoices;
-  final String redirectURL;
-  final String walletAddress;
-  final AddFundsBloc addFundsBloc;
 
-  VendorWebViewPage(this.accountBloc, this._url, this._title,
-      {this.listenInvoices = true, this.redirectURL, this.walletAddress, this.addFundsBloc});
+  VendorWebViewPage(
+    this.accountBloc,
+    this._url,
+    this._title,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -78,63 +75,32 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     if (!_isInit) {
       var invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-      if (widget.listenInvoices) {
-        _weblnHandlers = WeblnHandlers(context, accountBloc, invoiceBloc, onBeforeCallHandler);
 
-        String loadedURL;
-        _widgetWebview.onStateChanged.listen((state) async {
-          if (state.type == WebViewState.finishLoad && loadedURL != state.url) {
-            loadedURL = state.url;
-            _widgetWebview.evalJavascript(await _weblnHandlers.initWeblnScript);
-          }
-        });
+      _weblnHandlers = WeblnHandlers(context, accountBloc, invoiceBloc, onBeforeCallHandler);
 
-        _postMessageListener = _widgetWebview.onPostMessage.listen((msg) {
-          if (msg != null) {
-            var postMessage = (widget._title == "ln.pizza") ? {"action": "sendPayment", "payReq": msg} : JSON.jsonDecode(msg);
-            _weblnHandlers.handleMessage(postMessage).then((resScript) {
-              if (resScript != null) {
-                _widgetWebview.evalJavascript(resScript);
-                _widgetWebview.show();
-                setState(() {
-                  _screenshotData = null;
-                });
-              }
-            });
-          }
-        });
-      } else {
-        String loadedURL;
-        _widgetWebview.onStateChanged.listen((state) async {
-          if (state.type == WebViewState.finishLoad && loadedURL != state.url) {
-            loadedURL = state.url;
-            var script = "function getParameterByName(name) {    \n" +
-                "    name = name.replace(/[\\[\\]]/g, '\\\\\$&');\n" +
-                "    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|\$)'),\n" +
-                "        results = regex.exec(window.location.href);\n" +
-                "    if (!results) return null;\n" +
-                "    if (!results[2]) return '';\n" +
-                "    return decodeURIComponent(results[2].replace(/\\+/g, ' '));\n" +
-                "}\n" +
-                "\n" +
-                "var alertInterval = setInterval(function () {\n" +
-                "    if (document.URL.indexOf(\"${widget.redirectURL}\") >= 0 && getParameterByName('transactionId') != null && getParameterByName('addFunds') == 'true') {\n" +
-                "        window.postMessage(JSON.stringify({ status: 'completed'}), \"*\");\n" +
-                "        clearInterval(alertInterval);\n" +
-                "    }\n" +
-                "}, 50);";
-            _widgetWebview.evalJavascript(script);
-          }
-        });
-        _postMessageListener = _widgetWebview.onPostMessage.listen((msg) {
-          if (msg != null) {
-            var postMessage = JSON.jsonDecode(msg);
-            if (postMessage['status'] == "completed") {
-              widget.addFundsBloc.orderSink.add(MoonpayOrder(widget.walletAddress, DateTime.now().millisecondsSinceEpoch));
+      String loadedURL;
+      _widgetWebview.onStateChanged.listen((state) async {
+        if (state.type == WebViewState.finishLoad && loadedURL != state.url) {
+          loadedURL = state.url;
+          _widgetWebview.evalJavascript(await _weblnHandlers.initWeblnScript);
+        }
+      });
+
+      _postMessageListener = _widgetWebview.onPostMessage.listen((msg) {
+        if (msg != null) {
+          var postMessage = (widget._title == "ln.pizza") ? {"action": "sendPayment", "payReq": msg} : JSON.jsonDecode(msg);
+          _weblnHandlers.handleMessage(postMessage).then((resScript) {
+            if (resScript != null) {
+              _widgetWebview.evalJavascript(resScript);
+              _widgetWebview.show();
+              setState(() {
+                _screenshotData = null;
+              });
             }
-          }
-        });
-      }
+          });
+        }
+      });
+
       _isInit = true;
     }
     super.didChangeDependencies();
