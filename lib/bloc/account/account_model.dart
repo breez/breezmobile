@@ -50,8 +50,8 @@ class AccountSettings {
   Map<String, dynamic> toJson() {
     return {
       "ignoreWalletBalance": ignoreWalletBalance,
-      "showConnectProgress": showConnectProgress ?? false,
-      "moonpayIpCheck": moonpayIpCheck ?? true,
+      "showConnectProgress": showConnectProgress,
+      "moonpayIpCheck": moonpayIpCheck,
       "failePaymentBehavior": failePaymentBehavior.index,
     };
   }
