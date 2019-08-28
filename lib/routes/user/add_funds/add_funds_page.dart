@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
+import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
@@ -19,7 +20,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:breez/bloc/account/moonpay_order.dart';
+
 import 'deposit_to_btc_address_page.dart';
 
 class AddFundsPage extends StatefulWidget {
@@ -39,6 +40,7 @@ class AddFundsState extends State<AddFundsPage> {
   AddFundsBloc _addFundsBloc;
   StreamSubscription<AccountModel> _accountSubscription;
   StreamSubscription<MoonpayOrder> _moonPaySubscription;
+  StreamSubscription<AccountSettings> _settingsSubscription;
   bool _isIpAllowed = false;
 
   MoonpayOrder _moonPayOrder;
@@ -54,7 +56,9 @@ class AddFundsState extends State<AddFundsPage> {
         _accountSubscription.cancel();
       }
     });
-    isIpAllowed();
+    _settingsSubscription = widget._accountBloc.accountSettingsStream.listen((settings) {
+      isIpAllowed(settings.moonpayIpCheck);
+    });
     _moonPaySubscription = _addFundsBloc.moonPayOrderStream.listen((order) {
       setState(() {
         _moonPayOrder = order;
@@ -63,13 +67,17 @@ class AddFundsState extends State<AddFundsPage> {
     _checkMoonpayOrderExpiration();
   }
 
-  isIpAllowed() async {
-    var response = await http.get("https://api.moonpay.io/v2/ip_address");
-    if (response.statusCode != 200) {
-      log.severe('moonpay response error: ${response.body.substring(0, 100)}');
-      throw "Service Unavailable. Please try again later.";
+  isIpAllowed(bool ipCheckSetting) async {
+    if (ipCheckSetting) {
+      var response = await http.get("https://api.moonpay.io/v2/ip_address");
+      if (response.statusCode != 200) {
+        log.severe('moonpay response error: ${response.body.substring(0, 100)}');
+        throw "Service Unavailable. Please try again later.";
+      }
+      _isIpAllowed = jsonDecode(response.body)['isAllowed'];
+    } else {
+      _isIpAllowed = true;
     }
-    _isIpAllowed = jsonDecode(response.body)['isAllowed'];
   }
 
   void _checkMoonpayOrderExpiration() {
@@ -85,6 +93,7 @@ class AddFundsState extends State<AddFundsPage> {
   void dispose() {
     _addFundsBloc.addFundRequestSink.close();
     _accountSubscription.cancel();
+    _settingsSubscription.cancel();
     _moonPaySubscription?.cancel();
     moonPayTimer?.cancel();
     super.dispose();
@@ -208,11 +217,11 @@ class AddFundsState extends State<AddFundsPage> {
       ..add(_buildDepositToBTCAddress())
       ..add(Divider(
         indent: 72,
-      ))
-      ..add(_buildMoonpayButton(response))
-      ..add(Divider(indent: 72))
-      ..add(_buildRedeemVoucherButton())
-      ..add(Divider(indent: 72));
+      ));
+    if (_isIpAllowed) {
+      list..add(_buildMoonpayButton(response))..add(Divider(indent: 72));
+    }
+    list..add(_buildRedeemVoucherButton())..add(Divider(indent: 72));
     return list;
   }
 
@@ -279,48 +288,46 @@ class AddFundsState extends State<AddFundsPage> {
       moonPayURL += "&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
     }
 
-    return !_isIpAllowed
-        ? GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            child: Container(
-              height: 72,
-              width: MediaQuery.of(context).size.width,
-              child: Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16),
-                  child: Image(
-                    image: AssetImage("src/icon/credit_card.png"),
-                    height: 24.0,
-                    width: 24.0,
-                    fit: BoxFit.scaleDown,
-                    color: Colors.white,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'BUY BITCOIN',
-                    style: theme.addFundsItemsStyle,
-                  ),
-                ),
-                Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 24.0)),
-              ]),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      child: Container(
+        height: 72,
+        width: MediaQuery.of(context).size.width,
+        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Image(
+              image: AssetImage("src/icon/credit_card.png"),
+              height: 24.0,
+              width: 24.0,
+              fit: BoxFit.scaleDown,
+              color: Colors.white,
             ),
-            onTap: () => Navigator.push(
-              context,
-              FadeInRoute(
-                builder: (_) => new VendorWebViewPage(
-                  null,
-                  moonPayURL,
-                  "MoonPay",
-                  redirectURL: redirectURL,
-                  walletAddress: walletAddress,
-                  addFundsBloc: _addFundsBloc,
-                  listenInvoices: false,
-                ),
-              ),
+          ),
+          Expanded(
+            child: Text(
+              'BUY BITCOIN',
+              style: theme.addFundsItemsStyle,
             ),
-          )
-        : null;
+          ),
+          Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 24.0)),
+        ]),
+      ),
+      onTap: () => Navigator.push(
+        context,
+        FadeInRoute(
+          builder: (_) => new VendorWebViewPage(
+            null,
+            moonPayURL,
+            "MoonPay",
+            redirectURL: redirectURL,
+            walletAddress: walletAddress,
+            addFundsBloc: _addFundsBloc,
+            listenInvoices: false,
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildRedeemVoucherButton() {
