@@ -152,7 +152,8 @@ class AccountModel {
               ..walletBalance = Int64(0)
               ..status = Account_AccountStatus.DISCONNECTED
               ..maxAllowedToReceive = Int64(0)
-              ..maxPaymentAmount = Int64(0),              
+              ..maxPaymentAmount = Int64(0)
+              ..enabled = true,   
             Currency.SAT,
             "USD",
             null,
@@ -212,6 +213,7 @@ class AccountModel {
   Int64 get reserveAmount => balance - maxAllowedToPay;
   Int64 get warningMaxChanReserveAmount => _accountResponse.maxChanReserve;
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
+  bool get enabled => _accountResponse.enabled;
   Int64 get routingNodeFee => _accountResponse.routingNodeFee;  
   bool get synced => syncProgress == 1.0;
   bool get readyForPayments => _accountResponse.readyForPayments;

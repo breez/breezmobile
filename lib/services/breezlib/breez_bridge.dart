@@ -378,6 +378,10 @@ class BreezBridge {
     );
   }
 
+  Future enableAccount(bool enabled) {
+    return _invokeMethodWhenReady("enableAccount", {"argument": enabled});
+  }
+
   Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
     return _startedCompleter.future.then(
             (completed) {            

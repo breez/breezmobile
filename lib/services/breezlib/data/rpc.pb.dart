@@ -53,6 +53,7 @@ class Account extends $pb.GeneratedMessage {
     ..aInt64(6, 'maxAllowedToPay')
     ..aInt64(7, 'maxPaymentAmount')
     ..aInt64(8, 'routingNodeFee')
+    ..aOB(9, 'enabled')
     ..aInt64(10, 'maxChanReserve')
     ..aOB(11, 'readyForPayments')
     ..hasRequiredFields = false
@@ -110,14 +111,19 @@ class Account extends $pb.GeneratedMessage {
   $core.bool hasRoutingNodeFee() => $_has(7);
   void clearRoutingNodeFee() => clearField(8);
 
-  Int64 get maxChanReserve => $_getI64(8);
-  set maxChanReserve(Int64 v) { $_setInt64(8, v); }
-  $core.bool hasMaxChanReserve() => $_has(8);
+  $core.bool get enabled => $_get(8, false);
+  set enabled($core.bool v) { $_setBool(8, v); }
+  $core.bool hasEnabled() => $_has(8);
+  void clearEnabled() => clearField(9);
+
+  Int64 get maxChanReserve => $_getI64(9);
+  set maxChanReserve(Int64 v) { $_setInt64(9, v); }
+  $core.bool hasMaxChanReserve() => $_has(9);
   void clearMaxChanReserve() => clearField(10);
 
-  $core.bool get readyForPayments => $_get(9, false);
-  set readyForPayments($core.bool v) { $_setBool(9, v); }
-  $core.bool hasReadyForPayments() => $_has(9);
+  $core.bool get readyForPayments => $_get(10, false);
+  set readyForPayments($core.bool v) { $_setBool(10, v); }
+  $core.bool hasReadyForPayments() => $_has(10);
   void clearReadyForPayments() => clearField(11);
 }
 

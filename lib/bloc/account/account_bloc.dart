@@ -164,13 +164,26 @@ class AccountBloc {
       _listenBootstrapStatus();
       _trackOnBoardingStatus();
       _openAutomaticLSPConnection();
+      _listenEnableAccount();
     });
   }
+
+  void _listenEnableAccount() {
+    _accountEnableController.stream.listen((enable) {
+      _accountController
+          .add(_accountController.value.copyWith(enableInProgress: true));
+      _breezLib.enableAccount(enable).whenComplete(() {
+        _accountController
+            .add(_accountController.value.copyWith(enableInProgress: false));
+      });
+    });
+  }
+
 
   void _openAutomaticLSPConnection(){
     bool pendingConnection = false;
     _accountController.stream  
-    .where((acc) => acc.synced)  
+    .where((acc) => acc.synced && acc.enabled)
     .listen((acc) async {
 
         // If we have a channel opened or pending, then it is a sign that our pending
