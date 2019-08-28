@@ -275,19 +275,12 @@ class AddFundsState extends State<AddFundsPage> {
   }
 
   Widget _buildMoonpayButton(AddFundResponse response) {
-    String baseUrl = "https://buy-staging.moonpay.io";
-    String apiKey = "pk_test_AZskxvTXb0rpsI7o2GCdmzs8jeST9d";
-    String currencyCode = "btc";
-    String walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF";
-    String maxQuoteCurrencyAmount = Currency.BTC.format(response?.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
-    String colorCode = "%23055DEB";
-    String redirectURL = "https://buy-staging.moonpay.io/transaction_receipt?addFunds=true";
-    String moonPayURL =
-        "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&walletAddress=$walletAddress&colorCode=$colorCode&redirectURL=${Uri.encodeFull(redirectURL)}";
+    String walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to response?.address when we use public apiKey
+    String moonPayURL = _addFundsBloc.moonPayURL + "&walletAddress=$walletAddress";
     if (response != null) {
+      String maxQuoteCurrencyAmount = Currency.BTC.format(response?.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
       moonPayURL += "&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
     }
-
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       child: Container(
