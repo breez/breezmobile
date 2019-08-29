@@ -57,6 +57,8 @@ class AddFundsBloc {
         _isIPMoonpayAllowed().then((isAllowed) {
           if (isAllowed) _createMoonpayUrl();
         });
+      } else {
+        _createMoonpayUrl();
       }
     }
   }
