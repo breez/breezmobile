@@ -74,7 +74,7 @@ class AddFundsState extends State<AddFundsPage> {
                   if (!moonpayOrder.hasData) {
                     return Center(child: Loader(color: theme.BreezColors.white[400]));
                   }
-                  if (_orderIsPending(moonpayOrder.data) && _orderExistsInUnconfirmedAddresses(account, moonpayOrder.data)) {
+                  if (_orderIsPending(moonpayOrder.data) && _orderExistsInUnconfirmedAddresses(account.data, moonpayOrder.data)) {
                     return Column(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
@@ -100,8 +100,8 @@ class AddFundsState extends State<AddFundsPage> {
   bool _orderIsPending(MoonpayOrder moonpayOrder) =>
       DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(moonpayOrder.timestamp ?? 0)).inHours <= 1;
 
-  bool _orderExistsInUnconfirmedAddresses(AsyncSnapshot<AccountModel> account, MoonpayOrder moonpayOrder) {
-    return account.data?.addedFundsReply?.unConfirmedAddresses
+  bool _orderExistsInUnconfirmedAddresses(AccountModel account, MoonpayOrder moonpayOrder) {
+    return account?.addedFundsReply?.unConfirmedAddresses
             ?.firstWhere((swapAddressInfo) => swapAddressInfo.address == moonpayOrder.address, orElse: () => null) !=
         null;
   }
