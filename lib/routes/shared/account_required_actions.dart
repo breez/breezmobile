@@ -2,6 +2,7 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/funds_over_limit_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -21,8 +22,9 @@ import 'transfer_funds_in_progress_dialog.dart';
 class AccountRequiredActionsIndicator extends StatefulWidget {
   final BackupBloc _backupBloc;
   final AccountBloc _accountBloc;
+  final UserProfileBloc _userProfileBloc;
 
-  AccountRequiredActionsIndicator(this._backupBloc, this._accountBloc);
+  AccountRequiredActionsIndicator(this._backupBloc, this._accountBloc, this._userProfileBloc);
 
   @override
   AccountRequiredActionsIndicatorState createState() {
@@ -48,11 +50,12 @@ class AccountRequiredActionsIndicatorState
       _promptEnableSubscription =
           Observable(widget._backupBloc.promptBackupStream)
               .delay(Duration(seconds: 4))
-              .listen((_) {                
+              .listen((_) async {                
                 if (_currentSettings.promptOnError && !showingBackupDialog) {
                   showingBackupDialog = true;
                   widget._backupBloc.backupPromptVisibleSink.add(true);
-                  popFlushbars(context);                  
+                  popFlushbars(context);
+                  await widget._userProfileBloc.userStream.where((u) => u.locked == false).first;
                   showDialog(
                       barrierDismissible: false,
                       context: context,
