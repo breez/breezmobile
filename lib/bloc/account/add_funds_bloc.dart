@@ -54,14 +54,14 @@ class AddFundsBloc {
     if (accountSettings != null) {
       Map<String, dynamic> settings = json.decode(accountSettings);
       if (settings["moonpayIpCheck"]) {
-        _isIpAllowed().then((ipIsAllowed) {
-          if (ipIsAllowed) _createMoonpayUrl();
+        _isIPMoonpayAllowed().then((isAllowed) {
+          if (isAllowed) _createMoonpayUrl();
         });
       }
     }
   }
 
-  Future<bool> _isIpAllowed() async {
+  Future<bool> _isIPMoonpayAllowed() async {
     var response = await http.get("https://api.moonpay.io/v2/ip_address");
     if (response.statusCode != 200) {
       log.severe('moonpay response error: ${response.body.substring(0, 100)}');
