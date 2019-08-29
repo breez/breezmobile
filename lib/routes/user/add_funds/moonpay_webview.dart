@@ -8,6 +8,7 @@ import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
@@ -92,21 +93,43 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: _addFundsBloc.addFundResponseStream,
-      builder: (BuildContext context, AsyncSnapshot<AddFundResponse> snapshot) {
-        walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to snapshot?.address when we use public apiKey
-        _moonPayURL += "&walletAddress=$walletAddress";
-        if (snapshot.data != null) {
-          String maxQuoteCurrencyAmount = Currency.BTC.format(snapshot.data?.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
+      builder: (BuildContext context, AsyncSnapshot<AddFundResponse> response) {
+        if (!response.hasData) {
+          return Material(
+            child: Scaffold(
+              appBar: AppBar(
+                actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
+                automaticallyImplyLeading: false,
+                iconTheme: theme.appBarIconTheme,
+                textTheme: theme.appBarTextTheme,
+                backgroundColor: theme.BreezColors.blue[500],
+                title: Text(
+                  "MoonPay",
+                  style: theme.appBarTextStyle,
+                ),
+                elevation: 0.0,
+              ),
+              body: Center(
+                child: Loader(color: theme.BreezColors.white[400]),
+              ),
+            ),
+          );
+        }
+        if (response.data != null) {
+          walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to snapshot?.address when we use public apiKey
+          _moonPayURL += "&walletAddress=$walletAddress";
+          String maxQuoteCurrencyAmount = Currency.BTC.format(response.data?.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
           _moonPayURL += "&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
         }
+
         return WebviewScaffold(
-          appBar: new AppBar(
-            actions: <Widget>[IconButton(icon: new Icon(Icons.close), onPressed: () => Navigator.pop(context))],
+          appBar: AppBar(
+            actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
             automaticallyImplyLeading: false,
             iconTheme: theme.appBarIconTheme,
             textTheme: theme.appBarTextTheme,
             backgroundColor: theme.BreezColors.blue[500],
-            title: new Text(
+            title: Text(
               "MoonPay",
               style: theme.appBarTextStyle,
             ),
