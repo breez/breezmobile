@@ -104,6 +104,7 @@ class AddFundsBloc {
     _moonPayOrderController.stream.listen((order) async {
       injector.sharedPreferences.then((preferences) {
         preferences.setString(PENDING_MOONPAY_ORDER_KEY, json.encode(order.toJson()));
+        _moonPayOrderController.add(order);
       });
     });
   }

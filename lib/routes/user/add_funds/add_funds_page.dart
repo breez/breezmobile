@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
@@ -36,45 +34,15 @@ class AddFundsPage extends StatefulWidget {
 class AddFundsState extends State<AddFundsPage> {
   final String _title = "Add Funds";
   AddFundsBloc _addFundsBloc;
-  StreamSubscription<MoonpayOrder> _moonPaySubscription;
-  StreamSubscription<String> _urlSubscription;
-
-  MoonpayOrder _moonPayOrder;
-  Timer moonPayTimer;
-  String _moonPayURL;
 
   @override
   initState() {
     super.initState();
     _addFundsBloc = new AddFundsBloc(widget._user.userID);
-    _moonPaySubscription = _addFundsBloc.moonPayOrderStream.listen((order) {
-      setState(() {
-        _moonPayOrder = order;
-      });
-    });
-    _urlSubscription = _addFundsBloc.moonPayUrlStream.listen((moonPayURL) {
-      setState(() {
-        _moonPayURL = moonPayURL;
-        _urlSubscription.cancel();
-      });
-    });
-    _checkMoonpayOrderExpiration();
-  }
-
-  void _checkMoonpayOrderExpiration() {
-    moonPayTimer = Timer.periodic(new Duration(seconds: 15), (_) async {
-      if (_moonPayOrder?.timestamp != null &&
-          DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(_moonPayOrder.timestamp)).inMinutes >= 15) {
-        _addFundsBloc.moonPayOrderSink.add(MoonpayOrder(null, null));
-      }
-    });
   }
 
   @override
   void dispose() {
-    _moonPaySubscription?.cancel();
-    _urlSubscription?.cancel();
-    moonPayTimer?.cancel();
     super.dispose();
   }
 
@@ -100,14 +68,45 @@ class AddFundsState extends State<AddFundsPage> {
             if (!account.hasData) {
               return Center(child: Loader(color: theme.BreezColors.white[400]));
             }
-            return getBody(context, account.data);
+            return StreamBuilder(
+                stream: _addFundsBloc.moonPayOrderStream,
+                builder: (BuildContext context, AsyncSnapshot<MoonpayOrder> moonpayOrder) {
+                  if (!moonpayOrder.hasData) {
+                    return Center(child: Loader(color: theme.BreezColors.white[400]));
+                  }
+                  if (_orderIsPending(moonpayOrder.data) && _orderExistsInUnconfirmedAddresses(account, moonpayOrder.data)) {
+                    return Column(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+                        child: LoadingAnimatedText(
+                          'Your MoonPay order is being processed',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ]);
+                  }
+                  return StreamBuilder(
+                      stream: _addFundsBloc.moonPayUrlStream,
+                      builder: (BuildContext context, AsyncSnapshot<String> moonpayUrl) {
+                        return getBody(context, account.data, moonpayUrl.data);
+                      });
+                });
           },
         ),
       ),
     );
   }
 
-  Widget getBody(BuildContext context, AccountModel account) {
+  bool _orderIsPending(MoonpayOrder moonpayOrder) =>
+      DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(moonpayOrder.timestamp ?? 0)).inHours <= 1;
+
+  bool _orderExistsInUnconfirmedAddresses(AsyncSnapshot<AccountModel> account, MoonpayOrder moonpayOrder) {
+    return account.data?.addedFundsReply?.unConfirmedAddresses
+            ?.firstWhere((swapAddressInfo) => swapAddressInfo.address == moonpayOrder.address, orElse: () => null) !=
+        null;
+  }
+
+  Widget getBody(BuildContext context, AccountModel account, String moonpayUrl) {
     var unconfirmedTxID = account?.swapFundsStatus?.unconfirmedTxID;
     bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
 
@@ -117,11 +116,6 @@ class AddFundsState extends State<AddFundsPage> {
     } else if (unconfirmedTxID?.isNotEmpty == true || account.processingWithdrawal) {
       errorMessage =
           'Breez is processing your previous ${waitingDepositConfirmation || account.processingBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
-    } else if (_moonPayOrder?.address != null &&
-        account?.addedFundsReply?.unConfirmedAddresses
-                ?.firstWhere((swapAddressInfo) => swapAddressInfo.address == _moonPayOrder.address, orElse: () => null) !=
-            null) {
-      errorMessage = 'Your MoonPay order is being processed';
     }
 
     if (errorMessage != null) {
@@ -134,12 +128,7 @@ class AddFundsState extends State<AddFundsPage> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
-            child: _moonPayOrder?.address != null
-                ? LoadingAnimatedText(
-                    errorMessage.substring(0, errorMessage.length - 1),
-                    textAlign: TextAlign.center,
-                  )
-                : Text(errorMessage, textAlign: TextAlign.center),
+            child: Text(errorMessage, textAlign: TextAlign.center),
           ),
           waitingDepositConfirmation
               ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -165,7 +154,7 @@ class AddFundsState extends State<AddFundsPage> {
     return Stack(
       children: <Widget>[
         ListView(
-          children: _buildList(),
+          children: _buildList(moonpayUrl),
         ),
         Positioned(
           child: _buildReserveAmountWarning(account),
@@ -177,14 +166,14 @@ class AddFundsState extends State<AddFundsPage> {
     );
   }
 
-  List<Widget> _buildList() {
+  List<Widget> _buildList(String moonpayUrl) {
     List<Widget> list = List();
     list
       ..add(_buildDepositToBTCAddress())
       ..add(Divider(
         indent: 72,
       ));
-    if (_moonPayURL != null) {
+    if (moonpayUrl != null) {
       list..add(_buildMoonpayButton())..add(Divider(indent: 72));
     }
     list..add(_buildRedeemVoucherButton())..add(Divider(indent: 72));
