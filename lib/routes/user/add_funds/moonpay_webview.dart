@@ -28,10 +28,11 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   final _widgetWebview = new FlutterWebviewPlugin();
   StreamSubscription _postMessageListener;
   StreamSubscription<AccountModel> _accountSubscription;
+  StreamSubscription<String> _urlSubscription;
   AddFundsBloc _addFundsBloc;
 
   String walletAddress = "";
-  String moonPayURL = "";
+  String _moonPayURL = "";
 
   bool _isInit = false;
 
@@ -44,6 +45,11 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
         _addFundsBloc.addFundRequestSink.add(null);
         _accountSubscription.cancel();
       }
+    });
+    _urlSubscription = _addFundsBloc.moonPayUrlStream.listen((moonPayURL) {
+      setState(() {
+        _moonPayURL = moonPayURL;
+      });
     });
     _widgetWebview.onDestroy.listen((_) {
       if (Navigator.canPop(context)) {
@@ -76,6 +82,8 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   @override
   void dispose() {
     _postMessageListener?.cancel();
+    _accountSubscription.cancel();
+    _urlSubscription.cancel();
     _widgetWebview.dispose();
     super.dispose();
   }
@@ -86,10 +94,10 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
       stream: _addFundsBloc.addFundResponseStream,
       builder: (BuildContext context, AsyncSnapshot<AddFundResponse> snapshot) {
         walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to snapshot?.address when we use public apiKey
-        moonPayURL = _addFundsBloc.moonPayURL + "&walletAddress=$walletAddress";
+        _moonPayURL += "&walletAddress=$walletAddress";
         if (snapshot.data != null) {
           String maxQuoteCurrencyAmount = Currency.BTC.format(snapshot.data?.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
-          moonPayURL += "&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
+          _moonPayURL += "&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
         }
         return WebviewScaffold(
           appBar: new AppBar(
@@ -104,7 +112,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
             ),
             elevation: 0.0,
           ),
-          url: moonPayURL,
+          url: _moonPayURL,
           withJavascript: true,
           withZoom: false,
           clearCache: true,

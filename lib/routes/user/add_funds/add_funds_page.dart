@@ -35,9 +35,11 @@ class AddFundsState extends State<AddFundsPage> {
   final String _title = "Add Funds";
   AddFundsBloc _addFundsBloc;
   StreamSubscription<MoonpayOrder> _moonPaySubscription;
+  StreamSubscription<String> _urlSubscription;
 
   MoonpayOrder _moonPayOrder;
   Timer moonPayTimer;
+  String _moonPayURL;
 
   @override
   initState() {
@@ -46,6 +48,11 @@ class AddFundsState extends State<AddFundsPage> {
     _moonPaySubscription = _addFundsBloc.moonPayOrderStream.listen((order) {
       setState(() {
         _moonPayOrder = order;
+      });
+    });
+    _urlSubscription = _addFundsBloc.moonPayUrlStream.listen((moonPayURL) {
+      setState(() {
+        _moonPayURL = moonPayURL;
       });
     });
     _checkMoonpayOrderExpiration();
@@ -63,6 +70,7 @@ class AddFundsState extends State<AddFundsPage> {
   @override
   void dispose() {
     _moonPaySubscription?.cancel();
+    _urlSubscription?.cancel();
     moonPayTimer?.cancel();
     super.dispose();
   }
@@ -173,7 +181,7 @@ class AddFundsState extends State<AddFundsPage> {
       ..add(Divider(
         indent: 72,
       ));
-    if (_addFundsBloc.moonPayURL != null) {
+    if (_moonPayURL != null) {
       list..add(_buildMoonpayButton())..add(Divider(indent: 72));
     }
     list..add(_buildRedeemVoucherButton())..add(Divider(indent: 72));

@@ -16,7 +16,6 @@ import 'moonpay_order.dart';
 class AddFundsBloc {
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PENDING_MOONPAY_ORDER_KEY = "pending_moonpay_order";
-  String _moonPayURL;
 
   final _addFundRequestController = new StreamController<void>();
 
@@ -32,6 +31,10 @@ class AddFundsBloc {
 
   Sink<MoonpayOrder> get moonPayOrderSink => _moonPayOrderController.sink;
 
+  final _moonPayUrlController = new BehaviorSubject<String>();
+
+  Stream<String> get moonPayUrlStream => _moonPayUrlController.stream;
+
   AddFundsBloc(String userID) {
     ServiceInjector injector = ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
@@ -46,8 +49,6 @@ class AddFundsBloc {
     _handleMoonpayOrders(injector);
   }
 
-  String get moonPayURL => _moonPayURL;
-
   _listenAccountSettings(ServiceInjector injector) async {
     var preferences = await injector.sharedPreferences;
     var accountSettings = preferences.getString(ACCOUNT_SETTINGS_PREFERENCES_KEY);
@@ -55,7 +56,11 @@ class AddFundsBloc {
       Map<String, dynamic> settings = json.decode(accountSettings);
       if (settings["moonpayIpCheck"]) {
         _isIPMoonpayAllowed().then((isAllowed) {
-          if (isAllowed) _createMoonpayUrl();
+          if (isAllowed) {
+            _createMoonpayUrl();
+          } else {
+            _moonPayUrlController.add(null);
+          }
         });
       } else {
         _createMoonpayUrl();
@@ -79,7 +84,9 @@ class AddFundsBloc {
     String currencyCode = config.get("MoonPay Parameters", 'currencyCode');
     String colorCode = config.get("MoonPay Parameters", 'colorCode');
     String redirectURL = config.get("MoonPay Parameters", 'redirectURL');
-    _moonPayURL = "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&colorCode=$colorCode&redirectURL=${Uri.encodeFull(redirectURL)}";
+    String moonPayURL =
+        "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&colorCode=$colorCode&redirectURL=${Uri.encodeFull(redirectURL)}";
+    _moonPayUrlController.add(moonPayURL);
   }
 
   Future<Config> _readConfig() async {
@@ -105,5 +112,6 @@ class AddFundsBloc {
     _addFundRequestController.close();
     _addFundResponseController.close();
     _moonPayOrderController.close();
+    _moonPayUrlController.close();
   }
 }
