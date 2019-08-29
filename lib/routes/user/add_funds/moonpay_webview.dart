@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert' as JSON;
+import 'dart:typed_data';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/account/moonpay_order.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -16,8 +18,9 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 class MoonpayWebView extends StatefulWidget {
   final BreezUserModel _user;
   final AccountBloc _accountBloc;
+  final BackupBloc _backupBloc;
 
-  MoonpayWebView(this._user, this._accountBloc);
+  MoonpayWebView(this._user, this._accountBloc, this._backupBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -30,10 +33,12 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   StreamSubscription _postMessageListener;
   StreamSubscription<AccountModel> _accountSubscription;
   StreamSubscription<String> _urlSubscription;
+  StreamSubscription<bool> _backupPromptVisibilitySubscription;
   AddFundsBloc _addFundsBloc;
 
   String walletAddress = "";
   String _moonPayURL = "";
+  Uint8List _screenshotData;
 
   bool _isInit = false;
 
@@ -41,6 +46,16 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   void initState() {
     super.initState();
     _addFundsBloc = new AddFundsBloc(widget._user.userID);
+    _backupPromptVisibilitySubscription = widget._backupBloc.backupPromptVisibleStream.listen((isVisible) {
+      if (isVisible) {
+        onBeforeCallHandler();
+      } else {
+        _widgetWebview.show();
+        setState(() {
+          _screenshotData = null;
+        });
+      }
+    });
     _accountSubscription = widget._accountBloc.accountStream.listen((acc) {
       if (!acc.bootstraping) {
         _addFundsBloc.addFundRequestSink.add(null);
@@ -86,8 +101,35 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
     _postMessageListener?.cancel();
     _accountSubscription.cancel();
     _urlSubscription.cancel();
+    _backupPromptVisibilitySubscription.cancel();
     _widgetWebview.dispose();
     super.dispose();
+  }
+
+  Future onBeforeCallHandler() {
+    if (_screenshotData != null) {
+      return Future.value(null);
+    }
+
+    Completer beforeCompleter = Completer();
+    FocusScope.of(context).requestFocus(FocusNode());
+    // Wait for keyboard and screen animations to settle
+    Timer(Duration(milliseconds: 0), () {
+      // Take screenshot and show payment request dialog
+      _takeScreenshot().then((imageData) {
+        setState(() {
+          _screenshotData = imageData;
+        });
+        // Wait for memory image to load
+        Timer(Duration(milliseconds: 200), () {
+          // Hide Webview to interact with payment request dialog
+          _widgetWebview.hide();
+          beforeCompleter.complete();
+        });
+      });
+    });
+
+    return beforeCompleter.future;
   }
 
   @override
@@ -140,8 +182,14 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
           withJavascript: true,
           withZoom: false,
           clearCache: true,
+          initialChild: _screenshotData != null ? Image.memory(_screenshotData) : null,
         );
       },
     );
+  }
+
+  Future _takeScreenshot() async {
+    Uint8List _imageData = await _widgetWebview.takeScreenshot();
+    return _imageData;
   }
 }

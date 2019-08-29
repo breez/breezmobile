@@ -116,7 +116,7 @@ class UserApp extends StatelessWidget {
                   );
                 case '/add_funds':
                   return new FadeInRoute(
-                    builder: (_) => new AddFundsPage(user, accountBloc),
+                    builder: (_) => new AddFundsPage(user, accountBloc, backupBloc),
                     settings: settings,
                   );
                 case '/withdraw_funds':

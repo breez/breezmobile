@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/account/moonpay_order.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -22,8 +23,9 @@ import 'moonpay_webview.dart';
 class AddFundsPage extends StatefulWidget {
   final BreezUserModel _user;
   final AccountBloc _accountBloc;
+  final BackupBloc _backupBloc;
 
-  const AddFundsPage(this._user, this._accountBloc);
+  const AddFundsPage(this._user, this._accountBloc, this._backupBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -264,7 +266,7 @@ class AddFundsState extends State<AddFundsPage> {
       ),
       onTap: () => Navigator.push(
         context,
-        FadeInRoute(builder: (_) => new MoonpayWebView(widget._user, widget._accountBloc)),
+        FadeInRoute(builder: (_) => new MoonpayWebView(widget._user, widget._accountBloc, widget._backupBloc)),
       ),
     );
   }
