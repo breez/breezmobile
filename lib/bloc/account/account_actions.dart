@@ -10,6 +10,8 @@ class SendPaymentFailureReport extends AsyncAction {
 
 class ResetNetwork extends AsyncAction {}
 
+class ResetChainService extends AsyncAction {}
+
 class RestartDaemon extends AsyncAction {}
 
 class FetchSwapFundStatus extends AsyncAction{}

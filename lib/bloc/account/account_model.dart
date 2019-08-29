@@ -479,8 +479,9 @@ class RefundableDepositModel {
 class BroadcastRefundRequestModel {
   final String fromAddress;
   final String toAddress;
+  final Int64 feeRate;
 
-  BroadcastRefundRequestModel(this.fromAddress, this.toAddress);
+  BroadcastRefundRequestModel(this.fromAddress, this.toAddress, this.feeRate);
 }
 
 class BroadcastRefundResponseModel {

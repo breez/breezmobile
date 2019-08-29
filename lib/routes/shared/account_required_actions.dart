@@ -51,6 +51,7 @@ class AccountRequiredActionsIndicatorState
               .listen((_) {                
                 if (_currentSettings.promptOnError && !showingBackupDialog) {
                   showingBackupDialog = true;
+                  widget._backupBloc.backupPromptVisibleSink.add(true);
                   popFlushbars(context);                  
                   showDialog(
                       barrierDismissible: false,
@@ -58,6 +59,7 @@ class AccountRequiredActionsIndicatorState
                       builder: (_) =>
                           new EnableBackupDialog(context, widget._backupBloc)).then((_) {
                     showingBackupDialog = false;
+                    widget._backupBloc.backupPromptVisibleSink.add(false);
                   });
                 }
               });   
