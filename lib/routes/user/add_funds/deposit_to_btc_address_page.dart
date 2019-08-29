@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
@@ -25,17 +23,15 @@ class DepositToBTCAddressPage extends StatefulWidget {
 
 class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   final String _title = "Deposit To Bitcoin Address";
-  StreamSubscription<AccountModel> _accountSubscription;
   AddFundsBloc _addFundsBloc;
 
   @override
   initState() {
     super.initState();
     _addFundsBloc = new AddFundsBloc(widget._user.userID);
-    _accountSubscription = widget._accountBloc.accountStream.listen((acc) {
+    widget._accountBloc.accountStream.first.then((acc) {
       if (!acc.bootstraping) {
         _addFundsBloc.addFundRequestSink.add(null);
-        _accountSubscription.cancel();
       }
     });
   }
@@ -43,7 +39,6 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   @override
   void dispose() {
     _addFundsBloc.addFundRequestSink.close();
-    _accountSubscription.cancel();
     super.dispose();
   }
 

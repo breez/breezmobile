@@ -33,14 +33,11 @@ class MoonpayWebView extends StatefulWidget {
 class MoonpayWebViewState extends State<MoonpayWebView> {
   final _widgetWebview = new FlutterWebviewPlugin();
   StreamSubscription _postMessageListener;
-  StreamSubscription<AccountModel> _accountSubscription;
-  StreamSubscription<String> _urlSubscription;
   StreamSubscription<bool> _backupPromptVisibilitySubscription;
   StreamSubscription<BreezUserModel> _userSubscription;
   AddFundsBloc _addFundsBloc;
 
   String walletAddress = "";
-  String _moonPayURL = "";
   Uint8List _screenshotData;
 
   bool _isInit = false;
@@ -49,17 +46,10 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   void initState() {
     super.initState();
     _addFundsBloc = new AddFundsBloc(widget._user.userID);
-    _accountSubscription = widget._accountBloc.accountStream.listen((acc) {
+    widget._accountBloc.accountStream.first.then((acc) {
       if (!acc.bootstraping) {
         _addFundsBloc.addFundRequestSink.add(null);
-        _accountSubscription.cancel();
       }
-    });
-    _urlSubscription = _addFundsBloc.moonPayUrlStream.listen((moonPayURL) {
-      setState(() {
-        _moonPayURL = moonPayURL;
-        _urlSubscription.cancel();
-      });
     });
     _backupPromptVisibilitySubscription = widget._backupBloc.backupPromptVisibleStream.listen((isVisible) {
       _hideWebview(isVisible);
@@ -99,8 +89,6 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   @override
   void dispose() {
     _postMessageListener?.cancel();
-    _accountSubscription.cancel();
-    _urlSubscription.cancel();
     _userSubscription.cancel();
     _backupPromptVisibilitySubscription.cancel();
     _widgetWebview.dispose();
@@ -150,45 +138,54 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
       stream: _addFundsBloc.addFundResponseStream,
       builder: (BuildContext context, AsyncSnapshot<AddFundResponse> response) {
         if (!response.hasData) {
-          return Material(
-            child: Scaffold(
-                appBar: AppBar(
-                  actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
-                  automaticallyImplyLeading: false,
-                  iconTheme: theme.appBarIconTheme,
-                  textTheme: theme.appBarTextTheme,
-                  backgroundColor: theme.BreezColors.blue[500],
-                  title: Text(
-                    "MoonPay",
-                    style: theme.appBarTextStyle,
-                  ),
-                  elevation: 0.0,
-                ),
-                body: response.hasError
-                    ? Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
-                            child: Text(
-                              "Failed to retrieve an address from Breez server\nPlease check your internet connection.",
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      )
-                    : Center(child: Loader(color: theme.BreezColors.white[400]))),
-          );
-        }
-        if (response.data != null) {
-          walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to snapshot?.address when we use public apiKey
-          _moonPayURL += "&walletAddress=$walletAddress";
-          String maxQuoteCurrencyAmount = Currency.BTC.format(response.data?.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
-          _moonPayURL += "&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
+          return _buildLoadingScreen(response);
         }
 
-        return WebviewScaffold(
+        return StreamBuilder(
+          stream: _addFundsBloc.moonPayUrlStream,
+          builder: (BuildContext context, AsyncSnapshot<String> moonpayUrl) {
+            if (!moonpayUrl.hasData) {
+              return _buildLoadingScreen(response);
+            }
+            walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to response?.address when we use public apiKey
+            String maxQuoteCurrencyAmount =
+                Currency.BTC.format(response.data?.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
+            String moonPayURL = moonpayUrl.data;
+            moonPayURL += "&walletAddress=$walletAddress&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
+
+            return WebviewScaffold(
+              appBar: AppBar(
+                actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
+                automaticallyImplyLeading: false,
+                iconTheme: theme.appBarIconTheme,
+                textTheme: theme.appBarTextTheme,
+                backgroundColor: theme.BreezColors.blue[500],
+                title: Text(
+                  "MoonPay",
+                  style: theme.appBarTextStyle,
+                ),
+                elevation: 0.0,
+              ),
+              url: moonPayURL,
+              withJavascript: true,
+              withZoom: false,
+              clearCache: true,
+              initialChild: _screenshotData != null ? Image.memory(_screenshotData) : null,
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future _takeScreenshot() async {
+    Uint8List _imageData = await _widgetWebview.takeScreenshot();
+    return _imageData;
+  }
+
+  Widget _buildLoadingScreen(AsyncSnapshot<AddFundResponse> response) {
+    return Material(
+      child: Scaffold(
           appBar: AppBar(
             actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
             automaticallyImplyLeading: false,
@@ -201,18 +198,21 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
             ),
             elevation: 0.0,
           ),
-          url: _moonPayURL,
-          withJavascript: true,
-          withZoom: false,
-          clearCache: true,
-          initialChild: _screenshotData != null ? Image.memory(_screenshotData) : null,
-        );
-      },
+          body: response.hasError
+              ? Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+                      child: Text(
+                        "Failed to retrieve an address from Breez server\nPlease check your internet connection.",
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                )
+              : Center(child: Loader(color: theme.BreezColors.white[400]))),
     );
-  }
-
-  Future _takeScreenshot() async {
-    Uint8List _imageData = await _widgetWebview.takeScreenshot();
-    return _imageData;
   }
 }
