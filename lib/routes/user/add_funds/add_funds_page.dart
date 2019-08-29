@@ -6,7 +6,6 @@ import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
@@ -35,7 +34,6 @@ class AddFundsPage extends StatefulWidget {
 class AddFundsState extends State<AddFundsPage> {
   final String _title = "Add Funds";
   AddFundsBloc _addFundsBloc;
-  StreamSubscription<AccountModel> _accountSubscription;
   StreamSubscription<MoonpayOrder> _moonPaySubscription;
 
   MoonpayOrder _moonPayOrder;
@@ -45,12 +43,6 @@ class AddFundsState extends State<AddFundsPage> {
   initState() {
     super.initState();
     _addFundsBloc = new AddFundsBloc(widget._user.userID);
-    _accountSubscription = widget._accountBloc.accountStream.listen((acc) {
-      if (!acc.bootstraping) {
-        _addFundsBloc.addFundRequestSink.add(null);
-        _accountSubscription.cancel();
-      }
-    });
     _moonPaySubscription = _addFundsBloc.moonPayOrderStream.listen((order) {
       setState(() {
         _moonPayOrder = order;
@@ -70,8 +62,6 @@ class AddFundsState extends State<AddFundsPage> {
 
   @override
   void dispose() {
-    _addFundsBloc.addFundRequestSink.close();
-    _accountSubscription.cancel();
     _moonPaySubscription?.cancel();
     moonPayTimer?.cancel();
     super.dispose();
@@ -99,36 +89,23 @@ class AddFundsState extends State<AddFundsPage> {
             if (!account.hasData) {
               return Center(child: Loader(color: theme.BreezColors.white[400]));
             }
-            return StreamBuilder(
-              stream: _addFundsBloc.addFundResponseStream,
-              builder: (BuildContext context, AsyncSnapshot<AddFundResponse> response) {
-                if (!response.hasData && !response.hasError) {
-                  return Center(child: Loader(color: theme.BreezColors.white[400]));
-                }
-                return getBody(context, account.data, response.data,
-                    response.hasError ? "Failed to retrieve an address from Breez server\nPlease check your internet connection." : null);
-              },
-            );
+            return getBody(context, account.data);
           },
         ),
       ),
     );
   }
 
-  Widget getBody(BuildContext context, AccountModel account, AddFundResponse response, String error) {
+  Widget getBody(BuildContext context, AccountModel account) {
     var unconfirmedTxID = account?.swapFundsStatus?.unconfirmedTxID;
     bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
 
     String errorMessage;
-    if (error != null) {
-      errorMessage = error;
-    } else if (account == null || account.bootstraping) {
+    if (account == null || account.bootstraping) {
       errorMessage = 'You\'d be able to add funds after Breez is finished bootstrapping.';
     } else if (unconfirmedTxID?.isNotEmpty == true || account.processingWithdrawal) {
       errorMessage =
           'Breez is processing your previous ${waitingDepositConfirmation || account.processingBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
-    } else if (response != null && response.errorMessage.isNotEmpty) {
-      errorMessage = response.errorMessage;
     } else if (_moonPayOrder?.address != null &&
         account?.addedFundsReply?.unConfirmedAddresses
                 ?.firstWhere((swapAddressInfo) => swapAddressInfo.address == _moonPayOrder.address, orElse: () => null) !=
@@ -177,10 +154,10 @@ class AddFundsState extends State<AddFundsPage> {
     return Stack(
       children: <Widget>[
         ListView(
-          children: _buildList(response),
+          children: _buildList(),
         ),
         Positioned(
-          child: _buildReserveAmountWarning(account, response),
+          child: _buildReserveAmountWarning(account),
           bottom: 72,
           right: 22,
           left: 22,
@@ -189,33 +166,30 @@ class AddFundsState extends State<AddFundsPage> {
     );
   }
 
-  List<Widget> _buildList(AddFundResponse response) {
+  List<Widget> _buildList() {
     List<Widget> list = List();
     list
       ..add(_buildDepositToBTCAddress())
       ..add(Divider(
         indent: 72,
       ));
-    print(_addFundsBloc.moonPayURL);
     if (_addFundsBloc.moonPayURL != null) {
-      list..add(_buildMoonpayButton(response))..add(Divider(indent: 72));
+      list..add(_buildMoonpayButton())..add(Divider(indent: 72));
     }
     list..add(_buildRedeemVoucherButton())..add(Divider(indent: 72));
     return list;
   }
 
-  Widget _buildReserveAmountWarning(AccountModel account, AddFundResponse response) {
-    return response == null
-        ? SizedBox()
-        : Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: theme.errorColor)),
-            padding: new EdgeInsets.all(16),
-            child: Text(
-              "Breez requires you to keep\n${account.currency.format(account.warningMaxChanReserveAmount, fixedDecimals: false)} in your balance.",
-              style: theme.reserveAmountWarningStyle,
-              textAlign: TextAlign.center,
-            ),
-          );
+  Widget _buildReserveAmountWarning(AccountModel account) {
+    return Container(
+      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: theme.errorColor)),
+      padding: new EdgeInsets.all(16),
+      child: Text(
+        "Breez requires you to keep\n${account.currency.format(account.warningMaxChanReserveAmount, fixedDecimals: false)} in your balance.",
+        style: theme.reserveAmountWarningStyle,
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 
   Widget _buildDepositToBTCAddress() {
@@ -253,13 +227,7 @@ class AddFundsState extends State<AddFundsPage> {
     );
   }
 
-  Widget _buildMoonpayButton(AddFundResponse response) {
-    String walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to response?.address when we use public apiKey
-    String moonPayURL = _addFundsBloc.moonPayURL + "&walletAddress=$walletAddress";
-    if (response != null) {
-      String maxQuoteCurrencyAmount = Currency.BTC.format(response?.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
-      moonPayURL += "&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
-    }
+  Widget _buildMoonpayButton() {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       child: Container(
@@ -287,13 +255,7 @@ class AddFundsState extends State<AddFundsPage> {
       ),
       onTap: () => Navigator.push(
         context,
-        FadeInRoute(
-          builder: (_) => new MoonpayWebView(
-            moonPayURL,
-            walletAddress: walletAddress,
-            addFundsBloc: _addFundsBloc,
-          ),
-        ),
+        FadeInRoute(builder: (_) => new MoonpayWebView(widget._user, widget._accountBloc)),
       ),
     );
   }

@@ -25,8 +25,8 @@ class DepositToBTCAddressPage extends StatefulWidget {
 
 class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   final String _title = "Deposit To Bitcoin Address";
-  AddFundsBloc _addFundsBloc;
   StreamSubscription<AccountModel> _accountSubscription;
+  AddFundsBloc _addFundsBloc;
 
   @override
   initState() {
@@ -85,6 +85,27 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   }
 
   Widget getBody(BuildContext context, AccountModel account, AddFundResponse response, String error) {
+    String errorMessage;
+    if (error != null) {
+      errorMessage = error;
+    } else if (response != null && response.errorMessage.isNotEmpty) {
+      errorMessage = response.errorMessage;
+    }
+    if (errorMessage != null) {
+      if (!errorMessage.endsWith('.')) {
+        errorMessage += '.';
+      }
+      return Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+            child: Text(errorMessage, textAlign: TextAlign.center),
+          ),
+        ],
+      );
+    }
     return Column(children: <Widget>[
       AddressWidget(response?.address, response?.backupJson),
       response == null
