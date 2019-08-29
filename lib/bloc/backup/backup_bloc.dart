@@ -17,6 +17,10 @@ class BackupBloc {
   final StreamController<void> _promptBackupController = new StreamController<void>.broadcast();
   Stream<void> get promptBackupStream => _promptBackupController.stream;
 
+  final StreamController<bool> _backupPromptVisibleController = new BehaviorSubject<bool>(seedValue: false);
+  Stream<bool> get backupPromptVisibleStream => _backupPromptVisibleController.stream;
+  Sink<bool> get backupPromptVisibleSink => _backupPromptVisibleController.sink;
+
   final BehaviorSubject<BackupSettings> _backupSettingsController =
       new BehaviorSubject<BackupSettings>(seedValue: BackupSettings.start());
   Stream<BackupSettings> get backupSettingsStream =>
@@ -193,6 +197,7 @@ class BackupBloc {
     _multipleRestoreController.close();
     _restoreFinishedController.close();    
     _backupSettingsController.close();
+    _backupPromptVisibleController.close();
   }
 }
 
