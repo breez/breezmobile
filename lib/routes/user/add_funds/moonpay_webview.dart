@@ -126,7 +126,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
     Completer beforeCompleter = Completer();
     FocusScope.of(context).requestFocus(FocusNode());
     // Wait for keyboard and screen animations to settle
-    Timer(Duration(milliseconds: 0), () {
+    Timer(Duration(milliseconds: 750), () {
       // Take screenshot and show payment request dialog
       _takeScreenshot().then((imageData) {
         setState(() {
