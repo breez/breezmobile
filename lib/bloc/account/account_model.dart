@@ -89,6 +89,11 @@ class SwapFundStatus {
     return errorAddresses.first.errorMessage;
   }
 
+  List<RefundableAddress> get unConfirmedAddresses {
+    var unConfirmedAddresses = _addedFundsReply?.unConfirmedAddresses  ?? List<RefundableAddress>();
+    return unConfirmedAddresses.map((a) => RefundableAddress(a)).toList();
+  }
+
   List<RefundableAddress> get refundableAddresses {
     var refundableAddresses = _addedFundsReply?.refundableAddresses ?? List<RefundableAddress>();
     return refundableAddresses.map((a) => RefundableAddress(a)).toList();
