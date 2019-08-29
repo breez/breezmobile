@@ -37,13 +37,13 @@ class PosApp extends StatelessWidget {
           return MaterialApp(
             title: 'Breez POS',
             initialRoute: user.registered ? null : '/intro',
-            home: PosHome(accountBloc, backupBloc),
+            home: PosHome(accountBloc, backupBloc, userProfileBloc),
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
                 case '/home':
                   return new FadeInRoute(
                     builder: (_) =>
-                        new PosHome(accountBloc, backupBloc),
+                        new PosHome(accountBloc, backupBloc, userProfileBloc),
                     settings: settings,
                   );
                 case '/intro':

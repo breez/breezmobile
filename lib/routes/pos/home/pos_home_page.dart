@@ -1,4 +1,5 @@
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/account_required_actions.dart';
 import 'package:breez/routes/user/sync_ui_handler.dart';
 
@@ -12,8 +13,9 @@ import 'package:breez/bloc/account/account_bloc.dart';
 class PosHome extends StatefulWidget {
   final AccountBloc accountBloc;
   final BackupBloc backupBloc;
+  final UserProfileBloc userBlock;
 
-  PosHome(this.accountBloc, this.backupBloc);
+  PosHome(this.accountBloc, this.backupBloc, this.userBlock);
 
   final List<DrawerItemConfig> _screens =
       new List<DrawerItemConfig>.unmodifiable([]);
@@ -60,7 +62,7 @@ class PosHomeState extends State<PosHome> {
             Padding(
               padding: const EdgeInsets.all(14.0),
               child: AccountRequiredActionsIndicator(
-                  widget.backupBloc, widget.accountBloc),
+                  widget.backupBloc, widget.accountBloc, widget.userBlock),
             ),
           ],
           leading: new IconButton(
