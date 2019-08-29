@@ -50,6 +50,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
     _urlSubscription = _addFundsBloc.moonPayUrlStream.listen((moonPayURL) {
       setState(() {
         _moonPayURL = moonPayURL;
+        _urlSubscription.cancel();
       });
     });
     _widgetWebview.onDestroy.listen((_) {

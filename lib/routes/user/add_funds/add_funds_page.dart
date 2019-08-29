@@ -53,6 +53,7 @@ class AddFundsState extends State<AddFundsPage> {
     _urlSubscription = _addFundsBloc.moonPayUrlStream.listen((moonPayURL) {
       setState(() {
         _moonPayURL = moonPayURL;
+        _urlSubscription.cancel();
       });
     });
     _checkMoonpayOrderExpiration();
