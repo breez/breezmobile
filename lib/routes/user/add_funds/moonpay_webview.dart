@@ -142,17 +142,16 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
         }
 
         return StreamBuilder(
-          stream: _addFundsBloc.moonPayUrlStream,
-          builder: (BuildContext context, AsyncSnapshot<String> moonpayUrl) {
-            if (!moonpayUrl.hasData) {
+          stream: _addFundsBloc.availableVendorsStream,
+          builder: (BuildContext context, AsyncSnapshot<AddFundVendorModel> vendor) {
+            if (!vendor.hasData) {
               return _buildLoadingScreen(response);
             }
             walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to response?.address when we use public apiKey
             String maxQuoteCurrencyAmount =
                 Currency.BTC.format(response.data?.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
-            String moonPayURL = moonpayUrl.data;
+            String moonPayURL = vendor.data.url;
             moonPayURL += "&walletAddress=$walletAddress&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
-
             return WebviewScaffold(
               appBar: AppBar(
                 actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],

@@ -71,10 +71,9 @@ class AddFundsState extends State<AddFundsPage> {
             return StreamBuilder(
                 stream: _addFundsBloc.moonPayOrderStream,
                 builder: (BuildContext context, AsyncSnapshot<MoonpayOrder> moonpayOrder) {
-                  if (!moonpayOrder.hasData) {
-                    return Center(child: Loader(color: theme.BreezColors.white[400]));
-                  }
-                  if (_orderIsPending(moonpayOrder.data) && _orderExistsInUnconfirmedAddresses(account.data, moonpayOrder.data)) {
+                  if (moonpayOrder.hasData &&
+                      _orderIsPending(moonpayOrder.data) &&
+                      _orderExistsInUnconfirmedAddresses(account.data, moonpayOrder.data)) {
                     return Column(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
@@ -85,10 +84,14 @@ class AddFundsState extends State<AddFundsPage> {
                       ),
                     ]);
                   }
+
                   return StreamBuilder(
-                      stream: _addFundsBloc.moonPayUrlStream,
-                      builder: (BuildContext context, AsyncSnapshot<String> moonpayUrl) {
-                        return getBody(context, account.data, moonpayUrl.data);
+                      stream: _addFundsBloc.availableVendorsStream,
+                      builder: (BuildContext context, AsyncSnapshot<AddFundVendorModel> vendor) {
+                        if (!vendor.hasData) {
+                          return Center(child: Loader(color: theme.BreezColors.white[400]));
+                        }
+                        return getBody(context, account.data, vendor.data);
                       });
                 });
           },
@@ -106,7 +109,7 @@ class AddFundsState extends State<AddFundsPage> {
         null;
   }
 
-  Widget getBody(BuildContext context, AccountModel account, String moonpayUrl) {
+  Widget getBody(BuildContext context, AccountModel account, AddFundVendorModel vendor) {
     var unconfirmedTxID = account?.swapFundsStatus?.unconfirmedTxID;
     bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
 
@@ -154,7 +157,7 @@ class AddFundsState extends State<AddFundsPage> {
     return Stack(
       children: <Widget>[
         ListView(
-          children: _buildList(moonpayUrl),
+          children: _buildList(vendor),
         ),
         Positioned(
           child: _buildReserveAmountWarning(account),
@@ -166,14 +169,14 @@ class AddFundsState extends State<AddFundsPage> {
     );
   }
 
-  List<Widget> _buildList(String moonpayUrl) {
+  List<Widget> _buildList(AddFundVendorModel vendor) {
     List<Widget> list = List();
     list
       ..add(_buildDepositToBTCAddress())
       ..add(Divider(
         indent: 72,
       ));
-    if (moonpayUrl != null) {
+    if (vendor.isAllowed) {
       list..add(_buildMoonpayButton())..add(Divider(indent: 72));
     }
     list..add(_buildRedeemVoucherButton())..add(Divider(indent: 72));

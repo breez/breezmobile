@@ -31,9 +31,9 @@ class AddFundsBloc {
 
   Sink<MoonpayOrder> get moonPayOrderSink => _moonPayOrderController.sink;
 
-  final _moonPayUrlController = new BehaviorSubject<String>();
+  final _availableVendorsController = new BehaviorSubject<AddFundVendorModel>();
 
-  Stream<String> get moonPayUrlStream => _moonPayUrlController.stream;
+  Stream<AddFundVendorModel> get availableVendorsStream => _availableVendorsController.stream;
 
   AddFundsBloc(String userID) {
     ServiceInjector injector = ServiceInjector();
@@ -45,8 +45,14 @@ class AddFundsBloc {
           .then((reply) => _addFundResponseController.add(new AddFundResponse(reply)))
           .catchError(_addFundResponseController.addError);
     }).onDone(_dispose);
-    _listenAccountSettings(injector);
+    _initializeAvailableVendors().then((_) => _listenAccountSettings(injector));
     _handleMoonpayOrders(injector);
+  }
+
+  Future _initializeAvailableVendors() async {
+    String moonpayUrl = await _createMoonpayUrl();
+    _availableVendorsController.add(AddFundVendorModel("Moonpay", moonpayUrl, false));
+    return true;
   }
 
   _listenAccountSettings(ServiceInjector injector) async {
@@ -56,14 +62,10 @@ class AddFundsBloc {
       Map<String, dynamic> settings = json.decode(accountSettings);
       if (settings["moonpayIpCheck"]) {
         _isIPMoonpayAllowed().then((isAllowed) {
-          if (isAllowed) {
-            _createMoonpayUrl();
-          } else {
-            _moonPayUrlController.add(null);
-          }
+          _availableVendorsController.add(_availableVendorsController.value.copyWith(isAllowed: isAllowed));
         });
       } else {
-        _createMoonpayUrl();
+        _availableVendorsController.add(_availableVendorsController.value.copyWith(isAllowed: true));
       }
     }
   }
@@ -77,7 +79,7 @@ class AddFundsBloc {
     return jsonDecode(response.body)['isAllowed'];
   }
 
-  Future _createMoonpayUrl() async {
+  Future<String> _createMoonpayUrl() async {
     Config config = await _readConfig();
     String baseUrl = config.get("MoonPay Parameters", 'baseUrl');
     String apiKey = config.get("MoonPay Parameters", 'apiKey');
@@ -86,7 +88,7 @@ class AddFundsBloc {
     String redirectURL = config.get("MoonPay Parameters", 'redirectURL');
     String moonPayURL =
         "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&colorCode=$colorCode&redirectURL=${Uri.encodeFull(redirectURL)}";
-    _moonPayUrlController.add(moonPayURL);
+    return moonPayURL;
   }
 
   Future<Config> _readConfig() async {
@@ -102,17 +104,26 @@ class AddFundsBloc {
       _moonPayOrderController.add(MoonpayOrder.fromJson(settings));
     }
     _moonPayOrderController.stream.listen((order) async {
-      injector.sharedPreferences.then((preferences) {
-        preferences.setString(PENDING_MOONPAY_ORDER_KEY, json.encode(order.toJson()));
-        _moonPayOrderController.add(order);
-      });
+      preferences.setString(PENDING_MOONPAY_ORDER_KEY, json.encode(order.toJson()));
     });
   }
 
   _dispose() {
     _addFundRequestController.close();
     _addFundResponseController.close();
+    _availableVendorsController.close();
     _moonPayOrderController.close();
-    _moonPayUrlController.close();
+  }
+}
+
+class AddFundVendorModel {
+  String name;
+  String url;
+  bool isAllowed;
+
+  AddFundVendorModel(this.name, this.url, this.isAllowed);
+
+  AddFundVendorModel copyWith({String url, bool isAllowed}) {
+    return new AddFundVendorModel(this.name, url = this.url, isAllowed = isAllowed ?? this.isAllowed);
   }
 }
