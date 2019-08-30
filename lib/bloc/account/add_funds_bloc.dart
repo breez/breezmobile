@@ -52,7 +52,6 @@ class AddFundsBloc {
   Future _initializeAvailableVendors() async {
     String moonpayUrl = await _createMoonpayUrl();
     _availableVendorsController.add(AddFundVendorModel("Moonpay", moonpayUrl, false));
-    return true;
   }
 
   _listenAccountSettings(ServiceInjector injector) async {
