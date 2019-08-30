@@ -11,6 +11,7 @@ import "package:ini/ini.dart";
 import 'package:rxdart/rxdart.dart';
 
 import 'account_model.dart';
+import 'add_fund_vendor_model.dart';
 import 'moonpay_order.dart';
 
 class AddFundsBloc {
@@ -112,17 +113,5 @@ class AddFundsBloc {
     _addFundResponseController.close();
     _availableVendorsController.close();
     _moonPayOrderController.close();
-  }
-}
-
-class AddFundVendorModel {
-  String name;
-  String url;
-  bool isAllowed;
-
-  AddFundVendorModel(this.name, this.url, this.isAllowed);
-
-  AddFundVendorModel copyWith({String url, bool isAllowed}) {
-    return new AddFundVendorModel(this.name, url = this.url, isAllowed = isAllowed ?? this.isAllowed);
   }
 }
