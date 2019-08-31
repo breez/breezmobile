@@ -10,7 +10,6 @@ import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
@@ -148,11 +147,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
             if (!vendor.hasData) {
               return _buildLoadingScreen(response);
             }
-            walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to response?.address when we use public apiKey
-            String maxQuoteCurrencyAmount =
-                Currency.BTC.format(response.data?.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
-            String moonPayURL = vendor.data.url;
-            moonPayURL += "&walletAddress=$walletAddress&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
+            walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF";// Will switch to response.data.address when we use public apiKey
             return WebviewScaffold(
               appBar: AppBar(
                 actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
@@ -166,7 +161,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
                 ),
                 elevation: 0.0,
               ),
-              url: moonPayURL,
+              url: vendor.data.url,
               withJavascript: true,
               withZoom: false,
               clearCache: true,
