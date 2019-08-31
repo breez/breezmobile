@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/add_fund_vendor_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -73,7 +72,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
         if (msg != null) {
           var postMessage = JSON.jsonDecode(msg);
           if (postMessage['status'] == "completed") {
-            _addFundsBloc.moonPayOrderSink.add(MoonpayOrder(walletAddress, DateTime.now().millisecondsSinceEpoch));
+            _addFundsBloc.moonpayOrderSink.add(MoonpayOrder(walletAddress, DateTime.now().millisecondsSinceEpoch));
           }
         }
       });
@@ -142,12 +141,14 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
         }
 
         return StreamBuilder(
-          stream: _addFundsBloc.availableVendorsStream,
-          builder: (BuildContext context, AsyncSnapshot<AddFundVendorModel> vendor) {
-            if (!vendor.hasData) {
+          stream: _addFundsBloc.moonpayUrlStream,
+          builder: (BuildContext context, AsyncSnapshot<String> moonpayUrl) {
+            if (!moonpayUrl.hasData) {
               return _buildLoadingScreen(response);
             }
-            walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF";// Will switch to response.data.address when we use public apiKey
+            walletAddress = response.data.address;
+            print(moonpayUrl.data);
+            //walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF";// Will switch to response.data.address when we use public apiKey
             return WebviewScaffold(
               appBar: AppBar(
                 actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
@@ -161,7 +162,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
                 ),
                 elevation: 0.0,
               ),
-              url: vendor.data.url,
+              url: moonpayUrl.data,
               withJavascript: true,
               withZoom: false,
               clearCache: true,

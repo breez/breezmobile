@@ -70,7 +70,7 @@ class AddFundsState extends State<AddFundsPage> {
               return Center(child: Loader(color: theme.BreezColors.white[400]));
             }
             return StreamBuilder(
-                stream: _addFundsBloc.moonPayOrderStream,
+                stream: _addFundsBloc.moonpayOrderStream,
                 builder: (BuildContext context, AsyncSnapshot<MoonpayOrder> moonpayOrder) {
                   if (moonpayOrder.hasData &&
                       _orderIsPending(moonpayOrder.data) &&
@@ -88,11 +88,11 @@ class AddFundsState extends State<AddFundsPage> {
 
                   return StreamBuilder(
                       stream: _addFundsBloc.availableVendorsStream,
-                      builder: (BuildContext context, AsyncSnapshot<AddFundVendorModel> vendor) {
-                        if (!vendor.hasData) {
+                      builder: (BuildContext context, AsyncSnapshot<List<AddFundVendorModel>> vendorList) {
+                        if (!vendorList.hasData) {
                           return Center(child: Loader(color: theme.BreezColors.white[400]));
                         }
-                        return getBody(context, account.data, vendor.data);
+                        return getBody(context, account.data, vendorList.data);
                       });
                 });
           },
@@ -110,7 +110,7 @@ class AddFundsState extends State<AddFundsPage> {
         null;
   }
 
-  Widget getBody(BuildContext context, AccountModel account, AddFundVendorModel vendor) {
+  Widget getBody(BuildContext context, AccountModel account, List<AddFundVendorModel> vendorList) {
     var unconfirmedTxID = account?.swapFundsStatus?.unconfirmedTxID;
     bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
 
@@ -158,7 +158,7 @@ class AddFundsState extends State<AddFundsPage> {
     return Stack(
       children: <Widget>[
         ListView(
-          children: _buildList(vendor),
+          children: _buildList(vendorList.firstWhere((vendor) => vendor.name == "moonpay")),
         ),
         Positioned(
           child: _buildReserveAmountWarning(account),

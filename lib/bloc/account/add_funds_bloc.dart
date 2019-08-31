@@ -27,15 +27,19 @@ class AddFundsBloc {
 
   Stream<AddFundResponse> get addFundResponseStream => _addFundResponseController.stream;
 
-  final _moonPayOrderController = new BehaviorSubject<MoonpayOrder>();
+  final _moonpayOrderController = new BehaviorSubject<MoonpayOrder>();
 
-  Stream<MoonpayOrder> get moonPayOrderStream => _moonPayOrderController.stream;
+  Stream<MoonpayOrder> get moonpayOrderStream => _moonpayOrderController.stream;
 
-  Sink<MoonpayOrder> get moonPayOrderSink => _moonPayOrderController.sink;
+  Sink<MoonpayOrder> get moonpayOrderSink => _moonpayOrderController.sink;
 
-  final _availableVendorsController = new BehaviorSubject<AddFundVendorModel>();
+  final _moonpayUrlController = new BehaviorSubject<String>();
 
-  Stream<AddFundVendorModel> get availableVendorsStream => _availableVendorsController.stream;
+  Stream<String> get moonpayUrlStream => _moonpayUrlController.stream;
+
+  final _availableVendorsController = new BehaviorSubject<List<AddFundVendorModel>>();
+
+  Stream<List<AddFundVendorModel>> get availableVendorsStream => _availableVendorsController.stream;
 
   AddFundsBloc(String userID) {
     ServiceInjector injector = ServiceInjector();
@@ -44,8 +48,8 @@ class AddFundsBloc {
       _addFundResponseController.add(null);
       breezLib.addFundsInit(userID).then((reply) {
         AddFundResponse response = AddFundResponse(reply);
-        _addFundResponseController.add(response);
         _attachMoonpayUrl(response);
+        _addFundResponseController.add(response);
       }).catchError(_addFundResponseController.addError);
     }).onDone(_dispose);
     _initializeAvailableVendors().then((_) => _listenAccountSettings(injector));
@@ -53,7 +57,11 @@ class AddFundsBloc {
   }
 
   Future _initializeAvailableVendors() async {
-    _availableVendorsController.add(AddFundVendorModel("Moonpay", null, false));
+    List<AddFundVendorModel> _vendorList = [];
+    _vendorList.add(AddFundVendorModel("btcaddress", true));
+    _vendorList.add(AddFundVendorModel("moonpay", false));
+    _vendorList.add(AddFundVendorModel("fastbitcoin", true));
+    _availableVendorsController.add(_vendorList);
   }
 
   Future _attachMoonpayUrl(AddFundResponse response) async {
@@ -61,7 +69,7 @@ class AddFundsBloc {
     String walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to response.address when we use public apiKey
     String maxQuoteCurrencyAmount = Currency.BTC.format(response.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
     moonpayUrl += "&walletAddress=$walletAddress&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
-    _availableVendorsController.add(_availableVendorsController.value.copyWith(url: moonpayUrl));
+    _moonpayUrlController.add(moonpayUrl);
   }
 
   _listenAccountSettings(ServiceInjector injector) async {
@@ -71,10 +79,12 @@ class AddFundsBloc {
       Map<String, dynamic> settings = json.decode(accountSettings);
       if (settings["moonpayIpCheck"]) {
         _isIPMoonpayAllowed().then((isAllowed) {
-          _availableVendorsController.add(_availableVendorsController.value.copyWith(isAllowed: isAllowed));
+          _availableVendorsController.value[_availableVendorsController.value.indexWhere((vendor) => vendor.name == "moonpay")] =
+              _availableVendorsController.value.firstWhere((vendor) => vendor.name == "moonpay").copyWith(isAllowed: isAllowed);
         });
       } else {
-        _availableVendorsController.add(_availableVendorsController.value.copyWith(isAllowed: true));
+        _availableVendorsController.value[_availableVendorsController.value.indexWhere((vendor) => vendor.name == "moonpay")] =
+            _availableVendorsController.value.firstWhere((vendor) => vendor.name == "moonpay").copyWith(isAllowed: true);
       }
     }
   }
@@ -95,9 +105,7 @@ class AddFundsBloc {
     String currencyCode = config.get("MoonPay Parameters", 'currencyCode');
     String colorCode = config.get("MoonPay Parameters", 'colorCode');
     String redirectURL = config.get("MoonPay Parameters", 'redirectURL');
-    String moonPayURL =
-        "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&colorCode=$colorCode&redirectURL=${Uri.encodeFull(redirectURL)}";
-    return moonPayURL;
+    return "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&colorCode=$colorCode&redirectURL=${Uri.encodeFull(redirectURL)}";
   }
 
   Future<Config> _readConfig() async {
@@ -110,9 +118,9 @@ class AddFundsBloc {
     var pendingOrder = preferences.getString(PENDING_MOONPAY_ORDER_KEY);
     if (pendingOrder != null) {
       Map<String, dynamic> settings = json.decode(pendingOrder);
-      _moonPayOrderController.add(MoonpayOrder.fromJson(settings));
+      _moonpayOrderController.add(MoonpayOrder.fromJson(settings));
     }
-    _moonPayOrderController.stream.listen((order) async {
+    _moonpayOrderController.stream.listen((order) async {
       preferences.setString(PENDING_MOONPAY_ORDER_KEY, json.encode(order.toJson()));
     });
   }
@@ -121,6 +129,7 @@ class AddFundsBloc {
     _addFundRequestController.close();
     _addFundResponseController.close();
     _availableVendorsController.close();
-    _moonPayOrderController.close();
+    _moonpayOrderController.close();
+    _moonpayUrlController.close();
   }
 }
