@@ -6,6 +6,6 @@ class AddFundVendorModel {
   AddFundVendorModel(this.name, this.url, this.isAllowed);
 
   AddFundVendorModel copyWith({String url, bool isAllowed}) {
-    return new AddFundVendorModel(this.name, url = this.url, isAllowed = isAllowed ?? this.isAllowed);
+    return new AddFundVendorModel(this.name, url = url ?? this.url, isAllowed = isAllowed ?? this.isAllowed);
   }
 }

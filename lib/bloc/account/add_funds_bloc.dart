@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
@@ -41,18 +42,26 @@ class AddFundsBloc {
     BreezBridge breezLib = injector.breezBridge;
     _addFundRequestController.stream.listen((request) {
       _addFundResponseController.add(null);
-      breezLib
-          .addFundsInit(userID)
-          .then((reply) => _addFundResponseController.add(new AddFundResponse(reply)))
-          .catchError(_addFundResponseController.addError);
+      breezLib.addFundsInit(userID).then((reply) {
+        AddFundResponse response = AddFundResponse(reply);
+        _addFundResponseController.add(response);
+        _attachMoonpayUrl(response);
+      }).catchError(_addFundResponseController.addError);
     }).onDone(_dispose);
     _initializeAvailableVendors().then((_) => _listenAccountSettings(injector));
     _handleMoonpayOrders(injector);
   }
 
   Future _initializeAvailableVendors() async {
+    _availableVendorsController.add(AddFundVendorModel("Moonpay", null, false));
+  }
+
+  Future _attachMoonpayUrl(AddFundResponse response) async {
     String moonpayUrl = await _createMoonpayUrl();
-    _availableVendorsController.add(AddFundVendorModel("Moonpay", moonpayUrl, false));
+    String walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to response.address when we use public apiKey
+    String maxQuoteCurrencyAmount = Currency.BTC.format(response.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
+    moonpayUrl += "&walletAddress=$walletAddress&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
+    _availableVendorsController.add(_availableVendorsController.value.copyWith(url: moonpayUrl));
   }
 
   _listenAccountSettings(ServiceInjector injector) async {
