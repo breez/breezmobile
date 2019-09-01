@@ -25,17 +25,14 @@ class AddFundsBloc {
 
   final _addFundResponseController = new StreamController<AddFundResponse>();
 
-  Stream<AddFundResponse> get addFundResponseStream => _addFundResponseController.stream;
+  Stream<AddFundResponse> get addFundResponseStream => _addFundResponseController.stream;  
 
-  final _moonpayOrderController = new BehaviorSubject<MoonpayOrder>();
+  final _moonpayNextOrderController = new BehaviorSubject<MoonpayOrder>();
+  Stream<MoonpayOrder> get moonpayNextOrderStream => _moonpayNextOrderController.stream;
 
-  Stream<MoonpayOrder> get moonpayOrderStream => _moonpayOrderController.stream;
-
-  Sink<MoonpayOrder> get moonpayOrderSink => _moonpayOrderController.sink;
-
-  final _moonpayUrlController = new BehaviorSubject<String>();
-
-  Stream<String> get moonpayUrlStream => _moonpayUrlController.stream;
+  final _completedMoonpayOrderController = new BehaviorSubject<MoonpayOrder>();
+  Stream<MoonpayOrder> get completedMoonpayOrderStream => _completedMoonpayOrderController.stream;
+  Sink<MoonpayOrder> get completedMoonpayOrderSink => _completedMoonpayOrderController.sink;  
 
   final _availableVendorsController = new BehaviorSubject<List<AddFundVendorModel>>();
 
@@ -51,15 +48,16 @@ class AddFundsBloc {
         _attachMoonpayUrl(response);
         _addFundResponseController.add(response);
       }).catchError(_addFundResponseController.addError);
-    }).onDone(_dispose);
-    _initializeAvailableVendors().then((_) => _listenAccountSettings(injector));
+    });
+    _populateAvailableVendors(false);
+    _listenAccountSettings(injector);    
     _handleMoonpayOrders(injector);
   }
 
-  Future _initializeAvailableVendors() async {
+  Future _populateAvailableVendors(bool moonpayAllowed) async {
     List<AddFundVendorModel> _vendorList = [];
     _vendorList.add(AddFundVendorModel("btcaddress", true));
-    _vendorList.add(AddFundVendorModel("moonpay", false));
+    _vendorList.add(AddFundVendorModel("moonpay", moonpayAllowed));
     _vendorList.add(AddFundVendorModel("fastbitcoin", true));
     _availableVendorsController.add(_vendorList);
   }
@@ -69,27 +67,21 @@ class AddFundsBloc {
     String walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to response.address when we use public apiKey
     String maxQuoteCurrencyAmount = Currency.BTC.format(response.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
     moonpayUrl += "&walletAddress=$walletAddress&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
-    _moonpayUrlController.add(moonpayUrl);
+    _moonpayNextOrderController.add(MoonpayOrder(walletAddress, moonpayUrl, null));    
   }
 
   _listenAccountSettings(ServiceInjector injector) async {
     var preferences = await injector.sharedPreferences;
     var accountSettings = preferences.getString(ACCOUNT_SETTINGS_PREFERENCES_KEY);
-    if (accountSettings != null) {
-      Map<String, dynamic> settings = json.decode(accountSettings);
-      if (settings["moonpayIpCheck"]) {
-        _isIPMoonpayAllowed().then((isAllowed) {
-          _availableVendorsController.value[_availableVendorsController.value.indexWhere((vendor) => vendor.name == "moonpay")] =
-              _availableVendorsController.value.firstWhere((vendor) => vendor.name == "moonpay").copyWith(isAllowed: isAllowed);
-        });
-      } else {
-        _availableVendorsController.value[_availableVendorsController.value.indexWhere((vendor) => vendor.name == "moonpay")] =
-            _availableVendorsController.value.firstWhere((vendor) => vendor.name == "moonpay").copyWith(isAllowed: true);
-      }
+    Map<String, dynamic> settings = accountSettings != null ? json.decode(accountSettings) : {};
+    bool ipAllowed = settings["moonpayIpCheck"] == false;
+    if (!ipAllowed) {
+      ipAllowed = await _isIPMoonpayAllowed();
     }
+    _populateAvailableVendors(ipAllowed);    
   }
 
-  Future<bool> _isIPMoonpayAllowed() async {
+  Future<bool> _isIPMoonpayAllowed() async {    
     var response = await http.get("https://api.moonpay.io/v2/ip_address");
     if (response.statusCode != 200) {
       log.severe('moonpay response error: ${response.body.substring(0, 100)}');
@@ -118,18 +110,18 @@ class AddFundsBloc {
     var pendingOrder = preferences.getString(PENDING_MOONPAY_ORDER_KEY);
     if (pendingOrder != null) {
       Map<String, dynamic> settings = json.decode(pendingOrder);
-      _moonpayOrderController.add(MoonpayOrder.fromJson(settings));
+      _completedMoonpayOrderController.add(MoonpayOrder.fromJson(settings));
     }
-    _moonpayOrderController.stream.listen((order) async {
+    _completedMoonpayOrderController.stream.listen((order) async {
       preferences.setString(PENDING_MOONPAY_ORDER_KEY, json.encode(order.toJson()));
     });
   }
 
-  _dispose() {
+  dispose() {
     _addFundRequestController.close();
     _addFundResponseController.close();
     _availableVendorsController.close();
-    _moonpayOrderController.close();
-    _moonpayUrlController.close();
+    _moonpayNextOrderController.close();
+    _completedMoonpayOrderController.close();
   }
 }
