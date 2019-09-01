@@ -3,28 +3,19 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_fund_vendor_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/account/moonpay_order.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
-import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'deposit_to_btc_address_page.dart';
-import 'moonpay_webview.dart';
+class AddFundsPage extends StatefulWidget {  
 
-class AddFundsPage extends StatefulWidget {
-  final BreezUserModel _user;
-  final AccountBloc _accountBloc;
-  final BackupBloc _backupBloc;
-
-  const AddFundsPage(this._user, this._accountBloc, this._backupBloc);
+  const AddFundsPage();
 
   @override
   State<StatefulWidget> createState() {
@@ -33,24 +24,12 @@ class AddFundsPage extends StatefulWidget {
 }
 
 class AddFundsState extends State<AddFundsPage> {
-  final String _title = "Add Funds";
-  AddFundsBloc _addFundsBloc;
-
-  @override
-  initState() {
-    super.initState();
-    _addFundsBloc = new AddFundsBloc(widget._user.userID);
-  }
-
-  @override
-  void dispose() {
-    _addFundsBloc.dispose();
-    super.dispose();
-  }
+  final String _title = "Add Funds";  
 
   @override
   Widget build(BuildContext context) {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     return Material(
       child: new Scaffold(
         appBar: new AppBar(
@@ -71,7 +50,7 @@ class AddFundsState extends State<AddFundsPage> {
               return Center(child: Loader(color: theme.BreezColors.white[400]));
             }
             return StreamBuilder(
-                stream: _addFundsBloc.completedMoonpayOrderStream,
+                stream: addFundsBloc.completedMoonpayOrderStream,
                 builder: (BuildContext context, AsyncSnapshot<MoonpayOrder> moonpayOrder) {
                   if (moonpayOrder.hasData &&
                       _orderIsPending(moonpayOrder.data) &&
@@ -88,7 +67,7 @@ class AddFundsState extends State<AddFundsPage> {
                   }
 
                   return StreamBuilder(
-                      stream: _addFundsBloc.availableVendorsStream,
+                      stream: addFundsBloc.availableVendorsStream,
                       builder: (BuildContext context, AsyncSnapshot<List<AddFundVendorModel>> vendorList) {
                         if (!vendorList.hasData) {
                           return Center(child: Loader(color: theme.BreezColors.white[400]));
@@ -157,7 +136,7 @@ class AddFundsState extends State<AddFundsPage> {
     return Stack(
       children: <Widget>[
         ListView(
-          children: _buildList(vendorList.firstWhere((vendor) => vendor.name == "moonpay")),
+          children: _buildList(vendorList),
         ),
         Positioned(
           child: _buildReserveAmountWarning(account),
@@ -169,17 +148,17 @@ class AddFundsState extends State<AddFundsPage> {
     );
   }
 
-  List<Widget> _buildList(AddFundVendorModel vendor) {
+  List<Widget> _buildList(List<AddFundVendorModel> vendorsList) {
     List<Widget> list = List();
-    list
-      ..add(_buildDepositToBTCAddress())
-      ..add(Divider(
-        indent: 72,
-      ));
-    if (vendor.isAllowed) {
-      list..add(_buildMoonpayButton())..add(Divider(indent: 72));
-    }
-    list..add(_buildRedeemVoucherButton())..add(Divider(indent: 72));
+    vendorsList.forEach((v){
+      if (v.isAllowed) {
+        list
+        ..add(_buildAddFundsVendorItem(v))
+        ..add(Divider(
+          indent: 72,
+        ));
+      }
+    });       
     return list;
   }
 
@@ -195,7 +174,7 @@ class AddFundsState extends State<AddFundsPage> {
     );
   }
 
-  Widget _buildDepositToBTCAddress() {
+  Widget _buildAddFundsVendorItem(AddFundVendorModel vendor) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       child: Container(
@@ -205,7 +184,7 @@ class AddFundsState extends State<AddFundsPage> {
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16),
             child: Image(
-              image: AssetImage("src/icon/bitcoin.png"),
+              image: AssetImage(vendor.icon),
               height: 24.0,
               width: 24.0,
               fit: BoxFit.scaleDown,
@@ -214,82 +193,19 @@ class AddFundsState extends State<AddFundsPage> {
           ),
           Expanded(
             child: Text(
-              'DEPOSIT TO BTC ADDRESS',
+              vendor.name,
               style: theme.addFundsItemsStyle,
             ),
           ),
           Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 24.0)),
         ]),
       ),
-      onTap: () => Navigator.push(
-        context,
-        FadeInRoute(
-          builder: (_) => DepositToBTCAddressPage(widget._user, widget._accountBloc),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMoonpayButton() {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      child: Container(
-        height: 72,
-        width: MediaQuery.of(context).size.width,
-        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Image(
-              image: AssetImage("src/icon/credit_card.png"),
-              height: 24.0,
-              width: 24.0,
-              fit: BoxFit.scaleDown,
-              color: Colors.white,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              'BUY BITCOIN',
-              style: theme.addFundsItemsStyle,
-            ),
-          ),
-          Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 24.0)),
-        ]),
-      ),
-      onTap: () => Navigator.push(
-        context,
-        FadeInRoute(builder: (_) => new MoonpayWebView(widget._accountBloc, widget._backupBloc, _addFundsBloc)),
-      ),
-    );
-  }
-
-  Widget _buildRedeemVoucherButton() {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      child: Container(
-        height: 72,
-        width: MediaQuery.of(context).size.width,
-        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Image(
-              image: AssetImage("src/icon/vendors/fastbitcoins_logo.png"),
-              height: 24.0,
-              width: 24.0,
-              fit: BoxFit.scaleDown,
-              color: Colors.white,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              'REDEEM FASTBITCOINS VOUCHER',
-              style: theme.addFundsItemsStyle,
-            ),
-          ),
-          Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 24.0)),
-        ]),
-      ),
-      onTap: () => Navigator.of(context).pushNamed("/fastbitcoins"),
+      onTap: () {        
+        Navigator.pushNamed(
+          context,
+          vendor.route
+        );
+      },
     );
   }
 }

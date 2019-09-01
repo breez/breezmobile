@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
@@ -8,6 +9,8 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/security_pin/lock_screen.dart';
+import 'package:breez/routes/user/add_funds/deposit_to_btc_address_page.dart';
+import 'package:breez/routes/user/add_funds/moonpay_webview.dart';
 import 'package:breez/routes/user/get_refund/get_refund_page.dart';
 import 'package:breez/routes/user/withdraw_funds/send_coins_dialog.dart';
 import 'package:breez/widgets/static_loader.dart';
@@ -116,7 +119,26 @@ class UserApp extends StatelessWidget {
                   );
                 case '/add_funds':
                   return new FadeInRoute(
-                    builder: (_) => new AddFundsPage(user, accountBloc, backupBloc),
+                    builder: (_) => BlocProvider(
+                      creator: () => new AddFundsBloc(user.userID),
+                      builder: (ctx) => new AddFundsPage()
+                    ),
+                    settings: settings,
+                  );
+                case '/deposit_btc_address':
+                  return new FadeInRoute(
+                    builder: (_) => BlocProvider(
+                      creator: () => new AddFundsBloc(user.userID),
+                      builder: (ctx) => new DepositToBTCAddressPage(accountBloc)
+                    ),                    
+                    settings: settings,
+                  );
+                case '/buy_bitcoin':
+                  return new FadeInRoute(
+                    builder: (_) => BlocProvider(
+                      creator: () => new AddFundsBloc(user.userID),
+                      builder: (ctx) => new MoonpayWebView(user, accountBloc, backupBloc)
+                    ),                    
                     settings: settings,
                   );
                 case '/withdraw_funds':

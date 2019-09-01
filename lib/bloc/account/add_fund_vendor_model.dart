@@ -1,10 +1,12 @@
 class AddFundVendorModel {
-  String name;
-  bool isAllowed;
+  final String name;
+  final String icon;
+  final String route;
+  final bool isAllowed;  
 
-  AddFundVendorModel(this.name, this.isAllowed);
+  AddFundVendorModel(this.name, this.icon, this.route, {this.isAllowed = true});
 
   AddFundVendorModel copyWith({bool isAllowed}) {
-    return new AddFundVendorModel(this.name, isAllowed = isAllowed ?? this.isAllowed);
+    return new AddFundVendorModel(this.name, this.icon, this.route, isAllowed: isAllowed ?? this.isAllowed);
   }
 }

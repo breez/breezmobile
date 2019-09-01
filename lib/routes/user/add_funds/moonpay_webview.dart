@@ -3,7 +3,6 @@ import 'dart:convert' as JSON;
 import 'dart:typed_data';
 
 import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -18,10 +17,10 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class MoonpayWebView extends StatefulWidget {  
   final AccountBloc _accountBloc;
-  final BackupBloc _backupBloc;  
-  final AddFundsBloc _addFundsBloc;
+  final BackupBloc _backupBloc;
+  final BreezUserModel _user;
 
-  MoonpayWebView(this._accountBloc, this._backupBloc, this._addFundsBloc);
+  MoonpayWebView(this._user, this._accountBloc, this._backupBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -35,38 +34,35 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   StreamSubscription<bool> _backupPromptVisibilitySubscription;
   StreamSubscription<BreezUserModel> _userSubscription;
   
-    
+  AddFundsBloc _addFundsBloc;
   Uint8List _screenshotData;
   MoonpayOrder _order;
   String _error;
   bool _isInit = false;
 
   @override
-  void initState() {
-    super.initState();    
-    widget._accountBloc.accountStream.first.then((acc) {
-      if (!acc.bootstraping) {
-        widget._addFundsBloc.addFundRequestSink.add(null);
-      }
-    });
-    _backupPromptVisibilitySubscription = widget._backupBloc.backupPromptVisibleStream.listen((isVisible) {
-      _hideWebview(isVisible);
-    });
-
-    widget._addFundsBloc.moonpayNextOrderStream.first
-      .then((order) => setState(() => _order = order))
-      .catchError((err) => setState(() => _error = err.toString()));
-
-    _widgetWebview.onDestroy.listen((_) {
-      if (Navigator.canPop(context)) {
-        Navigator.of(context).pop();
-      }
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
+  void didChangeDependencies() {    
     if (!_isInit) {
+      _addFundsBloc = BlocProvider.of<AddFundsBloc>(context); 
+      
+      _backupPromptVisibilitySubscription = widget._backupBloc.backupPromptVisibleStream.listen((isVisible) {
+        _hideWebview(isVisible);
+      });
+
+      _addFundsBloc.moonpayNextOrderStream.first
+        .then((order) => setState(() => _order = order))
+        .catchError((err) => setState(() => _error = err.toString()));
+
+      _widgetWebview.onDestroy.listen((_) {
+        if (Navigator.canPop(context)) {
+          Navigator.of(context).pop();
+        }
+      });
+
+      widget._accountBloc.accountStream.firstWhere((acc) => !acc.bootstraping).then((acc) {
+        _addFundsBloc.addFundRequestSink.add(null);
+      });
+
       _widgetWebview.onStateChanged.listen((state) async {
         if (state.type == WebViewState.finishLoad) {
           _widgetWebview.evalJavascript(await rootBundle.loadString('src/scripts/moonpay.js'));
@@ -76,7 +72,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
         if (msg != null) {
           var postMessage = JSON.jsonDecode(msg);
           if (postMessage['status'] == "completed") {
-            widget._addFundsBloc.completedMoonpayOrderSink.add(_order.copyWith(orderTimestamp: DateTime.now().millisecondsSinceEpoch));            
+            _addFundsBloc.completedMoonpayOrderSink.add(_order.copyWith(orderTimestamp: DateTime.now().millisecondsSinceEpoch));            
           }
         }
       });
@@ -94,7 +90,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
     _postMessageListener?.cancel();
     _userSubscription.cancel();
     _backupPromptVisibilitySubscription.cancel();
-    _widgetWebview.dispose();
+    _widgetWebview.dispose();    
     super.dispose();
   }
 

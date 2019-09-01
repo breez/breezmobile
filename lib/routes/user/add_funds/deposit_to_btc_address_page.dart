@@ -2,18 +2,16 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/user/add_funds/address_widget.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
-class DepositToBTCAddressPage extends StatefulWidget {
-  final BreezUserModel _user;
+class DepositToBTCAddressPage extends StatefulWidget {  
   final AccountBloc _accountBloc;
 
-  const DepositToBTCAddressPage(this._user, this._accountBloc);
+  const DepositToBTCAddressPage(this._accountBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -22,24 +20,17 @@ class DepositToBTCAddressPage extends StatefulWidget {
 }
 
 class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
-  final String _title = "Deposit To Bitcoin Address";
+  final String _title = "Deposit To Bitcoin Address";  
   AddFundsBloc _addFundsBloc;
 
-  @override
-  initState() {
-    super.initState();
-    _addFundsBloc = new AddFundsBloc(widget._user.userID);
-    widget._accountBloc.accountStream.first.then((acc) {
-      if (!acc.bootstraping) {
+  @override void didChangeDependencies() {    
+    super.didChangeDependencies();
+    if (_addFundsBloc == null) {
+      _addFundsBloc = BlocProvider.of<AddFundsBloc>(context); 
+      widget._accountBloc.accountStream.firstWhere((acc) => !acc.bootstraping).then((acc) {
         _addFundsBloc.addFundRequestSink.add(null);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _addFundsBloc.addFundRequestSink.close();
-    super.dispose();
+      });
+    }
   }
 
   @override
