@@ -44,6 +44,7 @@ class AddFundsState extends State<AddFundsPage> {
 
   @override
   void dispose() {
+    _addFundsBloc.dispose();
     super.dispose();
   }
 
@@ -70,7 +71,7 @@ class AddFundsState extends State<AddFundsPage> {
               return Center(child: Loader(color: theme.BreezColors.white[400]));
             }
             return StreamBuilder(
-                stream: _addFundsBloc.moonpayOrderStream,
+                stream: _addFundsBloc.completedMoonpayOrderStream,
                 builder: (BuildContext context, AsyncSnapshot<MoonpayOrder> moonpayOrder) {
                   if (moonpayOrder.hasData &&
                       _orderIsPending(moonpayOrder.data) &&
@@ -102,12 +103,10 @@ class AddFundsState extends State<AddFundsPage> {
   }
 
   bool _orderIsPending(MoonpayOrder moonpayOrder) =>
-      DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(moonpayOrder.timestamp ?? 0)).inHours <= 1;
+      DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(moonpayOrder.orderTimestamp ?? 0)).inHours <= 1;
 
   bool _orderExistsInUnconfirmedAddresses(AccountModel account, MoonpayOrder moonpayOrder) {
-    return account?.addedFundsReply?.unConfirmedAddresses
-            ?.firstWhere((swapAddressInfo) => swapAddressInfo.address == moonpayOrder.address, orElse: () => null) !=
-        null;
+    return account?.swapFundsStatus?.unConfirmedAddresses?.contains(moonpayOrder.address) == true;
   }
 
   Widget getBody(BuildContext context, AccountModel account, List<AddFundVendorModel> vendorList) {
@@ -259,7 +258,7 @@ class AddFundsState extends State<AddFundsPage> {
       ),
       onTap: () => Navigator.push(
         context,
-        FadeInRoute(builder: (_) => new MoonpayWebView(widget._user, widget._accountBloc, widget._backupBloc)),
+        FadeInRoute(builder: (_) => new MoonpayWebView(widget._accountBloc, widget._backupBloc, _addFundsBloc)),
       ),
     );
   }

@@ -1,16 +1,25 @@
 class MoonpayOrder {
   final String address;
-  final int timestamp;
+  final String url;
+  final int orderTimestamp;
 
-  MoonpayOrder(this.address, this.timestamp);
+  MoonpayOrder(this.address, this.url, this.orderTimestamp);
 
   MoonpayOrder.fromJson(Map<String, dynamic> json)
-      : this(json["pendingMoonpayOrderAddress"] ?? null, json["pendingMoonpayOrderTimestamp"] ?? null);
+      : this(
+        json["address"],
+        json["url"],
+        json["orderTimestamp"] ?? null);
 
   Map<String, dynamic> toJson() {
     return {
-      "pendingMoonpayOrderAddress": address,
-      "pendingMoonpayOrderTimestamp": timestamp,
+      "address": address,
+      "url": url,
+      "orderTimestamp": orderTimestamp,
     };
+  }
+
+  MoonpayOrder copyWith({int orderTimestamp}){
+    return MoonpayOrder(this.address, this.url, orderTimestamp);
   }
 }

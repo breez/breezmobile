@@ -16,12 +16,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
-class MoonpayWebView extends StatefulWidget {
-  final BreezUserModel _user;
+class MoonpayWebView extends StatefulWidget {  
   final AccountBloc _accountBloc;
-  final BackupBloc _backupBloc;
+  final BackupBloc _backupBloc;  
+  final AddFundsBloc _addFundsBloc;
 
-  MoonpayWebView(this._user, this._accountBloc, this._backupBloc);
+  MoonpayWebView(this._accountBloc, this._backupBloc, this._addFundsBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -34,25 +34,29 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   StreamSubscription _postMessageListener;
   StreamSubscription<bool> _backupPromptVisibilitySubscription;
   StreamSubscription<BreezUserModel> _userSubscription;
-  AddFundsBloc _addFundsBloc;
-
-  String walletAddress = "";
+  
+    
   Uint8List _screenshotData;
-
+  MoonpayOrder _order;
+  String _error;
   bool _isInit = false;
 
   @override
   void initState() {
-    super.initState();
-    _addFundsBloc = new AddFundsBloc(widget._user.userID);
+    super.initState();    
     widget._accountBloc.accountStream.first.then((acc) {
       if (!acc.bootstraping) {
-        _addFundsBloc.addFundRequestSink.add(null);
+        widget._addFundsBloc.addFundRequestSink.add(null);
       }
     });
     _backupPromptVisibilitySubscription = widget._backupBloc.backupPromptVisibleStream.listen((isVisible) {
       _hideWebview(isVisible);
     });
+
+    widget._addFundsBloc.moonpayNextOrderStream.first
+      .then((order) => setState(() => _order = order))
+      .catchError((err) => setState(() => _error = err.toString()));
+
     _widgetWebview.onDestroy.listen((_) {
       if (Navigator.canPop(context)) {
         Navigator.of(context).pop();
@@ -72,7 +76,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
         if (msg != null) {
           var postMessage = JSON.jsonDecode(msg);
           if (postMessage['status'] == "completed") {
-            _addFundsBloc.moonpayOrderSink.add(MoonpayOrder(walletAddress, DateTime.now().millisecondsSinceEpoch));
+            widget._addFundsBloc.completedMoonpayOrderSink.add(_order.copyWith(orderTimestamp: DateTime.now().millisecondsSinceEpoch));            
           }
         }
       });
@@ -132,46 +136,30 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: _addFundsBloc.addFundResponseStream,
-      builder: (BuildContext context, AsyncSnapshot<AddFundResponse> response) {
-        if (!response.hasData) {
-          return _buildLoadingScreen(response);
-        }
-
-        return StreamBuilder(
-          stream: _addFundsBloc.moonpayUrlStream,
-          builder: (BuildContext context, AsyncSnapshot<String> moonpayUrl) {
-            if (!moonpayUrl.hasData) {
-              return _buildLoadingScreen(response);
-            }
-            walletAddress = response.data.address;
-            print(moonpayUrl.data);
-            //walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF";// Will switch to response.data.address when we use public apiKey
-            return WebviewScaffold(
-              appBar: AppBar(
-                actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
-                automaticallyImplyLeading: false,
-                iconTheme: theme.appBarIconTheme,
-                textTheme: theme.appBarTextTheme,
-                backgroundColor: theme.BreezColors.blue[500],
-                title: Text(
-                  "MoonPay",
-                  style: theme.appBarTextStyle,
-                ),
-                elevation: 0.0,
-              ),
-              url: moonpayUrl.data,
-              withJavascript: true,
-              withZoom: false,
-              clearCache: true,
-              initialChild: _screenshotData != null ? Image.memory(_screenshotData) : null,
-            );
-          },
-        );
-      },
-    );
+  Widget build(BuildContext context) {    
+    if (_order == null || _error != null) {
+      return _buildLoadingScreen();
+    }            
+                
+    return WebviewScaffold(
+      appBar: AppBar(
+        actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
+        automaticallyImplyLeading: false,
+        iconTheme: theme.appBarIconTheme,
+        textTheme: theme.appBarTextTheme,
+        backgroundColor: theme.BreezColors.blue[500],
+        title: Text(
+          "MoonPay",
+          style: theme.appBarTextStyle,
+        ),
+        elevation: 0.0,
+      ),
+      url: _order.url,
+      withJavascript: true,
+      withZoom: false,
+      clearCache: false,
+      initialChild: _screenshotData != null ? Image.memory(_screenshotData) : null,
+    );    
   }
 
   Future _takeScreenshot() async {
@@ -179,7 +167,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
     return _imageData;
   }
 
-  Widget _buildLoadingScreen(AsyncSnapshot<AddFundResponse> response) {
+  Widget _buildLoadingScreen() {
     return Material(
       child: Scaffold(
           appBar: AppBar(
@@ -194,7 +182,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
             ),
             elevation: 0.0,
           ),
-          body: response.hasError
+          body: _error != null
               ? Column(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
