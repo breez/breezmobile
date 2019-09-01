@@ -11,13 +11,15 @@ import 'package:http/http.dart' as http;
 import "package:ini/ini.dart";
 import 'package:rxdart/rxdart.dart';
 
+import '../blocs_provider.dart';
 import 'account_model.dart';
 import 'add_fund_vendor_model.dart';
 import 'moonpay_order.dart';
 
-class AddFundsBloc {
+class AddFundsBloc extends Bloc {
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PENDING_MOONPAY_ORDER_KEY = "pending_moonpay_order";
+  static bool _ipCheckResult = false;
 
   final _addFundRequestController = new StreamController<void>();
 
@@ -56,9 +58,9 @@ class AddFundsBloc {
 
   Future _populateAvailableVendors(bool moonpayAllowed) async {
     List<AddFundVendorModel> _vendorList = [];
-    _vendorList.add(AddFundVendorModel("btcaddress", true));
-    _vendorList.add(AddFundVendorModel("moonpay", moonpayAllowed));
-    _vendorList.add(AddFundVendorModel("fastbitcoin", true));
+    _vendorList.add(AddFundVendorModel("DEPOSIT TO BTC ADDRESS", "src/icon/bitcoin.png", "/deposit_btc_address"));
+    _vendorList.add(AddFundVendorModel("BUY BITCOIN", "src/icon/credit_card.png", "/buy_bitcoin", isAllowed: moonpayAllowed));
+    _vendorList.add(AddFundVendorModel("REDEEM FASTBITCOINS VOUCHER", "src/icon/vendors/fastbitcoins_logo.png", "/fastbitcoins"));
     _availableVendorsController.add(_vendorList);
   }
 
@@ -77,17 +79,20 @@ class AddFundsBloc {
     bool ipAllowed = settings["moonpayIpCheck"] == false;
     if (!ipAllowed) {
       ipAllowed = await _isIPMoonpayAllowed();
-    }
+    }    
     _populateAvailableVendors(ipAllowed);    
   }
 
-  Future<bool> _isIPMoonpayAllowed() async {    
-    var response = await http.get("https://api.moonpay.io/v2/ip_address");
-    if (response.statusCode != 200) {
-      log.severe('moonpay response error: ${response.body.substring(0, 100)}');
-      throw "Service Unavailable. Please try again later.";
+  Future<bool> _isIPMoonpayAllowed() async {
+    if (!_ipCheckResult) {
+      var response = await http.get("https://api.moonpay.io/v2/ip_address");
+      if (response.statusCode != 200) {
+        log.severe('moonpay response error: ${response.body.substring(0, 100)}');
+        throw "Service Unavailable. Please try again later.";
+      }
+      _ipCheckResult = jsonDecode(response.body)['isAllowed'];
     }
-    return jsonDecode(response.body)['isAllowed'];
+    return _ipCheckResult;
   }
 
   Future<String> _createMoonpayUrl() async {
