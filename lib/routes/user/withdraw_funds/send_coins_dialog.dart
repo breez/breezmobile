@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/app_blocs.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/form_keyboard_actions.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
+import 'package:breez/widgets/send_onchain.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +18,99 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
+
+class SendCoinsDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    return StreamBuilder(
+      stream: accountBloc.accountStream,
+      builder: (ctx, snapshot) {
+        var acc = snapshot.data;
+        if (acc == null) {
+          return SizedBox();
+        }
+
+        return SendOnchain(acc, acc.walletBalance, "Unexpected Funds", (address, fee){
+
+        });
+      });    
+  }
+
+  Future<bool> _showAlertDialog(BuildContext context, AccountModel acc) {
+    Completer<bool> completer = Completer<bool>();
+
+    AlertDialog dialog = new AlertDialog(
+      content: new Text(
+          "Are you sure you want to remove " +
+              acc.currency.format(acc.walletBalance) +
+              " from Breez and send this amount to the address you've specified?",
+          style: theme.alertStyle),
+      actions: <Widget>[
+        new FlatButton(
+            onPressed: () { 
+              Navigator.pop(context, false);
+              completer.complete(false);
+            },
+            child: new Text("NO", style: theme.buttonStyle)),
+        new FlatButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _showLoadingDialog();
+              accountBloc.withdrawalSink.add(new RemoveFundRequestModel(
+                  currency.parse(_amountController.text),
+                  _addressValidated,
+                  fromWallet: true,
+                  satPerByteFee: _feeController.text.isNotEmpty
+                      ? Int64.parseInt(_feeController.text)
+                      : Int64(0)));
+            },
+            child: new Text("YES", style: theme.buttonStyle))
+      ],
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
+    );
+    showDialog(context: context, builder: (_) => dialog);
+    return completer.future;
+  }
+
+  _showLoadingDialog() {
+    setState(() {
+      _inProgress = true;
+    });
+    AlertDialog dialog = new AlertDialog(
+      title: Text(
+        "Removing Funds",
+        style: theme.alertTitleStyle,
+        textAlign: TextAlign.center,
+      ),
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          new Text(
+            "Please wait while Breez is sending the funds to the specified address.",
+            style: theme.alertStyle,
+            textAlign: TextAlign.center,
+          ),
+          Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: new Image.asset(
+                'src/images/breez_loader.gif',
+                gaplessPlayback: true,
+              ))
+        ],
+      ),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
+    );
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => WillPopScope(onWillPop: _onWillPop, child: dialog));
+  }
+}
+
 
 class SendWalletFundsDialog extends StatefulWidget {
   final AccountBloc _accountBloc;

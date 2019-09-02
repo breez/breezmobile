@@ -128,7 +128,7 @@ class UserApp extends StatelessWidget {
                   return new MaterialPageRoute(
                     fullscreenDialog: true,
                     builder: (_) =>
-                        new SendWalletFundsDialog(accountBloc),
+                        new SendCoinsDialog(),
                     settings: settings,
                   );
                 case '/get_refund':
