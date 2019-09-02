@@ -5,6 +5,8 @@ import 'dart:typed_data';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/marketplace/webln_handlers.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
@@ -29,6 +31,7 @@ class VendorWebViewPage extends StatefulWidget {
 
 class VendorWebViewPageState extends State<VendorWebViewPage> {
   final _widgetWebview = new FlutterWebviewPlugin();
+  StreamSubscription<BreezUserModel> _userSubscription;
   StreamSubscription _postMessageListener;
   WeblnHandlers _weblnHandlers;
   bool _isInit = false;
@@ -44,37 +47,12 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     });
   }
 
-  Future onBeforeCallHandler(String handlerName) {
-    if (_screenshotData != null || !["makeInvoice", "sendPayment"].contains(handlerName)) {
-      return Future.value(null);
-    }
-
-    Completer beforeCompleter = Completer();
-    FocusScope.of(context).requestFocus(FocusNode());
-    // Wait for keyboard and screen animations to settle
-    Timer(Duration(milliseconds: 750), () {
-      // Take screenshot and show payment request dialog
-      _takeScreenshot().then((imageData) {
-        setState(() {
-          _screenshotData = imageData;
-        });
-        // Wait for memory image to load
-        Timer(Duration(milliseconds: 200), () {
-          // Hide Webview to interact with payment request dialog
-          _widgetWebview.hide();
-          beforeCompleter.complete();
-        });
-      });
-    });
-
-    return beforeCompleter.future;
-  }
-
   @override
   void didChangeDependencies() {
     if (!_isInit) {
       var invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+      var userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
       _weblnHandlers = WeblnHandlers(context, accountBloc, invoiceBloc, onBeforeCallHandler);
 
@@ -101,6 +79,10 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
         }
       });
 
+      _userSubscription = userBloc.userStream.listen((user) {
+        _hideWebview(user.locked);
+      });
+
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -111,6 +93,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     _postMessageListener?.cancel();
     _widgetWebview.dispose();
     _weblnHandlers?.dispose();
+    _userSubscription?.cancel();
     super.dispose();
   }
 
@@ -135,6 +118,43 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       clearCache: true,
       initialChild: _screenshotData != null ? Image.memory(_screenshotData) : null,
     );
+  }
+
+  _hideWebview(bool hide) {
+    if (hide) {
+      onBeforeCallHandler("lockScreen");
+    } else {
+      _widgetWebview.show();
+      setState(() {
+        _screenshotData = null;
+      });
+    }
+  }
+
+  Future onBeforeCallHandler(String handlerName) {
+    if (_screenshotData != null || !["makeInvoice", "sendPayment", "lockScreen"].contains(handlerName)) {
+      return Future.value(null);
+    }
+
+    Completer beforeCompleter = Completer();
+    FocusScope.of(context).requestFocus(FocusNode());
+    // Wait for keyboard and screen animations to settle
+    Timer(Duration(milliseconds: 750), () {
+      // Take screenshot and show payment request dialog
+      _takeScreenshot().then((imageData) {
+        setState(() {
+          _screenshotData = imageData;
+        });
+        // Wait for memory image to load
+        Timer(Duration(milliseconds: 200), () {
+          // Hide Webview to interact with payment request dialog
+          _widgetWebview.hide();
+          beforeCompleter.complete();
+        });
+      });
+    });
+
+    return beforeCompleter.future;
   }
 
   Future _takeScreenshot() async {
