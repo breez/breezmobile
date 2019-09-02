@@ -35,7 +35,7 @@ class SecurityPageState extends State<SecurityPage> {
 
   @override
   Widget build(BuildContext context) {
-    String _title = "Security PIN";
+    String _title = "Security";
     return StreamBuilder<BreezUserModel>(
         stream: widget.userProfileBloc.userStream,
         builder: (context, snapshot) {
