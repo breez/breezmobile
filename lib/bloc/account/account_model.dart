@@ -20,38 +20,31 @@ enum SyncUIState {
 class AccountSettings {
   final bool ignoreWalletBalance;
   final bool showConnectProgress;
-  final bool moonpayIpCheck;
   final BugReportBehavior failePaymentBehavior;
 
-  AccountSettings(
-      this.ignoreWalletBalance,
+  AccountSettings(this.ignoreWalletBalance,
       {this.showConnectProgress = false,
-      this.moonpayIpCheck = true,
-      this.failePaymentBehavior = BugReportBehavior.PROMPT});
+        this.failePaymentBehavior = BugReportBehavior.PROMPT});
+
   AccountSettings.start() : this(false);
 
-  AccountSettings copyWith(
-      {bool ignoreWalletBalance,
-      bool showConnectProgress,
-      bool moonpayIpCheck,
-      BugReportBehavior failePaymentBehavior}) {
+  AccountSettings copyWith({bool ignoreWalletBalance,
+    bool showConnectProgress,
+    BugReportBehavior failePaymentBehavior}) {
     return AccountSettings(ignoreWalletBalance ?? this.ignoreWalletBalance,
         showConnectProgress: showConnectProgress ?? this.showConnectProgress,
-        moonpayIpCheck: moonpayIpCheck ?? this.moonpayIpCheck,
         failePaymentBehavior: failePaymentBehavior ?? this.failePaymentBehavior);
   }
 
   AccountSettings.fromJson(Map<String, dynamic> json)
       : this(json["ignoreWalletBalance"] ?? false,
-            showConnectProgress: json["showConnectProgress"] ?? false,
-            moonpayIpCheck: json["moonpayIpCheck"] ?? true,
-            failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0]);
+      showConnectProgress: json["showConnectProgress"] ?? false,
+      failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0]);
 
   Map<String, dynamic> toJson() {
     return {
       "ignoreWalletBalance": ignoreWalletBalance,
       "showConnectProgress": showConnectProgress,
-      "moonpayIpCheck": moonpayIpCheck,
       "failePaymentBehavior": failePaymentBehavior.index,
     };
   }
