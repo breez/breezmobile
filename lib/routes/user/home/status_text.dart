@@ -35,12 +35,12 @@ class _StatusTextState extends State<StatusText> {
               text: "Breez is ",
               style: DefaultTextStyle.of(context).style),
           _LinkTextSpan(
-              text: "opening a secure channel ",
+              text: "opening a secure channel",
               url: widget.account.channelFundingTxUrl,
               style: DefaultTextStyle.of(context).style.copyWith(decoration: TextDecoration.underline)),
               // style: theme.blueLinkStyle),
           TextSpan(
-            text: "with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments.",
+            text: " with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments.",
             style: DefaultTextStyle.of(context).style)
         ]));
     }
