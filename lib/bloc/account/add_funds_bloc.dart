@@ -114,7 +114,7 @@ class AddFundsBloc extends Bloc {
     String currencyCode = config.get("MoonPay Parameters", 'currencyCode');
     String colorCode = config.get("MoonPay Parameters", 'colorCode');
     String redirectURL = config.get("MoonPay Parameters", 'redirectURL');
-    return "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&colorCode=$colorCode&redirectURL=${Uri.encodeFull(redirectURL)}";
+    return "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&colorCode=$colorCode&redirectURL=${Uri.encodeComponent(redirectURL)}";
   }
 
   Future<Config> _readConfig() async {
