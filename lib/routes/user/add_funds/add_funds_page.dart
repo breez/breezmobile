@@ -84,7 +84,7 @@ class AddFundsState extends State<AddFundsPage> {
   bool _orderIsPending(MoonpayOrder moonpayOrder) =>
       DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(moonpayOrder.orderTimestamp ?? 0)).inHours <= 1;
 
-  bool _orderExistsInUnconfirmedAddresses(AccountModel account, MoonpayOrder moonpayOrder) {
+  bool _orderExistsInUnconfirmedAddresses(AccountModel account, MoonpayOrder moonpayOrder) {    
     return account?.swapFundsStatus?.unConfirmedAddresses?.contains(moonpayOrder.address) == true;
   }
 

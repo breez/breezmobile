@@ -17,10 +17,9 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class MoonpayWebView extends StatefulWidget {  
   final AccountBloc _accountBloc;
-  final BackupBloc _backupBloc;
-  final BreezUserModel _user;
+  final BackupBloc _backupBloc;  
 
-  MoonpayWebView(this._user, this._accountBloc, this._backupBloc);
+  MoonpayWebView(this._accountBloc, this._backupBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -135,8 +134,8 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   Widget build(BuildContext context) {    
     if (_order == null || _error != null) {
       return _buildLoadingScreen();
-    }            
-                
+    }
+
     return WebviewScaffold(
       appBar: AppBar(
         actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
