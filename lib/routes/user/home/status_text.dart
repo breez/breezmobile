@@ -27,10 +27,10 @@ class _StatusTextState extends State<StatusText> {
       return LoadingAnimatedText(widget.message);
     }
 
-    if (widget.account.processingBreezConnection) {
-      return RichText(
+    if (!widget.account.processingBreezConnection) {      
+      return LoadingAnimatedText("",
           textAlign: TextAlign.center,
-            text: TextSpan(children: <TextSpan>[
+          textElements: <TextSpan>[
           TextSpan(
               text: "Breez is ",
               style: DefaultTextStyle.of(context).style),
@@ -42,7 +42,7 @@ class _StatusTextState extends State<StatusText> {
           TextSpan(
             text: "with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments.",
             style: DefaultTextStyle.of(context).style)
-        ]));
+        ]);
     }
 
     if (widget.account == null || widget.account.statusMessage == null) {
