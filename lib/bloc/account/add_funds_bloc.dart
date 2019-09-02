@@ -21,15 +21,15 @@ class AddFundsBloc extends Bloc {
   static const String PENDING_MOONPAY_ORDER_KEY = "pending_moonpay_order";
   static bool _ipCheckResult = false;
 
-  final _addFundRequestController = new StreamController<void>();
+  final _addFundRequestController = new StreamController<bool>.broadcast();
 
-  Sink<void> get addFundRequestSink => _addFundRequestController.sink;
+  Sink<bool> get addFundRequestSink => _addFundRequestController.sink;
 
-  final _addFundResponseController = new StreamController<AddFundResponse>();
+  final _addFundResponseController = new StreamController<AddFundResponse>.broadcast();
 
   Stream<AddFundResponse> get addFundResponseStream => _addFundResponseController.stream;  
 
-  final _moonpayNextOrderController = new BehaviorSubject<MoonpayOrder>();
+  final _moonpayNextOrderController = new StreamController<MoonpayOrder>.broadcast();
   Stream<MoonpayOrder> get moonpayNextOrderStream => _moonpayNextOrderController.stream;
 
   final _completedMoonpayOrderController = new BehaviorSubject<MoonpayOrder>();
@@ -43,13 +43,23 @@ class AddFundsBloc extends Bloc {
   AddFundsBloc(String userID) {
     ServiceInjector injector = ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
-    _addFundRequestController.stream.listen((request) {
-      _addFundResponseController.add(null);
+    int requestNumber = 0;
+    _addFundRequestController.stream.listen((newAddress) {
+      var currentRequest = ++requestNumber;      
+      if (!newAddress) {
+        _addFundResponseController.add(null);
+        return;
+      }      
       breezLib.addFundsInit(userID).then((reply) {
-        AddFundResponse response = AddFundResponse(reply);
-        _attachMoonpayUrl(response);
-        _addFundResponseController.add(response);
-      }).catchError(_addFundResponseController.addError);
+        if (currentRequest == currentRequest) {
+          AddFundResponse response = AddFundResponse(reply);
+          _attachMoonpayUrl(response);
+          _addFundResponseController.add(response);
+        }
+      }).catchError((err) {
+        _addFundResponseController.addError(err);
+        _moonpayNextOrderController.addError(err);
+      });
     });
     _populateAvailableVendors(false);
     _listenAccountSettings(injector);    
@@ -65,11 +75,13 @@ class AddFundsBloc extends Bloc {
   }
 
   Future _attachMoonpayUrl(AddFundResponse response) async {
-    String moonpayUrl = await _createMoonpayUrl();
-    String walletAddress = "n4VQ5YdHf7hLQ2gWQYYrcxoE5B7nWuDFNF"; // Will switch to response.address when we use public apiKey
-    String maxQuoteCurrencyAmount = Currency.BTC.format(response.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
-    moonpayUrl += "&walletAddress=$walletAddress&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
-    _moonpayNextOrderController.add(MoonpayOrder(walletAddress, moonpayUrl, null));    
+    if (response.errorMessage == null || response.errorMessage.isEmpty) {
+      String moonpayUrl = await _createMoonpayUrl();
+      String walletAddress = response.address;
+      String maxQuoteCurrencyAmount = Currency.BTC.format(response.maxAllowedDeposit, includeSymbol: false, fixedDecimals: false);
+      moonpayUrl += "&walletAddress=$walletAddress&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
+      _moonpayNextOrderController.add(MoonpayOrder(walletAddress, moonpayUrl, null));    
+    }    
   }
 
   _listenAccountSettings(ServiceInjector injector) async {

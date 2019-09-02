@@ -27,8 +27,9 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     super.didChangeDependencies();
     if (_addFundsBloc == null) {
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context); 
+      _addFundsBloc.addFundRequestSink.add(false);
       widget._accountBloc.accountStream.firstWhere((acc) => !acc.bootstraping).then((acc) {
-        _addFundsBloc.addFundRequestSink.add(null);
+        _addFundsBloc.addFundRequestSink.add(true);
       });
     }
   }
@@ -119,7 +120,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
           text: hasError ? "RETRY" : "CLOSE",
           onPressed: () {
             if (hasError) {
-              _addFundsBloc.addFundRequestSink.add(null);
+              _addFundsBloc.addFundRequestSink.add(true);
             } else {
               Navigator.of(context).pop();
             }

@@ -43,7 +43,8 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   void didChangeDependencies() {    
     if (!_isInit) {
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context); 
-      
+      _addFundsBloc.addFundRequestSink.add(false);
+
       _backupPromptVisibilitySubscription = widget._backupBloc.backupPromptVisibleStream.listen((isVisible) {
         _hideWebview(isVisible);
       });
@@ -59,7 +60,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
       });
 
       widget._accountBloc.accountStream.firstWhere((acc) => !acc.bootstraping).then((acc) {
-        _addFundsBloc.addFundRequestSink.add(null);
+        _addFundsBloc.addFundRequestSink.add(true);
       });
 
       _widgetWebview.onStateChanged.listen((state) async {
