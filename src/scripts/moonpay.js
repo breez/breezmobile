@@ -8,7 +8,7 @@ function getParameterByName(name) {
 }
 
 var alertInterval = setInterval(function () {
-    if (document.URL.indexOf("https://buy-staging.moonpay.io/transaction_receipt?addFunds=true") >= 0 && getParameterByName('transactionId') != null && getParameterByName('addFunds') == 'true') {
+    if (document.URL.indexOf("https://buy.moonpay.io/transaction_receipt?addFunds=true") >= 0 && getParameterByName('transactionId') != null && getParameterByName('addFunds') == 'true') {
         window.postMessage(JSON.stringify({ status: 'completed' }), "*");
         clearInterval(alertInterval);
     }
