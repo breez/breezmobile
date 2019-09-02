@@ -14,10 +14,11 @@ import 'package:rxdart/rxdart.dart';
 import '../blocs_provider.dart';
 import 'account_model.dart';
 import 'add_fund_vendor_model.dart';
+import 'add_funds_model.dart';
 import 'moonpay_order.dart';
 
 class AddFundsBloc extends Bloc {
-  static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
+  static const String ADD_FUNDS_SETTINGS_PREFERENCES_KEY = "add_funds_settings";
   static const String PENDING_MOONPAY_ORDER_KEY = "pending_moonpay_order";
   static bool _ipCheckResult = false;
 
@@ -40,6 +41,10 @@ class AddFundsBloc extends Bloc {
 
   Stream<List<AddFundVendorModel>> get availableVendorsStream => _availableVendorsController.stream;
 
+  final _addFundsSettingsController = new BehaviorSubject<AddFundsSettings>();
+  Stream<AddFundsSettings> get addFundsSettingsStream => _addFundsSettingsController.stream;
+  Sink<AddFundsSettings> get addFundsSettingsSink => _addFundsSettingsController.sink;
+
   AddFundsBloc(String userID) {
     ServiceInjector injector = ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
@@ -61,8 +66,9 @@ class AddFundsBloc extends Bloc {
         _moonpayNextOrderController.addError(err);
       });
     });
+    _addFundsSettingsController.add(AddFundsSettings.start());
     _populateAvailableVendors(false);
-    _listenAccountSettings(injector);    
+    _handleAddFundsSettings(injector);
     _handleMoonpayOrders(injector);
   }
 
@@ -84,15 +90,24 @@ class AddFundsBloc extends Bloc {
     }    
   }
 
-  _listenAccountSettings(ServiceInjector injector) async {
+  _handleAddFundsSettings(ServiceInjector injector) async {
     var preferences = await injector.sharedPreferences;
-    var accountSettings = preferences.getString(ACCOUNT_SETTINGS_PREFERENCES_KEY);
-    Map<String, dynamic> settings = accountSettings != null ? json.decode(accountSettings) : {};
+    var addFundsSettings = preferences.getString(ADD_FUNDS_SETTINGS_PREFERENCES_KEY);
+    Map<String, dynamic> settings = addFundsSettings != null ? json.decode(addFundsSettings) : {};
     bool ipAllowed = settings["moonpayIpCheck"] == false;
     if (!ipAllowed) {
       ipAllowed = await _isIPMoonpayAllowed();
-    }    
-    _populateAvailableVendors(ipAllowed);    
+    }
+    _populateAvailableVendors(ipAllowed);
+
+    _addFundsSettingsController.stream.listen((settings) async {
+      preferences.setString(ADD_FUNDS_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
+      bool ipAllowed = settings.moonpayIpCheck == false;
+      if (!ipAllowed) {
+        ipAllowed = await _isIPMoonpayAllowed();
+      }
+      _populateAvailableVendors(ipAllowed);
+    });
   }
 
   Future<bool> _isIPMoonpayAllowed() async {
@@ -137,6 +152,7 @@ class AddFundsBloc extends Bloc {
   dispose() {
     _addFundRequestController.close();
     _addFundResponseController.close();
+    _addFundsSettingsController.close();
     _availableVendorsController.close();
     _moonpayNextOrderController.close();
     _completedMoonpayOrderController.close();
