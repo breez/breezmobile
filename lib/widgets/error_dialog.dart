@@ -64,7 +64,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
       });
 }
 
-Future promptAreYouSure(BuildContext context, String title, Widget body,
+Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
     {contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
     bool wideTitle = false,
     String okText = "YES",
