@@ -53,8 +53,7 @@ class AddFundsState extends State<AddFundsPage> {
                 stream: addFundsBloc.completedMoonpayOrderStream,
                 builder: (BuildContext context, AsyncSnapshot<MoonpayOrder> moonpayOrder) {
                   if (moonpayOrder.hasData &&
-                      _orderIsPending(moonpayOrder.data) &&
-                      _orderExistsInUnconfirmedAddresses(account.data, moonpayOrder.data)) {
+                      _orderIsPending(account.data, moonpayOrder.data)) {
                     return Column(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
@@ -81,11 +80,11 @@ class AddFundsState extends State<AddFundsPage> {
     );
   }
 
-  bool _orderIsPending(MoonpayOrder moonpayOrder) =>
-      DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(moonpayOrder.orderTimestamp ?? 0)).inHours <= 1;
-
-  bool _orderExistsInUnconfirmedAddresses(AccountModel account, MoonpayOrder moonpayOrder) {    
-    return account?.swapFundsStatus?.unConfirmedAddresses?.contains(moonpayOrder.address) == true;
+  bool _orderIsPending(AccountModel account, MoonpayOrder moonpayOrder) {
+      List<String> allAddresses = account.swapFundsStatus.unConfirmedAddresses.toList()
+                                    ..addAll(account.swapFundsStatus.confirmedAddresses);
+      return DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(moonpayOrder.orderTimestamp ?? 0)).inHours <= 1 && 
+        !allAddresses.contains(moonpayOrder.address);
   }
 
   Widget getBody(BuildContext context, AccountModel account, List<AddFundVendorModel> vendorList) {
