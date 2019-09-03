@@ -22,14 +22,26 @@ class DepositToBTCAddressPage extends StatefulWidget {
 class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   final String _title = "Deposit To Bitcoin Address";  
   AddFundsBloc _addFundsBloc;
+  Route _thisRoute;
 
   @override void didChangeDependencies() {    
     super.didChangeDependencies();
     if (_addFundsBloc == null) {
+      _thisRoute = ModalRoute.of(context);
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context); 
       _addFundsBloc.addFundRequestSink.add(false);
       widget._accountBloc.accountStream.firstWhere((acc) => !acc.bootstraping).then((acc) {
-        _addFundsBloc.addFundRequestSink.add(true);
+        if (this.mounted) {
+          _addFundsBloc.addFundRequestSink.add(true);
+        }
+      });
+            
+      widget._accountBloc.accountStream.firstWhere(
+        (acc) => acc?.swapFundsStatus?.unconfirmedTxID?.isNotEmpty == true)
+        .then((acc) {
+          if (this.mounted) {            
+            Navigator.of(context).removeRoute(_thisRoute);
+          }
       });
     }
   }

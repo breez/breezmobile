@@ -60,7 +60,9 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
       });
 
       widget._accountBloc.accountStream.firstWhere((acc) => !acc.bootstraping).then((acc) {
-        _addFundsBloc.addFundRequestSink.add(true);
+        if (this.mounted) {
+          _addFundsBloc.addFundRequestSink.add(true);
+        }
       });
 
       _widgetWebview.onStateChanged.listen((state) async {
