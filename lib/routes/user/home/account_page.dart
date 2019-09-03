@@ -95,7 +95,7 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
     double listHeightSpace = MediaQuery.of(context).size.height - DASHBOARD_MIN_HEIGHT - kToolbarHeight - FILTER_MAX_SIZE - 25.0;
     double bottomPlaceholderSpace = paymentsModel.paymentsList == null || paymentsModel.paymentsList.length == 0 ? 0.0 : (listHeightSpace - PAYMENT_LIST_ITEM_HEIGHT * paymentsModel.paymentsList.length).clamp(0.0, listHeightSpace);
 
-    String message = account?.statusMessage;
+    String message;    
     bool showMessage = account?.syncUIState != SyncUIState.BLOCKING && (account != null && !account.initial || account?.isInitialBootstrap == true);
     if (pendingCTPLink != null) {
       message =
@@ -127,15 +127,12 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
       )));
     } else if (showMessage) {
       slivers.add(SliverPersistentHeader(              
-        delegate: new FixedSliverDelegate(200.0,
+        delegate: new FixedSliverDelegate(250.0,
             builder: (context, shrinkedHeight, overlapContent) {
           return Container(
             child: Padding(
               padding: const EdgeInsets.only(top: 130.0, left: 40.0, right: 40.0),
-              child: (
-                    StatusText(message,
-                    loading: account?.swapFundsStatus?.error?.isNotEmpty !=
-                        true)),
+              child: StatusText(account, message: message),
             ),
           );
         }),

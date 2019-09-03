@@ -86,11 +86,14 @@ class GetRefundPage extends StatelessWidget {
     ));
   }
 
-  Future<bool> broadcastAndWait(BuildContext context, String fromAddress, String toAddress, Int64 feeRate){
+  Future<String> broadcastAndWait(BuildContext context, String fromAddress, String toAddress, Int64 feeRate){
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return showDialog<bool>(
         context: context,
         barrierDismissible: false,
-        builder: (_) => WaitBroadcastDialog(accountBloc, fromAddress, toAddress, feeRate));
+        builder: (_) => WaitBroadcastDialog(accountBloc, fromAddress, toAddress, feeRate))
+        .then((ok){
+          return ok ? null : Future.error("failed");
+        });
   }
 }

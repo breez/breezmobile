@@ -140,6 +140,7 @@ class AccountBloc {
       ChangeSyncUIState: _collapseSyncUI,
       FetchRates: _fetchRates,
       ResetChainService: _handleResetChainService,
+      SendCoins: _handleSendCoins,
     };
 
     _accountController.add(AccountModel.initial());
@@ -222,8 +223,12 @@ class AccountBloc {
     action.resolve(await _breezLib.sendPaymentFailureBugReport(action.traceReport));        
   }
 
-  Future _handleResetNetwork(ResetNetwork action) async {
+  Future _handleResetNetwork(ResetNetwork action) async {    
     action.resolve(await _breezLib.setPeers([]));    
+  }
+
+  Future _handleSendCoins(SendCoins action) async {
+    action.resolve(await _breezLib.sendWalletCoins(action.destAddress, Int64(action.feeRate)));     
   }
 
   Future _handleResetChainService(ResetChainService action) async {
@@ -468,22 +473,12 @@ class AccountBloc {
   void _listenWithdrawalRequests() {
     _withdrawalController.stream.listen((removeFundRequestModel) {
       Future removeFunds = Future.value(null);
-      if (removeFundRequestModel.fromWallet) {
-        removeFunds = _breezLib
-            .sendWalletCoins(
-                removeFundRequestModel.address,
-                removeFundRequestModel.amount,
-                removeFundRequestModel.satPerByteFee)
-            .then((txID) => _withdrawalResultController
-                .add(new RemoveFundResponseModel(txID)));
-      } else {
-        removeFunds = _breezLib
-            .removeFund(
-                removeFundRequestModel.address, removeFundRequestModel.amount)
-            .then((res) => _withdrawalResultController.add(
-                new RemoveFundResponseModel(res.txid,
-                    errorMessage: res.errorMessage)));
-      }
+      removeFunds = _breezLib
+        .removeFund(
+            removeFundRequestModel.address, removeFundRequestModel.amount)
+        .then((res) => _withdrawalResultController.add(
+            new RemoveFundResponseModel(res.txid,
+                errorMessage: res.errorMessage)));
 
       removeFunds.catchError(_withdrawalResultController.addError);
     });

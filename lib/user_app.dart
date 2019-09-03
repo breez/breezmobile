@@ -56,7 +56,7 @@ class UserApp extends StatelessWidget {
 
           BreezUserModel user = snapshot.data;
           return  BlocProvider(
-            creator: () => new AddFundsBloc(user.userID),
+            creator: () => new AddFundsBloc(user.userID, accountBloc),
             builder: (ctx) => MaterialApp(
               navigatorKey: _navigatorKey,
               title: 'Breez',
@@ -143,7 +143,7 @@ class UserApp extends StatelessWidget {
                     return new MaterialPageRoute(
                       fullscreenDialog: true,
                       builder: (_) =>
-                          new SendWalletFundsDialog(accountBloc),
+                          new SendCoinsDialog(accountBloc: accountBloc),
                       settings: settings,
                     );
                   case '/get_refund':

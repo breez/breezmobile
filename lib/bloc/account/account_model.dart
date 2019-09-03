@@ -235,16 +235,18 @@ class AccountModel {
   bool get enabled => _accountResponse.enabled;
 
   bool get synced => syncProgress == 1.0;
+  String get channelFundingTxUrl {
+     if (_accountResponse.channelPoint.isEmpty) {
+       return null;
+     }
+     return "https://blockstream.info/tx/${_accountResponse.channelPoint.split(":")[0]}";
+  }
 
   String get statusMessage {
 
     if (this.isInitialBootstrap) {
       return "Please wait a minute while Breez is bootstrapping (keep the app open).";
-    }
-
-    if (this.processingBreezConnection) {
-      return "Breez is opening a secure channel with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments";
-    }
+    }    
 
     SwapFundStatus swapStatus = this.swapFundsStatus;
 
@@ -449,12 +451,11 @@ class AddFundResponse {
 
 class RemoveFundRequestModel {
   final Int64 amount;
-  final String address;
-  final bool fromWallet;
+  final String address;  
   final Int64 satPerByteFee;
 
   RemoveFundRequestModel(this.amount, this.address,
-      {this.fromWallet = false, this.satPerByteFee});
+      {this.satPerByteFee});
 }
 
 class RemoveFundResponseModel {
