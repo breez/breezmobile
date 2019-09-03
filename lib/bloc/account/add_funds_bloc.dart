@@ -156,7 +156,7 @@ class AddFundsBloc extends Bloc {
       var fundsStatus = acc.swapFundsStatus;
       if (fundsStatus != null) {
         var allAddresses = fundsStatus.unConfirmedAddresses.toList()..addAll(fundsStatus.confirmedAddresses);
-        if (allAddresses.contains(_completedMoonpayOrderController.value.address)) {
+        if (allAddresses.contains(_completedMoonpayOrderController.value?.address)) {
           preferences.remove(PENDING_MOONPAY_ORDER_KEY);
           _completedMoonpayOrderController.add(null);
         }
