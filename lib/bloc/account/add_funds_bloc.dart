@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/logger.dart';
@@ -22,6 +23,7 @@ class AddFundsBloc extends Bloc {
   static const String PENDING_MOONPAY_ORDER_KEY = "pending_moonpay_order";
   static bool _ipCheckResult = false;
 
+  final AccountBloc _accountBloc;
   final _addFundRequestController = new StreamController<bool>.broadcast();
 
   Sink<bool> get addFundRequestSink => _addFundRequestController.sink;
@@ -45,7 +47,7 @@ class AddFundsBloc extends Bloc {
   Stream<AddFundsSettings> get addFundsSettingsStream => _addFundsSettingsController.stream;
   Sink<AddFundsSettings> get addFundsSettingsSink => _addFundsSettingsController.sink;
 
-  AddFundsBloc(String userID) {
+  AddFundsBloc(String userID, this._accountBloc) {
     ServiceInjector injector = ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
     int requestNumber = 0;
@@ -70,7 +72,7 @@ class AddFundsBloc extends Bloc {
     _populateAvailableVendors(false);
     _handleAddFundsSettings(injector);
     _handleMoonpayOrders(injector);
-  }
+  }  
 
   Future _populateAvailableVendors(bool moonpayAllowed) async {
     List<AddFundVendorModel> _vendorList = [];
@@ -145,7 +147,20 @@ class AddFundsBloc extends Bloc {
       _completedMoonpayOrderController.add(MoonpayOrder.fromJson(settings));
     }
     _completedMoonpayOrderController.stream.listen((order) async {
-      preferences.setString(PENDING_MOONPAY_ORDER_KEY, json.encode(order.toJson()));
+      if (order != null) {
+        preferences.setString(PENDING_MOONPAY_ORDER_KEY, json.encode(order.toJson()));
+      }
+    });
+
+    _accountBloc.accountStream.where((acc) => acc != null).listen((acc){
+      var fundsStatus = acc.swapFundsStatus;
+      if (fundsStatus != null) {
+        var allAddresses = fundsStatus.unConfirmedAddresses.toList()..addAll(fundsStatus.confirmedAddresses);
+        if (allAddresses.contains(_completedMoonpayOrderController.value.address)) {
+          preferences.remove(PENDING_MOONPAY_ORDER_KEY);
+          _completedMoonpayOrderController.add(null);
+        }
+      }
     });
   }
 

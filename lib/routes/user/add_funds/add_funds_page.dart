@@ -80,11 +80,8 @@ class AddFundsState extends State<AddFundsPage> {
     );
   }
 
-  bool _orderIsPending(AccountModel account, MoonpayOrder moonpayOrder) {
-      List<String> allAddresses = account.swapFundsStatus.unConfirmedAddresses.toList()
-                                    ..addAll(account.swapFundsStatus.confirmedAddresses);
-      return DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(moonpayOrder.orderTimestamp ?? 0)).inHours <= 1 && 
-        !allAddresses.contains(moonpayOrder.address);
+  bool _orderIsPending(AccountModel account, MoonpayOrder moonpayOrder) {      
+      return DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(moonpayOrder.orderTimestamp ?? 0)).inHours <= 1;
   }
 
   Widget getBody(BuildContext context, AccountModel account, List<AddFundVendorModel> vendorList) {
