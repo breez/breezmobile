@@ -9,6 +9,7 @@ import 'package:breez/routes/user/home/invoice_bottom_sheet.dart';
 import 'package:breez/routes/user/home/payments_filter.dart';
 import 'package:breez/routes/user/home/payments_list.dart';
 import 'package:breez/routes/user/home/wallet_dashboard.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:breez/widgets/scroll_watcher.dart';
 import 'package:flutter/material.dart';
@@ -142,17 +143,17 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
     return Stack(
         key: Key("account_sliver"),
         fit: StackFit.expand,
-        children: [
-          CustomScrollView(
-            controller: widget.scrollController,
-            slivers: slivers          
-          ),
+        children: [          
           paymentsModel.nonFilteredItems.length == 0 ? new Image.asset(
             "src/images/waves-home.png",
             fit: BoxFit.contain,
             width: double.infinity,
             alignment: Alignment.bottomCenter,
           ) : SizedBox(),
+          CustomScrollView(
+            controller: widget.scrollController,
+            slivers: slivers          
+          ),
           //Floating actions
           ScrollWatcher(
             controller: widget.scrollController,
