@@ -442,12 +442,11 @@ class AddFundResponse {
 
 class RemoveFundRequestModel {
   final Int64 amount;
-  final String address;
-  final bool fromWallet;
+  final String address;  
   final Int64 satPerByteFee;
 
   RemoveFundRequestModel(this.amount, this.address,
-      {this.fromWallet = false, this.satPerByteFee});
+      {this.satPerByteFee});
 }
 
 class RemoveFundResponseModel {

@@ -265,8 +265,7 @@ class PaymentResponse extends $pb.GeneratedMessage {
 class SendWalletCoinsRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('SendWalletCoinsRequest', package: const $pb.PackageName('data'))
     ..aOS(1, 'address')
-    ..aInt64(2, 'amount')
-    ..aInt64(3, 'satPerByteFee')
+    ..aInt64(2, 'satPerByteFee')
     ..hasRequiredFields = false
   ;
 
@@ -287,15 +286,10 @@ class SendWalletCoinsRequest extends $pb.GeneratedMessage {
   $core.bool hasAddress() => $_has(0);
   void clearAddress() => clearField(1);
 
-  Int64 get amount => $_getI64(1);
-  set amount(Int64 v) { $_setInt64(1, v); }
-  $core.bool hasAmount() => $_has(1);
-  void clearAmount() => clearField(2);
-
-  Int64 get satPerByteFee => $_getI64(2);
-  set satPerByteFee(Int64 v) { $_setInt64(2, v); }
-  $core.bool hasSatPerByteFee() => $_has(2);
-  void clearSatPerByteFee() => clearField(3);
+  Int64 get satPerByteFee => $_getI64(1);
+  set satPerByteFee(Int64 v) { $_setInt64(1, v); }
+  $core.bool hasSatPerByteFee() => $_has(1);
+  void clearSatPerByteFee() => clearField(2);
 }
 
 class PayInvoiceRequest extends $pb.GeneratedMessage {

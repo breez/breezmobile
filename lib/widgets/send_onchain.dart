@@ -9,13 +9,16 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 
+import 'flushbar.dart';
+
 class SendOnchain extends StatefulWidget {
   final AccountModel _account;
-  final Future<bool> Function(String address, Int64 fee) _onBroadcast;
+  final Future<String> Function(String address, Int64 fee) _onBroadcast;
   final Int64 _amount;  
-  final String _title;  
+  final String _title;
+  final String prefixMessage;
 
-  SendOnchain(this._account, this._amount, this._title, this._onBroadcast);
+  SendOnchain(this._account, this._amount, this._title, this._onBroadcast, {this.prefixMessage});
 
   @override
   State<StatefulWidget> createState() {
@@ -91,9 +94,10 @@ class SendOnchainState extends State<SendOnchain> {
                         if (validated) {
                           _formKey.currentState.save();
                           widget._onBroadcast(_addressValidated, _getFee())
-                            .then((res){
-                              if (res) {
-                                Navigator.of(context).pop();
+                            .then((msg){
+                              Navigator.of(context).pop();
+                              if (msg != null) {
+                                showFlushbar(context, message: msg);
                               }
                             });
                         }
@@ -113,7 +117,14 @@ class SendOnchainState extends State<SendOnchain> {
                     child: new Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[                        
+                      children: <Widget>[
+                        widget.prefixMessage != null ? 
+                          Text(widget.prefixMessage, 
+                            style: new TextStyle(
+                                    color: theme.BreezColors.grey[500],
+                                    fontSize: 16.0,
+                                    height: 1.2)) : 
+                          SizedBox(),                        
                         new TextFormField(
                           controller: _addressController,
                           decoration: new InputDecoration(
@@ -178,7 +189,7 @@ class SendOnchainState extends State<SendOnchain> {
   Widget _buildAvailableBTC(AccountModel acc) {
     return new Row(
       children: <Widget>[
-        new Text("Refund amount:", style: theme.alertStyle),
+        new Text("Amount:", style: theme.alertStyle),
         new Padding(
           padding: EdgeInsets.only(left: 3.0),
           child: new Text(acc.currency.format(widget._amount),

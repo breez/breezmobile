@@ -99,8 +99,7 @@ const SendWalletCoinsRequest$json = const {
   '1': 'SendWalletCoinsRequest',
   '2': const [
     const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
-    const {'1': 'amount', '3': 2, '4': 1, '5': 3, '10': 'amount'},
-    const {'1': 'satPerByteFee', '3': 3, '4': 1, '5': 3, '10': 'satPerByteFee'},
+    const {'1': 'satPerByteFee', '3': 2, '4': 1, '5': 3, '10': 'satPerByteFee'},
   ],
 };
 
