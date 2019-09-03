@@ -22,32 +22,30 @@ class AccountSettings {
   final bool showConnectProgress;
   final BugReportBehavior failePaymentBehavior;
 
-  AccountSettings(
-      this.ignoreWalletBalance,
+  AccountSettings(this.ignoreWalletBalance,
       {this.showConnectProgress = false,
-      this.failePaymentBehavior = BugReportBehavior.PROMPT});
+        this.failePaymentBehavior = BugReportBehavior.PROMPT});
+
   AccountSettings.start() : this(false);
 
-  AccountSettings copyWith(
-      {bool ignoreWalletBalance,
-      bool showConnectProgress,
-      BugReportBehavior failePaymentBehavior}) {
+  AccountSettings copyWith({bool ignoreWalletBalance,
+    bool showConnectProgress,
+    BugReportBehavior failePaymentBehavior}) {
     return AccountSettings(ignoreWalletBalance ?? this.ignoreWalletBalance,
-        failePaymentBehavior:
-            failePaymentBehavior ?? this.failePaymentBehavior,
-        showConnectProgress: showConnectProgress ?? this.showConnectProgress);
+        showConnectProgress: showConnectProgress ?? this.showConnectProgress,
+        failePaymentBehavior: failePaymentBehavior ?? this.failePaymentBehavior);
   }
 
   AccountSettings.fromJson(Map<String, dynamic> json)
       : this(json["ignoreWalletBalance"] ?? false,
-            failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0],
-            showConnectProgress: json["showConnectProgress"] ?? false);
+      showConnectProgress: json["showConnectProgress"] ?? false,
+      failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0]);
 
   Map<String, dynamic> toJson() {
     return {
       "ignoreWalletBalance": ignoreWalletBalance,
+      "showConnectProgress": showConnectProgress,
       "failePaymentBehavior": failePaymentBehavior.index,
-      "showConnectProgress": showConnectProgress ?? false
     };
   }
 }
@@ -76,7 +74,7 @@ class SwapFundStatus {
       return refundAddresses[0].refundableError;
     }
 
-    var errorAddresses = _addedFundsReply?.confirmedAddresses?.where((a) => a.errorMessage.isNotEmpty);    
+    var errorAddresses = _addedFundsReply?.confirmedAddresses?.where((a) => a.errorMessage.isNotEmpty);
     if (errorAddresses == null || errorAddresses.isEmpty) {
       return null;
     }
@@ -84,8 +82,18 @@ class SwapFundStatus {
     return errorAddresses.first.errorMessage;
   }
 
+  List<String> get unConfirmedAddresses {
+    var unConfirmedAddresses = _addedFundsReply?.unConfirmedAddresses  ?? List<SwapAddressInfo>();
+    return unConfirmedAddresses.map((a) => a.address).toList();
+  }
+
+  List<String> get confirmedAddresses {
+    var unConfirmedAddresses = _addedFundsReply?.confirmedAddresses  ?? List<SwapAddressInfo>();
+    return unConfirmedAddresses.map((a) => a.address).toList();
+  }
+
   List<RefundableAddress> get refundableAddresses {
-    var refundableAddresses = _addedFundsReply?.refundableAddresses ?? List<RefundableAddress>();
+    var refundableAddresses = _addedFundsReply?.refundableAddresses ?? List<SwapAddressInfo>();
     return refundableAddresses.map((a) => RefundableAddress(a)).toList();
   }
 
@@ -225,6 +233,7 @@ class AccountModel {
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
   Int64 get routingNodeFee => _accountResponse.routingNodeFee;
   bool get enabled => _accountResponse.enabled;
+
   bool get synced => syncProgress == 1.0;
   String get channelFundingTxUrl {
      if (_accountResponse.channelPoint.isEmpty) {
@@ -256,7 +265,7 @@ class AccountModel {
     return null;
   }
 
-  bool get transferringOnChainDeposit => swapFundsStatus.depositConfirmed && this.active;  
+  bool get transferringOnChainDeposit => swapFundsStatus.depositConfirmed && this.active;
 
   String validateOutgoingOnChainPayment(Int64 amount) {
     if (amount > walletBalance) {
@@ -281,7 +290,7 @@ class AccountModel {
     }
 
     if (amount > maxAmount) {
-      return outgoing ? "Not enough funds" : "Amount exceeds available capacity";      
+      return outgoing ? "Not enough funds" : "Amount exceeds available capacity";
     }
 
     if (outgoing && amount > maxAllowedToPay) {
