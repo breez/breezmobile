@@ -1,26 +1,21 @@
-import 'dart:async';
-
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/account/add_fund_vendor_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
+import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/routes/user/add_funds/address_widget.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class AddFundsPage extends StatefulWidget {
-  final BreezUserModel _user;
-  final AccountBloc _accountBloc;
+class AddFundsPage extends StatefulWidget {  
 
-  const AddFundsPage(this._user, this._accountBloc);
+  const AddFundsPage();
 
   @override
   State<StatefulWidget> createState() {
@@ -29,85 +24,76 @@ class AddFundsPage extends StatefulWidget {
 }
 
 class AddFundsState extends State<AddFundsPage> {
-  final String _title = "Add Funds";
-  AddFundsBloc _addFundsBloc;
-  StreamSubscription<AccountModel> _accountSubscription;
-
-  @override
-  initState() {
-    super.initState();
-    _addFundsBloc = new AddFundsBloc(widget._user.userID);
-    _accountSubscription = widget._accountBloc.accountStream.listen((acc) {
-      if (!acc.bootstraping) {
-        _addFundsBloc.addFundRequestSink.add(null);
-        _accountSubscription.cancel();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _addFundsBloc.addFundRequestSink.close();
-    _accountSubscription.cancel();
-    super.dispose();
-  }
+  final String _title = "Add Funds";  
 
   @override
   Widget build(BuildContext context) {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    return new StreamBuilder(
-        stream: accountBloc.accountStream,
-        builder:
-            (BuildContext context, AsyncSnapshot<AccountModel> accSnapshot) {
-          return StreamBuilder(
-              stream: _addFundsBloc.addFundResponseStream,
-              builder: (BuildContext context,
-                  AsyncSnapshot<AddFundResponse> snapshot) {
-                return Material(
-                  child: new Scaffold(
-                      appBar: new AppBar(
-                        iconTheme: theme.appBarIconTheme,
-                        textTheme: theme.appBarTextTheme,
-                        backgroundColor: theme.BreezColors.blue[500],
-                        leading: backBtn.BackButton(),
-                        title: new Text(
-                          _title,
-                          style: theme.appBarTextStyle,
+    AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
+    return Material(
+      child: new Scaffold(
+        appBar: new AppBar(
+          iconTheme: theme.appBarIconTheme,
+          textTheme: theme.appBarTextTheme,
+          backgroundColor: theme.BreezColors.blue[500],
+          leading: backBtn.BackButton(),
+          title: new Text(
+            _title,
+            style: theme.appBarTextStyle,
+          ),
+          elevation: 0.0,
+        ),
+        body: StreamBuilder(
+          stream: accountBloc.accountStream,
+          builder: (BuildContext context, AsyncSnapshot<AccountModel> account) {
+            if (!account.hasData) {
+              return Center(child: Loader(color: theme.BreezColors.white[400]));
+            }
+            return StreamBuilder(
+                stream: addFundsBloc.completedMoonpayOrderStream,
+                builder: (BuildContext context, AsyncSnapshot<MoonpayOrder> moonpayOrder) {
+                  if (moonpayOrder.hasData &&
+                      _orderIsPending(account.data, moonpayOrder.data)) {
+                    return Column(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+                        child: LoadingAnimatedText(
+                          'Your MoonPay order is being processed',
+                          textAlign: TextAlign.center,
                         ),
-                        elevation: 0.0,
                       ),
-                      body: new Container(
-                        child: Material(
-                            child: getBody(
-                                context,
-                                accSnapshot.data,
-                                snapshot.data,
-                                snapshot.hasError
-                                    ? "Failed to retrieve an address from Breez server\nPlease check your internet connection."
-                                    : null)),
-                      )),
-                );
-              });
-        });
+                    ]);
+                  }
+
+                  return StreamBuilder(
+                      stream: addFundsBloc.availableVendorsStream,
+                      builder: (BuildContext context, AsyncSnapshot<List<AddFundVendorModel>> vendorList) {
+                        if (!vendorList.hasData) {
+                          return Center(child: Loader(color: theme.BreezColors.white[400]));
+                        }
+                        return getBody(context, account.data, vendorList.data);
+                      });
+                });
+          },
+        ),
+      ),
+    );
   }
 
-  Widget getBody(BuildContext context, AccountModel account,
-      AddFundResponse response, String error) {
+  bool _orderIsPending(AccountModel account, MoonpayOrder moonpayOrder) {      
+      return DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(moonpayOrder.orderTimestamp ?? 0)).inHours <= 1;
+  }
+
+  Widget getBody(BuildContext context, AccountModel account, List<AddFundVendorModel> vendorList) {
     var unconfirmedTxID = account?.swapFundsStatus?.unconfirmedTxID;
     bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
 
     String errorMessage;
-    if (error != null) {
-      errorMessage = error;
-    } else if (account == null || account.bootstraping) {
-      errorMessage =
-          'You\'d be able to add funds after Breez is finished bootstrapping.';
-    } else if (unconfirmedTxID?.isNotEmpty == true ||
-        account.processingWithdrawal) {
+    if (account == null || account.bootstraping) {
+      errorMessage = 'You\'d be able to add funds after Breez is finished bootstrapping.';
+    } else if (unconfirmedTxID?.isNotEmpty == true || account.processingWithdrawal) {
       errorMessage =
           'Breez is processing your previous ${waitingDepositConfirmation || account.processingBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
-    } else if (response != null && response.errorMessage.isNotEmpty) {
-      errorMessage = response.errorMessage;
     }
 
     if (errorMessage != null) {
@@ -121,120 +107,101 @@ class AddFundsState extends State<AddFundsPage> {
           Padding(
             padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
             child: Text(errorMessage, textAlign: TextAlign.center),
-          ),          
+          ),
           waitingDepositConfirmation
-              ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                  children:
-                  [ 
-                    Padding(
-                      padding: EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
-                      child: Text("Transaction ID:", textAlign: TextAlign.start),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.only(top: 10.0, left: 30.0, right: 22.0),
-                          child: 
-                          LinkLauncher(
-                            linkName: unconfirmedTxID,
-                            linkAddress: "https://blockstream.info/tx/$unconfirmedTxID",
-                            onCopy: (){
-                              Clipboard.setData(ClipboardData(text: unconfirmedTxID));
-                              showFlushbar(context,
-                                  message:
-                                      "Transaction ID was copied to your clipboard.",
-                                  duration: Duration(seconds: 3));
-                            },
-                          )
-                  )
-                  ])                      
+              ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                    child: Text("Transaction ID:", textAlign: TextAlign.start),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(top: 10.0, left: 30.0, right: 22.0),
+                      child: LinkLauncher(
+                        linkName: unconfirmedTxID,
+                        linkAddress: "https://blockstream.info/tx/$unconfirmedTxID",
+                        onCopy: () {
+                          Clipboard.setData(ClipboardData(text: unconfirmedTxID));
+                          showFlushbar(context, message: "Transaction ID was copied to your clipboard.", duration: Duration(seconds: 3));
+                        },
+                      ))
+                ])
               : SizedBox()
         ],
       );
     }
-    return Column(children: <Widget>[
-      AddressWidget(response?.address, response?.backupJson),
-      response == null
-          ? SizedBox()
-          : Expanded(
-              child: Container(
-                padding:
-                    new EdgeInsets.only(top: 36.0, left: 12.0, right: 12.0),
-                child: AutoSizeText(
-                  "Send up to " +
-                      account.currency.format(response.maxAllowedDeposit,
-                          includeSymbol: true) +
-                      " to this address." +
-                      "\nBreez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount)} in your balance.",
-                  style: theme.warningStyle,
-                  textAlign: TextAlign.center,
-                  minFontSize: MinFontSize(context).minFontSize,
-                  stepGranularity: 0.1,
-                ),
-              ),
-            ),
-      _buildBottomBar(response, account,
-          hasError: error != null ? true : false),
-    ]);
+    return Stack(
+      children: <Widget>[
+        ListView(
+          children: _buildList(vendorList),
+        ),
+        Positioned(
+          child: _buildReserveAmountWarning(account),
+          bottom: 72,
+          right: 22,
+          left: 22,
+        )
+      ],
+    );
   }
 
-  Widget _buildRedeemVoucherButton() {
-    return new GestureDetector(
-        onTap: () => Navigator.of(context).pushNamed("/fastbitcoins"),
-        child: Container(
-          height: 48,
-          width: 256,
-          decoration: BoxDecoration(
-              color: theme.fastbitcoins.iconBgColor,
-              border: Border.all(
-                  color: Colors.white, style: BorderStyle.solid, width: 1.0),
-              borderRadius: BorderRadius.circular(14.0)),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(left: 8.0, right: 4.0),
-                child: Image(
-                  image: AssetImage("src/icon/vendors/fastbitcoins_logo.png"),
-                  height: 24.0,
-                  fit: BoxFit.scaleDown,
-                  color: theme.fastbitcoins.iconFgColor,
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(right: 8.0),
-                  child: AutoSizeText(
-                    'REDEEM FASTBITCOINS VOUCHER',
-                    style: theme.fastbitcoinsTextStyle,
-                    maxLines: 1,
-                    minFontSize: MinFontSize(context, fontSize: theme.fastbitcoinsTextStyle.fontSize).minFontSize,
-                    stepGranularity: 0.1,
-                  ),
-                ),
-              )
-            ],
-          ),
+  List<Widget> _buildList(List<AddFundVendorModel> vendorsList) {
+    List<Widget> list = List();
+    vendorsList.forEach((v){
+      if (v.isAllowed) {
+        list
+        ..add(_buildAddFundsVendorItem(v))
+        ..add(Divider(
+          indent: 72,
         ));
+      }
+    });       
+    return list;
   }
 
-  Widget _buildBottomBar(AddFundResponse response, AccountModel account,
-      {hasError = false}) {
-    if (hasError || response?.errorMessage?.isNotEmpty == true) {
-      return SingleButtonBottomBar(
-          text: hasError ? "RETRY" : "CLOSE",
-          onPressed: () {
-            if (hasError) {
-              _addFundsBloc.addFundRequestSink.add(null);
-            } else {
-              Navigator.of(context).pop();
-            }
-          });
-    }
+  Widget _buildReserveAmountWarning(AccountModel account) {
+    return Container(
+      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: theme.errorColor)),
+      padding: new EdgeInsets.all(16),
+      child: Text(
+        "Breez requires you to keep\n${account.currency.format(account.warningMaxChanReserveAmount, fixedDecimals: false)} in your balance.",
+        style: theme.reserveAmountWarningStyle,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
 
-    return response == null || account?.active != true
-        ? SizedBox()
-        : new Padding(padding: new EdgeInsets.only(bottom: 40.0, left: 16.0, right: 16.0), child:_buildRedeemVoucherButton());
+  Widget _buildAddFundsVendorItem(AddFundVendorModel vendor) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      child: Container(
+        height: 72,
+        width: MediaQuery.of(context).size.width,
+        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Image(
+              image: AssetImage(vendor.icon),
+              height: 24.0,
+              width: 24.0,
+              fit: BoxFit.scaleDown,
+              color: Colors.white,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              vendor.name,
+              style: theme.addFundsItemsStyle,
+            ),
+          ),
+          Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 24.0)),
+        ]),
+      ),
+      onTap: () {        
+        Navigator.pushNamed(
+          context,
+          vendor.route
+        );
+      },
+    );
   }
 }

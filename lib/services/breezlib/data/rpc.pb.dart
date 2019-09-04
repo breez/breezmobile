@@ -55,6 +55,7 @@ class Account extends $pb.GeneratedMessage {
     ..aInt64(8, 'routingNodeFee')
     ..aOB(9, 'enabled')
     ..aInt64(10, 'maxChanReserve')
+    ..aOS(11, 'channelPoint')
     ..hasRequiredFields = false
   ;
 
@@ -119,6 +120,11 @@ class Account extends $pb.GeneratedMessage {
   set maxChanReserve(Int64 v) { $_setInt64(9, v); }
   $core.bool hasMaxChanReserve() => $_has(9);
   void clearMaxChanReserve() => clearField(10);
+
+  $core.String get channelPoint => $_getS(10, '');
+  set channelPoint($core.String v) { $_setString(10, v); }
+  $core.bool hasChannelPoint() => $_has(10);
+  void clearChannelPoint() => clearField(11);
 }
 
 class Payment extends $pb.GeneratedMessage {
@@ -259,8 +265,7 @@ class PaymentResponse extends $pb.GeneratedMessage {
 class SendWalletCoinsRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('SendWalletCoinsRequest', package: const $pb.PackageName('data'))
     ..aOS(1, 'address')
-    ..aInt64(2, 'amount')
-    ..aInt64(3, 'satPerByteFee')
+    ..aInt64(2, 'satPerByteFee')
     ..hasRequiredFields = false
   ;
 
@@ -281,15 +286,10 @@ class SendWalletCoinsRequest extends $pb.GeneratedMessage {
   $core.bool hasAddress() => $_has(0);
   void clearAddress() => clearField(1);
 
-  Int64 get amount => $_getI64(1);
-  set amount(Int64 v) { $_setInt64(1, v); }
-  $core.bool hasAmount() => $_has(1);
-  void clearAmount() => clearField(2);
-
-  Int64 get satPerByteFee => $_getI64(2);
-  set satPerByteFee(Int64 v) { $_setInt64(2, v); }
-  $core.bool hasSatPerByteFee() => $_has(2);
-  void clearSatPerByteFee() => clearField(3);
+  Int64 get satPerByteFee => $_getI64(1);
+  set satPerByteFee(Int64 v) { $_setInt64(1, v); }
+  $core.bool hasSatPerByteFee() => $_has(1);
+  void clearSatPerByteFee() => clearField(2);
 }
 
 class PayInvoiceRequest extends $pb.GeneratedMessage {

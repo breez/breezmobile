@@ -35,3 +35,10 @@ class ChangeSyncUIState extends AsyncAction {
 }
 
 class FetchRates extends AsyncAction {}
+
+class SendCoins extends AsyncAction {
+  final int feeRate;
+  final String destAddress;
+  
+  SendCoins(this.feeRate, this.destAddress);
+}
