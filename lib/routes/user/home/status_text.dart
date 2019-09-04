@@ -54,7 +54,8 @@ class _StatusTextState extends State<StatusText> {
       );
     }
 
-    bool loading = widget.account.swapFundsStatus?.error?.isNotEmpty == false;
+    var swapError = widget.account.swapFundsStatus?.error;    
+    bool loading = swapError == null || swapError.isEmpty;
     return loading ? LoadingAnimatedText(widget.account.statusMessage) : 
       Text(widget.account.statusMessage, textAlign: TextAlign.center);
   }
