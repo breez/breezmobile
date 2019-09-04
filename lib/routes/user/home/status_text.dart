@@ -5,7 +5,7 @@ import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:url_launcher/url_launcher.dart';
+//import 'package:url_launcher/url_launcher.dart';
 
 class StatusText extends StatefulWidget {
   final AccountModel account;
@@ -67,6 +67,6 @@ class _LinkTextSpan extends TextSpan {
             text: text ?? url,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                launch(url, forceSafariVC: false);
+               // launch(url, forceSafariVC: false);
               });
 }

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:breez/bloc/connect_pay/encryption.dart';
-import 'package:firebase_database/firebase_database.dart';
+//import 'package:firebase_database/firebase_database.dart';
 import 'package:rxdart/rxdart.dart';
 
 /*
@@ -33,13 +33,13 @@ class PaymentSessionChannel {
 
   PaymentSessionChannel(this._sessionID, this._payer, {this.interceptor}) {
     _activeChannels++;
-    FirebaseDatabase.instance.goOnline();
+   // FirebaseDatabase.instance.goOnline();
     _myKey = this._payer ? "payer" : "payee";
     _theirKey = this._payer ? "payee" : "payer";
     _listenIncomingMessages();
-    Future sessionCreated =
-        !_payer ? Future.value(null) : FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID').update({"lastUpdated": ServerValue.timestamp});
-    sessionCreated.then((res) => _watchSessionTermination);
+    // Future sessionCreated =
+    //     !_payer ? Future.value(null) : FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID').update({"lastUpdated": ServerValue.timestamp});
+    // sessionCreated.then((res) => _watchSessionTermination);
     _watchSessionTermination();
     _watchPeerReset();
   }
@@ -52,13 +52,13 @@ class PaymentSessionChannel {
     }
     return toSend.then( (valueToSend) {
       if (!_terminated) {
-        return FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID/$_myKey').update({"state": valueToSend});
+        //return FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID/$_myKey').update({"state": valueToSend});
       }
     });    
   }
 
   Future sendResetMessage() async{
-    await FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID/${_payer ? "payee" : "payer"}').remove();
+   // await FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID/${_payer ? "payee" : "payer"}').remove();
   }
 
   Future terminate({bool destroyHistory = false}) async {
@@ -70,12 +70,12 @@ class PaymentSessionChannel {
       await peerResetStreamController.close();
       await _peerTerminatedController.close();
       if (destroyHistory) {
-        await FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID').remove();
+       // await FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID').remove();
       }
       await _incomingMessagesController.close();
       _activeChannels--;
       if (_activeChannels == 0) {
-        await FirebaseDatabase.instance.goOffline();
+        //await FirebaseDatabase.instance.goOffline();
       }      
     }
   }
@@ -83,7 +83,7 @@ class PaymentSessionChannel {
   bool get terminated => _terminated;
 
   void _listenIncomingMessages() async {    
-    var theirData = FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID/$_theirKey/state');
+    var theirData = null;//FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID/$_theirKey/state');
     _theirDataListener = theirData.onValue.listen((event) async{
       var stateMessage = event.snapshot.value;
       if (stateMessage == null) {
@@ -102,7 +102,7 @@ class PaymentSessionChannel {
   }
   
   void _watchSessionTermination() {    
-    var sessionRoot = FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID');
+    var sessionRoot = null;// FirebaseDatabase.instance.reference().child('remote-payments/$_sessionID');
     _sessionRootListener = sessionRoot.onValue.listen((event) {
       if (event.snapshot.value == null) {        
         _peerTerminatedController.add(null);
@@ -112,7 +112,7 @@ class PaymentSessionChannel {
 
   void _watchPeerReset(){
     var terminationPath = _payer ? '$_sessionID/payer' : '$_sessionID/payee';
-    var terminationRef = FirebaseDatabase.instance.reference().child('remote-payments/$terminationPath');
+    var terminationRef = null;//FirebaseDatabase.instance.reference().child('remote-payments/$terminationPath');
     _peerResetListener = Observable(terminationRef.onValue)
       .delay(Duration(milliseconds: 500))
       .listen((event) {

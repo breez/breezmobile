@@ -1,4 +1,4 @@
-import 'package:app_settings/app_settings.dart';
+//import 'package:app_settings/app_settings.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
@@ -85,7 +85,7 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
                   elevation: 0.0,
                   shape: const StadiumBorder(),
                   onPressed: () async {
-                    AppSettings.openAppSettings();
+                    //AppSettings.openAppSettings();
                     Navigator.pop(context);
                   },
                 ),

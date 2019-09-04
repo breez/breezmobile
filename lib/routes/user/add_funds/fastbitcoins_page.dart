@@ -15,7 +15,7 @@ import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:url_launcher/url_launcher.dart';
+//import 'package:url_launcher/url_launcher.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 
 class FastbitcoinsPage extends StatefulWidget {
@@ -420,6 +420,6 @@ class _LinkTextSpan extends TextSpan {
             text: text ?? url,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                launch(url, forceSafariVC: false);
+                //launch(url, forceSafariVC: false);
               });
 }

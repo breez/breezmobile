@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:breez/logger.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+//import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 class DeepLinksService {
   static const SESSION_SECRET = "sessionSecret";
@@ -14,19 +14,19 @@ class DeepLinksService {
   }
 
   void listen() async {
-    var publishLink = (PendingDynamicLinkData data) async {      
-      final Uri uri = data?.link;
-        if (uri != null) {
-          _linksNotificationsController.add(uri.toString()); 
-        }
-    };
+    // var publishLink = (PendingDynamicLinkData data) async {      
+    //   final Uri uri = data?.link;
+    //     if (uri != null) {
+    //       _linksNotificationsController.add(uri.toString()); 
+    //     }
+    // };
 
-    var data = await FirebaseDynamicLinks.instance.getInitialLink();
-    publishLink(data);
+    // var data = await FirebaseDynamicLinks.instance.getInitialLink();
+    // publishLink(data);
 
-    FirebaseDynamicLinks.instance.onLink(onSuccess: publishLink, onError: (err) async {
-      log.severe("Failed to fetch dynamic link " + err.toString());
-    });     
+    // FirebaseDynamicLinks.instance.onLink(onSuccess: publishLink, onError: (err) async {
+    //   log.severe("Failed to fetch dynamic link " + err.toString());
+    // });     
   }
 
   SessionLinkModel parseSessionInviteLink(String link) {     
@@ -34,15 +34,15 @@ class DeepLinksService {
   }
 
   Future<String> generateSessionInviteLink(SessionLinkModel link) async {
-    ShortDynamicLink shortLink = await new DynamicLinkParameters(
-      dynamicLinkParametersOptions: DynamicLinkParametersOptions(shortDynamicLinkPathLength: ShortDynamicLinkPathLength.unguessable),
-      link: Uri.parse('https://breez.technology?${link.toLinkQuery()}'),
-      uriPrefix: "https://breez.page.link",
-      androidParameters: AndroidParameters(packageName: "com.breez.client"),
-      iosParameters: IosParameters(bundleId: "technology.breez.client")      
-    ).buildShortLink();
+    // ShortDynamicLink shortLink = await new DynamicLinkParameters(
+    //   dynamicLinkParametersOptions: DynamicLinkParametersOptions(shortDynamicLinkPathLength: ShortDynamicLinkPathLength.unguessable),
+    //   link: Uri.parse('https://breez.technology?${link.toLinkQuery()}'),
+    //   uriPrefix: "https://breez.page.link",
+    //   androidParameters: AndroidParameters(packageName: "com.breez.client"),
+    //   iosParameters: IosParameters(bundleId: "technology.breez.client")      
+    // ).buildShortLink();
 
-    return shortLink.shortUrl.toString();
+    // return shortLink.shortUrl.toString();
   }
 }
 
