@@ -1,11 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:url_launcher/url_launcher.dart';
 
 class StatusText extends StatefulWidget {
   final AccountModel account;
@@ -68,6 +67,6 @@ class _LinkTextSpan extends TextSpan {
             text: text ?? url,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                launch(url, forceSafariVC: false);
+                ServiceInjector().device.launch(url);
               });
 }

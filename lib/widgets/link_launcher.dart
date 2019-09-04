@@ -1,7 +1,5 @@
-import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/services/injector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class LinkLauncher extends StatelessWidget {  
   final String linkName;
@@ -57,7 +55,7 @@ class LinkLauncher extends StatelessWidget {
                     color: Colors.white,
                     icon: Icon(Icons.launch),
                     onPressed: () {
-                      launch(linkAddress);
+                      ServiceInjector().device.launch(linkAddress);
                     },
                   ),
                 ],

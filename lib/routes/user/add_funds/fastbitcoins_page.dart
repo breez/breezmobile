@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/add_funds/fastbitcoins_confirm.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
@@ -15,7 +16,6 @@ import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:url_launcher/url_launcher.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 
 class FastbitcoinsPage extends StatefulWidget {
@@ -420,6 +420,6 @@ class _LinkTextSpan extends TextSpan {
             text: text ?? url,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                launch(url, forceSafariVC: false);
+                ServiceInjector().device.launch(url);
               });
 }

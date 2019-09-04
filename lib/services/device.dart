@@ -12,6 +12,8 @@ class Device {
       const EventChannel('com.breez.client/lifecycle_events_notifications');
   static const MethodChannel _breezShareChannel =
       const MethodChannel('com.breez.client/share_breez');
+  static const MethodChannel _breezLaunchURLChannel =
+      const MethodChannel('com.breez.client/url_launcher');
 
   final StreamController _eventsController =
       new StreamController<NotificationType>.broadcast();
@@ -41,6 +43,10 @@ class Device {
         _eventsController.add(NotificationType.PAUSE);
       }
     });
+  }
+
+  void launch(String url) {
+    _breezLaunchURLChannel.invokeMethod("launch", {"url": url});
   }
 
   Future shareText(String text) {
