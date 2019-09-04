@@ -40,7 +40,8 @@ public class MainActivity extends FlutterActivity {
         BreezApplication.breezShare = new BreezShare(this.registrarFor("com.breez.client.plugins.breez_share"), this);
         new Breez(this.registrarFor("com.breez.client.plugins.breez_lib"));
         _lifecycleEventsPlugin = new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
-        new Permissions(this.registrarFor("com.breez.client.plugins.permissions"), this);        
+        new Permissions(this.registrarFor("com.breez.client.plugins.permissions"), this);
+        new URLLauncher(this.registrarFor("com.breez.client.plugins.url_launcher"), this);
     }
 
     public void onPause() {
