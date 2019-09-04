@@ -56,7 +56,7 @@ class UserApp extends StatelessWidget {
 
           BreezUserModel user = snapshot.data;
           return  BlocProvider(
-            creator: () => new AddFundsBloc(user.userID, accountBloc),
+            creator: () => new AddFundsBloc(userProfileBloc.userStream, accountBloc.accountStream),
             builder: (ctx) => MaterialApp(
               navigatorKey: _navigatorKey,
               title: 'Breez',

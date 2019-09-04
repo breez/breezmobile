@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -23,7 +24,7 @@ class AddFundsBloc extends Bloc {
   static const String PENDING_MOONPAY_ORDER_KEY = "pending_moonpay_order";
   static bool _ipCheckResult = false;
 
-  final AccountBloc _accountBloc;
+  final Stream<AccountModel> accountStream;
   final _addFundRequestController = new StreamController<bool>.broadcast();
 
   Sink<bool> get addFundRequestSink => _addFundRequestController.sink;
@@ -47,7 +48,7 @@ class AddFundsBloc extends Bloc {
   Stream<AddFundsSettings> get addFundsSettingsStream => _addFundsSettingsController.stream;
   Sink<AddFundsSettings> get addFundsSettingsSink => _addFundsSettingsController.sink;
 
-  AddFundsBloc(String userID, this._accountBloc) {
+  AddFundsBloc(Stream<BreezUserModel> userStream, this.accountStream) {
     ServiceInjector injector = ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
     int requestNumber = 0;
@@ -56,17 +57,20 @@ class AddFundsBloc extends Bloc {
       if (!newAddress) {
         _addFundResponseController.add(null);
         return;
-      }      
-      breezLib.addFundsInit(userID).then((reply) {
-        if (currentRequest == currentRequest) {
-          AddFundResponse response = AddFundResponse(reply);
-          _attachMoonpayUrl(response);
-          _addFundResponseController.add(response);
-        }
-      }).catchError((err) {
-        _addFundResponseController.addError(err);
-        _moonpayNextOrderController.addError(err);
-      });
+      }
+      userStream.firstWhere((u) => u.userID != null)
+        .then((user) {
+          breezLib.addFundsInit(user.userID).then((reply) {
+          if (currentRequest == currentRequest) {
+            AddFundResponse response = AddFundResponse(reply);
+            _attachMoonpayUrl(response);
+            _addFundResponseController.add(response);
+          }
+          }).catchError((err) {
+            _addFundResponseController.addError(err);
+            _moonpayNextOrderController.addError(err);
+          });
+        });        
     });
     _addFundsSettingsController.add(AddFundsSettings.start());
     _populateAvailableVendors(false);
@@ -152,7 +156,7 @@ class AddFundsBloc extends Bloc {
       }
     });
 
-    _accountBloc.accountStream.where((acc) => acc != null).listen((acc){
+    accountStream.where((acc) => acc != null).listen((acc){
       var fundsStatus = acc.swapFundsStatus;
       if (fundsStatus != null) {
         var allAddresses = fundsStatus.unConfirmedAddresses.toList()..addAll(fundsStatus.confirmedAddresses);
