@@ -40,6 +40,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "getLogger": SingleArgBindingExecutor(f: BindingsGetLogger),
     "setPeers": SingleArgBindingExecutor(f: BindingsSetPeers),
     "getPeers": EmptyArgsBindingExecutor(f: BindingsGetPeers),
+    "testPeer": SingleArgBindingExecutor(f: BindingsTestPeer),
     "createRatchetSession": SingleArgBindingExecutor(f: BindingsCreateRatchetSession),
     "ratchetDecrypt": SingleArgBindingExecutor(f: BindingsRatchetDecrypt),
     "ratchetEncrypt": SingleArgBindingExecutor(f: BindingsRatchetEncrypt),
