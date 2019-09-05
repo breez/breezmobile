@@ -37,6 +37,7 @@ const Account$json = const {
     const {'1': 'enabled', '3': 9, '4': 1, '5': 8, '10': 'enabled'},
     const {'1': 'maxChanReserve', '3': 10, '4': 1, '5': 3, '10': 'maxChanReserve'},
     const {'1': 'readyForPayments', '3': 11, '4': 1, '5': 8, '10': 'readyForPayments'},
+    const {'1': 'channelPoint', '3': 12, '4': 1, '5': 9, '10': 'channelPoint'},
   ],
   '4': const [Account_AccountStatus$json],
 };
@@ -98,8 +99,7 @@ const SendWalletCoinsRequest$json = const {
   '1': 'SendWalletCoinsRequest',
   '2': const [
     const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
-    const {'1': 'amount', '3': 2, '4': 1, '5': 3, '10': 'amount'},
-    const {'1': 'satPerByteFee', '3': 3, '4': 1, '5': 3, '10': 'satPerByteFee'},
+    const {'1': 'satPerByteFee', '3': 2, '4': 1, '5': 3, '10': 'satPerByteFee'},
   ],
 };
 

@@ -294,11 +294,10 @@ class BreezBridge {
         .then( (response) => addr);
   }
 
-  Future<String> sendWalletCoins(String address, Int64 amount, Int64 satPerByteFee){
+  Future<String> sendWalletCoins(String address, Int64 satPerByteFee){
     var request = 
       SendWalletCoinsRequest()
-        ..address = address
-        ..amount = amount
+        ..address = address        
         ..satPerByteFee = satPerByteFee;
     return _invokeMethodWhenReady("sendWalletCoins", {"argument": request.writeToBuffer()}).then((txid) => txid as String);        
   }

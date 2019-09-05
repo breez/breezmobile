@@ -22,32 +22,30 @@ class AccountSettings {
   final bool showConnectProgress;
   final BugReportBehavior failePaymentBehavior;
 
-  AccountSettings(
-      this.ignoreWalletBalance,
+  AccountSettings(this.ignoreWalletBalance,
       {this.showConnectProgress = false,
-      this.failePaymentBehavior = BugReportBehavior.PROMPT});
+        this.failePaymentBehavior = BugReportBehavior.PROMPT});
+
   AccountSettings.start() : this(false);
 
-  AccountSettings copyWith(
-      {bool ignoreWalletBalance,
-      bool showConnectProgress,
-      BugReportBehavior failePaymentBehavior}) {
+  AccountSettings copyWith({bool ignoreWalletBalance,
+    bool showConnectProgress,
+    BugReportBehavior failePaymentBehavior}) {
     return AccountSettings(ignoreWalletBalance ?? this.ignoreWalletBalance,
-        failePaymentBehavior:
-            failePaymentBehavior ?? this.failePaymentBehavior,
-        showConnectProgress: showConnectProgress ?? this.showConnectProgress);
+        showConnectProgress: showConnectProgress ?? this.showConnectProgress,
+        failePaymentBehavior: failePaymentBehavior ?? this.failePaymentBehavior);
   }
 
   AccountSettings.fromJson(Map<String, dynamic> json)
       : this(json["ignoreWalletBalance"] ?? false,
-            failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0],
-            showConnectProgress: json["showConnectProgress"] ?? false);
+      showConnectProgress: json["showConnectProgress"] ?? false,
+      failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0]);
 
   Map<String, dynamic> toJson() {
     return {
       "ignoreWalletBalance": ignoreWalletBalance,
+      "showConnectProgress": showConnectProgress,
       "failePaymentBehavior": failePaymentBehavior.index,
-      "showConnectProgress": showConnectProgress ?? false
     };
   }
 }
@@ -76,7 +74,7 @@ class SwapFundStatus {
       return refundAddresses[0].refundableError;
     }
 
-    var errorAddresses = _addedFundsReply?.confirmedAddresses?.where((a) => a.errorMessage.isNotEmpty);    
+    var errorAddresses = _addedFundsReply?.confirmedAddresses?.where((a) => a.errorMessage.isNotEmpty);
     if (errorAddresses == null || errorAddresses.isEmpty) {
       return null;
     }
@@ -84,8 +82,18 @@ class SwapFundStatus {
     return errorAddresses.first.errorMessage;
   }
 
+  List<String> get unConfirmedAddresses {
+    var unConfirmedAddresses = _addedFundsReply?.unConfirmedAddresses  ?? List<SwapAddressInfo>();
+    return unConfirmedAddresses.map((a) => a.address).toList();
+  }
+
+  List<String> get confirmedAddresses {
+    var unConfirmedAddresses = _addedFundsReply?.confirmedAddresses  ?? List<SwapAddressInfo>();
+    return unConfirmedAddresses.map((a) => a.address).toList();
+  }
+
   List<RefundableAddress> get refundableAddresses {
-    var refundableAddresses = _addedFundsReply?.refundableAddresses ?? List<RefundableAddress>();
+    var refundableAddresses = _addedFundsReply?.refundableAddresses ?? List<SwapAddressInfo>();
     return refundableAddresses.map((a) => RefundableAddress(a)).toList();
   }
 
@@ -215,18 +223,21 @@ class AccountModel {
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
   bool get enabled => _accountResponse.enabled;
   Int64 get routingNodeFee => _accountResponse.routingNodeFee;  
-  bool get synced => syncProgress == 1.0;
   bool get readyForPayments => _accountResponse.readyForPayments;
+
+  bool get synced => syncProgress == 1.0;
+  String get channelFundingTxUrl {
+     if (_accountResponse.channelPoint.isEmpty) {
+       return null;
+     }
+     return "https://blockstream.info/tx/${_accountResponse.channelPoint.split(":")[0]}";
+  }
 
   String get statusMessage {
 
     if (this.isInitialBootstrap) {
       return "Please wait a minute while Breez is bootstrapping (keep the app open).";
-    }
-
-    if (this.processingConnection) {
-      return "Breez is opening a secure channel with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments";
-    }
+    }    
 
     SwapFundStatus swapStatus = this.swapFundsStatus;
 
@@ -270,7 +281,7 @@ class AccountModel {
     }
 
     if (amount > maxAmount) {
-      return outgoing ? "Not enough funds" : "Amount exceeds available capacity";      
+      return outgoing ? "Not enough funds" : "Amount exceeds available capacity";
     }
 
     if (outgoing && amount > maxAllowedToPay) {
@@ -431,12 +442,11 @@ class AddFundResponse {
 
 class RemoveFundRequestModel {
   final Int64 amount;
-  final String address;
-  final bool fromWallet;
+  final String address;  
   final Int64 satPerByteFee;
 
   RemoveFundRequestModel(this.amount, this.address,
-      {this.fromWallet = false, this.satPerByteFee});
+      {this.satPerByteFee});
 }
 
 class RemoveFundResponseModel {

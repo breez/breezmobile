@@ -142,7 +142,7 @@ class HomeState extends State<Home> {
               actions: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(14.0),
-                  child: AccountRequiredActionsIndicator(widget.backupBloc, widget.accountBloc),
+                  child: AccountRequiredActionsIndicator(widget.backupBloc, widget.accountBloc, widget.userProfileBloc),
                 ),],
               leading: new IconButton(
                   icon: ImageIcon(

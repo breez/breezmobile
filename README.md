@@ -54,9 +54,9 @@
 - [x] Add webLN support
 - [x] Fiat units
 - [x] Optional PIN
+- [x] Adding funds via credit card
 - [ ] Add stronger encryption to cloud backup
 - [ ] iCloud backup option
-- [ ] Adding funds via credit card
 - [ ] Support 3rd-party LSPs
 - [ ] Support SD storage
 - [ ] NFC device support
