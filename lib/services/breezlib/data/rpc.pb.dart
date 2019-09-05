@@ -55,8 +55,8 @@ class Account extends $pb.GeneratedMessage {
     ..aInt64(8, 'routingNodeFee')
     ..aOB(9, 'enabled')
     ..aInt64(10, 'maxChanReserve')
-    ..aOB(11, 'readyForPayments')
-    ..aOS(12, 'channelPoint')
+    ..aOS(11, 'channelPoint')
+    ..aOB(12, 'readyForPayments')
     ..hasRequiredFields = false
   ;
 
@@ -122,15 +122,15 @@ class Account extends $pb.GeneratedMessage {
   $core.bool hasMaxChanReserve() => $_has(9);
   void clearMaxChanReserve() => clearField(10);
 
-  $core.bool get readyForPayments => $_get(10, false);
-  set readyForPayments($core.bool v) { $_setBool(10, v); }
-  $core.bool hasReadyForPayments() => $_has(10);
-  void clearReadyForPayments() => clearField(11);
+  $core.String get channelPoint => $_getS(10, '');
+  set channelPoint($core.String v) { $_setString(10, v); }
+  $core.bool hasChannelPoint() => $_has(10);
+  void clearChannelPoint() => clearField(11);
 
-  $core.String get channelPoint => $_getS(11, '');
-  set channelPoint($core.String v) { $_setString(11, v); }
-  $core.bool hasChannelPoint() => $_has(11);
-  void clearChannelPoint() => clearField(12);
+  $core.bool get readyForPayments => $_get(11, false);
+  set readyForPayments($core.bool v) { $_setBool(11, v); }
+  $core.bool hasReadyForPayments() => $_has(11);
+  void clearReadyForPayments() => clearField(12);
 }
 
 class Payment extends $pb.GeneratedMessage {

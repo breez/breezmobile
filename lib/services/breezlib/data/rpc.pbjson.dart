@@ -36,8 +36,8 @@ const Account$json = const {
     const {'1': 'routingNodeFee', '3': 8, '4': 1, '5': 3, '10': 'routingNodeFee'},
     const {'1': 'enabled', '3': 9, '4': 1, '5': 8, '10': 'enabled'},
     const {'1': 'maxChanReserve', '3': 10, '4': 1, '5': 3, '10': 'maxChanReserve'},
-    const {'1': 'readyForPayments', '3': 11, '4': 1, '5': 8, '10': 'readyForPayments'},
-    const {'1': 'channelPoint', '3': 12, '4': 1, '5': 9, '10': 'channelPoint'},
+    const {'1': 'channelPoint', '3': 11, '4': 1, '5': 9, '10': 'channelPoint'},
+    const {'1': 'readyForPayments', '3': 12, '4': 1, '5': 8, '10': 'readyForPayments'},
   ],
   '4': const [Account_AccountStatus$json],
 };
