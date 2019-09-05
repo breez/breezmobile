@@ -52,6 +52,7 @@ final TextStyle paymentRequestAmountStyle = new TextStyle(color: BreezColors.gre
 final TextStyle cancelButtonStyle = TextStyle(color: BreezColors.red[600], letterSpacing: 1.25, height: 1.16, fontSize: 14.0, fontFamily: "IBMPlexSansMedium");
 final TextStyle backupPhraseInformationTextStyle = TextStyle(color: BreezColors.white[500], fontSize: 12.3, letterSpacing: 0.4, height: 1.16);
 final TextStyle backupPhraseConfirmationTextStyle = TextStyle(color: BreezColors.white[500], fontSize: 14.3, letterSpacing: 1.25, height: 1.16, fontFamily: 'IBMPlexSansMedium');
+final TextStyle mnemonicsTextStyle = TextStyle(color: BreezColors.white[400], fontSize: 16.4, letterSpacing: 0.73, height: 1.25);
 final TextStyle invoiceMemoStyle = new TextStyle( color: BreezColors.grey[500], fontSize: 12.3, height: 1.16, letterSpacing: 0.4);
 final TextStyle invoiceChargeAmountStyle = TextStyle(color: BreezColors.white[500], fontSize: 14.3, height: 1.16, letterSpacing: 1.25);
 final TextStyle invoiceAmountStyle = TextStyle(color: BreezColors.grey[600], fontSize: 22.0, height: 1.32, letterSpacing: 0.2);
