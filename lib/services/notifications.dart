@@ -1,4 +1,4 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
+//import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
@@ -12,18 +12,18 @@ abstract class Notifications {
 
 class FirebaseNotifications implements Notifications {
   
-  FirebaseMessaging _firebaseMessaging;
+  //FirebaseMessaging _firebaseMessaging;
 
   final StreamController<Map<dynamic, dynamic>> _notificationController = new BehaviorSubject<Map<dynamic, dynamic>>();
   Stream<Map<dynamic, dynamic>> get notifications => _notificationController.stream;
 
   FirebaseNotifications() {    
-    _firebaseMessaging = new FirebaseMessaging();
-    _firebaseMessaging.configure(
-      onMessage: _onMessage,
-      onResume: _onResume,
-      onLaunch: _onResume
-    );
+    // _firebaseMessaging = new FirebaseMessaging();
+    // _firebaseMessaging.configure(
+    //   onMessage: _onMessage,
+    //   onResume: _onResume,
+    //   onLaunch: _onResume
+    // );
   }
 
   Future<dynamic> _onMessage(Map<String, dynamic> message) {
@@ -46,9 +46,9 @@ class FirebaseNotifications implements Notifications {
 
   @override
   Future<String> getToken() {
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true));
-    return _firebaseMessaging.getToken();
+    // _firebaseMessaging.requestNotificationPermissions(
+    //     const IosNotificationSettings(sound: true, badge: true, alert: true));
+    // return _firebaseMessaging.getToken();
   }
 
 }
