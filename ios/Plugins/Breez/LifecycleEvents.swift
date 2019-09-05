@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Bindings
 
 class LifecycleEvents : NSObject, FlutterPlugin, FlutterStreamHandler {
     var eventSink : FlutterEventSink?;
@@ -42,6 +43,7 @@ class LifecycleEvents : NSObject, FlutterPlugin, FlutterStreamHandler {
             }
             self.resumed = true;
         }
+        BindingsOnResume();
     }
     
     func applicationDidEnterBackground(_ application : UIApplication) {
