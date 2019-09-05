@@ -1,6 +1,14 @@
 import 'dart:math';
 
+import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/security_model.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/security_pin/backup_phrase/generate_backup_phrase_page.dart';
+import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
@@ -46,6 +54,8 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
+    UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     return Scaffold(
       appBar: new AppBar(
           iconTheme: theme.appBarIconTheme,
@@ -57,12 +67,13 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
               Navigator.push(
                 context,
                 FadeInRoute(
-                  builder: (_) => GenerateBackupPhrasePage(
-                    mnemonics: widget._mnemonics,
-                    phase: 2,
-                    randomlySelectedIndexes: _randomlySelectedIndexes,
-                    verificationFormValues: _verificationFormValues,
-                  ),
+                  builder: (_) =>
+                      GenerateBackupPhrasePage(
+                        mnemonics: widget._mnemonics,
+                        phase: 2,
+                        randomlySelectedIndexes: _randomlySelectedIndexes,
+                        verificationFormValues: _verificationFormValues,
+                      ),
                 ),
               );
             },
@@ -78,7 +89,15 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           _buildInstructions(),
         ],
       ),
-      bottomNavigationBar: _buildBackupBtn(),
+      bottomNavigationBar: StreamBuilder<BreezUserModel>(
+        stream: userProfileBloc.userStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container();
+          }
+          return _buildBackupBtn(snapshot.data.securityModel, userProfileBloc, backupBloc);
+        },
+      ),
     );
   }
 
@@ -86,7 +105,8 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     return Padding(
       padding: EdgeInsets.only(left: 72, top: 96, right: 72),
       child: Text(
-        "Type the ${_randomlySelectedIndexes[0] + 1}, ${_randomlySelectedIndexes[1] + 1} and the ${_randomlySelectedIndexes[2] + 1} words of your generated backup phrase",
+        "Type the ${_randomlySelectedIndexes[0] + 1}, ${_randomlySelectedIndexes[1] + 1} and the ${_randomlySelectedIndexes[2] +
+            1} words of your generated backup phrase",
         style: theme.backupPhraseInformationTextStyle.copyWith(color: theme.BreezColors.white[300]),
         textAlign: TextAlign.center,
       ),
@@ -104,7 +124,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: List.generate(
             _randomlySelectedIndexes.length,
-            (index) {
+                (index) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: TextFormField(
@@ -141,7 +161,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     }
   }
 
-  _buildBackupBtn() {
+  _buildBackupBtn(SecurityModel securityModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) {
     return Padding(
       padding: new EdgeInsets.only(bottom: 40),
       child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
@@ -158,13 +178,39 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
             shape: const StadiumBorder(),
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                // Verify
-                print("Verified");
+                _updateSecurityModel(securityModel, securityModel.copyWith(backupPhrase: widget._mnemonics.join(" "),), userProfileBloc, backupBloc);
               }
             },
           ),
         )
       ]),
     );
+  }
+
+  Future _updateSecurityModel(SecurityModel oldModel, SecurityModel newModel, UserProfileBloc userProfileBloc,
+      BackupBloc backupBloc) async {
+    var action = UpdateSecurityModel(newModel);
+    userProfileBloc.userActionsSink.add(action);
+    action.future.then((_) {
+      if (newModel.backupPhrase != oldModel.backupPhrase) {
+        backupBloc.backupNowSink.add(true);
+        backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
+          if (mounted) {
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (ctx) => buildBackupInProgressDialog(ctx, backupBloc.backupStateStream));
+          }
+        });
+      }
+    }).catchError((err) {
+      promptError(
+          context,
+          "Internal Error",
+          Text(
+            err.toString(),
+            style: theme.alertStyle,
+          ));
+    });
   }
 }
