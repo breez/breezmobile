@@ -7,5 +7,6 @@ import 'package:flutter/services.dart';
 void main() { 
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  initializeDateFormatting(Platform.localeName, null);    
+  initializeDateFormatting(Platform.localeName, null);  
+  runApp(Container());
 }
