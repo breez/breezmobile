@@ -120,6 +120,16 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
             shape: const StadiumBorder(),
             onPressed: () {
               if (_phase + 1 == 3) {
+                Navigator.push(
+                  context,
+                  FadeInRoute(
+                    builder: (_) => VerifyBackupPhrasePage(
+                      _mnemonics,
+                      randomlySelectedIndexes: widget.randomlySelectedIndexes,
+                      verificationFormValues: widget.verificationFormValues,
+                    ),
+                  ),
+                );
               } else {
                 setState(() {
                   _phase++;
