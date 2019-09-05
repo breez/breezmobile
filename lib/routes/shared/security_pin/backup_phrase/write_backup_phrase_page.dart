@@ -6,12 +6,12 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
 
-class WriteBackupPhrasePage extends StatefulWidget {
+class EnterBackupPhrasePage extends StatefulWidget {
   @override
-  WriteBackupPhrasePageState createState() => new WriteBackupPhrasePageState();
+  EnterBackupPhrasePageState createState() => new EnterBackupPhrasePageState();
 }
 
-class WriteBackupPhrasePageState extends State<WriteBackupPhrasePage> {
+class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
   int _phase;
 
