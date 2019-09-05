@@ -40,7 +40,7 @@ class RestoreDialogState extends State<RestoreDialog> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           new Text(
-            "You have mulitple Breez backups on your Google Drive, please choose which to restore:",
+            "You have multiple Breez backups on your Google Drive, please choose which to restore:",
             style: theme.paymentRequestSubtitleStyle,
           ),
          
