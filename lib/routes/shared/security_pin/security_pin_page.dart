@@ -5,7 +5,6 @@ import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
-import 'package:breez/routes/shared/security_pin/security_pin_warning_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -14,6 +13,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 
+import 'backup_phrase/backup_phrase_confirmation_page.dart';
 import 'change_pin_code.dart';
 import 'lock_screen.dart';
 
@@ -77,9 +77,9 @@ class SecurityPageState extends State<SecurityPage> {
   List<Widget> _buildSecurityPINTiles(SecurityModel securityModel) {
     List<Widget> _tiles = <Widget>[_buildDisablePINTile(securityModel)];
     if (securityModel.requiresPin)
-      _tiles..add(
-        Divider())
-        ..add(_buildSecureBackupWithPinTile(securityModel))
+      _tiles
+        ..add(Divider())
+        ..add(_buildGenerateBackupPhraseTile(securityModel))
         ..add(Divider())
         ..add(_buildPINIntervalTile(securityModel))
         ..add(Divider())
@@ -87,11 +87,11 @@ class SecurityPageState extends State<SecurityPage> {
     return _tiles;
   }
 
-  ListTile _buildSecureBackupWithPinTile(SecurityModel securityModel) {
+  ListTile _buildGenerateBackupPhraseTile(SecurityModel securityModel) {
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Use in Backup/Restore",
+          "Generate Backup Phrase",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -105,18 +105,8 @@ class SecurityPageState extends State<SecurityPage> {
         onChanged: (bool value) async {
           if (this.mounted) {
             if (value) {
-              bool approved = await showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return SecurityPINWarningDialog();
-                }
-              );
-              if (!approved) {
-                return;
-              }                                                
+              Navigator.push(context, FadeInRoute(builder: (BuildContext context) => BackupPhraseGeneratorConfirmationPage()));
             }
-            _updateSecurityModel(securityModel, securityModel.copyWith(secureBackupWithPin: value));                        
           }
         },
       ),
