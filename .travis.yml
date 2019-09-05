@@ -34,7 +34,7 @@ before_script:
 - brew install --HEAD libimobiledevice
 - brew install ideviceinstaller ios-deploy
 - pod setup
-- git clone https://github.com/flutter/flutter.git -b beta
+- git clone https://github.com/flutter/flutter.git -b stable
 script:
 - mkdir $TRAVIS_BUILD_DIR/conf
 - cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $TRAVIS_BUILD_DIR/ios/bindings.framework

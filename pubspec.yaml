@@ -12,20 +12,9 @@ dependencies:
   # firebase_database: ^3.0.0
   # firebase_messaging: ^5.0.1+1
   # firebase_dynamic_links: ^0.5.0    
-  shared_preferences: ^0.5.1+2
-  share_extend:
-    git:
-      url: https://github.com/breez/ShareExtend.git
-  qr_flutter: ^2.0.0  
-  hex: "^0.1.1"
-  rxdart: "^0.18.1"  
-  flutter_advanced_networkimage: any
-  intl: ^0.15.7
-  flushbar: ^1.3.0
-  barcode_scan:
-    git:
-       url: https://github.com/breez/flutter_barcode_reader.git  
-       ref: ios
+  #shared_preferences: ^0.5.1+2
+  #https://github.com/breez/ShareExtend.git
+  #os
   image_picker: ^0.5.0+9
   image: any
   package_info: any  
@@ -45,10 +34,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.0
   image_cropper: ^1.0.2
-  uni_links: ^0.2.0
-  flutter_webview_plugin:
-    git:
-      url: https://github.com/breez/flutter_webview_plugin.git
+  #uni_links: ^0.2.0
+  #flutter_webview_plugin:
+  #  git:
+  #    url: https://github.com/breez/flutter_webview_plugin.git
   # keyboard_actions: ^2.1.1
   # flutter_secure_storage: ^3.2.1+1
   # auto_size_text: 2.0.2+1
