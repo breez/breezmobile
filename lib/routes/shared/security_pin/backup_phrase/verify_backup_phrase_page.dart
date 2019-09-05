@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -45,10 +43,10 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   }
 
   _selectIndexes() {
+    List list = List.generate(23, (i) => i);
+    list.shuffle();
     for (var i = 0; i < 3; i++) {
-      int min = 0;
-      int max = 23;
-      _randomlySelectedIndexes.add(min + Random().nextInt(max - min));
+      _randomlySelectedIndexes.add(list[i]);
     }
   }
 
