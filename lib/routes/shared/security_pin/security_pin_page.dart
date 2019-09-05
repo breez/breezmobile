@@ -100,12 +100,14 @@ class SecurityPageState extends State<SecurityPage> {
         ),
       ),
       trailing: Switch(
-        value: securityModel.secureBackupWithPin,
+        value: securityModel.backupPhrase.isNotEmpty,
         activeColor: Colors.white,
         onChanged: (bool value) async {
           if (this.mounted) {
             if (value) {
               Navigator.push(context, FadeInRoute(builder: (BuildContext context) => BackupPhraseGeneratorConfirmationPage()));
+            } else {
+              _updateSecurityModel(securityModel, securityModel.copyWith(backupPhrase: ""));
             }
           }
         },
@@ -230,8 +232,8 @@ class SecurityPageState extends State<SecurityPage> {
     action.future
     .then((_){
       if (
-        newModel.secureBackupWithPin != oldModel.secureBackupWithPin ||
-        newModel.secureBackupWithPin && pinCodeChanged) {
+        newModel.backupPhrase != oldModel.backupPhrase ||
+        newModel.backupPhrase.isNotEmpty && pinCodeChanged) {
         widget.backupBloc.backupNowSink.add(true);                        
         widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s){
           if (mounted) {

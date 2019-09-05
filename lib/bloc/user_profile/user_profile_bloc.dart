@@ -132,12 +132,9 @@ class UserProfileBloc {
         user = user.copyWith(name: randomName[0] + ' ' + randomName[1], color: randomName[0], animal: randomName[1]);          
       }
 
-      // Read the pin from the secure storage and initialize the breez user model appropriately
-      String pinCode;
-      if (user.securityModel.requiresPin) {        
-        pinCode = await _secureStorage.read(key: 'pinCode');
-      }      
-      await _breezLib.setPinCode(user.securityModel.secureBackupWithPin ? pinCode : null);
+      // Read the backup phrase from the secure storage and initialize the breez user model appropriately
+      String backupPhrase = await _secureStorage.read(key: 'backupPhrase');
+      user = user.copyWith(securityModel: user.securityModel.copyWith(backupPhrase: backupPhrase));
       user = user.copyWith(locked: user.securityModel.requiresPin);
 
       if (user.userID != null) {
@@ -173,8 +170,7 @@ class UserProfileBloc {
   }
 
   Future _updatePinCode(UpdatePinCode action) async {
-    await _secureStorage.write(key: 'pinCode', value: action.newPin);    
-    await _breezLib.setPinCode(_currentUser.securityModel.secureBackupWithPin ? action.newPin : null);
+    await _secureStorage.write(key: 'pinCode', value: action.newPin);
     action.resolve(null);
   }
 
@@ -195,11 +191,9 @@ class UserProfileBloc {
     if (!newModel.requiresPin) {
       await _secureStorage.delete(key: 'pinCode');
     }
-    var backupPIN;
-    if (newModel.secureBackupWithPin) {
-      backupPIN = await _secureStorage.read(key: 'pinCode');
+    if (newModel.backupPhrase != _currentUser.securityModel.backupPhrase) {
+      await _secureStorage.write(key: 'backupPhrase', value: newModel.backupPhrase);
     }
-    await _breezLib.setPinCode(backupPIN);
     _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
   }
@@ -294,6 +288,7 @@ class UserProfileBloc {
     _registrationController.close();
     _currencyController.close();
     _fiatConversionController.close();
+    _userActionsController.close();
     _userController.close();
     _uploadImageController.close();
     _randomizeController.close();
