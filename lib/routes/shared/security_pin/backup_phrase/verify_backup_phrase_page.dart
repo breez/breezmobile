@@ -108,7 +108,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: TextFormField(
-                  initialValue: widget.verificationFormValues?.elementAt(index) ?? "",
+                  initialValue: exceptionAware<String>(() => widget.verificationFormValues.elementAt(index)) ?? "",
                   decoration: new InputDecoration(
                     labelText: "${_randomlySelectedIndexes[index] + 1}",
                   ),
@@ -131,6 +131,14 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
         ),
       ),
     );
+  }
+
+  T exceptionAware<T>(T Function() f) {
+    try {
+      return f();
+    } catch (_) {
+      return null;
+    }
   }
 
   _buildBackupBtn() {
