@@ -1,12 +1,12 @@
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/security_model.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
 
 class WriteBackupPhrasePage extends StatefulWidget {
-  final List<String> _mnemonics;
-
-  WriteBackupPhrasePage(this._mnemonics);
-
   @override
   WriteBackupPhrasePageState createState() => new WriteBackupPhrasePageState();
 }
@@ -23,6 +23,8 @@ class WriteBackupPhrasePageState extends State<WriteBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
+    UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+
     return Scaffold(
       appBar: new AppBar(
           iconTheme: theme.appBarIconTheme,
@@ -45,12 +47,20 @@ class WriteBackupPhrasePageState extends State<WriteBackupPhrasePage> {
             style: theme.appBarTextStyle,
           ),
           elevation: 0.0),
-      body: _buildForm(),
+      body: StreamBuilder<BreezUserModel>(
+          stream: userProfileBloc.userStream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
+            return _buildForm(snapshot.data.securityModel);
+          }),
       bottomNavigationBar: _buildBottomBtn(),
     );
   }
 
-  _buildForm() {
+  _buildForm(SecurityModel securityModel) {
+    List<String> mnemonics = securityModel.backupPhrase.split(" ");
     return Form(
       key: _formKey,
       child: new Padding(
@@ -58,17 +68,17 @@ class WriteBackupPhrasePageState extends State<WriteBackupPhrasePage> {
         child: new Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(widget._mnemonics.length ~/ 4, (index) {
+          children: List.generate(mnemonics.length ~/ 4, (index) {
             return TextFormField(
               decoration: new InputDecoration(
-                labelText: "${index + (widget._mnemonics.length ~/ 4 * (_phase - 1)) + 1}",
+                labelText: "${index + (mnemonics.length ~/ 4 * (_phase - 1)) + 1}",
               ),
               style: theme.FieldTextStyle.textStyle,
               validator: (text) {
                 if (text.length == 0) {
                   return "Please fill all fields";
                 }
-                if (text != widget._mnemonics[index + (widget._mnemonics.length ~/ 4 * (_phase - 1))]) {
+                if (text.toLowerCase().trim() != mnemonics[index + (mnemonics.length ~/ 4 * (_phase - 1))]) {
                   return "False word";
                 }
                 return null;
@@ -97,8 +107,9 @@ class WriteBackupPhrasePageState extends State<WriteBackupPhrasePage> {
             shape: const StadiumBorder(),
             onPressed: () {
               if (_phase + 1 == 5) {
-                // Restore
-                print("Restored");
+                if (_formKey.currentState.validate()) {
+                  print("Restore successful");
+                }
               } else {
                 setState(() {
                   _phase++;
