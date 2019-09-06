@@ -9,7 +9,6 @@
 import Foundation
 import Flutter
 import Bindings
-import GoogleSignIn
 
 class EmptyLogger : NSObject, BindingsLoggerProtocol {
     func log(_ msg: String?, lvl: String?) {
@@ -21,7 +20,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     static var logger : BindingsLoggerProtocol = EmptyLogger();
     
     var eventSink : FlutterEventSink?;
-    var googleAuth = GoogleAuthenticator();
+    //var googleAuth = GoogleAuthenticator();
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let BREEZ_CHANNEL_NAME = "com.breez.client/breez_lib";
@@ -39,9 +38,10 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     }
     
     func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        return GIDSignIn.sharedInstance().handle(url as URL?,
-                                                 sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
-                                                 annotation: options[UIApplication.OpenURLOptionsKey.annotation])
+//        return GIDSignIn.sharedInstance().handle(url as URL?,
+//                                                 sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
+//                                                 annotation: options[UIApplication.OpenURLOptionsKey.annotation])
+        return false;
     }
     
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -96,14 +96,14 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     }
     
     func signIn(call: FlutterMethodCall, result: @escaping FlutterResult){
-        DispatchQueue.global().async {
-            do {
-                let _ = try self.googleAuth.getAccessToken(silentOnly: false)
-                result(true);
-            } catch {
-                result(FlutterError(code: "AuthError", message: "Failed to signIn breez library", details: ""));
-            }
-        }
+//        DispatchQueue.global().async {
+//            do {
+//                //let _ = try self.googleAuth.getAccessToken(silentOnly: false)
+//                result(true);
+//            } catch {
+//                result(FlutterError(code: "AuthError", message: "Failed to signIn breez library", details: ""));
+//            }
+//        }
     }
     
     func restoreBackup(call: FlutterMethodCall, result: @escaping FlutterResult){
@@ -141,16 +141,17 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     }
 
     func backupProviderSignIn() throws -> String {
-        return try googleAuth.getAccessToken(silentOnly: true);
+       // return try googleAuth.getAccessToken(silentOnly: true);
+        return "";
     }
     
     func backupProviderSign(in err: NSErrorPointer) -> String {
-        do {
-            return try googleAuth.getAccessToken(silentOnly: true);
-        }
-        catch {
-            err?.pointee = NSError(domain: "AuthError " + error.localizedDescription, code: 0, userInfo: nil);
-        }
+//        do {
+//            return try googleAuth.getAccessToken(silentOnly: true);
+//        }
+//        catch {
+//            err?.pointee = NSError(domain: "AuthError " + error.localizedDescription, code: 0, userInfo: nil);
+//        }
         return "";
     }
 
