@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:breez/widgets/animated_loader_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -143,7 +144,21 @@ class NetworkPageState extends State<NetworkPage> {
                                   if (_formKey.currentState.validate()) {
                                     _formKey.currentState.save();
                                     if (this._data.peer.isNotEmpty) {
-                                      await _breezLib.setPeers([this._data.peer]);
+                                      
+                                      var error = await showDialog(
+                                        context: context,
+                                        builder: (ctx) => _TestingPeerDialog(testFuture: _breezLib.testPeer(this._data.peer))
+                                      );
+                                      
+                                      if (error != null) {
+                                        await promptError(
+                                          context, null, 
+                                          Text("Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
+                                          style: theme.alertStyle));
+                                        return;
+                                      } else {
+                                        await _breezLib.setPeers([this._data.peer]);
+                                      }
                                     } else {
                                       await _reset();
                                     }
@@ -162,5 +177,38 @@ class NetworkPageState extends State<NetworkPage> {
   Future _reset() async {
     await _breezLib.setPeers([]);
     return _loadData();
+  }
+}
+
+class _TestingPeerDialog extends StatefulWidget {
+  final Future testFuture;
+
+  const _TestingPeerDialog({Key key, this.testFuture}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _TestingPeerDialogState();
+  }
+}
+
+class _TestingPeerDialogState extends State<_TestingPeerDialog> {
+  bool _allowPop = false;
+
+  @override void initState() {    
+    super.initState();
+    widget.testFuture
+      .then((_) => Navigator.pop(context))
+      .catchError((err){
+        _allowPop = true;
+        Navigator.pop(context, err);
+      });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () => Future.value(_allowPop),
+      child: createAnimatedLoaderDialog(context, "Testing node", withOKButton: false)
+    );
   }
 }

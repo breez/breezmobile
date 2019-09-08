@@ -176,6 +176,10 @@ class BreezBridge {
     return _invokeMethodImmediate("setPeers", {"argument": p.writeToBuffer()});
   }
 
+  Future testPeer(String address) {
+    return _invokeMethodImmediate("testPeer", {"argument": address});
+  }
+
   Future<String> addInvoice(Int64 amount, {String payeeName, String payeeImageURL, String payerName, String payerImageURL, String description, Int64 expiry}){
     InvoiceMemo invoice = new InvoiceMemo();
     invoice.amount = amount;
