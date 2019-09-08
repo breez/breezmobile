@@ -145,7 +145,7 @@ class InvoiceBloc {
     .asyncMap( (paymentRequest) {       
       return breezLib.decodePaymentRequest(paymentRequest)
         .then( (invoice) => new PaymentRequestModel(invoice, paymentRequest))
-        .catchError( (err) => throw Exception("Lightning invoice was not found."));
+        .catchError( (err) => throw PaymentRequestError("Lightning invoice was not found."));
     })    
     .listen(_receivedInvoicesController.add)
     .onError(_receivedInvoicesController.addError);

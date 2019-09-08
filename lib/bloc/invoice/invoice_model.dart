@@ -24,3 +24,8 @@ class PaymentRequestModel {
   String get rawPayReq => _rawPayReq;
   bool get loaded => _invoice != null ? true : false;
 }
+
+class PaymentRequestError implements Exception { 
+  final String message;
+  PaymentRequestError(this.message); 
+}
