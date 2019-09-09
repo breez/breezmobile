@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
-import 'package:breez/utils/crypto.dart';
+import 'package:crypto/crypto.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
@@ -188,7 +188,7 @@ class BackupBloc {
 
       List<int> key;
       if (request.pinCode != null && request.pinCode.isNotEmpty) {
-        key = hash256(utf8.encode(request.pinCode));
+        key = sha256.convert(utf8.encode(request.pinCode)).bytes;
       }
       
       _breezLib.restore(request.snapshot.nodeID, key)

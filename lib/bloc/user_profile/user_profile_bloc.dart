@@ -14,7 +14,6 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
-import 'package:breez/utils/crypto.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
@@ -294,7 +293,7 @@ class UserProfileBloc {
   Future _setBackupKey(List<int> key) {
     var encryptionKey = key;
     if (encryptionKey != null && encryptionKey.length != 32) {
-      encryptionKey = hash256(key);
+      encryptionKey = sha256.convert(key).bytes;
     }
     return _breezLib.setBackupEncryptionKey(encryptionKey, encryptionKey != null ? "Pin" : "");
   }
