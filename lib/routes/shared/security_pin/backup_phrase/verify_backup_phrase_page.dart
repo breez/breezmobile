@@ -9,6 +9,7 @@ import 'package:breez/routes/shared/security_pin/backup_phrase/generate_backup_p
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
@@ -175,7 +176,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
             shape: const StadiumBorder(),
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                _updateBackupPhrase(userProfileBloc, backupBloc);
+                _updateBackupPhrase(securityModel, userProfileBloc, backupBloc);
               }
             },
           ),
@@ -184,8 +185,19 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     );
   }
 
-  Future _updateBackupPhrase(UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
-    var action = UpdateBackupPhrase(widget._mnemonics);
+  Future _updateBackupPhrase(SecurityModel securityModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
+    var updateBackupPhraseAction = UpdateBackupPhrase(widget._mnemonics);
+    userProfileBloc.userActionsSink.add(updateBackupPhraseAction);
+    updateBackupPhraseAction.future.then((_) {
+      _updateSecurityModel(securityModel, securityModel.copyWith(secureBackupWithPhrase: true), userProfileBloc, backupBloc);
+    }).catchError((err) {
+      promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+    });
+  }
+
+  Future _updateSecurityModel(
+      SecurityModel oldModel, SecurityModel newModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
+    var action = UpdateSecurityModel(newModel);
     userProfileBloc.userActionsSink.add(action);
     action.future.then((_) {
       backupBloc.backupNowSink.add(true);
@@ -194,17 +206,14 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           showDialog(
               barrierDismissible: false,
               context: context,
-              builder: (ctx) => buildBackupInProgressDialog(ctx, backupBloc.backupStateStream));
+              builder: (ctx) => buildBackupInProgressDialog(ctx, backupBloc.backupStateStream)).then((_) {
+            Navigator.popUntil(context, ModalRoute.withName("/security"));
+            showFlushbar(context, message: "Backups are now secure with you backup phrase");
+          });
         }
       });
     }).catchError((err) {
-      promptError(
-          context,
-          "Internal Error",
-          Text(
-            err.toString(),
-            style: theme.alertStyle,
-          ));
+      promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
     });
   }
 }
