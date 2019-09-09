@@ -28,11 +28,12 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   String _title;
   List _randomlySelectedIndexes = List();
   List<String> _verificationFormValues;
+  List<String> _mnemonicsList;
 
   @override
   void initState() {
     _verificationFormValues = widget.verificationFormValues ?? List();
-
+    _mnemonicsList = widget._mnemonics.split(" ");
     _title = "Let's verify";
     if (widget.randomlySelectedIndexes != null) {
       _randomlySelectedIndexes = widget.randomlySelectedIndexes;
@@ -134,8 +135,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
                     if (text.length == 0) {
                       return "Please fill all fields";
                     }
-                    if (text.toLowerCase().trim() != widget._mnemonics[_randomlySelectedIndexes[index]]) {
-                      print(widget._mnemonics[_randomlySelectedIndexes[index]]);
+                    if (text.toLowerCase().trim() != _mnemonicsList[_randomlySelectedIndexes[index]]) {
                       return "False word";
                     }
                     return null;
