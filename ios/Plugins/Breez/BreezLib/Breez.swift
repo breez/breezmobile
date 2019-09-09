@@ -62,6 +62,10 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             restoreBackup(call: call, result: result)
         }
         
+        if (call.method == "setBackupEncryptionKey") {
+            setBackupEncryptionKey(call: call, result: result)
+        }
+        
         let executor = NativeMethods.getExecutor(forMethod: call.method);
         if executor != nil {
             print(call.method)
@@ -111,13 +115,40 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             do {
                 if let args = call.arguments as? Dictionary<String,Any> {
                     let nodeID : String = args["nodeID"] as! String;
-                    let restorePIN : String = args["restorePIN"] as! String;
+                    
+                    var keyData : Data? = nil;
+                    if let encryptionKey : FlutterStandardTypedData = args["encryptionKey"] as? FlutterStandardTypedData {
+                        keyData = encryptionKey.data;
+                    }
                     var error : NSError?;
-                    if (BindingsRestoreBackup(nodeID, restorePIN, &error)) {
+                    if (BindingsRestoreBackup(nodeID, keyData, &error)) {
                         result(true);
                     } else {
                         result(FlutterError(code: "", message: error?.localizedDescription, details: nil));
                     }
+                }
+                result(FlutterError(code: "Missing Argument", message: "Expecting a dictionary", details: nil));
+            }
+        }
+    }
+    
+    func setBackupEncryptionKey(call: FlutterMethodCall, result: @escaping FlutterResult){
+        DispatchQueue.global().async {
+            do {
+                if let args = call.arguments as? Dictionary<String,Any> {
+                    let encryptionType : String = args["encryptionType"] as! String;
+                    var keyData : Data? = nil;
+                    if let encryptionKey : FlutterStandardTypedData = args["encryptionKey"] as? FlutterStandardTypedData {
+                        keyData = encryptionKey.data;
+                    }
+                    
+                    var error : NSError?;
+                    if (BindingsSetBackupEncryptionKey(keyData, encryptionType, &error)) {
+                        result(true);
+                    } else {
+                        result(FlutterError(code: "", message: error?.localizedDescription, details: nil));
+                    }
+                    return;
                 }
                 result(FlutterError(code: "Missing Argument", message: "Expecting a dictionary", details: nil));
             }
