@@ -136,13 +136,18 @@ class UserProfileBloc {
         user = user.copyWith(name: randomName[0] + ' ' + randomName[1], color: randomName[0], animal: randomName[1]);          
       }
 
-      // Read the pin from the secure storage and initialize the breez user model appropriately
+      // Read the pin & backup phrase from the secure storage and initialize the breez user model appropriately
       List<int> pinCodeBytes;
-      if (user.securityModel.requiresPin) {        
+      if (user.securityModel.requiresPin) {
         String pinCode = await _secureStorage.read(key: 'pinCode');
-        pinCodeBytes = utf8.encode(pinCode);        
-      }      
-      await _setBackupKey(user.securityModel.secureBackupWithPin ? pinCodeBytes : null);
+        pinCodeBytes = utf8.encode(pinCode);
+      }
+      List<int> backupPhraseBytes;
+      if (user.securityModel.secureBackupWithPhrase) {
+        String backupPhrase = await _secureStorage.read(key: 'backupPhrase');
+        backupPhraseBytes = utf8.encode(backupPhrase);
+      }
+      await _setBackupKey(user.securityModel.secureBackupWithPhrase ? backupPhraseBytes : user.securityModel.secureBackupWithPin ? pinCodeBytes : null);
       user = user.copyWith(locked: user.securityModel.requiresPin);
 
       if (user.userID != null) {
@@ -225,7 +230,7 @@ class UserProfileBloc {
     if (newModel.secureBackupWithPin) {
       backupPIN = await _secureStorage.read(key: 'pinCode');
     }
-    await _setBackupKey(backupPhrase != null ? backupPhrase : backupPIN != null ? utf8.encode(backupPIN) : null);
+    await _setBackupKey(backupPhrase != null ? utf8.encode(backupPhrase) : backupPIN != null ? utf8.encode(backupPIN) : null);
     _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
   }
