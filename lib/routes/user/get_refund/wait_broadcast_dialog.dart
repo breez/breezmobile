@@ -33,6 +33,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
     _broadcastSubscription =
         widget._accountBloc.broadcastRefundResponseStream.listen((response) {
       setState(() {
+        _error = null;
         _response = response;
       });
     }, onError: (e) {
