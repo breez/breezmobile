@@ -208,7 +208,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
               context: context,
               builder: (ctx) => buildBackupInProgressDialog(ctx, backupBloc.backupStateStream)).then((_) {
             Navigator.popUntil(context, ModalRoute.withName("/security"));
-            showFlushbar(context, message: "Backups are now secure with you backup phrase");
+            showFlushbar(context, message: "Backup was successfully completed!");
           });
         }
       });
