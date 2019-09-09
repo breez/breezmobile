@@ -49,6 +49,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     for (var i = 0; i < 3; i++) {
       _randomlySelectedIndexes.add(list[i]);
     }
+    _randomlySelectedIndexes.sort();
   }
 
   @override
