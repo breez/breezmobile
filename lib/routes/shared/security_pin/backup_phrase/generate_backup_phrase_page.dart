@@ -22,9 +22,6 @@ class GenerateBackupPhrasePage extends StatefulWidget {
 class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   List<String> _mnemonics;
 
-  double itemHeight;
-  double itemWidth;
-
   int _phase;
 
   @override
@@ -32,13 +29,6 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     _phase = widget.phase ?? 1;
     _mnemonics = widget.mnemonics ?? bip39.generateMnemonic(strength: 256).split(" ");
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 8;
-    itemWidth = (MediaQuery.of(context).size.width) / 2;
   }
 
   @override
@@ -70,21 +60,31 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     );
   }
 
-  Padding _buildMnemonicSeedList() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 44),
-      child: GridView.count(
-        crossAxisCount: 2,
-        childAspectRatio: (itemWidth / itemHeight),
-        children: List.generate(
-          _mnemonics.length ~/ 2,
-          (index) {
-            return _buildMnemonicItem(
-                index + (_mnemonics.length ~/ 2 * (_phase - 1)), _mnemonics[index + (_mnemonics.length ~/ 2 * (_phase - 1))]);
-          },
+  Row _buildMnemonicSeedList() {
+    return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
+      Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.max,
+        children: List<Widget>.generate(
+          _mnemonics.length ~/ 4,
+          (index) => _buildMnemonicItem(
+            index + (_mnemonics.length ~/ 2 * (_phase - 1)),
+            _mnemonics[index + (_mnemonics.length ~/ 2 * (_phase - 1))],
+          ),
         ),
       ),
-    );
+      Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.max,
+        children: List<Widget>.generate(
+          _mnemonics.length ~/ 4,
+          (index) => _buildMnemonicItem(
+            index + (_mnemonics.length ~/ 2 * (_phase - 1)) + _mnemonics.length ~/ 4,
+            _mnemonics[index + (_mnemonics.length ~/ 2 * (_phase - 1)) + _mnemonics.length ~/ 4],
+          ),
+        ),
+      ),
+    ]);
   }
 
   _buildMnemonicItem(int index, String mnemonic) {
@@ -92,7 +92,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
       child: Container(
         height: 48,
         width: 150,
-        decoration: BoxDecoration(border: Border.all(color: Colors.white30)),
+        decoration: BoxDecoration(border: Border.all(color: Colors.white30), borderRadius: BorderRadius.all(Radius.circular(4))),
         child: Center(
           child: Text(
             '${index + 1}. $mnemonic',
