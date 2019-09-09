@@ -217,11 +217,15 @@ class UserProfileBloc {
     if (!newModel.secureBackupWithPhrase) {
       await _secureStorage.delete(key: 'backupPhrase');
     }
+    String backupPhrase;
+    if (newModel.secureBackupWithPhrase) {
+      backupPhrase = await _secureStorage.read(key: 'backupPhrase');
+    }
     String backupPIN;
     if (newModel.secureBackupWithPin) {
       backupPIN = await _secureStorage.read(key: 'pinCode');
     }
-    await _setBackupKey(backupPIN != null ? utf8.encode(backupPIN) : null);
+    await _setBackupKey(backupPhrase != null ? backupPhrase : backupPIN != null ? utf8.encode(backupPIN) : null);
     _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
   }
