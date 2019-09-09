@@ -214,6 +214,9 @@ class UserProfileBloc {
     if (!newModel.requiresPin) {
       await _secureStorage.delete(key: 'pinCode');
     }
+    if (!newModel.secureBackupWithPhrase) {
+      await _secureStorage.delete(key: 'backupPhrase');
+    }
     String backupPIN;
     if (newModel.secureBackupWithPin) {
       backupPIN = await _secureStorage.read(key: 'pinCode');

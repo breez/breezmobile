@@ -107,7 +107,7 @@ class SecurityPageState extends State<SecurityPage> {
             if (value) {
               Navigator.push(context, FadeInRoute(builder: (BuildContext context) => BackupPhraseGeneratorConfirmationPage()));
             } else {
-              _clearBackupPhrase(securityModel);
+              _updateSecurityModel(securityModel, securityModel.copyWith(secureBackupWithPhrase: value));
             }
           }
         },
@@ -222,32 +222,6 @@ class SecurityPageState extends State<SecurityPage> {
             promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
           });
       }
-    });
-  }
-
-  Future _clearBackupPhrase(SecurityModel securityModel) async {
-    var action = UpdateBackupPhrase("");
-    widget.userProfileBloc.userActionsSink.add(action);
-    action.future.then((_) {
-      widget.backupBloc.backupNowSink.add(true);
-      widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
-        if (mounted) {
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (ctx) => buildBackupInProgressDialog(ctx, widget.backupBloc.backupStateStream),
-          );
-        }
-      });
-      _updateSecurityModel(securityModel, securityModel.copyWith(secureBackupWithPhrase: false));
-    }).catchError((err) {
-      promptError(
-          context,
-          "Internal Error",
-          Text(
-            err.toString(),
-            style: theme.alertStyle,
-          ));
     });
   }
 
