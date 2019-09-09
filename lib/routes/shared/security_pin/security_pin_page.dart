@@ -107,7 +107,7 @@ class SecurityPageState extends State<SecurityPage> {
             if (value) {
               Navigator.push(context, FadeInRoute(builder: (BuildContext context) => BackupPhraseGeneratorConfirmationPage()));
             } else {
-              _updateBackupPhrase(securityModel);
+              _clearBackupPhrase(securityModel);
             }
           }
         },
@@ -225,7 +225,7 @@ class SecurityPageState extends State<SecurityPage> {
     });
   }
 
-  Future _updateBackupPhrase(SecurityModel securityModel) async {
+  Future _clearBackupPhrase(SecurityModel securityModel) async {
     var action = UpdateBackupPhrase("");
     widget.userProfileBloc.userActionsSink.add(action);
     action.future.then((_) {
@@ -239,7 +239,7 @@ class SecurityPageState extends State<SecurityPage> {
           );
         }
       });
-      _updateSecurityModel(securityModel, securityModel.copyWith(secureBackupWithPhrase: true));
+      _updateSecurityModel(securityModel, securityModel.copyWith(secureBackupWithPhrase: false));
     }).catchError((err) {
       promptError(
           context,
