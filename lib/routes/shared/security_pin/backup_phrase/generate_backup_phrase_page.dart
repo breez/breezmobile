@@ -8,12 +8,12 @@ import 'verify_backup_phrase_page.dart';
 
 class GenerateBackupPhrasePage extends StatefulWidget {
   final List<String> mnemonics;
-  final int phase;
+  final int page;
   final List randomlySelectedIndexes;
   final List<String> verifyInputList;
   final List<String> verificationFormValues;
 
-  GenerateBackupPhrasePage({this.mnemonics, this.phase, this.randomlySelectedIndexes, this.verifyInputList, this.verificationFormValues});
+  GenerateBackupPhrasePage({this.mnemonics, this.page, this.randomlySelectedIndexes, this.verifyInputList, this.verificationFormValues});
 
   @override
   GenerateBackupPhrasePageState createState() => new GenerateBackupPhrasePageState();
@@ -22,11 +22,11 @@ class GenerateBackupPhrasePage extends StatefulWidget {
 class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   List<String> _mnemonics;
 
-  int _phase;
+  int _currentPage;
 
   @override
   void initState() {
-    _phase = widget.phase ?? 1;
+    _currentPage = widget.page ?? 1;
     _mnemonics = widget.mnemonics ?? bip39.generateMnemonic(strength: 256).split(" ");
     super.initState();
   }
@@ -41,17 +41,17 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(
             onPressed: () {
-              if (_phase == 1) {
+              if (_currentPage == 1) {
                 Navigator.popUntil(context, ModalRoute.withName("/security"));
-              } else if (_phase > 1) {
+              } else if (_currentPage > 1) {
                 setState(() {
-                  _phase--;
+                  _currentPage--;
                 });
               }
             },
           ),
           title: new Text(
-            "Write these words ($_phase/2)",
+            "Write these words ($_currentPage/2)",
             style: theme.appBarTextStyle,
           ),
           elevation: 0.0),
@@ -68,8 +68,8 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
         children: List<Widget>.generate(
           _mnemonics.length ~/ 4,
           (index) => _buildMnemonicItem(
-            index + (_mnemonics.length ~/ 2 * (_phase - 1)),
-            _mnemonics[index + (_mnemonics.length ~/ 2 * (_phase - 1))],
+            index + (_mnemonics.length ~/ 2 * (_currentPage - 1)),
+            _mnemonics[index + (_mnemonics.length ~/ 2 * (_currentPage - 1))],
           ),
         ),
       ),
@@ -79,8 +79,8 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
         children: List<Widget>.generate(
           _mnemonics.length ~/ 4,
           (index) => _buildMnemonicItem(
-            index + (_mnemonics.length ~/ 2 * (_phase - 1)) + _mnemonics.length ~/ 4,
-            _mnemonics[index + (_mnemonics.length ~/ 2 * (_phase - 1)) + _mnemonics.length ~/ 4],
+            index + (_mnemonics.length ~/ 2 * (_currentPage - 1)) + _mnemonics.length ~/ 4,
+            _mnemonics[index + (_mnemonics.length ~/ 2 * (_currentPage - 1)) + _mnemonics.length ~/ 4],
           ),
         ),
       ),
@@ -119,7 +119,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
             elevation: 0.0,
             shape: const StadiumBorder(),
             onPressed: () {
-              if (_phase + 1 == 3) {
+              if (_currentPage + 1 == 3) {
                 Navigator.push(
                   context,
                   FadeInRoute(
@@ -132,7 +132,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
                 );
               } else {
                 setState(() {
-                  _phase++;
+                  _currentPage++;
                 });
               }
             },

@@ -67,7 +67,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
                 FadeInRoute(
                   builder: (_) => GenerateBackupPhrasePage(
                     mnemonics: widget._mnemonics,
-                    phase: 2,
+                    page: 2,
                     randomlySelectedIndexes: _randomlySelectedIndexes,
                     verificationFormValues: _verificationFormValues,
                   ),

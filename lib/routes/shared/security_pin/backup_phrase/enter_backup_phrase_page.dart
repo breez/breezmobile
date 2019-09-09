@@ -13,11 +13,11 @@ class EnterBackupPhrasePage extends StatefulWidget {
 
 class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
-  int _phase;
+  int _currentPage;
 
   @override
   void initState() {
-    _phase = 1;
+    _currentPage = 1;
     super.initState();
   }
 
@@ -33,17 +33,17 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(
             onPressed: () {
-              if (_phase == 1) {
+              if (_currentPage == 1) {
                 Navigator.pop(context);
-              } else if (_phase > 1) {
+              } else if (_currentPage > 1) {
                 setState(() {
-                  _phase--;
+                  _currentPage--;
                 });
               }
             },
           ),
           title: new Text(
-            "Enter your backup phrase ($_phase/4)",
+            "Enter your backup phrase ($_currentPage/4)",
             style: theme.appBarTextStyle,
           ),
           elevation: 0.0),
@@ -71,14 +71,14 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
           children: List.generate(mnemonics.length ~/ 4, (index) {
             return TextFormField(
               decoration: new InputDecoration(
-                labelText: "${index + (mnemonics.length ~/ 4 * (_phase - 1)) + 1}",
+                labelText: "${index + (mnemonics.length ~/ 4 * (_currentPage - 1)) + 1}",
               ),
               style: theme.FieldTextStyle.textStyle,
               validator: (text) {
                 if (text.length == 0) {
                   return "Please fill all fields";
                 }
-                if (text.toLowerCase().trim() != mnemonics[index + (mnemonics.length ~/ 4 * (_phase - 1))]) {
+                if (text.toLowerCase().trim() != mnemonics[index + (mnemonics.length ~/ 4 * (_currentPage - 1))]) {
                   return "False word";
                 }
                 return null;
@@ -99,20 +99,20 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
           width: 168.0,
           child: new RaisedButton(
             child: new Text(
-              _phase + 1 == 5 ? "RESTORE" : "NEXT",
+              _currentPage + 1 == 5 ? "RESTORE" : "NEXT",
               style: theme.buttonStyle,
             ),
             color: theme.BreezColors.white[500],
             elevation: 0.0,
             shape: const StadiumBorder(),
             onPressed: () {
-              if (_phase + 1 == 5) {
+              if (_currentPage + 1 == 5) {
                 if (_formKey.currentState.validate()) {
                   print("Restore successful");
                 }
               } else {
                 setState(() {
-                  _phase++;
+                  _currentPage++;
                 });
               }
             },
