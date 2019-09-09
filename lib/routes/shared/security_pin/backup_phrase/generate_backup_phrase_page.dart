@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'verify_backup_phrase_page.dart';
 
 class GenerateBackupPhrasePage extends StatefulWidget {
-  final List<String> mnemonics;
+  final String mnemonics;
   final int page;
   final List randomlySelectedIndexes;
   final List<String> verifyInputList;
@@ -20,14 +20,16 @@ class GenerateBackupPhrasePage extends StatefulWidget {
 }
 
 class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
-  List<String> _mnemonics;
+  String _mnemonics;
+  List<String> _mnemonicsList;
 
   int _currentPage;
 
   @override
   void initState() {
     _currentPage = widget.page ?? 1;
-    _mnemonics = widget.mnemonics ?? bip39.generateMnemonic(strength: 256).split(" ");
+    _mnemonics = widget.mnemonics ?? bip39.generateMnemonic(strength: 256);
+    _mnemonicsList = _mnemonics.split(" ");
     super.initState();
   }
 
@@ -66,10 +68,10 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
         children: List<Widget>.generate(
-          _mnemonics.length ~/ 4,
+          _mnemonicsList.length ~/ 4,
           (index) => _buildMnemonicItem(
-            index + (_mnemonics.length ~/ 2 * (_currentPage - 1)),
-            _mnemonics[index + (_mnemonics.length ~/ 2 * (_currentPage - 1))],
+            index + (_mnemonicsList.length ~/ 2 * (_currentPage - 1)),
+            _mnemonicsList[index + (_mnemonicsList.length ~/ 2 * (_currentPage - 1))],
           ),
         ),
       ),
@@ -77,10 +79,10 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
         children: List<Widget>.generate(
-          _mnemonics.length ~/ 4,
+          _mnemonicsList.length ~/ 4,
           (index) => _buildMnemonicItem(
-            index + (_mnemonics.length ~/ 2 * (_currentPage - 1)) + _mnemonics.length ~/ 4,
-            _mnemonics[index + (_mnemonics.length ~/ 2 * (_currentPage - 1)) + _mnemonics.length ~/ 4],
+            index + (_mnemonicsList.length ~/ 2 * (_currentPage - 1)) + _mnemonicsList.length ~/ 4,
+            _mnemonicsList[index + (_mnemonicsList.length ~/ 2 * (_currentPage - 1)) + _mnemonicsList.length ~/ 4],
           ),
         ),
       ),

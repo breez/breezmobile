@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -69,6 +70,8 @@ class UserProfileBloc {
       UpdateSecurityModel: _updateSecurityModelAction,
       UpdatePinCode: _updatePinCode,
       ValidatePinCode: _validatePinCode,
+      UpdateBackupPhrase: _updateBackupPhrase,
+      ValidateBackupPhrase: _validateBackupPhrase,
     };
     print ("UserProfileBloc started");
 
@@ -133,8 +136,6 @@ class UserProfileBloc {
         user = user.copyWith(name: randomName[0] + ' ' + randomName[1], color: randomName[0], animal: randomName[1]);          
       }
 
-      // Read the backup phrase from the secure storage and initialize the breez user model appropriately
-      String backupPhrase = await _secureStorage.read(key: 'backupPhrase');
       // Read the pin from the secure storage and initialize the breez user model appropriately
       List<int> pinCodeBytes;
       if (user.securityModel.requiresPin) {        
@@ -143,7 +144,6 @@ class UserProfileBloc {
       }      
       await _setBackupKey(user.securityModel.secureBackupWithPin ? pinCodeBytes : null);
       user = user.copyWith(locked: user.securityModel.requiresPin);
-      user = user.copyWith(securityModel: user.securityModel.copyWith(backupPhrase: backupPhrase));
 
       if (user.userID != null) {
         saveUser(injector, preferences, user).then(_publishUser);
@@ -191,6 +191,20 @@ class UserProfileBloc {
     action.resolve(pinCode == action.enteredPin);
   }
 
+  Future _updateBackupPhrase(UpdateBackupPhrase action) async {
+    await _secureStorage.write(key: 'backupPhrase', value: bip39.mnemonicToEntropy(action.backupPhrase));
+    await _setBackupKey(utf8.encode(bip39.mnemonicToEntropy(action.backupPhrase)));
+    action.resolve(null);
+  }
+
+  Future _validateBackupPhrase(ValidateBackupPhrase action) async {
+    var backupPhrase = await _secureStorage.read(key: 'backupPhrase');
+    if (backupPhrase != action.enteredBackupPhrase) {
+      throw new Exception("Incorrect Backup Phrase");
+    }
+    action.resolve(backupPhrase == action.enteredBackupPhrase);
+  }
+
   Future _updateSecurityModelAction(UpdateSecurityModel updateSecurityModelAction) async {
     updateSecurityModelAction.resolve(await _updateSecurityModel(updateSecurityModelAction));
   }
@@ -199,9 +213,6 @@ class UserProfileBloc {
     SecurityModel newModel = updateSecurityModelAction.newModel;
     if (!newModel.requiresPin) {
       await _secureStorage.delete(key: 'pinCode');
-    }
-    if (newModel.backupPhrase != _currentUser.securityModel.backupPhrase) {
-      await _secureStorage.write(key: 'backupPhrase', value: newModel.backupPhrase);
     }
     String backupPIN;
     if (newModel.secureBackupWithPin) {

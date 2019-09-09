@@ -100,14 +100,14 @@ class SecurityPageState extends State<SecurityPage> {
         ),
       ),
       trailing: Switch(
-        value: securityModel.backupPhrase.isNotEmpty,
+        value: securityModel.secureBackupWithPhrase,
         activeColor: Colors.white,
         onChanged: (bool value) async {
           if (this.mounted) {
             if (value) {
               Navigator.push(context, FadeInRoute(builder: (BuildContext context) => BackupPhraseGeneratorConfirmationPage()));
             } else {
-              _updateSecurityModel(securityModel, securityModel.copyWith(backupPhrase: ""));
+              _updateBackupPhrase();
             }
           }
         },
@@ -225,17 +225,39 @@ class SecurityPageState extends State<SecurityPage> {
     });
   }
 
+  Future _updateBackupPhrase() async {
+    var action = UpdateBackupPhrase("");
+    widget.userProfileBloc.userActionsSink.add(action);
+    action.future.then((_) {
+      widget.backupBloc.backupNowSink.add(true);
+      widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
+        if (mounted) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (ctx) => buildBackupInProgressDialog(ctx, widget.backupBloc.backupStateStream),
+          );
+        }
+      });
+    }).catchError((err) {
+      promptError(
+          context,
+          "Internal Error",
+          Text(
+            err.toString(),
+            style: theme.alertStyle,
+          ));
+    });
+  }
+
   Future _updateSecurityModel(SecurityModel oldModel, SecurityModel newModel, {bool pinCodeChanged = false}) async {
     _screenLocked = false;
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
-    action.future
-    .then((_){
-      if (
-        newModel.backupPhrase != oldModel.backupPhrase ||
-        newModel.backupPhrase.isNotEmpty && pinCodeChanged) {
-        widget.backupBloc.backupNowSink.add(true);                        
-        widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s){
+    action.future.then((_) {
+      if (newModel.secureBackupWithPin != oldModel.secureBackupWithPin || newModel.secureBackupWithPin && pinCodeChanged) {
+        widget.backupBloc.backupNowSink.add(true);
+        widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
           if (mounted) {
             showDialog(
               barrierDismissible: false,

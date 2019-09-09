@@ -13,7 +13,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
 class VerifyBackupPhrasePage extends StatefulWidget {
-  final List<String> _mnemonics;
+  final String _mnemonics;
   final List randomlySelectedIndexes;
   final List<String> verificationFormValues;
 
@@ -174,13 +174,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
             shape: const StadiumBorder(),
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                _updateSecurityModel(
-                    securityModel,
-                    securityModel.copyWith(
-                      backupPhrase: widget._mnemonics.join(" "),
-                    ),
-                    userProfileBloc,
-                    backupBloc);
+                _updateBackupPhrase(userProfileBloc, backupBloc);
               }
             },
           ),
@@ -189,22 +183,19 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     );
   }
 
-  Future _updateSecurityModel(
-      SecurityModel oldModel, SecurityModel newModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
-    var action = UpdateSecurityModel(newModel);
+  Future _updateBackupPhrase(UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
+    var action = UpdateBackupPhrase(widget._mnemonics);
     userProfileBloc.userActionsSink.add(action);
     action.future.then((_) {
-      if (newModel.backupPhrase != oldModel.backupPhrase) {
-        backupBloc.backupNowSink.add(true);
-        backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
-          if (mounted) {
-            showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (ctx) => buildBackupInProgressDialog(ctx, backupBloc.backupStateStream));
-          }
-        });
-      }
+      backupBloc.backupNowSink.add(true);
+      backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
+        if (mounted) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (ctx) => buildBackupInProgressDialog(ctx, backupBloc.backupStateStream));
+        }
+      });
     }).catchError((err) {
       promptError(
           context,

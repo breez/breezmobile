@@ -19,3 +19,15 @@ class ValidatePinCode extends AsyncAction {
 
   ValidatePinCode(this.enteredPin);
 }
+
+class UpdateBackupPhrase extends AsyncAction {
+  final String backupPhrase;
+
+  UpdateBackupPhrase(this.backupPhrase);
+}
+
+class ValidateBackupPhrase extends AsyncAction {
+  final String enteredBackupPhrase;
+
+  ValidateBackupPhrase(this.enteredBackupPhrase);
+}

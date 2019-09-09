@@ -1,35 +1,36 @@
 class SecurityModel {
-
   static List<int> lockIntervals = List.unmodifiable([0, 30, 120, 300, 600, 1800, 3600]);
   static const int _defaultLockInterval = 120;
 
   final bool requiresPin;
-  final String backupPhrase;
   final bool secureBackupWithPin;
+  final bool secureBackupWithPhrase;
   final int automaticallyLockInterval;
 
-  SecurityModel({this.requiresPin, this.backupPhrase, this.secureBackupWithPin, this.automaticallyLockInterval});
+  SecurityModel({this.requiresPin, this.secureBackupWithPin, this.secureBackupWithPhrase, this.automaticallyLockInterval});
 
-  SecurityModel copyWith({bool requiresPin, String backupPhrase, int automaticallyLockInterval, bool secureBackupWithPin}) {
-    return new SecurityModel(requiresPin: requiresPin ?? this.requiresPin,
-        backupPhrase: backupPhrase ?? this.backupPhrase,
+  SecurityModel copyWith({bool requiresPin, int automaticallyLockInterval, bool secureBackupWithPin, bool secureBackupWithPhrase}) {
+    return new SecurityModel(
+        requiresPin: requiresPin ?? this.requiresPin,
         automaticallyLockInterval: automaticallyLockInterval ?? this.automaticallyLockInterval,
-        secureBackupWithPin: secureBackupWithPin ?? this.secureBackupWithPin);
+        secureBackupWithPin: secureBackupWithPin ?? this.secureBackupWithPin,
+        secureBackupWithPhrase: secureBackupWithPhrase ?? this.secureBackupWithPhrase);
   }
 
   SecurityModel.initial()
-      : this(requiresPin: false, backupPhrase: "", automaticallyLockInterval: _defaultLockInterval, secureBackupWithPin: false);
+      : this(
+            requiresPin: false, automaticallyLockInterval: _defaultLockInterval, secureBackupWithPin: false, secureBackupWithPhrase: false);
 
   SecurityModel.fromJson(Map<String, dynamic> json)
       : requiresPin = json['requiresPin'] ?? false,
         automaticallyLockInterval = json['automaticallyLockInterval'] ?? _defaultLockInterval,
         secureBackupWithPin = json['secureBackupWithPin'] ?? false,
-        backupPhrase = "";
+        secureBackupWithPhrase = json['secureBackupWithPhrase'] ?? false;
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'automaticallyLockInterval': automaticallyLockInterval,
         'requiresPin': requiresPin,
-        'secureBackupWithPin': secureBackupWithPin
+        'secureBackupWithPin': secureBackupWithPin,
+        'secureBackupWithPhrase': secureBackupWithPhrase
       };
 }

@@ -1,6 +1,5 @@
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/security_model.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -14,6 +13,7 @@ class EnterBackupPhrasePage extends StatefulWidget {
 class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
   int _currentPage;
+  List<String> _mnemonics = List();
 
   @override
   void initState() {
@@ -47,20 +47,12 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             style: theme.appBarTextStyle,
           ),
           elevation: 0.0),
-      body: StreamBuilder<BreezUserModel>(
-          stream: userProfileBloc.userStream,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Container();
-            }
-            return _buildForm(snapshot.data.securityModel);
-          }),
-      bottomNavigationBar: _buildBottomBtn(),
+      body: _buildForm(),
+      bottomNavigationBar: _buildBottomBtn(userProfileBloc),
     );
   }
 
-  _buildForm(SecurityModel securityModel) {
-    List<String> mnemonics = securityModel.backupPhrase.split(" ");
+  _buildForm() {
     return Form(
       key: _formKey,
       child: new Padding(
@@ -68,19 +60,17 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
         child: new Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(mnemonics.length ~/ 4, (index) {
+          children: List.generate(6, (index) {
             return TextFormField(
               decoration: new InputDecoration(
-                labelText: "${index + (mnemonics.length ~/ 4 * (_currentPage - 1)) + 1}",
+                labelText: "${index + (6 * (_currentPage - 1)) + 1}",
               ),
               style: theme.FieldTextStyle.textStyle,
               validator: (text) {
                 if (text.length == 0) {
                   return "Please fill all fields";
                 }
-                if (text.toLowerCase().trim() != mnemonics[index + (mnemonics.length ~/ 4 * (_currentPage - 1))]) {
-                  return "False word";
-                }
+                _mnemonics.add(text);
                 return null;
               },
             );
@@ -90,7 +80,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     );
   }
 
-  _buildBottomBtn() {
+  _buildBottomBtn(UserProfileBloc userProfileBloc) {
     return Padding(
       padding: new EdgeInsets.only(bottom: 40),
       child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
@@ -108,7 +98,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             onPressed: () {
               if (_currentPage + 1 == 5) {
                 if (_formKey.currentState.validate()) {
-                  print("Restore successful");
+                  _validateBackupPhrase(userProfileBloc);
                 }
               } else {
                 setState(() {
@@ -120,5 +110,11 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
         )
       ]),
     );
+  }
+
+  Future _validateBackupPhrase(UserProfileBloc userProfileBloc) async {
+    var validateAction = ValidateBackupPhrase(_mnemonics.join(" "));
+    userProfileBloc.userActionsSink.add(validateAction);
+    return validateAction.future.then((_) => Navigator.pop(context));
   }
 }
