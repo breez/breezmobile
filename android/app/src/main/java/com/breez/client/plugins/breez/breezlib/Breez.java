@@ -97,6 +97,10 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
             _executor.execute(() -> {
                 restoreBackup(call, result);
             });
+        } else if (call.method.equals("setBackupEncryptionKey")) {
+            _executor.execute(() -> {
+                setBackupEncryptionKey(call, result);
+            });
         } else {
             _executor.execute(new BreezTask(call, result));
         }
@@ -175,8 +179,19 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
     private void restoreBackup(MethodCall call, MethodChannel.Result result){
         try {
             String nodeID = call.argument("nodeID");
-            String restorePIN = call.argument("restorePIN");
-            Bindings.restoreBackup(nodeID, restorePIN);
+            byte[] restoreKey = call.argument("encryptionKey");
+            Bindings.restoreBackup(nodeID, restoreKey);
+            success(result,true);
+        } catch (Exception e) {
+            fail(result,"ResultError", e.getMessage(), e.getMessage());
+        }
+    }
+
+    private void setBackupEncryptionKey(MethodCall call, MethodChannel.Result result){
+        try {
+            String encryptionType = call.argument("encryptionType");
+            byte[] encryptionKey = call.argument("encryptionKey");
+            Bindings.setBackupEncryptionKey(encryptionKey, encryptionType);
             success(result,true);
         } catch (Exception e) {
             fail(result,"ResultError", e.getMessage(), e.getMessage());

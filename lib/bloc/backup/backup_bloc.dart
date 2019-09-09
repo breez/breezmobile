@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
+import 'package:crypto/crypto.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
@@ -185,7 +186,12 @@ class BackupBloc {
         return;     
       }
 
-      _breezLib.restore(request.snapshot.nodeID, request.pinCode)
+      List<int> key;
+      if (request.pinCode != null && request.pinCode.isNotEmpty) {
+        key = sha256.convert(utf8.encode(request.pinCode)).bytes;
+      }
+      
+      _breezLib.restore(request.snapshot.nodeID, key)
         .then((_) => _restoreFinishedController.add(true))
         .catchError(_restoreFinishedController.addError);      
     });  
@@ -205,14 +211,18 @@ class SnapshotInfo {
   final String nodeID;	
 	final String modifiedTime;
   final bool encrypted;
+  final String encryptionType;
 
-  SnapshotInfo(this.nodeID, this.modifiedTime, this.encrypted);
+  SnapshotInfo(this.nodeID, this.modifiedTime, this.encrypted, this.encryptionType){
+    print("New Snapshot encrypted = ${this.encrypted} encrytionType = ${this.encryptionType}");
+  }
   
   SnapshotInfo.fromJson(Map<String, dynamic> json) : 
     this(
       json["NodeID"], 
       json["ModifiedTime"],      
       json["Encrypted"] == true,
+      json["EncryptionType"],
     );
 }
 

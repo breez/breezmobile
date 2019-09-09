@@ -245,7 +245,7 @@ class AccountModel {
   String get statusMessage {
 
     if (this.isInitialBootstrap) {
-      return "Please wait a minute while Breez is bootstrapping (keep the app open).";
+      return "Please wait a minute while Breez is initializing (keep the app open).";
     }    
 
     SwapFundStatus swapStatus = this.swapFundsStatus;

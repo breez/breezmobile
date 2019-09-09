@@ -54,6 +54,7 @@ dependencies:
   auto_size_text: 2.0.2+1
   app_settings: ^1.0.6+2
   bip39: ^1.0.3
+  crypto: ^2.1.2
 
 dev_dependencies:
   mockito: "^3.0.0"
