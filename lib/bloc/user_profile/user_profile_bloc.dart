@@ -199,10 +199,10 @@ class UserProfileBloc {
 
   Future _validateBackupPhrase(ValidateBackupPhrase action) async {
     var backupPhrase = await _secureStorage.read(key: 'backupPhrase');
-    if (backupPhrase != action.enteredBackupPhrase) {
+    if (backupPhrase != bip39.mnemonicToEntropy(action.enteredBackupPhrase)) {
       throw new Exception("Incorrect Backup Phrase");
     }
-    action.resolve(backupPhrase == action.enteredBackupPhrase);
+    action.resolve(backupPhrase == bip39.mnemonicToEntropy(action.enteredBackupPhrase));
   }
 
   Future _updateSecurityModelAction(UpdateSecurityModel updateSecurityModelAction) async {
