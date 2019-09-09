@@ -10,7 +10,7 @@ class SecurityModel {
 
   SecurityModel({this.requiresPin, this.backupPhrase, this.secureBackupWithPin, this.automaticallyLockInterval});
 
-  SecurityModel copyWith({bool requiresPin, String backupPhrase, int automaticallyLockInterval bool secureBackupWithPin}) {
+  SecurityModel copyWith({bool requiresPin, String backupPhrase, int automaticallyLockInterval, bool secureBackupWithPin}) {
     return new SecurityModel(requiresPin: requiresPin ?? this.requiresPin,
         backupPhrase: backupPhrase ?? this.backupPhrase,
         automaticallyLockInterval: automaticallyLockInterval ?? this.automaticallyLockInterval,
