@@ -137,17 +137,15 @@ class UserProfileBloc {
       }
 
       // Read the pin & backup phrase from the secure storage and initialize the breez user model appropriately
-      List<int> pinCodeBytes;
-      if (user.securityModel.requiresPin) {
-        String pinCode = await _secureStorage.read(key: 'pinCode');
-        pinCodeBytes = utf8.encode(pinCode);
-      }
-      List<int> backupPhraseBytes;
+      List<int> backupEncryptionKey;
       if (user.securityModel.secureBackupWithPhrase) {
         String backupPhrase = await _secureStorage.read(key: 'backupPhrase');
-        backupPhraseBytes = utf8.encode(backupPhrase);
+        backupEncryptionKey = utf8.encode(backupPhrase);
+      } else if (user.securityModel.requiresPin) {
+        String pinCode = await _secureStorage.read(key: 'pinCode');
+        backupEncryptionKey = utf8.encode(pinCode);
       }
-      await _setBackupKey(user.securityModel.secureBackupWithPhrase ? backupPhraseBytes : user.securityModel.secureBackupWithPin ? pinCodeBytes : null);
+      await _setBackupKey(backupEncryptionKey ?? null);
       user = user.copyWith(locked: user.securityModel.requiresPin);
 
       if (user.userID != null) {
