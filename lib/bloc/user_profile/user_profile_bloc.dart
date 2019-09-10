@@ -138,14 +138,17 @@ class UserProfileBloc {
 
       // Read the pin & backup phrase from the secure storage and initialize the breez user model appropriately
       List<int> backupEncryptionKey;
+      String keyType;
       if (user.securityModel.secureBackupWithPhrase) {
         String backupPhrase = await _secureStorage.read(key: 'backupPhrase');
         backupEncryptionKey = utf8.encode(backupPhrase);
+        keyType = "Mnemonics";
       } else if (user.securityModel.requiresPin) {
         String pinCode = await _secureStorage.read(key: 'pinCode');
         backupEncryptionKey = utf8.encode(pinCode);
+        keyType = "Pin";
       }
-      await _setBackupKey(backupEncryptionKey ?? null);
+      await _setBackupKey(backupEncryptionKey ?? null, keyType);
       user = user.copyWith(locked: user.securityModel.requiresPin);
 
       if (user.userID != null) {
@@ -182,7 +185,7 @@ class UserProfileBloc {
 
   Future _updatePinCode(UpdatePinCode action) async {
     await _secureStorage.write(key: 'pinCode', value: action.newPin);
-    await _setBackupKey(_currentUser.securityModel.secureBackupWithPin ? utf8.encode(action.newPin) : null);
+    await _setBackupKey(_currentUser.securityModel.secureBackupWithPin ? utf8.encode(action.newPin) : null, _currentUser.securityModel.secureBackupWithPin ? "Pin" : "");
     action.resolve(null);
   }
 
@@ -196,7 +199,7 @@ class UserProfileBloc {
 
   Future _updateBackupPhrase(UpdateBackupPhrase action) async {
     await _secureStorage.write(key: 'backupPhrase', value: bip39.mnemonicToEntropy(action.backupPhrase));
-    await _setBackupKey(utf8.encode(bip39.mnemonicToEntropy(action.backupPhrase)));
+    await _setBackupKey(utf8.encode(bip39.mnemonicToEntropy(action.backupPhrase)), "Mnemonics");
     action.resolve(null);
   }
 
@@ -228,7 +231,7 @@ class UserProfileBloc {
     if (newModel.secureBackupWithPin) {
       backupPIN = await _secureStorage.read(key: 'pinCode');
     }
-    await _setBackupKey(backupPhrase != null ? utf8.encode(backupPhrase) : backupPIN != null ? utf8.encode(backupPIN) : null);
+    await _setBackupKey(backupPhrase != null ? utf8.encode(backupPhrase) : backupPIN != null ? utf8.encode(backupPIN) : null, backupPhrase != null ? "Mnemonics" : backupPIN != null ? "Pin" : "");
     _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
   }
@@ -317,12 +320,12 @@ class UserProfileBloc {
     _nfc.startCardActivation(_userStreamController.value.userID);
   }
 
-  Future _setBackupKey(List<int> key) {
+  Future _setBackupKey(List<int> key, String keyType) {
     var encryptionKey = key;
     if (encryptionKey != null && encryptionKey.length != 32) {
       encryptionKey = sha256.convert(key).bytes;
     }
-    return _breezLib.setBackupEncryptionKey(encryptionKey, encryptionKey != null ? "Pin" : "");
+    return _breezLib.setBackupEncryptionKey(encryptionKey, encryptionKey != null ? keyType : "");
   }
 
   BreezUserModel get _currentUser => _userStreamController.value;
