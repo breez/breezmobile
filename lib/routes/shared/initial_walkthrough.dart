@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/shared/security_pin/backup_phrase/enter_backup_phrase_page.dart';
 import 'package:breez/routes/shared/security_pin/restore_pin.dart';
 import 'package:breez/routes/user/home/beta_warning_dialog.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -63,16 +64,20 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                 new RestoreDialog(context, widget._backupBloc, options));
       }
 
-      String restorePIN;
+      String restoreKey;
       if (toRestore != null) {
         if (toRestore.encrypted) {
-          restorePIN = await getRestorePIN();
-          if (restorePIN == null) {
+          if (toRestore.encryptionType == "Mnemonics") {
+            restoreKey = await getBackupPhrase();
+          } else if (toRestore.encryptionType == "Pin") {
+            restoreKey = await getRestorePIN();
+          }
+          if (restoreKey == null) {
             return;
           }
         }
         widget._backupBloc.restoreRequestSink
-            .add(RestoreRequest(toRestore, restorePIN));
+            .add(RestoreRequest(toRestore, restoreKey));
         Navigator.push(
             context,
             createLoaderRoute(context,
@@ -106,6 +111,14 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       _controller.stop();
       _controller.dispose();
     }
+  }
+
+  Future<String> getBackupPhrase() {
+    return Navigator.of(context).push(new FadeInRoute(
+      builder: (BuildContext context) {
+        return EnterBackupPhrasePage();
+      },
+    ));
   }
 
   Future<String> getRestorePIN() {
