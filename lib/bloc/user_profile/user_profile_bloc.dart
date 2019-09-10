@@ -205,8 +205,14 @@ class UserProfileBloc {
 
   Future _validateBackupPhrase(ValidateBackupPhrase action) async {
     var backupPhrase = await _secureStorage.read(key: 'backupPhrase');
-    if (backupPhrase != bip39.mnemonicToEntropy(action.enteredBackupPhrase)) {
-      throw new Exception("Incorrect Backup Phrase");
+    String enteredBackupPhrase;
+    try {
+      enteredBackupPhrase = bip39.mnemonicToEntropy(action.enteredBackupPhrase);
+      if (backupPhrase != enteredBackupPhrase) {
+        throw new Exception("Incorrect Backup Phrase");
+      }
+    } catch (e) {
+      throw new Exception(e.toString());
     }
     action.resolve(backupPhrase == bip39.mnemonicToEntropy(action.enteredBackupPhrase));
   }
