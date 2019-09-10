@@ -1,3 +1,4 @@
+import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -13,7 +14,7 @@ class EnterBackupPhrasePage extends StatefulWidget {
 class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
   int _currentPage;
-  List<String> _mnemonics = List();
+  List<String> _mnemonicsList = List();
 
   @override
   void initState() {
@@ -70,7 +71,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
                 if (text.length == 0) {
                   return "Please fill all fields";
                 }
-                _mnemonics.add(text);
+                _mnemonicsList.insert(index + (6 * (_currentPage - 1)), text.toLowerCase().trim());
                 return null;
               },
             );
@@ -96,14 +97,15 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             elevation: 0.0,
             shape: const StadiumBorder(),
             onPressed: () {
-              if (_currentPage + 1 == 5) {
-                if (_formKey.currentState.validate()) {
+              if (_formKey.currentState.validate()) {
+                if (_currentPage + 1 == 5) {
                   _validateBackupPhrase(userProfileBloc);
+                } else {
+                  _formKey.currentState.reset();
+                  setState(() {
+                    _currentPage++;
+                  });
                 }
-              } else {
-                setState(() {
-                  _currentPage++;
-                });
               }
             },
           ),
@@ -113,8 +115,8 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   Future _validateBackupPhrase(UserProfileBloc userProfileBloc) async {
-    var validateAction = ValidateBackupPhrase(_mnemonics.join(" "));
+    var validateAction = ValidateBackupPhrase(_mnemonicsList.join(" "));
     userProfileBloc.userActionsSink.add(validateAction);
-    return validateAction.future.then((_) => Navigator.pop(context));
+    return validateAction.future.then((_) => Navigator.pop(context, bip39.mnemonicToEntropy(_mnemonicsList.join(" "))));
   }
 }
