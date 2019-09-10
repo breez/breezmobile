@@ -42,6 +42,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "getLogger": SingleArgBindingExecutor(f: BindingsGetLogger),
     "setPeers": SingleArgBindingExecutor(f: BindingsSetPeers),
     "getPeers": EmptyArgsBindingExecutor(f: BindingsGetPeers),
+    "testPeer": SingleArgBindingExecutor(f: BindingsTestPeer),
     "createRatchetSession": SingleArgBindingExecutor(f: BindingsCreateRatchetSession),
     "ratchetDecrypt": SingleArgBindingExecutor(f: BindingsRatchetDecrypt),
     "ratchetEncrypt": SingleArgBindingExecutor(f: BindingsRatchetEncrypt),
@@ -62,8 +63,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "getDefaultOnChainFeeRate": VoidBindingExecutor(f: BindingsGetDefaultOnChainFeeRate),
     "rate": EmptyArgsBindingExecutor(f: BindingsRate),
     "onResume": VoidBindingExecutor(f: BindingsOnResume),
-    "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),
-    "setPinCode": SingleArgBindingExecutor(f: BindingsSetPinCode),
+    "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),    
     "getLogPath": VoidBindingExecutor(f: BindingsGetLogPath),
     "needsBootstrap": VoidBindingExecutor(f: BindingsNeedsBootstrap),
     "bootstrapHeaders": SingleArgBindingExecutor(f: BindingsBootstrapHeaders)

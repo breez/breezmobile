@@ -90,7 +90,7 @@ class AddFundsState extends State<AddFundsPage> {
 
     String errorMessage;
     if (account == null || account.isInitialBootstrap) {
-      errorMessage = 'You\'d be able to add funds after Breez is finished bootstrapping.';
+      errorMessage = 'You\'ll be able to add funds after Breez is finished bootstrapping.';
     } else if (unconfirmedTxID?.isNotEmpty == true || account.closingConnection) {
       errorMessage =
           'Breez is processing your previous ${waitingDepositConfirmation || account.processingConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';

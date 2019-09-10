@@ -56,8 +56,10 @@ class InvoiceNotificationsHandler {
                         _context, _accountBloc, payreq, firstPaymentItemKey, scrollController));            
       }).onError((error) {
         _setLoading(false);
-        _handlingRequest = false;
-        showFlushbar(_context, message: error.toString().substring(10));
+        _handlingRequest = false;        
+        if (error is PaymentRequestError) {
+          showFlushbar(_context, message: error.message);
+        }
       });
     });
   }

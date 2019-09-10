@@ -182,6 +182,10 @@ class BreezBridge {
     return _invokeMethodImmediate("setPeers", {"argument": p.writeToBuffer()});
   }
 
+  Future testPeer(String address) {
+    return _invokeMethodImmediate("testPeer", {"argument": address});
+  }
+
   Future<String> addInvoice(Int64 amount, {String payeeName, String payeeImageURL, String payerName, String payerImageURL, String description, Int64 expiry}){
     InvoiceMemo invoice = new InvoiceMemo();
     invoice.amount = amount;
@@ -314,8 +318,8 @@ class BreezBridge {
     return _invokeMethodWhenReady("requestBackup");
   }
 
-  Future setPinCode(String pinCode){
-    return _invokeMethodImmediate("setPinCode", {"argument": pinCode ?? ""});
+  Future setBackupEncryptionKey(List<int> encryptionKey, String encryptionType){
+    return _invokeMethodImmediate("setBackupEncryptionKey", {"encryptionKey": encryptionKey, "encryptionType": encryptionType ?? ""});
   }
 
   Future<String> getAvailableBackups() async {
@@ -331,12 +335,12 @@ class BreezBridge {
           throw (err as PlatformException).message;
         }
         throw err;
-    }      
+    }
   }
 
-  Future restore(String nodeId, String restorePIN) async {    
+  Future restore(String nodeId, List<int> encryptionKey) async {
     try {
-      await _methodChannel.invokeMethod("restoreBackup", {"nodeID": nodeId, "restorePIN": restorePIN ?? ""});
+      await _methodChannel.invokeMethod("restoreBackup", {"nodeID": nodeId, "encryptionKey": encryptionKey ?? ""});
     } on PlatformException catch(e) {
       throw e.message;
     }    

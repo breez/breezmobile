@@ -14,6 +14,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -133,11 +134,12 @@ class UserProfileBloc {
       }
 
       // Read the pin from the secure storage and initialize the breez user model appropriately
-      String pinCode;
+      List<int> pinCodeBytes;
       if (user.securityModel.requiresPin) {        
-        pinCode = await _secureStorage.read(key: 'pinCode');
+        String pinCode = await _secureStorage.read(key: 'pinCode');
+        pinCodeBytes = utf8.encode(pinCode);        
       }      
-      await _breezLib.setPinCode(user.securityModel.secureBackupWithPin ? pinCode : null);
+      await _setBackupKey(user.securityModel.secureBackupWithPin ? pinCodeBytes : null);
       user = user.copyWith(locked: user.securityModel.requiresPin);
 
       if (user.userID != null) {
@@ -173,8 +175,8 @@ class UserProfileBloc {
   }
 
   Future _updatePinCode(UpdatePinCode action) async {
-    await _secureStorage.write(key: 'pinCode', value: action.newPin);    
-    await _breezLib.setPinCode(_currentUser.securityModel.secureBackupWithPin ? action.newPin : null);
+    await _secureStorage.write(key: 'pinCode', value: action.newPin);   
+    await _setBackupKey(_currentUser.securityModel.secureBackupWithPin ? utf8.encode(action.newPin) : null);
     action.resolve(null);
   }
 
@@ -195,11 +197,11 @@ class UserProfileBloc {
     if (!newModel.requiresPin) {
       await _secureStorage.delete(key: 'pinCode');
     }
-    var backupPIN;
+    String backupPIN;
     if (newModel.secureBackupWithPin) {
       backupPIN = await _secureStorage.read(key: 'pinCode');
     }
-    await _breezLib.setPinCode(backupPIN);
+    await _setBackupKey(backupPIN != null ? utf8.encode(backupPIN) : null);
     _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
   }
@@ -286,6 +288,14 @@ class UserProfileBloc {
 
   void cardActivationInit() {
     _nfc.startCardActivation(_userStreamController.value.userID);
+  }
+
+  Future _setBackupKey(List<int> key) {
+    var encryptionKey = key;
+    if (encryptionKey != null && encryptionKey.length != 32) {
+      encryptionKey = sha256.convert(key).bytes;
+    }
+    return _breezLib.setBackupEncryptionKey(encryptionKey, encryptionKey != null ? "Pin" : "");
   }
 
   BreezUserModel get _currentUser => _userStreamController.value;
