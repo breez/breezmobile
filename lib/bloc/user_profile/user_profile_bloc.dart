@@ -223,21 +223,21 @@ class UserProfileBloc {
 
   Future _updateSecurityModel(UpdateSecurityModel updateSecurityModelAction) async {
     SecurityModel newModel = updateSecurityModelAction.newModel;
-    if (!newModel.requiresPin) {
+    List<int> backupEncryptionKey;
+    String keyType;
+    if (newModel.secureBackupWithPhrase) {
+      String backupPhrase = await _secureStorage.read(key: 'backupPhrase');
+      backupEncryptionKey = utf8.encode(backupPhrase);
+      keyType = "Mnemonics";
+    } else if (newModel.secureBackupWithPin) {
+      await _secureStorage.delete(key: 'backupPhrase');
+      String pinCode = await _secureStorage.read(key: 'pinCode');
+      backupEncryptionKey = utf8.encode(pinCode);
+      keyType = "Pin";
+    } else {
       await _secureStorage.delete(key: 'pinCode');
     }
-    if (!newModel.secureBackupWithPhrase) {
-      await _secureStorage.delete(key: 'backupPhrase');
-    }
-    String backupPhrase;
-    if (newModel.secureBackupWithPhrase) {
-      backupPhrase = await _secureStorage.read(key: 'backupPhrase');
-    }
-    String backupPIN;
-    if (newModel.secureBackupWithPin) {
-      backupPIN = await _secureStorage.read(key: 'pinCode');
-    }
-    await _setBackupKey(backupPhrase != null ? utf8.encode(backupPhrase) : backupPIN != null ? utf8.encode(backupPIN) : null, backupPhrase != null ? "Mnemonics" : backupPIN != null ? "Pin" : "");
+    await _setBackupKey(backupEncryptionKey, keyType);
     _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
   }
