@@ -148,7 +148,7 @@ class UserProfileBloc {
         backupEncryptionKey = utf8.encode(pinCode);
         keyType = "Pin";
       }
-      await _setBackupKey(backupEncryptionKey ?? null, keyType);
+      await _setBackupKey(backupEncryptionKey, keyType);
       user = user.copyWith(locked: user.securityModel.requiresPin);
 
       if (user.userID != null) {
