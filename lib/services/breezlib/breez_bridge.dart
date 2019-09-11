@@ -334,7 +334,7 @@ class BreezBridge {
 
   Future restore(String nodeId, List<int> encryptionKey) async {
     try {
-      await _methodChannel.invokeMethod("restoreBackup", {"nodeID": nodeId, "encryptionKey": encryptionKey ?? ""});
+      await _methodChannel.invokeMethod("restoreBackup", {"nodeID": nodeId, "encryptionKey": encryptionKey});
     } on PlatformException catch(e) {
       throw e.message;
     }    
