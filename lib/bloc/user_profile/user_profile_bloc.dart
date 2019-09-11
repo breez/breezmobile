@@ -214,7 +214,7 @@ class UserProfileBloc {
     } catch (e) {
       throw new Exception(e.toString());
     }
-    action.resolve(backupPhrase == bip39.mnemonicToEntropy(action.enteredBackupPhrase));
+    action.resolve(backupPhrase == enteredBackupPhrase);
   }
 
   Future _updateSecurityModelAction(UpdateSecurityModel updateSecurityModelAction) async {
