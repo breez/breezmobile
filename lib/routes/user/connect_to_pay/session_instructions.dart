@@ -51,9 +51,9 @@ class SessionInstructions extends StatelessWidget {
                   return Padding(
                     padding: EdgeInsets.only(left: 4, right: 4),
                     child: OutlineButton(
-                        shape: StadiumBorder(),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
                         borderSide: BorderSide(color: theme.BreezColors.white[500], style: BorderStyle.solid),
-                        child: Text(action.toUpperCase()), onPressed: _disabledActions.contains(action) ? null : () => _onAction(action)),
+                        child: Text(action.toUpperCase(), style: theme.sessionNotificationStyle), onPressed: _disabledActions.contains(action) ? null : () => _onAction(action)),
                   );
                 }).toList(),
               ),
