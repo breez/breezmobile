@@ -229,6 +229,7 @@ class UserProfileBloc {
       String backupPhrase = await _secureStorage.read(key: 'backupPhrase');
       backupEncryptionKey = utf8.encode(backupPhrase);
       keyType = "Mnemonics";
+      newModel = newModel.copyWith(secureBackupWithPin: false);
     } else if (newModel.secureBackupWithPin) {
       await _secureStorage.delete(key: 'backupPhrase');
       String pinCode = await _secureStorage.read(key: 'pinCode');
