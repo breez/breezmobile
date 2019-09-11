@@ -48,10 +48,13 @@ class SessionInstructions extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: (_actions ?? []).map((action) {
-                  return OutlineButton(
-                      shape: StadiumBorder(),
-                      borderSide: BorderSide(color: theme.BreezColors.white[500], style: BorderStyle.solid),
-                      child: Text(action.toUpperCase()), onPressed: _disabledActions.contains(action) ? null : () => _onAction(action));
+                  return Padding(
+                    padding: EdgeInsets.only(left: 4, right: 4),
+                    child: OutlineButton(
+                        shape: StadiumBorder(),
+                        borderSide: BorderSide(color: theme.BreezColors.white[500], style: BorderStyle.solid),
+                        child: Text(action.toUpperCase()), onPressed: _disabledActions.contains(action) ? null : () => _onAction(action)),
+                  );
                 }).toList(),
               ),
             ))
