@@ -44,7 +44,7 @@ class SessionInstructions extends StatelessWidget {
         Positioned(
             bottom: 10.0,
             child: Container(
-              height: 36.0,
+              height: 24.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: (_actions ?? []).map((action) {
@@ -53,7 +53,7 @@ class SessionInstructions extends StatelessWidget {
                     child: OutlineButton(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
                         borderSide: BorderSide(color: theme.BreezColors.white[500], style: BorderStyle.solid),
-                        child: Text(action.toUpperCase(), style: theme.sessionNotificationStyle), onPressed: _disabledActions.contains(action) ? null : () => _onAction(action)),
+                        child: Text(action.toUpperCase(), style: theme.sessionNotificationStyle.copyWith(fontSize: 12.3)), onPressed: _disabledActions.contains(action) ? null : () => _onAction(action)),
                   );
                 }).toList(),
               ),
