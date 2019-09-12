@@ -312,8 +312,8 @@ class BreezBridge {
     return _invokeMethodWhenReady("requestBackup");
   }
 
-  Future setBackupEncryptionKey(List<int> encryptionKey, String encryptionType){
-    return _invokeMethodImmediate("setBackupEncryptionKey", {"encryptionKey": encryptionKey, "encryptionType": encryptionType ?? ""});
+  Future setBackupEncryptionKey(List<int> encryptionKey){
+    return _invokeMethodImmediate("setBackupEncryptionKey", {"encryptionKey": encryptionKey,});
   }
 
   Future<String> getAvailableBackups() async {

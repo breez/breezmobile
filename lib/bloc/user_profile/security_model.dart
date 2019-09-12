@@ -1,36 +1,34 @@
+enum BackupKeyType { NONE, PIN, PHRASE }
+
 class SecurityModel {
   static List<int> lockIntervals = List.unmodifiable([0, 30, 120, 300, 600, 1800, 3600]);
   static const int _defaultLockInterval = 120;
 
   final bool requiresPin;
-  final bool secureBackupWithPin;
-  final bool secureBackupWithPhrase;
+  final BackupKeyType backupKeyType;
   final int automaticallyLockInterval;
 
-  SecurityModel({this.requiresPin, this.secureBackupWithPin, this.secureBackupWithPhrase, this.automaticallyLockInterval});
+  SecurityModel({this.requiresPin, this.backupKeyType, this.automaticallyLockInterval});
 
-  SecurityModel copyWith({bool requiresPin, int automaticallyLockInterval, bool secureBackupWithPin, bool secureBackupWithPhrase}) {
+  SecurityModel copyWith({bool requiresPin, int automaticallyLockInterval, BackupKeyType backupKeyType}) {
     return new SecurityModel(
         requiresPin: requiresPin ?? this.requiresPin,
         automaticallyLockInterval: automaticallyLockInterval ?? this.automaticallyLockInterval,
-        secureBackupWithPin: secureBackupWithPin ?? this.secureBackupWithPin,
-        secureBackupWithPhrase: secureBackupWithPhrase ?? this.secureBackupWithPhrase);
+        backupKeyType: backupKeyType ?? this.backupKeyType,);
   }
 
   SecurityModel.initial()
       : this(
-            requiresPin: false, automaticallyLockInterval: _defaultLockInterval, secureBackupWithPin: false, secureBackupWithPhrase: false);
+            requiresPin: false, automaticallyLockInterval: _defaultLockInterval, backupKeyType: BackupKeyType.NONE,);
 
   SecurityModel.fromJson(Map<String, dynamic> json)
       : requiresPin = json['requiresPin'] ?? false,
         automaticallyLockInterval = json['automaticallyLockInterval'] ?? _defaultLockInterval,
-        secureBackupWithPin = json['secureBackupWithPin'] ?? false,
-        secureBackupWithPhrase = json['secureBackupWithPhrase'] ?? false;
+        backupKeyType = BackupKeyType.values[json["backupKeyType"] ?? 0];
 
   Map<String, dynamic> toJson() => {
         'automaticallyLockInterval': automaticallyLockInterval,
         'requiresPin': requiresPin,
-        'secureBackupWithPin': secureBackupWithPin,
-        'secureBackupWithPhrase': secureBackupWithPhrase
+        'backupKeyType': backupKeyType.index,
       };
 }

@@ -189,7 +189,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     var updateBackupPhraseAction = UpdateBackupPhrase(widget._mnemonics);
     userProfileBloc.userActionsSink.add(updateBackupPhraseAction);
     updateBackupPhraseAction.future.then((_) {
-      _updateSecurityModel(securityModel, securityModel.copyWith(secureBackupWithPhrase: true), userProfileBloc, backupBloc);
+      _updateSecurityModel(securityModel, securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE), userProfileBloc, backupBloc);
     }).catchError((err) {
       promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
     });

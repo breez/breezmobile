@@ -100,14 +100,14 @@ class SecurityPageState extends State<SecurityPage> {
         ),
       ),
       trailing: Switch(
-        value: securityModel.secureBackupWithPhrase,
+        value: securityModel.backupKeyType == BackupKeyType.PHRASE,
         activeColor: Colors.white,
         onChanged: (bool value) async {
           if (this.mounted) {
             if (value) {
               Navigator.push(context, FadeInRoute(builder: (BuildContext context) => BackupPhraseGeneratorConfirmationPage()));
             } else {
-              _updateSecurityModel(securityModel, securityModel.copyWith(secureBackupWithPhrase: value));
+              _updateSecurityModel(securityModel, securityModel.copyWith(backupKeyType: BackupKeyType.NONE));
             }
           }
         },
@@ -230,7 +230,7 @@ class SecurityPageState extends State<SecurityPage> {
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
     action.future.then((_) {
-      if (newModel.secureBackupWithPin != oldModel.secureBackupWithPin || newModel.secureBackupWithPin && pinCodeChanged) {
+      if ((newModel.backupKeyType == BackupKeyType.PIN) != (oldModel.backupKeyType == BackupKeyType.PIN) || newModel.backupKeyType == BackupKeyType.PIN && pinCodeChanged) {
         widget.backupBloc.backupNowSink.add(true);
         widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
           if (mounted) {
