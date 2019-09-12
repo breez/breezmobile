@@ -129,7 +129,7 @@ class UserProfileBloc {
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
       Map profile = json.decode(jsonStr);
       // Migrate old users backup encryption method
-      profile = _migrateBackupKeyType(profile);
+      profile = await _migrateBackupKeyType(profile);
       BreezUserModel user = BreezUserModel.fromJson(profile);
 
       // First time we create a user, initialize with random data.
@@ -154,7 +154,7 @@ class UserProfileBloc {
     });
   }
 
-  _migrateBackupKeyType(Map profile) async {
+  Future<Map<dynamic, dynamic>> _migrateBackupKeyType(Map profile) async {
     if (profile["secureBackupWithPin"] == true) {
       profile["backupKeyType"] = BackupKeyType.PIN;
 
