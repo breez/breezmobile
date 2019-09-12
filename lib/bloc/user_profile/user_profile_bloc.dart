@@ -157,12 +157,12 @@ class UserProfileBloc {
   Future<Map<dynamic, dynamic>> _migrateBackupKeyType(Map profile) async {
     if (profile["secureBackupWithPin"] == true) {
       profile["backupKeyType"] = BackupKeyType.PIN;
-
-      String pinCode = await _secureStorage.read(key: 'pinCode');
-      if(pinCode != null) {
-        await _secureStorage.write(key: 'backupKey', value: pinCode);
-        await _secureStorage.delete(key: 'pinCode');
-      }
+    }
+    // Transfer existing pinCode to backupKey(for users that has not set secure backup feature but has a pinCode)
+    String pinCode = await _secureStorage.read(key: 'pinCode');
+    if(pinCode != null) {
+      await _secureStorage.write(key: 'backupKey', value: pinCode);
+      await _secureStorage.delete(key: 'pinCode');
     }
     return profile;
   }
