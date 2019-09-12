@@ -58,6 +58,7 @@
 - [ ] Add stronger encryption to cloud backup
 - [ ] iCloud backup option
 - [ ] Support 3rd-party LSPs
+- [ ] Implement lnurl 
 - [ ] Support SD storage
 - [ ] NFC device support
 - [ ] POS POC release
