@@ -136,6 +136,8 @@ class UserProfileBloc {
         user = user.copyWith(name: randomName[0] + ' ' + randomName[1], color: randomName[0], animal: randomName[1]);          
       }
 
+      // Migrate old users backup encryption method
+      user = await _migrateBackupKeyType(user);
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
       if(user.securityModel.backupKeyType != BackupKeyType.NONE){
         List<int> backupEncryptionKey;
@@ -150,6 +152,16 @@ class UserProfileBloc {
 
       _publishUser(user);      
     });
+  }
+
+  _migrateBackupKeyType(BreezUserModel user) async {
+    String pinCode = await _secureStorage.read(key: 'pinCode');
+    if(pinCode != null) {
+      await _secureStorage.write(key: 'backupKey', value: pinCode);
+      await _secureStorage.delete(key: 'pinCode');
+      user = user.copyWith(securityModel: user.securityModel.copyWith(backupKeyType: BackupKeyType.PIN));
+    }
+    return user;
   }
 
   Future<BreezUserModel> saveUser(ServiceInjector injector, SharedPreferences preferences, BreezUserModel user) async {    
