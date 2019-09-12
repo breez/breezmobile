@@ -144,7 +144,7 @@ class UserProfileBloc {
         String backupKey = await _secureStorage.read(key: 'backupKey');
         backupEncryptionKey = utf8.encode(backupKey);
       }
-      await _setBackupKey(backupEncryptionKey);
+      await _setBackupKey(backupEncryptionKey, user.securityModel.backupKeyType);
       user = user.copyWith(locked: user.securityModel.requiresPin);
       if (user.userID != null) {
         saveUser(injector, preferences, user).then(_publishUser);
@@ -194,7 +194,7 @@ class UserProfileBloc {
   Future _updatePinCode(UpdatePinCode action) async {
     await _secureStorage.write(key: 'backupKey', value: action.newPin);
     if(_currentUser.securityModel.backupKeyType == BackupKeyType.PIN){
-      await _setBackupKey(utf8.encode(action.newPin));
+      await _setBackupKey(utf8.encode(action.newPin), _currentUser.securityModel.backupKeyType);
     }
     action.resolve(null);
   }
@@ -209,7 +209,7 @@ class UserProfileBloc {
 
   Future _updateBackupPhrase(UpdateBackupPhrase action) async {
     await _secureStorage.write(key: 'backupKey', value: bip39.mnemonicToEntropy(action.backupPhrase));
-    await _setBackupKey(utf8.encode(bip39.mnemonicToEntropy(action.backupPhrase)));
+    await _setBackupKey(utf8.encode(bip39.mnemonicToEntropy(action.backupPhrase)), _currentUser.securityModel.backupKeyType);
     action.resolve(null);
   }
 
@@ -240,7 +240,7 @@ class UserProfileBloc {
     } else {
       await _secureStorage.delete(key: 'backupKey');
     }
-    await _setBackupKey(backupEncryptionKey);
+    await _setBackupKey(backupEncryptionKey, newModel.backupKeyType);
     _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
   }
@@ -329,12 +329,13 @@ class UserProfileBloc {
     _nfc.startCardActivation(_userStreamController.value.userID);
   }
 
-  Future _setBackupKey(List<int> key) {
+  Future _setBackupKey(List<int> key, BackupKeyType keyType) {
     var encryptionKey = key;
     if (encryptionKey != null && encryptionKey.length != 32) {
       encryptionKey = sha256.convert(key).bytes;
     }
-    return _breezLib.setBackupEncryptionKey(encryptionKey);
+    var encryptionKeyType = encryptionKey != null ? keyType == BackupKeyType.PHRASE ? "Mnemonics" :  keyType == BackupKeyType.PIN ? "PIN" : "" : "";
+    return _breezLib.setBackupEncryptionKey(encryptionKey, encryptionKeyType);
   }
 
   BreezUserModel get _currentUser => _userStreamController.value;
