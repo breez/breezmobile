@@ -59,7 +59,7 @@ class RestoreDialogState extends State<RestoreDialog> {
                     trailing: _selectedSnapshot?.nodeID == widget.snapshots[index].nodeID ? Icon(Icons.check, color: theme.BreezColors.blue[500],) : Icon(Icons.check),
                     title: Text( 
                       DateUtils.formatYearMonthDayHourMinute(DateTime.parse(widget.snapshots[index].modifiedTime)) + 
-                        (widget.snapshots[index].encrypted ? " - (PIN required)" : ""), 
+                        (widget.snapshots[index].encrypted ? " - (Requires key)" : ""),
                       style: theme.bolt11Style.apply(fontSizeDelta: 1.3),
                     ),
                     subtitle: Text(
