@@ -139,13 +139,13 @@ class UserProfileBloc {
       // Migrate old users backup encryption method
       user = await _migrateBackupKeyType(user);
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
+      List<int> backupEncryptionKey;
       if(user.securityModel.backupKeyType != BackupKeyType.NONE){
-        List<int> backupEncryptionKey;
         String backupKey = await _secureStorage.read(key: 'backupKey');
         backupEncryptionKey = utf8.encode(backupKey);
-        await _setBackupKey(backupEncryptionKey);
-        user = user.copyWith(locked: user.securityModel.requiresPin);
       }
+      await _setBackupKey(backupEncryptionKey);
+      user = user.copyWith(locked: user.securityModel.requiresPin);
       if (user.userID != null) {
         saveUser(injector, preferences, user).then(_publishUser);
       }
