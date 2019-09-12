@@ -128,6 +128,8 @@ class UserProfileBloc {
       String jsonStr =
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
       Map profile = json.decode(jsonStr);
+      // Migrate old users backup encryption method
+      profile = _migrateBackupKeyType(profile);
       BreezUserModel user = BreezUserModel.fromJson(profile);
 
       // First time we create a user, initialize with random data.
@@ -136,8 +138,6 @@ class UserProfileBloc {
         user = user.copyWith(name: randomName[0] + ' ' + randomName[1], color: randomName[0], animal: randomName[1]);          
       }
 
-      // Migrate old users backup encryption method
-      user = await _migrateBackupKeyType(user);
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
       List<int> backupEncryptionKey;
       if(user.securityModel.backupKeyType != BackupKeyType.NONE){
@@ -154,14 +154,17 @@ class UserProfileBloc {
     });
   }
 
-  _migrateBackupKeyType(BreezUserModel user) async {
-    String pinCode = await _secureStorage.read(key: 'pinCode');
-    if(pinCode != null) {
-      await _secureStorage.write(key: 'backupKey', value: pinCode);
-      await _secureStorage.delete(key: 'pinCode');
-      user = user.copyWith(securityModel: user.securityModel.copyWith(backupKeyType: BackupKeyType.PIN));
+  _migrateBackupKeyType(Map profile) async {
+    if (profile["secureBackupWithPin"] == true) {
+      profile["backupKeyType"] = BackupKeyType.PIN;
+
+      String pinCode = await _secureStorage.read(key: 'pinCode');
+      if(pinCode != null) {
+        await _secureStorage.write(key: 'backupKey', value: pinCode);
+        await _secureStorage.delete(key: 'pinCode');
+      }
     }
-    return user;
+    return profile;
   }
 
   Future<BreezUserModel> saveUser(ServiceInjector injector, SharedPreferences preferences, BreezUserModel user) async {    
