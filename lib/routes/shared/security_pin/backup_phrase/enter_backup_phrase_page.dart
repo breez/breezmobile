@@ -6,6 +6,8 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
 
+import 'wordlist.dart';
+
 class EnterBackupPhrasePage extends StatefulWidget {
   @override
   EnterBackupPhrasePageState createState() => new EnterBackupPhrasePageState();
@@ -13,13 +15,45 @@ class EnterBackupPhrasePage extends StatefulWidget {
 
 class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
+  List<FocusNode> focusNodes = List<FocusNode>(24);
+  List<TextEditingController> textEditingControllers = List<TextEditingController>(24);
   int _currentPage;
+  int _selectedIndex;
+  bool _showWordList;
+  List<String> _wordsShow = List();
   List<String> _mnemonicsList = List();
+  bool _autoValidate;
 
   @override
   void initState() {
+    _createFocusNodes();
+    _createTextEditingControllers();
     _currentPage = 1;
+    _selectedIndex = 0;
+    _showWordList = false;
+    _autoValidate = false;
     super.initState();
+  }
+
+  _createFocusNodes() {
+    for (var i = 0; i < focusNodes.length; i++) {
+      FocusNode focusNode = new FocusNode();
+      focusNodes[i] = focusNode;
+      focusNode.addListener(_onFocusChange);
+    }
+  }
+
+  void _onFocusChange() {
+    setState(() {
+      _showWordList = false;
+    });
+  }
+
+  _createTextEditingControllers() {
+    for (var i = 0; i < textEditingControllers.length; i++) {
+      TextEditingController textEditingController = new TextEditingController();
+      textEditingControllers[i] = textEditingController;
+    }
   }
 
   @override
@@ -37,7 +71,11 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
               if (_currentPage == 1) {
                 Navigator.pop(context);
               } else if (_currentPage > 1) {
+                _addToUserInput();
+                _formKey.currentState.reset();
+                FocusScope.of(context).requestFocus(new FocusNode());
                 setState(() {
+                  _showWordList = false;
                   _currentPage--;
                 });
               }
@@ -59,28 +97,112 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
         key: _formKey,
         child: new Padding(
           padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-          child: new Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(6, (index) {
-              return TextFormField(
-                decoration: new InputDecoration(
-                  labelText: "${index + (6 * (_currentPage - 1)) + 1}",
-                ),
-                style: theme.FieldTextStyle.textStyle,
-                validator: (text) {
-                  if (text.length == 0) {
-                    return "Please fill all fields";
-                  }
-                  _mnemonicsList.insert(index + (6 * (_currentPage - 1)), text.toLowerCase().trim());
-                  return null;
-                },
-              );
-            }),
+          child: Stack(
+            children: [
+              new Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(6, (index) {
+                  var itemIndex = index + (6 * (_currentPage - 1));
+                  return TextFormField(
+                    autovalidate: _autoValidate,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (v) {
+                      setState(() {
+                        _showWordList = false;
+                      });
+                      _wordsShow.clear();
+                      FocusScope.of(context).requestFocus(focusNodes[itemIndex + 1]);
+                    },
+                    focusNode: focusNodes[itemIndex],
+                    controller: textEditingControllers[itemIndex],
+                    decoration: new InputDecoration(
+                      labelText: "${itemIndex + 1}",
+                    ),
+                    style: theme.FieldTextStyle.textStyle,
+                    onChanged: (text) {
+                      if (text.length > 0) {
+                        _wordsShow.clear();
+                        setState(() {
+                          _selectedIndex = itemIndex;
+                          _wordsShow = WORDLIST.where((item) => item.startsWith(text)).toList();
+                        });
+                        if (_wordsShow.length > 0) {
+                          _wordsShow.sort();
+                          setState(() {
+                            _showWordList = true;
+                          });
+                        }
+                      }
+                    },
+                    validator: (text) {
+                      if (text.length == 0) {
+                        return "Missing word";
+                      }
+                      if (!WORDLIST.contains(text.toLowerCase().trim())) {
+                        return "Invalid word";
+                      }
+                      return null;
+                    },
+                  );
+                }),
+              ),
+              _showWordList
+                  ? new Container(
+                      padding: new EdgeInsets.only(top: (61 * (_selectedIndex + 1) + 3).toDouble()),
+                      child: new Row(
+                        children: <Widget>[
+                          new Expanded(
+                              flex: 200, child: new Container(decoration: theme.autoCompleteBoxDecoration, child: _getFutureWidgetWords())),
+                          new Expanded(flex: 128, child: new Container())
+                        ],
+                      ))
+                  : new Container()
+            ],
           ),
         ),
       ),
     );
+  }
+
+  _addToUserInput() {
+    textEditingControllers.asMap().forEach((index, textEditingController) {
+      if (exceptionAware<String>(() => _mnemonicsList.elementAt(index)) != null) {
+        _mnemonicsList.removeAt(index);
+      }
+      _mnemonicsList.insert(index, textEditingController.text.toLowerCase().trim());
+    });
+  }
+
+  T exceptionAware<T>(T Function() f) {
+    try {
+      return f();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Widget _getFutureWidgetWords() {
+    List<InkWell> list = new List();
+    int number = _wordsShow.length > 2 ? 3 : _wordsShow.length;
+    for (int i = 0; i < number; i++) {
+      list.add(new InkWell(
+        child: new Container(
+            padding: new EdgeInsets.only(left: 10.0),
+            alignment: Alignment.centerLeft,
+            height: 35.0,
+            child: new Text(_wordsShow[i], overflow: TextOverflow.ellipsis, style: theme.autoCompleteStyle)),
+        onTap: () {
+          setState(() {
+            textEditingControllers[_selectedIndex].text = _wordsShow[i];
+            _wordsShow.clear();
+            FocusScope.of(context).requestFocus((_selectedIndex < 23) ? focusNodes[_selectedIndex + 1] : FocusNode());
+          });
+        },
+      ));
+    }
+
+    return new Container(height: list.length * 35.0, width: MediaQuery.of(context).size.width, child: new ListView(children: list));
   }
 
   _buildBottomBtn(UserProfileBloc userProfileBloc) {
@@ -99,16 +221,22 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             elevation: 0.0,
             shape: const StadiumBorder(),
             onPressed: () {
-              if (_formKey.currentState.validate()) {
-                if (_currentPage + 1 == 5) {
-                  _validateBackupPhrase(userProfileBloc);
-                } else {
-                  _formKey.currentState.reset();
-                  setState(() {
+              setState(() {
+                _showWordList = false;
+                if (_formKey.currentState.validate()) {
+                  _autoValidate = false;
+                  _addToUserInput();
+                  if (_currentPage + 1 == 5) {
+                    _validateBackupPhrase(userProfileBloc);
+                  } else {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                    _formKey.currentState.reset();
                     _currentPage++;
-                  });
+                  }
+                } else {
+                  _autoValidate = true;
                 }
-              }
+              });
             },
           ),
         )
