@@ -176,7 +176,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
             shape: const StadiumBorder(),
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                _updateBackupPhrase(securityModel, userProfileBloc, backupBloc);
+                _createBackupPhrase(securityModel, userProfileBloc, backupBloc);
               }
             },
           ),
@@ -185,10 +185,10 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     );
   }
 
-  Future _updateBackupPhrase(SecurityModel securityModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
-    var updateBackupPhraseAction = UpdateBackupPhrase(widget._mnemonics);
-    userProfileBloc.userActionsSink.add(updateBackupPhraseAction);
-    updateBackupPhraseAction.future.then((_) {
+  Future _createBackupPhrase(SecurityModel securityModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
+    var createBackupPhraseAction = CreateBackupPhrase(widget._mnemonics);
+    userProfileBloc.userActionsSink.add(createBackupPhraseAction);
+    createBackupPhraseAction.future.then((_) {
       _updateSecurityModel(securityModel, securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE), userProfileBloc, backupBloc);
     }).catchError((err) {
       promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));

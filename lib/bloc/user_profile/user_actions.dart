@@ -20,10 +20,10 @@ class ValidatePinCode extends AsyncAction {
   ValidatePinCode(this.enteredPin);
 }
 
-class UpdateBackupPhrase extends AsyncAction {
+class CreateBackupPhrase extends AsyncAction {
   final String backupPhrase;
 
-  UpdateBackupPhrase(this.backupPhrase);
+  CreateBackupPhrase(this.backupPhrase);
 }
 
 class ValidateBackupPhrase extends AsyncAction {

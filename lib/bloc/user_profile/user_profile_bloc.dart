@@ -70,7 +70,7 @@ class UserProfileBloc {
       UpdateSecurityModel: _updateSecurityModelAction,
       UpdatePinCode: _updatePinCode,
       ValidatePinCode: _validatePinCode,
-      UpdateBackupPhrase: _updateBackupPhrase,
+      CreateBackupPhrase: _createBackupPhrase,
       ValidateBackupPhrase: _validateBackupPhrase,
     };
     print ("UserProfileBloc started");
@@ -207,9 +207,8 @@ class UserProfileBloc {
     action.resolve(pinCode == action.enteredPin);
   }
 
-  Future _updateBackupPhrase(UpdateBackupPhrase action) async {
+  Future _createBackupPhrase(CreateBackupPhrase action) async {
     await _secureStorage.write(key: 'backupKey', value: bip39.mnemonicToEntropy(action.backupPhrase));
-    await _setBackupKey(utf8.encode(bip39.mnemonicToEntropy(action.backupPhrase)), _currentUser.securityModel.backupKeyType);
     action.resolve(null);
   }
 
