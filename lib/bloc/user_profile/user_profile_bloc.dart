@@ -157,12 +157,11 @@ class UserProfileBloc {
   Future<Map<dynamic, dynamic>> _migrateBackupKeyType(Map profile) async {
     if (profile["secureBackupWithPin"] == true) {
       profile["backupKeyType"] = BackupKeyType.PIN;
-    }
-    // Transfer existing pinCode to backupKey(for users that has not set secure backup feature but has a pinCode)
-    String pinCode = await _secureStorage.read(key: 'pinCode');
-    if(pinCode != null) {
-      await _secureStorage.write(key: 'backupKey', value: pinCode);
-      await _secureStorage.delete(key: 'pinCode');
+      // Transfer existing pinCode to backupKey(for users that has not set secure backup feature but has a pinCode)
+      String pinCode = await _secureStorage.read(key: 'pinCode');
+      if(pinCode != null) {
+        await _secureStorage.write(key: 'backupKey', value: pinCode);
+      }
     }
     return profile;
   }
@@ -192,15 +191,16 @@ class UserProfileBloc {
   }
 
   Future _updatePinCode(UpdatePinCode action) async {
-    await _secureStorage.write(key: 'backupKey', value: action.newPin);
+    await _secureStorage.write(key: 'pinCode', value: action.newPin);
     if(_currentUser.securityModel.backupKeyType == BackupKeyType.PIN){
+      await _secureStorage.write(key: 'backupKey', value: action.newPin);
       await _setBackupKey(utf8.encode(action.newPin), _currentUser.securityModel.backupKeyType);
     }
     action.resolve(null);
   }
 
   Future _validatePinCode(ValidatePinCode action) async {
-    var pinCode = await _secureStorage.read(key: 'backupKey');
+    var pinCode = await _secureStorage.read(key: 'pinCode');
     if (pinCode != action.enteredPin) {
       throw new Exception("Incorrect PIN");
     }
@@ -334,7 +334,7 @@ class UserProfileBloc {
     if (encryptionKey != null && encryptionKey.length != 32) {
       encryptionKey = sha256.convert(key).bytes;
     }
-    var encryptionKeyType = encryptionKey != null ? keyType == BackupKeyType.PHRASE ? "Mnemonics" :  keyType == BackupKeyType.PIN ? "PIN" : "" : "";
+    var encryptionKeyType = encryptionKey != null ? keyType == BackupKeyType.PHRASE ? "Mnemonics" :  keyType == BackupKeyType.PIN ? "Pin" : "" : "";
     return _breezLib.setBackupEncryptionKey(encryptionKey, encryptionKeyType);
   }
 
