@@ -5,6 +5,7 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'wordlist.dart';
 
@@ -104,37 +105,20 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(6, (index) {
                   var itemIndex = index + (6 * (_currentPage - 1));
-                  return TextFormField(
-                    autovalidate: _autoValidate,
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (v) {
-                      setState(() {
-                        _showWordList = false;
-                      });
-                      _wordsShow.clear();
-                      FocusScope.of(context).requestFocus(focusNodes[itemIndex + 1]);
-                    },
-                    focusNode: focusNodes[itemIndex],
-                    controller: textEditingControllers[itemIndex],
-                    decoration: new InputDecoration(
-                      labelText: "${itemIndex + 1}",
+                  return TypeAheadFormField(
+                    textFieldConfiguration: TextFieldConfiguration(
+                      controller: textEditingControllers[itemIndex],
+                      textInputAction: TextInputAction.next,
+                      onSubmitted: (v) {
+                        FocusScope.of(context).requestFocus(focusNodes[itemIndex + 1]);
+                      },
+                      focusNode: focusNodes[itemIndex],
+                      decoration: new InputDecoration(
+                        labelText: "${itemIndex + 1}",
+                      ),
+                      style: theme.FieldTextStyle.textStyle,
                     ),
-                    style: theme.FieldTextStyle.textStyle,
-                    onChanged: (text) {
-                      if (text.length > 0) {
-                        _wordsShow.clear();
-                        setState(() {
-                          _selectedIndex = itemIndex;
-                          _wordsShow = WORDLIST.where((item) => item.startsWith(text)).toList();
-                        });
-                        if (_wordsShow.length > 0) {
-                          _wordsShow.sort();
-                          setState(() {
-                            _showWordList = true;
-                          });
-                        }
-                      }
-                    },
+                    autovalidate: _autoValidate,
                     validator: (text) {
                       if (text.length == 0) {
                         return "Missing word";
@@ -143,6 +127,23 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
                         return "Invalid word";
                       }
                       return null;
+                    },
+                    suggestionsCallback: (pattern) {
+                      var suggestionList = WORDLIST.where((item) => item.startsWith(pattern)).toList();
+                      return suggestionList.length > 0 ? suggestionList : null;
+                    },
+                    suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                      color: Colors.white,
+                      constraints: BoxConstraints(maxHeight: 120, minHeight: 60, minWidth: 180, maxWidth: 180),
+                    ),
+                    itemBuilder: (context, suggestion) {
+                      return ListTile(
+                        title: Text(suggestion, overflow: TextOverflow.ellipsis, style: theme.autoCompleteStyle),
+                      );
+                    },
+                    onSuggestionSelected: (suggestion) {
+                      textEditingControllers[itemIndex].text = suggestion;
+                      FocusScope.of(context).requestFocus(focusNodes[itemIndex + 1]);
                     },
                   );
                 }),
