@@ -54,28 +54,30 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   _buildForm() {
-    return Form(
-      key: _formKey,
-      child: new Padding(
-        padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-        child: new Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(6, (index) {
-            return TextFormField(
-              decoration: new InputDecoration(
-                labelText: "${index + (6 * (_currentPage - 1)) + 1}",
-              ),
-              style: theme.FieldTextStyle.textStyle,
-              validator: (text) {
-                if (text.length == 0) {
-                  return "Please fill all fields";
-                }
-                _mnemonicsList.insert(index + (6 * (_currentPage - 1)), text.toLowerCase().trim());
-                return null;
-              },
-            );
-          }),
+    return SingleChildScrollView(
+      child: Form(
+        key: _formKey,
+        child: new Padding(
+          padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+          child: new Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(6, (index) {
+              return TextFormField(
+                decoration: new InputDecoration(
+                  labelText: "${index + (6 * (_currentPage - 1)) + 1}",
+                ),
+                style: theme.FieldTextStyle.textStyle,
+                validator: (text) {
+                  if (text.length == 0) {
+                    return "Please fill all fields";
+                  }
+                  _mnemonicsList.insert(index + (6 * (_currentPage - 1)), text.toLowerCase().trim());
+                  return null;
+                },
+              );
+            }),
+          ),
         ),
       ),
     );
