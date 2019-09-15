@@ -39,9 +39,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     }
     
     func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        return GIDSignIn.sharedInstance().handle(url as URL?,
-                                                 sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
-                                                 annotation: options[UIApplication.OpenURLOptionsKey.annotation])
+        return GIDSignIn.sharedInstance().handle(url as URL?)
     }
     
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -56,6 +54,10 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
         
         if (call.method == "signIn") {
             signIn(call: call, result: result);
+        }
+        
+        if (call.method == "signOut") {
+            signOut(call: call, result: result);
         }
         
         if (call.method == "restoreBackup") {
@@ -107,6 +109,13 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             } catch {
                 result(FlutterError(code: "AuthError", message: "Failed to signIn breez library", details: ""));
             }
+        }
+    }
+    
+    func signOut(call: FlutterMethodCall, result: @escaping FlutterResult){
+        DispatchQueue.global().async {
+            self.googleAuth.signOut();
+            result(true);
         }
     }
     

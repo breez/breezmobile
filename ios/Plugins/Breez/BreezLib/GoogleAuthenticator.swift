@@ -31,7 +31,7 @@ class GoogleAuthenticator : NSObject {
         GIDSignIn.sharedInstance()?.signOut();
     }
     
-    func getAccessToken(silentOnly: Bool) throws -> String{
+    func getAccessToken(silentOnly: Bool) throws -> String{        
         let signInOperation = startSignInOperation(silentOnly: silentOnly);
         signInOperation.waitUntilFinished();
         queue.sync{
@@ -45,7 +45,7 @@ class GoogleAuthenticator : NSObject {
     }
 }
 
-class SignInOperation : Operation, GIDSignInUIDelegate, GIDSignInDelegate {
+class SignInOperation : Operation, GIDSignInDelegate {
     
     private enum State {
         case ready
@@ -84,11 +84,12 @@ class SignInOperation : Operation, GIDSignInUIDelegate, GIDSignInDelegate {
         if let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") {
             if let plist = NSMutableDictionary.init(contentsOfFile: path) {
                 GIDSignIn.sharedInstance()?.delegate = self;
-                GIDSignIn.sharedInstance()?.uiDelegate = self;
+                let viewController = UIApplication.shared.keyWindow!.rootViewController;
+                GIDSignIn.sharedInstance()?.presentingViewController = viewController;
                 GIDSignIn.sharedInstance()?.clientID = plist["CLIENT_ID"] as? String;
                 GIDSignIn.sharedInstance()?.scopes = ["https://www.googleapis.com/auth/drive.appdata"];
                 state = .executing;
-                GIDSignIn.sharedInstance()?.signInSilently();
+                GIDSignIn.sharedInstance()?.restorePreviousSignIn()
                 return;
             }
         }
