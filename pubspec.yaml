@@ -15,17 +15,17 @@ dependencies:
   #shared_preferences: ^0.5.1+2
   #https://github.com/breez/ShareExtend.git
   #os
-  # image_picker: ^0.5.0+9
-  # image: any
-  # package_info: any  
-  # uuid: ^1.0.3
-  # ini: ^2.0.1
-  # connectivity: ^0.4.2
+  image_picker: ^0.5.0+9
+  image: any
+  package_info: any  
+  uuid: ^1.0.3
+  ini: ^2.0.1
+  connectivity: ^0.4.2
   # logging: ^0.11.3+2
   # flutter_svg: "^0.13.0"
   # json_annotation: ^2.0.0
   # http: ^0.12.0+1
-  #url_launcher: ^5.1.2
+  url_launcher: ^5.1.2
   archive: ^2.0.8
   duration: ^2.0.8
   dio: ^2.1.13
