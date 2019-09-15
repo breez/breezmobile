@@ -19,6 +19,7 @@
 		6F09D3DE225F2AD300867443 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F09D3DD225F2AD300867443 /* GoogleService-Info.plist */; };
 		6F09D3E0225F45EB00867443 /* NativeMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F09D3DF225F45EB00867443 /* NativeMethods.swift */; };
 		6F09D3E2225F584000867443 /* LifecycleEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F09D3E1225F584000867443 /* LifecycleEvents.swift */; };
+		6F3FAFCA232E610400680AC5 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F3FAFC9232E610400680AC5 /* CloudKit.framework */; };
 		6F5D313F22A6827700A8CFDF /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5D313E22A6827700A8CFDF /* BackgroundTask.swift */; };
 		6F8177DB2270AEED00842148 /* GoogleAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8177DA2270AEED00842148 /* GoogleAuthenticator.swift */; };
 		6FCA797622796CA6002E4572 /* ChainSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA797522796CA6002E4572 /* ChainSync.swift */; };
@@ -62,6 +63,7 @@
 		6F09D3DD225F2AD300867443 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6F09D3DF225F45EB00867443 /* NativeMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeMethods.swift; sourceTree = "<group>"; };
 		6F09D3E1225F584000867443 /* LifecycleEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleEvents.swift; sourceTree = "<group>"; };
+		6F3FAFC9232E610400680AC5 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		6F5D313E22A6827700A8CFDF /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
 		6F8177D92270997B00842148 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		6F8177DA2270AEED00842148 /* GoogleAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuthenticator.swift; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F3FAFCA232E610400680AC5 /* CloudKit.framework in Frameworks */,
 				6F09D3DC225E7BBD00867443 /* bindings.framework in Frameworks */,
 				9705A1C61CF904A100538489 /* Flutter.framework in Frameworks */,
 				3B80C3941E831B6300D905FE /* App.framework in Frameworks */,
@@ -195,6 +198,7 @@
 		E5F01C87D6084F818230B447 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6F3FAFC9232E610400680AC5 /* CloudKit.framework */,
 				6F09D3DB225E7BBC00867443 /* bindings.framework */,
 				1BB8FE81E630D060DA96BD7C /* Pods_Runner.framework */,
 			);
@@ -249,6 +253,9 @@
 								enabled = 1;
 							};
 							com.apple.SafariKeychain = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
 								enabled = 1;
 							};
 						};
@@ -619,11 +626,11 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F7R2LZH3W5;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -639,7 +646,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = technology.breez.client;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = DIST_PROFILE;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
