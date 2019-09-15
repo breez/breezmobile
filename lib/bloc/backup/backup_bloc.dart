@@ -123,9 +123,12 @@ class BackupBloc {
     _backupNowController.stream.listen((_) => _backupNow());
   }
   
-  void _backupNow() {    
-    _breezLib.signIn(_backupServiceNeedLogin)
-      .then((_) => _breezLib.requestBackup());      
+  Future _backupNow() async {    
+    if (_backupServiceNeedLogin) {
+      await _breezLib.signOut();
+    }
+    await _breezLib.signIn(_backupServiceNeedLogin);
+    _breezLib.requestBackup();      
   }
 
   _listenBackupPaths() { 
