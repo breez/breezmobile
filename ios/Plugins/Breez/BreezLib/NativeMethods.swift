@@ -61,7 +61,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "rate": EmptyArgsBindingExecutor(f: BindingsRate),    
     "onResume": VoidBindingExecutor(f: BindingsOnResume),
     "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),
-    "setPinCode": SingleArgBindingExecutor(f: BindingsSetPinCode),
+    //"setPinCode": SingleArgBindingExecutor(f: BindingsSetPinCode),
     "getLogPath": VoidBindingExecutor(f: BindingsGetLogPath),
     "needsBootstrap": VoidBindingExecutor(f: BindingsNeedsBootstrap),
     "bootstrapHeaders": SingleArgBindingExecutor(f: BindingsBootstrapHeaders)

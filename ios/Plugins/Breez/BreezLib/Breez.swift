@@ -113,11 +113,11 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
                     let nodeID : String = args["nodeID"] as! String;
                     let restorePIN : String = args["restorePIN"] as! String;
                     var error : NSError?;
-                    if (BindingsRestoreBackup(nodeID, restorePIN, &error)) {
-                        result(true);
-                    } else {
-                        result(FlutterError(code: "", message: error?.localizedDescription, details: nil));
-                    }
+//                    if (BindingsRestoreBackup(nodeID, restorePIN, &error)) {
+//                        result(true);
+//                    } else {
+//                        result(FlutterError(code: "", message: error?.localizedDescription, details: nil));
+//                    }
                 }
                 result(FlutterError(code: "Missing Argument", message: "Expecting a dictionary", details: nil));
             }
