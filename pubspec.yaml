@@ -18,9 +18,9 @@ dependencies:
   image_picker: ^0.5.0+9
   image: any
   package_info: any  
-  uuid: ^1.0.3
-  ini: ^2.0.1
-  connectivity: ^0.4.2
+  #uuid: ^1.0.3
+  #ini: ^2.0.1
+  #connectivity: ^0.4.2
   # logging: ^0.11.3+2
   # flutter_svg: "^0.13.0"
   # json_annotation: ^2.0.0
