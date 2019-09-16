@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
@@ -16,12 +18,10 @@ class EnterBackupPhrasePage extends StatefulWidget {
 
 class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
+
   List<FocusNode> focusNodes = List<FocusNode>(24);
   List<TextEditingController> textEditingControllers = List<TextEditingController>(24);
   int _currentPage;
-  int _selectedIndex;
-  bool _showWordList;
-  List<String> _wordsShow = List();
   List<String> _mnemonicsList = List();
   bool _autoValidate;
 
@@ -30,8 +30,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     _createFocusNodes();
     _createTextEditingControllers();
     _currentPage = 1;
-    _selectedIndex = 0;
-    _showWordList = false;
     _autoValidate = false;
     super.initState();
   }
@@ -40,14 +38,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     for (var i = 0; i < focusNodes.length; i++) {
       FocusNode focusNode = new FocusNode();
       focusNodes[i] = focusNode;
-      focusNode.addListener(_onFocusChange);
     }
-  }
-
-  void _onFocusChange() {
-    setState(() {
-      _showWordList = false;
-    });
   }
 
   _createTextEditingControllers() {
@@ -76,7 +67,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
                 _formKey.currentState.reset();
                 FocusScope.of(context).requestFocus(new FocusNode());
                 setState(() {
-                  _showWordList = false;
                   _currentPage--;
                 });
               }
@@ -98,71 +88,71 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
         key: _formKey,
         child: new Padding(
           padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-          child: Stack(
-            children: [
-              new Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(6, (index) {
-                  var itemIndex = index + (6 * (_currentPage - 1));
-                  return TypeAheadFormField(
-                    textFieldConfiguration: TextFieldConfiguration(
-                      controller: textEditingControllers[itemIndex],
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (v) {
-                        FocusScope.of(context).requestFocus(focusNodes[itemIndex + 1]);
-                      },
-                      focusNode: focusNodes[itemIndex],
-                      decoration: new InputDecoration(
-                        labelText: "${itemIndex + 1}",
-                      ),
-                      style: theme.FieldTextStyle.textStyle,
-                    ),
-                    autovalidate: _autoValidate,
-                    validator: (text) {
-                      if (text.length == 0) {
-                        return "Missing word";
-                      }
-                      if (!WORDLIST.contains(text.toLowerCase().trim())) {
-                        return "Invalid word";
-                      }
-                      return null;
-                    },
-                    suggestionsCallback: (pattern) {
-                      var suggestionList = WORDLIST.where((item) => item.startsWith(pattern)).toList();
-                      return suggestionList.length > 0 ? suggestionList : null;
-                    },
-                    suggestionsBoxDecoration: SuggestionsBoxDecoration(
-                      color: Colors.white,
-                      constraints: BoxConstraints(maxHeight: 120, minHeight: 60, minWidth: 180, maxWidth: 180),
-                    ),
-                    itemBuilder: (context, suggestion) {
-                      return ListTile(
-                        title: Text(suggestion, overflow: TextOverflow.ellipsis, style: theme.autoCompleteStyle),
-                      );
-                    },
-                    onSuggestionSelected: (suggestion) {
-                      textEditingControllers[itemIndex].text = suggestion;
-                      FocusScope.of(context).requestFocus(focusNodes[itemIndex + 1]);
-                    },
-                  );
-                }),
-              ),
-              _showWordList
-                  ? new Container(
-                      padding: new EdgeInsets.only(top: (61 * (_selectedIndex + 1) + 3).toDouble()),
-                      child: new Row(
-                        children: <Widget>[
-                          new Expanded(
-                              flex: 200, child: new Container(decoration: theme.autoCompleteBoxDecoration, child: _getFutureWidgetWords())),
-                          new Expanded(flex: 128, child: new Container())
-                        ],
-                      ))
-                  : new Container()
-            ],
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(6, (index) {
+              var itemIndex = index + (6 * (_currentPage - 1));
+              return _typeAheadFormField(itemIndex);
+            }),
           ),
         ),
       ),
+    );
+  }
+
+  TypeAheadFormField<String> _typeAheadFormField(int itemIndex) {
+    return TypeAheadFormField(
+      textFieldConfiguration: _textFieldConfiguration(itemIndex),
+      autovalidate: _autoValidate,
+      validator: _onValidate,
+      suggestionsCallback: _getSuggestions,
+      autoFlipDirection: true,
+      suggestionsBoxDecoration: SuggestionsBoxDecoration(
+        color: Colors.white,
+        constraints: BoxConstraints(minWidth: 180, maxWidth: 180, maxHeight: 180),
+      ),
+      itemBuilder: (context, suggestion) {
+        return Container(
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 0.5, color: theme.BreezColors.blue[500]))),
+          child: ListTile(title: Text(suggestion, overflow: TextOverflow.ellipsis, style: theme.autoCompleteStyle)),
+        );
+      },
+      onSuggestionSelected: (suggestion) {
+        textEditingControllers[itemIndex].text = suggestion;
+        FocusScope.of(context).requestFocus((itemIndex <= 23) ? focusNodes[itemIndex + 1] : FocusNode());
+      },
+    );
+  }
+
+  FutureOr<List<String>> _getSuggestions(pattern) {
+    var suggestionList = WORDLIST.where((item) => item.startsWith(pattern)).toList();
+    return suggestionList.length > 0 ? suggestionList : null;
+  }
+
+  String _onValidate(text) {
+    if (text.length == 0) {
+      return "Missing word";
+    }
+    if (!WORDLIST.contains(text.toLowerCase().trim())) {
+      return "Invalid word";
+    }
+    return null;
+  }
+
+  TextFieldConfiguration _textFieldConfiguration(int itemIndex) {
+    return TextFieldConfiguration(
+      controller: textEditingControllers[itemIndex],
+      textInputAction: TextInputAction.next,
+      onSubmitted: (text) {
+        textEditingControllers[itemIndex].text = text;
+        FocusScope.of(context).requestFocus(focusNodes[itemIndex + 1]);
+      },
+      focusNode: focusNodes[itemIndex],
+      decoration: new InputDecoration(
+        labelText: "${itemIndex + 1}",
+      ),
+      style: theme.FieldTextStyle.textStyle,
     );
   }
 
@@ -183,29 +173,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     }
   }
 
-  Widget _getFutureWidgetWords() {
-    List<InkWell> list = new List();
-    int number = _wordsShow.length > 2 ? 3 : _wordsShow.length;
-    for (int i = 0; i < number; i++) {
-      list.add(new InkWell(
-        child: new Container(
-            padding: new EdgeInsets.only(left: 10.0),
-            alignment: Alignment.centerLeft,
-            height: 35.0,
-            child: new Text(_wordsShow[i], overflow: TextOverflow.ellipsis, style: theme.autoCompleteStyle)),
-        onTap: () {
-          setState(() {
-            textEditingControllers[_selectedIndex].text = _wordsShow[i];
-            _wordsShow.clear();
-            FocusScope.of(context).requestFocus((_selectedIndex < 23) ? focusNodes[_selectedIndex + 1] : FocusNode());
-          });
-        },
-      ));
-    }
-
-    return new Container(height: list.length * 35.0, width: MediaQuery.of(context).size.width, child: new ListView(children: list));
-  }
-
   _buildBottomBtn(UserProfileBloc userProfileBloc) {
     return Padding(
       padding: new EdgeInsets.only(bottom: 40),
@@ -223,7 +190,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             shape: const StadiumBorder(),
             onPressed: () {
               setState(() {
-                _showWordList = false;
                 if (_formKey.currentState.validate()) {
                   _autoValidate = false;
                   _addToUserInput();
