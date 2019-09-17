@@ -63,7 +63,6 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
 
   _buildCheckbox() {
     return SizedBox(
-      width: 184.0,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
