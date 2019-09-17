@@ -7,13 +7,7 @@ import 'package:flutter/material.dart';
 import 'verify_backup_phrase_page.dart';
 
 class GenerateBackupPhrasePage extends StatefulWidget {
-  final String mnemonics;
-  final int page;
-  final List randomlySelectedIndexes;
-  final List<String> verifyInputList;
-  final List<String> verificationFormValues;
-
-  GenerateBackupPhrasePage({this.mnemonics, this.page, this.randomlySelectedIndexes, this.verifyInputList, this.verificationFormValues});
+  GenerateBackupPhrasePage();
 
   @override
   GenerateBackupPhrasePageState createState() => new GenerateBackupPhrasePageState();
@@ -27,8 +21,8 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
 
   @override
   void initState() {
-    _currentPage = widget.page ?? 1;
-    _mnemonics = widget.mnemonics ?? bip39.generateMnemonic(strength: 256);
+    _currentPage = 1;
+    _mnemonics = bip39.generateMnemonic(strength: 256);
     _mnemonicsList = _mnemonics.split(" ");
     super.initState();
   }
@@ -127,8 +121,6 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
                   FadeInRoute(
                     builder: (_) => VerifyBackupPhrasePage(
                       _mnemonics,
-                      randomlySelectedIndexes: widget.randomlySelectedIndexes,
-                      verificationFormValues: widget.verificationFormValues,
                     ),
                   ),
                 );

@@ -15,10 +15,10 @@ import 'package:flutter/material.dart';
 
 class VerifyBackupPhrasePage extends StatefulWidget {
   final String _mnemonics;
-  final List randomlySelectedIndexes;
-  final List<String> verificationFormValues;
 
-  VerifyBackupPhrasePage(this._mnemonics, {this.randomlySelectedIndexes, this.verificationFormValues});
+  VerifyBackupPhrasePage(
+    this._mnemonics,
+  );
 
   @override
   VerifyBackupPhrasePageState createState() => new VerifyBackupPhrasePageState();
@@ -33,14 +33,10 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
 
   @override
   void initState() {
-    _verificationFormValues = widget.verificationFormValues ?? List();
+    _verificationFormValues = List();
     _mnemonicsList = widget._mnemonics.split(" ");
     _title = "Let's verify";
-    if (widget.randomlySelectedIndexes != null) {
-      _randomlySelectedIndexes = widget.randomlySelectedIndexes;
-    } else {
-      _selectIndexes();
-    }
+    _selectIndexes();
     super.initState();
   }
 
@@ -68,12 +64,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
               Navigator.push(
                 context,
                 FadeInRoute(
-                  builder: (_) => GenerateBackupPhrasePage(
-                    mnemonics: widget._mnemonics,
-                    page: 2,
-                    randomlySelectedIndexes: _randomlySelectedIndexes,
-                    verificationFormValues: _verificationFormValues,
-                  ),
+                  builder: (_) => GenerateBackupPhrasePage(),
                 ),
               );
             },
@@ -127,7 +118,6 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: TextFormField(
-                  initialValue: exceptionAware<String>(() => widget.verificationFormValues.elementAt(index)) ?? "",
                   decoration: new InputDecoration(
                     labelText: "${_randomlySelectedIndexes[index] + 1}",
                   ),
@@ -149,14 +139,6 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
         ),
       ),
     );
-  }
-
-  T exceptionAware<T>(T Function() f) {
-    try {
-      return f();
-    } catch (_) {
-      return null;
-    }
   }
 
   _buildBackupBtn(SecurityModel securityModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) {
