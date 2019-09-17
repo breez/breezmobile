@@ -55,7 +55,9 @@ dependencies:
   app_settings: ^1.0.6+2
   bip39: ^1.0.3
   crypto: ^2.1.2
-  flutter_typeahead: ^1.6.1
+  flutter_typeahead:
+    git:
+      url: https://github.com/breez/flutter_typeahead.git
 
 dev_dependencies:
   mockito: "^3.0.0"
