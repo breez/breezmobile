@@ -235,7 +235,7 @@ class SecurityPageState extends State<SecurityPage> {
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
     action.future.then((_) {
-      if ((newModel.backupKeyType == BackupKeyType.PIN) != (oldModel.backupKeyType == BackupKeyType.PIN) || newModel.backupKeyType == BackupKeyType.PIN && pinCodeChanged) {
+      if ((newModel.backupKeyType != oldModel.backupKeyType) || (newModel.backupKeyType == BackupKeyType.PIN && pinCodeChanged)) {
         widget.backupBloc.backupNowSink.add(true);
         widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
           if (mounted) {
