@@ -75,26 +75,27 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           ),
           elevation: 0.0),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           _buildForm(),
           _buildInstructions(),
+          StreamBuilder<BreezUserModel>(
+            stream: userProfileBloc.userStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Container(padding: EdgeInsets.only(bottom: 88),);
+              }
+              return _buildBackupBtn(snapshot.data.securityModel, userProfileBloc, backupBloc);
+            },
+          )
         ],
-      ),
-      bottomNavigationBar: StreamBuilder<BreezUserModel>(
-        stream: userProfileBloc.userStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          }
-          return _buildBackupBtn(snapshot.data.securityModel, userProfileBloc, backupBloc);
-        },
       ),
     );
   }
 
   Padding _buildInstructions() {
     return Padding(
-      padding: EdgeInsets.only(left: 72, top: 96, right: 72),
+      padding: EdgeInsets.only(left: 72, right: 72),
       child: Text(
         "Type the ${_randomlySelectedIndexes[0] + 1}, ${_randomlySelectedIndexes[1] + 1} and the ${_randomlySelectedIndexes[2] + 1} words of your generated backup phrase",
         style: theme.backupPhraseInformationTextStyle.copyWith(color: theme.BreezColors.white[300]),
