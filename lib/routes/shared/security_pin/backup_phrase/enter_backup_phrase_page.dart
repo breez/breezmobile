@@ -22,7 +22,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   List<FocusNode> focusNodes = List<FocusNode>(24);
   List<TextEditingController> textEditingControllers = List<TextEditingController>(24);
   int _currentPage;
-  List<String> _mnemonicsList = List();
   bool _autoValidate;
 
   @override
@@ -63,7 +62,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
               if (_currentPage == 1) {
                 Navigator.pop(context);
               } else if (_currentPage > 1) {
-                _addToUserInput();
                 _formKey.currentState.reset();
                 FocusScope.of(context).requestFocus(new FocusNode());
                 setState(() {
@@ -156,15 +154,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     );
   }
 
-  _addToUserInput() {
-    textEditingControllers.asMap().forEach((index, textEditingController) {
-      if (exceptionAware<String>(() => _mnemonicsList.elementAt(index)) != null) {
-        _mnemonicsList.removeAt(index);
-      }
-      _mnemonicsList.insert(index, textEditingController.text.toLowerCase().trim());
-    });
-  }
-
   T exceptionAware<T>(T Function() f) {
     try {
       return f();
@@ -192,7 +181,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
               setState(() {
                 if (_formKey.currentState.validate()) {
                   _autoValidate = false;
-                  _addToUserInput();
                   if (_currentPage + 1 == 5) {
                     _validateBackupPhrase(userProfileBloc);
                   } else {
@@ -212,8 +200,9 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   Future _validateBackupPhrase(UserProfileBloc userProfileBloc) async {
-    var validateAction = ValidateBackupPhrase(_mnemonicsList.join(" "));
+    var mnemonic = textEditingControllers.map((controller) => controller.text.toLowerCase().trim()).toList().join(" ");
+    var validateAction = ValidateBackupPhrase(mnemonic);
     userProfileBloc.userActionsSink.add(validateAction);
-    return validateAction.future.then((_) => Navigator.pop(context, bip39.mnemonicToEntropy(_mnemonicsList.join(" "))));
+    return validateAction.future.then((_) => Navigator.pop(context, bip39.mnemonicToEntropy(mnemonic)));
   }
 }
