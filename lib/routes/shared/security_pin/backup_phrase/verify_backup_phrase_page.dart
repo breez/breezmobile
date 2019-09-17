@@ -30,12 +30,14 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   List _randomlySelectedIndexes = List();
   List<String> _verificationFormValues;
   List<String> _mnemonicsList;
+  bool _hasError;
 
   @override
   void initState() {
     _verificationFormValues = List();
     _mnemonicsList = widget._mnemonics.split(" ");
     _title = "Let's verify";
+    _hasError = false;
     _selectIndexes();
     super.initState();
   }
@@ -83,7 +85,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
             stream: userProfileBloc.userStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return Container(padding: EdgeInsets.only(bottom: 88),);
+                return Container(padding: EdgeInsets.only(bottom: 88));
               }
               return _buildBackupBtn(snapshot.data.securityModel, userProfileBloc, backupBloc);
             },
@@ -111,35 +113,42 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       child: new Padding(
         padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
         child: new Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(
-            _randomlySelectedIndexes.length,
-            (index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: TextFormField(
-                  decoration: new InputDecoration(
-                    labelText: "${_randomlySelectedIndexes[index] + 1}",
-                  ),
-                  style: theme.FieldTextStyle.textStyle,
-                  onSaved: (text) => _verificationFormValues.insert(index, text),
-                  validator: (text) {
-                    if (text.length == 0) {
-                      return "Please fill all fields";
-                    }
-                    if (text.toLowerCase().trim() != _mnemonicsList[_randomlySelectedIndexes[index]]) {
-                      return "False word";
-                    }
-                    return null;
-                  },
-                ),
-              );
-            },
-          ),
-        ),
+            mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.start, children: _buildVerificationFormContent()),
       ),
     );
+  }
+
+  List<Widget> _buildVerificationFormContent() {
+    List<Widget> selectedWordList = List.generate(
+      _randomlySelectedIndexes.length,
+      (index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: TextFormField(
+            decoration: new InputDecoration(
+              labelText: "${_randomlySelectedIndexes[index] + 1}",
+            ),
+            style: theme.FieldTextStyle.textStyle,
+            onSaved: (text) => _verificationFormValues.insert(index, text),
+            validator: (text) {
+              if (text.length == 0 || text.toLowerCase().trim() != _mnemonicsList[_randomlySelectedIndexes[index]]) {
+                setState(() {
+                  _hasError = true;
+                });
+              }
+              return null;
+            },
+          ),
+        );
+      },
+    );
+    if (_hasError)
+      selectedWordList
+        ..add(Text(
+          "Failed to verify words. Please write down the words and try again.",
+          style: theme.errorStyle,
+        ));
+    return selectedWordList;
   }
 
   _buildBackupBtn(SecurityModel securityModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) {
@@ -158,7 +167,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
             elevation: 0.0,
             shape: const StadiumBorder(),
             onPressed: () {
-              if (_formKey.currentState.validate()) {
+              if (_formKey.currentState.validate() && !_hasError) {
                 _createBackupPhrase(securityModel, userProfileBloc, backupBloc);
               }
             },
