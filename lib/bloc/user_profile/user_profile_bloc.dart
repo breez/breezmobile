@@ -218,9 +218,11 @@ class UserProfileBloc {
     try {
       enteredBackupPhrase = bip39.mnemonicToEntropy(action.enteredBackupPhrase);
       if (backupPhrase != enteredBackupPhrase) {
+        action.resolve(false);
         throw new Exception("Incorrect Backup Phrase");
       }
     } catch (e) {
+      action.resolve(false);
       throw new Exception(e.toString());
     }
     action.resolve(backupPhrase == enteredBackupPhrase);

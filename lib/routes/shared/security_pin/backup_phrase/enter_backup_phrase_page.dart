@@ -23,6 +23,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   List<TextEditingController> textEditingControllers = List<TextEditingController>(24);
   int _currentPage;
   bool _autoValidate;
+  bool _hasError;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     _createTextEditingControllers();
     _currentPage = 1;
     _autoValidate = false;
+    _hasError = false;
     super.initState();
   }
 
@@ -75,8 +77,10 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             style: theme.appBarTextStyle,
           ),
           elevation: 0.0),
-      body: _buildForm(),
-      bottomNavigationBar: _buildBottomBtn(userProfileBloc),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: _buildRestoreFormContent(userProfileBloc),
+      ),
     );
   }
 
@@ -85,7 +89,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       child: Form(
         key: _formKey,
         child: new Padding(
-          padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+          padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 24.0),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,6 +101,21 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
         ),
       ),
     );
+  }
+
+  List<Widget> _buildRestoreFormContent(UserProfileBloc userProfileBloc) {
+    List<Widget> restoreFormContent = List();
+    restoreFormContent..add(_buildForm());
+    if (_hasError) {
+      restoreFormContent
+        ..add(_buildErrorMessage("Failed to restore from backup. Please make sure backup phrase was correctly entered and try again."));
+    }
+    restoreFormContent..add(_buildBottomBtn(userProfileBloc));
+    return restoreFormContent;
+  }
+
+  _buildErrorMessage(String errorMessage) {
+    return Padding(padding: EdgeInsets.only(left: 16, right: 16), child: Text(errorMessage, style: theme.errorStyle));
   }
 
   TypeAheadFormField<String> _typeAheadFormField(int itemIndex) {
@@ -203,6 +222,14 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     var mnemonic = textEditingControllers.map((controller) => controller.text.toLowerCase().trim()).toList().join(" ");
     var validateAction = ValidateBackupPhrase(mnemonic);
     userProfileBloc.userActionsSink.add(validateAction);
-    return validateAction.future.then((_) => Navigator.pop(context, bip39.mnemonicToEntropy(mnemonic)));
+    return validateAction.future.then((isValid) {
+      if (isValid) {
+        Navigator.pop(context, bip39.mnemonicToEntropy(mnemonic));
+      } else {
+        setState(() {
+          _hasError = true;
+        });
+      }
+    });
   }
 }
