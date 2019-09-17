@@ -29,31 +29,36 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
-          automaticallyImplyLeading: false,
-          leading: backBtn.BackButton(
-            onPressed: () {
-              if (_currentPage == 1) {
-                Navigator.popUntil(context, ModalRoute.withName("/security"));
-              } else if (_currentPage > 1) {
-                setState(() {
-                  _currentPage--;
-                });
-              }
-            },
-          ),
-          title: new Text(
-            "Write these words ($_currentPage/2)",
-            style: theme.appBarTextStyle,
-          ),
-          elevation: 0.0),
-      body: _buildMnemonicSeedList(),
-      bottomNavigationBar: _buildNextBtn(),
+    return WillPopScope(
+      onWillPop: () => _onWillPop(context),
+      child: Scaffold(
+        appBar: new AppBar(
+            iconTheme: theme.appBarIconTheme,
+            textTheme: theme.appBarTextTheme,
+            backgroundColor: theme.BreezColors.blue[500],
+            automaticallyImplyLeading: false,
+            leading: backBtn.BackButton(
+              onPressed: () => _onWillPop(context),
+            ),
+            title: new Text(
+              "Write these words ($_currentPage/2)",
+              style: theme.appBarTextStyle,
+            ),
+            elevation: 0.0),
+        body: _buildMnemonicSeedList(),
+        bottomNavigationBar: _buildNextBtn(),
+      ),
     );
+  }
+
+  _onWillPop(BuildContext context) {
+    if (_currentPage == 1) {
+      Navigator.popUntil(context, ModalRoute.withName("/security"));
+    } else if (_currentPage > 1) {
+      setState(() {
+        _currentPage--;
+      });
+    }
   }
 
   Row _buildMnemonicSeedList() {
@@ -116,7 +121,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
             shape: const StadiumBorder(),
             onPressed: () {
               if (_currentPage + 1 == 3) {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   FadeInRoute(
                     builder: (_) => VerifyBackupPhrasePage(

@@ -55,42 +55,50 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   Widget build(BuildContext context) {
     UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    return Scaffold(
-      appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
-          automaticallyImplyLeading: false,
-          leading: backBtn.BackButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                FadeInRoute(
-                  builder: (_) => GenerateBackupPhrasePage(),
-                ),
-              );
-            },
-          ),
-          title: new Text(
-            _title,
-            style: theme.appBarTextStyle,
-          ),
-          elevation: 0.0),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          _buildForm(),
-          _buildInstructions(),
-          StreamBuilder<BreezUserModel>(
-            stream: userProfileBloc.userStream,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Container(padding: EdgeInsets.only(bottom: 88));
-              }
-              return _buildBackupBtn(snapshot.data.securityModel, userProfileBloc, backupBloc);
-            },
-          )
-        ],
+    return WillPopScope(
+      onWillPop: () => Navigator.pushReplacement(
+        context,
+        FadeInRoute(
+          builder: (_) => GenerateBackupPhrasePage(),
+        ),
+      ),
+      child: Scaffold(
+        appBar: new AppBar(
+            iconTheme: theme.appBarIconTheme,
+            textTheme: theme.appBarTextTheme,
+            backgroundColor: theme.BreezColors.blue[500],
+            automaticallyImplyLeading: false,
+            leading: backBtn.BackButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  FadeInRoute(
+                    builder: (_) => GenerateBackupPhrasePage(),
+                  ),
+                );
+              },
+            ),
+            title: new Text(
+              _title,
+              style: theme.appBarTextStyle,
+            ),
+            elevation: 0.0),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            _buildForm(),
+            _buildInstructions(),
+            StreamBuilder<BreezUserModel>(
+              stream: userProfileBloc.userStream,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Container(padding: EdgeInsets.only(bottom: 88));
+                }
+                return _buildBackupBtn(snapshot.data.securityModel, userProfileBloc, backupBloc);
+              },
+            )
+          ],
+        ),
       ),
     );
   }
