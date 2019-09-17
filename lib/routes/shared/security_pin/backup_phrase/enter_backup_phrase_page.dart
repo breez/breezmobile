@@ -118,7 +118,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       },
       onSuggestionSelected: (suggestion) {
         textEditingControllers[itemIndex].text = suggestion;
-        FocusScope.of(context).requestFocus((itemIndex <= 23) ? focusNodes[itemIndex + 1] : FocusNode());
+        FocusScope.of(context).requestFocus((itemIndex < 23) ? focusNodes[itemIndex + 1] : FocusNode());
       },
     );
   }
@@ -144,7 +144,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       textInputAction: TextInputAction.next,
       onSubmitted: (text) {
         textEditingControllers[itemIndex].text = text;
-        FocusScope.of(context).requestFocus(focusNodes[itemIndex + 1]);
+        FocusScope.of(context).requestFocus((itemIndex < 23) ? focusNodes[itemIndex + 1] : FocusNode());
       },
       focusNode: focusNodes[itemIndex],
       decoration: new InputDecoration(
