@@ -9,7 +9,6 @@ import 'package:breez/routes/shared/security_pin/backup_phrase/generate_backup_p
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
@@ -199,6 +198,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       SecurityModel oldModel, SecurityModel newModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
     var action = UpdateSecurityModel(newModel);
     userProfileBloc.userActionsSink.add(action);
+    Navigator.popUntil(context, ModalRoute.withName("/security"));
     action.future.then((_) {
       backupBloc.backupNowSink.add(true);
       backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
@@ -206,10 +206,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           showDialog(
               barrierDismissible: false,
               context: context,
-              builder: (ctx) => buildBackupInProgressDialog(ctx, backupBloc.backupStateStream)).then((_) {
-            Navigator.popUntil(context, ModalRoute.withName("/security"));
-            showFlushbar(context, message: "Backup was successfully completed!");
-          });
+              builder: (ctx) => buildBackupInProgressDialog(ctx, backupBloc.backupStateStream));
         }
       });
     }).catchError((err) {
