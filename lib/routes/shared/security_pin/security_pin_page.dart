@@ -76,14 +76,15 @@ class SecurityPageState extends State<SecurityPage> {
 
   List<Widget> _buildSecurityPINTiles(SecurityModel securityModel) {
     List<Widget> _tiles = <Widget>[_buildDisablePINTile(securityModel)];
-    if (securityModel.requiresPin)
+    if (securityModel.requiresPin) {
       _tiles
-        ..add(Divider())
-        ..add(_buildGenerateBackupPhraseTile(securityModel))
         ..add(Divider())
         ..add(_buildPINIntervalTile(securityModel))
         ..add(Divider())
-        ..add(_buildChangePINTile(securityModel));        
+        ..add(_buildChangePINTile(securityModel))
+        ..add(Divider());
+    }
+    _tiles..add(_buildGenerateBackupPhraseTile(securityModel));
     return _tiles;
   }
 
@@ -91,7 +92,7 @@ class SecurityPageState extends State<SecurityPage> {
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Generate Backup Phrase",
+          "Use Backup Phrase",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -194,7 +195,11 @@ class SecurityPageState extends State<SecurityPage> {
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
-                  _updateSecurityModel(securityModel, SecurityModel.initial());                  
+                  _updateSecurityModel(
+                      securityModel,
+                      securityModel.backupKeyType != BackupKeyType.PHRASE
+                          ? SecurityModel.initial()
+                          : SecurityModel.initial().copyWith(backupKeyType: BackupKeyType.PHRASE));
                 }
               },
             )
