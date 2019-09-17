@@ -82,7 +82,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           StreamBuilder<BreezUserModel>(
             stream: userProfileBloc.userStream,
             builder: (context, snapshot) {
-              if (snapshot.hasData) {
+              if (!snapshot.hasData) {
                 return Container(padding: EdgeInsets.only(bottom: 88),);
               }
               return _buildBackupBtn(snapshot.data.securityModel, userProfileBloc, backupBloc);
@@ -97,7 +97,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     return Padding(
       padding: EdgeInsets.only(left: 72, right: 72),
       child: Text(
-        "Type the ${_randomlySelectedIndexes[0] + 1}, ${_randomlySelectedIndexes[1] + 1} and the ${_randomlySelectedIndexes[2] + 1} words of your generated backup phrase",
+        "Type the ${_randomlySelectedIndexes[0] + 1}, ${_randomlySelectedIndexes[1] + 1} and the ${_randomlySelectedIndexes[2] + 1} words of your generated backup phrase.",
         style: theme.backupPhraseInformationTextStyle.copyWith(color: theme.BreezColors.white[300]),
         textAlign: TextAlign.center,
       ),
