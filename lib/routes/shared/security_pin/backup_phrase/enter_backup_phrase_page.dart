@@ -233,6 +233,10 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
           _hasError = true;
         });
       }
+    }).catchError((err) {
+      setState(() {
+        _hasError = true;
+      });
     });
   }
 }
