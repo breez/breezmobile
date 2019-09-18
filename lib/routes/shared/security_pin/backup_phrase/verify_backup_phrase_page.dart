@@ -174,6 +174,10 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
             elevation: 0.0,
             shape: const StadiumBorder(),
             onPressed: () {
+              // reset state
+              setState(() {
+                _hasError = false;
+              });
               if (_formKey.currentState.validate() && !_hasError) {
                 _createBackupPhrase(securityModel, userProfileBloc, backupBloc);
               }
