@@ -3,6 +3,9 @@ import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/security_model.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/security_pin/backup_phrase/enter_backup_phrase_page.dart';
 import 'package:breez/routes/shared/security_pin/restore_pin.dart';
@@ -15,11 +18,12 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
+  final BreezUserModel _user;
   final UserProfileBloc _registrationBloc;
   final BackupBloc _backupBloc;
   final bool _isPos;
 
-  InitialWalkthroughPage(this._registrationBloc, this._backupBloc, this._isPos);
+  InitialWalkthroughPage(this._user, this._registrationBloc, this._backupBloc, this._isPos);
 
   @override
   State createState() => new InitialWalkthroughPageState();
@@ -36,6 +40,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool _registered = false;
+  UpdateSecurityModel _updateSecurityModelAction;
 
   @override
   void initState() {
@@ -44,6 +49,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     _instructions = widget._isPos ?
     "The simplest, fastest & safest way\nto earn bitcoin" :
     "The simplest, fastest & safest way\nto spend your bitcoins";
+    _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.NONE));
 
     _multipleRestoreSubscription =
         widget._backupBloc.multipleRestoreStream.listen((options) async {
@@ -69,10 +75,13 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         if (toRestore.encrypted) {
           if (toRestore.encryptionType == "Mnemonics") {
             restoreKey = await getBackupPhrase();
+            if (restoreKey != null) _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE));
           } else if (toRestore.encryptionType == "Pin") {
             restoreKey = await getRestorePIN();
+            if (restoreKey != null) _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PIN));
           }
           if (restoreKey == null) {
+            _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.NONE));
             return;
           }
         }
@@ -94,7 +103,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         widget._backupBloc.restoreFinishedStream.listen((restored) {
       popToWalkthrough();
       if (restored) {
-        _proceedToRegister();
+        widget._registrationBloc.userActionsSink.add(_updateSecurityModelAction);
+        _updateSecurityModelAction.future.then((_) {
+          _proceedToRegister();
+        });
       }
     }, onError: (error) {
       popToWalkthrough(
@@ -230,7 +242,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                               return BetaWarningDialog();
                             }).then((approved) {
                           if (approved) {
-                            _proceedToRegister();
+                            widget._registrationBloc.userActionsSink.add(_updateSecurityModelAction);
+                            _updateSecurityModelAction.future.then((_) {
+                              _proceedToRegister();
+                            });
                           }
                         });
                       },
