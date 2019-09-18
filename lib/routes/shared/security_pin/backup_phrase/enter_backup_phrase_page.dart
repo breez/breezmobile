@@ -77,27 +77,30 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             style: theme.appBarTextStyle,
           ),
           elevation: 0.0),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: _buildRestoreFormContent(userProfileBloc),
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height - kToolbarHeight - MediaQuery.of(context).padding.top,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: _buildRestoreFormContent(userProfileBloc),
+          ),
+        ),
       ),
     );
   }
 
   _buildForm() {
-    return SingleChildScrollView(
-      child: Form(
-        key: _formKey,
-        child: new Padding(
-          padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(6, (index) {
-              var itemIndex = index + (6 * (_currentPage - 1));
-              return _typeAheadFormField(itemIndex);
-            }),
-          ),
+    return Form(
+      key: _formKey,
+      child: new Padding(
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List.generate(6, (index) {
+            var itemIndex = index + (6 * (_currentPage - 1));
+            return _typeAheadFormField(itemIndex);
+          }),
         ),
       ),
     );
