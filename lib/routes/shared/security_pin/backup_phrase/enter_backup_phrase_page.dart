@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -223,20 +222,8 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
 
   Future _validateBackupPhrase(UserProfileBloc userProfileBloc) async {
     var mnemonic = textEditingControllers.map((controller) => controller.text.toLowerCase().trim()).toList().join(" ");
-    var validateAction = ValidateBackupPhrase(mnemonic);
-    userProfileBloc.userActionsSink.add(validateAction);
-    return validateAction.future.then((isValid) {
-      if (isValid) {
-        Navigator.pop(context, bip39.mnemonicToEntropy(mnemonic));
-      } else {
-        setState(() {
-          _hasError = true;
-        });
-      }
-    }).catchError((err) {
       setState(() {
         _hasError = true;
       });
-    });
   }
 }

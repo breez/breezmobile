@@ -25,9 +25,3 @@ class CreateBackupPhrase extends AsyncAction {
 
   CreateBackupPhrase(this.backupPhrase);
 }
-
-class ValidateBackupPhrase extends AsyncAction {
-  final String enteredBackupPhrase;
-
-  ValidateBackupPhrase(this.enteredBackupPhrase);
-}
