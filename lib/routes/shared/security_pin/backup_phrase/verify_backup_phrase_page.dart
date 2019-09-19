@@ -47,21 +47,26 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
               style: theme.appBarTextStyle,
             ),
             elevation: 0.0),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            _buildForm(),
-            _buildInstructions(),
-            StreamBuilder<BreezUserModel>(
-              stream: userProfileBloc.userStream,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Container(padding: EdgeInsets.only(bottom: 88));
-                }
-                return _buildBackupBtn(snapshot.data.securityModel, userProfileBloc, backupBloc);
-              },
-            )
-          ],
+        body: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height - kToolbarHeight - MediaQuery.of(context).padding.top,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _buildForm(),
+                _buildInstructions(),
+                StreamBuilder<BreezUserModel>(
+                  stream: userProfileBloc.userStream,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container(padding: EdgeInsets.only(bottom: 88));
+                    }
+                    return _buildBackupBtn(snapshot.data.securityModel, userProfileBloc, backupBloc);
+                  },
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
