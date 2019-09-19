@@ -16,6 +16,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/widgets/error_dialog.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
   final BreezUserModel _user;
@@ -109,6 +110,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         widget._registrationBloc.userActionsSink.add(_updateSecurityModelAction);
         _updateSecurityModelAction.future.then((_) {
           _proceedToRegister();
+        }).catchError((err) {
+          promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
         });
       }
     }, onError: (error) {
@@ -256,6 +259,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                             widget._registrationBloc.userActionsSink.add(_updateSecurityModelAction);
                             _updateSecurityModelAction.future.then((_) {
                               _proceedToRegister();
+                            }).catchError((err) {
+                              promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
                             });
                           }
                         });
