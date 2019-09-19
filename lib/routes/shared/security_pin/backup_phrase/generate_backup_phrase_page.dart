@@ -15,8 +15,8 @@ class GenerateBackupPhrasePage extends StatefulWidget {
 }
 
 class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
+  PageController _pageController = new PageController();
   List<String> _mnemonicsList;
-
   int _currentPage;
 
   @override
@@ -37,7 +37,15 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
               style: theme.appBarTextStyle,
             ),
             elevation: 0.0),
-        body: _buildMnemonicSeedList(),
+        body: PageView(
+          controller: _pageController,
+          children: <Widget>[_buildMnemonicSeedList(0), _buildMnemonicSeedList(1)],
+          onPageChanged: (page) {
+            setState(() {
+              _currentPage = page + 1;
+            });
+          },
+        ),
         bottomNavigationBar: _buildNextBtn(),
       ),
     );
@@ -45,8 +53,8 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
 
   @override
   void initState() {
-    _currentPage = widget.page ?? 1;
     _mnemonicsList = widget.mnemonics.split(" ");
+    _currentPage = _pageController.hasClients ? _pageController.page.toInt() + 1 : 1;
     super.initState();
   }
 
@@ -66,29 +74,18 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     );
   }
 
-  Row _buildMnemonicSeedList() {
+  Row _buildMnemonicSeedList(int page) {
     return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
       Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
-        children: List<Widget>.generate(
-          _mnemonicsList.length ~/ 4,
-          (index) => _buildMnemonicItem(
-            index + (_mnemonicsList.length ~/ 2 * (_currentPage - 1)),
-            _mnemonicsList[index + (_mnemonicsList.length ~/ 2 * (_currentPage - 1))],
-          ),
-        ),
+        children: List<Widget>.generate(6, (index) => _buildMnemonicItem(index + (12 * (page)), _mnemonicsList[index + (12 * (page))])),
       ),
       Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
-        children: List<Widget>.generate(
-          _mnemonicsList.length ~/ 4,
-          (index) => _buildMnemonicItem(
-            index + (_mnemonicsList.length ~/ 2 * (_currentPage - 1)) + _mnemonicsList.length ~/ 4,
-            _mnemonicsList[index + (_mnemonicsList.length ~/ 2 * (_currentPage - 1)) + _mnemonicsList.length ~/ 4],
-          ),
-        ),
+        children:
+            List<Widget>.generate(6, (index) => _buildMnemonicItem(index + (12 * (page)) + 6, _mnemonicsList[index + 6 + 12 * (page)])),
       ),
     ]);
   }
@@ -109,16 +106,18 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
             elevation: 0.0,
             shape: const StadiumBorder(),
             onPressed: () {
-              if (_currentPage + 1 == 3) {
+              if (_currentPage == 2) {
                 Navigator.push(
                   context,
                   FadeInRoute(
-                    builder: (_) => VerifyBackupPhrasePage(_mnemonics),
+                    builder: (_) => VerifyBackupPhrasePage(widget.mnemonics),
                   ),
                 );
               } else {
-                setState(() {
-                  _currentPage++;
+                _pageController.nextPage(duration: Duration(milliseconds: 400), curve: Curves.easeInOut).whenComplete(() {
+                  setState(() {
+                    _currentPage = _pageController.page.toInt() + 1;
+                  });
                 });
               }
             },
@@ -131,9 +130,11 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   _onWillPop(BuildContext context) {
     if (_currentPage == 1) {
       Navigator.popUntil(context, ModalRoute.withName("/security"));
-    } else if (_currentPage > 1) {
-      setState(() {
-        _currentPage--;
+    } else {
+      _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut).whenComplete(() {
+        setState(() {
+          _currentPage = _pageController.page.toInt() + 1;
+        });
       });
     }
   }
