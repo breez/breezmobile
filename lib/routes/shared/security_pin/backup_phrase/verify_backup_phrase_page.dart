@@ -15,9 +15,7 @@ import 'package:flutter/material.dart';
 class VerifyBackupPhrasePage extends StatefulWidget {
   final String _mnemonics;
 
-  VerifyBackupPhrasePage(
-    this._mnemonics,
-  );
+  VerifyBackupPhrasePage(this._mnemonics);
 
   @override
   VerifyBackupPhrasePageState createState() => new VerifyBackupPhrasePageState();
@@ -25,42 +23,16 @@ class VerifyBackupPhrasePage extends StatefulWidget {
 
 class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
-  String _title;
   List _randomlySelectedIndexes = List();
-  List<String> _verificationFormValues;
   List<String> _mnemonicsList;
   bool _hasError;
-
-  @override
-  void initState() {
-    _verificationFormValues = List();
-    _mnemonicsList = widget._mnemonics.split(" ");
-    _title = "Let's verify";
-    _hasError = false;
-    _selectIndexes();
-    super.initState();
-  }
-
-  _selectIndexes() {
-    List list = List.generate(23, (i) => i);
-    list.shuffle();
-    for (var i = 0; i < 3; i++) {
-      _randomlySelectedIndexes.add(list[i]);
-    }
-    _randomlySelectedIndexes.sort();
-  }
 
   @override
   Widget build(BuildContext context) {
     UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     return WillPopScope(
-      onWillPop: () => Navigator.pushReplacement(
-        context,
-        FadeInRoute(
-          builder: (_) => GenerateBackupPhrasePage(),
-        ),
-      ),
+      onWillPop: () => _onWillPop(context),
       child: Scaffold(
         appBar: new AppBar(
             iconTheme: theme.appBarIconTheme,
@@ -68,17 +40,10 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
             backgroundColor: theme.BreezColors.blue[500],
             automaticallyImplyLeading: false,
             leading: backBtn.BackButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  FadeInRoute(
-                    builder: (_) => GenerateBackupPhrasePage(),
-                  ),
-                );
-              },
+              onPressed: () => _onWillPop(context),
             ),
             title: new Text(
-              _title,
+              "Let's verify",
               style: theme.appBarTextStyle,
             ),
             elevation: 0.0),
@@ -102,60 +67,12 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     );
   }
 
-  Padding _buildInstructions() {
-    return Padding(
-      padding: EdgeInsets.only(left: 72, right: 72),
-      child: Text(
-        "Please type words number ${_randomlySelectedIndexes[0] + 1}, ${_randomlySelectedIndexes[1] + 1} and ${_randomlySelectedIndexes[2] + 1} of the generated backup phrase.",
-        style: theme.backupPhraseInformationTextStyle.copyWith(color: theme.BreezColors.white[300]),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  _buildForm() {
-    return Form(
-      key: _formKey,
-      onChanged: () => _formKey.currentState.save(),
-      child: new Padding(
-        padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-        child: new Column(
-            mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.start, children: _buildVerificationFormContent()),
-      ),
-    );
-  }
-
-  List<Widget> _buildVerificationFormContent() {
-    List<Widget> selectedWordList = List.generate(
-      _randomlySelectedIndexes.length,
-      (index) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: TextFormField(
-            decoration: new InputDecoration(
-              labelText: "${_randomlySelectedIndexes[index] + 1}",
-            ),
-            style: theme.FieldTextStyle.textStyle,
-            onSaved: (text) => _verificationFormValues.insert(index, text),
-            validator: (text) {
-              if (text.length == 0 || text.toLowerCase().trim() != _mnemonicsList[_randomlySelectedIndexes[index]]) {
-                setState(() {
-                  _hasError = true;
-                });
-              }
-              return null;
-            },
-          ),
-        );
-      },
-    );
-    if (_hasError)
-      selectedWordList
-        ..add(Text(
-          "Failed to verify words. Please write down the words and try again.",
-          style: theme.errorStyle,
-        ));
-    return selectedWordList;
+  @override
+  void initState() {
+    _mnemonicsList = widget._mnemonics.split(" ");
+    _hasError = false;
+    _selectIndexes();
+    super.initState();
   }
 
   _buildBackupBtn(SecurityModel securityModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) {
@@ -188,6 +105,61 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     );
   }
 
+  _buildForm() {
+    return Form(
+      key: _formKey,
+      onChanged: () => _formKey.currentState.save(),
+      child: new Padding(
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+        child: new Column(
+            mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.start, children: _buildVerificationFormContent()),
+      ),
+    );
+  }
+
+  Padding _buildInstructions() {
+    return Padding(
+      padding: EdgeInsets.only(left: 72, right: 72),
+      child: Text(
+        "Please type words number ${_randomlySelectedIndexes[0] + 1}, ${_randomlySelectedIndexes[1] + 1} and ${_randomlySelectedIndexes[2] + 1} of the generated backup phrase.",
+        style: theme.backupPhraseInformationTextStyle.copyWith(color: theme.BreezColors.white[300]),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  List<Widget> _buildVerificationFormContent() {
+    List<Widget> selectedWordList = List.generate(
+      _randomlySelectedIndexes.length,
+      (index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: TextFormField(
+            decoration: new InputDecoration(
+              labelText: "${_randomlySelectedIndexes[index] + 1}",
+            ),
+            style: theme.FieldTextStyle.textStyle,
+            validator: (text) {
+              if (text.length == 0 || text.toLowerCase().trim() != _mnemonicsList[_randomlySelectedIndexes[index]]) {
+                setState(() {
+                  _hasError = true;
+                });
+              }
+              return null;
+            },
+          ),
+        );
+      },
+    );
+    if (_hasError)
+      selectedWordList
+        ..add(Text(
+          "Failed to verify words. Please write down the words and try again.",
+          style: theme.errorStyle,
+        ));
+    return selectedWordList;
+  }
+
   Future _createBackupPhrase(SecurityModel securityModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
     var createBackupPhraseAction = CreateBackupPhrase(widget._mnemonics);
     userProfileBloc.userActionsSink.add(createBackupPhraseAction);
@@ -196,6 +168,27 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     }).catchError((err) {
       promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
     });
+  }
+
+  Future<bool> _onWillPop(BuildContext context) {
+    return Navigator.pushReplacement(
+      context,
+      FadeInRoute(
+        builder: (_) => GenerateBackupPhrasePage(
+          mnemonics: widget._mnemonics,
+          page: 2,
+        ),
+      ),
+    );
+  }
+
+  _selectIndexes() {
+    List list = List.generate(23, (i) => i);
+    list.shuffle();
+    for (var i = 0; i < 3; i++) {
+      _randomlySelectedIndexes.add(list[i]);
+    }
+    _randomlySelectedIndexes.sort();
   }
 
   Future _updateSecurityModel(

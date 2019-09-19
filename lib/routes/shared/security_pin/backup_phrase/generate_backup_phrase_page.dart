@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 import 'verify_backup_phrase_page.dart';
 
 class GenerateBackupPhrasePage extends StatefulWidget {
-  GenerateBackupPhrasePage();
+  final String mnemonics;
+  final int page;
+
+  GenerateBackupPhrasePage({this.mnemonics, this.page});
 
   @override
   GenerateBackupPhrasePageState createState() => new GenerateBackupPhrasePageState();
@@ -18,14 +21,6 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   List<String> _mnemonicsList;
 
   int _currentPage;
-
-  @override
-  void initState() {
-    _currentPage = 1;
-    _mnemonics = bip39.generateMnemonic(strength: 256);
-    _mnemonicsList = _mnemonics.split(" ");
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +46,28 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     );
   }
 
-  _onWillPop(BuildContext context) {
-    if (_currentPage == 1) {
-      Navigator.popUntil(context, ModalRoute.withName("/security"));
-    } else if (_currentPage > 1) {
-      setState(() {
-        _currentPage--;
-      });
-    }
+  @override
+  void initState() {
+    _currentPage = widget.page ?? 1;
+    _mnemonics = widget.mnemonics ?? bip39.generateMnemonic(strength: 256);
+    _mnemonicsList = _mnemonics.split(" ");
+    super.initState();
+  }
+
+  _buildMnemonicItem(int index, String mnemonic) {
+    return Center(
+      child: Container(
+        height: 48,
+        width: 150,
+        decoration: BoxDecoration(border: Border.all(color: Colors.white30), borderRadius: BorderRadius.all(Radius.circular(4))),
+        child: Center(
+          child: Text(
+            '${index + 1}. $mnemonic',
+            style: theme.mnemonicsTextStyle,
+          ),
+        ),
+      ),
+    );
   }
 
   Row _buildMnemonicSeedList() {
@@ -88,22 +97,6 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     ]);
   }
 
-  _buildMnemonicItem(int index, String mnemonic) {
-    return Center(
-      child: Container(
-        height: 48,
-        width: 150,
-        decoration: BoxDecoration(border: Border.all(color: Colors.white30), borderRadius: BorderRadius.all(Radius.circular(4))),
-        child: Center(
-          child: Text(
-            '${index + 1}. $mnemonic',
-            style: theme.mnemonicsTextStyle,
-          ),
-        ),
-      ),
-    );
-  }
-
   _buildNextBtn() {
     return Padding(
       padding: new EdgeInsets.only(bottom: 40),
@@ -121,12 +114,10 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
             shape: const StadiumBorder(),
             onPressed: () {
               if (_currentPage + 1 == 3) {
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   FadeInRoute(
-                    builder: (_) => VerifyBackupPhrasePage(
-                      _mnemonics,
-                    ),
+                    builder: (_) => VerifyBackupPhrasePage(_mnemonics),
                   ),
                 );
               } else {
@@ -139,5 +130,15 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
         )
       ]),
     );
+  }
+
+  _onWillPop(BuildContext context) {
+    if (_currentPage == 1) {
+      Navigator.popUntil(context, ModalRoute.withName("/security"));
+    } else if (_currentPage > 1) {
+      setState(() {
+        _currentPage--;
+      });
+    }
   }
 }
