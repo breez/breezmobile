@@ -200,7 +200,10 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             shape: const StadiumBorder(),
             onPressed: () {
               setState(() {
-                if (_formKey.currentState.validate()) {
+                setState(() {
+                  _hasError = false;
+                });
+                if (_formKey.currentState.validate() && !_hasError) {
                   _autoValidate = false;
                   if (_currentPage + 1 == 5) {
                     _validateBackupPhrase(userProfileBloc);
@@ -222,8 +225,15 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
 
   Future _validateBackupPhrase(UserProfileBloc userProfileBloc) async {
     var mnemonic = textEditingControllers.map((controller) => controller.text.toLowerCase().trim()).toList().join(" ");
+    String enteredBackupPhrase;
+    try {
+      enteredBackupPhrase = bip39.mnemonicToEntropy(mnemonic);
+    } catch (e) {
       setState(() {
         _hasError = true;
       });
+      throw new Exception(e.toString());
+    }
+    return Navigator.pop(context, enteredBackupPhrase);
   }
 }

@@ -75,7 +75,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         if (toRestore.encrypted) {
           if (toRestore.encryptionType == "Mnemonics") {
             restoreKey = await getBackupPhrase();
-            if (restoreKey != null) _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE));
+            if (restoreKey != null) {
+              _createBackupPhrase(restoreKey);
+              _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE));
+            }
           } else if (toRestore.encryptionType == "Pin") {
             restoreKey = await getRestorePIN();
             if (restoreKey != null) _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PIN));
@@ -131,6 +134,14 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         return EnterBackupPhrasePage();
       },
     ));
+  }
+
+  Future _createBackupPhrase(String _mnemonics) async {
+    var createBackupPhraseAction = CreateBackupPhrase(_mnemonics);
+    widget._registrationBloc.userActionsSink.add(createBackupPhraseAction);
+    createBackupPhraseAction.future.catchError((err) {
+      promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+    });
   }
 
   Future<String> getRestorePIN() {
