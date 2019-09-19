@@ -142,8 +142,14 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   Future _createBackupPhrase(String _mnemonics) async {
     var createBackupPhraseAction = CreateBackupPhrase(_mnemonics);
     widget._registrationBloc.userActionsSink.add(createBackupPhraseAction);
-    createBackupPhraseAction.future.catchError((err) {
-      promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+    return createBackupPhraseAction.future.catchError((err) {
+      promptError(
+          context,
+          "Internal Error",
+          Text(
+            err.toString(),
+            style: theme.alertStyle,
+          ));
     });
   }
 
