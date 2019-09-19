@@ -5,11 +5,9 @@ import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
-import 'package:breez/routes/shared/security_pin/backup_phrase/generate_backup_phrase_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
 class VerifyBackupPhrasePage extends StatefulWidget {
@@ -31,41 +29,36 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   Widget build(BuildContext context) {
     UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    return WillPopScope(
-      onWillPop: () => _onWillPop(context),
-      child: Scaffold(
-        appBar: new AppBar(
-            iconTheme: theme.appBarIconTheme,
-            textTheme: theme.appBarTextTheme,
-            backgroundColor: theme.BreezColors.blue[500],
-            automaticallyImplyLeading: false,
-            leading: backBtn.BackButton(
-              onPressed: () => _onWillPop(context),
-            ),
-            title: new Text(
-              "Let's verify",
-              style: theme.appBarTextStyle,
-            ),
-            elevation: 0.0),
-        body: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height - kToolbarHeight - MediaQuery.of(context).padding.top,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                _buildForm(),
-                _buildInstructions(),
-                StreamBuilder<BreezUserModel>(
-                  stream: userProfileBloc.userStream,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(padding: EdgeInsets.only(bottom: 88));
-                    }
-                    return _buildBackupBtn(snapshot.data.securityModel, userProfileBloc, backupBloc);
-                  },
-                )
-              ],
-            ),
+    return Scaffold(
+      appBar: new AppBar(
+          iconTheme: theme.appBarIconTheme,
+          textTheme: theme.appBarTextTheme,
+          backgroundColor: theme.BreezColors.blue[500],
+          automaticallyImplyLeading: false,
+          leading: backBtn.BackButton(),
+          title: new Text(
+            "Let's verify",
+            style: theme.appBarTextStyle,
+          ),
+          elevation: 0.0),
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height - kToolbarHeight - MediaQuery.of(context).padding.top,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              _buildForm(),
+              _buildInstructions(),
+              StreamBuilder<BreezUserModel>(
+                stream: userProfileBloc.userStream,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container(padding: EdgeInsets.only(bottom: 88));
+                  }
+                  return _buildBackupBtn(snapshot.data.securityModel, userProfileBloc, backupBloc);
+                },
+              )
+            ],
           ),
         ),
       ),
@@ -173,18 +166,6 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     }).catchError((err) {
       promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
     });
-  }
-
-  Future<bool> _onWillPop(BuildContext context) {
-    return Navigator.pushReplacement(
-      context,
-      FadeInRoute(
-        builder: (_) => GenerateBackupPhrasePage(
-          mnemonics: widget._mnemonics,
-          page: 2,
-        ),
-      ),
-    );
   }
 
   _selectIndexes() {
