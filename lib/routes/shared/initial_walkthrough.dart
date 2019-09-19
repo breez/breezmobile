@@ -256,8 +256,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                               return BetaWarningDialog();
                             }).then((approved) {
                           if (approved) {
-                            widget._registrationBloc.userActionsSink.add(_updateSecurityModelAction);
-                            _updateSecurityModelAction.future.then((_) {
+                            UpdateSecurityModel updateSecurityModelAction = UpdateSecurityModel(SecurityModel.initial());
+                            widget._registrationBloc.userActionsSink.add(updateSecurityModelAction);
+                            updateSecurityModelAction.future.then((_) {
                               _proceedToRegister();
                             }).catchError((err) {
                               promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
