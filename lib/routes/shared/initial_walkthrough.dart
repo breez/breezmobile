@@ -77,7 +77,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           if (toRestore.encryptionType == "Mnemonics") {
             restoreKey = await getBackupPhrase();
             if (restoreKey != null) {
-              _createBackupPhrase(restoreKey);
+              await _createBackupPhrase(restoreKey);
               _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE));
             }
           } else if (toRestore.encryptionType == "Pin") {
