@@ -11,6 +11,11 @@ import Flutter
 import Bindings
 import GoogleSignIn
 
+protocol BackupAuthenticatorProtocol {
+    func backupProviderSignIn(silent: Bool, in err: NSErrorPointer) -> String;
+    func signOut();
+}
+
 class EmptyLogger : NSObject, BindingsLoggerProtocol {
     func log(_ msg: String?, lvl: String?) {
         print(msg!);
@@ -21,7 +26,8 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     static var logger : BindingsLoggerProtocol = EmptyLogger();
     
     var eventSink : FlutterEventSink?;
-    var googleAuth = GoogleAuthenticator();
+    var backupAuthenticators : Dictionary<String, BackupAuthenticatorProtocol> = ["gdrive":GoogleAuthenticator(), "icloud": iCloudAuthenticator()];
+    var backupProvider = "icloud";
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let BREEZ_CHANNEL_NAME = "com.breez.client/breez_lib";
@@ -45,6 +51,11 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if (call.method == "init") {
             initBreez(call: call, result: result);
+            return;
+        }
+        
+        if (call.method == "setBackupProvider") {
+            setBackupProvider(call: call, result: result);
             return;
         }
        
@@ -80,6 +91,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             let tempDir : String = args["tempDir"] as! String;
             let workingDir : String = args["workingDir"] as! String;
             var err : NSError?
+            BindingsRegisterNativeBackupProvider("icloud", iCloudBackupProvider());
             if (BindingsInit(tempDir, workingDir, self, &err)){
                 var error : NSError?;
                 Breez.logger = BindingsGetLogger(workingDir, &error)!;
@@ -101,20 +113,31 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
         result(FlutterError(code: "Missing Argument", message: "Expecting a dictionary", details: nil));
     }
     
+    func setBackupProvider(call: FlutterMethodCall, result: @escaping FlutterResult){
+        if let args = call.arguments as? Dictionary<String,Any> {
+            let providerName : String = args["argument"] as! String;
+            self.backupProvider = providerName;
+            result(true);
+        }
+        result(FlutterError(code: "Missing Argument", message: "Expecting a dictionary", details: nil));
+    }
+    
     func signIn(call: FlutterMethodCall, result: @escaping FlutterResult){
         DispatchQueue.global().async {
-            do {
-                let _ = try self.googleAuth.getAccessToken(silentOnly: false)
-                result(true);
-            } catch {
+            let errorPtr: NSErrorPointer = nil
+            var _ = self.backupAuthenticators[self.backupProvider]?.backupProviderSignIn(silent: false, in: errorPtr);
+            if let _ = errorPtr?.pointee {
                 result(FlutterError(code: "AuthError", message: "Failed to signIn breez library", details: ""));
+                return;
             }
+            
+            result(true);
         }
     }
     
     func signOut(call: FlutterMethodCall, result: @escaping FlutterResult){
         DispatchQueue.global().async {
-            self.googleAuth.signOut();
+            self.backupAuthenticators[self.backupProvider]?.signOut();
             result(true);
         }
     }
@@ -177,21 +200,11 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     
     // BindingsAppServicesProtocol protocol
     func backupProviderName() -> String {
-        return "gdrive"
+        return self.backupProvider;
     }
-
-    func backupProviderSignIn() throws -> String {
-        return try googleAuth.getAccessToken(silentOnly: true);
-    }
-    
+   
     func backupProviderSign(in err: NSErrorPointer) -> String {
-        do {
-            return try googleAuth.getAccessToken(silentOnly: true);
-        }
-        catch {
-            err?.pointee = NSError(domain: "AuthError " + error.localizedDescription, code: 0, userInfo: nil);
-        }
-        return "";
+        return self.backupAuthenticators[self.backupProvider]!.backupProviderSignIn(silent: true, in: err);
     }
 
     func notify(_ notificationEvent: Data?) {

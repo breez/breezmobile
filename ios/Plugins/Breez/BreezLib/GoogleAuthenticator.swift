@@ -8,8 +8,9 @@
 
 import Foundation
 import GoogleSignIn
+import Bindings;
 
-class GoogleAuthenticator : NSObject {
+class GoogleAuthenticator : NSObject, BackupAuthenticatorProtocol {
     private var queue : DispatchQueue = DispatchQueue(label: "com.breez.client.gdrive.oauth")
     private var inProgressOperation : SignInOperation?
     
@@ -43,6 +44,17 @@ class GoogleAuthenticator : NSObject {
         }
         return signInOperation.accessToken!;
     }
+    
+    func backupProviderSignIn(silent: Bool, in err: NSErrorPointer) -> String {
+        do {
+            return try self.getAccessToken(silentOnly: silent);
+        }
+        catch {
+            err?.pointee = NSError(domain: "AuthError " + error.localizedDescription, code: 0, userInfo: nil);
+        }
+        return "";
+    }
+    
 }
 
 class SignInOperation : Operation, GIDSignInDelegate {
@@ -132,5 +144,4 @@ class SignInOperation : Operation, GIDSignInDelegate {
         self.state = .finished;
         self.didChangeValue(forKey: "isFinished");
     }
-    
 }
