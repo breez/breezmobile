@@ -1,4 +1,3 @@
-import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
@@ -8,16 +7,14 @@ import 'verify_backup_phrase_page.dart';
 
 class GenerateBackupPhrasePage extends StatefulWidget {
   final String mnemonics;
-  final int page;
 
-  GenerateBackupPhrasePage({this.mnemonics, this.page});
+  GenerateBackupPhrasePage(this.mnemonics);
 
   @override
   GenerateBackupPhrasePageState createState() => new GenerateBackupPhrasePageState();
 }
 
 class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
-  String _mnemonics;
   List<String> _mnemonicsList;
 
   int _currentPage;
@@ -49,8 +46,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   @override
   void initState() {
     _currentPage = widget.page ?? 1;
-    _mnemonics = widget.mnemonics ?? bip39.generateMnemonic(strength: 256);
-    _mnemonicsList = _mnemonics.split(" ");
+    _mnemonicsList = widget.mnemonics.split(" ");
     super.initState();
   }
 
