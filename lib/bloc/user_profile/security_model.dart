@@ -8,17 +8,17 @@ class SecurityModel {
   final BackupKeyType backupKeyType;
   final int automaticallyLockInterval;
 
-  SecurityModel({this.requiresPin, this.backupKeyType, this.automaticallyLockInterval});
+  SecurityModel._({this.requiresPin, this.backupKeyType, this.automaticallyLockInterval});
 
   SecurityModel copyWith({bool requiresPin, int automaticallyLockInterval, BackupKeyType backupKeyType}) {
-    return new SecurityModel(
+    return new SecurityModel._(
         requiresPin: requiresPin ?? this.requiresPin,
         automaticallyLockInterval: automaticallyLockInterval ?? this.automaticallyLockInterval,
         backupKeyType: backupKeyType ?? this.backupKeyType,);
   }
 
   SecurityModel.initial()
-      : this(
+      : this._(
             requiresPin: false, automaticallyLockInterval: _defaultLockInterval, backupKeyType: BackupKeyType.NONE,);
 
   SecurityModel.fromJson(Map<String, dynamic> json)
