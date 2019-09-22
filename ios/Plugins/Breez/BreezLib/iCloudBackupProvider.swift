@@ -112,6 +112,11 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
     }
     
     func uploadBackupFiles(_ files: String?, nodeID: String?, encryptionType: String?) throws {
+        let accStatus = getAccountStatus();
+        if (accStatus == .noAccount) {
+            throw NSError(domain: "AuthError", code: 0, userInfo: nil);
+        }
+        
         var resultErr : Error?
         let record = CKRecord(recordType: "BackupSnapshot", recordID: CKRecord.ID(recordName: nodeID!));
         record["backupEncryptionType"] = encryptionType;
@@ -137,6 +142,17 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         if let err = resultErr {
             throw err;
         }
+    }
+    
+    func getAccountStatus() -> CKAccountStatus {
+        let semaphore = DispatchSemaphore(value: 0)
+        var accStatus : CKAccountStatus = .couldNotDetermine
+        CKContainer.default().accountStatus(completionHandler: {status, err in
+            accStatus = status;
+            semaphore.signal();
+        });
+        semaphore.wait();
+        return accStatus;
     }
 }
 
