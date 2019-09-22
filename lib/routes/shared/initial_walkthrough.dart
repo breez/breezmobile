@@ -8,6 +8,7 @@ import 'package:breez/routes/shared/security_pin/restore_pin.dart';
 import 'package:breez/routes/user/home/beta_warning_dialog.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
@@ -229,10 +230,18 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                         padding: EdgeInsets.only(top: 10.0),
                         child: new GestureDetector(
                             onTap: () {
-                              // Restore then start lightninglib
-                              Navigator.push(
-                                  context, createLoaderRoute(context));
-                              widget._backupBloc.restoreRequestSink.add(null);
+                              widget._backupBloc.backupSettingsStream.first.then((settings) async {
+                                var backupProvider = settings.backupProvider;
+                                if (backupProvider == null) {
+                                  backupProvider = await showDialog(context: context, builder: (_) => BackupProviderSelectionDialog(backupBloc: widget._backupBloc));
+                                }
+                                if (backupProvider != null) {
+                                  // Restore then start lightninglib
+                                  Navigator.push(
+                                    context, createLoaderRoute(context));
+                                    widget._backupBloc.restoreRequestSink.add(null);
+                                  }
+                              });                              
                             },
                             child: new Text(
                               "Restore from backup",
