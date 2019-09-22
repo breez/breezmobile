@@ -9,6 +9,9 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../async_action.dart';
+import 'backup_actions.dart';
+
 class BackupBloc {
 
   final BehaviorSubject<BackupState> _backupStateController =
@@ -42,11 +45,15 @@ class BackupBloc {
   final _restoreFinishedController = new StreamController<bool>.broadcast();
   Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
 
+  final _backupActionsController = new StreamController<AsyncAction>.broadcast();  
+  Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
+
   BreezBridge _breezLib;  
   BackgroundTaskService _tasksService;
   SharedPreferences _sharedPrefrences;    
   bool _backupServiceNeedLogin = false;
   bool _enableBackupPrompt = false;  
+  Map<Type, Function> _actionHandlers = Map();
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";  
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
@@ -55,6 +62,9 @@ class BackupBloc {
     ServiceInjector injector = new ServiceInjector();
     _breezLib = injector.breezBridge;
     _tasksService = injector.backgroundTaskService;
+    _actionHandlers = {
+      UpdateBackupSettings: _setBackupProvier
+    };
 
     SharedPreferences.getInstance().then((sp) {
       _sharedPrefrences = sp;     
@@ -63,6 +73,7 @@ class BackupBloc {
       _listenBackupNowRequests();
       _listenRestoreRequests();
       _scheduleBackgroundTasks();
+      _listenActions();
     });
   }
 
@@ -83,14 +94,31 @@ class BackupBloc {
     //settings persistency
     var backupSettings =
         _sharedPrefrences.getString(BACKUP_SETTINGS_PREFERENCES_KEY);
-    if (backupSettings != null) {
+    if (backupSettings != null) {      
       Map<String, dynamic> settings = json.decode(backupSettings);
       _backupSettingsController.add(BackupSettings.fromJson(settings));
     }
+
     _backupSettingsController.stream.listen((settings) {
       _sharedPrefrences.setString(
-          BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
+          BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));       
+    });    
+  }
+
+  void _listenActions() {
+    _backupActionsController.stream.listen((action) {
+      var handler = _actionHandlers[action.runtimeType];
+      if (handler != null) {
+        handler(action).catchError((e) => action.resolveError(e));
+      }
     });
+  }
+
+  Future _setBackupProvier(UpdateBackupSettings action) async {
+    _backupSettingsController.add(action.settings);
+    if (action.settings.backupProvider != null) {
+      action.resolve(_breezLib.setBackupProvider(action.settings.backupProvider.name));
+    }
   }
 
   _scheduleBackgroundTasks(){
