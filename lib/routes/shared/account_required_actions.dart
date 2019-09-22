@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/funds_over_limit_dialog.dart';
+import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/rotator.dart';
@@ -109,61 +110,66 @@ class AccountRequiredActionsIndicatorState
           return StreamBuilder<AccountModel>(
               stream: widget._accountBloc.accountStream,
               builder: (context, accountSnapshot) {
-                return StreamBuilder<BackupState>(
-                    stream: widget._backupBloc.backupStateStream,
-                    builder: (context, backupSnapshot) {
-                      List<Widget> warnings = List<Widget>();
-                      Int64 walletBalance =
-                          accountSnapshot?.data?.walletBalance ?? Int64(0);
-                      if (walletBalance > 0 &&
-                          !settingsSnapshot.data.ignoreWalletBalance) {
-                        warnings.add(WarningAction(() =>
-                            Navigator.of(context).pushNamed("/send_coins")));
-                      }
+                return StreamBuilder<BackupSettings>(
+                  stream: widget._backupBloc.backupSettingsStream,
+                  builder: (context, backupSettingsSnapshot) => StreamBuilder<BackupState>(
+                      stream: widget._backupBloc.backupStateStream,
+                      builder: (context, backupSnapshot) {
+                        List<Widget> warnings = List<Widget>();
+                        Int64 walletBalance =
+                            accountSnapshot?.data?.walletBalance ?? Int64(0);
+                        if (walletBalance > 0 &&
+                            !settingsSnapshot.data.ignoreWalletBalance) {
+                          warnings.add(WarningAction(() =>
+                              Navigator.of(context).pushNamed("/send_coins")));
+                        }
 
-                      if (backupSnapshot.hasError) {
-                        warnings.add(WarningAction(() => showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (_) => new EnableBackupDialog(
-                                context, widget._backupBloc))));
-                      }
+                        if (backupSnapshot.hasError) {                          
+                          warnings.add(WarningAction(() async {                                                        
+                              showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (_) => new EnableBackupDialog(
+                                    context, widget._backupBloc));                              
+                            }));                          
+                        }
 
-                      var loaderIcon = _buildLoader(backupSnapshot.data, accountSnapshot.data);
-                      if (loaderIcon != null) {
-                        warnings.add(loaderIcon);
-                      }
+                        var loaderIcon = _buildLoader(backupSnapshot.data, accountSnapshot.data);
+                        if (loaderIcon != null) {
+                          warnings.add(loaderIcon);
+                        }
 
-                      var swapStatus = accountSnapshot?.data?.swapFundsStatus;
+                        var swapStatus = accountSnapshot?.data?.swapFundsStatus;
 
-                      // only warn on refundable addresses that weren't refunded in the past.
-                      var shouldWarnRefund = swapStatus != null &&
-                        swapStatus.refundableAddresses.where((r) => r.lastRefundTxID.isEmpty).length > 0;
+                        // only warn on refundable addresses that weren't refunded in the past.
+                        var shouldWarnRefund = swapStatus != null &&
+                          swapStatus.refundableAddresses.where((r) => r.lastRefundTxID.isEmpty).length > 0;
 
-                      if (shouldWarnRefund) {  
-                        warnings.add(WarningAction(() => showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (_) => new SwapRefundDialog(accountBloc: widget._accountBloc))));
-                      }
+                        if (shouldWarnRefund) {  
+                          warnings.add(WarningAction(() => showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (_) => new SwapRefundDialog(accountBloc: widget._accountBloc))));
+                        }
 
-                      if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED) {
-                        warnings.add(WarningAction(
-                          () => widget._accountBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.BLOCKING)),
-                          iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
-                        ));
-                      }
+                        if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED) {
+                          warnings.add(WarningAction(
+                            () => widget._accountBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.BLOCKING)),
+                            iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
+                          ));
+                        }
 
-                      if (warnings.length == 0) {
-                        return SizedBox();
-                      }
+                        if (warnings.length == 0) {
+                          return SizedBox();
+                        }
 
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        children: warnings                           
-                      );
-                    });
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: warnings                           
+                        );
+                      }),
+                );
               });
         });
   }
