@@ -316,6 +316,10 @@ class BreezBridge {
     return _invokeMethodImmediate("setBackupEncryptionKey", {"encryptionKey": encryptionKey, "encryptionType": encryptionType ?? ""});
   }
 
+  Future setBackupProvider(String backupProvider){
+    return _methodChannel.invokeMethod("setBackupProvider", {"argument": backupProvider});
+  }
+
   Future<String> getAvailableBackups() async {
     try {
       await signIn(true);

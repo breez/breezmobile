@@ -27,7 +27,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     
     var eventSink : FlutterEventSink?;
     var backupAuthenticators : Dictionary<String, BackupAuthenticatorProtocol> = ["gdrive":GoogleAuthenticator(), "icloud": iCloudAuthenticator()];
-    var backupProvider = "icloud";
+    var backupProvider : String?;
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let BREEZ_CHANNEL_NAME = "com.breez.client/breez_lib";
@@ -116,6 +116,12 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     func setBackupProvider(call: FlutterMethodCall, result: @escaping FlutterResult){
         if let args = call.arguments as? Dictionary<String,Any> {
             let providerName : String = args["argument"] as! String;
+            var errorPtr: NSError?;
+            BindingsSetBackupProvider(providerName, &errorPtr)
+            if let err = errorPtr {
+                result(FlutterError(code: "AuthError", message: err.localizedDescription, details: ""));
+                return;
+            }
             self.backupProvider = providerName;
             result(true);
         }
@@ -124,10 +130,14 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     
     func signIn(call: FlutterMethodCall, result: @escaping FlutterResult){
         DispatchQueue.global().async {
-            let errorPtr: NSErrorPointer = nil
-            var _ = self.backupAuthenticators[self.backupProvider]?.backupProviderSignIn(silent: false, in: errorPtr);
-            if let _ = errorPtr?.pointee {
+            var errorPtr: NSError?;
+            guard let provider = self.backupProvider else {
                 result(FlutterError(code: "AuthError", message: "Failed to signIn breez library", details: ""));
+                return;
+            }
+            var _ = self.backupAuthenticators[provider]?.backupProviderSignIn(silent: false, in: &errorPtr);
+            if let _ = errorPtr {
+                result(FlutterError(code: "AuthError", message: "Failed to sign in breez library", details: ""));
                 return;
             }
             
@@ -137,7 +147,11 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     
     func signOut(call: FlutterMethodCall, result: @escaping FlutterResult){
         DispatchQueue.global().async {
-            self.backupAuthenticators[self.backupProvider]?.signOut();
+            guard let provider = self.backupProvider else {
+                result(FlutterError(code: "AuthError", message: "Failed to sign out breez library", details: ""));
+                return;
+            }
+            self.backupAuthenticators[provider]?.signOut();
             result(true);
         }
     }
@@ -200,11 +214,18 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     
     // BindingsAppServicesProtocol protocol
     func backupProviderName() -> String {
-        return self.backupProvider;
+        guard let provider = self.backupProvider else {
+            return "";
+        }
+        return provider;
     }
    
     func backupProviderSign(in err: NSErrorPointer) -> String {
-        return self.backupAuthenticators[self.backupProvider]!.backupProviderSignIn(silent: true, in: err);
+        guard let provider = self.backupProvider else {
+            err?.pointee = NSError(domain: "AuthError", code: 0, userInfo: nil);
+            return "";
+        }
+        return self.backupAuthenticators[provider]!.backupProviderSignIn(silent: true, in: err);
     }
 
     func notify(_ notificationEvent: Data?) {
