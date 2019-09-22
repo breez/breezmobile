@@ -42,6 +42,7 @@ final TextStyle whiteButtonStyle = new TextStyle(color: BreezColors.white[500], 
 final TextStyle appBarLogoStyle = new TextStyle(color: BreezColors.logo[2], fontSize: 23.5, letterSpacing: 0.15, fontFamily:'Breez Logo', height: 0.9);
 final TextStyle posTransactionTitleStyle = new TextStyle(color: BreezColors.white[500], fontSize: 14.4, letterSpacing: 0.44, height: 1.28);
 final TextStyle transactionTitleStyle = new TextStyle(color: BreezColors.white[500], fontSize: 14.3, letterSpacing: 0.25, height: 1.2);
+final TextStyle backupProviderTitleStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 14.3, letterSpacing: 0.25, height: 1.2);
 final TextStyle transactionSubtitleStyle = new TextStyle(color: BreezColors.white[200], fontSize: 12.3, letterSpacing: 0.4, height: 1.16);
 final TextStyle transactionAmountStyle = new TextStyle(color: BreezColors.white[500], fontSize: 16.4, letterSpacing: 0.5, height: 1.28, fontFamily:'IBMPlexSansMedium');
 final TextStyle posWithdrawalTransactionTitleStyle = new TextStyle(color: Color.fromRGBO(255,255,255, 0.7), fontSize: 14.4, letterSpacing: 0.44, height: 1.28);
