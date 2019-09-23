@@ -9,6 +9,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:bip39/bip39.dart' as bip39;
 
 class VerifyBackupPhrasePage extends StatefulWidget {
   final String _mnemonics;
@@ -159,7 +160,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   }
 
   Future _createBackupPhrase(SecurityModel securityModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
-    var createBackupPhraseAction = CreateBackupPhrase(widget._mnemonics);
+    var createBackupPhraseAction = CreateBackupPhrase(bip39.mnemonicToEntropy(widget._mnemonics));
     userProfileBloc.userActionsSink.add(createBackupPhraseAction);
     createBackupPhraseAction.future.then((_) {
       _updateSecurityModel(securityModel, securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE), userProfileBloc, backupBloc);

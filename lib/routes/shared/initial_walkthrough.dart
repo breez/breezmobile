@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -15,8 +16,10 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:hex/hex.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
   final BreezUserModel _user;
@@ -40,8 +43,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   StreamSubscription<List<SnapshotInfo>> _multipleRestoreSubscription;
 
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
-  bool _registered = false;
-  UpdateSecurityModel _updateSecurityModelAction;
+  bool _registered = false;  
 
   @override
   void initState() {
@@ -49,9 +51,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
     _instructions = widget._isPos ?
     "The simplest, fastest & safest way\nto earn bitcoin" :
-    "The simplest, fastest & safest way\nto spend your bitcoins";
-    _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.NONE));
-
+    "The simplest, fastest & safest way\nto spend your bitcoins";    
+    
     _multipleRestoreSubscription =
         widget._backupBloc.multipleRestoreStream.listen((options) async {
       if (options.length == 0) {
@@ -70,31 +71,40 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
             builder: (_) =>
                 new RestoreDialog(context, widget._backupBloc, options));
       }
-
-      String restoreKey;
-      if (toRestore != null) {
-        if (toRestore.encrypted) {
-          if (toRestore.encryptionType == "Mnemonics") {
-            restoreKey = await getBackupPhrase();
-            if (restoreKey != null) {
-              await _createBackupPhrase(restoreKey);
-              _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE));
-            }
-          } else if (toRestore.encryptionType == "Pin") {
-            restoreKey = await getRestorePIN();
-            if (restoreKey != null) _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PIN));
-          }
-          if (restoreKey == null) {
-            _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.NONE));
-            return;
-          }
-        }
+      
+      var restore = (SnapshotInfo snapshot, String key) {
         widget._backupBloc.restoreRequestSink
-            .add(RestoreRequest(toRestore, restoreKey));
+              .add(RestoreRequest(snapshot, key));
         Navigator.push(
             context,
             createLoaderRoute(context,
                 message: "Restoring data...", opacity: 0.8));
+      };
+
+      if (toRestore != null) {
+        if (toRestore.encrypted) {
+          if (toRestore.encryptionType == "Mnemonics") {
+            restoreUsingPhrase((entrophy) async {
+              await _createBackupPhrase(entrophy);
+              var updateAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE));
+              widget._registrationBloc.userActionsSink.add(updateAction);
+              restore(toRestore, entrophy);
+            });
+            return;
+          }
+          
+          if (toRestore.encryptionType == "Pin") {
+            restoreUsingPIN((pin) async {                            
+              var updateAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.NONE));
+              widget._registrationBloc.userActionsSink.add(updateAction);
+              restore(toRestore, pin);
+            });
+            return;            
+          }
+        }
+
+        restore(toRestore, null);
+
       }
     }, onError: (error) {
       popToWalkthrough(
@@ -105,20 +115,17 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
     _restoreFinishedSubscription =
         widget._backupBloc.restoreFinishedStream.listen((restored) {
-      popToWalkthrough();
+      Navigator.of(context).pop();
       if (restored) {
-        widget._registrationBloc.userActionsSink.add(_updateSecurityModelAction);
-        _updateSecurityModelAction.future.then((_) {
-          _proceedToRegister();
-        }).catchError((err) {
-          promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
-        });
+        _proceedToRegister();
       }
     }, onError: (error) {
-      popToWalkthrough(
-          error: error.runtimeType != SignInFailedException
-              ? error.toString()
-              : null);
+      Navigator.of(context).pop();
+      if (error.runtimeType != SignInFailedException) {
+        _scaffoldKey.currentState.showSnackBar(new SnackBar(
+          duration: new Duration(seconds: 3),
+          content: new Text(error.toString())));
+      }      
     });
 
     _controller = new AnimationController(
@@ -131,10 +138,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }
   }
 
-  Future<String> getBackupPhrase() {
+  Future<String> restoreUsingPhrase(Function(String key) onKeySubmitted) {
     return Navigator.of(context).push(new FadeInRoute(
       builder: (BuildContext context) {
-        return EnterBackupPhrasePage();
+        return EnterBackupPhrasePage(onPhraseSubmitted: onKeySubmitted);
       },
     ));
   }
@@ -153,10 +160,13 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     });
   }
 
-  Future<String> getRestorePIN() {
+  Future<String> restoreUsingPIN(Function(String key) onKeySubmitted) {
     return Navigator.of(context).push(new FadeInRoute(
       builder: (BuildContext context) {
-        return RestorePinCode();
+        return RestorePinCode(onPinCodeSubmitted: (pinCode){
+          String key = utf8.decode(sha256.convert(utf8.encode(pinCode)).bytes);          
+          onKeySubmitted(key);
+        });
       },
     ));
   }

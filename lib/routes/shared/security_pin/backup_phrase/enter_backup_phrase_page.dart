@@ -11,6 +11,10 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'wordlist.dart';
 
 class EnterBackupPhrasePage extends StatefulWidget {
+  final Function(String phrase) onPhraseSubmitted;
+
+  const EnterBackupPhrasePage({Key key, @required this.onPhraseSubmitted}) : super(key: key);
+
   @override
   EnterBackupPhrasePageState createState() => new EnterBackupPhrasePageState();
 }
@@ -200,9 +204,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             shape: const StadiumBorder(),
             onPressed: () {
               setState(() {
-                setState(() {
-                  _hasError = false;
-                });
+                _hasError = false;
                 if (_formKey.currentState.validate() && !_hasError) {
                   _autoValidate = false;
                   if (_currentPage + 1 == 5) {
@@ -234,6 +236,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       });
       throw new Exception(e.toString());
     }
-    return Navigator.pop(context, enteredBackupPhrase);
+    widget.onPhraseSubmitted(enteredBackupPhrase);
   }
 }

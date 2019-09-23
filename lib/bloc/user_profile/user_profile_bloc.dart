@@ -196,7 +196,7 @@ class UserProfileBloc {
   }
 
   Future _createBackupPhrase(CreateBackupPhrase action) async {
-    await _secureStorage.write(key: 'backupKey', value: bip39.mnemonicToEntropy(action.backupPhrase));
+    await _secureStorage.write(key: 'backupKey', value: action.backupPhrase);
     action.resolve(null);
   }
 
