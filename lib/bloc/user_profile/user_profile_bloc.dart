@@ -128,7 +128,7 @@ class UserProfileBloc {
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
       Map profile = json.decode(jsonStr);
       // Migrate old users backup encryption method
-      profile = await _migrateBackupKeyType(profile);
+      _migrateBackupKeyType(profile);
       BreezUserModel user = BreezUserModel.fromJson(profile);
 
       // First time we create a user, initialize with random data.
@@ -138,11 +138,7 @@ class UserProfileBloc {
       }
 
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
-      List<int> backupEncryptionKey;
-      if(user.securityModel.backupKeyType != BackupKeyType.NONE){
-        String backupKey = await _secureStorage.read(key: 'backupKey');
-        backupEncryptionKey = utf8.encode(backupKey);
-      }
+      List<int> backupEncryptionKey = await _getBackupKey(user.securityModel.backupKeyType);      
       await _setBackupKey(backupEncryptionKey, user.securityModel.backupKeyType);
       user = user.copyWith(locked: user.securityModel.requiresPin);
       if (user.userID != null) {
@@ -153,16 +149,10 @@ class UserProfileBloc {
     });
   }
 
-  Future<Map<dynamic, dynamic>> _migrateBackupKeyType(Map profile) async {
+  void _migrateBackupKeyType(Map profile) async {
     if (profile["secureBackupWithPin"] == true) {
-      profile["backupKeyType"] = BackupKeyType.PIN;
-      // Transfer existing pinCode to backupKey(for users that has not set secure backup feature but has a pinCode)
-      String pinCode = await _secureStorage.read(key: 'pinCode');
-      if(pinCode != null) {
-        await _secureStorage.write(key: 'backupKey', value: pinCode);
-      }
-    }
-    return profile;
+      profile["backupKeyType"] = BackupKeyType.PIN;      
+    }    
   }
 
   Future<BreezUserModel> saveUser(ServiceInjector injector, SharedPreferences preferences, BreezUserModel user) async {    
@@ -191,8 +181,7 @@ class UserProfileBloc {
 
   Future _updatePinCode(UpdatePinCode action) async {
     await _secureStorage.write(key: 'pinCode', value: action.newPin);
-    if(_currentUser.securityModel.backupKeyType == BackupKeyType.PIN){
-      await _secureStorage.write(key: 'backupKey', value: action.newPin);
+    if(_currentUser.securityModel.backupKeyType == BackupKeyType.PIN){      
       await _setBackupKey(utf8.encode(action.newPin), _currentUser.securityModel.backupKeyType);
     }
     action.resolve(null);
@@ -217,16 +206,27 @@ class UserProfileBloc {
 
   Future _updateSecurityModel(UpdateSecurityModel updateSecurityModelAction) async {
     SecurityModel newModel = updateSecurityModelAction.newModel;
-    List<int> backupEncryptionKey;
-    if (newModel.backupKeyType != BackupKeyType.NONE) {
-      String pinCode = await _secureStorage.read(key: 'backupKey');
-      backupEncryptionKey = utf8.encode(pinCode);
-    } else {
+    List<int> backupEncryptionKey = await _getBackupKey(newModel.backupKeyType);
+    if (backupEncryptionKey == null) {
       await _secureStorage.delete(key: 'backupKey');
     }
+
     await _setBackupKey(backupEncryptionKey, newModel.backupKeyType);
     _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
+  }
+
+  Future<List<int>> _getBackupKey(BackupKeyType keyType) async {   
+    if (keyType == BackupKeyType.PIN) {
+      var pinCode = await _secureStorage.read(key: 'pinCode');
+      return utf8.encode(pinCode);
+    }
+    if (keyType == BackupKeyType.PHRASE) {
+      var phrase = await _secureStorage.read(key: 'backupKey');
+      return utf8.encode(phrase);
+    }
+
+    return null;
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {
