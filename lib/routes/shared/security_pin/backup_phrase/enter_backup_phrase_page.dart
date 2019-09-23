@@ -1,28 +1,43 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bip39/bip39.dart' as bip39;
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/loader.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'wordlist.dart';
 
 class EnterBackupPhrasePage extends StatefulWidget {
+  final UserProfileBloc userProfileBloc;
+  final BackupBloc backupBloc;
+  final SnapshotInfo toRestore;
+
+  EnterBackupPhrasePage(this.userProfileBloc, this.backupBloc, this.toRestore);
+
   @override
   EnterBackupPhrasePageState createState() => new EnterBackupPhrasePageState();
 }
 
 class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
-
+  StreamSubscription _multipleRestoreSubscription;
+  StreamSubscription _restoreFinishedSubscription;
   List<FocusNode> focusNodes = List<FocusNode>(24);
   List<TextEditingController> textEditingControllers = List<TextEditingController>(24);
   int _currentPage;
   bool _autoValidate;
   bool _hasError;
+  String _errorMessage;
 
   @override
   void initState() {
@@ -31,7 +46,35 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     _currentPage = 1;
     _autoValidate = false;
     _hasError = false;
+    _errorMessage = "";
+    _multipleRestoreSubscription = widget.backupBloc.multipleRestoreStream.listen((options) async {}, onError: (err) {
+      Navigator.pop(context);
+      var error = err.runtimeType != SignInFailedException ? err.toString() : null;
+      if (error != null) {
+        setState(() {
+          _errorMessage = error.toString();
+          _hasError = true;
+        });
+      }
+    });
+    _restoreFinishedSubscription = widget.backupBloc.restoreFinishedStream.listen((restored) async {}, onError: (err) {
+      Navigator.pop(context);
+      var error = err.runtimeType != SignInFailedException ? err.toString() : null;
+      if (error != null) {
+        setState(() {
+          _errorMessage = error.toString();
+          _hasError = true;
+        });
+      }
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _multipleRestoreSubscription.cancel();
+    _restoreFinishedSubscription.cancel();
+    super.dispose();
   }
 
   _createFocusNodes() {
@@ -52,40 +95,47 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   Widget build(BuildContext context) {
     UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
-    return Scaffold(
-      appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
-          automaticallyImplyLeading: false,
-          leading: backBtn.BackButton(
-            onPressed: () {
-              if (_currentPage == 1) {
-                Navigator.pop(context);
-              } else if (_currentPage > 1) {
-                _formKey.currentState.reset();
-                FocusScope.of(context).requestFocus(new FocusNode());
-                setState(() {
-                  _currentPage--;
-                });
-              }
-            },
-          ),
-          title: new Text(
-            "Enter your backup phrase ($_currentPage/4)",
-            style: theme.appBarTextStyle,
-          ),
-          elevation: 0.0),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height - kToolbarHeight - MediaQuery.of(context).padding.top,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: _buildRestoreFormContent(userProfileBloc),
+    return WillPopScope(
+      onWillPop: () => _onWillPop(context),
+      child: Scaffold(
+        appBar: new AppBar(
+            iconTheme: theme.appBarIconTheme,
+            textTheme: theme.appBarTextTheme,
+            backgroundColor: theme.BreezColors.blue[500],
+            automaticallyImplyLeading: false,
+            leading: backBtn.BackButton(
+              onPressed: () => _onWillPop(context),
+            ),
+            title: new Text(
+              "Enter your backup phrase ($_currentPage/4)",
+              style: theme.appBarTextStyle,
+            ),
+            elevation: 0.0),
+        body: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height - kToolbarHeight - MediaQuery.of(context).padding.top,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: _buildRestoreFormContent(userProfileBloc),
+            ),
           ),
         ),
       ),
     );
+  }
+
+  _onWillPop(BuildContext context) {
+    if (_currentPage == 1) {
+      Navigator.pop(context);
+    } else if (_currentPage > 1) {
+      _formKey.currentState.reset();
+      FocusScope.of(context).requestFocus(new FocusNode());
+      setState(() {
+        _errorMessage = "";
+        _hasError = false;
+        _currentPage--;
+      });
+    }
   }
 
   _buildForm() {
@@ -109,8 +159,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     List<Widget> restoreFormContent = List();
     restoreFormContent..add(_buildForm());
     if (_hasError) {
-      restoreFormContent
-        ..add(_buildErrorMessage("Failed to restore from backup. Please make sure backup phrase was correctly entered and try again."));
+      restoreFormContent..add(_buildErrorMessage(_errorMessage));
     }
     restoreFormContent..add(_buildBottomBtn(userProfileBloc));
     return restoreFormContent;
@@ -223,17 +272,29 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     );
   }
 
-  Future _validateBackupPhrase(UserProfileBloc userProfileBloc) async {
-    var mnemonic = textEditingControllers.map((controller) => controller.text.toLowerCase().trim()).toList().join(" ");
-    String enteredBackupPhrase;
+  _validateBackupPhrase(UserProfileBloc userProfileBloc) async {
+    var mnemonics = textEditingControllers.map((controller) => controller.text.toLowerCase().trim()).toList().join(" ");
     try {
-      enteredBackupPhrase = bip39.mnemonicToEntropy(mnemonic);
+      bip39.mnemonicToEntropy(mnemonics);
     } catch (e) {
       setState(() {
+        _errorMessage = "Failed to restore from backup. Please make sure backup phrase was correctly entered and try again.";
         _hasError = true;
       });
       throw new Exception(e.toString());
     }
-    return Navigator.pop(context, enteredBackupPhrase);
+    await _createBackupPhrase(mnemonics);
+  }
+
+  Future _createBackupPhrase(String mnemonics) async {
+    var createBackupPhraseAction = CreateBackupPhrase(mnemonics);
+    widget.userProfileBloc.userActionsSink.add(createBackupPhraseAction);
+    return createBackupPhraseAction.future
+      ..then((_) {
+        widget.backupBloc.restoreRequestSink.add(RestoreRequest(widget.toRestore, bip39.mnemonicToEntropy(mnemonics)));
+        Navigator.push(context, createLoaderRoute(context, message: "Restoring data...", opacity: 0.8));
+      }).catchError((err) {
+        showFlushbar(context, message: err.toString());
+      });
   }
 }

@@ -10,7 +10,6 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/security_pin/backup_phrase/enter_backup_phrase_page.dart';
 import 'package:breez/routes/shared/security_pin/restore_pin.dart';
 import 'package:breez/routes/user/home/beta_warning_dialog.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/restore_dialog.dart';
@@ -41,7 +40,6 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool _registered = false;
-  UpdateSecurityModel _updateSecurityModelAction;
 
   @override
   void initState() {
@@ -50,12 +48,11 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     _instructions = widget._isPos ?
     "The simplest, fastest & safest way\nto earn bitcoin" :
     "The simplest, fastest & safest way\nto spend your bitcoins";
-    _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.NONE));
 
-    _multipleRestoreSubscription =
-        widget._backupBloc.multipleRestoreStream.listen((options) async {
+    _multipleRestoreSubscription = widget._backupBloc.multipleRestoreStream.listen((options) async {
+      Navigator.pop(context);
       if (options.length == 0) {
-        popToWalkthrough(error: "Could not locate backup for this account");
+        _popToWalkthrough(error: "Could not locate backup for this account");
         return;
       }
 
@@ -64,61 +61,36 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       if (options.length == 1) {
         toRestore = options.first;
       } else {
-        popToWalkthrough();
         toRestore = await showDialog<SnapshotInfo>(
             context: context,
             builder: (_) =>
                 new RestoreDialog(context, widget._backupBloc, options));
+        _popToWalkthrough();
       }
 
       String restoreKey;
       if (toRestore != null) {
         if (toRestore.encrypted) {
           if (toRestore.encryptionType == "Mnemonics") {
-            restoreKey = await getBackupPhrase();
-            if (restoreKey != null) {
-              await _createBackupPhrase(restoreKey);
-              _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE));
-            }
+            getBackupPhrase(widget._registrationBloc, widget._backupBloc, toRestore);
           } else if (toRestore.encryptionType == "Pin") {
             restoreKey = await getRestorePIN();
-            if (restoreKey != null) _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PIN));
           }
           if (restoreKey == null) {
-            _updateSecurityModelAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.NONE));
             return;
           }
+        } else {
+          widget._backupBloc.restoreRequestSink.add(RestoreRequest(toRestore, null));
+          Navigator.push(context, createLoaderRoute(context, message: "Restoring data...", opacity: 0.8));
         }
-        widget._backupBloc.restoreRequestSink
-            .add(RestoreRequest(toRestore, restoreKey));
-        Navigator.push(
-            context,
-            createLoaderRoute(context,
-                message: "Restoring data...", opacity: 0.8));
       }
-    }, onError: (error) {
-      popToWalkthrough(
-          error: error.runtimeType != SignInFailedException
-              ? error.toString()
-              : null);
     });
 
-    _restoreFinishedSubscription =
-        widget._backupBloc.restoreFinishedStream.listen((restored) {
-      popToWalkthrough();
+    _restoreFinishedSubscription = widget._backupBloc.restoreFinishedStream.listen((restored) {
       if (restored) {
-        widget._registrationBloc.userActionsSink.add(_updateSecurityModelAction);
-        _updateSecurityModelAction.future.then((_) {
-          _proceedToRegister();
-        }).catchError((err) {
-          promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
-        });
+        _popToWalkthrough();
+        _proceedToRegister();
       }
-    }, onError: (error) {
-      popToWalkthrough(
-          error: error.runtimeType != SignInFailedException
-              ? error.toString()
-              : null);
     });
 
     _controller = new AnimationController(
@@ -131,26 +103,12 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }
   }
 
-  Future<String> getBackupPhrase() {
-    return Navigator.of(context).push(new FadeInRoute(
+  getBackupPhrase(UserProfileBloc userProfileBloc, BackupBloc backupBloc, SnapshotInfo toRestore) {
+    Navigator.of(context).push(new FadeInRoute(
       builder: (BuildContext context) {
-        return EnterBackupPhrasePage();
+        return EnterBackupPhrasePage(userProfileBloc, backupBloc, toRestore);
       },
     ));
-  }
-
-  Future _createBackupPhrase(String _mnemonics) async {
-    var createBackupPhraseAction = CreateBackupPhrase(_mnemonics);
-    widget._registrationBloc.userActionsSink.add(createBackupPhraseAction);
-    return createBackupPhraseAction.future.catchError((err) {
-      promptError(
-          context,
-          "Internal Error",
-          Text(
-            err.toString(),
-            style: theme.alertStyle,
-          ));
-    });
   }
 
   Future<String> getRestorePIN() {
@@ -161,7 +119,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     ));
   }
 
-  void popToWalkthrough({String error}) {
+  void _popToWalkthrough({String error}) {
     Navigator.popUntil(context, (route) {
       return route.settings.name == "/intro";
     });
