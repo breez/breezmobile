@@ -105,8 +105,7 @@ class UserApp extends StatelessWidget {
                     );
                   case '/intro':
                     return new FadeInRoute(
-                      builder: (_) => new InitialWalkthroughPage(
-                          userProfileBloc, backupBloc, false),
+                      builder: (_) => new InitialWalkthroughPage(user, userProfileBloc, backupBloc, false),
                       settings: settings,
                     );
                   case '/order_card':

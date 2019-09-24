@@ -1,11 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
-import 'package:breez/routes/shared/security_pin/security_pin_warning_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -14,6 +15,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 
+import 'backup_phrase/backup_phrase_confirmation_page.dart';
 import 'change_pin_code.dart';
 import 'lock_screen.dart';
 
@@ -35,63 +37,67 @@ class SecurityPageState extends State<SecurityPage> {
 
   @override
   Widget build(BuildContext context) {
-    String _title = "Security PIN";
-    return StreamBuilder<BreezUserModel>(
-        stream: widget.userProfileBloc.userStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          } else {
-            if (snapshot.data.securityModel.requiresPin && this._screenLocked) {
-              return AppLockScreen(
-                (pinEntered) { 
-                  var validateAction = ValidatePinCode(pinEntered);
-                    widget.userProfileBloc.userActionsSink.add(validateAction);
-                    return validateAction.future.then((_){
-                      setState((){ this._screenLocked = false; });
-                    });
-                },
-                canCancel: true,               
+    String _title = "Security";
+    return StreamBuilder<BackupSettings>(
+      stream: widget.backupBloc.backupSettingsStream,
+      builder: (context, backupSnapshot) => StreamBuilder<BreezUserModel>(
+          stream: widget.userProfileBloc.userStream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            } else {
+              if (snapshot.data.securityModel.requiresPin && this._screenLocked) {
+                return AppLockScreen(
+                  (pinEntered) { 
+                    var validateAction = ValidatePinCode(pinEntered);
+                      widget.userProfileBloc.userActionsSink.add(validateAction);
+                      return validateAction.future.then((_){
+                        setState((){ this._screenLocked = false; });
+                      });
+                  },
+                  canCancel: true,               
+                );
+              }
+              return Scaffold(
+                appBar: new AppBar(
+                    iconTheme: theme.appBarIconTheme,
+                    textTheme: theme.appBarTextTheme,
+                    backgroundColor: theme.BreezColors.blue[500],
+                    automaticallyImplyLeading: false,
+                    leading: backBtn.BackButton(),
+                    title: new Text(
+                      _title,
+                      style: theme.appBarTextStyle,
+                    ),
+                    elevation: 0.0),
+                body: ListView(
+                  children: _buildSecurityPINTiles(snapshot.data.securityModel, backupSnapshot.data),
+                ),
               );
             }
-            return Scaffold(
-              appBar: new AppBar(
-                  iconTheme: theme.appBarIconTheme,
-                  textTheme: theme.appBarTextTheme,
-                  backgroundColor: theme.BreezColors.blue[500],
-                  automaticallyImplyLeading: false,
-                  leading: backBtn.BackButton(),
-                  title: new Text(
-                    _title,
-                    style: theme.appBarTextStyle,
-                  ),
-                  elevation: 0.0),
-              body: ListView(
-                children: _buildSecurityPINTiles(snapshot.data.securityModel),
-              ),
-            );
-          }
-        });
+          }),
+    );
   }
 
-  List<Widget> _buildSecurityPINTiles(SecurityModel securityModel) {
-    List<Widget> _tiles = <Widget>[_buildDisablePINTile(securityModel)];
-    if (securityModel.requiresPin)
-      _tiles..add(
-        Divider())
-        ..add(_buildSecureBackupWithPinTile(securityModel))
+  List<Widget> _buildSecurityPINTiles(SecurityModel securityModel, BackupSettings backupSettings) {
+    List<Widget> _tiles = <Widget>[_buildDisablePINTile(securityModel, backupSettings)];
+    if (securityModel.requiresPin) {
+      _tiles
         ..add(Divider())
-        ..add(_buildPINIntervalTile(securityModel))
+        ..add(_buildPINIntervalTile(securityModel, backupSettings))
         ..add(Divider())
-        ..add(_buildChangePINTile(securityModel));        
+        ..add(_buildChangePINTile(securityModel, backupSettings))
+        ..add(Divider());
+    }
+    _tiles..add(_buildGenerateBackupPhraseTile(securityModel, backupSettings));
     return _tiles;
   }
 
-  ListTile _buildSecureBackupWithPinTile(SecurityModel securityModel) {
+  ListTile _buildGenerateBackupPhraseTile(SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Use in Backup/Restore",
+          "Use Backup Phrase",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -100,30 +106,22 @@ class SecurityPageState extends State<SecurityPage> {
         ),
       ),
       trailing: Switch(
-        value: securityModel.secureBackupWithPin,
+        value: backupSettings.backupKeyType == BackupKeyType.PHRASE,
         activeColor: Colors.white,
         onChanged: (bool value) async {
           if (this.mounted) {
             if (value) {
-              bool approved = await showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return SecurityPINWarningDialog();
-                }
-              );
-              if (!approved) {
-                return;
-              }                                                
+              Navigator.push(context, FadeInRoute(builder: (BuildContext context) => BackupPhraseGeneratorConfirmationPage()));
+            } else {
+              _updateBackupSettings(backupSettings, backupSettings.copyWith(keyType: BackupKeyType.NONE));
             }
-            _updateSecurityModel(securityModel, securityModel.copyWith(secureBackupWithPin: value));                        
           }
         },
       ),
     );
   }
 
-  ListTile _buildPINIntervalTile(SecurityModel securityModel) {
+  ListTile _buildPINIntervalTile(SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: Container(
         child: AutoSizeText(
@@ -140,7 +138,7 @@ class SecurityPageState extends State<SecurityPage> {
           value: securityModel.automaticallyLockInterval,
           isDense: true,
           onChanged: (int newValue) {
-            _updateSecurityModel(securityModel, securityModel.copyWith(automaticallyLockInterval: newValue));
+            _updateSecurityModel(securityModel, securityModel.copyWith(automaticallyLockInterval: newValue), backupSettings);
           },
           items: SecurityModel.lockIntervals.map((int seconds) {
             return new DropdownMenuItem(
@@ -158,7 +156,7 @@ class SecurityPageState extends State<SecurityPage> {
           }).toList(),
         ),
       ),
-      onTap: () => _onChangePinSelected(securityModel),
+      onTap: () => _onChangePinSelected(securityModel, backupSettings),
     );
   }
 
@@ -169,7 +167,7 @@ class SecurityPageState extends State<SecurityPage> {
     return printDuration(Duration(seconds: seconds));    
   }
 
-  ListTile _buildChangePINTile(SecurityModel securityModel) {
+  ListTile _buildChangePINTile(SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: Container(
         child: AutoSizeText(
@@ -182,11 +180,11 @@ class SecurityPageState extends State<SecurityPage> {
         ),
       ),
       trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-      onTap: () => _onChangePinSelected(securityModel),
+      onTap: () => _onChangePinSelected(securityModel, backupSettings),
     );
   }
 
-  ListTile _buildDisablePINTile(SecurityModel securityModel) {
+  ListTile _buildDisablePINTile(SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: AutoSizeText(
         securityModel.requiresPin ? "Activate PIN" : "Create PIN",
@@ -202,18 +200,20 @@ class SecurityPageState extends State<SecurityPage> {
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
-                  _updateSecurityModel(securityModel, SecurityModel.initial());                  
+                  _updateSecurityModel(
+                      securityModel,
+                      SecurityModel.initial(), backupSettings);
                 }
               },
             )
           : Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
       onTap: securityModel.requiresPin
           ? null
-          : () => _onChangePinSelected(securityModel),
+          : () => _onChangePinSelected(securityModel, backupSettings),
     );
   }
 
-  void _onChangePinSelected(SecurityModel securityModel){
+  void _onChangePinSelected(SecurityModel securityModel, BackupSettings backupSettings){
     Navigator.of(context).push(
       new FadeInRoute(
         builder: (BuildContext context) {
@@ -225,7 +225,7 @@ class SecurityPageState extends State<SecurityPage> {
         var updatePinAction = UpdatePinCode(newPIN);
         widget.userProfileBloc.userActionsSink.add(updatePinAction);
         updatePinAction.future.then((_) => 
-          _updateSecurityModel(securityModel, securityModel.copyWith(requiresPin: true), pinCodeChanged: true))
+          _updateSecurityModel(securityModel, securityModel.copyWith(requiresPin: true), backupSettings, pinCodeChanged: true))
           .catchError((err){
             promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
           });
@@ -233,28 +233,48 @@ class SecurityPageState extends State<SecurityPage> {
     });
   }
 
-  Future _updateSecurityModel(SecurityModel oldModel, SecurityModel newModel, {bool pinCodeChanged = false}) async {
-    _screenLocked = false;
-    var action = UpdateSecurityModel(newModel);
-    widget.userProfileBloc.userActionsSink.add(action);
-    action.future
-    .then((_){
-      if (
-        newModel.secureBackupWithPin != oldModel.secureBackupWithPin ||
-        newModel.secureBackupWithPin && pinCodeChanged) {
-        widget.backupBloc.backupNowSink.add(true);                        
-        widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s){
-          if (mounted) {
-            showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (ctx) => buildBackupInProgressDialog(ctx, widget.backupBloc.backupStateStream));
-          }
-        });
+  Future _updateSecurityModel(
+    SecurityModel oldModel, SecurityModel newModel, 
+    BackupSettings backupSettings, {bool pinCodeChanged = false}) async {
+      _screenLocked = false;
+      var action = UpdateSecurityModel(newModel);
+      widget.userProfileBloc.userActionsSink.add(action);
+      action.future.then((_) {
+        //(newModel.backupKeyType != oldModel.backupKeyType) || 
+        if ((backupSettings.backupKeyType == BackupKeyType.PIN && pinCodeChanged)) {
+          triggerBackup();
+        }
+      })
+      .catchError((err){
+        promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+      });    
+  }
+
+  Future _updateBackupSettings(    
+    BackupSettings oldBackupSettings, BackupSettings newBackupSettings, {bool pinCodeChanged = false}) async {
+      _screenLocked = false;
+      var action = UpdateBackupSettings(newBackupSettings);
+      widget.backupBloc.backupActionsSink.add(action);
+      action.future.then((_) {
+        //(newModel.backupKeyType != oldModel.backupKeyType) || 
+        if ((oldBackupSettings.backupKeyType != newBackupSettings.backupKeyType)) {
+          triggerBackup();
+        }
+      })
+      .catchError((err){
+        promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+      });    
+  }
+
+  void triggerBackup(){
+    widget.backupBloc.backupNowSink.add(true);
+    widget.backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
+      if (mounted) {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (ctx) => buildBackupInProgressDialog(ctx, widget.backupBloc.backupStateStream));
       }
-    })
-    .catchError((err){
-      promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
-    });    
+    });
   }
 }

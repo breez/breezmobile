@@ -40,7 +40,7 @@ class RestoreDialogState extends State<RestoreDialog> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           new Text(
-            "You have mulitple Breez backups on your Google Drive, please choose which to restore:",
+            "You have multiple Breez backups on your Google Drive, please choose which to restore:",
             style: theme.paymentRequestSubtitleStyle,
           ),
          
@@ -59,7 +59,7 @@ class RestoreDialogState extends State<RestoreDialog> {
                     trailing: _selectedSnapshot?.nodeID == widget.snapshots[index].nodeID ? Icon(Icons.check, color: theme.BreezColors.blue[500],) : Icon(Icons.check),
                     title: Text( 
                       DateUtils.formatYearMonthDayHourMinute(DateTime.parse(widget.snapshots[index].modifiedTime)) + 
-                        (widget.snapshots[index].encrypted ? " - (PIN required)" : ""), 
+                        (widget.snapshots[index].encrypted ? " - (Requires key)" : ""),
                       style: theme.bolt11Style.apply(fontSizeDelta: 1.3),
                     ),
                     subtitle: Text(

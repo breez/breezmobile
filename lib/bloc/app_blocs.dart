@@ -40,7 +40,7 @@ class AppBlocs {
     POSProfileBloc posProfileBloc = _registerBloc(POSProfileBloc(), blocsByType);    
     InvoiceBloc invoicesBloc = _registerBloc(InvoiceBloc(userProfileBloc), blocsByType);
     ConnectPayBloc connectPayBloc = _registerBloc(ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream), blocsByType);
-    BackupBloc backupBloc = _registerBloc(BackupBloc(), blocsByType);
+    BackupBloc backupBloc = _registerBloc(BackupBloc(userProfileBloc.userStream), blocsByType);
     MarketplaceBloc marketplaceBloc = _registerBloc(MarketplaceBloc(), blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc = _registerBloc(FastbitcoinsBloc(production: true), blocsByType);
 
