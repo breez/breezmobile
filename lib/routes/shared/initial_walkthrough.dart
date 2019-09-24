@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
@@ -89,8 +91,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           if (toRestore.encryptionType == "Mnemonics") {
             restoreUsingPhrase((entrophy) async {
               await _createBackupPhrase(entrophy);
-              var updateAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE));
-              widget._registrationBloc.userActionsSink.add(updateAction);              
+              var updateAction = UpdateBackupSettings(BackupSettings.start().copyWith(keyType: BackupKeyType.PHRASE));
+              widget._backupBloc.backupActionsSink.add(updateAction);              
               updateAction.future.then((_) => restore(toRestore, HEX.decode(entrophy)));
             });
             return;
@@ -98,9 +100,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           
           if (toRestore.encryptionType == "Pin") {
             restoreUsingPIN((pin) async {                            
-              var updateAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.NONE));
+              var updateAction = UpdateBackupSettings(BackupSettings.start().copyWith(keyType: BackupKeyType.NONE));
               var key = sha256.convert(utf8.encode(pin));
-              widget._registrationBloc.userActionsSink.add(updateAction);
+              widget._backupBloc.backupActionsSink.add(updateAction); 
               updateAction.future.then((_) => restore(toRestore, key.bytes));
             });
             return;            
@@ -149,10 +151,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     ));
   }
 
-  Future _createBackupPhrase(String _mnemonics) async {
-    var createBackupPhraseAction = CreateBackupPhrase(_mnemonics);
-    widget._registrationBloc.userActionsSink.add(createBackupPhraseAction);
-    return createBackupPhraseAction.future.catchError((err) {
+  Future _createBackupPhrase(String entrophy) async {
+    var saveBackupKeyAction = SaveBackupKey(entrophy);
+    widget._backupBloc.backupActionsSink.add(saveBackupKeyAction);
+    return saveBackupKeyAction.future.catchError((err) {
       promptError(
           context,
           "Internal Error",

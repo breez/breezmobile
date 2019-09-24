@@ -70,8 +70,7 @@ class UserProfileBloc {
     _actionHandlers = {
       UpdateSecurityModel: _updateSecurityModelAction,
       UpdatePinCode: _updatePinCode,
-      ValidatePinCode: _validatePinCode,
-      CreateBackupPhrase: _createBackupPhrase,
+      ValidatePinCode: _validatePinCode,      
     };
     print ("UserProfileBloc started");
 
@@ -127,9 +126,7 @@ class UserProfileBloc {
       print ("UserProfileBloc got preferences");
       String jsonStr =
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
-      Map profile = json.decode(jsonStr);
-      // Migrate old users backup encryption method
-      _migrateBackupKeyType(profile);
+      Map profile = json.decode(jsonStr);      
       BreezUserModel user = BreezUserModel.fromJson(profile);
 
       // First time we create a user, initialize with random data.
@@ -137,10 +134,7 @@ class UserProfileBloc {
         List randomName = generateDefaultProfile();
         user = user.copyWith(name: randomName[0] + ' ' + randomName[1], color: randomName[0], animal: randomName[1]);          
       }
-
-      // Read the backupKey from the secure storage and initialize the breez user model appropriately
-      List<int> backupEncryptionKey = await _getBackupKey(user.securityModel.backupKeyType);      
-      await _setBackupKey(backupEncryptionKey, user.securityModel.backupKeyType);
+           
       user = user.copyWith(locked: user.securityModel.requiresPin);
       if (user.userID != null) {
         saveUser(injector, preferences, user).then(_publishUser);
@@ -148,12 +142,6 @@ class UserProfileBloc {
 
       _publishUser(user);      
     });
-  }
-
-  void _migrateBackupKeyType(Map profile) async {
-    if (profile["secureBackupWithPin"] == true) {
-      profile["backupKeyType"] = BackupKeyType.PIN;      
-    }    
   }
 
   Future<BreezUserModel> saveUser(ServiceInjector injector, SharedPreferences preferences, BreezUserModel user) async {    
@@ -182,9 +170,7 @@ class UserProfileBloc {
 
   Future _updatePinCode(UpdatePinCode action) async {
     await _secureStorage.write(key: 'pinCode', value: action.newPin);
-    if(_currentUser.securityModel.backupKeyType == BackupKeyType.PIN){      
-      await _setBackupKey(await _getBackupKey(BackupKeyType.PIN), _currentUser.securityModel.backupKeyType);
-    }
+    _publishUser(_currentUser);
     action.resolve(null);
   }
 
@@ -196,38 +182,13 @@ class UserProfileBloc {
     action.resolve(pinCode == action.enteredPin);
   }
 
-  Future _createBackupPhrase(CreateBackupPhrase action) async {
-    await _secureStorage.write(key: 'backupKey', value: action.backupPhrase);
-    action.resolve(null);
-  }
-
   Future _updateSecurityModelAction(UpdateSecurityModel updateSecurityModelAction) async {
     updateSecurityModelAction.resolve(await _updateSecurityModel(updateSecurityModelAction));
   }
 
-  Future _updateSecurityModel(UpdateSecurityModel updateSecurityModelAction) async {
-    SecurityModel newModel = updateSecurityModelAction.newModel;
-    List<int> backupEncryptionKey = await _getBackupKey(newModel.backupKeyType);
-    if (backupEncryptionKey == null) {
-      await _secureStorage.delete(key: 'backupKey');
-    }
-
-    await _setBackupKey(backupEncryptionKey, newModel.backupKeyType);
+  Future _updateSecurityModel(UpdateSecurityModel updateSecurityModelAction) async {        
     _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
-  }
-
-  Future<List<int>> _getBackupKey(BackupKeyType keyType) async {   
-    if (keyType == BackupKeyType.PIN) {
-      var pinCode = await _secureStorage.read(key: 'pinCode');
-      return utf8.encode(pinCode);
-    }
-    if (keyType == BackupKeyType.PHRASE) {
-      var phrase = await _secureStorage.read(key: 'backupKey');
-      return HEX.decode(phrase);
-    }
-
-    return null;
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {
@@ -312,15 +273,6 @@ class UserProfileBloc {
 
   void cardActivationInit() {
     _nfc.startCardActivation(_userStreamController.value.userID);
-  }
-
-  Future _setBackupKey(List<int> key, BackupKeyType keyType) {
-    var encryptionKey = key;
-    if (encryptionKey != null && encryptionKey.length != 32) {
-      encryptionKey = sha256.convert(key).bytes;
-    }
-    var encryptionKeyType = encryptionKey != null ? keyType == BackupKeyType.PHRASE ? "Mnemonics" :  keyType == BackupKeyType.PIN ? "Pin" : "" : "";
-    return _breezLib.setBackupEncryptionKey(encryptionKey, encryptionKeyType);
   }
 
   BreezUserModel get _currentUser => _userStreamController.value;

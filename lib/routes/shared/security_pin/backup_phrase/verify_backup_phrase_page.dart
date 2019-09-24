@@ -1,6 +1,7 @@
+import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -50,13 +51,13 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
             children: <Widget>[
               _buildForm(),
               _buildInstructions(),
-              StreamBuilder<BreezUserModel>(
-                stream: userProfileBloc.userStream,
+              StreamBuilder<BackupSettings>(
+                stream: backupBloc.backupSettingsStream,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Container(padding: EdgeInsets.only(bottom: 88));
                   }
-                  return _buildBackupBtn(snapshot.data.securityModel, userProfileBloc, backupBloc);
+                  return _buildBackupBtn(snapshot.data, backupBloc);
                 },
               )
             ],
@@ -74,7 +75,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     super.initState();
   }
 
-  _buildBackupBtn(SecurityModel securityModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) {
+  _buildBackupBtn(BackupSettings backupSettings, BackupBloc backupBloc) {
     return Padding(
       padding: new EdgeInsets.only(bottom: 40),
       child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
@@ -95,7 +96,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
                 _hasError = false;
               });
               if (_formKey.currentState.validate() && !_hasError) {
-                _createBackupPhrase(securityModel, userProfileBloc, backupBloc);
+                _createBackupPhrase(backupSettings, backupBloc);
               }
             },
           ),
@@ -159,11 +160,11 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     return selectedWordList;
   }
 
-  Future _createBackupPhrase(SecurityModel securityModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
-    var createBackupPhraseAction = CreateBackupPhrase(bip39.mnemonicToEntropy(widget._mnemonics));
-    userProfileBloc.userActionsSink.add(createBackupPhraseAction);
-    createBackupPhraseAction.future.then((_) {
-      _updateSecurityModel(securityModel, securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE), userProfileBloc, backupBloc);
+  Future _createBackupPhrase(BackupSettings backupSettings, BackupBloc backupBloc) async {
+    var saveBackupKey = SaveBackupKey(bip39.mnemonicToEntropy(widget._mnemonics));
+    backupBloc.backupActionsSink.add(saveBackupKey);
+    saveBackupKey.future.then((_) {
+      _updateBackupSettings(backupSettings.copyWith(keyType: BackupKeyType.PHRASE), backupBloc);
     }).catchError((err) {
       promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
     });
@@ -178,10 +179,10 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     _randomlySelectedIndexes.sort();
   }
 
-  Future _updateSecurityModel(
-      SecurityModel oldModel, SecurityModel newModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
-    var action = UpdateSecurityModel(newModel);
-    userProfileBloc.userActionsSink.add(action);
+  Future _updateBackupSettings(
+      BackupSettings backupSettings, BackupBloc backupBloc) async {
+    var action = UpdateBackupSettings(backupSettings);
+    backupBloc.backupActionsSink.add(action);
     Navigator.popUntil(context, ModalRoute.withName("/security"));
     action.future.then((_) {
       backupBloc.backupNowSink.add(true);
