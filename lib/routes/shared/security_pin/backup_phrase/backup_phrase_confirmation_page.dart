@@ -95,8 +95,11 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
                 height: 48.0,
                 width: 168.0,
                 child: new RaisedButton(
-                  onPressed: () => Navigator.pushReplacement(context,
-                      FadeInRoute(builder: (BuildContext context) => GenerateBackupPhrasePage(bip39.generateMnemonic(strength: 256)))),
+                  onPressed: () { 
+                    String mnemonics = bip39.generateMnemonic(strength: 256);
+                    Navigator.pushReplacement(context,
+                      FadeInRoute(builder: (BuildContext context) => GenerateBackupPhrasePage(mnemonics)));
+                  },
                   child: new Text(
                     "NEXT",
                     style: theme.buttonStyle,
