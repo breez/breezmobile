@@ -119,6 +119,9 @@ PODS:
     - TOCropViewController (~> 2.5.0)
   - image_picker (0.0.1):
     - Flutter
+  - keyboard_visibility (0.5.0):
+    - Flutter
+    - Reachability
   - leveldb-library (1.20)
   - MTBBarcodeScanner (5.0.11)
   - nanopb (0.3.901):
@@ -156,6 +159,7 @@ DEPENDENCIES:
   - GoogleSignIn
   - image_cropper (from `Pods/.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `Pods/.symlinks/plugins/image_picker/ios`)
+  - keyboard_visibility (from `Pods/.symlinks/plugins/keyboard_visibility/ios`)
   - package_info (from `Pods/.symlinks/plugins/package_info/ios`)
   - path_provider (from `Pods/.symlinks/plugins/path_provider/ios`)
   - share_extend (from `Pods/.symlinks/plugins/share_extend/ios`)
@@ -212,6 +216,8 @@ EXTERNAL SOURCES:
     :path: Pods/.symlinks/plugins/image_cropper/ios
   image_picker:
     :path: Pods/.symlinks/plugins/image_picker/ios
+  keyboard_visibility:
+    :path: Pods/.symlinks/plugins/keyboard_visibility/ios
   package_info:
     :path: Pods/.symlinks/plugins/package_info/ios
   path_provider:
@@ -253,6 +259,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
   image_cropper: f25bdfbf1ef970c9a0a0f78306fb6a0aaac7229e
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
+  keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
