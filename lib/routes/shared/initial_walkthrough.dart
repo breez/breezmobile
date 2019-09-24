@@ -9,10 +9,12 @@ import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/security_pin/backup_phrase/enter_backup_phrase_page.dart';
+import 'package:breez/routes/shared/security_pin/backup_phrase/generate_backup_phrase_page.dart';
 import 'package:breez/routes/shared/security_pin/restore_pin.dart';
 import 'package:breez/routes/user/home/beta_warning_dialog.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
@@ -20,6 +22,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:hex/hex.dart';
+import 'package:bip39/bip39.dart' as bip39;
 
 class InitialWalkthroughPage extends StatefulWidget {
   final BreezUserModel _user;
@@ -65,14 +68,14 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       if (options.length == 1) {
         toRestore = options.first;
       } else {
-        popToWalkthrough();
+        popToWalkthrough();        
         toRestore = await showDialog<SnapshotInfo>(
             context: context,
             builder: (_) =>
                 new RestoreDialog(context, widget._backupBloc, options));
       }
       
-      var restore = (SnapshotInfo snapshot, String key) {
+      var restore = (SnapshotInfo snapshot, List<int> key) {
         widget._backupBloc.restoreRequestSink
               .add(RestoreRequest(snapshot, key));
         Navigator.push(
@@ -87,8 +90,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
             restoreUsingPhrase((entrophy) async {
               await _createBackupPhrase(entrophy);
               var updateAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE));
-              widget._registrationBloc.userActionsSink.add(updateAction);
-              restore(toRestore, entrophy);
+              widget._registrationBloc.userActionsSink.add(updateAction);              
+              updateAction.future.then((_) => restore(toRestore, HEX.decode(entrophy)));
             });
             return;
           }
@@ -96,8 +99,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           if (toRestore.encryptionType == "Pin") {
             restoreUsingPIN((pin) async {                            
               var updateAction = UpdateSecurityModel(widget._user.securityModel.copyWith(backupKeyType: BackupKeyType.NONE));
+              var key = sha256.convert(utf8.encode(pin));
               widget._registrationBloc.userActionsSink.add(updateAction);
-              restore(toRestore, pin);
+              updateAction.future.then((_) => restore(toRestore, key.bytes));
             });
             return;            
           }
@@ -114,17 +118,16 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     });
 
     _restoreFinishedSubscription =
-        widget._backupBloc.restoreFinishedStream.listen((restored) {
-      Navigator.of(context).pop();
+        widget._backupBloc.restoreFinishedStream.listen((restored) {      
       if (restored) {
+        popToWalkthrough();
         _proceedToRegister();
       }
     }, onError: (error) {
       Navigator.of(context).pop();
       if (error.runtimeType != SignInFailedException) {
-        _scaffoldKey.currentState.showSnackBar(new SnackBar(
-          duration: new Duration(seconds: 3),
-          content: new Text(error.toString())));
+        showFlushbar(context, duration: new Duration(seconds: 3),
+          message: error.toString());
       }      
     });
 
@@ -163,10 +166,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   Future<String> restoreUsingPIN(Function(String key) onKeySubmitted) {
     return Navigator.of(context).push(new FadeInRoute(
       builder: (BuildContext context) {
-        return RestorePinCode(onPinCodeSubmitted: (pinCode){
-          String key = utf8.decode(sha256.convert(utf8.encode(pinCode)).bytes);          
-          onKeySubmitted(key);
-        });
+        return RestorePinCode(onPinCodeSubmitted: onKeySubmitted);
       },
     ));
   }

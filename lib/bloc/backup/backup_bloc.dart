@@ -189,12 +189,7 @@ class BackupBloc {
         return;     
       }
 
-      List<int> key;
-      if (request.pinCode != null && request.pinCode.isNotEmpty) {
-        key = sha256.convert(utf8.encode(request.pinCode)).bytes;
-      }
-      
-      _breezLib.restore(request.snapshot.nodeID, key)
+      _breezLib.restore(request.snapshot.nodeID, request.encryptionKey)
         .then((_) => _restoreFinishedController.add(true))
         .catchError(_restoreFinishedController.addError);      
     });  
@@ -231,7 +226,7 @@ class SnapshotInfo {
 
 class RestoreRequest {
   final SnapshotInfo snapshot;
-  final String pinCode;
+  final List<int> encryptionKey;
 
-  RestoreRequest(this.snapshot, this.pinCode);
+  RestoreRequest(this.snapshot, this.encryptionKey);
 }

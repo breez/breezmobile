@@ -17,6 +17,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hex/hex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -182,7 +183,7 @@ class UserProfileBloc {
   Future _updatePinCode(UpdatePinCode action) async {
     await _secureStorage.write(key: 'pinCode', value: action.newPin);
     if(_currentUser.securityModel.backupKeyType == BackupKeyType.PIN){      
-      await _setBackupKey(utf8.encode(action.newPin), _currentUser.securityModel.backupKeyType);
+      await _setBackupKey(await _getBackupKey(BackupKeyType.PIN), _currentUser.securityModel.backupKeyType);
     }
     action.resolve(null);
   }
@@ -223,7 +224,7 @@ class UserProfileBloc {
     }
     if (keyType == BackupKeyType.PHRASE) {
       var phrase = await _secureStorage.read(key: 'backupKey');
-      return utf8.encode(phrase);
+      return HEX.decode(phrase);
     }
 
     return null;
