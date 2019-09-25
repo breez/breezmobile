@@ -19,33 +19,30 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => _onWillPop,
-      child: Scaffold(
-        appBar: new AppBar(
-            iconTheme: theme.appBarIconTheme,
-            textTheme: theme.appBarTextTheme,
-            backgroundColor: theme.BreezColors.blue[500],
-            automaticallyImplyLeading: false,
-            leading: backBtn.BackButton(
-              onPressed: () => _onWillPop,
-            ),
-            title: new Text(
-              "Write these words ($_currentPage/2)",
-              style: theme.appBarTextStyle,
-            ),
-            elevation: 0.0),
-        body: PageView(
-          controller: _pageController,
-          children: <Widget>[_buildMnemonicSeedList(0), _buildMnemonicSeedList(1)],
-          onPageChanged: (page) {
-            setState(() {
-              _currentPage = page + 1;
-            });
-          },
-        ),
-        bottomNavigationBar: _buildNextBtn(),
+    return Scaffold(
+      appBar: new AppBar(
+          iconTheme: theme.appBarIconTheme,
+          textTheme: theme.appBarTextTheme,
+          backgroundColor: theme.BreezColors.blue[500],
+          automaticallyImplyLeading: false,
+          leading: backBtn.BackButton(
+            onPressed: () => _onWillPop(),
+          ),
+          title: new Text(
+            "Write these words ($_currentPage/2)",
+            style: theme.appBarTextStyle,
+          ),
+          elevation: 0.0),
+      body: PageView(
+        controller: _pageController,
+        children: <Widget>[_buildMnemonicSeedList(0), _buildMnemonicSeedList(1)],
+        onPageChanged: (page) {
+          setState(() {
+            _currentPage = page + 1;
+          });
+        },
       ),
+      bottomNavigationBar: _buildNextBtn(),
     );
   }
 
