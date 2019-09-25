@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ class GenerateBackupPhrasePage extends StatefulWidget {
 }
 
 class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
+  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   PageController _pageController = new PageController();
   List<String> _mnemonicsList;
   int _currentPage;
@@ -24,7 +27,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     return WillPopScope(
       onWillPop: () => _onWillPop(context),
       child: Scaffold(
-        appBar: new AppBar(
+        appBar: AppBar(
             iconTheme: theme.appBarIconTheme,
             textTheme: theme.appBarTextTheme,
             backgroundColor: theme.BreezColors.blue[500],
@@ -32,9 +35,10 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
             leading: backBtn.BackButton(
               onPressed: () => _onWillPop(context),
             ),
-            title: new Text(
+            title: AutoSizeText(
               "Write these words ($_currentPage/2)",
               style: theme.appBarTextStyle,
+              maxLines: 1,
             ),
             elevation: 0.0),
         body: PageView(
@@ -59,18 +63,25 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   }
 
   _buildMnemonicItem(int index, String mnemonic) {
-    return Center(
-      child: Container(
-        height: 48,
-        width: 150,
-        decoration: BoxDecoration(border: Border.all(color: Colors.white30), borderRadius: BorderRadius.all(Radius.circular(4))),
-        child: Center(
-          child: Text(
-            '${index + 1}. $mnemonic',
+    return Container(
+      height: 48,
+      width: 150,
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(border: Border.all(color: Colors.white30), borderRadius: BorderRadius.all(Radius.circular(4))),
+      child: Row(children: [
+        Text('${index + 1}.', style: theme.mnemonicsTextStyle),
+        Expanded(
+          child: AutoSizeText(
+            mnemonic,
             style: theme.mnemonicsTextStyle,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
+            group: _autoSizeGroup,
           ),
         ),
-      ),
+      ]),
     );
   }
 
