@@ -178,5 +178,4 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     _randomlySelectedIndexes.sort();
   }
 
-  }
 }
