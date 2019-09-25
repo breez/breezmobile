@@ -8,12 +8,12 @@ import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/backup_phrase_navigator.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 
-import 'backup_phrase/backup_phrase_confirmation_page.dart';
 import 'change_pin_code.dart';
 import 'lock_screen.dart';
 
@@ -106,7 +106,10 @@ class SecurityPageState extends State<SecurityPage> {
         onChanged: (bool value) async {
           if (this.mounted) {
             if (value) {
-              Navigator.push(context, FadeInRoute(builder: (BuildContext context) => BackupPhraseGeneratorConfirmationPage()));
+              Navigator.push(context, FadeInRoute(builder: (BuildContext context) => BackupPhraseNavigator(context))).then((verified) {
+                if (verified != null ? verified : false)
+                  _updateSecurityModel(securityModel, securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE));
+              });
             } else {
               _updateSecurityModel(securityModel, securityModel.copyWith(backupKeyType: BackupKeyType.NONE));
             }

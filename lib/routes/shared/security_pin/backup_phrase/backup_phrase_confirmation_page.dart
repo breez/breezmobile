@@ -1,10 +1,6 @@
-import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-
-import 'generate_backup_phrase_page.dart';
 
 class BackupPhraseGeneratorConfirmationPage extends StatefulWidget {
   @override
@@ -95,10 +91,8 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
                 height: 48.0,
                 width: 168.0,
                 child: new RaisedButton(
-                  onPressed: () { 
-                    String mnemonics = bip39.generateMnemonic(strength: 256);
-                    Navigator.pushReplacement(context,
-                      FadeInRoute(builder: (BuildContext context) => GenerateBackupPhrasePage(mnemonics)));
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, "/generate");
                   },
                   child: new Text(
                     "NEXT",

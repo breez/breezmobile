@@ -1,9 +1,6 @@
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-
-import 'verify_backup_phrase_page.dart';
 
 class GenerateBackupPhrasePage extends StatefulWidget {
   final String mnemonics;
@@ -113,12 +110,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
             shape: const StadiumBorder(),
             onPressed: () {
               if (_currentPage == 2) {
-                Navigator.push(
-                  context,
-                  FadeInRoute(
-                    builder: (_) => VerifyBackupPhrasePage(widget.mnemonics),
-                  ),
-                );
+                Navigator.pushNamed(context, "/verify");
               } else {
                 _pageController.nextPage(duration: Duration(milliseconds: 400), curve: Curves.easeInOut).whenComplete(() {
                   setState(() {
@@ -135,7 +127,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
 
   _onWillPop(BuildContext context) {
     if (_currentPage == 1) {
-      Navigator.popUntil(context, ModalRoute.withName("/security"));
+      Navigator.pop(context);
     } else {
       _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut).whenComplete(() {
         setState(() {

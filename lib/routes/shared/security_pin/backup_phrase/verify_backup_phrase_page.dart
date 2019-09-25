@@ -1,20 +1,20 @@
+import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:bip39/bip39.dart' as bip39;
 
 class VerifyBackupPhrasePage extends StatefulWidget {
   final String _mnemonics;
+  final BuildContext securityContext;
 
-  VerifyBackupPhrasePage(this._mnemonics);
+  VerifyBackupPhrasePage(this._mnemonics, this.securityContext);
 
   @override
   VerifyBackupPhrasePageState createState() => new VerifyBackupPhrasePageState();
@@ -163,7 +163,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     var createBackupPhraseAction = CreateBackupPhrase(bip39.mnemonicToEntropy(widget._mnemonics));
     userProfileBloc.userActionsSink.add(createBackupPhraseAction);
     createBackupPhraseAction.future.then((_) {
-      _updateSecurityModel(securityModel, securityModel.copyWith(backupKeyType: BackupKeyType.PHRASE), userProfileBloc, backupBloc);
+      Navigator.of(widget.securityContext).pop(true);
     }).catchError((err) {
       promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
     });
@@ -178,23 +178,5 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     _randomlySelectedIndexes.sort();
   }
 
-  Future _updateSecurityModel(
-      SecurityModel oldModel, SecurityModel newModel, UserProfileBloc userProfileBloc, BackupBloc backupBloc) async {
-    var action = UpdateSecurityModel(newModel);
-    userProfileBloc.userActionsSink.add(action);
-    Navigator.popUntil(context, ModalRoute.withName("/security"));
-    action.future.then((_) {
-      backupBloc.backupNowSink.add(true);
-      backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
-        if (mounted) {
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (ctx) => buildBackupInProgressDialog(ctx, backupBloc.backupStateStream));
-        }
-      });
-    }).catchError((err) {
-      promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
-    });
   }
 }
