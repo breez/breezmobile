@@ -1,16 +1,13 @@
+import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/security_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:bip39/bip39.dart' as bip39;
 
 class VerifyBackupPhrasePage extends StatefulWidget {
   final String _mnemonics;
@@ -29,7 +26,6 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
-    UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     return Scaffold(
       appBar: new AppBar(
@@ -173,10 +169,30 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   _selectIndexes() {
     List list = List.generate(23, (i) => i);
     list.shuffle();
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; _randomlySelectedIndexes.length < 3; i++) {
       _randomlySelectedIndexes.add(list[i]);
+      if (_randomlySelectedIndexes.length == 3) {
+        if (!hasRange(0, 11, _randomlySelectedIndexes)) {
+          _randomlySelectedIndexes.removeLast();
+        } else if (!hasRange(13, 23, _randomlySelectedIndexes)) {
+          _randomlySelectedIndexes.removeLast();
+        }
+      }
     }
     _randomlySelectedIndexes.sort();
+  }
+  
+  bool hasRange(int start, int end, List numbers) {
+    bool result = false;
+
+    for (var i = start; i <= end; i++) {
+      if (numbers.contains(i)) {
+        result = true;
+        return result;
+      }
+    }
+
+    return result;
   }
 
   Future _updateBackupSettings(
