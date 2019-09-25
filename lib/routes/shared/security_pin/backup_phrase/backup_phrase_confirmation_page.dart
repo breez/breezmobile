@@ -3,6 +3,10 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
 
 class BackupPhraseGeneratorConfirmationPage extends StatefulWidget {
+  final BuildContext securityContext;
+
+  BackupPhraseGeneratorConfirmationPage(this.securityContext);
+
   @override
   BackupPhraseGeneratorConfirmationPageState createState() => new BackupPhraseGeneratorConfirmationPageState();
 }
@@ -20,7 +24,9 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
             textTheme: theme.appBarTextTheme,
             backgroundColor: theme.BreezColors.blue[500],
             automaticallyImplyLeading: false,
-            leading: backBtn.BackButton(),
+            leading: backBtn.BackButton(
+              onPressed: () => Navigator.pop(widget.securityContext),
+            ),
             title: new Text(
               "Generate Backup Phrase",
               style: theme.appBarTextStyle,
@@ -47,17 +53,6 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
     );
   }
 
-  Padding _buildInstructions() {
-    return Padding(
-      padding: EdgeInsets.only(left: 48, right: 48),
-      child: Text(
-        _instructions,
-        style: theme.backupPhraseInformationTextStyle,
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
   _buildCheckbox() {
     return SizedBox(
       child: Row(
@@ -78,6 +73,17 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
             style: theme.backupPhraseConfirmationTextStyle,
           )
         ],
+      ),
+    );
+  }
+
+  Padding _buildInstructions() {
+    return Padding(
+      padding: EdgeInsets.only(left: 48, right: 48),
+      child: Text(
+        _instructions,
+        style: theme.backupPhraseInformationTextStyle,
+        textAlign: TextAlign.center,
       ),
     );
   }

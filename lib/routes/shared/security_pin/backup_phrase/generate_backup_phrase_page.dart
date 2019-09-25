@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 class GenerateBackupPhrasePage extends StatefulWidget {
   final String mnemonics;
+  final BuildContext securityContext;
 
-  GenerateBackupPhrasePage(this.mnemonics);
+  GenerateBackupPhrasePage(this.mnemonics, this.securityContext);
 
   @override
   GenerateBackupPhrasePageState createState() => new GenerateBackupPhrasePageState();
@@ -19,7 +20,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => _onWillPop(context),
+      onWillPop: () => _onWillPop,
       child: Scaffold(
         appBar: new AppBar(
             iconTheme: theme.appBarIconTheme,
@@ -27,7 +28,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
             backgroundColor: theme.BreezColors.blue[500],
             automaticallyImplyLeading: false,
             leading: backBtn.BackButton(
-              onPressed: () => _onWillPop(context),
+              onPressed: () => _onWillPop,
             ),
             title: new Text(
               "Write these words ($_currentPage/2)",
@@ -125,9 +126,9 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     );
   }
 
-  _onWillPop(BuildContext context) {
+  _onWillPop() {
     if (_currentPage == 1) {
-      Navigator.pop(context);
+      Navigator.pop(widget.securityContext);
     } else {
       _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut).whenComplete(() {
         setState(() {
