@@ -79,13 +79,14 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
       Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
-        children: List<Widget>.generate(6, (index) => _buildMnemonicItem(index + (12 * (page)), _mnemonicsList[index + (12 * (page))])),
+        children:
+            List<Widget>.generate(6, (index) => _buildMnemonicItem(2 * index + (12 * (page)), _mnemonicsList[2 * index + (12 * (page))])),
       ),
       Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
-        children:
-            List<Widget>.generate(6, (index) => _buildMnemonicItem(index + (12 * (page)) + 6, _mnemonicsList[index + 6 + 12 * (page)])),
+        children: List<Widget>.generate(
+            6, (index) => _buildMnemonicItem(1 + 2 * index + 12 * (page), _mnemonicsList[1 + 2 * index + 12 * (page)])),
       ),
     ]);
   }
