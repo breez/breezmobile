@@ -63,13 +63,18 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
       child: Container(
         height: 48,
         width: 150,
+        padding: EdgeInsets.only(left: 8, right: 8),
         decoration: BoxDecoration(border: Border.all(color: Colors.white30), borderRadius: BorderRadius.all(Radius.circular(4))),
-        child: Center(
-          child: Text(
-            '${index + 1}. $mnemonic',
-            style: theme.mnemonicsTextStyle,
+        child: Stack(children: [
+          Container(alignment: Alignment.centerLeft, child: Text('${index + 1}.', style: theme.mnemonicsTextStyle)),
+          Center(
+            child: Text(
+              mnemonic,
+              style: theme.mnemonicsTextStyle,
+              textAlign: TextAlign.center,
+            ),
           ),
-        ),
+        ]),
       ),
     );
   }
@@ -79,13 +84,14 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
       Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
-        children: List<Widget>.generate(6, (index) => _buildMnemonicItem(index + (12 * (page)), _mnemonicsList[index + (12 * (page))])),
+        children:
+            List<Widget>.generate(6, (index) => _buildMnemonicItem(2 * index + (12 * (page)), _mnemonicsList[2 * index + (12 * (page))])),
       ),
       Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
-        children:
-            List<Widget>.generate(6, (index) => _buildMnemonicItem(index + (12 * (page)) + 6, _mnemonicsList[index + 6 + 12 * (page)])),
+        children: List<Widget>.generate(
+            6, (index) => _buildMnemonicItem(1 + 2 * index + 12 * (page), _mnemonicsList[1 + 2 * index + 12 * (page)])),
       ),
     ]);
   }
