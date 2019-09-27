@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -167,21 +169,15 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   }
 
   _selectIndexes() {
-    List list = List.generate(23, (i) => i);
-    list.shuffle();
-    for (var i = 0; _randomlySelectedIndexes.length < 3; i++) {
-      _randomlySelectedIndexes.add(list[i]);
-      if (_randomlySelectedIndexes.length == 3) {
-        if (!hasRange(0, 11, _randomlySelectedIndexes)) {
-          _randomlySelectedIndexes.removeLast();
-        } else if (!hasRange(13, 23, _randomlySelectedIndexes)) {
-          _randomlySelectedIndexes.removeLast();
-        }
-      }
-    }
+    var n1 = Random().nextInt(12);
+    var n2 = Random().nextInt(12) + 12;
+    var n3 = Random().nextInt(23);
+    if (n3 == n1) n3++;
+    if (n3 == n2) n3++;
+    _randomlySelectedIndexes.addAll([n1, n2, n3]);
     _randomlySelectedIndexes.sort();
   }
-  
+
   bool hasRange(int start, int end, List numbers) {
     bool result = false;
 
