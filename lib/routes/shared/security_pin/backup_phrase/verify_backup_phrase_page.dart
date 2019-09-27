@@ -171,9 +171,9 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   _selectIndexes() {
     var n1 = Random().nextInt(12);
     var n2 = Random().nextInt(12) + 12;
-    var n3 = Random().nextInt(23);
-    if (n3 == n1) n3++;
-    if (n3 == n2) n3++;
+    var n3 = Random().nextInt(22);
+    if (n3 >= n1) n3++;
+    if (n3 >= n2) n3++;
     _randomlySelectedIndexes.addAll([n1, n2, n3]);
     _randomlySelectedIndexes.sort();
   }
