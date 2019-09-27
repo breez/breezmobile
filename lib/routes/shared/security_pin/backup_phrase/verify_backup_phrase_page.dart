@@ -1,16 +1,15 @@
+import 'dart:math';
+
+import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/security_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:bip39/bip39.dart' as bip39;
 
 class VerifyBackupPhrasePage extends StatefulWidget {
   final String _mnemonics;
@@ -29,7 +28,6 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
-    UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     return Scaffold(
       appBar: new AppBar(
@@ -171,11 +169,14 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   }
 
   _selectIndexes() {
-    List list = List.generate(23, (i) => i);
-    list.shuffle();
-    for (var i = 0; i < 3; i++) {
-      _randomlySelectedIndexes.add(list[i]);
-    }
+    // Select at least one index from each page(0-11,12-23) randomly
+    var firstIndex = Random().nextInt(12);
+    var secondIndex = Random().nextInt(12) + 12;
+    // Select last index randomly from any page, ensure that there are no duplicates and each option has an ~equally likely chance of being selected
+    var thirdIndex = Random().nextInt(22);
+    if (thirdIndex >= firstIndex) thirdIndex++;
+    if (thirdIndex >= secondIndex) thirdIndex++;
+    _randomlySelectedIndexes.addAll([firstIndex, secondIndex, thirdIndex]);
     _randomlySelectedIndexes.sort();
   }
 
