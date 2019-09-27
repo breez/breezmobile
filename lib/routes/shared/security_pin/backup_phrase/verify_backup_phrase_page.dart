@@ -178,19 +178,6 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     _randomlySelectedIndexes.sort();
   }
 
-  bool hasRange(int start, int end, List numbers) {
-    bool result = false;
-
-    for (var i = start; i <= end; i++) {
-      if (numbers.contains(i)) {
-        result = true;
-        return result;
-      }
-    }
-
-    return result;
-  }
-
   Future _updateBackupSettings(
       BackupSettings backupSettings, BackupBloc backupBloc) async {
     var action = UpdateBackupSettings(backupSettings);
