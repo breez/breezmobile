@@ -97,7 +97,7 @@ class SecurityPageState extends State<SecurityPage> {
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Use Backup Phrase",
+          "Encrypt Backup Information",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
