@@ -7,6 +7,7 @@ import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
+import 'package:breez/routes/shared/security_pin/backup_phrase/backup_phrase_warning_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -113,7 +114,16 @@ class SecurityPageState extends State<SecurityPage> {
             if (value) {
               Navigator.push(context, FadeInRoute(builder: (BuildContext context) => BackupPhraseGeneratorConfirmationPage()));
             } else {
-              _updateBackupSettings(backupSettings, backupSettings.copyWith(keyType: BackupKeyType.NONE));
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return BackupPhraseWarningDialog();
+                  }).then(
+                (approved) {
+                  if (approved) _updateBackupSettings(backupSettings, backupSettings.copyWith(keyType: BackupKeyType.NONE));
+                },
+              );
             }
           }
         },
