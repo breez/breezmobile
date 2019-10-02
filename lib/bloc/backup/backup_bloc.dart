@@ -83,6 +83,9 @@ class BackupBloc {
 
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
       _setBreezLibBackupKey();
+      if (_backupSettingsController.value.backupProvider !=  null) {
+        _breezLib.setBackupProvider(_backupSettingsController.value.backupProvider.name);
+      }
       _listenPinCodeChange(userStream);
       _listenActions();
     });
