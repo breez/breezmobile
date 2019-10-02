@@ -294,10 +294,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                         child: new GestureDetector(
                             onTap: () {
                               widget._backupBloc.backupSettingsStream.first.then((settings) async {
-                                var backupProvider = settings.backupProvider;
-                                if (backupProvider == null) {
-                                  backupProvider = await showDialog(context: context, builder: (_) => BackupProviderSelectionDialog(backupBloc: widget._backupBloc));
-                                }
+                                var backupProvider = await showDialog(context: context, builder: (_) => 
+                                  BackupProviderSelectionDialog(backupBloc: widget._backupBloc, restore: true));                                
                                 if (backupProvider != null) {
                                   // Restore then start lightninglib
                                   Navigator.push(
