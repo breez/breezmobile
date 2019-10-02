@@ -66,6 +66,13 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         });
         semaphore.wait();
         guard let record = resultRecord else { return ""; }
+        
+        record["backupID"] = backupID!;
+        if let err = updateRecord(record: record, savePolicy: .changedKeys) {
+            error?.pointee = NSError(domain: err.localizedDescription, code: 0, userInfo: nil);
+            return "";
+        }
+        
         guard let walletdbAsset = record["walletdb"] as? CKAsset else {
             error?.pointee = NSError(domain: "walletdb was not found", code: 0, userInfo: nil);
             return ""
@@ -117,7 +124,6 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
             throw NSError(domain: "AuthError", code: 0, userInfo: nil);
         }
         
-        var resultErr : Error?
         let record = CKRecord(recordType: "BackupSnapshot", recordID: CKRecord.ID(recordName: nodeID!));
         record["backupEncryptionType"] = encryptionType;
         let filesArray = files!.split(separator: ",");
@@ -128,9 +134,16 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         record["channeldb"] = CKAsset(fileURL: URL(fileURLWithPath: channeldb));
         record["breezdb"] = CKAsset(fileURL: URL(fileURLWithPath: breezdb));
         
+        if let err = updateRecord(record: record, savePolicy: .allKeys) {
+            throw err;
+        }
+    }
+    
+    func updateRecord(record : CKRecord, savePolicy: CKModifyRecordsOperation.RecordSavePolicy) -> Error? {
+        var resultErr : Error?
         let semaphore = DispatchSemaphore(value: 0)
         let modifyOperation = CKModifyRecordsOperation(recordsToSave: [record], recordIDsToDelete: nil);
-        modifyOperation.savePolicy = .allKeys
+        modifyOperation.savePolicy = savePolicy
         modifyOperation.qualityOfService = .userInitiated;
         modifyOperation.isAtomic = true;
         modifyOperation.modifyRecordsCompletionBlock = { records, ids, err in
@@ -139,9 +152,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         }
         CKContainer.default().privateCloudDatabase.add(modifyOperation);
         semaphore.wait();
-        if let err = resultErr {
-            throw err;
-        }
+        return resultErr;
     }
     
     func getAccountStatus() -> CKAccountStatus {
