@@ -132,7 +132,14 @@ class BackupBloc {
         _sharedPrefrences.getString(BACKUP_SETTINGS_PREFERENCES_KEY);
     if (backupSettings != null) {      
       Map<String, dynamic> settings = json.decode(backupSettings);
-      _backupSettingsController.add(BackupSettings.fromJson(settings));      
+      var backupSettingsModel = BackupSettings.fromJson(settings);
+
+      // For backward competability migrate backup provider by assigning "Google Drive"
+      // in case we had backup and the provider is not set.
+      if (backupSettingsModel.backupProvider == null && lastTime != null) {
+        backupSettingsModel = backupSettingsModel.copyWith(backupProvider: BackupSettings.googleBackupProvider);
+      }
+      _backupSettingsController.add(backupSettingsModel);      
     }
 
     _backupSettingsController.stream.listen((settings) {
