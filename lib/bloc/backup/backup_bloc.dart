@@ -103,6 +103,9 @@ class BackupBloc {
     if (action.settings.backupKeyType != currentSettings.backupKeyType) {
       await _setBreezLibBackupKey(backupKeyType: action.settings.backupKeyType);
     }
+    if (action.settings.backupProvider != currentSettings.backupProvider) {
+      await _breezLib.setBackupProvider(action.settings.backupProvider.name);
+    }
     action.resolve(action.settings);
   }
 

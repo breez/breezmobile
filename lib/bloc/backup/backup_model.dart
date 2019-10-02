@@ -9,7 +9,7 @@ class BackupProvider {
 enum BackupKeyType { NONE, PIN, PHRASE }
 
 class BackupSettings {
-  static const BackupProvider icloudBackupProvider = const BackupProvider("icloud", "Apple ICloud");
+  static const BackupProvider icloudBackupProvider = const BackupProvider("icloud", "Apple iCloud");
   static const BackupProvider googleBackupProvider = const BackupProvider("gdrive", "Google Drive");
 
   final bool promptOnError;
@@ -33,11 +33,11 @@ class BackupSettings {
     json["promptOnError"] ?? false,
     BackupKeyType.values[json["backupKeyType"] ?? 0],
     BackupSettings.availableBackupProviders().firstWhere(
-      (p) => p.name == ["backupProvider"], orElse: null),
+      (p) => p.name == json["backupProvider"], orElse: () => null),
   );
 
   Map<String, dynamic> toJson(){
-    return {"promptOnError": promptOnError, "backupKeyType": backupKeyType.index, "backupProvider": backupProvider};
+    return {"promptOnError": promptOnError, "backupKeyType": backupKeyType.index, "backupProvider": backupProvider?.name};
   }
 
   static List<BackupProvider> availableBackupProviders(){

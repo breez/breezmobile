@@ -11,6 +11,7 @@ import 'package:breez/routes/shared/security_pin/backup_phrase/backup_phrase_war
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:duration/duration.dart';
@@ -38,7 +39,7 @@ class SecurityPageState extends State<SecurityPage> {
 
   @override
   Widget build(BuildContext context) {
-    String _title = "Security";
+    String _title = "Security & Backup";
     return StreamBuilder<BackupSettings>(
       stream: widget.backupBloc.backupSettingsStream,
       builder: (context, backupSnapshot) => StreamBuilder<BreezUserModel>(
@@ -90,7 +91,8 @@ class SecurityPageState extends State<SecurityPage> {
         ..add(_buildChangePINTile(securityModel, backupSettings))
         ..add(Divider());
     }
-    _tiles..add(_buildGenerateBackupPhraseTile(securityModel, backupSettings));
+    _tiles..add(_buildBackupProviderTitle(securityModel, backupSettings));
+    _tiles..add(_buildGenerateBackupPhraseTile(securityModel, backupSettings));    
     return _tiles;
   }
 
@@ -98,7 +100,7 @@ class SecurityPageState extends State<SecurityPage> {
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Encrypt Backup Information",
+          "Encrypt Backup Data",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -128,6 +130,44 @@ class SecurityPageState extends State<SecurityPage> {
           }
         },
       ),
+    );
+  }
+
+  ListTile _buildBackupProviderTitle(SecurityModel securityModel, BackupSettings backupSettings) {
+    return ListTile(
+      title: Container(
+        child: AutoSizeText(
+          "Store Backup Data in",
+          style: TextStyle(color: Colors.white),
+          maxLines: 1,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
+          group: _autoSizeGroup,
+        ),
+      ),
+      trailing: DropdownButtonHideUnderline(
+        child: new DropdownButton<BackupProvider>(
+          value: backupSettings.backupProvider,
+          isDense: true,
+          onChanged: (BackupProvider newValue) {
+            _updateBackupSettings(backupSettings, backupSettings.copyWith(backupProvider: newValue));            
+          },
+          items: BackupSettings.availableBackupProviders().map((provider) {
+            return new DropdownMenuItem(
+              value: provider,
+              child: Container(
+                child: AutoSizeText(
+                  provider.displayName,
+                  style: theme.FieldTextStyle.textStyle,
+                  maxLines: 1,
+                  minFontSize: MinFontSize(context).minFontSize,
+                  stepGranularity: 0.1,
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),      
     );
   }
 
@@ -267,7 +307,8 @@ class SecurityPageState extends State<SecurityPage> {
       widget.backupBloc.backupActionsSink.add(action);
       action.future.then((_) {
         //(newModel.backupKeyType != oldModel.backupKeyType) || 
-        if ((oldBackupSettings.backupKeyType != newBackupSettings.backupKeyType)) {
+        if ((oldBackupSettings.backupKeyType != newBackupSettings.backupKeyType ||
+              oldBackupSettings.backupProvider != newBackupSettings.backupProvider)) {
           triggerBackup();
         }
       })
