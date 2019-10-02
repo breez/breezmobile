@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
 import 'package:crypto/crypto.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
@@ -54,28 +57,55 @@ class BackupBloc {
   bool _backupServiceNeedLogin = false;
   bool _enableBackupPrompt = false;  
   Map<Type, Function> _actionHandlers = Map();
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";  
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
 
-  BackupBloc() {
+  BackupBloc(Stream<BreezUserModel> userStream) {
     ServiceInjector injector = new ServiceInjector();
     _breezLib = injector.breezBridge;
     _tasksService = injector.backgroundTaskService;
     _actionHandlers = {
-      UpdateBackupSettings: _setBackupProvier
+      UpdateBackupSettings: _setBackupProvier,      
+      SaveBackupKey: _saveBackupKey,
+      UpdateBackupSettings: _updateBackupSettings,
     };
 
-    SharedPreferences.getInstance().then((sp) {
+    SharedPreferences.getInstance().then((sp) async {
       _sharedPrefrences = sp;     
+      // Read the backupKey from the secure storage and initialize the breez user model appropriately      
       _initializePersistentData();
       _listenBackupPaths();
       _listenBackupNowRequests();
       _listenRestoreRequests();
-      _scheduleBackgroundTasks();
+      _scheduleBackgroundTasks();    
+
+      // Read the backupKey from the secure storage and initialize the breez user model appropriately
+      _setBreezLibBackupKey();
+      _listenPinCodeChange(userStream);
       _listenActions();
     });
   }
+
+  void _listenActions() {
+    _backupActionsController.stream.listen((action) {
+      var handler = _actionHandlers[action.runtimeType];
+      if (handler != null) {
+        handler(action).catchError((e) => action.resolveError(e));
+      }
+    });
+  }
+
+  Future _updateBackupSettings(UpdateBackupSettings action) async {
+    var currentSettings = _backupSettingsController.value;
+    _backupSettingsController.add(action.settings);
+    if (action.settings.backupKeyType != currentSettings.backupKeyType) {
+      await _setBreezLibBackupKey(backupKeyType: action.settings.backupKeyType);
+    }
+    action.resolve(action.settings);
+  }
+
 
   void _initializePersistentData() {     
 
@@ -96,7 +126,7 @@ class BackupBloc {
         _sharedPrefrences.getString(BACKUP_SETTINGS_PREFERENCES_KEY);
     if (backupSettings != null) {      
       Map<String, dynamic> settings = json.decode(backupSettings);
-      _backupSettingsController.add(BackupSettings.fromJson(settings));
+      _backupSettingsController.add(BackupSettings.fromJson(settings));      
     }
 
     _backupSettingsController.stream.listen((settings) {
@@ -105,20 +135,45 @@ class BackupBloc {
     });    
   }
 
-  void _listenActions() {
-    _backupActionsController.stream.listen((action) {
-      var handler = _actionHandlers[action.runtimeType];
-      if (handler != null) {
-        handler(action).catchError((e) => action.resolveError(e));
-      }
-    });
-  }
-
   Future _setBackupProvier(UpdateBackupSettings action) async {
     _backupSettingsController.add(action.settings);
     if (action.settings.backupProvider != null) {
       action.resolve(_breezLib.setBackupProvider(action.settings.backupProvider.name));
     }
+  }
+
+  void _listenPinCodeChange(Stream<BreezUserModel> userStream){    
+    userStream.listen((user){
+      _setBreezLibBackupKey();
+    });
+  }
+
+  Future _saveBackupKey(SaveBackupKey action) async {
+    await _secureStorage.write(key: 'backupKey', value: action.backupPhrase);
+    action.resolve(null);
+  }
+
+  Future<List<int>> _getBackupKey(BackupKeyType keyType) async {   
+    if (keyType == BackupKeyType.PIN) {
+      var pinCode = await _secureStorage.read(key: 'pinCode');
+      return utf8.encode(pinCode);
+    }
+    if (keyType == BackupKeyType.PHRASE) {
+      var phrase = await _secureStorage.read(key: 'backupKey');
+      return HEX.decode(phrase);
+    }
+
+    return null;
+  }
+
+  Future _setBreezLibBackupKey({BackupKeyType backupKeyType}) async {
+    var keyType = backupKeyType ?? _backupSettingsController.value.backupKeyType;
+    var encryptionKey = await _getBackupKey(keyType);
+    if (encryptionKey != null && encryptionKey.length != 32) {
+      encryptionKey = sha256.convert(encryptionKey).bytes;
+    }
+    var encryptionKeyType = encryptionKey != null ? keyType == BackupKeyType.PHRASE ? "Mnemonics" :  keyType == BackupKeyType.PIN ? "Pin" : "" : "";
+    return _breezLib.setBackupEncryptionKey(encryptionKey, encryptionKeyType);
   }
 
   _scheduleBackgroundTasks(){
@@ -217,12 +272,7 @@ class BackupBloc {
         return;     
       }
 
-      List<int> key;
-      if (request.pinCode != null && request.pinCode.isNotEmpty) {
-        key = sha256.convert(utf8.encode(request.pinCode)).bytes;
-      }
-      
-      _breezLib.restore(request.snapshot.nodeID, key)
+      _breezLib.restore(request.snapshot.nodeID, request.encryptionKey)
         .then((_) => _restoreFinishedController.add(true))
         .catchError(_restoreFinishedController.addError);      
     });  
@@ -235,6 +285,7 @@ class BackupBloc {
     _restoreFinishedController.close();    
     _backupSettingsController.close();
     _backupPromptVisibleController.close();
+    _backupActionsController.close();
   }
 }
 
@@ -259,7 +310,7 @@ class SnapshotInfo {
 
 class RestoreRequest {
   final SnapshotInfo snapshot;
-  final String pinCode;
+  final List<int> encryptionKey;
 
-  RestoreRequest(this.snapshot, this.pinCode);
+  RestoreRequest(this.snapshot, this.encryptionKey);
 }

@@ -48,7 +48,7 @@ class PosApp extends StatelessWidget {
                   );
                 case '/intro':
                   return new FadeInRoute(
-                    builder: (_) => new InitialWalkthroughPage(
+                    builder: (_) => new InitialWalkthroughPage(user,
                         userProfileBloc, backupBloc, true),
                     settings: settings,
                   );
