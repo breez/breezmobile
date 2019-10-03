@@ -160,7 +160,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           "Internal Error",
           Text(
             err.toString(),
-            style: theme.alertStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
           ));
     });
   }
@@ -279,7 +279,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                             updateSecurityModelAction.future.then((_) {
                               _proceedToRegister();
                             }).catchError((err) {
-                              promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+                              promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
                             });
                           }
                         });

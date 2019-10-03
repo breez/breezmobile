@@ -394,7 +394,7 @@ class DevViewState extends State<DevView> {
 
   Future _promptForRestart() {
     return promptAreYouSure(context, null,
-            Text("Please restart to resynchronize Breez.", style: theme.alertStyle),
+            Text("Please restart to resynchronize Breez.", style: Theme.of(context).dialogTheme.contentTextStyle),
             cancelText: "Cancel", okText: "Exit Breez")
         .then((shouldExit) {
       if (shouldExit) {

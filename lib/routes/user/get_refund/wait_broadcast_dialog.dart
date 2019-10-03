@@ -59,7 +59,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
           accentColor: Theme.of(context).canvasColor),
       child: new AlertDialog(
           title: Text(getTitleText(),
-              style: theme.alertTitleStyle, textAlign: TextAlign.center),
+              style: Theme.of(context).dialogTheme.titleTextStyle, textAlign: TextAlign.center),
           content: getContent(),
           actions: _response == null && _error == null
               ? []
@@ -68,7 +68,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                       onPressed: () {
                         Navigator.of(context).pop(_error != null && _response?.txID?.isNotEmpty == true);
                       },
-                      child: new Text("CLOSE", style: theme.buttonStyle)),
+                      child: new Text("CLOSE", style: Theme.of(context).primaryTextTheme.button)),
                 ],
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),),
@@ -85,7 +85,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
   getContent() {
     if (_error != null) {
       return Text("Error in broadcasting transaction: " + _error.toString(),
-          style: theme.alertStyle, textAlign: TextAlign.center);
+          style: Theme.of(context).dialogTheme.contentTextStyle, textAlign: TextAlign.center);
     }
     if (_response == null) {
       return getWaitingContent();
@@ -100,7 +100,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
       children: <Widget>[
         new Text(
           "Please wait while Breez is sending the funds to the specified address.",
-          style: theme.alertStyle,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
           textAlign: TextAlign.center,
         ),
         Padding(
@@ -124,7 +124,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
               Expanded(
                 child: Text(
                   "Funds were successfully sent to the specified address.",
-                  style: theme.alertStyle,
+                  style: Theme.of(context).dialogTheme.contentTextStyle,
                   textAlign: TextAlign.center,
                 ),
               )
@@ -138,7 +138,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
               Expanded(
                 flex: 1,
                 child: Text("Transaction ID:",
-                    style: theme.paymentDetailsTitleStyle),
+                    style: Theme.of(context).primaryTextTheme.display1),
               ),
               Expanded(
                   child: Container(

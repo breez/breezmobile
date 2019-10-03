@@ -169,7 +169,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       return Theme(
         data: Theme.of(context).copyWith(
           inputDecorationTheme: InputDecorationTheme(enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide)),
-          hintColor: theme.alertStyle.color,
+          hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
           accentColor: theme.BreezColors.blue[500],
           primaryColor: theme.BreezColors.blue[500],
           errorColor: Colors.red),         
@@ -187,7 +187,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                   focusNode: _amountFocusNode,
                   controller: _invoiceAmountController,
                   validatorFn: account.validateOutgoingPayment,
-                  style: theme.alertStyle.copyWith(height: 1.0),
+                  style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(height: 1.0),
                 ),
               ),
             ),
@@ -250,7 +250,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     List<Widget> actions = [
       SimpleDialogOption(
         onPressed: () => widget._onStateChange(PaymentRequestState.USER_CANCELLED),
-        child: new Text("CANCEL", style: theme.buttonStyle),
+        child: new Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
       )
     ];
 
@@ -271,7 +271,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             }
           }
         }),
-        child: new Text("APPROVE", style: theme.buttonStyle),
+        child: new Text("APPROVE", style: Theme.of(context).primaryTextTheme.button),
       ));
     }
     return Padding(

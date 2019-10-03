@@ -131,7 +131,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                       child: Padding(
                         child: AutoSizeText(
                           "Enter amount in",
-                          style: theme.alertTitleStyle,
+                          style: Theme.of(context).dialogTheme.titleTextStyle,
                           maxLines: 1,
                           minFontSize: MinFontSize(context).minFontSize,
                           stepGranularity: 0.1,
@@ -146,7 +146,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                         child: new DropdownButton(
                           onChanged: (value) => _selectFiatCurrency(account, value),
                           value: account.fiatCurrency.currencyData.shortName,
-                          style: theme.alertTitleStyle,
+                          style: Theme.of(context).dialogTheme.titleTextStyle,
                           items: account.fiatConversionList.map((FiatConversion value) {
                             return new DropdownMenuItem<String>(
                               value: value.currencyData.shortName,
@@ -155,7 +155,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                                 child: AutoSizeText(
                                   value.currencyData.shortName,
                                   textAlign: TextAlign.left,
-                                  style: theme.alertTitleStyle,
+                                  style: Theme.of(context).dialogTheme.titleTextStyle,
                                   maxLines: 1,
                                   minFontSize: MinFontSize(context).minFontSize,
                                   stepGranularity: 0.1,
@@ -188,7 +188,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                           errorStyle: theme.errorStyle.copyWith(color: Colors.red),
                           prefix: Text(
                             account.fiatCurrency.currencyData.symbol,
-                            style: theme.alertStyle,
+                            style: Theme.of(context).dialogTheme.contentTextStyle,
                           )),
                       // Do not allow '.' when fractionSize is 0 and only allow fiat currencies fractionSize number of digits after decimal point
                       inputFormatters: [
@@ -206,7 +206,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                         }
                         return null;
                       },
-                      style: theme.alertStyle),
+                      style: Theme.of(context).dialogTheme.contentTextStyle,),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 24.0),
@@ -214,7 +214,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                     children: <Widget>[
                       Text(
                           "${_fiatAmountController.text.isNotEmpty ? account.currency.format(_convertedSatoshies(account), includeSymbol: false) : 0} ${account.currency.symbol}",
-                          style: theme.headline.copyWith(fontSize: 16.0)),
+                          style: Theme.of(context).textTheme.headline.copyWith(fontSize: 16.0)),
                       _buildExchangeRateLabel(account.fiatCurrency)
                     ],
                   ),
@@ -227,7 +227,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   }
 
   List<Widget> _buildActions(AccountModel account) {
-    List<Widget> actions = [new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("Cancel", style: theme.buttonStyle))];
+    List<Widget> actions = [new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("Cancel", style: Theme.of(context).primaryTextTheme.button))];
 
     // Show done button only when the converted amount is bigger than 0
     if (_fiatAmountController.text.isNotEmpty && _convertedSatoshies(account) > 0) {
@@ -238,7 +238,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
               Navigator.pop(context);
             }
           },
-          child: new Text("Done", style: theme.buttonStyle)));
+          child: new Text("Done", style: Theme.of(context).primaryTextTheme.button)));
     }
     return actions;
   }
@@ -260,9 +260,9 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
   Widget _buildExchangeRateLabel(FiatConversion fiatConversion) {
     // Empty string widget is returned so that the dialogs height is not changed when the exchange rate is shown
     return _exchangeRate == null
-        ? Text("", style: theme.smallTextStyle)
+        ? Text("", style: Theme.of(context).primaryTextTheme.subtitle)
         : Text("1 BTC = $_exchangeRate ${fiatConversion.currencyData.shortName}",
-            style: theme.smallTextStyle.copyWith(color: _colorAnimation.value));
+            style: Theme.of(context).primaryTextTheme.subtitle.copyWith(color: _colorAnimation.value));
   }
 
   _selectFiatCurrency(AccountModel accountModel, shortName) {

@@ -225,7 +225,7 @@ class HomeState extends State<Home> {
         Navigator.of(context).push(ctpRoute);                    
       },
       (e) {
-        promptError(context, "Connect to Pay", Text(e.toString(), style: theme.alertStyle));
+        promptError(context, "Connect to Pay", Text(e.toString(), style: Theme.of(context).dialogTheme.contentTextStyle));
       }
     );
     new SyncUIHandler(widget.accountBloc, context);
@@ -244,7 +244,7 @@ class HomeState extends State<Home> {
           return route.settings.name == "/home" || route.settings.name == "/";
         }
       );
-      await promptError(context, "Configuration Error", Text("Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.", style: theme.alertStyle), 
+      await promptError(context, "Configuration Error", Text("Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.", style: Theme.of(context).dialogTheme.contentTextStyle),
                         okText: "Exit Breez", okFunc: () => exit(0), disableBack: true );        
     });
   }
@@ -253,7 +253,7 @@ class HomeState extends State<Home> {
     widget.accountBloc.optimizationWhitelistExplainStream.listen((_) async {
       await promptError(context, "Background Synchronization", 
         Text("In order to support instantaneous payments, Breez needs your permission in order to synchronize the information while the app is not active. Please approve the app in the next dialog.", 
-        style: theme.alertStyle), 
+        style: Theme.of(context).dialogTheme.contentTextStyle),
         okFunc: () => widget.accountBloc.optimizationWhitelistRequestSink.add(null));      
     });
   }

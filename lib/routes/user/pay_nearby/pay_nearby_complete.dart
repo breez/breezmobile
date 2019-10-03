@@ -102,15 +102,15 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
   void _showAlertDialog() {
     AlertDialog dialog = new AlertDialog(
       content: new Text("Breez requires NFC to be enabled in your device in order to pay someone nearby.",
-          style: theme.alertStyle),
+          style: Theme.of(context).dialogTheme.contentTextStyle),
       actions: <Widget>[
-        new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("CANCEL", style: theme.buttonStyle)),
+        new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("CANCEL", style: Theme.of(context).primaryTextTheme.button)),
         new FlatButton(
             onPressed: () {
               _nfc.openSettings();
               Navigator.pop(context);
             },
-            child: new Text("SETTINGS", style: theme.buttonStyle))
+            child: new Text("SETTINGS", style: Theme.of(context).primaryTextTheme.button))
       ],
     );
     showDialog(context: context, builder: (_) => dialog);

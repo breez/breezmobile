@@ -71,7 +71,7 @@ class NetworkPageState extends State<NetworkPage> {
 
   Future<bool> _promptForRestart() {
     return promptAreYouSure(context, null,
-            Text("Please restart Breez to switch to the new Bitcoin Node configuration.", style: theme.alertStyle),
+            Text("Please restart Breez to switch to the new Bitcoin Node configuration.", style: Theme.of(context).dialogTheme.contentTextStyle),
             cancelText: "Cancel", okText: "Exit Breez")
         .then((shouldExit) {
       if (shouldExit) {
@@ -154,7 +154,7 @@ class NetworkPageState extends State<NetworkPage> {
                                         await promptError(
                                           context, null, 
                                           Text("Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
-                                          style: theme.alertStyle));
+                                          style: Theme.of(context).dialogTheme.contentTextStyle));
                                         return;
                                       } else {
                                         await _breezLib.setPeers([this._data.peer]);

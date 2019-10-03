@@ -81,7 +81,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           Navigator.of(context).pop(); //remove the loading dialog
           if (response.errorMessage?.isNotEmpty == true) {
             promptError(context, null,
-                Text(response.errorMessage, style: theme.alertStyle));
+                Text(response.errorMessage, style: Theme.of(context).dialogTheme.contentTextStyle));
             return;
           }
           Navigator.of(context).pop(
@@ -91,7 +91,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
             _inProgress = false;
           });
           Navigator.of(context).pop(); //remove the loading dialog
-          promptError(context, null, Text(err.toString(), style: theme.alertStyle));
+          promptError(context, null, Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle));
       });
   }
 
@@ -227,7 +227,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           "Are you sure you want to remove " +
               currency.format(currency.parse(_amountController.text)) +
               " from Breez and send this amount to the address you've specified?",
-          style: theme.alertStyle),
+          style: Theme.of(context).dialogTheme.contentTextStyle),
       actions: <Widget>[
         new FlatButton(
             onPressed: () => Navigator.pop(context),
@@ -256,7 +256,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     AlertDialog dialog = new AlertDialog(
       title: Text(
         "Removing Funds",
-        style: theme.alertTitleStyle,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
         textAlign: TextAlign.center,
       ),
       content: Column(
@@ -265,7 +265,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
         children: <Widget>[
           new Text(
             "Please wait while Breez is sending the funds to the specified address.",
-            style: theme.alertStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
             textAlign: TextAlign.center,
           ),
           Padding(

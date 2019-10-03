@@ -336,7 +336,7 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
                 context,
                 "Redeem Voucher",
                 Text("Failed to redeem voucher: " + err.toString(),
-                    style: theme.alertStyle))
+                    style: Theme.of(context).dialogTheme.contentTextStyle))
             .whenComplete(() => popToForm());
       });
     });

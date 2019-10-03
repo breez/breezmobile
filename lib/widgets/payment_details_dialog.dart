@@ -18,7 +18,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
       Container(
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
-          color: theme.BreezColors.blue[900],
+          color: Theme.of(context).primaryColorDark,
         ),
         height: 64.0,
         width: MediaQuery.of(context).size.width,
@@ -44,7 +44,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                       left: 16.0, right: 16.0, bottom: (paymentInfo.description == null || paymentInfo.description.isEmpty) ? 16 : 8),
                   child: AutoSizeText(
                     paymentInfo.title,
-                    style: theme.paymentRequestAmountStyle,
+                    style: Theme.of(context).primaryTextTheme.headline,
                     textAlign: TextAlign.center,
                     maxLines: 1,
                   ),
@@ -55,7 +55,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: AutoSizeText(
                     paymentInfo.description,
-                    style: theme.paymentDetailsTitleStyle,
+                    style: Theme.of(context).primaryTextTheme.display1,
                     textAlign: paymentInfo.description.length > 40 ? TextAlign.justify : TextAlign.center,
                     maxLines: 3,
                   ),
@@ -72,7 +72,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                         padding: const EdgeInsets.only(right:8.0),
                         child: AutoSizeText(
                           "Amount",
-                          style: theme.paymentDetailsTitleStyle,
+                          style: Theme.of(context).primaryTextTheme.display1,
                           textAlign: TextAlign.left,
                           maxLines: 1,
                           group: _labelGroup,
@@ -85,7 +85,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                           child: AutoSizeText(
                             (paymentInfo.type == PaymentType.SENT || paymentInfo.type == PaymentType.WITHDRAWAL ? "-" : "+") +
                                 paymentInfo.currency.format(paymentInfo.amount),
-                            style: theme.paymentDetailsSubtitleStyle,
+                            style: Theme.of(context).primaryTextTheme.display2,
                             textAlign: TextAlign.right,
                             maxLines: 1,
                             group: _valueGroup,
@@ -107,7 +107,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                         padding: const EdgeInsets.only(right:8.0),
                         child: AutoSizeText(
                           "Date & Time",
-                          style: theme.paymentDetailsTitleStyle,
+                          style: Theme.of(context).primaryTextTheme.display1,
                           textAlign: TextAlign.left,
                           maxLines: 1,
                           group: _labelGroup,
@@ -121,7 +121,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                           child: AutoSizeText(
                             DateUtils.formatYearMonthDayHourMinute(
                                 DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)),
-                            style: theme.paymentDetailsSubtitleStyle,
+                            style: Theme.of(context).primaryTextTheme.display2,
                             textAlign: TextAlign.right,
                             maxLines: 1,
                             group: _valueGroup,
@@ -143,7 +143,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                         padding: const EdgeInsets.only(right:8.0),
                         child: AutoSizeText(
                           "Expiration",
-                          style: theme.paymentDetailsTitleStyle,
+                          style: Theme.of(context).primaryTextTheme.display1,
                           textAlign: TextAlign.left,
                           maxLines: 1,
                           group: _labelGroup,
@@ -157,7 +157,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
                           child: AutoSizeText(
                             DateUtils.formatYearMonthDayHourMinute(
                                 DateTime.fromMillisecondsSinceEpoch(paymentInfo.pendingExpirationTimestamp.toInt() * 1000)),
-                            style: theme.paymentDetailsSubtitleStyle,
+                            style: Theme.of(context).primaryTextTheme.display2,
                             textAlign: TextAlign.right,
                             maxLines: 1,
                             group: _valueGroup,
@@ -196,13 +196,13 @@ class ShareablePaymentRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _expansionTileTheme =
-        Theme.of(context).copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor);
+        Theme.of(context).copyWith(unselectedWidgetColor: Theme.of(context).buttonColor, accentColor: Theme.of(context).buttonColor, dividerColor: Theme.of(context).backgroundColor);
     return Theme(
       data: _expansionTileTheme,
       child: ExpansionTile(
           title: AutoSizeText(
             title,
-            style: theme.paymentDetailsTitleStyle,
+            style: Theme.of(context).primaryTextTheme.display1,
             maxLines: 1,
             group: _labelGroup,
           ),
@@ -231,7 +231,7 @@ class ShareablePaymentRow extends StatelessWidget {
                             padding: EdgeInsets.only(right: 8.0),
                             tooltip: "Copy $title",
                             iconSize: 16.0,
-                            color: theme.BreezColors.blue[500],
+                            color: Theme.of(context).buttonColor,
                             icon: Icon(
                               IconData(0xe90b, fontFamily: 'icomoon'),
                             ),
@@ -245,7 +245,7 @@ class ShareablePaymentRow extends StatelessWidget {
                             padding: EdgeInsets.only(right: 8.0),
                             tooltip: "Share Transaction Hash",
                             iconSize: 16.0,
-                            color: theme.BreezColors.blue[500],
+                            color: Theme.of(context).buttonColor,
                             icon: Icon(Icons.share),
                             onPressed: () {
                               ShareExtend.share(sharedValue, "text");

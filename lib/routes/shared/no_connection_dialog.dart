@@ -64,7 +64,7 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
       ),
       // Text(
       //     "You can try:\n• Turning off airplane mode\n• Turning on mobile data or Wi-Fi\n• Checking the signal in your area",
-      //     style: theme.alertStyle),
+      //     style: Theme.of(context).dialogTheme.contentTextStyle),
       okText: "Try Again",
       okFunc: () => accountBloc.userActionsSink.add(RestartDaemon()),
       optionText: "Exit",
@@ -76,6 +76,6 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
 
 Future _promptForRestart(BuildContext context) {
   return promptAreYouSure(context, null,
-          Text("Restoring chain information might take several minutes.", style: theme.alertStyle),
+          Text("Restoring chain information might take several minutes.", style: Theme.of(context).dialogTheme.contentTextStyle),
           cancelText: "Cancel", okText: "Exit Breez");    
 }

@@ -237,7 +237,7 @@ class SecurityPageState extends State<SecurityPage> {
         updatePinAction.future.then((_) => 
           _updateSecurityModel(securityModel, securityModel.copyWith(requiresPin: true), backupSettings, pinCodeChanged: true))
           .catchError((err){
-            promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+            promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
           });
       }
     });
@@ -256,7 +256,7 @@ class SecurityPageState extends State<SecurityPage> {
         }
       })
       .catchError((err){
-        promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+        promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
       });    
   }
 
@@ -272,7 +272,7 @@ class SecurityPageState extends State<SecurityPage> {
         }
       })
       .catchError((err){
-        promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+        promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
       });    
   }
 

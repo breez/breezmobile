@@ -51,7 +51,7 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
       padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
       child: Text(
         "Payment Confirmation",
-        style: theme.alertTitleStyle,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
         textAlign: TextAlign.center,
       ),
     );
@@ -67,17 +67,17 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
           child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: <Widget>[
             Text(
               'Are you sure you want to pay',
-              style: theme.alertStyle,
+              style: Theme.of(context).dialogTheme.contentTextStyle,
               textAlign: TextAlign.center,
             ),
             AutoSizeText.rich(
                 TextSpan(children: <TextSpan>[
-                  TextSpan(text: widget._amountToPayStr, style: theme.alertStyle.copyWith(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                  TextSpan(text: widget._amountToPayStr, style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(fontSize: 20.0, fontWeight: FontWeight.bold)),
                   TextSpan(text: " ?")
                 ]),
                 maxLines: 2,
                 textAlign: TextAlign.center,
-                style: theme.alertStyle),
+                style: Theme.of(context).dialogTheme.contentTextStyle),
           ]),
         ),
       ),
@@ -87,11 +87,11 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
   Container _buildActions() {
     List<Widget> children = <Widget>[
       new FlatButton(
-        child: new Text("NO", style: theme.buttonStyle),
+        child: new Text("NO", style: Theme.of(context).primaryTextTheme.button),
         onPressed: () => widget._onStateChange(PaymentRequestState.USER_CANCELLED),
       ),
       new FlatButton(
-        child: new Text("YES", style: theme.buttonStyle),
+        child: new Text("YES", style: Theme.of(context).primaryTextTheme.button),
         onPressed: () {
           widget.accountBloc.userActionsSink.add(SendPayment(PayRequest(widget.invoice.rawPayReq, widget._amountToPay)));
           widget._onStateChange(PaymentRequestState.PROCESSING_PAYMENT);

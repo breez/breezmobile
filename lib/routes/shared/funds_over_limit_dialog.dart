@@ -34,7 +34,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
         titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
         title: new Text(
           "On-chain Transaction",
-          style: theme.alertTitleStyle,
+          style: Theme.of(context).dialogTheme.titleTextStyle,
         ),
         contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
         content: FutureBuilder(
@@ -98,7 +98,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
         actions: [
           new SimpleDialogOption(
             onPressed: () => Navigator.pop(context),
-            child: new Text("OK", style: theme.buttonStyle),
+            child: new Text("OK", style: Theme.of(context).primaryTextTheme.button),
           )
         ],
         shape: RoundedRectangleBorder(

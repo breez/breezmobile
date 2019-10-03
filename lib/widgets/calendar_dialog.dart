@@ -38,7 +38,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
     return AlertDialog(
       title: Text(
         "Choose a date range:",
-        style: theme.alertTitleStyle,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
       content: SingleChildScrollView(
         child: Row(
@@ -56,7 +56,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
           onPressed: _clearFilter,
         ),
         FlatButton(
-          child: Text("Apply Filter", style: theme.buttonStyle),
+          child: Text("Apply Filter", style: Theme.of(context).primaryTextTheme.button),
           onPressed: () {
             _applyFilter();
           },
@@ -84,11 +84,11 @@ class _CalendarDialogState extends State<CalendarDialog> {
         child: TextFormField(
           decoration: InputDecoration(
             labelText: label,
-            labelStyle: theme.alertStyle,
+            labelStyle: Theme.of(context).dialogTheme.contentTextStyle,
           ),
           controller: textEditingController,
           enabled: false,
-          style: theme.alertStyle,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
         width: 84.0,
         padding: EdgeInsets.zero,

@@ -35,7 +35,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: new Text(
             "Backup",
-            style: theme.alertTitleStyle,
+            style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
           contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
           content: StreamBuilder<BackupSettings>(
@@ -93,7 +93,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
               onPressed: () => Navigator.pop(widget.context),
               child: Text(
                 "LATER",
-                style: theme.buttonStyle,
+                style: Theme.of(context).primaryTextTheme.button,
                 maxLines: 1,
               ),
             ),
@@ -104,7 +104,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
               }),
               child: Text(
                 "BACKUP NOW",
-                style: theme.buttonStyle,
+                style: Theme.of(context).primaryTextTheme.button,
                 maxLines: 1,
               ),
             ),

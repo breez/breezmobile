@@ -38,11 +38,11 @@ class MakeInvoiceRequest extends StatelessWidget {
         children: <Widget>[
           SimpleDialogOption(
             onPressed: () => Navigator.pop(context, false),
-            child: new Text("CANCEL", style: theme.buttonStyle),
+            child: new Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
           ),
           SimpleDialogOption(
             onPressed: () => Navigator.pop(context, true),
-            child: new Text("APPROVE", style: theme.buttonStyle),
+            child: new Text("APPROVE", style: Theme.of(context).primaryTextTheme.button),
           )
         ],
       ),

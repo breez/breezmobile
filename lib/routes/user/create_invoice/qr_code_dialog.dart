@@ -25,7 +25,7 @@ class QrCodeDialog extends StatelessWidget {
         children: [
           new Text(
             "Invoice",
-            style: theme.alertTitleStyle,
+            style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
           new StreamBuilder<String>(
             stream: _invoiceBloc.readyInvoicesStream,
@@ -38,7 +38,7 @@ class QrCodeDialog extends StatelessWidget {
                   new IconButton(
                     padding: EdgeInsets.only(top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
                     icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
-                    color: theme.BreezColors.grey[500],
+                    color: Theme.of(context).primaryIconTheme.color,
                     onPressed: () {
                       ShareExtend.share("lightning:" + snapshot.data, "text");
                     },
@@ -46,7 +46,7 @@ class QrCodeDialog extends StatelessWidget {
                   new IconButton(
                     padding: EdgeInsets.only(top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
                     icon: new Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-                    color: theme.BreezColors.grey[500],
+                    color: Theme.of(context).primaryIconTheme.color,
                     onPressed: () {
                       Clipboard.setData(new ClipboardData(text: snapshot.data));
                       showFlushbar(context, message: "Invoice address was copied to your clipboard.", duration:Duration(seconds: 3));                      
@@ -85,10 +85,12 @@ class QrCodeDialog extends StatelessWidget {
                   new Container(
                     width: 230.0,
                     height: 230.0,
-                    child: new CompactQRImage(                      
+                    color: Colors.white,
+                    child: new CompactQRImage(
                       data: snapshot.data,
                     ),
                   ),
+                  Padding(padding: EdgeInsets.only(top: 8.0)),
                   new GestureDetector(
                     onTap: () {
                       ShareExtend.share(snapshot.data, "text");
@@ -125,7 +127,7 @@ class QrCodeDialog extends StatelessWidget {
       onPressed: (() {
         Navigator.pop(context);
       }),
-      child: new Text("CLOSE", style: theme.buttonStyle),
+      child: new Text("CLOSE", style: Theme.of(context).primaryTextTheme.button),
     );
   }
 }

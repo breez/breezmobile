@@ -39,7 +39,7 @@ class LostCardDialog extends StatelessWidget {
       title:        
         new Text(
           "Lost or Stolen Card",
-          style: theme.alertTitleStyle,
+          style: Theme.of(context).dialogTheme.titleTextStyle,
           maxLines: 2,
         ),      
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
@@ -47,20 +47,20 @@ class LostCardDialog extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: AutoSizeText(
             "If your card has been lost or stolen, you should deactivate it now to prevent it from being used by others. Deactivate means you won't be able to use any of your existing cards until you re-activate them.",
-            style: theme.alertStyle),
+            style: Theme.of(context).dialogTheme.contentTextStyle),
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 8.0),
       actions: <Widget>[
         FlatButton(
           onPressed: () => Navigator.pop(context),
-          child: Text("CANCEL", style: theme.buttonStyle),
+          child: Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
         ),
         FlatButton(
           onPressed: (() {
             Navigator.pop(context);
             _lostCardFlush.show(context);
           }),
-          child: Text("DEACTIVATE", style: theme.buttonStyle),
+          child: Text("DEACTIVATE", style: Theme.of(context).primaryTextTheme.button),
         ),
       ],
       shape: RoundedRectangleBorder(

@@ -11,7 +11,7 @@ AlertDialog createAnimatedLoaderDialog(BuildContext context, String text, {bool 
         children: <Widget>[
           new LoadingAnimatedText(
             text,
-            textStyle: theme.alertStyle,
+            textStyle: Theme.of(context).dialogTheme.contentTextStyle,
             textAlign: TextAlign.center,
           ),
           new Image.asset(
@@ -25,7 +25,7 @@ AlertDialog createAnimatedLoaderDialog(BuildContext context, String text, {bool 
             mainAxisSize: MainAxisSize.max,
             children: withOKButton ? <Widget>[
               FlatButton(
-                child: Text('OK', style: theme.buttonStyle),
+                child: Text('OK', style: Theme.of(context).primaryTextTheme.button),
                 onPressed: () {
                   Navigator.pop(context, false);
                 },

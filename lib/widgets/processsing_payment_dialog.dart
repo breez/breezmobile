@@ -175,7 +175,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
       padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
       child: Text(
         "Processing Payment",
-        style: theme.alertTitleStyle,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
         textAlign: TextAlign.center,
       ),
     );
@@ -194,7 +194,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
             children: <Widget>[
               LoadingAnimatedText(
                 'Please wait while your payment is being processed',
-                textStyle: theme.alertStyle,
+                textStyle: Theme.of(context).dialogTheme.contentTextStyle,
                 textAlign: TextAlign.center,
               ),
               Image.asset(

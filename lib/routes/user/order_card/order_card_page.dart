@@ -316,11 +316,11 @@ class OrderCardPageState extends State<OrderCardPage> {
     AlertDialog dialog = new AlertDialog(
       content: new Text(
           "Name and address are required for sending you a Breez card. Any information provided will be deleted from our systems after card has been sent. You may skip this step and continue using Breez without a card.",
-          style: theme.alertStyle),
+          style: Theme.of(context).dialogTheme.contentTextStyle),
       actions: <Widget>[
         new FlatButton(
             onPressed: () => Navigator.pop(context),
-            child: new Text("OK", style: theme.buttonStyle))
+            child: new Text("OK", style: Theme.of(context).primaryTextTheme.button))
       ],
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0))),

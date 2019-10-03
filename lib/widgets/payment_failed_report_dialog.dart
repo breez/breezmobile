@@ -53,7 +53,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: new Text(
             "Failed Payment",
-            style: theme.alertTitleStyle,
+            style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
           contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
           content: _settings == null
@@ -98,14 +98,14 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                 onSubmit(false);
                 Navigator.pop(widget.context, false);
               },
-              child: new Text("NO", style: theme.buttonStyle),
+              child: new Text("NO", style: Theme.of(context).primaryTextTheme.button),
             ),
             new SimpleDialogOption(
               onPressed: (() async {
                 onSubmit(true);                
                 Navigator.pop(widget.context, true);
               }),
-              child: new Text("YES", style: theme.buttonStyle),
+              child: new Text("YES", style: Theme.of(context).primaryTextTheme.button),
             ),
           ],
           shape: RoundedRectangleBorder(

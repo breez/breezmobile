@@ -913,11 +913,11 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
       child: new ButtonBar(
         children: <Widget>[
           new FlatButton(
-            child: new Text(localizations.cancelButtonLabel,style: theme.buttonStyle),
+            child: new Text(localizations.cancelButtonLabel,style: Theme.of(context).primaryTextTheme.button),
             onPressed: _handleCancel,
           ),
           new FlatButton(
-            child: new Text(localizations.okButtonLabel,style: theme.buttonStyle),
+            child: new Text(localizations.okButtonLabel,style: Theme.of(context).primaryTextTheme.button),
             onPressed: _handleOk,
           ),
         ],

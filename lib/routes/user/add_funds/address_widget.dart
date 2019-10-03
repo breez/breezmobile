@@ -120,7 +120,7 @@ class AddressWidget extends StatelessWidget {
       contentPadding: EdgeInsets.fromLTRB(20.0,20.0,20.0,4.0),
       content: RichText(
         text: TextSpan(
-            style: theme.alertStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
             text: "Breez is using Submarine Swaps to execute on-chain transactions. Click ",
             children: <TextSpan>[
               TextSpan(
@@ -140,7 +140,7 @@ class AddressWidget extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: new Text("OK", style: theme.buttonStyle))
+            child: new Text("OK", style: Theme.of(context).primaryTextTheme.button))
       ],
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );

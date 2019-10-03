@@ -63,15 +63,15 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
   void _showAlertDialog() {
     AlertDialog dialog = new AlertDialog(
       content: new Text("Breez requires NFC to be enabled in your device in order to activate a card.",
-          style: theme.alertStyle),
+          style: Theme.of(context).dialogTheme.contentTextStyle),
       actions: <Widget>[
-        new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("CANCEL", style: theme.buttonStyle)),
+        new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("CANCEL", style: Theme.of(context).primaryTextTheme.button)),
         new FlatButton(
             onPressed: () {
               nfc.openSettings();
               Navigator.pop(context);
             },
-            child: new Text("SETTINGS", style: theme.buttonStyle))
+            child: new Text("SETTINGS", style: Theme.of(context).primaryTextTheme.button))
       ],
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0))),

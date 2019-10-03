@@ -24,7 +24,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                 ? null
                 : new Text(
                     title,
-                    style: theme.alertTitleStyle,
+                    style: Theme.of(context).dialogTheme.titleTextStyle,
                   ),
             content: new SingleChildScrollView(
               child: body,
@@ -47,7 +47,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                     )
                   : null,
               new FlatButton(
-                child: new Text(okText, style: theme.buttonStyle),
+                child: new Text(okText, style: Theme.of(context).primaryTextTheme.button),
                 onPressed: () {
                   canPop = true;
                   Navigator.of(context).pop();
@@ -71,7 +71,7 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
     String cancelText = "NO",
     TextStyle textStyle = const TextStyle(color: Colors.white)}) {
   
-  Widget titleWidget = title == null ? null : Text(title, style: theme.alertTitleStyle);
+  Widget titleWidget = title == null ? null : Text(title, style: Theme.of(context).dialogTheme.titleTextStyle);
   if (titleWidget != null && wideTitle) {
     titleWidget = Container(
       child: titleWidget,
@@ -90,13 +90,13 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text(cancelText, style: theme.buttonStyle),              
+              child: new Text(cancelText, style: Theme.of(context).primaryTextTheme.button),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             new FlatButton(
-              child: new Text(okText, style: theme.buttonStyle),
+              child: new Text(okText, style: Theme.of(context).primaryTextTheme.button),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },

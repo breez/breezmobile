@@ -72,7 +72,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
             titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
             title: new Text(
               "Beta Warning",
-              style: theme.alertTitleStyle,
+              style: Theme.of(context).dialogTheme.titleTextStyle,
             ),
             contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
             content: Column(
@@ -83,7 +83,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
             actions: [
               new FlatButton(
                 onPressed: () => exit(0),
-                child: new Text("Exit", style: theme.buttonStyle),
+                child: new Text("Exit", style: Theme.of(context).primaryTextTheme.button),
               ),
               new FlatButton(
                 onPressed: (() {
@@ -95,7 +95,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
                     });
                   }
                 }),
-                child: new Text("Continue", style: theme.buttonStyle),
+                child: new Text("Continue", style: Theme.of(context).primaryTextTheme.button),
               ),
             ],
             shape: RoundedRectangleBorder(
