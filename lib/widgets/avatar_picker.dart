@@ -85,7 +85,7 @@ class AvatarPicker extends StatelessWidget {
 
   Future _pickImage(BuildContext context) async {
     return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
-      ImageCropper.cropImage(sourcePath: file.path, ratioX: 1.0, ratioY: 1.0)
+      ImageCropper.cropImage(sourcePath: file.path, aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0))
           .then((file) {
         if (file != null) {
           file
