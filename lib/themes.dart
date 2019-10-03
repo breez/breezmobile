@@ -13,6 +13,7 @@ class Themes {
     accentColor: Color(0xFFffffff),
     canvasColor: theme.BreezColors.blue[500],
     backgroundColor: Colors.white,
+    appBarTheme: AppBarTheme(iconTheme: IconThemeData(color: Colors.transparent,)),
     dialogTheme: DialogTheme(
         titleTextStyle: TextStyle(color: theme.BreezColors.grey[600], fontSize: 20.5, letterSpacing: 0.25),
         backgroundColor: Colors.white,
@@ -50,6 +51,7 @@ class Themes {
     accentColor: Colors.white,
     canvasColor: Color(0xFF0c2031),
     backgroundColor: Color(0xFF152a3d),
+    appBarTheme: AppBarTheme(iconTheme: IconThemeData(color: Colors.white,)),
     dialogTheme: DialogTheme(
         titleTextStyle: TextStyle(color: Colors.white, fontSize: 20.5, letterSpacing: 0.25),
         contentTextStyle: TextStyle(color: Colors.white70, fontSize: 16.0, height: 1.5),

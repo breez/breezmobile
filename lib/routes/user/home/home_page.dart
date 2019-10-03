@@ -148,13 +148,15 @@ class HomeState extends State<Home> {
                   icon: ImageIcon(
                     AssetImage("src/icon/hamburger.png"),
                     size: 24.0,
-                    color: null,
+                    color: Theme.of(context).buttonColor,
                   ),
                   onPressed: () => _scaffoldKey.currentState.openDrawer()),
               title: new Image.asset(
                 "src/images/logo-color.png",
                 height: 23.5,
                 width: 62.7,
+                color: Theme.of(context).appBarTheme.iconTheme.color,
+                colorBlendMode: BlendMode.srcATop,
               ),
               iconTheme: new IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
               backgroundColor: Theme.of(context).backgroundColor,
