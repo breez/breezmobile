@@ -1,3 +1,4 @@
+import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:flutter/foundation.dart';
 
 class BackupProvider {
@@ -54,4 +55,15 @@ class BackupState {
   final bool inProgress;
 
   BackupState(this.lastBackupTime, this.inProgress);
+}
+
+class BackupFailedException implements Exception {
+  final BackupProvider provider;
+  final bool authenticationError;
+
+  BackupFailedException(this.provider, this.authenticationError);
+
+  String toString() {
+    return "Backup Failed";
+  }
 }

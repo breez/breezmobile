@@ -118,6 +118,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           error: error.runtimeType != SignInFailedException
               ? error.toString()
               : null);
+      if (error.runtimeType == SignInFailedException) {
+        _handleSignInException(error as SignInFailedException);
+      }
     });
 
     _restoreFinishedSubscription =
@@ -131,6 +134,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       if (error.runtimeType != SignInFailedException) {
         showFlushbar(context, duration: new Duration(seconds: 3),
           message: error.toString());
+      }
+      else {
+        _handleSignInException(error as SignInFailedException);
       }      
     });
 
@@ -141,6 +147,12 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     if (_controller.isCompleted) {
       _controller.stop();
       _controller.dispose();
+    }
+  }
+
+  Future _handleSignInException(SignInFailedException e) async {
+    if (e.provider == BackupSettings.icloudBackupProvider) {
+      await promptError(context, "Sign in to iCloud", Text("Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.", style: theme.alertStyle));
     }
   }
 

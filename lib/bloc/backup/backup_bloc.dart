@@ -4,7 +4,9 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:crypto/crypto.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
@@ -16,6 +18,8 @@ import '../async_action.dart';
 import 'backup_actions.dart';
 
 class BackupBloc {
+
+  static const String _signInFaileCode = "AuthError";
 
   final BehaviorSubject<BackupState> _backupStateController =
       new BehaviorSubject<BackupState>();
@@ -242,10 +246,10 @@ class BackupBloc {
       }      
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
         _backupServiceNeedLogin = true;
-        _backupStateController.addError(null);
+        _backupStateController.addError(BackupFailedException(_backupSettingsController.value.backupProvider, true));
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_FAILED) {        
-        _backupStateController.addError(null);
+        _backupStateController.addError(BackupFailedException(_backupSettingsController.value.backupProvider, false));
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
         _backupServiceNeedLogin = false;      
@@ -279,6 +283,15 @@ class BackupBloc {
           }
           _multipleRestoreController.add(snapshots);
         }).catchError((error) {
+          if (error.runtimeType == PlatformException) {
+            PlatformException e = (error as PlatformException);
+            if (e.code == _signInFaileCode || e.message == _signInFaileCode){
+              error = SignInFailedException(_backupSettingsController.value.backupProvider);
+            } else {          
+              error = (error as PlatformException).message;
+            }
+          }
+
           _restoreFinishedController.addError(error);
         });
 
@@ -326,4 +339,14 @@ class RestoreRequest {
   final List<int> encryptionKey;
 
   RestoreRequest(this.snapshot, this.encryptionKey);
+}
+
+class SignInFailedException implements Exception {
+  final BackupProvider provider;
+
+  SignInFailedException(this.provider);
+
+  String toString() {
+    return "Sign in failed";
+  }
 }

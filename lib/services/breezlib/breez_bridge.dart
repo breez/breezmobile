@@ -15,8 +15,7 @@ import 'package:rxdart/rxdart.dart';
 // protoc --dart_out=grpc:lib/services/breezlib/data/ -Ilib/services/breezlib/ lib/services/breezlib/rpc.proto
 class BreezBridge {
   static const _methodChannel = const MethodChannel('com.breez.client/breez_lib');
-  static const _eventChannel = const EventChannel('com.breez.client/breez_lib_notifications');
-  static const String _signInFaileCode = "AuthError";
+  static const _eventChannel = const EventChannel('com.breez.client/breez_lib_notifications');  
 
   BehaviorSubject<Map<String, DownloadFileInfo>> _bootstrapDownloadProgressController = new BehaviorSubject<Map<String, DownloadFileInfo>>();
   Stream<Map<String, DownloadFileInfo>> get chainBootstrapProgress => _bootstrapDownloadProgressController.stream;
@@ -320,20 +319,9 @@ class BreezBridge {
     return _invokeMethodImmediate("setBackupProvider", {"argument": backupProvider});
   }
 
-  Future<String> getAvailableBackups() async {
-    try {
-      await signIn(true);
-      return await _methodChannel.invokeMethod("availableSnapshots").then((res) => res as String);     
-    } catch( err ) {
-      if (err.runtimeType == PlatformException) {
-          PlatformException e = (err as PlatformException);
-          if (e.code == _signInFaileCode) {
-            throw new SignInFailedException();
-          }          
-          throw (err as PlatformException).message;
-        }
-        throw err;
-    }
+  Future<String> getAvailableBackups() async {    
+    await signIn(true);
+    return await _methodChannel.invokeMethod("availableSnapshots").then((res) => res as String);         
   }
 
   Future restore(String nodeId, List<int> encryptionKey) async {
@@ -427,10 +415,4 @@ class BreezBridge {
     await _invokeMethodImmediate("bootstrapHeaders", {"argument": targetDir});
     return true;   
   }  
-}
-
-class SignInFailedException implements Exception {
-  String toString() {
-    return "Sign in failed";
-  }
 }

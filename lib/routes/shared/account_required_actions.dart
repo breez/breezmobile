@@ -61,7 +61,7 @@ class AccountRequiredActionsIndicatorState
                       barrierDismissible: false,
                       context: context,
                       builder: (_) =>
-                          new EnableBackupDialog(context, widget._backupBloc)).then((_) {
+                          new EnableBackupDialog(context, widget._backupBloc, signInNeeded: true,)).then((_) {
                     showingBackupDialog = false;
                     widget._backupBloc.backupPromptVisibleSink.add(false);
                   });
@@ -124,13 +124,17 @@ class AccountRequiredActionsIndicatorState
                               Navigator.of(context).pushNamed("/send_coins")));
                         }
 
-                        if (backupSnapshot.hasError) {                          
+                        if (backupSnapshot.hasError) {
+                          bool signInNeeded = false;
+                          if (backupSnapshot.error.runtimeType == BackupFailedException) {
+                            signInNeeded = (backupSnapshot.error as BackupFailedException).authenticationError;
+                          }                         
                           warnings.add(WarningAction(() async {                                                        
                               showDialog(
                                 barrierDismissible: false,
                                 context: context,
                                 builder: (_) => new EnableBackupDialog(
-                                    context, widget._backupBloc));                              
+                                    context, widget._backupBloc, signInNeeded: signInNeeded));                              
                             }));                          
                         }
 
