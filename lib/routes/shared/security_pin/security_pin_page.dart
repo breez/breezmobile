@@ -166,7 +166,6 @@ class SecurityPageState extends State<SecurityPage> {
           }).toList(),
         ),
       ),
-      onTap: () => _onChangePinSelected(securityModel, backupSettings),
     );
   }
 
