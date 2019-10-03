@@ -61,7 +61,7 @@ class Themes {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))),
     errorColor: Color(0xFFeddc97),
     dividerColor: Colors.lightBlueAccent,
-    buttonColor: Colors.white,
+    buttonColor: Color(0xFF4B89EB),
     cardColor: Color(0xFF121212),
     highlightColor: Color(0xFF121212),
     textTheme: TextTheme(
