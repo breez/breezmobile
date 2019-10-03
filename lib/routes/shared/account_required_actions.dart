@@ -94,7 +94,7 @@ class AccountRequiredActionsIndicatorState
             builder: dialogBuilder
           );
         },
-        iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
+        iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Theme.of(context).appBarTheme.actionsIconTheme.color)),
       );
     }
 
@@ -150,7 +150,7 @@ class AccountRequiredActionsIndicatorState
                       if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED) {
                         warnings.add(WarningAction(
                           () => widget._accountBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.BLOCKING)),
-                          iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
+                          iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Theme.of(context).appBarTheme.actionsIconTheme.color)),
                         ));
                       }
 
@@ -214,7 +214,7 @@ class WarningActionState extends State<WarningAction> with SingleTickerProviderS
         width: 45 * _animation.value,
         child: widget.iconWidget ??  new Image(          
           image: new AssetImage("src/icon/warning.png"),
-          color: Color.fromRGBO(0, 120, 253, 1.0),
+          color: Theme.of(context).appBarTheme.actionsIconTheme.color,
         ),
       ),
       tooltip: 'Backup',
