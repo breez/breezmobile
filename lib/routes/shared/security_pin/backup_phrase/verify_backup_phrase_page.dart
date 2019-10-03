@@ -164,7 +164,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     saveBackupKey.future.then((_) {
       _updateBackupSettings(backupSettings.copyWith(keyType: BackupKeyType.PHRASE), backupBloc);
     }).catchError((err) {
-      promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+      promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
     });
   }
 
@@ -196,7 +196,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
         }
       });
     }).catchError((err) {
-      promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+      promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
     });
   }
 }

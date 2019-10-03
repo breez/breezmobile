@@ -55,7 +55,7 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
               children: <Widget>[
                 Text(
                   "For QR scan, please grant Breez access to your camera.",
-                  style: theme.alertStyle.copyWith(
+                  style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
                     color: Colors.white,
                   ),
                   textAlign: TextAlign.center,
