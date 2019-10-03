@@ -344,7 +344,7 @@ class OrderCardPageState extends State<OrderCardPage> {
       appBar: new AppBar(
           iconTheme: theme.appBarIconTheme,
           textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
+          backgroundColor: Theme.of(context).canvasColor,
           automaticallyImplyLeading: false,
           leading: _showLeadingButton(_showSkip),
           title: new Text(

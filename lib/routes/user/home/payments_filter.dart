@@ -51,7 +51,7 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
         delegate: new FixedSliverDelegate(!_hasNoFilter ? widget._maxSize : (scrollOffset).clamp(widget._minSize, widget._maxSize),
             builder: (context, shrinkedHeight, overlapContent) {
           return Container(
-              decoration: BoxDecoration(color: theme.BreezColors.blue[500]),
+              decoration: BoxDecoration(color: Theme.of(context).canvasColor),
               height: widget._maxSize,
               child: AnimatedOpacity(
                   duration: Duration(milliseconds: 100),

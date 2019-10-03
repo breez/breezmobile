@@ -39,7 +39,7 @@ class WalletDashboardState extends State<WalletDashboard> {
         child: Stack(
           alignment: AlignmentDirectional.topCenter,
           children: <Widget>[
-            Container(width: MediaQuery.of(context).size.width, height: widget._height, decoration: BoxDecoration(color: Colors.white)),
+            Container(width: MediaQuery.of(context).size.width, height: widget._height, decoration: BoxDecoration(color: Theme.of(context).backgroundColor)),
             Positioned(
               width: MediaQuery.of(context).size.width,
               left: CHART_MAX_HORIZONTAL_OFFSET * widget._offsetFactor,
@@ -47,7 +47,7 @@ class WalletDashboardState extends State<WalletDashboard> {
               bottom: -CHART_MAX_VERTICAL_OFFSET * widget._offsetFactor,
               child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).backgroundColor,
                       image: DecorationImage(
                         image: AssetImage("src/images/chart_graph.png"),
                         fit: BoxFit.fitWidth,

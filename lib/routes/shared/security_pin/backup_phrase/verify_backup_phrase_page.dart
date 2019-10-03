@@ -33,7 +33,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       appBar: new AppBar(
           iconTheme: theme.appBarIconTheme,
           textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
+          backgroundColor: Theme.of(context).canvasColor,
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(),
           title: new Text(

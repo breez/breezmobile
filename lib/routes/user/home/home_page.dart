@@ -157,7 +157,7 @@ class HomeState extends State<Home> {
                 width: 62.7,
               ),
               iconTheme: new IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
-              backgroundColor: theme.whiteColor,
+              backgroundColor: Theme.of(context).backgroundColor,
               elevation: 0.0,
             ),
             drawer: new NavigationDrawer(

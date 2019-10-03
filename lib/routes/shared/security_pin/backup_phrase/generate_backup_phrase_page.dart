@@ -30,7 +30,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
         appBar: AppBar(
             iconTheme: theme.appBarIconTheme,
             textTheme: theme.appBarTextTheme,
-            backgroundColor: theme.BreezColors.blue[500],
+            backgroundColor: Theme.of(context).canvasColor,
             automaticallyImplyLeading: false,
             leading: backBtn.BackButton(
               onPressed: () => _onWillPop(context),

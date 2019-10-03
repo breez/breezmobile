@@ -25,7 +25,7 @@ class _RestorePinCodeState extends State<RestorePinCode> {
         appBar: new AppBar(
           iconTheme: theme.appBarIconTheme,
           textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
+          backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(
             onPressed: () {
               Navigator.pop(context, null);

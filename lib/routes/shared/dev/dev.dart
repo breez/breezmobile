@@ -131,7 +131,7 @@ class DevViewState extends State<DevView> {
                           appBar: new AppBar(
                             iconTheme: theme.appBarIconTheme,
                             textTheme: theme.appBarTextTheme,
-                            backgroundColor: theme.BreezColors.blue[500],
+                            backgroundColor: Theme.of(context).canvasColor,
                             leading: backBtn.BackButton(),
                             elevation: 0.0,
                             actions: <Widget>[

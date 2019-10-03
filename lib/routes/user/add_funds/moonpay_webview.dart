@@ -145,7 +145,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
         automaticallyImplyLeading: false,
         iconTheme: theme.appBarIconTheme,
         textTheme: theme.appBarTextTheme,
-        backgroundColor: theme.BreezColors.blue[500],
+        backgroundColor: Theme.of(context).canvasColor,
         title: Text(
           "MoonPay",
           style: theme.appBarTextStyle,
@@ -173,7 +173,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
             automaticallyImplyLeading: false,
             iconTheme: theme.appBarIconTheme,
             textTheme: theme.appBarTextTheme,
-            backgroundColor: theme.BreezColors.blue[500],
+            backgroundColor: Theme.of(context).canvasColor,
             title: Text(
               "MoonPay",
               style: theme.appBarTextStyle,
