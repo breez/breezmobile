@@ -12,6 +12,12 @@ import Bindings
 
 class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
     func availableSnapshots(_ fnError: NSErrorPointer) -> String {
+        let accStatus = getAccountStatus();
+        if (accStatus == .noAccount) {
+            fnError?.pointee = NSError(domain: "AuthError", code: 0, userInfo: [NSLocalizedDescriptionKey: "AuthError"]);
+            return "";
+        }
+        
         var resultRecords = [CKRecord]()
         
         let semaphore = DispatchSemaphore(value: 0)
@@ -121,7 +127,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
     func uploadBackupFiles(_ files: String?, nodeID: String?, encryptionType: String?) throws {
         let accStatus = getAccountStatus();
         if (accStatus == .noAccount) {
-            throw NSError(domain: "AuthError", code: 0, userInfo: nil);
+            throw NSError(domain: "AuthError", code: 0, userInfo: [NSLocalizedDescriptionKey: "AuthError"]);
         }
         
         let record = CKRecord(recordType: "BackupSnapshot", recordID: CKRecord.ID(recordName: nodeID!));
@@ -173,5 +179,4 @@ class iCloudAuthenticator : BackupAuthenticatorProtocol {
     }
     
     func signOut(){}
-    
 }

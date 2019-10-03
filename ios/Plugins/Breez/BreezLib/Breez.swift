@@ -170,7 +170,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
                     if (BindingsRestoreBackup(nodeID, keyData, &error)) {
                         result(true);
                     } else {
-                        result(FlutterError(code: "", message: error?.localizedDescription, details: nil));
+                        result(FlutterError(code: error?.localizedDescription ?? "", message: error?.localizedDescription, details: nil));
                     }
                 }
                 result(FlutterError(code: "Missing Argument", message: "Expecting a dictionary", details: nil));
