@@ -34,7 +34,8 @@ import 'package:breez/routes/user/pay_nearby/pay_nearby_page.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_complete.dart';
 import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
 import 'package:breez/routes/user/marketplace/marketplace.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'custom_theme.dart';
+import 'themes.dart';
 
 class UserApp extends StatelessWidget {
   GlobalKey<NavigatorState> _navigatorKey = new GlobalKey<NavigatorState>();
@@ -47,170 +48,159 @@ class UserApp extends StatelessWidget {
     var backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     var connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
 
-    return StreamBuilder(
-        stream: userProfileBloc.userStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return StaticLoader();
-          }
+    return CustomTheme(initialThemeId: ThemeId.BLUE,
+      child: StreamBuilder(
+          stream: userProfileBloc.userStream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return StaticLoader();
+            }
 
-          BreezUserModel user = snapshot.data;
-          return  BlocProvider(
-            creator: () => new AddFundsBloc(userProfileBloc.userStream, accountBloc.accountStream),
-            builder: (ctx) => MaterialApp(
-              navigatorKey: _navigatorKey,
-              title: 'Breez',
-              theme: ThemeData(
-                backgroundColor: theme.BreezColors.blue[500],
-                brightness: Brightness.dark,
-                accentColor: Color(0xFFffffff),
-                dialogBackgroundColor: Colors.white,
-                primaryColor: Color.fromRGBO(255, 255, 255, 1.0),
-                textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
-                textSelectionHandleColor: Color(0xFF0085fb),
-                dividerColor: Color(0x33ffffff),
-                errorColor: theme.errorColor,
-                canvasColor: theme.BreezColors.blue[500],
-                fontFamily: 'IBMPlexSansRegular',
-                cardColor: theme.BreezColors.blue[500],
-              ),
-              builder: (BuildContext context, Widget child) {
-                final MediaQueryData data = MediaQuery.of(context);
-                return MediaQuery(
-                    data: data.copyWith(
-                      textScaleFactor: (data.textScaleFactor >= 1.3) ? 1.3 : data.textScaleFactor,
-                    ),
-                    child: child);
-              },
-              initialRoute: user.registered ? (user.locked ? '/lockscreen' : null) : '/splash',
-              home: new Home(accountBloc, invoiceBloc, userProfileBloc, connectPayBloc, backupBloc),
-              onGenerateRoute: (RouteSettings settings) {
-                switch (settings.name) {
-                  case '/lockscreen':
-                    return new FadeInRoute(
-                        builder: (ctx) => new AppLockScreen((pinEntered) {
-                          var validateAction = ValidatePinCode(pinEntered);
-                          userProfileBloc.userActionsSink.add(validateAction);
-                          return validateAction.future.then((_){
-                            Navigator.pop(ctx);                          
-                            userProfileBloc.userSink.add(user.copyWith(locked: false));
-                          });                        
-                        },),
-                        settings: settings
-                    );
-                  case '/home':
-                    return new FadeInRoute(
-                      builder: (_) => new Home(accountBloc,invoiceBloc,userProfileBloc,connectPayBloc,backupBloc),
-                      settings: settings,
-                    );
-                  case '/intro':
-                    return new FadeInRoute(
-                      builder: (_) => new InitialWalkthroughPage(user, userProfileBloc, backupBloc, false),
-                      settings: settings,
-                    );
-                  case '/order_card':
-                    return new FadeInRoute(
-                      builder: (_) => new OrderCardPage(showSkip: false),
-                      settings: settings,
-                    );
-                  case '/order_card?skip=true':
-                    return new FadeInRoute(
-                      builder: (_) => new OrderCardPage(showSkip: true),
-                      settings: settings,
-                    );
-                  case '/add_funds':
-                    return new FadeInRoute(
-                      builder: (_) => new AddFundsPage(),
-                      settings: settings,
-                    );
-                  case '/deposit_btc_address':
-                    return new FadeInRoute(
-                      builder: (_) => new DepositToBTCAddressPage(accountBloc),                    
-                      settings: settings,
-                    );
-                  case '/buy_bitcoin':
-                    return new FadeInRoute(
-                      builder: (_) => new MoonpayWebView(accountBloc, backupBloc),                    
-                      settings: settings,
-                    );
-                  case '/withdraw_funds':
-                    return new FadeInRoute(
-                      builder: (_) => new WithdrawFundsPage(),
-                      settings: settings,
-                    );
-                  case '/send_coins':
-                    return new MaterialPageRoute(
-                      fullscreenDialog: true,
-                      builder: (_) =>
-                          new SendCoinsDialog(accountBloc: accountBloc),
-                      settings: settings,
-                    );
-                  case '/get_refund':
-                    return new FadeInRoute(
-                      builder: (_) => new GetRefundPage(),
-                      settings: settings,
-                    );
-                  case '/activate_card':
-                    return new FadeInRoute(
-                      builder: (_) => new ActivateCardPage(),
-                      settings: settings,
-                    );
-                  case '/pay_nearby':
-                    return new FadeInRoute(
-                      builder: (_) => new PayNearbyPage(),
-                      settings: settings,
-                    );
-                  case '/pay_nearby_complete':
-                    return new FadeInRoute(
-                      builder: (_) => new PayNearbyComplete(),
-                      settings: settings,
-                    );
-                  case '/create_invoice':
-                    return new FadeInRoute(
-                      builder: (_) => new CreateInvoicePage(),
-                      settings: settings,
-                    );
-                  case '/network':
-                    return new FadeInRoute(
-                      builder: (_) => new NetworkPage(),
-                      settings: settings,
-                    );
-                  case '/security':
-                    return new FadeInRoute(
-                      builder: (_) => new SecurityPage(userProfileBloc, backupBloc),
-                      settings: settings,
-                    );
-                  case '/developers':
-                    return new FadeInRoute(
-                      builder: (_) => new DevView(),
-                      settings: settings,
-                    );
-                  case '/splash':
-                    return new FadeInRoute(
-                      builder: (_) => new SplashPage(user),
-                      settings: settings,
-                    );
-                  case '/connect_to_pay':
-                    return new FadeInRoute(
-                      builder: (_) => new ConnectToPayPage(null),
-                      settings: settings,
-                    );
-                  case '/marketplace':
-                    return new FadeInRoute(
-                      builder: (_) => new MarketplacePage(),
-                      settings: settings,
-                    );
-                  case '/fastbitcoins':
-                    return new FadeInRoute(
-                      builder: (_) =>
-                      new FastbitcoinsPage(),
-                      settings: settings,
-                    );
-                }
-                assert(false);
-              },
-            )
-          );
-        });
+            BreezUserModel user = snapshot.data;
+            return  BlocProvider(
+              creator: () => new AddFundsBloc(userProfileBloc.userStream, accountBloc.accountStream),
+              builder: (ctx) => MaterialApp(
+                navigatorKey: _navigatorKey,
+                title: 'Breez',
+                theme: CustomTheme.of(context),
+                builder: (BuildContext context, Widget child) {
+                  final MediaQueryData data = MediaQuery.of(context);
+                  return MediaQuery(
+                      data: data.copyWith(
+                        textScaleFactor: (data.textScaleFactor >= 1.3) ? 1.3 : data.textScaleFactor,
+                      ),
+                      child: child);
+                },
+                initialRoute: user.registered ? (user.locked ? '/lockscreen' : null) : '/splash',
+                home: new Home(accountBloc, invoiceBloc, userProfileBloc, connectPayBloc, backupBloc),
+                onGenerateRoute: (RouteSettings settings) {
+                  switch (settings.name) {
+                    case '/lockscreen':
+                      return new FadeInRoute(
+                          builder: (ctx) => new AppLockScreen((pinEntered) {
+                            var validateAction = ValidatePinCode(pinEntered);
+                            userProfileBloc.userActionsSink.add(validateAction);
+                            return validateAction.future.then((_){
+                              Navigator.pop(ctx);
+                              userProfileBloc.userSink.add(user.copyWith(locked: false));
+                            });
+                          },),
+                          settings: settings
+                      );
+                    case '/home':
+                      return new FadeInRoute(
+                        builder: (_) => new Home(accountBloc,invoiceBloc,userProfileBloc,connectPayBloc,backupBloc),
+                        settings: settings,
+                      );
+                    case '/intro':
+                      return new FadeInRoute(
+                        builder: (_) => new InitialWalkthroughPage(user, userProfileBloc, backupBloc, false),
+                        settings: settings,
+                      );
+                    case '/order_card':
+                      return new FadeInRoute(
+                        builder: (_) => new OrderCardPage(showSkip: false),
+                        settings: settings,
+                      );
+                    case '/order_card?skip=true':
+                      return new FadeInRoute(
+                        builder: (_) => new OrderCardPage(showSkip: true),
+                        settings: settings,
+                      );
+                    case '/add_funds':
+                      return new FadeInRoute(
+                        builder: (_) => new AddFundsPage(),
+                        settings: settings,
+                      );
+                    case '/deposit_btc_address':
+                      return new FadeInRoute(
+                        builder: (_) => new DepositToBTCAddressPage(accountBloc),
+                        settings: settings,
+                      );
+                    case '/buy_bitcoin':
+                      return new FadeInRoute(
+                        builder: (_) => new MoonpayWebView(accountBloc, backupBloc),
+                        settings: settings,
+                      );
+                    case '/withdraw_funds':
+                      return new FadeInRoute(
+                        builder: (_) => new WithdrawFundsPage(),
+                        settings: settings,
+                      );
+                    case '/send_coins':
+                      return new MaterialPageRoute(
+                        fullscreenDialog: true,
+                        builder: (_) =>
+                            new SendCoinsDialog(accountBloc: accountBloc),
+                        settings: settings,
+                      );
+                    case '/get_refund':
+                      return new FadeInRoute(
+                        builder: (_) => new GetRefundPage(),
+                        settings: settings,
+                      );
+                    case '/activate_card':
+                      return new FadeInRoute(
+                        builder: (_) => new ActivateCardPage(),
+                        settings: settings,
+                      );
+                    case '/pay_nearby':
+                      return new FadeInRoute(
+                        builder: (_) => new PayNearbyPage(),
+                        settings: settings,
+                      );
+                    case '/pay_nearby_complete':
+                      return new FadeInRoute(
+                        builder: (_) => new PayNearbyComplete(),
+                        settings: settings,
+                      );
+                    case '/create_invoice':
+                      return new FadeInRoute(
+                        builder: (_) => new CreateInvoicePage(),
+                        settings: settings,
+                      );
+                    case '/network':
+                      return new FadeInRoute(
+                        builder: (_) => new NetworkPage(),
+                        settings: settings,
+                      );
+                    case '/security':
+                      return new FadeInRoute(
+                        builder: (_) => new SecurityPage(userProfileBloc, backupBloc),
+                        settings: settings,
+                      );
+                    case '/developers':
+                      return new FadeInRoute(
+                        builder: (_) => new DevView(),
+                        settings: settings,
+                      );
+                    case '/splash':
+                      return new FadeInRoute(
+                        builder: (_) => new SplashPage(user),
+                        settings: settings,
+                      );
+                    case '/connect_to_pay':
+                      return new FadeInRoute(
+                        builder: (_) => new ConnectToPayPage(null),
+                        settings: settings,
+                      );
+                    case '/marketplace':
+                      return new FadeInRoute(
+                        builder: (_) => new MarketplacePage(),
+                        settings: settings,
+                      );
+                    case '/fastbitcoins':
+                      return new FadeInRoute(
+                        builder: (_) =>
+                        new FastbitcoinsPage(),
+                        settings: settings,
+                      );
+                  }
+                  assert(false);
+                },
+              )
+            );
+          }),
+    );
   }
 }
