@@ -197,9 +197,9 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
           child: new RaisedButton(
             child: new Text(
               _currentPage + 1 == 5 ? "RESTORE" : "NEXT",
-              style: theme.buttonStyle,
+              style: Theme.of(context).textTheme.button,
             ),
-            color: theme.BreezColors.white[500],
+            color: Theme.of(context).buttonColor,
             elevation: 0.0,
             shape: const StadiumBorder(),
             onPressed: () {

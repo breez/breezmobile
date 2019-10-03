@@ -83,9 +83,9 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           child: new RaisedButton(
             child: new Text(
               "BACKUP",
-              style: theme.buttonStyle,
+              style: Theme.of(context).textTheme.button,
             ),
-            color: theme.BreezColors.white[500],
+            color: Theme.of(context).buttonColor,
             elevation: 0.0,
             shape: const StadiumBorder(),
             onPressed: () {

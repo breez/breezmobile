@@ -196,7 +196,7 @@ class ShareablePaymentRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _expansionTileTheme =
-        Theme.of(context).copyWith(unselectedWidgetColor: Theme.of(context).buttonColor, accentColor: Theme.of(context).buttonColor, dividerColor: Theme.of(context).backgroundColor);
+        Theme.of(context).copyWith(unselectedWidgetColor: Theme.of(context).canvasColor, accentColor: Theme.of(context).canvasColor, dividerColor: Theme.of(context).backgroundColor);
     return Theme(
       data: _expansionTileTheme,
       child: ExpansionTile(
@@ -231,7 +231,7 @@ class ShareablePaymentRow extends StatelessWidget {
                             padding: EdgeInsets.only(right: 8.0),
                             tooltip: "Copy $title",
                             iconSize: 16.0,
-                            color: Theme.of(context).buttonColor,
+                            color: Theme.of(context).canvasColor,
                             icon: Icon(
                               IconData(0xe90b, fontFamily: 'icomoon'),
                             ),
@@ -245,7 +245,7 @@ class ShareablePaymentRow extends StatelessWidget {
                             padding: EdgeInsets.only(right: 8.0),
                             tooltip: "Share Transaction Hash",
                             iconSize: 16.0,
-                            color: Theme.of(context).buttonColor,
+                            color: Theme.of(context).canvasColor,
                             icon: Icon(Icons.share),
                             onPressed: () {
                               ShareExtend.share(sharedValue, "text");

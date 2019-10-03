@@ -114,9 +114,9 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                         child: RaisedButton(
                           child: new Text(
                             "REMOVE",
-                            style: theme.buttonStyle,
+                            style: Theme.of(context).textTheme.button,
                           ),
-                          color: Colors.white,
+                          color: Theme.of(context).buttonColor,
                           elevation: 0.0,
                           shape: new RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(42.0)),

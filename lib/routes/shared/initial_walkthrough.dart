@@ -262,7 +262,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                     width: 168.0,
                     child: RaisedButton(
                       padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                      child: Text("LET'S BREEZ!", style: theme.buttonStyle),
+                      child: Text("LET'S BREEZ!", style: Theme.of(context).textTheme.button),
                       color: theme.whiteColor,
                       elevation: 0.0,
                       shape: const StadiumBorder(),
