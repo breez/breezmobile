@@ -4,7 +4,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/custom_theme.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/themes.dart';
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:breez/widgets/breez_avatar_dialog.dart';
 import 'package:breez/widgets/breez_drawer_header.dart';
@@ -89,7 +91,7 @@ class _ListDivider extends StatelessWidget {
 
 Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return new BreezDrawerHeader(
-    padding: EdgeInsets.only(top: 61.0, left: 16.0),
+    padding: EdgeInsets.only(left: 16.0),
     child: !drawAvatar
         ? new Container()
         : new StreamBuilder<BreezUserModel>(
@@ -108,6 +110,52 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                   },
                   child: new Column(children: <Widget>[
                     new Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        new Padding(
+                          padding: EdgeInsets.only(
+                            top: 10,
+                            right: 16.0,
+                          ),
+                          child: Container(
+                            width: 64,
+                            padding: EdgeInsets.all(4),
+                            decoration: ShapeDecoration(shape: StadiumBorder(), color: theme.marketplaceButtonColor),
+                            child: Row(
+                              children: <Widget>[
+                                GestureDetector(
+                                    child: Image.asset(
+                                      "src/icon/ic_lightmode.png",
+                                      height: 24,
+                                      width: 24,
+                                      color: (Theme.of(context).canvasColor ==
+                                              CustomTheme.instanceOf(context).getTheme(ThemeId.BLUE).canvasColor)
+                                          ? Colors.white
+                                          : Colors.white30,
+                                    ),
+                                    onTap: () => CustomTheme.instanceOf(context).changeTheme(ThemeId.BLUE)),
+                                Container(
+                                  height: 20,
+                                  width: 8,
+                                  child: VerticalDivider(
+                                    color: Colors.white30,
+                                  ),
+                                ),
+                                GestureDetector(
+                                    child: ImageIcon(AssetImage("src/icon/ic_darkmode.png"),
+                                        color: (Theme.of(context).canvasColor ==
+                                                CustomTheme.instanceOf(context).getTheme(ThemeId.DARK).canvasColor)
+                                            ? Colors.white
+                                            : Colors.white30,
+                                        size: 24.0),
+                                    onTap: () => CustomTheme.instanceOf(context).changeTheme(ThemeId.DARK))
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    new Row(
                       children: <Widget>[
                         BreezAvatar(snapshot.data.avatarURL, radius: 24.0),
                       ],
@@ -123,20 +171,22 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                           ),
                         ),
                         new Spacer(),
-                        new Padding(padding: EdgeInsets.only(top: 4.0,), child:
-                        new RawMaterialButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).pushNamed("/marketplace");
-                          },
-                          child: ImageIcon(
-                              AssetImage("src/icon/ic_market.png"),
-                              color: Colors.white, size: 24.0),
-                          padding: const EdgeInsets.all(12.0),
-                          fillColor: theme.marketplaceButtonColor,
-                          shape: new CircleBorder(),
-                          elevation: 0.0,
-                        ),),
+                        new Padding(
+                          padding: EdgeInsets.only(
+                            top: 4.0,
+                          ),
+                          child: new RawMaterialButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).pushNamed("/marketplace");
+                            },
+                            child: ImageIcon(AssetImage("src/icon/ic_market.png"), color: Colors.white, size: 24.0),
+                            padding: const EdgeInsets.all(12.0),
+                            fillColor: theme.marketplaceButtonColor,
+                            shape: new CircleBorder(),
+                            elevation: 0.0,
+                          ),
+                        ),
                       ],
                     ),
                   ]),
