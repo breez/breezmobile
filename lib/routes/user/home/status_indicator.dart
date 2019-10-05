@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class StatusIndicator extends StatelessWidget {
+  final BuildContext context;
   final AccountModel _accountModel;
 
-  StatusIndicator(this._accountModel);
+  StatusIndicator(this.context, this._accountModel);
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +27,11 @@ class StatusIndicator extends StatelessWidget {
       return LinearProgressIndicator(        
         backgroundColor: Theme.of(context).backgroundColor,
           valueColor:
-              AlwaysStoppedAnimation<Color>(theme.BreezColors.blue[200]),
+              AlwaysStoppedAnimation<Color>(Theme.of(context).highlightColor),
           value: _accountModel.bootstrapProgress);
     }
 
     return LinearProgressIndicator(
-        backgroundColor: theme.BreezColors.blue[200], value: value);
+        backgroundColor: Theme.of(context).highlightColor, value: value);
   }
 }

@@ -169,7 +169,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                   AccountModel acc = snapshot.data;
                                   AccountSettings settings = settingSnapshot.data;
                                   if (settings?.showConnectProgress == true || acc?.isInitialBootstrap == true ) {
-                                    return new StatusIndicator(snapshot.data);
+                                    return new StatusIndicator(context, snapshot.data);
                                   }
                                   return SizedBox();
                                 });

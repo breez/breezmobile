@@ -54,7 +54,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                         alignment: FractionalOffset.bottomCenter,
                       ))),
             ),
-            showProgressBar ? Positioned(top: 0.0, child: StatusIndicator(widget._accountModel)) : SizedBox(),
+            showProgressBar ? Positioned(top: 0.0, child: StatusIndicator(context, widget._accountModel)) : SizedBox(),
             Positioned(
                 top: 10.0,
                 child: Center(
