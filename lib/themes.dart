@@ -17,6 +17,7 @@ class Themes {
     appBarTheme: AppBarTheme(iconTheme: IconThemeData(color: Colors.transparent,), actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0))),
     dialogTheme: DialogTheme(
         titleTextStyle: TextStyle(color: theme.BreezColors.grey[600], fontSize: 20.5, letterSpacing: 0.25),
+        contentTextStyle: TextStyle(color: theme.BreezColors.grey[500], fontSize: 16.0, height: 1.5),
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))),
     errorColor: theme.errorColor,
