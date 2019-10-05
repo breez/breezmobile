@@ -109,8 +109,6 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
               ),
             ),
           ],
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12.0))),
         ));
   }
 }

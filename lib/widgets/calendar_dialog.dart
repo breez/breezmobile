@@ -62,8 +62,6 @@ class _CalendarDialogState extends State<CalendarDialog> {
           },
         ),
       ],
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
   }
 

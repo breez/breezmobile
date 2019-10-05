@@ -98,8 +98,6 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
                 child: new Text("Continue", style: Theme.of(context).primaryTextTheme.button),
               ),
             ],
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12.0))),
           ));
   }
 }

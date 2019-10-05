@@ -34,7 +34,5 @@ AlertDialog createAnimatedLoaderDialog(BuildContext context, String text, {bool 
           )
         ],
       ),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
 }

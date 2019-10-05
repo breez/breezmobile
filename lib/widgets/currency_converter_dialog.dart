@@ -115,7 +115,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
           _updateExchangeLabel(exchangeRate);
 
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
             title: new Theme(
               data: Theme.of(context).copyWith(
                 brightness: Brightness.light,

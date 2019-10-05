@@ -53,6 +53,6 @@ class MakeInvoiceRequest extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
             child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: children)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)));
+        );
   }
 }

@@ -110,8 +110,6 @@ class QrCodeDialog extends StatelessWidget {
         Padding(padding: EdgeInsets.only(top: 16.0)),
         _buildCloseButton()
       ],
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
   }
 

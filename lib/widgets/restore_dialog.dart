@@ -102,8 +102,6 @@ class RestoreDialogState extends State<RestoreDialog> {
           child: new Text("OK"),
         )
       ],
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
   }
 }

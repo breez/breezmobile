@@ -173,8 +173,6 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                     ],
                   ),
                 )),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
   }
 

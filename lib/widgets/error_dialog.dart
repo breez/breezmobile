@@ -57,8 +57,6 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                 },
               ),
             ],
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12.0))),
           ),
         );
       });
@@ -102,8 +100,6 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
               },
             ),
           ],
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12.0))),
         );
       });
 }

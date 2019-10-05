@@ -73,8 +73,6 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
             },
             child: new Text("SETTINGS", style: Theme.of(context).primaryTextTheme.button))
       ],
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(context: context, builder: (_) => dialog);
   }

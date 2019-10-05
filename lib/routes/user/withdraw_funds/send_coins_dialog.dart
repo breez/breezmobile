@@ -66,8 +66,6 @@ class SendCoinsDialog extends StatelessWidget {
               ))
         ],
       ),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(
         context: context,

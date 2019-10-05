@@ -49,7 +49,6 @@ class _BackupPhraseWarningDialogState extends State<BackupPhraseWarningDialog> {
               child: new Text("YES", style: Theme.of(context).primaryTextTheme.button),
             ),
           ],
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
         ));
   }
 }
