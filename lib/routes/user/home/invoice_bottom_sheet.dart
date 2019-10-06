@@ -64,25 +64,25 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
       duration: Duration(milliseconds: 150),
       child: RaisedButton(
         onPressed: function,
-        color: isFirst ? Colors.white : Color.fromRGBO(0, 133, 251, 1.0),
+        color: isFirst ? Colors.white : Theme.of(context).primaryColorLight,
         padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
         shape: isFirst
             ? RoundedRectangleBorder(borderRadius: new BorderRadius.only(topLeft: Radius.circular(20.0)))
-            : Border(top: BorderSide(color: Color.fromRGBO(255, 255, 255, 0.12), width: 1, style: BorderStyle.solid)),
+            : Border(top: BorderSide(color: Theme.of(context).backgroundColor.withOpacity(0.12), width: 1, style: BorderStyle.solid)),
         child: Row(
             mainAxisSize: MainAxisSize.max,
             children: widget.isSmallView
                 ? <Widget>[
                     ImageIcon(
                       AssetImage(iconPath),
-                      color: isFirst ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white,
+                      color: isFirst ? Theme.of(context).buttonColor : Colors.white,
                       size: 24.0,
                     )
                   ]
                 : <Widget>[
                     ImageIcon(
                       AssetImage(iconPath),
-                      color: isFirst ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white,
+                      color: isFirst ? Theme.of(context).primaryColorLight : Colors.white,
                       size: 24.0,
                     ),
                     Padding(padding: EdgeInsets.only(left: 8.0)),
@@ -90,7 +90,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                       child: AutoSizeText(
                         title.toUpperCase(),
                         style: theme.bottomSheetMenuItemStyle.copyWith(
-                          color: isFirst ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white,
+                          color: isFirst ? Theme.of(context).primaryColorLight : Colors.white,
                         ),
                         maxLines: 1,
                         minFontSize: MinFontSize(context).minFontSize,

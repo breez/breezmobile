@@ -30,8 +30,8 @@ class WalletDashboardState extends State<WalletDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    double startHeaderSize = theme.headline.fontSize;
-    double endHeaderFontSize = theme.headline.fontSize - 8.0;
+    double startHeaderSize = Theme.of(context).textTheme.headline.fontSize;
+    double endHeaderFontSize = Theme.of(context).textTheme.headline.fontSize - 8.0;
     bool showProgressBar = (widget._accSettings?.showConnectProgress == true && !widget._accountModel.initial) ||
         widget._accountModel?.isInitialBootstrap == true;
 
@@ -60,7 +60,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                 child: Center(
                   child: widget._accountModel != null && !widget._accountModel.initial
                       ? Text("Balance",
-                          style: theme.subtitle.copyWith(color: theme.subtitle.color.withOpacity(pow(1 - widget._offsetFactor, 8))))
+                          style: Theme.of(context).textTheme.subtitle.copyWith(color: Theme.of(context).textTheme.subtitle.color.withOpacity(pow(1 - widget._offsetFactor, 8))))
                       : SizedBox(),
                 )),
             Positioned(
@@ -75,10 +75,10 @@ class WalletDashboardState extends State<WalletDashboard> {
                         },
                         child: (_showFiatCurrency && widget._accountModel.fiatCurrency != null)
                             ? Text("${widget._accountModel.formattedFiatBalance}",
-                                style: theme.headline
+                                style: Theme.of(context).textTheme.headline
                                     .copyWith(fontSize: startHeaderSize - (startHeaderSize - endHeaderFontSize) * widget._offsetFactor))
                             : Text(widget._accountModel.currency.format(widget._accountModel.balance, fixedDecimals: false),
-                                style: theme.headline
+                                style: Theme.of(context).textTheme.headline
                                     .copyWith(fontSize: startHeaderSize - (startHeaderSize - endHeaderFontSize) * widget._offsetFactor)))
                     : SizedBox(),
               ),
