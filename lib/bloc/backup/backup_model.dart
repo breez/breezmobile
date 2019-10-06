@@ -44,7 +44,7 @@ class BackupSettings {
   static List<BackupProvider> availableBackupProviders(){
     List<BackupProvider> providers = [googleBackupProvider];
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      providers.add(icloudBackupProvider);
+      providers.insert(0, icloudBackupProvider);
     }
     return providers;
   }
