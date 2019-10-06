@@ -52,6 +52,7 @@ class SecurityPageState extends State<SecurityPage> {
               if (!snapshot.hasData) {
                 return Container();
               } else {
+                var backupState = backupStateSnapshot.data;
                 if (snapshot.data.securityModel.requiresPin &&
                     this._screenLocked) {
                   return AppLockScreen(
@@ -87,12 +88,11 @@ class SecurityPageState extends State<SecurityPage> {
                   bottomNavigationBar: Padding(
                     padding: const EdgeInsets.only(
                         bottom: 20.0, left: 20.0, top: 20.0),
-                    child: backupSnapshot.data != null &&
-                            backupStateSnapshot.data.lastBackupTime
-                                    .millisecondsSinceEpoch >
-                                0
+                    child: backupStateSnapshot.data != null &&
+                            backupStateSnapshot.data.lastBackupTime != null
                         ? Text(
-                            "Last backup: ${DateUtils.formatYearMonthDayHourMinute(backupStateSnapshot.data.lastBackupTime)}",
+                            "Last backup: ${DateUtils.formatYearMonthDayHourMinute(backupState.lastBackupTime)}" + 
+                            (backupState.lastBackupAccountName?.isNotEmpty == true ? "\nAccount: ${backupState.lastBackupAccountName}" : ""),
                             textAlign: TextAlign.left)
                         : SizedBox(),
                   ),

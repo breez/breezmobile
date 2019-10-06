@@ -53,8 +53,19 @@ class BackupSettings {
 class BackupState {
   final DateTime lastBackupTime;
   final bool inProgress;
+  final String lastBackupAccountName;
 
-  BackupState(this.lastBackupTime, this.inProgress);
+  BackupState(this.lastBackupTime, this.inProgress, this.lastBackupAccountName);
+
+  BackupState.fromJson(Map<String, dynamic> json) : this(
+    json["lastBackupTime"] != null ? DateTime.fromMillisecondsSinceEpoch(json["lastBackupTime"]) : null,
+    false,
+    json["lastBackupAccountName"],
+  );
+
+  Map<String, dynamic> toJson(){
+    return {"lastBackupTime": lastBackupTime?.millisecondsSinceEpoch, "lastBackupAccountName": lastBackupAccountName};
+  }
 }
 
 class BackupFailedException implements Exception {

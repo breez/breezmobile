@@ -65,6 +65,7 @@ class BackupBloc {
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";  
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
+  static const String LAST_BACKUP_STATE_PREFERENCE_KEY = "backup_last_state";
 
   BackupBloc(Stream<BreezUserModel> userStream) {
     ServiceInjector injector = new ServiceInjector();
@@ -120,13 +121,17 @@ class BackupBloc {
   void _initializePersistentData() {     
 
     //last backup time persistency
-    int lastTime = _sharedPrefrences.getInt(LAST_BACKUP_TIME_PREFERENCE_KEY);
+    String backupStateJson = _sharedPrefrences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
+    BackupState backupState = BackupState(null, false, null);
+    if (backupStateJson != null) {
+      backupState = BackupState.fromJson(json.decode(backupStateJson));      
+    }
+
     _backupStateController
-          .add(BackupState(DateTime.fromMillisecondsSinceEpoch(lastTime ?? 0), false)); 
-       
+            .add(backupState);    
     _backupStateController.stream.listen((state) {      
-      _sharedPrefrences.setInt(
-          LAST_BACKUP_TIME_PREFERENCE_KEY, state.lastBackupTime.millisecondsSinceEpoch);
+      _sharedPrefrences.setString(
+          LAST_BACKUP_STATE_PREFERENCE_KEY, json.encode(state.toJson()));
     }, onError: (e){      
       _pushPromptIfNeeded();
     });
@@ -140,7 +145,7 @@ class BackupBloc {
 
       // For backward competability migrate backup provider by assigning "Google Drive"
       // in case we had backup and the provider is not set.
-      if (backupSettingsModel.backupProvider == null && lastTime != null) {
+      if (backupSettingsModel.backupProvider == null && backupState?.lastBackupTime != null) {
         backupSettingsModel = backupSettingsModel.copyWith(backupProvider: BackupSettings.googleBackupProvider);
       }
       _backupSettingsController.add(backupSettingsModel);      
@@ -242,7 +247,7 @@ class BackupBloc {
     .listen((event) {
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         _backupServiceNeedLogin = false;
-        _backupStateController.add((BackupState(_backupStateController.value.lastBackupTime, true)));
+        _backupStateController.add((BackupState(_backupStateController.value.lastBackupTime, true, _backupStateController.value.lastBackupAccountName)));
       }      
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
         _backupServiceNeedLogin = true;
@@ -253,7 +258,7 @@ class BackupBloc {
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
         _backupServiceNeedLogin = false;      
-        _backupStateController.add(BackupState(DateTime.now(), false));
+        _backupStateController.add(BackupState(DateTime.now(), false, event.data[0]));
       } 
       if (backupOperations.contains(event.type)) {
         _enableBackupPrompt = true;
