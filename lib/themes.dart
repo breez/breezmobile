@@ -5,6 +5,28 @@ import 'theme_data.dart' as theme;
 enum ThemeId { BLUE, DARK }
 
 class Themes {
+  static ThemeId getThemeIdFromString(String themeId) {
+    switch (themeId) {
+      case "BLUE":
+        return ThemeId.BLUE;
+      case "DARK":
+        return ThemeId.DARK;
+      default:
+        return ThemeId.BLUE;
+    }
+  }
+
+  static String getStringFromThemeId(ThemeId themeId) {
+    switch (themeId) {
+      case ThemeId.BLUE:
+        return "BLUE";
+      case ThemeId.DARK:
+        return "DARK";
+      default:
+        return "BLUE";
+    }
+  }
+
   static final ThemeData blueTheme = ThemeData(
     brightness: Brightness.dark,
     primaryColor: Color.fromRGBO(255, 255, 255, 1.0),
@@ -85,15 +107,4 @@ class Themes {
     textSelectionHandleColor: Color(0xFF121212),
     fontFamily: 'IBMPlexSansRegular',
   );
-
-  static ThemeData getThemeFromId(ThemeId themeId) {
-    switch (themeId) {
-      case ThemeId.BLUE:
-        return blueTheme;
-      case ThemeId.DARK:
-        return darkTheme;
-      default:
-        return blueTheme;
-    }
-  }
 }
