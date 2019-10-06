@@ -4,7 +4,9 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:crypto/crypto.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
@@ -16,6 +18,8 @@ import '../async_action.dart';
 import 'backup_actions.dart';
 
 class BackupBloc {
+
+  static const String _signInFaileCode = "AuthError";
 
   final BehaviorSubject<BackupState> _backupStateController =
       new BehaviorSubject<BackupState>();
@@ -61,12 +65,14 @@ class BackupBloc {
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";  
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
+  static const String LAST_BACKUP_STATE_PREFERENCE_KEY = "backup_last_state";
 
   BackupBloc(Stream<BreezUserModel> userStream) {
     ServiceInjector injector = new ServiceInjector();
     _breezLib = injector.breezBridge;
     _tasksService = injector.backgroundTaskService;
-    _actionHandlers = {      
+    _actionHandlers = {
+      UpdateBackupSettings: _setBackupProvier,      
       SaveBackupKey: _saveBackupKey,
       UpdateBackupSettings: _updateBackupSettings,
     };
@@ -82,6 +88,9 @@ class BackupBloc {
 
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
       _setBreezLibBackupKey();
+      if (_backupSettingsController.value.backupProvider !=  null) {
+        _breezLib.setBackupProvider(_backupSettingsController.value.backupProvider.name);
+      }
       _listenPinCodeChange(userStream);
       _listenActions();
     });
@@ -102,6 +111,9 @@ class BackupBloc {
     if (action.settings.backupKeyType != currentSettings.backupKeyType) {
       await _setBreezLibBackupKey(backupKeyType: action.settings.backupKeyType);
     }
+    if (action.settings.backupProvider != currentSettings.backupProvider) {
+      await _breezLib.setBackupProvider(action.settings.backupProvider.name);
+    }
     action.resolve(action.settings);
   }
 
@@ -109,13 +121,17 @@ class BackupBloc {
   void _initializePersistentData() {     
 
     //last backup time persistency
-    int lastTime = _sharedPrefrences.getInt(LAST_BACKUP_TIME_PREFERENCE_KEY);
+    String backupStateJson = _sharedPrefrences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
+    BackupState backupState = BackupState(null, false, null);
+    if (backupStateJson != null) {
+      backupState = BackupState.fromJson(json.decode(backupStateJson));      
+    }
+
     _backupStateController
-          .add(BackupState(DateTime.fromMillisecondsSinceEpoch(lastTime ?? 0), false)); 
-       
+            .add(backupState);    
     _backupStateController.stream.listen((state) {      
-      _sharedPrefrences.setInt(
-          LAST_BACKUP_TIME_PREFERENCE_KEY, state.lastBackupTime.millisecondsSinceEpoch);
+      _sharedPrefrences.setString(
+          LAST_BACKUP_STATE_PREFERENCE_KEY, json.encode(state.toJson()));
     }, onError: (e){      
       _pushPromptIfNeeded();
     });
@@ -123,14 +139,29 @@ class BackupBloc {
     //settings persistency
     var backupSettings =
         _sharedPrefrences.getString(BACKUP_SETTINGS_PREFERENCES_KEY);
-    if (backupSettings != null) {
+    if (backupSettings != null) {      
       Map<String, dynamic> settings = json.decode(backupSettings);
-      _backupSettingsController.add(BackupSettings.fromJson(settings));      
+      var backupSettingsModel = BackupSettings.fromJson(settings);
+
+      // For backward competability migrate backup provider by assigning "Google Drive"
+      // in case we had backup and the provider is not set.
+      if (backupSettingsModel.backupProvider == null && backupState?.lastBackupTime != null) {
+        backupSettingsModel = backupSettingsModel.copyWith(backupProvider: BackupSettings.googleBackupProvider);
+      }
+      _backupSettingsController.add(backupSettingsModel);      
     }
+
     _backupSettingsController.stream.listen((settings) {
       _sharedPrefrences.setString(
-          BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
-    });
+          BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));       
+    });    
+  }
+
+  Future _setBackupProvier(UpdateBackupSettings action) async {
+    _backupSettingsController.add(action.settings);
+    if (action.settings.backupProvider != null) {
+      action.resolve(_breezLib.setBackupProvider(action.settings.backupProvider.name));
+    }
   }
 
   void _listenPinCodeChange(Stream<BreezUserModel> userStream){    
@@ -216,18 +247,18 @@ class BackupBloc {
     .listen((event) {
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         _backupServiceNeedLogin = false;
-        _backupStateController.add((BackupState(_backupStateController.value.lastBackupTime, true)));
+        _backupStateController.add((BackupState(_backupStateController.value.lastBackupTime, true, _backupStateController.value.lastBackupAccountName)));
       }      
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
         _backupServiceNeedLogin = true;
-        _backupStateController.addError(null);
+        _backupStateController.addError(BackupFailedException(_backupSettingsController.value.backupProvider, true));
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_FAILED) {        
-        _backupStateController.addError(null);
+        _backupStateController.addError(BackupFailedException(_backupSettingsController.value.backupProvider, false));
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
         _backupServiceNeedLogin = false;      
-        _backupStateController.add(BackupState(DateTime.now(), false));
+        _backupStateController.add(BackupState(DateTime.now(), false, event.data[0]));
       } 
       if (backupOperations.contains(event.type)) {
         _enableBackupPrompt = true;
@@ -257,6 +288,15 @@ class BackupBloc {
           }
           _multipleRestoreController.add(snapshots);
         }).catchError((error) {
+          if (error.runtimeType == PlatformException) {
+            PlatformException e = (error as PlatformException);
+            if (e.code == _signInFaileCode || e.message == _signInFaileCode){
+              error = SignInFailedException(_backupSettingsController.value.backupProvider);
+            } else {          
+              error = (error as PlatformException).message;
+            }
+          }
+
           _restoreFinishedController.addError(error);
         });
 
@@ -276,6 +316,7 @@ class BackupBloc {
     _restoreFinishedController.close();    
     _backupSettingsController.close();
     _backupPromptVisibleController.close();
+    _backupActionsController.close();
   }
 }
 
@@ -303,4 +344,14 @@ class RestoreRequest {
   final List<int> encryptionKey;
 
   RestoreRequest(this.snapshot, this.encryptionKey);
+}
+
+class SignInFailedException implements Exception {
+  final BackupProvider provider;
+
+  SignInFailedException(this.provider);
+
+  String toString() {
+    return "Sign in failed";
+  }
 }

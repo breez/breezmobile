@@ -19,14 +19,14 @@ void main() {
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   initializeDateFormatting(Platform.localeName, null);
-  SharedPreferences.getInstance().then((preferences){
-    runMigration(preferences);
+  SharedPreferences.getInstance().then((preferences) async {
+    await runMigration(preferences);
     AppBlocs blocs = AppBlocs();
     runApp(AppBlocsProvider(child: UserApp(), appBlocs: blocs));    
   });  
 }
 
-void runMigration(SharedPreferences preferences){
+Future runMigration(SharedPreferences preferences) async {
   var userJson = preferences.getString(UserProfileBloc.USER_DETAILS_PREFERENCES_KEY);
   Map<String, dynamic> userData = json.decode(userJson ?? "{}");
 
@@ -36,7 +36,15 @@ void runMigration(SharedPreferences preferences){
   if (userData["securityModel"] != null && userData["securityModel"]["secureBackupWithPin"] == true) {    
     backupData["backupKeyType"] = BackupKeyType.PIN.index;
     userData["securityModel"]["secureBackupWithPin"] = null;
-    preferences.setString(BackupBloc.BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(backupData));
-    preferences.setString(UserProfileBloc.USER_DETAILS_PREFERENCES_KEY, json.encode(userData));    
+    await preferences.setString(BackupBloc.BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(backupData));
+    await preferences.setString(UserProfileBloc.USER_DETAILS_PREFERENCES_KEY, json.encode(userData));    
   }
+
+  // last backup time migration
+  var legacyBackupTime = preferences.getInt(BackupBloc.LAST_BACKUP_TIME_PREFERENCE_KEY);  
+  if (legacyBackupTime != null) {
+    Map<String, dynamic> backupStateData = {"lastBackupTime": legacyBackupTime};
+    await preferences.setString(BackupBloc.LAST_BACKUP_STATE_PREFERENCE_KEY, json.encode(backupStateData));
+    await preferences.remove(BackupBloc.LAST_BACKUP_TIME_PREFERENCE_KEY);
+  }  
 }
