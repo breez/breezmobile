@@ -20,7 +20,7 @@ class Themes {
         contentTextStyle: TextStyle(color: theme.BreezColors.grey[500], fontSize: 16.0, height: 1.5),
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))),
-    errorColor: theme.errorColor,
+    errorColor: Color(0xffffe685),
     dividerColor: Color(0x33ffffff),
     buttonColor: Colors.white,
     cardColor: theme.BreezColors.blue[500],
@@ -28,7 +28,9 @@ class Themes {
     textTheme: TextTheme(
         subtitle: TextStyle(color: theme.BreezColors.grey[600], fontSize: 14.3, letterSpacing: 0.2),
         headline: TextStyle(color: theme.BreezColors.grey[600], fontSize: 26.0),
-        button: TextStyle(color: theme.BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25)),
+        button: TextStyle(color: theme.BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
+        caption: TextStyle(color: Color(0xffffe685), fontSize: 18.0, letterSpacing: 0.8, height: 1.25, fontFamily:'IBMPlexSansMedium'),
+    ),
     primaryTextTheme: TextTheme(
         display1: TextStyle(
             color: theme.BreezColors.grey[500], fontSize: 14.0, letterSpacing: 0.0, height: 1.28, fontFamily: 'IBMPlexSansMedium'),
@@ -68,7 +70,9 @@ class Themes {
     textTheme: TextTheme(
         subtitle: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
         headline: TextStyle(color: Colors.white, fontSize: 26.0),
-        button: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25)),
+        button: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
+        caption: TextStyle(color: Color(0xFFeddc97), fontSize: 18.0, letterSpacing: 0.8, height: 1.25, fontFamily:'IBMPlexSansMedium'),
+    ),
     primaryTextTheme: TextTheme(
         display1: TextStyle(color: Colors.white, fontSize: 14.0, letterSpacing: 0.0, height: 1.28, fontFamily: 'IBMPlexSansMedium'),
         display2: TextStyle(color: Colors.white, fontSize: 14.0, letterSpacing: 0.0, height: 1.28),

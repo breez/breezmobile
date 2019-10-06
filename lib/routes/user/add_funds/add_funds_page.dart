@@ -160,11 +160,11 @@ class AddFundsState extends State<AddFundsPage> {
 
   Widget _buildReserveAmountWarning(AccountModel account) {
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: theme.errorColor)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: Theme.of(context).errorColor)),
       padding: new EdgeInsets.all(16),
       child: Text(
         "Breez requires you to keep\n${account.currency.format(account.warningMaxChanReserveAmount, fixedDecimals: false)} in your balance.",
-        style: theme.reserveAmountWarningStyle,
+        style: Theme.of(context).textTheme.caption,
         textAlign: TextAlign.center,
       ),
     );

@@ -112,11 +112,11 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
           : Padding(
               padding: const EdgeInsets.all(16),
               child: Container(
-                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: theme.errorColor)),
+                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: Theme.of(context).errorColor)),
                 padding: new EdgeInsets.all(16),
                 child: Text(
                   "Send up to " + account.currency.format(response.maxAllowedDeposit, includeSymbol: true) + " to this address.",
-                  style: theme.reserveAmountWarningStyle,
+                  style: Theme.of(context).textTheme.caption,
                   textAlign: TextAlign.center,
                 ),
               ),
