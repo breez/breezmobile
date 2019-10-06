@@ -11,6 +11,7 @@ import CloudKit
 import Bindings
 
 class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
+    
     func availableSnapshots(_ fnError: NSErrorPointer) -> String {
         let accStatus = getAccountStatus();
         if (accStatus == .noAccount) {
@@ -124,10 +125,11 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         return filesArray.joined(separator: ",");
     }
     
-    func uploadBackupFiles(_ files: String?, nodeID: String?, encryptionType: String?) throws {
+    func uploadBackupFiles(_ files: String?, nodeID: String?, encryptionType: String?, error: NSErrorPointer) -> String {
         let accStatus = getAccountStatus();
         if (accStatus == .noAccount) {
-            throw NSError(domain: "AuthError", code: 0, userInfo: [NSLocalizedDescriptionKey: "AuthError"]);
+            error?.pointee = NSError(domain: "AuthError", code: 0, userInfo: [NSLocalizedDescriptionKey: "AuthError"]);
+            return "";
         }
         
         let record = CKRecord(recordType: "BackupSnapshot", recordID: CKRecord.ID(recordName: nodeID!));
@@ -141,8 +143,11 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         record["breezdb"] = CKAsset(fileURL: URL(fileURLWithPath: breezdb));
         
         if let err = updateRecord(record: record, savePolicy: .allKeys) {
-            throw err;
+            error?.pointee = NSError(domain: err.localizedDescription, code: 0, userInfo: nil);
+            return "";
         }
+        
+        return "";
     }
     
     func updateRecord(record : CKRecord, savePolicy: CKModifyRecordsOperation.RecordSavePolicy) -> Error? {
@@ -170,6 +175,17 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         });
         semaphore.wait();
         return accStatus;
+    }
+    
+    func fetchUserName() -> String? {
+        let semaphore = DispatchSemaphore(value: 0)
+        var userName : String?
+        CKContainer.default().fetchUserRecordID(completionHandler: {rec, err in
+            userName = rec?.recordName
+            semaphore.signal();
+        });
+        semaphore.wait();
+        return userName;
     }
 }
 
