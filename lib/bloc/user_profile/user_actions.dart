@@ -1,4 +1,5 @@
 import 'package:breez/bloc/async_action.dart';
+import 'package:breez/themes.dart';
 
 import 'security_model.dart';
 
@@ -18,4 +19,10 @@ class ValidatePinCode extends AsyncAction {
   final String enteredPin;
 
   ValidatePinCode(this.enteredPin);
+}
+
+class ChangeTheme extends AsyncAction {
+  final ThemeId newTheme;
+
+  ChangeTheme(this.newTheme);
 }

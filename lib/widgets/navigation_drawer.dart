@@ -3,14 +3,15 @@ import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/custom_theme.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/themes.dart';
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:breez/widgets/breez_avatar_dialog.dart';
 import 'package:breez/widgets/breez_drawer_header.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/widgets/error_dialog.dart';
 
 class DrawerItemConfig {
   final String name;
@@ -109,51 +110,48 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                     );
                   },
                   child: new Column(children: <Widget>[
-                    new Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        new Padding(
-                          padding: EdgeInsets.only(
-                            top: 10,
-                            right: 16.0,
-                          ),
-                          child: Container(
-                            width: 64,
-                            padding: EdgeInsets.all(4),
-                            decoration: ShapeDecoration(shape: StadiumBorder(), color: theme.marketplaceButtonColor),
-                            child: Row(
-                              children: <Widget>[
-                                GestureDetector(
-                                    child: Image.asset(
-                                      "src/icon/ic_lightmode.png",
-                                      height: 24,
-                                      width: 24,
-                                      color: (Theme.of(context).canvasColor ==
-                                              CustomTheme.instanceOf(context).getTheme(ThemeId.BLUE).canvasColor)
+                    GestureDetector(
+                      onTap: () => _changeTheme(snapshot.data.themeId == ThemeId.BLUE ? ThemeId.DARK : ThemeId.BLUE, user, context),
+                      child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          new Padding(
+                            padding: EdgeInsets.only(
+                              top: 10,
+                              right: 16.0,
+                            ),
+                            child: Container(
+                              width: 64,
+                              padding: EdgeInsets.all(4),
+                              decoration: ShapeDecoration(shape: StadiumBorder(), color: theme.marketplaceButtonColor),
+                              child: Row(
+                                children: <Widget>[
+                                  Image.asset(
+                                    "src/icon/ic_lightmode.png",
+                                    height: 24,
+                                    width: 24,
+                                    color: snapshot.data.themeId == ThemeId.BLUE
+                                        ? Colors.white
+                                        : Colors.white30,
+                                  ),
+                                  Container(
+                                    height: 20,
+                                    width: 8,
+                                    child: VerticalDivider(
+                                      color: Colors.white30,
+                                    ),
+                                  ),
+                                  ImageIcon(AssetImage("src/icon/ic_darkmode.png"),
+                                      color: snapshot.data.themeId == ThemeId.DARK
                                           ? Colors.white
                                           : Colors.white30,
-                                    ),
-                                    onTap: () => CustomTheme.instanceOf(context).changeTheme(ThemeId.BLUE)),
-                                Container(
-                                  height: 20,
-                                  width: 8,
-                                  child: VerticalDivider(
-                                    color: Colors.white30,
-                                  ),
-                                ),
-                                GestureDetector(
-                                    child: ImageIcon(AssetImage("src/icon/ic_darkmode.png"),
-                                        color: (Theme.of(context).canvasColor ==
-                                                CustomTheme.instanceOf(context).getTheme(ThemeId.DARK).canvasColor)
-                                            ? Colors.white
-                                            : Colors.white30,
-                                        size: 24.0),
-                                    onTap: () => CustomTheme.instanceOf(context).changeTheme(ThemeId.DARK))
-                              ],
+                                      size: 24.0),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     new Row(
                       children: <Widget>[
@@ -197,6 +195,15 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
       image: DecorationImage(image: AssetImage("src/images/waves-drawer.png"), fit: BoxFit.scaleDown, alignment: Alignment(0, 0)),
     ),
   );
+}
+
+Future _changeTheme(ThemeId themeId, UserProfileBloc userProfileBloc, BuildContext context) async {
+    var action = ChangeTheme(themeId);
+    userProfileBloc.userActionsSink.add(action);
+    action.future.then((_) {
+    }).catchError((err){
+      promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
+    });
 }
 
 Widget _actionTile(
