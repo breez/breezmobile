@@ -167,7 +167,7 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
             controller: widget.scrollController,
             builder: (context, offset) {
               double height = (DASHBOARD_MAX_HEIGHT - offset).clamp(DASHBOARD_MIN_HEIGHT, DASHBOARD_MAX_HEIGHT);
-              return (account?.active ?? false) ? InvoiceBottomSheet(_invoiceBloc, height < 160.0) : Positioned(top: 0.0, child: SizedBox());
+              return (account?.active ?? false) ? InvoiceBottomSheet(_invoiceBloc, height < 160.0, _userProfileBloc) : Positioned(top: 0.0, child: SizedBox());
             },
           ),
         ],
