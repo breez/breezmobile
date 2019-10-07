@@ -25,8 +25,8 @@ class BackupBloc {
       new BehaviorSubject<BackupState>();
   Stream<BackupState> get backupStateStream => _backupStateController.stream;
 
-  final StreamController<void> _promptBackupController = new StreamController<void>.broadcast();
-  Stream<void> get promptBackupStream => _promptBackupController.stream;
+  final StreamController<bool> _promptBackupController = new StreamController<bool>.broadcast();
+  Stream<bool> get promptBackupStream => _promptBackupController.stream;
 
   final StreamController<bool> _backupPromptVisibleController = new BehaviorSubject<bool>(seedValue: false);
   Stream<bool> get backupPromptVisibleStream => _backupPromptVisibleController.stream;
@@ -268,9 +268,9 @@ class BackupBloc {
   }
 
   _pushPromptIfNeeded(){
-    if (_enableBackupPrompt && _backupServiceNeedLogin) {
+    if (_enableBackupPrompt && (_backupServiceNeedLogin || _backupSettingsController.value.backupProvider == null)) {
       _enableBackupPrompt = false;      
-      _promptBackupController.add(null);
+      _promptBackupController.add(_backupServiceNeedLogin);
     }
   }
 

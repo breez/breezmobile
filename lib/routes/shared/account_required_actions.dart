@@ -51,7 +51,7 @@ class AccountRequiredActionsIndicatorState
       _promptEnableSubscription =
           Observable(widget._backupBloc.promptBackupStream)
               .delay(Duration(seconds: 4))
-              .listen((_) async {                
+              .listen((needSignIn) async {                
                 if (_currentSettings.promptOnError && !showingBackupDialog) {
                   showingBackupDialog = true;
                   widget._backupBloc.backupPromptVisibleSink.add(true);
@@ -61,7 +61,7 @@ class AccountRequiredActionsIndicatorState
                       barrierDismissible: false,
                       context: context,
                       builder: (_) =>
-                          new EnableBackupDialog(context, widget._backupBloc, signInNeeded: true,)).then((_) {
+                          new EnableBackupDialog(context, widget._backupBloc, signInNeeded: needSignIn,)).then((_) {
                     showingBackupDialog = false;
                     widget._backupBloc.backupPromptVisibleSink.add(false);
                   });
