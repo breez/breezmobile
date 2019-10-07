@@ -113,10 +113,8 @@ class SecurityPageState extends State<SecurityPage> {
         ..add(Divider())
         ..add(_buildPINIntervalTile(securityModel, backupSettings))
         ..add(Divider())
-        ..add(_buildChangePINTile(securityModel, backupSettings))
-        ..add(Divider());
+        ..add(_buildChangePINTile(securityModel, backupSettings));
     }
-    _tiles..add(_buildBackupProviderTitle(securityModel, backupSettings));
     _tiles..add(Divider())
           ..add(_buildBackupProviderTitle(securityModel, backupSettings))
           ..add(Divider())
