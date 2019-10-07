@@ -22,7 +22,7 @@ mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
 # Add certificates to keychain and allow codesign to access them
 security import ~/apple.cer -k ~/Library/Keychains/ios-build.keychain -A
 security import ~/ios_distribution.cer -k ~/Library/Keychains/ios-build.keychain -A
-security import ~/ios_distribution.p12 -k ~/Library/Keychains/ios-build.keychain -P "$PRIVATE_KEY_PASS" -A
+security import ~/ios_distribution.p12 -k ~/Library/Keychains/ios-build.keychain -P "$CERT_KEY_PASS" -A
 security set-key-partition-list -S apple-tool:,apple: -s -k travis ios-build.keychain > /dev/null
 
 # Put the provisioning profile in place

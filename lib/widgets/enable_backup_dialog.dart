@@ -6,11 +6,15 @@ import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'backup_provider_selection_dialog.dart';
+import 'error_dialog.dart';
+
 class EnableBackupDialog extends StatefulWidget {
   final BuildContext context;
   final BackupBloc backupBloc;
+  final bool signInNeeded;
 
-  EnableBackupDialog(this.context, this.backupBloc);
+  EnableBackupDialog(this.context, this.backupBloc, {this.signInNeeded = false});
 
   @override
   EnableBackupDialogState createState() {
@@ -97,16 +101,36 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                 maxLines: 1,
               ),
             ),
-            FlatButton(
-              onPressed: (() {
-                Navigator.pop(widget.context);
-                widget.backupBloc.backupNowSink.add(true);
-              }),
-              child: Text(
-                "BACKUP NOW",
-                style: Theme.of(context).primaryTextTheme.button,
-                maxLines: 1,
-              ),
+            StreamBuilder<BackupSettings>(
+              stream: widget.backupBloc.backupSettingsStream,
+              builder: (context, snapshot) {
+                return FlatButton(
+                  onPressed: (() async {
+                    Navigator.pop(widget.context);
+                    var provider = snapshot.data.backupProvider;
+                    if (provider == null) {
+                      provider = await showDialog(
+                        context: context,
+                        builder: (_) => BackupProviderSelectionDialog(backupBloc: widget.backupBloc)
+                      );
+                    }
+                    
+                    if (provider != null) {     
+                      if (widget.signInNeeded && provider == BackupSettings.icloudBackupProvider) {                          
+                        await promptError(context, "Sign in to iCloud", Text("Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.", 
+                        style: Theme.of(context).dialogTheme.contentTextStyle));
+                        return;
+                      }                                        
+                      widget.backupBloc.backupNowSink.add(true);
+                    }
+                  }),
+                  child: Text(
+                    "BACKUP NOW",
+                    style: Theme.of(context).primaryTextTheme.button,
+                    maxLines: 1,
+                  ),
+                );
+              }
             ),
           ],
         ));

@@ -29,8 +29,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
 
       ImageCropper.cropImage(
         sourcePath: file.path,
-        ratioX: 1.0,
-        ratioY: 1.0        
+        aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),        
       ).then((file){
           if (file != null) {
             file.readAsBytes()

@@ -245,14 +245,7 @@ class DevViewState extends State<DevView> {
                                       ],
                                     ),
                                   ),
-                                )),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 20.0, left: 20.0, top: 20.0),
-                              child: backupSnapshot.data != null && backupSnapshot.data.lastBackupTime.millisecondsSinceEpoch > 0
-                                  ? Text("Last backup: ${DateUtils.formatYearMonthDayHourMinute(backupSnapshot.data.lastBackupTime)}",
-                                      textAlign: TextAlign.left)
-                                  : SizedBox(),
-                            ),
+                                )),                            
                           ]),
                         );
                       });

@@ -16,6 +16,7 @@ import 'package:breez/routes/shared/security_pin/restore_pin.dart';
 import 'package:breez/routes/user/home/beta_warning_dialog.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/restore_dialog.dart';
@@ -117,6 +118,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           error: error.runtimeType != SignInFailedException
               ? error.toString()
               : null);
+      if (error.runtimeType == SignInFailedException) {
+        _handleSignInException(error as SignInFailedException);
+      }
     });
 
     _restoreFinishedSubscription =
@@ -130,6 +134,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       if (error.runtimeType != SignInFailedException) {
         showFlushbar(context, duration: new Duration(seconds: 3),
           message: error.toString());
+      }
+      else {
+        _handleSignInException(error as SignInFailedException);
       }      
     });
 
@@ -140,6 +147,12 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     if (_controller.isCompleted) {
       _controller.stop();
       _controller.dispose();
+    }
+  }
+
+  Future _handleSignInException(SignInFailedException e) async {
+    if (e.provider == BackupSettings.icloudBackupProvider) {
+      await promptError(context, "Sign in to iCloud", Text("Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.", style: theme.alertStyle));
     }
   }
 
@@ -292,10 +305,19 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                         padding: EdgeInsets.only(top: 10.0),
                         child: new GestureDetector(
                             onTap: () {
-                              // Restore then start lightninglib
-                              Navigator.push(
-                                  context, createLoaderRoute(context));
-                              widget._backupBloc.restoreRequestSink.add(null);
+                              widget._backupBloc.backupSettingsStream.first.then((settings) async {
+                                var backupProvider = settings.backupProvider;
+                                if (backupProvider == null || BackupSettings.availableBackupProviders().length > 1) {
+                                  backupProvider = await showDialog(context: context, builder: (_) => 
+                                    BackupProviderSelectionDialog(backupBloc: widget._backupBloc, restore: true));
+                                }                           
+                                if (backupProvider != null) {
+                                  // Restore then start lightninglib
+                                  Navigator.push(
+                                    context, createLoaderRoute(context));
+                                    widget._backupBloc.restoreRequestSink.add(null);
+                                  }
+                              });                              
                             },
                             child: new Text(
                               "Restore from backup",
