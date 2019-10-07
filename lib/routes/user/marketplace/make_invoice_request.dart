@@ -14,7 +14,7 @@ class MakeInvoiceRequest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [
-      Text("This site wants to pay you:", style: theme.paymentRequestSubtitleStyle, textAlign: TextAlign.center),
+      Text("This site wants to pay you:", style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16), textAlign: TextAlign.center),
       Text(account.currency.format(Int64(amount)), style: theme.paymentRequestAmountStyle,textAlign: TextAlign.center)
     ];
 
@@ -23,7 +23,7 @@ class MakeInvoiceRequest extends StatelessWidget {
         padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
         child: AutoSizeText(
           description,
-          style: theme.paymentRequestSubtitleStyle,
+          style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
           textAlign: description.length > 40 ? TextAlign.justify : TextAlign.center,
           maxLines: 3,
         ),

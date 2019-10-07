@@ -38,7 +38,7 @@ class QrCodeDialog extends StatelessWidget {
                   new IconButton(
                     padding: EdgeInsets.only(top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
                     icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
-                    color: Theme.of(context).primaryIconTheme.color,
+                    color: Theme.of(context).primaryTextTheme.button.color,
                     onPressed: () {
                       ShareExtend.share("lightning:" + snapshot.data, "text");
                     },
@@ -46,7 +46,7 @@ class QrCodeDialog extends StatelessWidget {
                   new IconButton(
                     padding: EdgeInsets.only(top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
                     icon: new Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-                    color: Theme.of(context).primaryIconTheme.color,
+                    color: Theme.of(context).primaryTextTheme.button.color,
                     onPressed: () {
                       Clipboard.setData(new ClipboardData(text: snapshot.data));
                       showFlushbar(context, message: "Invoice address was copied to your clipboard.", duration:Duration(seconds: 3));                      
@@ -76,7 +76,7 @@ class QrCodeDialog extends StatelessWidget {
                             valueColor: new AlwaysStoppedAnimation<Color>(
                               theme.BreezColors.grey[500],
                             ),
-                            backgroundColor: theme.whiteColor,
+                            backgroundColor: Theme.of(context).accentColor,
                           ),
                         )));
               }

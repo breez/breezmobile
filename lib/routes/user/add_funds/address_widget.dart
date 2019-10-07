@@ -45,7 +45,7 @@ class AddressWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.6),
                     decoration: theme.qrImageStyle,
                     child: new Container(
-                      color: theme.whiteColor,
+                      color: Theme.of(context).accentColor,
                       child: new CompactQRImage(
                         data: "bitcoin:" + address,
                         size: 180.0,
@@ -93,7 +93,7 @@ class AddressWidget extends StatelessWidget {
     }
     Widget _shareIcon = new IconButton(
       icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
-      color: theme.whiteColor,
+      color: Theme.of(context).buttonColor,
       onPressed: () {
         final RenderBox box = context.findRenderObject();
         ShareExtend.share(address,
@@ -104,7 +104,7 @@ class AddressWidget extends StatelessWidget {
     );
     Widget _copyIcon = new IconButton(
       icon: new Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-      color: theme.whiteColor,
+      color: Theme.of(context).buttonColor,
       onPressed: () {
         Clipboard.setData(new ClipboardData(text: address));
         showFlushbar(context, message: "Deposit address was copied to your clipboard.");

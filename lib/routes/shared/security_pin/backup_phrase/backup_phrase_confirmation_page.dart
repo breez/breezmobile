@@ -22,14 +22,14 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            iconTheme: theme.appBarIconTheme,
-            textTheme: theme.appBarTextTheme,
+            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+            textTheme: Theme.of(context).appBarTheme.textTheme,
             backgroundColor: Theme.of(context).canvasColor,
             automaticallyImplyLeading: false,
             leading: backBtn.BackButton(),
             title: AutoSizeText(
               "Generate Backup Phrase",
-              style: theme.appBarTextStyle,
+              style: Theme.of(context).appBarTheme.textTheme.title,
               maxLines: 1,
             ),
             elevation: 0.0),
@@ -77,8 +77,8 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Checkbox(
-              activeColor: theme.BreezColors.white[500],
-              checkColor: theme.BreezColors.blue[500],
+              activeColor: Colors.white,
+              checkColor: Theme.of(context).canvasColor,
               value: _isUnderstood,
               onChanged: (value) {
                 setState(() {

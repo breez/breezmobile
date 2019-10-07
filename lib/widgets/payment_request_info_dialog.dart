@@ -145,7 +145,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         ? null
         : Text(
             "${widget.invoice.payeeName}",
-            style: theme.paymentRequestTitleStyle,
+            style: Theme.of(context).primaryTextTheme.display1.copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );
   }
@@ -154,12 +154,12 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     return widget.invoice.payeeName == null || widget.invoice.payeeName.isEmpty
         ? new Text(
             "You are requested to pay:",
-            style: theme.paymentRequestSubtitleStyle,
+            style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           )
         : new Text(
             "is requesting you to pay:",
-            style: theme.paymentRequestSubtitleStyle,
+            style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );
   }
@@ -183,7 +183,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                 child: AmountFormField(
                   context: context,
                   accountModel: account,
-                  iconColor: theme.BreezColors.blue[500],
+                  iconColor: Theme.of(context).primaryIconTheme.color,
                   focusNode: _amountFocusNode,
                   controller: _invoiceAmountController,
                   validatorFn: account.validateOutgoingPayment,
@@ -201,7 +201,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           _showFiatCurrency && account.fiatCurrency != null
               ? "${account.fiatCurrency.format(widget.invoice.amount)}"
               : account.currency.format(widget.invoice.amount),
-          style: theme.paymentRequestAmountStyle,
+          style: Theme.of(context).primaryTextTheme.headline,
           textAlign: TextAlign.center,
         ),
       ),
@@ -226,7 +226,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
             child: AutoSizeText(
               widget.invoice.description,
-              style: theme.paymentRequestSubtitleStyle,
+              style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
               textAlign: widget.invoice.description.length > 40 ? TextAlign.justify : TextAlign.center,
               maxLines: 3,
             ),
@@ -242,7 +242,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
       child: AutoSizeText(validationError,
-          maxLines: 3, textAlign: TextAlign.center, style: theme.paymentRequestSubtitleStyle.copyWith(color: Colors.red)),
+          maxLines: 3, textAlign: TextAlign.center, style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16, color: Colors.red)),
     );
   }
 

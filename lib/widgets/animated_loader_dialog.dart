@@ -17,7 +17,8 @@ AlertDialog createAnimatedLoaderDialog(BuildContext context, String text, {bool 
           new Image.asset(
             'src/images/breez_loader.gif',
             height: 64.0,
-            colorBlendMode: BlendMode.multiply,
+            colorBlendMode: BlendMode.modulate,
+            color: Theme.of(context).backgroundColor,
             gaplessPlayback: true,
           ),
           Row(

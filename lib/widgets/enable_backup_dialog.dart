@@ -58,7 +58,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
                         child: new AutoSizeText(
                           "If you want to be able to restore your funds in case this mobile device or this app are no longer available (e.g. lost or stolen device or app uninstall), you are required to backup your information.",
-                          style: theme.paymentRequestSubtitleStyle,
+                          style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
                           minFontSize: MinFontSize(context).minFontSize,
                           stepGranularity: 0.1,
                           group: _autoSizeGroup,
@@ -68,8 +68,8 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                         padding: const EdgeInsets.only(top: 16.0),
                         child: Row(
                           children: <Widget>[
-                            Checkbox(                            
-                                activeColor: theme.BreezColors.blue[500],
+                            Checkbox(
+                                activeColor: Theme.of(context).canvasColor,
                                 value: !snapshot.data.promptOnError,
                                 onChanged: (v) {
                                   var currentSettings = snapshot.data;
@@ -79,7 +79,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                             Expanded(
                                 child: AutoSizeText(
                               "Don't prompt again",
-                              style: theme.paymentRequestSubtitleStyle,
+                              style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
                               maxLines: 1,
                               minFontSize: MinFontSize(context).minFontSize,
                               stepGranularity: 0.1,

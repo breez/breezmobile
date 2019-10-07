@@ -66,7 +66,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                       padding: const EdgeInsets.only(left: 15.0, right: 12.0),
                       child: new Text(
                         "Sending failed payment details to Breez could help increase successful transactions rate.\nDo you want to send this failed payment details to Breez?",
-                        style: theme.paymentRequestSubtitleStyle,
+                        style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
                       ),
                     ),
                     Padding(
@@ -74,7 +74,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                       child: Row(
                         children: <Widget>[
                           Checkbox(
-                              activeColor: theme.BreezColors.blue[500],
+                              activeColor: Theme.of(context).canvasColor,
                               value: _doneAsk ??
                                   _settings.failePaymentBehavior !=
                                       BugReportBehavior.PROMPT,
@@ -85,7 +85,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                               }),
                           Text(
                             "Don't ask me again",
-                            style: theme.paymentRequestSubtitleStyle,
+                            style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
                           )
                         ],
                       ),

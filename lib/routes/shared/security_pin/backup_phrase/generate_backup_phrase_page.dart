@@ -114,7 +114,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
               "NEXT",
               style: Theme.of(context).textTheme.button,
             ),
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).buttonColor,
             elevation: 0.0,
             shape: const StadiumBorder(),
             onPressed: () {

@@ -152,7 +152,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   Future _handleSignInException(SignInFailedException e) async {
     if (e.provider == BackupSettings.icloudBackupProvider) {
-      await promptError(context, "Sign in to iCloud", Text("Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.", style: theme.alertStyle));
+      await promptError(context, "Sign in to iCloud", Text("Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.", style: Theme.of(context).dialogTheme.contentTextStyle,));
     }
   }
 
@@ -276,7 +276,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                     child: RaisedButton(
                       padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
                       child: Text("LET'S BREEZ!", style: Theme.of(context).textTheme.button),
-                      color: theme.whiteColor,
+                      color: Theme.of(context).buttonColor,
                       elevation: 0.0,
                       shape: const StadiumBorder(),
                       onPressed: () {

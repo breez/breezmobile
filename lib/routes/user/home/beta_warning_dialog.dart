@@ -24,7 +24,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
         child: new Text(
           "Since Breez is still in beta, there is a chance your money will be lost. Use this app only if you are willing to take this risk.",
-          style: theme.paymentRequestSubtitleStyle,
+          style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
         ),
       ),
       Padding(
@@ -32,7 +32,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
         child: Row(
           children: <Widget>[
             Checkbox(
-                activeColor: theme.BreezColors.blue[500],
+                activeColor: Theme.of(context).canvasColor,
                 value: _isUnderstood,
                 onChanged: (value) {
                   setState(() {
@@ -41,7 +41,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
                 }),
             Text(
               "I understand",
-              style: theme.paymentRequestSubtitleStyle,
+              style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
             )
           ],
         ),
@@ -53,7 +53,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
                 top: 0.0, left: 16.0, right: 16.0, bottom: 0.0),
             child: Text(
               "Please confirm that you understand before you continue.",
-              style: theme.paymentRequestSubtitleStyle
+              style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16)
                   .copyWith(fontSize: 12.0, color: Colors.red),
             )),
       ),

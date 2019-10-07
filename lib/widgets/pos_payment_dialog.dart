@@ -145,7 +145,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                         padding: EdgeInsets.only(top: 15.0),
                         child: new Text(_countdownString,
                             textAlign: TextAlign.center,
-                            style: theme.paymentRequestTitleStyle)),
+                            style: Theme.of(context).primaryTextTheme.display1.copyWith(fontSize: 16))),
                     _cancelButton(),
                   ],
                 )
@@ -160,7 +160,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                         child: new Text(
                           'Payment approved!',
                           textAlign: TextAlign.center,
-                          style: theme.paymentRequestTitleStyle,
+                          style: Theme.of(context).primaryTextTheme.display1.copyWith(fontSize: 16),
                         ),
                       ),
                       new Padding(
@@ -181,7 +181,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       new Text(
         title,
         textAlign: TextAlign.center,
-        style: theme.paymentRequestTitleStyle,
+        style: Theme.of(context).primaryTextTheme.display1.copyWith(fontSize: 16),
       ),
       new Padding(
         padding: EdgeInsets.only(top: 15.0),

@@ -71,14 +71,14 @@ class SecurityPageState extends State<SecurityPage> {
                 }
                 return Scaffold(
                   appBar: new AppBar(
-                      iconTheme: theme.appBarIconTheme,
-                      textTheme: theme.appBarTextTheme,
+                      iconTheme: Theme.of(context).appBarTheme.iconTheme,
+                      textTheme: Theme.of(context).appBarTheme.textTheme,
                       backgroundColor: Theme.of(context).canvasColor,
                       automaticallyImplyLeading: false,
                       leading: backBtn.BackButton(),
                       title: new Text(
                         _title,
-                        style: theme.appBarTextStyle,
+                        style: Theme.of(context).appBarTheme.textTheme.title,
                       ),
                       elevation: 0.0),
                   body: ListView(
@@ -117,7 +117,10 @@ class SecurityPageState extends State<SecurityPage> {
         ..add(Divider());
     }
     _tiles..add(_buildBackupProviderTitle(securityModel, backupSettings));
-    _tiles..add(_buildGenerateBackupPhraseTile(securityModel, backupSettings));
+    _tiles..add(Divider())
+          ..add(_buildBackupProviderTitle(securityModel, backupSettings))
+          ..add(Divider())
+          ..add(_buildGenerateBackupPhraseTile(securityModel, backupSettings));
     return _tiles;
   }
 

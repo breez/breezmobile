@@ -123,7 +123,7 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
                       semanticsLabel: widget.message,
                       backgroundColor: Colors.grey.withOpacity(0.5),
                       valueColor: new AlwaysStoppedAnimation<Color>(
-                        theme.whiteColor,
+                        Theme.of(context).accentColor,
                       ),        
                     ),
                   ),

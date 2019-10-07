@@ -131,9 +131,6 @@ class HomeState extends State<Home> {
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      decoration: new BoxDecoration(
-        color: theme.BreezColors.blue[500],        
-      ),
       child: FadeInWidget(
         child: new Scaffold(
             key: _scaffoldKey,

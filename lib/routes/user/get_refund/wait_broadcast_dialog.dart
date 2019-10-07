@@ -103,6 +103,8 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
             padding: EdgeInsets.only(top: 8.0),
             child: new Image.asset(
               'src/images/breez_loader.gif',
+              colorBlendMode: BlendMode.modulate,
+              color: Theme.of(context).backgroundColor,
               gaplessPlayback: true,
             ))
       ],

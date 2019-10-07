@@ -199,9 +199,9 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
               ),
               Image.asset(
                 'src/images/breez_loader.gif',
+                colorBlendMode: BlendMode.modulate,
                 height: 64.0,
-                colorBlendMode: BlendMode.multiply,
-                color: colorAnimation?.value ?? Colors.transparent,
+                color: colorAnimation?.value ?? Theme.of(context).backgroundColor,
                 gaplessPlayback: true,
               )
             ],
