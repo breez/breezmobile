@@ -60,7 +60,7 @@ class UserApp extends StatelessWidget {
             builder: (ctx) => MaterialApp(
               navigatorKey: _navigatorKey,
               title: 'Breez',
-              theme: Themes(user.themeId).theme,
+              theme: Themes.themeMap[user.themeId],
               builder: (BuildContext context, Widget child) {
                 final MediaQueryData data = MediaQuery.of(context);
                 return MediaQuery(

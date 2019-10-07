@@ -111,7 +111,7 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                   },
                   child: new Column(children: <Widget>[
                     GestureDetector(
-                      onTap: () => _changeTheme(snapshot.data.themeId == ThemeId.BLUE ? ThemeId.DARK : ThemeId.BLUE, user, context),
+                      onTap: () => _changeTheme(snapshot.data.themeId == "BLUE" ? "DARK" : "BLUE", user, context),
                       child: new Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
@@ -130,7 +130,7 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                                     "src/icon/ic_lightmode.png",
                                     height: 24,
                                     width: 24,
-                                    color: snapshot.data.themeId == ThemeId.BLUE
+                                    color: snapshot.data.themeId == "BLUE"
                                         ? Colors.white
                                         : Colors.white30,
                                   ),
@@ -142,7 +142,7 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                                     ),
                                   ),
                                   ImageIcon(AssetImage("src/icon/ic_darkmode.png"),
-                                      color: snapshot.data.themeId == ThemeId.DARK
+                                      color: snapshot.data.themeId == "DARK"
                                           ? Colors.white
                                           : Colors.white30,
                                       size: 24.0),
@@ -197,7 +197,7 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   );
 }
 
-Future _changeTheme(ThemeId themeId, UserProfileBloc userProfileBloc, BuildContext context) async {
+Future _changeTheme(String themeId, UserProfileBloc userProfileBloc, BuildContext context) async {
     var action = ChangeTheme(themeId);
     userProfileBloc.userActionsSink.add(action);
     action.future.then((_) {

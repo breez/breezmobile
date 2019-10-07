@@ -1,45 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'theme_data.dart' as theme_data;
 
-enum ThemeId { BLUE, DARK }
-
 class Themes {
-  final ThemeId themeId;
-
-  const Themes(this.themeId);
-
-  ThemeData get theme {
-    switch (themeId) {
-      case (ThemeId.BLUE):
-        return blueTheme;
-      case (ThemeId.DARK):
-        return darkTheme;
-      default:
-        return blueTheme;
-    }
-  }
-
-  static ThemeId getThemeIdFromString(String themeId) {
-    switch (themeId) {
-      case "BLUE":
-        return ThemeId.BLUE;
-      case "DARK":
-        return ThemeId.DARK;
-      default:
-        return ThemeId.BLUE;
-    }
-  }
-
-  static String getStringFromThemeId(ThemeId themeId) {
-    switch (themeId) {
-      case ThemeId.BLUE:
-        return "BLUE";
-      case ThemeId.DARK:
-        return "DARK";
-      default:
-        return "BLUE";
-    }
-  }
+  static final Map<String, ThemeData> themeMap = {"BLUE": blueTheme, "DARK": darkTheme};
 
   static final ThemeData blueTheme = ThemeData(
     brightness: Brightness.dark,

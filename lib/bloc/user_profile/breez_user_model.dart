@@ -1,6 +1,5 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
-import 'package:breez/themes.dart';
 
 class BreezUserModel {
   final String userID;
@@ -12,15 +11,15 @@ class BreezUserModel {
   final String animal;
   final String image;
   final SecurityModel securityModel;
-  final ThemeId themeId;
+  final String themeId;
   final bool locked;
 
   BreezUserModel._(this.userID, this.name, this.color, this.animal, {
-    this.currency = Currency.SAT, this.fiatCurrency = "USD", this.image, this.securityModel, this.locked, this.token = '', this.themeId = ThemeId.BLUE});
+    this.currency = Currency.SAT, this.fiatCurrency = "USD", this.image, this.securityModel, this.locked, this.token = '', this.themeId = "BLUE"});
 
   BreezUserModel copyWith({
     String name, String color, String animal, Currency currency, String fiatCurrency, 
-    String image, SecurityModel securityModel, bool locked, String token, String userID, ThemeId themeId}) {
+    String image, SecurityModel securityModel, bool locked, String token, String userID, String themeId}) {
       return new BreezUserModel._(userID ?? this.userID, name ?? this.name, color ?? this.color, animal ?? this.animal, currency: currency ?? this.currency, fiatCurrency: fiatCurrency ?? this.fiatCurrency, image: image ?? this.image, securityModel: securityModel ?? this.securityModel, locked: locked ?? this.locked, token: token ?? this.token, themeId: themeId ?? this.themeId);
   }
 
@@ -41,7 +40,7 @@ class BreezUserModel {
         image = json['image'],
         locked = true,
         securityModel = json['securityModel'] == null ? SecurityModel.initial() : SecurityModel.fromJson(json['securityModel'],),
-        themeId = Themes.getThemeIdFromString(json['themeId']);
+        themeId = json['themeId'] == null ? "BLUE" : json['themeId'];
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -53,6 +52,6 @@ class BreezUserModel {
         'animal': animal,
         'image': image,
         'securityModel': securityModel?.toJson(),
-        'themeId': Themes.getStringFromThemeId(themeId),
+        'themeId': themeId,
       };
 }
