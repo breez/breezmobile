@@ -70,11 +70,11 @@ class RestoreDialogState extends State<RestoreDialog> {
                     title: Text( 
                       DateUtils.formatYearMonthDayHourMinute(DateTime.parse(widget.snapshots[index].modifiedTime)) + 
                         (widget.snapshots[index].encrypted ? " - (Requires key)" : ""),
-                      style: theme.bolt11Style.apply(fontSizeDelta: 1.3),
+                      style: Theme.of(context).primaryTextTheme.caption.copyWith(fontSize: 9).apply(fontSizeDelta: 1.3),
                     ),
                     subtitle: Text(
                       widget.snapshots[index].nodeID,
-                      style: theme.bolt11Style,
+                      style: Theme.of(context).primaryTextTheme.caption.copyWith(fontSize: 9),
                     ),
                     onTap: () {
                       setState(() {

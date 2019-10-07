@@ -98,7 +98,7 @@ class QrCodeDialog extends StatelessWidget {
                     child: new Container(
                       child: new Text(
                         snapshot.data,
-                        style: theme.bolt11Style,
+                        style: Theme.of(context).primaryTextTheme.caption.copyWith(fontSize: 9),
                       ),
                     ),
                   ),
@@ -116,7 +116,7 @@ class QrCodeDialog extends StatelessWidget {
   Widget _buildExpiryMessage() {
     return new Column(children: <Widget>[
       Text("Keep the Breez app open in order to receive payment.",
-          style: theme.createInvoiceDialogWarningStyle)
+          style: Theme.of(context).primaryTextTheme.caption)
     ]);
   }
 

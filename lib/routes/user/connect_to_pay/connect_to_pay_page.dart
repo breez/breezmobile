@@ -119,12 +119,11 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   }
 
   void _onTerminateSession() async {
-    TextStyle textStyle = TextStyle(color: Colors.black);
     String exitSessionMessage =
         'Are you sure you want to cancel this payment session?';
     bool cancel = await promptAreYouSure(
-        _key.currentContext, null, Text(exitSessionMessage, style: textStyle),
-        textStyle: textStyle);
+        _key.currentContext, null, Text(exitSessionMessage, style: Theme.of(context).dialogTheme.contentTextStyle),
+        textStyle: Theme.of(context).dialogTheme.contentTextStyle);
     if (cancel) {
       _popWithMessage(null);           
     }
