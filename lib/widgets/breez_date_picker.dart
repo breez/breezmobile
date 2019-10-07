@@ -384,7 +384,7 @@ class DayPicker extends StatelessWidget {
 
         BoxDecoration decoration;
         // Should move this to a property on theme data
-        TextStyle itemStyle = TextStyle(color: Theme.of(context).primaryColor ==  Color(0xFF7aa5eb) ? Colors.white : Colors.black);
+        TextStyle itemStyle = TextStyle(color: Theme.of(context).primaryColor == Color(0xFF7aa5eb) ? Colors.white : Colors.black);
 
         final bool isSelectedDay = selectedDate.year == year && selectedDate.month == month && selectedDate.day == day;
         if (isSelectedDay) {
