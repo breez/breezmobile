@@ -93,9 +93,9 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
               setState(() {
                 _hasError = false;
               });
-              //if (_formKey.currentState.validate() && !_hasError) {
+              if (_formKey.currentState.validate() && !_hasError) {
                 _createBackupPhrase(backupSettings, backupBloc);
-              //}
+              }
             },
           ),
         )
