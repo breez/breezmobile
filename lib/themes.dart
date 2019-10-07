@@ -21,6 +21,7 @@ class Themes {
         iconTheme: IconThemeData(
           color: Colors.white,
         ),
+        color: Colors.transparent,
         actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0))),
     dialogTheme: DialogTheme(
         titleTextStyle: TextStyle(color: theme_data.BreezColors.grey[600], fontSize: 20.5, letterSpacing: 0.25),
@@ -71,6 +72,7 @@ class Themes {
         iconTheme: IconThemeData(
           color: Colors.white,
         ),
+        color: Colors.white,
         actionsIconTheme: IconThemeData(color: Colors.white)),
     dialogTheme: DialogTheme(
         titleTextStyle: TextStyle(color: Colors.white, fontSize: 20.5, letterSpacing: 0.25),

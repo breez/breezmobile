@@ -152,7 +152,7 @@ class HomeState extends State<Home> {
                 "src/images/logo-color.png",
                 height: 23.5,
                 width: 62.7,
-                color: Colors.transparent,
+                color: Theme.of(context).appBarTheme.color,
                 colorBlendMode: BlendMode.srcATop,
               ),
               iconTheme: new IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
