@@ -48,13 +48,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
     super.initState();
     _fiatAmountController.addListener(() => setState(() {}));
     _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
-    _colorAnimation = new ColorTween(
-      begin: Colors.black45,
-      end: theme.BreezColors.blue[500],
-    ).animate(_controller)
-      ..addListener(() {
-        setState(() {});
-      });
     // Loop back to start and stop
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -81,7 +74,14 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
           });
         }        
       });
-      
+      _colorAnimation = new ColorTween(
+        // change to white according to theme
+        begin: Theme.of(context).primaryTextTheme.display1.color,
+        end: Theme.of(context).primaryTextTheme.button.color,
+      ).animate(_controller)
+        ..addListener(() {
+          setState(() {});
+        });
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -139,30 +139,36 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                         padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
                       ),
                     ),
-                    new DropdownButtonHideUnderline(
-                      child: ButtonTheme(
-                        alignedDropdown: true,
-                        child: new DropdownButton(
-                          onChanged: (value) => _selectFiatCurrency(account, value),
-                          value: account.fiatCurrency.currencyData.shortName,
-                          style: Theme.of(context).dialogTheme.titleTextStyle,
-                          items: account.fiatConversionList.map((FiatConversion value) {
-                            return new DropdownMenuItem<String>(
-                              value: value.currencyData.shortName,
-                              child: Container(
-                                width: 36,
-                                child: AutoSizeText(
-                                  value.currencyData.shortName,
-                                  textAlign: TextAlign.left,
-                                  style: Theme.of(context).dialogTheme.titleTextStyle,
-                                  maxLines: 1,
-                                  minFontSize: MinFontSize(context).minFontSize,
-                                  stepGranularity: 0.1,
-                                  group: _autoSizeGroup,
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                          canvasColor: Theme.of(context).backgroundColor,
+                      ),
+                      child: new DropdownButtonHideUnderline(
+                        child: ButtonTheme(
+                          alignedDropdown: true,
+                          child: new DropdownButton(
+                            onChanged: (value) => _selectFiatCurrency(account, value),
+                            value: account.fiatCurrency.currencyData.shortName,
+                            iconEnabledColor: Theme.of(context).dialogTheme.titleTextStyle.color,
+                            style: Theme.of(context).dialogTheme.titleTextStyle,
+                            items: account.fiatConversionList.map((FiatConversion value) {
+                              return new DropdownMenuItem<String>(
+                                value: value.currencyData.shortName,
+                                child: Container(
+                                  width: 36,
+                                  child: AutoSizeText(
+                                    value.currencyData.shortName,
+                                    textAlign: TextAlign.left,
+                                    style: Theme.of(context).dialogTheme.titleTextStyle,
+                                    maxLines: 1,
+                                    minFontSize: MinFontSize(context).minFontSize,
+                                    stepGranularity: 0.1,
+                                    group: _autoSizeGroup,
+                                  ),
                                 ),
-                              ),
-                            );
-                          }).toList(),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
                     ),
