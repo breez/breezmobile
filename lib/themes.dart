@@ -77,7 +77,7 @@ class Themes {
         backgroundColor: Color(0xFF152a3d),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))),
     errorColor: Color(0xFFeddc97),
-    dividerColor: Colors.white,
+    dividerColor: Color(0x337aa5eb),
     buttonColor: Color(0xFF4B89EB),
     cardColor: Color(0xFF121212),
     highlightColor: Color(0xFF4B88EB),
