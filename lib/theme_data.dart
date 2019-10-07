@@ -1,21 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
-final ThemeData breezThemeData = new ThemeData(
-  brightness: Brightness.light,
-  backgroundColor: BreezColors.blue[500],
-  accentColor: BreezColors.white[500],
-);
-
 final VendorTheme bitrefill = VendorTheme(iconFgColor: Color.fromRGBO(68, 155, 247, 1.0), iconBgColor: Color(0xFFffffff),textColor: Color.fromRGBO(47, 47, 47, 1.0));
 final VendorTheme fastbitcoins = VendorTheme(iconBgColor: Color(0xFFff7c10), iconFgColor: Color(0xFF1f2a44), textColor: Color(0xFF1f2a44));
 final VendorTheme lnpizza = VendorTheme(iconBgColor:  Color(0xFF000000), iconFgColor: Color(0xFFf8e71c));
-final TextTheme appBarTextTheme = new TextTheme(title:appBarTextStyle);
-final IconThemeData appBarIconTheme = new IconThemeData(color: BreezColors.white[500]);
 final TextStyle drawerItemTextStyle = new TextStyle(height: 1.2, letterSpacing: 0.25, fontSize: 14.3);
 final TextStyle notificationTextStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 10.0, letterSpacing: 0.06, height: 1.10);
-final TextStyle headline = new TextStyle(color: BreezColors.grey[600],fontSize: 26.0);
-final TextStyle subtitle = new TextStyle(color: BreezColors.grey[600],fontSize: 14.3,letterSpacing: 0.2);
 final TextStyle addFundsBtnStyle = new TextStyle(color: BreezColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
 final TextStyle addFundsItemsStyle = new TextStyle(color: BreezColors.white[500], fontSize: 14.3, letterSpacing: 1.25, height: 1.16, fontFamily: 'IBMPlexSansMedium');
 final TextStyle bottomSheetMenuItemStyle = new TextStyle(color: BreezColors.white[400], fontSize: 14.3, letterSpacing: 0.55);
@@ -28,11 +18,8 @@ final TextStyle errorStyle = new TextStyle(color: errorColor, fontSize: 12.0);
 final TextStyle textStyle = new TextStyle(color: BreezColors.white[400], fontSize: 16.0);
 final TextStyle navigationDrawerHandleStyle = new TextStyle(fontSize: 16.0, letterSpacing: 0.2, color:  Color.fromRGBO(255, 255, 255, 0.6));
 final TextStyle warningStyle = new TextStyle(color: errorColor, fontSize: 16.0);
-final TextStyle reserveAmountWarningStyle = new TextStyle(color: errorColor, fontSize: 18.0, letterSpacing: 0.8, height: 1.25, fontFamily:'IBMPlexSansMedium');
 final TextStyle createInvoiceDialogWarningStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 12.0);
-final TextStyle alertStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 16.0, height: 1.5);
 final TextStyle bolt11Style = new TextStyle(color: BreezColors.grey[500], fontSize: 9.0);
-final TextStyle alertTitleStyle = new TextStyle(color: BreezColors.grey[600], fontSize: 20.5, letterSpacing: 0.25);
 final TextStyle instructionStyle = new TextStyle(color: BreezColors.white[400], fontSize: 14.3);
 final TextStyle validatorStyle = new TextStyle(color: Color(0xFFe3b42f), fontSize: 12.0, height: 1.25);
 final TextStyle welcomeTextStyle = new TextStyle(color: BreezColors.white[500], fontSize: 16.0, height: 1.1);
@@ -60,7 +47,6 @@ final TextStyle invoiceAmountStyle = TextStyle(color: BreezColors.grey[600], fon
 final TextStyle currencyDropdownStyle = TextStyle(color: BreezColors.grey[600], fontSize: 16.3, height: 1.32, letterSpacing: 0.15);
 final TextStyle numPadNumberStyle = new TextStyle(color: BreezColors.white[500], fontSize: 20.0, letterSpacing: 0.18);
 final TextStyle numPadAdditionStyle = new TextStyle(color: BreezColors.white[500], fontSize: 32.0, letterSpacing: 0.18);
-final TextStyle appBarTextStyle = new TextStyle(color: BreezColors.white[500], fontSize: 18.0, letterSpacing: 0.22);
 final TextStyle smallTextStyle = new TextStyle(color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09);
 final TextStyle linkStyle = new TextStyle(color: BreezColors.white[300], fontSize: 12.3, letterSpacing: 0.4, height: 1.2, decoration: TextDecoration.underline);
 final TextStyle restoreLinkStyle = new TextStyle(color: BreezColors.white[300], fontSize: 12.0, letterSpacing: 0.4, height: 1.2, decoration: TextDecoration.underline);
@@ -77,8 +63,6 @@ final BoxDecoration boxDecoration = new BoxDecoration(border: new Border(bottom:
 final BoxDecoration autoCompleteBoxDecoration = new BoxDecoration(color: BreezColors.white[500], borderRadius: new BorderRadius.circular(3.0));
 final BoxDecoration qrImageStyle = new BoxDecoration(border: new Border.all(color: BreezColors.blue[800], width: 1.0), borderRadius: new BorderRadius.circular(3.0));
 final Color whiteColor = BreezColors.white[500];
-final Color massageBackgroundColor = BreezColors.blue[900];
-final Color messageTextColor = BreezColors.white[300];
 final Color snackBarBackgroundColor = BreezColors.blue[300];
 final Color avatarBackgroundColor = BreezColors.blue[500];
 final Color sessionAvatarBackgroundColor = BreezColors.white[500];
