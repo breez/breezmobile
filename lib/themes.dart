@@ -15,6 +15,9 @@ class Themes {
     canvasColor: theme_data.BreezColors.blue[500],
     backgroundColor: Colors.white,
     appBarTheme: AppBarTheme(
+        textTheme: TextTheme(
+          title: TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+        ),
         iconTheme: IconThemeData(
           color: Colors.transparent,
         ),
@@ -61,6 +64,9 @@ class Themes {
     canvasColor: Color(0xFF0c2031),
     backgroundColor: Color(0xFF152a3d),
     appBarTheme: AppBarTheme(
+        textTheme: TextTheme(
+          title: TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+        ),
         iconTheme: IconThemeData(
           color: Colors.white,
         ),

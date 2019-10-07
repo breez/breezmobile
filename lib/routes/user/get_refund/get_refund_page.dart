@@ -18,11 +18,11 @@ class GetRefundPage extends StatelessWidget {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return new Scaffold(
       appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(),
-          title: new Text(TITLE, style: theme.appBarTextStyle),
+          title: new Text(TITLE, style: Theme.of(context).appBarTheme.textTheme.title),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,

@@ -23,8 +23,8 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
       theme: Theme.of(context).copyWith(backgroundColor: Colors.red, primaryColor: Colors.yellow, canvasColor: Colors.grey),
       home: Scaffold(
         appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
           title: GestureDetector(
             onTap: () {

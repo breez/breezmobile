@@ -58,8 +58,8 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
 
     return Scaffold(
       appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(
@@ -77,7 +77,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
           ),
           title: new Text(
             "Enter your backup phrase ($_currentPage/4)",
-            style: theme.appBarTextStyle,
+            style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0),
       body: SingleChildScrollView(

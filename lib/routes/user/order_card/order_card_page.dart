@@ -340,14 +340,14 @@ class OrderCardPageState extends State<OrderCardPage> {
     String _title = _showSkip ? "Order a Breez Card" : "Order Card";
     return new Scaffold(
       appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
           automaticallyImplyLeading: false,
           leading: _showLeadingButton(_showSkip),
           title: new Text(
             _title,
-            style: theme.appBarTextStyle,
+            style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0,
           actions: _showSkipButton(_showSkip)),

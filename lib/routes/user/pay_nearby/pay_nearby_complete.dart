@@ -131,13 +131,13 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
       child: new Scaffold(
         key: _scaffoldKey,
         appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(),
           title: new Text(
             _title,
-            style: theme.appBarTextStyle,
+            style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0,
         ),

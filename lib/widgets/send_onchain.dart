@@ -69,8 +69,8 @@ class SendOnchainState extends State<SendOnchain> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-            iconTheme: theme.appBarIconTheme,
-            textTheme: theme.appBarTextTheme,
+            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+            textTheme: Theme.of(context).appBarTheme.textTheme,
             automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
             actions: <Widget>[

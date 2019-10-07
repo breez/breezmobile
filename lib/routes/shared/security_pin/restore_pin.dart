@@ -23,8 +23,8 @@ class _RestorePinCodeState extends State<RestorePinCode> {
       onWillPop: () => Future.value(false),
       child: Scaffold(
         appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(
             onPressed: () {

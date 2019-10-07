@@ -92,14 +92,14 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(),
           title: new Text(
             _title,
-            style: theme.appBarTextStyle,
+            style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0),
       body: new Padding(

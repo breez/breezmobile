@@ -129,8 +129,8 @@ class DevViewState extends State<DevView> {
                         return new Scaffold(
                           key: _scaffoldKey,
                           appBar: new AppBar(
-                            iconTheme: theme.appBarIconTheme,
-                            textTheme: theme.appBarTextTheme,
+                            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+                            textTheme: Theme.of(context).appBarTheme.textTheme,
                             backgroundColor: Theme.of(context).canvasColor,
                             leading: backBtn.BackButton(),
                             elevation: 0.0,
@@ -150,7 +150,7 @@ class DevViewState extends State<DevView> {
                             ],
                             title: new Text(
                               "Developers",
-                              style: theme.appBarTextStyle,
+                              style: Theme.of(context).appBarTheme.textTheme.title,
                             ),
                           ),
                           body: new Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: <Widget>[

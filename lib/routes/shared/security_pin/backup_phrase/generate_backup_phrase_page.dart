@@ -28,8 +28,8 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
       onWillPop: () => _onWillPop(context),
       child: Scaffold(
         appBar: AppBar(
-            iconTheme: theme.appBarIconTheme,
-            textTheme: theme.appBarTextTheme,
+            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+            textTheme: Theme.of(context).appBarTheme.textTheme,
             backgroundColor: Theme.of(context).canvasColor,
             automaticallyImplyLeading: false,
             leading: backBtn.BackButton(
@@ -37,7 +37,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
             ),
             title: AutoSizeText(
               "Write these words ($_currentPage/2)",
-              style: theme.appBarTextStyle,
+              style: Theme.of(context).appBarTheme.textTheme.title,
               maxLines: 1,
             ),
             elevation: 0.0),

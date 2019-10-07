@@ -140,13 +140,13 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         key: _key,
         appBar: new AppBar(
           actions: _error == null ? <Widget>[IconButton( onPressed: () => _onTerminateSession(), icon: Icon(Icons.close))] : null,
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(onPressed: _onBackPressed),
           title: new Text(
             _title,
-            style: theme.appBarTextStyle,
+            style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0,
         ),
