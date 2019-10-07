@@ -77,11 +77,11 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
         onPressed: function,
         color: (themeId == "BLUE")
             ? isFirst ? Colors.white : Theme.of(context).primaryColorLight
-            : isFirst ? Theme.of(context).buttonColor : Colors.white,
+            : isFirst ? Theme.of(context).buttonColor : Theme.of(context).backgroundColor,
         padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
         shape: isFirst
             ? RoundedRectangleBorder(borderRadius: new BorderRadius.only(topLeft: Radius.circular(20.0)))
-            : Border(top: BorderSide(color: Theme.of(context).backgroundColor.withOpacity(0.12), width: 1, style: BorderStyle.solid)),
+            : Border(top: BorderSide(color: Theme.of(context).dividerColor.withOpacity(0.12), width: 1, style: BorderStyle.solid)),
         child: Row(
             mainAxisSize: MainAxisSize.max,
             children: widget.isSmallView
@@ -90,7 +90,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                       AssetImage(iconPath),
                       color: (themeId == "BLUE")
                           ? isFirst ? Theme.of(context).buttonColor : Colors.white
-                          : isFirst ? Colors.white : Theme.of(context).buttonColor,
+                          : Colors.white,
                       size: 24.0,
                     )
                   ]
@@ -99,7 +99,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                       AssetImage(iconPath),
                       color: (themeId == "BLUE")
                           ? isFirst ? Theme.of(context).primaryColorLight : Colors.white
-                          : isFirst ? Colors.white : Theme.of(context).buttonColor,
+                          : Colors.white,
                       size: 24.0,
                     ),
                     Padding(padding: EdgeInsets.only(left: 8.0)),
@@ -109,7 +109,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                         style: theme.bottomSheetMenuItemStyle.copyWith(
                           color: (themeId == "BLUE")
                               ? isFirst ? Theme.of(context).primaryColorLight : Colors.white
-                              : isFirst ? Colors.white : Theme.of(context).buttonColor,
+                              : Colors.white,
                         ),
                         maxLines: 1,
                         minFontSize: MinFontSize(context).minFontSize,
