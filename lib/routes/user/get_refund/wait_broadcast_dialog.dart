@@ -145,7 +145,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                   padding: EdgeInsets.only(top: 4.0, right: 0.0, left: 0.0),
                   tooltip: "Copy Transaction Hash",
                   iconSize: 16.0,
-                  color: theme.BreezColors.blue[500],
+                  color: Theme.of(context).primaryTextTheme.button.color,
                   icon: Icon(
                     IconData(0xe90b, fontFamily: 'icomoon'),
                   ),
@@ -158,7 +158,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                   padding: EdgeInsets.only(top: 4.0, right: 0.0, left: 0.0),
                   tooltip: "Share Transaction Hash",
                   iconSize: 16.0,
-                  color: theme.BreezColors.blue[500],
+                  color: Theme.of(context).primaryTextTheme.button.color,
                   icon: Icon(Icons.share),
                   onPressed: () {
                     ShareExtend.share(_response.txID, "text");
@@ -177,7 +177,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
             child: Padding(
               padding: EdgeInsets.only(left: 0.0, right: 0.0),
               child: Text('${_response.txID}',
-                  textAlign: TextAlign.left, overflow: TextOverflow.clip, maxLines: 4, style: theme.paymentDetailsNodeIdStyle),
+                  textAlign: TextAlign.left, overflow: TextOverflow.clip, maxLines: 4, style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 10)),
             ),
           ),
         ],

@@ -54,7 +54,6 @@ final TextStyle sessionNotificationStyle = new TextStyle(fontSize: 14.2);
 final TextStyle sessionNotificationWarningStyle = new TextStyle(color: errorColor, fontSize: 14.2);
 final TextStyle paymentDetailsTitleStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 14.0, letterSpacing: 0.0, height: 1.28, fontFamily:'IBMPlexSansMedium');
 final TextStyle paymentDetailsSubtitleStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 14.0, letterSpacing: 0.0, height: 1.28);
-final TextStyle paymentDetailsNodeIdStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 10.0, letterSpacing: 0.0, height: 1.28);
 final TextStyle fastbitcoinsTextStyle = new TextStyle(color: fastbitcoins.textColor, fontSize: 11.0, letterSpacing: 0.0, fontFamily:'ComfortaaBold');
 final TextStyle vendorTitleStyle = new  TextStyle(color: BreezColors.white[500], fontSize: 36.0, fontWeight: FontWeight.w600, letterSpacing: 1.1, fontFamily: 'Roboto');
 final BoxDecoration boxDecoration = new BoxDecoration(border: new Border(bottom: new BorderSide(color: BreezColors.white[500], width: 1.5)));

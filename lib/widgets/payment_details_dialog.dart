@@ -215,7 +215,7 @@ class ShareablePaymentRow extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.only(left: 16.0, right: 0.0),
                     child: Text('$sharedValue',
-                        textAlign: TextAlign.left, overflow: TextOverflow.clip, maxLines: 4, style: theme.paymentDetailsNodeIdStyle),
+                        textAlign: TextAlign.left, overflow: TextOverflow.clip, maxLines: 4, style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 10)),
                   ),
                 ),
                 Expanded(
