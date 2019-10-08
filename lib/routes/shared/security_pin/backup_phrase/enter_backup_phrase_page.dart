@@ -121,7 +121,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   _buildErrorMessage(String errorMessage) {
-    return Padding(padding: EdgeInsets.only(left: 16, right: 16), child: Text(errorMessage, style: theme.errorStyle));
+    return Padding(padding: EdgeInsets.only(left: 16, right: 16), child: Text(errorMessage, style: Theme.of(context).textTheme.caption.copyWith(fontSize: 12)));
   }
 
   TypeAheadFormField<String> _typeAheadFormField(int itemIndex) {

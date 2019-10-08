@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import  'package:keyboard_actions/keyboard_actions.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:breez/theme_data.dart' as theme;
 
 class FormActionsWrapper extends StatelessWidget {

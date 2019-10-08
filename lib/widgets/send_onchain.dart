@@ -62,8 +62,8 @@ class SendOnchainState extends State<SendOnchain> {
       data: Theme.of(context).copyWith(
         inputDecorationTheme: InputDecorationTheme(enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide)),
           hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-          accentColor: theme.BreezColors.blue[500],
-          primaryColor: theme.BreezColors.blue[500],
+          accentColor: Theme.of(context).textTheme.button.color,
+          primaryColor: Theme.of(context).textTheme.button.color,
           unselectedWidgetColor: Theme.of(context).canvasColor,
           errorColor: Colors.red),
       child: Scaffold(
@@ -76,6 +76,7 @@ class SendOnchainState extends State<SendOnchain> {
             actions: <Widget>[
               IconButton(
                   onPressed: () => Navigator.pop(context),
+                  // Color needs to be changed
                   icon: Icon(Icons.close, color: theme.BreezColors.grey[600]))
             ],
             title: new Text(widget._title,
@@ -103,7 +104,9 @@ class SendOnchainState extends State<SendOnchain> {
                         }
                       });
                     },
-                    child: Text("BROADCAST", style: theme.buttonStyle))
+                    child: Text("BROADCAST", style: Theme.of(context).textTheme.button,),
+                    color: Theme.of(context).buttonColor,
+                  )
                 ]),
           ),
         ),

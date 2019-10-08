@@ -1,7 +1,6 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

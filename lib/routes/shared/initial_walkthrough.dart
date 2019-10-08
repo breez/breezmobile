@@ -11,21 +11,18 @@ import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/security_pin/backup_phrase/enter_backup_phrase_page.dart';
-import 'package:breez/routes/shared/security_pin/backup_phrase/generate_backup_phrase_page.dart';
 import 'package:breez/routes/shared/security_pin/restore_pin.dart';
 import 'package:breez/routes/user/home/beta_warning_dialog.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/backup_provider_selection_dialog.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/widgets/error_dialog.dart';
 import 'package:hex/hex.dart';
-import 'package:bip39/bip39.dart' as bip39;
 
 class InitialWalkthroughPage extends StatefulWidget {
   final BreezUserModel _user;

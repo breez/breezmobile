@@ -1,10 +1,9 @@
 import 'package:breez/bloc/backup/backup_actions.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/bloc/backup/backup_bloc.dart';
 
 class BackupProviderSelectionDialog extends StatefulWidget {
   final BackupBloc backupBloc;
@@ -74,7 +73,7 @@ class BackupProviderSelectionDialogState
                             : Icon(Icons.check, color: Theme.of(context).backgroundColor),
                         title: Text(
                           providers[index].displayName,
-                          style: theme.backupProviderTitleStyle,
+                          style: theme.backupProviderTitleStyle, // Color needs to change
                         ),
                         onTap: () {
                           setState(() {
@@ -91,7 +90,8 @@ class BackupProviderSelectionDialogState
       actions: <Widget>[
         new FlatButton(
           onPressed: () => Navigator.pop(context, null),
-          child: new Text("CANCEL", style: theme.buttonStyle),
+          child: Text("CANCEL", style: Theme.of(context).textTheme.button,),
+          color: Theme.of(context).buttonColor,
         ),
         StreamBuilder<BackupSettings>(
             stream: widget.backupBloc.backupSettingsStream,

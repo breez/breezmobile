@@ -12,7 +12,6 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:duration/duration.dart';

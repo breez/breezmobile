@@ -1,10 +1,9 @@
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:intl/intl.dart';
 
 class RestoreDialog extends StatefulWidget {
   final BuildContext context;

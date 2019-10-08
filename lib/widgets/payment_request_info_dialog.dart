@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -14,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:image/image.dart' as DartImage;
 
-import 'form_keyboard_actions.dart';
 import 'keyboard_done_action.dart';
 
 class PaymentRequestInfoDialog extends StatefulWidget {
@@ -55,7 +52,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   }
 
   @override void dispose() {
-    _doneAction.dispose();    
+    _doneAction.dispose();
     super.dispose();
   }
 
@@ -86,11 +83,13 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             child: Stack(
               children: <Widget>[
                 Center(
-                    child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                    theme.BreezColors.blue[500],
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).primaryTextTheme.button.color,
+                    ),
+                    backgroundColor: Theme.of(context).backgroundColor,
                   ),
-                )),
+                ),
                 Center(
                     child: ClipOval(
                   child: FadeInImage(
@@ -178,7 +177,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             key: _formKey,
             child: Padding(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Container(                                        
+              child: Container(
                   height: 80.0,
                 child: AmountFormField(
                   context: context,

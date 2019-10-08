@@ -104,11 +104,11 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     return _errorMessage.isNotEmpty
         ? Text(
             _errorMessage,
-            style: theme.errorStyle,
+            style: Theme.of(context).textTheme.caption.copyWith(fontSize: 12),
           )
         : Text(
             "",
-            style: theme.errorStyle,
+            style: Theme.of(context).textTheme.caption.copyWith(fontSize: 12),
           );
   }
 

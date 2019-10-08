@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
@@ -7,23 +8,21 @@ import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/services/permissions.dart';
-import 'package:breez/utils/date.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:flutter/material.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/routes/shared/dev/default_commands.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/services/permissions.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/loader.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/gestures.dart';
-import 'package:breez/routes/shared/dev/default_commands.dart';
-import 'package:archive/archive_io.dart';
 
 final _cliInputController = TextEditingController();
 final FocusNode _cliEntryFocusNode = FocusNode();
@@ -137,6 +136,7 @@ class DevViewState extends State<DevView> {
                             actions: <Widget>[
                               PopupMenuButton<Choice>(
                                 onSelected: widget._select,
+                                color: Theme.of(context).backgroundColor,
                                 itemBuilder: (BuildContext context) {
                                   return getChoices(accBloc, settingsSnapshot.data, account, addFundsBloc, addFundsSettingsSnapshot.data)
                                       .map((Choice choice) {

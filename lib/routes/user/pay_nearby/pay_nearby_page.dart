@@ -53,11 +53,8 @@ class PayNearbyPageState extends State<PayNearbyPage> {
                 width: 168.0,
                 child: new RaisedButton(
                   padding: EdgeInsets.only(top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
-                  child: new Text(
-                    "PAY",
-                    style: theme.buttonStyle,
-                  ),
-                  color: Colors.white,
+                  child: Text("PAY", style: Theme.of(context).textTheme.button,),
+                  color: Theme.of(context).buttonColor,
                   elevation: 0.0,
                   shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(42.0)),
                   onPressed: () {

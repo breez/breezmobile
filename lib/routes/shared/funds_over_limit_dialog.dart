@@ -67,10 +67,10 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
                   if (hoursToUnlock > 0) {
                     redeemText.add(TextSpan(
                         text: "You will be able to redeem your funds after block $lockHeight ($hoursToUnlockStr).",
-                        style: theme.dialogGrayStyle));
+                        style: Theme.of(context).dialogTheme.contentTextStyle));
                   } else {
                     redeemText.addAll([
-                      TextSpan(text: "You can ", style: theme.dialogGrayStyle),
+                      TextSpan(text: "You can ", style: Theme.of(context).dialogTheme.contentTextStyle),
                       TextSpan(
                           text: "get a refund ",
                           recognizer: TapGestureRecognizer()
@@ -79,13 +79,13 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
                               Navigator.pushNamed(context, "/get_refund");
                             },
                           style: theme.blueLinkStyle),
-                      TextSpan(text: "now.", style: theme.dialogGrayStyle),
+                      TextSpan(text: "now.", style: Theme.of(context).dialogTheme.contentTextStyle),
                     ]);
                   }
 
                   return RichText(
                       text: TextSpan(
-                          style: theme.dialogGrayStyle,
+                          style: Theme.of(context).dialogTheme.contentTextStyle,
                           text: "Breez was not able to transfer the funds to your balance $reason\n",
                           children: redeemText));
                 });
