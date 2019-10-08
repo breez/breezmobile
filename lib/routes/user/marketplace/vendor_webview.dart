@@ -100,7 +100,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   Widget build(BuildContext context) {
     return new WebviewScaffold(
       appBar: new AppBar(
-        actions: <Widget>[IconButton(icon: new Icon(Icons.close), onPressed: () => Navigator.pop(context))],
+        actions: <Widget>[IconButton(icon: new Icon(Icons.close, color: Theme.of(context).iconTheme.color,), onPressed: () => Navigator.pop(context))],
         automaticallyImplyLeading: false,
         iconTheme: Theme.of(context).appBarTheme.iconTheme,
         textTheme: Theme.of(context).appBarTheme.textTheme,
