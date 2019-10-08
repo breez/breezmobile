@@ -1,7 +1,7 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 Future<Null> promptError(BuildContext context, String title, Widget body,
     {String okText = "OK",
@@ -81,7 +81,7 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return new AlertDialog(
-          contentPadding: contentPadding,          
+          contentPadding: contentPadding,
           title: titleWidget,
           content: new SingleChildScrollView(
             child: body,

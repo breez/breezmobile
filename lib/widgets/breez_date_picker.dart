@@ -4,12 +4,11 @@
 
 import 'dart:async';
 import 'dart:math' as math;
-import 'package:breez/theme_data.dart' as theme;
 
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart';
 
 /// Initial display mode of the date picker dialog.
 ///

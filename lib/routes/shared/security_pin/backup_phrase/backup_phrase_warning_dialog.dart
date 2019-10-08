@@ -1,4 +1,3 @@
-import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
 class BackupPhraseWarningDialog extends StatefulWidget {

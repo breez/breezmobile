@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class SingleButtonBottomBar extends StatelessWidget {
   final VoidCallback onPressed;

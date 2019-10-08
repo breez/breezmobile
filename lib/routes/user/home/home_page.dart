@@ -13,7 +13,6 @@ import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:breez/routes/user/ctp_join_session_handler.dart';
 import 'package:breez/routes/user/received_invoice_notification.dart';
 import 'package:breez/routes/user/showPinHandler.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';

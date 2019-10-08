@@ -1,21 +1,18 @@
+import 'dart:async';
+
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/funds_over_limit_dialog.dart';
-import 'package:breez/widgets/backup_provider_selection_dialog.dart';
-import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/rotator.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:breez/widgets/enable_backup_dialog.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 import 'backup_in_progress_dialog.dart';
 import 'transfer_funds_in_progress_dialog.dart';

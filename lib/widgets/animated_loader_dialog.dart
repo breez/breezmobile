@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
+
 import 'loading_animated_text.dart';
 
 AlertDialog createAnimatedLoaderDialog(BuildContext context, String text, {bool withOKButton = true}){
