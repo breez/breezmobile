@@ -68,7 +68,8 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                         child: Row(
                           children: <Widget>[
                             Checkbox(
-                                activeColor: Theme.of(context).canvasColor,
+                                activeColor: Theme.of(context).accentColor,
+                                checkColor: Theme.of(context).canvasColor,
                                 value: !snapshot.data.promptOnError,
                                 onChanged: (v) {
                                   var currentSettings = snapshot.data;
