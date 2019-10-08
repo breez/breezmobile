@@ -73,7 +73,7 @@ class BackupProviderSelectionDialogState
                             : Icon(Icons.check, color: Theme.of(context).backgroundColor),
                         title: Text(
                           providers[index].displayName,
-                          style: theme.backupProviderTitleStyle, // Color needs to change
+                          style: Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 14.3, height: 1.2), // Color needs to change
                         ),
                         onTap: () {
                           setState(() {
@@ -91,7 +91,7 @@ class BackupProviderSelectionDialogState
         new FlatButton(
           onPressed: () => Navigator.pop(context, null),
           child: Text("CANCEL", style: Theme.of(context).textTheme.button,),
-          color: Theme.of(context).buttonColor,
+          color: Theme.of(context).primaryTextTheme.button.color,
         ),
         StreamBuilder<BackupSettings>(
             stream: widget.backupBloc.backupSettingsStream,
