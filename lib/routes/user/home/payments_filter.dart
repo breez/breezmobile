@@ -29,7 +29,7 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
     widget._controller.addListener(onScroll);
   }
 
-  @override 
+  @override
   void dispose() {
     widget._controller.removeListener(onScroll);
     super.dispose();
@@ -114,26 +114,29 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       ),
     );
     children.add(
-      new DropdownButtonHideUnderline(
-        child: ButtonTheme(
-          alignedDropdown: true,
-          child: new DropdownButton(
-              value: _filter,
-              style: theme.transactionTitleStyle,
-              items: <String>['All Activities', 'Sent', 'Received'].map((String value) {
-                return new DropdownMenuItem<String>(
-                  value: value,
-                  child: new Text(
-                    value,
-                  ),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _filter = value;
-                });
-                widget._accountBloc.paymentFilterSink.add(widget._paymentsModel.filter.copyWith(filter: _getFilterType(_filter)));
-              }),
+      Theme(
+        data: Theme.of(context).backgroundColor != theme.transactionTitleStyle.color ? Theme.of(context).copyWith(canvasColor: Theme.of(context).backgroundColor) : Theme.of(context),
+        child:  DropdownButtonHideUnderline(
+          child: ButtonTheme(
+            alignedDropdown: true,
+            child: new DropdownButton(
+                value: _filter,
+                style: theme.transactionTitleStyle,
+                items: <String>['All Activities', 'Sent', 'Received'].map((String value) {
+                  return new DropdownMenuItem<String>(
+                    value: value,
+                    child: new Text(
+                      value,
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _filter = value;
+                  });
+                  widget._accountBloc.paymentFilterSink.add(widget._paymentsModel.filter.copyWith(filter: _getFilterType(_filter)));
+                }),
+          ),
         ),
       ),
     );
