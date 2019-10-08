@@ -89,7 +89,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                     ImageIcon(
                       AssetImage(iconPath),
                       color: (themeId == "BLUE")
-                          ? isFirst ? Theme.of(context).buttonColor : Colors.white
+                          ? isFirst ? Theme.of(context).primaryColorLight : Colors.white
                           : Colors.white,
                       size: 24.0,
                     )
