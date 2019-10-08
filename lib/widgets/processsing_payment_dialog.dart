@@ -53,8 +53,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
     if (!_isInit) {      
       controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
       colorAnimation = new ColorTween(
-        begin: theme.BreezColors.blue[500],
-        end: theme.BreezColors.white[500],
+        begin: Theme.of(context).canvasColor,
+        end: Theme.of(context).backgroundColor,
       ).animate(controller)
         ..addListener(() {
           setState(() {});
