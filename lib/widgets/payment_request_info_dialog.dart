@@ -273,12 +273,15 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         child: new Text("APPROVE", style: Theme.of(context).primaryTextTheme.button),
       ));
     }
-    return Padding(
-      padding: const EdgeInsets.only(top: 24.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: actions,
+    return Theme(
+      data: Theme.of(context).copyWith(splashColor: Colors.transparent, highlightColor: Colors.transparent),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 24.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: actions,
+        ),
       ),
     );
   }

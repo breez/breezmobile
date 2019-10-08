@@ -138,7 +138,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     return new Scaffold(
         key: _key,
         appBar: new AppBar(
-          actions: _error == null ? <Widget>[IconButton( onPressed: () => _onTerminateSession(), icon: Icon(Icons.close))] : null,
+          actions: _error == null ? <Widget>[IconButton( onPressed: () => _onTerminateSession(), icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color))] : null,
           iconTheme: Theme.of(context).appBarTheme.iconTheme,
           textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,

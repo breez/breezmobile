@@ -141,7 +141,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
 
     return WebviewScaffold(
       appBar: AppBar(
-        actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
+        actions: <Widget>[IconButton(icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color), onPressed: () => Navigator.pop(context))],
         automaticallyImplyLeading: false,
         iconTheme: Theme.of(context).appBarTheme.iconTheme,
         textTheme: Theme.of(context).appBarTheme.textTheme,
@@ -169,7 +169,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
     return Material(
       child: Scaffold(
           appBar: AppBar(
-            actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
+            actions: <Widget>[IconButton(icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color), onPressed: () => Navigator.pop(context))],
             automaticallyImplyLeading: false,
             iconTheme: Theme.of(context).appBarTheme.iconTheme,
             textTheme: Theme.of(context).appBarTheme.textTheme,

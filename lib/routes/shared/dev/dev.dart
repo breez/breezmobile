@@ -137,12 +137,13 @@ class DevViewState extends State<DevView> {
                               PopupMenuButton<Choice>(
                                 onSelected: widget._select,
                                 color: Theme.of(context).backgroundColor,
+                                icon: Icon(Icons.more_vert, color: Theme.of(context).iconTheme.color,),
                                 itemBuilder: (BuildContext context) {
                                   return getChoices(accBloc, settingsSnapshot.data, account, addFundsBloc, addFundsSettingsSnapshot.data)
                                       .map((Choice choice) {
                                     return PopupMenuItem<Choice>(
                                       value: choice,
-                                      child: Text(choice.title),
+                                      child: Text(choice.title, style: Theme.of(context).textTheme.button),
                                     );
                                   }).toList();
                                 },
