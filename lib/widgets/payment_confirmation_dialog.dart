@@ -87,10 +87,14 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
     List<Widget> children = <Widget>[
       new FlatButton(
         child: new Text("NO", style: Theme.of(context).primaryTextTheme.button),
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         onPressed: () => widget._onStateChange(PaymentRequestState.USER_CANCELLED),
       ),
       new FlatButton(
         child: new Text("YES", style: Theme.of(context).primaryTextTheme.button),
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         onPressed: () {
           widget.accountBloc.userActionsSink.add(SendPayment(PayRequest(widget.invoice.rawPayReq, widget._amountToPay)));
           widget._onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
