@@ -196,7 +196,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                 Text(
                                   message,
                                   textAlign: TextAlign.center,
-                                  style: theme.warningStyle,
+                                  style: theme.warningStyle.copyWith(color: Theme.of(context).errorColor),
                                 ),
                               ]));
                         } else {

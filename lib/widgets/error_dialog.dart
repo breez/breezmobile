@@ -38,7 +38,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                             fontFamily: "IBMPlexSansMedium",
                             fontSize: 16.4,
                             letterSpacing: 0.0,
-                            color: Colors.black),
+                            color: Theme.of(context).dialogTheme.titleTextStyle.color),
                       ),
                       onPressed: () {
                         canPop = true;

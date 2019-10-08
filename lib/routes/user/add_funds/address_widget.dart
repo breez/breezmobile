@@ -63,7 +63,7 @@ class AddressWidget extends StatelessWidget {
                     },
                     child: new Text(
                       address,
-                      style: theme.smallTextStyle,
+                      style: Theme.of(context).primaryTextTheme.subtitle,
                     ),
                   ),
                 ),

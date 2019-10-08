@@ -1,4 +1,7 @@
 import 'dart:async';
+
+import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
@@ -8,15 +11,12 @@ import 'package:breez/routes/user/home/floating_actions_bar.dart';
 import 'package:breez/routes/user/home/invoice_bottom_sheet.dart';
 import 'package:breez/routes/user/home/payments_filter.dart';
 import 'package:breez/routes/user/home/payments_list.dart';
+import 'package:breez/routes/user/home/status_text.dart';
 import 'package:breez/routes/user/home/wallet_dashboard.dart';
-import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:breez/widgets/scroll_watcher.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/routes/user/home/status_text.dart';
-import 'package:breez/utils/date.dart';
 
 const DASHBOARD_MAX_HEIGHT = 188.0;
 const DASHBOARD_MIN_HEIGHT = 70.0;

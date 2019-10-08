@@ -74,9 +74,9 @@ class QrCodeDialog extends StatelessWidget {
                           width: 80.0,
                           child: CircularProgressIndicator(
                             valueColor: new AlwaysStoppedAnimation<Color>(
-                              theme.BreezColors.grey[500],
+                              Theme.of(context).primaryTextTheme.button.color,
                             ),
-                            backgroundColor: Theme.of(context).accentColor,
+                            backgroundColor: Theme.of(context).backgroundColor,
                           ),
                         )));
               }

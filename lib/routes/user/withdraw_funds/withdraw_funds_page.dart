@@ -1,20 +1,20 @@
 import 'dart:async';
+
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/form_keyboard_actions.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
-import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/injector.dart';
 
 class WithdrawFundsPage extends StatefulWidget {
 
@@ -231,7 +231,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
       actions: <Widget>[
         new FlatButton(
             onPressed: () => Navigator.pop(context),
-            child: new Text("NO", style: theme.buttonStyle)),
+            child: new Text("NO", style: Theme.of(context).primaryTextTheme.button)),
         new FlatButton(
             onPressed: () {
               Navigator.pop(context);
@@ -241,7 +241,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                   _addressValidated                  
                 ));
             },
-            child: new Text("YES", style: theme.buttonStyle))
+            child: new Text("YES", style: Theme.of(context).primaryTextTheme.button))
       ],
     );
     showDialog(context: context, builder: (_) => dialog);

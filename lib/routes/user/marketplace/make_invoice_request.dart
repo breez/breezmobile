@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class MakeInvoiceRequest extends StatelessWidget {
   final AccountModel account;
@@ -15,7 +14,7 @@ class MakeInvoiceRequest extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> children = [
       Text("This site wants to pay you:", style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16), textAlign: TextAlign.center),
-      Text(account.currency.format(Int64(amount)), style: theme.paymentRequestAmountStyle,textAlign: TextAlign.center)
+      Text(account.currency.format(Int64(amount)), style: Theme.of(context).primaryTextTheme.headline,textAlign: TextAlign.center)
     ];
 
     if (description != null && description.isEmpty) {

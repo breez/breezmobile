@@ -1,16 +1,14 @@
-import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/widgets/form_keyboard_actions.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/static_loader.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:fixnum/fixnum.dart';
-import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/widgets/currency_converter_dialog.dart';
+import 'package:flutter/material.dart';
 
 class PayNearbyPage extends StatefulWidget {  
   PayNearbyPage();
