@@ -16,13 +16,13 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
       "No Internet Connection",
       RichText(
       text: TextSpan(
-        style: theme.dialogGrayStyle,
+        style: Theme.of(context).dialogTheme.contentTextStyle,
         text: "You can try:\n",
         children:<TextSpan>[
-          TextSpan(text: "• Turning off airplane mode\n", style: theme.dialogGrayStyle),
-          TextSpan(text: "• Turning on mobile data or Wi-Fi\n", style: theme.dialogGrayStyle),
-          TextSpan(text: "• Checking the signal in your area\n", style: theme.dialogGrayStyle),
-          TextSpan(text: "• ", style: theme.dialogGrayStyle),
+          TextSpan(text: "• Turning off airplane mode\n", style: Theme.of(context).dialogTheme.contentTextStyle),
+          TextSpan(text: "• Turning on mobile data or Wi-Fi\n", style: Theme.of(context).dialogTheme.contentTextStyle),
+          TextSpan(text: "• Checking the signal in your area\n", style: Theme.of(context).dialogTheme.contentTextStyle),
+          TextSpan(text: "• ", style: Theme.of(context).dialogTheme.contentTextStyle),
           TextSpan(
             text: "Recover ",
             style: theme.blueLinkStyle,
@@ -38,8 +38,8 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
                 }
               );
             }),
-          TextSpan(text: "chain information\n", style: theme.dialogGrayStyle),
-          TextSpan(text: "• ", style: theme.dialogGrayStyle),  
+          TextSpan(text: "chain information\n", style: Theme.of(context).dialogTheme.contentTextStyle),
+          TextSpan(text: "• ", style: Theme.of(context).dialogTheme.contentTextStyle),
           TextSpan(
             text: "Reset ", 
             style: theme.blueLinkStyle,
@@ -50,8 +50,8 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
               Navigator.pop(context);
               accountBloc.userActionsSink.add(RestartDaemon());
             }), 
-          TextSpan(text: "your Bitcoin node\n", style: theme.dialogGrayStyle),
-          TextSpan(text: "• ", style: theme.dialogGrayStyle),  
+          TextSpan(text: "your Bitcoin node\n", style: Theme.of(context).dialogTheme.contentTextStyle),
+          TextSpan(text: "• ", style: Theme.of(context).dialogTheme.contentTextStyle),
           TextSpan(
             text: "View ", 
             style: theme.blueLinkStyle,
@@ -59,7 +59,7 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
               var logPath = await ServiceInjector().breezBridge.getLogPath();
               ShareExtend.share(logPath, "file");
             }), 
-          TextSpan(text: "your logs \n", style: theme.dialogGrayStyle),
+          TextSpan(text: "your logs \n", style: Theme.of(context).dialogTheme.contentTextStyle),
         ]), 
       ),
       // Text(
