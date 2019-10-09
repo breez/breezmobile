@@ -91,7 +91,7 @@ class BackupProviderSelectionDialogState
         new FlatButton(
           onPressed: () => Navigator.pop(context, null),
           child: Text("CANCEL", style: Theme.of(context).textTheme.button,),
-          color: Theme.of(context).primaryTextTheme.button.color,
+          textColor: Theme.of(context).primaryTextTheme.button.color,
         ),
         StreamBuilder<BackupSettings>(
             stream: widget.backupBloc.backupSettingsStream,
