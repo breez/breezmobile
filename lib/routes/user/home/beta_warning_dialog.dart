@@ -29,14 +29,17 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
         padding: const EdgeInsets.only(top: 16.0, bottom: 0.0),
         child: Row(
           children: <Widget>[
-            Checkbox(
-                activeColor: Theme.of(context).canvasColor,
-                value: _isUnderstood,
-                onChanged: (value) {
-                  setState(() {
-                    _isUnderstood = value;
-                  });
-                }),
+            Theme(
+              data: Theme.of(context).copyWith(unselectedWidgetColor: Theme.of(context).textTheme.button.color),
+              child: Checkbox(
+                  activeColor: Theme.of(context).canvasColor,
+                  value: _isUnderstood,
+                  onChanged: (value) {
+                    setState(() {
+                      _isUnderstood = value;
+                    });
+                  }),
+            ),
             Text(
               "I understand",
               style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),

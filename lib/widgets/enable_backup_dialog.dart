@@ -67,15 +67,18 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                         padding: const EdgeInsets.only(top: 16.0),
                         child: Row(
                           children: <Widget>[
-                            Checkbox(
-                                activeColor: Theme.of(context).accentColor,
-                                checkColor: Theme.of(context).canvasColor,
-                                value: !snapshot.data.promptOnError,
-                                onChanged: (v) {
-                                  var currentSettings = snapshot.data;
-                                  widget.backupBloc.backupSettingsSink.add(
-                                      currentSettings.copyWith(promptOnError: !v));
-                                }),
+                            Theme(
+                              data: Theme.of(context).copyWith(unselectedWidgetColor: Theme.of(context).textTheme.button.color),
+                              child: Checkbox(
+                                  activeColor: Colors.white,
+                                  checkColor: Theme.of(context).canvasColor,
+                                  value: !snapshot.data.promptOnError,
+                                  onChanged: (v) {
+                                    var currentSettings = snapshot.data;
+                                    widget.backupBloc.backupSettingsSink.add(
+                                        currentSettings.copyWith(promptOnError: !v));
+                                  }),
+                            ),
                             Expanded(
                                 child: AutoSizeText(
                               "Don't prompt again",

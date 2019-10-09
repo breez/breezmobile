@@ -72,16 +72,19 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                       padding: const EdgeInsets.only(top: 16.0),
                       child: Row(
                         children: <Widget>[
-                          Checkbox(
-                              activeColor: Theme.of(context).canvasColor,
-                              value: _doneAsk ??
-                                  _settings.failePaymentBehavior !=
-                                      BugReportBehavior.PROMPT,
-                              onChanged: (v) {
-                                setState(() {
-                                  _doneAsk = v;
-                                });
-                              }),
+                          Theme(
+                            data: Theme.of(context).copyWith(unselectedWidgetColor: Theme.of(context).textTheme.button.color),
+                            child: Checkbox(
+                                activeColor: Theme.of(context).canvasColor,
+                                value: _doneAsk ??
+                                    _settings.failePaymentBehavior !=
+                                        BugReportBehavior.PROMPT,
+                                onChanged: (v) {
+                                  setState(() {
+                                    _doneAsk = v;
+                                  });
+                                }),
+                          ),
                           Text(
                             "Don't ask me again",
                             style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),

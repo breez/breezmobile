@@ -76,15 +76,18 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Checkbox(
-              activeColor: Colors.white,
-              checkColor: Theme.of(context).canvasColor,
-              value: _isUnderstood,
-              onChanged: (value) {
-                setState(() {
-                  _isUnderstood = value;
-                });
-              }),
+          Theme(
+            data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+            child: Checkbox(
+                activeColor: Colors.white,
+                checkColor: Theme.of(context).canvasColor,
+                value: _isUnderstood,
+                onChanged: (value) {
+                  setState(() {
+                    _isUnderstood = value;
+                  });
+                }),
+          ),
           Text(
             "I UNDERSTAND",
             style: theme.backupPhraseConfirmationTextStyle,
