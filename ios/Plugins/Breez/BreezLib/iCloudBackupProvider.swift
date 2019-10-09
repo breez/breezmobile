@@ -25,6 +25,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         
         let pred = NSPredicate(value: true);
         let query = CKQuery(recordType: "BackupSnapshot", predicate: pred)
+        query.sortDescriptors = [NSSortDescriptor(key: "modificationDate", ascending: false)]
         let operation = CKQueryOperation(query: query)
         operation.desiredKeys = ["modificationDate", "backupID", "backupEncryptionType"]
         operation.resultsLimit = 100;
