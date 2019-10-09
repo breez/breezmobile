@@ -347,7 +347,8 @@ class SecurityPageState extends State<SecurityPage> {
       widget.backupBloc.backupActionsSink.add(action);
       action.future.then((_) {
         //(newModel.backupKeyType != oldModel.backupKeyType) ||
-        if ((oldBackupSettings.backupKeyType != newBackupSettings.backupKeyType)) {
+        if ((oldBackupSettings.backupKeyType != newBackupSettings.backupKeyType || 
+          oldBackupSettings.backupProvider != newBackupSettings.backupProvider)) {
           triggerBackup();
         }
       })
