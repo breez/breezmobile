@@ -34,6 +34,7 @@ import 'package:breez/routes/user/pay_nearby/pay_nearby_page.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_complete.dart';
 import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
 import 'package:breez/routes/user/marketplace/marketplace.dart';
+import 'custom_theme.dart';
 import 'themes.dart';
 
 class UserApp extends StatelessWidget {
@@ -60,7 +61,7 @@ class UserApp extends StatelessWidget {
             builder: (ctx) => MaterialApp(
               navigatorKey: _navigatorKey,
               title: 'Breez',
-              theme: Themes.themeMap[user.themeId],
+              theme: CustomTheme(user.themeId).theme,
               builder: (BuildContext context, Widget child) {
                 final MediaQueryData data = MediaQuery.of(context);
                 return MediaQuery(
