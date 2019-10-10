@@ -101,7 +101,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
         Padding(
             padding: EdgeInsets.only(top: 8.0),
             child: new Image.asset(
-              Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? 'src/images/breez_loader.gif' : 'src/images/breez_loader_dark.gif',
+              Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? 'src/images/breez_loader_blue.gif' : 'src/images/breez_loader_dark.gif',
               gaplessPlayback: true,
             ))
       ],

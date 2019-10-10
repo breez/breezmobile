@@ -61,7 +61,7 @@ class SendCoinsDialog extends StatelessWidget {
           Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: new Image.asset(
-                Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? 'src/images/breez_loader.gif' : 'src/images/breez_loader_dark.gif',
+                Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? 'src/images/breez_loader_blue.gif' : 'src/images/breez_loader_dark.gif',
                 gaplessPlayback: true,
               ))
         ],
