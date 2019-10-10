@@ -1,3 +1,4 @@
+import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,9 +40,18 @@ class RestoreDialogState extends State<RestoreDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          new Text(
-            "You have mulitple Breez backups on your Google Drive, please choose which to restore:",
-            style: theme.paymentRequestSubtitleStyle,
+          StreamBuilder<BackupSettings>(
+            stream: widget.backupBloc.backupSettingsStream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return SizedBox();
+              }
+
+              return new Text(
+                "You have multiple Breez backups on ${snapshot.data.backupProvider.displayName}, please choose which one to restore:",
+                style: theme.paymentRequestSubtitleStyle,
+              );
+            }
           ),
          
           new Padding(
@@ -59,7 +69,7 @@ class RestoreDialogState extends State<RestoreDialog> {
                     trailing: _selectedSnapshot?.nodeID == widget.snapshots[index].nodeID ? Icon(Icons.check, color: theme.BreezColors.blue[500],) : Icon(Icons.check),
                     title: Text( 
                       DateUtils.formatYearMonthDayHourMinute(DateTime.parse(widget.snapshots[index].modifiedTime)) + 
-                        (widget.snapshots[index].encrypted ? " - (PIN required)" : ""), 
+                        (widget.snapshots[index].encrypted ? " - (Requires key)" : ""),
                       style: theme.bolt11Style.apply(fontSizeDelta: 1.3),
                     ),
                     subtitle: Text(

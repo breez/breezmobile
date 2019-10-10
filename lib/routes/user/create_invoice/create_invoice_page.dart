@@ -213,11 +213,14 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   Widget _buildReceivableBTC(AccountModel acc) {
-    return AutoSizeText(
-      "Receive up to: ${acc.currency.format(acc.maxAllowedToReceive)}",
-      style: theme.textStyle,
-      maxLines: 1,
-      minFontSize: MinFontSize(context).minFontSize,
+    return GestureDetector(
+      child: AutoSizeText(
+        "Receive up to: ${acc.currency.format(acc.maxAllowedToReceive)}",
+        style: theme.textStyle,
+        maxLines: 1,
+        minFontSize: MinFontSize(context).minFontSize,
+      ),
+      onTap: () => _amountController.text = acc.currency.format(acc.maxAllowedToReceive, includeSymbol: false, userInput: true),
     );
   }
 }

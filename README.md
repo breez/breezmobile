@@ -55,9 +55,10 @@
 - [x] Fiat units
 - [x] Optional PIN
 - [x] Adding funds via credit card
-- [ ] Add stronger encryption to cloud backup
+- [x] Add stronger encryption to cloud backup
 - [ ] iCloud backup option
 - [ ] Support 3rd-party LSPs
+- [ ] Implement lnurl 
 - [ ] Support SD storage
 - [ ] NFC device support
 - [ ] POS POC release

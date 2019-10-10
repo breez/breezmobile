@@ -44,7 +44,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.0
-  image_cropper: ^1.0.2
+  image_cropper: ^1.1.0
   uni_links: ^0.2.0
   flutter_webview_plugin:
     git:
@@ -53,7 +53,11 @@ dependencies:
   flutter_secure_storage: ^3.2.1+1
   auto_size_text: 2.0.2+1
   app_settings: ^1.0.6+2
+  bip39: ^1.0.3
   crypto: ^2.1.2
+  flutter_typeahead:
+    git:
+      url: https://github.com/breez/flutter_typeahead.git
 
 dev_dependencies:
   mockito: "^3.0.0"

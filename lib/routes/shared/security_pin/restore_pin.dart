@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 const PIN_CODE_LENGTH = 6;
 
 class RestorePinCode extends StatefulWidget {
-  RestorePinCode({Key key}) : super(key: key);
+  final Function(String phrase) onPinCodeSubmitted;
+
+  RestorePinCode({Key key, @required this.onPinCodeSubmitted}) : super(key: key);
 
   @override
   _RestorePinCodeState createState() => new _RestorePinCodeState();
@@ -40,8 +42,8 @@ class _RestorePinCodeState extends State<RestorePinCode> {
     );
   }
 
-  _onPinEntered(String enteredPinCode) {
-    Navigator.pop(context, enteredPinCode);
+  Future _onPinEntered(String enteredPinCode) {
+    widget.onPinCodeSubmitted(enteredPinCode);    
     return Future.value(null);
   }
 }

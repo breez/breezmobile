@@ -132,7 +132,7 @@ class AddFundsState extends State<AddFundsPage> {
     return Stack(
       children: <Widget>[
         ListView(
-          children: _buildList(vendorList),
+          children: _buildList(vendorList, account),
         ),
         Positioned(
           child: _buildReserveAmountWarning(account),
@@ -144,10 +144,10 @@ class AddFundsState extends State<AddFundsPage> {
     );
   }
 
-  List<Widget> _buildList(List<AddFundVendorModel> vendorsList) {
+  List<Widget> _buildList(List<AddFundVendorModel> vendorsList, AccountModel account) {
     List<Widget> list = List();
     vendorsList.forEach((v){
-      if (v.isAllowed) {
+      if (v.isAllowed && (!v.requireActiveChannel || account.active == true)){
         list
         ..add(_buildAddFundsVendorItem(v))
         ..add(Divider(

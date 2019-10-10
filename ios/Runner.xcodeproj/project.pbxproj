@@ -19,6 +19,8 @@
 		6F09D3DE225F2AD300867443 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F09D3DD225F2AD300867443 /* GoogleService-Info.plist */; };
 		6F09D3E0225F45EB00867443 /* NativeMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F09D3DF225F45EB00867443 /* NativeMethods.swift */; };
 		6F09D3E2225F584000867443 /* LifecycleEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F09D3E1225F584000867443 /* LifecycleEvents.swift */; };
+		6F3FAFCA232E610400680AC5 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F3FAFC9232E610400680AC5 /* CloudKit.framework */; };
+		6F3FAFCC232E6BA700680AC5 /* iCloudBackupProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3FAFCB232E6BA700680AC5 /* iCloudBackupProvider.swift */; };
 		6F5D313F22A6827700A8CFDF /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5D313E22A6827700A8CFDF /* BackgroundTask.swift */; };
 		6F8177DB2270AEED00842148 /* GoogleAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8177DA2270AEED00842148 /* GoogleAuthenticator.swift */; };
 		6FCA797622796CA6002E4572 /* ChainSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA797522796CA6002E4572 /* ChainSync.swift */; };
@@ -62,6 +64,8 @@
 		6F09D3DD225F2AD300867443 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6F09D3DF225F45EB00867443 /* NativeMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeMethods.swift; sourceTree = "<group>"; };
 		6F09D3E1225F584000867443 /* LifecycleEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleEvents.swift; sourceTree = "<group>"; };
+		6F3FAFC9232E610400680AC5 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		6F3FAFCB232E6BA700680AC5 /* iCloudBackupProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudBackupProvider.swift; sourceTree = "<group>"; };
 		6F5D313E22A6827700A8CFDF /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
 		6F8177D92270997B00842148 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		6F8177DA2270AEED00842148 /* GoogleAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuthenticator.swift; sourceTree = "<group>"; };
@@ -84,6 +88,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F3FAFCA232E610400680AC5 /* CloudKit.framework in Frameworks */,
 				6F09D3DC225E7BBD00867443 /* bindings.framework in Frameworks */,
 				9705A1C61CF904A100538489 /* Flutter.framework in Frameworks */,
 				3B80C3941E831B6300D905FE /* App.framework in Frameworks */,
@@ -129,6 +134,7 @@
 				6F09D3DF225F45EB00867443 /* NativeMethods.swift */,
 				6F8177DA2270AEED00842148 /* GoogleAuthenticator.swift */,
 				6FCA797522796CA6002E4572 /* ChainSync.swift */,
+				6F3FAFCB232E6BA700680AC5 /* iCloudBackupProvider.swift */,
 			);
 			path = BreezLib;
 			sourceTree = "<group>";
@@ -195,6 +201,7 @@
 		E5F01C87D6084F818230B447 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6F3FAFC9232E610400680AC5 /* CloudKit.framework */,
 				6F09D3DB225E7BBC00867443 /* bindings.framework */,
 				1BB8FE81E630D060DA96BD7C /* Pods_Runner.framework */,
 			);
@@ -249,6 +256,9 @@
 								enabled = 1;
 							};
 							com.apple.SafariKeychain = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
 								enabled = 1;
 							};
 						};
@@ -315,12 +325,13 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh",
-				"${PODS_ROOT}/.symlinks/flutter/ios/Flutter.framework",
+				"${BUILT_PRODUCTS_DIR}/AppAuth/AppAuth.framework",
+				"${PODS_ROOT}/.symlinks/flutter/ios-release/Flutter.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMAppAuth/GTMAppAuth.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/MTBBarcodeScanner/MTBBarcodeScanner.framework",
-				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/Reachability/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/TOCropViewController/TOCropViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/app_settings/app_settings.framework",
@@ -329,6 +340,7 @@
 				"${BUILT_PRODUCTS_DIR}/flutter_secure_storage/flutter_secure_storage.framework",
 				"${BUILT_PRODUCTS_DIR}/flutter_webview_plugin/flutter_webview_plugin.framework",
 				"${BUILT_PRODUCTS_DIR}/image_picker/image_picker.framework",
+				"${BUILT_PRODUCTS_DIR}/keyboard_visibility/keyboard_visibility.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 				"${BUILT_PRODUCTS_DIR}/package_info/package_info.framework",
@@ -342,12 +354,13 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AppAuth.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Flutter.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMAppAuth.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MTBBarcodeScanner.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TOCropViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/app_settings.framework",
@@ -356,6 +369,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_secure_storage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_webview_plugin.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/image_picker.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/keyboard_visibility.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/package_info.framework",
@@ -435,6 +449,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F3FAFCC232E6BA700680AC5 /* iCloudBackupProvider.swift in Sources */,
 				6F5D313F22A6827700A8CFDF /* BackgroundTask.swift in Sources */,
 				6F09D3D7225E232000867443 /* Breez.swift in Sources */,
 				6FCA79782279E33D002E4572 /* Notifier.swift in Sources */,
@@ -617,7 +632,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
