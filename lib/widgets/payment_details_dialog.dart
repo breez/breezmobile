@@ -18,7 +18,7 @@ Future<Null> showPaymentDetailsDialog(BuildContext context, PaymentInfo paymentI
       Container(
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
-          color: Theme.of(context).primaryColor == Color(0xFF7aa5eb) ? Theme.of(context).canvasColor : Theme.of(context).primaryColorDark,
+          color: theme.themeId == "BLUE" ? Theme.of(context).primaryColorDark : Theme.of(context).canvasColor,
         ),
         height: 64.0,
         width: MediaQuery.of(context).size.width,

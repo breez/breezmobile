@@ -187,10 +187,10 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                       decoration: InputDecoration(
                           enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide),
                           focusedBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide),
-                          errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColor != Color.fromRGBO(255, 255, 255, 1.0) ? Theme.of(context).errorColor : Colors.red)),
-                          focusedErrorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColor != Color.fromRGBO(255, 255, 255, 1.0) ? Theme.of(context).errorColor : Colors.red)),
+                          errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor)),
+                          focusedErrorBorder: UnderlineInputBorder(borderSide: BorderSide(color: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor)),
                           errorMaxLines: 2,
-                          errorStyle: Theme.of(context).primaryTextTheme.caption.copyWith(color: Theme.of(context).primaryColor != Color.fromRGBO(255, 255, 255, 1.0) ? Theme.of(context).errorColor : Colors.red),
+                          errorStyle: Theme.of(context).primaryTextTheme.caption.copyWith(color: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor),
                           prefix: Text(
                             account.fiatCurrency.currencyData.symbol,
                             style: Theme.of(context).dialogTheme.contentTextStyle,

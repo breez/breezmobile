@@ -49,7 +49,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
         height: 70.0,
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
-          color: Theme.of(context).primaryColor == Color(0xFF7aa5eb) ? Theme.of(context).canvasColor : Theme.of(context).primaryColorDark,
+          color: theme.themeId == "BLUE" ? Theme.of(context).primaryColorDark : Theme.of(context).canvasColor,
         ),
       ),
       Container(

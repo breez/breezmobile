@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-
+import 'package:breez/theme_data.dart' as theme;
 /// Initial display mode of the date picker dialog.
 ///
 /// Date picker UI mode for either showing a list of available years or a
@@ -383,7 +383,7 @@ class DayPicker extends StatelessWidget {
 
         BoxDecoration decoration;
         // Should move this to a property on theme data
-        TextStyle itemStyle = TextStyle(color: Theme.of(context).primaryColor == Color(0xFF7aa5eb) ? Colors.white : Colors.black);
+        TextStyle itemStyle = TextStyle(color: theme.themeId == "BLUE" ? Colors.black : Colors.white);
 
         final bool isSelectedDay = selectedDate.year == year && selectedDate.month == month && selectedDate.day == day;
         if (isSelectedDay) {

@@ -10,6 +10,7 @@ import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
@@ -152,7 +153,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
                     mainAxisSize: MainAxisSize.min,
                     children: _buildProcessingPaymentDialog())),
             decoration: ShapeDecoration(
-              color: Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? colorAnimation.value : (controller.value >= 0.25 ? Theme.of(context).backgroundColor : colorAnimation.value),
+              color: theme.themeId == "BLUE" ? colorAnimation.value : (controller.value >= 0.25 ? Theme.of(context).backgroundColor : colorAnimation.value),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderAnimation.value)),
             ),
           ),
@@ -197,10 +198,10 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
                 textAlign: TextAlign.center,
               ),
               Image.asset(
-                Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? 'src/images/breez_loader_blue.gif' : 'src/images/breez_loader_dark.gif',
+                theme.customData[theme.themeId].loaderAssetPath,
                 height: 64.0,
-                colorBlendMode: Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? BlendMode.multiply : BlendMode.srcIn,
-                color: Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? colorAnimation?.value ?? Colors.transparent : null,
+                colorBlendMode: theme.customData[theme.themeId].loaderColorBlendMode ?? BlendMode.srcIn,
+                color: theme.themeId == "BLUE" ? colorAnimation?.value ?? Colors.transparent : null,
                 gaplessPlayback: true,
               )
             ],
