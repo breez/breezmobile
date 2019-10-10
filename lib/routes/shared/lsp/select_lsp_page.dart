@@ -37,14 +37,14 @@ class SelectLSPPageState extends State<SelectLSPPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        iconTheme: theme.appBarIconTheme,
-        textTheme: theme.appBarTextTheme,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
         backgroundColor: theme.BreezColors.blue[500],
         leading: backBtn.BackButton(),
         elevation: 0.0,
         title: new Text(
           "Lightning Service Provider",
-          style: theme.appBarTextStyle,
+          style: Theme.of(context).appBarTheme.textTheme.title,
         ),
       ),
       body: StreamBuilder<List<LSPInfo>>(

@@ -75,12 +75,12 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       appBar: new AppBar(
         leading: backBtn.BackButton(),
         automaticallyImplyLeading: false,
-        iconTheme: theme.appBarIconTheme,
-        textTheme: theme.appBarTextTheme,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
         backgroundColor: theme.BreezColors.blue[500],
         title: new Text(
           widget._title,
-          style: theme.appBarTextStyle,
+          style: Theme.of(context).appBarTheme.textTheme.title,
         ),
         elevation: 0.0,
       ),

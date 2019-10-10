@@ -74,13 +74,13 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     return new Scaffold(
       key: _scaffoldKey,
       appBar: new AppBar(
-        iconTheme: theme.appBarIconTheme,
-        textTheme: theme.appBarTextTheme,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
         backgroundColor: theme.BreezColors.blue[500],
         leading: backBtn.BackButton(),
         title: new Text(
           _title,
-          style: theme.appBarTextStyle,
+          style: Theme.of(context).appBarTheme.textTheme.title,
         ),
         actions: <Widget>[actions == null ? Container() : actions],
         elevation: 0.0,

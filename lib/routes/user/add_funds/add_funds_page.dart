@@ -147,7 +147,7 @@ class AddFundsState extends State<AddFundsPage> {
   List<Widget> _buildList(List<AddFundVendorModel> vendorsList, AccountModel account) {
     List<Widget> list = List();
     vendorsList.forEach((v){
-      if (v.isAllowed && (!v.requireActiveChannel || account.active == true)){
+      if (v.isAllowed && (!v.requireActiveChannel || account.connected == true)){
         list
         ..add(_buildAddFundsVendorItem(v))
         ..add(Divider(
