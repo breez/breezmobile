@@ -382,7 +382,6 @@ class DayPicker extends StatelessWidget {
             || (selectableDayPredicate != null && !selectableDayPredicate(dayToBuild));
 
         BoxDecoration decoration;
-        // Should move this to a property on theme data
         TextStyle itemStyle = TextStyle(color: theme.themeId == "BLUE" ? Colors.black : Colors.white);
 
         final bool isSelectedDay = selectedDate.year == year && selectedDate.month == month && selectedDate.day == day;
@@ -397,7 +396,7 @@ class DayPicker extends StatelessWidget {
           itemStyle = TextStyle(color: Colors.blueGrey);
         } else if (currentDate.year == year && currentDate.month == month && currentDate.day == day) {
           // The current day gets a different text color.
-          itemStyle = TextStyle(color: Colors.black,fontSize: 20.0);
+          itemStyle = TextStyle(color: theme.themeId == "BLUE" ? Colors.black : Colors.white, fontSize: 20.0);
         }
 
         Widget dayWidget = new Container(
