@@ -1,6 +1,6 @@
+import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 const double _kBarSize = 45.0;
 

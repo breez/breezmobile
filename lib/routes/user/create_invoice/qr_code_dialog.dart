@@ -1,10 +1,9 @@
+import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/services.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:share_extend/share_extend.dart';
 
 class QrCodeDialog extends StatelessWidget {

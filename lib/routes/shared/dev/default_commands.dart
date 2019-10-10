@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:breez/routes/shared/dev/dev.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter/material.dart';
 
 var defaultCliCommandsText = <TextSpan>[
   new LinkTextSpan(

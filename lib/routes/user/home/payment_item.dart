@@ -1,11 +1,11 @@
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/routes/user/home/flip_transition.dart';
 import 'package:breez/routes/user/home/payment_item_avatar.dart';
 import 'package:breez/routes/user/home/success_avatar.dart';
-import 'package:breez/utils/date.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/routes/user/home/flip_transition.dart';
-import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/date.dart';
+import 'package:breez/widgets/payment_details_dialog.dart';
+import 'package:flutter/material.dart';
 
 class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;

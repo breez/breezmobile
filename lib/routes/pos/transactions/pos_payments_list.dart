@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/pos/transactions/pos_payment_item.dart';
+import 'package:flutter/material.dart';
 
 class PosPaymentsList extends StatelessWidget {
   final List<PaymentInfo> _payments;

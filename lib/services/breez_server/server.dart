@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:grpc/grpc.dart';
+
+import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/generated/breez.pb.dart';
 import 'package:breez/services/breez_server/generated/breez.pbgrpc.dart';
-import 'package:flutter/services.dart';
-import 'dart:convert';
 import 'package:fixnum/fixnum.dart';
-import 'package:breez/logger.dart';
+import 'package:flutter/services.dart';
+import 'package:grpc/grpc.dart';
 import "package:ini/ini.dart";
 
 //proto command:

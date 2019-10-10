@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter/material.dart';
 
 class PulseAnimationDecorator extends StatefulWidget {
   final Widget _child;

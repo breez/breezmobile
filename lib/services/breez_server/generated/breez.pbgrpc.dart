@@ -7,7 +7,9 @@
 import 'dart:async' as $async;
 
 import 'package:grpc/service_api.dart' as $grpc;
+
 import 'breez.pb.dart';
+
 export 'breez.pb.dart';
 
 class InvoicerClient extends $grpc.Client {

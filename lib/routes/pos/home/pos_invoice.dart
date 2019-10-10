@@ -1,19 +1,20 @@
 import 'dart:async';
+
 import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:fixnum/fixnum.dart';
-import 'package:flutter/material.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
 import 'package:breez/bloc/pos_profile/pos_profile_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/home/status_indicator.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/pos_payment_dialog.dart';
+import 'package:fixnum/fixnum.dart';
+import 'package:flutter/material.dart';
 
 var cancellationTimeoutValue;
 

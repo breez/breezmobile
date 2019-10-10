@@ -1,12 +1,13 @@
 import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
-import 'invoice/invoice_bloc.dart';
-import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/bloc/status_indicator/status_indicator_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
+import 'package:breez/bloc/status_indicator/status_indicator_bloc.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+
+import 'invoice/invoice_bloc.dart';
 
 /*
 Bloc stands for Business Logic Component.

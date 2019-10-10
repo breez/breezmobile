@@ -1,14 +1,14 @@
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/account_required_actions.dart';
+import 'package:breez/routes/shared/no_connection_dialog.dart';
 import 'package:breez/routes/user/sync_ui_handler.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/navigation_drawer.dart';
+import 'package:flutter/material.dart';
 
 import 'pos_invoice.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/widgets/navigation_drawer.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/routes/shared/no_connection_dialog.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
 
 class PosHome extends StatefulWidget {
   final AccountBloc accountBloc;

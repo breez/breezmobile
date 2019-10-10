@@ -3,12 +3,12 @@ import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payee_session.dart';
 import 'package:breez/routes/user/connect_to_pay/peers_connection.dart';
 import 'package:breez/routes/user/connect_to_pay/session_instructions.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class PayeeSessionWidget extends StatelessWidget {
   final PayeeRemoteSession _currentSession;

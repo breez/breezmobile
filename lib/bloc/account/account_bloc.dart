@@ -1,28 +1,29 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:breez/bloc/async_action.dart';
+
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
+import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
-import 'package:breez/services/device.dart';
-import 'package:breez/services/notifications.dart';
-import 'package:breez/services/currency_service.dart';
-import 'package:fixnum/fixnum.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'account_model.dart';
-import 'package:breez/services/injector.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:breez/logger.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:breez/services/currency_data.dart';
-import 'package:breez/bloc/account/fiat_conversion.dart';
+import 'package:breez/services/currency_service.dart';
+import 'package:breez/services/device.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/services/notifications.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'account_model.dart';
 import 'account_synchronizer.dart';
 
 class AccountBloc {

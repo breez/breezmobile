@@ -1,4 +1,5 @@
 import 'dart:core';
+
 import 'package:breez/routes/user/connect_to_pay/animations/connected.dart';
 import 'package:breez/routes/user/connect_to_pay/animations/waiting_peer_connect.dart';
 import 'package:flutter/material.dart';

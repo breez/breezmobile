@@ -1,8 +1,8 @@
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
-import 'package:flutter/material.dart';
 import 'package:breez/widgets/static_loader.dart';
+import 'package:flutter/material.dart';
 
 class LNDBootstrapProgress extends StatelessWidget {
   

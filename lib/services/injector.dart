@@ -1,14 +1,15 @@
 import 'dart:async';
-import 'package:breez/services/breezlib/breez_bridge.dart';
+
 import 'package:breez/services/breez_server/server.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/currency_service.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/device.dart';
-import 'package:breez/services/notifications.dart';
+import 'package:breez/services/lightning_links.dart';
 import 'package:breez/services/nfc.dart';
+import 'package:breez/services/notifications.dart';
 import 'package:breez/services/permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:breez/services/lightning_links.dart';
-import 'package:breez/services/currency_service.dart';
 
 import 'background_task.dart';
 

@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:breez/bloc/pos_profile/pos_profile_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/injector.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:breez/logger.dart';
 
 class POSProfileBloc {
 

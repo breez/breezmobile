@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:breez/widgets/fixed_sliver_delegate.dart';
-import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/calendar_dialog.dart';
+import 'package:breez/widgets/fixed_sliver_delegate.dart';
+import 'package:flutter/material.dart';
 
 class PaymentFilterSliver extends StatefulWidget {
 

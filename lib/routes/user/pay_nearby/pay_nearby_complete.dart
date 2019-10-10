@@ -1,14 +1,15 @@
+import 'dart:async';
+
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'dart:async';
 
 class PayNearbyComplete extends StatefulWidget {  
   PayNearbyComplete();

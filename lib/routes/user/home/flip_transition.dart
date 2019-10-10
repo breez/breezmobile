@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
+
+import 'package:flutter/material.dart';
 
 class FlipTransition extends StatefulWidget {
   final Widget firstChild;

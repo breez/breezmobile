@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter/material.dart';
 
 class PosPaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;

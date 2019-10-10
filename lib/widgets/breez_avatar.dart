@@ -1,7 +1,7 @@
-import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/bloc/user_profile/default_profile_generator.dart' as generator;
+import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter/material.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
 
 final _breezAvatarColors = {
   "salmon": Color(0xFFFA8072),

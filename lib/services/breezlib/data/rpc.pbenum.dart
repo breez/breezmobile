@@ -6,6 +6,7 @@
 
 // ignore_for_file: UNDEFINED_SHOWN_NAME,UNUSED_SHOWN_NAME
 import 'dart:core' as $core show int, dynamic, String, List, Map;
+
 import 'package:protobuf/protobuf.dart' as $pb;
 
 class SwapError extends $pb.ProtobufEnum {

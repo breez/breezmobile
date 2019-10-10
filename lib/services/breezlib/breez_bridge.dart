@@ -1,7 +1,7 @@
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
+
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/lnd_bootstrapper.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';

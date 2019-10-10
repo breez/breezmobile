@@ -1,14 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 
-import 'package:breez/widgets/animated_loader_dialog.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/services/injector.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/animated_loader_dialog.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/error_dialog.dart';
+import 'package:flutter/material.dart';
 
 class _NetworkData {
   String peer = '';

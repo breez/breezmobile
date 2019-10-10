@@ -1,13 +1,14 @@
 import 'dart:async';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:flutter/material.dart';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/pos/transactions/pos_payments_list.dart';
-import 'package:breez/widgets/calendar_dialog.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/calendar_dialog.dart';
+import 'package:flutter/material.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 

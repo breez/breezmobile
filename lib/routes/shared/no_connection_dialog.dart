@@ -1,12 +1,12 @@
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/services/injector.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'dart:io';
 
+import 'package:breez/bloc/account/account_actions.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/error_dialog.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
 void listenNoConnection(BuildContext context, AccountBloc accountBloc) {

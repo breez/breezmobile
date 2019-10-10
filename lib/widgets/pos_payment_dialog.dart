@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'package:breez/widgets/compact_qr_image.dart';
-import 'package:breez/services/countdown.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
+
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/pos_profile/pos_profile_model.dart';
 import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
+import 'package:breez/bloc/pos_profile/pos_profile_model.dart';
+import 'package:breez/services/countdown.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/compact_qr_image.dart';
+import 'package:flutter/material.dart';
 
 enum _PosPaymentState { WAITING_FOR_PAYMENT, PAYMENT_RECEIVED }
 

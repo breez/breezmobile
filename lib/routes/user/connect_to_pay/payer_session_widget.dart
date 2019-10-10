@@ -4,12 +4,12 @@ import 'package:breez/bloc/connect_pay/payer_session.dart';
 import 'package:breez/routes/user/connect_to_pay/payment_details_form.dart';
 import 'package:breez/routes/user/connect_to_pay/peers_connection.dart';
 import 'package:breez/routes/user/connect_to_pay/session_instructions.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/delay_render.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class PayerSessionWidget extends StatelessWidget {
   final PayerRemoteSession _currentSession;

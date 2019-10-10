@@ -1,18 +1,19 @@
 import 'dart:async';
+
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/services/injector.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/device.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/services/lightning_links.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/bip21.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:breez/services/lightning_links.dart';
-import 'package:breez/services/device.dart';
+import 'package:rxdart/rxdart.dart';
 
 class InvoiceBloc {
 
