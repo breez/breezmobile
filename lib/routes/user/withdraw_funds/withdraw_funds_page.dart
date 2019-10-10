@@ -269,9 +269,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: new Image.asset(
-                'src/images/breez_loader.gif',
-                colorBlendMode: BlendMode.modulate,
-                color: Theme.of(context).backgroundColor,
+                Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? 'src/images/breez_loader.gif' : 'src/images/breez_loader_dark.gif',
                 gaplessPlayback: true,
               ))
         ],

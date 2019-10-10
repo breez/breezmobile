@@ -197,10 +197,10 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
                 textAlign: TextAlign.center,
               ),
               Image.asset(
-                'src/images/breez_loader.gif',
-                colorBlendMode: BlendMode.modulate,
+                Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? 'src/images/breez_loader.gif' : 'src/images/breez_loader_dark.gif',
                 height: 64.0,
-                color: colorAnimation?.value ?? Theme.of(context).backgroundColor,
+                colorBlendMode: Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? BlendMode.multiply : BlendMode.color,
+                color: colorAnimation?.value ?? Colors.transparent,
                 gaplessPlayback: true,
               )
             ],
