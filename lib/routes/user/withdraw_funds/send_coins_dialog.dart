@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/send_onchain.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class SendCoinsDialog extends StatelessWidget {
   final AccountBloc accountBloc;
