@@ -5,6 +5,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/send_onchain.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 class SendCoinsDialog extends StatelessWidget {
   final AccountBloc accountBloc;
@@ -61,9 +62,7 @@ class SendCoinsDialog extends StatelessWidget {
           Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: new Image.asset(
-                'src/images/breez_loader.gif',
-                colorBlendMode: BlendMode.modulate,
-                color: Theme.of(context).backgroundColor,
+                theme.customData[theme.themeId].loaderAssetPath,
                 gaplessPlayback: true,
               ))
         ],

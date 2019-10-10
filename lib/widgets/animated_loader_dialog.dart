@@ -15,10 +15,8 @@ AlertDialog createAnimatedLoaderDialog(BuildContext context, String text, {bool 
             textAlign: TextAlign.center,
           ),
           new Image.asset(
-            'src/images/breez_loader.gif',
+            Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? 'src/images/breez_loader_blue.gif' : 'src/images/breez_loader_dark.gif',
             height: 64.0,
-            colorBlendMode: BlendMode.modulate,
-            color: Theme.of(context).backgroundColor,
             gaplessPlayback: true,
           ),
           Row(
