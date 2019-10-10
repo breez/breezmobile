@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
+
 import 'loading_animated_text.dart';
 
 AlertDialog createAnimatedLoaderDialog(BuildContext context, String text, {bool withOKButton = true}){
@@ -11,13 +11,14 @@ AlertDialog createAnimatedLoaderDialog(BuildContext context, String text, {bool 
         children: <Widget>[
           new LoadingAnimatedText(
             text,
-            textStyle: theme.alertStyle,
+            textStyle: Theme.of(context).dialogTheme.contentTextStyle,
             textAlign: TextAlign.center,
           ),
           new Image.asset(
             'src/images/breez_loader.gif',
             height: 64.0,
-            colorBlendMode: BlendMode.multiply,
+            colorBlendMode: BlendMode.modulate,
+            color: Theme.of(context).backgroundColor,
             gaplessPlayback: true,
           ),
           Row(
@@ -25,7 +26,7 @@ AlertDialog createAnimatedLoaderDialog(BuildContext context, String text, {bool 
             mainAxisSize: MainAxisSize.max,
             children: withOKButton ? <Widget>[
               FlatButton(
-                child: Text('OK', style: theme.buttonStyle),
+                child: Text('OK', style: Theme.of(context).primaryTextTheme.button),
                 onPressed: () {
                   Navigator.pop(context, false);
                 },
@@ -34,7 +35,5 @@ AlertDialog createAnimatedLoaderDialog(BuildContext context, String text, {bool 
           )
         ],
       ),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
 }

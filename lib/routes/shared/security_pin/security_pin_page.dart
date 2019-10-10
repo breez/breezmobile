@@ -12,7 +12,6 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:duration/duration.dart';
@@ -71,14 +70,14 @@ class SecurityPageState extends State<SecurityPage> {
                 }
                 return Scaffold(
                   appBar: new AppBar(
-                      iconTheme: theme.appBarIconTheme,
-                      textTheme: theme.appBarTextTheme,
-                      backgroundColor: theme.BreezColors.blue[500],
+                      iconTheme: Theme.of(context).appBarTheme.iconTheme,
+                      textTheme: Theme.of(context).appBarTheme.textTheme,
+                      backgroundColor: Theme.of(context).canvasColor,
                       automaticallyImplyLeading: false,
                       leading: backBtn.BackButton(),
                       title: new Text(
                         _title,
-                        style: theme.appBarTextStyle,
+                        style: Theme.of(context).appBarTheme.textTheme.title,
                       ),
                       elevation: 0.0),
                   body: ListView(
@@ -113,11 +112,12 @@ class SecurityPageState extends State<SecurityPage> {
         ..add(Divider())
         ..add(_buildPINIntervalTile(securityModel, backupSettings))
         ..add(Divider())
-        ..add(_buildChangePINTile(securityModel, backupSettings))
-        ..add(Divider());
+        ..add(_buildChangePINTile(securityModel, backupSettings));
     }
-    _tiles..add(_buildBackupProviderTitle(securityModel, backupSettings));
-    _tiles..add(_buildGenerateBackupPhraseTile(securityModel, backupSettings));
+    _tiles..add(Divider())
+          ..add(_buildBackupProviderTitle(securityModel, backupSettings))
+          ..add(Divider())
+          ..add(_buildGenerateBackupPhraseTile(securityModel, backupSettings));
     return _tiles;
   }
 
@@ -314,68 +314,47 @@ class SecurityPageState extends State<SecurityPage> {
       if (newPIN != null) {
         var updatePinAction = UpdatePinCode(newPIN);
         widget.userProfileBloc.userActionsSink.add(updatePinAction);
-        updatePinAction.future
-            .then((_) => _updateSecurityModel(securityModel,
-                securityModel.copyWith(requiresPin: true), backupSettings,
-                pinCodeChanged: true))
-            .catchError((err) {
-          promptError(
-              context,
-              "Internal Error",
-              Text(
-                err.toString(),
-                style: theme.alertStyle,
-              ));
-        });
+        updatePinAction.future.then((_) =>
+          _updateSecurityModel(securityModel, securityModel.copyWith(requiresPin: true), backupSettings, pinCodeChanged: true))
+          .catchError((err){
+            promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
+          });
       }
     });
   }
 
-  Future _updateSecurityModel(SecurityModel oldModel, SecurityModel newModel,
-      BackupSettings backupSettings,
-      {bool pinCodeChanged = false}) async {
-    _screenLocked = false;
-    var action = UpdateSecurityModel(newModel);
-    widget.userProfileBloc.userActionsSink.add(action);
-    action.future.then((_) {
-      //(newModel.backupKeyType != oldModel.backupKeyType) ||
-      if ((backupSettings.backupKeyType == BackupKeyType.PIN &&
-          pinCodeChanged)) {
-        triggerBackup();
-      }
-    }).catchError((err) {
-      promptError(
-          context,
-          "Internal Error",
-          Text(
-            err.toString(),
-            style: theme.alertStyle,
-          ));
-    });
+  Future _updateSecurityModel(
+    SecurityModel oldModel, SecurityModel newModel,
+    BackupSettings backupSettings, {bool pinCodeChanged = false}) async {
+      _screenLocked = false;
+      var action = UpdateSecurityModel(newModel);
+      widget.userProfileBloc.userActionsSink.add(action);
+      action.future.then((_) {
+        //(newModel.backupKeyType != oldModel.backupKeyType) ||
+        if ((backupSettings.backupKeyType == BackupKeyType.PIN && pinCodeChanged)) {
+          triggerBackup();
+        }
+      })
+      .catchError((err){
+        promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
+      });
   }
 
   Future _updateBackupSettings(
-      BackupSettings oldBackupSettings, BackupSettings newBackupSettings,
-      {bool pinCodeChanged = false}) async {
-    _screenLocked = false;
-    var action = UpdateBackupSettings(newBackupSettings);
-    widget.backupBloc.backupActionsSink.add(action);
-    action.future.then((_) {
-      //(newModel.backupKeyType != oldModel.backupKeyType) ||
-      if ((oldBackupSettings.backupKeyType != newBackupSettings.backupKeyType ||
-          oldBackupSettings.backupProvider !=
-              newBackupSettings.backupProvider)) {
-        triggerBackup();
-      }
-    }).catchError((err) {
-      promptError(
-          context,
-          "Internal Error",
-          Text(
-            err.toString(),
-            style: theme.alertStyle,
-          ));
-    });
+    BackupSettings oldBackupSettings, BackupSettings newBackupSettings, {bool pinCodeChanged = false}) async {
+      _screenLocked = false;
+      var action = UpdateBackupSettings(newBackupSettings);
+      widget.backupBloc.backupActionsSink.add(action);
+      action.future.then((_) {
+        //(newModel.backupKeyType != oldModel.backupKeyType) ||
+        if ((oldBackupSettings.backupKeyType != newBackupSettings.backupKeyType || 
+          oldBackupSettings.backupProvider != newBackupSettings.backupProvider)) {
+          triggerBackup();
+        }
+      })
+      .catchError((err){
+        promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
+      });
   }
 
   void triggerBackup() {

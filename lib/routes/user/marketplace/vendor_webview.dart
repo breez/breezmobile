@@ -8,7 +8,6 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/marketplace/webln_handlers.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
@@ -101,14 +100,14 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   Widget build(BuildContext context) {
     return new WebviewScaffold(
       appBar: new AppBar(
-        actions: <Widget>[IconButton(icon: new Icon(Icons.close), onPressed: () => Navigator.pop(context))],
+        actions: <Widget>[IconButton(icon: new Icon(Icons.close, color: Theme.of(context).iconTheme.color,), onPressed: () => Navigator.pop(context))],
         automaticallyImplyLeading: false,
-        iconTheme: theme.appBarIconTheme,
-        textTheme: theme.appBarTextTheme,
-        backgroundColor: theme.BreezColors.blue[500],
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         title: new Text(
           widget._title,
-          style: theme.appBarTextStyle,
+          style: Theme.of(context).appBarTheme.textTheme.title,
         ),
         elevation: 0.0,
       ),

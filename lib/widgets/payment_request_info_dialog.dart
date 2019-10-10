@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -14,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:image/image.dart' as DartImage;
 
-import 'form_keyboard_actions.dart';
 import 'keyboard_done_action.dart';
 
 class PaymentRequestInfoDialog extends StatefulWidget {
@@ -55,7 +52,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   }
 
   @override void dispose() {
-    _doneAction.dispose();    
+    _doneAction.dispose();
     super.dispose();
   }
 
@@ -74,7 +71,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             width: MediaQuery.of(context).size.width,
             constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
             child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: _paymentRequestDialog)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)));
+        );
   }
 
   Widget _buildPaymentRequestTitle() {
@@ -86,11 +83,13 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             child: Stack(
               children: <Widget>[
                 Center(
-                    child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                    theme.BreezColors.blue[500],
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).primaryTextTheme.button.color,
+                    ),
+                    backgroundColor: Theme.of(context).backgroundColor,
                   ),
-                )),
+                ),
                 Center(
                     child: ClipOval(
                   child: FadeInImage(
@@ -145,7 +144,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         ? null
         : Text(
             "${widget.invoice.payeeName}",
-            style: theme.paymentRequestTitleStyle,
+            style: Theme.of(context).primaryTextTheme.display1.copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );
   }
@@ -154,12 +153,12 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     return widget.invoice.payeeName == null || widget.invoice.payeeName.isEmpty
         ? new Text(
             "You are requested to pay:",
-            style: theme.paymentRequestSubtitleStyle,
+            style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           )
         : new Text(
             "is requesting you to pay:",
-            style: theme.paymentRequestSubtitleStyle,
+            style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );
   }
@@ -169,25 +168,25 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       return Theme(
         data: Theme.of(context).copyWith(
           inputDecorationTheme: InputDecorationTheme(enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide)),
-          hintColor: theme.alertStyle.color,
-          accentColor: theme.BreezColors.blue[500],
-          primaryColor: theme.BreezColors.blue[500],
-          errorColor: Colors.red),         
+          hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
+          accentColor: Theme.of(context).textTheme.button.color,
+          primaryColor: Theme.of(context).textTheme.button.color,
+          errorColor: Theme.of(context).primaryColor != Color.fromRGBO(255, 255, 255, 1.0) ? Theme.of(context).errorColor : Colors.red),
           child: Form(
             autovalidate: true,
             key: _formKey,
             child: Padding(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Container(                                        
+              child: Container(
                   height: 80.0,
                 child: AmountFormField(
                   context: context,
                   accountModel: account,
-                  iconColor: theme.BreezColors.blue[500],
+                  iconColor: Theme.of(context).primaryIconTheme.color,
                   focusNode: _amountFocusNode,
                   controller: _invoiceAmountController,
                   validatorFn: account.validateOutgoingPayment,
-                  style: theme.alertStyle.copyWith(height: 1.0),
+                  style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(height: 1.0),
                 ),
               ),
             ),
@@ -201,7 +200,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           _showFiatCurrency && account.fiatCurrency != null
               ? "${account.fiatCurrency.format(widget.invoice.amount)}"
               : account.currency.format(widget.invoice.amount),
-          style: theme.paymentRequestAmountStyle,
+          style: Theme.of(context).primaryTextTheme.headline,
           textAlign: TextAlign.center,
         ),
       ),
@@ -226,7 +225,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
             child: AutoSizeText(
               widget.invoice.description,
-              style: theme.paymentRequestSubtitleStyle,
+              style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
               textAlign: widget.invoice.description.length > 40 ? TextAlign.justify : TextAlign.center,
               maxLines: 3,
             ),
@@ -242,7 +241,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
       child: AutoSizeText(validationError,
-          maxLines: 3, textAlign: TextAlign.center, style: theme.paymentRequestSubtitleStyle.copyWith(color: Colors.red)),
+          maxLines: 3, textAlign: TextAlign.center, style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16, color: Theme.of(context).primaryColor != Color.fromRGBO(255, 255, 255, 1.0) ? Theme.of(context).errorColor : Colors.red)),
     );
   }
 
@@ -250,7 +249,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     List<Widget> actions = [
       SimpleDialogOption(
         onPressed: () => widget._onStateChange(PaymentRequestState.USER_CANCELLED),
-        child: new Text("CANCEL", style: theme.buttonStyle),
+        child: new Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
       )
     ];
 
@@ -271,15 +270,18 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             }
           }
         }),
-        child: new Text("APPROVE", style: theme.buttonStyle),
+        child: new Text("APPROVE", style: Theme.of(context).primaryTextTheme.button),
       ));
     }
-    return Padding(
-      padding: const EdgeInsets.only(top: 24.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: actions,
+    return Theme(
+      data: Theme.of(context).copyWith(splashColor: Colors.transparent, highlightColor: Colors.transparent),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 24.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: actions,
+        ),
       ),
     );
   }

@@ -46,10 +46,10 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     titlePadding: EdgeInsets.all(0.0),
     title: new Stack(children: <Widget>[
       new Container(
-        height: 70.0,        
+        height: 70.0,
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
-          color: theme.BreezColors.blue[900],
+          color: Theme.of(context).primaryColor == Color(0xFF7aa5eb) ? Theme.of(context).canvasColor : Theme.of(context).primaryColorDark,
         ),
       ),
       Container(
@@ -105,9 +105,9 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
       child: new ListBody(
         children: <Widget>[
           new Theme(
-            data: new ThemeData(primaryColor: theme.BreezColors.blue[900], hintColor: theme.BreezColors.blue[900]),
+            data: new ThemeData(primaryColor: Theme.of(context).primaryTextTheme.body1.color, hintColor: Theme.of(context).primaryTextTheme.body1.color),
             child: new TextField(
-                style: theme.avatarDialogStyle,
+                style: Theme.of(context).primaryTextTheme.body1,
                 controller: _nameInputController,
                 decoration: InputDecoration(hintText: 'Enter your name'),
                 onSubmitted: (text) {}),
@@ -117,13 +117,13 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     ),
     actions: <Widget>[
       new FlatButton(
-        child: new Text('CANCEL', style: theme.buttonStyle),
+        child: new Text('CANCEL', style: Theme.of(context).primaryTextTheme.button),
         onPressed: () {
           Navigator.of(context).pop();
         },
       ),
       new FlatButton(
-        child: new Text('SAVE', style: theme.buttonStyle),
+        child: new Text('SAVE', style: Theme.of(context).primaryTextTheme.button),
         onPressed: () {
           userBloc.userSink.add(_currentSettings.copyWith(name: _nameInputController.text));
           Navigator.of(context).pop();

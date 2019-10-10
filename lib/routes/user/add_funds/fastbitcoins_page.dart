@@ -1,22 +1,21 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
+
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
+import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/add_funds/fastbitcoins_confirm.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
-import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:barcode_scan/barcode_scan.dart';
 
 class FastbitcoinsPage extends StatefulWidget {
   @override
@@ -92,14 +91,14 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(),
           title: new Text(
             _title,
-            style: theme.appBarTextStyle,
+            style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0),
       body: new Padding(
@@ -260,9 +259,9 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                   child: new RaisedButton(
                     child: new Text(
                       "CALCULATE",
-                      style: theme.buttonStyle,
+                      style: Theme.of(context).textTheme.button,
                     ),
-                    color: theme.BreezColors.white[500],
+                    color: Theme.of(context).buttonColor,
                     elevation: 0.0,
                     shape: const StadiumBorder(),
                     onPressed: () {
@@ -322,7 +321,7 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
         Widget content = FastBitcoinsConfirmWidget(
             request: widget._voucherRequest, response: res, user: user);
         bool sure = await promptAreYouSure(context, "Confirm Order", content,
-            textStyle: theme.dialogBlackStye, okText: "CONFIRM", cancelText: "CANCEL",
+            textStyle: Theme.of(context).dialogTheme.contentTextStyle, okText: "CONFIRM", cancelText: "CANCEL",
             wideTitle: true,
             contentPadding: EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0));
         if (sure == true) {
@@ -336,7 +335,7 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
                 context,
                 "Redeem Voucher",
                 Text("Failed to redeem voucher: " + err.toString(),
-                    style: theme.alertStyle))
+                    style: Theme.of(context).dialogTheme.contentTextStyle))
             .whenComplete(() => popToForm());
       });
     });
@@ -351,7 +350,7 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
               context,
               "Redeem Voucher",
               Text("Failed to redeem voucher: " + err.toString(),
-                  style: theme.dialogBlackStye))
+                  style: Theme.of(context).dialogTheme.contentTextStyle))
           .whenComplete(() => popToForm());
     });
   }
@@ -403,12 +402,12 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
             text: TextSpan(children: <TextSpan>[
           TextSpan(
               text: "This voucher can be redeemed only in ",
-              style: theme.dialogBlackStye),
+              style: Theme.of(context).dialogTheme.contentTextStyle),
           _LinkTextSpan(
               text: "fastbitcoins.com ",
               url: "https://fastbitcoins.com",
               style: theme.blueLinkStyle),
-          TextSpan(text: "site.", style: theme.dialogBlackStye)
+          TextSpan(text: "site.", style: Theme.of(context).dialogTheme.contentTextStyle)
         ]))).whenComplete(() => popToForm());
   }
 }

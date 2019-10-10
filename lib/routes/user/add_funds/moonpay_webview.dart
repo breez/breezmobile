@@ -141,14 +141,14 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
 
     return WebviewScaffold(
       appBar: AppBar(
-        actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
+        actions: <Widget>[IconButton(icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color), onPressed: () => Navigator.pop(context))],
         automaticallyImplyLeading: false,
-        iconTheme: theme.appBarIconTheme,
-        textTheme: theme.appBarTextTheme,
-        backgroundColor: theme.BreezColors.blue[500],
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         title: Text(
           "MoonPay",
-          style: theme.appBarTextStyle,
+          style: Theme.of(context).appBarTheme.textTheme.title,
         ),
         elevation: 0.0,
       ),
@@ -169,14 +169,14 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
     return Material(
       child: Scaffold(
           appBar: AppBar(
-            actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context))],
+            actions: <Widget>[IconButton(icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color), onPressed: () => Navigator.pop(context))],
             automaticallyImplyLeading: false,
-            iconTheme: theme.appBarIconTheme,
-            textTheme: theme.appBarTextTheme,
-            backgroundColor: theme.BreezColors.blue[500],
+            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+            textTheme: Theme.of(context).appBarTheme.textTheme,
+            backgroundColor: Theme.of(context).canvasColor,
             title: Text(
               "MoonPay",
-              style: theme.appBarTextStyle,
+              style: Theme.of(context).appBarTheme.textTheme.title,
             ),
             elevation: 0.0,
           ),

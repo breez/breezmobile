@@ -71,7 +71,7 @@ class NetworkPageState extends State<NetworkPage> {
 
   Future<bool> _promptForRestart() {
     return promptAreYouSure(context, null,
-            Text("Please restart Breez to switch to the new Bitcoin Node configuration.", style: theme.alertStyle),
+            Text("Please restart Breez to switch to the new Bitcoin Node configuration.", style: Theme.of(context).dialogTheme.contentTextStyle),
             cancelText: "Cancel", okText: "Exit Breez")
         .then((shouldExit) {
       if (shouldExit) {
@@ -88,14 +88,14 @@ class NetworkPageState extends State<NetworkPage> {
         height: 28.0,
         child: new Scaffold(
           appBar: new AppBar(
-              iconTheme: theme.appBarIconTheme,
-              textTheme: theme.appBarTextTheme,
-              backgroundColor: theme.BreezColors.blue[500],
+              iconTheme: Theme.of(context).appBarTheme.iconTheme,
+              textTheme: Theme.of(context).appBarTheme.textTheme,
+              backgroundColor: Theme.of(context).canvasColor,
               automaticallyImplyLeading: false,
               leading: backBtn.BackButton(),
               title: new Text(
                 _title,
-                style: theme.appBarTextStyle,
+                style: Theme.of(context).appBarTheme.textTheme.title,
               ),
               elevation: 0.0),
           body: new Padding(
@@ -154,7 +154,7 @@ class NetworkPageState extends State<NetworkPage> {
                                         await promptError(
                                           context, null, 
                                           Text("Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
-                                          style: theme.alertStyle));
+                                          style: Theme.of(context).dialogTheme.contentTextStyle));
                                         return;
                                       } else {
                                         await _breezLib.setPeers([this._data.peer]);

@@ -31,77 +31,71 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-        title: new Text(
-          "On-chain Transaction",
-          style: theme.alertTitleStyle,
-        ),
-        contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
-        content: FutureBuilder(
-            future: this._fetchFuture,
-            initialData: "loading",
-            builder: (ctx, loadingSnapshot) {
-              if (loadingSnapshot.data == "loading") {
-                return Loader();
-              }
+      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+      title: new Text(
+        "On-chain Transaction",
+        style: Theme.of(context).dialogTheme.titleTextStyle,
+      ),
+      contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+      content: FutureBuilder(
+          future: this._fetchFuture,
+          initialData: "loading",
+          builder: (ctx, loadingSnapshot) {
+            if (loadingSnapshot.data == "loading") {
+              return Loader();
+            }
 
-              return StreamBuilder<AccountModel>(
-                  stream: widget.accountBloc.accountStream,
-                  builder: (ctx, snapshot) {
-                    var swapStatus = snapshot?.data?.swapFundsStatus;
-                    if (swapStatus == null) {
-                      return Loader();
-                    }
-                    
-                    String reason = "";                    
-                    RefundableAddress swapAddress = swapStatus.refundableAddresses[0];
-                    int lockHeight = swapAddress.lockHeight;
-                    double hoursToUnlock = swapAddress.hoursToUnlock;
-                    if (swapAddress.refundableError != null) {                      
-                      reason = "since " + swapAddress.refundableError;
-                    }
+            return StreamBuilder<AccountModel>(
+                stream: widget.accountBloc.accountStream,
+                builder: (ctx, snapshot) {
+                  var swapStatus = snapshot?.data?.swapFundsStatus;
+                  if (swapStatus == null) {
+                    return Loader();
+                  }
 
-                    int roundedHoursToUnlock = hoursToUnlock.round();
-                    String hoursToUnlockStr = roundedHoursToUnlock > 1
-                        ? "~${roundedHoursToUnlock.toString()} hours"
-                        : "in about an hour";
-                    List<TextSpan> redeemText = List<TextSpan>();
-                    if (hoursToUnlock > 0) {
-                      redeemText.add(TextSpan(
-                          text:
-                              "You will be able to redeem your funds after block $lockHeight ($hoursToUnlockStr).",
-                          style: theme.dialogGrayStyle));
-                    } else {
-                      redeemText.addAll([
-                        TextSpan(
-                            text: "You can ", style: theme.dialogGrayStyle),
-                        TextSpan(
-                            text: "get a refund ",
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () async {
-                                Navigator.pop(context);
-                                Navigator.pushNamed(context, "/get_refund");
-                              },
-                            style: theme.blueLinkStyle),
-                        TextSpan(text: "now.", style: theme.dialogGrayStyle),
-                      ]);
-                    }
+                  String reason = "";
+                  RefundableAddress swapAddress = swapStatus.refundableAddresses[0];
+                  int lockHeight = swapAddress.lockHeight;
+                  double hoursToUnlock = swapAddress.hoursToUnlock;
+                  if (swapAddress.refundableError != null) {
+                    reason = "since " + swapAddress.refundableError;
+                  }
 
-                    return RichText(
-                        text: TextSpan(
-                            style: theme.dialogGrayStyle,
-                            text:
-                                "Breez was not able to transfer the funds to your balance $reason\n",
-                            children: redeemText));
-                  });              
-            }),
-        actions: [
-          new SimpleDialogOption(
-            onPressed: () => Navigator.pop(context),
-            child: new Text("OK", style: theme.buttonStyle),
-          )
-        ],
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12.0))),);
+                  int roundedHoursToUnlock = hoursToUnlock.round();
+                  String hoursToUnlockStr = roundedHoursToUnlock > 1 ? "~${roundedHoursToUnlock.toString()} hours" : "in about an hour";
+                  List<TextSpan> redeemText = List<TextSpan>();
+                  if (hoursToUnlock > 0) {
+                    redeemText.add(TextSpan(
+                        text: "You will be able to redeem your funds after block $lockHeight ($hoursToUnlockStr).",
+                        style: Theme.of(context).dialogTheme.contentTextStyle));
+                  } else {
+                    redeemText.addAll([
+                      TextSpan(text: "You can ", style: Theme.of(context).dialogTheme.contentTextStyle),
+                      TextSpan(
+                          text: "get a refund ",
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(context, "/get_refund");
+                            },
+                          style: theme.blueLinkStyle),
+                      TextSpan(text: "now.", style: Theme.of(context).dialogTheme.contentTextStyle),
+                    ]);
+                  }
+
+                  return RichText(
+                      text: TextSpan(
+                          style: Theme.of(context).dialogTheme.contentTextStyle,
+                          text: "Breez was not able to transfer the funds to your balance $reason\n",
+                          children: redeemText));
+                });
+          }),
+      actions: [
+        new SimpleDialogOption(
+          onPressed: () => Navigator.pop(context),
+          child: new Text("OK", style: Theme.of(context).primaryTextTheme.button),
+        )
+      ],
+    );
   }
 }

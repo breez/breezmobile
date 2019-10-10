@@ -40,7 +40,7 @@ class FloatingActionsBar extends StatelessWidget {
             shape: isSmallView
                 ? new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(56.0))
                 : new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(42.0)),
-            color: Color.fromRGBO(0, 133, 251, 1.0),
+            color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
             padding: isSmallView ? EdgeInsets.all(16.0) : EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
             child: Row(
               mainAxisSize: MainAxisSize.min,

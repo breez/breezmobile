@@ -1,20 +1,20 @@
 import 'dart:async';
+
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/form_keyboard_actions.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
-import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/injector.dart';
 
 class WithdrawFundsPage extends StatefulWidget {
 
@@ -81,7 +81,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           Navigator.of(context).pop(); //remove the loading dialog
           if (response.errorMessage?.isNotEmpty == true) {
             promptError(context, null,
-                Text(response.errorMessage, style: theme.alertStyle));
+                Text(response.errorMessage, style: Theme.of(context).dialogTheme.contentTextStyle));
             return;
           }
           Navigator.of(context).pop(
@@ -91,7 +91,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
             _inProgress = false;
           });
           Navigator.of(context).pop(); //remove the loading dialog
-          promptError(context, null, Text(err.toString(), style: theme.alertStyle));
+          promptError(context, null, Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle));
       });
   }
 
@@ -114,9 +114,9 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                         child: RaisedButton(
                           child: new Text(
                             "REMOVE",
-                            style: theme.buttonStyle,
+                            style: Theme.of(context).textTheme.button,
                           ),
-                          color: Colors.white,
+                          color: Theme.of(context).buttonColor,
                           elevation: 0.0,
                           shape: new RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(42.0)),
@@ -135,11 +135,11 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                     ]));
           }),
       appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(),
-          title: new Text(_title, style: theme.appBarTextStyle),
+          title: new Text(_title, style: Theme.of(context).appBarTheme.textTheme.title),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
         stream: _accountBloc.accountStream,
@@ -227,11 +227,11 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           "Are you sure you want to remove " +
               currency.format(currency.parse(_amountController.text)) +
               " from Breez and send this amount to the address you've specified?",
-          style: theme.alertStyle),
+          style: Theme.of(context).dialogTheme.contentTextStyle),
       actions: <Widget>[
         new FlatButton(
             onPressed: () => Navigator.pop(context),
-            child: new Text("NO", style: theme.buttonStyle)),
+            child: new Text("NO", style: Theme.of(context).primaryTextTheme.button)),
         new FlatButton(
             onPressed: () {
               Navigator.pop(context);
@@ -241,10 +241,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                   _addressValidated                  
                 ));
             },
-            child: new Text("YES", style: theme.buttonStyle))
+            child: new Text("YES", style: Theme.of(context).primaryTextTheme.button))
       ],
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(context: context, builder: (_) => dialog);
   }
@@ -256,7 +254,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     AlertDialog dialog = new AlertDialog(
       title: Text(
         "Removing Funds",
-        style: theme.alertTitleStyle,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
         textAlign: TextAlign.center,
       ),
       content: Column(
@@ -265,19 +263,19 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
         children: <Widget>[
           new Text(
             "Please wait while Breez is sending the funds to the specified address.",
-            style: theme.alertStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
             textAlign: TextAlign.center,
           ),
           Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: new Image.asset(
                 'src/images/breez_loader.gif',
+                colorBlendMode: BlendMode.modulate,
+                color: Theme.of(context).backgroundColor,
                 gaplessPlayback: true,
               ))
         ],
       ),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(
         context: context,

@@ -1,7 +1,7 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 Future<Null> promptError(BuildContext context, String title, Widget body,
     {String okText = "OK",
@@ -24,7 +24,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                 ? null
                 : new Text(
                     title,
-                    style: theme.alertTitleStyle,
+                    style: Theme.of(context).dialogTheme.titleTextStyle,
                   ),
             content: new SingleChildScrollView(
               child: body,
@@ -38,7 +38,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                             fontFamily: "IBMPlexSansMedium",
                             fontSize: 16.4,
                             letterSpacing: 0.0,
-                            color: Colors.black),
+                            color: Theme.of(context).dialogTheme.titleTextStyle.color),
                       ),
                       onPressed: () {
                         canPop = true;
@@ -47,7 +47,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                     )
                   : null,
               new FlatButton(
-                child: new Text(okText, style: theme.buttonStyle),
+                child: new Text(okText, style: Theme.of(context).primaryTextTheme.button),
                 onPressed: () {
                   canPop = true;
                   Navigator.of(context).pop();
@@ -57,8 +57,6 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                 },
               ),
             ],
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12.0))),
           ),
         );
       });
@@ -71,7 +69,7 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
     String cancelText = "NO",
     TextStyle textStyle = const TextStyle(color: Colors.white)}) {
   
-  Widget titleWidget = title == null ? null : Text(title, style: theme.alertTitleStyle);
+  Widget titleWidget = title == null ? null : Text(title, style: Theme.of(context).dialogTheme.titleTextStyle);
   if (titleWidget != null && wideTitle) {
     titleWidget = Container(
       child: titleWidget,
@@ -83,27 +81,25 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return new AlertDialog(
-          contentPadding: contentPadding,          
+          contentPadding: contentPadding,
           title: titleWidget,
           content: new SingleChildScrollView(
             child: body,
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text(cancelText, style: theme.buttonStyle),              
+              child: new Text(cancelText, style: Theme.of(context).primaryTextTheme.button),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             new FlatButton(
-              child: new Text(okText, style: theme.buttonStyle),
+              child: new Text(okText, style: Theme.of(context).primaryTextTheme.button),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
             ),
           ],
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12.0))),
         );
       });
 }

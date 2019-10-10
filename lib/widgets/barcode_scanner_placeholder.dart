@@ -1,7 +1,6 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -23,9 +22,9 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
       theme: Theme.of(context).copyWith(backgroundColor: Colors.red, primaryColor: Colors.yellow, canvasColor: Colors.grey),
       home: Scaffold(
         appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
           title: GestureDetector(
             onTap: () {
               Clipboard.getData("text/plain").then((clipboardData) {
@@ -55,7 +54,7 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
               children: <Widget>[
                 Text(
                   "For QR scan, please grant Breez access to your camera.",
-                  style: theme.alertStyle.copyWith(
+                  style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
                     color: Colors.white,
                   ),
                   textAlign: TextAlign.center,

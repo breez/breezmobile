@@ -58,9 +58,9 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
 
     return Scaffold(
       appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(
             onPressed: () {
@@ -77,7 +77,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
           ),
           title: new Text(
             "Enter your backup phrase ($_currentPage/4)",
-            style: theme.appBarTextStyle,
+            style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0),
       body: SingleChildScrollView(
@@ -121,7 +121,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   _buildErrorMessage(String errorMessage) {
-    return Padding(padding: EdgeInsets.only(left: 16, right: 16), child: Text(errorMessage, style: theme.errorStyle));
+    return Padding(padding: EdgeInsets.only(left: 16, right: 16), child: Text(errorMessage, style: Theme.of(context).textTheme.caption.copyWith(fontSize: 12)));
   }
 
   TypeAheadFormField<String> _typeAheadFormField(int itemIndex) {
@@ -197,9 +197,9 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
           child: new RaisedButton(
             child: new Text(
               _currentPage + 1 == 5 ? "RESTORE" : "NEXT",
-              style: theme.buttonStyle,
+              style: Theme.of(context).textTheme.button,
             ),
-            color: theme.BreezColors.white[500],
+            color: Theme.of(context).buttonColor,
             elevation: 0.0,
             shape: const StadiumBorder(),
             onPressed: () {

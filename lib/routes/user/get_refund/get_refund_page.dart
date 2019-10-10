@@ -2,13 +2,12 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/user/get_refund/wait_broadcast_dialog.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/send_onchain.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class GetRefundPage extends StatelessWidget {
   static const String TITLE = "Get Refund";
@@ -18,11 +17,11 @@ class GetRefundPage extends StatelessWidget {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return new Scaffold(
       appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(),
-          title: new Text(TITLE, style: theme.appBarTextStyle),
+          title: new Text(TITLE, style: Theme.of(context).appBarTheme.textTheme.title),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,

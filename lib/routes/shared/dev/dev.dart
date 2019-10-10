@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
@@ -7,23 +8,21 @@ import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/services/permissions.dart';
-import 'package:breez/utils/date.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:flutter/material.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/routes/shared/dev/default_commands.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/services/permissions.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/loader.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/gestures.dart';
-import 'package:breez/routes/shared/dev/default_commands.dart';
-import 'package:archive/archive_io.dart';
 
 final _cliInputController = TextEditingController();
 final FocusNode _cliEntryFocusNode = FocusNode();
@@ -129,20 +128,22 @@ class DevViewState extends State<DevView> {
                         return new Scaffold(
                           key: _scaffoldKey,
                           appBar: new AppBar(
-                            iconTheme: theme.appBarIconTheme,
-                            textTheme: theme.appBarTextTheme,
-                            backgroundColor: theme.BreezColors.blue[500],
+                            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+                            textTheme: Theme.of(context).appBarTheme.textTheme,
+                            backgroundColor: Theme.of(context).canvasColor,
                             leading: backBtn.BackButton(),
                             elevation: 0.0,
                             actions: <Widget>[
                               PopupMenuButton<Choice>(
                                 onSelected: widget._select,
+                                color: Theme.of(context).backgroundColor,
+                                icon: Icon(Icons.more_vert, color: Theme.of(context).iconTheme.color,),
                                 itemBuilder: (BuildContext context) {
                                   return getChoices(accBloc, settingsSnapshot.data, account, addFundsBloc, addFundsSettingsSnapshot.data)
                                       .map((Choice choice) {
                                     return PopupMenuItem<Choice>(
                                       value: choice,
-                                      child: Text(choice.title),
+                                      child: Text(choice.title, style: Theme.of(context).textTheme.button),
                                     );
                                   }).toList();
                                 },
@@ -150,7 +151,7 @@ class DevViewState extends State<DevView> {
                             ],
                             title: new Text(
                               "Developers",
-                              style: theme.appBarTextStyle,
+                              style: Theme.of(context).appBarTheme.textTheme.title,
                             ),
                           ),
                           body: new Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: <Widget>[
@@ -388,7 +389,7 @@ class DevViewState extends State<DevView> {
 
   Future _promptForRestart() {
     return promptAreYouSure(context, null,
-            Text("Please restart to resynchronize Breez.", style: theme.alertStyle),
+            Text("Please restart to resynchronize Breez.", style: Theme.of(context).dialogTheme.contentTextStyle),
             cancelText: "Cancel", okText: "Exit Breez")
         .then((shouldExit) {
       if (shouldExit) {

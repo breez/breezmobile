@@ -29,7 +29,7 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
     widget._controller.addListener(onScroll);
   }
 
-  @override 
+  @override
   void dispose() {
     widget._controller.removeListener(onScroll);
     super.dispose();
@@ -51,7 +51,7 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
         delegate: new FixedSliverDelegate(!_hasNoFilter ? widget._maxSize : (scrollOffset).clamp(widget._minSize, widget._maxSize),
             builder: (context, shrinkedHeight, overlapContent) {
           return Container(
-              decoration: BoxDecoration(color: theme.BreezColors.blue[500]),
+              decoration: BoxDecoration(color: Theme.of(context).canvasColor),
               height: widget._maxSize,
               child: AnimatedOpacity(
                   duration: Duration(milliseconds: 100),
@@ -114,26 +114,29 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       ),
     );
     children.add(
-      new DropdownButtonHideUnderline(
-        child: ButtonTheme(
-          alignedDropdown: true,
-          child: new DropdownButton(
-              value: _filter,
-              style: theme.transactionTitleStyle,
-              items: <String>['All Activities', 'Sent', 'Received'].map((String value) {
-                return new DropdownMenuItem<String>(
-                  value: value,
-                  child: new Text(
-                    value,
-                  ),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _filter = value;
-                });
-                widget._accountBloc.paymentFilterSink.add(widget._paymentsModel.filter.copyWith(filter: _getFilterType(_filter)));
-              }),
+      Theme(
+        data: Theme.of(context).backgroundColor != theme.transactionTitleStyle.color ? Theme.of(context).copyWith(canvasColor: Theme.of(context).backgroundColor) : Theme.of(context),
+        child:  DropdownButtonHideUnderline(
+          child: ButtonTheme(
+            alignedDropdown: true,
+            child: new DropdownButton(
+                value: _filter,
+                style: theme.transactionTitleStyle,
+                items: <String>['All Activities', 'Sent', 'Received'].map((String value) {
+                  return new DropdownMenuItem<String>(
+                    value: value,
+                    child: new Text(
+                      value,
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _filter = value;
+                  });
+                  widget._accountBloc.paymentFilterSink.add(widget._paymentsModel.filter.copyWith(filter: _getFilterType(_filter)));
+                }),
+          ),
         ),
       ),
     );

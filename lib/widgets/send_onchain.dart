@@ -61,25 +61,26 @@ class SendOnchainState extends State<SendOnchain> {
     return Theme(
       data: Theme.of(context).copyWith(
         inputDecorationTheme: InputDecorationTheme(enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide)),
-          hintColor: theme.alertStyle.color,
-          accentColor: theme.BreezColors.blue[500],
-          primaryColor: theme.BreezColors.blue[500],
+          hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
+          accentColor: Theme.of(context).textTheme.button.color,
+          primaryColor: Theme.of(context).textTheme.button.color,
           unselectedWidgetColor: Theme.of(context).canvasColor,
           errorColor: Colors.red),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-            iconTheme: theme.appBarIconTheme,
-            textTheme: theme.appBarTextTheme,
+            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+            textTheme: Theme.of(context).appBarTheme.textTheme,
             automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
             actions: <Widget>[
               IconButton(
                   onPressed: () => Navigator.pop(context),
+                  // Color needs to be changed
                   icon: Icon(Icons.close, color: theme.BreezColors.grey[600]))
             ],
             title: new Text(widget._title,
-                style: theme.alertTitleStyle, textAlign: TextAlign.left),
+                style: Theme.of(context).dialogTheme.titleTextStyle, textAlign: TextAlign.left),
             elevation: 0.0),
         bottomNavigationBar: BottomAppBar(
           color: Colors.white,
@@ -103,7 +104,9 @@ class SendOnchainState extends State<SendOnchain> {
                         }
                       });
                     },
-                    child: Text("BROADCAST", style: theme.buttonStyle))
+                    child: Text("BROADCAST", style: Theme.of(context).textTheme.button,),
+                    color: Theme.of(context).buttonColor,
+                  )
                 ]),
           ),
         ),
@@ -134,7 +137,7 @@ class SendOnchainState extends State<SendOnchain> {
                               alignment: Alignment.bottomRight,
                               icon: new Image(
                                 image: new AssetImage("src/icon/qr_scan.png"),
-                                color: theme.alertStyle.color,
+                                color: Theme.of(context).dialogTheme.contentTextStyle.color,
                                 fit: BoxFit.contain,
                                 width: 24.0,
                                 height: 24.0,
@@ -143,7 +146,7 @@ class SendOnchainState extends State<SendOnchain> {
                               onPressed: _scanBarcode,
                             ),
                           ),
-                          style: theme.alertStyle,
+                          style: Theme.of(context).dialogTheme.contentTextStyle,
                           validator: (value) {
                             if (_addressValidated == null) {
                               return "Please enter a valid BTC Address";
@@ -165,7 +168,7 @@ class SendOnchainState extends State<SendOnchain> {
                             keyboardType: TextInputType.number,
                             decoration: new InputDecoration(
                                 labelText: "Sat Per Byte Fee Rate"),
-                            style: theme.alertStyle,
+                            style: Theme.of(context).dialogTheme.contentTextStyle,
                             validator: (value) {
                               if (_feeController.text.isEmpty) {
                                 return "Please enter a valid fee rate";
@@ -189,11 +192,11 @@ class SendOnchainState extends State<SendOnchain> {
   Widget _buildAvailableBTC(AccountModel acc) {
     return new Row(
       children: <Widget>[
-        new Text("Amount:", style: theme.alertStyle),
+        new Text("Amount:", style: Theme.of(context).dialogTheme.contentTextStyle),
         new Padding(
           padding: EdgeInsets.only(left: 3.0),
           child: new Text(acc.currency.format(widget._amount),
-              style: theme.alertStyle),
+              style: Theme.of(context).dialogTheme.contentTextStyle),
         )
       ],
     );

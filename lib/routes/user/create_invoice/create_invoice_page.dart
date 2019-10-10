@@ -90,9 +90,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                     return RaisedButton(
                       child: new Text(
                         "CREATE",
-                        style: theme.buttonStyle,
+                        style: Theme.of(context).textTheme.button,
                       ),
-                      color: Colors.white,
+                      color: Theme.of(context).buttonColor,
                       elevation: 0.0,
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(42.0)),
@@ -118,11 +118,11 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             )
           ])),
       appBar: new AppBar(
-        iconTheme: theme.appBarIconTheme,
-        textTheme: theme.appBarTextTheme,
-        backgroundColor: theme.BreezColors.blue[500],
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
-        title: new Text(_title, style: theme.appBarTextStyle),
+        title: new Text(_title, style: Theme.of(context).appBarTheme.textTheme.title),
         elevation: 0.0,
       ),
       body: StreamBuilder<AccountModel>(
@@ -196,7 +196,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                 Text(
                                   message,
                                   textAlign: TextAlign.center,
-                                  style: theme.warningStyle,
+                                  style: theme.warningStyle.copyWith(color: Theme.of(context).errorColor),
                                 ),
                               ]));
                         } else {

@@ -75,7 +75,7 @@ class FullScreenLoader extends StatelessWidget {
             right: 25.0,
             height: 30.0,
             width: 30.0,
-            child: IconButton(color: Colors.white, onPressed: () => this.onClose(), icon: Icon(Icons.close)),
+            child: IconButton(color: Colors.white, onPressed: () => this.onClose(), icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color)),
           ) : SizedBox(),
         ],
       ),

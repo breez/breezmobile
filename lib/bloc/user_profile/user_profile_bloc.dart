@@ -70,7 +70,8 @@ class UserProfileBloc {
     _actionHandlers = {
       UpdateSecurityModel: _updateSecurityModelAction,
       UpdatePinCode: _updatePinCode,
-      ValidatePinCode: _validatePinCode,      
+      ValidatePinCode: _validatePinCode,
+      ChangeTheme: _changeThemeAction,
     };
     print ("UserProfileBloc started");
 
@@ -189,6 +190,15 @@ class UserProfileBloc {
   Future _updateSecurityModel(UpdateSecurityModel updateSecurityModelAction) async {        
     _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
+  }
+
+  Future _changeThemeAction(ChangeTheme action) async {
+    action.resolve(await _changeTheme(action));
+  }
+
+  Future _changeTheme(ChangeTheme action) async {
+    _saveChanges(await _preferences, _currentUser.copyWith(themeId: action.newTheme));
+    return action.newTheme;
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {

@@ -1,4 +1,3 @@
-import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
 class BackupPhraseWarningDialog extends StatefulWidget {
@@ -18,7 +17,7 @@ class _BackupPhraseWarningDialogState extends State<BackupPhraseWarningDialog> {
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
         child: new Text(
           "Your existing backup phrase will no longer be valid and a new one will be generated next time you decide to use a backup phrase. Are you sure you don't want to use a backup phrase?",
-          style: theme.paymentRequestSubtitleStyle,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
       ),
     ];
@@ -42,14 +41,13 @@ class _BackupPhraseWarningDialogState extends State<BackupPhraseWarningDialog> {
           actions: [
             new FlatButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: new Text("NO", style: theme.buttonStyle),
+              child: new Text("NO", style: Theme.of(context).primaryTextTheme.button),
             ),
             new FlatButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: new Text("YES", style: theme.buttonStyle),
+              child: new Text("YES", style: Theme.of(context).primaryTextTheme.button),
             ),
           ],
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
         ));
   }
 }

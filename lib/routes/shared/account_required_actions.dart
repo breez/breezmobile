@@ -1,21 +1,18 @@
+import 'dart:async';
+
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/funds_over_limit_dialog.dart';
-import 'package:breez/widgets/backup_provider_selection_dialog.dart';
-import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/rotator.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:breez/widgets/enable_backup_dialog.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 import 'backup_in_progress_dialog.dart';
 import 'transfer_funds_in_progress_dialog.dart';
@@ -95,7 +92,7 @@ class AccountRequiredActionsIndicatorState
             builder: dialogBuilder
           );
         },
-        iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
+        iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Theme.of(context).appBarTheme.actionsIconTheme.color)),
       );
     }
 
@@ -128,14 +125,14 @@ class AccountRequiredActionsIndicatorState
                           bool signInNeeded = false;
                           if (backupSnapshot.error.runtimeType == BackupFailedException) {
                             signInNeeded = (backupSnapshot.error as BackupFailedException).authenticationError;
-                          }                         
-                          warnings.add(WarningAction(() async {                                                        
+                          }
+                          warnings.add(WarningAction(() async {
                               showDialog(
                                 barrierDismissible: false,
                                 context: context,
                                 builder: (_) => new EnableBackupDialog(
-                                    context, widget._backupBloc, signInNeeded: signInNeeded));                              
-                            }));                          
+                                    context, widget._backupBloc, signInNeeded: signInNeeded));
+                            }));
                         }
 
                         var loaderIcon = _buildLoader(backupSnapshot.data, accountSnapshot.data);
@@ -149,7 +146,7 @@ class AccountRequiredActionsIndicatorState
                         var shouldWarnRefund = swapStatus != null &&
                           swapStatus.refundableAddresses.where((r) => r.lastRefundTxID.isEmpty).length > 0;
 
-                        if (shouldWarnRefund) {  
+                        if (shouldWarnRefund) {
                           warnings.add(WarningAction(() => showDialog(
                               barrierDismissible: false,
                               context: context,
@@ -159,7 +156,7 @@ class AccountRequiredActionsIndicatorState
                         if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED) {
                           warnings.add(WarningAction(
                             () => widget._accountBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.BLOCKING)),
-                            iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Color.fromRGBO(0, 120, 253, 1.0))),
+                            iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Theme.of(context).appBarTheme.actionsIconTheme.color)),
                           ));
                         }
 
@@ -170,7 +167,7 @@ class AccountRequiredActionsIndicatorState
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           mainAxisSize: MainAxisSize.min,
-                          children: warnings                           
+                          children: warnings
                         );
                       }),
                 );
@@ -224,7 +221,7 @@ class WarningActionState extends State<WarningAction> with SingleTickerProviderS
         width: 45 * _animation.value,
         child: widget.iconWidget ??  new Image(          
           image: new AssetImage("src/icon/warning.png"),
-          color: Color.fromRGBO(0, 120, 253, 1.0),
+          color: Theme.of(context).appBarTheme.actionsIconTheme.color,
         ),
       ),
       tooltip: 'Backup',

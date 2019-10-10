@@ -102,15 +102,15 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
   void _showAlertDialog() {
     AlertDialog dialog = new AlertDialog(
       content: new Text("Breez requires NFC to be enabled in your device in order to pay someone nearby.",
-          style: theme.alertStyle),
+          style: Theme.of(context).dialogTheme.contentTextStyle),
       actions: <Widget>[
-        new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("CANCEL", style: theme.buttonStyle)),
+        new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("CANCEL", style: Theme.of(context).primaryTextTheme.button)),
         new FlatButton(
             onPressed: () {
               _nfc.openSettings();
               Navigator.pop(context);
             },
-            child: new Text("SETTINGS", style: theme.buttonStyle))
+            child: new Text("SETTINGS", style: Theme.of(context).primaryTextTheme.button))
       ],
     );
     showDialog(context: context, builder: (_) => dialog);
@@ -131,13 +131,13 @@ class PayNearbyCompleteState extends State<PayNearbyComplete> with WidgetsBindin
       child: new Scaffold(
         key: _scaffoldKey,
         appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(),
           title: new Text(
             _title,
-            style: theme.appBarTextStyle,
+            style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0,
         ),

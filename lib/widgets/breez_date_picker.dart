@@ -4,12 +4,11 @@
 
 import 'dart:async';
 import 'dart:math' as math;
-import 'package:breez/theme_data.dart' as theme;
 
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart';
 
 /// Initial display mode of the date picker dialog.
 ///
@@ -91,7 +90,7 @@ class _DatePickerHeader extends StatelessWidget {
         backgroundColor = themeData.primaryColor;
         break;
       case Brightness.dark:
-        backgroundColor = Color.fromRGBO(5, 93, 235, 1.0);
+        backgroundColor = Theme.of(context).primaryTextTheme.button.color;
         break;
     }
 
@@ -367,7 +366,7 @@ class DayPicker extends StatelessWidget {
     final int daysInMonth = getDaysInMonth(year, month);
     final int firstDayOffset = _computeFirstDayOffset(year, month, localizations);
     final List<Widget> labels = <Widget>[];
-    labels.addAll(_getDayHeaders(TextStyle(color: theme.BreezColors.blue[500]), localizations));
+    labels.addAll(_getDayHeaders(TextStyle(color: Theme.of(context).primaryTextTheme.button.color), localizations));
     for (int i = 0; true; i += 1) {
       // 1-based day of month, e.g. 1-31 for January, and 1-29 for February on
       // a leap year.
@@ -383,18 +382,19 @@ class DayPicker extends StatelessWidget {
             || (selectableDayPredicate != null && !selectableDayPredicate(dayToBuild));
 
         BoxDecoration decoration;
-        TextStyle itemStyle = TextStyle(color: Colors.black);
+        // Should move this to a property on theme data
+        TextStyle itemStyle = TextStyle(color: Theme.of(context).primaryColor == Color(0xFF7aa5eb) ? Colors.white : Colors.black);
 
         final bool isSelectedDay = selectedDate.year == year && selectedDate.month == month && selectedDate.day == day;
         if (isSelectedDay) {
           // The selected day gets a circle background highlight, and a contrasting text color.
           itemStyle = TextStyle(color: Colors.white);
           decoration = new BoxDecoration(
-              color: theme.BreezColors.blue[500],
+              color: Theme.of(context).primaryTextTheme.button.color,
               shape: BoxShape.circle
           );
         } else if (disabled) {
-          itemStyle = TextStyle(color: Colors.grey);
+          itemStyle = TextStyle(color: Colors.blueGrey);
         } else if (currentDate.year == year && currentDate.month == month && currentDate.day == day) {
           // The current day gets a different text color.
           itemStyle = TextStyle(color: Colors.black,fontSize: 20.0);
@@ -443,7 +443,7 @@ class DayPicker extends StatelessWidget {
               child: new ExcludeSemantics(
                 child: new Text(
                   localizations.formatMonthYear(displayedMonth),
-                  style: TextStyle(color: theme.BreezColors.blue[500]),
+                  style: TextStyle(color: Theme.of(context).primaryTextTheme.button.color),
                 ),
               ),
             ),
@@ -644,7 +644,7 @@ class _MonthPickerState extends State<MonthPicker> {
             child: new Semantics(
               sortKey: _MonthPickerSortKey.previousMonth,
               child: new IconButton(
-                color: theme.BreezColors.blue[500],
+                color: Theme.of(context).primaryTextTheme.button.color,
                 icon: const Icon(Icons.chevron_left),
                 tooltip: _isDisplayingFirstMonth ? null : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
                 onPressed: _isDisplayingFirstMonth ? null : _handlePreviousMonth,
@@ -657,7 +657,7 @@ class _MonthPickerState extends State<MonthPicker> {
             child: new Semantics(
               sortKey: _MonthPickerSortKey.nextMonth,
               child: new IconButton(
-                color: theme.BreezColors.blue[500],
+                color: Theme.of(context).primaryTextTheme.button.color,
                 icon: const Icon(Icons.chevron_right),
                 tooltip: _isDisplayingLastMonth ? null : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
                 onPressed: _isDisplayingLastMonth ? null : _handleNextMonth,
@@ -902,7 +902,6 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeBg = Theme.of(context);
     final Widget picker = new Flexible(
       child: new SizedBox(
         height: _kMaxDayPickerHeight,
@@ -913,11 +912,11 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
       child: new ButtonBar(
         children: <Widget>[
           new FlatButton(
-            child: new Text(localizations.cancelButtonLabel,style: theme.buttonStyle),
+            child: new Text(localizations.cancelButtonLabel,style: Theme.of(context).primaryTextTheme.button),
             onPressed: _handleCancel,
           ),
           new FlatButton(
-            child: new Text(localizations.okButtonLabel,style: theme.buttonStyle),
+            child: new Text(localizations.okButtonLabel,style: Theme.of(context).primaryTextTheme.button),
             onPressed: _handleOk,
           ),
         ],
@@ -943,8 +942,6 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
                       children: <Widget>[
                         header,
                         new Container(
-                          decoration: ShapeDecoration(shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(bottom: Radius.circular(12.0))),color: themeBg.dialogBackgroundColor,),
                           child: new Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -968,7 +965,7 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
                         new Flexible(
                           child: new Container(
                             width: _kMonthPickerLandscapeWidth,
-                            color: themeBg.dialogBackgroundColor,
+                            color: Theme.of(context).dialogBackgroundColor,
                             child: new Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -985,12 +982,7 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
         )
     );
 
-    return new Theme(
-      data: themeBg.copyWith(
-        dialogBackgroundColor: Colors.transparent,
-      ),
-      child: dialog,
-    );
+    return dialog;
   }
 }
 

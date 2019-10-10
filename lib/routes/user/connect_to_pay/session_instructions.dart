@@ -20,7 +20,7 @@ class SessionInstructions extends StatelessWidget {
       children: <Widget>[
         Container(
           height: 100.0,
-          color: theme.massageBackgroundColor,
+          color: Theme.of(context).primaryColorDark,
           padding: new EdgeInsets.only(left: 16.0, top: 0.0, right: 16.0, bottom: hasActions ? 0.0 : 0.0),
           child: Center(
             child: SingleChildScrollView(

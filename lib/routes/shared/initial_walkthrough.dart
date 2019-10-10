@@ -11,21 +11,18 @@ import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/security_pin/backup_phrase/enter_backup_phrase_page.dart';
-import 'package:breez/routes/shared/security_pin/backup_phrase/generate_backup_phrase_page.dart';
 import 'package:breez/routes/shared/security_pin/restore_pin.dart';
 import 'package:breez/routes/user/home/beta_warning_dialog.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/backup_provider_selection_dialog.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/widgets/error_dialog.dart';
 import 'package:hex/hex.dart';
-import 'package:bip39/bip39.dart' as bip39;
 
 class InitialWalkthroughPage extends StatefulWidget {
   final BreezUserModel _user;
@@ -152,7 +149,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   Future _handleSignInException(SignInFailedException e) async {
     if (e.provider == BackupSettings.icloudBackupProvider) {
-      await promptError(context, "Sign in to iCloud", Text("Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.", style: theme.alertStyle));
+      await promptError(context, "Sign in to iCloud", Text("Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.", style: Theme.of(context).dialogTheme.contentTextStyle,));
     }
   }
 
@@ -173,7 +170,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           "Internal Error",
           Text(
             err.toString(),
-            style: theme.alertStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
           ));
     });
   }
@@ -275,8 +272,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                     width: 168.0,
                     child: RaisedButton(
                       padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                      child: Text("LET'S BREEZ!", style: theme.buttonStyle),
-                      color: theme.whiteColor,
+                      child: Text("LET'S BREEZ!", style: Theme.of(context).textTheme.button),
+                      color: Theme.of(context).buttonColor,
                       elevation: 0.0,
                       shape: const StadiumBorder(),
                       onPressed: () {
@@ -292,7 +289,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                             updateSecurityModelAction.future.then((_) {
                               _proceedToRegister();
                             }).catchError((err) {
-                              promptError(context, "Internal Error", Text(err.toString(), style: theme.alertStyle,));
+                              promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
                             });
                           }
                         });

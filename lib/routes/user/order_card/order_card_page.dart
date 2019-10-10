@@ -316,14 +316,12 @@ class OrderCardPageState extends State<OrderCardPage> {
     AlertDialog dialog = new AlertDialog(
       content: new Text(
           "Name and address are required for sending you a Breez card. Any information provided will be deleted from our systems after card has been sent. You may skip this step and continue using Breez without a card.",
-          style: theme.alertStyle),
+          style: Theme.of(context).dialogTheme.contentTextStyle),
       actions: <Widget>[
         new FlatButton(
             onPressed: () => Navigator.pop(context),
-            child: new Text("OK", style: theme.buttonStyle))
+            child: new Text("OK", style: Theme.of(context).primaryTextTheme.button))
       ],
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(context: context,  builder: (_) => dialog);
   }
@@ -342,14 +340,14 @@ class OrderCardPageState extends State<OrderCardPage> {
     String _title = _showSkip ? "Order a Breez Card" : "Order Card";
     return new Scaffold(
       appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
           automaticallyImplyLeading: false,
           leading: _showLeadingButton(_showSkip),
           title: new Text(
             _title,
-            style: theme.appBarTextStyle,
+            style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0,
           actions: _showSkipButton(_showSkip)),
@@ -601,9 +599,9 @@ class OrderCardPageState extends State<OrderCardPage> {
                   child: new RaisedButton(
                     child: new Text(
                       "ORDER",
-                      style: theme.buttonStyle,
+                      style: Theme.of(context).textTheme.button,
                     ),
-                    color: theme.BreezColors.white[500],
+                    color: Theme.of(context).buttonColor,
                     elevation: 0.0,
                     shape: const StadiumBorder(),
                     onPressed: () {

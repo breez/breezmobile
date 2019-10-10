@@ -1,10 +1,9 @@
 import 'package:breez/bloc/backup/backup_actions.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/bloc/backup/backup_bloc.dart';
 
 class BackupProviderSelectionDialog extends StatefulWidget {
   final BackupBloc backupBloc;
@@ -34,7 +33,7 @@ class BackupProviderSelectionDialogState
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: new Text(
         "Backup Data Storage",
-        style: theme.alertTitleStyle,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: Column(
@@ -45,7 +44,7 @@ class BackupProviderSelectionDialogState
             widget.restore
                 ? "Restore backup data from:"
                 : "Store backup data in:",
-            style: theme.paymentRequestSubtitleStyle,
+            style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
           ),
           new StreamBuilder<BackupSettings>(
               stream: widget.backupBloc.backupSettingsStream,
@@ -69,12 +68,12 @@ class BackupProviderSelectionDialogState
                         trailing: _selectedProviderIndex == index
                             ? Icon(
                                 Icons.check,
-                                color: theme.BreezColors.blue[500],
+                                color: Theme.of(context).primaryTextTheme.button.color,
                               )
-                            : Icon(Icons.check),
+                            : Icon(Icons.check, color: Theme.of(context).backgroundColor),
                         title: Text(
                           providers[index].displayName,
-                          style: theme.backupProviderTitleStyle,
+                          style: Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 14.3, height: 1.2), // Color needs to change
                         ),
                         onTap: () {
                           setState(() {
@@ -91,14 +90,15 @@ class BackupProviderSelectionDialogState
       actions: <Widget>[
         new FlatButton(
           onPressed: () => Navigator.pop(context, null),
-          child: new Text("CANCEL", style: theme.buttonStyle),
+          child: Text("CANCEL", style: Theme.of(context).textTheme.button,),
+          textColor: Theme.of(context).primaryTextTheme.button.color,
         ),
         StreamBuilder<BackupSettings>(
             stream: widget.backupBloc.backupSettingsStream,
             builder: (context, snapshot) {
               return new FlatButton(
-                textColor: theme.BreezColors.blue[500],
-                disabledTextColor: theme.BreezColors.blue[500].withOpacity(0.4),
+                textColor: Theme.of(context).primaryTextTheme.button.color,
+                disabledTextColor: Theme.of(context).primaryTextTheme.button.color.withOpacity(0.4),
                 onPressed: !snapshot.hasData
                     ? null
                     : () {

@@ -1,10 +1,10 @@
 import 'dart:async';
+
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/send_onchain.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class SendCoinsDialog extends StatelessWidget {
   final AccountBloc accountBloc;
@@ -29,7 +29,7 @@ class SendCoinsDialog extends StatelessWidget {
                     Text("Are you sure you want to remove " +
                         acc.currency.format(acc.walletBalance) +
                         " from Breez and send this amount to the address you've specified?",
-                        style: theme.alertStyle))
+                        style: Theme.of(context).dialogTheme.contentTextStyle))
                 .then((sure) {
               if (!sure) {
                 return Future.error("User canceled");
@@ -46,7 +46,7 @@ class SendCoinsDialog extends StatelessWidget {
     AlertDialog dialog = new AlertDialog(
       title: Text(
         "Removing Funds",
-        style: theme.alertTitleStyle,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
         textAlign: TextAlign.center,
       ),
       content: Column(
@@ -55,19 +55,19 @@ class SendCoinsDialog extends StatelessWidget {
         children: <Widget>[
           new Text(
             "Please wait while Breez is sending the funds to the specified address.",
-            style: theme.alertStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
             textAlign: TextAlign.center,
           ),
           Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: new Image.asset(
                 'src/images/breez_loader.gif',
+                colorBlendMode: BlendMode.modulate,
+                color: Theme.of(context).backgroundColor,
                 gaplessPlayback: true,
               ))
         ],
       ),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(
         context: context,
@@ -82,7 +82,7 @@ class SendCoinsDialog extends StatelessWidget {
       return "The funds were successfully sent to the address you have specified.";
     }).catchError((err) {
       Navigator.of(context).pop();
-      return promptError(context, null, Text(err.toString(), style: theme.alertStyle))
+      return promptError(context, null, Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle))
         .whenComplete((){
           return Future.error(err);
         });      

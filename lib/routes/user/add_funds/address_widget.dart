@@ -45,7 +45,7 @@ class AddressWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.6),
                     decoration: theme.qrImageStyle,
                     child: new Container(
-                      color: theme.whiteColor,
+                      color: Theme.of(context).accentColor,
                       child: new CompactQRImage(
                         data: "bitcoin:" + address,
                         size: 180.0,
@@ -63,7 +63,7 @@ class AddressWidget extends StatelessWidget {
                     },
                     child: new Text(
                       address,
-                      style: theme.smallTextStyle,
+                      style: Theme.of(context).primaryTextTheme.subtitle,
                     ),
                   ),
                 ),
@@ -93,7 +93,7 @@ class AddressWidget extends StatelessWidget {
     }
     Widget _shareIcon = new IconButton(
       icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
-      color: theme.whiteColor,
+      color: Theme.of(context).buttonColor,
       onPressed: () {
         final RenderBox box = context.findRenderObject();
         ShareExtend.share(address,
@@ -104,7 +104,7 @@ class AddressWidget extends StatelessWidget {
     );
     Widget _copyIcon = new IconButton(
       icon: new Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-      color: theme.whiteColor,
+      color: Theme.of(context).buttonColor,
       onPressed: () {
         Clipboard.setData(new ClipboardData(text: address));
         showFlushbar(context, message: "Deposit address was copied to your clipboard.");
@@ -120,7 +120,7 @@ class AddressWidget extends StatelessWidget {
       contentPadding: EdgeInsets.fromLTRB(20.0,20.0,20.0,4.0),
       content: RichText(
         text: TextSpan(
-            style: theme.alertStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
             text: "Breez is using Submarine Swaps to execute on-chain transactions. Click ",
             children: <TextSpan>[
               TextSpan(
@@ -140,9 +140,8 @@ class AddressWidget extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: new Text("OK", style: theme.buttonStyle))
+            child: new Text("OK", style: Theme.of(context).primaryTextTheme.button))
       ],
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(context: context, builder: (_) => dialog);
   }

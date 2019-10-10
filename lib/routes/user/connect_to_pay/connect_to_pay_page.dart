@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
@@ -6,7 +7,6 @@ import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
 import 'package:breez/routes/user/connect_to_pay/payee_session_widget.dart';
 import 'package:breez/routes/user/connect_to_pay/payer_session_widget.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -119,12 +119,11 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   }
 
   void _onTerminateSession() async {
-    TextStyle textStyle = TextStyle(color: Colors.black);
     String exitSessionMessage =
         'Are you sure you want to cancel this payment session?';
     bool cancel = await promptAreYouSure(
-        _key.currentContext, null, Text(exitSessionMessage, style: textStyle),
-        textStyle: textStyle);
+        _key.currentContext, null, Text(exitSessionMessage, style: Theme.of(context).dialogTheme.contentTextStyle),
+        textStyle: Theme.of(context).dialogTheme.contentTextStyle);
     if (cancel) {
       _popWithMessage(null);           
     }
@@ -139,14 +138,14 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     return new Scaffold(
         key: _key,
         appBar: new AppBar(
-          actions: _error == null ? <Widget>[IconButton( onPressed: () => _onTerminateSession(), icon: Icon(Icons.close))] : null,
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
+          actions: _error == null ? <Widget>[IconButton( onPressed: () => _onTerminateSession(), icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color))] : null,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(onPressed: _onBackPressed),
           title: new Text(
             _title,
-            style: theme.appBarTextStyle,
+            style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0,
         ),

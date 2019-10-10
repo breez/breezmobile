@@ -19,3 +19,9 @@ class ValidatePinCode extends AsyncAction {
 
   ValidatePinCode(this.enteredPin);
 }
+
+class ChangeTheme extends AsyncAction {
+  final String newTheme;
+
+  ChangeTheme(this.newTheme);
+}

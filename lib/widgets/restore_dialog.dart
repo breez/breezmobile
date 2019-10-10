@@ -1,10 +1,9 @@
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:intl/intl.dart';
 
 class RestoreDialog extends StatefulWidget {
   final BuildContext context;
@@ -33,7 +32,7 @@ class RestoreDialogState extends State<RestoreDialog> {
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: new Text(
         "Restore",
-        style: theme.alertTitleStyle,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: Column(
@@ -49,7 +48,7 @@ class RestoreDialogState extends State<RestoreDialog> {
 
               return new Text(
                 "You have multiple Breez backups on ${snapshot.data.backupProvider.displayName}, please choose which one to restore:",
-                style: theme.paymentRequestSubtitleStyle,
+                style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
               );
             }
           ),
@@ -70,11 +69,11 @@ class RestoreDialogState extends State<RestoreDialog> {
                     title: Text( 
                       DateUtils.formatYearMonthDayHourMinute(DateTime.parse(widget.snapshots[index].modifiedTime)) + 
                         (widget.snapshots[index].encrypted ? " - (Requires key)" : ""),
-                      style: theme.bolt11Style.apply(fontSizeDelta: 1.3),
+                      style: Theme.of(context).primaryTextTheme.caption.copyWith(fontSize: 9).apply(fontSizeDelta: 1.3),
                     ),
                     subtitle: Text(
                       widget.snapshots[index].nodeID,
-                      style: theme.bolt11Style,
+                      style: Theme.of(context).primaryTextTheme.caption.copyWith(fontSize: 9),
                     ),
                     onTap: () {
                       setState(() {
@@ -101,7 +100,7 @@ class RestoreDialogState extends State<RestoreDialog> {
       actions: <Widget>[
         new FlatButton(
           onPressed: () =>  Navigator.pop(widget.context, null),
-          child: new Text("CANCEL", style: theme.buttonStyle),
+          child: new Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
         ),
         new FlatButton(     
           textColor: theme.BreezColors.blue[500],
@@ -112,8 +111,6 @@ class RestoreDialogState extends State<RestoreDialog> {
           child: new Text("OK"),
         )
       ],
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
   }
 }

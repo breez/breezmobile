@@ -62,7 +62,7 @@ class VendorRow extends StatelessWidget {
                 )
               ],
               border: Border.all(
-                  color: _vendorBgColor == Colors.white ? theme.BreezColors.blue[200] : Colors.white, style: BorderStyle.solid, width: 1.0),
+                  color: _vendorBgColor == Colors.white ? Theme.of(context).highlightColor : Colors.white, style: BorderStyle.solid, width: 1.0),
               borderRadius: BorderRadius.circular(14.0)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

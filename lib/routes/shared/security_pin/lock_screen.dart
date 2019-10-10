@@ -1,4 +1,3 @@
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:flutter/material.dart';
@@ -27,9 +26,9 @@ class _AppLockScreenState extends State<AppLockScreen> {
       child: Scaffold(
         appBar: widget.canCancel == true
             ? new AppBar(
-                iconTheme: theme.appBarIconTheme,
-                textTheme: theme.appBarTextTheme,
-                backgroundColor: theme.BreezColors.blue[500],
+                iconTheme: Theme.of(context).appBarTheme.iconTheme,
+                textTheme: Theme.of(context).appBarTheme.textTheme,
+                backgroundColor: Theme.of(context).canvasColor,
                 leading: backBtn.BackButton(
                   onPressed: () {
                     Navigator.pop(context, false);

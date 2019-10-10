@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
@@ -53,8 +52,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
     if (!_isInit) {      
       controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
       colorAnimation = new ColorTween(
-        begin: theme.BreezColors.blue[500],
-        end: theme.BreezColors.white[500],
+        begin: Theme.of(context).canvasColor,
+        end: Theme.of(context).backgroundColor,
       ).animate(controller)
         ..addListener(() {
           setState(() {});
@@ -175,7 +174,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
       padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
       child: Text(
         "Processing Payment",
-        style: theme.alertTitleStyle,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
         textAlign: TextAlign.center,
       ),
     );
@@ -194,14 +193,14 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
             children: <Widget>[
               LoadingAnimatedText(
                 'Please wait while your payment is being processed',
-                textStyle: theme.alertStyle,
+                textStyle: Theme.of(context).dialogTheme.contentTextStyle,
                 textAlign: TextAlign.center,
               ),
               Image.asset(
                 'src/images/breez_loader.gif',
+                colorBlendMode: BlendMode.modulate,
                 height: 64.0,
-                colorBlendMode: BlendMode.multiply,
-                color: colorAnimation?.value ?? Colors.transparent,
+                color: colorAnimation?.value ?? Theme.of(context).backgroundColor,
                 gaplessPlayback: true,
               )
             ],

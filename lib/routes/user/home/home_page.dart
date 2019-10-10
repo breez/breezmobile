@@ -13,7 +13,6 @@ import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:breez/routes/user/ctp_join_session_handler.dart';
 import 'package:breez/routes/user/received_invoice_notification.dart';
 import 'package:breez/routes/user/showPinHandler.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
@@ -131,9 +130,6 @@ class HomeState extends State<Home> {
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      decoration: new BoxDecoration(
-        color: theme.BreezColors.blue[500],        
-      ),
       child: FadeInWidget(
         child: new Scaffold(
             key: _scaffoldKey,
@@ -148,16 +144,18 @@ class HomeState extends State<Home> {
                   icon: ImageIcon(
                     AssetImage("src/icon/hamburger.png"),
                     size: 24.0,
-                    color: null,
+                    color: Theme.of(context).appBarTheme.actionsIconTheme.color,
                   ),
                   onPressed: () => _scaffoldKey.currentState.openDrawer()),
               title: new Image.asset(
                 "src/images/logo-color.png",
                 height: 23.5,
                 width: 62.7,
+                color: Theme.of(context).appBarTheme.color,
+                colorBlendMode: BlendMode.srcATop,
               ),
               iconTheme: new IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
-              backgroundColor: theme.whiteColor,
+              backgroundColor: Theme.of(context).backgroundColor,
               elevation: 0.0,
             ),
             drawer: new NavigationDrawer(
@@ -225,7 +223,7 @@ class HomeState extends State<Home> {
         Navigator.of(context).push(ctpRoute);                    
       },
       (e) {
-        promptError(context, "Connect to Pay", Text(e.toString(), style: theme.alertStyle));
+        promptError(context, "Connect to Pay", Text(e.toString(), style: Theme.of(context).dialogTheme.contentTextStyle));
       }
     );
     new SyncUIHandler(widget.accountBloc, context);
@@ -244,7 +242,7 @@ class HomeState extends State<Home> {
           return route.settings.name == "/home" || route.settings.name == "/";
         }
       );
-      await promptError(context, "Configuration Error", Text("Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.", style: theme.alertStyle), 
+      await promptError(context, "Configuration Error", Text("Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.", style: Theme.of(context).dialogTheme.contentTextStyle),
                         okText: "Exit Breez", okFunc: () => exit(0), disableBack: true );        
     });
   }
@@ -253,7 +251,7 @@ class HomeState extends State<Home> {
     widget.accountBloc.optimizationWhitelistExplainStream.listen((_) async {
       await promptError(context, "Background Synchronization", 
         Text("In order to support instantaneous payments, Breez needs your permission in order to synchronize the information while the app is not active. Please approve the app in the next dialog.", 
-        style: theme.alertStyle), 
+        style: Theme.of(context).dialogTheme.contentTextStyle),
         okFunc: () => widget.accountBloc.optimizationWhitelistRequestSink.add(null));      
     });
   }

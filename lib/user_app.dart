@@ -35,7 +35,7 @@ import 'package:breez/routes/user/pay_nearby/pay_nearby_page.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_complete.dart';
 import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
 import 'package:breez/routes/user/marketplace/marketplace.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'themes.dart';
 
 class UserApp extends StatelessWidget {
   GlobalKey<NavigatorState> _navigatorKey = new GlobalKey<NavigatorState>();
@@ -61,20 +61,7 @@ class UserApp extends StatelessWidget {
             builder: (ctx) => MaterialApp(
               navigatorKey: _navigatorKey,
               title: 'Breez',
-              theme: ThemeData(
-                backgroundColor: theme.BreezColors.blue[500],
-                brightness: Brightness.dark,
-                accentColor: Color(0xFFffffff),
-                dialogBackgroundColor: Colors.white,
-                primaryColor: Color.fromRGBO(255, 255, 255, 1.0),
-                textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
-                textSelectionHandleColor: Color(0xFF0085fb),
-                dividerColor: Color(0x33ffffff),
-                errorColor: theme.errorColor,
-                canvasColor: theme.BreezColors.blue[500],
-                fontFamily: 'IBMPlexSansRegular',
-                cardColor: theme.BreezColors.blue[500],
-              ),
+              theme: Themes.themeMap[user.themeId],
               builder: (BuildContext context, Widget child) {
                 final MediaQueryData data = MediaQuery.of(context);
                 return MediaQuery(
@@ -93,9 +80,9 @@ class UserApp extends StatelessWidget {
                           var validateAction = ValidatePinCode(pinEntered);
                           userProfileBloc.userActionsSink.add(validateAction);
                           return validateAction.future.then((_){
-                            Navigator.pop(ctx);                          
+                            Navigator.pop(ctx);
                             userProfileBloc.userSink.add(user.copyWith(locked: false));
-                          });                        
+                          });
                         },),
                         settings: settings
                     );
@@ -126,12 +113,12 @@ class UserApp extends StatelessWidget {
                     );
                   case '/deposit_btc_address':
                     return new FadeInRoute(
-                      builder: (_) => new DepositToBTCAddressPage(accountBloc),                    
+                      builder: (_) => new DepositToBTCAddressPage(accountBloc),
                       settings: settings,
                     );
                   case '/buy_bitcoin':
                     return new FadeInRoute(
-                      builder: (_) => new MoonpayWebView(accountBloc, backupBloc),                    
+                      builder: (_) => new MoonpayWebView(accountBloc, backupBloc),
                       settings: settings,
                     );
                   case '/withdraw_funds':

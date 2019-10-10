@@ -1,8 +1,6 @@
-import 'dart:async';
-
+import 'package:breez/theme_data.dart' as theme;
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 Flushbar showFlushbar(BuildContext context, {String title = "", String message = "", Duration duration = const Duration(seconds: 8)}) {
   Flushbar flush;

@@ -11,15 +11,16 @@ class BreezUserModel {
   final String animal;
   final String image;
   final SecurityModel securityModel;
+  final String themeId;
   final bool locked;
 
   BreezUserModel._(this.userID, this.name, this.color, this.animal, {
-    this.currency = Currency.SAT, this.fiatCurrency = "USD", this.image, this.securityModel, this.locked, this.token = ''});
+    this.currency = Currency.SAT, this.fiatCurrency = "USD", this.image, this.securityModel, this.locked, this.token = '', this.themeId = "BLUE"});
 
   BreezUserModel copyWith({
     String name, String color, String animal, Currency currency, String fiatCurrency, 
-    String image, SecurityModel securityModel, bool locked, String token, String userID}) {
-      return new BreezUserModel._(userID ?? this.userID, name ?? this.name, color ?? this.color, animal ?? this.animal, currency: currency ?? this.currency, fiatCurrency: fiatCurrency ?? this.fiatCurrency, image: image ?? this.image, securityModel: securityModel ?? this.securityModel, locked: locked ?? this.locked, token: token ?? this.token);
+    String image, SecurityModel securityModel, bool locked, String token, String userID, String themeId}) {
+      return new BreezUserModel._(userID ?? this.userID, name ?? this.name, color ?? this.color, animal ?? this.animal, currency: currency ?? this.currency, fiatCurrency: fiatCurrency ?? this.fiatCurrency, image: image ?? this.image, securityModel: securityModel ?? this.securityModel, locked: locked ?? this.locked, token: token ?? this.token, themeId: themeId ?? this.themeId);
   }
 
   bool get registered {
@@ -37,8 +38,9 @@ class BreezUserModel {
         color = json['color'],
         animal = json['animal'],
         image = json['image'],
-        locked = true,      
-        securityModel = json['securityModel'] == null ? SecurityModel.initial() : SecurityModel.fromJson(json['securityModel'],);        
+        locked = true,
+        securityModel = json['securityModel'] == null ? SecurityModel.initial() : SecurityModel.fromJson(json['securityModel'],),
+        themeId = json['themeId'] == null ? "BLUE" : json['themeId'];
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -50,5 +52,6 @@ class BreezUserModel {
         'animal': animal,
         'image': image,
         'securityModel': securityModel?.toJson(),
+        'themeId': themeId,
       };
 }

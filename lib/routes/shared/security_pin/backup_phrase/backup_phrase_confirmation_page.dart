@@ -22,14 +22,14 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            iconTheme: theme.appBarIconTheme,
-            textTheme: theme.appBarTextTheme,
-            backgroundColor: theme.BreezColors.blue[500],
+            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+            textTheme: Theme.of(context).appBarTheme.textTheme,
+            backgroundColor: Theme.of(context).canvasColor,
             automaticallyImplyLeading: false,
             leading: backBtn.BackButton(),
             title: AutoSizeText(
               "Generate Backup Phrase",
-              style: theme.appBarTextStyle,
+              style: Theme.of(context).appBarTheme.textTheme.title,
               maxLines: 1,
             ),
             elevation: 0.0),
@@ -76,15 +76,18 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Checkbox(
-              activeColor: theme.BreezColors.white[500],
-              checkColor: theme.BreezColors.blue[500],
-              value: _isUnderstood,
-              onChanged: (value) {
-                setState(() {
-                  _isUnderstood = value;
-                });
-              }),
+          Theme(
+            data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+            child: Checkbox(
+                activeColor: Colors.white,
+                checkColor: Theme.of(context).canvasColor,
+                value: _isUnderstood,
+                onChanged: (value) {
+                  setState(() {
+                    _isUnderstood = value;
+                  });
+                }),
+          ),
           Text(
             "I UNDERSTAND",
             style: theme.backupPhraseConfirmationTextStyle,
@@ -109,9 +112,9 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
                   },
                   child: Text(
                     "NEXT",
-                    style: theme.buttonStyle,
+                    style: Theme.of(context).textTheme.button,
                   ),
-                  color: theme.BreezColors.white[500],
+                  color: Theme.of(context).buttonColor,
                   elevation: 0.0,
                   shape: const StadiumBorder(),
                 ),

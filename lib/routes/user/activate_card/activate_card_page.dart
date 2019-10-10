@@ -63,18 +63,16 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
   void _showAlertDialog() {
     AlertDialog dialog = new AlertDialog(
       content: new Text("Breez requires NFC to be enabled in your device in order to activate a card.",
-          style: theme.alertStyle),
+          style: Theme.of(context).dialogTheme.contentTextStyle),
       actions: <Widget>[
-        new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("CANCEL", style: theme.buttonStyle)),
+        new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("CANCEL", style: Theme.of(context).primaryTextTheme.button)),
         new FlatButton(
             onPressed: () {
               nfc.openSettings();
               Navigator.pop(context);
             },
-            child: new Text("SETTINGS", style: theme.buttonStyle))
+            child: new Text("SETTINGS", style: Theme.of(context).primaryTextTheme.button))
       ],
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
     showDialog(context: context, builder: (_) => dialog);
   }
@@ -94,13 +92,13 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
   Widget _buildCardActivation(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        iconTheme: theme.appBarIconTheme,
-        textTheme: theme.appBarTextTheme,
-        backgroundColor: theme.BreezColors.blue[500],
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         title: new Text(
           _title,
-          style: theme.appBarTextStyle,
+          style: Theme.of(context).appBarTheme.textTheme.title,
         ),
         elevation: 0.0,
       ),

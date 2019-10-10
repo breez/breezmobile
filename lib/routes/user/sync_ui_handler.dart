@@ -4,7 +4,6 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class SyncUIHandler {  
   final AccountBloc _accountBloc;
@@ -107,7 +106,7 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
             left: 0.0,
             right: 0.0,
             child: Container( 
-              color: theme.BreezColors.blue[500].withOpacity(widget.opacity),
+              color: Theme.of(context).canvasColor.withOpacity(widget.opacity),
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: Column(
@@ -123,7 +122,7 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
                       semanticsLabel: widget.message,
                       backgroundColor: Colors.grey.withOpacity(0.5),
                       valueColor: new AlwaysStoppedAnimation<Color>(
-                        theme.whiteColor,
+                        Theme.of(context).accentColor,
                       ),        
                     ),
                   ),

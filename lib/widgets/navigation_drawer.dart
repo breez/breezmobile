@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:breez/widgets/breez_avatar_dialog.dart';
 import 'package:breez/widgets/breez_drawer_header.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
 
 class DrawerItemConfig {
@@ -89,7 +91,7 @@ class _ListDivider extends StatelessWidget {
 
 Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return new BreezDrawerHeader(
-    padding: EdgeInsets.only(top: 61.0, left: 16.0),
+    padding: EdgeInsets.only(left: 16.0),
     child: !drawAvatar
         ? new Container()
         : new StreamBuilder<BreezUserModel>(
@@ -107,6 +109,49 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                     );
                   },
                   child: new Column(children: <Widget>[
+                    GestureDetector(
+                      onTap: () => _changeTheme(snapshot.data.themeId == "BLUE" ? "DARK" : "BLUE", user, context),
+                      child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          new Padding(
+                            padding: EdgeInsets.only(
+                              top: 10,
+                              right: 16.0,
+                            ),
+                            child: Container(
+                              width: 64,
+                              padding: EdgeInsets.all(4),
+                              decoration: ShapeDecoration(shape: StadiumBorder(), color: theme.marketplaceButtonColor),
+                              child: Row(
+                                children: <Widget>[
+                                  Image.asset(
+                                    "src/icon/ic_lightmode.png",
+                                    height: 24,
+                                    width: 24,
+                                    color: snapshot.data.themeId == "BLUE"
+                                        ? Colors.white
+                                        : Colors.white30,
+                                  ),
+                                  Container(
+                                    height: 20,
+                                    width: 8,
+                                    child: VerticalDivider(
+                                      color: Colors.white30,
+                                    ),
+                                  ),
+                                  ImageIcon(AssetImage("src/icon/ic_darkmode.png"),
+                                      color: snapshot.data.themeId == "DARK"
+                                          ? Colors.white
+                                          : Colors.white30,
+                                      size: 24.0),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     new Row(
                       children: <Widget>[
                         BreezAvatar(snapshot.data.avatarURL, radius: 24.0),
@@ -123,20 +168,22 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
                           ),
                         ),
                         new Spacer(),
-                        new Padding(padding: EdgeInsets.only(top: 4.0,), child:
-                        new RawMaterialButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).pushNamed("/marketplace");
-                          },
-                          child: ImageIcon(
-                              AssetImage("src/icon/ic_market.png"),
-                              color: Colors.white, size: 24.0),
-                          padding: const EdgeInsets.all(12.0),
-                          fillColor: theme.marketplaceButtonColor,
-                          shape: new CircleBorder(),
-                          elevation: 0.0,
-                        ),),
+                        new Padding(
+                          padding: EdgeInsets.only(
+                            top: 4.0,
+                          ),
+                          child: new RawMaterialButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).pushNamed("/marketplace");
+                            },
+                            child: ImageIcon(AssetImage("src/icon/ic_market.png"), color: Colors.white, size: 24.0),
+                            padding: const EdgeInsets.all(12.0),
+                            fillColor: theme.marketplaceButtonColor,
+                            shape: new CircleBorder(),
+                            elevation: 0.0,
+                          ),
+                        ),
                       ],
                     ),
                   ]),
@@ -147,6 +194,15 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
       image: DecorationImage(image: AssetImage("src/images/waves-drawer.png"), fit: BoxFit.scaleDown, alignment: Alignment(0, 0)),
     ),
   );
+}
+
+Future _changeTheme(String themeId, UserProfileBloc userProfileBloc, BuildContext context) async {
+    var action = ChangeTheme(themeId);
+    userProfileBloc.userActionsSink.add(action);
+    action.future.then((_) {
+    }).catchError((err){
+      promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
+    });
 }
 
 Widget _actionTile(
