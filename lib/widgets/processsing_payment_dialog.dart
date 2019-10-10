@@ -152,7 +152,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
                     mainAxisSize: MainAxisSize.min,
                     children: _buildProcessingPaymentDialog())),
             decoration: ShapeDecoration(
-              color: colorAnimation.value,
+              color: Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? colorAnimation.value : (controller.value >= 0.25 ? Theme.of(context).backgroundColor : colorAnimation.value),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderAnimation.value)),
             ),
           ),
@@ -197,10 +197,10 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog> with S
                 textAlign: TextAlign.center,
               ),
               Image.asset(
-                Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? 'src/images/breez_loader.gif' : 'src/images/breez_loader_dark.gif',
+                Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? 'src/images/breez_loader_blue.gif' : 'src/images/breez_loader_dark.gif',
                 height: 64.0,
-                colorBlendMode: Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? BlendMode.multiply : BlendMode.color,
-                color: colorAnimation?.value ?? Colors.transparent,
+                colorBlendMode: Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? BlendMode.multiply : BlendMode.srcIn,
+                color: Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0) ? colorAnimation?.value ?? Colors.transparent : null,
                 gaplessPlayback: true,
               )
             ],
