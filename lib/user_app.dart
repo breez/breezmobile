@@ -6,7 +6,6 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/dev/dev.dart';
 import 'package:breez/routes/shared/initial_walkthrough.dart';
 import 'package:breez/routes/shared/network/network.dart';
@@ -33,7 +32,7 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'themes.dart';
+import 'theme_data.dart' as theme;
 
 class UserApp extends StatelessWidget {
   GlobalKey<NavigatorState> _navigatorKey = new GlobalKey<NavigatorState>();
@@ -54,12 +53,13 @@ class UserApp extends StatelessWidget {
           }
 
           BreezUserModel user = snapshot.data;
+          theme.themeId = user.themeId;
           return  BlocProvider(
             creator: () => new AddFundsBloc(userProfileBloc.userStream, accountBloc.accountStream),
             builder: (ctx) => MaterialApp(
               navigatorKey: _navigatorKey,
               title: 'Breez',
-              theme: Themes.themeMap[user.themeId],
+              theme: theme.themeMap[user.themeId],
               builder: (BuildContext context, Widget child) {
                 final MediaQueryData data = MediaQuery.of(context);
                 return MediaQuery(

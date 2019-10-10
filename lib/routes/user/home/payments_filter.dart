@@ -115,7 +115,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     );
     children.add(
       Theme(
-        data: Theme.of(context).backgroundColor != theme.transactionTitleStyle.color ? Theme.of(context).copyWith(canvasColor: Theme.of(context).backgroundColor) : Theme.of(context),
+        data: theme.themeId == "BLUE" ? Theme.of(context) : Theme.of(context).copyWith(canvasColor: Theme.of(context).backgroundColor),
         child:  DropdownButtonHideUnderline(
           child: ButtonTheme(
             alignedDropdown: true,
