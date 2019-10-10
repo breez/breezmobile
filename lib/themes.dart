@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'theme_data.dart' as theme;
 
+enum ThemeId { BLUE, DARK }
+
 class Themes {
   static ThemeId getThemeIdFromString(String themeId) {
     switch (themeId) {
