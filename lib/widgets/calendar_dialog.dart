@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:math';
+
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/date.dart';
+import 'package:breez/widgets/breez_date_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/widgets/breez_date_picker.dart';
-import 'package:breez/utils/date.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class CalendarDialog extends StatefulWidget {
   final BuildContext context;
@@ -40,15 +42,12 @@ class _CalendarDialogState extends State<CalendarDialog> {
         "Choose a date range:",
         style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
-      content: SingleChildScrollView(
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            _selectDateButton("Start", _startDateController, true),
-            _selectDateButton("End", _endDateController, false),
-          ],
-        ),
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          _selectDateButton("Start", _startDateController, true),
+          _selectDateButton("End", _endDateController, false),
+        ],
       ),
       actions: <Widget>[
         FlatButton(
@@ -77,8 +76,9 @@ class _CalendarDialogState extends State<CalendarDialog> {
   }
 
   Widget _selectDateButton(String label, TextEditingController textEditingController, bool isStartBtn) {
-    return FlatButton(
-      child: Container(
+    return Container(
+      constraints: BoxConstraints(maxWidth: 85 * max(MediaQuery.of(context).textScaleFactor, 1.0)),
+      child: GestureDetector(
         child: TextFormField(
           decoration: InputDecoration(
             labelText: label,
@@ -88,14 +88,13 @@ class _CalendarDialogState extends State<CalendarDialog> {
           enabled: false,
           style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
-        width: 84.0,
-        padding: EdgeInsets.zero,
+        onTap: () {
+          setState(() {
+            _selectDate(context, isStartBtn);
+          });
+        },
+        behavior: HitTestBehavior.translucent,
       ),
-      onPressed: () {
-        setState(() {
-          _selectDate(context, isStartBtn);
-        });
-      },
     );
   }
 
