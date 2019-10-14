@@ -53,78 +53,65 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
     return LayoutBuilder(builder: (context, constraints) {
       print("constraints biggest = " + constraints.biggest.toString());
       _maxHeight = max(_maxHeight, constraints.maxHeight);
-      return Stack(
-        alignment: Alignment.topCenter,
+      return Column(
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          Positioned(
-            top: 0.0,        
-            bottom: 0.0,    
+          Container(
+            height: max(formMinHeight, constraints.maxHeight - bottomBarHeight),
+            width: constraints.maxWidth,
             child: SingleChildScrollView(
-              child: Container(
-                height: max(formMinHeight, constraints.maxHeight - bottomBarHeight),                
-                width: constraints.maxWidth,            
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      AmountFormField(
-                        context: context,
-                        accountModel: widget._account,
-                        focusNode: _amountFocusNode,
-                        controller: _amountController,
-                        validatorFn: widget._account.validateOutgoingPayment,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    AmountFormField(
+                      context: context,
+                      accountModel: widget._account,
+                      focusNode: _amountFocusNode,
+                      controller: _amountController,
+                      validatorFn: widget._account.validateOutgoingPayment,
+                    ),
+                    TextFormField(
+                      controller: _invoiceDescriptionController,
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.done,
+                      maxLines: null,
+                      maxLength: 90,
+                      maxLengthEnforced: true,
+                      decoration: new InputDecoration(
+                        labelText: "Note (optional)",
                       ),
-                      TextFormField(
-                        controller: _invoiceDescriptionController,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.done,
-                        maxLines: null,
-                        maxLength: 90,
-                        maxLengthEnforced: true,
-                        decoration: new InputDecoration(
-                          labelText: "Note (optional)",
-                        ),
-                        style: theme.FieldTextStyle.textStyle,
+                      style: theme.FieldTextStyle.textStyle,
+                    ),
+                    Container(
+                      padding: new EdgeInsets.only(top: 36.0),
+                      child: new Row(
+                        children: <Widget>[
+                          new Text("Available:", style: theme.textStyle),
+                          new Padding(
+                            padding: EdgeInsets.only(left: 3.0),
+                            child: new Text(widget._account.currency.format(widget._account.balance), style: theme.textStyle),
+                          )
+                        ],
                       ),
-                      Container(
-                        padding: new EdgeInsets.only(top: 36.0),
-                        child: new Row(
-                          children: <Widget>[
-                            new Text("Available:", style: theme.textStyle),
-                            new Padding(
-                              padding: EdgeInsets.only(left: 3.0),
-                              child: new Text(
-                                  widget._account.currency
-                                      .format(widget._account.balance),
-                                  style: theme.textStyle),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),                  
+                    )
+                  ],
                 ),
               ),
             ),
           ),
-          Positioned(
-            top: _maxHeight - bottomBarHeight + bottomBarTopMargin,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 36.0),
-              child: SubmitButton(
-                  widget._sessionState.paymentFulfilled ? "Close" : "Pay", () {
-                if (widget._sessionState.paymentFulfilled) {
-                  Navigator.pop(context);
-                } else {
-                  if (_formKey.currentState.validate()) {
-                    Int64 satoshies =
-                        widget._account.currency.parse(_amountController.text);
-                    widget._onSubmitPayementDetails(satoshies,
-                        description: _invoiceDescriptionController.text);
-                  }
+          Padding(
+            padding: const EdgeInsets.only(top:8, bottom: 36.0),
+            child: SubmitButton(widget._sessionState.paymentFulfilled ? "Close" : "Pay", () {
+              if (widget._sessionState.paymentFulfilled) {
+                Navigator.pop(context);
+              } else {
+                if (_formKey.currentState.validate()) {
+                  Int64 satoshies = widget._account.currency.parse(_amountController.text);
+                  widget._onSubmitPayementDetails(satoshies, description: _invoiceDescriptionController.text);
                 }
-              }),
-            ),
+              }
+            }),
           )
         ],
       );
