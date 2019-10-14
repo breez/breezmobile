@@ -77,7 +77,7 @@ class SendOnchainState extends State<SendOnchain> {
             actions: <Widget>[
               IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: Icon(Icons.close, color: theme.themeId == "BLUE" ? Theme.of(context).primaryIconTheme.color : Theme.of(context).iconTheme.color))
+                  icon: Icon(Icons.close, color: Theme.of(context).appBarTheme.actionsIconTheme.color))
             ],
             title: new Text(widget._title,
                 style: Theme.of(context).dialogTheme.titleTextStyle, textAlign: TextAlign.left),
