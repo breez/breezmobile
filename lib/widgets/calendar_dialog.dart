@@ -51,7 +51,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
       ),
       actions: <Widget>[
         FlatButton(
-          child: Text("Clear", style: theme.cancelButtonStyle),
+          child: Text("Clear", style: theme.cancelButtonStyle.copyWith(color: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor)),
           onPressed: _clearFilter,
         ),
         FlatButton(
@@ -79,14 +79,17 @@ class _CalendarDialogState extends State<CalendarDialog> {
     return Container(
       constraints: BoxConstraints(maxWidth: 85 * max(MediaQuery.of(context).textScaleFactor, 1.0)),
       child: GestureDetector(
-        child: TextFormField(
-          decoration: InputDecoration(
-            labelText: label,
-            labelStyle: Theme.of(context).dialogTheme.contentTextStyle,
+        child: Theme(
+          data: theme.themeId == "BLUE" ? Theme.of(context) : Theme.of(context).copyWith(disabledColor: Theme.of(context).backgroundColor),
+          child: TextField(
+            decoration: InputDecoration(
+              labelText: label,
+              labelStyle: Theme.of(context).dialogTheme.contentTextStyle,
+            ),
+            controller: textEditingController,
+            enabled: false,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
           ),
-          controller: textEditingController,
-          enabled: false,
-          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
         onTap: () {
           setState(() {
