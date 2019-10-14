@@ -56,6 +56,7 @@ class UserApp extends StatelessWidget {
 
           BreezUserModel user = snapshot.data;
           theme.themeId = user.themeId;
+          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
           return  BlocProvider(
             creator: () => new AddFundsBloc(userProfileBloc.userStream, accountBloc.accountStream),
             builder: (ctx) => MaterialApp(

@@ -33,7 +33,9 @@ final ThemeData blueTheme = ThemeData(
         color: Colors.white,
       ),
       color: Colors.transparent,
-      actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0))),
+      actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0)),
+      brightness: Brightness.dark,
+  ),
   dialogTheme: DialogTheme(
       titleTextStyle: TextStyle(color: BreezColors.grey[600], fontSize: 20.5, letterSpacing: 0.25),
       contentTextStyle: TextStyle(color: BreezColors.grey[500], fontSize: 16.0, height: 1.5),
@@ -84,7 +86,9 @@ final ThemeData darkTheme = ThemeData(
         color: Colors.white,
       ),
       color: Colors.white,
-      actionsIconTheme: IconThemeData(color: Colors.white)),
+      actionsIconTheme: IconThemeData(color: Colors.white),
+      brightness: Brightness.dark,
+  ),
   dialogTheme: DialogTheme(
       titleTextStyle: TextStyle(color: Colors.white, fontSize: 20.5, letterSpacing: 0.25),
       contentTextStyle: TextStyle(color: Colors.white70, fontSize: 16.0, height: 1.5),
