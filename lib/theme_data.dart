@@ -125,6 +125,9 @@ final VendorTheme bitrefill =
     VendorTheme(iconFgColor: Color.fromRGBO(68, 155, 247, 1.0), iconBgColor: Color(0xFFffffff), textColor: Color.fromRGBO(47, 47, 47, 1.0));
 final VendorTheme fastbitcoins = VendorTheme(iconBgColor: Color(0xFFff7c10), iconFgColor: Color(0xFF1f2a44), textColor: Color(0xFF1f2a44));
 final VendorTheme lnpizza = VendorTheme(iconBgColor: Color(0xFF000000), iconFgColor: Color(0xFFf8e71c));
+final VendorTheme xsats = VendorTheme(iconBgColor: Color(0xFF000000),);
+final Map<String, VendorTheme> vendorTheme = {"bitrefill": bitrefill, "fastbitcoins": fastbitcoins, "ln.pizza": lnpizza, "xsats": xsats,};
+
 final TextStyle drawerItemTextStyle = new TextStyle(height: 1.2, letterSpacing: 0.25, fontSize: 14.3);
 final TextStyle notificationTextStyle = new TextStyle(color: BreezColors.grey[500], fontSize: 10.0, letterSpacing: 0.06, height: 1.10);
 final TextStyle addFundsBtnStyle = new TextStyle(color: BreezColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
