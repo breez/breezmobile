@@ -5,6 +5,8 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/home/floating_actions_bar.dart';
@@ -93,6 +95,9 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
   }
 
   Widget _buildBalanceAndPayments(PaymentsModel paymentsModel, AccountModel account, String pendingCTPLink) {
+
+    LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+
     double listHeightSpace = MediaQuery.of(context).size.height - DASHBOARD_MIN_HEIGHT - kToolbarHeight - FILTER_MAX_SIZE - 25.0;
     double bottomPlaceholderSpace = paymentsModel.paymentsList == null || paymentsModel.paymentsList.length == 0 ? 0.0 : (listHeightSpace - PAYMENT_LIST_ITEM_HEIGHT * paymentsModel.paymentsList.length).clamp(0.0, listHeightSpace);
 
@@ -130,11 +135,22 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
       slivers.add(SliverPersistentHeader(              
         delegate: new FixedSliverDelegate(250.0,
             builder: (context, shrinkedHeight, overlapContent) {
-          return Container(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 130.0, left: 40.0, right: 40.0),
-              child: StatusText(account, message: message),
-            ),
+          return StreamBuilder<LSPStatus>(
+            stream: lspBloc.lspStatusStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data.connectionStatus != LSPConnectionStatus.Active && snapshot.data.connectionStatus != LSPConnectionStatus.InProgress) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 130.0),
+                  child: NoLSPWidget(error: snapshot.data.lastConnectionError,),
+                );
+              }
+              return Container(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 130.0, left: 40.0, right: 40.0),
+                  child: StatusText(account, message: message),
+                ),
+              );
+            }
           );
         }),
       ));
@@ -222,5 +238,45 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
     return true;
+  }
+}
+
+class NoLSPWidget extends StatelessWidget {
+  final String error;
+
+  const NoLSPWidget({Key key, this.error}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    List<Widget> buttons = [
+      Container(
+        height: 24.0,
+        child: OutlineButton(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
+          borderSide: BorderSide(style: BorderStyle.solid, color: Theme.of(context).buttonColor),
+          child: Text("SELECT...", style: TextStyle(fontSize: 12.3)), onPressed: (){
+            Navigator.of(context).pushNamed("/select_lsp");
+          }),
+      )
+                
+    ];    
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,      
+      children: <Widget>[       
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Text("In order to activate Breez, please select a provider.")
+          ],),
+        SizedBox(height: 24),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: buttons)
+        ]);
   }
 }
