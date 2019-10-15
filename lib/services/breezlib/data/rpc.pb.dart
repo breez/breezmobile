@@ -1102,14 +1102,15 @@ class Rates extends $pb.GeneratedMessage {
 class LSPInformation extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('LSPInformation', package: const $pb.PackageName('data'))
     ..aOS(1, 'name')
-    ..aOS(2, 'pubkey')
-    ..aOS(3, 'host')
-    ..aInt64(4, 'channelCapacity')
-    ..a<$core.int>(5, 'targetConf', $pb.PbFieldType.O3)
-    ..aInt64(6, 'baseFeeMsat')
-    ..a<$core.double>(7, 'feeRate', $pb.PbFieldType.OD)
-    ..a<$core.int>(8, 'timeLockDelta', $pb.PbFieldType.OU3)
-    ..aInt64(9, 'minHtlcMsat')
+    ..aOS(2, 'widgetUrl')
+    ..aOS(3, 'pubkey')
+    ..aOS(4, 'host')
+    ..aInt64(5, 'channelCapacity')
+    ..a<$core.int>(6, 'targetConf', $pb.PbFieldType.O3)
+    ..aInt64(7, 'baseFeeMsat')
+    ..a<$core.double>(8, 'feeRate', $pb.PbFieldType.OD)
+    ..a<$core.int>(9, 'timeLockDelta', $pb.PbFieldType.OU3)
+    ..aInt64(10, 'minHtlcMsat')
     ..hasRequiredFields = false
   ;
 
@@ -1130,45 +1131,50 @@ class LSPInformation extends $pb.GeneratedMessage {
   $core.bool hasName() => $_has(0);
   void clearName() => clearField(1);
 
-  $core.String get pubkey => $_getS(1, '');
-  set pubkey($core.String v) { $_setString(1, v); }
-  $core.bool hasPubkey() => $_has(1);
-  void clearPubkey() => clearField(2);
+  $core.String get widgetUrl => $_getS(1, '');
+  set widgetUrl($core.String v) { $_setString(1, v); }
+  $core.bool hasWidgetUrl() => $_has(1);
+  void clearWidgetUrl() => clearField(2);
 
-  $core.String get host => $_getS(2, '');
-  set host($core.String v) { $_setString(2, v); }
-  $core.bool hasHost() => $_has(2);
-  void clearHost() => clearField(3);
+  $core.String get pubkey => $_getS(2, '');
+  set pubkey($core.String v) { $_setString(2, v); }
+  $core.bool hasPubkey() => $_has(2);
+  void clearPubkey() => clearField(3);
 
-  Int64 get channelCapacity => $_getI64(3);
-  set channelCapacity(Int64 v) { $_setInt64(3, v); }
-  $core.bool hasChannelCapacity() => $_has(3);
-  void clearChannelCapacity() => clearField(4);
+  $core.String get host => $_getS(3, '');
+  set host($core.String v) { $_setString(3, v); }
+  $core.bool hasHost() => $_has(3);
+  void clearHost() => clearField(4);
 
-  $core.int get targetConf => $_get(4, 0);
-  set targetConf($core.int v) { $_setSignedInt32(4, v); }
-  $core.bool hasTargetConf() => $_has(4);
-  void clearTargetConf() => clearField(5);
+  Int64 get channelCapacity => $_getI64(4);
+  set channelCapacity(Int64 v) { $_setInt64(4, v); }
+  $core.bool hasChannelCapacity() => $_has(4);
+  void clearChannelCapacity() => clearField(5);
 
-  Int64 get baseFeeMsat => $_getI64(5);
-  set baseFeeMsat(Int64 v) { $_setInt64(5, v); }
-  $core.bool hasBaseFeeMsat() => $_has(5);
-  void clearBaseFeeMsat() => clearField(6);
+  $core.int get targetConf => $_get(5, 0);
+  set targetConf($core.int v) { $_setSignedInt32(5, v); }
+  $core.bool hasTargetConf() => $_has(5);
+  void clearTargetConf() => clearField(6);
 
-  $core.double get feeRate => $_getN(6);
-  set feeRate($core.double v) { $_setDouble(6, v); }
-  $core.bool hasFeeRate() => $_has(6);
-  void clearFeeRate() => clearField(7);
+  Int64 get baseFeeMsat => $_getI64(6);
+  set baseFeeMsat(Int64 v) { $_setInt64(6, v); }
+  $core.bool hasBaseFeeMsat() => $_has(6);
+  void clearBaseFeeMsat() => clearField(7);
 
-  $core.int get timeLockDelta => $_get(7, 0);
-  set timeLockDelta($core.int v) { $_setUnsignedInt32(7, v); }
-  $core.bool hasTimeLockDelta() => $_has(7);
-  void clearTimeLockDelta() => clearField(8);
+  $core.double get feeRate => $_getN(7);
+  set feeRate($core.double v) { $_setDouble(7, v); }
+  $core.bool hasFeeRate() => $_has(7);
+  void clearFeeRate() => clearField(8);
 
-  Int64 get minHtlcMsat => $_getI64(8);
-  set minHtlcMsat(Int64 v) { $_setInt64(8, v); }
-  $core.bool hasMinHtlcMsat() => $_has(8);
-  void clearMinHtlcMsat() => clearField(9);
+  $core.int get timeLockDelta => $_get(8, 0);
+  set timeLockDelta($core.int v) { $_setUnsignedInt32(8, v); }
+  $core.bool hasTimeLockDelta() => $_has(8);
+  void clearTimeLockDelta() => clearField(9);
+
+  Int64 get minHtlcMsat => $_getI64(9);
+  set minHtlcMsat(Int64 v) { $_setInt64(9, v); }
+  $core.bool hasMinHtlcMsat() => $_has(9);
+  void clearMinHtlcMsat() => clearField(10);
 }
 
 class LSPList extends $pb.GeneratedMessage {
