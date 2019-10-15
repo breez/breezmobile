@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -18,7 +17,6 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:breez/routes/shared/splash_page.dart';
 import 'package:breez/routes/shared/initial_walkthrough.dart';
 import 'package:breez/routes/shared/network/network.dart';
@@ -35,6 +33,7 @@ import 'package:breez/routes/user/pay_nearby/pay_nearby_page.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_complete.dart';
 import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
 import 'package:breez/routes/user/marketplace/marketplace.dart';
+import 'bloc/lsp/lsp_bloc.dart';
 import 'themes.dart';
 
 class UserApp extends StatelessWidget {
@@ -47,6 +46,7 @@ class UserApp extends StatelessWidget {
     var userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     var backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     var connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
+    var lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     return StreamBuilder(
         stream: userProfileBloc.userStream,
@@ -71,7 +71,7 @@ class UserApp extends StatelessWidget {
                     child: child);
               },
               initialRoute: user.registered ? (user.locked ? '/lockscreen' : null) : '/splash',
-              home: new Home(accountBloc, invoiceBloc, userProfileBloc, connectPayBloc, backupBloc),
+              home: new Home(accountBloc, invoiceBloc, userProfileBloc, connectPayBloc, backupBloc, lspBloc),
               onGenerateRoute: (RouteSettings settings) {
                 switch (settings.name) {
                   case '/lockscreen':
@@ -88,7 +88,7 @@ class UserApp extends StatelessWidget {
                     );
                   case '/home':
                     return new FadeInRoute(
-                      builder: (_) => new Home(accountBloc,invoiceBloc,userProfileBloc,connectPayBloc,backupBloc),
+                      builder: (_) => new Home(accountBloc,invoiceBloc,userProfileBloc,connectPayBloc,backupBloc, lspBloc),
                       settings: settings,
                     );
                   case '/intro':
@@ -131,6 +131,13 @@ class UserApp extends StatelessWidget {
                       fullscreenDialog: true,
                       builder: (_) =>
                           new SendCoinsDialog(accountBloc: accountBloc),
+                      settings: settings,
+                    );
+                  case '/select_lsp':
+                    return new MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (_) =>
+                          new SelectLSPPage(lstBloc: lspBloc),
                       settings: settings,
                     );
                   case '/get_refund':
