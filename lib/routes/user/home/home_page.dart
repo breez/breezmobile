@@ -6,6 +6,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/account_required_actions.dart';
 import 'package:breez/routes/shared/no_connection_dialog.dart';
@@ -37,8 +38,9 @@ class Home extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final ConnectPayBloc ctpBloc;
   final BackupBloc backupBloc;
+  final LSPBloc lspBloc;
 
-  Home(this.accountBloc, this.invoiceBloc, this.userProfileBloc, this.ctpBloc, this.backupBloc);
+  Home(this.accountBloc, this.invoiceBloc, this.userProfileBloc, this.ctpBloc, this.backupBloc, this.lspBloc);
 
   final List<DrawerItemConfig> _screens =
       new List<DrawerItemConfig>.unmodifiable(
@@ -99,6 +101,7 @@ class HomeState extends State<Home> {
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
     _listenWhiltelistPermissionsRequest();
+    _listenLSPSelectionPrompt();
     _hiddenRountes.add("/get_refund");
     widget.accountBloc.accountStream.listen((acc){
       setState(() {        
@@ -138,7 +141,7 @@ class HomeState extends State<Home> {
               actions: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(14.0),
-                  child: AccountRequiredActionsIndicator(widget.backupBloc, widget.accountBloc, widget.userProfileBloc),
+                  child: AccountRequiredActionsIndicator(widget.backupBloc, widget.accountBloc, widget.userProfileBloc, widget.lspBloc),
                 ),],
               leading: new IconButton(
                   icon: ImageIcon(
@@ -245,6 +248,14 @@ class HomeState extends State<Home> {
       await promptError(context, "Configuration Error", Text("Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.", style: Theme.of(context).dialogTheme.contentTextStyle),
                         okText: "Exit Breez", okFunc: () => exit(0), disableBack: true );        
     });
+  }
+
+  void _listenLSPSelectionPrompt() async {
+    var afterBootstrap = await widget.accountBloc.accountStream.firstWhere(
+      (acc) => acc.isInitialBootstrap && acc.bootstrapProgress == 1.0, orElse: () => null);
+    if (afterBootstrap != null) {
+      Navigator.of(context).pushNamed("/select_lsp");
+    }
   }
 
   void _listenWhiltelistPermissionsRequest(){
