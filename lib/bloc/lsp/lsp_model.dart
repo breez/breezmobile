@@ -7,6 +7,7 @@ class LSPInfo {
   LSPInfo(this._lspInformation, this.lspID);
 
   String get name => _lspInformation.name;
+  String get widgetURL => _lspInformation.widgetUrl;
   String get pubKey => _lspInformation.pubkey;
   String get host => _lspInformation.host;
   bool get frozen => _lspInformation.isFrozen;

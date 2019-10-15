@@ -39,7 +39,11 @@ class LSPBloc with AsyncActionsHandler {
   }
 
   Future _connectLSP(ConnectLSP action) async {
-    action.resolve(await _breezLib.connectToLSP(action.lspID));
+    if (action.lnurl?.isNotEmpty == true) {
+      action.resolve(await _breezLib.connectToLnurl(action.lnurl));  
+    } else {
+      action.resolve(await _breezLib.connectToLSP(action.lspID));
+    }
   }
 
   void close() async {
