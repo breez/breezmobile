@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/breez_date_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
   TextEditingController _endDateController = new TextEditingController();  
   DateTime _endDate = DateTime.now();
   DateTime _startDate;
+  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
 
   @override
   void initState() {
@@ -43,7 +45,6 @@ class _CalendarDialogState extends State<CalendarDialog> {
         style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
       content: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           _selectDateButton("Start", _startDateController, true),
           _selectDateButton("End", _endDateController, false),
@@ -76,20 +77,30 @@ class _CalendarDialogState extends State<CalendarDialog> {
   }
 
   Widget _selectDateButton(String label, TextEditingController textEditingController, bool isStartBtn) {
-    return Container(
-      constraints: BoxConstraints(maxWidth: 85 * max(MediaQuery.of(context).textScaleFactor, 1.0)),
+    return Expanded(
       child: GestureDetector(
-        child: Theme(
-          data: theme.themeId == "BLUE" ? Theme.of(context) : Theme.of(context).copyWith(disabledColor: Theme.of(context).backgroundColor),
-          child: TextField(
-            decoration: InputDecoration(
-              labelText: label,
-              labelStyle: Theme.of(context).dialogTheme.contentTextStyle,
-            ),
-            controller: textEditingController,
-            enabled: false,
-            style: Theme.of(context).dialogTheme.contentTextStyle,
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+              AutoSizeText(
+                label,
+                style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(fontSize: 12),
+                maxLines: 1,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+              ),
+              AutoSizeText(
+                textEditingController.text,
+                style: Theme.of(context).dialogTheme.contentTextStyle,
+                maxLines: 1,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+                group: _autoSizeGroup,
+              )
+            ]),
+          ],
         ),
         onTap: () {
           setState(() {
