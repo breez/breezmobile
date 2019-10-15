@@ -233,6 +233,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   Widget _buildReserveAmountWarning(AccountModel account) {
     return Center(
       child: Container(
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: Theme.of(context).errorColor)),
         padding: new EdgeInsets.all(16),
         child: Text(
