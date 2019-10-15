@@ -86,7 +86,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
             Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
               AutoSizeText(
                 label,
-                style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(fontSize: 12),
+                style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.w300),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
                 stepGranularity: 0.1,
