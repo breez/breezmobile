@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:math';
+
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/date.dart';
+import 'package:breez/widgets/breez_date_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/widgets/breez_date_picker.dart';
-import 'package:breez/utils/date.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class CalendarDialog extends StatefulWidget {
   final BuildContext context;
@@ -40,19 +42,16 @@ class _CalendarDialogState extends State<CalendarDialog> {
         "Choose a date range:",
         style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
-      content: SingleChildScrollView(
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            _selectDateButton("Start", _startDateController, true),
-            _selectDateButton("End", _endDateController, false),
-          ],
-        ),
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          _selectDateButton("Start", _startDateController, true),
+          _selectDateButton("End", _endDateController, false),
+        ],
       ),
       actions: <Widget>[
         FlatButton(
-          child: Text("Clear", style: theme.cancelButtonStyle),
+          child: Text("Clear", style: theme.cancelButtonStyle.copyWith(color: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor)),
           onPressed: _clearFilter,
         ),
         FlatButton(
@@ -77,25 +76,28 @@ class _CalendarDialogState extends State<CalendarDialog> {
   }
 
   Widget _selectDateButton(String label, TextEditingController textEditingController, bool isStartBtn) {
-    return FlatButton(
-      child: Container(
-        child: TextFormField(
-          decoration: InputDecoration(
-            labelText: label,
-            labelStyle: Theme.of(context).dialogTheme.contentTextStyle,
+    return Container(
+      constraints: BoxConstraints(maxWidth: 85 * max(MediaQuery.of(context).textScaleFactor, 1.0)),
+      child: GestureDetector(
+        child: Theme(
+          data: theme.themeId == "BLUE" ? Theme.of(context) : Theme.of(context).copyWith(disabledColor: Theme.of(context).backgroundColor),
+          child: TextField(
+            decoration: InputDecoration(
+              labelText: label,
+              labelStyle: Theme.of(context).dialogTheme.contentTextStyle,
+            ),
+            controller: textEditingController,
+            enabled: false,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
           ),
-          controller: textEditingController,
-          enabled: false,
-          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
-        width: 84.0,
-        padding: EdgeInsets.zero,
+        onTap: () {
+          setState(() {
+            _selectDate(context, isStartBtn);
+          });
+        },
+        behavior: HitTestBehavior.translucent,
       ),
-      onPressed: () {
-        setState(() {
-          _selectDate(context, isStartBtn);
-        });
-      },
     );
   }
 
