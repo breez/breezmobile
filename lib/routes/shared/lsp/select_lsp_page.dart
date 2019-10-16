@@ -29,19 +29,23 @@ class SelectLSPPageState extends State<SelectLSPPage> {
   @override
   void initState() {
     super.initState();
+    _fetchLSPS();
+  }
+
+  void _fetchLSPS() {
     var fetchAction = FetchLSPList();
     widget.lstBloc.actionsSink.add(fetchAction);
-    fetchAction.future
-    .then((result){
+    fetchAction.future.then((result) {
       List<LSPInfo> lspList = result as List<LSPInfo>;
-      var breezLSP = lspList.firstWhere((l) => l.lspID == "62b09753-c742-4150-9656-5e5a55eefba0", orElse: () => null);
+      var breezLSP = lspList.firstWhere(
+          (l) => l.lspID == "62b09753-c742-4150-9656-5e5a55eefba0",
+          orElse: () => null);
       if (breezLSP != null && _selectedLSP == null) {
         setState(() {
           _selectedLSP = breezLSP;
         });
       }
-    })
-    .catchError((err) {
+    }).catchError((err) {
       setState(() {
         _error = err;
       });
@@ -73,10 +77,21 @@ class SelectLSPPageState extends State<SelectLSPPage> {
           stream: widget.lstBloc.lspStatusStream,
           builder: (ctx, snapshot) {
             if (_error != null) {
-              return Text("Error: " + _error.toString());
+              return Padding(
+                padding: EdgeInsets.fromLTRB(16.0, 100.0, 16.0, 0.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Text(
+                        "There was an error fetching lightning providers. Please check your internet connection and try again.",
+                        textAlign: TextAlign.center),
+                  ],
+                ),
+              );
             }
 
-            if (!snapshot.hasData) {
+            if (!snapshot.hasData || snapshot.data.availableLSPs.length == 0){
               return Center(child: Loader());
             }
 
@@ -126,32 +141,45 @@ class SelectLSPPageState extends State<SelectLSPPage> {
               ),
             );
           }),
-      bottomNavigationBar: _selectedLSP != null
-          ? SingleButtonBottomBar(
-              text: "SELECT",
-              onPressed: () async {
-                ConnectLSP connectAction;
-                if (_selectedLSP.widgetURL?.isNotEmpty == true) {
-                  String lnurl = await Navigator.of(context).push<String>(
-                      FadeInRoute(
-                          builder: (_) => LSPWebViewPage(null,
-                              _selectedLSP.widgetURL, _selectedLSP.name)));
-                  connectAction = ConnectLSP(_selectedLSP.lspID, lnurl);
-                } else {
-                  connectAction = ConnectLSP(_selectedLSP.lspID, null);
-                }
-
-                if (connectAction != null) {
-                  widget.lstBloc.actionsSink.add(connectAction);
-                  Navigator.of(context).pop();
-                  // connectAction.future.then((_) {
-                  //   Navigator.of(context).pop();
-                  // }).catchError((err) {
-                  //   promptError(context, "Connect Error", Text(err.toString()));
-                  // });
-                }
-              })
-          : null,
+      bottomNavigationBar: _buildBottomButton(),
     );
+  }
+
+  Widget _buildBottomButton() {
+    if (_error != null) {
+      return SingleButtonBottomBar(
+        text: "RETRY",
+        onPressed: () {
+          setState(() {
+            _error = null;
+            _fetchLSPS();
+          });          
+        },
+      );
+    }
+    if (_selectedLSP != null) {
+      return SingleButtonBottomBar(
+          text: "SELECT",
+          onPressed: () async {
+            ConnectLSP connectAction;
+            if (_selectedLSP.widgetURL?.isNotEmpty == true) {
+              String lnurl = await Navigator.of(context).push<String>(
+                  FadeInRoute(
+                      builder: (_) => LSPWebViewPage(
+                          null, _selectedLSP.widgetURL, _selectedLSP.name)));
+              if (lnurl != null) {
+                connectAction = ConnectLSP(_selectedLSP.lspID, lnurl);
+              }
+            } else {
+              connectAction = ConnectLSP(_selectedLSP.lspID, null);
+            }
+
+            if (connectAction != null) {
+              widget.lstBloc.actionsSink.add(connectAction);
+              Navigator.of(context).pop();
+            }
+          });
+    }
+    return null;
   }
 }
