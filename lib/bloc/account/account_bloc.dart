@@ -142,7 +142,7 @@ class AccountBloc {
       ChangeSyncUIState: _collapseSyncUI,
       FetchRates: _fetchRates,
       ResetChainService: _handleResetChainService,
-      SendCoins: _handleSendCoins,
+      SendCoins: _handleSendCoins,      
     };
 
     _accountController.add(AccountModel.initial());
@@ -164,8 +164,7 @@ class AccountBloc {
       _listenMempoolTransactions();
       _listenRoutingConnectionChanges();
       _listenBootstrapStatus();
-      _trackOnBoardingStatus();
-      _openAutomaticLSPConnection();
+      _trackOnBoardingStatus();      
       _listenEnableAccount();
     });
   }
@@ -180,44 +179,7 @@ class AccountBloc {
       });
     });
   }
-
-
-  void _openAutomaticLSPConnection(){
-    bool pendingConnection = false;
-    _accountController.stream  
-    .where((acc) => acc.synced && acc.enabled)
-    .listen((acc) async {
-
-        // If we have a channel opened or pending, then it is a sign that our pending
-        // connection request has completed and we are now connected to lsp.
-        if (acc.connected || acc.processingConnection) {
-          pendingConnection = false;
-          return;
-        }
-
-        // we already have a pending connection, let's skip this.
-        if (pendingConnection) {
-          return;
-        }
-
-        // Mark a pending connection and try to connect to a single LSP if exists.
-        pendingConnection = true;
-        Future.doWhile(() async {
-          try {
-            var list = await _breezLib.getLSPList();
-            var lspID = list.lsps.keys.elementAt(0);
-            log.info("connecting to lsp with id $lspID");
-            await _breezLib.connectToLSP(lspID);            
-            return false;
-          } catch(e) {
-            log.severe("failed to open automatic lsp connection, trying again");
-            await Future.delayed(Duration(seconds: 5));            
-          }
-          return true;
-        });             
-    });
-  }
-
+  
   //settings persistency
   Future _hanleAccountSettings() async {
     var preferences = await ServiceInjector().sharedPreferences;
