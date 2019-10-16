@@ -138,7 +138,7 @@ class AccountPageState extends State<AccountPage> with SingleTickerProviderState
           return StreamBuilder<LSPStatus>(
             stream: lspBloc.lspStatusStream,
             builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.data.connectionStatus != LSPConnectionStatus.Active && snapshot.data.connectionStatus != LSPConnectionStatus.InProgress) {
+              if (snapshot.hasData && snapshot.data.selectionRequired) {
                 return Padding(
                   padding: const EdgeInsets.only(top: 130.0),
                   child: NoLSPWidget(error: snapshot.data.lastConnectionError,),

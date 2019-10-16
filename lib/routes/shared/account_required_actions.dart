@@ -169,7 +169,7 @@ class AccountRequiredActionsIndicatorState
                           }
 
                           var lspStat = lspStatusSnapshot?.data;
-                          if (lspStat?.lastConnectionError != null || lspStat?.selectionRequired == true && lspStat?.dontPromptToConnect == true) {
+                          if (lspStat?.selectionRequired == true && lspStat?.dontPromptToConnect == true) {
                              warnings.add(WarningAction(() {
                               if (lspStat?.lastConnectionError != null) {
                                 showProvierErrorDialog(context, lspStat?.lastConnectionError, (){
