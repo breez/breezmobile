@@ -100,15 +100,20 @@ class LSPBloc with AsyncActionsHandler {
       Account_AccountStatus.CONNECTED, Account_AccountStatus.PROCESSING_CONNECTION
     ];
 
-    _breezLib.notificationStream.listen((_) {
-      _breezLib.getAccount().then((acc) async {
-        bool lspSelected =  lspSelectedStatuses.contains(acc.status);
-        _lspsStatusController.add(
-          _lspsStatusController.value.copyWith(
-            connectionStatus: lspSelected ? LSPConnectionStatus.Active : LSPConnectionStatus.NotSelected,
-            dontPromptToConnect: _lspsStatusController.value.dontPromptToConnect || lspSelected)
-        );        
-      });
+
+    bool breezReady = false;
+    _breezLib.notificationStream.listen((event) {
+      breezReady = breezReady || event.type == NotificationEvent_NotificationType.READY;
+      if (breezReady && event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
+        _breezLib.getAccount().then((acc) async {
+          bool lspSelected =  lspSelectedStatuses.contains(acc.status);
+          _lspsStatusController.add(
+            _lspsStatusController.value.copyWith(
+              connectionStatus: lspSelected ? LSPConnectionStatus.Active : LSPConnectionStatus.NotSelected,
+              dontPromptToConnect: _lspsStatusController.value.dontPromptToConnect || lspSelected)
+          );        
+        });
+      }
     });    
   }
 

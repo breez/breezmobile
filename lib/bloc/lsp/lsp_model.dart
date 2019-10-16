@@ -29,12 +29,14 @@ class LSPStatus {
   }
 
   bool get selectionRequired =>
-      connectionStatus == LSPConnectionStatus.NotSelected && !shouldAutoReconnect;
+      connectionStatus == LSPConnectionStatus.NotSelected && !shouldAutoReconnect && 
+        (availableLSPs.length > 0 || lastConnectionError != null);
 
   bool get shouldAutoReconnect =>
       connectionStatus == LSPConnectionStatus.NotSelected &&
               availableLSPs.length == 1 &&
               availableLSPs[0].widgetURL.isEmpty &&
+              !dontPromptToConnect &&
               lastConnectionError == null;         
 }
 
