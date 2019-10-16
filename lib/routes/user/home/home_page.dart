@@ -251,11 +251,7 @@ class HomeState extends State<Home> {
   }
 
   void _listenLSPSelectionPrompt() async {
-    var afterBootstrap = await widget.accountBloc.accountStream.firstWhere(
-      (acc) => acc.isInitialBootstrap && acc.bootstrapProgress == 1.0, orElse: () => null);
-    if (afterBootstrap != null) {
-      Navigator.of(context).pushNamed("/select_lsp");
-    }
+    widget.lspBloc.lspPromptStream.first.then((_) => Navigator.of(context).pushNamed("/select_lsp"));    
   }
 
   void _listenWhiltelistPermissionsRequest(){
