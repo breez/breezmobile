@@ -65,25 +65,26 @@ class SendOnchainState extends State<SendOnchain> {
           accentColor: Theme.of(context).textTheme.button.color,
           primaryColor: Theme.of(context).textTheme.button.color,
           unselectedWidgetColor: Theme.of(context).canvasColor,
-          errorColor: Colors.red),
+          errorColor: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
+            brightness: theme.themeId == "BLUE" ? Brightness.light : Theme.of(context).appBarTheme.brightness,
             iconTheme: Theme.of(context).appBarTheme.iconTheme,
             textTheme: Theme.of(context).appBarTheme.textTheme,
             automaticallyImplyLeading: false,
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).backgroundColor,
             actions: <Widget>[
               IconButton(
                   onPressed: () => Navigator.pop(context),
-                  // Color needs to be changed
-                  icon: Icon(Icons.close, color: theme.BreezColors.grey[600]))
+                  icon: Icon(Icons.close, color: Theme.of(context).appBarTheme.actionsIconTheme.color))
             ],
             title: new Text(widget._title,
                 style: Theme.of(context).dialogTheme.titleTextStyle, textAlign: TextAlign.left),
             elevation: 0.0),
         bottomNavigationBar: BottomAppBar(
-          color: Colors.white,
+          elevation: 0,
+          color: Theme.of(context).backgroundColor,
           child: Padding(
             padding: const EdgeInsets.only(right: 12.0),
             child: Row(
@@ -104,8 +105,7 @@ class SendOnchainState extends State<SendOnchain> {
                         }
                       });
                     },
-                    child: Text("BROADCAST", style: Theme.of(context).textTheme.button,),
-                    color: Theme.of(context).buttonColor,
+                    child: Text("BROADCAST", style: Theme.of(context).primaryTextTheme.button,),
                   )
                 ]),
           ),
@@ -124,7 +124,7 @@ class SendOnchainState extends State<SendOnchain> {
                         widget.prefixMessage != null ? 
                           Text(widget.prefixMessage, 
                             style: new TextStyle(
-                                    color: theme.BreezColors.grey[500],
+                                    color: Theme.of(context).dialogTheme.contentTextStyle.color,
                                     fontSize: 16.0,
                                     height: 1.2)) : 
                           SizedBox(),                        

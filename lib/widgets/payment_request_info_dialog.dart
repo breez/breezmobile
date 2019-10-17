@@ -171,7 +171,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
           accentColor: Theme.of(context).textTheme.button.color,
           primaryColor: Theme.of(context).textTheme.button.color,
-          errorColor: Theme.of(context).primaryColor != Color.fromRGBO(255, 255, 255, 1.0) ? Theme.of(context).errorColor : Colors.red),
+          errorColor: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor),
           child: Form(
             autovalidate: true,
             key: _formKey,
@@ -241,7 +241,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
       child: AutoSizeText(validationError,
-          maxLines: 3, textAlign: TextAlign.center, style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16, color: Theme.of(context).primaryColor != Color.fromRGBO(255, 255, 255, 1.0) ? Theme.of(context).errorColor : Colors.red)),
+          maxLines: 3, textAlign: TextAlign.center, style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16, color: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor)),
     );
   }
 

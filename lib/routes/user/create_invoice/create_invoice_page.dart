@@ -173,8 +173,11 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                   StreamBuilder(
                       stream: accountBloc.accountStream,
                       builder: (BuildContext context, AsyncSnapshot<AccountModel> accSnapshot) {
+                        if (!accSnapshot.hasData) {
+                          return Container();
+                        }
                         AccountModel acc = accSnapshot.data;
-
+                        
                         String message;
                         if (accSnapshot.hasError) {
                           message = accSnapshot.error.toString();
@@ -200,7 +203,10 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                 ),
                               ]));
                         } else {
-                          return Container();
+                          return Padding(
+                            padding: EdgeInsets.only(top: 50.0),
+                            child: _buildReserveAmountWarning(accSnapshot.data),
+                          );
                         }
                       })
                 ],
@@ -221,6 +227,21 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         minFontSize: MinFontSize(context).minFontSize,
       ),
       onTap: () => _amountController.text = acc.currency.format(acc.maxAllowedToReceive, includeSymbol: false, userInput: true),
+    );
+  }
+
+  Widget _buildReserveAmountWarning(AccountModel account) {
+    return Center(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: Theme.of(context).errorColor)),
+        padding: new EdgeInsets.all(16),
+        child: Text(
+          "Breez requires you to keep\n${account.currency.format(account.warningMaxChanReserveAmount, fixedDecimals: false)} in your balance.",
+          style: Theme.of(context).textTheme.caption,
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }

@@ -33,8 +33,9 @@ import 'package:breez/routes/user/pay_nearby/pay_nearby_page.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_complete.dart';
 import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
 import 'package:breez/routes/user/marketplace/marketplace.dart';
+import 'package:flutter/services.dart';
 import 'bloc/lsp/lsp_bloc.dart';
-import 'themes.dart';
+import 'theme_data.dart' as theme;
 
 class UserApp extends StatelessWidget {
   GlobalKey<NavigatorState> _navigatorKey = new GlobalKey<NavigatorState>();
@@ -56,12 +57,14 @@ class UserApp extends StatelessWidget {
           }
 
           BreezUserModel user = snapshot.data;
+          theme.themeId = user.themeId;
+          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
           return  BlocProvider(
             creator: () => new AddFundsBloc(userProfileBloc.userStream, accountBloc.accountStream),
             builder: (ctx) => MaterialApp(
               navigatorKey: _navigatorKey,
               title: 'Breez',
-              theme: Themes.themeMap[user.themeId],
+              theme: theme.themeMap[user.themeId],
               builder: (BuildContext context, Widget child) {
                 final MediaQueryData data = MediaQuery.of(context);
                 return MediaQuery(
