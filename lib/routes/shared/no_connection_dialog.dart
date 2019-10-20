@@ -39,6 +39,24 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
               );
             }),
           TextSpan(text: "chain information\n", style: Theme.of(context).dialogTheme.contentTextStyle),
+
+          TextSpan(text: "• ", style: Theme.of(context).dialogTheme.contentTextStyle),
+          TextSpan(
+            text: "Force Rescan",
+            style: theme.blueLinkStyle,
+            recognizer: TapGestureRecognizer()..onTap = () async {                            
+              _promptForRestart(context).then(
+                (ok) async {
+                  if (ok) {
+                    ForceRescan resetAction = ForceRescan();
+                    accountBloc.userActionsSink.add(resetAction);
+                    await resetAction.future;
+                    exit(0);
+                  }
+                }
+              );
+            }),          
+
           TextSpan(text: "• ", style: Theme.of(context).dialogTheme.contentTextStyle),
           TextSpan(
             text: "Reset ", 

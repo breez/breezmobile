@@ -12,6 +12,8 @@ class ResetNetwork extends AsyncAction {}
 
 class ResetChainService extends AsyncAction {}
 
+class ForceRescan extends AsyncAction {}
+
 class RestartDaemon extends AsyncAction {}
 
 class FetchSwapFundStatus extends AsyncAction{}

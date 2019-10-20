@@ -26,6 +26,7 @@ import 'package:flutter/services.dart';
 import 'account_synchronizer.dart';
 
 class AccountBloc {
+  static const FORCE_RESCAN_FILE_NAME = "FORCE_RESCAN";
   static const FORCE_BOOTSTRAP_FILE_NAME = "FORCE_BOOTSTRAP";
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
@@ -140,6 +141,7 @@ class AccountBloc {
       ChangeSyncUIState: _collapseSyncUI,
       FetchRates: _fetchRates,
       ResetChainService: _handleResetChainService,
+      ForceRescan: _forceRescan,
       SendCoins: _handleSendCoins,
     };
 
@@ -235,6 +237,12 @@ class AccountBloc {
     var workingDir = await _breezLib.getWorkingDir();
     var bootstrapFile = File(workingDir.path + "/$FORCE_BOOTSTRAP_FILE_NAME");    
     action.resolve(await bootstrapFile.create(recursive: true));
+  }
+
+  Future _forceRescan(ForceRescan action) async {
+    var workingDir = await _breezLib.getWorkingDir();
+    var rescanFile = File(workingDir.path + "/$FORCE_RESCAN_FILE_NAME");
+    action.resolve(await rescanFile.create(recursive: true));
   }
 
   Future _handleRestartDaemon(RestartDaemon action) async {
