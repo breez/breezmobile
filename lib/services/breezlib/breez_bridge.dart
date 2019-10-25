@@ -7,7 +7,6 @@ import 'package:breez/services/breezlib/lnd_bootstrapper.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
-import 'package:ini/ini.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -52,9 +51,9 @@ class BreezBridge {
       .then((workingDir) {
         return copyBreezConfig(workingDir.path)
           .then((_) async {
-            var tmpDir = await _tempDirFuture;                     
-            await init(workingDir.path, tmpDir.path);                        
-            _startedCompleter.complete(true);            
+            var tmpDir = await _tempDirFuture;            
+            await init(workingDir.path, tmpDir.path);            
+            _startedCompleter.complete(true);
           });
       });
   }
@@ -381,14 +380,6 @@ class BreezBridge {
         }
     );
   }
-
-  Future<String> getWalletDBpFilePath() async {
-    String lines = await rootBundle.loadString('conf/breez.conf');
-    var config =  Config.fromString(lines);
-    String lndDir = (await getApplicationDocumentsDirectory()).path;    
-    String network = config.get('Application Options', 'network');
-    return '$lndDir/data/chain/bitcoin/$network/wallet.db';    
-  } 
 
   Future<bool> bootstrap() async {
     var bootstrapNeeded = await needsBootstrap();
