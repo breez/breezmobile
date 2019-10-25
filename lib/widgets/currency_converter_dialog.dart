@@ -11,6 +11,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:breez/widgets/breez_dropdown.dart';
 
 import 'flushbar.dart';
 
@@ -146,7 +147,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                       child: new DropdownButtonHideUnderline(
                         child: ButtonTheme(
                           alignedDropdown: true,
-                          child: new DropdownButton(
+                          child: new BreezDropdownButton(
                             onChanged: (value) => _selectFiatCurrency(account, value),
                             value: account.fiatCurrency.currencyData.shortName,
                             iconEnabledColor: Theme.of(context).dialogTheme.titleTextStyle.color,
@@ -204,6 +205,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog> with S
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
                       focusNode: _fiatAmountFocusNode,
                       autofocus: true,
+                      onEditingComplete: () => _fiatAmountFocusNode.unfocus(),
                       controller: _fiatAmountController,
                       validator: (_) {
                         if (widget.validatorFn != null) {
