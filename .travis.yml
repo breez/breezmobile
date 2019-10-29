@@ -8,6 +8,7 @@ before_script:
 - chmod 600 ./travis/build_server_key
 - ssh-add ./travis/build_server_key
 - "./travis/add-key.sh"
+- brew install go@1.12
 - brew upgrade go@1.12
 - export PATH="/usr/local/opt/go@1.12/bin:$PATH"
 - go version
