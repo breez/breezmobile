@@ -8,8 +8,8 @@ before_script:
 - chmod 600 ./travis/build_server_key
 - ssh-add ./travis/build_server_key
 - "./travis/add-key.sh"
-- brew install go@1.11
-- export PATH="/usr/local/opt/go@1.11/bin:$PATH"
+- brew install go@1.12
+- export PATH="/usr/local/opt/go@1.12/bin:$PATH"
 - go version
 - brew install bazaar
 - git clone -b lsp https://github.com/breez/breez.git gopath/src/github.com/breez/breez
@@ -19,11 +19,6 @@ before_script:
 - export GOPATH=$TMP_GOPATH
 - go get golang.org/x/mobile/cmd/gomobile
 - go get golang.org/x/mobile/cmd/gobind
-- pushd $GOPATH/src/golang.org/x/mobile/
-- git reset --hard 597adff16ade9d88626f8caea514bb189b8c74ee
-- popd
-- go install golang.org/x/mobile/cmd/gomobile
-- go install golang.org/x/mobile/cmd/gobind
 - "$GOPATH/bin/gomobile init"
 - mkdir -p build/ios
 - PATH=$PATH:$GOPATH/bin gomobile bind -target=ios -tags="ios experimental signrpc
