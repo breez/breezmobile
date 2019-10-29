@@ -8,6 +8,7 @@ before_script:
 - chmod 600 ./travis/build_server_key
 - ssh-add ./travis/build_server_key
 - "./travis/add-key.sh"
+- brew install go@1.11
 - brew install go@1.12
 - export PATH="/usr/local/opt/go@1.12/bin:$PATH"
 - go version
@@ -15,6 +16,7 @@ before_script:
 - git clone -b lsp https://github.com/breez/breez.git gopath/src/github.com/breez/breez
 - export TMP_GOPATH=$(pwd)/gopath
 - pushd gopath/src/github.com/breez/breez
+- /usr/local/opt/go@1.11/bin/go mod vendor
 - go mod vendor
 - export GOPATH=$TMP_GOPATH
 - go get golang.org/x/mobile/cmd/gomobile
