@@ -154,31 +154,39 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   IconButton _buildExportButton(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        Icons.share,
-        color: Colors.white,
-        size: 18.0,
-      ),
-      onPressed: () {
-        List<List<dynamic>> paymentListArr = new List.generate(widget._paymentsModel.paymentsList.length, (index) {
-          List paymentItem = new List();
-          paymentItem.add(DateUtils.formatYearMonthDayHourMinute(
-              DateTime.fromMillisecondsSinceEpoch(widget._paymentsModel.paymentsList.elementAt(index).creationTimestamp.toInt() * 1000)));
-          paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).title);
-          paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).description);
-          paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).destination);
-          paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).amount.toString());
-          paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).preimage);
-          paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).paymentHash);
-          return paymentItem;
-        });
-        // Date & Time, Title, Description, Node ID, Amount, Preimage, TX Hash
-        paymentListArr.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
-        String csv = const ListToCsvConverter().convert(paymentListArr);
-        _saveCsv(csv);
-      },
-    );
+    return widget._paymentsModel.paymentsList.isNotEmpty
+        ? IconButton(
+            icon: Icon(
+              Icons.share,
+              color: Colors.white,
+              size: 18.0,
+            ),
+            onPressed: () {
+              List<List<dynamic>> paymentListArr = new List.generate(widget._paymentsModel.paymentsList.length, (index) {
+                List paymentItem = new List();
+                paymentItem.add(DateUtils.formatYearMonthDayHourMinute(DateTime.fromMillisecondsSinceEpoch(
+                    widget._paymentsModel.paymentsList.elementAt(index).creationTimestamp.toInt() * 1000)));
+                paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).title);
+                paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).description);
+                paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).destination);
+                paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).amount.toString());
+                paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).preimage);
+                paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).paymentHash);
+                return paymentItem;
+              });
+              // Date & Time, Title, Description, Node ID, Amount, Preimage, TX Hash
+              paymentListArr.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
+              String csv = const ListToCsvConverter().convert(paymentListArr);
+              _saveCsv(csv);
+            },
+          )
+        : IconButton(
+            icon: Icon(
+              Icons.share,
+              color: Theme.of(context).disabledColor,
+              size: 18.0,
+            ),
+          );
   }
 
   _saveCsv(String csv) async {
