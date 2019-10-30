@@ -1,12 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:breez/widgets/fixed_sliver_delegate.dart';
-import 'package:breez/widgets/calendar_dialog.dart';
+import 'dart:io';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/date.dart';
+import 'package:breez/widgets/calendar_dialog.dart';
+import 'package:breez/widgets/fixed_sliver_delegate.dart';
+import 'package:csv/csv.dart';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_extend/share_extend.dart';
 
 class PaymentFilterSliver extends StatefulWidget {
-
   final ScrollController _controller;
   final double _minSize;
   final double _maxSize;
@@ -85,62 +90,56 @@ class PaymentsFilterState extends State<PaymentsFilter> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = <Widget>[];
-    children.add(
-      new Padding(
-        padding: EdgeInsets.only(left: 12.0, right: 0.0),
-        child: IconButton(
-          icon: ImageIcon(
-            AssetImage("src/icon/calendar.png"),
-            color: Colors.white,
-            size: 24.0,
-          ),
-          onPressed: () =>
-          widget._paymentsModel.firstDate != null ?
-          showDialog(
-            context: context,
-            builder: (_) =>
-                CalendarDialog(context, widget._paymentsModel.firstDate),
-          ).then((result) {
-            widget._accountBloc.paymentFilterSink.add(
-                widget._paymentsModel.filter.copyWith(
-                    filter: _getFilterType(_filter),
-                    startDate: result[0],
-                    endDate: result[1]));
-          })
-              : Scaffold.of(context).showSnackBar(new SnackBar(
-              content: new Text("Please wait while Breez is loading transactions."))),
+    return Row(children: [_buildCalendarButton(context), _buildFilterDropdown(context), _buildExportButton(context)]);
+  }
+  Padding _buildCalendarButton(BuildContext context) {
+    return new Padding(
+      padding: EdgeInsets.only(left: 12.0, right: 0.0),
+      child: IconButton(
+        icon: ImageIcon(
+          AssetImage("src/icon/calendar.png"),
+          color: Colors.white,
+          size: 24.0,
+        ),
+        onPressed: () => widget._paymentsModel.firstDate != null
+            ? showDialog(
+                context: context,
+                builder: (_) => CalendarDialog(context, widget._paymentsModel.firstDate),
+              ).then((result) {
+                widget._accountBloc.paymentFilterSink
+                    .add(widget._paymentsModel.filter.copyWith(filter: _getFilterType(_filter), startDate: result[0], endDate: result[1]));
+              })
+            : Scaffold.of(context).showSnackBar(new SnackBar(content: new Text("Please wait while Breez is loading transactions."))),
+      ),
+    );
+  }
+
+  Theme _buildFilterDropdown(BuildContext context) {
+    return Theme(
+      data: theme.themeId == "BLUE" ? Theme.of(context) : Theme.of(context).copyWith(canvasColor: Theme.of(context).backgroundColor),
+      child: DropdownButtonHideUnderline(
+        child: ButtonTheme(
+          alignedDropdown: true,
+          child: new DropdownButton(
+              value: _filter,
+              style: theme.transactionTitleStyle,
+              items: <String>['All Activities', 'Sent', 'Received'].map((String value) {
+                return new DropdownMenuItem<String>(
+                  value: value,
+                  child: new Text(
+                    value,
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _filter = value;
+                });
+                widget._accountBloc.paymentFilterSink.add(widget._paymentsModel.filter.copyWith(filter: _getFilterType(_filter)));
+              }),
         ),
       ),
     );
-    children.add(
-      Theme(
-        data: theme.themeId == "BLUE" ? Theme.of(context) : Theme.of(context).copyWith(canvasColor: Theme.of(context).backgroundColor),
-        child:  DropdownButtonHideUnderline(
-          child: ButtonTheme(
-            alignedDropdown: true,
-            child: new DropdownButton(
-                value: _filter,
-                style: theme.transactionTitleStyle,
-                items: <String>['All Activities', 'Sent', 'Received'].map((String value) {
-                  return new DropdownMenuItem<String>(
-                    value: value,
-                    child: new Text(
-                      value,
-                    ),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _filter = value;
-                  });
-                  widget._accountBloc.paymentFilterSink.add(widget._paymentsModel.filter.copyWith(filter: _getFilterType(_filter)));
-                }),
-          ),
-        ),
-      ),
-    );
-    return Row(children: children);
   }
 
   _getFilterType(String _filter){
@@ -150,5 +149,15 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       return [PaymentType.RECEIVED, PaymentType.DEPOSIT];
     }
     return [PaymentType.RECEIVED, PaymentType.DEPOSIT, PaymentType.SENT, PaymentType.WITHDRAWAL];
+  }
+
+  IconButton _buildExportButton(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.share,
+        color: Colors.white,
+        size: 18.0,
+      ),
+    );
   }
 }
