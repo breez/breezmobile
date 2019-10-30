@@ -128,7 +128,7 @@ class BreezBridge {
   }
 
   Future<LSPList> getLSPList(){
-    return _invokeMethodWhenReady("lSPList")
+    return _invokeMethodWhenReady("lspList")
       .then((result) => LSPList()..mergeFromBuffer(result ?? []));
   }
 
