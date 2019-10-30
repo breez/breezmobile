@@ -28,6 +28,7 @@ class PaymentFilterSliver extends StatefulWidget {
 
 class PaymentFilterSliverState extends State<PaymentFilterSliver> {
   bool _hasNoFilter;
+
   @override
   void initState() {
     super.initState();
@@ -92,6 +93,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   Widget build(BuildContext context) {
     return Row(children: [_buildCalendarButton(context), _buildFilterDropdown(context), _buildExportButton(context)]);
   }
+
   Padding _buildCalendarButton(BuildContext context) {
     return new Padding(
       padding: EdgeInsets.only(left: 12.0, right: 0.0),
@@ -158,6 +160,36 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         color: Colors.white,
         size: 18.0,
       ),
+      onPressed: () {
+        List<List<dynamic>> paymentListArr = new List.generate(widget._paymentsModel.paymentsList.length, (index) {
+          List paymentItem = new List();
+          paymentItem.add(DateUtils.formatYearMonthDayHourMinute(
+              DateTime.fromMillisecondsSinceEpoch(widget._paymentsModel.paymentsList.elementAt(index).creationTimestamp.toInt() * 1000)));
+          paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).title);
+          paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).description);
+          paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).destination);
+          paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).amount.toString());
+          paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).preimage);
+          paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).paymentHash);
+          return paymentItem;
+        });
+        // Date & Time, Title, Description, Node ID, Amount, Preimage, TX Hash
+        paymentListArr.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
+        String csv = const ListToCsvConverter().convert(paymentListArr);
+        _saveCsv(csv);
+      },
     );
+  }
+
+  _saveCsv(String csv) async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/payment_list.csv');
+      await file.writeAsString(csv);
+      final RenderBox box = context.findRenderObject();
+      ShareExtend.share(file.path, "file", sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+    } catch (e) {
+      Scaffold.of(context).showSnackBar(new SnackBar(content: new Text("Failed to export payment list.")));
+    }
   }
 }
