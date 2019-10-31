@@ -305,12 +305,12 @@ class POSInvoiceState extends State<POSInvoice> {
             return new AlertDialog(
               title: new Text(
                 "Required Information",
-                style: theme.alertTitleStyle,
+                style: Theme.of(context).dialogTheme.titleTextStyle,
               ),
               contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
               content: new SingleChildScrollView(
                 child: new Text("$errorMessage in the Settings screen.",
-                    style: theme.alertStyle),
+                    style: Theme.of(context).dialogTheme.contentTextStyle),
               ),
               actions: <Widget>[
                 new FlatButton(
@@ -338,7 +338,7 @@ class POSInvoiceState extends State<POSInvoice> {
             "You don't have the capacity to receive such payment.",
             Text(
                 "Maximum payment size you can receive is ${_currency.format(_maxAllowedToReceive, includeSymbol: true)}. Please enter a smaller value.",
-                style: theme.alertStyle));
+                style: Theme.of(context).dialogTheme.contentTextStyle));
       } else if (_totalAmount < _maxPaymentAmount.toInt() ||
           _totalAmount < _maxPaymentAmount.toInt()) {
         _invoiceBloc.newInvoiceRequestSink.add(
@@ -354,7 +354,7 @@ class POSInvoiceState extends State<POSInvoice> {
             "You have exceeded the maximum payment size.",
             Text(
                 "Maximum payment size on the Lightning Network is ${_currency.format(_maxPaymentAmount, includeSymbol: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
-                style: theme.alertStyle));
+                style: Theme.of(context).dialogTheme.contentTextStyle));
       }
     }
   }
@@ -422,10 +422,10 @@ class POSInvoiceState extends State<POSInvoice> {
         title: new Text(
           "Clear Sale?",
           textAlign: TextAlign.center,
-          style: theme.alertTitleStyle,
+          style: Theme.of(context).dialogTheme.titleTextStyle,
         ),
         content: new Text("This will clear the current transaction.",
-            style: theme.alertStyle),
+            style: Theme.of(context).dialogTheme.contentTextStyle),
         contentPadding:
             EdgeInsets.only(left: 24.0, right: 24.0, bottom: 12.0, top: 24.0),
         actions: <Widget>[
