@@ -270,7 +270,7 @@ class NoLSPWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Text("In order to activate Breez, please select a provider.")
+            Text("In order to activate Breez, please select a provider:")
           ],),
         SizedBox(height: 24),
         Row(
