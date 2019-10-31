@@ -1,15 +1,10 @@
-import 'dart:io';
-
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
-import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
 class PaymentFilterSliver extends StatefulWidget {
@@ -162,23 +157,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
               color: Colors.white,
               size: 18.0,
             ),
-            onPressed: () {
-              List<List<dynamic>> paymentListArr = new List.generate(widget._paymentsModel.paymentsList.length, (index) {
-                List paymentItem = new List();
-                paymentItem.add(DateUtils.formatYearMonthDayHourMinute(DateTime.fromMillisecondsSinceEpoch(
-                    widget._paymentsModel.paymentsList.elementAt(index).creationTimestamp.toInt() * 1000)));
-                paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).title);
-                paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).description);
-                paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).destination);
-                paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).amount.toString());
-                paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).preimage);
-                paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).paymentHash);
-                return paymentItem;
-              });
-              paymentListArr.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
-              String csv = const ListToCsvConverter().convert(paymentListArr);
-              _saveCsv(csv);
-            },
+            onPressed: () => _exportPayments(context),
           )
         : IconButton(
             icon: Icon(
@@ -189,18 +168,14 @@ class PaymentsFilterState extends State<PaymentsFilter> {
           );
   }
 
-  _saveCsv(String csv) async {
-    try {
-      final directory = await getApplicationDocumentsDirectory();
-      DateFormat dateFilterFormat = DateFormat("d.M.yy");
-      String typeFilter = _filter.trim().toLowerCase();
-      String dateFilter = '${dateFilterFormat.format(widget._paymentsModel.filter.startDate)}-${dateFilterFormat.format(widget._paymentsModel.filter.endDate)}';
-      final file = File('${directory.path}/payment_list_${typeFilter}_$dateFilter.csv');
-      await file.writeAsString(csv);
+  Future _exportPayments(BuildContext context) async {
+    var action = ExportPayments();
+    widget._accountBloc.userActionsSink.add(action);
+    action.future.then((filePath) {
       final RenderBox box = context.findRenderObject();
-      ShareExtend.share(file.path, "file", sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-    } catch (e) {
+      ShareExtend.share(filePath, "file", sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+    }).catchError((err) {
       Scaffold.of(context).showSnackBar(new SnackBar(content: new Text("Failed to export payment list.")));
-    }
+    });
   }
 }
