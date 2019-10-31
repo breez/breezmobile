@@ -153,18 +153,18 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   IconButton _buildExportButton(BuildContext context) {
     return widget._paymentsModel.paymentsList.isNotEmpty
         ? IconButton(
-            icon: Icon(
-              Icons.share,
+            icon: ImageIcon(
+              AssetImage("src/icon/export.png"),
               color: Colors.white,
-              size: 18.0,
+              size: 26.0,
             ),
             onPressed: () => _exportPayments(context),
           )
         : IconButton(
-            icon: Icon(
-              Icons.share,
+            icon: ImageIcon(
+              AssetImage("src/icon/export.png"),
               color: Theme.of(context).disabledColor,
-              size: 18.0,
+              size: 26.0,
             ),
           );
   }
