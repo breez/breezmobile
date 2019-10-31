@@ -58,6 +58,7 @@ class PosHomeState extends State<PosHome> {
     return new Scaffold(
         key: _scaffoldKey,
         appBar: new AppBar(
+          brightness: theme.themeId == "BLUE" ? Brightness.light : Theme.of(context).appBarTheme.brightness,
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.all(14.0),
@@ -69,16 +70,18 @@ class PosHomeState extends State<PosHome> {
               icon: ImageIcon(
                 AssetImage("src/icon/hamburger.png"),
                 size: 24.0,
-                color: null,
+                color: Theme.of(context).appBarTheme.actionsIconTheme.color,
               ),
               onPressed: () => _scaffoldKey.currentState.openDrawer()),
           title: new Image.asset(
             "src/images/logo-color.png",
             height: 23.5,
             width: 62.7,
+            color: Theme.of(context).appBarTheme.color,
+            colorBlendMode: BlendMode.srcATop,
           ),
           iconTheme: new IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
-          backgroundColor: theme.whiteColor,
+          backgroundColor: Theme.of(context).backgroundColor,
           elevation: 0.0,
         ),
         drawer: new NavigationDrawer(

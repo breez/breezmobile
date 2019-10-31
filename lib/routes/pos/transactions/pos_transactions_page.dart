@@ -76,7 +76,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
       appBar: new AppBar(
         iconTheme: Theme.of(context).appBarTheme.iconTheme,
         textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: theme.BreezColors.blue[500],
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         title: new Text(
           _title,

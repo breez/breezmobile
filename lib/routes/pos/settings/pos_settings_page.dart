@@ -77,7 +77,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
         automaticallyImplyLeading: false,
         iconTheme: Theme.of(context).appBarTheme.iconTheme,
         textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: theme.BreezColors.blue[500],
+        backgroundColor: Theme.of(context).canvasColor,
         title: new Text(
           widget._title,
           style: Theme.of(context).appBarTheme.textTheme.title,
