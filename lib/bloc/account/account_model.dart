@@ -206,7 +206,7 @@ class AccountModel {
   bool get closingConnection =>
       _accountResponse.status == Account_AccountStatus.CLOSING_CONNECTION;
   bool get connected => _accountResponse.status == Account_AccountStatus.CONNECTED;
-  bool get isInitialBootstrap => !processingConnection && !connected && !initial;
+  bool get isInitialBootstrap => !initial && (disconnected || closingConnection);
   Int64 get balance => _accountResponse.balance;
   String get formattedFiatBalance => fiatCurrency?.format(balance);
   Int64 get walletBalance => _accountResponse.walletBalance;
