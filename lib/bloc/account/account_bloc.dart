@@ -243,7 +243,49 @@ class AccountBloc {
   }
 
   Future _exportPayments() async {
-    List<List<dynamic>> paymentListArr = new List.generate(_filterPayments(_paymentsController.value.paymentsList).length, (index) {
+    List paymentList = _generatePaymentList();
+    String csv = const ListToCsvConverter().convert(paymentList);
+    return await _saveCsvFile(csv);
+  }
+
+  Future _saveCsvFile(String csv) async {
+    try {
+      String filePath = await _createCsvFilePath();
+      final file = File(filePath);
+      await file.writeAsString(csv);
+      return file.path;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<String> _createCsvFilePath() async {
+    final directory = await getApplicationDocumentsDirectory();
+    String filePath = '${directory.path}/breez_payment_list';
+    filePath = appendFilterInformation(filePath);
+    filePath += ".csv";
+    return filePath;
+  }
+
+  String appendFilterInformation(String filePath) {
+    if (listEquals(_paymentFilterController.value.paymentType, [PaymentType.SENT, PaymentType.WITHDRAWAL])) {
+      String typeFilter = "sent";
+      filePath += "_$typeFilter";
+    } else if (listEquals(_paymentFilterController.value.paymentType, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
+      String typeFilter = "received";
+      filePath += "_$typeFilter";
+    }
+    if (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null) {
+      DateFormat dateFilterFormat = DateFormat("d.M.yy");
+      String dateFilter =
+          '${dateFilterFormat.format(_paymentFilterController.value.startDate)}-${dateFilterFormat.format(_paymentFilterController.value.endDate)}';
+      filePath += "_$dateFilter";
+    }
+    return filePath;
+  }
+
+  _generatePaymentList(){
+    List<List<dynamic>> paymentList = new List.generate(_filterPayments(_paymentsController.value.paymentsList).length, (index) {
       List paymentItem = new List();
       paymentItem.add(DateUtils.formatYearMonthDayHourMinute(DateTime.fromMillisecondsSinceEpoch(
           _filterPayments(_paymentsController.value.paymentsList).elementAt(index).creationTimestamp.toInt() * 1000)));
@@ -255,31 +297,8 @@ class AccountBloc {
       paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).paymentHash);
       return paymentItem;
     });
-    paymentListArr.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
-    String csv = const ListToCsvConverter().convert(paymentListArr);
-    try {
-      final directory = await getApplicationDocumentsDirectory();
-      DateFormat dateFilterFormat = DateFormat("d.M.yy");
-      String filePath = '${directory.path}/breez_payment_list';
-      if (listEquals(_paymentFilterController.value.paymentType, [PaymentType.SENT, PaymentType.WITHDRAWAL])) {
-        String typeFilter = "sent";
-        filePath += "_$typeFilter";
-      } else if (listEquals(_paymentFilterController.value.paymentType, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
-        String typeFilter = "received";
-        filePath += "_$typeFilter";
-      }
-      if (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null) {
-        String dateFilter =
-            '${dateFilterFormat.format(_paymentFilterController.value.startDate)}-${dateFilterFormat.format(_paymentFilterController.value.endDate)}';
-        filePath += "_$dateFilter";
-      }
-      filePath += ".csv";
-      final file = File(filePath);
-      await file.writeAsString(csv);
-      return file.path;
-    } catch (e) {
-      return e;
-    }
+    paymentList.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
+    return paymentList;
   }
 
   Future _handleResetChainService(ResetChainService action) async {
