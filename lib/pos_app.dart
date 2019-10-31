@@ -38,6 +38,7 @@ class PosApp extends StatelessWidget {
             title: 'Breez POS',
             initialRoute: user.registered ? null : '/intro',
             home: PosHome(accountBloc, backupBloc, userProfileBloc),
+            theme: theme.themeMap[user.themeId],
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
                 case '/home':
@@ -80,19 +81,6 @@ class PosApp extends StatelessWidget {
               }
               assert(false);
             },
-            theme: ThemeData(
-              brightness: Brightness.dark,
-              accentColor: Color(0xFFffffff),
-              dialogBackgroundColor: Colors.white,
-              primaryColor: Color.fromRGBO(255, 255, 255, 1.0),
-              textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
-              textSelectionHandleColor: Color(0xFF0085fb),
-              dividerColor: Color(0x33ffffff),
-              errorColor: theme.errorColor,
-              canvasColor: theme.BreezColors.blue[500],
-              fontFamily: 'IBMPlexSansRegular',
-              cardColor: theme.BreezColors.blue[500],
-            ),
           );
         });
   }
