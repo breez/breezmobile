@@ -42,3 +42,5 @@ class SendCoins extends AsyncAction {
   
   SendCoins(this.feeRate, this.destAddress);
 }
+
+class ExportPayments extends AsyncAction{}

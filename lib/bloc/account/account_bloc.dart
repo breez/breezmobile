@@ -1,28 +1,34 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:breez/bloc/async_action.dart';
+
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
+import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
-import 'package:breez/services/device.dart';
-import 'package:breez/services/notifications.dart';
-import 'package:breez/services/currency_service.dart';
-import 'package:fixnum/fixnum.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'account_model.dart';
-import 'package:breez/services/injector.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:breez/logger.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:breez/services/currency_data.dart';
-import 'package:breez/bloc/account/fiat_conversion.dart';
+import 'package:breez/services/currency_service.dart';
+import 'package:breez/services/device.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/services/notifications.dart';
+import 'package:breez/utils/date.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:csv/csv.dart';
+import 'package:fixnum/fixnum.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'account_model.dart';
 import 'account_synchronizer.dart';
 
 class AccountBloc {
@@ -141,6 +147,7 @@ class AccountBloc {
       FetchRates: _fetchRates,
       ResetChainService: _handleResetChainService,
       SendCoins: _handleSendCoins,
+      ExportPayments: _exportPaymentsAction,
     };
 
     _accountController.add(AccountModel.initial());
@@ -229,6 +236,50 @@ class AccountBloc {
 
   Future _handleSendCoins(SendCoins action) async {
     action.resolve(await _breezLib.sendWalletCoins(action.destAddress, Int64(action.feeRate)));     
+  }
+
+  Future _exportPaymentsAction(ExportPayments action) async {
+    action.resolve(await _exportPayments());
+  }
+
+  Future _exportPayments() async {
+    List<List<dynamic>> paymentListArr = new List.generate(_filterPayments(_paymentsController.value.paymentsList).length, (index) {
+      List paymentItem = new List();
+      paymentItem.add(DateUtils.formatYearMonthDayHourMinute(DateTime.fromMillisecondsSinceEpoch(
+          _filterPayments(_paymentsController.value.paymentsList).elementAt(index).creationTimestamp.toInt() * 1000)));
+      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).title);
+      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).description);
+      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).destination);
+      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).amount.toString());
+      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).preimage);
+      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).paymentHash);
+      return paymentItem;
+    });
+    paymentListArr.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
+    String csv = const ListToCsvConverter().convert(paymentListArr);
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      DateFormat dateFilterFormat = DateFormat("d.M.yy");
+      String filePath = '${directory.path}/breez_payment_list';
+      if (listEquals(_paymentFilterController.value.paymentType, [PaymentType.SENT, PaymentType.WITHDRAWAL])) {
+        String typeFilter = "sent";
+        filePath += "_$typeFilter";
+      } else if (listEquals(_paymentFilterController.value.paymentType, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
+        String typeFilter = "received";
+        filePath += "_$typeFilter";
+      }
+      if (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null) {
+        String dateFilter =
+            '${dateFilterFormat.format(_paymentFilterController.value.startDate)}-${dateFilterFormat.format(_paymentFilterController.value.endDate)}';
+        filePath += "_$dateFilter";
+      }
+      filePath += ".csv";
+      final file = File(filePath);
+      await file.writeAsString(csv);
+      return file.path;
+    } catch (e) {
+      return e;
+    }
   }
 
   Future _handleResetChainService(ResetChainService action) async {
