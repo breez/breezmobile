@@ -327,8 +327,11 @@ class AccountBloc {
         .listen((_) async {
       connectingFuture = connectingFuture.whenComplete(() async {
         var acc = _accountController.value;
+        log.info("Checking if reconnect needed for account: connected=${acc.connected} readyForPayment=${acc.readyForPayments} processingConnection=${acc.processingConnection}");
+
         if (_allowReconnect == true && 
               (acc.connected && acc.readyForPayments == false || acc.processingConnection)) {
+          log.info("Reconnecting...");
           await _breezLib.connectAccount();
         }
       }).catchError((e) {});
