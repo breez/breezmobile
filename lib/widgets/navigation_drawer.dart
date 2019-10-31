@@ -93,7 +93,54 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return new BreezDrawerHeader(
     padding: EdgeInsets.only(left: 16.0),
     child: !drawAvatar
-        ? new Container()
+        ? new StreamBuilder<BreezUserModel>(
+            stream: user.userStream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return new Container();
+              } else {
+                return new Column(children: <Widget>[
+                  GestureDetector(
+                    onTap: () => _changeTheme(snapshot.data.themeId == "BLUE" ? "DARK" : "BLUE", user, context),
+                    child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        new Padding(
+                          padding: EdgeInsets.only(
+                            top: 10,
+                            right: 16.0,
+                          ),
+                          child: Container(
+                            width: 64,
+                            padding: EdgeInsets.all(4),
+                            decoration: ShapeDecoration(shape: StadiumBorder(), color: theme.marketplaceButtonColor),
+                            child: Row(
+                              children: <Widget>[
+                                Image.asset(
+                                  "src/icon/ic_lightmode.png",
+                                  height: 24,
+                                  width: 24,
+                                  color: snapshot.data.themeId == "BLUE" ? Colors.white : Colors.white30,
+                                ),
+                                Container(
+                                  height: 20,
+                                  width: 8,
+                                  child: VerticalDivider(
+                                    color: Colors.white30,
+                                  ),
+                                ),
+                                ImageIcon(AssetImage("src/icon/ic_darkmode.png"),
+                                    color: snapshot.data.themeId == "DARK" ? Colors.white : Colors.white30, size: 24.0),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]);
+              }
+            })
         : new StreamBuilder<BreezUserModel>(
             stream: user.userStream,
             builder: (context, snapshot) {
