@@ -8,6 +8,7 @@ import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -174,7 +175,6 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                 paymentItem.add(widget._paymentsModel.paymentsList.elementAt(index).paymentHash);
                 return paymentItem;
               });
-              // Date & Time, Title, Description, Node ID, Amount, Preimage, TX Hash
               paymentListArr.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
               String csv = const ListToCsvConverter().convert(paymentListArr);
               _saveCsv(csv);
@@ -192,7 +192,10 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   _saveCsv(String csv) async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/payment_list.csv');
+      DateFormat dateFilterFormat = DateFormat("d.M.yy");
+      String typeFilter = _filter.trim().toLowerCase();
+      String dateFilter = '${dateFilterFormat.format(widget._paymentsModel.filter.startDate)}-${dateFilterFormat.format(widget._paymentsModel.filter.endDate)}';
+      final file = File('${directory.path}/payment_list_${typeFilter}_$dateFilter.csv');
       await file.writeAsString(csv);
       final RenderBox box = context.findRenderObject();
       ShareExtend.share(file.path, "file", sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
