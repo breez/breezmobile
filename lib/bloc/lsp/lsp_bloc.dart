@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
@@ -20,9 +21,10 @@ class LSPBloc with AsyncActionsHandler {
       BehaviorSubject<LSPStatus>();
   Stream<LSPStatus> get lspStatusStream => _lspsStatusController.stream;
 
+  final Stream<AccountModel> accountStream;
   BreezBridge _breezLib;
 
-  LSPBloc() {
+  LSPBloc(this.accountStream) {
     ServiceInjector injector = new ServiceInjector();
     _breezLib = injector.breezBridge;
 
@@ -71,6 +73,7 @@ class LSPBloc with AsyncActionsHandler {
       _lspsStatusController.value.copyWith(
         connectionStatus: LSPConnectionStatus.InProgress, lastConnectionError: null, dontPromptToConnect: true)
     );
+    await accountStream.where((a) => a.synced).first;
 
     try {      
       if (action.lnurl?.isNotEmpty == true) {

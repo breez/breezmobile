@@ -45,7 +45,7 @@ class AppBlocs {
     ConnectPayBloc connectPayBloc = _registerBloc(ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream), blocsByType);
     BackupBloc backupBloc = _registerBloc(BackupBloc(userProfileBloc.userStream), blocsByType);
     MarketplaceBloc marketplaceBloc = _registerBloc(MarketplaceBloc(), blocsByType);
-    LSPBloc lspBloc = _registerBloc(LSPBloc(), blocsByType);
+    LSPBloc lspBloc = _registerBloc(LSPBloc(accountBloc.accountStream), blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc = _registerBloc(FastbitcoinsBloc(production: true), blocsByType);
 
     return AppBlocs._(      
