@@ -243,9 +243,25 @@ class AccountBloc {
   }
 
   Future _exportPayments() async {
-    List paymentList = _generatePaymentList();
-    String csv = const ListToCsvConverter().convert(paymentList);
-    return await _saveCsvFile(csv);
+    // convert payment list to csv format and save to disk
+    return await _saveCsvFile(const ListToCsvConverter().convert(_generatePaymentList()));
+  }
+
+  _generatePaymentList(){
+    List<List<dynamic>> paymentList = new List.generate(_filterPayments(_paymentsController.value.paymentsList).length, (index) {
+      List paymentItem = new List();
+      paymentItem.add(DateUtils.formatYearMonthDayHourMinute(DateTime.fromMillisecondsSinceEpoch(
+          _filterPayments(_paymentsController.value.paymentsList).elementAt(index).creationTimestamp.toInt() * 1000)));
+      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).title);
+      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).description);
+      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).destination);
+      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).amount.toString());
+      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).preimage);
+      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).paymentHash);
+      return paymentItem;
+    });
+    paymentList.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
+    return paymentList;
   }
 
   Future _saveCsvFile(String csv) async {
@@ -282,23 +298,6 @@ class AccountBloc {
       filePath += "_$dateFilter";
     }
     return filePath;
-  }
-
-  _generatePaymentList(){
-    List<List<dynamic>> paymentList = new List.generate(_filterPayments(_paymentsController.value.paymentsList).length, (index) {
-      List paymentItem = new List();
-      paymentItem.add(DateUtils.formatYearMonthDayHourMinute(DateTime.fromMillisecondsSinceEpoch(
-          _filterPayments(_paymentsController.value.paymentsList).elementAt(index).creationTimestamp.toInt() * 1000)));
-      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).title);
-      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).description);
-      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).destination);
-      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).amount.toString());
-      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).preimage);
-      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).paymentHash);
-      return paymentItem;
-    });
-    paymentList.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
-    return paymentList;
   }
 
   Future _handleResetChainService(ResetChainService action) async {
