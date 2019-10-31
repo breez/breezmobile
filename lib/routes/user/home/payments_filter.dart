@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -171,10 +172,13 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   Future _exportPayments(BuildContext context) async {
     var action = ExportPayments();
     widget._accountBloc.userActionsSink.add(action);
+    Navigator.of(context).push(createLoaderRoute(context));
     action.future.then((filePath) {
+      Navigator.of(context).pop();
       final RenderBox box = context.findRenderObject();
       ShareExtend.share(filePath, "file", sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
     }).catchError((err) {
+      Navigator.of(context).pop();
       Scaffold.of(context).showSnackBar(new SnackBar(content: new Text("Failed to export payment list.")));
     });
   }
