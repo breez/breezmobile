@@ -156,7 +156,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
             icon: ImageIcon(
               AssetImage("src/icon/export.png"),
               color: Colors.white,
-              size: 26.0,
+              size: 24.0,
             ),
             onPressed: () => _exportPayments(context),
           )
@@ -164,7 +164,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
             icon: ImageIcon(
               AssetImage("src/icon/export.png"),
               color: Theme.of(context).disabledColor,
-              size: 26.0,
+              size: 24.0,
             ),
           );
   }
