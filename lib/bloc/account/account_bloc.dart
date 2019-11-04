@@ -242,7 +242,7 @@ class AccountBloc {
     action.resolve(await _exportPayments());
   }
 
-  Future _exportPayments() async {
+  Future<String> _exportPayments() async {
     // convert payment list to csv format and save to disk
     return await _saveCsvFile(const ListToCsvConverter().convert(_generatePaymentList()));
   }
@@ -265,7 +265,7 @@ class AccountBloc {
     return paymentList;
   }
 
-  Future _saveCsvFile(String csv) async {
+  Future<String> _saveCsvFile(String csv) async {
     String filePath = await _createCsvFilePath();
     final file = File(filePath);
     await file.writeAsString(csv);
