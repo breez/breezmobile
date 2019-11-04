@@ -10,6 +10,7 @@ import 'package:breez/bloc/app_blocs.dart';
 
 AppBlocs blocs = AppBlocs();
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   BreezLogger();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
