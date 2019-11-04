@@ -248,16 +248,17 @@ class AccountBloc {
   }
 
   _generatePaymentList(){
-    List<List<dynamic>> paymentList = new List.generate(_filterPayments(_paymentsController.value.paymentsList).length, (index) {
+    List currentPaymentList = _filterPayments(_paymentsController.value.paymentsList);
+    List<List<dynamic>> paymentList = new List.generate(currentPaymentList.length, (index) {
       List paymentItem = new List();
-      paymentItem.add(DateUtils.formatYearMonthDayHourMinute(DateTime.fromMillisecondsSinceEpoch(
-          _filterPayments(_paymentsController.value.paymentsList).elementAt(index).creationTimestamp.toInt() * 1000)));
-      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).title);
-      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).description);
-      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).destination);
-      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).amount.toString());
-      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).preimage);
-      paymentItem.add(_filterPayments(_paymentsController.value.paymentsList).elementAt(index).paymentHash);
+      PaymentInfo paymentInfo = currentPaymentList.elementAt(index);
+      paymentItem.add(DateUtils.formatYearMonthDayHourMinute(DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)));
+      paymentItem.add(paymentInfo.title);
+      paymentItem.add(paymentInfo.description);
+      paymentItem.add(paymentInfo.destination);
+      paymentItem.add(paymentInfo.amount.toString());
+      paymentItem.add(paymentInfo.preimage);
+      paymentItem.add(paymentInfo.paymentHash);
       return paymentItem;
     });
     paymentList.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
