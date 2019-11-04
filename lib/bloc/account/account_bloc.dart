@@ -266,14 +266,10 @@ class AccountBloc {
   }
 
   Future _saveCsvFile(String csv) async {
-    try {
-      String filePath = await _createCsvFilePath();
-      final file = File(filePath);
-      await file.writeAsString(csv);
-      return file.path;
-    } catch (e) {
-      return e;
-    }
+    String filePath = await _createCsvFilePath();
+    final file = File(filePath);
+    await file.writeAsString(csv);
+    return file.path;
   }
 
   Future<String> _createCsvFilePath() async {
