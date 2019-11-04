@@ -6,6 +6,7 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/async_action.dart';
+import 'package:breez/bloc/csv_exporter.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
@@ -17,14 +18,9 @@ import 'package:breez/services/currency_service.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
-import 'package:breez/utils/date.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:csv/csv.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -239,60 +235,8 @@ class AccountBloc {
   }
 
   Future _exportPaymentsAction(ExportPayments action) async {
-    action.resolve(await _exportPayments());
-  }
-
-  Future<String> _exportPayments() async {
-    // convert payment list to csv format and save to disk
-    return await _saveCsvFile(const ListToCsvConverter().convert(_generatePaymentList()));
-  }
-
-  _generatePaymentList(){
     List currentPaymentList = _filterPayments(_paymentsController.value.paymentsList);
-    List<List<dynamic>> paymentList = new List.generate(currentPaymentList.length, (index) {
-      List paymentItem = new List();
-      PaymentInfo paymentInfo = currentPaymentList.elementAt(index);
-      paymentItem.add(DateUtils.formatYearMonthDayHourMinute(DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)));
-      paymentItem.add(paymentInfo.title);
-      paymentItem.add(paymentInfo.description);
-      paymentItem.add(paymentInfo.destination);
-      paymentItem.add(paymentInfo.amount.toString());
-      paymentItem.add(paymentInfo.preimage);
-      paymentItem.add(paymentInfo.paymentHash);
-      return paymentItem;
-    });
-    paymentList.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
-    return paymentList;
-  }
-
-  Future<String> _saveCsvFile(String csv) async {
-    String filePath = await _createCsvFilePath();
-    final file = File(filePath);
-    await file.writeAsString(csv);
-    return file.path;
-  }
-
-  Future<String> _createCsvFilePath() async {
-    final directory = await getApplicationDocumentsDirectory();
-    String filePath = '${directory.path}/breez_payment_list';
-    filePath = appendFilterInformation(filePath);
-    filePath += ".csv";
-    return filePath;
-  }
-
-  String appendFilterInformation(String filePath) {
-    if (listEquals(_paymentFilterController.value.paymentType, [PaymentType.SENT, PaymentType.WITHDRAWAL])) {
-      filePath += "_sent";
-    } else if (listEquals(_paymentFilterController.value.paymentType, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
-      filePath += "_received";
-    }
-    if (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null) {
-      DateFormat dateFilterFormat = DateFormat("d.M.yy");
-      String dateFilter =
-          '${dateFilterFormat.format(_paymentFilterController.value.startDate)}-${dateFilterFormat.format(_paymentFilterController.value.endDate)}';
-      filePath += "_$dateFilter";
-    }
-    return filePath;
+    action.resolve(await CsvExporter(currentPaymentList, _paymentFilterController.value).export());
   }
 
   Future _handleResetChainService(ResetChainService action) async {
