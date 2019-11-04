@@ -282,11 +282,9 @@ class AccountBloc {
 
   String appendFilterInformation(String filePath) {
     if (listEquals(_paymentFilterController.value.paymentType, [PaymentType.SENT, PaymentType.WITHDRAWAL])) {
-      String typeFilter = "sent";
-      filePath += "_$typeFilter";
+      filePath += "_sent";
     } else if (listEquals(_paymentFilterController.value.paymentType, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
-      String typeFilter = "received";
-      filePath += "_$typeFilter";
+      filePath += "_received";
     }
     if (_paymentFilterController.value.startDate != null && _paymentFilterController.value.endDate != null) {
       DateFormat dateFilterFormat = DateFormat("d.M.yy");
