@@ -175,8 +175,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     Navigator.of(context).push(createLoaderRoute(context));
     action.future.then((filePath) {
       Navigator.of(context).pop();
-      final RenderBox box = context.findRenderObject();
-      ShareExtend.share(filePath, "file", sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+      ShareExtend.share(filePath, "file");
     }).catchError((err) {
       Navigator.of(context).pop();
       Scaffold.of(context).showSnackBar(new SnackBar(content: new Text("Failed to export payment list.")));
