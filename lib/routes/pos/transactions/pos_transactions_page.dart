@@ -108,26 +108,19 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
       return Padding(
         padding: const EdgeInsets.only(right: 16.0),
         child: PopupMenuButton(
-          color: Theme
-              .of(context)
-              .backgroundColor,
+          color: Theme.of(context).backgroundColor,
           icon: Icon(
             Icons.more_vert,
-            color: Theme
-                .of(context)
-                .iconTheme
-                .color,
+            color: Theme.of(context).iconTheme.color,
           ),
           padding: EdgeInsets.zero,
+          offset: Offset(0, 48),
           onSelected: _select,
-          itemBuilder: (context) =>
-          [
+          itemBuilder: (context) => [
             PopupMenuItem(
+              height: 36,
               value: Choice(() => _exportTransactions(context)),
-              child: Text('Export', style: Theme
-                  .of(context)
-                  .textTheme
-                  .button),
+              child: Text('Export', style: Theme.of(context).textTheme.button),
             ),
           ],
         ),
@@ -138,9 +131,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
       child: IconButton(
         icon: Icon(
           Icons.more_vert,
-          color: Theme
-              .of(context)
-              .disabledColor,
+          color: Theme.of(context).disabledColor,
           size: 24.0,
         ),
       ),
