@@ -89,12 +89,12 @@ class PaymentsFilterState extends State<PaymentsFilter> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [_buildCalendarButton(context), _buildFilterDropdown(context), _buildExportButton(context)]);
+    return Row(children: [_buildExportButton(context),_buildCalendarButton(context), _buildFilterDropdown(context)]);
   }
 
   Padding _buildCalendarButton(BuildContext context) {
     return new Padding(
-      padding: EdgeInsets.only(left: 12.0, right: 0.0),
+      padding: EdgeInsets.only(left: 0.0, right: 0.0),
       child: IconButton(
         icon: ImageIcon(
           AssetImage("src/icon/calendar.png"),
@@ -151,23 +151,43 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     return [PaymentType.RECEIVED, PaymentType.DEPOSIT, PaymentType.SENT, PaymentType.WITHDRAWAL];
   }
 
-  IconButton _buildExportButton(BuildContext context) {
-    return widget._paymentsModel.paymentsList.isNotEmpty
-        ? IconButton(
-            icon: ImageIcon(
-              AssetImage("src/icon/export.png"),
-              color: Colors.white,
-              size: 24.0,
+  Padding _buildExportButton(BuildContext context) {
+    if (widget._paymentsModel.paymentsList.isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(right: 0.0),
+        child: PopupMenuButton(
+          color: Theme.of(context).backgroundColor,
+          icon: Icon(
+            Icons.more_vert,
+            color: Theme.of(context).iconTheme.color,
+          ),
+          padding: EdgeInsets.zero,
+          offset: Offset(12, 36),
+          onSelected: _select,
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              height: 36,
+              value: Choice(() => _exportPayments(context)),
+              child: Text('Export', style: Theme.of(context).textTheme.button),
             ),
-            onPressed: () => _exportPayments(context),
-          )
-        : IconButton(
-            icon: ImageIcon(
-              AssetImage("src/icon/export.png"),
-              color: Theme.of(context).disabledColor,
-              size: 24.0,
-            ),
-          );
+          ],
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(right: 16.0),
+      child: IconButton(
+        icon: Icon(
+          Icons.more_vert,
+          color: Theme.of(context).disabledColor,
+          size: 24.0,
+        ),
+      ),
+    );
+  }
+
+  void _select(Choice choice) {
+    choice.function();
   }
 
   Future _exportPayments(BuildContext context) async {
@@ -182,4 +202,10 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       showFlushbar(context, message: "Failed to export payment list.");
     });
   }
+}
+
+class Choice {
+  const Choice(this.function);
+
+  final Function function;
 }
