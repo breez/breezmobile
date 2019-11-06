@@ -48,7 +48,7 @@ class Account extends $pb.GeneratedMessage {
     ..aOS(1, 'id')
     ..aInt64(2, 'balance')
     ..aInt64(3, 'walletBalance')
-    ..e<Account_AccountStatus>(4, 'status', $pb.PbFieldType.OE, Account_AccountStatus.WAITING_DEPOSIT, Account_AccountStatus.valueOf, Account_AccountStatus.values)
+    ..e<Account_AccountStatus>(4, 'status', $pb.PbFieldType.OE, Account_AccountStatus.DISCONNECTED, Account_AccountStatus.valueOf, Account_AccountStatus.values)
     ..aInt64(5, 'maxAllowedToReceive')
     ..aInt64(6, 'maxAllowedToPay')
     ..aInt64(7, 'maxPaymentAmount')
@@ -56,6 +56,7 @@ class Account extends $pb.GeneratedMessage {
     ..aOB(9, 'enabled')
     ..aInt64(10, 'maxChanReserve')
     ..aOS(11, 'channelPoint')
+    ..aOB(12, 'readyForPayments')
     ..hasRequiredFields = false
   ;
 
@@ -125,6 +126,11 @@ class Account extends $pb.GeneratedMessage {
   set channelPoint($core.String v) { $_setString(10, v); }
   $core.bool hasChannelPoint() => $_has(10);
   void clearChannelPoint() => clearField(11);
+
+  $core.bool get readyForPayments => $_get(11, false);
+  set readyForPayments($core.bool v) { $_setBool(11, v); }
+  $core.bool hasReadyForPayments() => $_has(11);
+  void clearReadyForPayments() => clearField(12);
 }
 
 class Payment extends $pb.GeneratedMessage {
@@ -1091,5 +1097,104 @@ class Rates extends $pb.GeneratedMessage {
   static Rates _defaultInstance;
 
   $core.List<rate> get rates => $_getList(0);
+}
+
+class LSPInformation extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('LSPInformation', package: const $pb.PackageName('data'))
+    ..aOS(1, 'name')
+    ..aOS(2, 'widgetUrl')
+    ..aOS(3, 'pubkey')
+    ..aOS(4, 'host')
+    ..aInt64(5, 'channelCapacity')
+    ..a<$core.int>(6, 'targetConf', $pb.PbFieldType.O3)
+    ..aInt64(7, 'baseFeeMsat')
+    ..a<$core.double>(8, 'feeRate', $pb.PbFieldType.OD)
+    ..a<$core.int>(9, 'timeLockDelta', $pb.PbFieldType.OU3)
+    ..aInt64(10, 'minHtlcMsat')
+    ..hasRequiredFields = false
+  ;
+
+  LSPInformation() : super();
+  LSPInformation.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  LSPInformation.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  LSPInformation clone() => LSPInformation()..mergeFromMessage(this);
+  LSPInformation copyWith(void Function(LSPInformation) updates) => super.copyWith((message) => updates(message as LSPInformation));
+  $pb.BuilderInfo get info_ => _i;
+  static LSPInformation create() => LSPInformation();
+  LSPInformation createEmptyInstance() => create();
+  static $pb.PbList<LSPInformation> createRepeated() => $pb.PbList<LSPInformation>();
+  static LSPInformation getDefault() => _defaultInstance ??= create()..freeze();
+  static LSPInformation _defaultInstance;
+
+  $core.String get name => $_getS(0, '');
+  set name($core.String v) { $_setString(0, v); }
+  $core.bool hasName() => $_has(0);
+  void clearName() => clearField(1);
+
+  $core.String get widgetUrl => $_getS(1, '');
+  set widgetUrl($core.String v) { $_setString(1, v); }
+  $core.bool hasWidgetUrl() => $_has(1);
+  void clearWidgetUrl() => clearField(2);
+
+  $core.String get pubkey => $_getS(2, '');
+  set pubkey($core.String v) { $_setString(2, v); }
+  $core.bool hasPubkey() => $_has(2);
+  void clearPubkey() => clearField(3);
+
+  $core.String get host => $_getS(3, '');
+  set host($core.String v) { $_setString(3, v); }
+  $core.bool hasHost() => $_has(3);
+  void clearHost() => clearField(4);
+
+  Int64 get channelCapacity => $_getI64(4);
+  set channelCapacity(Int64 v) { $_setInt64(4, v); }
+  $core.bool hasChannelCapacity() => $_has(4);
+  void clearChannelCapacity() => clearField(5);
+
+  $core.int get targetConf => $_get(5, 0);
+  set targetConf($core.int v) { $_setSignedInt32(5, v); }
+  $core.bool hasTargetConf() => $_has(5);
+  void clearTargetConf() => clearField(6);
+
+  Int64 get baseFeeMsat => $_getI64(6);
+  set baseFeeMsat(Int64 v) { $_setInt64(6, v); }
+  $core.bool hasBaseFeeMsat() => $_has(6);
+  void clearBaseFeeMsat() => clearField(7);
+
+  $core.double get feeRate => $_getN(7);
+  set feeRate($core.double v) { $_setDouble(7, v); }
+  $core.bool hasFeeRate() => $_has(7);
+  void clearFeeRate() => clearField(8);
+
+  $core.int get timeLockDelta => $_get(8, 0);
+  set timeLockDelta($core.int v) { $_setUnsignedInt32(8, v); }
+  $core.bool hasTimeLockDelta() => $_has(8);
+  void clearTimeLockDelta() => clearField(9);
+
+  Int64 get minHtlcMsat => $_getI64(9);
+  set minHtlcMsat(Int64 v) { $_setInt64(9, v); }
+  $core.bool hasMinHtlcMsat() => $_has(9);
+  void clearMinHtlcMsat() => clearField(10);
+}
+
+class LSPList extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('LSPList', package: const $pb.PackageName('data'))
+    ..m<$core.String, LSPInformation>(1, 'lsps', 'LSPList.LspsEntry',$pb.PbFieldType.OS, $pb.PbFieldType.OM, LSPInformation.create, null, null , const $pb.PackageName('data'))
+    ..hasRequiredFields = false
+  ;
+
+  LSPList() : super();
+  LSPList.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  LSPList.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  LSPList clone() => LSPList()..mergeFromMessage(this);
+  LSPList copyWith(void Function(LSPList) updates) => super.copyWith((message) => updates(message as LSPList));
+  $pb.BuilderInfo get info_ => _i;
+  static LSPList create() => LSPList();
+  LSPList createEmptyInstance() => create();
+  static $pb.PbList<LSPList> createRepeated() => $pb.PbList<LSPList>();
+  static LSPList getDefault() => _defaultInstance ??= create()..freeze();
+  static LSPList _defaultInstance;
+
+  $core.Map<$core.String, LSPInformation> get lsps => $_getMap(0);
 }
 

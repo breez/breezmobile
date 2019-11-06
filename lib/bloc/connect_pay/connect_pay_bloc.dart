@@ -45,7 +45,7 @@ class ConnectPayBloc {
 
   void onAccountChanged(AccountModel acc) async {
     _currentAccount = acc; 
-    if (_currentAccount.active && !_pendingCTPLinkController.isClosed) {
+    if (_currentAccount.connected && !_pendingCTPLinkController.isClosed) {
       await _userStream.where((u) => u.locked == false).first;
       String pendingLink = _pendingCTPLinkController.value;
       if (pendingLink != null) {
@@ -147,7 +147,7 @@ class ConnectPayBloc {
     deepLinks.linksNotifications
       .listen((link) async {      
         //if our account is not active yet, just persist the link
-        if (!_currentAccount.active) {
+        if (!_currentAccount.connected) {
           _pendingCTPLinkController.add(link);
           StreamSubscription<BreezUserModel> userSubscription;
           userSubscription = _userStream.listen((user) {

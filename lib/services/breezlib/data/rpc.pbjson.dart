@@ -37,6 +37,7 @@ const Account$json = const {
     const {'1': 'enabled', '3': 9, '4': 1, '5': 8, '10': 'enabled'},
     const {'1': 'maxChanReserve', '3': 10, '4': 1, '5': 3, '10': 'maxChanReserve'},
     const {'1': 'channelPoint', '3': 11, '4': 1, '5': 9, '10': 'channelPoint'},
+    const {'1': 'readyForPayments', '3': 12, '4': 1, '5': 8, '10': 'readyForPayments'},
   ],
   '4': const [Account_AccountStatus$json],
 };
@@ -44,11 +45,10 @@ const Account$json = const {
 const Account_AccountStatus$json = const {
   '1': 'AccountStatus',
   '2': const [
-    const {'1': 'WAITING_DEPOSIT', '2': 0},
-    const {'1': 'WAITING_DEPOSIT_CONFIRMATION', '2': 1},
-    const {'1': 'PROCESSING_BREEZ_CONNECTION', '2': 2},
-    const {'1': 'PROCESSING_WITHDRAWAL', '2': 3},
-    const {'1': 'ACTIVE', '2': 4},
+    const {'1': 'DISCONNECTED', '2': 0},
+    const {'1': 'PROCESSING_CONNECTION', '2': 1},
+    const {'1': 'CLOSING_CONNECTION', '2': 2},
+    const {'1': 'CONNECTED', '2': 3},
   ],
 };
 
@@ -151,15 +151,14 @@ const NotificationEvent_NotificationType$json = const {
     const {'1': 'ACCOUNT_CHANGED', '2': 2},
     const {'1': 'PAYMENT_SENT', '2': 3},
     const {'1': 'INVOICE_PAID', '2': 4},
-    const {'1': 'ROUTING_NODE_CONNECTION_CHANGED', '2': 5},
-    const {'1': 'LIGHTNING_SERVICE_DOWN', '2': 6},
-    const {'1': 'FUND_ADDRESS_CREATED', '2': 7},
-    const {'1': 'FUND_ADDRESS_UNSPENT_CHANGED', '2': 8},
-    const {'1': 'BACKUP_SUCCESS', '2': 9},
-    const {'1': 'BACKUP_FAILED', '2': 10},
-    const {'1': 'BACKUP_AUTH_FAILED', '2': 11},
-    const {'1': 'BACKUP_NODE_CONFLICT', '2': 12},
-    const {'1': 'BACKUP_REQUEST', '2': 13},
+    const {'1': 'LIGHTNING_SERVICE_DOWN', '2': 5},
+    const {'1': 'FUND_ADDRESS_CREATED', '2': 6},
+    const {'1': 'FUND_ADDRESS_UNSPENT_CHANGED', '2': 7},
+    const {'1': 'BACKUP_SUCCESS', '2': 8},
+    const {'1': 'BACKUP_FAILED', '2': 9},
+    const {'1': 'BACKUP_AUTH_FAILED', '2': 10},
+    const {'1': 'BACKUP_NODE_CONFLICT', '2': 11},
+    const {'1': 'BACKUP_REQUEST', '2': 12},
   ],
 };
 
@@ -329,5 +328,38 @@ const Rates$json = const {
   '2': const [
     const {'1': 'rates', '3': 1, '4': 3, '5': 11, '6': '.data.rate', '10': 'rates'},
   ],
+};
+
+const LSPInformation$json = const {
+  '1': 'LSPInformation',
+  '2': const [
+    const {'1': 'name', '3': 1, '4': 1, '5': 9, '10': 'name'},
+    const {'1': 'widget_url', '3': 2, '4': 1, '5': 9, '10': 'widgetUrl'},
+    const {'1': 'pubkey', '3': 3, '4': 1, '5': 9, '10': 'pubkey'},
+    const {'1': 'host', '3': 4, '4': 1, '5': 9, '10': 'host'},
+    const {'1': 'channel_capacity', '3': 5, '4': 1, '5': 3, '10': 'channelCapacity'},
+    const {'1': 'target_conf', '3': 6, '4': 1, '5': 5, '10': 'targetConf'},
+    const {'1': 'base_fee_msat', '3': 7, '4': 1, '5': 3, '10': 'baseFeeMsat'},
+    const {'1': 'fee_rate', '3': 8, '4': 1, '5': 1, '10': 'feeRate'},
+    const {'1': 'time_lock_delta', '3': 9, '4': 1, '5': 13, '10': 'timeLockDelta'},
+    const {'1': 'min_htlc_msat', '3': 10, '4': 1, '5': 3, '10': 'minHtlcMsat'},
+  ],
+};
+
+const LSPList$json = const {
+  '1': 'LSPList',
+  '2': const [
+    const {'1': 'lsps', '3': 1, '4': 3, '5': 11, '6': '.data.LSPList.LspsEntry', '10': 'lsps'},
+  ],
+  '3': const [LSPList_LspsEntry$json],
+};
+
+const LSPList_LspsEntry$json = const {
+  '1': 'LspsEntry',
+  '2': const [
+    const {'1': 'key', '3': 1, '4': 1, '5': 9, '10': 'key'},
+    const {'1': 'value', '3': 2, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'value'},
+  ],
+  '7': const {'7': true},
 };
 

@@ -29,7 +29,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
       _thisRoute = ModalRoute.of(context);
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context); 
       _addFundsBloc.addFundRequestSink.add(false);
-      widget._accountBloc.accountStream.firstWhere((acc) => !acc.bootstraping).then((acc) {
+      widget._accountBloc.accountStream.firstWhere((acc) => !acc.isInitialBootstrap).then((acc) {
         if (this.mounted) {
           _addFundsBloc.addFundRequestSink.add(true);
         }
