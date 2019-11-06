@@ -1,31 +1,30 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:breez/bloc/async_action.dart';
+
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
-import 'package:breez/bloc/lsp/lsp_actions.dart';
-import 'package:breez/bloc/lsp/lsp_bloc.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
+import 'package:breez/bloc/async_action.dart';
+import 'package:breez/bloc/csv_exporter.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/breezlib/progress_downloader.dart';
-import 'package:breez/services/device.dart';
-import 'package:breez/services/notifications.dart';
-import 'package:breez/services/currency_service.dart';
-import 'package:fixnum/fixnum.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'account_model.dart';
-import 'package:breez/services/injector.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:breez/logger.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:breez/services/currency_data.dart';
-import 'package:breez/bloc/account/fiat_conversion.dart';
+import 'package:breez/services/currency_service.dart';
+import 'package:breez/services/device.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/services/notifications.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'account_model.dart';
 import 'account_synchronizer.dart';
 
 class AccountBloc {
@@ -142,7 +141,8 @@ class AccountBloc {
       ChangeSyncUIState: _collapseSyncUI,
       FetchRates: _fetchRates,
       ResetChainService: _handleResetChainService,
-      SendCoins: _handleSendCoins,      
+      SendCoins: _handleSendCoins,
+      ExportPayments: _exportPaymentsAction,
     };
 
     _accountController.add(AccountModel.initial());
@@ -227,6 +227,11 @@ class AccountBloc {
 
   Future _handleSendCoins(SendCoins action) async {
     action.resolve(await _breezLib.sendWalletCoins(action.destAddress, Int64(action.feeRate)));     
+  }
+
+  Future _exportPaymentsAction(ExportPayments action) async {
+    List currentPaymentList = _filterPayments(_paymentsController.value.paymentsList);
+    action.resolve(await CsvExporter(currentPaymentList, _paymentFilterController.value).export());
   }
 
   Future _handleResetChainService(ResetChainService action) async {
