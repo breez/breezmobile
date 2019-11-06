@@ -298,17 +298,6 @@ class DevViewState extends State<DevView> {
             _resetBugReportBehavior(accBloc, settings);
           }));
     }
-
-    if (!account.enableInProgress && account.id.isNotEmpty) {
-      choices.add(Choice(
-          title: account.enabled
-              ? "Disable Automatic Channel"
-              : "Enable Automatic Channel",
-          icon: Icons.phone_android,
-          function: () {
-            accBloc.accountEnableSink.add(!account.enabled);
-          }));
-    }
     choices.add(Choice(
         title: "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
         icon: Icons.network_check,
@@ -323,8 +312,8 @@ class DevViewState extends State<DevView> {
         _promptForRestart();
 
       }
-    ));
-
+    ));   
+    
     return choices;
   }
 

@@ -135,11 +135,9 @@ class AccountModel {
   final FiatConversion _fiatCurrency;
   final List<FiatConversion> _fiatConversionList;
   final FundStatusReply addedFundsReply;
-  final String paymentRequestInProgress;
-  final bool connected;
+  final String paymentRequestInProgress;  
   final Int64 onChainFeeRate;
-  final bool initial;
-  final bool bootstraping;
+  final bool initial;  
   final double bootstrapProgress;
   final bool enableInProgress;
   final double syncProgress;
@@ -148,10 +146,8 @@ class AccountModel {
   AccountModel(this._accountResponse, this._currency, this._fiatShortName, this._fiatCurrency, this._fiatConversionList,
       {this.initial = true,
       this.addedFundsReply,
-      this.paymentRequestInProgress,
-      this.connected = false,
-      this.onChainFeeRate,
-      this.bootstraping = false,
+      this.paymentRequestInProgress,      
+      this.onChainFeeRate,      
       this.enableInProgress = false,
       this.bootstrapProgress = 0,
       this.syncProgress = 0,
@@ -162,16 +158,15 @@ class AccountModel {
             Account()
               ..balance = Int64(0)
               ..walletBalance = Int64(0)
-              ..status = Account_AccountStatus.WAITING_DEPOSIT
+              ..status = Account_AccountStatus.DISCONNECTED
               ..maxAllowedToReceive = Int64(0)
               ..maxPaymentAmount = Int64(0)
-              ..enabled = true,
+              ..enabled = true,   
             Currency.SAT,
             "USD",
             null,
             List(),
-            initial: true,
-            bootstraping: true);
+            initial: true);
   AccountModel copyWith(
       {Account accountResponse,
       Currency currency,
@@ -179,10 +174,8 @@ class AccountModel {
       FiatConversion fiatCurrency,
       List<FiatConversion> fiatConversionList,
       FundStatusReply addedFundsReply,
-      String paymentRequestInProgress,
-      bool connected,
-      Int64 onChainFeeRate,
-      bool bootstraping,
+      String paymentRequestInProgress,      
+      Int64 onChainFeeRate,      
       bool enableInProgress,
       double bootstrapProgress,
       double syncProgress,
@@ -193,10 +186,8 @@ class AccountModel {
         fiatShortName ?? this._fiatShortName,
         fiatCurrency ?? this._fiatCurrency,
         fiatConversionList ?? this._fiatConversionList,
-        addedFundsReply: addedFundsReply ?? this.addedFundsReply,
-        connected: connected ?? this.connected,
-        onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
-        bootstraping: bootstraping ?? this.bootstraping,
+        addedFundsReply: addedFundsReply ?? this.addedFundsReply,        
+        onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,        
         bootstrapProgress: bootstrapProgress ?? this.bootstrapProgress,
         enableInProgress: enableInProgress ?? this.enableInProgress,
         paymentRequestInProgress:
@@ -208,15 +199,14 @@ class AccountModel {
 
   String get id => _accountResponse.id;
   SwapFundStatus get swapFundsStatus => SwapFundStatus(this.addedFundsReply);
-  bool get processingBreezConnection =>
+  bool get disconnected => _accountResponse.status == Account_AccountStatus.DISCONNECTED;
+  bool get processingConnection =>
       _accountResponse.status ==
-      Account_AccountStatus.PROCESSING_BREEZ_CONNECTION;
-  bool get processingWithdrawal =>
-      _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
-  bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;
-  bool get isInitialBootstrap =>
-      (bootstraping ||
-      (!active && !processingWithdrawal && !processingBreezConnection)) && !initial;
+      Account_AccountStatus.PROCESSING_CONNECTION;
+  bool get closingConnection =>
+      _accountResponse.status == Account_AccountStatus.CLOSING_CONNECTION;
+  bool get connected => _accountResponse.status == Account_AccountStatus.CONNECTED;
+  bool get isInitialBootstrap => !initial && (disconnected || closingConnection);
   Int64 get balance => _accountResponse.balance;
   String get formattedFiatBalance => fiatCurrency?.format(balance);
   Int64 get walletBalance => _accountResponse.walletBalance;
@@ -231,8 +221,9 @@ class AccountModel {
   Int64 get reserveAmount => balance - maxAllowedToPay;
   Int64 get warningMaxChanReserveAmount => _accountResponse.maxChanReserve;
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
-  Int64 get routingNodeFee => _accountResponse.routingNodeFee;
   bool get enabled => _accountResponse.enabled;
+  Int64 get routingNodeFee => _accountResponse.routingNodeFee;  
+  bool get readyForPayments => _accountResponse.readyForPayments;
 
   bool get synced => syncProgress == 1.0;
   String get channelFundingTxUrl {
@@ -265,7 +256,7 @@ class AccountModel {
     return null;
   }
 
-  bool get transferringOnChainDeposit => swapFundsStatus.depositConfirmed && this.active;
+  bool get transferringOnChainDeposit => swapFundsStatus.depositConfirmed && this.connected;  
 
   String validateOutgoingOnChainPayment(Int64 amount) {
     if (amount > walletBalance) {

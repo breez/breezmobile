@@ -26,7 +26,7 @@ class _StatusTextState extends State<StatusText> {
       return LoadingAnimatedText(widget.message);
     }
 
-    if (widget.account.processingBreezConnection) {      
+    if (widget.account.processingConnection) {      
       return LoadingAnimatedText("",
           textAlign: TextAlign.center,
           textElements: <TextSpan>[

@@ -89,11 +89,11 @@ class AddFundsState extends State<AddFundsPage> {
     bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
 
     String errorMessage;
-    if (account == null || account.bootstraping) {
+    if (account == null || account.isInitialBootstrap) {
       errorMessage = 'You\'ll be able to add funds after Breez is finished bootstrapping.';
-    } else if (unconfirmedTxID?.isNotEmpty == true || account.processingWithdrawal) {
+    } else if (unconfirmedTxID?.isNotEmpty == true || account.closingConnection) {
       errorMessage =
-          'Breez is processing your previous ${waitingDepositConfirmation || account.processingBreezConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
+          'Breez is processing your previous ${waitingDepositConfirmation || account.processingConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
     }
 
     if (errorMessage != null) {
@@ -147,7 +147,7 @@ class AddFundsState extends State<AddFundsPage> {
   List<Widget> _buildList(List<AddFundVendorModel> vendorsList, AccountModel account) {
     List<Widget> list = List();
     vendorsList.forEach((v){
-      if (v.isAllowed && (!v.requireActiveChannel || account.active == true)){
+      if (v.isAllowed && (!v.requireActiveChannel || account.connected == true)){
         list
         ..add(_buildAddFundsVendorItem(v))
         ..add(Divider(

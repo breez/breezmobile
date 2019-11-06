@@ -18,6 +18,8 @@ import 'package:breez/routes/pos/transactions/pos_transactions_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 
+import 'bloc/lsp/lsp_bloc.dart';
+
 class PosApp extends StatelessWidget {
   const PosApp({Key key}) : super(key: key);
 
@@ -26,6 +28,7 @@ class PosApp extends StatelessWidget {
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     return StreamBuilder(
         stream: userProfileBloc.userStream,
@@ -42,14 +45,14 @@ class PosApp extends StatelessWidget {
             builder: (ctx) => MaterialApp(
               title: 'Breez POS',
               initialRoute: user.registered ? null : '/intro',
-              home: PosHome(accountBloc, backupBloc, userProfileBloc),
+              home: PosHome(accountBloc, backupBloc, userProfileBloc, lspBloc),
               theme: theme.themeMap[user.themeId],
               onGenerateRoute: (RouteSettings settings) {
                 switch (settings.name) {
                   case '/home':
                     return new FadeInRoute(
                       builder: (_) =>
-                          new PosHome(accountBloc, backupBloc, userProfileBloc),
+                          new PosHome(accountBloc, backupBloc, userProfileBloc, lspBloc),
                       settings: settings,
                     );
                   case '/intro':
