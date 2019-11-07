@@ -116,8 +116,8 @@ final ThemeData darkTheme = ThemeData(
     caption: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
   ),
   primaryIconTheme: IconThemeData(color: Color(0xFF7aa5eb)),
-  textSelectionColor: Color(0xFF121212).withOpacity(0.5),
-  textSelectionHandleColor: Color(0xFF121212),
+  textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
+  textSelectionHandleColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSansRegular',
 );
 
