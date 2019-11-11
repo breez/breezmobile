@@ -24,11 +24,25 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
   String _enteredPinCode;
   String _errorMessage;
 
+  LocalAuthenticationService _localAuthService;
+  bool _canCheckBiometrics = false;
+  String _availableBiometric;
+
   @override
   initState() {
     super.initState();
+    _availableBiometric = "";
+    _initLocalAuthService();
     _enteredPinCode = "";
     _errorMessage = "";
+  }
+
+  Future _initLocalAuthService() async {
+    _localAuthService = LocalAuthenticationService(context);
+    _canCheckBiometrics =  await _localAuthService.checkBiometrics();
+    if(_canCheckBiometrics) {
+      _availableBiometric = await _localAuthService.getAvailableBiometrics();
+    }
   }
 
   Widget build(BuildContext context) {    
@@ -143,7 +157,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
               ),
             ),
           _numberButton("0"),
-          widget.onFingerprintEntered == null || _enteredPinCode.length > 0
+          widget.onFingerprintEntered == null || (_canCheckBiometrics && _availableBiometric != "" && _enteredPinCode.length > 0)
               ? Container(
                   child: new IconButton(
                     onPressed: () => _setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
@@ -155,13 +169,13 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
                 )
               : Container(
                   child: new IconButton(
-                    onPressed: () => LocalAuthenticationService(context).authenticate().then((isValid) {
+                    onPressed: () => _localAuthService.authenticate().then((isValid) {
                       Future.delayed(Duration(milliseconds: 200), () {
                         return widget.onFingerprintEntered(isValid);
                       });
                     }),
                     icon: Icon(
-                      Icons.fingerprint,
+                      _availableBiometric == "face" ? Icons.face : Icons.fingerprint,
                       color: Theme.of(context).errorColor,
                     ),
                   ),
