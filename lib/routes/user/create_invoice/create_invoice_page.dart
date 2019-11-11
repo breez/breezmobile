@@ -149,7 +149,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                     maxLength: 90,
                     maxLengthEnforced: true,
                     decoration: new InputDecoration(
-                      labelText: "Description",
+                      labelText: "Description (optional)",
                     ),
                     style: theme.FieldTextStyle.textStyle,
                   ),
