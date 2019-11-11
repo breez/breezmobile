@@ -14,6 +14,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/routes/user/home/status_indicator.dart';
 import 'package:breez/widgets/pos_payment_dialog.dart';
+import 'package:breez/widgets/breez_dropdown.dart';
 
 var cancellationTimeoutValue;
 
@@ -183,6 +184,7 @@ class POSInvoiceState extends State<POSInvoice> {
                           child: IgnorePointer(
                             ignoring: _isButtonDisabled,
                             child: new RaisedButton(
+                              color: Theme.of(context).primaryColorLight,
                               padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
                               child: new Text(
                                 "Charge ${_chargeAmountController.text}"
@@ -197,10 +199,10 @@ class POSInvoiceState extends State<POSInvoice> {
                         ),
                       ),
                       new Container(
-                        height: 50.0,
+                        height: 80.0,
                         child: new Padding(
                           padding: EdgeInsets.only(
-                              left: 28.0, right: 28.0, top: 8.0),
+                              left: 16.0, right: 16.0, top: 0.0),
                           child: new TextField(
                             focusNode: _focusNode,
                             textInputAction: TextInputAction.done,
@@ -224,10 +226,11 @@ class POSInvoiceState extends State<POSInvoice> {
                                   color: Color(0xFFc5cedd),
                                 ),
                               ),
+                              counterStyle: Theme.of(context).primaryTextTheme.caption,
                               hintText: 'Add Note',
-                              hintStyle: theme.invoiceMemoStyle,
+                              hintStyle: theme.invoiceMemoStyle.copyWith(color: Theme.of(context).primaryTextTheme.display1.color),
                             ),
-                            style: theme.invoiceMemoStyle,
+                            style: theme.invoiceMemoStyle.copyWith(color: Theme.of(context).primaryTextTheme.display1.color),
                           ),
                         ),
                       ),
@@ -236,23 +239,22 @@ class POSInvoiceState extends State<POSInvoice> {
                         child: Row(children: <Widget>[
                           new Flexible(
                               child: new TextField(
+                                decoration: InputDecoration.collapsed(hintText: ''),
                             enabled: false,
                             controller: _amountController,
-                            style: theme.invoiceAmountStyle,
+                            style: theme.invoiceAmountStyle.copyWith(color:Theme.of(context).textTheme.headline.color),
                             textAlign: TextAlign.right,
                           )),
-                          new Theme(
-                            data: Theme.of(context).copyWith(
-                              brightness: Brightness.light,
-                              canvasColor: theme.BreezColors.white[500],
-                            ),
+                          Theme(
+                            data: Theme.of(context).copyWith(canvasColor: Theme.of(context).backgroundColor),
                             child: new DropdownButtonHideUnderline(
                               child: ButtonTheme(
                                 alignedDropdown: true,
-                                child: new DropdownButton(
+                                child: new BreezDropdownButton(
                                   onChanged: (value) => changeCurrency(value),
+                                  iconEnabledColor: Theme.of(context).textTheme.headline.color,
                                   value: _currency.displayName,
-                                  style: theme.invoiceAmountStyle,
+                                  style: theme.invoiceAmountStyle.copyWith(color:Theme.of(context).textTheme.headline.color),
                                   items:
                                       Currency.currencies.map((Currency value) {
                                     return new DropdownMenuItem<String>(
@@ -260,7 +262,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                       child: new Text(
                                         value.displayName,
                                         textAlign: TextAlign.right,
-                                        style: theme.invoiceAmountStyle,
+                                        style: theme.invoiceAmountStyle.copyWith(color:Theme.of(context).textTheme.headline.color),
                                       ),
                                     );
                                   }).toList(),
@@ -273,7 +275,7 @@ class POSInvoiceState extends State<POSInvoice> {
                     ],
                   ),
                   decoration: new BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).backgroundColor,
                   ),
                   height: MediaQuery.of(context).size.height * 0.29),
               new Expanded(child: _numPad())
@@ -305,12 +307,12 @@ class POSInvoiceState extends State<POSInvoice> {
             return new AlertDialog(
               title: new Text(
                 "Required Information",
-                style: theme.alertTitleStyle,
+                style: Theme.of(context).dialogTheme.titleTextStyle,
               ),
               contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
               content: new SingleChildScrollView(
                 child: new Text("$errorMessage in the Settings screen.",
-                    style: theme.alertStyle),
+                    style: Theme.of(context).dialogTheme.contentTextStyle),
               ),
               actions: <Widget>[
                 new FlatButton(
@@ -338,7 +340,7 @@ class POSInvoiceState extends State<POSInvoice> {
             "You don't have the capacity to receive such payment.",
             Text(
                 "Maximum payment size you can receive is ${_currency.format(_maxAllowedToReceive, includeSymbol: true)}. Please enter a smaller value.",
-                style: theme.alertStyle));
+                style: Theme.of(context).dialogTheme.contentTextStyle));
       } else if (_totalAmount < _maxPaymentAmount.toInt() ||
           _totalAmount < _maxPaymentAmount.toInt()) {
         _invoiceBloc.newInvoiceRequestSink.add(
@@ -354,7 +356,7 @@ class POSInvoiceState extends State<POSInvoice> {
             "You have exceeded the maximum payment size.",
             Text(
                 "Maximum payment size on the Lightning Network is ${_currency.format(_maxPaymentAmount, includeSymbol: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
-                style: theme.alertStyle));
+                style: Theme.of(context).dialogTheme.contentTextStyle));
       }
     }
   }
@@ -422,10 +424,10 @@ class POSInvoiceState extends State<POSInvoice> {
         title: new Text(
           "Clear Sale?",
           textAlign: TextAlign.center,
-          style: theme.alertTitleStyle,
+          style: Theme.of(context).dialogTheme.titleTextStyle,
         ),
         content: new Text("This will clear the current transaction.",
-            style: theme.alertStyle),
+            style: Theme.of(context).dialogTheme.contentTextStyle),
         contentPadding:
             EdgeInsets.only(left: 24.0, right: 24.0, bottom: 12.0, top: 24.0),
         actions: <Widget>[
@@ -449,7 +451,7 @@ class POSInvoiceState extends State<POSInvoice> {
   Container _numberButton(String number) {
     return Container(
         decoration: new BoxDecoration(
-            border: new Border.all(color: Colors.white, width: 0.5)),
+            border: new Border.all(color: Theme.of(context).backgroundColor, width: 0.5)),
         child: IgnorePointer(
             ignoring: _isButtonDisabled,
             child: new FlatButton(
@@ -469,7 +471,7 @@ class POSInvoiceState extends State<POSInvoice> {
             .followedBy([
           Container(
               decoration: new BoxDecoration(
-                  border: new Border.all(color: Colors.white, width: 0.5)),
+                  border: new Border.all(color: Theme.of(context).backgroundColor, width: 0.5)),
               child: new GestureDetector(
                   onLongPress: approveClear,
                   child: new FlatButton(
@@ -478,7 +480,7 @@ class POSInvoiceState extends State<POSInvoice> {
           _numberButton("0"),
           Container(
               decoration: new BoxDecoration(
-                  border: new Border.all(color: Colors.white, width: 0.5)),
+                  border: new Border.all(color: Theme.of(context).backgroundColor, width: 0.5)),
               child: new FlatButton(
                   onPressed: onAddition,
                   child: new Text("+", style: theme.numPadAdditionStyle))),

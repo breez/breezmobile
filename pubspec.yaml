@@ -58,6 +58,7 @@ dependencies:
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
+  csv: ^4.0.3
 
 dev_dependencies:
   mockito: "^3.0.0"

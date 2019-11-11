@@ -183,7 +183,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                           message = accSnapshot.error.toString();
                         } else if (!accSnapshot.hasData) {
                           message = 'Receiving payments will be available as soon as Breez is synchronized.';
-                        } else if (acc.processingBreezConnection) {
+                        } else if (acc.processingConnection) {
                           message =
                               'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
                         }
@@ -233,6 +233,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   Widget _buildReserveAmountWarning(AccountModel account) {
     return Center(
       child: Container(
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: Theme.of(context).errorColor)),
         padding: new EdgeInsets.all(16),
         child: Text(

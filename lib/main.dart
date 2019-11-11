@@ -15,6 +15,7 @@ import 'bloc/backup/backup_model.dart';
 import 'bloc/user_profile/user_profile_bloc.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   BreezLogger();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);

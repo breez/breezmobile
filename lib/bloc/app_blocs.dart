@@ -8,6 +8,8 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
 
+import 'lsp/lsp_bloc.dart';
+
 /*
 Bloc stands for Business Logic Component.
 */
@@ -21,6 +23,7 @@ class AppBlocs {
   final BackupBloc backupBloc;
   final MarketplaceBloc marketplaceBloc;
   final FastbitcoinsBloc fastbitcoinsBloc;
+  final LSPBloc lspBloc;
   final Map<Type, Object> _blocsByType;
 
   static T _registerBloc<T>(T bloc, Map<Type, Object> blocs) {
@@ -42,6 +45,7 @@ class AppBlocs {
     ConnectPayBloc connectPayBloc = _registerBloc(ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream), blocsByType);
     BackupBloc backupBloc = _registerBloc(BackupBloc(userProfileBloc.userStream), blocsByType);
     MarketplaceBloc marketplaceBloc = _registerBloc(MarketplaceBloc(), blocsByType);
+    LSPBloc lspBloc = _registerBloc(LSPBloc(accountBloc.accountStream), blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc = _registerBloc(FastbitcoinsBloc(production: true), blocsByType);
 
     return AppBlocs._(      
@@ -54,6 +58,7 @@ class AppBlocs {
       backupBloc,
       marketplaceBloc,
       fastbitcoinsBloc,
+      lspBloc,
       blocsByType
     );
   }  
@@ -68,6 +73,7 @@ class AppBlocs {
     this.backupBloc,
     this.marketplaceBloc,
     this.fastbitcoinsBloc,
-    this._blocsByType,
+    this.lspBloc,
+    this._blocsByType,    
   );
 }

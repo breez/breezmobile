@@ -31,10 +31,10 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.breez.client"
         minSdkVersion 24
-        targetSdkVersion 27
+        targetSdkVersion 28
         multiDexEnabled true
         versionCode 1
-        versionName "0.7-beta"
+        versionName "0.8-beta"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
