@@ -59,7 +59,8 @@ dependencies:
     git:
       url: https://github.com/breez/flutter_typeahead.git
   csv: ^4.0.3
-
+  local_auth: ^0.6.0+1
+  
 dev_dependencies:
   mockito: "^3.0.0"
   protoc_plugin: ^16.0.1
