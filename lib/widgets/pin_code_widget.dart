@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
+import 'package:breez/services/local_auth_service.dart';
 
 const PIN_CODE_LENGTH = 6;
 
@@ -141,17 +142,30 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
               ),
             ),
           _numberButton("0"),
-          Container(
-            child: new IconButton(
-              onPressed: () => _setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
-              icon: Icon(
-                Icons.backspace,
-                color: Colors.white,
-              ),
-            ),
-          )
-          ]
-        )
+          widget.onFingerprintEntered == null || _enteredPinCode.length > 0
+              ? Container(
+                  child: new IconButton(
+                    onPressed: () => _setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
+                    icon: Icon(
+                      Icons.backspace,
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              : Container(
+                  child: new IconButton(
+                    onPressed: () => LocalAuthenticationService(context).authenticate().then((isValid) {
+                      Future.delayed(Duration(milliseconds: 200), () {
+                        return widget.onFingerprintEntered(isValid);
+                      });
+                    }),
+                    icon: Icon(
+                      Icons.fingerprint,
+                      color: Theme.of(context).errorColor,
+                    ),
+                  ),
+                )
+        ])
       ],
     );
   }
