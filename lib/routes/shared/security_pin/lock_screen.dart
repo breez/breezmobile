@@ -7,8 +7,9 @@ const PIN_CODE_LENGTH = 6;
 class AppLockScreen extends StatefulWidget {  
   final bool canCancel;
   final Future Function(String pinCode) onPinEntered;
+  final Future Function(bool isValid) onFingerprintEntered;
 
-  AppLockScreen(this.onPinEntered, {Key key, this.canCancel = false}) : super(key: key);
+  AppLockScreen(this.onPinEntered, {Key key, this.canCancel = false, this.onFingerprintEntered}) : super(key: key);
 
   @override
   _AppLockScreenState createState() => new _AppLockScreenState();
@@ -41,6 +42,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
           _label,
           widget.canCancel,
           widget.onPinEntered,
+          onFingerprintEntered: widget.onFingerprintEntered,
         ),
       ),
     );

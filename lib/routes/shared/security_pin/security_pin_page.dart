@@ -65,6 +65,13 @@ class SecurityPageState extends State<SecurityPage> {
                         });
                       });
                     },
+                    onFingerprintEntered: (isValid) {
+                      if (isValid) {
+                        setState(() {
+                          this._screenLocked = false;
+                        });
+                      }
+                    },
                     canCancel: true,
                   );
                 }
