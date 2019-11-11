@@ -10,8 +10,9 @@ class PinCodeWidget extends StatefulWidget {
   final String label;
   final bool dismissible;
   final Future Function(String pinEntered) onPinEntered;
+  final Future Function(bool isValid) onFingerprintEntered;
 
-  PinCodeWidget(this.label, this.dismissible, this.onPinEntered);
+  PinCodeWidget(this.label, this.dismissible, this.onPinEntered, {this.onFingerprintEntered});
 
   @override
   State<StatefulWidget> createState() {
