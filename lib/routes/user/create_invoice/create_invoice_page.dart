@@ -152,11 +152,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                       labelText: "Description",
                     ),
                     style: theme.FieldTextStyle.textStyle,
-                    validator: (text) {
-                      if (text.length == 0) {
-                        return "Please enter a description";
-                      }
-                    },),
+                  ),
                   new AmountFormField(
                       context: context,
                       accountModel: acc,
