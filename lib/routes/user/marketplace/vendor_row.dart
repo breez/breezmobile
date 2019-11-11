@@ -13,32 +13,16 @@ class VendorRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color _vendorFgColor = Colors.transparent;
-    if (_vendor.name.toLowerCase() == "bitrefill") {
-      _vendorFgColor = theme.bitrefill.iconFgColor != null ? theme.bitrefill.iconFgColor : Colors.transparent;
-    } else if (_vendor.name.toLowerCase() == "ln.pizza") {
-      _vendorFgColor = theme.lnpizza.iconFgColor != null ? theme.lnpizza.iconFgColor : Colors.transparent;
-    }
-
-    Color _vendorBgColor = Colors.white;
-    if (_vendor.name.toLowerCase() == "bitrefill") {
-      _vendorBgColor = theme.bitrefill.iconBgColor != null ? theme.bitrefill.iconBgColor : Colors.transparent;
-    } else if (_vendor.name.toLowerCase() == "ln.pizza") {
-      _vendorBgColor = theme.lnpizza.iconBgColor != null ? theme.lnpizza.iconBgColor : Colors.transparent;
-    }
-
-    Color _vendorTextColor = Colors.black;
-    if (_vendor.name.toLowerCase() == "bitrefill") {
-      _vendorTextColor = theme.bitrefill.textColor != null ? theme.bitrefill.textColor : Colors.black;
-    } else if (_vendor.name.toLowerCase() == "ln.pizza") {
-      _vendorTextColor = theme.lnpizza.textColor != null ? theme.lnpizza.textColor : Colors.black;
-    }
+    Color _vendorFgColor = theme.vendorTheme[_vendor.name.toLowerCase()]?.iconFgColor ?? Colors.transparent;
+    Color _vendorBgColor = theme.vendorTheme[_vendor.name.toLowerCase()]?.iconBgColor ?? Colors.white;
+    Color _vendorTextColor = theme.vendorTheme[_vendor.name.toLowerCase()]?.textColor ?? Colors.black;
 
     final _vendorLogo = _vendor.logo != null
         ? Image(
             image: AssetImage(_vendor.logo),
             height: 48.0,
             color: _vendorFgColor,
+            colorBlendMode: BlendMode.srcATop,
           )
         : Container();
 
