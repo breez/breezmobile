@@ -44,7 +44,7 @@ class CsvExporter {
 
   Future<String> _createCsvFilePath() async {
     final directory = await getTemporaryDirectory();
-    String filePath = '${directory.path}/breez_payment_list';
+    String filePath = '${directory.path}/BreezPayments';
     filePath = appendFilterInformation(filePath);
     filePath += ".csv";
     return filePath;
