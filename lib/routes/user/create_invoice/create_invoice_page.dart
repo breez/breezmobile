@@ -49,6 +49,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             Navigator.pop(context, "Payment was successfuly received!");            
       });
       _isInit = true;
+      Future.delayed(Duration(milliseconds: 200), () => FocusScope.of(context).requestFocus(_amountFocusNode));
     }
     super.didChangeDependencies();
   }
