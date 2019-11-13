@@ -18,6 +18,7 @@ before_script:
 - git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
 - export TMP_GOPATH=$(pwd)/gopath
 - pushd gopath/src/github.com/breez/breez
+- export GOPRIVATE=github.com/btcsuite/btcd
 - go mod vendor
 - export GOPATH=$TMP_GOPATH
 - export GO111MODULE=off
@@ -25,7 +26,6 @@ before_script:
 - go get golang.org/x/mobile/cmd/gobind
 - "$GOPATH/bin/gomobile init"
 - mkdir -p build/ios
-- export GOPRIVATE=github.com/btcsuite/btcd
 - PATH=$PATH:$GOPATH/bin gomobile bind -target=ios -tags="ios experimental signrpc
   walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc"
   -o build/ios/bindings.framework github.com/breez/breez/bindings
