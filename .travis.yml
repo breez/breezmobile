@@ -8,11 +8,11 @@ before_script:
 - chmod 600 ./travis/build_server_key
 - ssh-add ./travis/build_server_key
 - "./travis/add-key.sh"
-- curl -o golang https://dl.google.com/go/go1.13.2.darwin-amd64.tar.gz
-- mkdir go1.13.2
-- tar -C $(pwd)/go1.13.2 -xzf golang
-- export PATH=$(pwd)/go1.13.2/go/bin:$PATH
-- export GOROOT=$(pwd)/go1.13.2/go
+- curl -o golang https://dl.google.com/go/go1.13.4.darwin-amd64.tar.gz
+- mkdir go1.13.4
+- tar -C $(pwd)/go1.13.4 -xzf golang
+- export PATH=$(pwd)/go1.13.4/go/bin:$PATH
+- export GOROOT=$(pwd)/go1.13.4/go
 - go version
 - brew install bazaar
 - git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
