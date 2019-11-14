@@ -100,7 +100,6 @@ class SecurityPageState extends State<SecurityPage> {
                             }
                           }
                         : null,
-                    },
                     canCancel: true,
                   );
                 }
