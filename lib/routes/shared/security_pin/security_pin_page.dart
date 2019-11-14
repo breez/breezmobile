@@ -74,6 +74,9 @@ class SecurityPageState extends State<SecurityPage> {
               if (!snapshot.hasData) {
                 return Container();
               } else {
+                if (snapshot.data.securityModel.isFingerprintEnabled && !_hasBiometricsSet) {
+                  _updateSecurityModel(snapshot.data.securityModel, snapshot.data.securityModel.copyWith(isFingerprintEnabled: false), backupSnapshot.data);
+                }
                 var backupState = backupStateSnapshot.data;
                 if (snapshot.data.securityModel.requiresPin &&
                     this._screenLocked) {
