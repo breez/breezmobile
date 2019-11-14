@@ -9,7 +9,7 @@
 	<key>provisioningProfiles</key>
 	<dict>
 		<key>technology.breez.client</key>
-		<string>DIST_PROFILE</string>
+		<string>BREEZ-DIST</string>
 	</dict>
 	<key>signingCertificate</key>
 	<string>iPhone Distribution</string>
