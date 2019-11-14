@@ -86,12 +86,12 @@ class UserApp extends StatelessWidget {
                             Navigator.pop(ctx);
                             userProfileBloc.userSink.add(user.copyWith(locked: false));
                           });
-                        }, onFingerprintEntered: (isValid) {
+                        }, onFingerprintEntered: user.securityModel.isFingerprintEnabled ? (isValid) {
                             if (isValid) {
                               Navigator.pop(ctx);
                               userProfileBloc.userSink.add(user.copyWith(locked: false));
                             }
-                          },
+                          } : null,
                         ),
                         settings: settings
                     );
