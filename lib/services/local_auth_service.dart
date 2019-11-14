@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:breez/widgets/flushbar.dart';
@@ -16,8 +17,7 @@ class LocalAuthenticationService {
     try {
       return await _auth.canCheckBiometrics;
     } on PlatformException catch (error) {
-      showFlushbar(context, message: error.message);
-      return false;
+      throw error.message;
     }
   }
 
@@ -25,28 +25,28 @@ class LocalAuthenticationService {
     try {
       List<BiometricType> availableBiometrics = await _auth.getAvailableBiometrics();
       if (availableBiometrics.contains(BiometricType.face)) {
-        return "face";
+        return (Platform.isIOS) ? "Face ID" : "Face";
       } else if (availableBiometrics.contains(BiometricType.fingerprint)) {
-        return "fingerprint";
+        return (Platform.isIOS) ? "Touch ID" : "Fingerprint";
       }
+      return "";
     } on PlatformException catch (error) {
-      if (error.code == "PasscodeNotSet") {
-        showFlushbar(context, message: error.message);
-      }
+      throw error.message;
     }
-    return "";
   }
 
   Future<bool> authenticate() async {
     try {
       return await _auth.authenticateWithBiometrics(
         localizedReason: 'Authenticate to sign in',
-        useErrorDialogs: true,
-        stickyAuth: true,
+        useErrorDialogs: false,
       );
     } on PlatformException catch (error) {
-      showFlushbar(context, message: error.message);
-      return false;
+      if (error.code == "LockedOut" || error.code == "PermanentlyLockedOut") {
+        showFlushbar(context, message: error.message);
+        return false;
+      }
+      throw error.message;
     }
   }
 }
