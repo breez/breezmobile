@@ -8,6 +8,7 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
 import 'package:breez/routes/shared/security_pin/backup_phrase/backup_phrase_warning_dialog.dart';
+import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/min_font_size.dart';
@@ -38,6 +39,28 @@ class SecurityPageState extends State<SecurityPage> {
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
 
+  LocalAuthenticationService _localAuthService;
+  bool _hasBiometricsSet = false;
+  String _availableBiometric;
+
+  @override
+  void initState() {
+    super.initState();
+    _availableBiometric = "";
+    _initLocalAuthService();
+  }
+
+  Future _initLocalAuthService() async {
+    _localAuthService = LocalAuthenticationService(context);
+    bool canCheckBiometrics = await _localAuthService.checkBiometrics();
+    if (canCheckBiometrics) {
+      _availableBiometric = await _localAuthService.getAvailableBiometrics();
+      setState(() {
+        _hasBiometricsSet = _availableBiometric != null;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     String _title = "Security & Backup";
@@ -65,12 +88,15 @@ class SecurityPageState extends State<SecurityPage> {
                         });
                       });
                     },
-                    onFingerprintEntered: (isValid) {
-                      if (isValid) {
-                        setState(() {
-                          this._screenLocked = false;
-                        });
-                      }
+                    onFingerprintEntered: snapshot.data.securityModel.isFingerprintEnabled
+                        ? (isValid) {
+                            if (isValid) {
+                              setState(() {
+                                this._screenLocked = false;
+                              });
+                            }
+                          }
+                        : null,
                     },
                     canCancel: true,
                   );
@@ -120,6 +146,9 @@ class SecurityPageState extends State<SecurityPage> {
         ..add(_buildPINIntervalTile(securityModel, backupSettings))
         ..add(Divider())
         ..add(_buildChangePINTile(securityModel, backupSettings));
+      if (_hasBiometricsSet) {
+        _tiles..add(Divider())..add(_buildEnableBiometricAuthTile(securityModel, backupSettings));
+      }
     }
     _tiles..add(Divider())
           ..add(_buildBackupProviderTitle(securityModel, backupSettings))
@@ -277,6 +306,27 @@ class SecurityPageState extends State<SecurityPage> {
       trailing:
           Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
       onTap: () => _onChangePinSelected(securityModel, backupSettings),
+    );
+  }
+  ListTile _buildEnableBiometricAuthTile(SecurityModel securityModel, BackupSettings backupSettings) {
+    return ListTile(
+      title: AutoSizeText(
+        (securityModel.isFingerprintEnabled ? "Disable" : "Enable") + " $_availableBiometric Authentication",
+        style: TextStyle(color: Colors.white),
+        maxLines: 1,
+        minFontSize: MinFontSize(context).minFontSize,
+        stepGranularity: 0.1,
+        group: securityModel.requiresPin ? _autoSizeGroup : null,
+      ),
+      trailing: Switch(
+        value: securityModel.isFingerprintEnabled,
+        activeColor: Colors.white,
+        onChanged: (bool value) {
+          if (this.mounted) {
+            _updateSecurityModel(securityModel, securityModel.copyWith(isFingerprintEnabled: value), backupSettings);
+          }
+        },
+      ),
     );
   }
 
