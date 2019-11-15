@@ -14,13 +14,15 @@ GOOGLE_SIGN_IN_URL=$(/usr/libexec/PlistBuddy -c "Print :REVERSED_CLIENT_ID" Runn
 /usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:0:CFBundleURLSchemes:0 $GOOGLE_SIGN_IN_URL" Runner/Info.plist
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $TRAVIS_JOB_NUMBER" Runner/Info.plist
 xcodebuild -quiet -workspace Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath $PWD/build/Runner.xcarchive
-
-zip -r "symbols_$TRAVIS_JOB_NUMBER.zip" ./build/Runner.xcarchive/dSYMs/Runner.app.dSYM
-export uploadCommand="put symbols_$TRAVIS_JOB_NUMBER.zip"
-sftp builderfiles@packages.breez.technology:config/conf <<< $uploadCommand
+echo "after build"
+#zip -r "symbols_$TRAVIS_JOB_NUMBER.zip" ./build/Runner.xcarchive/dSYMs/Runner.app.dSYM
+#export uploadCommand="put symbols_$TRAVIS_JOB_NUMBER.zip"
+#sftp builderfiles@packages.breez.technology:config/conf <<< $uploadCommand
 xcodebuild -quiet -exportArchive -archivePath $PWD/build/Runner.xcarchive -exportOptionsPlist ../travis/export-options.plist -exportPath $PWD/build/Runner.ipa
-
+echo "after archive"
 #upload to testflight
-altool="$(dirname "$(xcode-select -p)")/Applications/Application Loader.app/Contents/Frameworks/ITunesSoftwareService.framework/Support/altool"
+altool="$(dirname "$(xcode-select -p)")/Developer/usr/bin/altool"
 ipa="$PWD/build/Runner.ipa/Runner.ipa"
+export uploadCommand="put $ipa"
+sftp builderfiles@packages.breez.technology:config/conf <<< $uploadCommand
 "$altool" --upload-app --type ios --file "$ipa" --username $APP_USERNAME --password $APP_PASSWORD

@@ -49,6 +49,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             Navigator.pop(context, "Payment was successfuly received!");            
       });
       _isInit = true;
+      Future.delayed(Duration(milliseconds: 200), () => FocusScope.of(context).requestFocus(_amountFocusNode));
     }
     super.didChangeDependencies();
   }
@@ -149,14 +150,10 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                     maxLength: 90,
                     maxLengthEnforced: true,
                     decoration: new InputDecoration(
-                      labelText: "Description",
+                      labelText: "Description (optional)",
                     ),
                     style: theme.FieldTextStyle.textStyle,
-                    validator: (text) {
-                      if (text.length == 0) {
-                        return "Please enter a description";
-                      }
-                    },),
+                  ),
                   new AmountFormField(
                       context: context,
                       accountModel: acc,

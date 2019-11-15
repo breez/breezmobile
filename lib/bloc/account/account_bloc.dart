@@ -111,8 +111,7 @@ class AccountBloc {
   Sink get optimizationWhitelistRequestSink =>
       _permissionsHandler.optimizationWhitelistRequestSink;
 
-  BreezUserModel _currentUser;
-  bool _allowReconnect = true;
+  BreezUserModel _currentUser;  
   bool _startedLightning = false;
   bool _retryingLightningService = false;
   SharedPreferences _sharedPreferences;
@@ -320,8 +319,9 @@ class AccountBloc {
     connectivity.onConnectivityChanged.skip(1).listen((connectivityResult) {
       log.info("_listenConnectivityChanges: connection changed to: " +
           connectivityResult.toString());
-      _allowReconnect = (connectivityResult != ConnectivityResult.none);
-      _reconnectSink.add(null);
+      if (connectivityResult != ConnectivityResult.none) {
+        _reconnectSink.add(null);
+      }
     });
   }
 
@@ -334,8 +334,7 @@ class AccountBloc {
         var acc = _accountController.value;
         log.info("Checking if reconnect needed for account: connected=${acc.connected} readyForPayment=${acc.readyForPayments} processingConnection=${acc.processingConnection}");
 
-        if (_allowReconnect == true && 
-              (acc.connected && acc.readyForPayments == false || acc.processingConnection)) {
+        if (acc.connected && acc.readyForPayments == false || acc.processingConnection) {
           log.info("Reconnecting...");
           await _breezLib.connectAccount();
         }
