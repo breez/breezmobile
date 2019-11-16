@@ -199,7 +199,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       ShareExtend.share(filePath, "file");
     }).catchError((err) {
       Navigator.of(context).pop();
-      showFlushbar(context, message: "Failed to export payment list.");
+      showFlushbar(context, message: "Failed to export payments.");
     });
   }
 }
