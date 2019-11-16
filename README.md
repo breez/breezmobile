@@ -58,14 +58,17 @@
 - [x] Add stronger encryption to cloud backup
 - [x] iCloud backup option
 - [x] Dark mode
-- [ ] Support 3rd-party LSPs
-- [ ] Implement lnurl 
+- [x] Export payments to .csv
+- [x] Support 3rd-party LSPs
+- [ ] Fast on-boarding
+- [ ] Pay w/o full sync
+- [ ] Implement lnurl-withdraw 
+- [ ] Support zero-conf channels
+- [ ] Async payments via Lightning Rod
 - [ ] Support SD storage
+- [ ] NFC card support
 - [ ] NFC device support
 - [ ] POS POC release
-- [ ] Save C2P contacts
-- [ ] NFC card support
-- [ ] Support zero-conf 
 
 ## System Requirements
 * Android 7+ 64bit
