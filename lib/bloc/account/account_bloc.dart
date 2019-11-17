@@ -205,7 +205,7 @@ class AccountBloc {
       var handler = _actionHandlers[action.runtimeType];
       if (handler != null) {
         handler(action).catchError((e) {
-          log.severe("${action.runtimeType} - ${e.toString()}");
+          log.severe("AccountAction: ${action.runtimeType.toString()} - Error: ${e.toString()}");
           action.resolveError(e);
         });
       }
