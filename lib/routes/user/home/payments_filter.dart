@@ -200,8 +200,6 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       ShareExtend.share(filePath, "file");
     }).catchError((err) {
       Navigator.of(context).pop();
-      log.severe("Failed to export payments");
-      log.severe(err.toString());
       showFlushbar(context, message: "Failed to export payments.");
     });
   }

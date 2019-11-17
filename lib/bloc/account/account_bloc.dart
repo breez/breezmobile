@@ -204,7 +204,10 @@ class AccountBloc {
     _userActionsController.stream.listen((action) {
       var handler = _actionHandlers[action.runtimeType];
       if (handler != null) {
-        handler(action).catchError((e) => action.resolveError(e));
+        handler(action).catchError((e) {
+          log.severe("${action.runtimeType} - ${e.toString()}");
+          action.resolveError(e);
+        });
       }
     });
   }
