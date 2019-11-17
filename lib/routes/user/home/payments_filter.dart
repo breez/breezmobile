@@ -8,6 +8,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/logger.dart';
 
 class PaymentFilterSliver extends StatefulWidget {
   final ScrollController _controller;
@@ -199,6 +200,8 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       ShareExtend.share(filePath, "file");
     }).catchError((err) {
       Navigator.of(context).pop();
+      log.severe("Failed to export payments");
+      log.severe(err.toString());
       showFlushbar(context, message: "Failed to export payments.");
     });
   }
