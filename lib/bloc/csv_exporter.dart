@@ -16,7 +16,9 @@ class CsvExporter {
 
   Future export() async {
     log.info("export payments started");
-    return await _saveCsvFile(const ListToCsvConverter().convert(_generateList()));
+    String tmpFilePath = await _saveCsvFile(const ListToCsvConverter().convert(_generateList()));
+    log.info("export payments finished");
+    return tmpFilePath;
   }
 
   List _generateList() {
