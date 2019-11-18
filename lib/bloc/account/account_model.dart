@@ -376,15 +376,16 @@ class PaymentInfo {
       _paymentResponse?.invoiceMemo?.transferRequest == true;
 
   String get description =>
-      _paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
-          ? _paymentResponse.invoiceMemo.description
-              .substring(10, _paymentResponse.invoiceMemo.description.length)
+      _paymentResponse.invoiceMemo.description.startsWith("Bitrefill ")
+          ? _paymentResponse.invoiceMemo.description.length >= 36
+              ? _paymentResponse.invoiceMemo.description.substring(9, _paymentResponse.invoiceMemo.description.length).trimLeft()
+              : _paymentResponse.invoiceMemo.description
           : type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL
               ? "Bitcoin Transfer"
               : _paymentResponse.invoiceMemo?.description;
 
   String get imageURL {
-    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
+    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") && _paymentResponse.invoiceMemo.description.length >= 36) {
       return "src/icon/vendors/bitrefill_logo.png";
     }
     if (_paymentResponse.invoiceMemo.description.startsWith("Fastbitcoins")) {
@@ -401,7 +402,7 @@ class PaymentInfo {
   }
 
   String get title {
-    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
+    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") && _paymentResponse.invoiceMemo.description.length >= 36) {
       return "Bitrefill";
     }
     if (_paymentResponse.invoiceMemo.description.startsWith("LN.pizza")) {
