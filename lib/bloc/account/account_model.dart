@@ -378,7 +378,7 @@ class PaymentInfo {
   String get description =>
       _paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
           ? _paymentResponse.invoiceMemo.description
-              .substring(10, _paymentResponse.invoiceMemo.description.length)
+              .substring(9, _paymentResponse.invoiceMemo.description.length).trimLeft()
           : type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL
               ? "Bitcoin Transfer"
               : _paymentResponse.invoiceMemo?.description;
