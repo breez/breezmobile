@@ -25,6 +25,7 @@ class CsvExporter {
     log.info("generating payment list started");
     List<List<dynamic>> paymentList = new List.generate(this.paymentList.length, (index) {
       List paymentItem = new List();
+      log.info("payment list length: ${this.paymentList.length} , index: $index");
       PaymentInfo paymentInfo = this.paymentList.elementAt(index);
       paymentItem
           .add(DateUtils.formatYearMonthDayHourMinute(DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)));
@@ -34,9 +35,12 @@ class CsvExporter {
       paymentItem.add(paymentInfo.amount.toString());
       paymentItem.add(paymentInfo.preimage);
       paymentItem.add(paymentInfo.paymentHash);
+      log.info("payment item: $paymentItem");
       return paymentItem;
     });
+    log.info("adding header");
     paymentList.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
+    log.info("added header");
     log.info("generating payment finished");
     return paymentList;
   }
