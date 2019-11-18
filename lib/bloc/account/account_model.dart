@@ -375,16 +375,17 @@ class PaymentInfo {
   bool get isTransferRequest =>
       _paymentResponse?.invoiceMemo?.transferRequest == true;
 
+  // A typical Bitrefill transaction consists of Bitrefill prefix followed by ~36 character order id
   String get description =>
-      _paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
+      _paymentResponse.invoiceMemo.description.startsWith("Bitrefill") && _paymentResponse.invoiceMemo.description.length >= 40
           ? _paymentResponse.invoiceMemo.description
-              .substring(10, _paymentResponse.invoiceMemo.description.length)
+              .substring(9, _paymentResponse.invoiceMemo.description.length).trimLeft()
           : type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL
               ? "Bitcoin Transfer"
               : _paymentResponse.invoiceMemo?.description;
 
   String get imageURL {
-    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
+    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") && _paymentResponse.invoiceMemo.description.length >= 40) {
       return "src/icon/vendors/bitrefill_logo.png";
     }
     if (_paymentResponse.invoiceMemo.description.startsWith("Fastbitcoins")) {
@@ -401,7 +402,7 @@ class PaymentInfo {
   }
 
   String get title {
-    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
+    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") && _paymentResponse.invoiceMemo.description.length >= 40) {
       return "Bitrefill";
     }
     if (_paymentResponse.invoiceMemo.description.startsWith("LN.pizza")) {
