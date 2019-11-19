@@ -2,22 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/bloc/async_action.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/default_profile_generator.dart';
-import 'package:breez/bloc/user_profile/security_model.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
-import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hex/hex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -99,6 +95,8 @@ class UserProfileBloc {
     //listen upload image requests
     _listenUploadImageRequests(injector);
 
+    _updateBiometricsSettings(injector);
+
     startPINIntervalWatcher();
   }
 
@@ -158,6 +156,22 @@ class UserProfileBloc {
       _registrationController.addError(e);
     }
     return user;
+  }
+
+  _updateBiometricsSettings(ServiceInjector injector) {
+    _checkBiometrics(injector);
+    _deviceService.eventStream.listen((e){
+      if (e == NotificationType.RESUME) {
+        _checkBiometrics(injector);
+      }
+    });
+  }
+
+  Future _checkBiometrics(ServiceInjector injector) async {
+    String enrolledBiometrics = await injector.localAuthService.enrolledBiometrics;
+    if(enrolledBiometrics == ""){
+      _updateSecurityModel(UpdateSecurityModel(_currentUser.securityModel.copyWith(isFingerprintEnabled: false)));
+    }
   }
 
   void _listenUserActions() {

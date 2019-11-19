@@ -8,6 +8,7 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
 import 'package:breez/routes/shared/security_pin/backup_phrase/backup_phrase_warning_dialog.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
@@ -39,26 +40,18 @@ class SecurityPageState extends State<SecurityPage> {
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
 
-  LocalAuthenticationService _localAuthService;
-  bool _hasBiometricsSet = false;
-  String _availableBiometric;
+  String _enrolledBiometrics;
 
   @override
   void initState() {
     super.initState();
-    _availableBiometric = "";
-    _initLocalAuthService();
+    _enrolledBiometrics = "";
+    _checkBiometrics();
   }
 
-  Future _initLocalAuthService() async {
-    _localAuthService = LocalAuthenticationService(context);
-    bool canCheckBiometrics = await _localAuthService.checkBiometrics();
-    if (canCheckBiometrics) {
-      _availableBiometric = await _localAuthService.getAvailableBiometrics();
-      setState(() {
-        _hasBiometricsSet = _availableBiometric != null;
-      });
-    }
+  _checkBiometrics() async{
+    LocalAuthenticationService localAuthService = new ServiceInjector().localAuthService;
+    _enrolledBiometrics = await localAuthService.enrolledBiometrics;
   }
 
   @override
@@ -148,7 +141,7 @@ class SecurityPageState extends State<SecurityPage> {
         ..add(_buildPINIntervalTile(securityModel, backupSettings))
         ..add(Divider())
         ..add(_buildChangePINTile(securityModel, backupSettings));
-      if (_hasBiometricsSet) {
+      if (_enrolledBiometrics != "") {
         _tiles..add(Divider())..add(_buildEnableBiometricAuthTile(securityModel, backupSettings));
       }
     }
@@ -313,7 +306,7 @@ class SecurityPageState extends State<SecurityPage> {
   ListTile _buildEnableBiometricAuthTile(SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: AutoSizeText(
-        (securityModel.isFingerprintEnabled ? "Disable" : "Enable") + " $_availableBiometric Authentication",
+        (securityModel.isFingerprintEnabled ? "Disable" : "Enable") + " $_enrolledBiometrics Authentication",
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,

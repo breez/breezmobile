@@ -1,38 +1,25 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:breez/widgets/flushbar.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 
 class LocalAuthenticationService {
-  BuildContext context;
-
-  LocalAuthenticationService(this.context);
+  LocalAuthenticationService();
 
   final _auth = LocalAuthentication();
 
-  Future<bool> checkBiometrics() async {
-    try {
-      return await _auth.canCheckBiometrics;
-    } on PlatformException catch (error) {
-      throw error.message;
-    }
-  }
+  Future<String> get enrolledBiometrics async => await _getAvailableBiometrics();
 
-  Future<String> getAvailableBiometrics() async {
-    try {
-      List<BiometricType> availableBiometrics = await _auth.getAvailableBiometrics();
-      if (availableBiometrics.contains(BiometricType.face)) {
-        return (Platform.isIOS) ? "Face ID" : "Face";
-      } else if (availableBiometrics.contains(BiometricType.fingerprint)) {
-        return (Platform.isIOS) ? "Touch ID" : "Fingerprint";
-      }
-      return "";
-    } on PlatformException catch (error) {
-      throw error.message;
+  Future<String> _getAvailableBiometrics() async {
+    List<BiometricType> availableBiometrics = await _auth.getAvailableBiometrics();
+    String enrolledBiometrics = "";
+    if (availableBiometrics.contains(BiometricType.face)) {
+      enrolledBiometrics = (Platform.isIOS) ? "Face ID" : "Face";
+    } else if (availableBiometrics.contains(BiometricType.fingerprint)) {
+      enrolledBiometrics = (Platform.isIOS) ? "Touch ID" : "Fingerprint";
     }
+    return enrolledBiometrics;
   }
 
   Future<bool> authenticate() async {
@@ -43,7 +30,6 @@ class LocalAuthenticationService {
       );
     } on PlatformException catch (error) {
       if (error.code == "LockedOut" || error.code == "PermanentlyLockedOut") {
-        showFlushbar(context, message: error.message);
         return false;
       }
       throw error.message;

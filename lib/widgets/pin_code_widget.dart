@@ -1,9 +1,9 @@
 import 'dart:math';
 
+import 'package:breez/services/injector.dart';
 import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
-
 const PIN_CODE_LENGTH = 6;
 
 class PinCodeWidget extends StatefulWidget {
@@ -25,34 +25,28 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
   String _errorMessage;
 
   LocalAuthenticationService _localAuthService;
-  bool _hasBiometricsSet = false;
-  String _availableBiometric;
+  String _enrolledBiometrics;
 
   @override
   initState() {
     super.initState();
     if (widget.onFingerprintEntered != null) {
-      _availableBiometric = "";
-      _initLocalAuthService();
+      _enrolledBiometrics = "";
+      _checkBiometrics();
     }
     _enteredPinCode = "";
     _errorMessage = "";
   }
 
-  Future _initLocalAuthService() async {
-    _localAuthService = LocalAuthenticationService(context);
-    bool canCheckBiometrics = await _localAuthService.checkBiometrics();
-    if (canCheckBiometrics) {
-      _availableBiometric = await _localAuthService.getAvailableBiometrics();
-      _hasBiometricsSet = _availableBiometric != "";
-      if(_hasBiometricsSet){
-        // Prompt biometrics auth on startup
-        _localAuthService.authenticate().then((isValid) {
-          Future.delayed(Duration(milliseconds: 200), () {
-            return widget.onFingerprintEntered(isValid);
-          });
+  Future _checkBiometrics() async{
+    _localAuthService = new ServiceInjector().localAuthService;
+    _enrolledBiometrics = await _localAuthService.enrolledBiometrics;
+    if(_enrolledBiometrics != ""){
+      _localAuthService.authenticate().then((isValid) {
+        Future.delayed(Duration(milliseconds: 200), () {
+          return widget.onFingerprintEntered(isValid);
         });
-      }
+      });
     }
   }
 
@@ -168,7 +162,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
               ),
             ),
           _numberButton("0"),
-          widget.onFingerprintEntered == null || ((widget.onFingerprintEntered != null && _hasBiometricsSet) && _enteredPinCode.length > 0)
+          widget.onFingerprintEntered == null || ((widget.onFingerprintEntered != null && _enrolledBiometrics != "") && _enteredPinCode.length > 0)
               ? Container(
                   child: new IconButton(
                     onPressed: () => _setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
@@ -186,7 +180,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
                       });
                     }),
                     icon: Icon(
-                      _availableBiometric.contains("Face") ? Icons.face : Icons.fingerprint,
+                      _enrolledBiometrics.contains("Face") ? Icons.face : Icons.fingerprint,
                       color: Theme.of(context).errorColor,
                     ),
                   ),
