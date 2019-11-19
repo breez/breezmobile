@@ -15,6 +15,7 @@ import 'package:breez/utils/date.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
@@ -90,6 +91,8 @@ class SecurityPageState extends State<SecurityPage> {
                               setState(() {
                                 this._screenLocked = false;
                               });
+                            } else {
+                              showFlushbar(context, message: "Too many attempts. Try again in 30 seconds.");
                             }
                           }
                         : null,
