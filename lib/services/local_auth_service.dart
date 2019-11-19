@@ -30,9 +30,9 @@ class LocalAuthenticationService {
       );
     } on PlatformException catch (error) {
       if (error.code == "LockedOut" || error.code == "PermanentlyLockedOut") {
-        return false;
+        throw error.message;
       }
-      throw error.message;
+      return false;
     }
   }
 }

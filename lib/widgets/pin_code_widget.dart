@@ -4,6 +4,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 
 const PIN_CODE_LENGTH = 6;
@@ -49,21 +50,21 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     super.didChangeDependencies();
   }
 
-  Future _getEnrolledBiometrics() async{
+  Future _getEnrolledBiometrics() async {
     var getEnrolledBiometricsAction = GetEnrolledBiometrics();
     _userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
     _enrolledBiometrics = await getEnrolledBiometricsAction.future;
-    if(_enrolledBiometrics != "") _validateBiometrics();
+    if (_enrolledBiometrics != "") _validateBiometrics();
   }
 
   Future _validateBiometrics() async {
     var validateBiometricsAction = ValidateBiometrics();
     _userProfileBloc.userActionsSink.add(validateBiometricsAction);
-    validateBiometricsAction.future.then((isValid){
+    validateBiometricsAction.future.then((isValid) {
       Future.delayed(Duration(milliseconds: 200), () {
         return widget.onFingerprintEntered(isValid);
       });
-    });
+    }, onError: (error) => showFlushbar(context, message: error));
   }
 
   Widget build(BuildContext context) {
@@ -190,7 +191,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
                 )
               : Container(
                   child: new IconButton(
-                    onPressed: () => _validateBiometrics,
+                    onPressed: () => _validateBiometrics(),
                     icon: Icon(
                       _enrolledBiometrics.contains("Face") ? Icons.face : Icons.fingerprint,
                       color: Theme.of(context).errorColor,
