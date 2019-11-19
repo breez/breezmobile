@@ -174,9 +174,9 @@ class UserProfileBloc {
 
   Future _checkBiometrics() async {
     String enrolledBiometrics = await _localAuthService.enrolledBiometrics;
-    if(enrolledBiometrics == ""){
-      _updateSecurityModel(UpdateSecurityModel(_currentUser.securityModel.copyWith(isFingerprintEnabled: false)));
-    }
+    _updateSecurityModel(UpdateSecurityModel(_currentUser.securityModel.copyWith(
+        isFingerprintEnabled: enrolledBiometrics == "" ? false : _currentUser.securityModel.isFingerprintEnabled,
+        enrolledBiometrics: enrolledBiometrics)));
   }
 
   void _listenUserActions() {

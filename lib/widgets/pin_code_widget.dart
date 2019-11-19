@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -14,8 +14,9 @@ class PinCodeWidget extends StatefulWidget {
   final bool dismissible;
   final Future Function(String pinEntered) onPinEntered;
   final Function(bool isValid) onFingerprintEntered;
+  final UserProfileBloc userProfileBloc;
 
-  PinCodeWidget(this.label, this.dismissible, this.onPinEntered, {this.onFingerprintEntered});
+  PinCodeWidget(this.label, this.dismissible, this.onPinEntered, {this.onFingerprintEntered, this.userProfileBloc});
 
   @override
   State<StatefulWidget> createState() {
@@ -26,9 +27,6 @@ class PinCodeWidget extends StatefulWidget {
 class PinCodeWidgetState extends State<PinCodeWidget> {
   String _enteredPinCode;
   String _errorMessage;
-
-  UserProfileBloc _userProfileBloc;
-  String _enrolledBiometrics;
 
   bool _isInit = false;
 
@@ -42,8 +40,6 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
   @override
   void didChangeDependencies() {
     if (!_isInit && widget.onFingerprintEntered != null) {
-      _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      _enrolledBiometrics = "";
       _getEnrolledBiometrics();
       _isInit = true;
     }
@@ -52,14 +48,14 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
 
   Future _getEnrolledBiometrics() async {
     var getEnrolledBiometricsAction = GetEnrolledBiometrics();
-    _userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
-    _enrolledBiometrics = await getEnrolledBiometricsAction.future;
-    if (_enrolledBiometrics != "") _validateBiometrics();
+    widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
+    String enrolledBiometrics = await getEnrolledBiometricsAction.future;
+    if (enrolledBiometrics != "") _validateBiometrics();
   }
 
   Future _validateBiometrics() async {
     var validateBiometricsAction = ValidateBiometrics();
-    _userProfileBloc.userActionsSink.add(validateBiometricsAction);
+    widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then((isValid) {
       Future.delayed(Duration(milliseconds: 200), () {
         return widget.onFingerprintEntered(isValid);
@@ -179,27 +175,44 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
               ),
             ),
           _numberButton("0"),
-          widget.onFingerprintEntered == null || ((widget.onFingerprintEntered != null && _enrolledBiometrics != "") && _enteredPinCode.length > 0)
-              ? Container(
-                  child: new IconButton(
-                    onPressed: () => _setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
-                    icon: Icon(
-                      Icons.backspace,
-                      color: Colors.white,
-                    ),
-                  ),
-                )
-              : Container(
-                  child: new IconButton(
-                    onPressed: () => _validateBiometrics(),
-                    icon: Icon(
-                      _enrolledBiometrics.contains("Face") ? Icons.face : Icons.fingerprint,
-                      color: Theme.of(context).errorColor,
-                    ),
-                  ),
+          widget.onFingerprintEntered == null || ((widget.onFingerprintEntered != null) && _enteredPinCode.length > 0)
+              ? _buildEraseButton()
+              : StreamBuilder<BreezUserModel>(
+                  stream: widget.userProfileBloc.userStream,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData || snapshot.data.securityModel.enrolledBiometrics == "") {
+                      return _buildEraseButton();
+                    } else {
+                      return _buildBiometricsButton(snapshot, context);
+                    }
+                  },
                 )
         ])
       ],
+    );
+  }
+
+  Container _buildBiometricsButton(AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
+    return Container(
+      child: new IconButton(
+        onPressed: () => _validateBiometrics(),
+        icon: Icon(
+          snapshot.data.securityModel.enrolledBiometrics.contains("Face") ? Icons.face : Icons.fingerprint,
+          color: Theme.of(context).errorColor,
+        ),
+      ),
+    );
+  }
+
+  Container _buildEraseButton() {
+    return Container(
+      child: new IconButton(
+        onPressed: () => _setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
+        icon: Icon(
+          Icons.backspace,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 

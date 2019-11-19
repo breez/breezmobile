@@ -1,3 +1,4 @@
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,9 @@ class AppLockScreen extends StatefulWidget {
   final bool canCancel;
   final Future Function(String pinCode) onPinEntered;
   final Function(bool isValid) onFingerprintEntered;
+  final UserProfileBloc userProfileBloc;
 
-  AppLockScreen(this.onPinEntered, {Key key, this.canCancel = false, this.onFingerprintEntered}) : super(key: key);
+  AppLockScreen(this.onPinEntered, {Key key, this.canCancel = false, this.onFingerprintEntered, this.userProfileBloc}) : super(key: key);
 
   @override
   _AppLockScreenState createState() => new _AppLockScreenState();
@@ -43,6 +45,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
           widget.canCancel,
           widget.onPinEntered,
           onFingerprintEntered: widget.onFingerprintEntered,
+          userProfileBloc: widget.userProfileBloc,
         ),
       ),
     );

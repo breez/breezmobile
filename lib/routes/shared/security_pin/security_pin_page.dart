@@ -8,8 +8,6 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/backup_in_progress_dialog.dart';
 import 'package:breez/routes/shared/security_pin/backup_phrase/backup_phrase_warning_dialog.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/min_font_size.dart';
@@ -40,21 +38,6 @@ class SecurityPage extends StatefulWidget {
 class SecurityPageState extends State<SecurityPage> {
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
-
-  String _enrolledBiometrics;
-
-  @override
-  void initState() {
-    super.initState();
-    _enrolledBiometrics = "";
-    _getEnrolledBiometrics();
-  }
-
-  Future _getEnrolledBiometrics() async{
-    var getEnrolledBiometricsAction = GetEnrolledBiometrics();
-    widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
-    _enrolledBiometrics = await getEnrolledBiometricsAction.future;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +77,7 @@ class SecurityPageState extends State<SecurityPage> {
                             }
                           }
                         : null,
+                    userProfileBloc: widget.userProfileBloc,
                     canCancel: true,
                   );
                 }
@@ -142,7 +126,7 @@ class SecurityPageState extends State<SecurityPage> {
         ..add(_buildPINIntervalTile(securityModel, backupSettings))
         ..add(Divider())
         ..add(_buildChangePINTile(securityModel, backupSettings));
-      if (_enrolledBiometrics != "") {
+      if (securityModel.enrolledBiometrics != "") {
         _tiles..add(Divider())..add(_buildEnableBiometricAuthTile(securityModel, backupSettings));
       }
     }
@@ -307,7 +291,7 @@ class SecurityPageState extends State<SecurityPage> {
   ListTile _buildEnableBiometricAuthTile(SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: AutoSizeText(
-        (securityModel.isFingerprintEnabled ? "Disable" : "Enable") + " $_enrolledBiometrics Authentication",
+        (securityModel.isFingerprintEnabled ? "Disable" : "Enable") + " ${securityModel.enrolledBiometrics} Authentication",
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,

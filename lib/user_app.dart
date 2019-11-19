@@ -92,6 +92,7 @@ class UserApp extends StatelessWidget {
                               userProfileBloc.userSink.add(user.copyWith(locked: false));
                             }
                           } : null,
+                          userProfileBloc: userProfileBloc,
                         ),
                         settings: settings
                     );
