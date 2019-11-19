@@ -12,6 +12,7 @@ import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,6 +27,7 @@ class UserProfileBloc {
   BreezBridge _breezLib;
   NFCService _nfc;
   Device _deviceService;
+  LocalAuthenticationService _localAuthService;
   Future<SharedPreferences> _preferences;
   
   Map<Type, Function> _actionHandlers = Map();
@@ -63,11 +65,14 @@ class UserProfileBloc {
     _breezLib = injector.breezBridge;
     _deviceService = injector.device;
     _preferences = injector.sharedPreferences;
+    _localAuthService = injector.localAuthService;
     _actionHandlers = {
       UpdateSecurityModel: _updateSecurityModelAction,
       UpdatePinCode: _updatePinCode,
       ValidatePinCode: _validatePinCode,
       ChangeTheme: _changeThemeAction,
+      GetEnrolledBiometrics: _getEnrolledBiometrics,
+      ValidateBiometrics: _validateBiometrics,
     };
     print ("UserProfileBloc started");
 
@@ -95,7 +100,7 @@ class UserProfileBloc {
     //listen upload image requests
     _listenUploadImageRequests(injector);
 
-    _updateBiometricsSettings(injector);
+    _updateBiometricsSettings();
 
     startPINIntervalWatcher();
   }
@@ -158,17 +163,17 @@ class UserProfileBloc {
     return user;
   }
 
-  _updateBiometricsSettings(ServiceInjector injector) {
-    _checkBiometrics(injector);
+  _updateBiometricsSettings() {
+    _checkBiometrics();
     _deviceService.eventStream.listen((e){
       if (e == NotificationType.RESUME) {
-        _checkBiometrics(injector);
+        _checkBiometrics();
       }
     });
   }
 
-  Future _checkBiometrics(ServiceInjector injector) async {
-    String enrolledBiometrics = await injector.localAuthService.enrolledBiometrics;
+  Future _checkBiometrics() async {
+    String enrolledBiometrics = await _localAuthService.enrolledBiometrics;
     if(enrolledBiometrics == ""){
       _updateSecurityModel(UpdateSecurityModel(_currentUser.securityModel.copyWith(isFingerprintEnabled: false)));
     }
@@ -213,6 +218,14 @@ class UserProfileBloc {
   Future _changeTheme(ChangeTheme action) async {
     _saveChanges(await _preferences, _currentUser.copyWith(themeId: action.newTheme));
     return action.newTheme;
+  }
+
+  Future _getEnrolledBiometrics(GetEnrolledBiometrics action) async {
+    action.resolve(await _localAuthService.enrolledBiometrics);
+  }
+
+  Future _validateBiometrics(ValidateBiometrics action) async {
+    action.resolve(await _localAuthService.authenticate());
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {

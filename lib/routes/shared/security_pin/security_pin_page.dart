@@ -47,12 +47,13 @@ class SecurityPageState extends State<SecurityPage> {
   void initState() {
     super.initState();
     _enrolledBiometrics = "";
-    _checkBiometrics();
+    _getEnrolledBiometrics();
   }
 
-  _checkBiometrics() async{
-    LocalAuthenticationService localAuthService = new ServiceInjector().localAuthService;
-    _enrolledBiometrics = await localAuthService.enrolledBiometrics;
+  Future _getEnrolledBiometrics() async{
+    var getEnrolledBiometricsAction = GetEnrolledBiometrics();
+    widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
+    _enrolledBiometrics = await getEnrolledBiometricsAction.future;
   }
 
   @override

@@ -1,9 +1,11 @@
 import 'dart:math';
 
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/local_auth_service.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
+
 const PIN_CODE_LENGTH = 6;
 
 class PinCodeWidget extends StatefulWidget {
@@ -24,33 +26,47 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
   String _enteredPinCode;
   String _errorMessage;
 
-  LocalAuthenticationService _localAuthService;
+  UserProfileBloc _userProfileBloc;
   String _enrolledBiometrics;
+
+  bool _isInit = false;
 
   @override
   initState() {
     super.initState();
-    if (widget.onFingerprintEntered != null) {
-      _enrolledBiometrics = "";
-      _checkBiometrics();
-    }
     _enteredPinCode = "";
     _errorMessage = "";
   }
 
-  Future _checkBiometrics() async{
-    _localAuthService = new ServiceInjector().localAuthService;
-    _enrolledBiometrics = await _localAuthService.enrolledBiometrics;
-    if(_enrolledBiometrics != ""){
-      _localAuthService.authenticate().then((isValid) {
-        Future.delayed(Duration(milliseconds: 200), () {
-          return widget.onFingerprintEntered(isValid);
-        });
-      });
+  @override
+  void didChangeDependencies() {
+    if (!_isInit && widget.onFingerprintEntered != null) {
+      _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      _enrolledBiometrics = "";
+      _getEnrolledBiometrics();
+      _isInit = true;
     }
+    super.didChangeDependencies();
   }
 
-  Widget build(BuildContext context) {    
+  Future _getEnrolledBiometrics() async{
+    var getEnrolledBiometricsAction = GetEnrolledBiometrics();
+    _userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
+    _enrolledBiometrics = await getEnrolledBiometricsAction.future;
+    if(_enrolledBiometrics != "") _validateBiometrics();
+  }
+
+  Future _validateBiometrics() async {
+    var validateBiometricsAction = ValidateBiometrics();
+    _userProfileBloc.userActionsSink.add(validateBiometricsAction);
+    validateBiometricsAction.future.then((isValid){
+      Future.delayed(Duration(milliseconds: 200), () {
+        return widget.onFingerprintEntered(isValid);
+      });
+    });
+  }
+
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -174,11 +190,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
                 )
               : Container(
                   child: new IconButton(
-                    onPressed: () => _localAuthService.authenticate().then((isValid) {
-                      Future.delayed(Duration(milliseconds: 200), () {
-                        return widget.onFingerprintEntered(isValid);
-                      });
-                    }),
+                    onPressed: () => _validateBiometrics,
                     icon: Icon(
                       _enrolledBiometrics.contains("Face") ? Icons.face : Icons.fingerprint,
                       color: Theme.of(context).errorColor,
