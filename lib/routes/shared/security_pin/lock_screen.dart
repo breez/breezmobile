@@ -10,8 +10,9 @@ class AppLockScreen extends StatefulWidget {
   final Future Function(String pinCode) onPinEntered;
   final Function(bool isValid) onFingerprintEntered;
   final UserProfileBloc userProfileBloc;
+  final String localizedReason;
 
-  AppLockScreen(this.onPinEntered, {Key key, this.canCancel = false, this.onFingerprintEntered, this.userProfileBloc}) : super(key: key);
+  AppLockScreen(this.onPinEntered, {Key key, this.canCancel = false, this.onFingerprintEntered, this.userProfileBloc, this.localizedReason}) : super(key: key);
 
   @override
   _AppLockScreenState createState() => new _AppLockScreenState();
@@ -46,6 +47,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
           widget.onPinEntered,
           onFingerprintEntered: widget.onFingerprintEntered,
           userProfileBloc: widget.userProfileBloc,
+          localizedReason: widget.localizedReason,
         ),
       ),
     );

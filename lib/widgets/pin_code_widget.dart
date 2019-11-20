@@ -15,8 +15,9 @@ class PinCodeWidget extends StatefulWidget {
   final Future Function(String pinEntered) onPinEntered;
   final Function(bool isValid) onFingerprintEntered;
   final UserProfileBloc userProfileBloc;
+  final String localizedReason;
 
-  PinCodeWidget(this.label, this.dismissible, this.onPinEntered, {this.onFingerprintEntered, this.userProfileBloc});
+  PinCodeWidget(this.label, this.dismissible, this.onPinEntered, {this.onFingerprintEntered, this.userProfileBloc, this.localizedReason});
 
   @override
   State<StatefulWidget> createState() {
@@ -38,7 +39,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
   }
 
   Future _validateBiometrics() async {
-    var validateBiometricsAction = ValidateBiometrics();
+    var validateBiometricsAction = ValidateBiometrics(localizedReason: widget.localizedReason);
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then((isValid) {
       Future.delayed(Duration(milliseconds: 200), () {

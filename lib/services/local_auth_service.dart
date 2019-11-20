@@ -22,10 +22,10 @@ class LocalAuthenticationService {
     return enrolledBiometrics;
   }
 
-  Future<bool> authenticate() async {
+  Future<bool> authenticate({String localizedReason}) async {
     try {
       return await _auth.authenticateWithBiometrics(
-        localizedReason: 'Authenticate to sign in',
+        localizedReason: localizedReason ?? 'Authenticate to sign-in',
         useErrorDialogs: false,
       );
     } on PlatformException catch (error) {

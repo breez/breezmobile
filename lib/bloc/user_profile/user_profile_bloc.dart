@@ -220,7 +220,7 @@ class UserProfileBloc {
   }
 
   Future _validateBiometrics(ValidateBiometrics action) async {
-    action.resolve(await _localAuthService.authenticate());
+    action.resolve(await _localAuthService.authenticate(localizedReason: action.localizedReason));
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {

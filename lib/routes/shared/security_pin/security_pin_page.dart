@@ -72,12 +72,11 @@ class SecurityPageState extends State<SecurityPage> {
                               setState(() {
                                 this._screenLocked = false;
                               });
-                            } else {
-                              showFlushbar(context, message: "Too many attempts. Try again in 30 seconds.");
                             }
                           }
                         : null,
                     userProfileBloc: widget.userProfileBloc,
+                    localizedReason: "Authenticate to enter Security & Backup",
                     canCancel: true,
                   );
                 }
@@ -315,7 +314,7 @@ class SecurityPageState extends State<SecurityPage> {
   }
 
   Future _validateBiometrics(SecurityModel securityModel, BackupSettings backupSettings) async {
-    var validateBiometricsAction = ValidateBiometrics();
+    var validateBiometricsAction = ValidateBiometrics(localizedReason: "Authenticate to enable this setting");
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then((isValid) {
         _updateSecurityModel(securityModel, securityModel.copyWith(isFingerprintEnabled: isValid), backupSettings);
