@@ -174,9 +174,13 @@ class UserProfileBloc {
 
   Future _checkBiometrics() async {
     String enrolledBiometrics = await _localAuthService.enrolledBiometrics;
-    _updateSecurityModel(UpdateSecurityModel(_currentUser.securityModel.copyWith(
-        isFingerprintEnabled: enrolledBiometrics == "" ? false : _currentUser.securityModel.isFingerprintEnabled,
-        enrolledBiometrics: enrolledBiometrics)));
+    String enrolledBiometricIds = (await _localAuthService.enrolledBiometricIds).join(",");
+    if (_currentUser.securityModel.enrolledBiometricIds != enrolledBiometricIds || enrolledBiometrics == "") {
+      _updateSecurityModel(UpdateSecurityModel(
+          _currentUser.securityModel.copyWith(isFingerprintEnabled: false, enrolledBiometrics: enrolledBiometrics, enrolledBiometricIds: "")));
+    } else {
+      _updateSecurityModel(UpdateSecurityModel(_currentUser.securityModel.copyWith(enrolledBiometrics: enrolledBiometrics)));
+    }
   }
 
   void _listenUserActions() {
