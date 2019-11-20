@@ -303,11 +303,23 @@ class SecurityPageState extends State<SecurityPage> {
         activeColor: Colors.white,
         onChanged: (bool value) {
           if (this.mounted) {
-            _updateSecurityModel(securityModel, securityModel.copyWith(isFingerprintEnabled: value), backupSettings);
+            if(value){
+              _validateBiometrics(securityModel, backupSettings);
+            } else {
+              _updateSecurityModel(securityModel, securityModel.copyWith(isFingerprintEnabled: false), backupSettings);
+            }
           }
         },
       ),
     );
+  }
+
+  Future _validateBiometrics(SecurityModel securityModel, BackupSettings backupSettings) async {
+    var validateBiometricsAction = ValidateBiometrics();
+    widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
+    validateBiometricsAction.future.then((isValid) {
+        _updateSecurityModel(securityModel, securityModel.copyWith(isFingerprintEnabled: isValid), backupSettings);
+    }, onError: (error) => showFlushbar(context, message: error));
   }
 
   ListTile _buildDisablePINTile(
