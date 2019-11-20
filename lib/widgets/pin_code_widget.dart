@@ -29,13 +29,16 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
   String _enteredPinCode;
   String _errorMessage;
 
-  bool _isInit = false;
-
   @override
   initState() {
     super.initState();
     _enteredPinCode = "";
     _errorMessage = "";
+    if (widget.onFingerprintEntered != null) {
+      widget.userProfileBloc.userStream.firstWhere((u) => u.securityModel.enrolledBiometrics != "").then((_) {
+        _validateBiometrics();
+      });
+    }
   }
 
   Future _validateBiometrics() async {
@@ -168,10 +171,6 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
                     if (!snapshot.hasData || snapshot.data.securityModel.enrolledBiometrics == "") {
                       return _buildEraseButton();
                     } else {
-                      if (!_isInit && widget.onFingerprintEntered != null) {
-                        _validateBiometrics();
-                        _isInit = true;
-                      }
                       return _buildBiometricsButton(snapshot, context);
                     }
                   },
