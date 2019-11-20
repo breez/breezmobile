@@ -71,7 +71,6 @@ class UserProfileBloc {
       UpdatePinCode: _updatePinCode,
       ValidatePinCode: _validatePinCode,
       ChangeTheme: _changeThemeAction,
-      GetEnrolledBiometrics: _getEnrolledBiometrics,
       ValidateBiometrics: _validateBiometrics,
     };
     print ("UserProfileBloc started");
@@ -218,10 +217,6 @@ class UserProfileBloc {
   Future _changeTheme(ChangeTheme action) async {
     _saveChanges(await _preferences, _currentUser.copyWith(themeId: action.newTheme));
     return action.newTheme;
-  }
-
-  Future _getEnrolledBiometrics(GetEnrolledBiometrics action) async {
-    action.resolve(await _localAuthService.enrolledBiometrics);
   }
 
   Future _validateBiometrics(ValidateBiometrics action) async {

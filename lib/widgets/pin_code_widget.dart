@@ -37,22 +37,6 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     _errorMessage = "";
   }
 
-  @override
-  void didChangeDependencies() {
-    if (!_isInit && widget.onFingerprintEntered != null) {
-      _getEnrolledBiometrics();
-      _isInit = true;
-    }
-    super.didChangeDependencies();
-  }
-
-  Future _getEnrolledBiometrics() async {
-    var getEnrolledBiometricsAction = GetEnrolledBiometrics();
-    widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
-    String enrolledBiometrics = await getEnrolledBiometricsAction.future;
-    if (enrolledBiometrics != "") _validateBiometrics();
-  }
-
   Future _validateBiometrics() async {
     var validateBiometricsAction = ValidateBiometrics();
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
@@ -183,6 +167,10 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
                     if (!snapshot.hasData || snapshot.data.securityModel.enrolledBiometrics == "") {
                       return _buildEraseButton();
                     } else {
+                      if (!_isInit && widget.onFingerprintEntered != null) {
+                        _validateBiometrics();
+                        _isInit = true;
+                      }
                       return _buildBiometricsButton(snapshot, context);
                     }
                   },

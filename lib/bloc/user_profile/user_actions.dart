@@ -26,6 +26,4 @@ class ChangeTheme extends AsyncAction {
   ChangeTheme(this.newTheme);
 }
 
-class GetEnrolledBiometrics extends AsyncAction {}
-
 class ValidateBiometrics extends AsyncAction {}
