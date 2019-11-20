@@ -11,6 +11,8 @@ class LocalAuthenticationService {
 
   Future<String> get enrolledBiometrics async => await _getAvailableBiometrics();
 
+  Future<List<int>> get enrolledBiometricIds async => await _auth.enrolledBiometricIds;
+
   Future<String> _getAvailableBiometrics() async {
     List<BiometricType> availableBiometrics = await _auth.getAvailableBiometrics();
     String enrolledBiometrics = "";
