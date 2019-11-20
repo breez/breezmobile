@@ -290,7 +290,7 @@ class SecurityPageState extends State<SecurityPage> {
   ListTile _buildEnableBiometricAuthTile(SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: AutoSizeText(
-        (securityModel.isFingerprintEnabled ? "Disable" : "Enable") + " ${securityModel.enrolledBiometrics} Authentication",
+        "Enable ${securityModel.enrolledBiometrics}",
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
