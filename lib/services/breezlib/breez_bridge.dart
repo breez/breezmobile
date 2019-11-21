@@ -3,12 +3,9 @@ import 'dart:async';
 import 'package:breez/logger.dart' as logger;
 import 'dart:io';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/breezlib/lnd_bootstrapper.dart';
-import 'package:breez/services/breezlib/progress_downloader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:rxdart/rxdart.dart';
 
 // This is the bridge to the native breez library. Protobuf messages are used as the interface and to generate the classes use the bellow command.
 // Note that the version of protoc comiler must be 3-4-0
@@ -16,9 +13,6 @@ import 'package:rxdart/rxdart.dart';
 class BreezBridge {
   static const _methodChannel = const MethodChannel('com.breez.client/breez_lib');
   static const _eventChannel = const EventChannel('com.breez.client/breez_lib_notifications');  
-
-  BehaviorSubject<Map<String, DownloadFileInfo>> _bootstrapDownloadProgressController = new BehaviorSubject<Map<String, DownloadFileInfo>>();
-  Stream<Map<String, DownloadFileInfo>> get chainBootstrapProgress => _bootstrapDownloadProgressController.stream;
 
 
   Completer _readyCompleter = new Completer();
@@ -29,7 +23,7 @@ class BreezBridge {
   Future<Directory> _tempDirFuture;  
 
   BreezBridge(){
-    _eventChannel.receiveBroadcastStream().listen((event){
+    _eventChannel.receiveBroadcastStream().listen((event){      
       var notification = new NotificationEvent()..mergeFromBuffer(event);
       if (notification.type == NotificationEvent_NotificationType.READY){
         ready = true;
@@ -67,14 +61,6 @@ class BreezBridge {
     return _methodChannel.invokeMethod("init", {
       "workingDir": appDir,
       "tempDir": tmpDir});
-  }
-
-  Future<bool> needsBootstrap(){        
-    return _startedCompleter.future.then((_) {       
-      return getApplicationDocumentsDirectory().then((dir){
-        return _invokeMethodImmediate("needsBootstrap", {"argument": dir.path}).then((res) => res as bool);        
-      });
-    });
   }
 
   Future<Rates> rate(){
@@ -160,13 +146,6 @@ class BreezBridge {
 
   Future sendPaymentFailureBugReport(String traceReport) {    
     return _invokeMethodWhenReady("sendPaymentFailureBugReport", {"argument": traceReport});
-  }
-
-  Future bootstrapFiles(String workingDir, List<String> bootstrapFilesPaths) {
-    BootstrapFilesRequest bootstrap = new BootstrapFilesRequest();
-    bootstrap.workingDir = workingDir;
-    bootstrap.fullPaths..clear()..addAll(bootstrapFilesPaths);
-    return _methodChannel.invokeMethod("bootstrapFiles", {"argument": bootstrap.writeToBuffer()});
   }
 
   Future<PaymentsList> getPayments(){
@@ -394,45 +373,4 @@ class BreezBridge {
         }
     );
   }
-
-  Future<bool> bootstrap() async {
-    logger.log.info("breezLib: bootstrap started");
-    var bootstrapNeeded = await needsBootstrap();
-    if (!bootstrapNeeded) {
-      logger.log.info("breezLib: not bootstrap is needed, exiting");
-      _bootstrapDownloadProgressController.close();
-      return false;
-    }
-
-    Directory appDir = await getApplicationDocumentsDirectory();
-    var lndBootstrapper = new LNDBootstrapper();
-      lndBootstrapper.bootstrapProgressStreams
-        .listen((downloadFileInfo) {
-          var aggregatedStatus = Map<String, DownloadFileInfo>();
-          if (_bootstrapDownloadProgressController.value != null) {
-            aggregatedStatus.addAll(_bootstrapDownloadProgressController.value);
-          }
-          aggregatedStatus[downloadFileInfo.fileURL] = downloadFileInfo;
-          _bootstrapDownloadProgressController.add(aggregatedStatus);
-        },
-        onError: (err){
-          print("Error");
-          _bootstrapDownloadProgressController.addError(err);
-        },
-        onDone: () {
-          _bootstrapDownloadProgressController.close();
-          return;
-        });
-
-    logger.log.info("breezLib: before downloadBootstrapFiles");
-    String targetDir = await lndBootstrapper.downloadBootstrapFiles(appDir.path);
-    logger.log.info("breezLib: after downloadBootstrapFiles targetDir = ${targetDir ?? 'null'}");
-    if (targetDir == null) {
-      return false;
-    }
-
-    await _invokeMethodImmediate("bootstrapHeaders", {"argument": targetDir});
-    logger.log.info("breezLib: bootstrapHeaders finished");
-    return true;   
-  }  
 }
