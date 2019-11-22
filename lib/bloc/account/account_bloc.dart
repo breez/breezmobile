@@ -146,7 +146,7 @@ class AccountBloc {
     _paymentFilterController.add(PaymentFilterModel.initial());
     _accountSettingsController.add(AccountSettings.start());
 
-    print("Account bloc started");
+    log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
       _sharedPreferences = preferences;
       _refreshAccount();
