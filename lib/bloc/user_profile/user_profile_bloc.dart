@@ -175,6 +175,7 @@ class UserProfileBloc {
   Future _checkBiometrics() async {
     String enrolledBiometrics = await _localAuthService.enrolledBiometrics;
     String enrolledBiometricIds = (await _localAuthService.enrolledBiometricIds).join(",");
+    // Disable biometrics auth if a new biometrics configuration is detected while biometrics auth is enabled
     if ((_currentUser.securityModel.isFingerprintEnabled && _currentUser.securityModel.enrolledBiometricIds != enrolledBiometricIds) ||
         enrolledBiometrics == "") {
       _updateSecurityModel(UpdateSecurityModel(_currentUser.securityModel.copyWith(isFingerprintEnabled: false, enrolledBiometricIds: "")));
