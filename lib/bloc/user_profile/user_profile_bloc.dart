@@ -72,7 +72,6 @@ class UserProfileBloc {
       ValidatePinCode: _validatePinCode,
       ChangeTheme: _changeThemeAction,
       ValidateBiometrics: _validateBiometrics,
-      GetEnrolledBiometricIds: _getEnrolledBiometricIds,
     };
     print ("UserProfileBloc started");
 
@@ -174,11 +173,8 @@ class UserProfileBloc {
 
   Future _checkBiometrics() async {
     String enrolledBiometrics = await _localAuthService.enrolledBiometrics;
-    String enrolledBiometricIds = (await _localAuthService.enrolledBiometricIds).join(",");
-    // Disable biometrics auth if a new biometrics configuration is detected while biometrics auth is enabled
-    if ((_currentUser.securityModel.isFingerprintEnabled && _currentUser.securityModel.enrolledBiometricIds != enrolledBiometricIds) ||
-        enrolledBiometrics == "") {
-      _updateSecurityModel(UpdateSecurityModel(_currentUser.securityModel.copyWith(isFingerprintEnabled: false, enrolledBiometricIds: "")));
+    if (enrolledBiometrics == "" || enrolledBiometrics != _currentUser.securityModel.enrolledBiometrics) {
+      _updateSecurityModel(UpdateSecurityModel(_currentUser.securityModel.copyWith(isFingerprintEnabled: false)));
     }
     _updateSecurityModel(UpdateSecurityModel(_currentUser.securityModel.copyWith(enrolledBiometrics: enrolledBiometrics)));
   }
@@ -226,10 +222,6 @@ class UserProfileBloc {
 
   Future _validateBiometrics(ValidateBiometrics action) async {
     action.resolve(await _localAuthService.authenticate(localizedReason: action.localizedReason));
-  }
-
-  Future _getEnrolledBiometricIds(GetEnrolledBiometricIds action) async {
-    action.resolve((await _localAuthService.enrolledBiometricIds).join(","));
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {

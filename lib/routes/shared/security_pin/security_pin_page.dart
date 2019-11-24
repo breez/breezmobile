@@ -317,18 +317,11 @@ class SecurityPageState extends State<SecurityPage> {
     var validateBiometricsAction = ValidateBiometrics(localizedReason: "Authenticate to enable this setting");
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then((isValid) async {
-      String enrolledBiometricIds = await _getEnrolledBiometricIds();
       _updateSecurityModel(
-          securityModel, securityModel.copyWith(isFingerprintEnabled: isValid, enrolledBiometricIds: enrolledBiometricIds), backupSettings);
+          securityModel, securityModel.copyWith(isFingerprintEnabled: isValid), backupSettings);
     }, onError: (error) => showFlushbar(context, message: error));
   }
   
-  Future _getEnrolledBiometricIds() async {
-    var getEnrolledBiometricIdsAction = GetEnrolledBiometricIds();
-    widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricIdsAction);
-    return getEnrolledBiometricIdsAction.future;
-  }
-
   ListTile _buildDisablePINTile(
       SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(

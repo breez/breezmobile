@@ -31,5 +31,3 @@ class ValidateBiometrics extends AsyncAction {
 
   ValidateBiometrics({this.localizedReason});
 }
-
-class GetEnrolledBiometricIds extends AsyncAction {}
