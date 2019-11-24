@@ -12,7 +12,6 @@ import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/breezlib/progress_downloader.dart';
 import 'package:breez/services/currency_data.dart';
 import 'package:breez/services/currency_service.dart';
 import 'package:breez/services/device.dart';
@@ -100,9 +99,7 @@ class AccountBloc {
 
   final BehaviorSubject<void> _nodeConflictController =
       new BehaviorSubject<void>();
-  Stream<void> get nodeConflictStream => _nodeConflictController.stream;
-
-  Stream<Map<String, DownloadFileInfo>> chainBootstrapProgress;
+  Stream<void> get nodeConflictStream => _nodeConflictController.stream;  
 
   final AccountPermissionsHandler _permissionsHandler =
       new AccountPermissionsHandler();
@@ -149,7 +146,7 @@ class AccountBloc {
     _paymentFilterController.add(PaymentFilterModel.initial());
     _accountSettingsController.add(AccountSettings.start());
 
-    print("Account bloc started");
+    log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
       _sharedPreferences = preferences;
       _refreshAccount();
@@ -161,8 +158,7 @@ class AccountBloc {
       _listenFilterChanges();
       _listenAccountChanges();      
       _listenMempoolTransactions();
-      _listenRoutingConnectionChanges();
-      _listenBootstrapStatus();
+      _listenRoutingConnectionChanges();      
       _trackOnBoardingStatus();      
       _listenEnableAccount();
     });
@@ -385,47 +381,25 @@ class AccountBloc {
       //start lightning
       if (user.registered) {
         if (!_startedLightning) {
-
-          _breezLib.needsBootstrap().then((need) async {
-              log.info("account: needsBootstrap = $need");
-              if (need && _accountController.value.syncUIState == SyncUIState.NONE) {
-                await userProfileStream.where((u) => u.locked == false).first;
-                _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
-              }
-          });          
-          
           log.info(
               "Account bloc got registered user, starting lightning daemon...");
           _startedLightning = true;
           _pollSyncStatus();          
           _backgroundService.runAsTask(_onBoardingCompleter.future, (){
             log.info("onboarding background task finished");
-          });
-          log.info("account: before _bootstrapWitRetry");
-          _bootstrapWitRetry().then((_) async {
-            log.info("account: starting lightning...");
-            await _breezLib.startLightning();
-            log.info("account: lightning started");
-            _breezLib.registerPeriodicSync(user.token);
-            _fetchFundStatus();
-            _listenConnectivityChanges();
-            _listenReconnects();
-            _listenRefundableDeposits();
-            _updateExchangeRates();
-            _listenRefundBroadcasts();
-          });
+          });          
+          log.info("account: starting lightning...");
+          await _breezLib.startLightning();
+          log.info("account: lightning started");
+          _breezLib.registerPeriodicSync(user.token);
+          _fetchFundStatus();
+          _listenConnectivityChanges();
+          _listenReconnects();
+          _listenRefundableDeposits();
+          _updateExchangeRates();
+          _listenRefundBroadcasts();
         }
       }
-    });
-  }
-
-  Future _bootstrapWitRetry(){    
-    return _breezLib.bootstrap().then((downloadNeeded) async {
-      log.info("Account bloc bootstrap has finished");      
-    })
-    .catchError((err){
-      log.severe("bootstrap failed, retrying in 2 seconds...");
-      return Future.delayed(Duration(seconds: 2), () => _bootstrapWitRetry());
     });
   }
 
@@ -436,19 +410,10 @@ class AccountBloc {
 
     bool blockingPrompted = false;
     _accountSynchronizer = new AccountSynchronizer(
-      _breezLib, 
-      onStart: (startPollTimestamp, bootstraping) async {
-        if (
-            bootstraping || Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 1) &&
-            _accountController.value.syncUIState == SyncUIState.NONE) {
-              await userProfileStream.where((u) => u.locked == false).first;
-              blockingPrompted = true;
-             _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
-          }
-      },
+      _breezLib,      
       onProgress: (startPollTimestamp, progress) async {
         if (
-            Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 1) &&
+            Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 3) &&
             _accountController.value.syncUIState == SyncUIState.NONE && !blockingPrompted) {
               await userProfileStream.where((u) => u.locked == false).first;
               blockingPrompted = true;
@@ -458,23 +423,6 @@ class AccountBloc {
       },
       onComplete: () => _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.NONE, syncProgress: 1.0))
     );   
-  }
-
-  void _listenBootstrapStatus() {    
-    _breezLib.chainBootstrapProgress.listen((fileInfo) {
-      double totalContentLength = 0;
-      double downloadedContentLength = 0;
-      fileInfo.forEach((s, f) {
-        totalContentLength += f.contentLength;
-        downloadedContentLength += f.bytesDownloaded;
-      });
-      double progress = downloadedContentLength / totalContentLength;
-      _accountController
-          .add(_accountController.value.copyWith(bootstrapProgress: progress));      
-    }, onDone: () {
-      _accountController
-          .add(_accountController.value.copyWith(bootstrapProgress: 1));
-    });    
   }
 
   Future _fetchFundStatus() {

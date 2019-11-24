@@ -21,18 +21,9 @@ class StatusIndicator extends StatelessWidget {
   }
 
   Widget createStatusIndicator() {
-    double value;
-    if (_accountModel.isInitialBootstrap && _accountModel.bootstrapProgress < 1) {
-      return LinearProgressIndicator(
-        backgroundColor: Theme.of(context).backgroundColor,
-          valueColor:
-              AlwaysStoppedAnimation<Color>(Theme.of(context).highlightColor),
-          value: _accountModel.bootstrapProgress);
-    }
-
     return LinearProgressIndicator(
         valueColor:
         AlwaysStoppedAnimation<Color>(Theme.of(context).backgroundColor),
-        backgroundColor: Theme.of(context).highlightColor, value: value);
+        backgroundColor: Theme.of(context).highlightColor);
   }
 }
