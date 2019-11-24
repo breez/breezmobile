@@ -381,15 +381,6 @@ class AccountBloc {
       //start lightning
       if (user.registered) {
         if (!_startedLightning) {
-
-          // _breezLib.needsBootstrap().then((need) async {
-          //     log.info("account: needsBootstrap = $need");
-          //     if (need && _accountController.value.syncUIState == SyncUIState.NONE) {
-          //       await userProfileStream.where((u) => u.locked == false).first;
-          //       _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
-          //     }
-          // });          
-          
           log.info(
               "Account bloc got registered user, starting lightning daemon...");
           _startedLightning = true;
@@ -419,19 +410,10 @@ class AccountBloc {
 
     bool blockingPrompted = false;
     _accountSynchronizer = new AccountSynchronizer(
-      _breezLib, 
-      onStart: (startPollTimestamp, bootstraping) async {
-        if (
-            bootstraping || Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 1) &&
-            _accountController.value.syncUIState == SyncUIState.NONE) {
-              await userProfileStream.where((u) => u.locked == false).first;
-              blockingPrompted = true;
-             _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
-          }
-      },
+      _breezLib,      
       onProgress: (startPollTimestamp, progress) async {
         if (
-            Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 1) &&
+            Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 3) &&
             _accountController.value.syncUIState == SyncUIState.NONE && !blockingPrompted) {
               await userProfileStream.where((u) => u.locked == false).first;
               blockingPrompted = true;
