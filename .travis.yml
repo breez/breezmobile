@@ -15,7 +15,7 @@ before_script:
 - export GOROOT=$(pwd)/go1.13.4/go
 - go version
 - brew install bazaar
-- git clone -b fast-bootstrap https://github.com/breez/breez.git gopath/src/github.com/breez/breez
+- git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
 - export TMP_GOPATH=$(pwd)/gopath
 - pushd gopath/src/github.com/breez/breez
 - export GOPRIVATE=github.com/btcsuite/btcd
