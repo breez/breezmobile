@@ -1,11 +1,15 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/bloc/lnurl/lnurl_actions.dart';
+import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
+import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/user/create_invoice/qr_code_dialog.dart';
 import 'package:breez/services/background_task.dart';
@@ -14,9 +18,13 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'lnurl_withdraw_dialog.dart';
 
 class CreateInvoicePage extends StatefulWidget {
   const CreateInvoicePage();
@@ -28,6 +36,9 @@ class CreateInvoicePage extends StatefulWidget {
 }
 
 class CreateInvoicePageState extends State<CreateInvoicePage> {
+  LNUrlBloc _lnurlBloc;
+  String _withdrawUrl;
+
   final _formKey = GlobalKey<FormState>();
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -56,6 +67,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override 
   void initState() {
+    _lnurlBloc = new LNUrlBloc();
     _doneAction = new KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
     super.initState();
   }
@@ -90,7 +102,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                     var account = snapshot.data;
                     return RaisedButton(
                       child: new Text(
-                        "CREATE",
+                        _withdrawUrl == null ? "CREATE" : "WITHDRAW",
                         style: Theme.of(context).textTheme.button,
                       ),
                       color: Theme.of(context).buttonColor,
@@ -99,19 +111,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                           borderRadius: new BorderRadius.circular(42.0)),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          invoiceBloc.newInvoiceRequestSink.add(
-                              new InvoiceRequestModel(
-                                  null,
-                                  _descriptionController.text,
-                                  null,
-                                  account.currency
-                                      .parse(_amountController.text)));
-                          _bgService.runAsTask(
-                            showDialog(
-                              context: context, builder: (_) => QrCodeDialog(context, invoiceBloc)),
-                            (){
-                              log.info("waiting for payment background task finished");
-                            });
+                          _createInvoice(invoiceBloc, account);
                         }
                       },
                     );
@@ -123,6 +123,26 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         textTheme: Theme.of(context).appBarTheme.textTheme,
         backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
+        actions: <Widget>[
+          StreamBuilder<Object>(
+            stream: accountBloc.accountStream,
+            builder: (context, snapshot) {
+              var account = snapshot.data;
+              return new IconButton(                
+                alignment: Alignment.center,
+                icon: new Image(
+                  image: new AssetImage("src/icon/qr_scan.png"),
+                  color: theme.BreezColors.white[500],
+                  fit: BoxFit.contain,
+                  width: 24.0,
+                  height: 24.0,
+                ),
+                tooltip: 'Scan Barcode',
+                onPressed: () => account != null ? _scanBarcode(account) : null,
+              );
+            }
+          )
+        ],
         title: new Text(_title, style: Theme.of(context).appBarTheme.textTheme.title),
         elevation: 0.0,
       ),
@@ -241,4 +261,59 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       ),
     );
   }
+
+  Future _scanBarcode(AccountModel account) async {
+    try {
+      FocusScope.of(context).requestFocus(FocusNode());
+      String barcode = await BarcodeScanner.scan();
+      await _handleLNUrlWithdraw(account, barcode);
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        promptError(context, "",
+          Text(
+            "Please grant Breez camera permission to scan QR codes.",
+            style: Theme.of(context).dialogTheme.contentTextStyle,
+          ));       
+      }   
+    } 
+    catch (e) {
+      promptError(context, "", Text(e.toString(), style: Theme.of(context).dialogTheme.contentTextStyle));  
+    }
+  }
+
+  Future _handleLNUrlWithdraw(AccountModel account, String url) async{
+    Fetch fetchAction = Fetch(url);
+    _lnurlBloc.actionsSink.add(fetchAction);
+    var response = await fetchAction.future;
+    if (response.runtimeType != WithdrawFetchResponse) {
+      throw "Invalid URL";
+    }
+    WithdrawFetchResponse withdrawResponse = response as WithdrawFetchResponse;
+    setState(() {
+      _withdrawUrl = url;
+      _descriptionController.text = withdrawResponse.defaultDescription;
+      _amountController.text = account.currency.format(withdrawResponse.maxAmount, includeSymbol: false);
+    });
+  }
+
+  Future _createInvoice(InvoiceBloc invoiceBloc, AccountModel account){
+    invoiceBloc.newInvoiceRequestSink.add(
+      new InvoiceRequestModel(
+          null,
+          _descriptionController.text,
+          null,
+          account.currency.parse(_amountController.text)));
+
+    Widget dialog = _withdrawUrl != null ? 
+    LNURlWidthrawDialog(_withdrawUrl, invoiceBloc, _lnurlBloc) : 
+    QrCodeDialog(context, invoiceBloc);
+
+    return _bgService.runAsTask(
+      showDialog(
+        context: context, builder: (_) => dialog),
+      (){
+        log.info("waiting for payment background task finished");
+      }
+    );
+  }  
 }
