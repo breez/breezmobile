@@ -1,8 +1,9 @@
 ///
 //  Generated code. Do not modify.
 //  source: rpc.proto
-///
-// ignore_for_file: camel_case_types,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name
+//
+// @dart = 2.3
+// ignore_for_file: camel_case_types,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type
 
 const SwapError$json = const {
   '1': 'SwapError',
@@ -361,5 +362,24 @@ const LSPList_LspsEntry$json = const {
     const {'1': 'value', '3': 2, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'value'},
   ],
   '7': const {'7': true},
+};
+
+const LNUrlResponse$json = const {
+  '1': 'LNUrlResponse',
+  '2': const [
+    const {'1': 'withdraw', '3': 1, '4': 1, '5': 11, '6': '.data.LNUrlWithdraw', '9': 0, '10': 'withdraw'},
+  ],
+  '8': const [
+    const {'1': 'action'},
+  ],
+};
+
+const LNUrlWithdraw$json = const {
+  '1': 'LNUrlWithdraw',
+  '2': const [
+    const {'1': 'min_amount', '3': 1, '4': 1, '5': 3, '10': 'minAmount'},
+    const {'1': 'max_amount', '3': 2, '4': 1, '5': 3, '10': 'maxAmount'},
+    const {'1': 'default_description', '3': 3, '4': 1, '5': 9, '10': 'defaultDescription'},
+  ],
 };
 
