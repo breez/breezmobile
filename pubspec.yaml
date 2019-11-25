@@ -5,7 +5,7 @@ dependencies:
   flutter:
     sdk: flutter
   grpc: ^1.0.1
-  protobuf: any
+  protobuf: ^1.0.1
 
   path_provider: any
   firebase_core: 0.4.0+3
@@ -65,7 +65,7 @@ dependencies:
   
 dev_dependencies:
   mockito: "^3.0.0"
-  protoc_plugin: ^16.0.1
+  protoc_plugin: ^19.0.1
   build_runner: ^1.0.0
   json_serializable: ^2.0.0
   flutter_test:

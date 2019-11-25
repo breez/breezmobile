@@ -379,7 +379,7 @@ class AccountBloc {
       _paymentsController.add(updatedPayments);
 
       //start lightning
-      if (user.registered) {
+      if (user.registrationRequested) {
         if (!_startedLightning) {
           log.info(
               "Account bloc got registered user, starting lightning daemon...");
@@ -391,7 +391,9 @@ class AccountBloc {
           log.info("account: starting lightning...");
           await _breezLib.startLightning();
           log.info("account: lightning started");
-          _breezLib.registerPeriodicSync(user.token);
+          if (user.token != null) {
+            _breezLib.registerPeriodicSync(user.token);
+          }
           _fetchFundStatus();
           _listenConnectivityChanges();
           _listenReconnects();
@@ -434,7 +436,7 @@ class AccountBloc {
       return Future.value(null);
     }
 
-    return _breezLib.getFundStatus(_currentUser.userID).then((status) {      
+    return _breezLib.getFundStatus(_currentUser.userID ?? "").then((status) {      
       _accountController
             .add(_accountController.value.copyWith(addedFundsReply: status));
     }).catchError((err) {

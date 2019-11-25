@@ -9,11 +9,11 @@ import 'package:breez/bloc/user_profile/default_profile_generator.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/services/nfc.dart';
+import 'package:breez/services/notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -24,7 +24,8 @@ class UserProfileBloc {
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
-  BreezBridge _breezLib;
+  BreezServer _breezServer;
+  Notifications _notifications;
   NFCService _nfc;
   Device _deviceService;
   LocalAuthenticationService _localAuthService;
@@ -62,10 +63,11 @@ class UserProfileBloc {
   UserProfileBloc() {
     ServiceInjector injector = ServiceInjector();    
     _nfc = injector.nfc;    
-    _breezLib = injector.breezBridge;
+    _breezServer = injector.breezServer;
     _deviceService = injector.device;
     _preferences = injector.sharedPreferences;
     _localAuthService = injector.localAuthService;
+    _notifications = injector.notifications;
     _actionHandlers = {
       UpdateSecurityModel: _updateSecurityModelAction,
       UpdatePinCode: _updatePinCode,
@@ -102,6 +104,8 @@ class UserProfileBloc {
       _updateBiometricsSettings();
 
       startPINIntervalWatcher();
+
+      _refreshRegistration(_userStreamController.value);
     });    
   }
 
@@ -140,27 +144,8 @@ class UserProfileBloc {
       }
            
       user = user.copyWith(locked: user.securityModel.requiresPin);
-      if (user.userID != null) {
-        await saveUser(injector, preferences, user).then(_publishUser);
-      }
-
       _publishUser(user);      
     });
-  }
-
-  Future<BreezUserModel> saveUser(ServiceInjector injector, SharedPreferences preferences, BreezUserModel user) async {    
-    String currentToken = user.token;
-    try {
-      String token = await injector.notifications.getToken();      
-      if (token != currentToken || user.userID == null || user.userID.isEmpty) {
-        var userID = await injector.breezServer.registerDevice(token);                
-        user = user.copyWith(token: token, userID: userID);        
-      }
-      _saveChanges(preferences, user);
-    } catch(e) {
-      _registrationController.addError(e);
-    }
-    return user;
   }
 
   _updateBiometricsSettings() {
@@ -230,9 +215,28 @@ class UserProfileBloc {
 
   void _listenRegistrationRequests(ServiceInjector injector) {
     _registrationController.stream.listen((request) async {
-      var preferences = await injector.sharedPreferences;
-      saveUser(injector, preferences, _userStreamController.value);
+      _refreshRegistration(_userStreamController.value, onlyIfRegistered: false);      
     });
+  }
+
+  Future _refreshRegistration(BreezUserModel user, {bool onlyIfRegistered = true}) async {
+    if (user.token == null && onlyIfRegistered) {
+      return;
+    }
+    var userToRegister = user;
+    SharedPreferences preferences = await _preferences;
+    try {                  
+      String token = await _notifications.getToken();      
+      if (token != user.token || user.userID == null || user.userID.isEmpty) {
+        var userID = await _breezServer.registerDevice(token);                
+        userToRegister = userToRegister.copyWith(token: token, userID: userID);        
+      }
+      _saveChanges(preferences, userToRegister);
+    } catch(e) {
+      _registrationController.addError(e);
+    }
+    userToRegister = user.copyWith(registrationRequested: true);
+    _saveChanges(preferences, userToRegister);
   }
 
   void _listenCurrencyChange(ServiceInjector injector) {
