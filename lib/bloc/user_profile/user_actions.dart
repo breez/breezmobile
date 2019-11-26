@@ -31,3 +31,9 @@ class ValidateBiometrics extends AsyncAction {
 
   ValidateBiometrics({this.localizedReason});
 }
+
+class SetLockState extends AsyncAction {
+  final bool locked;
+
+  SetLockState(this.locked);
+}

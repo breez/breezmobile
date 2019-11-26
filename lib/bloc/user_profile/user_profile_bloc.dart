@@ -72,36 +72,37 @@ class UserProfileBloc {
       ValidatePinCode: _validatePinCode,
       ChangeTheme: _changeThemeAction,
       ValidateBiometrics: _validateBiometrics,
+      SetLockState: _setLockState,
     };
     print ("UserProfileBloc started");
 
     cardActivationStream = _nfc.cardActivationStream;
 
     //push already saved user to the stream
-    _initializeWithSavedUser(injector);
+    _initializeWithSavedUser(injector).then((_){
+      //listen to user actions
+      _listenUserActions();
 
-    //listen to user actions
-    _listenUserActions();
+      //listen to registration requests
+      _listenRegistrationRequests(injector);
 
-    //listen to registration requests
-    _listenRegistrationRequests(injector);
+      //listen to changes in user preferences
+      _listenCurrencyChange(injector);
+      _listenFiatCurrencyChange(injector);
 
-    //listen to changes in user preferences
-    _listenCurrencyChange(injector);
-    _listenFiatCurrencyChange(injector);
+      //listen to changes in user avatar
+      _listenUserChange(injector);
 
-    //listen to changes in user avatar
-    _listenUserChange(injector);
+      //listen to randomize profile requests
+      _listenRandomizeRequest(injector);
 
-    //listen to randomize profile requests
-    _listenRandomizeRequest(injector);
+      //listen upload image requests
+      _listenUploadImageRequests(injector);
 
-    //listen upload image requests
-    _listenUploadImageRequests(injector);
+      _updateBiometricsSettings();
 
-    _updateBiometricsSettings();
-
-    startPINIntervalWatcher();
+      startPINIntervalWatcher();
+    });    
   }
 
   void startPINIntervalWatcher(){
@@ -124,8 +125,8 @@ class UserProfileBloc {
     });
   }
 
-  void _initializeWithSavedUser(ServiceInjector injector) {    
-    injector.sharedPreferences.then((preferences) async {
+  Future _initializeWithSavedUser(ServiceInjector injector) {    
+    return injector.sharedPreferences.then((preferences) async {
       print ("UserProfileBloc got preferences");
       String jsonStr =
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
@@ -140,7 +141,7 @@ class UserProfileBloc {
            
       user = user.copyWith(locked: user.securityModel.requiresPin);
       if (user.userID != null) {
-        saveUser(injector, preferences, user).then(_publishUser);
+        await saveUser(injector, preferences, user).then(_publishUser);
       }
 
       _publishUser(user);      
@@ -186,6 +187,11 @@ class UserProfileBloc {
         handler(action).catchError((e) => action.resolveError(e));
       }
     });
+  }
+
+  Future _setLockState(SetLockState action) async {
+    _saveChanges(await _preferences, _currentUser.copyWith(locked: action.locked));
+    action.resolve(action.locked);    
   }
 
   Future _updatePinCode(UpdatePinCode action) async {
