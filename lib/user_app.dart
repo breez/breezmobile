@@ -89,7 +89,7 @@ class UserApp extends StatelessWidget {
                         }, onFingerprintEntered: user.securityModel.isFingerprintEnabled ? (isValid) {
                             if (isValid) {
                               Navigator.pop(ctx);
-                              userProfileBloc.userActionsSink.add(SetLockState(true));
+                              userProfileBloc.userActionsSink.add(SetLockState(false));
                             }
                           } : null,
                           userProfileBloc: userProfileBloc,
