@@ -137,8 +137,7 @@ class AccountModel {
   final FundStatusReply addedFundsReply;
   final String paymentRequestInProgress;  
   final Int64 onChainFeeRate;
-  final bool initial;  
-  final double bootstrapProgress;
+  final bool initial;    
   final bool enableInProgress;
   final double syncProgress;
   final SyncUIState syncUIState;
@@ -148,8 +147,7 @@ class AccountModel {
       this.addedFundsReply,
       this.paymentRequestInProgress,      
       this.onChainFeeRate,      
-      this.enableInProgress = false,
-      this.bootstrapProgress = 0,
+      this.enableInProgress = false,    
       this.syncProgress = 0,
       this.syncUIState = SyncUIState.NONE});
 
@@ -176,8 +174,7 @@ class AccountModel {
       FundStatusReply addedFundsReply,
       String paymentRequestInProgress,      
       Int64 onChainFeeRate,      
-      bool enableInProgress,
-      double bootstrapProgress,
+      bool enableInProgress,      
       double syncProgress,
       bool initial,
       SyncUIState syncUIState}) {
@@ -187,8 +184,7 @@ class AccountModel {
         fiatCurrency ?? this._fiatCurrency,
         fiatConversionList ?? this._fiatConversionList,
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,        
-        onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,        
-        bootstrapProgress: bootstrapProgress ?? this.bootstrapProgress,
+        onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,                
         enableInProgress: enableInProgress ?? this.enableInProgress,
         paymentRequestInProgress:
             paymentRequestInProgress ?? this.paymentRequestInProgress,
@@ -378,7 +374,7 @@ class PaymentInfo {
   String get description =>
       _paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
           ? _paymentResponse.invoiceMemo.description
-              .substring(10, _paymentResponse.invoiceMemo.description.length)
+              .substring(9, _paymentResponse.invoiceMemo.description.length).trimLeft()
           : type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL
               ? "Bitcoin Transfer"
               : _paymentResponse.invoiceMemo?.description;

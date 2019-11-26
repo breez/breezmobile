@@ -4,10 +4,10 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
-import 'package:breez/widgets/flushbar.dart';
 
 class PaymentFilterSliver extends StatefulWidget {
   final ScrollController _controller;
@@ -199,7 +199,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       ShareExtend.share(filePath, "file");
     }).catchError((err) {
       Navigator.of(context).pop();
-      showFlushbar(context, message: "Failed to export payment list.");
+      showFlushbar(context, message: "Failed to export payments.");
     });
   }
 }
