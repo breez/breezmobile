@@ -92,12 +92,15 @@ class BreezBridge {
   }
 
   Future<LNUrlResponse> fetchLNUrl(String lnurl) {
-    return _invokeMethodWhenReady("fetchLnurl")
+    return _invokeMethodWhenReady("fetchLnurl", {"argument": lnurl})
       .then((result) => LNUrlResponse()..mergeFromBuffer(result ?? []));
   }
 
   Future withdrawLNUrl(String lnurl, String bolt11Invoice){
-    return _invokeMethodWhenReady("withdrawLnurl");
+    LNUrlWithdrawRequest withdrawRequest = new LNUrlWithdrawRequest()
+      ..url = lnurl
+      ..paymentRequest = bolt11Invoice;
+    return _invokeMethodWhenReady("withdrawLnurl", {"argumenet": withdrawRequest.writeToBuffer()});
   }
 
   Future<String> getLogPath() {

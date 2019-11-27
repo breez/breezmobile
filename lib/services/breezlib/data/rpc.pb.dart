@@ -1802,3 +1802,44 @@ class LNUrlWithdraw extends $pb.GeneratedMessage {
   void clearDefaultDescription() => clearField(3);
 }
 
+class LNUrlWithdrawRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('LNUrlWithdrawRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'url')
+    ..aOS(2, 'paymentRequest')
+    ..hasRequiredFields = false
+  ;
+
+  LNUrlWithdrawRequest._() : super();
+  factory LNUrlWithdrawRequest() => create();
+  factory LNUrlWithdrawRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNUrlWithdrawRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  LNUrlWithdrawRequest clone() => LNUrlWithdrawRequest()..mergeFromMessage(this);
+  LNUrlWithdrawRequest copyWith(void Function(LNUrlWithdrawRequest) updates) => super.copyWith((message) => updates(message as LNUrlWithdrawRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LNUrlWithdrawRequest create() => LNUrlWithdrawRequest._();
+  LNUrlWithdrawRequest createEmptyInstance() => create();
+  static $pb.PbList<LNUrlWithdrawRequest> createRepeated() => $pb.PbList<LNUrlWithdrawRequest>();
+  @$core.pragma('dart2js:noInline')
+  static LNUrlWithdrawRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNUrlWithdrawRequest>(create);
+  static LNUrlWithdrawRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get url => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set url($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasUrl() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearUrl() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get paymentRequest => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set paymentRequest($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasPaymentRequest() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearPaymentRequest() => clearField(2);
+}
+
