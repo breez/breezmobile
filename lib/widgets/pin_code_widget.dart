@@ -35,12 +35,14 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     _enteredPinCode = "";
     _errorMessage = "";
     if (widget.onFingerprintEntered != null) {
-      widget.userProfileBloc.userStream.firstWhere((u) => u.securityModel.enrolledBiometrics != "").then((_) async {
-        await Future.delayed(Duration(milliseconds: 500));
-        if (this.mounted) {
-          _validateBiometrics();
-        }
-      });
+      widget.userProfileBloc.userStream.first.then(
+        (user) async {
+          if (user.securityModel.enrolledBiometrics != "") {
+            await Future.delayed(Duration(milliseconds: 500));
+            if (this.mounted) _validateBiometrics();
+          }
+        },
+      );
     }
   }
 
