@@ -22,13 +22,12 @@ class SecurityModel {
   SecurityModel.fromJson(Map<String, dynamic> json)
       : requiresPin = json['requiresPin'] ?? false,
         isFingerprintEnabled = json['isFingerprintEnabled'] ?? false,
-        enrolledBiometrics = json['enrolledBiometrics'] ?? "",
+        enrolledBiometrics = "",
         automaticallyLockInterval = json['automaticallyLockInterval'] ?? _defaultLockInterval;
 
   Map<String, dynamic> toJson() => {
         'requiresPin': requiresPin,
         'isFingerprintEnabled': isFingerprintEnabled,
-        'enrolledBiometrics': enrolledBiometrics,
         'automaticallyLockInterval': automaticallyLockInterval,
       };
 }
