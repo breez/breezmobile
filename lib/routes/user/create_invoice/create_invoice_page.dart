@@ -27,7 +27,8 @@ import 'package:flutter/services.dart';
 import 'lnurl_withdraw_dialog.dart';
 
 class CreateInvoicePage extends StatefulWidget {
-  const CreateInvoicePage();
+  final WithdrawFetchResponse lnurlWithdraw;
+  const CreateInvoicePage({this.lnurlWithdraw});
 
   @override
   State<StatefulWidget> createState() {
@@ -37,7 +38,7 @@ class CreateInvoicePage extends StatefulWidget {
 
 class CreateInvoicePageState extends State<CreateInvoicePage> {
   LNUrlBloc _lnurlBloc;
-  String _withdrawUrl;
+  WithdrawFetchResponse _withdrawFetchResponse;
 
   final _formKey = GlobalKey<FormState>();
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -54,13 +55,24 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override void didChangeDependencies(){        
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
     if (!_isInit) {      
       _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {            
             Navigator.popUntil(context, ModalRoute.withName("/create_invoice"));  
             Navigator.pop(context, "Payment was successfuly received!");            
       });
+      if (widget.lnurlWithdraw != null) {
+        accBloc.accountStream.first.then((account) {
+          setState(() {
+            applyWithdrawFetchResponse(widget.lnurlWithdraw, account);
+          });
+        });        
+      }
+
       _isInit = true;
-      Future.delayed(Duration(milliseconds: 200), () => FocusScope.of(context).requestFocus(_amountFocusNode));
+      if (widget.lnurlWithdraw == null) {
+        Future.delayed(Duration(milliseconds: 200), () => FocusScope.of(context).requestFocus(_amountFocusNode));
+      }
     }
     super.didChangeDependencies();
   }
@@ -68,7 +80,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   @override 
   void initState() {
     _lnurlBloc = new LNUrlBloc();
-    _doneAction = new KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
+    _doneAction = new KeyboardDoneAction(<FocusNode>[_amountFocusNode]);    
     super.initState();
   }
 
@@ -76,6 +88,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   void dispose() {
     _paidInvoicesSubscription?.cancel();
     _doneAction.dispose();
+    _lnurlBloc.dispose();
     super.dispose();
   }
 
@@ -102,14 +115,14 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                     var account = snapshot.data;
                     return RaisedButton(
                       child: new Text(
-                        _withdrawUrl == null ? "CREATE" : "WITHDRAW",
+                        _withdrawFetchResponse == null ? "CREATE" : "WITHDRAW",
                         style: Theme.of(context).textTheme.button,
                       ),
                       color: Theme.of(context).buttonColor,
                       elevation: 0.0,
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(42.0)),
-                      onPressed: () {
+                      onPressed: () {                       
                         if (_formKey.currentState.validate()) {
                           _createInvoice(invoiceBloc, account);
                         }
@@ -281,8 +294,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     }
   }
 
-  Future _handleLNUrlWithdraw(AccountModel account, String url) async{
-    Fetch fetchAction = Fetch(url);
+  Future _handleLNUrlWithdraw(AccountModel account, String lnurl) async{
+    Fetch fetchAction = Fetch(lnurl);
     _lnurlBloc.actionsSink.add(fetchAction);
     var response = await fetchAction.future;
     if (response.runtimeType != WithdrawFetchResponse) {
@@ -290,10 +303,14 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     }
     WithdrawFetchResponse withdrawResponse = response as WithdrawFetchResponse;
     setState(() {
-      _withdrawUrl = url;
-      _descriptionController.text = withdrawResponse.defaultDescription;
-      _amountController.text = account.currency.format(withdrawResponse.maxAmount, includeSymbol: false);
+      applyWithdrawFetchResponse(withdrawResponse, account);
     });
+  }
+
+  void applyWithdrawFetchResponse(WithdrawFetchResponse response, AccountModel account) {
+    _withdrawFetchResponse = response;
+    _descriptionController.text = response.defaultDescription;
+    _amountController.text = account.currency.format(response.maxAmount, includeSymbol: false);
   }
 
   Future _createInvoice(InvoiceBloc invoiceBloc, AccountModel account){
@@ -304,8 +321,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
           null,
           account.currency.parse(_amountController.text)));
 
-    Widget dialog = _withdrawUrl != null ? 
-    LNURlWidthrawDialog(_withdrawUrl, invoiceBloc, _lnurlBloc) : 
+    Widget dialog = _withdrawFetchResponse != null ? 
+    LNURlWidthrawDialog(invoiceBloc, _lnurlBloc) : 
     QrCodeDialog(context, invoiceBloc);
 
     return _bgService.runAsTask(
