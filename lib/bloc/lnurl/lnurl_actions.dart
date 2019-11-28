@@ -6,9 +6,8 @@ class Fetch extends AsyncAction {
   Fetch(this.lnurl);
 }
 
-class Withdraw extends AsyncAction {
-    final String  lnurl;
+class Withdraw extends AsyncAction {    
     final String bolt11Invoice ;
 
-  Withdraw(this.lnurl, this.bolt11Invoice);
+  Withdraw(this.bolt11Invoice);
 }
