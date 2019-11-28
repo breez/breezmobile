@@ -403,24 +403,28 @@ class AccountBloc {
     });
   }
 
-  void _pollSyncStatus(){
+  void _pollSyncStatus() async{
     if (_accountSynchronizer != null) {
       _accountSynchronizer.dismiss();
     }
 
+    var nodeID = await getPersistentNodeID();
+
     bool blockingPrompted = false;
+    bool newNode = nodeID == null;
     _accountSynchronizer = new AccountSynchronizer(
       _breezLib,      
-      onProgress: (startPollTimestamp, progress) async {
-        if (
-            Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 3) &&
+      onProgress: (startPollTimestamp, progress, syncedToChain, bootstrap) async {        
+        bool moreThan3DaysOff = Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - startPollTimestamp) > Duration(days: 3);
+        var syncUIState = _accountController.value.syncUIState;
+        if ((moreThan3DaysOff || newNode) &&
             _accountController.value.syncUIState == SyncUIState.NONE && !blockingPrompted) {
               await userProfileStream.where((u) => u.locked == false).first;
               blockingPrompted = true;
-             _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.BLOCKING));
+              syncUIState = SyncUIState.BLOCKING;             
           }
-        _accountController.add(_accountController.value.copyWith(syncProgress: progress));
-      },
+        _accountController.add(_accountController.value.copyWith(syncUIState: syncUIState, syncProgress: progress, syncedToChain: syncedToChain));
+      },      
       onComplete: () => _accountController.add(_accountController.value.copyWith(syncUIState: SyncUIState.NONE, syncProgress: 1.0))
     );   
   }

@@ -140,6 +140,7 @@ class AccountModel {
   final bool initial;    
   final bool enableInProgress;
   final double syncProgress;
+  final bool syncedToChain;
   final SyncUIState syncUIState;
 
   AccountModel(this._accountResponse, this._currency, this._fiatShortName, this._fiatCurrency, this._fiatConversionList,
@@ -149,6 +150,7 @@ class AccountModel {
       this.onChainFeeRate,      
       this.enableInProgress = false,    
       this.syncProgress = 0,
+      this.syncedToChain = false,
       this.syncUIState = SyncUIState.NONE});
 
   AccountModel.initial()
@@ -176,6 +178,7 @@ class AccountModel {
       Int64 onChainFeeRate,      
       bool enableInProgress,      
       double syncProgress,
+      bool syncedToChain,
       bool initial,
       SyncUIState syncUIState}) {
     return AccountModel(
@@ -189,6 +192,7 @@ class AccountModel {
         paymentRequestInProgress:
             paymentRequestInProgress ?? this.paymentRequestInProgress,
         syncProgress: syncProgress ?? this.syncProgress,
+        syncedToChain: syncedToChain ?? this.syncedToChain,
         syncUIState: syncUIState ?? this.syncUIState,
         initial: initial ?? this.initial);
   }
@@ -221,7 +225,7 @@ class AccountModel {
   Int64 get routingNodeFee => _accountResponse.routingNodeFee;  
   bool get readyForPayments => _accountResponse.readyForPayments;
 
-  bool get synced => syncProgress == 1.0;
+  bool get synced => syncedToChain;
   String get channelFundingTxUrl {
      if (_accountResponse.channelPoint.isEmpty) {
        return null;
