@@ -5,9 +5,11 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/retry.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../logger.dart';
 import '../async_actions_handler.dart';
 import 'lsp_actions.dart';
 
@@ -75,17 +77,21 @@ class LSPBloc with AsyncActionsHandler {
     );
     await accountStream.where((a) => a.synced).first;
 
-    try {      
-      if (action.lnurl?.isNotEmpty == true) {
-        action.resolve(await _breezLib.connectToLnurl(action.lnurl));  
-      } else {
-        action.resolve(await _breezLib.connectToLSP(action.lspID));
-      }
-      _lspsStatusController.add(
-        _lspsStatusController.value.copyWith(
-          connectionStatus: LSPConnectionStatus.Active, lastConnectionError: null)
-      );
+    try {
+      await retry(() async{
+        log.info("connecting to LSP...");
+        if (action.lnurl?.isNotEmpty == true) {
+          action.resolve(await _breezLib.connectToLnurl(action.lnurl));  
+        } else {
+          action.resolve(await _breezLib.connectToLSP(action.lspID));
+        }
+        _lspsStatusController.add(
+          _lspsStatusController.value.copyWith(
+            connectionStatus: LSPConnectionStatus.Active, lastConnectionError: null)
+        );
+      }, tryLimit: 3, interval: Duration(seconds: 2));
     } catch (err) {
+      log.info("Failed to connect to LSP: " + err.toString());
       _lspsStatusController.add(
         _lspsStatusController.value.copyWith(
           connectionStatus: LSPConnectionStatus.NotSelected,
