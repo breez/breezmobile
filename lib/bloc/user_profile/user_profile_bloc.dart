@@ -105,8 +105,10 @@ class UserProfileBloc {
 
       startPINIntervalWatcher();
 
-      _refreshRegistration(_userStreamController.value);
-    });    
+      _userStreamController.firstWhere((u) => u != null).then((user){
+        _refreshRegistration(_userStreamController.value);
+      });    
+    });
   }
 
   void startPINIntervalWatcher(){
