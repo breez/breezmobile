@@ -9,6 +9,7 @@ import 'package:breez/services/permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:breez/services/lightning_links.dart';
 import 'package:breez/services/currency_service.dart';
+import 'package:breez/services/local_auth_service.dart';
 
 import 'background_task.dart';
 
@@ -27,6 +28,7 @@ class ServiceInjector {
   Permissions _permissions;
   BackgroundTaskService _backroundTaskService;
   CurrencyService _currencyService;
+  LocalAuthenticationService _localAuthService;
 
   factory ServiceInjector() {
     return _injector != null ? _injector : _singleton;
@@ -73,5 +75,9 @@ class ServiceInjector {
 
   CurrencyService get currencyService {
     return _currencyService ??= CurrencyService();
+  }
+
+  LocalAuthenticationService get localAuthService {
+    return _localAuthService ??= LocalAuthenticationService();
   }
 }

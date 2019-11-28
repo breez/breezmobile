@@ -83,10 +83,17 @@ class UserApp extends StatelessWidget {
                           var validateAction = ValidatePinCode(pinEntered);
                           userProfileBloc.userActionsSink.add(validateAction);
                           return validateAction.future.then((_){
-                            Navigator.pop(ctx);
-                            userProfileBloc.userSink.add(user.copyWith(locked: false));
+                            Navigator.pop(ctx); 
+                            userProfileBloc.userActionsSink.add(SetLockState(false));                            
                           });
-                        },),
+                        }, onFingerprintEntered: user.securityModel.isFingerprintEnabled ? (isValid) {
+                            if (isValid) {
+                              Navigator.pop(ctx);
+                              userProfileBloc.userActionsSink.add(SetLockState(false));
+                            }
+                          } : null,
+                          userProfileBloc: userProfileBloc,
+                        ),
                         settings: settings
                     );
                   case '/home':

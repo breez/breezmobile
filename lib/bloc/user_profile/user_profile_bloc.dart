@@ -2,22 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/bloc/async_action.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/default_profile_generator.dart';
-import 'package:breez/bloc/user_profile/security_model.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/services/nfc.dart';
-import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hex/hex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +27,7 @@ class UserProfileBloc {
   BreezBridge _breezLib;
   NFCService _nfc;
   Device _deviceService;
+  LocalAuthenticationService _localAuthService;
   Future<SharedPreferences> _preferences;
   
   Map<Type, Function> _actionHandlers = Map();
@@ -67,39 +65,44 @@ class UserProfileBloc {
     _breezLib = injector.breezBridge;
     _deviceService = injector.device;
     _preferences = injector.sharedPreferences;
+    _localAuthService = injector.localAuthService;
     _actionHandlers = {
       UpdateSecurityModel: _updateSecurityModelAction,
       UpdatePinCode: _updatePinCode,
       ValidatePinCode: _validatePinCode,
       ChangeTheme: _changeThemeAction,
+      ValidateBiometrics: _validateBiometrics,
+      SetLockState: _setLockState,
     };
     print ("UserProfileBloc started");
 
     cardActivationStream = _nfc.cardActivationStream;
 
     //push already saved user to the stream
-    _initializeWithSavedUser(injector);
+    _initializeWithSavedUser(injector).then((_){
+      //listen to user actions
+      _listenUserActions();
 
-    //listen to user actions
-    _listenUserActions();
+      //listen to registration requests
+      _listenRegistrationRequests(injector);
 
-    //listen to registration requests
-    _listenRegistrationRequests(injector);
+      //listen to changes in user preferences
+      _listenCurrencyChange(injector);
+      _listenFiatCurrencyChange(injector);
 
-    //listen to changes in user preferences
-    _listenCurrencyChange(injector);
-    _listenFiatCurrencyChange(injector);
+      //listen to changes in user avatar
+      _listenUserChange(injector);
 
-    //listen to changes in user avatar
-    _listenUserChange(injector);
+      //listen to randomize profile requests
+      _listenRandomizeRequest(injector);
 
-    //listen to randomize profile requests
-    _listenRandomizeRequest(injector);
+      //listen upload image requests
+      _listenUploadImageRequests(injector);
 
-    //listen upload image requests
-    _listenUploadImageRequests(injector);
+      _updateBiometricsSettings();
 
-    startPINIntervalWatcher();
+      startPINIntervalWatcher();
+    });    
   }
 
   void startPINIntervalWatcher(){
@@ -122,8 +125,8 @@ class UserProfileBloc {
     });
   }
 
-  void _initializeWithSavedUser(ServiceInjector injector) {    
-    injector.sharedPreferences.then((preferences) async {
+  Future _initializeWithSavedUser(ServiceInjector injector) {    
+    return injector.sharedPreferences.then((preferences) async {
       print ("UserProfileBloc got preferences");
       String jsonStr =
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
@@ -138,7 +141,7 @@ class UserProfileBloc {
            
       user = user.copyWith(locked: user.securityModel.requiresPin);
       if (user.userID != null) {
-        saveUser(injector, preferences, user).then(_publishUser);
+        await saveUser(injector, preferences, user).then(_publishUser);
       }
 
       _publishUser(user);      
@@ -160,6 +163,21 @@ class UserProfileBloc {
     return user;
   }
 
+  _updateBiometricsSettings() {
+    _checkBiometrics();
+    _deviceService.eventStream.listen((e){
+      if (e == NotificationType.RESUME) {
+        _checkBiometrics();
+      }
+    });
+  }
+
+  Future _checkBiometrics() async {
+    String enrolledBiometrics = await _localAuthService.enrolledBiometrics;
+    bool isFingerprintEnabled = _currentUser.securityModel.isFingerprintEnabled && enrolledBiometrics.isNotEmpty;
+    _updateSecurityModel(UpdateSecurityModel(_currentUser.securityModel.copyWith(enrolledBiometrics: enrolledBiometrics, isFingerprintEnabled: isFingerprintEnabled)));
+  }
+
   void _listenUserActions() {
     _userActionsController.stream.listen((action) {
       var handler = _actionHandlers[action.runtimeType];
@@ -167,6 +185,11 @@ class UserProfileBloc {
         handler(action).catchError((e) => action.resolveError(e));
       }
     });
+  }
+
+  Future _setLockState(SetLockState action) async {
+    _saveChanges(await _preferences, _currentUser.copyWith(locked: action.locked));
+    action.resolve(action.locked);    
   }
 
   Future _updatePinCode(UpdatePinCode action) async {
@@ -199,6 +222,10 @@ class UserProfileBloc {
   Future _changeTheme(ChangeTheme action) async {
     _saveChanges(await _preferences, _currentUser.copyWith(themeId: action.newTheme));
     return action.newTheme;
+  }
+
+  Future _validateBiometrics(ValidateBiometrics action) async {
+    action.resolve(await _localAuthService.authenticate(localizedReason: action.localizedReason));
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {

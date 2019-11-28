@@ -13,6 +13,7 @@ import 'package:breez/utils/date.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +66,17 @@ class SecurityPageState extends State<SecurityPage> {
                         });
                       });
                     },
+                    onFingerprintEntered: snapshot.data.securityModel.isFingerprintEnabled
+                        ? (isValid) {
+                            if (isValid) {
+                              setState(() {
+                                this._screenLocked = false;
+                              });
+                            }
+                          }
+                        : null,
+                    userProfileBloc: widget.userProfileBloc,
+                    localizedReason: "Authenticate to enter Security & Backup",
                     canCancel: true,
                   );
                 }
@@ -113,6 +125,9 @@ class SecurityPageState extends State<SecurityPage> {
         ..add(_buildPINIntervalTile(securityModel, backupSettings))
         ..add(Divider())
         ..add(_buildChangePINTile(securityModel, backupSettings));
+      if (securityModel.enrolledBiometrics != "") {
+        _tiles..add(Divider())..add(_buildEnableBiometricAuthTile(securityModel, backupSettings));
+      }
     }
     _tiles..add(Divider())
           ..add(_buildBackupProviderTitle(securityModel, backupSettings))
@@ -272,7 +287,41 @@ class SecurityPageState extends State<SecurityPage> {
       onTap: () => _onChangePinSelected(securityModel, backupSettings),
     );
   }
+  ListTile _buildEnableBiometricAuthTile(SecurityModel securityModel, BackupSettings backupSettings) {
+    return ListTile(
+      title: AutoSizeText(
+        "Enable ${securityModel.enrolledBiometrics}",
+        style: TextStyle(color: Colors.white),
+        maxLines: 1,
+        minFontSize: MinFontSize(context).minFontSize,
+        stepGranularity: 0.1,
+        group: securityModel.requiresPin ? _autoSizeGroup : null,
+      ),
+      trailing: Switch(
+        value: securityModel.isFingerprintEnabled,
+        activeColor: Colors.white,
+        onChanged: (bool value) {
+          if (this.mounted) {
+            if(value){
+              _validateBiometrics(securityModel, backupSettings);
+            } else {
+              _updateSecurityModel(securityModel, securityModel.copyWith(isFingerprintEnabled: false), backupSettings);
+            }
+          }
+        },
+      ),
+    );
+  }
 
+  Future _validateBiometrics(SecurityModel securityModel, BackupSettings backupSettings) async {
+    var validateBiometricsAction = ValidateBiometrics(localizedReason: "Authenticate to enable this setting");
+    widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
+    validateBiometricsAction.future.then((isValid) async {
+      _updateSecurityModel(
+          securityModel, securityModel.copyWith(isFingerprintEnabled: isValid), backupSettings);
+    }, onError: (error) => showFlushbar(context, message: error));
+  }
+  
   ListTile _buildDisablePINTile(
       SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(

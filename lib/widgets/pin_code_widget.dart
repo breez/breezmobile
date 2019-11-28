@@ -1,6 +1,10 @@
 import 'dart:math';
 
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 
 const PIN_CODE_LENGTH = 6;
@@ -9,8 +13,11 @@ class PinCodeWidget extends StatefulWidget {
   final String label;
   final bool dismissible;
   final Future Function(String pinEntered) onPinEntered;
+  final Function(bool isValid) onFingerprintEntered;
+  final UserProfileBloc userProfileBloc;
+  final String localizedReason;
 
-  PinCodeWidget(this.label, this.dismissible, this.onPinEntered);
+  PinCodeWidget(this.label, this.dismissible, this.onPinEntered, {this.onFingerprintEntered, this.userProfileBloc, this.localizedReason});
 
   @override
   State<StatefulWidget> createState() {
@@ -27,9 +34,29 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     super.initState();
     _enteredPinCode = "";
     _errorMessage = "";
+    if (widget.onFingerprintEntered != null) {
+      widget.userProfileBloc.userStream.first.then(
+        (user) async {
+          if (user.securityModel.enrolledBiometrics != "") {
+            await Future.delayed(Duration(milliseconds: 500));
+            if (this.mounted) _validateBiometrics();
+          }
+        },
+      );
+    }
   }
 
-  Widget build(BuildContext context) {    
+  Future _validateBiometrics() async {
+    var validateBiometricsAction = ValidateBiometrics(localizedReason: widget.localizedReason);
+    widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
+    validateBiometricsAction.future.then((isValid) {
+      Future.delayed(Duration(milliseconds: 200), () {
+        return widget.onFingerprintEntered(isValid);
+      });
+    }, onError: (error) => showFlushbar(context, message: error));
+  }
+
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -141,18 +168,44 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
               ),
             ),
           _numberButton("0"),
-          Container(
-            child: new IconButton(
-              onPressed: () => _setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
-              icon: Icon(
-                Icons.backspace,
-                color: Colors.white,
-              ),
-            ),
-          )
-          ]
-        )
+          widget.onFingerprintEntered == null || ((widget.onFingerprintEntered != null) && _enteredPinCode.length > 0)
+              ? _buildEraseButton()
+              : StreamBuilder<BreezUserModel>(
+                  stream: widget.userProfileBloc.userStream,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData || snapshot.data.securityModel.enrolledBiometrics == "") {
+                      return _buildEraseButton();
+                    } else {
+                      return _buildBiometricsButton(snapshot, context);
+                    }
+                  },
+                )
+        ])
       ],
+    );
+  }
+
+  Container _buildBiometricsButton(AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
+    return Container(
+      child: new IconButton(
+        onPressed: () => _validateBiometrics(),
+        icon: Icon(
+          snapshot.data.securityModel.enrolledBiometrics.contains("Face") ? Icons.face : Icons.fingerprint,
+          color: Theme.of(context).errorColor,
+        ),
+      ),
+    );
+  }
+
+  Container _buildEraseButton() {
+    return Container(
+      child: new IconButton(
+        onPressed: () => _setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
+        icon: Icon(
+          Icons.backspace,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 

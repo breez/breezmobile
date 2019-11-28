@@ -25,3 +25,15 @@ class ChangeTheme extends AsyncAction {
 
   ChangeTheme(this.newTheme);
 }
+
+class ValidateBiometrics extends AsyncAction {
+  final String localizedReason;
+
+  ValidateBiometrics({this.localizedReason});
+}
+
+class SetLockState extends AsyncAction {
+  final bool locked;
+
+  SetLockState(this.locked);
+}
