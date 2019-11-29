@@ -162,6 +162,9 @@ class AccountBloc {
       _trackOnBoardingStatus();      
       _listenEnableAccount();
     });
+    _breezLib.waitForStart().catchError((err){
+      _accountNotificationsController.addError(err);
+    });
   }
 
   void _listenEnableAccount() {

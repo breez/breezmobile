@@ -49,8 +49,15 @@ class BreezBridge {
             await init(workingDir.path, tmpDir.path); 
             logger.log.info("breez library init finished");
             _startedCompleter.complete(true);
+          })
+          .catchError((err){
+            _startedCompleter.completeError(err);
           });
       });
+  }
+
+  Future waitForStart(){
+    return _startedCompleter.future;
   }
 
   Future<Directory> getWorkingDir(){
@@ -92,7 +99,9 @@ class BreezBridge {
   }
 
   Future<String> getLogPath() {
-    return _invokeMethodImmediate("getLogPath").then( (logPath) => logPath as String);
+    return getWorkingDir().then((d){
+      return "${d.path}/logs/bitcoin/mainnet/lnd.log";
+    });    
   }
 
   Future<int> lastSyncedHeaderTimestamp(){
