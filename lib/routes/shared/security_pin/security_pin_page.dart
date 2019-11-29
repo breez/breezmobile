@@ -114,7 +114,7 @@ class SecurityPageState extends State<SecurityPage> {
         ..add(_buildPINIntervalTile(securityModel, backupSettings))
         ..add(Divider())
         ..add(_buildChangePINTile(securityModel, backupSettings));
-      if (securityModel.enrolledBiometrics != "") {
+      if (securityModel.enrolledBiometrics.isNotEmpty) {
         _tiles..add(Divider())..add(_buildEnableBiometricAuthTile(securityModel, backupSettings));
       }
     }
@@ -328,8 +328,8 @@ class SecurityPageState extends State<SecurityPage> {
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
-                  _updateSecurityModel(
-                      securityModel, SecurityModel.initial(), backupSettings);
+                  _updateSecurityModel(securityModel,
+                      SecurityModel.initial().copyWith(enrolledBiometrics: securityModel.enrolledBiometrics), backupSettings);
                 }
               },
             )
