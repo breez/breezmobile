@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:local_auth/auth_strings.dart';
 import 'package:local_auth/local_auth.dart';
 
 class LocalAuthenticationService {
@@ -25,8 +26,9 @@ class LocalAuthenticationService {
   Future<bool> authenticate({String localizedReason}) async {
     try {
       return await _auth.authenticateWithBiometrics(
-        localizedReason: localizedReason ?? 'Authenticate to sign-in',
-        useErrorDialogs: false,
+          localizedReason: localizedReason ?? 'Authenticate to Sign-In.',
+          useErrorDialogs: false,
+          androidAuthStrings: AndroidAuthMessages(fingerprintHint: "")
       );
     } on PlatformException catch (error) {
       if (error.code == "LockedOut" || error.code == "PermanentlyLockedOut") {

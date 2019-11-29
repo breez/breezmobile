@@ -303,7 +303,7 @@ class SecurityPageState extends State<SecurityPage> {
   }
 
   Future _validateBiometrics(SecurityModel securityModel, BackupSettings backupSettings) async {
-    var validateBiometricsAction = ValidateBiometrics(localizedReason: "Authenticate to enable this setting");
+    var validateBiometricsAction = ValidateBiometrics(localizedReason: "Authenticate to enable this setting.");
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then((isValid) async {
       _updateSecurityModel(
