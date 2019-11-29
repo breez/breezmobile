@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:breez/logger.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -32,6 +33,7 @@ class LocalAuthenticationService {
       if (error.code == "LockedOut" || error.code == "PermanentlyLockedOut") {
         throw error.message;
       }
+      log.severe("Error Code: ${error.code} - Message: ${error.message}");
       return false;
     }
   }
