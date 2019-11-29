@@ -66,17 +66,6 @@ class SecurityPageState extends State<SecurityPage> {
                         });
                       });
                     },
-                    onFingerprintEntered: snapshot.data.securityModel.isFingerprintEnabled
-                        ? (isValid) {
-                            if (isValid) {
-                              setState(() {
-                                this._screenLocked = false;
-                              });
-                            }
-                          }
-                        : null,
-                    userProfileBloc: widget.userProfileBloc,
-                    localizedReason: "Authenticate to enter Security & Backup",
                     canCancel: true,
                   );
                 }
