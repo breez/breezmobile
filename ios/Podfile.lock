@@ -135,6 +135,8 @@ PODS:
     - Flutter
     - Reachability
   - leveldb-library (1.22)
+  - local_auth (0.0.1):
+    - Flutter
   - MTBBarcodeScanner (5.0.11)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
@@ -172,6 +174,7 @@ DEPENDENCIES:
   - image_cropper (from `Pods/.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `Pods/.symlinks/plugins/image_picker/ios`)
   - keyboard_visibility (from `Pods/.symlinks/plugins/keyboard_visibility/ios`)
+  - local_auth (from `Pods/.symlinks/plugins/local_auth/ios`)
   - package_info (from `Pods/.symlinks/plugins/package_info/ios`)
   - path_provider (from `Pods/.symlinks/plugins/path_provider/ios`)
   - share_extend (from `Pods/.symlinks/plugins/share_extend/ios`)
@@ -234,6 +237,8 @@ EXTERNAL SOURCES:
     :path: Pods/.symlinks/plugins/image_picker/ios
   keyboard_visibility:
     :path: Pods/.symlinks/plugins/keyboard_visibility/ios
+  local_auth:
+    :path: Pods/.symlinks/plugins/local_auth/ios
   package_info:
     :path: Pods/.symlinks/plugins/package_info/ios
   path_provider:
@@ -251,7 +256,7 @@ SPEC CHECKSUMS:
   app_settings: 72b0ab4369ff445589e275506896bca9bf321944
   AppAuth: bce82c76043657c99d91e7882e8a9e1a93650cd4
   barcode_scan: 33f586d02270046fc6559135038b34b5754eaa4f
-  connectivity: c72716e202a1225ec4810740d5cb56b8ae3bf4cc
+  connectivity: 6e94255659cc86dcbef1d452ad3e0491bb1b3e75
   Firebase: 2d750c54cda57d5a6ae31212cfe5cc813c6be7e4
   firebase_core: ce5006bb48508ee4e71e0f429a3f519bb8ee2961
   firebase_database: d4f066a1b01f309676d0d2678ec600d6af18ad97
@@ -281,10 +286,11 @@ SPEC CHECKSUMS:
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
   keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
+  local_auth: 17f985934bb4ab2637431e5b3fe1b2d6698d2051
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   package_info: 78cabb3c322943c55d39676f4a5bfc748c01d055
-  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
+  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   Protobuf: a4dc852ad69c027ca2166ed287b856697814375b
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   share_extend: b6748dc53695587891126a89533b862b92548c7b
