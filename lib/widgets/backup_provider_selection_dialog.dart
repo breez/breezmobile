@@ -14,7 +14,7 @@ class BackupProviderSelectionDialog extends StatefulWidget {
 
   @override
   BackupProviderSelectionDialogState createState() {
-    return new BackupProviderSelectionDialogState();
+    return BackupProviderSelectionDialogState();
   }
 }
 
@@ -28,9 +28,9 @@ class BackupProviderSelectionDialogState
   }
 
   Widget createRestoreDialog() {
-    return new AlertDialog(
+    return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-      title: new Text(
+      title: Text(
         "Backup Data Storage",
         style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
@@ -39,13 +39,16 @@ class BackupProviderSelectionDialogState
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          new Text(
+          Text(
             widget.restore
                 ? "Restore backup data from:"
                 : "Store backup data in:",
-            style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
+            style: Theme.of(context)
+                .primaryTextTheme
+                .display2
+                .copyWith(fontSize: 16),
           ),
-          new StreamBuilder<BackupSettings>(
+          StreamBuilder<BackupSettings>(
               stream: widget.backupBloc.backupSettingsStream,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -67,12 +70,21 @@ class BackupProviderSelectionDialogState
                         trailing: _selectedProviderIndex == index
                             ? Icon(
                                 Icons.check,
-                                color: Theme.of(context).primaryTextTheme.button.color,
+                                color: Theme.of(context)
+                                    .primaryTextTheme
+                                    .button
+                                    .color,
                               )
-                            : Icon(Icons.check, color: Theme.of(context).backgroundColor),
+                            : Icon(Icons.check,
+                                color: Theme.of(context).backgroundColor),
                         title: Text(
                           providers[index].displayName,
-                          style: Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 14.3, height: 1.2), // Color needs to change
+                          style: Theme.of(context)
+                              .dialogTheme
+                              .titleTextStyle
+                              .copyWith(
+                                  fontSize: 14.3,
+                                  height: 1.2), // Color needs to change
                         ),
                         onTap: () {
                           setState(() {
@@ -87,17 +99,24 @@ class BackupProviderSelectionDialogState
         ],
       ),
       actions: <Widget>[
-        new FlatButton(
+        FlatButton(
           onPressed: () => Navigator.pop(context, null),
-          child: Text("CANCEL", style: Theme.of(context).textTheme.button,),
+          child: Text(
+            "CANCEL",
+            style: Theme.of(context).textTheme.button,
+          ),
           textColor: Theme.of(context).primaryTextTheme.button.color,
         ),
         StreamBuilder<BackupSettings>(
             stream: widget.backupBloc.backupSettingsStream,
             builder: (context, snapshot) {
-              return new FlatButton(
+              return FlatButton(
                 textColor: Theme.of(context).primaryTextTheme.button.color,
-                disabledTextColor: Theme.of(context).primaryTextTheme.button.color.withOpacity(0.4),
+                disabledTextColor: Theme.of(context)
+                    .primaryTextTheme
+                    .button
+                    .color
+                    .withOpacity(0.4),
                 onPressed: !snapshot.hasData
                     ? null
                     : () {
@@ -109,7 +128,7 @@ class BackupProviderSelectionDialogState
                         setAction.future.then(
                             (_) => Navigator.pop(context, selectedProvider));
                       },
-                child: new Text("OK"),
+                child: Text("OK"),
               );
             })
       ],

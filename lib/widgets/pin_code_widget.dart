@@ -17,7 +17,8 @@ class PinCodeWidget extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final String localizedReason;
 
-  PinCodeWidget(this.label, this.dismissible, this.onPinEntered, {this.onFingerprintEntered, this.userProfileBloc, this.localizedReason});
+  PinCodeWidget(this.label, this.dismissible, this.onPinEntered,
+      {this.onFingerprintEntered, this.userProfileBloc, this.localizedReason});
 
   @override
   State<StatefulWidget> createState() {
@@ -47,7 +48,8 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
   }
 
   Future _validateBiometrics() async {
-    var validateBiometricsAction = ValidateBiometrics(localizedReason: widget.localizedReason);
+    var validateBiometricsAction =
+        ValidateBiometrics(localizedReason: widget.localizedReason);
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then((isValid) {
       Future.delayed(Duration(milliseconds: 200), () {
@@ -63,25 +65,25 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
         children: <Widget>[
           Flexible(
             flex: 1,
-            child: new Container(
-                child: Center(
-                  child: _buildBreezLogo(context),
-                ),                
+            child: Container(
+              child: Center(
+                child: _buildBreezLogo(context),
               ),
+            ),
           ),
           Flexible(
             flex: 1,
-            child: new Container(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[Text(widget.label), _buildPinCircles(), _buildErrorMessage()]),                
-                ),
-          ),
-          Flexible(
-            flex: 2,
             child: Container(
-              child: _numPad(context)            
-          ))
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(widget.label),
+                    _buildPinCircles(),
+                    _buildErrorMessage()
+                  ]),
+            ),
+          ),
+          Flexible(flex: 2, child: Container(child: _numPad(context)))
         ],
       ),
     );
@@ -119,7 +121,8 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
         width: _enteredPinCode.length == PIN_CODE_LENGTH ? 28 : 24,
         height: _enteredPinCode.length == PIN_CODE_LENGTH ? 28 : 24,
         decoration: BoxDecoration(
-            color: i < _enteredPinCode.length ? Colors.white : Colors.transparent,
+            color:
+                i < _enteredPinCode.length ? Colors.white : Colors.transparent,
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white, width: 2.0)),
       ));
@@ -142,55 +145,68 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
   Widget _numPad(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,            
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
-          mainAxisSize: MainAxisSize.max, 
-          children: List<Widget>.generate(3, (i) => _numberButton( (i+1).toString())),),
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          children: List<Widget>.generate(
+              3, (i) => _numberButton((i + 1).toString())),
+        ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
-          mainAxisSize: MainAxisSize.max, 
-          children: List<Widget>.generate(3, (i) => _numberButton( (i+4).toString())),),
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          children: List<Widget>.generate(
+              3, (i) => _numberButton((i + 4).toString())),
+        ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
-          mainAxisSize: MainAxisSize.max, 
-          children: List<Widget>.generate(3, (i) => _numberButton( (i+7).toString())),),
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          children: List<Widget>.generate(
+              3, (i) => _numberButton((i + 7).toString())),
+        ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
-          mainAxisSize: MainAxisSize.max, 
-          children: <Widget>[
-            IconButton(
-              onPressed: () => _setPinCodeInput(""),
-              icon: Icon(
-                Icons.delete_forever,
-                color: Colors.white,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              IconButton(
+                onPressed: () => _setPinCodeInput(""),
+                icon: Icon(
+                  Icons.delete_forever,
+                  color: Colors.white,
+                ),
               ),
-            ),
-          _numberButton("0"),
-          widget.onFingerprintEntered == null || ((widget.onFingerprintEntered != null) && _enteredPinCode.length > 0)
-              ? _buildEraseButton()
-              : StreamBuilder<BreezUserModel>(
-                  stream: widget.userProfileBloc.userStream,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData || snapshot.data.securityModel.enrolledBiometrics == "") {
-                      return _buildEraseButton();
-                    } else {
-                      return _buildBiometricsButton(snapshot, context);
-                    }
-                  },
-                )
-        ])
+              _numberButton("0"),
+              widget.onFingerprintEntered == null ||
+                      ((widget.onFingerprintEntered != null) &&
+                          _enteredPinCode.length > 0)
+                  ? _buildEraseButton()
+                  : StreamBuilder<BreezUserModel>(
+                      stream: widget.userProfileBloc.userStream,
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData ||
+                            snapshot.data.securityModel.enrolledBiometrics ==
+                                "") {
+                          return _buildEraseButton();
+                        } else {
+                          return _buildBiometricsButton(snapshot, context);
+                        }
+                      },
+                    )
+            ])
       ],
     );
   }
 
-  Container _buildBiometricsButton(AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
+  Container _buildBiometricsButton(
+      AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
     return Container(
-      child: new IconButton(
+      child: IconButton(
         onPressed: () => _validateBiometrics(),
         icon: Icon(
-          snapshot.data.securityModel.enrolledBiometrics.contains("Face") ? Icons.face : Icons.fingerprint,
+          snapshot.data.securityModel.enrolledBiometrics.contains("Face")
+              ? Icons.face
+              : Icons.fingerprint,
           color: Theme.of(context).errorColor,
         ),
       ),
@@ -199,8 +215,9 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
 
   Container _buildEraseButton() {
     return Container(
-      child: new IconButton(
-        onPressed: () => _setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
+      child: IconButton(
+        onPressed: () => _setPinCodeInput(
+            _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
         icon: Icon(
           Icons.backspace,
           color: Colors.white,
@@ -211,9 +228,10 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
 
   Widget _numberButton(String number) {
     return FlatButton(
-        onPressed: () => _onNumButtonPressed(number),
-        child: new Text(number, textAlign: TextAlign.center, style: theme.numPadNumberStyle),
-      );
+      onPressed: () => _onNumButtonPressed(number),
+      child: Text(number,
+          textAlign: TextAlign.center, style: theme.numPadNumberStyle),
+    );
   }
 
   _onNumButtonPressed(String numberText) {
@@ -223,9 +241,10 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     }
     if (_enteredPinCode.length == PIN_CODE_LENGTH) {
       Future.delayed(Duration(milliseconds: 200), () {
-        widget.onPinEntered(_enteredPinCode)   
-          .catchError((err) => _errorMessage = err.toString().substring(10))
-          .whenComplete(() => _setPinCodeInput(""));        
+        widget
+            .onPinEntered(_enteredPinCode)
+            .catchError((err) => _errorMessage = err.toString().substring(10))
+            .whenComplete(() => _setPinCodeInput(""));
       });
     }
   }

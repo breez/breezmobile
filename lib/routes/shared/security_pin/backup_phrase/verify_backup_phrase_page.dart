@@ -17,7 +17,7 @@ class VerifyBackupPhrasePage extends StatefulWidget {
   VerifyBackupPhrasePage(this._mnemonics);
 
   @override
-  VerifyBackupPhrasePageState createState() => new VerifyBackupPhrasePageState();
+  VerifyBackupPhrasePageState createState() => VerifyBackupPhrasePageState();
 }
 
 class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
@@ -30,20 +30,22 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   Widget build(BuildContext context) {
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     return Scaffold(
-      appBar: new AppBar(
+      appBar: AppBar(
           iconTheme: Theme.of(context).appBarTheme.iconTheme,
           textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(),
-          title: new Text(
+          title: Text(
             "Let's verify",
             style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0),
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height - kToolbarHeight - MediaQuery.of(context).padding.top,
+          height: MediaQuery.of(context).size.height -
+              kToolbarHeight -
+              MediaQuery.of(context).padding.top,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -75,13 +77,13 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
 
   _buildBackupBtn(BackupSettings backupSettings, BackupBloc backupBloc) {
     return Padding(
-      padding: new EdgeInsets.only(bottom: 40),
-      child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      padding: EdgeInsets.only(bottom: 40),
+      child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
         SizedBox(
           height: 48.0,
           width: 168.0,
-          child: new RaisedButton(
-            child: new Text(
+          child: RaisedButton(
+            child: Text(
               "BACKUP",
               style: Theme.of(context).textTheme.button,
             ),
@@ -107,10 +109,13 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     return Form(
       key: _formKey,
       onChanged: () => _formKey.currentState.save(),
-      child: new Padding(
-        padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-        child: new Column(
-            mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.start, children: _buildVerificationFormContent()),
+      child: Padding(
+        padding:
+            EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+        child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _buildVerificationFormContent()),
       ),
     );
   }
@@ -120,7 +125,8 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       padding: EdgeInsets.only(left: 72, right: 72),
       child: Text(
         "Please type words number ${_randomlySelectedIndexes[0] + 1}, ${_randomlySelectedIndexes[1] + 1} and ${_randomlySelectedIndexes[2] + 1} of the generated backup phrase.",
-        style: theme.backupPhraseInformationTextStyle.copyWith(color: theme.BreezColors.white[300]),
+        style: theme.backupPhraseInformationTextStyle
+            .copyWith(color: theme.BreezColors.white[300]),
         textAlign: TextAlign.center,
       ),
     );
@@ -133,12 +139,14 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
         return Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: TextFormField(
-            decoration: new InputDecoration(
+            decoration: InputDecoration(
               labelText: "${_randomlySelectedIndexes[index] + 1}",
             ),
             style: theme.FieldTextStyle.textStyle,
             validator: (text) {
-              if (text.length == 0 || text.toLowerCase().trim() != _mnemonicsList[_randomlySelectedIndexes[index]]) {
+              if (text.length == 0 ||
+                  text.toLowerCase().trim() !=
+                      _mnemonicsList[_randomlySelectedIndexes[index]]) {
                 setState(() {
                   _hasError = true;
                 });
@@ -158,13 +166,22 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     return selectedWordList;
   }
 
-  Future _createBackupPhrase(BackupSettings backupSettings, BackupBloc backupBloc) async {
-    var saveBackupKey = SaveBackupKey(bip39.mnemonicToEntropy(widget._mnemonics));
+  Future _createBackupPhrase(
+      BackupSettings backupSettings, BackupBloc backupBloc) async {
+    var saveBackupKey =
+        SaveBackupKey(bip39.mnemonicToEntropy(widget._mnemonics));
     backupBloc.backupActionsSink.add(saveBackupKey);
     saveBackupKey.future.then((_) {
-      _updateBackupSettings(backupSettings.copyWith(keyType: BackupKeyType.PHRASE), backupBloc);
+      _updateBackupSettings(
+          backupSettings.copyWith(keyType: BackupKeyType.PHRASE), backupBloc);
     }).catchError((err) {
-      promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
+      promptError(
+          context,
+          "Internal Error",
+          Text(
+            err.toString(),
+            style: Theme.of(context).dialogTheme.contentTextStyle,
+          ));
     });
   }
 
@@ -192,11 +209,18 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           showDialog(
               barrierDismissible: false,
               context: context,
-              builder: (ctx) => buildBackupInProgressDialog(ctx, backupBloc.backupStateStream));
+              builder: (ctx) => buildBackupInProgressDialog(
+                  ctx, backupBloc.backupStateStream));
         }
       });
     }).catchError((err) {
-      promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
+      promptError(
+          context,
+          "Internal Error",
+          Text(
+            err.toString(),
+            style: Theme.of(context).dialogTheme.contentTextStyle,
+          ));
     });
   }
 }

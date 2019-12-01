@@ -21,15 +21,15 @@ class LSPWebViewPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return new LSPWebViewPageState();
+    return LSPWebViewPageState();
   }
 }
 
 class LSPWebViewPageState extends State<LSPWebViewPage> {
-  final _widgetWebview = new FlutterWebviewPlugin();
+  final _widgetWebview = FlutterWebviewPlugin();
   StreamSubscription<BreezUserModel> _userSubscription;
   StreamSubscription _postMessageListener;
-  bool _isInit = false;  
+  bool _isInit = false;
 
   @override
   void initState() {
@@ -43,14 +43,15 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
 
   @override
   void didChangeDependencies() {
-    if (!_isInit) {      
-      var userBloc = AppBlocsProvider.of<UserProfileBloc>(context);            
+    if (!_isInit) {
+      var userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
       String loadedURL;
       _widgetWebview.onStateChanged.listen((state) async {
         if (state.type == WebViewState.finishLoad && loadedURL != state.url) {
           loadedURL = state.url;
-          _widgetWebview.evalJavascript(await rootBundle.loadString('src/scripts/lightningLinkInterceptor.js'));
+          _widgetWebview.evalJavascript(await rootBundle
+              .loadString('src/scripts/lightningLinkInterceptor.js'));
         }
       });
 
@@ -62,9 +63,10 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
         if (msg != null) {
           var decodedMsg = JSON.jsonDecode(msg);
           String lightningLink = decodedMsg["lightningLink"];
-          if (lightningLink != null && lightningLink.toLowerCase().startsWith("lightning:lnurl")) {
+          if (lightningLink != null &&
+              lightningLink.toLowerCase().startsWith("lightning:lnurl")) {
             Navigator.pop(context, lightningLink.substring(10));
-          }         
+          }
         }
       });
 
@@ -74,8 +76,8 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
   }
 
   @override
-  void dispose() {    
-    _widgetWebview.dispose();    
+  void dispose() {
+    _widgetWebview.dispose();
     _userSubscription?.cancel();
     _postMessageListener?.cancel();
     super.dispose();
@@ -83,14 +85,21 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new WebviewScaffold(
-      appBar: new AppBar(
-        actions: <Widget>[IconButton(icon: new Icon(Icons.close, color: Theme.of(context).iconTheme.color,), onPressed: () => Navigator.pop(context))],
+    return WebviewScaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(
+                Icons.close,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              onPressed: () => Navigator.pop(context))
+        ],
         automaticallyImplyLeading: false,
         iconTheme: Theme.of(context).appBarTheme.iconTheme,
         textTheme: Theme.of(context).appBarTheme.textTheme,
         backgroundColor: Theme.of(context).canvasColor,
-        title: new Text(
+        title: Text(
           widget._title,
           style: Theme.of(context).appBarTheme.textTheme.title,
         ),
@@ -109,7 +118,7 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
     if (hide) {
       _widgetWebview.hide();
     } else {
-      _widgetWebview.show();     
+      _widgetWebview.show();
     }
   }
 }

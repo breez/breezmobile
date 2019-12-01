@@ -7,14 +7,13 @@ import 'package:flutter/material.dart';
 
 class PaymentFailedReportDialog extends StatefulWidget {
   final BuildContext context;
-  final AccountBloc _accountBloc;  
+  final AccountBloc _accountBloc;
 
-  PaymentFailedReportDialog(
-      this.context, this._accountBloc);
+  PaymentFailedReportDialog(this.context, this._accountBloc);
 
   @override
   PaymentFailedReportDialogState createState() {
-    return new PaymentFailedReportDialogState();
+    return PaymentFailedReportDialogState();
   }
 }
 
@@ -48,9 +47,9 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
         data: Theme.of(context).copyWith(
           unselectedWidgetColor: Theme.of(context).canvasColor,
         ),
-        child: new AlertDialog(
+        child: AlertDialog(
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-          title: new Text(
+          title: Text(
             "Failed Payment",
             style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
@@ -63,9 +62,12 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(left: 15.0, right: 12.0),
-                      child: new Text(
+                      child: Text(
                         "Sending failed payment details to Breez could help increase successful transactions rate.\nDo you want to send this failed payment details to Breez?",
-                        style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
+                        style: Theme.of(context)
+                            .primaryTextTheme
+                            .display2
+                            .copyWith(fontSize: 16),
                       ),
                     ),
                     Padding(
@@ -73,7 +75,9 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                       child: Row(
                         children: <Widget>[
                           Theme(
-                            data: Theme.of(context).copyWith(unselectedWidgetColor: Theme.of(context).textTheme.button.color),
+                            data: Theme.of(context).copyWith(
+                                unselectedWidgetColor:
+                                    Theme.of(context).textTheme.button.color),
                             child: Checkbox(
                                 activeColor: Theme.of(context).canvasColor,
                                 value: _doneAsk ??
@@ -87,7 +91,10 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                           ),
                           Text(
                             "Don't ask me again",
-                            style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
+                            style: Theme.of(context)
+                                .primaryTextTheme
+                                .display2
+                                .copyWith(fontSize: 16),
                           )
                         ],
                       ),
@@ -95,19 +102,21 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                   ],
                 ),
           actions: [
-            new SimpleDialogOption(
+            SimpleDialogOption(
               onPressed: () {
                 onSubmit(false);
                 Navigator.pop(widget.context, false);
               },
-              child: new Text("NO", style: Theme.of(context).primaryTextTheme.button),
+              child:
+                  Text("NO", style: Theme.of(context).primaryTextTheme.button),
             ),
-            new SimpleDialogOption(
+            SimpleDialogOption(
               onPressed: (() async {
-                onSubmit(true);                
+                onSubmit(true);
                 Navigator.pop(widget.context, true);
               }),
-              child: new Text("YES", style: Theme.of(context).primaryTextTheme.button),
+              child:
+                  Text("YES", style: Theme.of(context).primaryTextTheme.button),
             ),
           ],
         ));

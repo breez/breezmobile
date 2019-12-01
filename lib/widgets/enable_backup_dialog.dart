@@ -13,11 +13,12 @@ class EnableBackupDialog extends StatefulWidget {
   final BackupBloc backupBloc;
   final bool signInNeeded;
 
-  EnableBackupDialog(this.context, this.backupBloc, {this.signInNeeded = false});
+  EnableBackupDialog(this.context, this.backupBloc,
+      {this.signInNeeded = false});
 
   @override
   EnableBackupDialogState createState() {
-    return new EnableBackupDialogState();
+    return EnableBackupDialogState();
   }
 }
 
@@ -34,9 +35,9 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
         data: Theme.of(context).copyWith(
           unselectedWidgetColor: Theme.of(context).canvasColor,
         ),
-        child: new AlertDialog(
+        child: AlertDialog(
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-          title: new Text(
+          title: Text(
             "Backup",
             style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
@@ -48,16 +49,19 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                   return Container();
                 }
                 return Container(
-                  width: MediaQuery.of(context).size.width,                  
+                  width: MediaQuery.of(context).size.width,
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,                  
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
-                        child: new AutoSizeText(
+                        child: AutoSizeText(
                           "If you want to be able to restore your funds in case this mobile device or this app are no longer available (e.g. lost or stolen device or app uninstall), you are required to backup your information.",
-                          style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
+                          style: Theme.of(context)
+                              .primaryTextTheme
+                              .display2
+                              .copyWith(fontSize: 16),
                           minFontSize: MinFontSize(context).minFontSize,
                           stepGranularity: 0.1,
                           group: _autoSizeGroup,
@@ -68,7 +72,9 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                         child: Row(
                           children: <Widget>[
                             Theme(
-                              data: Theme.of(context).copyWith(unselectedWidgetColor: Theme.of(context).textTheme.button.color),
+                              data: Theme.of(context).copyWith(
+                                  unselectedWidgetColor:
+                                      Theme.of(context).textTheme.button.color),
                               child: Checkbox(
                                   activeColor: Colors.white,
                                   checkColor: Theme.of(context).canvasColor,
@@ -76,13 +82,17 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                                   onChanged: (v) {
                                     var currentSettings = snapshot.data;
                                     widget.backupBloc.backupSettingsSink.add(
-                                        currentSettings.copyWith(promptOnError: !v));
+                                        currentSettings.copyWith(
+                                            promptOnError: !v));
                                   }),
                             ),
                             Expanded(
                                 child: AutoSizeText(
                               "Don't prompt again",
-                              style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
+                              style: Theme.of(context)
+                                  .primaryTextTheme
+                                  .display2
+                                  .copyWith(fontSize: 16),
                               maxLines: 1,
                               minFontSize: MinFontSize(context).minFontSize,
                               stepGranularity: 0.1,
@@ -90,7 +100,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                             ))
                           ],
                         ),
-                      ),                    
+                      ),
                     ],
                   ),
                 );
@@ -105,36 +115,42 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
               ),
             ),
             StreamBuilder<BackupSettings>(
-              stream: widget.backupBloc.backupSettingsStream,
-              builder: (context, snapshot) {
-                return FlatButton(
-                  onPressed: (() async {
-                    Navigator.pop(widget.context);
-                    var provider = snapshot.data.backupProvider;
-                    if (provider == null) {
-                      provider = await showDialog(
-                        context: context,
-                        builder: (_) => BackupProviderSelectionDialog(backupBloc: widget.backupBloc)
-                      );
-                    }
-                    
-                    if (provider != null) {     
-                      if (widget.signInNeeded && provider == BackupSettings.icloudBackupProvider) {                          
-                        await promptError(context, "Sign in to iCloud", Text("Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.", 
-                        style: Theme.of(context).dialogTheme.contentTextStyle));
-                        return;
-                      }                                        
-                      widget.backupBloc.backupNowSink.add(true);
-                    }
-                  }),
-                  child: Text(
-                    "BACKUP NOW",
-                    style: Theme.of(context).primaryTextTheme.button,
-                    maxLines: 1,
-                  ),
-                );
-              }
-            ),
+                stream: widget.backupBloc.backupSettingsStream,
+                builder: (context, snapshot) {
+                  return FlatButton(
+                    onPressed: (() async {
+                      Navigator.pop(widget.context);
+                      var provider = snapshot.data.backupProvider;
+                      if (provider == null) {
+                        provider = await showDialog(
+                            context: context,
+                            builder: (_) => BackupProviderSelectionDialog(
+                                backupBloc: widget.backupBloc));
+                      }
+
+                      if (provider != null) {
+                        if (widget.signInNeeded &&
+                            provider == BackupSettings.icloudBackupProvider) {
+                          await promptError(
+                              context,
+                              "Sign in to iCloud",
+                              Text(
+                                  "Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.",
+                                  style: Theme.of(context)
+                                      .dialogTheme
+                                      .contentTextStyle));
+                          return;
+                        }
+                        widget.backupBloc.backupNowSink.add(true);
+                      }
+                    }),
+                    child: Text(
+                      "BACKUP NOW",
+                      style: Theme.of(context).primaryTextTheme.button,
+                      maxLines: 1,
+                    ),
+                  );
+                }),
           ],
         ));
   }

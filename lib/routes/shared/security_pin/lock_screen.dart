@@ -5,17 +5,23 @@ import 'package:flutter/material.dart';
 
 const PIN_CODE_LENGTH = 6;
 
-class AppLockScreen extends StatefulWidget {  
+class AppLockScreen extends StatefulWidget {
   final bool canCancel;
   final Future Function(String pinCode) onPinEntered;
   final Function(bool isValid) onFingerprintEntered;
   final UserProfileBloc userProfileBloc;
   final String localizedReason;
 
-  AppLockScreen(this.onPinEntered, {Key key, this.canCancel = false, this.onFingerprintEntered, this.userProfileBloc, this.localizedReason}) : super(key: key);
+  AppLockScreen(this.onPinEntered,
+      {Key key,
+      this.canCancel = false,
+      this.onFingerprintEntered,
+      this.userProfileBloc,
+      this.localizedReason})
+      : super(key: key);
 
   @override
-  _AppLockScreenState createState() => new _AppLockScreenState();
+  _AppLockScreenState createState() => _AppLockScreenState();
 }
 
 class _AppLockScreenState extends State<AppLockScreen> {
@@ -29,7 +35,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
       },
       child: Scaffold(
         appBar: widget.canCancel == true
-            ? new AppBar(
+            ? AppBar(
                 iconTheme: Theme.of(context).appBarTheme.iconTheme,
                 textTheme: Theme.of(context).appBarTheme.textTheme,
                 backgroundColor: Theme.of(context).canvasColor,

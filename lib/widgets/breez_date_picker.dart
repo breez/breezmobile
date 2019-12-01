@@ -10,6 +10,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:breez/theme_data.dart' as theme;
+
 /// Initial display mode of the date picker dialog.
 ///
 /// Date picker UI mode for either showing a list of available years or a
@@ -29,17 +30,19 @@ enum DatePickerMode {
 const double _kDatePickerHeaderPortraitHeight = 100.0;
 const double _kDatePickerHeaderLandscapeWidth = 168.0;
 
-const Duration _kMonthScrollDuration = const Duration(milliseconds: 200);
+const Duration _kMonthScrollDuration = Duration(milliseconds: 200);
 const double _kDayPickerRowHeight = 42.0;
 const int _kMaxDayPickerRowCount = 6; // A 31 day month that starts on Saturday.
 // Two extra rows: one for the day-of-week header and one for the month header.
-const double _kMaxDayPickerHeight = _kDayPickerRowHeight * (_kMaxDayPickerRowCount + 2);
+const double _kMaxDayPickerHeight =
+    _kDayPickerRowHeight * (_kMaxDayPickerRowCount + 2);
 
 const double _kMonthPickerPortraitWidth = 330.0;
 const double _kMonthPickerLandscapeWidth = 344.0;
 
 const double _kDialogActionBarHeight = 52.0;
-const double _kDatePickerLandscapeHeight = _kMaxDayPickerHeight + _kDialogActionBarHeight;
+const double _kDatePickerLandscapeHeight =
+    _kMaxDayPickerHeight + _kDialogActionBarHeight;
 
 // Shows the selected date in large font and toggles between year and day mode
 class _DatePickerHeader extends StatelessWidget {
@@ -49,7 +52,7 @@ class _DatePickerHeader extends StatelessWidget {
     @required this.mode,
     @required this.onModeChanged,
     @required this.orientation,
-  }) : assert(selectedDate != null),
+  })  : assert(selectedDate != null),
         assert(mode != null),
         assert(orientation != null),
         super(key: key);
@@ -60,13 +63,13 @@ class _DatePickerHeader extends StatelessWidget {
   final Orientation orientation;
 
   void _handleChangeMode(DatePickerMode value) {
-    if (value != mode)
-      onModeChanged(value);
+    if (value != mode) onModeChanged(value);
   }
 
   @override
   Widget build(BuildContext context) {
-    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations =
+        MaterialLocalizations.of(context);
     final ThemeData themeData = Theme.of(context);
     final TextTheme headerTextTheme = themeData.primaryTextTheme;
     Color dayColor;
@@ -74,15 +77,18 @@ class _DatePickerHeader extends StatelessWidget {
     switch (themeData.primaryColorBrightness) {
       case Brightness.dark:
         dayColor = mode == DatePickerMode.day ? Colors.black87 : Colors.black54;
-        yearColor = mode == DatePickerMode.year ? Colors.black87 : Colors.black54;
+        yearColor =
+            mode == DatePickerMode.year ? Colors.black87 : Colors.black54;
         break;
       case Brightness.light:
         dayColor = mode == DatePickerMode.day ? Colors.white : Colors.white70;
         yearColor = mode == DatePickerMode.year ? Colors.white : Colors.white70;
         break;
     }
-    final TextStyle dayStyle = headerTextTheme.display1.copyWith(color: dayColor, height: 1.4);
-    final TextStyle yearStyle = headerTextTheme.subhead.copyWith(color: yearColor, height: 1.4);
+    final TextStyle dayStyle =
+        headerTextTheme.display1.copyWith(color: dayColor, height: 1.4);
+    final TextStyle yearStyle =
+        headerTextTheme.subhead.copyWith(color: yearColor, height: 1.4);
 
     Color backgroundColor;
     switch (themeData.brightness) {
@@ -111,39 +117,45 @@ class _DatePickerHeader extends StatelessWidget {
         break;
     }
 
-    final Widget yearButton = new IgnorePointer(
+    final Widget yearButton = IgnorePointer(
       ignoring: mode != DatePickerMode.day,
       ignoringSemantics: false,
-      child: new _DateHeaderButton(
+      child: _DateHeaderButton(
         color: backgroundColor,
-        onTap: Feedback.wrapForTap(() => _handleChangeMode(DatePickerMode.year), context),
-        child: new Semantics(
+        onTap: Feedback.wrapForTap(
+            () => _handleChangeMode(DatePickerMode.year), context),
+        child: Semantics(
           selected: mode == DatePickerMode.year,
-          child: new Text(localizations.formatYear(selectedDate), style: yearStyle),
+          child: Text(localizations.formatYear(selectedDate), style: yearStyle),
         ),
       ),
     );
 
-    final Widget dayButton = new IgnorePointer(
+    final Widget dayButton = IgnorePointer(
       ignoring: mode == DatePickerMode.day,
       ignoringSemantics: false,
-      child: new _DateHeaderButton(
+      child: _DateHeaderButton(
         color: backgroundColor,
-        onTap: Feedback.wrapForTap(() => _handleChangeMode(DatePickerMode.day), context),
-        child: new Semantics(
+        onTap: Feedback.wrapForTap(
+            () => _handleChangeMode(DatePickerMode.day), context),
+        child: Semantics(
           selected: mode == DatePickerMode.day,
-          child: new Text(localizations.formatMediumDate(selectedDate), style: dayStyle),
+          child: Text(localizations.formatMediumDate(selectedDate),
+              style: dayStyle),
         ),
       ),
     );
 
-    return new Container(
+    return Container(
       width: width,
       height: height,
       padding: padding,
-      decoration: ShapeDecoration(shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),color: backgroundColor,),
-      child: new Column(
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
+        color: backgroundColor,
+      ),
+      child: Column(
         mainAxisAlignment: mainAxisAlignment,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[yearButton, dayButton],
@@ -168,15 +180,15 @@ class _DateHeaderButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
-    return new Material(
+    return Material(
       type: MaterialType.button,
       color: color,
-      child: new InkWell(
+      child: InkWell(
         borderRadius: kMaterialEdges[MaterialType.button],
         highlightColor: theme.highlightColor,
         splashColor: theme.splashColor,
         onTap: onTap,
-        child: new Container(
+        child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: child,
         ),
@@ -192,8 +204,9 @@ class _DayPickerGridDelegate extends SliverGridDelegate {
   SliverGridLayout getLayout(SliverConstraints constraints) {
     const int columnCount = DateTime.daysPerWeek;
     final double tileWidth = constraints.crossAxisExtent / columnCount;
-    final double tileHeight = math.min(_kDayPickerRowHeight, constraints.viewportMainAxisExtent / (_kMaxDayPickerRowCount + 1));
-    return new SliverGridRegularTileLayout(
+    final double tileHeight = math.min(_kDayPickerRowHeight,
+        constraints.viewportMainAxisExtent / (_kMaxDayPickerRowCount + 1));
+    return SliverGridRegularTileLayout(
       crossAxisCount: columnCount,
       mainAxisStride: tileHeight,
       crossAxisStride: tileWidth,
@@ -207,7 +220,7 @@ class _DayPickerGridDelegate extends SliverGridDelegate {
   bool shouldRelayout(_DayPickerGridDelegate oldDelegate) => false;
 }
 
-const _DayPickerGridDelegate _kDayPickerGridDelegate = const _DayPickerGridDelegate();
+const _DayPickerGridDelegate _kDayPickerGridDelegate = _DayPickerGridDelegate();
 
 /// Displays the days of a given month and allows choosing a day.
 ///
@@ -234,12 +247,13 @@ class DayPicker extends StatelessWidget {
     @required this.lastDate,
     @required this.displayedMonth,
     this.selectableDayPredicate,
-  }) : assert(selectedDate != null),
+  })  : assert(selectedDate != null),
         assert(currentDate != null),
         assert(onChanged != null),
         assert(displayedMonth != null),
         assert(!firstDate.isAfter(lastDate)),
-        assert(selectedDate.isAfter(firstDate) || selectedDate.isAtSameMomentAs(firstDate)),
+        assert(selectedDate.isAfter(firstDate) ||
+            selectedDate.isAtSameMomentAs(firstDate)),
         super(key: key);
 
   /// The currently selected date.
@@ -283,21 +297,34 @@ class DayPicker extends StatelessWidget {
   /// _ _ _ _ 1 2 3
   /// 4 5 6 7 8 9 10
   /// ```
-  List<Widget> _getDayHeaders(TextStyle headerStyle, MaterialLocalizations localizations) {
+  List<Widget> _getDayHeaders(
+      TextStyle headerStyle, MaterialLocalizations localizations) {
     final List<Widget> result = <Widget>[];
     for (int i = localizations.firstDayOfWeekIndex; true; i = (i + 1) % 7) {
       final String weekday = localizations.narrowWeekdays[i];
-      result.add(new ExcludeSemantics(
-        child: new Center(child: new Text(weekday, style: headerStyle)),
+      result.add(ExcludeSemantics(
+        child: Center(child: Text(weekday, style: headerStyle)),
       ));
-      if (i == (localizations.firstDayOfWeekIndex - 1) % 7)
-        break;
+      if (i == (localizations.firstDayOfWeekIndex - 1) % 7) break;
     }
     return result;
   }
 
   // Do not use this directly - call getDaysInMonth instead.
-  static const List<int> _daysInMonth = const <int>[31, -1, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  static const List<int> _daysInMonth = <int>[
+    31,
+    -1,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31
+  ];
 
   /// Returns the number of days in a month, according to the proleptic
   /// Gregorian calendar.
@@ -306,9 +333,9 @@ class DayPicker extends StatelessWidget {
   /// 1582. It will not give valid results for dates prior to that time.
   static int getDaysInMonth(int year, int month) {
     if (month == DateTime.february) {
-      final bool isLeapYear = (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
-      if (isLeapYear)
-        return 29;
+      final bool isLeapYear =
+          (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
+      if (isLeapYear) return 29;
       return 28;
     }
     return _daysInMonth[month - 1];
@@ -346,9 +373,10 @@ class DayPicker extends StatelessWidget {
   ///   into the [MaterialLocalizations.narrowWeekdays] list.
   /// - [MaterialLocalizations.narrowWeekdays] list provides localized names of
   ///   days of week, always starting with Sunday and ending with Saturday.
-  int _computeFirstDayOffset(int year, int month, MaterialLocalizations localizations) {
+  int _computeFirstDayOffset(
+      int year, int month, MaterialLocalizations localizations) {
     // 0-based day of week, with 0 representing Monday.
-    final int weekdayFromMonday = new DateTime(year, month).weekday - 1;
+    final int weekdayFromMonday = DateTime(year, month).weekday - 1;
     // 0-based day of week, with 0 representing Sunday.
     final int firstDayOfWeekFromSunday = localizations.firstDayOfWeekIndex;
     // firstDayOfWeekFromSunday recomputed to be Monday-based
@@ -360,66 +388,77 @@ class DayPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations =
+        MaterialLocalizations.of(context);
     final int year = displayedMonth.year;
     final int month = displayedMonth.month;
     final int daysInMonth = getDaysInMonth(year, month);
-    final int firstDayOffset = _computeFirstDayOffset(year, month, localizations);
+    final int firstDayOffset =
+        _computeFirstDayOffset(year, month, localizations);
     final List<Widget> labels = <Widget>[];
-    labels.addAll(_getDayHeaders(TextStyle(color: Theme.of(context).primaryTextTheme.button.color), localizations));
+    labels.addAll(_getDayHeaders(
+        TextStyle(color: Theme.of(context).primaryTextTheme.button.color),
+        localizations));
     for (int i = 0; true; i += 1) {
       // 1-based day of month, e.g. 1-31 for January, and 1-29 for February on
       // a leap year.
       final int day = i - firstDayOffset + 1;
-      if (day > daysInMonth)
-        break;
+      if (day > daysInMonth) break;
       if (day < 1) {
-        labels.add(new Container());
+        labels.add(Container());
       } else {
-        final DateTime dayToBuild = new DateTime(year, month, day);
-        final bool disabled = dayToBuild.isAfter(lastDate)
-            || dayToBuild.isBefore(firstDate)
-            || (selectableDayPredicate != null && !selectableDayPredicate(dayToBuild));
+        final DateTime dayToBuild = DateTime(year, month, day);
+        final bool disabled = dayToBuild.isAfter(lastDate) ||
+            dayToBuild.isBefore(firstDate) ||
+            (selectableDayPredicate != null &&
+                !selectableDayPredicate(dayToBuild));
 
         BoxDecoration decoration;
-        TextStyle itemStyle = TextStyle(color: theme.themeId == "BLUE" ? Colors.black : Colors.white);
+        TextStyle itemStyle = TextStyle(
+            color: theme.themeId == "BLUE" ? Colors.black : Colors.white);
 
-        final bool isSelectedDay = selectedDate.year == year && selectedDate.month == month && selectedDate.day == day;
+        final bool isSelectedDay = selectedDate.year == year &&
+            selectedDate.month == month &&
+            selectedDate.day == day;
         if (isSelectedDay) {
           // The selected day gets a circle background highlight, and a contrasting text color.
           itemStyle = TextStyle(color: Colors.white);
-          decoration = new BoxDecoration(
+          decoration = BoxDecoration(
               color: Theme.of(context).primaryTextTheme.button.color,
-              shape: BoxShape.circle
-          );
+              shape: BoxShape.circle);
         } else if (disabled) {
           itemStyle = TextStyle(color: Colors.blueGrey);
-        } else if (currentDate.year == year && currentDate.month == month && currentDate.day == day) {
+        } else if (currentDate.year == year &&
+            currentDate.month == month &&
+            currentDate.day == day) {
           // The current day gets a different text color.
-          itemStyle = TextStyle(color: theme.themeId == "BLUE" ? Colors.black : Colors.white, fontSize: 20.0);
+          itemStyle = TextStyle(
+              color: theme.themeId == "BLUE" ? Colors.black : Colors.white,
+              fontSize: 20.0);
         }
 
-        Widget dayWidget = new Container(
+        Widget dayWidget = Container(
           decoration: decoration,
-          child: new Center(
-            child: new Semantics(
+          child: Center(
+            child: Semantics(
               // We want the day of month to be spoken first irrespective of the
               // locale-specific preferences or TextDirection. This is because
               // an accessibility user is more likely to be interested in the
               // day of month before the rest of the date, as they are looking
               // for the day of month. To do that we prepend day of month to the
               // formatted full date.
-              label: '${localizations.formatDecimal(day)}, ${localizations.formatFullDate(dayToBuild)}',
+              label:
+                  '${localizations.formatDecimal(day)}, ${localizations.formatFullDate(dayToBuild)}',
               selected: isSelectedDay,
-              child: new ExcludeSemantics(
-                child: new Text(localizations.formatDecimal(day), style: itemStyle),
+              child: ExcludeSemantics(
+                child: Text(localizations.formatDecimal(day), style: itemStyle),
               ),
             ),
           ),
         );
 
         if (!disabled) {
-          dayWidget = new GestureDetector(
+          dayWidget = GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
               onChanged(dayToBuild);
@@ -432,25 +471,27 @@ class DayPicker extends StatelessWidget {
       }
     }
 
-    return new Padding(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: new Column(
+      child: Column(
         children: <Widget>[
-          new Container(
+          Container(
             height: _kDayPickerRowHeight,
-            child: new Center(
-              child: new ExcludeSemantics(
-                child: new Text(
+            child: Center(
+              child: ExcludeSemantics(
+                child: Text(
                   localizations.formatMonthYear(displayedMonth),
-                  style: TextStyle(color: Theme.of(context).primaryTextTheme.button.color),
+                  style: TextStyle(
+                      color: Theme.of(context).primaryTextTheme.button.color),
                 ),
               ),
             ),
           ),
-          new Flexible(
-            child: new GridView.custom(
+          Flexible(
+            child: GridView.custom(
               gridDelegate: _kDayPickerGridDelegate,
-              childrenDelegate: new SliverChildListDelegate(labels, addRepaintBoundaries: false),
+              childrenDelegate:
+                  SliverChildListDelegate(labels, addRepaintBoundaries: false),
             ),
           ),
         ],
@@ -483,10 +524,11 @@ class MonthPicker extends StatefulWidget {
     @required this.firstDate,
     @required this.lastDate,
     this.selectableDayPredicate,
-  }) : assert(selectedDate != null),
+  })  : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
-        assert(selectedDate.isAfter(firstDate) || selectedDate.isAtSameMomentAs(firstDate)),
+        assert(selectedDate.isAfter(firstDate) ||
+            selectedDate.isAtSameMomentAs(firstDate)),
         super(key: key);
 
   /// The currently selected date.
@@ -507,7 +549,7 @@ class MonthPicker extends StatefulWidget {
   final SelectableDayPredicate selectableDayPredicate;
 
   @override
-  _MonthPickerState createState() => new _MonthPickerState();
+  _MonthPickerState createState() => _MonthPickerState();
 }
 
 class _MonthPickerState extends State<MonthPicker> {
@@ -516,7 +558,7 @@ class _MonthPickerState extends State<MonthPicker> {
     super.initState();
     // Initially display the pre-selected date.
     final int monthPage = _monthDelta(widget.firstDate, widget.selectedDate);
-    _dayPickerController = new PageController(initialPage: monthPage);
+    _dayPickerController = PageController(initialPage: monthPage);
     _handleMonthPageChanged(monthPage);
     _updateCurrentDate();
   }
@@ -526,7 +568,7 @@ class _MonthPickerState extends State<MonthPicker> {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedDate != oldWidget.selectedDate) {
       final int monthPage = _monthDelta(widget.firstDate, widget.selectedDate);
-      _dayPickerController = new PageController(initialPage: monthPage);
+      _dayPickerController = PageController(initialPage: monthPage);
       _handleMonthPageChanged(monthPage);
     }
   }
@@ -547,12 +589,14 @@ class _MonthPickerState extends State<MonthPicker> {
   PageController _dayPickerController;
 
   void _updateCurrentDate() {
-    _todayDate = new DateTime.now();
-    final DateTime tomorrow = new DateTime(_todayDate.year, _todayDate.month, _todayDate.day + 1);
+    _todayDate = DateTime.now();
+    final DateTime tomorrow =
+        DateTime(_todayDate.year, _todayDate.month, _todayDate.day + 1);
     Duration timeUntilTomorrow = tomorrow.difference(_todayDate);
-    timeUntilTomorrow += const Duration(seconds: 1); // so we don't miss it by rounding
+    timeUntilTomorrow +=
+        const Duration(seconds: 1); // so we don't miss it by rounding
     _timer?.cancel();
-    _timer = new Timer(timeUntilTomorrow, () {
+    _timer = Timer(timeUntilTomorrow, () {
       setState(() {
         _updateCurrentDate();
       });
@@ -560,18 +604,21 @@ class _MonthPickerState extends State<MonthPicker> {
   }
 
   static int _monthDelta(DateTime startDate, DateTime endDate) {
-    return (endDate.year - startDate.year) * 12 + endDate.month - startDate.month;
+    return (endDate.year - startDate.year) * 12 +
+        endDate.month -
+        startDate.month;
   }
 
   /// Add months to a month truncated date.
   DateTime _addMonthsToMonthDate(DateTime monthDate, int monthsToAdd) {
-    return new DateTime(monthDate.year + monthsToAdd ~/ 12, monthDate.month + monthsToAdd % 12);
+    return DateTime(
+        monthDate.year + monthsToAdd ~/ 12, monthDate.month + monthsToAdd % 12);
   }
 
   Widget _buildItems(BuildContext context, int index) {
     final DateTime month = _addMonthsToMonthDate(widget.firstDate, index);
-    return new DayPicker(
-      key: new ValueKey<DateTime>(month),
+    return DayPicker(
+      key: ValueKey<DateTime>(month),
       selectedDate: widget.selectedDate,
       currentDate: _todayDate,
       onChanged: widget.onChanged,
@@ -584,28 +631,32 @@ class _MonthPickerState extends State<MonthPicker> {
 
   void _handleNextMonth() {
     if (!_isDisplayingLastMonth) {
-      SemanticsService.announce(localizations.formatMonthYear(_nextMonthDate), textDirection);
-      _dayPickerController.nextPage(duration: _kMonthScrollDuration, curve: Curves.ease);
+      SemanticsService.announce(
+          localizations.formatMonthYear(_nextMonthDate), textDirection);
+      _dayPickerController.nextPage(
+          duration: _kMonthScrollDuration, curve: Curves.ease);
     }
   }
 
   void _handlePreviousMonth() {
     if (!_isDisplayingFirstMonth) {
-      SemanticsService.announce(localizations.formatMonthYear(_previousMonthDate), textDirection);
-      _dayPickerController.previousPage(duration: _kMonthScrollDuration, curve: Curves.ease);
+      SemanticsService.announce(
+          localizations.formatMonthYear(_previousMonthDate), textDirection);
+      _dayPickerController.previousPage(
+          duration: _kMonthScrollDuration, curve: Curves.ease);
     }
   }
 
   /// True if the earliest allowable month is displayed.
   bool get _isDisplayingFirstMonth {
-    return !_currentDisplayedMonthDate.isAfter(
-        new DateTime(widget.firstDate.year, widget.firstDate.month));
+    return !_currentDisplayedMonthDate
+        .isAfter(DateTime(widget.firstDate.year, widget.firstDate.month));
   }
 
   /// True if the latest allowable month is displayed.
   bool get _isDisplayingLastMonth {
-    return !_currentDisplayedMonthDate.isBefore(
-        new DateTime(widget.lastDate.year, widget.lastDate.month));
+    return !_currentDisplayedMonthDate
+        .isBefore(DateTime(widget.lastDate.year, widget.lastDate.month));
   }
 
   DateTime _previousMonthDate;
@@ -613,23 +664,25 @@ class _MonthPickerState extends State<MonthPicker> {
 
   void _handleMonthPageChanged(int monthPage) {
     setState(() {
-      _previousMonthDate = _addMonthsToMonthDate(widget.firstDate, monthPage - 1);
-      _currentDisplayedMonthDate = _addMonthsToMonthDate(widget.firstDate, monthPage);
+      _previousMonthDate =
+          _addMonthsToMonthDate(widget.firstDate, monthPage - 1);
+      _currentDisplayedMonthDate =
+          _addMonthsToMonthDate(widget.firstDate, monthPage);
       _nextMonthDate = _addMonthsToMonthDate(widget.firstDate, monthPage + 1);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return new SizedBox(
+    return SizedBox(
       width: _kMonthPickerPortraitWidth,
       height: _kMaxDayPickerHeight,
-      child: new Stack(
+      child: Stack(
         children: <Widget>[
-          new Semantics(
+          Semantics(
             sortKey: _MonthPickerSortKey.calendar,
-            child: new PageView.builder(
-              key: new ValueKey<DateTime>(widget.selectedDate),
+            child: PageView.builder(
+              key: ValueKey<DateTime>(widget.selectedDate),
               controller: _dayPickerController,
               scrollDirection: Axis.horizontal,
               itemCount: _monthDelta(widget.firstDate, widget.lastDate) + 1,
@@ -637,28 +690,33 @@ class _MonthPickerState extends State<MonthPicker> {
               onPageChanged: _handleMonthPageChanged,
             ),
           ),
-          new PositionedDirectional(
+          PositionedDirectional(
             top: 0.0,
             start: 8.0,
-            child: new Semantics(
+            child: Semantics(
               sortKey: _MonthPickerSortKey.previousMonth,
-              child: new IconButton(
+              child: IconButton(
                 color: Theme.of(context).primaryTextTheme.button.color,
                 icon: const Icon(Icons.chevron_left),
-                tooltip: _isDisplayingFirstMonth ? null : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
-                onPressed: _isDisplayingFirstMonth ? null : _handlePreviousMonth,
+                tooltip: _isDisplayingFirstMonth
+                    ? null
+                    : '${localizations.previousMonthTooltip} ${localizations.formatMonthYear(_previousMonthDate)}',
+                onPressed:
+                    _isDisplayingFirstMonth ? null : _handlePreviousMonth,
               ),
             ),
           ),
-          new PositionedDirectional(
+          PositionedDirectional(
             top: 0.0,
             end: 8.0,
-            child: new Semantics(
+            child: Semantics(
               sortKey: _MonthPickerSortKey.nextMonth,
-              child: new IconButton(
+              child: IconButton(
                 color: Theme.of(context).primaryTextTheme.button.color,
                 icon: const Icon(Icons.chevron_right),
-                tooltip: _isDisplayingLastMonth ? null : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
+                tooltip: _isDisplayingLastMonth
+                    ? null
+                    : '${localizations.nextMonthTooltip} ${localizations.formatMonthYear(_nextMonthDate)}',
                 onPressed: _isDisplayingLastMonth ? null : _handleNextMonth,
               ),
             ),
@@ -679,9 +737,9 @@ class _MonthPickerState extends State<MonthPicker> {
 // Defines semantic traversal order of the top-level widgets inside the month
 // picker.
 class _MonthPickerSortKey extends OrdinalSortKey {
-  static const _MonthPickerSortKey previousMonth = const _MonthPickerSortKey(1.0);
-  static const _MonthPickerSortKey nextMonth = const _MonthPickerSortKey(2.0);
-  static const _MonthPickerSortKey calendar = const _MonthPickerSortKey(3.0);
+  static const _MonthPickerSortKey previousMonth = _MonthPickerSortKey(1.0);
+  static const _MonthPickerSortKey nextMonth = _MonthPickerSortKey(2.0);
+  static const _MonthPickerSortKey calendar = _MonthPickerSortKey(3.0);
 
   const _MonthPickerSortKey(double order) : super(order);
 }
@@ -711,7 +769,7 @@ class YearPicker extends StatefulWidget {
     @required this.onChanged,
     @required this.firstDate,
     @required this.lastDate,
-  }) : assert(selectedDate != null),
+  })  : assert(selectedDate != null),
         assert(onChanged != null),
         assert(!firstDate.isAfter(lastDate)),
         super(key: key);
@@ -731,7 +789,7 @@ class YearPicker extends StatefulWidget {
   final DateTime lastDate;
 
   @override
-  _YearPickerState createState() => new _YearPickerState();
+  _YearPickerState createState() => _YearPickerState();
 }
 
 class _YearPickerState extends State<YearPicker> {
@@ -741,9 +799,10 @@ class _YearPickerState extends State<YearPicker> {
   @override
   void initState() {
     super.initState();
-    scrollController = new ScrollController(
+    scrollController = ScrollController(
       // Move the initial scroll position to the currently selected date's year.
-      initialScrollOffset: (widget.selectedDate.year - widget.firstDate.year) * _itemExtent,
+      initialScrollOffset:
+          (widget.selectedDate.year - widget.firstDate.year) * _itemExtent,
     );
   }
 
@@ -751,25 +810,25 @@ class _YearPickerState extends State<YearPicker> {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
     final TextStyle style = TextStyle(color: Colors.black87);
-    return new ListView.builder(
+    return ListView.builder(
       controller: scrollController,
       itemExtent: _itemExtent,
       itemCount: widget.lastDate.year - widget.firstDate.year + 1,
       itemBuilder: (BuildContext context, int index) {
         final int year = widget.firstDate.year + index;
         final bool isSelected = year == widget.selectedDate.year;
-        final TextStyle itemStyle = isSelected
-            ? TextStyle(color: Colors.black87)
-            : style;
-        return new InkWell(
-          key: new ValueKey<int>(year),
+        final TextStyle itemStyle =
+            isSelected ? TextStyle(color: Colors.black87) : style;
+        return InkWell(
+          key: ValueKey<int>(year),
           onTap: () {
-            widget.onChanged(new DateTime(year, widget.selectedDate.month, widget.selectedDate.day));
+            widget.onChanged(DateTime(
+                year, widget.selectedDate.month, widget.selectedDate.day));
           },
-          child: new Center(
-            child: new Semantics(
+          child: Center(
+            child: Semantics(
               selected: isSelected,
-              child: new Text(year.toString(), style: itemStyle),
+              child: Text(year.toString(), style: itemStyle),
             ),
           ),
         );
@@ -795,7 +854,7 @@ class _DatePickerDialog extends StatefulWidget {
   final DatePickerMode initialDatePickerMode;
 
   @override
-  _DatePickerDialogState createState() => new _DatePickerDialogState();
+  _DatePickerDialogState createState() => _DatePickerDialogState();
 }
 
 class _DatePickerDialogState extends State<_DatePickerDialog> {
@@ -827,7 +886,7 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
 
   DateTime _selectedDate;
   DatePickerMode _mode;
-  final GlobalKey _pickerKey = new GlobalKey();
+  final GlobalKey _pickerKey = GlobalKey();
 
   void _vibrate() {
     switch (Theme.of(context).platform) {
@@ -845,9 +904,11 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
     setState(() {
       _mode = mode;
       if (_mode == DatePickerMode.day) {
-        SemanticsService.announce(localizations.formatMonthYear(_selectedDate), textDirection);
+        SemanticsService.announce(
+            localizations.formatMonthYear(_selectedDate), textDirection);
       } else {
-        SemanticsService.announce(localizations.formatYear(_selectedDate), textDirection);
+        SemanticsService.announce(
+            localizations.formatYear(_selectedDate), textDirection);
       }
     });
   }
@@ -879,7 +940,7 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
     assert(_mode != null);
     switch (_mode) {
       case DatePickerMode.day:
-        return new MonthPicker(
+        return MonthPicker(
           key: _pickerKey,
           selectedDate: _selectedDate,
           onChanged: _handleDayChanged,
@@ -888,7 +949,7 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
           selectableDayPredicate: widget.selectableDayPredicate,
         );
       case DatePickerMode.year:
-        return new YearPicker(
+        return YearPicker(
           key: _pickerKey,
           selectedDate: _selectedDate,
           onChanged: _handleYearChanged,
@@ -901,85 +962,84 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final Widget picker = new Flexible(
-      child: new SizedBox(
+    final Widget picker = Flexible(
+      child: SizedBox(
         height: _kMaxDayPickerHeight,
         child: _buildPicker(),
       ),
     );
-    final Widget actions = new ButtonTheme.bar(
-      child: new ButtonBar(
+    final Widget actions = ButtonTheme.bar(
+      child: ButtonBar(
         children: <Widget>[
-          new FlatButton(
-            child: new Text(localizations.cancelButtonLabel,style: Theme.of(context).primaryTextTheme.button),
+          FlatButton(
+            child: Text(localizations.cancelButtonLabel,
+                style: Theme.of(context).primaryTextTheme.button),
             onPressed: _handleCancel,
           ),
-          new FlatButton(
-            child: new Text(localizations.okButtonLabel,style: Theme.of(context).primaryTextTheme.button),
+          FlatButton(
+            child: Text(localizations.okButtonLabel,
+                style: Theme.of(context).primaryTextTheme.button),
             onPressed: _handleOk,
           ),
         ],
       ),
     );
-    final Dialog dialog = new Dialog(
-        child: new OrientationBuilder(
-            builder: (BuildContext context, Orientation orientation) {
-              assert(orientation != null);
-              final Widget header = new _DatePickerHeader(
-                selectedDate: _selectedDate,
-                mode: _mode,
-                onModeChanged: _handleModeChanged,
-                orientation: orientation,
-              );
-              switch (orientation) {
-                case Orientation.portrait:
-                  return new SizedBox(
-                    width: _kMonthPickerPortraitWidth,
-                    child: new Column(
+    final Dialog dialog = Dialog(child: OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+      assert(orientation != null);
+      final Widget header = _DatePickerHeader(
+        selectedDate: _selectedDate,
+        mode: _mode,
+        onModeChanged: _handleModeChanged,
+        orientation: orientation,
+      );
+      switch (orientation) {
+        case Orientation.portrait:
+          return SizedBox(
+            width: _kMonthPickerPortraitWidth,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                header,
+                Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      picker,
+                      actions,
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        case Orientation.landscape:
+          return SizedBox(
+            height: _kDatePickerLandscapeHeight,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                header,
+                Flexible(
+                  child: Container(
+                    width: _kMonthPickerLandscapeWidth,
+                    color: Theme.of(context).dialogBackgroundColor,
+                    child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        header,
-                        new Container(
-                          child: new Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              picker,
-                              actions,
-                            ],
-                          ),
-                        ),
-                      ],
+                      children: <Widget>[picker, actions],
                     ),
-                  );
-                case Orientation.landscape:
-                  return new SizedBox(
-                    height: _kDatePickerLandscapeHeight,
-                    child: new Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        header,
-                        new Flexible(
-                          child: new Container(
-                            width: _kMonthPickerLandscapeWidth,
-                            color: Theme.of(context).dialogBackgroundColor,
-                            child: new Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: <Widget>[picker, actions],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-              }
-              return null;
-            }
-        )
-    );
+                  ),
+                ),
+              ],
+            ),
+          );
+      }
+      return null;
+    }));
 
     return dialog;
   }
@@ -988,7 +1048,7 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
 /// Signature for predicating dates for enabled date selections.
 ///
 /// See [showDatePicker].
-typedef bool SelectableDayPredicate(DateTime day);
+typedef SelectableDayPredicate = bool Function(DateTime day);
 
 /// Shows a dialog containing a material design date picker.
 ///
@@ -1024,20 +1084,22 @@ Future<DateTime> showBreezDatePicker({
   @required DateTime firstDate,
   @required DateTime lastDate,
   SelectableDayPredicate selectableDayPredicate,
-  DatePickerMode initialDatePickerMode: DatePickerMode.day,
+  DatePickerMode initialDatePickerMode = DatePickerMode.day,
   Locale locale,
   TextDirection textDirection,
 }) async {
-  assert(!initialDate.isBefore(firstDate), 'initialDate must be on or after firstDate');
-  assert(!initialDate.isAfter(lastDate), 'initialDate must be on or before lastDate');
-  assert(!firstDate.isAfter(lastDate), 'lastDate must be on or after firstDate');
+  assert(!initialDate.isBefore(firstDate),
+      'initialDate must be on or after firstDate');
+  assert(!initialDate.isAfter(lastDate),
+      'initialDate must be on or before lastDate');
   assert(
-  selectableDayPredicate == null || selectableDayPredicate(initialDate),
-  'Provided initialDate must satisfy provided selectableDayPredicate'
-  );
-  assert(initialDatePickerMode != null, 'initialDatePickerMode must not be null');
+      !firstDate.isAfter(lastDate), 'lastDate must be on or after firstDate');
+  assert(selectableDayPredicate == null || selectableDayPredicate(initialDate),
+      'Provided initialDate must satisfy provided selectableDayPredicate');
+  assert(
+      initialDatePickerMode != null, 'initialDatePickerMode must not be null');
 
-  Widget child = new _DatePickerDialog(
+  Widget child = _DatePickerDialog(
     initialDate: initialDate,
     firstDate: firstDate,
     lastDate: lastDate,
@@ -1046,14 +1108,14 @@ Future<DateTime> showBreezDatePicker({
   );
 
   if (textDirection != null) {
-    child = new Directionality(
+    child = Directionality(
       textDirection: textDirection,
       child: child,
     );
   }
 
   if (locale != null) {
-    child = new Localizations.override(
+    child = Localizations.override(
       context: context,
       locale: locale,
       child: child,

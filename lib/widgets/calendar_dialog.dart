@@ -14,12 +14,12 @@ class CalendarDialog extends StatefulWidget {
   CalendarDialog(this.context, this.firstDate);
 
   @override
-  _CalendarDialogState createState() => new _CalendarDialogState();
+  _CalendarDialogState createState() => _CalendarDialogState();
 }
 
 class _CalendarDialogState extends State<CalendarDialog> {
-  TextEditingController _startDateController = new TextEditingController();
-  TextEditingController _endDateController = new TextEditingController();
+  TextEditingController _startDateController = TextEditingController();
+  TextEditingController _endDateController = TextEditingController();
   DateTime _endDate = DateTime.now();
   DateTime _startDate;
 

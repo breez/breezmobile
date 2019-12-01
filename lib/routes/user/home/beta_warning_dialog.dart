@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class BetaWarningDialog extends StatefulWidget {
   @override
-  _BetaWarningDialogState createState() => new _BetaWarningDialogState();
+  _BetaWarningDialogState createState() => _BetaWarningDialogState();
 }
 
 class _BetaWarningDialogState extends State<BetaWarningDialog> {
@@ -20,9 +20,12 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
     List<Widget> children = <Widget>[
       Padding(
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
-        child: new Text(
+        child: Text(
           "Since Breez is still in beta, there is a chance your money will be lost. Use this app only if you are willing to take this risk.",
-          style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
+          style: Theme.of(context)
+              .primaryTextTheme
+              .display2
+              .copyWith(fontSize: 16),
         ),
       ),
       Padding(
@@ -30,7 +33,9 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
         child: Row(
           children: <Widget>[
             Theme(
-              data: Theme.of(context).copyWith(unselectedWidgetColor: Theme.of(context).textTheme.button.color),
+              data: Theme.of(context).copyWith(
+                  unselectedWidgetColor:
+                      Theme.of(context).textTheme.button.color),
               child: Checkbox(
                   activeColor: Theme.of(context).canvasColor,
                   value: _isUnderstood,
@@ -42,7 +47,10 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
             ),
             Text(
               "I understand",
-              style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
+              style: Theme.of(context)
+                  .primaryTextTheme
+                  .display2
+                  .copyWith(fontSize: 16),
             )
           ],
         ),
@@ -54,7 +62,10 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
                 top: 0.0, left: 16.0, right: 16.0, bottom: 0.0),
             child: Text(
               "Please confirm that you understand before you continue.",
-              style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16)
+              style: Theme.of(context)
+                  .primaryTextTheme
+                  .display2
+                  .copyWith(fontSize: 16)
                   .copyWith(fontSize: 12.0, color: Colors.red),
             )),
       ),
@@ -66,39 +77,41 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
   @override
   Widget build(BuildContext context) {
     return Theme(
-          data: Theme.of(context).copyWith(
-            unselectedWidgetColor: Theme.of(context).canvasColor,
+        data: Theme.of(context).copyWith(
+          unselectedWidgetColor: Theme.of(context).canvasColor,
+        ),
+        child: AlertDialog(
+          titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+          title: Text(
+            "Beta Warning",
+            style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
-          child: new AlertDialog(
-            titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-            title: new Text(
-              "Beta Warning",
-              style: Theme.of(context).dialogTheme.titleTextStyle,
+          contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: _getContent(),
+          ),
+          actions: [
+            FlatButton(
+              onPressed: () => exit(0),
+              child: Text("Exit",
+                  style: Theme.of(context).primaryTextTheme.button),
             ),
-            contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: _getContent(),
+            FlatButton(
+              onPressed: (() {
+                if (_isUnderstood) {
+                  Navigator.of(context).pop(_isUnderstood);
+                } else {
+                  setState(() {
+                    _showReminderText = !_isUnderstood;
+                  });
+                }
+              }),
+              child: Text("Continue",
+                  style: Theme.of(context).primaryTextTheme.button),
             ),
-            actions: [
-              new FlatButton(
-                onPressed: () => exit(0),
-                child: new Text("Exit", style: Theme.of(context).primaryTextTheme.button),
-              ),
-              new FlatButton(
-                onPressed: (() {
-                  if (_isUnderstood) {
-                    Navigator.of(context).pop(_isUnderstood);
-                  } else {
-                    setState(() {
-                      _showReminderText = !_isUnderstood;
-                    });
-                  }
-                }),
-                child: new Text("Continue", style: Theme.of(context).primaryTextTheme.button),
-              ),
-            ],
-          ));
+          ],
+        ));
   }
 }

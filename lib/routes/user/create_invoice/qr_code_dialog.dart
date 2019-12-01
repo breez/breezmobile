@@ -19,37 +19,42 @@ class QrCodeDialog extends StatelessWidget {
   }
 
   Widget _buildQrCodeDialog() {
-    return new SimpleDialog(
-      title: new Row(
+    return SimpleDialog(
+      title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          new Text(
+          Text(
             "Invoice",
             style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
-          new StreamBuilder<String>(
+          StreamBuilder<String>(
             stream: _invoiceBloc.readyInvoicesStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Container();
               }
-              return new Row(
+              return Row(
                 children: <Widget>[
-                  new IconButton(
-                    padding: EdgeInsets.only(top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
-                    icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
+                  IconButton(
+                    padding: EdgeInsets.only(
+                        top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
+                    icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
                     color: Theme.of(context).primaryTextTheme.button.color,
                     onPressed: () {
                       ShareExtend.share("lightning:" + snapshot.data, "text");
                     },
                   ),
-                  new IconButton(
-                    padding: EdgeInsets.only(top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
-                    icon: new Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+                  IconButton(
+                    padding: EdgeInsets.only(
+                        top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
+                    icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
                     color: Theme.of(context).primaryTextTheme.button.color,
                     onPressed: () {
-                      Clipboard.setData(new ClipboardData(text: snapshot.data));
-                      showFlushbar(context, message: "Invoice address was copied to your clipboard.", duration:Duration(seconds: 3));                      
+                      Clipboard.setData(ClipboardData(text: snapshot.data));
+                      showFlushbar(context,
+                          message:
+                              "Invoice address was copied to your clipboard.",
+                          duration: Duration(seconds: 3));
                     },
                   )
                 ],
@@ -61,44 +66,47 @@ class QrCodeDialog extends StatelessWidget {
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 8.0),
       contentPadding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
       children: <Widget>[
-        new StreamBuilder<String>(
+        StreamBuilder<String>(
             stream: _invoiceBloc.readyInvoicesStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Container(
                     width: 150.0,
                     height: 150.0,
-                    child: Center(                                                
+                    child: Center(
                         child: Container(
-                          height: 80.0,
-                          width: 80.0,
-                          child: CircularProgressIndicator(
-                            valueColor: new AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).primaryTextTheme.button.color,
-                            ),
-                            backgroundColor: Theme.of(context).backgroundColor,
-                          ),
-                        )));
+                      height: 80.0,
+                      width: 80.0,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).primaryTextTheme.button.color,
+                        ),
+                        backgroundColor: Theme.of(context).backgroundColor,
+                      ),
+                    )));
               }
-              return new Column(
+              return Column(
                 children: [
-                  new Container(
+                  Container(
                     width: 230.0,
                     height: 230.0,
                     color: Colors.white,
-                    child: new CompactQRImage(
+                    child: CompactQRImage(
                       data: snapshot.data,
                     ),
                   ),
                   Padding(padding: EdgeInsets.only(top: 8.0)),
-                  new GestureDetector(
+                  GestureDetector(
                     onTap: () {
                       ShareExtend.share(snapshot.data, "text");
                     },
-                    child: new Container(
-                      child: new Text(
+                    child: Container(
+                      child: Text(
                         snapshot.data,
-                        style: Theme.of(context).primaryTextTheme.caption.copyWith(fontSize: 9),
+                        style: Theme.of(context)
+                            .primaryTextTheme
+                            .caption
+                            .copyWith(fontSize: 9),
                       ),
                     ),
                   ),
@@ -114,18 +122,18 @@ class QrCodeDialog extends StatelessWidget {
   }
 
   Widget _buildExpiryMessage() {
-    return new Column(children: <Widget>[
+    return Column(children: <Widget>[
       Text("Keep the Breez app open in order to receive payment.",
           style: Theme.of(context).primaryTextTheme.caption)
     ]);
   }
 
   Widget _buildCloseButton() {
-    return new FlatButton(
+    return FlatButton(
       onPressed: (() {
         Navigator.pop(context);
       }),
-      child: new Text("CLOSE", style: Theme.of(context).primaryTextTheme.button),
+      child: Text("CLOSE", style: Theme.of(context).primaryTextTheme.button),
     );
   }
 }

@@ -18,27 +18,30 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
       builder: (BuildContext context) {
         return WillPopScope(
           onWillPop: canPopCallback,
-          child: new AlertDialog(
+          child: AlertDialog(
             contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
             title: title == null
                 ? null
-                : new Text(
+                : Text(
                     title,
                     style: Theme.of(context).dialogTheme.titleTextStyle,
                   ),
-            content: new SingleChildScrollView(
+            content: SingleChildScrollView(
               child: body,
             ),
             actions: <Widget>[
               optionText != null
-                  ? new FlatButton(
-                      child: new Text(
+                  ? FlatButton(
+                      child: Text(
                         optionText,
-                        style: new TextStyle(
+                        style: TextStyle(
                             fontFamily: "IBMPlexSansMedium",
                             fontSize: 16.4,
                             letterSpacing: 0.0,
-                            color: Theme.of(context).dialogTheme.titleTextStyle.color),
+                            color: Theme.of(context)
+                                .dialogTheme
+                                .titleTextStyle
+                                .color),
                       ),
                       onPressed: () {
                         canPop = true;
@@ -46,8 +49,9 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                       },
                     )
                   : null,
-              new FlatButton(
-                child: new Text(okText, style: Theme.of(context).primaryTextTheme.button),
+              FlatButton(
+                child: Text(okText,
+                    style: Theme.of(context).primaryTextTheme.button),
                 onPressed: () {
                   canPop = true;
                   Navigator.of(context).pop();
@@ -68,8 +72,9 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
     String okText = "YES",
     String cancelText = "NO",
     TextStyle textStyle = const TextStyle(color: Colors.white)}) {
-  
-  Widget titleWidget = title == null ? null : Text(title, style: Theme.of(context).dialogTheme.titleTextStyle);
+  Widget titleWidget = title == null
+      ? null
+      : Text(title, style: Theme.of(context).dialogTheme.titleTextStyle);
   if (titleWidget != null && wideTitle) {
     titleWidget = Container(
       child: titleWidget,
@@ -80,21 +85,23 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return new AlertDialog(
+        return AlertDialog(
           contentPadding: contentPadding,
           title: titleWidget,
-          content: new SingleChildScrollView(
+          content: SingleChildScrollView(
             child: body,
           ),
           actions: <Widget>[
-            new FlatButton(
-              child: new Text(cancelText, style: Theme.of(context).primaryTextTheme.button),
+            FlatButton(
+              child: Text(cancelText,
+                  style: Theme.of(context).primaryTextTheme.button),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
-            new FlatButton(
-              child: new Text(okText, style: Theme.of(context).primaryTextTheme.button),
+            FlatButton(
+              child: Text(okText,
+                  style: Theme.of(context).primaryTextTheme.button),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },

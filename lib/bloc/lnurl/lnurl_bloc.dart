@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -11,26 +10,28 @@ import 'lnurl_actions.dart';
 import 'lnurl_model.dart';
 
 class LNUrlBloc with AsyncActionsHandler {
-  final StreamController<WithdrawFetchResponse> _lnurlWithdrawStreamController = StreamController<WithdrawFetchResponse>.broadcast();
-  Stream<WithdrawFetchResponse> get lnurlWithdrawStream => _lnurlWithdrawStreamController.stream;
+  final StreamController<WithdrawFetchResponse> _lnurlWithdrawStreamController =
+      StreamController<WithdrawFetchResponse>.broadcast();
+  Stream<WithdrawFetchResponse> get lnurlWithdrawStream =>
+      _lnurlWithdrawStreamController.stream;
   BreezBridge _breezLib;
 
-  LNUrlBloc(){
-    ServiceInjector injector = new ServiceInjector();
-    _breezLib = injector.breezBridge;    
-    
+  LNUrlBloc() {
+    ServiceInjector injector = ServiceInjector();
+    _breezLib = injector.breezBridge;
+
     registerAsyncHandlers({
       Fetch: _fetch,
-      Withdraw: _withdraw,    
+      Withdraw: _withdraw,
     });
     listenActions();
 
     injector.lightningLinks.linksNotifications
-      .where((l) => l.toLowerCase().startsWith("lightning:lnurl"))
-      .asyncMap((l) => _breezLib.fetchLNUrl(l))
-      .where((response) => response.hasWithdraw())
-      .map((response) => WithdrawFetchResponse(response.withdraw))
-      .pipe(_lnurlWithdrawStreamController);      
+        .where((l) => l.toLowerCase().startsWith("lightning:lnurl"))
+        .asyncMap((l) => _breezLib.fetchLNUrl(l))
+        .where((response) => response.hasWithdraw())
+        .map((response) => WithdrawFetchResponse(response.withdraw))
+        .pipe(_lnurlWithdrawStreamController);
   }
 
   Future _fetch(Fetch action) async {

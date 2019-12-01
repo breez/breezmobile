@@ -8,7 +8,7 @@ class ChangePinCode extends StatefulWidget {
   ChangePinCode({Key key}) : super(key: key);
 
   @override
-  _ChangePinCodeState createState() => new _ChangePinCodeState();
+  _ChangePinCodeState createState() => _ChangePinCodeState();
 }
 
 class _ChangePinCodeState extends State<ChangePinCode> {
@@ -19,7 +19,7 @@ class _ChangePinCodeState extends State<ChangePinCode> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: new AppBar(
+        appBar: AppBar(
           iconTheme: Theme.of(context).appBarTheme.iconTheme,
           textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,

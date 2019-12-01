@@ -22,12 +22,14 @@ class FloatingActionsBar extends StatelessWidget {
     bool isSmallView = height < 160;
     bool hasBalance = (account?.balance ?? Int64(0)) > 0;
 
-    var scaleFactor = MediaQuery.of(context).textScaleFactor;    
-    return new Positioned(
+    var scaleFactor = MediaQuery.of(context).textScaleFactor;
+    return Positioned(
       top: (height - 25.0),
       right: 16.0,
       child: AnimatedContainer(
-          width: isSmallView ? 56.0 : (hasBalance ? CTP_MAX_WIDTH : ADD_FUNDS_MAX_WIDTH),
+          width: isSmallView
+              ? 56.0
+              : (hasBalance ? CTP_MAX_WIDTH : ADD_FUNDS_MAX_WIDTH),
           duration: Duration(milliseconds: 150),
           child: RaisedButton(
             onPressed: () {
@@ -38,10 +40,14 @@ class FloatingActionsBar extends StatelessWidget {
               Navigator.of(context).pushNamed('/add_funds');
             },
             shape: isSmallView
-                ? new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(56.0))
-                : new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(42.0)),
+                ? RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(56.0))
+                : RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(42.0)),
             color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-            padding: isSmallView ? EdgeInsets.all(16.0) : EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+            padding: isSmallView
+                ? EdgeInsets.all(16.0)
+                : EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -55,24 +61,26 @@ class FloatingActionsBar extends StatelessWidget {
                             )
                           : Icon(Icons.add),
                     ]
-                  : <Widget>[                      
+                  : <Widget>[
                       hasBalance
                           ? ImageIcon(
                               AssetImage("src/icon/connect_to_pay.png"),
                               color: Colors.white,
                               size: 24.0,
                             )
-                          : Icon(Icons.add),                      
+                          : Icon(Icons.add),
                       Padding(padding: EdgeInsets.only(left: 8.0)),
-                      Container(                        
-                        width: (hasBalance ? CTP_MAX_WIDTH - 64 / min(scaleFactor, 1.0) : ADD_FUNDS_MAX_WIDTH - 64 / min(scaleFactor, 1.0)),                        
+                      Container(
+                        width: (hasBalance
+                            ? CTP_MAX_WIDTH - 64 / min(scaleFactor, 1.0)
+                            : ADD_FUNDS_MAX_WIDTH - 64 / min(scaleFactor, 1.0)),
                         child: AutoSizeText(
                           hasBalance ? "CONNECT TO PAY" : "ADD FUNDS",
                           style: theme.addFundsBtnStyle,
                           maxLines: 1,
                           minFontSize: MinFontSize(context).minFontSize,
                           stepGranularity: 0.1,
-                        ),                        
+                        ),
                       )
                     ],
             ),

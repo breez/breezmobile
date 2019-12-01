@@ -16,18 +16,21 @@ class CsvExporter {
 
   Future export() async {
     log.info("export payments started");
-    String tmpFilePath = await _saveCsvFile(const ListToCsvConverter().convert(_generateList()));
+    String tmpFilePath =
+        await _saveCsvFile(const ListToCsvConverter().convert(_generateList()));
     log.info("export payments finished");
     return tmpFilePath;
   }
 
   List _generateList() {
     log.info("generating payment list started");
-    List<List<dynamic>> paymentList = new List.generate(this.paymentList.length, (index) {
-      List paymentItem = new List();
+    List<List<dynamic>> paymentList =
+        List.generate(this.paymentList.length, (index) {
+      List paymentItem = List();
       PaymentInfo paymentInfo = this.paymentList.elementAt(index);
-      paymentItem
-          .add(DateUtils.formatYearMonthDayHourMinute(DateTime.fromMillisecondsSinceEpoch(paymentInfo.creationTimestamp.toInt() * 1000)));
+      paymentItem.add(DateUtils.formatYearMonthDayHourMinute(
+          DateTime.fromMillisecondsSinceEpoch(
+              paymentInfo.creationTimestamp.toInt() * 1000)));
       paymentItem.add(paymentInfo.title);
       paymentItem.add(paymentInfo.description);
       paymentItem.add(paymentInfo.destination);
@@ -36,7 +39,15 @@ class CsvExporter {
       paymentItem.add(paymentInfo.paymentHash);
       return paymentItem;
     });
-    paymentList.insert(0, ["Date & Time", "Title", "Description", "Node ID", "Amount", "Preimage", "TX Hash"]);
+    paymentList.insert(0, [
+      "Date & Time",
+      "Title",
+      "Description",
+      "Node ID",
+      "Amount",
+      "Preimage",
+      "TX Hash"
+    ]);
     log.info("generating payment finished");
     return paymentList;
   }
@@ -62,14 +73,17 @@ class CsvExporter {
 
   String appendFilterInformation(String filePath) {
     log.info("add filter information to path started");
-    if (listEquals(this.filter.paymentType, [PaymentType.SENT, PaymentType.WITHDRAWAL])) {
+    if (listEquals(
+        this.filter.paymentType, [PaymentType.SENT, PaymentType.WITHDRAWAL])) {
       filePath += "_sent";
-    } else if (listEquals(this.filter.paymentType, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
+    } else if (listEquals(
+        this.filter.paymentType, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
       filePath += "_received";
     }
     if (this.filter.startDate != null && this.filter.endDate != null) {
       DateFormat dateFilterFormat = DateFormat("d.M.yy");
-      String dateFilter = '${dateFilterFormat.format(this.filter.startDate)}-${dateFilterFormat.format(this.filter.endDate)}';
+      String dateFilter =
+          '${dateFilterFormat.format(this.filter.startDate)}-${dateFilterFormat.format(this.filter.endDate)}';
       filePath += "_$dateFilter";
     }
     log.info("add filter information to path finished");

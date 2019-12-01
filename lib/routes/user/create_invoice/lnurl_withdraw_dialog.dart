@@ -44,56 +44,57 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog> {
     var actions = <Widget>[];
     if (_error != null) {
       actions.add(FlatButton(
-          child: new Text("CLOSE",
-              style: Theme.of(context).primaryTextTheme.button),
+          child:
+              Text("CLOSE", style: Theme.of(context).primaryTextTheme.button),
           onPressed: () {
             Navigator.of(context).pop();
           }));
     }
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.fromLTRB(24.0, 20.0, 24.0, _error != null ? 24.0 : 0.0),
+      contentPadding:
+          EdgeInsets.fromLTRB(24.0, 20.0, 24.0, _error != null ? 24.0 : 0.0),
       title: Row(
         children: <Widget>[
-          
           Container(width: 50.0),
-          Expanded(flex: 1, child: Text("Receive Funds",
-                    style: Theme.of(context).dialogTheme.titleTextStyle,
-                    textAlign: TextAlign.center)),
+          Expanded(
+              flex: 1,
+              child: Text("Receive Funds",
+                  style: Theme.of(context).dialogTheme.titleTextStyle,
+                  textAlign: TextAlign.center)),
           Container(
             width: 50.0,
-            child: IconButton(    
-              iconSize: 24.0,          
+            child: IconButton(
+                iconSize: 24.0,
                 onPressed: () => Navigator.pop(context),
                 icon: Icon(Icons.close,
-                    color: Theme.of(context).dialogTheme.titleTextStyle.color)
-            ),
+                    color: Theme.of(context).dialogTheme.titleTextStyle.color)),
           )
         ],
       ),
       content: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,            
-              children: <Widget>[                
-                _error != null
-                    ? new Text("Failed to receive funds: $_error",
-                        style: Theme.of(context).dialogTheme.contentTextStyle,
-                        textAlign: TextAlign.center)
-                    : LoadingAnimatedText(
-                        'Please wait while your payment is being processed',
-                        textStyle: Theme.of(context).dialogTheme.contentTextStyle,
-                        textAlign: TextAlign.center,
-                      ),
-                _error != null
-                    ? SizedBox()
-                    : Padding(
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: new Image.asset(
-                          theme.customData[theme.themeId].loaderAssetPath,
-                          gaplessPlayback: true,
-                        ))
-              ],
-            ),      
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          _error != null
+              ? Text("Failed to receive funds: $_error",
+                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  textAlign: TextAlign.center)
+              : LoadingAnimatedText(
+                  'Please wait while your payment is being processed',
+                  textStyle: Theme.of(context).dialogTheme.contentTextStyle,
+                  textAlign: TextAlign.center,
+                ),
+          _error != null
+              ? SizedBox()
+              : Padding(
+                  padding: EdgeInsets.only(top: 8.0),
+                  child: Image.asset(
+                    theme.customData[theme.themeId].loaderAssetPath,
+                    gaplessPlayback: true,
+                  ))
+        ],
+      ),
     );
   }
 }

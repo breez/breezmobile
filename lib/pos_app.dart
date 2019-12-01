@@ -27,7 +27,8 @@ class PosApp extends StatelessWidget {
   Widget build(BuildContext context) {
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    UserProfileBloc userProfileBloc =
+        AppBlocsProvider.of<UserProfileBloc>(context);
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     return StreamBuilder(
@@ -39,9 +40,11 @@ class PosApp extends StatelessWidget {
 
           BreezUserModel user = snapshot.data;
           theme.themeId = user.themeId;
-          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-          return  BlocProvider(
-            creator: () => new AddFundsBloc(userProfileBloc.userStream, accountBloc.accountStream),
+          SystemChrome.setSystemUIOverlayStyle(
+              SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+          return BlocProvider(
+            creator: () => AddFundsBloc(
+                userProfileBloc.userStream, accountBloc.accountStream),
             builder: (ctx) => MaterialApp(
               title: 'Breez POS',
               initialRoute: user.registered ? null : '/intro',
@@ -50,40 +53,40 @@ class PosApp extends StatelessWidget {
               onGenerateRoute: (RouteSettings settings) {
                 switch (settings.name) {
                   case '/home':
-                    return new FadeInRoute(
-                      builder: (_) =>
-                          new PosHome(accountBloc, backupBloc, userProfileBloc, lspBloc),
+                    return FadeInRoute(
+                      builder: (_) => PosHome(
+                          accountBloc, backupBloc, userProfileBloc, lspBloc),
                       settings: settings,
                     );
                   case '/intro':
-                    return new FadeInRoute(
-                      builder: (_) => new InitialWalkthroughPage(user,
-                          userProfileBloc, backupBloc, true),
+                    return FadeInRoute(
+                      builder: (_) => InitialWalkthroughPage(
+                          user, userProfileBloc, backupBloc, true),
                       settings: settings,
                     );
                   case '/transactions':
-                    return new FadeInRoute(
-                      builder: (_) => new PosTransactionsPage(),
+                    return FadeInRoute(
+                      builder: (_) => PosTransactionsPage(),
                       settings: settings,
                     );
                   case '/withdraw_funds':
-                    return new FadeInRoute(
-                      builder: (_) => new WithdrawFundsPage(),
+                    return FadeInRoute(
+                      builder: (_) => WithdrawFundsPage(),
                       settings: settings,
                     );
                   case '/settings':
-                    return new FadeInRoute(
+                    return FadeInRoute(
                       builder: (_) => PosSettingsPage(),
                       settings: settings,
                     );
                   case '/network':
-                    return new FadeInRoute(
-                      builder: (_) => new NetworkPage(),
+                    return FadeInRoute(
+                      builder: (_) => NetworkPage(),
                       settings: settings,
                     );
                   case '/developers':
-                    return new FadeInRoute(
-                      builder: (_) => new DevView(),
+                    return FadeInRoute(
+                      builder: (_) => DevView(),
                       settings: settings,
                     );
                 }

@@ -10,10 +10,12 @@ import 'generate_backup_phrase_page.dart';
 
 class BackupPhraseGeneratorConfirmationPage extends StatefulWidget {
   @override
-  BackupPhraseGeneratorConfirmationPageState createState() => new BackupPhraseGeneratorConfirmationPageState();
+  BackupPhraseGeneratorConfirmationPageState createState() =>
+      BackupPhraseGeneratorConfirmationPageState();
 }
 
-class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGeneratorConfirmationPage> {
+class BackupPhraseGeneratorConfirmationPageState
+    extends State<BackupPhraseGeneratorConfirmationPage> {
   bool _isUnderstood = false;
   String _instructions =
       "You will be shown a list of words. Write down the words and store them in a safe place. Without these words, you won't be able to restore from backup and you funds will be lost. Breez won’t be able to help.";
@@ -77,7 +79,8 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Theme(
-            data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+            data:
+                Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
             child: Checkbox(
                 activeColor: Colors.white,
                 checkColor: Theme.of(context).canvasColor,
@@ -108,7 +111,11 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
                 child: RaisedButton(
                   onPressed: () {
                     String mnemonics = bip39.generateMnemonic(strength: 256);
-                    Navigator.pushReplacement(context, FadeInRoute(builder: (BuildContext context) => GenerateBackupPhrasePage(mnemonics)));
+                    Navigator.pushReplacement(
+                        context,
+                        FadeInRoute(
+                            builder: (BuildContext context) =>
+                                GenerateBackupPhrasePage(mnemonics)));
                   },
                   child: Text(
                     "NEXT",

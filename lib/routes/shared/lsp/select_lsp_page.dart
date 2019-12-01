@@ -18,7 +18,7 @@ class SelectLSPPage extends StatefulWidget {
 
   @override
   SelectLSPPageState createState() {
-    return new SelectLSPPageState();
+    return SelectLSPPageState();
   }
 }
 
@@ -55,13 +55,13 @@ class SelectLSPPageState extends State<SelectLSPPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
+      appBar: AppBar(
         iconTheme: Theme.of(context).appBarTheme.iconTheme,
         textTheme: Theme.of(context).appBarTheme.textTheme,
         backgroundColor: theme.BreezColors.blue[500],
         automaticallyImplyLeading: false,
         elevation: 0.0,
-        title: new Text(
+        title: Text(
           "Select a Lightning Provider",
           style: Theme.of(context).appBarTheme.textTheme.title,
         ),
@@ -91,7 +91,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
               );
             }
 
-            if (!snapshot.hasData || snapshot.data.availableLSPs.length == 0){
+            if (!snapshot.hasData || snapshot.data.availableLSPs.length == 0) {
               return Center(child: Loader());
             }
 
@@ -153,7 +153,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
           setState(() {
             _error = null;
             _fetchLSPS();
-          });          
+          });
         },
       );
     }

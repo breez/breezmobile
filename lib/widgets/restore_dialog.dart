@@ -10,16 +10,15 @@ class RestoreDialog extends StatefulWidget {
   final BackupBloc backupBloc;
   final List<SnapshotInfo> snapshots;
 
-  RestoreDialog(
-      this.context, this.backupBloc, this.snapshots);
+  RestoreDialog(this.context, this.backupBloc, this.snapshots);
 
   @override
   RestoreDialogState createState() {
-    return new RestoreDialogState();
+    return RestoreDialogState();
   }
 }
 
-class RestoreDialogState extends State<RestoreDialog> {  
+class RestoreDialogState extends State<RestoreDialog> {
   SnapshotInfo _selectedSnapshot;
 
   @override
@@ -28,9 +27,9 @@ class RestoreDialogState extends State<RestoreDialog> {
   }
 
   Widget createRestoreDialog() {
-    return new AlertDialog(
+    return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-      title: new Text(
+      title: Text(
         "Restore",
         style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
@@ -40,45 +39,63 @@ class RestoreDialogState extends State<RestoreDialog> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           StreamBuilder<BackupSettings>(
-            stream: widget.backupBloc.backupSettingsStream,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return SizedBox();
-              }
+              stream: widget.backupBloc.backupSettingsStream,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return SizedBox();
+                }
 
-              return new Text(
-                "You have multiple Breez backups on ${snapshot.data.backupProvider.displayName}, please choose which one to restore:",
-                style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
-              );
-            }
-          ),
-         
-          new Padding(
+                return Text(
+                  "You have multiple Breez backups on ${snapshot.data.backupProvider.displayName}, please choose which one to restore:",
+                  style: Theme.of(context)
+                      .primaryTextTheme
+                      .display2
+                      .copyWith(fontSize: 16),
+                );
+              }),
+          Padding(
             padding: EdgeInsets.only(top: 16.0),
             child: Container(
               width: 150.0,
               height: 200.0,
-              child: ListView.builder(                
+              child: ListView.builder(
                 shrinkWrap: false,
                 itemCount: widget.snapshots.length,
-                itemBuilder: (BuildContext context, int index) {                  
-                  return ListTile(  
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0),                    
-                    selected: _selectedSnapshot?.nodeID == widget.snapshots[index].nodeID  ,
-                    trailing: _selectedSnapshot?.nodeID == widget.snapshots[index].nodeID ? Icon(Icons.check, color: theme.BreezColors.blue[500],) : Icon(Icons.check),
-                    title: Text( 
-                      DateUtils.formatYearMonthDayHourMinute(DateTime.parse(widget.snapshots[index].modifiedTime)) + 
-                        (widget.snapshots[index].encrypted ? " - (Requires key)" : ""),
-                      style: Theme.of(context).primaryTextTheme.caption.copyWith(fontSize: 9).apply(fontSizeDelta: 1.3),
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
+                    selected: _selectedSnapshot?.nodeID ==
+                        widget.snapshots[index].nodeID,
+                    trailing: _selectedSnapshot?.nodeID ==
+                            widget.snapshots[index].nodeID
+                        ? Icon(
+                            Icons.check,
+                            color: theme.BreezColors.blue[500],
+                          )
+                        : Icon(Icons.check),
+                    title: Text(
+                      DateUtils.formatYearMonthDayHourMinute(DateTime.parse(
+                              widget.snapshots[index].modifiedTime)) +
+                          (widget.snapshots[index].encrypted
+                              ? " - (Requires key)"
+                              : ""),
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .caption
+                          .copyWith(fontSize: 9)
+                          .apply(fontSizeDelta: 1.3),
                     ),
                     subtitle: Text(
                       widget.snapshots[index].nodeID,
-                      style: Theme.of(context).primaryTextTheme.caption.copyWith(fontSize: 9),
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .caption
+                          .copyWith(fontSize: 9),
                     ),
                     onTap: () {
                       setState(() {
                         _selectedSnapshot = widget.snapshots[index];
-                      });                      
+                      });
                     },
                   );
                 },
@@ -89,26 +106,29 @@ class RestoreDialogState extends State<RestoreDialog> {
               stream: widget.backupBloc.restoreFinishedStream,
               builder: (context, snapshot) {
                 return snapshot.hasError
-                    ? new Text(
+                    ? Text(
                         snapshot.error.toString(),
                         style: theme.errorStyle,
                       )
                     : Container();
-              }),          
+              }),
         ],
       ),
       actions: <Widget>[
-        new FlatButton(
-          onPressed: () =>  Navigator.pop(widget.context, null),
-          child: new Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
+        FlatButton(
+          onPressed: () => Navigator.pop(widget.context, null),
+          child:
+              Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
         ),
-        new FlatButton(     
+        FlatButton(
           textColor: theme.BreezColors.blue[500],
-          disabledTextColor: theme.BreezColors.blue[500].withOpacity(0.4),               
-          onPressed: _selectedSnapshot == null ? null : () {
-            Navigator.pop(widget.context, _selectedSnapshot);
-          },
-          child: new Text("OK"),
+          disabledTextColor: theme.BreezColors.blue[500].withOpacity(0.4),
+          onPressed: _selectedSnapshot == null
+              ? null
+              : () {
+                  Navigator.pop(widget.context, _selectedSnapshot);
+                },
+          child: Text("OK"),
         )
       ],
     );

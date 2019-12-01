@@ -9,12 +9,11 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/theme_data.dart' as theme;
 
-class PosSettingsPage extends StatelessWidget { 
-
+class PosSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);
-    return new StreamBuilder<POSProfileModel>(
+    return StreamBuilder<POSProfileModel>(
         stream: posProfileBloc.posProfileStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -37,23 +36,25 @@ class _PosSettingsPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return new PosSettingsPageState();
+    return PosSettingsPageState();
   }
 }
 
 class PosSettingsPageState extends State<_PosSettingsPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   StreamSubscription<Exception> _errorStreamSubscription;
-  var _invoiceStringController = new TextEditingController();
-  var _cancellationTimeoutValueController = new TextEditingController();
+  var _invoiceStringController = TextEditingController();
+  var _cancellationTimeoutValueController = TextEditingController();
   final FocusNode _invoiceStringFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _cancellationTimeoutValueController.text = widget.currentProfile.cancellationTimeoutValue.toString();
+    _cancellationTimeoutValueController.text =
+        widget.currentProfile.cancellationTimeoutValue.toString();
     _invoiceStringController.text = widget.currentProfile.invoiceString;
-    _errorStreamSubscription = widget._posProfileBloc.profileUpdatesErrorStream.listen(
+    _errorStreamSubscription =
+        widget._posProfileBloc.profileUpdatesErrorStream.listen(
       (data) {},
       onError: (error) {
         promptError(context, "Upload Logo Failed", Text(error.toString()));
@@ -70,41 +71,53 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       key: _scaffoldKey,
-      appBar: new AppBar(
+      appBar: AppBar(
         leading: backBtn.BackButton(),
         automaticallyImplyLeading: false,
         iconTheme: Theme.of(context).appBarTheme.iconTheme,
         textTheme: Theme.of(context).appBarTheme.textTheme,
         backgroundColor: Theme.of(context).canvasColor,
-        title: new Text(
+        title: Text(
           widget._title,
           style: Theme.of(context).appBarTheme.textTheme.title,
         ),
         elevation: 0.0,
       ),
-      body: new GestureDetector(
+      body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
         },
-        child: new Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            new Center(
+            Center(
               child: widget.currentProfile == null ||
-                      widget.currentProfile != null && widget.currentProfile.uploadInProgress
-                  ? new Padding(padding: EdgeInsets.only(top: 24.0),child:new Container(child:CircularProgressIndicator(),height: 88.0,width: 88.0,))
-                  : AvatarPicker(widget.currentProfile.logoLocalPath,
-                      (newSelectedImage) => widget._posProfileBloc.uploadLogoSink.add(newSelectedImage),
+                      widget.currentProfile != null &&
+                          widget.currentProfile.uploadInProgress
+                  ? Padding(
+                      padding: EdgeInsets.only(top: 24.0),
+                      child: Container(
+                        child: CircularProgressIndicator(),
+                        height: 88.0,
+                        width: 88.0,
+                      ))
+                  : AvatarPicker(
+                      widget.currentProfile.logoLocalPath,
+                      (newSelectedImage) => widget
+                          ._posProfileBloc.uploadLogoSink
+                          .add(newSelectedImage),
                       radius: 44.0,
-                      renderLoading: widget.currentProfile == null ? false : widget.currentProfile.uploadInProgress,
+                      renderLoading: widget.currentProfile == null
+                          ? false
+                          : widget.currentProfile.uploadInProgress,
                       scaledWidth: widget._logoScaledWidth,
                       renderedWidth: widget._logoRenderedWidt),
             ),
-            new Stack(
+            Stack(
               alignment: Alignment.centerRight,
               children: <Widget>[
                 TextField(
@@ -112,9 +125,11 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                   focusNode: _invoiceStringFocusNode,
                   controller: _invoiceStringController,
                   textAlign: TextAlign.center,
-                  decoration: new InputDecoration(
+                  decoration: InputDecoration(
                     border: UnderlineInputBorder(
-                        borderSide: BorderSide(style: BorderStyle.solid, color: Color.fromRGBO(255, 255, 255, 0.12))),
+                        borderSide: BorderSide(
+                            style: BorderStyle.solid,
+                            color: Color.fromRGBO(255, 255, 255, 0.12))),
                     contentPadding: EdgeInsets.only(top: 25.0, bottom: 25.0),
                     hintText: "Enter your business name",
                     hintStyle: TextStyle(
@@ -123,61 +138,76 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                         letterSpacing: 0.0,
                         fontFamily: "IBMPlexSans"),
                   ),
-                  style: new TextStyle(
-                      fontFamily: "IBMPlexSansMedium", fontSize: 16.4, letterSpacing: 0.0, color: Colors.white),
+                  style: TextStyle(
+                      fontFamily: "IBMPlexSansMedium",
+                      fontSize: 16.4,
+                      letterSpacing: 0.0,
+                      color: Colors.white),
                   onChanged: (text) {
-                    widget._posProfileBloc.posProfileSink.add(widget.currentProfile.copyWith(invoiceString: text));
+                    widget._posProfileBloc.posProfileSink.add(
+                        widget.currentProfile.copyWith(invoiceString: text));
                   },
                 ),
-                new Padding(
+                Padding(
                     padding: EdgeInsets.only(right: 13.0),
                     child: IconButton(
-                      icon: new ImageIcon(
+                      icon: ImageIcon(
                         AssetImage("src/icon/edit.png"),
                         color: Colors.white,
                         size: 24.0,
                       ),
                       onPressed: () {
-                        FocusScope.of(context).requestFocus(_invoiceStringFocusNode);
+                        FocusScope.of(context)
+                            .requestFocus(_invoiceStringFocusNode);
                       },
                     )),
               ],
             ),
-            new Container(
+            Container(
               padding: EdgeInsets.only(top: 32.0, bottom: 19.0, left: 16.0),
-              child: new Text(
+              child: Text(
                 "Payment Cancellation Timeout (in seconds)",
                 style: TextStyle(
-                    fontSize: 12.4, letterSpacing: 0.11, height: 1.24, color: Color.fromRGBO(255, 255, 255, 0.87)),
+                    fontSize: 12.4,
+                    letterSpacing: 0.11,
+                    height: 1.24,
+                    color: Color.fromRGBO(255, 255, 255, 0.87)),
               ),
             ),
-            new Row(
+            Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  new Container(
+                  Container(
                     width: 304.0,
-                    child: new Padding(
+                    child: Padding(
                       padding: EdgeInsets.zero,
-                      child: new Slider(
+                      child: Slider(
                           value: widget.currentProfile.cancellationTimeoutValue,
-                          label: '${widget.currentProfile.cancellationTimeoutValue.toStringAsFixed(0)}',
+                          label:
+                              '${widget.currentProfile.cancellationTimeoutValue.toStringAsFixed(0)}',
                           min: 30.0,
                           max: 180.0,
                           divisions: 5,
                           onChanged: (double value) {
                             FocusScope.of(context).requestFocus(FocusNode());
-                            _cancellationTimeoutValueController.text = value.toString();
-                            widget._posProfileBloc.posProfileSink
-                                .add(widget.currentProfile.copyWith(cancellationTimeoutValue: value));
+                            _cancellationTimeoutValueController.text =
+                                value.toString();
+                            widget._posProfileBloc.posProfileSink.add(widget
+                                .currentProfile
+                                .copyWith(cancellationTimeoutValue: value));
                           }),
                     ),
                   ),
-                  new Padding(
+                  Padding(
                     padding: EdgeInsets.only(left: 8.0, right: 16.0),
-                    child: new Text(
-                      num.parse(_cancellationTimeoutValueController.text).toStringAsFixed(0),
-                      style: TextStyle(color: Colors.white, fontSize: 12.4, letterSpacing: 0.11),
+                    child: Text(
+                      num.parse(_cancellationTimeoutValueController.text)
+                          .toStringAsFixed(0),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.4,
+                          letterSpacing: 0.11),
                     ),
                   ),
                 ]),

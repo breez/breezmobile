@@ -24,48 +24,58 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     _currentSettings = user;
   });
 
-  Future _pickImage(BuildContext context) async {    
+  Future _pickImage(BuildContext context) async {
     return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
-
       ImageCropper.cropImage(
         sourcePath: file.path,
-        aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),        
-      ).then((file){
-          if (file != null) {
-            file.readAsBytes()
-              .then(scaleAndFormatPNG)
-              .then((image) {
-                userBloc.uploadImageSink.add(image);
-              });
-          }
-      });      
+        aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+      ).then((file) {
+        if (file != null) {
+          file.readAsBytes().then(scaleAndFormatPNG).then((image) {
+            userBloc.uploadImageSink.add(image);
+          });
+        }
+      });
     }).catchError((err) {});
   }
 
-  return new AlertDialog(
+  return AlertDialog(
     titlePadding: EdgeInsets.all(0.0),
-    title: new Stack(children: <Widget>[
-      new Container(
+    title: Stack(children: <Widget>[
+      Container(
         height: 70.0,
         decoration: ShapeDecoration(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
-          color: theme.themeId == "BLUE" ? Theme.of(context).primaryColorDark : Theme.of(context).canvasColor,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
+          color: theme.themeId == "BLUE"
+              ? Theme.of(context).primaryColorDark
+              : Theme.of(context).canvasColor,
         ),
       ),
       Container(
         width: MediaQuery.of(context).size.width,
         height: 100.0,
-        child: new Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
               child: FlatButton(
-                padding: EdgeInsets.only(bottom: 20.0, top: 26.0,),
-                child: new AutoSizeText('RANDOM', style: theme.whiteButtonStyle, maxLines: 1, minFontSize: MinFontSize(context).minFontSize, stepGranularity: 0.1, group: _autoSizeGroup,),
+                padding: EdgeInsets.only(
+                  bottom: 20.0,
+                  top: 26.0,
+                ),
+                child: AutoSizeText(
+                  'RANDOM',
+                  style: theme.whiteButtonStyle,
+                  maxLines: 1,
+                  minFontSize: MinFontSize(context).minFontSize,
+                  stepGranularity: 0.1,
+                  group: _autoSizeGroup,
+                ),
                 onPressed: () {
                   userBloc.randomizeSink.add(null);
-                  FocusScope.of(context).requestFocus(new FocusNode());
+                  FocusScope.of(context).requestFocus(FocusNode());
                 },
               ),
             ),
@@ -83,8 +93,11 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                 }),
             Expanded(
               child: FlatButton(
-                padding: EdgeInsets.only(bottom: 20.0, top: 26.0,),
-                child: new AutoSizeText(
+                padding: EdgeInsets.only(
+                  bottom: 20.0,
+                  top: 26.0,
+                ),
+                child: AutoSizeText(
                   'GALLERY',
                   style: theme.whiteButtonStyle,
                   maxLines: 1,
@@ -101,12 +114,14 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
         ),
       ),
     ]),
-    content: new SingleChildScrollView(
-      child: new ListBody(
+    content: SingleChildScrollView(
+      child: ListBody(
         children: <Widget>[
-          new Theme(
-            data: new ThemeData(primaryColor: Theme.of(context).primaryTextTheme.body1.color, hintColor: Theme.of(context).primaryTextTheme.body1.color),
-            child: new TextField(
+          Theme(
+            data: ThemeData(
+                primaryColor: Theme.of(context).primaryTextTheme.body1.color,
+                hintColor: Theme.of(context).primaryTextTheme.body1.color),
+            child: TextField(
                 style: Theme.of(context).primaryTextTheme.body1,
                 controller: _nameInputController,
                 decoration: InputDecoration(hintText: 'Enter your name'),
@@ -116,31 +131,34 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
       ),
     ),
     actions: <Widget>[
-      new FlatButton(
-        child: new Text('CANCEL', style: Theme.of(context).primaryTextTheme.button),
+      FlatButton(
+        child: Text('CANCEL', style: Theme.of(context).primaryTextTheme.button),
         onPressed: () {
           Navigator.of(context).pop();
         },
       ),
-      new FlatButton(
-        child: new Text('SAVE', style: Theme.of(context).primaryTextTheme.button),
+      FlatButton(
+        child: Text('SAVE', style: Theme.of(context).primaryTextTheme.button),
         onPressed: () {
-          userBloc.userSink.add(_currentSettings.copyWith(name: _nameInputController.text));
+          userBloc.userSink
+              .add(_currentSettings.copyWith(name: _nameInputController.text));
           Navigator.of(context).pop();
         },
       ),
     ],
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(12.0), top: Radius.circular(13.0))),
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(12.0), top: Radius.circular(13.0))),
   );
 }
 
 List<int> scaleAndFormatPNG(List<int> imageBytes) {
-  DartImage.Image image = DartImage.decodeImage(imageBytes);  
-  DartImage.Image resized = DartImage.copyResize(
-      image,
+  DartImage.Image image = DartImage.decodeImage(imageBytes);
+  DartImage.Image resized = DartImage.copyResize(image,
       width: image.width < image.height ? -1 : scaledWidth,
       height: image.width < image.height ? scaledWidth : -1);
   DartImage.Image centered = DartImage.copyInto(_transparentImage, resized,
-      dstX: ((scaledWidth - resized.width) / 2).round(), dstY: ((scaledWidth - resized.height) / 2).round());
+      dstX: ((scaledWidth - resized.width) / 2).round(),
+      dstY: ((scaledWidth - resized.height) / 2).round());
   return DartImage.encodePng(centered);
 }

@@ -5,7 +5,6 @@ import 'package:breez/theme_data.dart' as theme;
 
 void showProvierErrorDialog(
     BuildContext context, String error, Function() onSelect) {
-      
   String message = "In order to activate Breez, please ";
   if (error != null) {
     message =

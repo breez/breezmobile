@@ -23,7 +23,8 @@ class PaymentRequestInfoDialog extends StatefulWidget {
   final Function(Map map) _setAmountToPay;
   final _transparentImage = DartImage.encodePng(DartImage.Image(300, 300));
 
-  PaymentRequestInfoDialog(this.context, this.accountBloc, this.invoice, this._onStateChange, this._setDialogHeight, this._setAmountToPay);
+  PaymentRequestInfoDialog(this.context, this.accountBloc, this.invoice,
+      this._onStateChange, this._setDialogHeight, this._setAmountToPay);
 
   @override
   State<StatefulWidget> createState() {
@@ -34,11 +35,11 @@ class PaymentRequestInfoDialog extends StatefulWidget {
 class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   final _dialogKey = GlobalKey();
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _invoiceAmountController = new TextEditingController();
+  TextEditingController _invoiceAmountController = TextEditingController();
   final FocusNode _amountFocusNode = FocusNode();
   KeyboardDoneAction _doneAction;
 
-  Map<String, dynamic> _amountToPayMap = new Map<String, dynamic>();
+  Map<String, dynamic> _amountToPayMap = Map<String, dynamic>();
 
   bool _showFiatCurrency = false;
 
@@ -48,10 +49,11 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     _invoiceAmountController.addListener(() {
       setState(() {});
     });
-    _doneAction = new KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
+    _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
   }
 
-  @override void dispose() {
+  @override
+  void dispose() {
     _doneAction.dispose();
     super.dispose();
   }
@@ -66,12 +68,15 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     _addIfNotNull(_paymentRequestDialog, _buildPaymentRequestTitle());
     _addIfNotNull(_paymentRequestDialog, _buildPaymentRequestContent());
     return Dialog(
-        child: Container(
-            key: _dialogKey,
-            width: MediaQuery.of(context).size.width,
-            constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
-            child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: _paymentRequestDialog)),
-        );
+      child: Container(
+          key: _dialogKey,
+          width: MediaQuery.of(context).size.width,
+          constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: _paymentRequestDialog)),
+    );
   }
 
   Widget _buildPaymentRequestTitle() {
@@ -79,12 +84,14 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         ? null
         : Container(
             height: widget.invoice.payeeImageURL.isEmpty ? 64.0 : 128.0,
-            padding: widget.invoice.payeeImageURL.isEmpty ? EdgeInsets.zero : EdgeInsets.only(top: 48.0),
+            padding: widget.invoice.payeeImageURL.isEmpty
+                ? EdgeInsets.zero
+                : EdgeInsets.only(top: 48.0),
             child: Stack(
               children: <Widget>[
                 Center(
                   child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(
+                    valueColor: AlwaysStoppedAnimation<Color>(
                       Theme.of(context).primaryTextTheme.button.color,
                     ),
                     backgroundColor: Theme.of(context).backgroundColor,
@@ -96,9 +103,10 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                       width: 64.0,
                       height: 64.0,
                       placeholder: MemoryImage(widget._transparentImage),
-                      image: AdvancedNetworkImage(widget.invoice.payeeImageURL, useDiskCache: true),
-                      fadeOutDuration: new Duration(milliseconds: 200),
-                      fadeInDuration: new Duration(milliseconds: 200)),
+                      image: AdvancedNetworkImage(widget.invoice.payeeImageURL,
+                          useDiskCache: true),
+                      fadeOutDuration: Duration(milliseconds: 200),
+                      fadeInDuration: Duration(milliseconds: 200)),
                 )),
               ],
             ));
@@ -110,7 +118,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       builder: (context, snapshot) {
         var account = snapshot.data;
         if (account == null) {
-          return new Container(width: 0.0, height: 0.0);
+          return Container(width: 0.0, height: 0.0);
         }
         List<Widget> children = [];
         _addIfNotNull(children, _buildPayeeNameWidget());
@@ -144,21 +152,30 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         ? null
         : Text(
             "${widget.invoice.payeeName}",
-            style: Theme.of(context).primaryTextTheme.display1.copyWith(fontSize: 16),
+            style: Theme.of(context)
+                .primaryTextTheme
+                .display1
+                .copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );
   }
 
   Widget _buildRequestPayTextWidget() {
     return widget.invoice.payeeName == null || widget.invoice.payeeName.isEmpty
-        ? new Text(
+        ? Text(
             "You are requested to pay:",
-            style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
+            style: Theme.of(context)
+                .primaryTextTheme
+                .display2
+                .copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           )
-        : new Text(
+        : Text(
             "is requesting you to pay:",
-            style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
+            style: Theme.of(context)
+                .primaryTextTheme
+                .display2
+                .copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );
   }
@@ -167,34 +184,41 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     if (widget.invoice.amount == 0) {
       return Theme(
         data: Theme.of(context).copyWith(
-          inputDecorationTheme: InputDecorationTheme(enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide)),
-          hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-          accentColor: Theme.of(context).textTheme.button.color,
-          primaryColor: Theme.of(context).textTheme.button.color,
-          errorColor: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor),
-          child: Form(
-            autovalidate: true,
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Container(
-                  height: 80.0,
-                child: AmountFormField(
-                  context: context,
-                  accountModel: account,
-                  iconColor: Theme.of(context).primaryIconTheme.color,
-                  focusNode: _amountFocusNode,
-                  controller: _invoiceAmountController,
-                  validatorFn: account.validateOutgoingPayment,
-                  style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(height: 1.0),
-                ),
+            inputDecorationTheme: InputDecorationTheme(
+                enabledBorder:
+                    UnderlineInputBorder(borderSide: theme.greyBorderSide)),
+            hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
+            accentColor: Theme.of(context).textTheme.button.color,
+            primaryColor: Theme.of(context).textTheme.button.color,
+            errorColor: theme.themeId == "BLUE"
+                ? Colors.red
+                : Theme.of(context).errorColor),
+        child: Form(
+          autovalidate: true,
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+            child: Container(
+              height: 80.0,
+              child: AmountFormField(
+                context: context,
+                accountModel: account,
+                iconColor: Theme.of(context).primaryIconTheme.color,
+                focusNode: _amountFocusNode,
+                controller: _invoiceAmountController,
+                validatorFn: account.validateOutgoingPayment,
+                style: Theme.of(context)
+                    .dialogTheme
+                    .contentTextStyle
+                    .copyWith(height: 1.0),
               ),
             ),
           ),
+        ),
       );
     }
     return GestureDetector(
-      child: new ConstrainedBox(
+      child: ConstrainedBox(
         constraints: const BoxConstraints(minWidth: double.infinity),
         child: Text(
           _showFiatCurrency && account.fiatCurrency != null
@@ -219,21 +243,28 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   }
 
   Widget _buildDescriptionWidget() {
-    return widget.invoice.description == null || widget.invoice.description.isEmpty
+    return widget.invoice.description == null ||
+            widget.invoice.description.isEmpty
         ? null
         : Padding(
             padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
             child: AutoSizeText(
               widget.invoice.description,
-              style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16),
-              textAlign: widget.invoice.description.length > 40 ? TextAlign.justify : TextAlign.center,
+              style: Theme.of(context)
+                  .primaryTextTheme
+                  .display2
+                  .copyWith(fontSize: 16),
+              textAlign: widget.invoice.description.length > 40
+                  ? TextAlign.justify
+                  : TextAlign.center,
               maxLines: 3,
             ),
           );
   }
 
   Widget _buildErrorMessage(AccountModel account) {
-    String validationError = account.validateOutgoingPayment(amountToPay(account));
+    String validationError =
+        account.validateOutgoingPayment(amountToPay(account));
     if (validationError == null || widget.invoice.amount == 0) {
       return null;
     }
@@ -241,15 +272,22 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
       child: AutoSizeText(validationError,
-          maxLines: 3, textAlign: TextAlign.center, style: Theme.of(context).primaryTextTheme.display2.copyWith(fontSize: 16, color: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor)),
+          maxLines: 3,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).primaryTextTheme.display2.copyWith(
+              fontSize: 16,
+              color: theme.themeId == "BLUE"
+                  ? Colors.red
+                  : Theme.of(context).errorColor)),
     );
   }
 
   Widget _buildActions(AccountModel account) {
     List<Widget> actions = [
       SimpleDialogOption(
-        onPressed: () => widget._onStateChange(PaymentRequestState.USER_CANCELLED),
-        child: new Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
+        onPressed: () =>
+            widget._onStateChange(PaymentRequestState.USER_CANCELLED),
+        child: Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
       )
     ];
 
@@ -261,20 +299,25 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             widget._setDialogHeight(_getDialogSize());
             if (widget.invoice.amount == 0) {
               _amountToPayMap["_amountToPay"] = toPay;
-              _amountToPayMap["_amountToPayStr"] = account.currency.format(amountToPay(account));
+              _amountToPayMap["_amountToPayStr"] =
+                  account.currency.format(amountToPay(account));
               widget._setAmountToPay(_amountToPayMap);
-              widget._onStateChange(PaymentRequestState.WAITING_FOR_CONFIRMATION);
+              widget
+                  ._onStateChange(PaymentRequestState.WAITING_FOR_CONFIRMATION);
             } else {
-              widget.accountBloc.userActionsSink.add(SendPayment(PayRequest(widget.invoice.rawPayReq, amountToPay(account))));
+              widget.accountBloc.userActionsSink.add(SendPayment(
+                  PayRequest(widget.invoice.rawPayReq, amountToPay(account))));
               widget._onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
             }
           }
         }),
-        child: new Text("APPROVE", style: Theme.of(context).primaryTextTheme.button),
+        child:
+            Text("APPROVE", style: Theme.of(context).primaryTextTheme.button),
       ));
     }
     return Theme(
-      data: Theme.of(context).copyWith(splashColor: Colors.transparent, highlightColor: Colors.transparent),
+      data: Theme.of(context).copyWith(
+          splashColor: Colors.transparent, highlightColor: Colors.transparent),
       child: Padding(
         padding: const EdgeInsets.only(top: 24.0),
         child: Row(

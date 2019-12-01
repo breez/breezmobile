@@ -6,10 +6,12 @@ class AddFundsSettings {
   AddFundsSettings.start() : this(moonpayIpCheck: true);
 
   AddFundsSettings copyWith({bool moonpayIpCheck}) {
-    return AddFundsSettings(moonpayIpCheck: moonpayIpCheck ?? this.moonpayIpCheck);
+    return AddFundsSettings(
+        moonpayIpCheck: moonpayIpCheck ?? this.moonpayIpCheck);
   }
 
-  AddFundsSettings.fromJson(Map<String, dynamic> json) : this(moonpayIpCheck: json["moonpayIpCheck"] ?? true);
+  AddFundsSettings.fromJson(Map<String, dynamic> json)
+      : this(moonpayIpCheck: json["moonpayIpCheck"] ?? true);
 
   Map<String, dynamic> toJson() => {"moonpayIpCheck": moonpayIpCheck};
 }

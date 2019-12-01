@@ -27,9 +27,10 @@ class SendCoinsDialog extends StatelessWidget {
             return promptAreYouSure(
                     context,
                     null,
-                    Text("Are you sure you want to remove " +
-                        acc.currency.format(acc.walletBalance) +
-                        " from Breez and send this amount to the address you've specified?",
+                    Text(
+                        "Are you sure you want to remove " +
+                            acc.currency.format(acc.walletBalance) +
+                            " from Breez and send this amount to the address you've specified?",
                         style: Theme.of(context).dialogTheme.contentTextStyle))
                 .then((sure) {
               if (!sure) {
@@ -37,14 +38,16 @@ class SendCoinsDialog extends StatelessWidget {
               }
               return _sendAndWait(context, SendCoins(fee.toInt(), address));
             });
-          }, prefixMessage: "Breez found unexpected funds in its underlying  wallet. These funds cannot be used for Breez payments, so it is highly recommended you send them to an external address as soon as possible.");
+          },
+              prefixMessage:
+                  "Breez found unexpected funds in its underlying  wallet. These funds cannot be used for Breez payments, so it is highly recommended you send them to an external address as soon as possible.");
         });
   }
 
   Future<String> _sendAndWait(BuildContext context, SendCoins action) {
     accountBloc.userActionsSink.add(action);
 
-    AlertDialog dialog = new AlertDialog(
+    AlertDialog dialog = AlertDialog(
       title: Text(
         "Removing Funds",
         style: Theme.of(context).dialogTheme.titleTextStyle,
@@ -54,14 +57,14 @@ class SendCoinsDialog extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          new Text(
+          Text(
             "Please wait while Breez is sending the funds to the specified address.",
             style: Theme.of(context).dialogTheme.contentTextStyle,
             textAlign: TextAlign.center,
           ),
           Padding(
               padding: EdgeInsets.only(top: 8.0),
-              child: new Image.asset(
+              child: Image.asset(
                 theme.customData[theme.themeId].loaderAssetPath,
                 gaplessPlayback: true,
               ))
@@ -81,10 +84,14 @@ class SendCoinsDialog extends StatelessWidget {
       return "The funds were successfully sent to the address you have specified.";
     }).catchError((err) {
       Navigator.of(context).pop();
-      return promptError(context, null, Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle))
-        .whenComplete((){
-          return Future.error(err);
-        });      
+      return promptError(
+              context,
+              null,
+              Text(err.toString(),
+                  style: Theme.of(context).dialogTheme.contentTextStyle))
+          .whenComplete(() {
+        return Future.error(err);
+      });
     });
   }
 }

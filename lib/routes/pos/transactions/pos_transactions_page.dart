@@ -15,7 +15,7 @@ import 'package:share_extend/share_extend.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
-class PosTransactionsPage extends StatefulWidget {  
+class PosTransactionsPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return PosTransactionsPageState();
@@ -24,17 +24,17 @@ class PosTransactionsPage extends StatefulWidget {
 
 class PosTransactionsPageState extends State<PosTransactionsPage> {
   final String _title = "Transactions";
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final ScrollController _scrollController = new ScrollController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final ScrollController _scrollController = ScrollController();
 
   AccountBloc _accountBloc;
   StreamSubscription<String> _accountActionsSubscription;
   bool _isInit = false;
 
   @override
-  void didChangeDependencies() {        
+  void didChangeDependencies() {
     if (!_isInit) {
-      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);      
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -64,27 +64,33 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
                   return Container();
                 }
 
-                if ((account != null && !account.initial) && (paymentsModel != null && paymentsModel.paymentsList.length == 0 &&
-                    paymentsModel.filter == PaymentFilterModel.initial())) {
-                  return _buildScaffold(Center(child: Text("Successful transactions are displayed here.")));
+                if ((account != null && !account.initial) &&
+                    (paymentsModel != null &&
+                        paymentsModel.paymentsList.length == 0 &&
+                        paymentsModel.filter == PaymentFilterModel.initial())) {
+                  return _buildScaffold(Center(
+                      child:
+                          Text("Successful transactions are displayed here.")));
                 }
 
                 // account and payments are ready, build their widgets
-                return _buildScaffold(
-                    _buildTransactions(paymentsModel), [_calendarButton(paymentsModel), _exportButton(paymentsModel, context)]);
+                return _buildScaffold(_buildTransactions(paymentsModel), [
+                  _calendarButton(paymentsModel),
+                  _exportButton(paymentsModel, context)
+                ]);
               });
         });
   }
 
   Widget _buildScaffold(Widget body, [List<Widget> actions]) {
-    return new Scaffold(
+    return Scaffold(
       key: _scaffoldKey,
-      appBar: new AppBar(
+      appBar: AppBar(
         iconTheme: Theme.of(context).appBarTheme.iconTheme,
         textTheme: Theme.of(context).appBarTheme.textTheme,
         backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
-        title: new Text(
+        title: Text(
           _title,
           style: Theme.of(context).appBarTheme.textTheme.title,
         ),
@@ -97,10 +103,14 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
 
   Widget _calendarButton(PaymentsModel paymentsModel) {
     return IconButton(
-        icon: ImageIcon(AssetImage("src/icon/calendar.png"), color: Colors.white, size: 24.0),
-        onPressed: () =>
-            showDialog(context: context, builder: (_) => CalendarDialog(context, paymentsModel.firstDate)).then(
-                ((result) => _accountBloc.paymentFilterSink.add(paymentsModel.filter.copyWith(startDate: result[0], endDate: result[1])))));
+        icon: ImageIcon(AssetImage("src/icon/calendar.png"),
+            color: Colors.white, size: 24.0),
+        onPressed: () => showDialog(
+            context: context,
+            builder: (_) =>
+                CalendarDialog(context, paymentsModel.firstDate)).then(
+            ((result) => _accountBloc.paymentFilterSink.add(paymentsModel.filter
+                .copyWith(startDate: result[0], endDate: result[1])))));
   }
 
   Padding _exportButton(PaymentsModel paymentsModel, BuildContext context) {
@@ -159,46 +169,63 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        ((paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null) &&
-            paymentsModel.paymentsList.length == 0) ? Column(mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              _buildDateFilterChip(paymentsModel.filter),
-              Expanded(child: Center(child: Text("There are no transactions in this date range"),)),
-            ]) :
-        CustomScrollView(
-          controller: _scrollController,
-          slivers: <Widget>[
-            (paymentsModel.filter.startDate != null && paymentsModel.filter.endDate != null)
-                ? SliverAppBar(
-              pinned: true,
-              elevation: 0.0,
-              expandedHeight: 32.0,
-              automaticallyImplyLeading: false,
-              backgroundColor: Theme.of(context).canvasColor,
-              flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
-            ) : SliverPadding(padding: EdgeInsets.zero)
-            ,
-            PosPaymentsList(paymentsModel.paymentsList, PAYMENT_LIST_ITEM_HEIGHT),
-          ],
-        ),
+        ((paymentsModel.filter.startDate != null &&
+                    paymentsModel.filter.endDate != null) &&
+                paymentsModel.paymentsList.length == 0)
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                    _buildDateFilterChip(paymentsModel.filter),
+                    Expanded(
+                        child: Center(
+                      child:
+                          Text("There are no transactions in this date range"),
+                    )),
+                  ])
+            : CustomScrollView(
+                controller: _scrollController,
+                slivers: <Widget>[
+                  (paymentsModel.filter.startDate != null &&
+                          paymentsModel.filter.endDate != null)
+                      ? SliverAppBar(
+                          pinned: true,
+                          elevation: 0.0,
+                          expandedHeight: 32.0,
+                          automaticallyImplyLeading: false,
+                          backgroundColor: Theme.of(context).canvasColor,
+                          flexibleSpace:
+                              _buildDateFilterChip(paymentsModel.filter),
+                        )
+                      : SliverPadding(padding: EdgeInsets.zero),
+                  PosPaymentsList(
+                      paymentsModel.paymentsList, PAYMENT_LIST_ITEM_HEIGHT),
+                ],
+              ),
       ],
     );
   }
 
   _buildDateFilterChip(PaymentFilterModel filter) {
-    return (filter.startDate != null && filter.endDate != null) ?
-    _filterChip(filter) : Container();
+    return (filter.startDate != null && filter.endDate != null)
+        ? _filterChip(filter)
+        : Container();
   }
 
   Widget _filterChip(PaymentFilterModel filter) {
-    return Row(mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[Padding(padding: EdgeInsets.only(left: 16.0),
-        child: Chip(label: new Text(DateUtils.formatFilterDateRange(filter.startDate, filter.endDate)),
-          onDeleted: () =>
-              _accountBloc.paymentFilterSink.add(PaymentFilterModel(
-                  filter.paymentType, null,
-                  null)),),)
-      ],);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(left: 16.0),
+          child: Chip(
+            label: Text(DateUtils.formatFilterDateRange(
+                filter.startDate, filter.endDate)),
+            onDeleted: () => _accountBloc.paymentFilterSink
+                .add(PaymentFilterModel(filter.paymentType, null, null)),
+          ),
+        )
+      ],
+    );
   }
 }
 

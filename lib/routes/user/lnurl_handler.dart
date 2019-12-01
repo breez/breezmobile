@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 import 'create_invoice/create_invoice_page.dart';
 
 class LNURLHandler {
-  final BuildContext _context;  
+  final BuildContext _context;
 
   LNURLHandler(this._context) {
     LNUrlBloc bloc = LNUrlBloc();
     bloc.lnurlWithdrawStream.listen((withdrawResponse) {
       Navigator.of(_context).push(FadeInRoute(
-        builder: (_) => new CreateInvoicePage(lnurlWithdraw: withdrawResponse),
+        builder: (_) => CreateInvoicePage(lnurlWithdraw: withdrawResponse),
       ));
     });
   }

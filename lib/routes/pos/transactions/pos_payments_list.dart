@@ -10,9 +10,9 @@ class PosPaymentsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new SliverFixedExtentList(
+    return SliverFixedExtentList(
       itemExtent: _itemHeight,
-      delegate: new SliverChildBuilderDelegate((BuildContext context, int index) {
+      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
         return PosPaymentItem(_payments[index], _payments.length - 1 == index);
       }, childCount: _payments.length),
     );

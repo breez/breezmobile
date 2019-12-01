@@ -3,9 +3,9 @@ import 'package:breez/bloc/async_action.dart';
 import 'account_model.dart';
 
 class SendPaymentFailureReport extends AsyncAction {
-  final String traceReport;  
+  final String traceReport;
 
-  SendPaymentFailureReport(this.traceReport);  
+  SendPaymentFailureReport(this.traceReport);
 }
 
 class ResetNetwork extends AsyncAction {}
@@ -14,9 +14,9 @@ class ResetChainService extends AsyncAction {}
 
 class RestartDaemon extends AsyncAction {}
 
-class FetchSwapFundStatus extends AsyncAction{}
+class FetchSwapFundStatus extends AsyncAction {}
 
-class SendPayment extends AsyncAction{
+class SendPayment extends AsyncAction {
   final PayRequest paymentRequest;
 
   SendPayment(this.paymentRequest);
@@ -39,8 +39,8 @@ class FetchRates extends AsyncAction {}
 class SendCoins extends AsyncAction {
   final int feeRate;
   final String destAddress;
-  
+
   SendCoins(this.feeRate, this.destAddress);
 }
 
-class ExportPayments extends AsyncAction{}
+class ExportPayments extends AsyncAction {}

@@ -7,40 +7,44 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
-class DepositToBTCAddressPage extends StatefulWidget {  
+class DepositToBTCAddressPage extends StatefulWidget {
   final AccountBloc _accountBloc;
 
   const DepositToBTCAddressPage(this._accountBloc);
 
   @override
   State<StatefulWidget> createState() {
-    return new DepositToBTCAddressPageState();
+    return DepositToBTCAddressPageState();
   }
 }
 
 class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
-  final String _title = "Deposit To Bitcoin Address";  
+  final String _title = "Deposit To Bitcoin Address";
   AddFundsBloc _addFundsBloc;
   Route _thisRoute;
 
-  @override void didChangeDependencies() {    
+  @override
+  void didChangeDependencies() {
     super.didChangeDependencies();
     if (_addFundsBloc == null) {
       _thisRoute = ModalRoute.of(context);
-      _addFundsBloc = BlocProvider.of<AddFundsBloc>(context); 
+      _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
       _addFundsBloc.addFundRequestSink.add(false);
-      widget._accountBloc.accountStream.firstWhere((acc) => !acc.isInitialBootstrap).then((acc) {
+      widget._accountBloc.accountStream
+          .firstWhere((acc) => !acc.isInitialBootstrap)
+          .then((acc) {
         if (this.mounted) {
           _addFundsBloc.addFundRequestSink.add(true);
         }
       });
-            
-      widget._accountBloc.accountStream.firstWhere(
-        (acc) => acc?.swapFundsStatus?.unconfirmedTxID?.isNotEmpty == true)
-        .then((acc) {
-          if (this.mounted) {            
-            Navigator.of(context).removeRoute(_thisRoute);
-          }
+
+      widget._accountBloc.accountStream
+          .firstWhere((acc) =>
+              acc?.swapFundsStatus?.unconfirmedTxID?.isNotEmpty == true)
+          .then((acc) {
+        if (this.mounted) {
+          Navigator.of(context).removeRoute(_thisRoute);
+        }
       });
     }
   }
@@ -48,26 +52,28 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   @override
   Widget build(BuildContext context) {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    return new StreamBuilder(
+    return StreamBuilder(
         stream: accountBloc.accountStream,
-        builder: (BuildContext context, AsyncSnapshot<AccountModel> accSnapshot) {
+        builder:
+            (BuildContext context, AsyncSnapshot<AccountModel> accSnapshot) {
           return StreamBuilder(
               stream: _addFundsBloc.addFundResponseStream,
-              builder: (BuildContext context, AsyncSnapshot<AddFundResponse> snapshot) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<AddFundResponse> snapshot) {
                 return Material(
-                  child: new Scaffold(
-                      appBar: new AppBar(
+                  child: Scaffold(
+                      appBar: AppBar(
                         iconTheme: Theme.of(context).appBarTheme.iconTheme,
                         textTheme: Theme.of(context).appBarTheme.textTheme,
                         backgroundColor: Theme.of(context).canvasColor,
                         leading: backBtn.BackButton(),
-                        title: new Text(
+                        title: Text(
                           _title,
                           style: Theme.of(context).appBarTheme.textTheme.title,
                         ),
                         elevation: 0.0,
                       ),
-                      body: new Container(
+                      body: Container(
                         child: Material(
                             child: getBody(
                                 context,
@@ -82,7 +88,8 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
         });
   }
 
-  Widget getBody(BuildContext context, AccountModel account, AddFundResponse response, String error) {
+  Widget getBody(BuildContext context, AccountModel account,
+      AddFundResponse response, String error) {
     String errorMessage;
     if (error != null) {
       errorMessage = error;
@@ -111,21 +118,28 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
           : Padding(
               padding: const EdgeInsets.all(16),
               child: Container(
-                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: Theme.of(context).errorColor)),
-                padding: new EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                    border: Border.all(color: Theme.of(context).errorColor)),
+                padding: EdgeInsets.all(16),
                 child: Text(
-                  "Send up to " + account.currency.format(response.maxAllowedDeposit, includeSymbol: true) + " to this address.",
+                  "Send up to " +
+                      account.currency.format(response.maxAllowedDeposit,
+                          includeSymbol: true) +
+                      " to this address.",
                   style: Theme.of(context).textTheme.caption,
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
       Expanded(child: SizedBox()),
-      _buildBottomBar(response, account, hasError: error != null ? true : false),
+      _buildBottomBar(response, account,
+          hasError: error != null ? true : false),
     ]);
   }
 
-  Widget _buildBottomBar(AddFundResponse response, AccountModel account, {hasError = false}) {
+  Widget _buildBottomBar(AddFundResponse response, AccountModel account,
+      {hasError = false}) {
     if (hasError || response?.errorMessage?.isNotEmpty == true) {
       return SingleButtonBottomBar(
           text: hasError ? "RETRY" : "CLOSE",

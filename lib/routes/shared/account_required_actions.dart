@@ -28,11 +28,12 @@ class AccountRequiredActionsIndicator extends StatefulWidget {
   final UserProfileBloc _userProfileBloc;
   final LSPBloc lspBloc;
 
-  AccountRequiredActionsIndicator(this._backupBloc, this._accountBloc, this._userProfileBloc, this.lspBloc);
+  AccountRequiredActionsIndicator(
+      this._backupBloc, this._accountBloc, this._userProfileBloc, this.lspBloc);
 
   @override
   AccountRequiredActionsIndicatorState createState() {
-    return new AccountRequiredActionsIndicatorState();
+    return AccountRequiredActionsIndicatorState();
   }
 }
 
@@ -54,23 +55,28 @@ class AccountRequiredActionsIndicatorState
       _promptEnableSubscription =
           Observable(widget._backupBloc.promptBackupStream)
               .delay(Duration(seconds: 4))
-              .listen((needSignIn) async {                
-                if (_currentSettings.promptOnError && !showingBackupDialog) {
-                  showingBackupDialog = true;
-                  widget._backupBloc.backupPromptVisibleSink.add(true);
-                  popFlushbars(context);
-                  await widget._userProfileBloc.userStream.where((u) => u.locked == false).first;
-                  showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (_) =>
-                          new EnableBackupDialog(context, widget._backupBloc, signInNeeded: needSignIn,)).then((_) {
-                    showingBackupDialog = false;
-                    widget._backupBloc.backupPromptVisibleSink.add(false);
-                  });
-                }
-              });   
-      _init = true; 
+              .listen((needSignIn) async {
+        if (_currentSettings.promptOnError && !showingBackupDialog) {
+          showingBackupDialog = true;
+          widget._backupBloc.backupPromptVisibleSink.add(true);
+          popFlushbars(context);
+          await widget._userProfileBloc.userStream
+              .where((u) => u.locked == false)
+              .first;
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (_) => EnableBackupDialog(
+                    context,
+                    widget._backupBloc,
+                    signInNeeded: needSignIn,
+                  )).then((_) {
+            showingBackupDialog = false;
+            widget._backupBloc.backupPromptVisibleSink.add(false);
+          });
+        }
+      });
+      _init = true;
     }
   }
 
@@ -81,24 +87,26 @@ class AccountRequiredActionsIndicatorState
     super.dispose();
   }
 
-  Widget _buildLoader(BackupState backupState, AccountModel account){
+  Widget _buildLoader(BackupState backupState, AccountModel account) {
     Widget Function(BuildContext) dialogBuilder;
 
     if (backupState?.inProgress == true) {
-      dialogBuilder = (_) => buildBackupInProgressDialog(context, widget._backupBloc.backupStateStream);      
+      dialogBuilder = (_) => buildBackupInProgressDialog(
+          context, widget._backupBloc.backupStateStream);
     } else if (account?.transferringOnChainDeposit == true) {
-      dialogBuilder = (_) => buildTransferFundsInProgressDialog(context, widget._accountBloc.accountStream);      
+      dialogBuilder = (_) => buildTransferFundsInProgressDialog(
+          context, widget._accountBloc.accountStream);
     }
 
     if (dialogBuilder != null) {
       return WarningAction(
-        (){
-          showDialog(
-            context: context,                              
-            builder: dialogBuilder
-          );
+        () {
+          showDialog(context: context, builder: dialogBuilder);
         },
-        iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Theme.of(context).appBarTheme.actionsIconTheme.color)),
+        iconWidget: Rotator(
+            child: Image(
+                image: AssetImage("src/icon/sync.png"),
+                color: Theme.of(context).appBarTheme.actionsIconTheme.color)),
       );
     }
 
@@ -117,7 +125,8 @@ class AccountRequiredActionsIndicatorState
                 builder: (context, accountSnapshot) {
                   return StreamBuilder<BackupSettings>(
                     stream: widget._backupBloc.backupSettingsStream,
-                    builder: (context, backupSettingsSnapshot) => StreamBuilder<BackupState>(
+                    builder: (context, backupSettingsSnapshot) => StreamBuilder<
+                            BackupState>(
                         stream: widget._backupBloc.backupStateStream,
                         builder: (context, backupSnapshot) {
                           List<Widget> warnings = List<Widget>();
@@ -126,60 +135,82 @@ class AccountRequiredActionsIndicatorState
                           if (walletBalance > 0 &&
                               !settingsSnapshot.data.ignoreWalletBalance) {
                             warnings.add(WarningAction(() =>
-                                Navigator.of(context).pushNamed("/send_coins")));
+                                Navigator.of(context)
+                                    .pushNamed("/send_coins")));
                           }
 
                           if (backupSnapshot.hasError) {
                             bool signInNeeded = false;
-                            if (backupSnapshot.error.runtimeType == BackupFailedException) {
-                              signInNeeded = (backupSnapshot.error as BackupFailedException).authenticationError;
+                            if (backupSnapshot.error.runtimeType ==
+                                BackupFailedException) {
+                              signInNeeded = (backupSnapshot.error
+                                      as BackupFailedException)
+                                  .authenticationError;
                             }
                             warnings.add(WarningAction(() async {
-                                showDialog(
+                              showDialog(
                                   barrierDismissible: false,
                                   context: context,
-                                  builder: (_) => new EnableBackupDialog(
-                                      context, widget._backupBloc, signInNeeded: signInNeeded));
-                              }));
+                                  builder: (_) => EnableBackupDialog(
+                                      context, widget._backupBloc,
+                                      signInNeeded: signInNeeded));
+                            }));
                           }
 
-                          var loaderIcon = _buildLoader(backupSnapshot.data, accountSnapshot.data);
+                          var loaderIcon = _buildLoader(
+                              backupSnapshot.data, accountSnapshot.data);
                           if (loaderIcon != null) {
                             warnings.add(loaderIcon);
                           }
 
-                          var swapStatus = accountSnapshot?.data?.swapFundsStatus;
+                          var swapStatus =
+                              accountSnapshot?.data?.swapFundsStatus;
 
                           // only warn on refundable addresses that weren't refunded in the past.
                           var shouldWarnRefund = swapStatus != null &&
-                            swapStatus.refundableAddresses.where((r) => r.lastRefundTxID.isEmpty).length > 0;
+                              swapStatus.refundableAddresses
+                                      .where((r) => r.lastRefundTxID.isEmpty)
+                                      .length >
+                                  0;
 
                           if (shouldWarnRefund) {
                             warnings.add(WarningAction(() => showDialog(
                                 barrierDismissible: false,
                                 context: context,
-                                builder: (_) => new SwapRefundDialog(accountBloc: widget._accountBloc))));
+                                builder: (_) => SwapRefundDialog(
+                                    accountBloc: widget._accountBloc))));
                           }
 
-                          if (accountSnapshot?.data?.syncUIState == SyncUIState.COLLAPSED) {
+                          if (accountSnapshot?.data?.syncUIState ==
+                              SyncUIState.COLLAPSED) {
                             warnings.add(WarningAction(
-                              () => widget._accountBloc.userActionsSink.add(ChangeSyncUIState(SyncUIState.BLOCKING)),
-                              iconWidget: Rotator(child: Image(image: AssetImage("src/icon/sync.png"), color: Theme.of(context).appBarTheme.actionsIconTheme.color)),
+                              () => widget._accountBloc.userActionsSink
+                                  .add(ChangeSyncUIState(SyncUIState.BLOCKING)),
+                              iconWidget: Rotator(
+                                  child: Image(
+                                      image: AssetImage("src/icon/sync.png"),
+                                      color: Theme.of(context)
+                                          .appBarTheme
+                                          .actionsIconTheme
+                                          .color)),
                             ));
                           }
 
                           var lspStat = lspStatusSnapshot?.data;
-                          if (lspStat?.selectionRequired == true && lspStat?.dontPromptToConnect == true) {
-                             warnings.add(WarningAction(() {
+                          if (lspStat?.selectionRequired == true &&
+                              lspStat?.dontPromptToConnect == true) {
+                            warnings.add(WarningAction(() {
                               if (lspStat?.lastConnectionError != null) {
-                                showProvierErrorDialog(context, lspStat?.lastConnectionError, (){
-                                  Navigator.of(context).push(
-                                  FadeInRoute(builder: (_) => SelectLSPPage(lstBloc: widget.lspBloc)));
-                                }); 
+                                showProvierErrorDialog(
+                                    context, lspStat?.lastConnectionError, () {
+                                  Navigator.of(context).push(FadeInRoute(
+                                      builder: (_) => SelectLSPPage(
+                                          lstBloc: widget.lspBloc)));
+                                });
                               } else {
                                 Navigator.of(context).pushNamed("/select_lsp");
-                              }                           
-                             }));
+                              }
+                            }));
                           }
 
                           if (warnings.length == 0) {
@@ -187,10 +218,9 @@ class AccountRequiredActionsIndicatorState
                           }
 
                           return Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            mainAxisSize: MainAxisSize.min,
-                            children: warnings
-                          );
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: warnings);
                         }),
                   );
                 });
@@ -206,20 +236,21 @@ class WarningAction extends StatefulWidget {
   WarningAction(this.onTap, {this.iconWidget});
 
   @override
-  State<StatefulWidget> createState() {    
+  State<StatefulWidget> createState() {
     return WarningActionState();
   }
 }
 
-class WarningActionState extends State<WarningAction> with SingleTickerProviderStateMixin {  
-
+class WarningActionState extends State<WarningAction>
+    with SingleTickerProviderStateMixin {
   Animation<double> _animation;
   AnimationController _animationController;
 
-  @override 
-  void initState() {  
+  @override
+  void initState() {
     super.initState();
-    _animationController = new AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 1));
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
         _animationController); //use Tween animation here, to animate between the values of 1.0 & 2.5.
     _animation.addListener(() {
@@ -229,9 +260,9 @@ class WarningActionState extends State<WarningAction> with SingleTickerProviderS
     _animationController.forward();
   }
 
-  @override 
+  @override
   void dispose() {
-    _animationController.dispose();  
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -242,10 +273,11 @@ class WarningActionState extends State<WarningAction> with SingleTickerProviderS
       padding: EdgeInsets.zero,
       icon: Container(
         width: 45 * _animation.value,
-        child: widget.iconWidget ??  new Image(          
-          image: new AssetImage("src/icon/warning.png"),
-          color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-        ),
+        child: widget.iconWidget ??
+            Image(
+              image: AssetImage("src/icon/warning.png"),
+              color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+            ),
       ),
       tooltip: 'Backup',
       onPressed: this.widget.onTap,

@@ -28,13 +28,11 @@ class POSInvoice extends StatefulWidget {
 }
 
 class POSInvoiceState extends State<POSInvoice> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  
-  TextEditingController _amountController = new TextEditingController();
-  TextEditingController _chargeAmountController = new TextEditingController();
-  TextEditingController _invoiceDescriptionController =
-      new TextEditingController();
+  TextEditingController _amountController = TextEditingController();
+  TextEditingController _chargeAmountController = TextEditingController();
+  TextEditingController _invoiceDescriptionController = TextEditingController();
 
   POSProfileModel _posProfile;
   Currency _currency = Currency.BTC;
@@ -60,22 +58,22 @@ class POSInvoiceState extends State<POSInvoice> {
   bool _isInit = false;
 
   @override
-  void didChangeDependencies() {    
+  void didChangeDependencies() {
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      _posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);      
-      registerListeners();      
-      _isInit = true;  
-    } 
+      _posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);
+      registerListeners();
+      _isInit = true;
+    }
     itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
-    itemWidth = (MediaQuery.of(context).size.width) / 2; 
+    itemWidth = (MediaQuery.of(context).size.width) / 2;
     super.didChangeDependencies();
   }
 
-  void registerListeners() {    
-    _focusNode = new FocusNode();
+  void registerListeners() {
+    _focusNode = FocusNode();
     _focusNode.addListener(_onOnFocusNodeEvent);
     _invoiceDescriptionController.text = "";
     _accountSubscription = _accountBloc.accountStream.listen((acc) {
@@ -97,15 +95,16 @@ class POSInvoiceState extends State<POSInvoice> {
       cancellationTimeoutValue =
           _posProfile.cancellationTimeoutValue.toStringAsFixed(0);
     });
-    _invoiceReadyNotificationsSubscription =
-        _invoiceBloc.readyInvoicesStream.listen((invoiceReady) {
+    _invoiceReadyNotificationsSubscription = _invoiceBloc.readyInvoicesStream
+        .listen((invoiceReady) {
       // show the simple dialog with 3 states
       if (invoiceReady != null) {
         showDialog<bool>(
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
-              return new PosPaymentDialog(_invoiceBloc, _posProfileBloc, _scaffoldKey);
+              return PosPaymentDialog(
+                  _invoiceBloc, _posProfileBloc, _scaffoldKey);
             }).then((result) {
           setState(() {
             _currentAmount = 0;
@@ -120,11 +119,10 @@ class POSInvoiceState extends State<POSInvoice> {
           });
         });
       }
-      },
-      onError: (err) => _scaffoldKey.currentState.showSnackBar(
-          new SnackBar(
-              duration: new Duration(seconds: 10),
-              content: new Text(err.toString()))));
+    },
+            onError: (err) => _scaffoldKey.currentState.showSnackBar(SnackBar(
+                duration: Duration(seconds: 10),
+                content: Text(err.toString()))));
   }
 
   @override
@@ -138,55 +136,58 @@ class POSInvoiceState extends State<POSInvoice> {
     _accountSubscription?.cancel();
     _posProfileSubscription?.cancel();
     _invoiceReadyNotificationsSubscription?.cancel();
-    _invoiceNotificationsSubscription?.cancel();    
+    _invoiceNotificationsSubscription?.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: new GestureDetector(
+      body: GestureDetector(
         onTap: () {
           // call this method here to hide soft keyboard
-          FocusScope.of(context).requestFocus(new FocusNode());
+          FocusScope.of(context).requestFocus(FocusNode());
           setState(() {
             _isButtonDisabled = false;
           });
         },
-        child: new Builder(builder: (BuildContext context) {
+        child: Builder(builder: (BuildContext context) {
           return Column(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              new Container(
-                  child: new Column(
+              Container(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      new StreamBuilder<AccountSettings>(
+                      StreamBuilder<AccountSettings>(
                           stream: _accountBloc.accountSettingsStream,
                           builder: (settingCtx, settingSnapshot) {
                             return StreamBuilder<AccountModel>(
                                 stream: _accountBloc.accountStream,
                                 builder: (context, snapshot) {
                                   AccountModel acc = snapshot.data;
-                                  AccountSettings settings = settingSnapshot.data;
-                                  if (settings?.showConnectProgress == true || acc?.isInitialBootstrap == true ) {
-                                    return new StatusIndicator(context, snapshot.data);
+                                  AccountSettings settings =
+                                      settingSnapshot.data;
+                                  if (settings?.showConnectProgress == true ||
+                                      acc?.isInitialBootstrap == true) {
+                                    return StatusIndicator(
+                                        context, snapshot.data);
                                   }
                                   return SizedBox();
                                 });
                           }),
-                      new Padding(
+                      Padding(
                         padding:
                             EdgeInsets.only(top: 0.0, left: 16.0, right: 16.0),
-                        child: new ConstrainedBox(
+                        child: ConstrainedBox(
                           constraints:
                               const BoxConstraints(minWidth: double.infinity),
                           child: IgnorePointer(
                             ignoring: _isButtonDisabled,
-                            child: new RaisedButton(
+                            child: RaisedButton(
                               color: Theme.of(context).primaryColorLight,
                               padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
-                              child: new Text(
+                              child: Text(
                                 "Charge ${_chargeAmountController.text}"
                                     .toUpperCase(),
                                 maxLines: 1,
@@ -198,12 +199,12 @@ class POSInvoiceState extends State<POSInvoice> {
                           ),
                         ),
                       ),
-                      new Container(
+                      Container(
                         height: 80.0,
-                        child: new Padding(
+                        child: Padding(
                           padding: EdgeInsets.only(
                               left: 16.0, right: 16.0, top: 0.0),
-                          child: new TextField(
+                          child: TextField(
                             focusNode: _focusNode,
                             textInputAction: TextInputAction.done,
                             keyboardType: TextInputType.multiline,
@@ -226,43 +227,67 @@ class POSInvoiceState extends State<POSInvoice> {
                                   color: Color(0xFFc5cedd),
                                 ),
                               ),
-                              counterStyle: Theme.of(context).primaryTextTheme.caption,
+                              counterStyle:
+                                  Theme.of(context).primaryTextTheme.caption,
                               hintText: 'Add Note',
-                              hintStyle: theme.invoiceMemoStyle.copyWith(color: Theme.of(context).primaryTextTheme.display1.color),
+                              hintStyle: theme.invoiceMemoStyle.copyWith(
+                                  color: Theme.of(context)
+                                      .primaryTextTheme
+                                      .display1
+                                      .color),
                             ),
-                            style: theme.invoiceMemoStyle.copyWith(color: Theme.of(context).primaryTextTheme.display1.color),
+                            style: theme.invoiceMemoStyle.copyWith(
+                                color: Theme.of(context)
+                                    .primaryTextTheme
+                                    .display1
+                                    .color),
                           ),
                         ),
                       ),
-                      new Padding(
+                      Padding(
                         padding: EdgeInsets.only(left: 16.0, right: 16.0),
                         child: Row(children: <Widget>[
-                          new Flexible(
-                              child: new TextField(
-                                decoration: InputDecoration.collapsed(hintText: ''),
+                          Flexible(
+                              child: TextField(
+                            decoration: InputDecoration.collapsed(hintText: ''),
                             enabled: false,
                             controller: _amountController,
-                            style: theme.invoiceAmountStyle.copyWith(color:Theme.of(context).textTheme.headline.color),
+                            style: theme.invoiceAmountStyle.copyWith(
+                                color:
+                                    Theme.of(context).textTheme.headline.color),
                             textAlign: TextAlign.right,
                           )),
                           Theme(
-                            data: Theme.of(context).copyWith(canvasColor: Theme.of(context).backgroundColor),
-                            child: new DropdownButtonHideUnderline(
+                            data: Theme.of(context).copyWith(
+                                canvasColor: Theme.of(context).backgroundColor),
+                            child: DropdownButtonHideUnderline(
                               child: ButtonTheme(
                                 alignedDropdown: true,
-                                child: new BreezDropdownButton(
+                                child: BreezDropdownButton(
                                   onChanged: (value) => changeCurrency(value),
-                                  iconEnabledColor: Theme.of(context).textTheme.headline.color,
+                                  iconEnabledColor: Theme.of(context)
+                                      .textTheme
+                                      .headline
+                                      .color,
                                   value: _currency.displayName,
-                                  style: theme.invoiceAmountStyle.copyWith(color:Theme.of(context).textTheme.headline.color),
+                                  style: theme.invoiceAmountStyle.copyWith(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .headline
+                                          .color),
                                   items:
                                       Currency.currencies.map((Currency value) {
-                                    return new DropdownMenuItem<String>(
+                                    return DropdownMenuItem<String>(
                                       value: value.displayName,
-                                      child: new Text(
+                                      child: Text(
                                         value.displayName,
                                         textAlign: TextAlign.right,
-                                        style: theme.invoiceAmountStyle.copyWith(color:Theme.of(context).textTheme.headline.color),
+                                        style: theme.invoiceAmountStyle
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .headline
+                                                    .color),
                                       ),
                                     );
                                   }).toList(),
@@ -274,11 +299,11 @@ class POSInvoiceState extends State<POSInvoice> {
                       ),
                     ],
                   ),
-                  decoration: new BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Theme.of(context).backgroundColor,
                   ),
                   height: MediaQuery.of(context).size.height * 0.29),
-              new Expanded(child: _numPad())
+              Expanded(child: _numPad())
             ],
           );
         }),
@@ -304,19 +329,19 @@ class POSInvoiceState extends State<POSInvoice> {
           context: context,
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
-            return new AlertDialog(
-              title: new Text(
+            return AlertDialog(
+              title: Text(
                 "Required Information",
                 style: Theme.of(context).dialogTheme.titleTextStyle,
               ),
               contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
-              content: new SingleChildScrollView(
-                child: new Text("$errorMessage in the Settings screen.",
+              content: SingleChildScrollView(
+                child: Text("$errorMessage in the Settings screen.",
                     style: Theme.of(context).dialogTheme.contentTextStyle),
               ),
               actions: <Widget>[
-                new FlatButton(
-                  child: new Text("Go to Settings", style: theme.buttonStyle),
+                FlatButton(
+                  child: Text("Go to Settings", style: theme.buttonStyle),
                   onPressed: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pushNamed("/settings");
@@ -343,13 +368,12 @@ class POSInvoiceState extends State<POSInvoice> {
                 style: Theme.of(context).dialogTheme.contentTextStyle));
       } else if (_totalAmount < _maxPaymentAmount.toInt() ||
           _totalAmount < _maxPaymentAmount.toInt()) {
-        _invoiceBloc.newInvoiceRequestSink.add(
-            new InvoiceRequestModel(
-                _posProfile.invoiceString,
-                _invoiceDescriptionController.text,
-                _posProfile.logo,
-                Int64(_totalAmount),
-                expiry: Int64(int.parse(cancellationTimeoutValue))));
+        _invoiceBloc.newInvoiceRequestSink.add(InvoiceRequestModel(
+            _posProfile.invoiceString,
+            _invoiceDescriptionController.text,
+            _posProfile.logo,
+            Int64(_totalAmount),
+            expiry: Int64(int.parse(cancellationTimeoutValue))));
       } else {
         promptError(
             context,
@@ -420,26 +444,26 @@ class POSInvoiceState extends State<POSInvoice> {
 
   approveClear() {
     if (_totalAmount + _currentAmount != 0) {
-      AlertDialog dialog = new AlertDialog(
-        title: new Text(
+      AlertDialog dialog = AlertDialog(
+        title: Text(
           "Clear Sale?",
           textAlign: TextAlign.center,
           style: Theme.of(context).dialogTheme.titleTextStyle,
         ),
-        content: new Text("This will clear the current transaction.",
+        content: Text("This will clear the current transaction.",
             style: Theme.of(context).dialogTheme.contentTextStyle),
         contentPadding:
             EdgeInsets.only(left: 24.0, right: 24.0, bottom: 12.0, top: 24.0),
         actions: <Widget>[
-          new FlatButton(
+          FlatButton(
               onPressed: () => Navigator.pop(context),
-              child: new Text("Cancel", style: theme.buttonStyle)),
-          new FlatButton(
+              child: Text("Cancel", style: theme.buttonStyle)),
+          FlatButton(
               onPressed: () {
                 Navigator.pop(context);
                 clearSale();
               },
-              child: new Text("Clear", style: theme.buttonStyle))
+              child: Text("Clear", style: theme.buttonStyle))
         ],
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
@@ -450,19 +474,20 @@ class POSInvoiceState extends State<POSInvoice> {
 
   Container _numberButton(String number) {
     return Container(
-        decoration: new BoxDecoration(
-            border: new Border.all(color: Theme.of(context).backgroundColor, width: 0.5)),
+        decoration: BoxDecoration(
+            border: Border.all(
+                color: Theme.of(context).backgroundColor, width: 0.5)),
         child: IgnorePointer(
             ignoring: _isButtonDisabled,
-            child: new FlatButton(
+            child: FlatButton(
                 onPressed: () => onNumButtonPressed(number),
-                child: new Text(number,
+                child: Text(number,
                     textAlign: TextAlign.center,
                     style: theme.numPadNumberStyle))));
   }
 
   Widget _numPad() {
-    return new GridView.count(
+    return GridView.count(
         crossAxisCount: 3,
         childAspectRatio: (itemWidth / itemHeight),
         padding: EdgeInsets.zero,
@@ -470,20 +495,22 @@ class POSInvoiceState extends State<POSInvoice> {
             .map((index) => _numberButton((index + 1).toString()))
             .followedBy([
           Container(
-              decoration: new BoxDecoration(
-                  border: new Border.all(color: Theme.of(context).backgroundColor, width: 0.5)),
-              child: new GestureDetector(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Theme.of(context).backgroundColor, width: 0.5)),
+              child: GestureDetector(
                   onLongPress: approveClear,
-                  child: new FlatButton(
+                  child: FlatButton(
                       onPressed: onClear,
-                      child: new Text("C", style: theme.numPadNumberStyle)))),
+                      child: Text("C", style: theme.numPadNumberStyle)))),
           _numberButton("0"),
           Container(
-              decoration: new BoxDecoration(
-                  border: new Border.all(color: Theme.of(context).backgroundColor, width: 0.5)),
-              child: new FlatButton(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Theme.of(context).backgroundColor, width: 0.5)),
+              child: FlatButton(
                   onPressed: onAddition,
-                  child: new Text("+", style: theme.numPadAdditionStyle))),
+                  child: Text("+", style: theme.numPadAdditionStyle))),
         ]).toList());
   }
 }

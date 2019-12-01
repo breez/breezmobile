@@ -7,11 +7,12 @@ class LoadingAnimatedText extends StatefulWidget {
   final TextAlign textAlign;
   final List<TextSpan> textElements;
 
-  LoadingAnimatedText(this._loadingMessage, {this.textStyle, this.textAlign, this.textElements = const[]});
+  LoadingAnimatedText(this._loadingMessage,
+      {this.textStyle, this.textAlign, this.textElements = const []});
 
   @override
   State<StatefulWidget> createState() {
-    return new LoadingAnimatedTextState();
+    return LoadingAnimatedTextState();
   }
 }
 
@@ -36,19 +37,24 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
   }
 
   @override
-  Widget build(BuildContext context) {       
-    var textElements = widget.textElements.toList();    
+  Widget build(BuildContext context) {
+    var textElements = widget.textElements.toList();
     return RichText(
-      text: TextSpan(
-        style: widget.textStyle ?? DefaultTextStyle.of(context).style,
-        text: widget._loadingMessage,
-        children: textElements..addAll(<TextSpan>[
-          TextSpan(text: loadingDots),
-          TextSpan(text: paddingDots, style: TextStyle(color: Colors.transparent))
-        ])), 
-      textAlign: widget.textAlign == null ? TextAlign.center : widget.textAlign);
+        text: TextSpan(
+            style: widget.textStyle ?? DefaultTextStyle.of(context).style,
+            text: widget._loadingMessage,
+            children: textElements
+              ..addAll(<TextSpan>[
+                TextSpan(text: loadingDots),
+                TextSpan(
+                    text: paddingDots,
+                    style: TextStyle(color: Colors.transparent))
+              ])),
+        textAlign:
+            widget.textAlign == null ? TextAlign.center : widget.textAlign);
   }
 
   String get loadingDots => '${List.filled(_timerIteration % 4, ".").join("")}';
-  String get paddingDots => '${List.filled(3 - _timerIteration % 4, ".").join("")}';
+  String get paddingDots =>
+      '${List.filled(3 - _timerIteration % 4, ".").join("")}';
 }

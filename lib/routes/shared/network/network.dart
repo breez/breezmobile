@@ -27,20 +27,20 @@ class NetworkPage extends StatefulWidget {
 class NetworkPageState extends State<NetworkPage> {
   final _formKey = GlobalKey<FormState>();
   BreezBridge _breezLib;
-  ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = ScrollController();
   final _peerController = TextEditingController();
-  _NetworkData _data = new _NetworkData();
+  _NetworkData _data = _NetworkData();
 
   @override
   void initState() {
     super.initState();
-    _breezLib = new ServiceInjector().breezBridge;    
+    _breezLib = ServiceInjector().breezBridge;
     _loadData();
     _peerController.addListener(_onChangePeer);
   }
 
-  @override 
-  void dispose() {    
+  @override
+  void dispose() {
     _peerController.removeListener(_onChangePeer);
     super.dispose();
   }
@@ -58,7 +58,7 @@ class NetworkPageState extends State<NetworkPage> {
     setState(() {
       _data.peer = peer;
       _data.isDefault = peers.isDefault;
-    });   
+    });
     _peerController.text = peer;
   }
 
@@ -70,9 +70,14 @@ class NetworkPageState extends State<NetworkPage> {
   }
 
   Future<bool> _promptForRestart() {
-    return promptAreYouSure(context, null,
-            Text("Please restart Breez to switch to the new Bitcoin Node configuration.", style: Theme.of(context).dialogTheme.contentTextStyle),
-            cancelText: "Cancel", okText: "Exit Breez")
+    return promptAreYouSure(
+            context,
+            null,
+            Text(
+                "Please restart Breez to switch to the new Bitcoin Node configuration.",
+                style: Theme.of(context).dialogTheme.contentTextStyle),
+            cancelText: "Cancel",
+            okText: "Exit Breez")
         .then((shouldExit) {
       if (shouldExit) {
         exit(0);
@@ -85,93 +90,98 @@ class NetworkPageState extends State<NetworkPage> {
   Widget build(BuildContext context) {
     String _title = "Network";
     return ButtonTheme(
-        height: 28.0,
-        child: new Scaffold(
-          appBar: new AppBar(
-              iconTheme: Theme.of(context).appBarTheme.iconTheme,
-              textTheme: Theme.of(context).appBarTheme.textTheme,
-              backgroundColor: Theme.of(context).canvasColor,
-              automaticallyImplyLeading: false,
-              leading: backBtn.BackButton(),
-              title: new Text(
-                _title,
-                style: Theme.of(context).appBarTheme.textTheme.title,
-              ),
-              elevation: 0.0),
-          body: new Padding(
-              padding: new EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-              child: Form(
-                  key: _formKey,
-                  child: new ListView(
-                      scrollDirection: Axis.vertical,
-                      controller: _scrollController,
-                      children: <Widget>[
-                        new Column(children: <Widget>[
-                          new Container(
-                            padding: new EdgeInsets.only(top: 8.0),
-                            child: new TextFormField(                              
-                              decoration: new InputDecoration(
-                                  labelText: "Bitcoin Node (BIP 157)"),
-                              style: theme.FieldTextStyle.textStyle,
-                              onSaved: (String value) {
-                                this._data.peer = value;
-                              },
-                              validator: (val) => null,
-                              controller: _peerController,                              
-                            ),
+      height: 28.0,
+      child: Scaffold(
+        appBar: AppBar(
+            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+            textTheme: Theme.of(context).appBarTheme.textTheme,
+            backgroundColor: Theme.of(context).canvasColor,
+            automaticallyImplyLeading: false,
+            leading: backBtn.BackButton(),
+            title: Text(
+              _title,
+              style: Theme.of(context).appBarTheme.textTheme.title,
+            ),
+            elevation: 0.0),
+        body: Padding(
+            padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+            child: Form(
+                key: _formKey,
+                child: ListView(
+                    scrollDirection: Axis.vertical,
+                    controller: _scrollController,
+                    children: <Widget>[
+                      Column(children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                                labelText: "Bitcoin Node (BIP 157)"),
+                            style: theme.FieldTextStyle.textStyle,
+                            onSaved: (String value) {
+                              this._data.peer = value;
+                            },
+                            validator: (val) => null,
+                            controller: _peerController,
                           ),
-                          SizedBox(height: 12.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              OutlineButton(
-                                borderSide: BorderSide(color: Colors.white),
-                                child: new Text(
-                                  "Reset",
-                                ),
-                                onPressed: ()async {
-                                  await _reset();
-                                  _promptForRestart();
-                                },
+                        ),
+                        SizedBox(height: 12.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            OutlineButton(
+                              borderSide: BorderSide(color: Colors.white),
+                              child: Text(
+                                "Reset",
                               ),
-                              SizedBox(width: 12.0),
-                              OutlineButton(
-                                borderSide: BorderSide(color: Colors.white),
-                                child: new Text(
-                                  "Save",
-                                ),
-                                onPressed: () async {
-                                  if (_formKey.currentState.validate()) {
-                                    _formKey.currentState.save();
-                                    if (this._data.peer.isNotEmpty) {
-                                      
-                                      var error = await showDialog(
+                              onPressed: () async {
+                                await _reset();
+                                _promptForRestart();
+                              },
+                            ),
+                            SizedBox(width: 12.0),
+                            OutlineButton(
+                              borderSide: BorderSide(color: Colors.white),
+                              child: Text(
+                                "Save",
+                              ),
+                              onPressed: () async {
+                                if (_formKey.currentState.validate()) {
+                                  _formKey.currentState.save();
+                                  if (this._data.peer.isNotEmpty) {
+                                    var error = await showDialog(
                                         context: context,
-                                        builder: (ctx) => _TestingPeerDialog(testFuture: _breezLib.testPeer(this._data.peer))
-                                      );
-                                      
-                                      if (error != null) {
-                                        await promptError(
-                                          context, null, 
-                                          Text("Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
-                                          style: Theme.of(context).dialogTheme.contentTextStyle));
-                                        return;
-                                      } else {
-                                        await _breezLib.setPeers([this._data.peer]);
-                                      }
+                                        builder: (ctx) => _TestingPeerDialog(
+                                            testFuture: _breezLib
+                                                .testPeer(this._data.peer)));
+
+                                    if (error != null) {
+                                      await promptError(
+                                          context,
+                                          null,
+                                          Text(
+                                              "Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
+                                              style: Theme.of(context)
+                                                  .dialogTheme
+                                                  .contentTextStyle));
+                                      return;
                                     } else {
-                                      await _reset();
+                                      await _breezLib
+                                          .setPeers([this._data.peer]);
                                     }
-                                    await _promptForRestart();
+                                  } else {
+                                    await _reset();
                                   }
-                                },
-                              )
-                            ],
-                          )
-                        ])
-                      ]))),
-        ),
-      );    
+                                  await _promptForRestart();
+                                }
+                              },
+                            )
+                          ],
+                        )
+                      ])
+                    ]))),
+      ),
+    );
   }
 
   Future _reset() async {
@@ -194,21 +204,20 @@ class _TestingPeerDialog extends StatefulWidget {
 class _TestingPeerDialogState extends State<_TestingPeerDialog> {
   bool _allowPop = false;
 
-  @override void initState() {    
+  @override
+  void initState() {
     super.initState();
-    widget.testFuture
-      .then((_) => Navigator.pop(context))
-      .catchError((err){
-        _allowPop = true;
-        Navigator.pop(context, err);
-      });
+    widget.testFuture.then((_) => Navigator.pop(context)).catchError((err) {
+      _allowPop = true;
+      Navigator.pop(context, err);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => Future.value(_allowPop),
-      child: createAnimatedLoaderDialog(context, "Testing node", withOKButton: false)
-    );
+        onWillPop: () => Future.value(_allowPop),
+        child: createAnimatedLoaderDialog(context, "Testing node",
+            withOKButton: false));
   }
 }
