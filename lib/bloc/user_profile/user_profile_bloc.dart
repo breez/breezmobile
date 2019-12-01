@@ -198,7 +198,7 @@ class UserProfileBloc {
   }
 
   Future _updateSecurityModel(UpdateSecurityModel updateSecurityModelAction) async {        
-    _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
+    await _saveChanges(await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
   }
 
@@ -207,7 +207,7 @@ class UserProfileBloc {
   }
 
   Future _changeTheme(ChangeTheme action) async {
-    _saveChanges(await _preferences, _currentUser.copyWith(themeId: action.newTheme));
+    await _saveChanges(await _preferences, _currentUser.copyWith(themeId: action.newTheme));
     return action.newTheme;
   }
 
@@ -233,32 +233,32 @@ class UserProfileBloc {
         var userID = await _breezServer.registerDevice(token);                
         userToRegister = userToRegister.copyWith(token: token, userID: userID);        
       }
-      _saveChanges(preferences, userToRegister);
+      await _saveChanges(preferences, userToRegister);
     } catch(e) {
       _registrationController.addError(e);
     }
     userToRegister = user.copyWith(registrationRequested: true);
-    _saveChanges(preferences, userToRegister);
+    await _saveChanges(preferences, userToRegister);
   }
 
   void _listenCurrencyChange(ServiceInjector injector) {
     _currencyController.stream.listen((currency) async {
       var preferences = await injector.sharedPreferences;
-      _saveChanges(preferences, _currentUser.copyWith(currency: currency));
+      await _saveChanges(preferences, _currentUser.copyWith(currency: currency));
     });
   }
 
   void _listenFiatCurrencyChange(ServiceInjector injector) {
     _fiatConversionController.stream.listen((shortName) async {
       var preferences = await injector.sharedPreferences;
-      _saveChanges(preferences, _currentUser.copyWith(fiatCurrency: shortName));
+      await _saveChanges(preferences, _currentUser.copyWith(fiatCurrency: shortName));
     });
   }
 
   void _listenUserChange(ServiceInjector injector) {
     _userController.stream.listen((userData) async {
       var preferences = await injector.sharedPreferences;
-      _saveChanges(
+      await _saveChanges(
           preferences,
           userData);
     });
@@ -299,9 +299,10 @@ class UserProfileBloc {
                 .writeAsBytes(logoBytes, flush: true));
   }
 
-  void _saveChanges(SharedPreferences preferences, BreezUserModel user) {
-    preferences.setString(USER_DETAILS_PREFERENCES_KEY, json.encode(user));
+  Future<bool> _saveChanges(SharedPreferences preferences, BreezUserModel user) {
+    var res = preferences.setString(USER_DETAILS_PREFERENCES_KEY, json.encode(user));
     _publishUser(user);    
+    return res;
   }
 
   void _publishUser(BreezUserModel user) {
