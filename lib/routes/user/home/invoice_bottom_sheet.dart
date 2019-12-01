@@ -47,7 +47,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    _buildInvoiceMenuItem("INVOICE", "src/icon/invoice.png", () {
+                    _buildInvoiceMenuItem("RECEIVE", "src/icon/invoice.png", () {
                       setState(() {
                         isExpanded = !isExpanded;
                       });

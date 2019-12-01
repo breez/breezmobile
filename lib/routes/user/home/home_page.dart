@@ -191,7 +191,7 @@ class HomeState extends State<Home> {
           }
         }
       }),
-      new DrawerItemConfig("/create_invoice", "Create Invoice", "src/icon/paste.png"),
+      new DrawerItemConfig("/create_invoice", "Receive via Invoice", "src/icon/paste.png"),
     ]);
     return DrawerItemConfigGroup(_filterItems(minorActionsInvoice));
   }
