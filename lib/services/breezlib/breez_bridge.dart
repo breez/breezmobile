@@ -91,6 +91,15 @@ class BreezBridge {
     _invokeMethodImmediate("log", {"msg": msg, "lvl": level});
   }
 
+  Future<LNUrlResponse> fetchLNUrl(String lnurl){
+    return _invokeMethodImmediate("fetchLnurl", {"argument": lnurl})
+      .then((result) => LNUrlResponse()..mergeFromBuffer(result ?? []));
+  }
+
+  Future withdrawLNUrl(String bolt11Invoice){          
+    return _invokeMethodWhenReady("withdrawLnurl", {"argument": bolt11Invoice});
+  }
+
   Future<String> getLogPath() {
     return _invokeMethodImmediate("getLogPath").then( (logPath) => logPath as String);
   }

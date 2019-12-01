@@ -73,7 +73,7 @@ class UserApp extends StatelessWidget {
                     ),
                     child: child);
               },
-              initialRoute: user.registered ? (user.locked ? '/lockscreen' : null) : '/splash',
+              initialRoute: user.registrationRequested ? (user.locked ? '/lockscreen' : null) : '/splash',
               home: new Home(accountBloc, invoiceBloc, userProfileBloc, connectPayBloc, backupBloc, lspBloc),
               onGenerateRoute: (RouteSettings settings) {
                 switch (settings.name) {

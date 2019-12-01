@@ -63,7 +63,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet> with TickerProvi
                       }
                     }, snapshot.data.themeId),
                     _buildInvoiceMenuItem(
-                        "CREATE", "src/icon/paste.png", () => Navigator.of(context).pushNamed('/create_invoice'), snapshot.data.themeId),
+                        "RECEIVE", "src/icon/paste.png", () => Navigator.of(context).pushNamed('/create_invoice'), snapshot.data.themeId),
                   ]));
         });
   }

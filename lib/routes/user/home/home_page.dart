@@ -26,6 +26,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../lnurl_handler.dart';
 import '../sync_ui_handler.dart';
 import 'account_page.dart';
 
@@ -190,7 +191,7 @@ class HomeState extends State<Home> {
           }
         }
       }),
-      new DrawerItemConfig("/create_invoice", "Create Invoice", "src/icon/paste.png"),
+      new DrawerItemConfig("/create_invoice", "Receive via Invoice", "src/icon/paste.png"),
     ]);
     return DrawerItemConfigGroup(_filterItems(minorActionsInvoice));
   }
@@ -219,6 +220,7 @@ class HomeState extends State<Home> {
 
   void _registerNotificationHandlers(){        
     new InvoiceNotificationsHandler(context, widget.accountBloc, widget.invoiceBloc.receivedInvoicesStream, firstPaymentItemKey, scrollController, _scaffoldKey);
+    new LNURLHandler(context);
     new CTPJoinSessionHandler(widget.ctpBloc, this.context, 
       (session) {
         Navigator.popUntil(context, (route) {

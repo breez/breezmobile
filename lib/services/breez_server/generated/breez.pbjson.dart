@@ -1,8 +1,80 @@
 ///
 //  Generated code. Do not modify.
 //  source: breez.proto
-///
-// ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
+//
+// @dart = 2.3
+// ignore_for_file: camel_case_types,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type
+
+const RatesRequest$json = const {
+  '1': 'RatesRequest',
+};
+
+const Rate$json = const {
+  '1': 'Rate',
+  '2': const [
+    const {'1': 'coin', '3': 1, '4': 1, '5': 9, '10': 'coin'},
+    const {'1': 'value', '3': 2, '4': 1, '5': 1, '10': 'value'},
+  ],
+};
+
+const RatesReply$json = const {
+  '1': 'RatesReply',
+  '2': const [
+    const {'1': 'rates', '3': 1, '4': 3, '5': 11, '6': '.breez.Rate', '10': 'rates'},
+  ],
+};
+
+const LSPListRequest$json = const {
+  '1': 'LSPListRequest',
+  '2': const [
+    const {'1': 'pubkey', '3': 2, '4': 1, '5': 9, '10': 'pubkey'},
+  ],
+};
+
+const LSPInformation$json = const {
+  '1': 'LSPInformation',
+  '2': const [
+    const {'1': 'name', '3': 1, '4': 1, '5': 9, '10': 'name'},
+    const {'1': 'widget_url', '3': 2, '4': 1, '5': 9, '10': 'widget_url'},
+    const {'1': 'pubkey', '3': 3, '4': 1, '5': 9, '10': 'pubkey'},
+    const {'1': 'host', '3': 4, '4': 1, '5': 9, '10': 'host'},
+    const {'1': 'channel_capacity', '3': 5, '4': 1, '5': 3, '10': 'channel_capacity'},
+    const {'1': 'target_conf', '3': 6, '4': 1, '5': 5, '10': 'target_conf'},
+    const {'1': 'base_fee_msat', '3': 7, '4': 1, '5': 3, '10': 'base_fee_msat'},
+    const {'1': 'fee_rate', '3': 8, '4': 1, '5': 1, '10': 'fee_rate'},
+    const {'1': 'time_lock_delta', '3': 9, '4': 1, '5': 13, '10': 'time_lock_delta'},
+    const {'1': 'min_htlc_msat', '3': 10, '4': 1, '5': 3, '10': 'min_htlc_msat'},
+  ],
+};
+
+const LSPListReply$json = const {
+  '1': 'LSPListReply',
+  '2': const [
+    const {'1': 'lsps', '3': 1, '4': 3, '5': 11, '6': '.breez.LSPListReply.LspsEntry', '10': 'lsps'},
+  ],
+  '3': const [LSPListReply_LspsEntry$json],
+};
+
+const LSPListReply_LspsEntry$json = const {
+  '1': 'LspsEntry',
+  '2': const [
+    const {'1': 'key', '3': 1, '4': 1, '5': 9, '10': 'key'},
+    const {'1': 'value', '3': 2, '4': 1, '5': 11, '6': '.breez.LSPInformation', '10': 'value'},
+  ],
+  '7': const {'7': true},
+};
+
+const OpenLSPChannelRequest$json = const {
+  '1': 'OpenLSPChannelRequest',
+  '2': const [
+    const {'1': 'lsp_id', '3': 1, '4': 1, '5': 9, '10': 'lspId'},
+    const {'1': 'pubkey', '3': 2, '4': 1, '5': 9, '10': 'pubkey'},
+  ],
+};
+
+const OpenLSPChannelReply$json = const {
+  '1': 'OpenLSPChannelReply',
+};
 
 const OpenChannelRequest$json = const {
   '1': 'OpenChannelRequest',
@@ -14,6 +86,14 @@ const OpenChannelRequest$json = const {
 
 const OpenChannelReply$json = const {
   '1': 'OpenChannelReply',
+};
+
+const Captcha$json = const {
+  '1': 'Captcha',
+  '2': const [
+    const {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
+    const {'1': 'image', '3': 2, '4': 1, '5': 12, '10': 'image'},
+  ],
 };
 
 const UpdateChannelPolicyRequest$json = const {
@@ -125,6 +205,20 @@ const GetSwapPaymentReply$json = const {
   '1': 'GetSwapPaymentReply',
   '2': const [
     const {'1': 'paymentError', '3': 1, '4': 1, '5': 9, '10': 'paymentError'},
+    const {'1': 'funds_exceeded_limit', '3': 2, '4': 1, '5': 8, '10': 'fundsExceededLimit'},
+    const {'1': 'swap_error', '3': 3, '4': 1, '5': 14, '6': '.breez.GetSwapPaymentReply.SwapError', '10': 'swapError'},
+  ],
+  '4': const [GetSwapPaymentReply_SwapError$json],
+};
+
+const GetSwapPaymentReply_SwapError$json = const {
+  '1': 'SwapError',
+  '2': const [
+    const {'1': 'NO_ERROR', '2': 0},
+    const {'1': 'FUNDS_EXCEED_LIMIT', '2': 1},
+    const {'1': 'TX_TOO_SMALL', '2': 2},
+    const {'1': 'INVOICE_AMOUNT_MISMATCH', '2': 3},
+    const {'1': 'SWAP_EXPIRED', '2': 4},
   ],
 };
 
