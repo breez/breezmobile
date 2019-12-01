@@ -126,9 +126,9 @@ PODS:
   - GTMSessionFetcher/Core (1.2.2)
   - GTMSessionFetcher/Full (1.2.2):
     - GTMSessionFetcher/Core (= 1.2.2)
-  - image_cropper (0.0.1):
+  - image_cropper (0.0.2):
     - Flutter
-    - TOCropViewController (~> 2.5.1)
+    - TOCropViewController (~> 2.5.2)
   - image_picker (0.0.1):
     - Flutter
   - keyboard_visibility (0.5.0):
@@ -153,7 +153,7 @@ PODS:
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
-  - TOCropViewController (2.5.1)
+  - TOCropViewController (2.5.2)
   - uni_links (0.0.1):
     - Flutter
   - url_launcher (0.0.1):
@@ -282,7 +282,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: f895fde57977df4e0233edda0dbeac490e3703b6
   GTMAppAuth: 4deac854479704f348309e7b66189e604cf5e01e
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
-  image_cropper: 966bf742cd9cee8d78010ec5c67dd9e7826e6b19
+  image_cropper: 3c16d7651730ffe85897f5a1c4e2547e6b54989a
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
   keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
@@ -295,7 +295,7 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
-  TOCropViewController: 00dc36c4e4a0f4a45efa91adbf22df8a4fae01d3
+  TOCropViewController: e9da34f484aedd4e5d5a8ab230ba217cfe16c729
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
 
