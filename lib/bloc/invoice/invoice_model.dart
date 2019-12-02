@@ -6,16 +6,17 @@ class InvoiceRequestModel {
   final String description;
   final String logo;
   final Int64 amount;
-  final Int64 expiry;  
+  final Int64 expiry;
 
-  InvoiceRequestModel(this.payeeName, this.description, this.logo, this.amount, {this.expiry});
+  InvoiceRequestModel(this.payeeName, this.description, this.logo, this.amount,
+      {this.expiry});
 }
 
 class PaymentRequestModel {
   final InvoiceMemo _invoice;
   final String _rawPayReq;
 
-  PaymentRequestModel(this._invoice, this._rawPayReq); 
+  PaymentRequestModel(this._invoice, this._rawPayReq);
 
   String get description => _invoice.description;
   String get payeeImageURL => _invoice.payeeImageURL;
@@ -25,7 +26,7 @@ class PaymentRequestModel {
   bool get loaded => _invoice != null ? true : false;
 }
 
-class PaymentRequestError implements Exception { 
+class PaymentRequestError implements Exception {
   final String message;
-  PaymentRequestError(this.message); 
+  PaymentRequestError(this.message);
 }

@@ -25,29 +25,39 @@ class AmountFormField extends TextFormField {
     Key key,
     String initialValue,
     FocusNode focusNode,
-    InputDecoration decoration: const InputDecoration(),
+    InputDecoration decoration = const InputDecoration(),
     TextStyle style,
-    TextAlign textAlign: TextAlign.start,
-    int maxLines: 1,
+    TextAlign textAlign = TextAlign.start,
+    int maxLines = 1,
     int maxLength,
     ValueChanged<String> onFieldSubmitted,
     FormFieldSetter<String> onSaved,
     bool enabled,
   }) : super(
             focusNode: focusNode,
-            keyboardType: TextInputType.numberWithOptions(decimal: accountModel.currency != Currency.SAT),
-            decoration: new InputDecoration(
+            keyboardType: TextInputType.numberWithOptions(
+                decimal: accountModel.currency != Currency.SAT),
+            decoration: InputDecoration(
               labelText: accountModel.currency.displayName + " Amount",
               suffixIcon: IconButton(
-                icon: new Image.asset(
-                  (accountModel.fiatCurrency != null) ? accountModel.fiatCurrency.logoPath : "src/icon/btc_convert.png",
-                  color: iconColor != null ? iconColor : theme.BreezColors.white[500],
+                icon: Image.asset(
+                  (accountModel.fiatCurrency != null)
+                      ? accountModel.fiatCurrency.logoPath
+                      : "src/icon/btc_convert.png",
+                  color: iconColor != null
+                      ? iconColor
+                      : theme.BreezColors.white[500],
                 ),
                 padding: EdgeInsets.only(top: 21.0),
                 alignment: Alignment.bottomRight,
                 onPressed: () => showDialog(
-                    context: context,
-                    builder: (_) => CurrencyConverterDialog(returnFN != null ? returnFN : (value) => controller.text = value, validatorFn),),
+                  context: context,
+                  builder: (_) => CurrencyConverterDialog(
+                      returnFN != null
+                          ? returnFN
+                          : (value) => controller.text = value,
+                      validatorFn),
+                ),
               ),
             ),
             style: style,
@@ -63,7 +73,8 @@ class AmountFormField extends TextFormField {
   FormFieldValidator<String> get validator {
     return (value) {
       if (value.isEmpty) {
-        return "Please enter the amount in " + accountModel.currency.displayName;
+        return "Please enter the amount in " +
+            accountModel.currency.displayName;
       }
       Int64 intAmount = accountModel.currency.parse(value);
       if (intAmount <= 0) {

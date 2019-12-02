@@ -32,7 +32,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-      title: new Text(
+      title: Text(
         "On-chain Transaction",
         style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
@@ -54,7 +54,8 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
                   }
 
                   String reason = "";
-                  RefundableAddress swapAddress = swapStatus.refundableAddresses[0];
+                  RefundableAddress swapAddress =
+                      swapStatus.refundableAddresses[0];
                   int lockHeight = swapAddress.lockHeight;
                   double hoursToUnlock = swapAddress.hoursToUnlock;
                   if (swapAddress.refundableError != null) {
@@ -62,15 +63,21 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
                   }
 
                   int roundedHoursToUnlock = hoursToUnlock.round();
-                  String hoursToUnlockStr = roundedHoursToUnlock > 1 ? "~${roundedHoursToUnlock.toString()} hours" : "in about an hour";
+                  String hoursToUnlockStr = roundedHoursToUnlock > 1
+                      ? "~${roundedHoursToUnlock.toString()} hours"
+                      : "in about an hour";
                   List<TextSpan> redeemText = List<TextSpan>();
                   if (hoursToUnlock > 0) {
                     redeemText.add(TextSpan(
-                        text: "You will be able to redeem your funds after block $lockHeight ($hoursToUnlockStr).",
+                        text:
+                            "You will be able to redeem your funds after block $lockHeight ($hoursToUnlockStr).",
                         style: Theme.of(context).dialogTheme.contentTextStyle));
                   } else {
                     redeemText.addAll([
-                      TextSpan(text: "You can ", style: Theme.of(context).dialogTheme.contentTextStyle),
+                      TextSpan(
+                          text: "You can ",
+                          style:
+                              Theme.of(context).dialogTheme.contentTextStyle),
                       TextSpan(
                           text: "get a refund ",
                           recognizer: TapGestureRecognizer()
@@ -79,21 +86,25 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
                               Navigator.pushNamed(context, "/get_refund");
                             },
                           style: theme.blueLinkStyle),
-                      TextSpan(text: "now.", style: Theme.of(context).dialogTheme.contentTextStyle),
+                      TextSpan(
+                          text: "now.",
+                          style:
+                              Theme.of(context).dialogTheme.contentTextStyle),
                     ]);
                   }
 
                   return RichText(
                       text: TextSpan(
                           style: Theme.of(context).dialogTheme.contentTextStyle,
-                          text: "Breez was not able to transfer the funds to your balance $reason\n",
+                          text:
+                              "Breez was not able to transfer the funds to your balance $reason\n",
                           children: redeemText));
                 });
           }),
       actions: [
-        new SimpleDialogOption(
+        SimpleDialogOption(
           onPressed: () => Navigator.pop(context),
-          child: new Text("OK", style: Theme.of(context).primaryTextTheme.button),
+          child: Text("OK", style: Theme.of(context).primaryTextTheme.button),
         )
       ],
     );

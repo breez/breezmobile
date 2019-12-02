@@ -12,11 +12,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingObserver {
+class ActivateCardPageState extends State<ActivateCardPage>
+    with WidgetsBindingObserver {
   final String _title = "Activate Card";
   final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
-  
-  static ServiceInjector injector = new ServiceInjector();
+
+  static ServiceInjector injector = ServiceInjector();
   NFCService nfc = injector.nfc;
 
   StreamSubscription _streamSubscription;
@@ -34,51 +35,59 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    
+
     nfc.checkNFCSettings().then((isNfcEnabled) {
       if (!isNfcEnabled) {
-        return new Timer(new Duration(milliseconds: 500), () {
+        return Timer(Duration(milliseconds: 500), () {
           _showAlertDialog();
         });
       }
-    });   
+    });
   }
 
-  @override void didChangeDependencies() {            
-      if (!_isInit) {
-        UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-        userBloc.cardActivationInit();      
-        _streamSubscription = userBloc.cardActivationStream.listen((bool success) {
-          if (success) {
-            Navigator.pop(context, "Your Breez card has been activated and is now ready for use!");
-          } else {
-            log.info("Card activation failed!");
-          }
-        });
-        _isInit = true;
-      }
-      super.didChangeDependencies();
+  @override
+  void didChangeDependencies() {
+    if (!_isInit) {
+      UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      userBloc.cardActivationInit();
+      _streamSubscription =
+          userBloc.cardActivationStream.listen((bool success) {
+        if (success) {
+          Navigator.pop(context,
+              "Your Breez card has been activated and is now ready for use!");
+        } else {
+          log.info("Card activation failed!");
+        }
+      });
+      _isInit = true;
     }
+    super.didChangeDependencies();
+  }
 
   void _showAlertDialog() {
-    AlertDialog dialog = new AlertDialog(
-      content: new Text("Breez requires NFC to be enabled in your device in order to activate a card.",
+    AlertDialog dialog = AlertDialog(
+      content: Text(
+          "Breez requires NFC to be enabled in your device in order to activate a card.",
           style: Theme.of(context).dialogTheme.contentTextStyle),
       actions: <Widget>[
-        new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("CANCEL", style: Theme.of(context).primaryTextTheme.button)),
-        new FlatButton(
+        FlatButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("CANCEL",
+                style: Theme.of(context).primaryTextTheme.button)),
+        FlatButton(
             onPressed: () {
               nfc.openSettings();
               Navigator.pop(context);
             },
-            child: new Text("SETTINGS", style: Theme.of(context).primaryTextTheme.button))
+            child: Text("SETTINGS",
+                style: Theme.of(context).primaryTextTheme.button))
       ],
     );
     showDialog(context: context, builder: (_) => dialog);
   }
 
   @override
-  void dispose() {    
+  void dispose() {
     _streamSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -90,13 +99,13 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
   }
 
   Widget _buildCardActivation(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
+    return Scaffold(
+      appBar: AppBar(
         iconTheme: Theme.of(context).appBarTheme.iconTheme,
         textTheme: Theme.of(context).appBarTheme.textTheme,
         backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
-        title: new Text(
+        title: Text(
           _title,
           style: Theme.of(context).appBarTheme.textTheme.title,
         ),
@@ -148,12 +157,12 @@ class ActivateCardPageState extends State<ActivateCardPage> with WidgetsBindingO
   }
 }
 
-class ActivateCardPage extends StatefulWidget {  
+class ActivateCardPage extends StatefulWidget {
   final platform = const MethodChannel('com.breez.client/nfc');
 
   ActivateCardPage();
   @override
   State<StatefulWidget> createState() {
-    return new ActivateCardPageState();
+    return ActivateCardPageState();
   }
 }

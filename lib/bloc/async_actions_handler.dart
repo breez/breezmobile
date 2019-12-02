@@ -3,8 +3,7 @@ import 'dart:async';
 import 'async_action.dart';
 
 class AsyncActionsHandler {
-
-  final _actionsController = new StreamController<AsyncAction>.broadcast();  
+  final _actionsController = StreamController<AsyncAction>.broadcast();
   Map<Type, Function> _actionHandlers = Map();
 
   Sink<AsyncAction> get actionsSink => _actionsController.sink;

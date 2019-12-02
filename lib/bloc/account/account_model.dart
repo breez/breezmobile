@@ -5,17 +5,9 @@ import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
-enum BugReportBehavior {
-  PROMPT,
-  SEND_REPORT,
-  IGNORE
-}
+enum BugReportBehavior { PROMPT, SEND_REPORT, IGNORE }
 
-enum SyncUIState {
-  BLOCKING,
-  COLLAPSED,
-  NONE
-}
+enum SyncUIState { BLOCKING, COLLAPSED, NONE }
 
 class AccountSettings {
   final bool ignoreWalletBalance;
@@ -24,22 +16,25 @@ class AccountSettings {
 
   AccountSettings(this.ignoreWalletBalance,
       {this.showConnectProgress = false,
-        this.failePaymentBehavior = BugReportBehavior.PROMPT});
+      this.failePaymentBehavior = BugReportBehavior.PROMPT});
 
   AccountSettings.start() : this(false);
 
-  AccountSettings copyWith({bool ignoreWalletBalance,
-    bool showConnectProgress,
-    BugReportBehavior failePaymentBehavior}) {
+  AccountSettings copyWith(
+      {bool ignoreWalletBalance,
+      bool showConnectProgress,
+      BugReportBehavior failePaymentBehavior}) {
     return AccountSettings(ignoreWalletBalance ?? this.ignoreWalletBalance,
         showConnectProgress: showConnectProgress ?? this.showConnectProgress,
-        failePaymentBehavior: failePaymentBehavior ?? this.failePaymentBehavior);
+        failePaymentBehavior:
+            failePaymentBehavior ?? this.failePaymentBehavior);
   }
 
   AccountSettings.fromJson(Map<String, dynamic> json)
       : this(json["ignoreWalletBalance"] ?? false,
-      showConnectProgress: json["showConnectProgress"] ?? false,
-      failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0]);
+            showConnectProgress: json["showConnectProgress"] ?? false,
+            failePaymentBehavior:
+                BugReportBehavior.values[json["failePaymentBehavior"] ?? 0]);
 
   Map<String, dynamic> toJson() {
     return {
@@ -56,15 +51,18 @@ class SwapFundStatus {
   SwapFundStatus(this._addedFundsReply);
 
   String get unconfirmedTxID {
-      if (_addedFundsReply == null || _addedFundsReply.unConfirmedAddresses.length == 0) {
-        return null;
-      }
-      return _addedFundsReply.unConfirmedAddresses[0].fundingTxID;
+    if (_addedFundsReply == null ||
+        _addedFundsReply.unConfirmedAddresses.length == 0) {
+      return null;
+    }
+    return _addedFundsReply.unConfirmedAddresses[0].fundingTxID;
   }
 
   bool get depositConfirmed {
-      var waitingPaymentAddresses = _addedFundsReply?.confirmedAddresses?.where((a) => a.errorMessage.isEmpty);
-      return waitingPaymentAddresses != null && waitingPaymentAddresses.length > 0;
+    var waitingPaymentAddresses = _addedFundsReply?.confirmedAddresses
+        ?.where((a) => a.errorMessage.isEmpty);
+    return waitingPaymentAddresses != null &&
+        waitingPaymentAddresses.length > 0;
   }
 
   // in case of status is error, these fields will be populated.
@@ -74,7 +72,8 @@ class SwapFundStatus {
       return refundAddresses[0].refundableError;
     }
 
-    var errorAddresses = _addedFundsReply?.confirmedAddresses?.where((a) => a.errorMessage.isNotEmpty);
+    var errorAddresses = _addedFundsReply?.confirmedAddresses
+        ?.where((a) => a.errorMessage.isNotEmpty);
     if (errorAddresses == null || errorAddresses.isEmpty) {
       return null;
     }
@@ -83,17 +82,20 @@ class SwapFundStatus {
   }
 
   List<String> get unConfirmedAddresses {
-    var unConfirmedAddresses = _addedFundsReply?.unConfirmedAddresses  ?? List<SwapAddressInfo>();
+    var unConfirmedAddresses =
+        _addedFundsReply?.unConfirmedAddresses ?? List<SwapAddressInfo>();
     return unConfirmedAddresses.map((a) => a.address).toList();
   }
 
   List<String> get confirmedAddresses {
-    var unConfirmedAddresses = _addedFundsReply?.confirmedAddresses  ?? List<SwapAddressInfo>();
+    var unConfirmedAddresses =
+        _addedFundsReply?.confirmedAddresses ?? List<SwapAddressInfo>();
     return unConfirmedAddresses.map((a) => a.address).toList();
   }
 
   List<RefundableAddress> get refundableAddresses {
-    var refundableAddresses = _addedFundsReply?.refundableAddresses ?? List<SwapAddressInfo>();
+    var refundableAddresses =
+        _addedFundsReply?.refundableAddresses ?? List<SwapAddressInfo>();
     return refundableAddresses.map((a) => RefundableAddress(a)).toList();
   }
 
@@ -113,7 +115,7 @@ class RefundableAddress {
   int get lockHeight => _refundableInfo.lockHeight;
   double get hoursToUnlock => _refundableInfo.hoursToUnlock;
   String get refundableError {
-    switch(_refundableInfo.swapError) {
+    switch (_refundableInfo.swapError) {
       case SwapError.FUNDS_EXCEED_LIMIT:
         return "the executed transaction was above the specified limit.";
       case SwapError.INVOICE_AMOUNT_MISMATCH:
@@ -135,20 +137,23 @@ class AccountModel {
   final FiatConversion _fiatCurrency;
   final List<FiatConversion> _fiatConversionList;
   final FundStatusReply addedFundsReply;
-  final String paymentRequestInProgress;  
+  final String paymentRequestInProgress;
   final Int64 onChainFeeRate;
-  final bool initial;    
+  final bool initial;
   final bool enableInProgress;
   final double syncProgress;
+  final bool syncedToChain;
   final SyncUIState syncUIState;
 
-  AccountModel(this._accountResponse, this._currency, this._fiatShortName, this._fiatCurrency, this._fiatConversionList,
+  AccountModel(this._accountResponse, this._currency, this._fiatShortName,
+      this._fiatCurrency, this._fiatConversionList,
       {this.initial = true,
       this.addedFundsReply,
-      this.paymentRequestInProgress,      
-      this.onChainFeeRate,      
-      this.enableInProgress = false,    
+      this.paymentRequestInProgress,
+      this.onChainFeeRate,
+      this.enableInProgress = false,
       this.syncProgress = 0,
+      this.syncedToChain = false,
       this.syncUIState = SyncUIState.NONE});
 
   AccountModel.initial()
@@ -159,7 +164,7 @@ class AccountModel {
               ..status = Account_AccountStatus.DISCONNECTED
               ..maxAllowedToReceive = Int64(0)
               ..maxPaymentAmount = Int64(0)
-              ..enabled = true,   
+              ..enabled = true,
             Currency.SAT,
             "USD",
             null,
@@ -172,43 +177,50 @@ class AccountModel {
       FiatConversion fiatCurrency,
       List<FiatConversion> fiatConversionList,
       FundStatusReply addedFundsReply,
-      String paymentRequestInProgress,      
-      Int64 onChainFeeRate,      
-      bool enableInProgress,      
+      String paymentRequestInProgress,
+      Int64 onChainFeeRate,
+      bool enableInProgress,
       double syncProgress,
+      bool syncedToChain,
       bool initial,
       SyncUIState syncUIState}) {
     return AccountModel(
-        accountResponse ?? this._accountResponse, currency ?? this.currency,
+        accountResponse ?? this._accountResponse,
+        currency ?? this.currency,
         fiatShortName ?? this._fiatShortName,
         fiatCurrency ?? this._fiatCurrency,
         fiatConversionList ?? this._fiatConversionList,
-        addedFundsReply: addedFundsReply ?? this.addedFundsReply,        
-        onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,                
+        addedFundsReply: addedFundsReply ?? this.addedFundsReply,
+        onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
         enableInProgress: enableInProgress ?? this.enableInProgress,
         paymentRequestInProgress:
             paymentRequestInProgress ?? this.paymentRequestInProgress,
         syncProgress: syncProgress ?? this.syncProgress,
+        syncedToChain: syncedToChain ?? this.syncedToChain,
         syncUIState: syncUIState ?? this.syncUIState,
         initial: initial ?? this.initial);
   }
 
   String get id => _accountResponse.id;
   SwapFundStatus get swapFundsStatus => SwapFundStatus(this.addedFundsReply);
-  bool get disconnected => _accountResponse.status == Account_AccountStatus.DISCONNECTED;
+  bool get disconnected =>
+      _accountResponse.status == Account_AccountStatus.DISCONNECTED;
   bool get processingConnection =>
-      _accountResponse.status ==
-      Account_AccountStatus.PROCESSING_CONNECTION;
+      _accountResponse.status == Account_AccountStatus.PROCESSING_CONNECTION;
   bool get closingConnection =>
       _accountResponse.status == Account_AccountStatus.CLOSING_CONNECTION;
-  bool get connected => _accountResponse.status == Account_AccountStatus.CONNECTED;
-  bool get isInitialBootstrap => !initial && (disconnected || closingConnection);
+  bool get connected =>
+      _accountResponse.status == Account_AccountStatus.CONNECTED;
+  bool get isInitialBootstrap =>
+      !initial && (disconnected || closingConnection);
   Int64 get balance => _accountResponse.balance;
   String get formattedFiatBalance => fiatCurrency?.format(balance);
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
-  FiatConversion get fiatCurrency => _fiatConversionList.firstWhere((f) => f.currencyData.shortName == _fiatShortName, orElse: () => null);
+  FiatConversion get fiatCurrency => _fiatConversionList.firstWhere(
+      (f) => f.currencyData.shortName == _fiatShortName,
+      orElse: () => null);
   List<FiatConversion> get fiatConversionList => _fiatConversionList;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
   Int64 get maxAllowedToPay => Int64(min(
@@ -218,22 +230,21 @@ class AccountModel {
   Int64 get warningMaxChanReserveAmount => _accountResponse.maxChanReserve;
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
   bool get enabled => _accountResponse.enabled;
-  Int64 get routingNodeFee => _accountResponse.routingNodeFee;  
+  Int64 get routingNodeFee => _accountResponse.routingNodeFee;
   bool get readyForPayments => _accountResponse.readyForPayments;
 
-  bool get synced => syncProgress == 1.0;
+  bool get synced => syncedToChain;
   String get channelFundingTxUrl {
-     if (_accountResponse.channelPoint.isEmpty) {
-       return null;
-     }
-     return "https://blockstream.info/tx/${_accountResponse.channelPoint.split(":")[0]}";
+    if (_accountResponse.channelPoint.isEmpty) {
+      return null;
+    }
+    return "https://blockstream.info/tx/${_accountResponse.channelPoint.split(":")[0]}";
   }
 
   String get statusMessage {
-
     if (this.isInitialBootstrap) {
       return "Please wait a minute while Breez is initializing (keep the app open).";
-    }    
+    }
 
     SwapFundStatus swapStatus = this.swapFundsStatus;
 
@@ -252,7 +263,8 @@ class AccountModel {
     return null;
   }
 
-  bool get transferringOnChainDeposit => swapFundsStatus.depositConfirmed && this.connected;  
+  bool get transferringOnChainDeposit =>
+      swapFundsStatus.depositConfirmed && this.connected;
 
   String validateOutgoingOnChainPayment(Int64 amount) {
     if (amount > walletBalance) {
@@ -277,7 +289,9 @@ class AccountModel {
     }
 
     if (amount > maxAmount) {
-      return outgoing ? "Not enough funds" : "Amount exceeds available capacity";
+      return outgoing
+          ? "Not enough funds"
+          : "Amount exceeds available capacity";
     }
 
     if (outgoing && amount > maxAllowedToPay) {
@@ -294,19 +308,23 @@ class PaymentsModel {
   final PaymentFilterModel filter;
   final DateTime firstDate;
 
-  PaymentsModel(this.nonFilteredItems, this.paymentsList, this.filter, [this.firstDate]);
+  PaymentsModel(this.nonFilteredItems, this.paymentsList, this.filter,
+      [this.firstDate]);
 
   PaymentsModel.initial()
-      : this(List<PaymentInfo>(), List<PaymentInfo>(), PaymentFilterModel.initial(),
-            DateTime(DateTime.now().year));
+      : this(List<PaymentInfo>(), List<PaymentInfo>(),
+            PaymentFilterModel.initial(), DateTime(DateTime.now().year));
 
   PaymentsModel copyWith(
       {List<PaymentInfo> nonFilteredItems,
       List<PaymentInfo> paymentsList,
       PaymentFilterModel filter,
       DateTime firstDate}) {
-    return PaymentsModel(nonFilteredItems ?? this.nonFilteredItems, paymentsList ?? this.paymentsList,
-        filter ?? this.filter, firstDate ?? this.firstDate);
+    return PaymentsModel(
+        nonFilteredItems ?? this.nonFilteredItems,
+        paymentsList ?? this.paymentsList,
+        filter ?? this.filter,
+        firstDate ?? this.firstDate);
   }
 }
 
@@ -374,7 +392,8 @@ class PaymentInfo {
   String get description =>
       _paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
           ? _paymentResponse.invoiceMemo.description
-              .substring(9, _paymentResponse.invoiceMemo.description.length).trimLeft()
+              .substring(9, _paymentResponse.invoiceMemo.description.length)
+              .trimLeft()
           : type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL
               ? "Bitcoin Transfer"
               : _paymentResponse.invoiceMemo?.description;
@@ -438,11 +457,10 @@ class AddFundResponse {
 
 class RemoveFundRequestModel {
   final Int64 amount;
-  final String address;  
+  final String address;
   final Int64 satPerByteFee;
 
-  RemoveFundRequestModel(this.amount, this.address,
-      {this.satPerByteFee});
+  RemoveFundRequestModel(this.amount, this.address, {this.satPerByteFee});
 }
 
 class RemoveFundResponseModel {
@@ -495,7 +513,10 @@ class PaymentError implements Exception {
   final PayRequest request;
   final Object error;
   final String traceReport;
-  bool get validationError => error.toString().indexOf("rpc error") >= 0 || traceReport == null || traceReport.isEmpty;
+  bool get validationError =>
+      error.toString().indexOf("rpc error") >= 0 ||
+      traceReport == null ||
+      traceReport.isEmpty;
 
   PaymentError(this.request, this.error, this.traceReport);
 

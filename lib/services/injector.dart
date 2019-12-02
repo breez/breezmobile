@@ -14,10 +14,10 @@ import 'package:breez/services/local_auth_service.dart';
 import 'background_task.dart';
 
 class ServiceInjector {
-  static final _singleton = new ServiceInjector._internal();
+  static final _singleton = ServiceInjector._internal();
   static ServiceInjector _injector;
 
-  BreezServer _breezServer;  
+  BreezServer _breezServer;
   FirebaseNotifications _notifications;
   BreezBridge _breezBridge;
   NFCService _nfcService;
@@ -45,27 +45,29 @@ class ServiceInjector {
   }
 
   NFCService get nfc {
-    return _nfcService ??= new NFCService();
+    return _nfcService ??= NFCService();
   }
 
   BreezServer get breezServer {
-    return _breezServer ??= new BreezServer();
+    return _breezServer ??= BreezServer();
   }
 
   BreezBridge get breezBridge {
-    return _breezBridge ??= new BreezBridge();
+    return _breezBridge ??= BreezBridge();
   }
 
   Device get device {
     return _device ??= Device();
   }
 
-  DeepLinksService get deepLinks => _deepLinksService ??= new DeepLinksService();
-  LightningLinksService get lightningLinks => _lightningLinksService ??= new LightningLinksService();
+  DeepLinksService get deepLinks => _deepLinksService ??= DeepLinksService();
+  LightningLinksService get lightningLinks =>
+      _lightningLinksService ??= LightningLinksService();
 
-  Future<SharedPreferences> get sharedPreferences => _sharedPreferences ??= SharedPreferences.getInstance();     
+  Future<SharedPreferences> get sharedPreferences =>
+      _sharedPreferences ??= SharedPreferences.getInstance();
 
-  Permissions get permissions  {
+  Permissions get permissions {
     return _permissions ??= Permissions();
   }
 

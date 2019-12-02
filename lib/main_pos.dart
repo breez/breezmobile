@@ -16,5 +16,5 @@ void main() {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   initializeDateFormatting(Platform.localeName, null);
   AppBlocs blocs = AppBlocs();
-  runApp(AppBlocsProvider(child: PosApp(), appBlocs: blocs));  
+  runApp(AppBlocsProvider(child: PosApp(), appBlocs: blocs));
 }

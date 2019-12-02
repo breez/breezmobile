@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class BackupPhraseWarningDialog extends StatefulWidget {
   @override
-  _BackupPhraseWarningDialogState createState() => new _BackupPhraseWarningDialogState();
+  _BackupPhraseWarningDialogState createState() =>
+      _BackupPhraseWarningDialogState();
 }
 
 class _BackupPhraseWarningDialogState extends State<BackupPhraseWarningDialog> {
@@ -15,7 +16,7 @@ class _BackupPhraseWarningDialogState extends State<BackupPhraseWarningDialog> {
     List<Widget> children = <Widget>[
       Padding(
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
-        child: new Text(
+        child: Text(
           "Your existing backup phrase will no longer be valid and a new one will be generated next time you decide to use a backup phrase. Are you sure you don't want to use a backup phrase?",
           style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
@@ -31,7 +32,7 @@ class _BackupPhraseWarningDialogState extends State<BackupPhraseWarningDialog> {
         data: Theme.of(context).copyWith(
           unselectedWidgetColor: Theme.of(context).canvasColor,
         ),
-        child: new AlertDialog(
+        child: AlertDialog(
           contentPadding: EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 16.0),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -39,13 +40,15 @@ class _BackupPhraseWarningDialogState extends State<BackupPhraseWarningDialog> {
             children: _getContent(),
           ),
           actions: [
-            new FlatButton(
+            FlatButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: new Text("NO", style: Theme.of(context).primaryTextTheme.button),
+              child:
+                  Text("NO", style: Theme.of(context).primaryTextTheme.button),
             ),
-            new FlatButton(
+            FlatButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: new Text("YES", style: Theme.of(context).primaryTextTheme.button),
+              child:
+                  Text("YES", style: Theme.of(context).primaryTextTheme.button),
             ),
           ],
         ));

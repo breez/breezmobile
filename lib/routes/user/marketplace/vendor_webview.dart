@@ -24,12 +24,12 @@ class VendorWebViewPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return new VendorWebViewPageState();
+    return VendorWebViewPageState();
   }
 }
 
 class VendorWebViewPageState extends State<VendorWebViewPage> {
-  final _widgetWebview = new FlutterWebviewPlugin();
+  final _widgetWebview = FlutterWebviewPlugin();
   StreamSubscription<BreezUserModel> _userSubscription;
   StreamSubscription _postMessageListener;
   WeblnHandlers _weblnHandlers;
@@ -53,7 +53,8 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       var userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
-      _weblnHandlers = WeblnHandlers(context, accountBloc, invoiceBloc, onBeforeCallHandler);
+      _weblnHandlers =
+          WeblnHandlers(context, accountBloc, invoiceBloc, onBeforeCallHandler);
 
       String loadedURL;
       _widgetWebview.onStateChanged.listen((state) async {
@@ -65,7 +66,9 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
 
       _postMessageListener = _widgetWebview.onPostMessage.listen((msg) {
         if (msg != null) {
-          var postMessage = (widget._title == "ln.pizza") ? {"action": "sendPayment", "payReq": msg} : JSON.jsonDecode(msg);
+          var postMessage = (widget._title == "ln.pizza")
+              ? {"action": "sendPayment", "payReq": msg}
+              : JSON.jsonDecode(msg);
           _weblnHandlers.handleMessage(postMessage).then((resScript) {
             if (resScript != null) {
               _widgetWebview.evalJavascript(resScript);
@@ -98,14 +101,21 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new WebviewScaffold(
-      appBar: new AppBar(
-        actions: <Widget>[IconButton(icon: new Icon(Icons.close, color: Theme.of(context).iconTheme.color,), onPressed: () => Navigator.pop(context))],
+    return WebviewScaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(
+                Icons.close,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              onPressed: () => Navigator.pop(context))
+        ],
         automaticallyImplyLeading: false,
         iconTheme: Theme.of(context).appBarTheme.iconTheme,
         textTheme: Theme.of(context).appBarTheme.textTheme,
         backgroundColor: Theme.of(context).canvasColor,
-        title: new Text(
+        title: Text(
           widget._title,
           style: Theme.of(context).appBarTheme.textTheme.title,
         ),
@@ -115,7 +125,8 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       withJavascript: true,
       withZoom: false,
       clearCache: true,
-      initialChild: _screenshotData != null ? Image.memory(_screenshotData) : null,
+      initialChild:
+          _screenshotData != null ? Image.memory(_screenshotData) : null,
     );
   }
 
@@ -131,7 +142,8 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   }
 
   Future onBeforeCallHandler(String handlerName) {
-    if (_screenshotData != null || !["makeInvoice", "sendPayment", "lockScreen"].contains(handlerName)) {
+    if (_screenshotData != null ||
+        !["makeInvoice", "sendPayment", "lockScreen"].contains(handlerName)) {
       return Future.value(null);
     }
 

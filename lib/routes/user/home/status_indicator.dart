@@ -9,7 +9,8 @@ class StatusIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (_accountModel?.readyForPayments == true || _accountModel?.processingConnection == true) {
+    if (_accountModel?.readyForPayments == true ||
+        _accountModel?.processingConnection == true) {
       return Container();
     }
 
@@ -23,7 +24,7 @@ class StatusIndicator extends StatelessWidget {
   Widget createStatusIndicator() {
     return LinearProgressIndicator(
         valueColor:
-        AlwaysStoppedAnimation<Color>(Theme.of(context).backgroundColor),
+            AlwaysStoppedAnimation<Color>(Theme.of(context).backgroundColor),
         backgroundColor: Theme.of(context).highlightColor);
   }
 }

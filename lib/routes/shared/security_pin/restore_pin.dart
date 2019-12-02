@@ -7,10 +7,11 @@ const PIN_CODE_LENGTH = 6;
 class RestorePinCode extends StatefulWidget {
   final Function(String phrase) onPinCodeSubmitted;
 
-  RestorePinCode({Key key, @required this.onPinCodeSubmitted}) : super(key: key);
+  RestorePinCode({Key key, @required this.onPinCodeSubmitted})
+      : super(key: key);
 
   @override
-  _RestorePinCodeState createState() => new _RestorePinCodeState();
+  _RestorePinCodeState createState() => _RestorePinCodeState();
 }
 
 class _RestorePinCodeState extends State<RestorePinCode> {
@@ -21,7 +22,7 @@ class _RestorePinCodeState extends State<RestorePinCode> {
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: Scaffold(
-        appBar: new AppBar(
+        appBar: AppBar(
           iconTheme: Theme.of(context).appBarTheme.iconTheme,
           textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
@@ -42,7 +43,7 @@ class _RestorePinCodeState extends State<RestorePinCode> {
   }
 
   Future _onPinEntered(String enteredPinCode) {
-    widget.onPinCodeSubmitted(enteredPinCode);    
+    widget.onPinCodeSubmitted(enteredPinCode);
     return Future.value(null);
   }
 }

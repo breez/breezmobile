@@ -8,40 +8,41 @@ import 'package:url_launcher/url_launcher.dart';
 
 class StatusText extends StatefulWidget {
   final AccountModel account;
-  final String message; 
+  final String message;
 
   StatusText(this.account, {this.message});
 
   @override
   State<StatefulWidget> createState() {
-    return new _StatusTextState();
+    return _StatusTextState();
   }
 }
 
-class _StatusTextState extends State<StatusText> { 
-
+class _StatusTextState extends State<StatusText> {
   @override
   Widget build(BuildContext context) {
     if (widget.message != null) {
       return LoadingAnimatedText(widget.message);
     }
 
-    if (widget.account.processingConnection) {      
+    if (widget.account.processingConnection) {
       return LoadingAnimatedText("",
           textAlign: TextAlign.center,
           textElements: <TextSpan>[
-          TextSpan(
-              text: "Breez is ",
-              style: DefaultTextStyle.of(context).style),
-          _LinkTextSpan(
-              text: "opening a secure channel",
-              url: widget.account.channelFundingTxUrl,
-              style: DefaultTextStyle.of(context).style.copyWith(decoration: TextDecoration.underline)),
-              // style: theme.blueLinkStyle),
-          TextSpan(
-            text: " with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments.",
-            style: DefaultTextStyle.of(context).style)
-        ]);
+            TextSpan(
+                text: "Breez is ", style: DefaultTextStyle.of(context).style),
+            _LinkTextSpan(
+                text: "opening a secure channel",
+                url: widget.account.channelFundingTxUrl,
+                style: DefaultTextStyle.of(context)
+                    .style
+                    .copyWith(decoration: TextDecoration.underline)),
+            // style: theme.blueLinkStyle),
+            TextSpan(
+                text:
+                    " with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments.",
+                style: DefaultTextStyle.of(context).style)
+          ]);
     }
 
     if (widget.account == null || widget.account.statusMessage == null) {
@@ -53,10 +54,11 @@ class _StatusTextState extends State<StatusText> {
       );
     }
 
-    var swapError = widget.account.swapFundsStatus?.error;    
+    var swapError = widget.account.swapFundsStatus?.error;
     bool loading = swapError == null || swapError.isEmpty;
-    return loading ? LoadingAnimatedText(widget.account.statusMessage) : 
-      Text(widget.account.statusMessage, textAlign: TextAlign.center);
+    return loading
+        ? LoadingAnimatedText(widget.account.statusMessage)
+        : Text(widget.account.statusMessage, textAlign: TextAlign.center);
   }
 }
 

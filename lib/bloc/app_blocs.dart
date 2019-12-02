@@ -15,8 +15,8 @@ Bloc stands for Business Logic Component.
 */
 class AppBlocs {
   final UserProfileBloc userProfileBloc;
-  final AccountBloc accountBloc;  
-  final POSProfileBloc posProfileBloc;    
+  final AccountBloc accountBloc;
+  final POSProfileBloc posProfileBloc;
   final InvoiceBloc invoicesBloc;
   final ConnectPayBloc connectPayBloc;
   final StatusIndicatorBloc statusIndicatorBloc;
@@ -37,36 +37,46 @@ class AppBlocs {
 
   factory AppBlocs() {
     var blocsByType = Map<Type, Object>();
-    StatusIndicatorBloc statusIndicatorBloc = _registerBloc(StatusIndicatorBloc(), blocsByType);
-    UserProfileBloc userProfileBloc = _registerBloc(UserProfileBloc(), blocsByType);
-    AccountBloc accountBloc = _registerBloc(AccountBloc(userProfileBloc.userStream), blocsByType);
-    POSProfileBloc posProfileBloc = _registerBloc(POSProfileBloc(), blocsByType);    
-    InvoiceBloc invoicesBloc = _registerBloc(InvoiceBloc(userProfileBloc), blocsByType);
-    ConnectPayBloc connectPayBloc = _registerBloc(ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream), blocsByType);
-    BackupBloc backupBloc = _registerBloc(BackupBloc(userProfileBloc.userStream), blocsByType);
-    MarketplaceBloc marketplaceBloc = _registerBloc(MarketplaceBloc(), blocsByType);
-    LSPBloc lspBloc = _registerBloc(LSPBloc(accountBloc.accountStream), blocsByType);
-    FastbitcoinsBloc fastbitcoinsBloc = _registerBloc(FastbitcoinsBloc(production: true), blocsByType);
+    StatusIndicatorBloc statusIndicatorBloc =
+        _registerBloc(StatusIndicatorBloc(), blocsByType);
+    UserProfileBloc userProfileBloc =
+        _registerBloc(UserProfileBloc(), blocsByType);
+    AccountBloc accountBloc =
+        _registerBloc(AccountBloc(userProfileBloc.userStream), blocsByType);
+    POSProfileBloc posProfileBloc =
+        _registerBloc(POSProfileBloc(), blocsByType);
+    InvoiceBloc invoicesBloc =
+        _registerBloc(InvoiceBloc(userProfileBloc), blocsByType);
+    ConnectPayBloc connectPayBloc = _registerBloc(
+        ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream),
+        blocsByType);
+    BackupBloc backupBloc =
+        _registerBloc(BackupBloc(userProfileBloc.userStream), blocsByType);
+    MarketplaceBloc marketplaceBloc =
+        _registerBloc(MarketplaceBloc(), blocsByType);
+    LSPBloc lspBloc =
+        _registerBloc(LSPBloc(accountBloc.accountStream), blocsByType);
+    FastbitcoinsBloc fastbitcoinsBloc =
+        _registerBloc(FastbitcoinsBloc(production: true), blocsByType);
 
-    return AppBlocs._(      
-      userProfileBloc,
-      accountBloc,      
-      posProfileBloc,       
-      invoicesBloc,
-      connectPayBloc,
-      statusIndicatorBloc,
-      backupBloc,
-      marketplaceBloc,
-      fastbitcoinsBloc,
-      lspBloc,
-      blocsByType
-    );
-  }  
+    return AppBlocs._(
+        userProfileBloc,
+        accountBloc,
+        posProfileBloc,
+        invoicesBloc,
+        connectPayBloc,
+        statusIndicatorBloc,
+        backupBloc,
+        marketplaceBloc,
+        fastbitcoinsBloc,
+        lspBloc,
+        blocsByType);
+  }
 
-  AppBlocs._(    
-    this.userProfileBloc, 
-    this.accountBloc,     
-    this.posProfileBloc,         
+  AppBlocs._(
+    this.userProfileBloc,
+    this.accountBloc,
+    this.posProfileBloc,
     this.invoicesBloc,
     this.connectPayBloc,
     this.statusIndicatorBloc,
@@ -74,6 +84,6 @@ class AppBlocs {
     this.marketplaceBloc,
     this.fastbitcoinsBloc,
     this.lspBloc,
-    this._blocsByType,    
+    this._blocsByType,
   );
 }

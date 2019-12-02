@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 Widget buildTransferFundsInProgressDialog(
     BuildContext context, Stream<AccountModel> accountStream) {
-  return new _TransferFundsInProgressDialog(accountStream: accountStream);
+  return _TransferFundsInProgressDialog(accountStream: accountStream);
 }
 
 class _TransferFundsInProgressDialog extends StatefulWidget {
@@ -19,7 +19,8 @@ class _TransferFundsInProgressDialog extends StatefulWidget {
   }
 }
 
-class _TransferFundsInProgressDialogState extends State<_TransferFundsInProgressDialog> {
+class _TransferFundsInProgressDialogState
+    extends State<_TransferFundsInProgressDialog> {
   StreamSubscription<AccountModel> _stateSubscription;
 
   @override

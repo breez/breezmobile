@@ -19,14 +19,13 @@ class PaymentDetailsForm extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return new _PaymentDetailsFormState();
+    return _PaymentDetailsFormState();
   }
 }
 
 class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
-  TextEditingController _invoiceDescriptionController =
-      new TextEditingController();
-  TextEditingController _amountController = new TextEditingController();
+  TextEditingController _invoiceDescriptionController = TextEditingController();
+  TextEditingController _amountController = TextEditingController();
   double _maxHeight = 0.0;
   final _formKey = GlobalKey<FormState>();
   final FocusNode _amountFocusNode = FocusNode();
@@ -35,10 +34,10 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
   @override
   void initState() {
     super.initState();
-    _doneAction = new KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
+    _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
   }
 
-  @override 
+  @override
   void dispose() {
     _doneAction.dispose();
     super.dispose();
@@ -49,7 +48,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
     const double bottomBarHeight = 96.0;
     const double bottomBarTopMargin = 24.0;
     const double formMinHeight = 250.0;
-    
+
     return LayoutBuilder(builder: (context, constraints) {
       print("constraints biggest = " + constraints.biggest.toString());
       _maxHeight = max(_maxHeight, constraints.maxHeight);
@@ -78,19 +77,22 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                       maxLines: null,
                       maxLength: 90,
                       maxLengthEnforced: true,
-                      decoration: new InputDecoration(
+                      decoration: InputDecoration(
                         labelText: "Note (optional)",
                       ),
                       style: theme.FieldTextStyle.textStyle,
                     ),
                     Container(
-                      padding: new EdgeInsets.only(top: 36.0),
-                      child: new Row(
+                      padding: EdgeInsets.only(top: 36.0),
+                      child: Row(
                         children: <Widget>[
-                          new Text("Available:", style: theme.textStyle),
-                          new Padding(
+                          Text("Available:", style: theme.textStyle),
+                          Padding(
                             padding: EdgeInsets.only(left: 3.0),
-                            child: new Text(widget._account.currency.format(widget._account.balance), style: theme.textStyle),
+                            child: Text(
+                                widget._account.currency
+                                    .format(widget._account.balance),
+                                style: theme.textStyle),
                           )
                         ],
                       ),
@@ -101,14 +103,17 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top:8, bottom: 36.0),
-            child: SubmitButton(widget._sessionState.paymentFulfilled ? "Close" : "Pay", () {
+            padding: const EdgeInsets.only(top: 8, bottom: 36.0),
+            child: SubmitButton(
+                widget._sessionState.paymentFulfilled ? "Close" : "Pay", () {
               if (widget._sessionState.paymentFulfilled) {
                 Navigator.pop(context);
               } else {
                 if (_formKey.currentState.validate()) {
-                  Int64 satoshies = widget._account.currency.parse(_amountController.text);
-                  widget._onSubmitPayementDetails(satoshies, description: _invoiceDescriptionController.text);
+                  Int64 satoshies =
+                      widget._account.currency.parse(_amountController.text);
+                  widget._onSubmitPayementDetails(satoshies,
+                      description: _invoiceDescriptionController.text);
                 }
               }
             }),

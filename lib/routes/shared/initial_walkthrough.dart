@@ -30,10 +30,11 @@ class InitialWalkthroughPage extends StatefulWidget {
   final BackupBloc _backupBloc;
   final bool _isPos;
 
-  InitialWalkthroughPage(this._user, this._registrationBloc, this._backupBloc, this._isPos);
+  InitialWalkthroughPage(
+      this._user, this._registrationBloc, this._backupBloc, this._isPos);
 
   @override
-  State createState() => new InitialWalkthroughPageState();
+  State createState() => InitialWalkthroughPageState();
 }
 
 class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
@@ -45,17 +46,17 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   StreamSubscription<bool> _restoreFinishedSubscription;
   StreamSubscription<List<SnapshotInfo>> _multipleRestoreSubscription;
 
-  var _scaffoldKey = new GlobalKey<ScaffoldState>();
-  bool _registered = false;  
+  var _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _registered = false;
 
   @override
   void initState() {
     super.initState();
 
-    _instructions = widget._isPos ?
-    "The simplest, fastest & safest way\nto earn bitcoin" :
-    "The simplest, fastest & safest way\nto spend your bitcoins";    
-    
+    _instructions = widget._isPos
+        ? "The simplest, fastest & safest way\nto earn bitcoin"
+        : "The simplest, fastest & safest way\nto spend your bitcoins";
+
     _multipleRestoreSubscription =
         widget._backupBloc.multipleRestoreStream.listen((options) async {
       if (options.length == 0) {
@@ -63,21 +64,20 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         return;
       }
 
-
       SnapshotInfo toRestore;
       if (options.length == 1) {
         toRestore = options.first;
       } else {
-        popToWalkthrough();        
+        popToWalkthrough();
         toRestore = await showDialog<SnapshotInfo>(
             context: context,
             builder: (_) =>
-                new RestoreDialog(context, widget._backupBloc, options));
+                RestoreDialog(context, widget._backupBloc, options));
       }
-      
+
       var restore = (SnapshotInfo snapshot, List<int> key) {
         widget._backupBloc.restoreRequestSink
-              .add(RestoreRequest(snapshot, key));
+            .add(RestoreRequest(snapshot, key));
         Navigator.push(
             context,
             createLoaderRoute(context,
@@ -89,26 +89,28 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           if (toRestore.encryptionType == "Mnemonics") {
             restoreUsingPhrase((entrophy) async {
               await _createBackupPhrase(entrophy);
-              var updateAction = UpdateBackupSettings(BackupSettings.start().copyWith(keyType: BackupKeyType.PHRASE));
-              widget._backupBloc.backupActionsSink.add(updateAction);              
-              updateAction.future.then((_) => restore(toRestore, HEX.decode(entrophy)));
+              var updateAction = UpdateBackupSettings(BackupSettings.start()
+                  .copyWith(keyType: BackupKeyType.PHRASE));
+              widget._backupBloc.backupActionsSink.add(updateAction);
+              updateAction.future
+                  .then((_) => restore(toRestore, HEX.decode(entrophy)));
             });
             return;
           }
-          
+
           if (toRestore.encryptionType == "Pin") {
-            restoreUsingPIN((pin) async {                            
-              var updateAction = UpdateBackupSettings(BackupSettings.start().copyWith(keyType: BackupKeyType.NONE));
+            restoreUsingPIN((pin) async {
+              var updateAction = UpdateBackupSettings(
+                  BackupSettings.start().copyWith(keyType: BackupKeyType.NONE));
               var key = sha256.convert(utf8.encode(pin));
-              widget._backupBloc.backupActionsSink.add(updateAction); 
+              widget._backupBloc.backupActionsSink.add(updateAction);
               updateAction.future.then((_) => restore(toRestore, key.bytes));
             });
-            return;            
+            return;
           }
         }
 
         restore(toRestore, null);
-
       }
     }, onError: (error) {
       popToWalkthrough(
@@ -121,7 +123,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     });
 
     _restoreFinishedSubscription =
-        widget._backupBloc.restoreFinishedStream.listen((restored) {      
+        widget._backupBloc.restoreFinishedStream.listen((restored) {
       if (restored) {
         popToWalkthrough();
         _proceedToRegister();
@@ -129,18 +131,17 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }, onError: (error) {
       Navigator.of(context).pop();
       if (error.runtimeType != SignInFailedException) {
-        showFlushbar(context, duration: new Duration(seconds: 3),
-          message: error.toString());
-      }
-      else {
+        showFlushbar(context,
+            duration: Duration(seconds: 3), message: error.toString());
+      } else {
         _handleSignInException(error as SignInFailedException);
-      }      
+      }
     });
 
-    _controller = new AnimationController(
+    _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2720))
       ..forward(from: 0.0);
-    _animation = new IntTween(begin: 0, end: 67).animate(_controller);
+    _animation = IntTween(begin: 0, end: 67).animate(_controller);
     if (_controller.isCompleted) {
       _controller.stop();
       _controller.dispose();
@@ -149,12 +150,18 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   Future _handleSignInException(SignInFailedException e) async {
     if (e.provider == BackupSettings.icloudBackupProvider) {
-      await promptError(context, "Sign in to iCloud", Text("Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.", style: Theme.of(context).dialogTheme.contentTextStyle,));
+      await promptError(
+          context,
+          "Sign in to iCloud",
+          Text(
+            "Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.",
+            style: Theme.of(context).dialogTheme.contentTextStyle,
+          ));
     }
   }
 
   Future<String> restoreUsingPhrase(Function(String key) onKeySubmitted) {
-    return Navigator.of(context).push(new FadeInRoute(
+    return Navigator.of(context).push(FadeInRoute(
       builder: (BuildContext context) {
         return EnterBackupPhrasePage(onPhraseSubmitted: onKeySubmitted);
       },
@@ -176,7 +183,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   Future<String> restoreUsingPIN(Function(String key) onKeySubmitted) {
-    return Navigator.of(context).push(new FadeInRoute(
+    return Navigator.of(context).push(FadeInRoute(
       builder: (BuildContext context) {
         return RestorePinCode(onPinCodeSubmitted: onKeySubmitted);
       },
@@ -188,9 +195,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       return route.settings.name == "/intro";
     });
     if (error != null) {
-      _scaffoldKey.currentState.showSnackBar(new SnackBar(
-          duration: new Duration(seconds: 3),
-          content: new Text(error.toString())));
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+          duration: Duration(seconds: 3), content: Text(error.toString())));
     }
   }
 
@@ -217,36 +223,36 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       key: _scaffoldKey,
       body: WillPopScope(
         onWillPop: _onWillPop,
         child: Padding(
-            padding: new EdgeInsets.only(top: 24.0),
-            child: new Stack(children: <Widget>[
-              new Column(
+            padding: EdgeInsets.only(top: 24.0),
+            child: Stack(children: <Widget>[
+              Column(
                 children: <Widget>[
-                  new Expanded(flex: 244, child: new Container()),
-                  new Expanded(
+                  Expanded(flex: 244, child: Container()),
+                  Expanded(
                       flex: 372,
-                      child: new Image.asset(
+                      child: Image.asset(
                         'src/images/waves-middle.png',
                         fit: BoxFit.cover,
                         width: double.infinity,
                       )),
                 ],
               ),
-              new Column(
+              Column(
                 children: <Widget>[
-                  new Expanded(flex: 60, child: new Container()),
-                  new Expanded(
+                  Expanded(flex: 60, child: Container()),
+                  Expanded(
                     flex: 151,
-                    child: new AnimatedBuilder(
+                    child: AnimatedBuilder(
                       animation: _animation,
                       builder: (BuildContext context, Widget child) {
                         String frame =
                             _animation.value.toString().padLeft(2, '0');
-                        return new Image.asset(
+                        return Image.asset(
                           'src/animations/welcome/frame_${frame}_delay-0.04s.png',
                           gaplessPlayback: true,
                           fit: BoxFit.cover,
@@ -254,8 +260,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       },
                     ),
                   ),
-                  new Expanded(flex: 190, child: new Container()),
-                  new Expanded(
+                  Expanded(flex: 190, child: Container()),
+                  Expanded(
                     flex: 48,
                     child: Padding(
                       padding: EdgeInsets.only(left: 24, right: 24),
@@ -266,13 +272,14 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       ),
                     ),
                   ),
-                  new Expanded(flex: 79, child: new Container()),
+                  Expanded(flex: 79, child: Container()),
                   Container(
                     height: 48.0,
                     width: 168.0,
                     child: RaisedButton(
                       padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                      child: Text("LET'S BREEZ!", style: Theme.of(context).textTheme.button),
+                      child: Text("LET'S BREEZ!",
+                          style: Theme.of(context).textTheme.button),
                       color: Theme.of(context).buttonColor,
                       elevation: 0.0,
                       shape: const StadiumBorder(),
@@ -284,39 +291,58 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                               return BetaWarningDialog();
                             }).then((approved) {
                           if (approved) {
-                            UpdateSecurityModel updateSecurityModelAction = UpdateSecurityModel(SecurityModel.initial());
-                            widget._registrationBloc.userActionsSink.add(updateSecurityModelAction);
+                            UpdateSecurityModel updateSecurityModelAction =
+                                UpdateSecurityModel(SecurityModel.initial());
+                            widget._registrationBloc.userActionsSink
+                                .add(updateSecurityModelAction);
                             updateSecurityModelAction.future.then((_) {
                               _proceedToRegister();
                             }).catchError((err) {
-                              promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
+                              promptError(
+                                  context,
+                                  "Internal Error",
+                                  Text(
+                                    err.toString(),
+                                    style: Theme.of(context)
+                                        .dialogTheme
+                                        .contentTextStyle,
+                                  ));
                             });
                           }
                         });
                       },
                     ),
                   ),
-                  new Expanded(
+                  Expanded(
                     flex: 40,
-                    child: new Padding(
+                    child: Padding(
                         padding: EdgeInsets.only(top: 10.0),
-                        child: new GestureDetector(
+                        child: GestureDetector(
                             onTap: () {
-                              widget._backupBloc.backupSettingsStream.first.then((settings) async {
+                              widget._backupBloc.backupSettingsStream.first
+                                  .then((settings) async {
                                 var backupProvider = settings.backupProvider;
-                                if (backupProvider == null || BackupSettings.availableBackupProviders().length > 1) {
-                                  backupProvider = await showDialog(context: context, builder: (_) => 
-                                    BackupProviderSelectionDialog(backupBloc: widget._backupBloc, restore: true));
-                                }                           
+                                if (backupProvider == null ||
+                                    BackupSettings.availableBackupProviders()
+                                            .length >
+                                        1) {
+                                  backupProvider = await showDialog(
+                                      context: context,
+                                      builder: (_) =>
+                                          BackupProviderSelectionDialog(
+                                              backupBloc: widget._backupBloc,
+                                              restore: true));
+                                }
                                 if (backupProvider != null) {
                                   // Restore then start lightninglib
                                   Navigator.push(
-                                    context, createLoaderRoute(context));
-                                    widget._backupBloc.restoreRequestSink.add(null);
-                                  }
-                              });                              
+                                      context, createLoaderRoute(context));
+                                  widget._backupBloc.restoreRequestSink
+                                      .add(null);
+                                }
+                              });
                             },
-                            child: new Text(
+                            child: Text(
                               "Restore from backup",
                               style: theme.restoreLinkStyle,
                             ))),

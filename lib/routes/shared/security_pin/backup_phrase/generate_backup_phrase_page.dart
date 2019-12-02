@@ -13,12 +13,13 @@ class GenerateBackupPhrasePage extends StatefulWidget {
   GenerateBackupPhrasePage(this.mnemonics);
 
   @override
-  GenerateBackupPhrasePageState createState() => new GenerateBackupPhrasePageState();
+  GenerateBackupPhrasePageState createState() =>
+      GenerateBackupPhrasePageState();
 }
 
 class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
-  PageController _pageController = new PageController();
+  PageController _pageController = PageController();
   List<String> _mnemonicsList;
   int _currentPage;
 
@@ -43,7 +44,10 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
             elevation: 0.0),
         body: PageView(
           controller: _pageController,
-          children: <Widget>[_buildMnemonicSeedList(0), _buildMnemonicSeedList(1)],
+          children: <Widget>[
+            _buildMnemonicSeedList(0),
+            _buildMnemonicSeedList(1)
+          ],
           onPageChanged: (page) {
             setState(() {
               _currentPage = page + 1;
@@ -58,7 +62,8 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   @override
   void initState() {
     _mnemonicsList = widget.mnemonics.split(" ");
-    _currentPage = _pageController.hasClients ? _pageController.page.toInt() + 1 : 1;
+    _currentPage =
+        _pageController.hasClients ? _pageController.page.toInt() + 1 : 1;
     super.initState();
   }
 
@@ -67,7 +72,9 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
       height: 48,
       width: 150,
       padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(border: Border.all(color: Colors.white30), borderRadius: BorderRadius.all(Radius.circular(4))),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.white30),
+          borderRadius: BorderRadius.all(Radius.circular(4))),
       child: Row(children: [
         Text('${index + 1}.', style: theme.mnemonicsTextStyle),
         Expanded(
@@ -86,31 +93,38 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   }
 
   Row _buildMnemonicSeedList(int page) {
-    return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
-      Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Row(
         mainAxisSize: MainAxisSize.max,
-        children:
-            List<Widget>.generate(6, (index) => _buildMnemonicItem(2 * index + (12 * (page)), _mnemonicsList[2 * index + (12 * (page))])),
-      ),
-      Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisSize: MainAxisSize.max,
-        children: List<Widget>.generate(
-            6, (index) => _buildMnemonicItem(1 + 2 * index + 12 * (page), _mnemonicsList[1 + 2 * index + 12 * (page)])),
-      ),
-    ]);
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: List<Widget>.generate(
+                6,
+                (index) => _buildMnemonicItem(2 * index + (12 * (page)),
+                    _mnemonicsList[2 * index + (12 * (page))])),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: List<Widget>.generate(
+                6,
+                (index) => _buildMnemonicItem(1 + 2 * index + 12 * (page),
+                    _mnemonicsList[1 + 2 * index + 12 * (page)])),
+          ),
+        ]);
   }
 
   _buildNextBtn() {
     return Padding(
-      padding: new EdgeInsets.only(bottom: 40),
-      child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      padding: EdgeInsets.only(bottom: 40),
+      child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
         SizedBox(
           height: 48.0,
           width: 168.0,
-          child: new RaisedButton(
-            child: new Text(
+          child: RaisedButton(
+            child: Text(
               "NEXT",
               style: Theme.of(context).textTheme.button,
             ),
@@ -126,7 +140,11 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
                   ),
                 );
               } else {
-                _pageController.nextPage(duration: Duration(milliseconds: 400), curve: Curves.easeInOut).whenComplete(() {
+                _pageController
+                    .nextPage(
+                        duration: Duration(milliseconds: 400),
+                        curve: Curves.easeInOut)
+                    .whenComplete(() {
                   setState(() {
                     _currentPage = _pageController.page.toInt() + 1;
                   });
@@ -143,7 +161,11 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     if (_currentPage == 1) {
       Navigator.popUntil(context, ModalRoute.withName("/security"));
     } else {
-      _pageController.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut).whenComplete(() {
+      _pageController
+          .previousPage(
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeInOut)
+          .whenComplete(() {
         setState(() {
           _currentPage = _pageController.page.toInt() + 1;
         });

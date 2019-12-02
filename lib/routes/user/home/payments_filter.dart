@@ -16,7 +16,8 @@ class PaymentFilterSliver extends StatefulWidget {
   final AccountBloc _accountBloc;
   final PaymentsModel _paymentsModel;
 
-  PaymentFilterSliver(this._controller, this._minSize, this._maxSize, this._accountBloc, this._paymentsModel);
+  PaymentFilterSliver(this._controller, this._minSize, this._maxSize,
+      this._accountBloc, this._paymentsModel);
 
   @override
   State<StatefulWidget> createState() {
@@ -39,30 +40,42 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
     super.dispose();
   }
 
-  void onScroll(){
-    setState((){});
+  void onScroll() {
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     double scrollOffset = widget._controller.position.pixels;
-    _hasNoFilter = (widget._paymentsModel.filter.paymentType.contains(PaymentType.SENT) &&
-        widget._paymentsModel.filter.paymentType.contains(PaymentType.DEPOSIT) &&
-        widget._paymentsModel.filter.paymentType.contains(PaymentType.WITHDRAWAL) &&
-        widget._paymentsModel.filter.paymentType.contains(PaymentType.RECEIVED)) && (widget._paymentsModel.filter.startDate == null || widget._paymentsModel.filter.endDate == null);
+    _hasNoFilter =
+        (widget._paymentsModel.filter.paymentType.contains(PaymentType.SENT) &&
+                widget._paymentsModel.filter.paymentType
+                    .contains(PaymentType.DEPOSIT) &&
+                widget._paymentsModel.filter.paymentType
+                    .contains(PaymentType.WITHDRAWAL) &&
+                widget._paymentsModel.filter.paymentType
+                    .contains(PaymentType.RECEIVED)) &&
+            (widget._paymentsModel.filter.startDate == null ||
+                widget._paymentsModel.filter.endDate == null);
     return SliverPersistentHeader(
-        pinned: true,
-        delegate: new FixedSliverDelegate(!_hasNoFilter ? widget._maxSize : (scrollOffset).clamp(widget._minSize, widget._maxSize),
-            builder: (context, shrinkedHeight, overlapContent) {
-          return Container(
-              decoration: BoxDecoration(color: Theme.of(context).canvasColor),
-              height: widget._maxSize,
-              child: AnimatedOpacity(
-                  duration: Duration(milliseconds: 100),
-                  opacity: !_hasNoFilter ? 1.0 : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
-                  child: PaymentsFilter(widget._accountBloc, widget._paymentsModel)));
-        }),
-      );
+      pinned: true,
+      delegate: FixedSliverDelegate(
+          !_hasNoFilter
+              ? widget._maxSize
+              : (scrollOffset).clamp(widget._minSize, widget._maxSize),
+          builder: (context, shrinkedHeight, overlapContent) {
+        return Container(
+            decoration: BoxDecoration(color: Theme.of(context).canvasColor),
+            height: widget._maxSize,
+            child: AnimatedOpacity(
+                duration: Duration(milliseconds: 100),
+                opacity: !_hasNoFilter
+                    ? 1.0
+                    : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
+                child: PaymentsFilter(
+                    widget._accountBloc, widget._paymentsModel)));
+      }),
+    );
   }
 }
 
@@ -89,11 +102,15 @@ class PaymentsFilterState extends State<PaymentsFilter> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [_buildExportButton(context),_buildCalendarButton(context), _buildFilterDropdown(context)]);
+    return Row(children: [
+      _buildExportButton(context),
+      _buildCalendarButton(context),
+      _buildFilterDropdown(context)
+    ]);
   }
 
   Padding _buildCalendarButton(BuildContext context) {
-    return new Padding(
+    return Padding(
       padding: EdgeInsets.only(left: 0.0, right: 0.0),
       child: IconButton(
         icon: ImageIcon(
@@ -104,29 +121,39 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         onPressed: () => widget._paymentsModel.firstDate != null
             ? showDialog(
                 context: context,
-                builder: (_) => CalendarDialog(context, widget._paymentsModel.firstDate),
+                builder: (_) =>
+                    CalendarDialog(context, widget._paymentsModel.firstDate),
               ).then((result) {
-                widget._accountBloc.paymentFilterSink
-                    .add(widget._paymentsModel.filter.copyWith(filter: _getFilterType(_filter), startDate: result[0], endDate: result[1]));
+                widget._accountBloc.paymentFilterSink.add(
+                    widget._paymentsModel.filter.copyWith(
+                        filter: _getFilterType(_filter),
+                        startDate: result[0],
+                        endDate: result[1]));
               })
-            : Scaffold.of(context).showSnackBar(new SnackBar(content: new Text("Please wait while Breez is loading transactions."))),
+            : Scaffold.of(context).showSnackBar(SnackBar(
+                content:
+                    Text("Please wait while Breez is loading transactions."))),
       ),
     );
   }
 
   Theme _buildFilterDropdown(BuildContext context) {
     return Theme(
-      data: theme.themeId == "BLUE" ? Theme.of(context) : Theme.of(context).copyWith(canvasColor: Theme.of(context).backgroundColor),
+      data: theme.themeId == "BLUE"
+          ? Theme.of(context)
+          : Theme.of(context)
+              .copyWith(canvasColor: Theme.of(context).backgroundColor),
       child: DropdownButtonHideUnderline(
         child: ButtonTheme(
           alignedDropdown: true,
-          child: new DropdownButton(
+          child: DropdownButton(
               value: _filter,
               style: theme.transactionTitleStyle,
-              items: <String>['All Activities', 'Sent', 'Received'].map((String value) {
-                return new DropdownMenuItem<String>(
+              items: <String>['All Activities', 'Sent', 'Received']
+                  .map((String value) {
+                return DropdownMenuItem<String>(
                   value: value,
-                  child: new Text(
+                  child: Text(
                     value,
                   ),
                 );
@@ -135,20 +162,27 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                 setState(() {
                   _filter = value;
                 });
-                widget._accountBloc.paymentFilterSink.add(widget._paymentsModel.filter.copyWith(filter: _getFilterType(_filter)));
+                widget._accountBloc.paymentFilterSink.add(widget
+                    ._paymentsModel.filter
+                    .copyWith(filter: _getFilterType(_filter)));
               }),
         ),
       ),
     );
   }
 
-  _getFilterType(String _filter){
+  _getFilterType(String _filter) {
     if (_filter == "Sent") {
       return [PaymentType.SENT, PaymentType.WITHDRAWAL];
     } else if (_filter == "Received") {
       return [PaymentType.RECEIVED, PaymentType.DEPOSIT];
     }
-    return [PaymentType.RECEIVED, PaymentType.DEPOSIT, PaymentType.SENT, PaymentType.WITHDRAWAL];
+    return [
+      PaymentType.RECEIVED,
+      PaymentType.DEPOSIT,
+      PaymentType.SENT,
+      PaymentType.WITHDRAWAL
+    ];
   }
 
   Padding _buildExportButton(BuildContext context) {

@@ -32,7 +32,7 @@ class LinkTextSpan extends TextSpan {
       : super(
             style: style,
             text: text ?? command,
-            recognizer: new TapGestureRecognizer()
+            recognizer: TapGestureRecognizer()
               ..onTap = () {
                 _cliInputController.text = command + " ";
                 FocusScope.of(_scaffoldKey.currentState.context)
@@ -48,14 +48,14 @@ class Choice {
   final Function function;
 }
 
-final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class DevView extends StatefulWidget {
   BreezBridge _breezBridge;
   Permissions _permissionsService;
 
   DevView() {
-    ServiceInjector injector = new ServiceInjector();
+    ServiceInjector injector = ServiceInjector();
     _breezBridge = injector.breezBridge;
     _permissionsService = injector.permissions;
   }
@@ -66,7 +66,7 @@ class DevView extends StatefulWidget {
 
   @override
   DevViewState createState() {
-    return new DevViewState();
+    return DevViewState();
   }
 }
 
@@ -86,14 +86,14 @@ class DevViewState extends State<DevView> {
   }
 
   void _sendCommand(String command) {
-    FocusScope.of(context).requestFocus(new FocusNode());
+    FocusScope.of(context).requestFocus(FocusNode());
     widget._breezBridge.sendCommand(command).then((reply) {
       setState(() {
         _showDefaultCommands = false;
         _cliTextStyle = theme.smallTextStyle;
         _cliText = reply;
         _richCliText = <TextSpan>[
-          new TextSpan(text: _cliText),
+          TextSpan(text: _cliText),
         ];
       });
     }).catchError((error) {
@@ -102,7 +102,7 @@ class DevViewState extends State<DevView> {
         _cliText = error;
         _cliTextStyle = theme.warningStyle;
         _richCliText = <TextSpan>[
-          new TextSpan(text: _cliText),
+          TextSpan(text: _cliText),
         ];
       });
     });
@@ -115,7 +115,7 @@ class DevViewState extends State<DevView> {
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     return StreamBuilder<BackupState>(
       stream: backupBloc.backupStateStream,
-      builder: (ctx, backupSnapshot) =>  StreamBuilder(
+      builder: (ctx, backupSnapshot) => StreamBuilder(
           stream: accBloc.accountStream,
           builder: (accCtx, accSnapshot) {
             AccountModel account = accSnapshot.data;
@@ -125,9 +125,9 @@ class DevViewState extends State<DevView> {
                   return StreamBuilder(
                       stream: addFundsBloc.addFundsSettingsStream,
                       builder: (context, addFundsSettingsSnapshot) {
-                        return new Scaffold(
+                        return Scaffold(
                           key: _scaffoldKey,
-                          appBar: new AppBar(
+                          appBar: AppBar(
                             iconTheme: Theme.of(context).appBarTheme.iconTheme,
                             textTheme: Theme.of(context).appBarTheme.textTheme,
                             backgroundColor: Theme.of(context).canvasColor,
@@ -137,117 +137,162 @@ class DevViewState extends State<DevView> {
                               PopupMenuButton<Choice>(
                                 onSelected: widget._select,
                                 color: Theme.of(context).backgroundColor,
-                                icon: Icon(Icons.more_vert, color: Theme.of(context).iconTheme.color,),
+                                icon: Icon(
+                                  Icons.more_vert,
+                                  color: Theme.of(context).iconTheme.color,
+                                ),
                                 itemBuilder: (BuildContext context) {
-                                  return getChoices(accBloc, settingsSnapshot.data, account, addFundsBloc, addFundsSettingsSnapshot.data)
+                                  return getChoices(
+                                          accBloc,
+                                          settingsSnapshot.data,
+                                          account,
+                                          addFundsBloc,
+                                          addFundsSettingsSnapshot.data)
                                       .map((Choice choice) {
                                     return PopupMenuItem<Choice>(
                                       value: choice,
-                                      child: Text(choice.title, style: Theme.of(context).textTheme.button),
+                                      child: Text(choice.title,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .button),
                                     );
                                   }).toList();
                                 },
                               ),
                             ],
-                            title: new Text(
+                            title: Text(
                               "Developers",
-                              style: Theme.of(context).appBarTheme.textTheme.title,
+                              style:
+                                  Theme.of(context).appBarTheme.textTheme.title,
                             ),
                           ),
-                          body: new Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: new Row(
-                                children: <Widget>[
-                                  new Flexible(
-                                      child: new TextField(
-                                    focusNode: _cliEntryFocusNode,
-                                    controller: _cliInputController,
-                                    decoration: InputDecoration(hintText: 'Enter a command or use the links below'),
-                                    onSubmitted: (command) {
-                                      _sendCommand(command);
-                                    },
-                                  )),
-                                  new IconButton(
-                                    icon: new Icon(Icons.play_arrow),
-                                    tooltip: 'Run',
-                                    onPressed: () {
-                                      _sendCommand(_cliInputController.text);
-                                    },
+                          body: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Flexible(
+                                          child: TextField(
+                                        focusNode: _cliEntryFocusNode,
+                                        controller: _cliInputController,
+                                        decoration: InputDecoration(
+                                            hintText:
+                                                'Enter a command or use the links below'),
+                                        onSubmitted: (command) {
+                                          _sendCommand(command);
+                                        },
+                                      )),
+                                      IconButton(
+                                        icon: Icon(Icons.play_arrow),
+                                        tooltip: 'Run',
+                                        onPressed: () {
+                                          _sendCommand(
+                                              _cliInputController.text);
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.clear),
+                                        tooltip: 'Clear',
+                                        onPressed: () {
+                                          setState(() {
+                                            _cliInputController.clear();
+                                            _showDefaultCommands = true;
+                                            _cliText = "";
+                                            _richCliText =
+                                                defaultCliCommandsText;
+                                          });
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                  new IconButton(
-                                    icon: new Icon(Icons.clear),
-                                    tooltip: 'Clear',
-                                    onPressed: () {
-                                      setState(() {
-                                        _cliInputController.clear();
-                                        _showDefaultCommands = true;
-                                        _cliText = "";
-                                        _richCliText = defaultCliCommandsText;
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            new Expanded(
-                                flex: 1,
-                                child: new Container(
-                                  padding: new EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-                                  child: new Container(
-                                    padding: _showDefaultCommands ? new EdgeInsets.all(0.0) : new EdgeInsets.all(2.0),
-                                    decoration: new BoxDecoration(
-                                        border: _showDefaultCommands ? null : new Border.all(width: 1.0, color: Color(0x80FFFFFF))),
-                                    child: new Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: <Widget>[
-                                        _showDefaultCommands
-                                            ? new Container()
-                                            : new Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                children: <Widget>[
-                                                  new IconButton(
-                                                    icon: new Icon(Icons.content_copy),
-                                                    tooltip: 'Copy to Clipboard',
-                                                    iconSize: 19.0,
-                                                    onPressed: () {
-                                                      Clipboard.setData(new ClipboardData(text: _cliText));
-                                                      _scaffoldKey.currentState.showSnackBar(new SnackBar(
-                                                        content: new Text(
-                                                          'Copied to clipboard.',
-                                                          style: theme.snackBarStyle,
-                                                        ),
-                                                        backgroundColor: theme.snackBarBackgroundColor,
-                                                        duration: new Duration(seconds: 2),
-                                                      ));
-                                                    },
+                                ),
+                                Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                          top: 10.0, left: 10.0, right: 10.0),
+                                      child: Container(
+                                        padding: _showDefaultCommands
+                                            ? EdgeInsets.all(0.0)
+                                            : EdgeInsets.all(2.0),
+                                        decoration: BoxDecoration(
+                                            border: _showDefaultCommands
+                                                ? null
+                                                : Border.all(
+                                                    width: 1.0,
+                                                    color: Color(0x80FFFFFF))),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            _showDefaultCommands
+                                                ? Container()
+                                                : Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: <Widget>[
+                                                      IconButton(
+                                                        icon: Icon(
+                                                            Icons.content_copy),
+                                                        tooltip:
+                                                            'Copy to Clipboard',
+                                                        iconSize: 19.0,
+                                                        onPressed: () {
+                                                          Clipboard.setData(
+                                                              ClipboardData(
+                                                                  text:
+                                                                      _cliText));
+                                                          _scaffoldKey
+                                                              .currentState
+                                                              .showSnackBar(
+                                                                  SnackBar(
+                                                            content: Text(
+                                                              'Copied to clipboard.',
+                                                              style: theme
+                                                                  .snackBarStyle,
+                                                            ),
+                                                            backgroundColor: theme
+                                                                .snackBarBackgroundColor,
+                                                            duration: Duration(
+                                                                seconds: 2),
+                                                          ));
+                                                        },
+                                                      ),
+                                                      IconButton(
+                                                        icon: Icon(Icons.share),
+                                                        iconSize: 19.0,
+                                                        tooltip: 'Share',
+                                                        onPressed: () {
+                                                          ShareExtend.share(
+                                                              _cliText, "text");
+                                                        },
+                                                      )
+                                                    ],
                                                   ),
-                                                  new IconButton(
-                                                    icon: new Icon(Icons.share),
-                                                    iconSize: 19.0,
-                                                    tooltip: 'Share',
-                                                    onPressed: () {
-                                                      ShareExtend.share(_cliText, "text");
-                                                    },
-                                                  )
+                                            Expanded(
+                                                child: SingleChildScrollView(
+                                                    child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Expanded(
+                                                      child: RichText(
+                                                          text: TextSpan(
+                                                              style:
+                                                                  _cliTextStyle,
+                                                              children:
+                                                                  _richCliText)))
                                                 ],
                                               ),
-                                        new Expanded(
-                                            child: new SingleChildScrollView(
-                                                child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: new Row(
-                                            children: <Widget>[
-                                              new Expanded(
-                                                  child: new RichText(text: new TextSpan(style: _cliTextStyle, children: _richCliText)))
-                                            ],
-                                          ),
-                                        )))
-                                      ],
-                                    ),
-                                  ),
-                                )),                            
-                          ]),
+                                            )))
+                                          ],
+                                        ),
+                                      ),
+                                    )),
+                              ]),
                         );
                       });
                 });
@@ -256,14 +301,18 @@ class DevViewState extends State<DevView> {
   }
 
   List<Choice> getChoices(
-      AccountBloc accBloc, AccountSettings settings, AccountModel account, AddFundsBloc addFundsBloc, AddFundsSettings addFundsSettings) {
-    List<Choice> choices = new List<Choice>();
+      AccountBloc accBloc,
+      AccountSettings settings,
+      AccountModel account,
+      AddFundsBloc addFundsBloc,
+      AddFundsSettings addFundsSettings) {
+    List<Choice> choices = List<Choice>();
     choices.addAll([
       Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
       Choice(
           title: 'Show Initial Screen',
           icon: Icons.phone_android,
-          function: _gotoInitialScreen),      
+          function: _gotoInitialScreen),
       Choice(
           title:
               '${settings.showConnectProgress ? "Hide" : "Show"} Connect Progress',
@@ -274,7 +323,7 @@ class DevViewState extends State<DevView> {
       Choice(
           title: 'Describe Graph',
           icon: Icons.phone_android,
-          function: _describeGraph),      
+          function: _describeGraph),
     ]);
 
     if (Platform.isAndroid) {
@@ -291,29 +340,27 @@ class DevViewState extends State<DevView> {
     }
     if (settings.failePaymentBehavior != BugReportBehavior.PROMPT) {
       choices.add(Choice(
-          title:
-              'Reset Payment Report',
+          title: 'Reset Payment Report',
           icon: Icons.phone_android,
           function: () {
             _resetBugReportBehavior(accBloc, settings);
           }));
     }
     choices.add(Choice(
-        title: "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
+        title:
+            "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
         icon: Icons.network_check,
         function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));
     choices.add(Choice(
-      title: "Force Rescan",
-      icon: Icons.phone_android,
-      function: () async {
-        var workingDir = await widget._breezBridge.getWorkingDir();
-        var rescanFile = File(workingDir.path + "/$FORCE_RESCAN_FILE_NAME");
-        await rescanFile.create(recursive: true);
-        _promptForRestart();
+        title: "Force Rescan",
+        icon: Icons.phone_android,
+        function: () async {
+          var workingDir = await widget._breezBridge.getWorkingDir();
+          var rescanFile = File(workingDir.path + "/$FORCE_RESCAN_FILE_NAME");
+          await rescanFile.create(recursive: true);
+          _promptForRestart();
+        }));
 
-      }
-    ));   
-    
     return choices;
   }
 
@@ -338,13 +385,16 @@ class DevViewState extends State<DevView> {
         .add(settings.copyWith(failePaymentBehavior: BugReportBehavior.PROMPT));
   }
 
-  void _setShowExcessFunds(AccountBloc bloc, AccountSettings settings, {bool ignore = false}) {
+  void _setShowExcessFunds(AccountBloc bloc, AccountSettings settings,
+      {bool ignore = false}) {
     bloc.accountSettingsSink
         .add(settings.copyWith(ignoreWalletBalance: ignore));
   }
 
-  void _enableMoonpayIpCheck(AddFundsBloc bloc, AddFundsSettings addFundsSettings) {
-    bloc.addFundsSettingsSink.add(addFundsSettings.copyWith(moonpayIpCheck: !addFundsSettings.moonpayIpCheck));
+  void _enableMoonpayIpCheck(
+      AddFundsBloc bloc, AddFundsSettings addFundsSettings) {
+    bloc.addFundsSettingsSink.add(addFundsSettings.copyWith(
+        moonpayIpCheck: !addFundsSettings.moonpayIpCheck));
   }
 
   void _describeGraph() async {
@@ -359,7 +409,7 @@ class DevViewState extends State<DevView> {
         .whenComplete(() => userCancelled = true);
 
     widget._breezBridge.sendCommand("describegraph $filePath").then((_) {
-      var encoder = new ZipFileEncoder();
+      var encoder = ZipFileEncoder();
       encoder.create('${tempDir.path}/graph.zip');
       encoder.addFile(File(filePath));
       encoder.close();
@@ -367,18 +417,21 @@ class DevViewState extends State<DevView> {
       if (!userCancelled) {
         return shareFile("${tempDir.path}/graph.zip");
       }
-    }).whenComplete(() {    
+    }).whenComplete(() {
       if (!userCancelled) {
         Navigator.pop(context);
       }
     });
   }
 
-
   Future _promptForRestart() {
-    return promptAreYouSure(context, null,
-            Text("Please restart to resynchronize Breez.", style: Theme.of(context).dialogTheme.contentTextStyle),
-            cancelText: "Cancel", okText: "Exit Breez")
+    return promptAreYouSure(
+            context,
+            null,
+            Text("Please restart to resynchronize Breez.",
+                style: Theme.of(context).dialogTheme.contentTextStyle),
+            cancelText: "Cancel",
+            okText: "Exit Breez")
         .then((shouldExit) {
       if (shouldExit) {
         exit(0);

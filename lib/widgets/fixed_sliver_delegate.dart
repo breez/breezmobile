@@ -6,12 +6,14 @@ FixedSliverDelegate is a delegate that renders a sliver in a fixed height.
 class FixedSliverDelegate extends SliverPersistentHeaderDelegate {
   final double _height;
   final Widget child;
-  final Function(BuildContext context, double shrinkOffset, bool overlapsContent) builder;
+  final Function(
+      BuildContext context, double shrinkOffset, bool overlapsContent) builder;
 
   FixedSliverDelegate(this._height, {this.child, this.builder});
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     if (builder != null) {
       return builder(context, shrinkOffset, overlapsContent);
     }

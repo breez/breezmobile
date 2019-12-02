@@ -10,16 +10,16 @@ class KeyboardDoneAction {
 
   KeyboardDoneAction(this.focusNodes) {
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      focusNodes.forEach((f) => f.addListener(_onFocus));      
+      focusNodes.forEach((f) => f.addListener(_onFocus));
     }
   }
 
-  void dispose(){
-    focusNodes.forEach((f) => f.removeListener(_onFocus));    
+  void dispose() {
+    focusNodes.forEach((f) => f.removeListener(_onFocus));
     _overlayEntry?.remove();
   }
 
-  void _onFocus(){
+  void _onFocus() {
     bool hasFocus = focusNodes.any((f) => f.hasFocus);
     if (hasFocus && _overlayEntry == null) {
       _showOverlay();
@@ -28,16 +28,16 @@ class KeyboardDoneAction {
     }
   }
 
-  void _showOverlay(){
+  void _showOverlay() {
     OverlayState os = Overlay.of(focusNodes[0].context);
     _overlayEntry = OverlayEntry(builder: (context) {
-      // Update and build footer, if any      
+      // Update and build footer, if any
       return Positioned(
         bottom: MediaQuery.of(context).viewInsets.bottom,
         left: 0,
         right: 0,
-        child: Material(        
-          color: Colors.grey[200],          
+        child: Material(
+          color: Colors.grey[200],
           child: Container(
             height: _kBarSize,
             width: MediaQuery.of(context).size.width,
@@ -46,12 +46,15 @@ class KeyboardDoneAction {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 InkWell(
-                  onTap: (){
-                    FocusScope.of(context).requestFocus(new FocusNode());
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
                   },
                   child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text("Done", style: TextStyle(color: theme.BreezColors.blue[500], fontWeight: FontWeight.bold ))),
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("Done",
+                          style: TextStyle(
+                              color: theme.BreezColors.blue[500],
+                              fontWeight: FontWeight.bold))),
                 )
               ],
             ),
@@ -62,7 +65,7 @@ class KeyboardDoneAction {
     os.insert(_overlayEntry);
   }
 
-  void _hideOverlay(){
+  void _hideOverlay() {
     _overlayEntry.remove();
     _overlayEntry = null;
   }

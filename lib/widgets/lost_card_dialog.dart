@@ -18,30 +18,29 @@ class LostCardDialog extends StatelessWidget {
     return showLostCardDialog();
   }
 
-  Widget showLostCardDialog() {    
-    _lostCardFlush =
-        Flushbar(
-          titleText: new Text("", style: TextStyle(height: 0.0)),
-          messageText: new Text("Your card has been deactivated.\nYou may order a new card now.",
-            style: theme.snackBarStyle, textAlign: TextAlign.left),
-          duration: Duration(seconds: 8),
-          backgroundColor: theme.snackBarBackgroundColor,
-          mainButton: FlatButton(
-            onPressed: () {
-              _lostCardFlush.dismiss(true);
-              Navigator.pushReplacementNamed(context, "/order_card");
-            },
-            child: Text("ORDER", style: theme.validatorStyle),
-          )
-        );
-                  
-    return new AlertDialog(
-      title:        
-        new Text(
-          "Lost or Stolen Card",
-          style: Theme.of(context).dialogTheme.titleTextStyle,
-          maxLines: 2,
-        ),      
+  Widget showLostCardDialog() {
+    _lostCardFlush = Flushbar(
+        titleText: Text("", style: TextStyle(height: 0.0)),
+        messageText: Text(
+            "Your card has been deactivated.\nYou may order a new card now.",
+            style: theme.snackBarStyle,
+            textAlign: TextAlign.left),
+        duration: Duration(seconds: 8),
+        backgroundColor: theme.snackBarBackgroundColor,
+        mainButton: FlatButton(
+          onPressed: () {
+            _lostCardFlush.dismiss(true);
+            Navigator.pushReplacementNamed(context, "/order_card");
+          },
+          child: Text("ORDER", style: theme.validatorStyle),
+        ));
+
+    return AlertDialog(
+      title: Text(
+        "Lost or Stolen Card",
+        style: Theme.of(context).dialogTheme.titleTextStyle,
+        maxLines: 2,
+      ),
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
       content: Container(
         width: MediaQuery.of(context).size.width,
@@ -53,14 +52,16 @@ class LostCardDialog extends StatelessWidget {
       actions: <Widget>[
         FlatButton(
           onPressed: () => Navigator.pop(context),
-          child: Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
+          child:
+              Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
         ),
         FlatButton(
           onPressed: (() {
             Navigator.pop(context);
             _lostCardFlush.show(context);
           }),
-          child: Text("DEACTIVATE", style: Theme.of(context).primaryTextTheme.button),
+          child: Text("DEACTIVATE",
+              style: Theme.of(context).primaryTextTheme.button),
         ),
       ],
     );

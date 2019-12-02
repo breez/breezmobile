@@ -9,15 +9,15 @@ enum NotificationType { RESUME, PAUSE }
 
 class Device {
   static const EventChannel _notificationsChannel =
-      const EventChannel('com.breez.client/lifecycle_events_notifications');
+      EventChannel('com.breez.client/lifecycle_events_notifications');
   static const MethodChannel _breezShareChannel =
-      const MethodChannel('com.breez.client/share_breez');
+      MethodChannel('com.breez.client/share_breez');
 
   final StreamController _eventsController =
-      new StreamController<NotificationType>.broadcast();
+      StreamController<NotificationType>.broadcast();
   Stream<NotificationType> get eventStream => _eventsController.stream;
 
-  final _deviceClipboardController = new BehaviorSubject<String>();
+  final _deviceClipboardController = BehaviorSubject<String>();
   Stream get deviceClipboardStream => _deviceClipboardController.stream;
 
   String _lastClipping = "";
@@ -26,7 +26,8 @@ class Device {
   Device() {
     var sharedPrefrences = SharedPreferences.getInstance();
     sharedPrefrences.then((preferences) {
-      _lastClipping = preferences.getString(LAST_CLIPPING_PREFERENCES_KEY) ?? "";
+      _lastClipping =
+          preferences.getString(LAST_CLIPPING_PREFERENCES_KEY) ?? "";
       fetchClipboard(preferences);
     });
 
@@ -35,7 +36,7 @@ class Device {
         _eventsController.add(NotificationType.RESUME);
         sharedPrefrences.then((preferences) {
           fetchClipboard(preferences);
-        });        
+        });
       }
       if (event == "pause") {
         _eventsController.add(NotificationType.PAUSE);
@@ -50,7 +51,7 @@ class Device {
     return ShareExtend.share(text, "text");
   }
 
-  fetchClipboard(SharedPreferences preferences){
+  fetchClipboard(SharedPreferences preferences) {
     Clipboard.getData("text/plain").then((clipboardData) {
       if (clipboardData != null) {
         var text = clipboardData.text;

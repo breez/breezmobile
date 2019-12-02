@@ -75,7 +75,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
           this._scannerErrorMessage =
-          'Please grant Breez camera permission to scan QR codes.';
+              'Please grant Breez camera permission to scan QR codes.';
         });
       } else {
         setState(() => this._scannerErrorMessage = '');
@@ -89,40 +89,40 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
+    return Scaffold(
+      appBar: AppBar(
           iconTheme: Theme.of(context).appBarTheme.iconTheme,
           textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(),
-          title: new Text(
+          title: Text(
             _title,
             style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0),
-      body: new Padding(
-          padding: new EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+      body: Padding(
+          padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
           child: Form(
               key: _formKey,
-              child: new ListView(
+              child: ListView(
                 scrollDirection: Axis.vertical,
                 children: <Widget>[
-                  new Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      new Container(
-                        padding: new EdgeInsets.only(top: 8.0),
-                        child: new TextFormField(
+                      Container(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: TextFormField(
                           controller: _codeController,
-                          decoration: new InputDecoration(
-                              labelText: "Voucher Code",
-                              hintText: "Enter your voucher code",
-                            suffixIcon: new IconButton(
+                          decoration: InputDecoration(
+                            labelText: "Voucher Code",
+                            hintText: "Enter your voucher code",
+                            suffixIcon: IconButton(
                               padding: EdgeInsets.only(top: 21.0),
                               alignment: Alignment.bottomRight,
-                              icon: new Image(
-                                image: new AssetImage("src/icon/qr_scan.png"),
+                              icon: Image(
+                                image: AssetImage("src/icon/qr_scan.png"),
                                 color: theme.BreezColors.white[500],
                                 fit: BoxFit.contain,
                                 width: 24.0,
@@ -141,17 +141,17 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                         ),
                       ),
                       _scannerErrorMessage.length > 0
-                          ? new Text(
-                        _scannerErrorMessage,
-                        style: theme.validatorStyle,
-                      )
+                          ? Text(
+                              _scannerErrorMessage,
+                              style: theme.validatorStyle,
+                            )
                           : SizedBox(),
-                      new Container(
-                        padding: new EdgeInsets.only(top: 8.0),
-                        child: new TextFormField(
+                      Container(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: TextFormField(
                           controller: _emailController,
                           decoration:
-                              new InputDecoration(labelText: "E-mail Address"),
+                              InputDecoration(labelText: "E-mail Address"),
                           style: theme.FieldTextStyle.textStyle,
                           textCapitalization: TextCapitalization.none,
                           validator: (value) {
@@ -163,9 +163,9 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                           },
                         ),
                       ),
-                      new Container(
-                          padding: new EdgeInsets.only(top: 8.0),
-                          child: new Row(
+                      Container(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
@@ -178,7 +178,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                           RegExp(r'\d+\.?\d*'))
                                     ],
                                     keyboardType: TextInputType.number,
-                                    decoration: new InputDecoration(
+                                    decoration: InputDecoration(
                                         // contentPadding:
                                         //           new EdgeInsets.only(
                                         //               bottom: 10.74*5),
@@ -204,7 +204,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                 ),
                                 Expanded(
                                   flex: 4,
-                                  child: new FormField(
+                                  child: FormField(
                                     builder: (FormFieldState state) {
                                       return InputDecorator(
                                         decoration: InputDecoration(
@@ -213,7 +213,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                         child: Container(
                                           height: 28.3,
                                           child: DropdownButtonHideUnderline(
-                                            child: new DropdownButton(
+                                            child: DropdownButton(
                                               value: _currency,
                                               onChanged: (String newValue) {
                                                 setState(() {
@@ -228,9 +228,9 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                                 "CAD",
                                                 "AUD"
                                               ].map((String value) {
-                                                return new DropdownMenuItem(
+                                                return DropdownMenuItem(
                                                   value: value,
-                                                  child: new Text(value,
+                                                  child: Text(value,
                                                       style: theme
                                                           .FieldTextStyle
                                                           .textStyle),
@@ -248,16 +248,16 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                   ),
                 ],
               ))),
-      bottomNavigationBar: new Padding(
-          padding: new EdgeInsets.only(bottom: 40.0),
-          child: new Column(
+      bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(bottom: 40.0),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              new SizedBox(
+              SizedBox(
                   height: 48.0,
                   width: 168.0,
-                  child: new RaisedButton(
-                    child: new Text(
+                  child: RaisedButton(
+                    child: Text(
                       "CALCULATE",
                       style: Theme.of(context).textTheme.button,
                     ),
@@ -266,16 +266,14 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                     shape: const StadiumBorder(),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        var _request = new ValidateRequestModel(
+                        var _request = ValidateRequestModel(
                             _emailController.text.trim(),
                             _codeController.text.trim(),
                             double.parse(_valueController.text),
                             _currency);
                         Navigator.of(context).push(TransparentPageRoute(
-                            (context) => new RedeemVoucherRoute(
-                                _userProfileBloc,
-                                _fastBitcoinsBloc,
-                                _request)));
+                            (context) => RedeemVoucherRoute(_userProfileBloc,
+                                _fastBitcoinsBloc, _request)));
                       }
                     },
                   ))
@@ -302,7 +300,7 @@ class RedeemVoucherRoute extends StatefulWidget {
 class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
   bool _loading = true;
   StreamSubscription<ValidateResponseModel> _validateSubscription;
-  StreamSubscription<RedeemResponseModel> _redeemSubscription;  
+  StreamSubscription<RedeemResponseModel> _redeemSubscription;
 
   @override
   void initState() {
@@ -321,7 +319,9 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
         Widget content = FastBitcoinsConfirmWidget(
             request: widget._voucherRequest, response: res, user: user);
         bool sure = await promptAreYouSure(context, "Confirm Order", content,
-            textStyle: Theme.of(context).dialogTheme.contentTextStyle, okText: "CONFIRM", cancelText: "CANCEL",
+            textStyle: Theme.of(context).dialogTheme.contentTextStyle,
+            okText: "CONFIRM",
+            cancelText: "CANCEL",
             wideTitle: true,
             contentPadding: EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0));
         if (sure == true) {
@@ -383,7 +383,7 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
   }
 
   void _redeemRequest(ValidateResponseModel validateRes) {
-    var redeemRequest = new RedeemRequestModel(
+    var redeemRequest = RedeemRequestModel(
         widget._voucherRequest.emailAddress,
         widget._voucherRequest.code,
         widget._voucherRequest.value,
@@ -407,7 +407,9 @@ class RedeemVoucherRouteState extends State<RedeemVoucherRoute> {
               text: "fastbitcoins.com ",
               url: "https://fastbitcoins.com",
               style: theme.blueLinkStyle),
-          TextSpan(text: "site.", style: Theme.of(context).dialogTheme.contentTextStyle)
+          TextSpan(
+              text: "site.",
+              style: Theme.of(context).dialogTheme.contentTextStyle)
         ]))).whenComplete(() => popToForm());
   }
 }

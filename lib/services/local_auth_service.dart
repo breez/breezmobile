@@ -11,10 +11,12 @@ class LocalAuthenticationService {
 
   final _auth = LocalAuthentication();
 
-  Future<String> get enrolledBiometrics async => await _getAvailableBiometrics();
+  Future<String> get enrolledBiometrics async =>
+      await _getAvailableBiometrics();
 
   Future<String> _getAvailableBiometrics() async {
-    List<BiometricType> availableBiometrics = await _auth.getAvailableBiometrics();
+    List<BiometricType> availableBiometrics =
+        await _auth.getAvailableBiometrics();
     String enrolledBiometrics = "";
     if (availableBiometrics.contains(BiometricType.face)) {
       enrolledBiometrics = (Platform.isIOS) ? "Face ID" : "Face";

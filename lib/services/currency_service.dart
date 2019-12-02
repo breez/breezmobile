@@ -5,7 +5,8 @@ class CurrencyService {
   CurrencyService();
 
   Future<Map<String, CurrencyData>> currencies() async {
-    String jsonCurrencies = await rootBundle.loadString('src/json/currencies.json');
+    String jsonCurrencies =
+        await rootBundle.loadString('src/json/currencies.json');
     return currencyDataFromJson(jsonCurrencies);
   }
 }

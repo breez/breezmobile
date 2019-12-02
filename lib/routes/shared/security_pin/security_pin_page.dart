@@ -70,13 +70,13 @@ class SecurityPageState extends State<SecurityPage> {
                   );
                 }
                 return Scaffold(
-                  appBar: new AppBar(
+                  appBar: AppBar(
                       iconTheme: Theme.of(context).appBarTheme.iconTheme,
                       textTheme: Theme.of(context).appBarTheme.textTheme,
                       backgroundColor: Theme.of(context).canvasColor,
                       automaticallyImplyLeading: false,
                       leading: backBtn.BackButton(),
-                      title: new Text(
+                      title: Text(
                         _title,
                         style: Theme.of(context).appBarTheme.textTheme.title,
                       ),
@@ -91,8 +91,12 @@ class SecurityPageState extends State<SecurityPage> {
                     child: backupStateSnapshot.data != null &&
                             backupStateSnapshot.data.lastBackupTime != null
                         ? Text(
-                            "Last backup: ${DateUtils.formatYearMonthDayHourMinute(backupState.lastBackupTime)}" + 
-                            (backupState.lastBackupAccountName?.isNotEmpty == true ? "\nAccount: ${backupState.lastBackupAccountName}" : ""),
+                            "Last backup: ${DateUtils.formatYearMonthDayHourMinute(backupState.lastBackupTime)}" +
+                                (backupState.lastBackupAccountName
+                                            ?.isNotEmpty ==
+                                        true
+                                    ? "\nAccount: ${backupState.lastBackupAccountName}"
+                                    : ""),
                             textAlign: TextAlign.left)
                         : SizedBox(),
                   ),
@@ -118,10 +122,11 @@ class SecurityPageState extends State<SecurityPage> {
         _tiles..add(Divider())..add(_buildEnableBiometricAuthTile(securityModel, backupSettings));
       }
     }
-    _tiles..add(Divider())
-          ..add(_buildBackupProviderTitle(securityModel, backupSettings))
-          ..add(Divider())
-          ..add(_buildGenerateBackupPhraseTile(securityModel, backupSettings));
+    _tiles
+      ..add(Divider())
+      ..add(_buildBackupProviderTitle(securityModel, backupSettings))
+      ..add(Divider())
+      ..add(_buildGenerateBackupPhraseTile(securityModel, backupSettings));
     return _tiles;
   }
 
@@ -183,7 +188,7 @@ class SecurityPageState extends State<SecurityPage> {
         ),
       ),
       trailing: DropdownButtonHideUnderline(
-        child: new DropdownButton<BackupProvider>(
+        child: DropdownButton<BackupProvider>(
           value: backupSettings.backupProvider,
           isDense: true,
           onChanged: (BackupProvider newValue) {
@@ -191,7 +196,7 @@ class SecurityPageState extends State<SecurityPage> {
                 backupSettings.copyWith(backupProvider: newValue));
           },
           items: BackupSettings.availableBackupProviders().map((provider) {
-            return new DropdownMenuItem(
+            return DropdownMenuItem(
               value: provider,
               child: Container(
                 child: AutoSizeText(
@@ -223,7 +228,7 @@ class SecurityPageState extends State<SecurityPage> {
         ),
       ),
       trailing: DropdownButtonHideUnderline(
-        child: new DropdownButton(
+        child: DropdownButton(
           value: securityModel.automaticallyLockInterval,
           isDense: true,
           onChanged: (int newValue) {
@@ -233,7 +238,7 @@ class SecurityPageState extends State<SecurityPage> {
                 backupSettings);
           },
           items: SecurityModel.lockIntervals.map((int seconds) {
-            return new DropdownMenuItem(
+            return DropdownMenuItem(
               value: seconds,
               child: Container(
                 child: AutoSizeText(
@@ -276,7 +281,9 @@ class SecurityPageState extends State<SecurityPage> {
       onTap: () => _onChangePinSelected(securityModel, backupSettings),
     );
   }
-  ListTile _buildEnableBiometricAuthTile(SecurityModel securityModel, BackupSettings backupSettings) {
+
+  ListTile _buildEnableBiometricAuthTile(
+      SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: AutoSizeText(
         "Enable ${securityModel.enrolledBiometrics}",
@@ -291,10 +298,13 @@ class SecurityPageState extends State<SecurityPage> {
         activeColor: Colors.white,
         onChanged: (bool value) {
           if (this.mounted) {
-            if(value){
+            if (value) {
               _validateBiometrics(securityModel, backupSettings);
             } else {
-              _updateSecurityModel(securityModel, securityModel.copyWith(isFingerprintEnabled: false), backupSettings);
+              _updateSecurityModel(
+                  securityModel,
+                  securityModel.copyWith(isFingerprintEnabled: false),
+                  backupSettings);
             }
           }
         },
@@ -307,10 +317,12 @@ class SecurityPageState extends State<SecurityPage> {
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then((isValid) async {
       _updateSecurityModel(
-          securityModel, securityModel.copyWith(isFingerprintEnabled: isValid), backupSettings);
+          securityModel,
+          securityModel.copyWith(isFingerprintEnabled: isValid),
+          backupSettings);
     }, onError: (error) => showFlushbar(context, message: error));
   }
-  
+
   ListTile _buildDisablePINTile(
       SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
@@ -343,7 +355,7 @@ class SecurityPageState extends State<SecurityPage> {
   void _onChangePinSelected(
       SecurityModel securityModel, BackupSettings backupSettings) {
     Navigator.of(context).push(
-      new FadeInRoute(
+      FadeInRoute(
         builder: (BuildContext context) {
           return ChangePinCode();
         },
@@ -352,47 +364,68 @@ class SecurityPageState extends State<SecurityPage> {
       if (newPIN != null) {
         var updatePinAction = UpdatePinCode(newPIN);
         widget.userProfileBloc.userActionsSink.add(updatePinAction);
-        updatePinAction.future.then((_) =>
-          _updateSecurityModel(securityModel, securityModel.copyWith(requiresPin: true), backupSettings, pinCodeChanged: true))
-          .catchError((err){
-            promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
-          });
+        updatePinAction.future
+            .then((_) => _updateSecurityModel(securityModel,
+                securityModel.copyWith(requiresPin: true), backupSettings,
+                pinCodeChanged: true))
+            .catchError((err) {
+          promptError(
+              context,
+              "Internal Error",
+              Text(
+                err.toString(),
+                style: Theme.of(context).dialogTheme.contentTextStyle,
+              ));
+        });
       }
     });
   }
 
-  Future _updateSecurityModel(
-    SecurityModel oldModel, SecurityModel newModel,
-    BackupSettings backupSettings, {bool pinCodeChanged = false}) async {
-      _screenLocked = false;
-      var action = UpdateSecurityModel(newModel);
-      widget.userProfileBloc.userActionsSink.add(action);
-      action.future.then((_) {
-        //(newModel.backupKeyType != oldModel.backupKeyType) ||
-        if ((backupSettings.backupKeyType == BackupKeyType.PIN && pinCodeChanged)) {
-          triggerBackup();
-        }
-      })
-      .catchError((err){
-        promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
-      });
+  Future _updateSecurityModel(SecurityModel oldModel, SecurityModel newModel,
+      BackupSettings backupSettings,
+      {bool pinCodeChanged = false}) async {
+    _screenLocked = false;
+    var action = UpdateSecurityModel(newModel);
+    widget.userProfileBloc.userActionsSink.add(action);
+    action.future.then((_) {
+      //(newModel.backupKeyType != oldModel.backupKeyType) ||
+      if ((backupSettings.backupKeyType == BackupKeyType.PIN &&
+          pinCodeChanged)) {
+        triggerBackup();
+      }
+    }).catchError((err) {
+      promptError(
+          context,
+          "Internal Error",
+          Text(
+            err.toString(),
+            style: Theme.of(context).dialogTheme.contentTextStyle,
+          ));
+    });
   }
 
   Future _updateBackupSettings(
-    BackupSettings oldBackupSettings, BackupSettings newBackupSettings, {bool pinCodeChanged = false}) async {
-      _screenLocked = false;
-      var action = UpdateBackupSettings(newBackupSettings);
-      widget.backupBloc.backupActionsSink.add(action);
-      action.future.then((_) {
-        //(newModel.backupKeyType != oldModel.backupKeyType) ||
-        if ((oldBackupSettings.backupKeyType != newBackupSettings.backupKeyType || 
-          oldBackupSettings.backupProvider != newBackupSettings.backupProvider)) {
-          triggerBackup();
-        }
-      })
-      .catchError((err){
-        promptError(context, "Internal Error", Text(err.toString(), style: Theme.of(context).dialogTheme.contentTextStyle,));
-      });
+      BackupSettings oldBackupSettings, BackupSettings newBackupSettings,
+      {bool pinCodeChanged = false}) async {
+    _screenLocked = false;
+    var action = UpdateBackupSettings(newBackupSettings);
+    widget.backupBloc.backupActionsSink.add(action);
+    action.future.then((_) {
+      //(newModel.backupKeyType != oldModel.backupKeyType) ||
+      if ((oldBackupSettings.backupKeyType != newBackupSettings.backupKeyType ||
+          oldBackupSettings.backupProvider !=
+              newBackupSettings.backupProvider)) {
+        triggerBackup();
+      }
+    }).catchError((err) {
+      promptError(
+          context,
+          "Internal Error",
+          Text(
+            err.toString(),
+            style: Theme.of(context).dialogTheme.contentTextStyle,
+          ));
+    });
   }
 
   void triggerBackup() {

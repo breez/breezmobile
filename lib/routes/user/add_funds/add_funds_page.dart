@@ -13,31 +13,30 @@ import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class AddFundsPage extends StatefulWidget {  
-
+class AddFundsPage extends StatefulWidget {
   const AddFundsPage();
 
   @override
   State<StatefulWidget> createState() {
-    return new AddFundsState();
+    return AddFundsState();
   }
 }
 
 class AddFundsState extends State<AddFundsPage> {
-  final String _title = "Add Funds";  
+  final String _title = "Add Funds";
 
   @override
   Widget build(BuildContext context) {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     return Material(
-      child: new Scaffold(
-        appBar: new AppBar(
+      child: Scaffold(
+        appBar: AppBar(
           iconTheme: Theme.of(context).appBarTheme.iconTheme,
           textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(),
-          title: new Text(
+          title: Text(
             _title,
             style: Theme.of(context).appBarTheme.textTheme.title,
           ),
@@ -51,25 +50,33 @@ class AddFundsState extends State<AddFundsPage> {
             }
             return StreamBuilder(
                 stream: addFundsBloc.completedMoonpayOrderStream,
-                builder: (BuildContext context, AsyncSnapshot<MoonpayOrder> moonpayOrder) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<MoonpayOrder> moonpayOrder) {
                   if (moonpayOrder.hasData &&
                       _orderIsPending(account.data, moonpayOrder.data)) {
-                    return Column(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
-                        child: LoadingAnimatedText(
-                          'Your MoonPay order is being processed',
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ]);
+                    return Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: 50.0, left: 30.0, right: 30.0),
+                            child: LoadingAnimatedText(
+                              'Your MoonPay order is being processed',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ]);
                   }
 
                   return StreamBuilder(
                       stream: addFundsBloc.availableVendorsStream,
-                      builder: (BuildContext context, AsyncSnapshot<List<AddFundVendorModel>> vendorList) {
+                      builder: (BuildContext context,
+                          AsyncSnapshot<List<AddFundVendorModel>> vendorList) {
                         if (!vendorList.hasData) {
-                          return Center(child: Loader(color: theme.BreezColors.white[400]));
+                          return Center(
+                              child:
+                                  Loader(color: theme.BreezColors.white[400]));
                         }
                         return getBody(context, account.data, vendorList.data);
                       });
@@ -80,18 +87,25 @@ class AddFundsState extends State<AddFundsPage> {
     );
   }
 
-  bool _orderIsPending(AccountModel account, MoonpayOrder moonpayOrder) {      
-      return DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(moonpayOrder.orderTimestamp ?? 0)).inHours <= 1;
+  bool _orderIsPending(AccountModel account, MoonpayOrder moonpayOrder) {
+    return DateTime.now()
+            .difference(DateTime.fromMillisecondsSinceEpoch(
+                moonpayOrder.orderTimestamp ?? 0))
+            .inHours <=
+        1;
   }
 
-  Widget getBody(BuildContext context, AccountModel account, List<AddFundVendorModel> vendorList) {
+  Widget getBody(BuildContext context, AccountModel account,
+      List<AddFundVendorModel> vendorList) {
     var unconfirmedTxID = account?.swapFundsStatus?.unconfirmedTxID;
     bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
 
     String errorMessage;
     if (account == null || account.isInitialBootstrap) {
-      errorMessage = 'You\'ll be able to add funds after Breez is finished bootstrapping.';
-    } else if (unconfirmedTxID?.isNotEmpty == true || account.closingConnection) {
+      errorMessage =
+          'You\'ll be able to add funds after Breez is finished bootstrapping.';
+    } else if (unconfirmedTxID?.isNotEmpty == true ||
+        account.closingConnection) {
       errorMessage =
           'Breez is processing your previous ${waitingDepositConfirmation || account.processingConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
     }
@@ -111,17 +125,24 @@ class AddFundsState extends State<AddFundsPage> {
           waitingDepositConfirmation
               ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Padding(
-                    padding: EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                    padding:
+                        EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
                     child: Text("Transaction ID:", textAlign: TextAlign.start),
                   ),
                   Padding(
-                      padding: EdgeInsets.only(top: 10.0, left: 30.0, right: 22.0),
+                      padding:
+                          EdgeInsets.only(top: 10.0, left: 30.0, right: 22.0),
                       child: LinkLauncher(
                         linkName: unconfirmedTxID,
-                        linkAddress: "https://blockstream.info/tx/$unconfirmedTxID",
+                        linkAddress:
+                            "https://blockstream.info/tx/$unconfirmedTxID",
                         onCopy: () {
-                          Clipboard.setData(ClipboardData(text: unconfirmedTxID));
-                          showFlushbar(context, message: "Transaction ID was copied to your clipboard.", duration: Duration(seconds: 3));
+                          Clipboard.setData(
+                              ClipboardData(text: unconfirmedTxID));
+                          showFlushbar(context,
+                              message:
+                                  "Transaction ID was copied to your clipboard.",
+                              duration: Duration(seconds: 3));
                         },
                       ))
                 ])
@@ -144,24 +165,28 @@ class AddFundsState extends State<AddFundsPage> {
     );
   }
 
-  List<Widget> _buildList(List<AddFundVendorModel> vendorsList, AccountModel account) {
+  List<Widget> _buildList(
+      List<AddFundVendorModel> vendorsList, AccountModel account) {
     List<Widget> list = List();
-    vendorsList.forEach((v){
-      if (v.isAllowed && (!v.requireActiveChannel || account.connected == true)){
+    vendorsList.forEach((v) {
+      if (v.isAllowed &&
+          (!v.requireActiveChannel || account.connected == true)) {
         list
-        ..add(_buildAddFundsVendorItem(v))
-        ..add(Divider(
-          indent: 72,
-        ));
+          ..add(_buildAddFundsVendorItem(v))
+          ..add(Divider(
+            indent: 72,
+          ));
       }
-    });       
+    });
     return list;
   }
 
   Widget _buildReserveAmountWarning(AccountModel account) {
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), border: Border.all(color: Theme.of(context).errorColor)),
-      padding: new EdgeInsets.all(16),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+          border: Border.all(color: Theme.of(context).errorColor)),
+      padding: EdgeInsets.all(16),
       child: Text(
         "Breez requires you to keep\n${account.currency.format(account.warningMaxChanReserveAmount, fixedDecimals: false)} in your balance.",
         style: Theme.of(context).textTheme.caption,
@@ -176,7 +201,8 @@ class AddFundsState extends State<AddFundsPage> {
       child: Container(
         height: 72,
         width: MediaQuery.of(context).size.width,
-        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16),
             child: Image(
@@ -193,14 +219,14 @@ class AddFundsState extends State<AddFundsPage> {
               style: theme.addFundsItemsStyle,
             ),
           ),
-          Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 24.0)),
+          Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.keyboard_arrow_right,
+                  color: Colors.white, size: 24.0)),
         ]),
       ),
-      onTap: () {        
-        Navigator.pushNamed(
-          context,
-          vendor.route
-        );
+      onTap: () {
+        Navigator.pushNamed(context, vendor.route);
       },
     );
   }

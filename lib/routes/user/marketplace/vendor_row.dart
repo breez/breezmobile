@@ -9,13 +9,19 @@ class VendorRow extends StatelessWidget {
   final AccountBloc accountBloc;
   final VendorModel _vendor;
 
-  VendorRow(this.accountBloc,this._vendor);
+  VendorRow(this.accountBloc, this._vendor);
 
   @override
   Widget build(BuildContext context) {
-    Color _vendorFgColor = theme.vendorTheme[_vendor.name.toLowerCase()]?.iconFgColor ?? Colors.transparent;
-    Color _vendorBgColor = theme.vendorTheme[_vendor.name.toLowerCase()]?.iconBgColor ?? Colors.white;
-    Color _vendorTextColor = theme.vendorTheme[_vendor.name.toLowerCase()]?.textColor ?? Colors.black;
+    Color _vendorFgColor =
+        theme.vendorTheme[_vendor.name.toLowerCase()]?.iconFgColor ??
+            Colors.transparent;
+    Color _vendorBgColor =
+        theme.vendorTheme[_vendor.name.toLowerCase()]?.iconBgColor ??
+            Colors.white;
+    Color _vendorTextColor =
+        theme.vendorTheme[_vendor.name.toLowerCase()]?.textColor ??
+            Colors.black;
 
     final _vendorLogo = _vendor.logo != null
         ? Image(
@@ -26,12 +32,13 @@ class VendorRow extends StatelessWidget {
           )
         : Container();
 
-    final _vendorCard = new GestureDetector(
+    final _vendorCard = GestureDetector(
         onTap: () {
           Navigator.push(
               context,
               FadeInRoute(
-                builder: (_) => new VendorWebViewPage(accountBloc, _vendor.url, _vendor.name),
+                builder: (_) =>
+                    VendorWebViewPage(accountBloc, _vendor.url, _vendor.name),
               ));
         },
         child: Container(
@@ -46,7 +53,11 @@ class VendorRow extends StatelessWidget {
                 )
               ],
               border: Border.all(
-                  color: _vendorBgColor == Colors.white ? Theme.of(context).highlightColor : Colors.white, style: BorderStyle.solid, width: 1.0),
+                  color: _vendorBgColor == Colors.white
+                      ? Theme.of(context).highlightColor
+                      : Colors.white,
+                  style: BorderStyle.solid,
+                  width: 1.0),
               borderRadius: BorderRadius.circular(14.0)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -65,7 +76,8 @@ class VendorRow extends StatelessWidget {
       return <Widget>[
         _vendorLogo,
         Padding(padding: EdgeInsets.only(left: 4.0)),
-        Text(_vendor.name, style: theme.vendorTitleStyle.copyWith(color: _vendorTextColor)),
+        Text(_vendor.name,
+            style: theme.vendorTitleStyle.copyWith(color: _vendorTextColor)),
       ];
     }
   }

@@ -8,19 +8,24 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountPermissionsHandler {
-  static const String PERMISSION_DIALOG_SHOWN_KEY = "PERMISSION_DIALOG_SHOWN_KEY";
+  static const String PERMISSION_DIALOG_SHOWN_KEY =
+      "PERMISSION_DIALOG_SHOWN_KEY";
 
-  final _optimizationWhitelistRequestController = new StreamController<void>.broadcast();
-  Stream<void> get optimizationWhitelistRequestStream => _optimizationWhitelistRequestController.stream;
-  Sink<void> get optimizationWhitelistRequestSink => _optimizationWhitelistRequestController.sink;
+  final _optimizationWhitelistRequestController =
+      StreamController<void>.broadcast();
+  Stream<void> get optimizationWhitelistRequestStream =>
+      _optimizationWhitelistRequestController.stream;
+  Sink<void> get optimizationWhitelistRequestSink =>
+      _optimizationWhitelistRequestController.sink;
 
-  final _optimizationWhitelistExplainController = new BehaviorSubject<bool>();
-  Stream<bool> get optimizationWhitelistExplainStream => _optimizationWhitelistExplainController.stream;  
+  final _optimizationWhitelistExplainController = BehaviorSubject<bool>();
+  Stream<bool> get optimizationWhitelistExplainStream =>
+      _optimizationWhitelistExplainController.stream;
 
   Permissions _permissionsService;
   Future<SharedPreferences> _preferences;
 
-  AccountPermissionsHandler(){
+  AccountPermissionsHandler() {
     var injector = ServiceInjector();
     _permissionsService = injector.permissions;
     _preferences = injector.sharedPreferences;
@@ -30,7 +35,7 @@ class AccountPermissionsHandler {
     //       p.setBool(PERMISSION_DIALOG_SHOWN_KEY, true);
     //     });
     //   });
-    // });    
+    // });
   }
 
   void triggerOptimizeWhitelistExplenation() async {
@@ -41,7 +46,7 @@ class AccountPermissionsHandler {
     }
   }
 
-  dispose(){
+  dispose() {
     _optimizationWhitelistExplainController.close();
     _optimizationWhitelistRequestController.close();
   }

@@ -11,34 +11,41 @@ import 'package:flutter/services.dart' show rootBundle;
 
 import 'make_invoice_request.dart';
 
-class WeblnHandlers {  
+class WeblnHandlers {
   final BuildContext context;
   final AccountBloc accountBloc;
   final InvoiceBloc invoiceBloc;
   final Future Function(String handlerName) onBeforeCallHandler;
-  StreamSubscription<CompletedPayment> _sentPaymentResultSubscription; 
+  StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
   StreamSubscription<String> _readyInvoicesSubscription;
   StreamSubscription<AccountModel> _accountModelSubscription;
-  Completer<String> _currentInovoiceRequestCompleter; 
+  Completer<String> _currentInovoiceRequestCompleter;
   AccountModel _account;
 
-  WeblnHandlers(this.context, this.accountBloc, this.invoiceBloc, this.onBeforeCallHandler){
-    _readyInvoicesSubscription = invoiceBloc.readyInvoicesStream.asBroadcastStream()
-      .where((p) => p != null).listen((bolt11){
-        _currentInovoiceRequestCompleter?.complete(bolt11);
-        _currentInovoiceRequestCompleter = null;
-      }, onError: (_){
-        _currentInovoiceRequestCompleter?.completeError("Failed");
-        _currentInovoiceRequestCompleter = null;
-      });
+  WeblnHandlers(this.context, this.accountBloc, this.invoiceBloc,
+      this.onBeforeCallHandler) {
+    _readyInvoicesSubscription = invoiceBloc.readyInvoicesStream
+        .asBroadcastStream()
+        .where((p) => p != null)
+        .listen((bolt11) {
+      _currentInovoiceRequestCompleter?.complete(bolt11);
+      _currentInovoiceRequestCompleter = null;
+    }, onError: (_) {
+      _currentInovoiceRequestCompleter?.completeError("Failed");
+      _currentInovoiceRequestCompleter = null;
+    });
 
-      _accountModelSubscription = accountBloc.accountStream.listen((acc) => _account = acc);
-  }   
+    _accountModelSubscription =
+        accountBloc.accountStream.listen((acc) => _account = acc);
+  }
 
-  Future<String> get initWeblnScript => rootBundle.loadString('src/scripts/initializeWebLN.js');
+  Future<String> get initWeblnScript =>
+      rootBundle.loadString('src/scripts/initializeWebLN.js');
 
   Future<String> handleMessage(postMessage) async {
-    Map<String, Future<Map<String, dynamic>> Function(Map<String, dynamic> data)> _handlersMapping = {
+    Map<String,
+            Future<Map<String, dynamic>> Function(Map<String, dynamic> data)>
+        _handlersMapping = {
       "sendPayment": _sendPayment,
       "makeInvoice": _makeInvoice,
       "enable": (_) => Future.value({}),
@@ -74,7 +81,7 @@ class WeblnHandlers {
     return _trackPayment(bolt11).then((_) => Future.value({}));
   }
 
-  Future<Map<String, dynamic>> _makeInvoice(postMessage) async{
+  Future<Map<String, dynamic>> _makeInvoice(postMessage) async {
     Map<String, dynamic> invoiceArgs = postMessage["invoiceArgs"];
     if (invoiceArgs == null) {
       return Future.error("no invoice arguements");
@@ -82,18 +89,23 @@ class WeblnHandlers {
     String memo = invoiceArgs["defaultMemo"];
     int amount = invoiceArgs["amount"];
 
-    bool accept = await showDialog<bool>(context: context, barrierDismissible: false, builder: (ctx){
-      return MakeInvoiceRequest(amount: amount, description: memo, account: _account);
-    });
+    bool accept = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) {
+          return MakeInvoiceRequest(
+              amount: amount, description: memo, account: _account);
+        });
 
     if (accept == true) {
-      invoiceBloc.newInvoiceRequestSink.add(InvoiceRequestModel(null, memo, null, Int64(amount)));   
+      invoiceBloc.newInvoiceRequestSink
+          .add(InvoiceRequestModel(null, memo, null, Int64(amount)));
       return _trackInvoice().then((bolt11) => {"paymentRequest": bolt11});
     }
-    return Future.error("Request denied");   
+    return Future.error("Request denied");
   }
 
-  void dispose(){
+  void dispose() {
     _sentPaymentResultSubscription?.cancel();
     _readyInvoicesSubscription?.cancel();
     _accountModelSubscription?.cancel();
@@ -104,17 +116,18 @@ class WeblnHandlers {
     return _currentInovoiceRequestCompleter.future;
   }
 
-  Future _trackPayment(String bolt11) {    
-    Completer paymentCompleter = new Completer();
-    _sentPaymentResultSubscription?.cancel();        
-    _sentPaymentResultSubscription = accountBloc.completedPaymentsStream.listen((payment) {
+  Future _trackPayment(String bolt11) {
+    Completer paymentCompleter = Completer();
+    _sentPaymentResultSubscription?.cancel();
+    _sentPaymentResultSubscription =
+        accountBloc.completedPaymentsStream.listen((payment) {
       if (payment.paymentRequest.paymentRequest == bolt11) {
         if (payment.cancelled) {
           paymentCompleter.completeError("canceled");
         } else {
           paymentCompleter.complete();
         }
-      }           
+      }
     }, onError: (_) {
       paymentCompleter.completeError("Failed");
     });
