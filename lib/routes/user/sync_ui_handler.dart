@@ -1,7 +1,7 @@
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/widgets/loading_animated_text.dart';
+import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 
@@ -45,7 +45,7 @@ ModalRoute _createSyncRoute(AccountBloc accBloc) {
         var account = snapshot.data;
         double progress = account?.syncProgress ?? 0;
         return TransparentRouteLoader(
-          message: "Please wait while Breez is synchronizing",
+          message: "Breez is synchronizing to the Bitcoin network",
           value: progress,
           opacity: 0.9,
           onClose: () => accBloc.userActionsSink
@@ -114,40 +114,11 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
                     Theme.of(context).canvasColor.withOpacity(widget.opacity),
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        Container(
-                          height: 160.0,
-                          width: 160.0,
-                          child: CircularProgressIndicator(
-                            value: widget.value,
-                            semanticsLabel: widget.message,
-                            backgroundColor: Colors.grey.withOpacity(0.5),
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).accentColor,
-                            ),
-                          ),
-                        ),
-                        Center(
-                            child: Text(
-                                "${(widget.value * 100).round().toString()}%",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 36.0, color: Colors.white))),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 32.0),
-                      child: LoadingAnimatedText(widget.message,
-                          textAlign: TextAlign.center),
-                    )
-                  ],
-                )),
+                child: CircularProgress(
+                    size: 160.0,
+                    color: Theme.of(context).accentColor,
+                    value: widget.value,
+                    title: widget.message)),
           ),
           Positioned(
             top: 25.0,

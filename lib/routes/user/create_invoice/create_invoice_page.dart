@@ -126,7 +126,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                           borderRadius: BorderRadius.circular(42.0)),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          _createInvoice(invoiceBloc, account);
+                          _createInvoice(invoiceBloc, accountBloc, account);
                         }
                       },
                     );
@@ -332,7 +332,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         account.currency.format(response.maxAmount, includeSymbol: false);
   }
 
-  Future _createInvoice(InvoiceBloc invoiceBloc, AccountModel account) {
+  Future _createInvoice(
+      InvoiceBloc invoiceBloc, AccountBloc accountBloc, AccountModel account) {
     invoiceBloc.newInvoiceRequestSink.add(InvoiceRequestModel(
         null,
         _descriptionController.text,
@@ -340,8 +341,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         account.currency.parse(_amountController.text)));
 
     Widget dialog = _withdrawFetchResponse != null
-        ? LNURlWidthrawDialog(invoiceBloc, _lnurlBloc)
-        : QrCodeDialog(context, invoiceBloc);
+        ? LNURlWidthrawDialog(invoiceBloc, _lnurlBloc, accountBloc)
+        : QrCodeDialog(context, invoiceBloc, accountBloc);
 
     return _bgService
         .runAsTask(showDialog(context: context, builder: (_) => dialog), () {
