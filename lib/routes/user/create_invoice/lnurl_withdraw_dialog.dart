@@ -29,7 +29,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog> {
   void initState() {
     super.initState();
     widget.invoiceBloc.readyInvoicesStream.first.then((bolt11) {
-      widget.accountBloc.accountStream
+      return widget.accountBloc.accountStream
           .firstWhere((a) => a != null && a.syncedToChain == true)
           .then((_) {
         if (this.mounted) {
