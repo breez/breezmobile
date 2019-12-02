@@ -7,8 +7,11 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
+
+import '../sync_progress_dialog.dart';
 
 class PayeeSessionWidget extends StatelessWidget {
   final PayeeRemoteSession _currentSession;
@@ -89,7 +92,35 @@ class _PayeeInstructions extends StatelessWidget {
           'Waiting for ${_sessionState.payerData.userName ?? "payer"} to enter an amount',
           textStyle: theme.sessionNotificationStyle);
     } else if (!_account.synced) {
-      return LoadingAnimatedText('Please wait while Breez is synchronizing');
+      return LoadingAnimatedText("", textElements: <TextSpan>[
+        TextSpan(
+            text: "Please wait while Breez is ",
+            style: DefaultTextStyle.of(context).style),
+        TextSpan(
+            text: "synchronizing",
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          content: SyncProgressDialog(),
+                          actions: <Widget>[
+                            FlatButton(
+                              onPressed: (() {
+                                Navigator.pop(context);
+                              }),
+                              child: Text("CLOSE",
+                                  style: Theme.of(context)
+                                      .primaryTextTheme
+                                      .button),
+                            )
+                          ],
+                        ));
+              },
+            style: DefaultTextStyle.of(context)
+                .style
+                .copyWith(decoration: TextDecoration.underline)),
+      ]);
     } else if (_sessionState.payerData.amount != null &&
         _sessionState.payeeData.paymentRequest == null) {
       message =

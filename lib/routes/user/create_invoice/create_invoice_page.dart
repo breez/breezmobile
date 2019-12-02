@@ -59,7 +59,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
     if (!_isInit) {
       _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {
-        Navigator.popUntil(context, ModalRoute.withName("/create_invoice"));
         Navigator.pop(context, "Payment was successfuly received!");
       });
       if (widget.lnurlWithdraw != null) {
@@ -96,7 +95,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final String _title = "Create an Invoice";
+    final String _title = "Receive via Invoice";
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
 
@@ -126,7 +125,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                           borderRadius: BorderRadius.circular(42.0)),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          _createInvoice(invoiceBloc, account);
+                          _createInvoice(invoiceBloc, accountBloc, account);
                         }
                       },
                     );
@@ -332,7 +331,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         account.currency.format(response.maxAmount, includeSymbol: false);
   }
 
-  Future _createInvoice(InvoiceBloc invoiceBloc, AccountModel account) {
+  Future _createInvoice(
+      InvoiceBloc invoiceBloc, AccountBloc accountBloc, AccountModel account) {
     invoiceBloc.newInvoiceRequestSink.add(InvoiceRequestModel(
         null,
         _descriptionController.text,
@@ -340,9 +340,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         account.currency.parse(_amountController.text)));
 
     Widget dialog = _withdrawFetchResponse != null
-        ? LNURlWidthrawDialog(invoiceBloc, _lnurlBloc)
-        : QrCodeDialog(context, invoiceBloc);
-
+        ? LNURlWidthrawDialog(invoiceBloc, accountBloc)
+        : QrCodeDialog(context, invoiceBloc, accountBloc);
+    Navigator.of(context).pop();
     return _bgService
         .runAsTask(showDialog(context: context, builder: (_) => dialog), () {
       log.info("waiting for payment background task finished");

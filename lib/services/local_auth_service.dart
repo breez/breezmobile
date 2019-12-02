@@ -31,8 +31,7 @@ class LocalAuthenticationService {
       return await _auth.authenticateWithBiometrics(
           localizedReason: localizedReason ?? 'Authenticate to Sign-In.',
           useErrorDialogs: false,
-          androidAuthStrings: AndroidAuthMessages(fingerprintHint: "")
-      );
+          androidAuthStrings: AndroidAuthMessages(fingerprintHint: ""));
     } on PlatformException catch (error) {
       if (error.code == "LockedOut" || error.code == "PermanentlyLockedOut") {
         throw error.message;

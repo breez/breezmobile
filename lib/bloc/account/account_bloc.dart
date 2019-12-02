@@ -450,7 +450,8 @@ class AccountBloc {
               !blockingPrompted) {
             await userProfileStream.where((u) => u.locked == false).first;
             blockingPrompted = true;
-            syncUIState = SyncUIState.BLOCKING;
+            syncUIState =
+                newNode ? SyncUIState.BLOCKING : SyncUIState.COLLAPSED;
           }
           _accountController.add(_accountController.value.copyWith(
               syncUIState: syncUIState,

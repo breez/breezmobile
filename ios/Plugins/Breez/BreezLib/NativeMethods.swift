@@ -65,7 +65,9 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "rate": EmptyArgsBindingExecutor(f: BindingsRate),
     "onResume": VoidBindingExecutor(f: BindingsOnResume),
     "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),    
-    "getLogPath": VoidBindingExecutor(f: BindingsGetLogPath)   
+    "getLogPath": VoidBindingExecutor(f: BindingsGetLogPath),
+    "withdrawLnurl": SingleArgBindingExecutor(f: BindingsWithdrawLnurl),
+    "fetchLnurl": SingleArgBindingExecutor(f: BindingsFetchLnurl),
     
     //jobs
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewClosedChannelsJob(NSString* workingDir, NSError** error);

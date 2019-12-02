@@ -344,8 +344,11 @@ class SecurityPageState extends State<SecurityPage> {
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
-                  _updateSecurityModel(securityModel,
-                      SecurityModel.initial().copyWith(enrolledBiometrics: securityModel.enrolledBiometrics), backupSettings);
+                  _updateSecurityModel(
+                      securityModel,
+                      SecurityModel.initial().copyWith(
+                          enrolledBiometrics: securityModel.enrolledBiometrics),
+                      backupSettings);
                 }
               },
             )

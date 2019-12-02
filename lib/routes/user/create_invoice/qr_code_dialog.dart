@@ -1,17 +1,47 @@
+import 'dart:async';
+
+import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/services.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:share_extend/share_extend.dart';
 
-class QrCodeDialog extends StatelessWidget {
+class QrCodeDialog extends StatefulWidget {
   final BuildContext context;
   final InvoiceBloc _invoiceBloc;
+  final AccountBloc _accountBloc;
 
-  QrCodeDialog(this.context, this._invoiceBloc);
+  QrCodeDialog(this.context, this._invoiceBloc, this._accountBloc);
+
+  @override
+  State<StatefulWidget> createState() {
+    return QrCodeDialogState();
+  }
+}
+
+class QrCodeDialogState extends State<QrCodeDialog> {
+  StreamSubscription<bool> _paidInvoicesSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _paidInvoicesSubscription =
+        widget._invoiceBloc.paidInvoicesStream.listen((paid) {
+      Navigator.pop(context);
+      showFlushbar(context, message: "Payment was successfuly received!");
+    });
+  }
+
+  @override
+  void dispose() {
+    _paidInvoicesSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +58,7 @@ class QrCodeDialog extends StatelessWidget {
             style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
           StreamBuilder<String>(
-            stream: _invoiceBloc.readyInvoicesStream,
+            stream: widget._invoiceBloc.readyInvoicesStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Container();
@@ -66,53 +96,69 @@ class QrCodeDialog extends StatelessWidget {
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 8.0),
       contentPadding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
       children: <Widget>[
-        StreamBuilder<String>(
-            stream: _invoiceBloc.readyInvoicesStream,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Container(
-                    width: 150.0,
-                    height: 150.0,
-                    child: Center(
-                        child: Container(
-                      height: 80.0,
-                      width: 80.0,
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Theme.of(context).primaryTextTheme.button.color,
+        StreamBuilder<AccountModel>(
+          stream: widget._accountBloc.accountStream,
+          builder: (context, accSnapshot) {
+            return StreamBuilder<String>(
+                stream: widget._invoiceBloc.readyInvoicesStream,
+                builder: (context, snapshot) {
+                  bool synced = accSnapshot.data?.synced;
+                  if (!snapshot.hasData || accSnapshot.data?.synced != true) {
+                    double syncProgress = accSnapshot.data?.syncProgress;
+                    return Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 150.0,
+                        child: synced == false
+                            ? CircularProgress(
+                                color: Theme.of(context).textTheme.button.color,
+                                size: 100.0,
+                                value: syncProgress,
+                                title: "Synchronizing to the network")
+                            : Center(
+                                child: Container(
+                                height: 80.0,
+                                width: 80.0,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Theme.of(context)
+                                          .primaryTextTheme
+                                          .button
+                                          .color),
+                                  backgroundColor:
+                                      Theme.of(context).backgroundColor,
+                                ),
+                              )));
+                  }
+                  return Column(
+                    children: [
+                      Container(
+                        width: 230.0,
+                        height: 230.0,
+                        color: Colors.white,
+                        child: CompactQRImage(
+                          data: snapshot.data,
                         ),
-                        backgroundColor: Theme.of(context).backgroundColor,
                       ),
-                    )));
-              }
-              return Column(
-                children: [
-                  Container(
-                    width: 230.0,
-                    height: 230.0,
-                    color: Colors.white,
-                    child: CompactQRImage(
-                      data: snapshot.data,
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.only(top: 8.0)),
-                  GestureDetector(
-                    onTap: () {
-                      ShareExtend.share(snapshot.data, "text");
-                    },
-                    child: Container(
-                      child: Text(
-                        snapshot.data,
-                        style: Theme.of(context)
-                            .primaryTextTheme
-                            .caption
-                            .copyWith(fontSize: 9),
+                      Padding(padding: EdgeInsets.only(top: 8.0)),
+                      GestureDetector(
+                        onTap: () {
+                          ShareExtend.share(snapshot.data, "text");
+                        },
+                        child: Container(
+                          child: Text(
+                            snapshot.data,
+                            style: Theme.of(context)
+                                .primaryTextTheme
+                                .caption
+                                .copyWith(fontSize: 9),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ],
-              );
-            }),
+                    ],
+                  );
+                });
+          },
+        ),
         Padding(padding: EdgeInsets.only(top: 16.0)),
         _buildExpiryMessage(),
         Padding(padding: EdgeInsets.only(top: 16.0)),
