@@ -151,30 +151,41 @@ class UserProfileBloc {
             color: randomName[0],
             animal: randomName[1]);
       }
-
       user = user.copyWith(locked: user.securityModel.requiresPin);
+      await _checkBiometrics().then(
+        (enrolledBiometrics) {
+          bool isFingerprintEnabled =
+              (user.securityModel.isFingerprintEnabled &&
+                  enrolledBiometrics.isNotEmpty);
+          user = user.copyWith(
+              securityModel: user.securityModel.copyWith(
+                  isFingerprintEnabled: isFingerprintEnabled,
+                  enrolledBiometrics: enrolledBiometrics));
+        },
+      );
       _publishUser(user);
     });
   }
 
   _updateBiometricsSettings() {
-    _checkBiometrics();
     _deviceService.eventStream.listen((e) {
       if (e == NotificationType.RESUME) {
-        _checkBiometrics();
+        _checkBiometrics().then((enrolledBiometrics) {
+          bool isFingerprintEnabled =
+              _currentUser.securityModel.isFingerprintEnabled &&
+                  enrolledBiometrics.isNotEmpty;
+          _updateSecurityModel(
+              UpdateSecurityModel(_currentUser.securityModel.copyWith(
+            isFingerprintEnabled: isFingerprintEnabled,
+            enrolledBiometrics: enrolledBiometrics,
+          )));
+        });
       }
     });
   }
 
-  Future _checkBiometrics() async {
-    String enrolledBiometrics = await _localAuthService.enrolledBiometrics;
-    bool isFingerprintEnabled =
-        _currentUser.securityModel.isFingerprintEnabled &&
-            enrolledBiometrics.isNotEmpty;
-    _updateSecurityModel(UpdateSecurityModel(_currentUser.securityModel
-        .copyWith(
-            enrolledBiometrics: enrolledBiometrics,
-            isFingerprintEnabled: isFingerprintEnabled)));
+  Future<String> _checkBiometrics() async {
+    return await _localAuthService.enrolledBiometrics;
   }
 
   void _listenUserActions() {
