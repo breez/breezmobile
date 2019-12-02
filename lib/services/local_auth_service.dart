@@ -38,6 +38,7 @@ class LocalAuthenticationService {
         throw error.message;
       }
       log.severe("Error Code: ${error.code} - Message: ${error.message}");
+      await _auth.stopAuthentication();
       return false;
     }
   }
