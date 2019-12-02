@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -11,10 +14,9 @@ import '../sync_progress_dialog.dart';
 
 class LNURlWidthrawDialog extends StatefulWidget {
   final InvoiceBloc invoiceBloc;
-  final LNUrlBloc lnurlBloc;
   final AccountBloc accountBloc;
 
-  const LNURlWidthrawDialog(this.invoiceBloc, this.lnurlBloc, this.accountBloc);
+  const LNURlWidthrawDialog(this.invoiceBloc, this.accountBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -24,17 +26,26 @@ class LNURlWidthrawDialog extends StatefulWidget {
 
 class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog> {
   String _error;
+  StreamSubscription<bool> _paidInvoicesSubscription;
+  LNUrlBloc lnurlBloc;
 
   @override
   void initState() {
     super.initState();
+    lnurlBloc = LNUrlBloc();
+    _paidInvoicesSubscription =
+        widget.invoiceBloc.paidInvoicesStream.listen((paid) {
+      Navigator.pop(context);
+      showFlushbar(context, message: "Payment was successfuly received!");
+    });
+
     widget.invoiceBloc.readyInvoicesStream.first.then((bolt11) {
       return widget.accountBloc.accountStream
           .firstWhere((a) => a != null && a.syncedToChain == true)
           .then((_) {
         if (this.mounted) {
           Withdraw withdrawAction = Withdraw(bolt11);
-          widget.lnurlBloc.actionsSink.add(withdrawAction);
+          lnurlBloc.actionsSink.add(withdrawAction);
           return withdrawAction.future;
         }
         return null;
@@ -48,6 +59,8 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog> {
 
   @override
   void dispose() {
+    _paidInvoicesSubscription.cancel();
+    lnurlBloc.dispose();
     super.dispose();
   }
 
@@ -63,27 +76,11 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog> {
           }));
     }
     return AlertDialog(
-      titlePadding: EdgeInsets.zero,
       contentPadding:
           EdgeInsets.fromLTRB(24.0, 20.0, 24.0, _error != null ? 24.0 : 0.0),
-      title: Row(
-        children: <Widget>[
-          Container(width: 50.0),
-          Expanded(
-              flex: 1,
-              child: Text("Receive Funds",
-                  style: Theme.of(context).dialogTheme.titleTextStyle,
-                  textAlign: TextAlign.center)),
-          Container(
-            width: 50.0,
-            child: IconButton(
-                iconSize: 24.0,
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(Icons.close,
-                    color: Theme.of(context).dialogTheme.titleTextStyle.color)),
-          )
-        ],
-      ),
+      title: Text("Receive Funds",
+          style: Theme.of(context).dialogTheme.titleTextStyle,
+          textAlign: TextAlign.center),
       content: StreamBuilder<AccountModel>(
           stream: widget.accountBloc.accountStream,
           builder: (context, snapshot) {
@@ -115,10 +112,18 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog> {
                             child: Image.asset(
                               theme.customData[theme.themeId].loaderAssetPath,
                               gaplessPlayback: true,
-                            ))
+                            )),
+                FlatButton(
+                  onPressed: (() {
+                    Navigator.pop(context);
+                  }),
+                  child: Text("CLOSE",
+                      style: Theme.of(context).primaryTextTheme.button),
+                )
               ],
             );
           }),
+      actions: <Widget>[],
     );
   }
 }

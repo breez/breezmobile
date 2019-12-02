@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/widgets/circular_progress.dart';
@@ -9,12 +11,37 @@ import 'package:flutter/services.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:share_extend/share_extend.dart';
 
-class QrCodeDialog extends StatelessWidget {
+class QrCodeDialog extends StatefulWidget {
   final BuildContext context;
   final InvoiceBloc _invoiceBloc;
   final AccountBloc _accountBloc;
 
   QrCodeDialog(this.context, this._invoiceBloc, this._accountBloc);
+
+  @override
+  State<StatefulWidget> createState() {
+    return QrCodeDialogState();
+  }
+}
+
+class QrCodeDialogState extends State<QrCodeDialog> {
+  StreamSubscription<bool> _paidInvoicesSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _paidInvoicesSubscription =
+        widget._invoiceBloc.paidInvoicesStream.listen((paid) {
+      Navigator.pop(context);
+      showFlushbar(context, message: "Payment was successfuly received!");
+    });
+  }
+
+  @override
+  void dispose() {
+    _paidInvoicesSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +58,7 @@ class QrCodeDialog extends StatelessWidget {
             style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
           StreamBuilder<String>(
-            stream: _invoiceBloc.readyInvoicesStream,
+            stream: widget._invoiceBloc.readyInvoicesStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Container();
@@ -70,10 +97,10 @@ class QrCodeDialog extends StatelessWidget {
       contentPadding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
       children: <Widget>[
         StreamBuilder<AccountModel>(
-          stream: _accountBloc.accountStream,
+          stream: widget._accountBloc.accountStream,
           builder: (context, accSnapshot) {
             return StreamBuilder<String>(
-                stream: _invoiceBloc.readyInvoicesStream,
+                stream: widget._invoiceBloc.readyInvoicesStream,
                 builder: (context, snapshot) {
                   bool synced = accSnapshot.data?.synced;
                   if (!snapshot.hasData || accSnapshot.data?.synced != true) {

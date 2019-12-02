@@ -59,7 +59,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
     if (!_isInit) {
       _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {
-        Navigator.popUntil(context, ModalRoute.withName("/create_invoice"));
         Navigator.pop(context, "Payment was successfuly received!");
       });
       if (widget.lnurlWithdraw != null) {
@@ -96,7 +95,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final String _title = "Create an Invoice";
+    final String _title = "Receive via Invoice";
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
 
@@ -341,9 +340,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         account.currency.parse(_amountController.text)));
 
     Widget dialog = _withdrawFetchResponse != null
-        ? LNURlWidthrawDialog(invoiceBloc, _lnurlBloc, accountBloc)
+        ? LNURlWidthrawDialog(invoiceBloc, accountBloc)
         : QrCodeDialog(context, invoiceBloc, accountBloc);
-
+    Navigator.of(context).pop();
     return _bgService
         .runAsTask(showDialog(context: context, builder: (_) => dialog), () {
       log.info("waiting for payment background task finished");
