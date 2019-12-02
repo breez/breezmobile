@@ -76,8 +76,6 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog> {
           }));
     }
     return AlertDialog(
-      contentPadding:
-          EdgeInsets.fromLTRB(24.0, 20.0, 24.0, _error != null ? 24.0 : 0.0),
       title: Text("Receive Funds",
           style: Theme.of(context).dialogTheme.titleTextStyle,
           textAlign: TextAlign.center),
@@ -101,7 +99,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog> {
                             textAlign: TextAlign.center,
                           ),
                 _error != null
-                    ? SizedBox()
+                    ? SizedBox(height: 16.0)
                     : snapshot.hasData && snapshot.data.syncedToChain != true
                         ? Padding(
                             padding: const EdgeInsets.only(bottom: 12.0),
@@ -123,7 +121,6 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog> {
               ],
             );
           }),
-      actions: <Widget>[],
     );
   }
 }
