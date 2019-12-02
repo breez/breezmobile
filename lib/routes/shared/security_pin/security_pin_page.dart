@@ -119,7 +119,9 @@ class SecurityPageState extends State<SecurityPage> {
         ..add(Divider())
         ..add(_buildChangePINTile(securityModel, backupSettings));
       if (securityModel.enrolledBiometrics.isNotEmpty) {
-        _tiles..add(Divider())..add(_buildEnableBiometricAuthTile(securityModel, backupSettings));
+        _tiles
+          ..add(Divider())
+          ..add(_buildEnableBiometricAuthTile(securityModel, backupSettings));
       }
     }
     _tiles
@@ -312,8 +314,10 @@ class SecurityPageState extends State<SecurityPage> {
     );
   }
 
-  Future _validateBiometrics(SecurityModel securityModel, BackupSettings backupSettings) async {
-    var validateBiometricsAction = ValidateBiometrics(localizedReason: "Authenticate to enable this setting.");
+  Future _validateBiometrics(
+      SecurityModel securityModel, BackupSettings backupSettings) async {
+    var validateBiometricsAction = ValidateBiometrics(
+        localizedReason: "Authenticate to enable this setting");
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then((isValid) async {
       _updateSecurityModel(
