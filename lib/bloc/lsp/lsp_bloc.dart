@@ -77,7 +77,7 @@ class LSPBloc with AsyncActionsHandler {
       await retry(() async {
         log.info("connecting to LSP...");
         if (action.lnurl?.isNotEmpty == true) {
-          action.resolve(await _breezLib.connectToLnurl(action.lnurl));
+          action.resolve(await _breezLib.fetchLNUrl(action.lnurl));
         } else {
           action.resolve(await _breezLib.connectToLSP(action.lspID));
         }

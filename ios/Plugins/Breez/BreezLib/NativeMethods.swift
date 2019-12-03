@@ -21,24 +21,23 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "start": EmptyArgsBindingExecutor(f: BindingsStart),
     "stop": VoidBindingExecutor(f: BindingsStop),
     "restartDaemon": EmptyArgsBindingExecutor(f: BindingsRestartDaemon),
-    
+
     "lastSyncedHeaderTimestamp": VoidBindingExecutor(f: BindingsLastSyncedHeaderTimestamp),
     "addFundsInit": SingleArgBindingExecutor(f: BindingsAddFundsInit),
     "addInvoice": SingleArgBindingExecutor(f: BindingsAddInvoice),
     "availableSnapshots": EmptyArgsBindingExecutor(f: BindingsAvailableSnapshots),
     "bootstrapFiles": SingleArgBindingExecutor(f: BindingsBootstrapFiles),
     "connectAccount": EmptyArgsBindingExecutor(f: BindingsConnectAccount),
-    
+
     "decodePaymentRequest": SingleArgBindingExecutor(f: BindingsDecodePaymentRequest),
     "getAccountInfo": EmptyArgsBindingExecutor(f: BindingsGetAccountInfo),
     "lspList": EmptyArgsBindingExecutor(f: BindingsLSPList),
     "connectToLSP": SingleArgBindingExecutor(f: BindingsConnectToLSP),
-    "connectToLnurl": SingleArgBindingExecutor(f: BindingsConnectToLnurl),
     "enableAccount": SingleArgBindingExecutor(f: BindingsEnableAccount),
-    
+
     "getFundStatus": SingleArgBindingExecutor(f: BindingsGetFundStatus),
-    "getPayments": EmptyArgsBindingExecutor(f: BindingsGetPayments),    
-    
+    "getPayments": EmptyArgsBindingExecutor(f: BindingsGetPayments),
+
     "getRelatedInvoice": SingleArgBindingExecutor(f: BindingsGetRelatedInvoice),
     "getLogger": SingleArgBindingExecutor(f: BindingsGetLogger),
     "setPeers": SingleArgBindingExecutor(f: BindingsSetPeers),
@@ -52,27 +51,26 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "refund": SingleArgBindingExecutor(f: BindingsRefund),
     "registerChannelOpenedNotification": SingleArgBindingExecutor(f: BindingsRegisterChannelOpenedNotification),
     "registerPeriodicSync": SingleArgBindingExecutor(f: BindingsRegisterPeriodicSync),
-    "registerReceivePaymentReadyNotification": SingleArgBindingExecutor(f: BindingsRegisterReceivePaymentReadyNotification),    
+    "registerReceivePaymentReadyNotification": SingleArgBindingExecutor(f: BindingsRegisterReceivePaymentReadyNotification),
     "sendCommand": SingleArgBindingExecutor(f: BindingsSendCommand),
     "sendPaymentFailureBugReport": SingleArgBindingExecutor(f: BindingsSendPaymentFailureBugReport),
     "sendPaymentForRequest": SingleArgBindingExecutor(f: BindingsSendPaymentForRequest),
     "sendWalletCoins": SingleArgBindingExecutor(f: BindingsSendWalletCoins),
     "validateAddress": SingleArgBindingExecutor(f: BindingsValidateAddress),
     "removeFund": SingleArgBindingExecutor(f: BindingsRemoveFund),
-    
+
     "daemonReady": VoidBindingExecutor(f: BindingsDaemonReady),
     "getDefaultOnChainFeeRate": VoidBindingExecutor(f: BindingsGetDefaultOnChainFeeRate),
     "rate": EmptyArgsBindingExecutor(f: BindingsRate),
     "onResume": VoidBindingExecutor(f: BindingsOnResume),
-    "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),    
+    "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),
     "getLogPath": VoidBindingExecutor(f: BindingsGetLogPath),
     "withdrawLnurl": SingleArgBindingExecutor(f: BindingsWithdrawLnurl),
     "fetchLnurl": SingleArgBindingExecutor(f: BindingsFetchLnurl),
-    
     //jobs
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewClosedChannelsJob(NSString* workingDir, NSError** error);
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewSyncJob(NSString* workingDir, NSError** error);
-    
+
 ];
 
 
@@ -81,15 +79,15 @@ protocol BindingExecutor {
     func execute(call : FlutterMethodCall, result : @escaping FlutterResult);
 }
 
-fileprivate extension BindingExecutor {    
-    
+fileprivate extension BindingExecutor {
+
     func unwrapInputType(arg: Any?) -> Any? {
         if let data = arg as? FlutterStandardTypedData {
             return data.data;
         }
         return arg;
     }
-    
+
     func wrapOutputType(arg: Any?) -> Any? {
         if let data = arg as? Data {
             return FlutterStandardTypedData(bytes: data);
@@ -106,11 +104,11 @@ fileprivate extension BindingExecutor {
 
 fileprivate class SingleArgBindingExecutor<T,O> : BindingExecutor {
     var bindingFunc : (T, NSErrorPointer) -> O;
-    
+
     init(f: @escaping (T, NSErrorPointer) -> O) {
         self.bindingFunc = f;
     }
-    
+
     func execute(call : FlutterMethodCall, result : @escaping FlutterResult){
         DispatchQueue.global().async {
             let args = call.arguments as! Dictionary<String,Any>
@@ -128,11 +126,11 @@ fileprivate class SingleArgBindingExecutor<T,O> : BindingExecutor {
 
 fileprivate class EmptyArgsBindingExecutor<O> : BindingExecutor {
     var bindingFunc : (NSErrorPointer) -> O;
-    
+
     init(f: @escaping (NSErrorPointer) -> O) {
         self.bindingFunc = f;
     }
-    
+
     func execute(call : FlutterMethodCall, result : @escaping FlutterResult){
          DispatchQueue.global().async {
             var error : NSError?;
@@ -148,11 +146,11 @@ fileprivate class EmptyArgsBindingExecutor<O> : BindingExecutor {
 
 fileprivate class VoidBindingExecutor<O> : BindingExecutor {
     var bindingFunc : () -> O;
-    
+
     init(f: @escaping () -> O) {
         self.bindingFunc = f;
     }
-    
+
     func execute(call : FlutterMethodCall, result : @escaping FlutterResult){
         DispatchQueue.global().async {
             result(self.wrapOutputType(arg: self.bindingFunc()));

@@ -131,10 +131,6 @@ class BreezBridge {
     return _invokeMethodWhenReady("connectToLSP", {"argument": lspID});
   }
 
-  Future connectToLnurl(String lnurl) {
-    return _invokeMethodWhenReady("connectToLnurl", {"argument": lnurl});
-  }
-
   Future<RemoveFundReply> removeFund(String address, Int64 amount) {
     RemoveFundRequest request = RemoveFundRequest()
       ..address = address
