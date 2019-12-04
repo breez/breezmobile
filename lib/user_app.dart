@@ -100,8 +100,9 @@ class UserApp extends StatelessWidget {
                                     },
                                     onFingerprintEntered: user
                                             .securityModel.isFingerprintEnabled
-                                        ? (isValid) {
+                                        ? (isValid) async {
                                             if (isValid) {
+                                              await Future.delayed(Duration(milliseconds: 200));
                                               Navigator.pop(ctx);
                                               userProfileBloc.userActionsSink
                                                   .add(SetLockState(false));

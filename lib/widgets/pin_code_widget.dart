@@ -39,7 +39,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
       widget.userProfileBloc.userStream.first.then(
         (user) async {
           if (user.securityModel.enrolledBiometrics != "") {
-            await Future.delayed(Duration(milliseconds: 500));
+            await Future.delayed(Duration(milliseconds: 100));
             if (this.mounted) _validateBiometrics();
           }
         },
