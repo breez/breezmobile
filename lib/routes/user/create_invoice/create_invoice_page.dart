@@ -20,6 +20,7 @@ import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -287,11 +288,15 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   Future _scanBarcode(AccountModel account) async {
+    var loaderRoute = createLoaderRoute(context);
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await BarcodeScanner.scan();
+      Navigator.of(context).push(loaderRoute);
       await _handleLNUrlWithdraw(account, barcode);
+      Navigator.of(context).removeRoute(loaderRoute);
     } on PlatformException catch (e) {
+      Navigator.of(context).removeRoute(loaderRoute);
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         promptError(
             context,
@@ -302,10 +307,11 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             ));
       }
     } catch (e) {
+      Navigator.of(context).removeRoute(loaderRoute);
       promptError(
           context,
-          "",
-          Text(e.toString(),
+          "Receive Failed",
+          Text("Reason: ${e.toString()}",
               style: Theme.of(context).dialogTheme.contentTextStyle));
     }
   }
@@ -327,8 +333,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       WithdrawFetchResponse response, AccountModel account) {
     _withdrawFetchResponse = response;
     _descriptionController.text = response.defaultDescription;
-    _amountController.text =
-        account.currency.format(response.maxAmount, includeSymbol: false);
+    _amountController.text = account.currency
+        .format(response.maxAmount, includeSymbol: false, userInput: true);
   }
 
   Future _createInvoice(

@@ -31,7 +31,8 @@ class LNUrlBloc with AsyncActionsHandler {
         .asyncMap((l) => _breezLib.fetchLNUrl(l))
         .where((response) => response.hasWithdraw())
         .map((response) => WithdrawFetchResponse(response.withdraw))
-        .pipe(_lnurlWithdrawStreamController);
+        .pipe(_lnurlWithdrawStreamController)
+        .catchError((err) => _lnurlWithdrawStreamController.addError(err));
   }
 
   Future _fetch(Fetch action) async {
