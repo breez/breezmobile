@@ -333,8 +333,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       WithdrawFetchResponse response, AccountModel account) {
     _withdrawFetchResponse = response;
     _descriptionController.text = response.defaultDescription;
-    _amountController.text =
-        account.currency.format(response.maxAmount, includeSymbol: false);
+    _amountController.text = account.currency
+        .format(response.maxAmount, includeSymbol: false, userInput: true);
   }
 
   Future _createInvoice(

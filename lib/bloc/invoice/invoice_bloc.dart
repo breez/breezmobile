@@ -137,8 +137,9 @@ class InvoiceBloc {
 
           return s;
         })
-        .skipWhile(
-            (s) => s.startsWith("lightning:lnurl") || s.startsWith("lnurl"))
+        .skipWhile((s) =>
+            s.toLowerCase().startsWith("lightning:lnurl") ||
+            s.toLowerCase().startsWith("lnurl"))
         .asyncMap((paymentRequest) async {
           await _userProfileBloc.userStream
               .where((u) => u.locked == false)
