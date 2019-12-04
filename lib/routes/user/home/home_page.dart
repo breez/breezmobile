@@ -245,7 +245,7 @@ class HomeState extends State<Home> {
         firstPaymentItemKey,
         scrollController,
         _scaffoldKey);
-    LNURLHandler(context);
+    LNURLHandler(context, widget.userProfileBloc);
     CTPJoinSessionHandler(widget.ctpBloc, this.context, (session) {
       Navigator.popUntil(context, (route) {
         return route.settings.name != "/connect_to_pay";
