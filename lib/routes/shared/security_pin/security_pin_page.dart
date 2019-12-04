@@ -38,6 +38,7 @@ class SecurityPage extends StatefulWidget {
 class SecurityPageState extends State<SecurityPage> {
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
+  int _renderIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -295,10 +296,12 @@ class SecurityPageState extends State<SecurityPage> {
         stepGranularity: 0.1,
         group: securityModel.requiresPin ? _autoSizeGroup : null,
       ),
-      trailing: GestureDetector(
-        onTap: () {
+      trailing: Switch(
+        key: Key("switch $_renderIndex"),
+        value: securityModel.isFingerprintEnabled,
+        onChanged: (value) {
           if (this.mounted) {
-            if (!securityModel.isFingerprintEnabled) {
+            if (value) {
               _validateBiometrics(securityModel, backupSettings);
             } else {
               _updateSecurityModel(
@@ -308,15 +311,6 @@ class SecurityPageState extends State<SecurityPage> {
             }
           }
         },
-        child: Switch(
-          value: securityModel.isFingerprintEnabled,
-          inactiveThumbColor: securityModel.isFingerprintEnabled
-              ? Colors.white
-              : Colors.grey.shade400,
-          inactiveTrackColor: securityModel.isFingerprintEnabled
-              ? Colors.white.withAlpha(0x80)
-              : Colors.white30,
-        ),
       ),
     );
   }
@@ -331,6 +325,7 @@ class SecurityPageState extends State<SecurityPage> {
           securityModel,
           securityModel.copyWith(isFingerprintEnabled: isValid),
           backupSettings);
+      setState(() => _renderIndex++);
     }, onError: (error) => showFlushbar(context, message: error));
   }
 
