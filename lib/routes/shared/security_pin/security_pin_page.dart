@@ -295,12 +295,10 @@ class SecurityPageState extends State<SecurityPage> {
         stepGranularity: 0.1,
         group: securityModel.requiresPin ? _autoSizeGroup : null,
       ),
-      trailing: Switch(
-        value: securityModel.isFingerprintEnabled,
-        activeColor: Colors.white,
-        onChanged: (bool value) {
+      trailing: GestureDetector(
+        onTap: () {
           if (this.mounted) {
-            if (value) {
+            if (!securityModel.isFingerprintEnabled) {
               _validateBiometrics(securityModel, backupSettings);
             } else {
               _updateSecurityModel(
@@ -310,6 +308,15 @@ class SecurityPageState extends State<SecurityPage> {
             }
           }
         },
+        child: Switch(
+          value: securityModel.isFingerprintEnabled,
+          inactiveThumbColor: securityModel.isFingerprintEnabled
+              ? Colors.white
+              : Colors.grey.shade400,
+          inactiveTrackColor: securityModel.isFingerprintEnabled
+              ? Colors.white.withAlpha(0x80)
+              : Colors.white30,
+        ),
       ),
     );
   }
