@@ -297,7 +297,7 @@ class SecurityPageState extends State<SecurityPage> {
         group: securityModel.requiresPin ? _autoSizeGroup : null,
       ),
       trailing: Switch(
-        key: Key("switch $_renderIndex"),
+        key: Key(_renderIndex.toString()),
         value: securityModel.isFingerprintEnabled,
         onChanged: (value) {
           if (this.mounted) {
