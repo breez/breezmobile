@@ -51,11 +51,24 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     var validateBiometricsAction =
         ValidateBiometrics(localizedReason: widget.localizedReason);
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
-    validateBiometricsAction.future.then((isValid) {
-      Future.delayed(Duration(milliseconds: 200), () {
+    validateBiometricsAction.future.then((isValid) async {
+      if (isValid) {
+        do {
+          await Future.delayed(Duration(milliseconds: 40), () {});
+          setState(() {
+            _enteredPinCode = _enteredPinCode + "x";
+          });
+        } while (_enteredPinCode.length <= PIN_CODE_LENGTH);
+      }
+      Future.delayed(Duration(milliseconds: 160), () {
         return widget.onFingerprintEntered(isValid);
       });
-    }, onError: (error) => showFlushbar(context, message: error));
+    }, onError: (error) {
+      setState(() {
+        _enteredPinCode = "";
+      });
+      showFlushbar(context, message: error);
+    });
   }
 
   Widget build(BuildContext context) {
