@@ -39,7 +39,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
       widget.userProfileBloc.userStream.first.then(
         (user) async {
           if (user.securityModel.enrolledBiometrics != "") {
-            await Future.delayed(Duration(milliseconds: 500));
+            await Future.delayed(Duration(milliseconds: 240));
             if (this.mounted) _validateBiometrics();
           }
         },
@@ -51,11 +51,15 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     var validateBiometricsAction =
         ValidateBiometrics(localizedReason: widget.localizedReason);
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
-    validateBiometricsAction.future.then((isValid) {
-      Future.delayed(Duration(milliseconds: 200), () {
+    validateBiometricsAction.future.then((isValid) async {
+      setState(() => _enteredPinCode = (isValid) ? "123456" : "");
+      Future.delayed(Duration(milliseconds: 160), () {
         return widget.onFingerprintEntered(isValid);
       });
-    }, onError: (error) => showFlushbar(context, message: error));
+    }, onError: (error) {
+      setState(() => _enteredPinCode = "");
+      showFlushbar(context, message: error);
+    });
   }
 
   Widget build(BuildContext context) {
