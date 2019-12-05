@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
@@ -360,6 +361,28 @@ class DevViewState extends State<DevView> {
           await rescanFile.create(recursive: true);
           _promptForRestart();
         }));
+
+    choices.add(Choice(
+      title: "Export Wallet",
+      icon: Icons.phone_android,
+      function: () async {
+        var breezDir = await getApplicationDocumentsDirectory();
+        Directory tempDir = await getTemporaryDirectory();
+          List<dynamic> files = [
+            "${breezDir.path}/breez.db", 
+            "${breezDir.path}/data/chain/bitcoin/mainnet/wallet.db",
+            "${breezDir.path}/data/graph/mainnet/channel.db",
+            ];
+          if (files != null) {
+            var encoder = new ZipFileEncoder();            
+            tempDir = await tempDir.createTemp("export");
+            encoder.create('${tempDir.path}/wallet-export.zip');
+            files.forEach((f) => encoder.addFile(File(f)));            
+            encoder.close();
+            await shareFile("${tempDir.path}/wallet-export.zip");
+          }
+      }
+    ));
 
     return choices;
   }
