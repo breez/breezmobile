@@ -298,6 +298,7 @@ class SecurityPageState extends State<SecurityPage> {
       ),
       trailing: Switch(
         key: Key(_renderIndex.toString()),
+        activeColor: Colors.white,
         value: securityModel.isFingerprintEnabled,
         onChanged: (value) {
           if (this.mounted) {
