@@ -77,7 +77,12 @@ class LSPBloc with AsyncActionsHandler {
       await retry(() async {
         log.info("connecting to LSP...");
         if (action.lnurl?.isNotEmpty == true) {
-          action.resolve(await _breezLib.fetchLNUrl(action.lnurl));
+          LNUrlResponse res = await _breezLib.fetchLNUrl(action.lnurl);
+          if (res.hasChannel()) {
+            action.resolve(await _breezLib.openChannelLNUrl());
+          } else {
+            throw ("LNURL is not a channel provider!");
+          }
         } else {
           action.resolve(await _breezLib.connectToLSP(action.lspID));
         }

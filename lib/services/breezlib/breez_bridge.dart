@@ -98,6 +98,10 @@ class BreezBridge {
     return _invokeMethodWhenReady("withdrawLnurl", {"argument": bolt11Invoice});
   }
 
+  Future openChannelLNUrl() {
+    return _invokeMethodWhenReady("openChannelLnurl");
+  }
+
   Future<String> getLogPath() {
     return _invokeMethodImmediate("getLogPath")
         .then((logPath) => logPath as String);
