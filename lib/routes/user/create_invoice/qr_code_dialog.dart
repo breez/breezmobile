@@ -57,40 +57,49 @@ class QrCodeDialogState extends State<QrCodeDialog> {
             "Invoice",
             style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
-          StreamBuilder<String>(
-            stream: widget._invoiceBloc.readyInvoicesStream,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Container();
-              }
-              return Row(
-                children: <Widget>[
-                  IconButton(
-                    padding: EdgeInsets.only(
-                        top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
-                    icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-                    color: Theme.of(context).primaryTextTheme.button.color,
-                    onPressed: () {
-                      ShareExtend.share("lightning:" + snapshot.data, "text");
-                    },
-                  ),
-                  IconButton(
-                    padding: EdgeInsets.only(
-                        top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
-                    icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-                    color: Theme.of(context).primaryTextTheme.button.color,
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: snapshot.data));
-                      showFlushbar(context,
-                          message:
-                              "Invoice address was copied to your clipboard.",
-                          duration: Duration(seconds: 3));
-                    },
-                  )
-                ],
-              );
-            },
-          ),
+          StreamBuilder<AccountModel>(
+              stream: widget._accountBloc.accountStream,
+              builder: (accCtx, accSnapshot) {
+                bool synced = accSnapshot.data?.synced == true;
+                return StreamBuilder<String>(
+                  stream: widget._invoiceBloc.readyInvoicesStream,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData || !synced) {
+                      return Container();
+                    }
+                    return Row(
+                      children: <Widget>[
+                        IconButton(
+                          padding: EdgeInsets.only(
+                              top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
+                          icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
+                          color:
+                              Theme.of(context).primaryTextTheme.button.color,
+                          onPressed: () {
+                            ShareExtend.share(
+                                "lightning:" + snapshot.data, "text");
+                          },
+                        ),
+                        IconButton(
+                          padding: EdgeInsets.only(
+                              top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
+                          icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+                          color:
+                              Theme.of(context).primaryTextTheme.button.color,
+                          onPressed: () {
+                            Clipboard.setData(
+                                ClipboardData(text: snapshot.data));
+                            showFlushbar(context,
+                                message:
+                                    "Invoice address was copied to your clipboard.",
+                                duration: Duration(seconds: 3));
+                          },
+                        )
+                      ],
+                    );
+                  },
+                );
+              }),
         ],
       ),
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 8.0),

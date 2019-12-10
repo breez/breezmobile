@@ -137,8 +137,7 @@ class InvoiceBloc {
 
           return s;
         })
-        .where((s) =>            
-            !s.toLowerCase().startsWith("lnurl"))
+        .where((s) => !s.toLowerCase().startsWith("lnurl"))
         .asyncMap((paymentRequest) async {
           await _userProfileBloc.userStream
               .where((u) => u.locked == false)
