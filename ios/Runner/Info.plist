@@ -48,7 +48,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Camera permission is required for QR code scanning.</string>
 	<key>NSFaceIDUsageDescription</key>
-    <string>FaceID is required for securely signing into app.</string>
+	<string>FaceID is required for securely signing into app.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Required for selecting user avatar image.</string>
 	<key>UIBackgroundModes</key>
@@ -61,7 +61,6 @@
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>arkit</string>
 		<string>arm64</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
