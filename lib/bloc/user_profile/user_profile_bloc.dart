@@ -216,9 +216,13 @@ class UserProfileBloc {
         .resolve(await _updateSecurityModel(updateSecurityModelAction));
   }
 
-  Future _resetSecurityModelAction(ResetSecurityModel resetSecurityModelAction) async {
-    var updateSecurityModelAction = UpdateSecurityModel(SecurityModel.initial().copyWith(enrolledBiometrics: _currentUser.securityModel.enrolledBiometrics));
-    resetSecurityModelAction.resolve(await _updateSecurityModel(updateSecurityModelAction));
+  Future _resetSecurityModelAction(
+      ResetSecurityModel resetSecurityModelAction) async {
+    var updateSecurityModelAction = UpdateSecurityModel(SecurityModel.initial()
+        .copyWith(
+            enrolledBiometrics: _currentUser.securityModel.enrolledBiometrics));
+    resetSecurityModelAction
+        .resolve(await _updateSecurityModel(updateSecurityModelAction));
   }
 
   Future _updateSecurityModel(
