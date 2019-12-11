@@ -379,7 +379,7 @@ class AccountBloc {
 
   _listenUserChanges(Stream<BreezUserModel> userProfileStream) {
     userProfileStream.listen((user) async {
-      if (user.token != _currentUser?.token) {
+      if (user.token != null && user.token != _currentUser?.token) {
         log.info(
             "user profile bloc registering for channel open notifications");
         _breezLib.registerChannelOpenedNotification(user.token);
