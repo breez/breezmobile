@@ -60,10 +60,10 @@
 - [x] Dark mode
 - [x] Export payments to .csv
 - [x] Support 3rd-party LSPs
-- [ ] Biometric login
-- [ ] Fast on-boarding
-- [ ] Pay w/o full sync
-- [ ] Implement lnurl-withdraw 
+- [x] Biometric login
+- [x] Fast on-boarding
+- [x] Pay w/o full sync
+- [x] Implement lnurl-withdraw 
 - [ ] Support zero-conf channels
 - [ ] Async payments via Lightning Rod
 - [ ] Support SD storage
