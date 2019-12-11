@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/default_profile_generator.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
@@ -71,6 +72,7 @@ class UserProfileBloc {
     _notifications = injector.notifications;
     _actionHandlers = {
       UpdateSecurityModel: _updateSecurityModelAction,
+      ResetSecurityModel: _resetSecurityModelAction,
       UpdatePinCode: _updatePinCode,
       ValidatePinCode: _validatePinCode,
       ChangeTheme: _changeThemeAction,
@@ -212,6 +214,11 @@ class UserProfileBloc {
       UpdateSecurityModel updateSecurityModelAction) async {
     updateSecurityModelAction
         .resolve(await _updateSecurityModel(updateSecurityModelAction));
+  }
+
+  Future _resetSecurityModelAction(ResetSecurityModel resetSecurityModelAction) async {
+    var updateSecurityModelAction = UpdateSecurityModel(SecurityModel.initial().copyWith(enrolledBiometrics: _currentUser.securityModel.enrolledBiometrics));
+    resetSecurityModelAction.resolve(await _updateSecurityModel(updateSecurityModelAction));
   }
 
   Future _updateSecurityModel(

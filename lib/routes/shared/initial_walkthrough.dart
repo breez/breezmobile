@@ -291,11 +291,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                               return BetaWarningDialog();
                             }).then((approved) {
                           if (approved) {
-                            UpdateSecurityModel updateSecurityModelAction =
-                                UpdateSecurityModel(SecurityModel.initial());
+                            ResetSecurityModel resetSecurityModelAction = ResetSecurityModel();
                             widget._registrationBloc.userActionsSink
-                                .add(updateSecurityModelAction);
-                            updateSecurityModelAction.future.then((_) {
+                                .add(resetSecurityModelAction);
+                            resetSecurityModelAction.future.then((_) {
                               _proceedToRegister();
                             }).catchError((err) {
                               promptError(
