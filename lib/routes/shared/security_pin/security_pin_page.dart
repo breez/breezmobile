@@ -347,11 +347,7 @@ class SecurityPageState extends State<SecurityPage> {
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
-                  _updateSecurityModel(
-                      securityModel,
-                      SecurityModel.initial().copyWith(
-                          enrolledBiometrics: securityModel.enrolledBiometrics),
-                      backupSettings);
+                  _resetSecurityModel();
                 }
               },
             )
@@ -388,6 +384,20 @@ class SecurityPageState extends State<SecurityPage> {
               ));
         });
       }
+    });
+  }
+
+  Future _resetSecurityModel() async {
+    var action = ResetSecurityModel();
+    widget.userProfileBloc.userActionsSink.add(action);
+    action.future.catchError((err) {
+      promptError(
+          context,
+          "Internal Error",
+          Text(
+            err.toString(),
+            style: Theme.of(context).dialogTheme.contentTextStyle,
+          ));
     });
   }
 
