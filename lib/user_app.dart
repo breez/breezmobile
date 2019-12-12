@@ -85,7 +85,7 @@ class UserApp extends StatelessWidget {
                     onGenerateRoute: (RouteSettings settings) {
                       switch (settings.name) {
                         case '/lockscreen':
-                          return FadeInRoute(
+                          return NoTransitionRoute(
                               builder: (ctx) => AppLockScreen(
                                     (pinEntered) {
                                       var validateAction =
