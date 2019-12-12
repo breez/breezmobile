@@ -107,7 +107,10 @@ class UserProfileBloc {
       startPINIntervalWatcher();
 
       _userStreamController.firstWhere((u) => u != null).then((user) {
-        _refreshRegistration(_userStreamController.value);
+        // automatic refresh registration on startup if we already passed the walkthrough.
+        if (user.registrationRequested) {
+          _refreshRegistration(_userStreamController.value);
+        }
       });
     });
   }
@@ -240,29 +243,23 @@ class UserProfileBloc {
 
   void _listenRegistrationRequests(ServiceInjector injector) {
     _registrationController.stream.listen((request) async {
-      _refreshRegistration(_userStreamController.value,
-          onlyIfRegistered: false);
+      _refreshRegistration(_userStreamController.value);
     });
   }
-
-  Future _refreshRegistration(BreezUserModel user,
-      {bool onlyIfRegistered = true}) async {
-    if (user.token == null && onlyIfRegistered) {
-      return;
-    }
+  
+  Future _refreshRegistration(BreezUserModel user) async {    
     var userToRegister = user;
     SharedPreferences preferences = await _preferences;
     try {
       String token = await _notifications.getToken();
       if (token != user.token || user.userID == null || user.userID.isEmpty) {
         var userID = await _breezServer.registerDevice(token);
-        userToRegister = userToRegister.copyWith(token: token, userID: userID);
-      }
-      await _saveChanges(preferences, userToRegister);
+        userToRegister = userToRegister.copyWith(token: token, userID: userID);                
+      }      
     } catch (e) {
       _registrationController.addError(e);
     }
-    userToRegister = user.copyWith(registrationRequested: true);
+    userToRegister = userToRegister.copyWith(registrationRequested: true);    
     await _saveChanges(preferences, userToRegister);
   }
 
