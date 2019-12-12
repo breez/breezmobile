@@ -8,6 +8,8 @@ class UpdateSecurityModel extends AsyncAction {
   UpdateSecurityModel(this.newModel);
 }
 
+class ResetSecurityModel extends AsyncAction {}
+
 class UpdatePinCode extends AsyncAction {
   final String newPin;
 
