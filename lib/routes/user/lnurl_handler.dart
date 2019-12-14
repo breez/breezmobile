@@ -12,7 +12,7 @@ class LNURLHandler {
 
   LNURLHandler(this._context, this._userProfileBloc) {
     LNUrlBloc bloc = LNUrlBloc();
-    bloc.lnurlWithdrawStream.listen((withdrawResponse) async {
+    bloc.lnurlWitdrawStream.listen((withdrawResponse) async {
       await _userProfileBloc.userStream.where((u) => u.locked == false).first;
       Navigator.of(_context).push(FadeInRoute(
         builder: (_) => CreateInvoicePage(lnurlWithdraw: withdrawResponse),
