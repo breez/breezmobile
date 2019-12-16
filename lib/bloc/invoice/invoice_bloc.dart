@@ -138,10 +138,7 @@ class InvoiceBloc {
           return s;
         })
         .where((s) => !s.toLowerCase().startsWith("lnurl"))
-        .asyncMap((paymentRequest) async {
-          await _userProfileBloc.userStream
-              .where((u) => u.locked == false)
-              .first;
+        .asyncMap((paymentRequest) async {          
 
           // add stream event before processing and decoding
           _receivedInvoicesController
