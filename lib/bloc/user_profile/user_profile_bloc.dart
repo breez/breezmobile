@@ -257,20 +257,20 @@ class UserProfileBloc {
       _refreshRegistration(_userStreamController.value);
     });
   }
-  
-  Future _refreshRegistration(BreezUserModel user) async {    
+
+  Future _refreshRegistration(BreezUserModel user) async {
     var userToRegister = user;
     SharedPreferences preferences = await _preferences;
     try {
       String token = await _notifications.getToken();
       if (token != user.token || user.userID == null || user.userID.isEmpty) {
         var userID = await _breezServer.registerDevice(token);
-        userToRegister = userToRegister.copyWith(token: token, userID: userID);                
-      }      
+        userToRegister = userToRegister.copyWith(token: token, userID: userID);
+      }
     } catch (e) {
       _registrationController.addError(e);
     }
-    userToRegister = userToRegister.copyWith(registrationRequested: true);    
+    userToRegister = userToRegister.copyWith(registrationRequested: true);
     await _saveChanges(preferences, userToRegister);
   }
 

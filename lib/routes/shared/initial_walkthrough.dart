@@ -70,6 +70,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       } else {
         popToWalkthrough();
         toRestore = await showDialog<SnapshotInfo>(
+            useRootNavigator: false,
             context: context,
             builder: (_) =>
                 RestoreDialog(context, widget._backupBloc, options));
@@ -285,13 +286,15 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       shape: const StadiumBorder(),
                       onPressed: () {
                         showDialog(
+                            useRootNavigator: false,
                             context: context,
                             barrierDismissible: false,
                             builder: (BuildContext context) {
                               return BetaWarningDialog();
                             }).then((approved) {
                           if (approved) {
-                            ResetSecurityModel resetSecurityModelAction = ResetSecurityModel();
+                            ResetSecurityModel resetSecurityModelAction =
+                                ResetSecurityModel();
                             widget._registrationBloc.userActionsSink
                                 .add(resetSecurityModelAction);
                             resetSecurityModelAction.future.then((_) {
@@ -326,6 +329,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                                             .length >
                                         1) {
                                   backupProvider = await showDialog(
+                                      useRootNavigator: false,
                                       context: context,
                                       builder: (_) =>
                                           BackupProviderSelectionDialog(

@@ -349,8 +349,11 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         ? LNURlWidthrawDialog(invoiceBloc, accountBloc)
         : QrCodeDialog(context, invoiceBloc, accountBloc);
     Navigator.of(context).pop();
-    return _bgService
-        .runAsTask(showDialog(context: context, builder: (_) => dialog), () {
+    return _bgService.runAsTask(
+        showDialog(
+            useRootNavigator: false,
+            context: context,
+            builder: (_) => dialog), () {
       log.info("waiting for payment background task finished");
     });
   }

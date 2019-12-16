@@ -223,6 +223,7 @@ class HomeState extends State<Home> {
     } else {
       if (itemName == "/lost_card") {
         showDialog(
+            useRootNavigator: false,
             context: context,
             builder: (_) => lostCard.LostCardDialog(
                   context: context,

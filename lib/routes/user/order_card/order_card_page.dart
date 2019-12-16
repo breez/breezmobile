@@ -325,7 +325,8 @@ class OrderCardPageState extends State<OrderCardPage> {
             child: Text("OK", style: Theme.of(context).primaryTextTheme.button))
       ],
     );
-    showDialog(context: context, builder: (_) => dialog);
+    showDialog(
+        useRootNavigator: false, context: context, builder: (_) => dialog);
   }
 
   Widget _showLeadingButton(showSkip) {

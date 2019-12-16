@@ -123,6 +123,7 @@ StreamBuilder<BreezUserModel> _buildDrawerHeaderContent(
             onTap: drawAvatar
                 ? () {
                     showDialog<bool>(
+                      useRootNavigator: false,
                       context: context,
                       barrierDismissible: false,
                       builder: (context) => breezAvatarDialog(context, user),

@@ -138,8 +138,7 @@ class InvoiceBloc {
           return s;
         })
         .where((s) => !s.toLowerCase().startsWith("lnurl"))
-        .asyncMap((paymentRequest) async {          
-
+        .asyncMap((paymentRequest) async {
           // add stream event before processing and decoding
           _receivedInvoicesController
               .add(PaymentRequestModel(null, paymentRequest));

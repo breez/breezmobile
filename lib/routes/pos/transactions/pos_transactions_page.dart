@@ -106,6 +106,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
         icon: ImageIcon(AssetImage("src/icon/calendar.png"),
             color: Colors.white, size: 24.0),
         onPressed: () => showDialog(
+            useRootNavigator: false,
             context: context,
             builder: (_) =>
                 CalendarDialog(context, paymentsModel.firstDate)).then(

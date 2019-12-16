@@ -11,7 +11,7 @@ class ShowPinHandler {
           .distinct()
           .where((locked) => locked == true)
           .listen((_) {
-        Navigator.of(context).pushNamed("/lockscreen");
+        Navigator.of(context, rootNavigator: true).pushNamed("/lockscreen");
       });
     });
   }

@@ -64,6 +64,7 @@ class AccountRequiredActionsIndicatorState
               .where((u) => u.locked == false)
               .first;
           showDialog(
+              useRootNavigator: false,
               barrierDismissible: false,
               context: context,
               builder: (_) => EnableBackupDialog(
@@ -149,6 +150,7 @@ class AccountRequiredActionsIndicatorState
                             }
                             warnings.add(WarningAction(() async {
                               showDialog(
+                                  useRootNavigator: false,
                                   barrierDismissible: false,
                                   context: context,
                                   builder: (_) => EnableBackupDialog(
@@ -175,6 +177,7 @@ class AccountRequiredActionsIndicatorState
 
                           if (shouldWarnRefund) {
                             warnings.add(WarningAction(() => showDialog(
+                                useRootNavigator: false,
                                 barrierDismissible: false,
                                 context: context,
                                 builder: (_) => SwapRefundDialog(

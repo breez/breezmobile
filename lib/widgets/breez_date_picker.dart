@@ -1123,6 +1123,7 @@ Future<DateTime> showBreezDatePicker({
   }
 
   return await showDialog<DateTime>(
+    useRootNavigator: false,
     context: context,
     builder: (BuildContext context) => child,
   );

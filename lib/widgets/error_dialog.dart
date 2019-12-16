@@ -13,6 +13,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
   Future<bool> Function() canPopCallback = () => Future.value(canPop);
 
   return showDialog<Null>(
+      useRootNavigator: false,
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -82,6 +83,7 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
     );
   }
   return showDialog<bool>(
+      useRootNavigator: false,
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {

@@ -208,6 +208,7 @@ Future<Null> showPaymentDetailsDialog(
             bottom: Radius.circular(12.0), top: Radius.circular(13.0))),
   );
   return showDialog<Null>(
+    useRootNavigator: false,
     context: context,
     builder: (_) => _paymentDetailsDialog,
   );
