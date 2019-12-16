@@ -8,9 +8,8 @@ import 'create_invoice/create_invoice_page.dart';
 
 class LNURLHandler {
   final BuildContext _context;
-  final UserProfileBloc _userProfileBloc;
 
-  LNURLHandler(this._context, this._userProfileBloc) {
+  LNURLHandler(this._context) {
     LNUrlBloc bloc = LNUrlBloc();
     bloc.lnurlWithdrawStream.listen((withdrawResponse) async {      
       Navigator.of(_context).push(FadeInRoute(
