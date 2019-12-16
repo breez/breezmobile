@@ -306,7 +306,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                 alignment: Alignment.center,
                 child: Text("SKIP", style: theme.skipStyle)),
             onTap: () {
-              Navigator.of(context).pushNamed('/home');
+              Navigator.of(context).pushNamed('/');
             })
       ];
     } else {
