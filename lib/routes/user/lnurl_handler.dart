@@ -12,13 +12,11 @@ class LNURLHandler {
 
   LNURLHandler(this._context, this._userProfileBloc) {
     LNUrlBloc bloc = LNUrlBloc();
-    bloc.lnurlWithdrawStream.listen((withdrawResponse) async {
-      await _userProfileBloc.userStream.where((u) => u.locked == false).first;
+    bloc.lnurlWithdrawStream.listen((withdrawResponse) async {      
       Navigator.of(_context).push(FadeInRoute(
         builder: (_) => CreateInvoicePage(lnurlWithdraw: withdrawResponse),
       ));
-    }).onError((err) async {
-      await _userProfileBloc.userStream.where((u) => u.locked == false).first;
+    }).onError((err) async {      
       promptError(
           this._context,
           "Link Error",
