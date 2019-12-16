@@ -11,7 +11,7 @@ class LNURLHandler {
 
   LNURLHandler(this._context) {
     LNUrlBloc bloc = LNUrlBloc();
-    bloc.lnurlWithdrawStream.listen((withdrawResponse) async {      
+    bloc.lnurlWitdrawStream.listen((withdrawResponse) async {      
       Navigator.of(_context).push(FadeInRoute(
         builder: (_) => CreateInvoicePage(lnurlWithdraw: withdrawResponse),
       ));
