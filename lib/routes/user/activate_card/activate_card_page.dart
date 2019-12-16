@@ -83,7 +83,8 @@ class ActivateCardPageState extends State<ActivateCardPage>
                 style: Theme.of(context).primaryTextTheme.button))
       ],
     );
-    showDialog(context: context, builder: (_) => dialog);
+    showDialog(
+        useRootNavigator: false, context: context, builder: (_) => dialog);
   }
 
   @override

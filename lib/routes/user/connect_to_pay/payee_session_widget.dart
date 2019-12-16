@@ -101,6 +101,7 @@ class _PayeeInstructions extends StatelessWidget {
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 showDialog(
+                    useRootNavigator: false,
                     context: context,
                     builder: (context) => AlertDialog(
                           content: SyncProgressDialog(),

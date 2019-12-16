@@ -8,17 +8,14 @@ import 'create_invoice/create_invoice_page.dart';
 
 class LNURLHandler {
   final BuildContext _context;
-  final UserProfileBloc _userProfileBloc;
 
-  LNURLHandler(this._context, this._userProfileBloc) {
+  LNURLHandler(this._context) {
     LNUrlBloc bloc = LNUrlBloc();
-    bloc.lnurlWitdrawStream.listen((withdrawResponse) async {
-      await _userProfileBloc.userStream.where((u) => u.locked == false).first;
+    bloc.lnurlWitdrawStream.listen((withdrawResponse) async {      
       Navigator.of(_context).push(FadeInRoute(
         builder: (_) => CreateInvoicePage(lnurlWithdraw: withdrawResponse),
       ));
-    }).onError((err) async {
-      await _userProfileBloc.userStream.where((u) => u.locked == false).first;
+    }).onError((err) async {      
       promptError(
           this._context,
           "Link Error",

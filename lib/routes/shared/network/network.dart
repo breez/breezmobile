@@ -150,6 +150,7 @@ class NetworkPageState extends State<NetworkPage> {
                                   _formKey.currentState.save();
                                   if (this._data.peer.isNotEmpty) {
                                     var error = await showDialog(
+                                        useRootNavigator: false,
                                         context: context,
                                         builder: (ctx) => _TestingPeerDialog(
                                             testFuture: _breezLib

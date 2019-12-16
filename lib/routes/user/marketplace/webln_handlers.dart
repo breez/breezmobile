@@ -90,6 +90,7 @@ class WeblnHandlers {
     int amount = invoiceArgs["amount"];
 
     bool accept = await showDialog<bool>(
+        useRootNavigator: false,
         context: context,
         barrierDismissible: false,
         builder: (ctx) {

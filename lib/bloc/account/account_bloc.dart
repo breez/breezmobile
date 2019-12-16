@@ -447,8 +447,7 @@ class AccountBloc {
           var syncUIState = _accountController.value.syncUIState;
           if ((moreThan3DaysOff || newNode) &&
               _accountController.value.syncUIState == SyncUIState.NONE &&
-              !blockingPrompted) {
-            await userProfileStream.where((u) => u.locked == false).first;
+              !blockingPrompted) {            
             blockingPrompted = true;
             syncUIState =
                 newNode ? SyncUIState.BLOCKING : SyncUIState.COLLAPSED;
@@ -547,8 +546,7 @@ class AccountBloc {
           _breezLib.restartLightningDaemon();
           return;
         }
-        _retryingLightningService = false;
-        await userProfileStream.where((u) => u.locked == false).first;
+        _retryingLightningService = false;        
         _lightningDownController.add(true);
       }
       if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {

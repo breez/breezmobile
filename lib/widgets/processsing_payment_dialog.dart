@@ -137,6 +137,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     if (!error.validationError) {
       if (prompt) {
         send = await showDialog(
+            useRootNavigator: false,
             context: widget.context,
             barrierDismissible: false,
             builder: (_) =>

@@ -223,6 +223,7 @@ class HomeState extends State<Home> {
     } else {
       if (itemName == "/lost_card") {
         showDialog(
+            useRootNavigator: false,
             context: context,
             builder: (_) => lostCard.LostCardDialog(
                   context: context,
@@ -245,7 +246,7 @@ class HomeState extends State<Home> {
         firstPaymentItemKey,
         scrollController,
         _scaffoldKey);
-    LNURLHandler(context, widget.userProfileBloc);
+    LNURLHandler(context);
     CTPJoinSessionHandler(widget.ctpBloc, this.context, (session) {
       Navigator.popUntil(context, (route) {
         return route.settings.name != "/connect_to_pay";
@@ -273,7 +274,7 @@ class HomeState extends State<Home> {
   void _listenBackupConflicts() {
     widget.accountBloc.nodeConflictStream.listen((_) async {
       Navigator.popUntil(context, (route) {
-        return route.settings.name == "/home" || route.settings.name == "/";
+        return route.settings.name == "/";
       });
       await promptError(
           context,

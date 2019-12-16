@@ -306,7 +306,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                 alignment: Alignment.center,
                 child: Text("SKIP", style: theme.skipStyle)),
             onTap: () {
-              Navigator.of(context).pushNamed('/home');
+              Navigator.of(context).pushNamed('/');
             })
       ];
     } else {
@@ -325,7 +325,8 @@ class OrderCardPageState extends State<OrderCardPage> {
             child: Text("OK", style: Theme.of(context).primaryTextTheme.button))
       ],
     );
-    showDialog(context: context, builder: (_) => dialog);
+    showDialog(
+        useRootNavigator: false, context: context, builder: (_) => dialog);
   }
 
   Widget _showLeadingButton(showSkip) {

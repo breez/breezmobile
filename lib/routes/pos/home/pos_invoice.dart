@@ -100,6 +100,7 @@ class POSInvoiceState extends State<POSInvoice> {
       // show the simple dialog with 3 states
       if (invoiceReady != null) {
         showDialog<bool>(
+            useRootNavigator: false,
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
@@ -326,6 +327,7 @@ class POSInvoiceState extends State<POSInvoice> {
         errorMessage += " and ";
       if (_posProfile.logo == null) errorMessage += " select a business logo";
       return showDialog<Null>(
+          useRootNavigator: false,
           context: context,
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
@@ -468,7 +470,8 @@ class POSInvoiceState extends State<POSInvoice> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
       );
-      showDialog(context: context, builder: (_) => dialog);
+      showDialog(
+          useRootNavigator: false, context: context, builder: (_) => dialog);
     }
   }
 

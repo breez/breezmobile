@@ -56,6 +56,7 @@ class InvoiceNotificationsHandler {
           Navigator.pop(_context);
         }
         showDialog(
+            useRootNavigator: false,
             context: _context,
             barrierDismissible: false,
             builder: (_) => paymentRequest.PaymentRequestDialog(_context,
