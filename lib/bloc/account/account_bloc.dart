@@ -78,7 +78,7 @@ class AccountBloc {
       _withdrawalResultController.stream;
 
   final _paymentsController = BehaviorSubject<PaymentsModel>();
-  Stream<PaymentsModel> get paymentsStream => _paymentsController.stream;
+  Stream<PaymentsModel> get paymentsStream => _paymentsController.stream;  
 
   final _paymentFilterController = BehaviorSubject<PaymentFilterModel>();
   Stream<PaymentFilterModel> get paymentFilterStream =>
@@ -139,6 +139,7 @@ class AccountBloc {
       ResetChainService: _handleResetChainService,
       SendCoins: _handleSendCoins,
       ExportPayments: _exportPaymentsAction,
+      FetchPayments: _handleFetchPayments
     };
 
     _accountController.add(AccountModel.initial());
@@ -149,7 +150,7 @@ class AccountBloc {
     log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
       _sharedPreferences = preferences;
-      _refreshAccount();
+      _refreshAccountAndPayments();
       //listen streams
       _listenAccountActions();
       _hanleAccountSettings();
@@ -162,6 +163,14 @@ class AccountBloc {
       _trackOnBoardingStatus();
       _listenEnableAccount();
     });
+  }
+
+  Stream<List<PaymentInfo>> get pendingChannelsStream {
+    return _paymentsController.map((paymentModel) => paymentModel
+        .nonFilteredItems
+        .where(
+            (item) => item.type == PaymentType.CLOSED_CHANNEL && item.pending)
+        .toList());
   }
 
   void _listenEnableAccount() {
@@ -223,6 +232,11 @@ class AccountBloc {
 
   Future _handleResetNetwork(ResetNetwork action) async {
     action.resolve(await _breezLib.setPeers([]));
+  }
+
+  Future _handleFetchPayments(FetchPayments action) async {
+    await _refreshAccountAndPayments();
+    action.resolve(_paymentsController.value);
   }
 
   Future _handleSendCoins(SendCoins action) async {
@@ -393,10 +407,10 @@ class AccountBloc {
           _accountController.value.copyWith(fiatShortName: user.fiatCurrency));
       var updatedPayments = _paymentsController.value.copyWith(
         nonFilteredItems: _paymentsController.value.nonFilteredItems
-            .map((p) => p.copyWith(user.currency))
+            .map((p) => p.copyWith(_accountController.value))
             .toList(),
         paymentsList: _paymentsController.value.paymentsList
-            .map((p) => p.copyWith(user.currency))
+            .map((p) => p.copyWith(_accountController.value))
             .toList(),
       );
       _paymentsController.add(updatedPayments);
@@ -447,7 +461,7 @@ class AccountBloc {
           var syncUIState = _accountController.value.syncUIState;
           if ((moreThan3DaysOff || newNode) &&
               _accountController.value.syncUIState == SyncUIState.NONE &&
-              !blockingPrompted) {            
+              !blockingPrompted) {
             blockingPrompted = true;
             syncUIState =
                 newNode ? SyncUIState.BLOCKING : SyncUIState.COLLAPSED;
@@ -494,24 +508,31 @@ class AccountBloc {
     });
   }
 
-  void _refreshPayments() {
+  Future<PaymentsModel> fetchPayments() {
     DateTime _firstDate;
     print("refreshing payments...");
-    _breezLib.getPayments().then((payments) {
+    return _breezLib.getPayments().then((payments) {
       List<PaymentInfo> _paymentsList = payments.paymentsList
-          .map((payment) => PaymentInfo(payment, _currentUser?.currency))
+          .map((payment) => PaymentInfo(payment, _accountController.value))
           .toList();
       if (_paymentsList.length > 0) {
         _firstDate = DateTime.fromMillisecondsSinceEpoch(
             _paymentsList.last.creationTimestamp.toInt() * 1000);
       }
-      print("refresh payments finished");
-      _paymentsController.add(PaymentsModel(
+      print("refresh payments finished " +
+          payments.paymentsList.length.toString());
+      return PaymentsModel(
           _paymentsList,
           _filterPayments(_paymentsList),
           _paymentFilterController.value,
-          _firstDate ?? DateTime(DateTime.now().year)));
-    }).catchError(_paymentsController.addError);
+          _firstDate ?? DateTime(DateTime.now().year));
+    });
+  }
+
+  Future _refreshPayments() {
+    return fetchPayments()
+        .then((paymentModel) => _paymentsController.add(paymentModel))
+        .catchError(_paymentsController.addError);
   }
 
   _filterPayments(List<PaymentInfo> paymentsList) {
@@ -546,11 +567,11 @@ class AccountBloc {
           _breezLib.restartLightningDaemon();
           return;
         }
-        _retryingLightningService = false;        
+        _retryingLightningService = false;
         _lightningDownController.add(true);
       }
       if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
-        _refreshAccount();
+        _refreshAccountAndPayments();
       }
       if (event.type ==
           NotificationEvent_NotificationType.BACKUP_NODE_CONFLICT) {
@@ -560,26 +581,30 @@ class AccountBloc {
     });
   }
 
-  _refreshAccount() {
-    print("Account bloc refreshing account...");
-    _breezLib.getAccount().then((acc) {
+  Future _fetchAccount() {
+    return _breezLib.getAccount().then((acc) {
       if (acc.id.isNotEmpty) {
         print("ACCOUNT CHANGED BALANCE=" +
             acc.balance.toString() +
             " STATUS = " +
             acc.status.toString());
-        _accountController.add(_accountController.value.copyWith(
+        return _accountController.value.copyWith(
             accountResponse: acc,
             currency: _currentUser?.currency,
             fiatShortName: _currentUser?.fiatCurrency,
-            initial: false));
+            initial: false);
       } else {
-        _accountController
-            .add(_accountController.value.copyWith(initial: false));
+        return _accountController.value.copyWith(initial: false);
       }
-    }).catchError(_accountController.addError);
+    });
+  }
 
-    _refreshPayments();
+  _refreshAccountAndPayments() async {
+    print("Account bloc refreshing account...");
+    await _fetchAccount()
+        .then((acc) => _accountController.add(acc))
+        .catchError(_accountController.addError);
+    await _refreshPayments();
     if (_accountController.value.onChainFeeRate == null) {
       _breezLib.getDefaultOnChainFeeRate().then((rate) {
         if (rate.toInt() > 0) {
