@@ -27,7 +27,7 @@ dependencies:
        url: https://github.com/breez/flutter_barcode_reader.git       
   image_picker: ^0.5.0+9
   image: any
-  package_info: any  
+  package_info: ^0.4.0+13  
   uuid: ^1.0.3
   ini: ^2.0.1
   connectivity: ^0.4.5+3

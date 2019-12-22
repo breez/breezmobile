@@ -39,6 +39,7 @@ import 'theme_data.dart' as theme;
 
 class UserApp extends StatelessWidget {
   GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -124,128 +125,135 @@ class UserApp extends StatelessWidget {
                               settings: settings);
                         case '/':
                           return FadeInRoute(
-                            builder: (_) => Navigator(
-                              initialRoute: "/",
-                              onGenerateRoute: (RouteSettings settings) {
-                                switch (settings.name) {
-                                  case '/':
-                                    return FadeInRoute(
-                                      builder: (_) => Home(
-                                          accountBloc,
-                                          invoiceBloc,
-                                          userProfileBloc,
-                                          connectPayBloc,
-                                          backupBloc,
-                                          lspBloc),
-                                      settings: settings,
-                                    );
-                                  case '/order_card':
-                                    return FadeInRoute(
-                                      builder: (_) =>
-                                          OrderCardPage(showSkip: false),
-                                      settings: settings,
-                                    );
-                                  case '/order_card?skip=true':
-                                    return FadeInRoute(
-                                      builder: (_) =>
-                                          OrderCardPage(showSkip: true),
-                                      settings: settings,
-                                    );
-                                  case '/add_funds':
-                                    return FadeInRoute(
-                                      builder: (_) => AddFundsPage(),
-                                      settings: settings,
-                                    );
-                                  case '/deposit_btc_address':
-                                    return FadeInRoute(
-                                      builder: (_) =>
-                                          DepositToBTCAddressPage(accountBloc),
-                                      settings: settings,
-                                    );
-                                  case '/buy_bitcoin':
-                                    return FadeInRoute(
-                                      builder: (_) => MoonpayWebView(
-                                          accountBloc, backupBloc),
-                                      settings: settings,
-                                    );
-                                  case '/withdraw_funds':
-                                    return FadeInRoute(
-                                      builder: (_) => WithdrawFundsPage(),
-                                      settings: settings,
-                                    );
-                                  case '/send_coins':
-                                    return MaterialPageRoute(
-                                      fullscreenDialog: true,
-                                      builder: (_) => SendCoinsDialog(
-                                          accountBloc: accountBloc),
-                                      settings: settings,
-                                    );
-                                  case '/select_lsp':
-                                    return MaterialPageRoute(
-                                      fullscreenDialog: true,
-                                      builder: (_) =>
-                                          SelectLSPPage(lstBloc: lspBloc),
-                                      settings: settings,
-                                    );
-                                  case '/get_refund':
-                                    return FadeInRoute(
-                                      builder: (_) => GetRefundPage(),
-                                      settings: settings,
-                                    );
-                                  case '/activate_card':
-                                    return FadeInRoute(
-                                      builder: (_) => ActivateCardPage(),
-                                      settings: settings,
-                                    );
-                                  case '/pay_nearby':
-                                    return FadeInRoute(
-                                      builder: (_) => PayNearbyPage(),
-                                      settings: settings,
-                                    );
-                                  case '/pay_nearby_complete':
-                                    return FadeInRoute(
-                                      builder: (_) => PayNearbyComplete(),
-                                      settings: settings,
-                                    );
-                                  case '/create_invoice':
-                                    return FadeInRoute(
-                                      builder: (_) => CreateInvoicePage(),
-                                      settings: settings,
-                                    );
-                                  case '/network':
-                                    return FadeInRoute(
-                                      builder: (_) => NetworkPage(),
-                                      settings: settings,
-                                    );
-                                  case '/security':
-                                    return FadeInRoute(
-                                      builder: (_) => SecurityPage(
-                                          userProfileBloc, backupBloc),
-                                      settings: settings,
-                                    );
-                                  case '/developers':
-                                    return FadeInRoute(
-                                      builder: (_) => DevView(),
-                                      settings: settings,
-                                    );
-                                  case '/connect_to_pay':
-                                    return FadeInRoute(
-                                      builder: (_) => ConnectToPayPage(null),
-                                      settings: settings,
-                                    );
-                                  case '/marketplace':
-                                    return FadeInRoute(
-                                      builder: (_) => MarketplacePage(),
-                                      settings: settings,
-                                    );
-                                  case '/fastbitcoins':
-                                    return FadeInRoute(
-                                      builder: (_) => FastbitcoinsPage(),
-                                      settings: settings,
-                                    );
-                                }
-                                assert(false);
+                            builder: (_) => WillPopScope(
+                              onWillPop: () async {
+                                return !await _homeNavigatorKey.currentState
+                                    .maybePop();
                               },
+                              child: Navigator(
+                                key: _homeNavigatorKey,
+                                initialRoute: "/",
+                                onGenerateRoute: (RouteSettings settings) {
+                                  switch (settings.name) {
+                                    case '/':
+                                      return FadeInRoute(
+                                        builder: (_) => Home(
+                                            accountBloc,
+                                            invoiceBloc,
+                                            userProfileBloc,
+                                            connectPayBloc,
+                                            backupBloc,
+                                            lspBloc),
+                                        settings: settings,
+                                      );
+                                    case '/order_card':
+                                      return FadeInRoute(
+                                        builder: (_) =>
+                                            OrderCardPage(showSkip: false),
+                                        settings: settings,
+                                      );
+                                    case '/order_card?skip=true':
+                                      return FadeInRoute(
+                                        builder: (_) =>
+                                            OrderCardPage(showSkip: true),
+                                        settings: settings,
+                                      );
+                                    case '/add_funds':
+                                      return FadeInRoute(
+                                        builder: (_) => AddFundsPage(),
+                                        settings: settings,
+                                      );
+                                    case '/deposit_btc_address':
+                                      return FadeInRoute(
+                                        builder: (_) => DepositToBTCAddressPage(
+                                            accountBloc),
+                                        settings: settings,
+                                      );
+                                    case '/buy_bitcoin':
+                                      return FadeInRoute(
+                                        builder: (_) => MoonpayWebView(
+                                            accountBloc, backupBloc),
+                                        settings: settings,
+                                      );
+                                    case '/withdraw_funds':
+                                      return FadeInRoute(
+                                        builder: (_) => WithdrawFundsPage(),
+                                        settings: settings,
+                                      );
+                                    case '/send_coins':
+                                      return MaterialPageRoute(
+                                        fullscreenDialog: true,
+                                        builder: (_) => SendCoinsDialog(
+                                            accountBloc: accountBloc),
+                                        settings: settings,
+                                      );
+                                    case '/select_lsp':
+                                      return MaterialPageRoute(
+                                        fullscreenDialog: true,
+                                        builder: (_) =>
+                                            SelectLSPPage(lstBloc: lspBloc),
+                                        settings: settings,
+                                      );
+                                    case '/get_refund':
+                                      return FadeInRoute(
+                                        builder: (_) => GetRefundPage(),
+                                        settings: settings,
+                                      );
+                                    case '/activate_card':
+                                      return FadeInRoute(
+                                        builder: (_) => ActivateCardPage(),
+                                        settings: settings,
+                                      );
+                                    case '/pay_nearby':
+                                      return FadeInRoute(
+                                        builder: (_) => PayNearbyPage(),
+                                        settings: settings,
+                                      );
+                                    case '/pay_nearby_complete':
+                                      return FadeInRoute(
+                                        builder: (_) => PayNearbyComplete(),
+                                        settings: settings,
+                                      );
+                                    case '/create_invoice':
+                                      return FadeInRoute(
+                                        builder: (_) => CreateInvoicePage(),
+                                        settings: settings,
+                                      );
+                                    case '/network':
+                                      return FadeInRoute(
+                                        builder: (_) => NetworkPage(),
+                                        settings: settings,
+                                      );
+                                    case '/security':
+                                      return FadeInRoute(
+                                        builder: (_) => SecurityPage(
+                                            userProfileBloc, backupBloc),
+                                        settings: settings,
+                                      );
+                                    case '/developers':
+                                      return FadeInRoute(
+                                        builder: (_) => DevView(),
+                                        settings: settings,
+                                      );
+                                    case '/connect_to_pay':
+                                      return FadeInRoute(
+                                        builder: (_) => ConnectToPayPage(null),
+                                        settings: settings,
+                                      );
+                                    case '/marketplace':
+                                      return FadeInRoute(
+                                        builder: (_) => MarketplacePage(),
+                                        settings: settings,
+                                      );
+                                    case '/fastbitcoins':
+                                      return FadeInRoute(
+                                        builder: (_) => FastbitcoinsPage(),
+                                        settings: settings,
+                                      );
+                                  }
+                                  assert(false);
+                                },
+                              ),
                             ),
                             settings: settings,
                           );

@@ -226,8 +226,12 @@ class AccountBloc {
   }
 
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
-    action.resolve(
-        await _breezLib.sendPaymentFailureBugReport(action.traceReport));
+    Map<String, dynamic> jsonReport = json.decode(action.traceReport);
+    jsonReport["app version"] = await _device.appVersion();
+    JsonEncoder encoder = new JsonEncoder.withIndent('\t');
+    String report = encoder.convert(jsonReport);
+    action.resolve(        
+        await _breezLib.sendPaymentFailureBugReport(report));
   }
 
   Future _handleResetNetwork(ResetNetwork action) async {
