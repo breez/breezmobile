@@ -358,7 +358,7 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
                 style: Theme.of(context)
                     .dialogTheme
                     .contentTextStyle
-                    .copyWith(decoration: TextDecoration.underline)),
+                    .copyWith(decoration: TextDecoration.underline, color: theme.blueLinkStyle.color)),
             TextSpan(
                 style: Theme.of(context).dialogTheme.contentTextStyle,
                 text: ".")
@@ -373,8 +373,11 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
         ? "~${roundedHoursToUnlock.toString()} hours"
         : "in about an hour";
     String estimation =
-        lockHeight > 0 ? " in block $lockHeight ($hoursToUnlockStr)." : "";
+        lockHeight > 0 ? " in block $lockHeight ($hoursToUnlockStr)" : "";
 
+    var regularStyle = Theme.of(context).dialogTheme.contentTextStyle;
+    var linkStyle = regularStyle
+                  .copyWith(decoration: TextDecoration.underline, color: theme.blueLinkStyle.color);
     return RichText(
         text: TextSpan(
             style: Theme.of(context).dialogTheme.contentTextStyle,
@@ -383,10 +386,7 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
           _LinkTextSpan(
               text: "closed channel",
               url: closedChannel.closeChannelTxUrl,
-              style: Theme.of(context)
-                  .dialogTheme
-                  .contentTextStyle
-                  .copyWith(decoration: TextDecoration.underline, color: theme.blueLinkStyle.color)),
+              style: closedChannel.closeChannelTxUrl == null ? regularStyle : linkStyle),
           TextSpan(
               style: Theme.of(context).dialogTheme.contentTextStyle,
               text: " funds to be transferred to your local wallet$estimation."),
