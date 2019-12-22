@@ -78,7 +78,7 @@ class AccountBloc {
       _withdrawalResultController.stream;
 
   final _paymentsController = BehaviorSubject<PaymentsModel>();
-  Stream<PaymentsModel> get paymentsStream => _paymentsController.stream;  
+  Stream<PaymentsModel> get paymentsStream => _paymentsController.stream;
 
   final _paymentFilterController = BehaviorSubject<PaymentFilterModel>();
   Stream<PaymentFilterModel> get paymentFilterStream =>
@@ -228,10 +228,9 @@ class AccountBloc {
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
     Map<String, dynamic> jsonReport = json.decode(action.traceReport);
     jsonReport["app version"] = await _device.appVersion();
-    JsonEncoder encoder = new JsonEncoder.withIndent('\t');
+    JsonEncoder encoder = JsonEncoder.withIndent('\t');
     String report = encoder.convert(jsonReport);
-    action.resolve(        
-        await _breezLib.sendPaymentFailureBugReport(report));
+    action.resolve(await _breezLib.sendPaymentFailureBugReport(report));
   }
 
   Future _handleResetNetwork(ResetNetwork action) async {

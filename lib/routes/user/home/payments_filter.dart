@@ -174,7 +174,11 @@ class PaymentsFilterState extends State<PaymentsFilter> {
 
   _getFilterType(String _filter) {
     if (_filter == "Sent") {
-      return [PaymentType.SENT, PaymentType.WITHDRAWAL, PaymentType.CLOSED_CHANNEL];
+      return [
+        PaymentType.SENT,
+        PaymentType.WITHDRAWAL,
+        PaymentType.CLOSED_CHANNEL
+      ];
     } else if (_filter == "Received") {
       return [PaymentType.RECEIVED, PaymentType.DEPOSIT];
     }

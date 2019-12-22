@@ -376,7 +376,9 @@ class PaymentInfo {
   String get redeemTxID => _paymentResponse.redeemTxID;
   String get paymentHash => _paymentResponse.paymentHash;
   String get preimage => _paymentResponse.preimage;
-  bool get pending => _paymentResponse.pendingExpirationHeight > 0 || _paymentResponse.isChannelPending;
+  bool get pending =>
+      _paymentResponse.pendingExpirationHeight > 0 ||
+      _paymentResponse.isChannelPending;
   bool get channelCloseConfirmed => _paymentResponse.isChannelCloseConfimed;
   String get closeChannelTx => _paymentResponse.closedChannelTxID;
   String get closeChannelTxUrl {
@@ -385,11 +387,19 @@ class PaymentInfo {
     }
     return "https://blockstream.info/tx/$closeChannelTx";
   }
+
   int get pendingExpirationHeight => _paymentResponse.pendingExpirationHeight;
-  double get hoursToExpire => max(_paymentResponse.pendingExpirationHeight - _account.tipHeight.toInt(), 0) * 10 / 60;
+  double get hoursToExpire =>
+      max(_paymentResponse.pendingExpirationHeight - _account.tipHeight.toInt(),
+          0) *
+      10 /
+      60;
   Int64 get pendingExpirationTimestamp =>
-    _paymentResponse.pendingExpirationTimestamp > 0 ? _paymentResponse.pendingExpirationTimestamp :
-    Int64(DateTime.now().add(Duration(hours: hoursToExpire.round())).millisecondsSinceEpoch);
+      _paymentResponse.pendingExpirationTimestamp > 0
+          ? _paymentResponse.pendingExpirationTimestamp
+          : Int64(DateTime.now()
+              .add(Duration(hours: hoursToExpire.round()))
+              .millisecondsSinceEpoch);
   bool get containsPaymentInfo {
     String remoteName = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeName
@@ -450,7 +460,7 @@ class PaymentInfo {
     return (result == null || result.isEmpty) ? "Unknown" : result;
   }
 
-  String get dialogTitle {   
+  String get dialogTitle {
     if (this.pending && this.type == PaymentType.CLOSED_CHANNEL) {
       return "Pending Closed Channel";
     }

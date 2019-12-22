@@ -23,7 +23,7 @@ Future<Null> showPaymentDetailsDialog(
           return AlertDialog(
             titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
             title: Text(
-              (paymentInfo.pending ? "Pending " : "") +  "Closed Channel",
+              (paymentInfo.pending ? "Pending " : "") + "Closed Channel",
               style: Theme.of(context).dialogTheme.titleTextStyle,
             ),
             contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
@@ -355,10 +355,9 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
             _LinkTextSpan(
                 text: "closed channel",
                 url: closedChannel.closeChannelTxUrl,
-                style: Theme.of(context)
-                    .dialogTheme
-                    .contentTextStyle
-                    .copyWith(decoration: TextDecoration.underline, color: theme.blueLinkStyle.color)),
+                style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
+                    decoration: TextDecoration.underline,
+                    color: theme.blueLinkStyle.color)),
             TextSpan(
                 style: Theme.of(context).dialogTheme.contentTextStyle,
                 text: ".")
@@ -376,8 +375,8 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
         lockHeight > 0 ? " in block $lockHeight ($hoursToUnlockStr)" : "";
 
     var regularStyle = Theme.of(context).dialogTheme.contentTextStyle;
-    var linkStyle = regularStyle
-                  .copyWith(decoration: TextDecoration.underline, color: theme.blueLinkStyle.color);
+    var linkStyle = regularStyle.copyWith(
+        decoration: TextDecoration.underline, color: theme.blueLinkStyle.color);
     return RichText(
         text: TextSpan(
             style: Theme.of(context).dialogTheme.contentTextStyle,
@@ -386,13 +385,18 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
           _LinkTextSpan(
               text: "closed channel",
               url: closedChannel.closeChannelTxUrl,
-              style: closedChannel.closeChannelTxUrl == null ? regularStyle : linkStyle),
+              style: closedChannel.closeChannelTxUrl == null
+                  ? regularStyle
+                  : linkStyle),
           TextSpan(
               style: Theme.of(context).dialogTheme.contentTextStyle,
-              text: " funds to be transferred to your local wallet$estimation."),
+              text:
+                  " funds to be transferred to your local wallet$estimation."),
           TextSpan(
               style: Theme.of(context).dialogTheme.contentTextStyle,
-              text: closedChannel.channelCloseConfirmed ? "" : "(closing transaction is not yet confirmed).")
+              text: closedChannel.channelCloseConfirmed
+                  ? ""
+                  : "(closing transaction is not yet confirmed).")
         ]));
   }
 }

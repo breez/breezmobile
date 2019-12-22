@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 class PendingClosedChannelDialog extends StatefulWidget {
   final AccountBloc accountBloc;
 
-  const PendingClosedChannelDialog({Key key, this.accountBloc}) : super(key: key);
+  const PendingClosedChannelDialog({Key key, this.accountBloc})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -16,7 +17,8 @@ class PendingClosedChannelDialog extends StatefulWidget {
   }
 }
 
-class PendingClosedChannelDialogState extends State<PendingClosedChannelDialog> {
+class PendingClosedChannelDialogState
+    extends State<PendingClosedChannelDialog> {
   Future _fetchFuture;
 
   @override
@@ -42,17 +44,19 @@ class PendingClosedChannelDialogState extends State<PendingClosedChannelDialog> 
           builder: (ctx, loadingSnapshot) {
             if (loadingSnapshot.connectionState != ConnectionState.done) {
               return Loader();
-            }            
+            }
 
             return StreamBuilder<List<PaymentInfo>>(
                 stream: widget.accountBloc.pendingChannelsStream,
-                builder: (ctx, snapshot) {          
-                  var pendingClosedChannels = snapshot?.data;        
-                  if (pendingClosedChannels == null || pendingClosedChannels.length == 0) {
+                builder: (ctx, snapshot) {
+                  var pendingClosedChannels = snapshot?.data;
+                  if (pendingClosedChannels == null ||
+                      pendingClosedChannels.length == 0) {
                     return Loader();
                   }
-                  
-                  return ClosedChannelPaymentDetails(closedChannel: pendingClosedChannels[0]);
+
+                  return ClosedChannelPaymentDetails(
+                      closedChannel: pendingClosedChannels[0]);
                 });
           }),
       actions: [
