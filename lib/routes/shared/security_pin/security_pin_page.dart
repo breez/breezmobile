@@ -41,6 +41,12 @@ class SecurityPageState extends State<SecurityPage> {
   int _renderIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    _getEnrolledBiometricsAction();
+  }
+
+  @override
   Widget build(BuildContext context) {
     String _title = "Security & Backup";
     return StreamBuilder<BackupState>(
@@ -385,6 +391,12 @@ class SecurityPageState extends State<SecurityPage> {
         });
       }
     });
+  }
+
+  Future _getEnrolledBiometricsAction() async {
+    var getEnrolledBiometricsAction = GetEnrolledBiometrics();
+    widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
+    return getEnrolledBiometricsAction.future;
   }
 
   Future _resetSecurityModel() async {

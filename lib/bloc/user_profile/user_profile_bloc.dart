@@ -77,6 +77,7 @@ class UserProfileBloc {
       ValidatePinCode: _validatePinCode,
       ChangeTheme: _changeThemeAction,
       ValidateBiometrics: _validateBiometrics,
+      GetEnrolledBiometrics: _getEnrolledBiometrics,
       SetLockState: _setLockState,
     };
     print("UserProfileBloc started");
@@ -103,8 +104,6 @@ class UserProfileBloc {
 
       //listen upload image requests
       _listenUploadImageRequests(injector);
-
-      _updateBiometricsSettings();
 
       startPINIntervalWatcher();
 
@@ -156,31 +155,8 @@ class UserProfileBloc {
             color: randomName[0],
             animal: randomName[1]);
       }
-      String enrolledBiometrics = await _localAuthService.enrolledBiometrics;
-      bool isFingerprintEnabled = (user.securityModel.isFingerprintEnabled &&
-          enrolledBiometrics.isNotEmpty);
-      user = user.copyWith(
-          locked: user.securityModel.requiresPin,
-          securityModel: user.securityModel.copyWith(
-              isFingerprintEnabled: isFingerprintEnabled,
-              enrolledBiometrics: enrolledBiometrics));
+      user = user.copyWith(locked: user.securityModel.requiresPin);
       _publishUser(user);
-    });
-  }
-
-  _updateBiometricsSettings() {
-    _deviceService.eventStream.listen((e) async {
-      if (e == NotificationType.RESUME) {
-        String enrolledBiometrics = await _localAuthService.enrolledBiometrics;
-        bool isFingerprintEnabled =
-            _currentUser.securityModel.isFingerprintEnabled &&
-                enrolledBiometrics.isNotEmpty;
-        _updateSecurityModel(
-            UpdateSecurityModel(_currentUser.securityModel.copyWith(
-          isFingerprintEnabled: isFingerprintEnabled,
-          enrolledBiometrics: enrolledBiometrics,
-        )));
-      }
     });
   }
 
@@ -250,6 +226,19 @@ class UserProfileBloc {
   Future _validateBiometrics(ValidateBiometrics action) async {
     action.resolve(await _localAuthService.authenticate(
         localizedReason: action.localizedReason));
+  }
+
+  Future _getEnrolledBiometrics(GetEnrolledBiometrics action) async {
+    String enrolledBiometrics = await _localAuthService.enrolledBiometrics;
+    bool isFingerprintEnabled =
+        _currentUser.securityModel.isFingerprintEnabled &&
+            enrolledBiometrics.isNotEmpty;
+    _updateSecurityModel(
+        UpdateSecurityModel(_currentUser.securityModel.copyWith(
+      isFingerprintEnabled: isFingerprintEnabled,
+      enrolledBiometrics: enrolledBiometrics,
+    )));
+    action.resolve(enrolledBiometrics);
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {
