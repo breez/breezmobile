@@ -4,6 +4,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/circular_button.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 
@@ -163,30 +164,28 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
           children: List<Widget>.generate(
               3, (i) => _numberButton((i + 1).toString())),
         ),
+        SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           mainAxisSize: MainAxisSize.max,
           children: List<Widget>.generate(
               3, (i) => _numberButton((i + 4).toString())),
         ),
+        SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           mainAxisSize: MainAxisSize.max,
           children: List<Widget>.generate(
               3, (i) => _numberButton((i + 7).toString())),
         ),
+        SizedBox(height: 8),
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              IconButton(
-                onPressed: () => _setPinCodeInput(""),
-                icon: Icon(
-                  Icons.delete_forever,
-                  color: Colors.white,
-                ),
-              ),
+              _buildClearButton(),
               _numberButton("0"),
+
               widget.onFingerprintEntered == null ||
                       ((widget.onFingerprintEntered != null) &&
                           _enteredPinCode.length > 0)
@@ -208,6 +207,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     );
   }
 
+
   Container _buildBiometricsButton(
       AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
     return Container(
@@ -223,24 +223,36 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     );
   }
 
-  Container _buildEraseButton() {
-    return Container(
-      child: IconButton(
-        onPressed: () => _setPinCodeInput(
-            _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
-        icon: Icon(
-          Icons.backspace,
-          color: Colors.white,
-        ),
+  Widget _buildClearButton() {
+    return CircularButton(
+      child: Icon(
+        Icons.delete_forever,
+        color: Colors.white,
       ),
+      onTap: () => _setPinCodeInput(""),
+      width: MediaQuery.of(context).size.width / 6,
+    );
+  }
+
+  Widget _buildEraseButton() {
+    return CircularButton(
+      child: Icon(
+        Icons.backspace,
+        color: Colors.white,
+      ),
+      onTap: () => _setPinCodeInput(
+        _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1),
+      ),
+      width: MediaQuery.of(context).size.width / 6,
     );
   }
 
   Widget _numberButton(String number) {
-    return FlatButton(
-      onPressed: () => _onNumButtonPressed(number),
+    return CircularButton(
       child: Text(number,
           textAlign: TextAlign.center, style: theme.numPadNumberStyle),
+      onTap: () => _onNumButtonPressed(number),
+      width: MediaQuery.of(context).size.width / 6,
     );
   }
 
