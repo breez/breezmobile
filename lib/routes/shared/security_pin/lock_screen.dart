@@ -49,7 +49,6 @@ class _AppLockScreenState extends State<AppLockScreen> {
             : null,
         body: PinCodeWidget(
           _label,
-          widget.canCancel,
           widget.onPinEntered,
           onFingerprintEntered: widget.onFingerprintEntered,
           userProfileBloc: widget.userProfileBloc,
