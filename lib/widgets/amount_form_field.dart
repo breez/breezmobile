@@ -51,6 +51,7 @@ class AmountFormField extends TextFormField {
                 padding: EdgeInsets.only(top: 21.0),
                 alignment: Alignment.bottomRight,
                 onPressed: () => showDialog(
+                  useRootNavigator: false,
                   context: context,
                   builder: (_) => CurrencyConverterDialog(
                       returnFN != null

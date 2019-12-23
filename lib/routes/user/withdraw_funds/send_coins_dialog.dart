@@ -72,6 +72,7 @@ class SendCoinsDialog extends StatelessWidget {
       ),
     );
     showDialog(
+        useRootNavigator: false,
         context: context,
         barrierDismissible: false,
         builder: (_) => WillPopScope(

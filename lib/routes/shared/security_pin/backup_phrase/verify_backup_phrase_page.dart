@@ -207,6 +207,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
         if (mounted) {
           showDialog(
+              useRootNavigator: false,
               barrierDismissible: false,
               context: context,
               builder: (ctx) => buildBackupInProgressDialog(

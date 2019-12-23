@@ -120,6 +120,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         ),
         onPressed: () => widget._paymentsModel.firstDate != null
             ? showDialog(
+                useRootNavigator: false,
                 context: context,
                 builder: (_) =>
                     CalendarDialog(context, widget._paymentsModel.firstDate),

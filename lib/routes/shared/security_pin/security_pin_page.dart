@@ -467,6 +467,7 @@ class SecurityPageState extends State<SecurityPage> {
         .then((s) {
       if (mounted) {
         showDialog(
+            useRootNavigator: false,
             barrierDismissible: false,
             context: context,
             builder: (ctx) => buildBackupInProgressDialog(

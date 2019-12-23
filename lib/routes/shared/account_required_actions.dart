@@ -59,11 +59,9 @@ class AccountRequiredActionsIndicatorState
         if (_currentSettings.promptOnError && !showingBackupDialog) {
           showingBackupDialog = true;
           widget._backupBloc.backupPromptVisibleSink.add(true);
-          popFlushbars(context);
-          await widget._userProfileBloc.userStream
-              .where((u) => u.locked == false)
-              .first;
+          popFlushbars(context);          
           showDialog(
+              useRootNavigator: false,
               barrierDismissible: false,
               context: context,
               builder: (_) => EnableBackupDialog(
@@ -149,6 +147,7 @@ class AccountRequiredActionsIndicatorState
                             }
                             warnings.add(WarningAction(() async {
                               showDialog(
+                                  useRootNavigator: false,
                                   barrierDismissible: false,
                                   context: context,
                                   builder: (_) => EnableBackupDialog(
@@ -175,6 +174,7 @@ class AccountRequiredActionsIndicatorState
 
                           if (shouldWarnRefund) {
                             warnings.add(WarningAction(() => showDialog(
+                                useRootNavigator: false,
                                 barrierDismissible: false,
                                 context: context,
                                 builder: (_) => SwapRefundDialog(

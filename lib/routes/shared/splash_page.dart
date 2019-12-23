@@ -30,7 +30,7 @@ class SplashPageState extends State<SplashPage> {
       _startTime();
     } else {
       prefs.setBool('isFirstRun', true);
-      Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context).pushReplacementNamed('/');
     }
   }
 

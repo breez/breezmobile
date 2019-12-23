@@ -249,7 +249,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                 Text("YES", style: Theme.of(context).primaryTextTheme.button))
       ],
     );
-    showDialog(context: context, builder: (_) => dialog);
+    showDialog(
+        useRootNavigator: false, context: context, builder: (_) => dialog);
   }
 
   _showLoadingDialog() {
@@ -281,6 +282,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
       ),
     );
     showDialog(
+        useRootNavigator: false,
         context: context,
         barrierDismissible: false,
         builder: (_) => WillPopScope(onWillPop: _onWillPop, child: dialog));

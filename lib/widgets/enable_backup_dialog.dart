@@ -123,6 +123,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                       var provider = snapshot.data.backupProvider;
                       if (provider == null) {
                         provider = await showDialog(
+                            useRootNavigator: false,
                             context: context,
                             builder: (_) => BackupProviderSelectionDialog(
                                 backupBloc: widget.backupBloc));

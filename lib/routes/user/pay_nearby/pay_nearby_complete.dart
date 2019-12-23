@@ -114,7 +114,8 @@ class PayNearbyCompleteState extends State<PayNearbyComplete>
                 style: Theme.of(context).primaryTextTheme.button))
       ],
     );
-    showDialog(context: context, builder: (_) => dialog);
+    showDialog(
+        useRootNavigator: false, context: context, builder: (_) => dialog);
   }
 
   @override

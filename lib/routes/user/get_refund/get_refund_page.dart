@@ -95,6 +95,7 @@ class GetRefundPage extends StatelessWidget {
       String toAddress, Int64 feeRate) {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return showDialog<bool>(
+        useRootNavigator: false,
         context: context,
         barrierDismissible: false,
         builder: (_) => WaitBroadcastDialog(
