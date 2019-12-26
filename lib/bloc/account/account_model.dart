@@ -213,6 +213,7 @@ class AccountModel {
       _accountResponse.status == Account_AccountStatus.CONNECTED;
   bool get isInitialBootstrap =>
       !initial && (disconnected || closingConnection);
+  Int64 get tipHeight => _accountResponse.tipHeight;
   Int64 get balance => _accountResponse.balance;
   String get formattedFiatBalance => fiatCurrency?.format(balance);
   Int64 get walletBalance => _accountResponse.walletBalance;
@@ -342,7 +343,8 @@ class PaymentFilterModel {
           PaymentType.SENT,
           PaymentType.DEPOSIT,
           PaymentType.WITHDRAWAL,
-          PaymentType.RECEIVED
+          PaymentType.RECEIVED,
+          PaymentType.CLOSED_CHANNEL,
         ], null, null, initial: true);
 
   PaymentFilterModel copyWith(
@@ -352,17 +354,18 @@ class PaymentFilterModel {
   }
 }
 
-enum PaymentType { DEPOSIT, WITHDRAWAL, SENT, RECEIVED }
+enum PaymentType { DEPOSIT, WITHDRAWAL, SENT, RECEIVED, CLOSED_CHANNEL }
 
 class PaymentInfo {
   final Payment _paymentResponse;
-  final Currency _currency;
+  final AccountModel _account;
 
   Map _typeMap = {
     Payment_PaymentType.DEPOSIT: PaymentType.DEPOSIT,
     Payment_PaymentType.WITHDRAWAL: PaymentType.WITHDRAWAL,
     Payment_PaymentType.SENT: PaymentType.SENT,
     Payment_PaymentType.RECEIVED: PaymentType.RECEIVED,
+    Payment_PaymentType.CLOSED_CHANNEL: PaymentType.CLOSED_CHANNEL,
   };
 
   PaymentType get type => _typeMap[_paymentResponse.type];
@@ -373,11 +376,30 @@ class PaymentInfo {
   String get redeemTxID => _paymentResponse.redeemTxID;
   String get paymentHash => _paymentResponse.paymentHash;
   String get preimage => _paymentResponse.preimage;
-  bool get pending => _paymentResponse.pendingExpirationHeight > 0;
-  int get pendingExpirationHeight => _paymentResponse.pendingExpirationHeight;
-  Int64 get pendingExpirationTimestamp =>
-      _paymentResponse.pendingExpirationTimestamp;
+  bool get pending =>
+      _paymentResponse.pendingExpirationHeight > 0 ||
+      _paymentResponse.isChannelPending;
+  bool get channelCloseConfirmed => _paymentResponse.isChannelCloseConfimed;
+  String get closeChannelTx => _paymentResponse.closedChannelTxID;
+  String get closeChannelTxUrl {
+    if (closeChannelTx.isEmpty) {
+      return null;
+    }
+    return "https://blockstream.info/tx/$closeChannelTx";
+  }
 
+  int get pendingExpirationHeight => _paymentResponse.pendingExpirationHeight;
+  double get hoursToExpire =>
+      max(_paymentResponse.pendingExpirationHeight - _account.tipHeight.toInt(),
+          0) *
+      10 /
+      60;
+  Int64 get pendingExpirationTimestamp =>
+      _paymentResponse.pendingExpirationTimestamp > 0
+          ? _paymentResponse.pendingExpirationTimestamp
+          : Int64(DateTime.now()
+              .add(Duration(hours: hoursToExpire.round()))
+              .millisecondsSinceEpoch);
   bool get containsPaymentInfo {
     String remoteName = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeName
@@ -426,6 +448,9 @@ class PaymentInfo {
     if (type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL) {
       return "Bitcoin Transfer";
     }
+    if (type == PaymentType.CLOSED_CHANNEL) {
+      return "Closed Channel";
+    }
     String result = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeName
         : _paymentResponse.invoiceMemo?.payerName);
@@ -435,12 +460,19 @@ class PaymentInfo {
     return (result == null || result.isEmpty) ? "Unknown" : result;
   }
 
-  Currency get currency => _currency;
+  String get dialogTitle {
+    if (this.pending && this.type == PaymentType.CLOSED_CHANNEL) {
+      return "Pending Closed Channel";
+    }
+    return title;
+  }
 
-  PaymentInfo(this._paymentResponse, this._currency);
+  Currency get currency => _account.currency;
 
-  PaymentInfo copyWith(Currency currency) {
-    return PaymentInfo(this._paymentResponse, currency);
+  PaymentInfo(this._paymentResponse, this._account);
+
+  PaymentInfo copyWith(AccountModel account) {
+    return PaymentInfo(this._paymentResponse, account);
   }
 }
 

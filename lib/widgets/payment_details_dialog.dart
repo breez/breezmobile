@@ -4,15 +4,40 @@ import 'package:breez/routes/user/home/payment_item_avatar.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final AutoSizeGroup _labelGroup = AutoSizeGroup();
 final AutoSizeGroup _valueGroup = AutoSizeGroup();
 
 Future<Null> showPaymentDetailsDialog(
     BuildContext context, PaymentInfo paymentInfo) {
+  if (paymentInfo.type == PaymentType.CLOSED_CHANNEL) {
+    return showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+            title: Text(
+              (paymentInfo.pending ? "Pending " : "") + "Closed Channel",
+              style: Theme.of(context).dialogTheme.titleTextStyle,
+            ),
+            contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+            content: ClosedChannelPaymentDetails(closedChannel: paymentInfo),
+            actions: [
+              SimpleDialogOption(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text("OK",
+                    style: Theme.of(context).primaryTextTheme.button),
+              )
+            ],
+          );
+        });
+  }
   AlertDialog _paymentDetailsDialog = AlertDialog(
     titlePadding: EdgeInsets.zero,
     title: Stack(children: <Widget>[
@@ -41,7 +66,7 @@ Future<Null> showPaymentDetailsDialog(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          paymentInfo.title == null || paymentInfo.title.isEmpty
+          paymentInfo.dialogTitle == null || paymentInfo.dialogTitle.isEmpty
               ? Container()
               : Padding(
                   padding: EdgeInsets.only(
@@ -52,7 +77,7 @@ Future<Null> showPaymentDetailsDialog(
                           ? 16
                           : 8),
                   child: AutoSizeText(
-                    paymentInfo.title,
+                    paymentInfo.dialogTitle,
                     style: Theme.of(context).primaryTextTheme.headline,
                     textAlign: TextAlign.center,
                     maxLines: 1,
@@ -148,7 +173,7 @@ Future<Null> showPaymentDetailsDialog(
                     ],
                   ),
                 ),
-          !paymentInfo.pending
+          !paymentInfo.pending || paymentInfo.type == PaymentType.CLOSED_CHANNEL
               ? Container()
               : Container(
                   height: 36.0,
@@ -311,4 +336,78 @@ _buildSnackBar(String item) {
     duration: Duration(seconds: 4),
   );
   return snackBar;
+}
+
+class ClosedChannelPaymentDetails extends StatelessWidget {
+  final PaymentInfo closedChannel;
+
+  const ClosedChannelPaymentDetails({Key key, this.closedChannel})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (!closedChannel.pending) {
+      return RichText(
+          text: TextSpan(
+              style: Theme.of(context).dialogTheme.contentTextStyle,
+              text: "Transfer to local wallet due to ",
+              children: [
+            _LinkTextSpan(
+                text: "closed channel",
+                url: closedChannel.closeChannelTxUrl,
+                style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
+                    decoration: TextDecoration.underline,
+                    color: theme.blueLinkStyle.color)),
+            TextSpan(
+                style: Theme.of(context).dialogTheme.contentTextStyle,
+                text: ".")
+          ]));
+    }
+
+    int lockHeight = closedChannel.pendingExpirationHeight;
+    double hoursToUnlock = closedChannel.hoursToExpire;
+
+    int roundedHoursToUnlock = hoursToUnlock.round();
+    String hoursToUnlockStr = roundedHoursToUnlock > 1
+        ? "~${roundedHoursToUnlock.toString()} hours"
+        : "in about an hour";
+    String estimation =
+        lockHeight > 0 && hoursToUnlock > 0 ? " in block $lockHeight ($hoursToUnlockStr)" : "";
+
+    var regularStyle = Theme.of(context).dialogTheme.contentTextStyle;
+    var linkStyle = regularStyle.copyWith(
+        decoration: TextDecoration.underline, color: theme.blueLinkStyle.color);
+    return RichText(
+        text: TextSpan(
+            style: Theme.of(context).dialogTheme.contentTextStyle,
+            text: "Waiting for ",
+            children: [
+          _LinkTextSpan(
+              text: "closed channel",
+              url: closedChannel.closeChannelTxUrl,
+              style: closedChannel.closeChannelTxUrl == null
+                  ? regularStyle
+                  : linkStyle),
+          TextSpan(
+              style: Theme.of(context).dialogTheme.contentTextStyle,
+              text:
+                  " funds to be transferred to your local wallet$estimation."),
+          TextSpan(
+              style: Theme.of(context).dialogTheme.contentTextStyle,
+              text: closedChannel.channelCloseConfirmed
+                  ? ""
+                  : "(closing transaction is not yet confirmed).")
+        ]));
+  }
+}
+
+class _LinkTextSpan extends TextSpan {
+  _LinkTextSpan({TextStyle style, String url, String text})
+      : super(
+            style: style,
+            text: text ?? url,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                launch(url, forceSafariVC: false);
+              });
 }
