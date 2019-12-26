@@ -372,7 +372,7 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
         ? "~${roundedHoursToUnlock.toString()} hours"
         : "in about an hour";
     String estimation =
-        lockHeight > 0 ? " in block $lockHeight ($hoursToUnlockStr)" : "";
+        lockHeight > 0 && hoursToUnlock > 0 ? " in block $lockHeight ($hoursToUnlockStr)" : "";
 
     var regularStyle = Theme.of(context).dialogTheme.contentTextStyle;
     var linkStyle = regularStyle.copyWith(
