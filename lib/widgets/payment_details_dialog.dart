@@ -350,7 +350,7 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
       return RichText(
           text: TextSpan(
               style: Theme.of(context).dialogTheme.contentTextStyle,
-              text: "Trasnfer to local wallet due to ",
+              text: "Transfer to local wallet due to ",
               children: [
             _LinkTextSpan(
                 text: "closed channel",
