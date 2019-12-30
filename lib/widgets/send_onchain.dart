@@ -37,6 +37,7 @@ class SendOnchainState extends State<SendOnchain> {
   String _addressValidated;
   final FocusNode _feeFocusNode = FocusNode();
   KeyboardDoneAction _doneAction;
+  bool feeUpdated = false;
 
   @override
   void initState() {
@@ -44,11 +45,21 @@ class SendOnchainState extends State<SendOnchain> {
     _doneAction = KeyboardDoneAction(<FocusNode>[_feeFocusNode]);
   }
 
-  @override
-  void didChangeDependencies() {
+  @override void didChangeDependencies() {
+    _updateFee();
     super.didChangeDependencies();
-    if (_feeController.text.isEmpty) {
+  }
+
+  @override
+  void didUpdateWidget(Widget oldWidget) {    
+    _updateFee();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void _updateFee(){
+    if (!feeUpdated && _feeController.text.isEmpty && widget._account.onChainFeeRate != null) {
       _feeController.text = widget._account.onChainFeeRate.toString();
+      feeUpdated = true;
     }
   }
 
