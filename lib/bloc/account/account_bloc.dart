@@ -612,7 +612,7 @@ class AccountBloc {
         .catchError(_accountController.addError);
     await _refreshPayments();
     if (_accountController.value.onChainFeeRate == null) {
-      _breezLib.getDefaultOnChainFeeRate().then((rate) {        
+      _breezLib.getDefaultOnChainFeeRate().then((rate) {
         if (rate.toInt() > 0) {
           _accountController
               .add(_accountController.value.copyWith(onChainFeeRate: rate));

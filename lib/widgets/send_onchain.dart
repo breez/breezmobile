@@ -45,19 +45,22 @@ class SendOnchainState extends State<SendOnchain> {
     _doneAction = KeyboardDoneAction(<FocusNode>[_feeFocusNode]);
   }
 
-  @override void didChangeDependencies() {
+  @override
+  void didChangeDependencies() {
     _updateFee();
     super.didChangeDependencies();
   }
 
   @override
-  void didUpdateWidget(Widget oldWidget) {    
+  void didUpdateWidget(Widget oldWidget) {
     _updateFee();
     super.didUpdateWidget(oldWidget);
   }
 
-  void _updateFee(){
-    if (!feeUpdated && _feeController.text.isEmpty && widget._account.onChainFeeRate != null) {
+  void _updateFee() {
+    if (!feeUpdated &&
+        _feeController.text.isEmpty &&
+        widget._account.onChainFeeRate != null) {
       _feeController.text = widget._account.onChainFeeRate.toString();
       feeUpdated = true;
     }
