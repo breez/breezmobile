@@ -61,7 +61,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "removeFund": SingleArgBindingExecutor(f: BindingsRemoveFund),
     
     "daemonReady": VoidBindingExecutor(f: BindingsDaemonReady),
-    "getDefaultOnChainFeeRate": VoidBindingExecutor(f: BindingsGetDefaultOnChainFeeRate),
+    "getDefaultOnChainFeeRate": DefaultOnChainFeeRateExecutor(),
     "rate": EmptyArgsBindingExecutor(f: BindingsRate),
     "onResume": VoidBindingExecutor(f: BindingsOnResume),
     "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),    
@@ -101,6 +101,21 @@ fileprivate extension BindingExecutor {
             return nil;
         }
         return arg;
+    }
+}
+
+fileprivate class DefaultOnChainFeeRateExecutor : BindingExecutor {
+    func execute(call : FlutterMethodCall, result : @escaping FlutterResult){
+        DispatchQueue.global().async {
+            var arg : Int64 = 0;
+            var error : NSError?;
+            BindingsGetDefaultOnChainFeeRate(&arg, &error);
+            if let err = error {
+                result(self.wrapOutputType(arg: err));
+            } else {
+                result(self.wrapOutputType(arg: arg))
+            }
+        }
     }
 }
 
