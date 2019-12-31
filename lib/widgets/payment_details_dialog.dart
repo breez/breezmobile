@@ -10,6 +10,9 @@ import 'package:flutter/services.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'flushbar.dart';
+import 'link_launcher.dart';
+
 final AutoSizeGroup _labelGroup = AutoSizeGroup();
 final AutoSizeGroup _valueGroup = AutoSizeGroup();
 
@@ -374,31 +377,27 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
     String estimation = lockHeight > 0 && hoursToUnlock > 0
         ? " in block $lockHeight ($hoursToUnlockStr)"
         : "";
-
-    var regularStyle = Theme.of(context).dialogTheme.contentTextStyle;
-    var linkStyle = regularStyle.copyWith(
-        decoration: TextDecoration.underline, color: theme.blueLinkStyle.color);
-    return RichText(
-        text: TextSpan(
-            style: Theme.of(context).dialogTheme.contentTextStyle,
-            text: "Waiting for ",
-            children: [
-          _LinkTextSpan(
-              text: "closed channel",
-              url: closedChannel.closeChannelTxUrl,
-              style: closedChannel.closeChannelTxUrl == null
-                  ? regularStyle
-                  : linkStyle),
-          TextSpan(
-              style: Theme.of(context).dialogTheme.contentTextStyle,
-              text:
-                  " funds to be transferred to your local wallet$estimation."),
-          TextSpan(
-              style: Theme.of(context).dialogTheme.contentTextStyle,
-              text: closedChannel.channelCloseConfirmed
-                  ? ""
-                  : "(closing transaction is not yet confirmed).")
-        ]));
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        RichText(
+            text: TextSpan(
+                style: Theme.of(context).dialogTheme.contentTextStyle,
+                text:
+                    "Waiting for closed channel funds to be transferred to your local wallet$estimation",
+                children: [
+              TextSpan(
+                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  text: closedChannel.channelCloseConfirmed
+                      ? "."
+                      : "(closing transaction is not yet confirmed).")
+            ])),
+        _TxWidget(
+          txURL: closedChannel.closeChannelTxUrl,
+          txID: closedChannel.closeChannelTx,
+        )
+      ],
+    );
   }
 }
 
@@ -411,4 +410,39 @@ class _LinkTextSpan extends TextSpan {
               ..onTap = () {
                 launch(url, forceSafariVC: false);
               });
+}
+
+class _TxWidget extends StatelessWidget {
+  final String txURL;
+  final String txID;
+
+  const _TxWidget({Key key, this.txURL, this.txID}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (this.txURL == null) {
+      return SizedBox();
+    }
+    var textStyle = DefaultTextStyle.of(context).style;
+    textStyle = textStyle.copyWith(fontSize: textStyle.fontSize * 0.8);
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 20.0),
+            child: LinkLauncher(
+              textStyle: textStyle,
+              linkName: this.txID,
+              linkAddress: this.txURL,
+              onCopy: () {
+                Clipboard.setData(ClipboardData(text: this.txID));
+                showFlushbar(context,
+                    message: "Transaction ID was copied to your clipboard.",
+                    duration: Duration(seconds: 3));
+              },
+            ),
+          ),
+        ]);
+  }
 }
