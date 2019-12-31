@@ -188,7 +188,7 @@ class AccountRequiredActionsIndicatorState
                                         builder: (_) => SwapRefundDialog(
                                             accountBloc:
                                                 widget._accountBloc))));
-                                  }                                  
+                                  }
 
                                   if (accountSnapshot?.data?.syncUIState ==
                                       SyncUIState.COLLAPSED) {
