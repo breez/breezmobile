@@ -390,7 +390,7 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
                   style: Theme.of(context).dialogTheme.contentTextStyle,
                   text: closedChannel.channelCloseConfirmed
                       ? "."
-                      : "(closing transaction is not yet confirmed).")
+                      : " (closing transaction is expected to be confirmed within an hour).")
             ])),
         _TxWidget(
           txURL: closedChannel.closeChannelTxUrl,
