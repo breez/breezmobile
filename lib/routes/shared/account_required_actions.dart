@@ -188,19 +188,7 @@ class AccountRequiredActionsIndicatorState
                                         builder: (_) => SwapRefundDialog(
                                             accountBloc:
                                                 widget._accountBloc))));
-                                  }
-
-                                  if (pendingChannelsSnapshot.hasData &&
-                                      pendingChannelsSnapshot.data.length > 0) {
-                                    warnings.add(WarningAction(() => showDialog(
-                                        useRootNavigator: false,
-                                        barrierDismissible: false,
-                                        context: context,
-                                        builder: (_) =>
-                                            PendingClosedChannelDialog(
-                                                accountBloc:
-                                                    widget._accountBloc))));
-                                  }
+                                  }                                  
 
                                   if (accountSnapshot?.data?.syncUIState ==
                                       SyncUIState.COLLAPSED) {
