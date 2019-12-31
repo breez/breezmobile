@@ -350,21 +350,17 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!closedChannel.pending) {
-      return RichText(
-          text: TextSpan(
-              style: Theme.of(context).dialogTheme.contentTextStyle,
-              text: "Transfer to local wallet due to ",
-              children: [
-            _LinkTextSpan(
-                text: "closed channel",
-                url: closedChannel.closeChannelTxUrl,
-                style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
-                    decoration: TextDecoration.underline,
-                    color: theme.blueLinkStyle.color)),
-            TextSpan(
-                style: Theme.of(context).dialogTheme.contentTextStyle,
-                text: ".")
-          ]));
+      return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        RichText(
+            text: TextSpan(
+          style: Theme.of(context).dialogTheme.contentTextStyle,
+          text: "Transfer to local wallet due to closed channel.",
+        )),
+        _TxWidget(
+          txURL: closedChannel.closeChannelTxUrl,
+          txID: closedChannel.closeChannelTx,
+        )
+      ]);
     }
 
     int lockHeight = closedChannel.pendingExpirationHeight;
