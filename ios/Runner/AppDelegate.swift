@@ -17,6 +17,10 @@ class AppDelegate : FlutterAppDelegate {
         registerBreezPlugins();
         //application.setMinimumBackgroundFetchInterval(3600);
         Notifier.scheduleSyncRequiredNotification();                
+        
+        if let shortcutItem = launchOptions?[UIApplication.LaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem {
+            // TODO: handle the shorcutItem
+        }
         return super.application(application, didFinishLaunchingWithOptions: launchOptions);
     }
     
@@ -53,5 +57,9 @@ class AppDelegate : FlutterAppDelegate {
 //            Notifier.scheduleSyncRequiredNotification();
 //            completionHandler(UIBackgroundFetchResult.newData);
 //        });
+    }
+    
+    override func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        // TODO: handle the shorcutItem
     }
 }
