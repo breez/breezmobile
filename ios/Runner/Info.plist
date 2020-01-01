@@ -82,17 +82,17 @@
 			<key>UIApplicationShortcutItemIconType</key>
 			<string>UIApplicationShortcutIconTypeShare</string>
 			<key>UIApplicationShortcutItemTitle</key>
-			<string>Send</string>
+			<string>Pay Invoice</string>
 			<key>UIApplicationShortcutItemType</key>
-			<string>technology.breez.send</string>
+			<string>technology.breez.pay_invoice</string>
 		</dict>
 		<dict>
 			<key>UIApplicationShortcutItemIconType</key>
 			<string>UIApplicationShortcutIconTypeInvitation</string>
 			<key>UIApplicationShortcutItemTitle</key>
-			<string>Receive</string>
+			<string>Create Invoice</string>
 			<key>UIApplicationShortcutItemType</key>
-			<string>technology.breez.request</string>
+			<string>technology.breez.create_invoice</string>
 		</dict>
 	</array>
 </dict>
