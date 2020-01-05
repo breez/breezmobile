@@ -38,7 +38,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     if (widget.onFingerprintEntered != null) {
       _promptBiometrics();
     }
-  }   
+  }
 
   Future _promptBiometrics() async {
     var enrolledBiometrics = await _getEnrolledBiometricsAction();
@@ -185,7 +185,6 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
             children: <Widget>[
               _buildClearButton(),
               _numberButton("0"),
-
               widget.onFingerprintEntered == null ||
                       ((widget.onFingerprintEntered != null) &&
                           _enteredPinCode.length > 0)
@@ -206,7 +205,6 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
       ],
     );
   }
-
 
   Container _buildBiometricsButton(
       AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
@@ -230,7 +228,6 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
         color: Colors.white,
       ),
       onTap: () => _setPinCodeInput(""),
-      width: MediaQuery.of(context).size.width / 6,
     );
   }
 
@@ -243,7 +240,6 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
       onTap: () => _setPinCodeInput(
         _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1),
       ),
-      width: MediaQuery.of(context).size.width / 6,
     );
   }
 
@@ -252,7 +248,6 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
       child: Text(number,
           textAlign: TextAlign.center, style: theme.numPadNumberStyle),
       onTap: () => _onNumButtonPressed(number),
-      width: MediaQuery.of(context).size.width / 6,
     );
   }
 
