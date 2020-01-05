@@ -144,6 +144,19 @@ class BreezBridge {
         .then((res) => RemoveFundReply()..mergeFromBuffer(res ?? []));
   }
 
+  Future<String> newReverseSwap(String address, Int64 amount) {
+    ReverseSwapRequest request = ReverseSwapRequest()
+      ..address = address
+      ..amount = amount;
+    return _invokeMethodWhenReady(
+            "newReverseSwap", {"argument": request.writeToBuffer()})
+        .then((res) => res as String);
+  }
+
+  Future payReverseSwap(String hash) {
+    return _invokeMethodWhenReady("payReverseSwap", {"argument": hash});
+  }
+
   Future<PaymentResponse> sendPaymentForRequest(
       String blankInvoicePaymentRequest,
       {Int64 amount}) {

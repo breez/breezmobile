@@ -45,4 +45,10 @@ class SendCoins extends AsyncAction {
   SendCoins(this.feeRate, this.destAddress);
 }
 
+class RemoveFunds extends AsyncAction {
+  final RemoveFundRequestModel removeFundsRequest;
+
+  RemoveFunds(this.removeFundsRequest);
+}
+
 class ExportPayments extends AsyncAction {}

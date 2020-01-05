@@ -139,7 +139,8 @@ class AccountBloc {
       ResetChainService: _handleResetChainService,
       SendCoins: _handleSendCoins,
       ExportPayments: _exportPaymentsAction,
-      FetchPayments: _handleFetchPayments
+      FetchPayments: _handleFetchPayments,
+      RemoveFunds: _removeFunds,      
     };
 
     _accountController.add(AccountModel.initial());
@@ -257,7 +258,7 @@ class AccountBloc {
 
   Future _handleResetChainService(ResetChainService action) async {
     var workingDir = await _breezLib.getWorkingDir();
-    var bootstrapFile = File(workingDir.path + "/$FORCE_BOOTSTRAP_FILE_NAME");
+    var bootstrapFile = new File(workingDir.path + "/$FORCE_BOOTSTRAP_FILE_NAME");
     action.resolve(await bootstrapFile.create(recursive: true));
   }
 
@@ -493,16 +494,53 @@ class AccountBloc {
 
   void _listenWithdrawalRequests() {
     _withdrawalController.stream.listen((removeFundRequestModel) {
-      Future removeFunds = Future.value(null);
-      removeFunds = _breezLib
-          .removeFund(
+      _breezLib
+          .newReverseSwap(
               removeFundRequestModel.address, removeFundRequestModel.amount)
-          .then((res) => _withdrawalResultController.add(
-              RemoveFundResponseModel(res.txid,
-                  errorMessage: res.errorMessage)));
-
-      removeFunds.catchError(_withdrawalResultController.addError);
+          .then((hash) {
+        return _breezLib.payReverseSwap(hash);
+      }).catchError((err) => _withdrawalResultController.addError(err));
     });
+  }
+
+  Future _removeFunds(RemoveFunds action) async {
+    var removeResults = _breezLib
+        .newReverseSwap(
+            action.removeFundsRequest.address, action.removeFundsRequest.amount)
+        .then((hash) {
+      return _breezLib.payReverseSwap(hash).then((_) {
+        var resultCompletor = Completer();
+        StreamSubscription<NotificationEvent> ntfnSubscription;
+        StreamSubscription<PaymentsModel> paymentsSubscription;
+        var onComplete = ({String error}) {
+          if (error != null) {
+            resultCompletor.completeError(error);
+          } else {
+            resultCompletor.complete();
+          }
+          paymentsSubscription.cancel();
+          ntfnSubscription.cancel();
+        };
+
+        ntfnSubscription = _breezLib.notificationStream
+            .where((notif) =>
+                notif.type == NotificationEvent_NotificationType.PAYMENT_FAILED)
+            .listen((e) {
+          onComplete(error: "failed to initiate payment");
+        });
+
+        paymentsSubscription = paymentsStream.listen((payments) {
+          if (payments.nonFilteredItems.length > 0 &&
+              payments.nonFilteredItems[0].paymentHash == hash) {
+            resultCompletor.complete();
+          }
+        });
+
+        return resultCompletor.future;
+      });
+    });
+
+    return action.resolve(await removeResults);
   }
 
   void _listenFilterChanges() {
@@ -583,6 +621,9 @@ class AccountBloc {
           NotificationEvent_NotificationType.BACKUP_NODE_CONFLICT) {
         eventSubscription.cancel();
         _nodeConflictController.add(null);
+      }
+      if (event.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
+        print("payment succeed************");
       }
     });
   }
