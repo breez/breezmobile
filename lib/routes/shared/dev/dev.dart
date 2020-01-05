@@ -356,7 +356,7 @@ class DevViewState extends State<DevView> {
         icon: Icons.phone_android,
         function: () async {
           var workingDir = await widget._breezBridge.getWorkingDir();
-          var rescanFile = File(workingDir.path + "/$FORCE_RESCAN_FILE_NAME");
+          var rescanFile = File(workingDir.path + "/${AccountBloc.FORCE_BOOTSTRAP_FILE_NAME}");
           await rescanFile.create(recursive: true);
           _promptForRestart();
         }));
