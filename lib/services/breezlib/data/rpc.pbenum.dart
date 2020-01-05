@@ -66,12 +66,15 @@ class Payment_PaymentType extends $pb.ProtobufEnum {
   static const Payment_PaymentType SENT = Payment_PaymentType._(2, 'SENT');
   static const Payment_PaymentType RECEIVED =
       Payment_PaymentType._(3, 'RECEIVED');
+  static const Payment_PaymentType CLOSED_CHANNEL =
+      Payment_PaymentType._(4, 'CLOSED_CHANNEL');
 
   static const $core.List<Payment_PaymentType> values = <Payment_PaymentType>[
     DEPOSIT,
     WITHDRAWAL,
     SENT,
     RECEIVED,
+    CLOSED_CHANNEL,
   ];
 
   static final $core.Map<$core.int, Payment_PaymentType> _byValue =

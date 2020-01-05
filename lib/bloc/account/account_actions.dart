@@ -16,6 +16,8 @@ class RestartDaemon extends AsyncAction {}
 
 class FetchSwapFundStatus extends AsyncAction {}
 
+class FetchPayments extends AsyncAction {}
+
 class SendPayment extends AsyncAction {
   final PayRequest paymentRequest;
 

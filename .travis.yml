@@ -33,11 +33,11 @@ before_script:
 - brew install --HEAD usbmuxd
 - brew link usbmuxd
 - brew install --HEAD libimobiledevice
-- brew install ideviceinstaller ios-deploy
+- brew install ideviceinstaller ios-deploy  
 - pod setup
 - git clone https://github.com/flutter/flutter.git -b beta
 script:
-- mkdir $TRAVIS_BUILD_DIR/conf
+- mkdir -p $TRAVIS_BUILD_DIR/conf
 - cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $TRAVIS_BUILD_DIR/ios/bindings.framework
 - sftp builderfiles@packages.breez.technology:config/conf/lnd.conf $TRAVIS_BUILD_DIR/conf/lnd.conf
 - sftp builderfiles@packages.breez.technology:config/conf/breez-lsp.conf $TRAVIS_BUILD_DIR/conf/breez.conf

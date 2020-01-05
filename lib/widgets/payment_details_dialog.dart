@@ -4,15 +4,43 @@ import 'package:breez/routes/user/home/payment_item_avatar.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'flushbar.dart';
+import 'link_launcher.dart';
 
 final AutoSizeGroup _labelGroup = AutoSizeGroup();
 final AutoSizeGroup _valueGroup = AutoSizeGroup();
 
 Future<Null> showPaymentDetailsDialog(
     BuildContext context, PaymentInfo paymentInfo) {
+  if (paymentInfo.type == PaymentType.CLOSED_CHANNEL) {
+    return showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+            title: Text(
+              (paymentInfo.pending ? "Pending " : "") + "Closed Channel",
+              style: Theme.of(context).dialogTheme.titleTextStyle,
+            ),
+            contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+            content: ClosedChannelPaymentDetails(closedChannel: paymentInfo),
+            actions: [
+              SimpleDialogOption(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text("OK",
+                    style: Theme.of(context).primaryTextTheme.button),
+              )
+            ],
+          );
+        });
+  }
   AlertDialog _paymentDetailsDialog = AlertDialog(
     titlePadding: EdgeInsets.zero,
     title: Stack(children: <Widget>[
@@ -41,7 +69,7 @@ Future<Null> showPaymentDetailsDialog(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          paymentInfo.title == null || paymentInfo.title.isEmpty
+          paymentInfo.dialogTitle == null || paymentInfo.dialogTitle.isEmpty
               ? Container()
               : Padding(
                   padding: EdgeInsets.only(
@@ -52,7 +80,7 @@ Future<Null> showPaymentDetailsDialog(
                           ? 16
                           : 8),
                   child: AutoSizeText(
-                    paymentInfo.title,
+                    paymentInfo.dialogTitle,
                     style: Theme.of(context).primaryTextTheme.headline,
                     textAlign: TextAlign.center,
                     maxLines: 1,
@@ -148,7 +176,7 @@ Future<Null> showPaymentDetailsDialog(
                     ],
                   ),
                 ),
-          !paymentInfo.pending
+          !paymentInfo.pending || paymentInfo.type == PaymentType.CLOSED_CHANNEL
               ? Container()
               : Container(
                   height: 36.0,
@@ -311,4 +339,106 @@ _buildSnackBar(String item) {
     duration: Duration(seconds: 4),
   );
   return snackBar;
+}
+
+class ClosedChannelPaymentDetails extends StatelessWidget {
+  final PaymentInfo closedChannel;
+
+  const ClosedChannelPaymentDetails({Key key, this.closedChannel})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (!closedChannel.pending) {
+      return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        RichText(
+            text: TextSpan(
+          style: Theme.of(context).dialogTheme.contentTextStyle,
+          text: "Transfer to local wallet due to closed channel.",
+        )),
+        _TxWidget(
+          txURL: closedChannel.closeChannelTxUrl,
+          txID: closedChannel.closeChannelTx,
+        )
+      ]);
+    }
+
+    int lockHeight = closedChannel.pendingExpirationHeight;
+    double hoursToUnlock = closedChannel.hoursToExpire;
+
+    int roundedHoursToUnlock = hoursToUnlock.round();
+    String hoursToUnlockStr = roundedHoursToUnlock > 1
+        ? "~${roundedHoursToUnlock.toString()} hours"
+        : "in about an hour";
+    String estimation = lockHeight > 0 && hoursToUnlock > 0
+        ? " in block $lockHeight ($hoursToUnlockStr)"
+        : "";
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        RichText(
+            text: TextSpan(
+                style: Theme.of(context).dialogTheme.contentTextStyle,
+                text:
+                    "Waiting for closed channel funds to be transferred to your local wallet$estimation",
+                children: [
+              TextSpan(
+                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  text: closedChannel.channelCloseConfirmed
+                      ? "."
+                      : " (closing transaction is expected to be confirmed within an hour).")
+            ])),
+        _TxWidget(
+          txURL: closedChannel.closeChannelTxUrl,
+          txID: closedChannel.closeChannelTx,
+        )
+      ],
+    );
+  }
+}
+
+class _LinkTextSpan extends TextSpan {
+  _LinkTextSpan({TextStyle style, String url, String text})
+      : super(
+            style: style,
+            text: text ?? url,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                launch(url, forceSafariVC: false);
+              });
+}
+
+class _TxWidget extends StatelessWidget {
+  final String txURL;
+  final String txID;
+
+  const _TxWidget({Key key, this.txURL, this.txID}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (this.txURL == null) {
+      return SizedBox();
+    }
+    var textStyle = DefaultTextStyle.of(context).style;
+    textStyle = textStyle.copyWith(fontSize: textStyle.fontSize * 0.8);
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 20.0),
+            child: LinkLauncher(
+              textStyle: textStyle,
+              linkName: this.txID,
+              linkAddress: this.txURL,
+              onCopy: () {
+                Clipboard.setData(ClipboardData(text: this.txID));
+                showFlushbar(context,
+                    message: "Transaction ID was copied to your clipboard.",
+                    duration: Duration(seconds: 3));
+              },
+            ),
+          ),
+        ]);
+  }
 }

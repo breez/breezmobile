@@ -53,7 +53,8 @@ class PaymentItem extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     (_paymentInfo.type == PaymentType.SENT ||
-                                _paymentInfo.type == PaymentType.WITHDRAWAL
+                                _paymentInfo.type == PaymentType.WITHDRAWAL ||
+                                _paymentInfo.type == PaymentType.CLOSED_CHANNEL
                             ? "- "
                             : "+ ") +
                         _paymentInfo.currency

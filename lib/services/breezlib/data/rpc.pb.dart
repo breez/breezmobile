@@ -86,6 +86,7 @@ class Account extends $pb.GeneratedMessage {
     ..aInt64(10, 'maxChanReserve', protoName: 'maxChanReserve')
     ..aOS(11, 'channelPoint', protoName: 'channelPoint')
     ..aOB(12, 'readyForPayments', protoName: 'readyForPayments')
+    ..aInt64(13, 'tipHeight', protoName: 'tipHeight')
     ..hasRequiredFields = false;
 
   Account._() : super();
@@ -252,6 +253,18 @@ class Account extends $pb.GeneratedMessage {
   $core.bool hasReadyForPayments() => $_has(11);
   @$pb.TagNumber(12)
   void clearReadyForPayments() => clearField(12);
+
+  @$pb.TagNumber(13)
+  $fixnum.Int64 get tipHeight => $_getI64(12);
+  @$pb.TagNumber(13)
+  set tipHeight($fixnum.Int64 v) {
+    $_setInt64(12, v);
+  }
+
+  @$pb.TagNumber(13)
+  $core.bool hasTipHeight() => $_has(12);
+  @$pb.TagNumber(13)
+  void clearTipHeight() => clearField(13);
 }
 
 class Payment extends $pb.GeneratedMessage {
@@ -274,6 +287,10 @@ class Payment extends $pb.GeneratedMessage {
         protoName: 'PendingExpirationTimestamp')
     ..aInt64(12, 'fee')
     ..aOS(13, 'preimage')
+    ..aOS(14, 'closedChannelPoint', protoName: 'closedChannelPoint')
+    ..aOB(15, 'isChannelPending', protoName: 'isChannelPending')
+    ..aOB(16, 'isChannelCloseConfimed', protoName: 'isChannelCloseConfimed')
+    ..aOS(17, 'closedChannelTxID', protoName: 'closedChannelTxID')
     ..hasRequiredFields = false;
 
   Payment._() : super();
@@ -430,6 +447,54 @@ class Payment extends $pb.GeneratedMessage {
   $core.bool hasPreimage() => $_has(10);
   @$pb.TagNumber(13)
   void clearPreimage() => clearField(13);
+
+  @$pb.TagNumber(14)
+  $core.String get closedChannelPoint => $_getSZ(11);
+  @$pb.TagNumber(14)
+  set closedChannelPoint($core.String v) {
+    $_setString(11, v);
+  }
+
+  @$pb.TagNumber(14)
+  $core.bool hasClosedChannelPoint() => $_has(11);
+  @$pb.TagNumber(14)
+  void clearClosedChannelPoint() => clearField(14);
+
+  @$pb.TagNumber(15)
+  $core.bool get isChannelPending => $_getBF(12);
+  @$pb.TagNumber(15)
+  set isChannelPending($core.bool v) {
+    $_setBool(12, v);
+  }
+
+  @$pb.TagNumber(15)
+  $core.bool hasIsChannelPending() => $_has(12);
+  @$pb.TagNumber(15)
+  void clearIsChannelPending() => clearField(15);
+
+  @$pb.TagNumber(16)
+  $core.bool get isChannelCloseConfimed => $_getBF(13);
+  @$pb.TagNumber(16)
+  set isChannelCloseConfimed($core.bool v) {
+    $_setBool(13, v);
+  }
+
+  @$pb.TagNumber(16)
+  $core.bool hasIsChannelCloseConfimed() => $_has(13);
+  @$pb.TagNumber(16)
+  void clearIsChannelCloseConfimed() => clearField(16);
+
+  @$pb.TagNumber(17)
+  $core.String get closedChannelTxID => $_getSZ(14);
+  @$pb.TagNumber(17)
+  set closedChannelTxID($core.String v) {
+    $_setString(14, v);
+  }
+
+  @$pb.TagNumber(17)
+  $core.bool hasClosedChannelTxID() => $_has(14);
+  @$pb.TagNumber(17)
+  void clearClosedChannelTxID() => clearField(17);
 }
 
 class PaymentsList extends $pb.GeneratedMessage {
@@ -1989,6 +2054,72 @@ class Peers extends $pb.GeneratedMessage {
   $core.List<$core.String> get peer => $_getList(1);
 }
 
+class TxSpentURL extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('TxSpentURL',
+      package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'URL', protoName: 'URL')
+    ..aOB(2, 'isDefault', protoName: 'isDefault')
+    ..aOB(3, 'disabled')
+    ..hasRequiredFields = false;
+
+  TxSpentURL._() : super();
+  factory TxSpentURL() => create();
+  factory TxSpentURL.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory TxSpentURL.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  TxSpentURL clone() => TxSpentURL()..mergeFromMessage(this);
+  TxSpentURL copyWith(void Function(TxSpentURL) updates) =>
+      super.copyWith((message) => updates(message as TxSpentURL));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static TxSpentURL create() => TxSpentURL._();
+  TxSpentURL createEmptyInstance() => create();
+  static $pb.PbList<TxSpentURL> createRepeated() => $pb.PbList<TxSpentURL>();
+  @$core.pragma('dart2js:noInline')
+  static TxSpentURL getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<TxSpentURL>(create);
+  static TxSpentURL _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get uRL => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set uRL($core.String v) {
+    $_setString(0, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasURL() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearURL() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.bool get isDefault => $_getBF(1);
+  @$pb.TagNumber(2)
+  set isDefault($core.bool v) {
+    $_setBool(1, v);
+  }
+
+  @$pb.TagNumber(2)
+  $core.bool hasIsDefault() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearIsDefault() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.bool get disabled => $_getBF(2);
+  @$pb.TagNumber(3)
+  set disabled($core.bool v) {
+    $_setBool(2, v);
+  }
+
+  @$pb.TagNumber(3)
+  $core.bool hasDisabled() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearDisabled() => clearField(3);
+}
+
 class rate extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('rate',
       package: const $pb.PackageName('data'), createEmptyInstance: create)
@@ -2387,59 +2518,4 @@ class LNUrlWithdraw extends $pb.GeneratedMessage {
   $core.bool hasDefaultDescription() => $_has(2);
   @$pb.TagNumber(3)
   void clearDefaultDescription() => clearField(3);
-}
-
-class LNUrlWithdrawRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('LNUrlWithdrawRequest',
-      package: const $pb.PackageName('data'), createEmptyInstance: create)
-    ..aOS(1, 'url')
-    ..aOS(2, 'paymentRequest')
-    ..hasRequiredFields = false;
-
-  LNUrlWithdrawRequest._() : super();
-  factory LNUrlWithdrawRequest() => create();
-  factory LNUrlWithdrawRequest.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(i, r);
-  factory LNUrlWithdrawRequest.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromJson(i, r);
-  LNUrlWithdrawRequest clone() =>
-      LNUrlWithdrawRequest()..mergeFromMessage(this);
-  LNUrlWithdrawRequest copyWith(void Function(LNUrlWithdrawRequest) updates) =>
-      super.copyWith((message) => updates(message as LNUrlWithdrawRequest));
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static LNUrlWithdrawRequest create() => LNUrlWithdrawRequest._();
-  LNUrlWithdrawRequest createEmptyInstance() => create();
-  static $pb.PbList<LNUrlWithdrawRequest> createRepeated() =>
-      $pb.PbList<LNUrlWithdrawRequest>();
-  @$core.pragma('dart2js:noInline')
-  static LNUrlWithdrawRequest getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<LNUrlWithdrawRequest>(create);
-  static LNUrlWithdrawRequest _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get url => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set url($core.String v) {
-    $_setString(0, v);
-  }
-
-  @$pb.TagNumber(1)
-  $core.bool hasUrl() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearUrl() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.String get paymentRequest => $_getSZ(1);
-  @$pb.TagNumber(2)
-  set paymentRequest($core.String v) {
-    $_setString(1, v);
-  }
-
-  @$pb.TagNumber(2)
-  $core.bool hasPaymentRequest() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearPaymentRequest() => clearField(2);
 }

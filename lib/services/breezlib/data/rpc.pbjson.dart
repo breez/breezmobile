@@ -58,6 +58,7 @@ const Account$json = {
       '5': 8,
       '10': 'readyForPayments'
     },
+    {'1': 'tipHeight', '3': 13, '4': 1, '5': 3, '10': 'tipHeight'},
   ],
   '4': [Account_AccountStatus$json],
 };
@@ -118,6 +119,34 @@ const Payment$json = {
     },
     {'1': 'fee', '3': 12, '4': 1, '5': 3, '10': 'fee'},
     {'1': 'preimage', '3': 13, '4': 1, '5': 9, '10': 'preimage'},
+    {
+      '1': 'closedChannelPoint',
+      '3': 14,
+      '4': 1,
+      '5': 9,
+      '10': 'closedChannelPoint'
+    },
+    {
+      '1': 'isChannelPending',
+      '3': 15,
+      '4': 1,
+      '5': 8,
+      '10': 'isChannelPending'
+    },
+    {
+      '1': 'isChannelCloseConfimed',
+      '3': 16,
+      '4': 1,
+      '5': 8,
+      '10': 'isChannelCloseConfimed'
+    },
+    {
+      '1': 'closedChannelTxID',
+      '3': 17,
+      '4': 1,
+      '5': 9,
+      '10': 'closedChannelTxID'
+    },
   ],
   '4': [Payment_PaymentType$json],
 };
@@ -129,6 +158,7 @@ const Payment_PaymentType$json = {
     {'1': 'WITHDRAWAL', '2': 1},
     {'1': 'SENT', '2': 2},
     {'1': 'RECEIVED', '2': 3},
+    {'1': 'CLOSED_CHANNEL', '2': 4},
   ],
 };
 
@@ -442,6 +472,15 @@ const Peers$json = {
   ],
 };
 
+const TxSpentURL$json = {
+  '1': 'TxSpentURL',
+  '2': [
+    {'1': 'URL', '3': 1, '4': 1, '5': 9, '10': 'URL'},
+    {'1': 'isDefault', '3': 2, '4': 1, '5': 8, '10': 'isDefault'},
+    {'1': 'disabled', '3': 3, '4': 1, '5': 8, '10': 'disabled'},
+  ],
+};
+
 const rate$json = {
   '1': 'rate',
   '2': [
@@ -534,13 +573,5 @@ const LNUrlWithdraw$json = {
       '5': 9,
       '10': 'defaultDescription'
     },
-  ],
-};
-
-const LNUrlWithdrawRequest$json = {
-  '1': 'LNUrlWithdrawRequest',
-  '2': [
-    {'1': 'url', '3': 1, '4': 1, '5': 9, '10': 'url'},
-    {'1': 'payment_request', '3': 2, '4': 1, '5': 9, '10': 'paymentRequest'},
   ],
 };

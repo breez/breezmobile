@@ -127,24 +127,19 @@ class AddFundsState extends State<AddFundsPage> {
                   Padding(
                     padding:
                         EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
-                    child: Text("Transaction ID:", textAlign: TextAlign.start),
+                    child: LinkLauncher(
+                      linkName: unconfirmedTxID,
+                      linkAddress:
+                          "https://blockstream.info/tx/$unconfirmedTxID",
+                      onCopy: () {
+                        Clipboard.setData(ClipboardData(text: unconfirmedTxID));
+                        showFlushbar(context,
+                            message:
+                                "Transaction ID was copied to your clipboard.",
+                            duration: Duration(seconds: 3));
+                      },
+                    ),
                   ),
-                  Padding(
-                      padding:
-                          EdgeInsets.only(top: 10.0, left: 30.0, right: 22.0),
-                      child: LinkLauncher(
-                        linkName: unconfirmedTxID,
-                        linkAddress:
-                            "https://blockstream.info/tx/$unconfirmedTxID",
-                        onCopy: () {
-                          Clipboard.setData(
-                              ClipboardData(text: unconfirmedTxID));
-                          showFlushbar(context,
-                              message:
-                                  "Transaction ID was copied to your clipboard.",
-                              duration: Duration(seconds: 3));
-                        },
-                      ))
                 ])
               : SizedBox()
         ],

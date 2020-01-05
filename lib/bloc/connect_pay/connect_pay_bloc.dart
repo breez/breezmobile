@@ -49,7 +49,7 @@ class ConnectPayBloc {
 
   void onAccountChanged(AccountModel acc) async {
     _currentAccount = acc;
-    if (_currentAccount.connected && !_pendingCTPLinkController.isClosed) {      
+    if (_currentAccount.connected && !_pendingCTPLinkController.isClosed) {
       String pendingLink = _pendingCTPLinkController.value;
       if (pendingLink != null) {
         SessionLinkModel sessionLink =
@@ -177,7 +177,7 @@ class ConnectPayBloc {
 
       //othersise push the link to the invites stream.
       SessionLinkModel sessionLink = deepLinks.parseSessionInviteLink(link);
-      if (sessionLink != null && sessionLink.sessionID != null) {        
+      if (sessionLink != null && sessionLink.sessionID != null) {
         _sessionInvitesController.add(sessionLink);
       }
     });
@@ -189,7 +189,7 @@ class ConnectPayBloc {
     notificationService.notifications
         .where((message) =>
             (message["msg"] ?? "").toString().contains("CTPSessionID"))
-        .listen((message) async {      
+        .listen((message) async {
       Map<String, dynamic> parsedMsg = json.decode(message["msg"]);
       String sessionID = parsedMsg["CTPSessionID"];
       _sessionInvitesController.add(SessionLinkModel(sessionID, null, null));
