@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -43,8 +44,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   @override
   void didChangeDependencies() {
     if (!_isInit) {
-      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-      registerWithdrawalResult();
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);      
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -69,36 +69,6 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
       return false;
     }
     return true;
-  }
-
-  void registerWithdrawalResult() {
-    withdrawalResultSubscription =
-        _accountBloc.withdrawalResultStream.listen((response) {
-      setState(() {
-        _inProgress = false;
-      });
-      Navigator.of(context).pop(); //remove the loading dialog
-      if (response.errorMessage?.isNotEmpty == true) {
-        promptError(
-            context,
-            null,
-            Text(response.errorMessage,
-                style: Theme.of(context).dialogTheme.contentTextStyle));
-        return;
-      }
-      Navigator.of(context).pop(
-          "The funds were successfully sent to the address you have specified.");
-    }, onError: (err) {
-      setState(() {
-        _inProgress = false;
-      });
-      Navigator.of(context).pop(); //remove the loading dialog
-      promptError(
-          context,
-          null,
-          Text(err.toString(),
-              style: Theme.of(context).dialogTheme.contentTextStyle));
-    });
   }
 
   @override
@@ -242,8 +212,13 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
             onPressed: () {
               Navigator.pop(context);
               _showLoadingDialog();
-              _accountBloc.withdrawalSink.add(RemoveFundRequestModel(
+              var action = RemoveFunds(RemoveFundRequestModel(
                   currency.parse(_amountController.text), _addressValidated));
+
+              _accountBloc.userActionsSink.add(action);
+              action.future
+                  .then((_) => _onRemoveFundsSucceeded())
+                  .catchError(_onRemoveFundsFailed);
             },
             child:
                 Text("YES", style: Theme.of(context).primaryTextTheme.button))
@@ -251,6 +226,18 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     );
     showDialog(
         useRootNavigator: false, context: context, builder: (_) => dialog);
+  }
+
+  _onRemoveFundsSucceeded() {
+    Navigator.of(context).pop(); //remove the loading dialog
+    Navigator.of(context).pop(
+        "We wil notify you when the swap is confirmed.");
+  }
+
+  _onRemoveFundsFailed(Object error) {
+    Navigator.of(context).pop();
+    promptError(context, null,
+        Text(error.toString(), style: Theme.of(context).dialogTheme.contentTextStyle));
   }
 
   _showLoadingDialog() {
