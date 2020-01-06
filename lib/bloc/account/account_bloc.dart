@@ -10,6 +10,7 @@ import 'package:breez/bloc/csv_exporter.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
+import 'package:breez/services/breez_server/generated/breez.pb.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/currency_data.dart';
@@ -532,7 +533,7 @@ class AccountBloc {
         paymentsSubscription = paymentsStream.listen((payments) {
           if (payments.nonFilteredItems.length > 0 &&
               payments.nonFilteredItems[0].paymentHash == hash) {
-            resultCompletor.complete();
+            onComplete();
           }
         });
 
@@ -623,7 +624,16 @@ class AccountBloc {
         _nodeConflictController.add(null);
       }
       if (event.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
-        print("payment succeed************");
+        var paymentRequest = event.data[0];
+        var invoice = await _breezLib.getRelatedInvoice(paymentRequest);
+        _completedPaymentsController.add(CompletedPayment(PayRequest(paymentRequest, invoice.amtPaid), cancelled: false));
+      }
+      if (event.type == NotificationEvent_NotificationType.PAYMENT_FAILED) {        
+        var paymentRequest = event.data[0];
+        var error = event.data[1];
+        var traceReport = event.data[2];
+        var invoice = await _breezLib.getRelatedInvoice(paymentRequest);
+        _completedPaymentsController.addError(PaymentError(PayRequest(paymentRequest, invoice.amtPaid), error, traceReport));
       }
     });
   }
