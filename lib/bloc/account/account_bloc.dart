@@ -141,7 +141,7 @@ class AccountBloc {
       SendCoins: _handleSendCoins,
       ExportPayments: _exportPaymentsAction,
       FetchPayments: _handleFetchPayments,
-      RemoveFunds: _removeFunds,      
+      RemoveFunds: _removeFunds,
     };
 
     _accountController.add(AccountModel.initial());
@@ -259,7 +259,8 @@ class AccountBloc {
 
   Future _handleResetChainService(ResetChainService action) async {
     var workingDir = await _breezLib.getWorkingDir();
-    var bootstrapFile = new File(workingDir.path + "/$FORCE_BOOTSTRAP_FILE_NAME");
+    var bootstrapFile =
+        new File(workingDir.path + "/$FORCE_BOOTSTRAP_FILE_NAME");
     action.resolve(await bootstrapFile.create(recursive: true));
   }
 
@@ -273,30 +274,13 @@ class AccountBloc {
 
   Future _sendPayment(SendPayment sendPayment) {
     var payRequest = sendPayment.paymentRequest;
-    _accountController.add(_accountController.value
-        .copyWith(paymentRequestInProgress: payRequest.paymentRequest));
     var sendPaymentFuture = _breezLib
         .sendPaymentForRequest(payRequest.paymentRequest,
             amount: payRequest.amount)
-        .then((response) {
-      _accountController
-          .add(_accountController.value.copyWith(paymentRequestInProgress: ""));
-
-      if (response.paymentError.isNotEmpty) {
-        return Future.error(PaymentError(
-            payRequest, response.paymentError, response.traceReport));
-      }
-
-      _completedPaymentsController.add(CompletedPayment(payRequest));
-      return Future.value(null);
-    }).catchError((err) {
-      _accountController
-          .add(_accountController.value.copyWith(paymentRequestInProgress: ""));
-      var error = (err.runtimeType == PaymentError
-          ? err
-          : PaymentError(payRequest, err, null));
-      _completedPaymentsController.addError(error);
-      return Future.error(error);
+        .catchError((err) {
+      _completedPaymentsController
+          .addError(PaymentError(payRequest, err, null));
+      return Future.error(err);
     });
     _backgroundService.runAsTask(sendPaymentFuture, () {
       log.info("sendpayment background task finished");
@@ -625,15 +609,21 @@ class AccountBloc {
       }
       if (event.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
         var paymentRequest = event.data[0];
-        var invoice = await _breezLib.getRelatedInvoice(paymentRequest);
-        _completedPaymentsController.add(CompletedPayment(PayRequest(paymentRequest, invoice.amtPaid), cancelled: false));
+        var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
+        _completedPaymentsController.add(CompletedPayment(
+            PayRequest(paymentRequest, invoice.amount),
+            cancelled: false));
       }
-      if (event.type == NotificationEvent_NotificationType.PAYMENT_FAILED) {        
+      if (event.type == NotificationEvent_NotificationType.PAYMENT_FAILED) {
         var paymentRequest = event.data[0];
         var error = event.data[1];
-        var traceReport = event.data[2];
-        var invoice = await _breezLib.getRelatedInvoice(paymentRequest);
-        _completedPaymentsController.addError(PaymentError(PayRequest(paymentRequest, invoice.amtPaid), error, traceReport));
+        var traceReport;
+        if (event.data.length > 2) {
+          traceReport = event.data[2];
+        }
+        var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
+        _completedPaymentsController.addError(PaymentError(
+            PayRequest(paymentRequest, invoice.amount), error, traceReport));
       }
     });
   }

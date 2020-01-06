@@ -21,9 +21,11 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final ScrollController scrollController;
   final Function(PaymentRequestState state) _onStateChange;
   final double _initialDialogSize;
+  final String paymentRequest;
 
   ProcessingPaymentDialog(
       this.context,
+      this.paymentRequest,
       this.accountBloc,
       this.firstPaymentItemKey,
       this.scrollController,
@@ -89,7 +91,9 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
     _sentPaymentResultSubscription =
         widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
-      if (widget.scrollController.hasClients) {
+      if (widget.scrollController.hasClients &&
+          fulfilledPayment.paymentRequest.paymentRequest ==
+              widget.paymentRequest) {
         widget.scrollController
             .animateTo(widget.scrollController.position.minScrollExtent,
                 duration: Duration(milliseconds: 200), curve: Curves.ease)
@@ -100,7 +104,10 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
         });
       }
     }, onError: (err) {
-      widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
+      var paymentError = err as PaymentError;
+      if (paymentError.request.paymentRequest == widget.paymentRequest) {
+        widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
+      }
     });
   }
 

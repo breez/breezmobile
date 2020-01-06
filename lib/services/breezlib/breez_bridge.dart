@@ -157,7 +157,7 @@ class BreezBridge {
     return _invokeMethodWhenReady("payReverseSwap", {"argument": hash});
   }
 
-  Future<PaymentResponse> sendPaymentForRequest(
+  Future sendPaymentForRequest(
       String blankInvoicePaymentRequest,
       {Int64 amount}) {
     PayInvoiceRequest invoice = PayInvoiceRequest();
@@ -167,8 +167,7 @@ class BreezBridge {
     invoice.amount = amount;
     invoice.paymentRequest = blankInvoicePaymentRequest;
     return _invokeMethodWhenReady(
-            "sendPaymentForRequest", {"argument": invoice.writeToBuffer()})
-        .then((payReq) => PaymentResponse()..mergeFromBuffer(payReq ?? []));
+            "sendPaymentForRequest", {"argument": invoice.writeToBuffer()});        
   }
 
   Future sendPaymentFailureBugReport(String traceReport) {

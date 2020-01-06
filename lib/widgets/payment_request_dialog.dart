@@ -35,9 +35,7 @@ class PaymentRequestDialog extends StatefulWidget {
   }
 }
 
-class PaymentRequestDialogState extends State<PaymentRequestDialog> {
-  StreamSubscription<AccountModel> _paymentInProgressSubscription;
-  bool _inProgress = false;
+class PaymentRequestDialogState extends State<PaymentRequestDialog> {  
 
   PaymentRequestState _state;
   double _initialDialogSize;
@@ -48,12 +46,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   @override
   void initState() {
     super.initState();
-    _state = PaymentRequestState.PAYMENT_REQUEST;
-    _paymentInProgressSubscription =
-        widget.accountBloc.accountStream.listen((acc) {
-      _inProgress = acc.paymentRequestInProgress != null &&
-          acc.paymentRequestInProgress.isNotEmpty;
-    });
+    _state = PaymentRequestState.PAYMENT_REQUEST;    
   }
 
   @override
@@ -65,12 +58,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   }
 
   @override
-  dispose() {
-    _paymentInProgressSubscription?.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: _onWillPop, child: showPaymentRequestDialog());
@@ -78,7 +65,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
 
   // Do not pop dialog if there's a payment being processed
   Future<bool> _onWillPop() async {
-    if (_inProgress) {
+    if (this._state == PaymentRequestState.PROCESSING_PAYMENT) {
       return false;
     }
     widget.accountBloc.userActionsSink.add(CancelPaymentRequest(
@@ -90,6 +77,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return ProcessingPaymentDialog(
           widget.context,
+          widget.invoice.rawPayReq,
           widget.accountBloc,
           widget.firstPaymentItemKey,
           widget.scrollController,
