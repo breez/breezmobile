@@ -41,7 +41,6 @@ class AddressWidget extends StatelessWidget {
                   child: Container(
                     margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
                     padding: const EdgeInsets.all(8.6),
-                    decoration: theme.qrImageStyle,
                     child: Container(
                       color: Theme.of(context).accentColor,
                       child: CompactQRImage(
