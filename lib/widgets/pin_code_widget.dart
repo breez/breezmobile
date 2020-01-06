@@ -4,6 +4,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/circular_button.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 
@@ -172,13 +173,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              IconButton(
-                onPressed: () => _setPinCodeInput(""),
-                icon: Icon(
-                  Icons.delete_forever,
-                  color: Colors.white,
-                ),
-              ),
+              _buildClearButton(),
               _numberButton("0"),
               widget.onFingerprintEntered == null ||
                       ((widget.onFingerprintEntered != null) &&
@@ -216,24 +211,33 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     );
   }
 
-  Container _buildEraseButton() {
-    return Container(
-      child: IconButton(
-        onPressed: () => _setPinCodeInput(
-            _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1)),
-        icon: Icon(
-          Icons.backspace,
-          color: Colors.white,
-        ),
+  Widget _buildClearButton() {
+    return CircularButton(
+      child: Icon(
+        Icons.delete_forever,
+        color: Colors.white,
+      ),
+      onTap: () => _setPinCodeInput(""),
+    );
+  }
+
+  Widget _buildEraseButton() {
+    return CircularButton(
+      child: Icon(
+        Icons.backspace,
+        color: Colors.white,
+      ),
+      onTap: () => _setPinCodeInput(
+        _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1),
       ),
     );
   }
 
   Widget _numberButton(String number) {
-    return FlatButton(
-      onPressed: () => _onNumButtonPressed(number),
+    return CircularButton(
       child: Text(number,
           textAlign: TextAlign.center, style: theme.numPadNumberStyle),
+      onTap: () => _onNumButtonPressed(number),
     );
   }
 
