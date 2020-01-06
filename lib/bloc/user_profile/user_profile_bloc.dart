@@ -105,8 +105,6 @@ class UserProfileBloc {
       //listen upload image requests
       _listenUploadImageRequests(injector);
 
-      _updateBiometricsSettings();
-
       startPINIntervalWatcher();
 
       _userStreamController.firstWhere((u) => u != null).then((user) {
