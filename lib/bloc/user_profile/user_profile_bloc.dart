@@ -77,6 +77,7 @@ class UserProfileBloc {
       ValidatePinCode: _validatePinCode,
       ChangeTheme: _changeThemeAction,
       ValidateBiometrics: _validateBiometrics,
+      GetEnrolledBiometrics: _getEnrolledBiometrics,
       SetLockState: _setLockState,
     };
     print("UserProfileBloc started");
@@ -250,6 +251,10 @@ class UserProfileBloc {
   Future _validateBiometrics(ValidateBiometrics action) async {
     action.resolve(await _localAuthService.authenticate(
         localizedReason: action.localizedReason));
+  }
+
+  Future _getEnrolledBiometrics(GetEnrolledBiometrics action) async {
+    action.resolve(await _localAuthService.enrolledBiometrics);
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {
