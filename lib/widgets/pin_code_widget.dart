@@ -29,22 +29,31 @@ class PinCodeWidget extends StatefulWidget {
 class PinCodeWidgetState extends State<PinCodeWidget> {
   String _enteredPinCode;
   String _errorMessage;
+  String _enrolledBiometrics;
 
   @override
   initState() {
     super.initState();
     _enteredPinCode = "";
     _errorMessage = "";
+    _enrolledBiometrics = "";
     if (widget.onFingerprintEntered != null) {
-      widget.userProfileBloc.userStream.first.then(
-        (user) async {
-          if (user.securityModel.enrolledBiometrics != "") {
-            await Future.delayed(Duration(milliseconds: 240));
-            if (this.mounted) _validateBiometrics();
-          }
-        },
-      );
+      _promptBiometrics();
     }
+  }
+
+  Future _promptBiometrics() async {
+    _enrolledBiometrics = await _getEnrolledBiometrics();
+    if (_enrolledBiometrics != "") {
+      await Future.delayed(Duration(milliseconds: 240));
+      if (this.mounted) _validateBiometrics();
+    }
+  }
+
+  Future _getEnrolledBiometrics() async {
+    var getEnrolledBiometricsAction = GetEnrolledBiometrics();
+    widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
+    return getEnrolledBiometricsAction.future;
   }
 
   Future _validateBiometrics() async {
@@ -188,9 +197,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
                   : StreamBuilder<BreezUserModel>(
                       stream: widget.userProfileBloc.userStream,
                       builder: (context, snapshot) {
-                        if (!snapshot.hasData ||
-                            snapshot.data.securityModel.enrolledBiometrics ==
-                                "") {
+                        if (!snapshot.hasData || _enrolledBiometrics == "") {
                           return _buildEraseButton();
                         } else {
                           return _buildBiometricsButton(snapshot, context);
@@ -208,9 +215,7 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
       child: IconButton(
         onPressed: () => _validateBiometrics(),
         icon: Icon(
-          snapshot.data.securityModel.enrolledBiometrics.contains("Face")
-              ? Icons.face
-              : Icons.fingerprint,
+          _enrolledBiometrics.contains("Face") ? Icons.face : Icons.fingerprint,
           color: Theme.of(context).errorColor,
         ),
       ),

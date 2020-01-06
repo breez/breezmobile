@@ -5,13 +5,11 @@ class SecurityModel {
 
   final bool requiresPin;
   final bool isFingerprintEnabled;
-  final String enrolledBiometrics;
   final int automaticallyLockInterval;
 
   SecurityModel._(
       {this.requiresPin,
       this.isFingerprintEnabled,
-      this.enrolledBiometrics,
       this.automaticallyLockInterval});
 
   SecurityModel copyWith(
@@ -22,7 +20,6 @@ class SecurityModel {
     return SecurityModel._(
         requiresPin: requiresPin ?? this.requiresPin,
         isFingerprintEnabled: isFingerprintEnabled ?? this.isFingerprintEnabled,
-        enrolledBiometrics: enrolledBiometrics ?? this.enrolledBiometrics,
         automaticallyLockInterval:
             automaticallyLockInterval ?? this.automaticallyLockInterval);
   }
@@ -31,13 +28,11 @@ class SecurityModel {
       : this._(
             requiresPin: false,
             isFingerprintEnabled: false,
-            enrolledBiometrics: "",
             automaticallyLockInterval: _defaultLockInterval);
 
   SecurityModel.fromJson(Map<String, dynamic> json)
       : requiresPin = json['requiresPin'] ?? false,
         isFingerprintEnabled = json['isFingerprintEnabled'] ?? false,
-        enrolledBiometrics = "",
         automaticallyLockInterval =
             json['automaticallyLockInterval'] ?? _defaultLockInterval;
 
