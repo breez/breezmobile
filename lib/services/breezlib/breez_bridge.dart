@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
+import 'package:ini/ini.dart';
 import 'package:path_provider/path_provider.dart';
 
 // This is the bridge to the native breez library. Protobuf messages are used as the interface and to generate the classes use the bellow command.
@@ -35,8 +36,8 @@ class BreezBridge {
       }
       _eventsController.add(NotificationEvent()..mergeFromBuffer(event));
     });
-    _tempDirFuture = getTemporaryDirectory();
-    initLightningDir();
+    _tempDirFuture = getTemporaryDirectory();    
+    initLightningDir();     
   }
 
   initLightningDir() {
@@ -422,5 +423,13 @@ class BreezBridge {
         throw err;
       });
     });
+  }
+
+  Future<String> getWalletDBpFilePath() async {
+    String lines = await rootBundle.loadString('conf/breez.conf');
+    var config =  Config.fromString(lines);
+    String lndDir = (await getApplicationDocumentsDirectory()).path;    
+    String network = config.get('Application Options', 'network');
+    return '$lndDir/data/chain/bitcoin/$network/wallet.db';    
   }
 }

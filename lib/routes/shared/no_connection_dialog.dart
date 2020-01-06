@@ -80,6 +80,15 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
               TextSpan(
                   text: "your logs \n",
                   style: Theme.of(context).dialogTheme.contentTextStyle),
+              TextSpan(text: "• ", style: Theme.of(context).dialogTheme.contentTextStyle),
+              TextSpan(
+                text: "Export ", 
+                style: theme.blueLinkStyle,
+                recognizer: TapGestureRecognizer()..onTap = () async {
+                  var logPath = await ServiceInjector().breezBridge.getWalletDBpFilePath();
+                  ShareExtend.share(logPath, "file");
+                }), 
+              TextSpan(text: "your wallet.db \n", style: Theme.of(context).dialogTheme.contentTextStyle),
             ]),
       ),
       // Text(

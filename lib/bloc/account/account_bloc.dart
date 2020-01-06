@@ -139,7 +139,8 @@ class AccountBloc {
       ResetChainService: _handleResetChainService,
       SendCoins: _handleSendCoins,
       ExportPayments: _exportPaymentsAction,
-      FetchPayments: _handleFetchPayments
+      FetchPayments: _handleFetchPayments,
+      GetWalletDBFilePath: _getWalletDBFilePath,
     };
 
     _accountController.add(AccountModel.initial());
@@ -263,6 +264,10 @@ class AccountBloc {
 
   Future _handleRestartDaemon(RestartDaemon action) async {
     action.resolve(await _breezLib.restartLightningDaemon());
+  }
+
+  Future _getWalletDBFilePath(GetWalletDBFilePath action) async {
+    action.resolve(await _breezLib.getWalletDBpFilePath());
   }
 
   Future _fetchFundStatusAction(FetchSwapFundStatus action) async {

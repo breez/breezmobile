@@ -14,7 +14,9 @@ class ResetChainService extends AsyncAction {}
 
 class RestartDaemon extends AsyncAction {}
 
-class FetchSwapFundStatus extends AsyncAction {}
+class GetWalletDBFilePath extends AsyncAction {}
+
+class FetchSwapFundStatus extends AsyncAction{}
 
 class FetchPayments extends AsyncAction {}
 
