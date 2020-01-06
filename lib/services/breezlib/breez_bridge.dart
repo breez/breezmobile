@@ -425,11 +425,11 @@ class BreezBridge {
     });
   }
 
-  Future<String> getWalletDBpFilePath() async {
+  Future<List<String>> getWalletDBpFilePaths() async {
     String lines = await rootBundle.loadString('conf/breez.conf');
     var config =  Config.fromString(lines);
     String lndDir = (await getApplicationDocumentsDirectory()).path;    
     String network = config.get('Application Options', 'network');
-    return '$lndDir/data/chain/bitcoin/$network/wallet.db';    
+    return ['$lndDir/data/chain/bitcoin/$network/wallet.db', '$lndDir/breez.db', '$lndDir/data/graph/$network/channel.db'];    
   }
 }

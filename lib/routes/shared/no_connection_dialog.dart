@@ -1,3 +1,4 @@
+import 'package:archive/archive_io.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/services/injector.dart';
 import 'package:flutter/gestures.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 import 'package:share_extend/share_extend.dart';
@@ -85,8 +87,17 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
                 text: "Export ", 
                 style: theme.blueLinkStyle,
                 recognizer: TapGestureRecognizer()..onTap = () async {
-                  var logPath = await ServiceInjector().breezBridge.getWalletDBpFilePath();
-                  ShareExtend.share(logPath, "file");
+                  Directory tempDir = await getTemporaryDirectory();
+                  tempDir = await tempDir.createTemp("graph");
+                  var walletFiles = await ServiceInjector().breezBridge.getWalletDBpFilePaths();
+                  var encoder = ZipFileEncoder();
+                  var zipFile = '${tempDir.path}/wallet-files.zip';
+                  encoder.create(zipFile);
+                  walletFiles.forEach((f){
+                      encoder.addFile(File(f));
+                  });                  
+                  encoder.close();
+                  ShareExtend.share(zipFile, "file");
                 }), 
               TextSpan(text: "your wallet.db \n", style: Theme.of(context).dialogTheme.contentTextStyle),
             ]),
