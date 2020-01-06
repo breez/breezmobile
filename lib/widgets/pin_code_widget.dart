@@ -11,13 +11,12 @@ const PIN_CODE_LENGTH = 6;
 
 class PinCodeWidget extends StatefulWidget {
   final String label;
-  final bool dismissible;
   final Future Function(String pinEntered) onPinEntered;
   final Function(bool isValid) onFingerprintEntered;
   final UserProfileBloc userProfileBloc;
   final String localizedReason;
 
-  PinCodeWidget(this.label, this.dismissible, this.onPinEntered,
+  PinCodeWidget(this.label, this.onPinEntered,
       {this.onFingerprintEntered, this.userProfileBloc, this.localizedReason});
 
   @override

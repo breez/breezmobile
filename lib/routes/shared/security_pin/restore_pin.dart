@@ -35,7 +35,6 @@ class _RestorePinCodeState extends State<RestorePinCode> {
         ),
         body: PinCodeWidget(
           _label,
-          true,
           (enteredPinCode) => _onPinEntered(enteredPinCode),
         ),
       ),
