@@ -391,9 +391,6 @@ final BoxDecoration boxDecoration = BoxDecoration(
         Border(bottom: BorderSide(color: BreezColors.white[500], width: 1.5)));
 final BoxDecoration autoCompleteBoxDecoration = BoxDecoration(
     color: BreezColors.white[500], borderRadius: BorderRadius.circular(3.0));
-final BoxDecoration qrImageStyle = BoxDecoration(
-    border: Border.all(color: BreezColors.blue[800], width: 1.0),
-    borderRadius: BorderRadius.circular(3.0));
 final Color whiteColor = BreezColors.white[500];
 final Color snackBarBackgroundColor = BreezColors.blue[300];
 final Color avatarBackgroundColor = BreezColors.blue[500];
