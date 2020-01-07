@@ -32,7 +32,6 @@ class _ChangePinCodeState extends State<ChangePinCode> {
         ),
         body: PinCodeWidget(
           _label,
-          true,
           (enteredPinCode) => _onPinEntered(enteredPinCode),
         ));
   }
