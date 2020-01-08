@@ -101,13 +101,19 @@ class ProcessingSpeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String estimatedDelivery = "${targetConfirmation * 10} minutes";
+    var hours = targetConfirmation / 6;
+    if (hours == 1.0) {
+      estimatedDelivery = "${hours.ceil()} hour";
+    }
+    if (hours > 1.0) {
+      estimatedDelivery = "${hours.ceil()} hours";
+    }
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text("Processing Speed:"),
-          SizedBox(height: 12.0),
+        children: <Widget>[          
           Text(
-            "Estimated Delivery: ~${targetConfirmation * 10} minutes",
+            "Estimated Delivery: ~$estimatedDelivery",
             style: Theme.of(context).textTheme.button.copyWith(
                 color:
                     Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
