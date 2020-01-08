@@ -33,6 +33,8 @@ class AmountFormField extends TextFormField {
     ValueChanged<String> onFieldSubmitted,
     FormFieldSetter<String> onSaved,
     bool enabled,
+    ValueChanged<String> onChanged,
+    bool readOnly
   }) : super(
             focusNode: focusNode,
             keyboardType: TextInputType.numberWithOptions(
@@ -68,7 +70,9 @@ class AmountFormField extends TextFormField {
                 ? [WhitelistingTextInputFormatter(RegExp(r'\d+\.?\d*'))]
                 : [WhitelistingTextInputFormatter.digitsOnly],
             onFieldSubmitted: onFieldSubmitted,
-            onSaved: onSaved);
+            onSaved: onSaved,
+            onChanged: onChanged,
+            readOnly: readOnly);
 
   @override
   FormFieldValidator<String> get validator {
