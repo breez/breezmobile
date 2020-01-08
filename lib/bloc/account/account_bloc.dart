@@ -69,15 +69,6 @@ class AccountBloc {
   Stream<bool> get routingNodeConnectionStream =>
       _routingNodeConnectionController.stream;
 
-  final _withdrawalController =
-      StreamController<RemoveFundRequestModel>.broadcast();
-  Sink<RemoveFundRequestModel> get withdrawalSink => _withdrawalController.sink;
-
-  final _withdrawalResultController =
-      StreamController<RemoveFundResponseModel>.broadcast();
-  Stream<RemoveFundResponseModel> get withdrawalResultStream =>
-      _withdrawalResultController.stream;
-
   final _paymentsController = BehaviorSubject<PaymentsModel>();
   Stream<PaymentsModel> get paymentsStream => _paymentsController.stream;
 
@@ -140,8 +131,7 @@ class AccountBloc {
       ResetChainService: _handleResetChainService,
       SendCoins: _handleSendCoins,
       ExportPayments: _exportPaymentsAction,
-      FetchPayments: _handleFetchPayments,
-      RemoveFunds: _removeFunds,
+      FetchPayments: _handleFetchPayments,      
     };
 
     _accountController.add(AccountModel.initial());
@@ -156,8 +146,7 @@ class AccountBloc {
       //listen streams
       _listenAccountActions();
       _hanleAccountSettings();
-      _listenUserChanges(userProfileStream);
-      _listenWithdrawalRequests();
+      _listenUserChanges(userProfileStream);      
       _listenFilterChanges();
       _listenAccountChanges();
       _listenMempoolTransactions();
@@ -477,57 +466,6 @@ class AccountBloc {
     });
   }
 
-  void _listenWithdrawalRequests() {
-    _withdrawalController.stream.listen((removeFundRequestModel) {
-      _breezLib
-          .newReverseSwap(
-              removeFundRequestModel.address, removeFundRequestModel.amount)
-          .then((hash) {
-        return _breezLib.payReverseSwap(hash);
-      }).catchError((err) => _withdrawalResultController.addError(err));
-    });
-  }
-
-  Future _removeFunds(RemoveFunds action) async {
-    var removeResults = _breezLib
-        .newReverseSwap(
-            action.removeFundsRequest.address, action.removeFundsRequest.amount)
-        .then((hash) {
-      return _breezLib.payReverseSwap(hash).then((_) {
-        var resultCompletor = Completer();
-        StreamSubscription<NotificationEvent> ntfnSubscription;
-        StreamSubscription<PaymentsModel> paymentsSubscription;
-        var onComplete = ({String error}) {
-          if (error != null) {
-            resultCompletor.completeError(error);
-          } else {
-            resultCompletor.complete();
-          }
-          paymentsSubscription.cancel();
-          ntfnSubscription.cancel();
-        };
-
-        ntfnSubscription = _breezLib.notificationStream
-            .where((notif) =>
-                notif.type == NotificationEvent_NotificationType.PAYMENT_FAILED)
-            .listen((e) {
-          onComplete(error: "failed to initiate payment");
-        });
-
-        paymentsSubscription = paymentsStream.listen((payments) {
-          if (payments.nonFilteredItems.length > 0 &&
-              payments.nonFilteredItems[0].paymentHash == hash) {
-            onComplete();
-          }
-        });
-
-        return resultCompletor.future;
-      });
-    });
-
-    return action.resolve(await removeResults);
-  }
-
   void _listenFilterChanges() {
     _paymentFilterController.stream.skip(1).listen((filter) {
       _refreshPayments();
@@ -717,8 +655,7 @@ class AccountBloc {
   close() {
     _accountEnableController.close();
     _paymentsController.close();
-    _accountNotificationsController.close();
-    _withdrawalController.close();
+    _accountNotificationsController.close();    
     _paymentFilterController.close();
     _lightningDownController.close();
     _reconnectStreamController.close();

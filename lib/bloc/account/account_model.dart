@@ -482,21 +482,6 @@ class AddFundResponse {
   Int64 get requiredReserve => _addfundReply.requiredReserve;
 }
 
-class RemoveFundRequestModel {
-  final Int64 amount;
-  final String address;
-  final Int64 satPerByteFee;
-
-  RemoveFundRequestModel(this.amount, this.address, {this.satPerByteFee});
-}
-
-class RemoveFundResponseModel {
-  final String transactionID;
-  final String errorMessage;
-
-  RemoveFundResponseModel(this.transactionID, {this.errorMessage});
-}
-
 class RefundableDepositModel {
   final SwapAddressInfo _address;
   RefundableDepositModel(this._address);
