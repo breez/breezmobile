@@ -89,6 +89,18 @@ class BreezBridge {
     _invokeMethodImmediate("log", {"msg": msg, "lvl": level});
   }
 
+  Stream<NotificationEvent> trackPaymentResult(String paymentRequest){
+    return notificationStream
+            .where((notif) =>
+                (notif.type == NotificationEvent_NotificationType.PAYMENT_FAILED ||
+                notif.type == NotificationEvent_NotificationType.PAYMENT_SENT) && 
+                notif.data[0] == paymentRequest);
+  }
+
+  Future waitPayment(String paymentRequest) {
+    return trackPaymentResult(paymentRequest).first;
+  }
+
   Future<LNUrlResponse> fetchLNUrl(String lnurl) {
     return _invokeMethodImmediate("fetchLnurl", {"argument": lnurl})
         .then((result) => LNUrlResponse()..mergeFromBuffer(result ?? []));
@@ -151,6 +163,12 @@ class BreezBridge {
     return _invokeMethodWhenReady(
             "newReverseSwap", {"argument": request.writeToBuffer()})
         .then((res) => res as String);
+  }
+
+  Future<ReverseSwap> fetchReverseSwap(String hash) {
+    return _invokeMethodWhenReady(
+            "fetchReverseSwap", {"argument": hash})
+        .then((res) => ReverseSwap()..mergeFromBuffer(res ?? []));
   }
 
   Future payReverseSwap(String hash) {
