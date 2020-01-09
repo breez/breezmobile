@@ -81,7 +81,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                     //render error
                     return Center(
                         child: Text(
-                            "Failed to retrive fees. Please try again later"));
+                            "Failed to retrive fees. Please try again later: ${futureSnapshot.error.toString()}"));
                   }
                   if (futureSnapshot.connectionState != ConnectionState.done ||
                       acc == null) {
