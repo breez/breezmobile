@@ -12,4 +12,16 @@ class ReverseSwapInfo {
   Int64 get amount => _response.lnAmount;
 
   Int64 get onChainAmount => _response.onchainAmount;
+
+  String get claimAddress => _response.claimAddress;
+}
+
+class ReverseSwapClaimFeeEstimates {
+  final ClaimFeeEstimates claimFeeEstimates;
+
+  ReverseSwapClaimFeeEstimates(this.claimFeeEstimates);
+
+  Map<int, Int64> get fees {
+    return claimFeeEstimates.fees;
+  }
 }

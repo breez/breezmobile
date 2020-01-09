@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/routes/user/withdraw_funds/reverse_swap_confirmation.dart';
 import 'package:breez/routes/user/withdraw_funds/withdraw_funds_page.dart';
@@ -35,6 +37,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
 
   @override
   Widget build(BuildContext context) {
+    ReverseSwapBloc reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     return Scaffold(
       body: PageView(
         controller: _pageController,
@@ -53,6 +56,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
               }
               return ReverseSwapConfirmation(
                   swap: snapshot.data,
+                  bloc: reverseSwapBloc,
                   onSuccess: () {
                     Navigator.of(context)
                         .pop("We wil notify you when the swap is confirmed.");

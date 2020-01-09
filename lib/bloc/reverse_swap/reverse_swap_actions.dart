@@ -12,6 +12,13 @@ class NewReverseSwap extends AsyncAction {
 
 class PayReverseSwap extends AsyncAction {
   final ReverseSwapInfo swap;
+  final Int64 claimFee;
 
-  PayReverseSwap(this.swap);
+  PayReverseSwap(this.swap, this.claimFee);
+}
+
+class GetClaimFeeEstimates extends AsyncAction {
+  final String claimAddress;
+
+  GetClaimFeeEstimates(this.claimAddress);
 }

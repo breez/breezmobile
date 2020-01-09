@@ -19,8 +19,14 @@ class ReverseSwapBloc with AsyncActionsHandler {
     registerAsyncHandlers({
       NewReverseSwap: _newReverseSwap,
       PayReverseSwap: _payReverseSwap,
+      GetClaimFeeEstimates: _getFeeClaimEstimates,
     });
     listenActions();
+  }
+
+  Future _getFeeClaimEstimates(GetClaimFeeEstimates action) async {
+    var estimates = await _breezLib.reverseSwapClaimFeeEstimates(action.claimAddress);
+    action.resolve(ReverseSwapClaimFeeEstimates(estimates));
   }
 
   Future _newReverseSwap(NewReverseSwap action) async {
@@ -45,6 +51,8 @@ class ReverseSwapBloc with AsyncActionsHandler {
       }
       paymentsSubscription.cancel();
     };
+
+    await _breezLib.setReverseSwapClaimFee(action.swap.hash, action.claimFee);
 
     action.resolve(await _breezLib.payReverseSwap(action.swap.hash).then((_) {
       Future.any([

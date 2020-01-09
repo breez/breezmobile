@@ -11,14 +11,16 @@ import 'package:breez/widgets/fee_chooser.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:fixnum/fixnum.dart';
 
 class ReverseSwapConfirmation extends StatefulWidget {
   final ReverseSwapInfo swap;
+  final ReverseSwapBloc bloc;
   final Function() onPrevious;
   final Function() onSuccess;
 
   const ReverseSwapConfirmation(
-      {Key key, this.swap, this.onPrevious, this.onSuccess})
+      {Key key, this.swap, this.onPrevious, this.onSuccess, this.bloc})
       : super(key: key);
 
   @override
@@ -28,12 +30,25 @@ class ReverseSwapConfirmation extends StatefulWidget {
 }
 
 class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
-  final List<FeeOption> feeOptions = [
-    FeeOption(100, 25),
-    FeeOption(300, 6),
-    FeeOption(2000, 2)
-  ];
+  List<FeeOption> feeOptions;
   int selectedFeeIndex = 1;
+  Future _claimFeeFuture;
+
+  @override void initState() {    
+    super.initState();
+    var action = GetClaimFeeEstimates(widget.swap.claimAddress);
+    widget.bloc.actionsSink.add(action);
+    _claimFeeFuture = action.future.then((r){
+      ReverseSwapClaimFeeEstimates feeEstimates = r as ReverseSwapClaimFeeEstimates;
+      List<int> targetConfirmations = feeEstimates.fees.keys.toList()..sort();
+      var middle = (targetConfirmations.length / 2).floor();
+      feeOptions = [
+        FeeOption(feeEstimates.fees[targetConfirmations.last].toInt(), targetConfirmations.last),
+        FeeOption(feeEstimates.fees[targetConfirmations[middle]].toInt(), targetConfirmations[middle]),
+        FeeOption(feeEstimates.fees[targetConfirmations.first].toInt(), targetConfirmations.first)
+      ];
+    });  
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,36 +68,47 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
       body: StreamBuilder<AccountModel>(
           stream: AppBlocsProvider.of<AccountBloc>(context).accountStream,
           builder: (context, snapshot) {
-            AccountModel acc = snapshot.data;
-            if (acc == null) {
-              return SizedBox();
-            }
-            return Container(
-              height: 500.0,
-              padding: EdgeInsets.only(
-                  left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                //mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    child: FeeChooser(
-                      economyFee: feeOptions[0],
-                      regularFee: feeOptions[1],
-                      priorityFee: feeOptions[2],
-                      selectedIndex: this.selectedFeeIndex,
-                      onSelect: (index) {
-                        this.setState(() {
-                          this.selectedFeeIndex = index;
-                        });
-                      },
-                    ),
+            AccountModel acc = snapshot.data;            
+            return FutureBuilder(
+              future: _claimFeeFuture,
+              builder: (context, futureSnapshot) {                
+                if (futureSnapshot.error != null) {
+                  //render error
+                  return Center(child: Text("Failed to retrive fees. Please try again later"));
+                }
+                if (futureSnapshot.connectionState != ConnectionState.done || acc == null) {
+                  //render loader
+                  return SizedBox();
+                }
+                
+                return Container(
+                  height: 500.0,
+                  padding: EdgeInsets.only(
+                      left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    //mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        child: FeeChooser(
+                          economyFee: feeOptions[0],
+                          regularFee: feeOptions[1],
+                          priorityFee: feeOptions[2],
+                          selectedIndex: this.selectedFeeIndex,
+                          onSelect: (index) {
+                            this.setState(() {
+                              this.selectedFeeIndex = index;
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 36.0),
+                      buildSummary(acc),
+                    ],
                   ),
-                  SizedBox(height: 36.0),
-                  buildSummary(acc),
-                ],
-              ),
+                );
+              }
             );
           }),
       bottomNavigationBar: Padding(
@@ -102,7 +128,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                     borderRadius: BorderRadius.circular(42.0)),
                 onPressed: () {
                   Navigator.of(context).push(createLoaderRoute(context));
-                  var action = PayReverseSwap(widget.swap);
+                  var action = PayReverseSwap(widget.swap, Int64(feeOptions[selectedFeeIndex].sats));
                   reverseSwapBloc.actionsSink.add(action);
                   action.future.then((_) {
                     Navigator.of(context).pop();
