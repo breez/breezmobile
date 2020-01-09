@@ -1956,6 +1956,8 @@ class ReverseSwap extends $pb.GeneratedMessage {
     ..aInt64(8, 'lnAmount')
     ..aInt64(9, 'onchainAmount')
     ..aInt64(10, 'timeoutBlockHeight')
+    ..aInt64(11, 'startBlockHeight')
+    ..aInt64(12, 'claimFee')
     ..hasRequiredFields = false
   ;
 
@@ -2063,5 +2065,89 @@ class ReverseSwap extends $pb.GeneratedMessage {
   $core.bool hasTimeoutBlockHeight() => $_has(9);
   @$pb.TagNumber(10)
   void clearTimeoutBlockHeight() => clearField(10);
+
+  @$pb.TagNumber(11)
+  $fixnum.Int64 get startBlockHeight => $_getI64(10);
+  @$pb.TagNumber(11)
+  set startBlockHeight($fixnum.Int64 v) { $_setInt64(10, v); }
+  @$pb.TagNumber(11)
+  $core.bool hasStartBlockHeight() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearStartBlockHeight() => clearField(11);
+
+  @$pb.TagNumber(12)
+  $fixnum.Int64 get claimFee => $_getI64(11);
+  @$pb.TagNumber(12)
+  set claimFee($fixnum.Int64 v) { $_setInt64(11, v); }
+  @$pb.TagNumber(12)
+  $core.bool hasClaimFee() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearClaimFee() => clearField(12);
+}
+
+class ReverseSwapClaimFee extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ReverseSwapClaimFee', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'hash')
+    ..aInt64(2, 'fee')
+    ..hasRequiredFields = false
+  ;
+
+  ReverseSwapClaimFee._() : super();
+  factory ReverseSwapClaimFee() => create();
+  factory ReverseSwapClaimFee.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ReverseSwapClaimFee.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ReverseSwapClaimFee clone() => ReverseSwapClaimFee()..mergeFromMessage(this);
+  ReverseSwapClaimFee copyWith(void Function(ReverseSwapClaimFee) updates) => super.copyWith((message) => updates(message as ReverseSwapClaimFee));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ReverseSwapClaimFee create() => ReverseSwapClaimFee._();
+  ReverseSwapClaimFee createEmptyInstance() => create();
+  static $pb.PbList<ReverseSwapClaimFee> createRepeated() => $pb.PbList<ReverseSwapClaimFee>();
+  @$core.pragma('dart2js:noInline')
+  static ReverseSwapClaimFee getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReverseSwapClaimFee>(create);
+  static ReverseSwapClaimFee _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get hash => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set hash($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasHash() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearHash() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get fee => $_getI64(1);
+  @$pb.TagNumber(2)
+  set fee($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasFee() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearFee() => clearField(2);
+}
+
+class ClaimFeeEstimates extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ClaimFeeEstimates', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..m<$core.int, $fixnum.Int64>(1, 'fees', entryClassName: 'ClaimFeeEstimates.FeesEntry', keyFieldType: $pb.PbFieldType.O3, valueFieldType: $pb.PbFieldType.O6, packageName: const $pb.PackageName('data'))
+    ..hasRequiredFields = false
+  ;
+
+  ClaimFeeEstimates._() : super();
+  factory ClaimFeeEstimates() => create();
+  factory ClaimFeeEstimates.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ClaimFeeEstimates.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ClaimFeeEstimates clone() => ClaimFeeEstimates()..mergeFromMessage(this);
+  ClaimFeeEstimates copyWith(void Function(ClaimFeeEstimates) updates) => super.copyWith((message) => updates(message as ClaimFeeEstimates));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ClaimFeeEstimates create() => ClaimFeeEstimates._();
+  ClaimFeeEstimates createEmptyInstance() => create();
+  static $pb.PbList<ClaimFeeEstimates> createRepeated() => $pb.PbList<ClaimFeeEstimates>();
+  @$core.pragma('dart2js:noInline')
+  static ClaimFeeEstimates getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ClaimFeeEstimates>(create);
+  static ClaimFeeEstimates _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.Map<$core.int, $fixnum.Int64> get fees => $_getMap(0);
 }
 

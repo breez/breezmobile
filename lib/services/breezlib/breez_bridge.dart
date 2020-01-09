@@ -175,6 +175,18 @@ class BreezBridge {
     return _invokeMethodWhenReady("payReverseSwap", {"argument": hash});
   }
 
+  Future<ClaimFeeEstimates> reverseSwapClaimFeeEstimates(String claimAddress) {
+    return _invokeMethodWhenReady("reverseSwapClaimFeeEstimates", {"argument": claimAddress})
+      .then((res) => ClaimFeeEstimates()..mergeFromBuffer(res ?? []));    
+  }
+
+  Future setReverseSwapClaimFee(String hash, Int64 fee) {
+    var arg = ReverseSwapClaimFee()
+                ..fee = fee
+                ..hash = hash;
+    return _invokeMethodWhenReady("setReverseSwapClaimFee", {"argument": arg.writeToBuffer()});
+  }
+
   Future sendPaymentForRequest(
       String blankInvoicePaymentRequest,
       {Int64 amount}) {

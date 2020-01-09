@@ -424,6 +424,33 @@ const ReverseSwap$json = const {
     const {'1': 'ln_amount', '3': 8, '4': 1, '5': 3, '10': 'lnAmount'},
     const {'1': 'onchain_amount', '3': 9, '4': 1, '5': 3, '10': 'onchainAmount'},
     const {'1': 'timeout_block_height', '3': 10, '4': 1, '5': 3, '10': 'timeoutBlockHeight'},
+    const {'1': 'start_block_height', '3': 11, '4': 1, '5': 3, '10': 'startBlockHeight'},
+    const {'1': 'claim_fee', '3': 12, '4': 1, '5': 3, '10': 'claimFee'},
   ],
+};
+
+const ReverseSwapClaimFee$json = const {
+  '1': 'ReverseSwapClaimFee',
+  '2': const [
+    const {'1': 'hash', '3': 1, '4': 1, '5': 9, '10': 'hash'},
+    const {'1': 'fee', '3': 2, '4': 1, '5': 3, '10': 'fee'},
+  ],
+};
+
+const ClaimFeeEstimates$json = const {
+  '1': 'ClaimFeeEstimates',
+  '2': const [
+    const {'1': 'fees', '3': 1, '4': 3, '5': 11, '6': '.data.ClaimFeeEstimates.FeesEntry', '10': 'fees'},
+  ],
+  '3': const [ClaimFeeEstimates_FeesEntry$json],
+};
+
+const ClaimFeeEstimates_FeesEntry$json = const {
+  '1': 'FeesEntry',
+  '2': const [
+    const {'1': 'key', '3': 1, '4': 1, '5': 5, '10': 'key'},
+    const {'1': 'value', '3': 2, '4': 1, '5': 3, '10': 'value'},
+  ],
+  '7': const {'7': true},
 };
 

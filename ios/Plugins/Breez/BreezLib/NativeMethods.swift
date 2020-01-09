@@ -61,7 +61,9 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "removeFund": SingleArgBindingExecutor(f: BindingsRemoveFund),
     "newReverseSwap": SingleArgBindingExecutor(f: BindingsNewReverseSwap),
     "payReverseSwap": SingleArgBindingExecutor(f: BindingsPayReverseSwap),
+    "reverseSwapClaimFeeEstimates": SingleArgBindingExecutor(f: BindingsReverseSwapClaimFeeEstimates),
     "fetchReverseSwap": SingleArgBindingExecutor(f: BindingsFetchReverseSwap),
+    "setReverseSwapClaimFee": SingleArgBindingExecutor(f: BindingsSetReverseSwapClaimFee),
     
     "daemonReady": VoidBindingExecutor(f: BindingsDaemonReady),
     "getDefaultOnChainFeeRate": DefaultOnChainFeeRateExecutor(),
