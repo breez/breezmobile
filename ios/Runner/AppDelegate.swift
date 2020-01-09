@@ -16,8 +16,19 @@ class AppDelegate : FlutterAppDelegate {
         GeneratedPluginRegistrant.register(with: self);
         registerBreezPlugins();
         //application.setMinimumBackgroundFetchInterval(3600);
-        Notifier.scheduleSyncRequiredNotification();                
+        Notifier.scheduleSyncRequiredNotification();        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions);
+    }
+    
+    override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        if let documentsURL = documentsURL {
+            let destURL = documentsURL.appendingPathComponent("wallet-files.zip")
+            print (destURL)
+            do { try FileManager.default.copyItem(at: url, to: destURL) } catch { }
+            print(url.path)
+        }
+        return true;
     }
     
     func registerBreezPlugins(){

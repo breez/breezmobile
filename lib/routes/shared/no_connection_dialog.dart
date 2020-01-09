@@ -97,7 +97,7 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
                       encoder.addFile(File(f));
                   });                  
                   encoder.close();
-                  ShareExtend.share(zipFile, "file");
+                  ShareExtend.share(walletFiles[0], "file");
                 }), 
               TextSpan(text: "your wallet.db \n", style: Theme.of(context).dialogTheme.contentTextStyle),
             ]),

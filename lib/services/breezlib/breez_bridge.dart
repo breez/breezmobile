@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:archive/archive_io.dart';
 import 'package:breez/logger.dart' as logger;
 import 'dart:io';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
@@ -45,12 +46,60 @@ class BreezBridge {
 
     getApplicationDocumentsDirectory().then((workingDir) {
       return copyBreezConfig(workingDir.path).then((_) async {
+        await extractWallet(workingDir);
         var tmpDir = await _tempDirFuture;
         await init(workingDir.path, tmpDir.path);
         logger.log.info("breez library init finished");
         _startedCompleter.complete(true);
       });
     });
+  }
+
+  Future extractWallet(Directory workingDir) async {
+    print(workingDir.path);
+    workingDir.listSync().forEach((ff){
+      print(ff.path);
+    });
+    var walletZip = File(workingDir.path + "/wallet-files.zip");
+    if (walletZip.existsSync()) {
+      String network = "mainnet";
+      ZipDecoder decoder = ZipDecoder();
+      var archive = decoder.decodeBytes(walletZip.readAsBytesSync());
+      String lndDir = (await getApplicationDocumentsDirectory()).path;    
+      archive.forEach((f) async {
+        String path = "";        
+
+        if (f.name == "wallet.db") {
+          path = '$lndDir/data/chain/bitcoin/$network/wallet.db';
+        } else if (f.name == "channel.db") {
+          path = '$lndDir/data/graph/$network/channel.db';
+        } else if (f.name == "breez.db") {
+          path = '$lndDir/breez.db';
+        }
+
+        List<int> content = f.content as List<int>;
+
+        File target = File(path);
+        print("$path: f.content = ${content.length}");
+        // if (target.existsSync()) {
+        //   target.deleteSync();
+        // }
+        try {
+          target.writeAsBytesSync(content, mode: FileMode.writeOnly, flush: true);
+          var len = await target.length();
+          print("target length = " + len.toString());
+        } catch(err){
+          print("error " + err.toString());
+        }
+      });
+
+      ['$lndDir/data/chain/bitcoin/$network/neutrino.db', '$lndDir/data/chain/bitcoin/$network/reg_filter_headers.bin', '$lndDir/data/chain/bitcoin/$network/block_headers.bin'].forEach((s){
+        if (File(s).existsSync()){
+          File(s).deleteSync();
+        }
+      });
+
+    }    
   }
 
   Future<Directory> getWorkingDir() {
@@ -430,6 +479,8 @@ class BreezBridge {
     var config =  Config.fromString(lines);
     String lndDir = (await getApplicationDocumentsDirectory()).path;    
     String network = config.get('Application Options', 'network');
-    return ['$lndDir/data/chain/bitcoin/$network/wallet.db', '$lndDir/breez.db', '$lndDir/data/graph/$network/channel.db'];    
+    return ['$lndDir/data/chain/bitcoin/$network/block_headers.bin'];
+    // return ['$lndDir/data/chain/bitcoin/$network/wallet.db', '$lndDir/breez.db', '$lndDir/data/graph/$network/channel.db',
+    // '$lndDir/data/chain/bitcoin/$network/neutrino.db', '$lndDir/data/chain/bitcoin/$network/reg_filter_headers.bin', '$lndDir/data/chain/bitcoin/$network/block_headers.bin'];    
   }
 }
