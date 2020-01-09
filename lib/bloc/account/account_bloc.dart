@@ -131,7 +131,7 @@ class AccountBloc {
       ResetChainService: _handleResetChainService,
       SendCoins: _handleSendCoins,
       ExportPayments: _exportPaymentsAction,
-      FetchPayments: _handleFetchPayments,      
+      FetchPayments: _handleFetchPayments,
     };
 
     _accountController.add(AccountModel.initial());
@@ -146,7 +146,7 @@ class AccountBloc {
       //listen streams
       _listenAccountActions();
       _hanleAccountSettings();
-      _listenUserChanges(userProfileStream);      
+      _listenUserChanges(userProfileStream);
       _listenFilterChanges();
       _listenAccountChanges();
       _listenMempoolTransactions();
@@ -248,8 +248,7 @@ class AccountBloc {
 
   Future _handleResetChainService(ResetChainService action) async {
     var workingDir = await _breezLib.getWorkingDir();
-    var bootstrapFile =
-        new File(workingDir.path + "/$FORCE_BOOTSTRAP_FILE_NAME");
+    var bootstrapFile = File(workingDir.path + "/$FORCE_BOOTSTRAP_FILE_NAME");
     action.resolve(await bootstrapFile.create(recursive: true));
   }
 
@@ -655,7 +654,7 @@ class AccountBloc {
   close() {
     _accountEnableController.close();
     _paymentsController.close();
-    _accountNotificationsController.close();    
+    _accountNotificationsController.close();
     _paymentFilterController.close();
     _lightningDownController.close();
     _reconnectStreamController.close();

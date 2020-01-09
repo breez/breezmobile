@@ -308,7 +308,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
               var sendAction = SendPayment(
                   PayRequest(widget.invoice.rawPayReq, amountToPay(account)));
               widget.accountBloc.userActionsSink.add(sendAction);
-              widget._onStateChange(PaymentRequestState.PROCESSING_PAYMENT);              
+              widget._onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
             }
           }
         }),

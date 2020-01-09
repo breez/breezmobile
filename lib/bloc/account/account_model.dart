@@ -136,7 +136,7 @@ class AccountModel {
   final String _fiatShortName;
   final FiatConversion _fiatCurrency;
   final List<FiatConversion> _fiatConversionList;
-  final FundStatusReply addedFundsReply;  
+  final FundStatusReply addedFundsReply;
   final Int64 onChainFeeRate;
   final bool initial;
   final bool enableInProgress;
@@ -147,7 +147,7 @@ class AccountModel {
   AccountModel(this._accountResponse, this._currency, this._fiatShortName,
       this._fiatCurrency, this._fiatConversionList,
       {this.initial = true,
-      this.addedFundsReply,      
+      this.addedFundsReply,
       this.onChainFeeRate,
       this.enableInProgress = false,
       this.syncProgress = 0,
@@ -174,7 +174,7 @@ class AccountModel {
       String fiatShortName,
       FiatConversion fiatCurrency,
       List<FiatConversion> fiatConversionList,
-      FundStatusReply addedFundsReply,      
+      FundStatusReply addedFundsReply,
       Int64 onChainFeeRate,
       bool enableInProgress,
       double syncProgress,
@@ -189,7 +189,7 @@ class AccountModel {
         fiatConversionList ?? this._fiatConversionList,
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,
         onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
-        enableInProgress: enableInProgress ?? this.enableInProgress,        
+        enableInProgress: enableInProgress ?? this.enableInProgress,
         syncProgress: syncProgress ?? this.syncProgress,
         syncedToChain: syncedToChain ?? this.syncedToChain,
         syncUIState: syncUIState ?? this.syncUIState,

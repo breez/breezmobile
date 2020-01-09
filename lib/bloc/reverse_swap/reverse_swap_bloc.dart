@@ -25,7 +25,8 @@ class ReverseSwapBloc with AsyncActionsHandler {
   }
 
   Future _getFeeClaimEstimates(GetClaimFeeEstimates action) async {
-    var estimates = await _breezLib.reverseSwapClaimFeeEstimates(action.claimAddress);
+    var estimates =
+        await _breezLib.reverseSwapClaimFeeEstimates(action.claimAddress);
     action.resolve(ReverseSwapClaimFeeEstimates(estimates));
   }
 
@@ -33,7 +34,9 @@ class ReverseSwapBloc with AsyncActionsHandler {
     action.resolve(await _breezLib
         .newReverseSwap(action.address, action.amount)
         .then((hash) {
-      return _breezLib.fetchReverseSwap(hash).then((resp) => new ReverseSwapInfo(hash, resp));
+      return _breezLib
+          .fetchReverseSwap(hash)
+          .then((resp) => ReverseSwapInfo(hash, resp));
     }));
   }
 

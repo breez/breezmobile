@@ -89,12 +89,11 @@ class BreezBridge {
     _invokeMethodImmediate("log", {"msg": msg, "lvl": level});
   }
 
-  Stream<NotificationEvent> trackPaymentResult(String paymentRequest){
-    return notificationStream
-            .where((notif) =>
-                (notif.type == NotificationEvent_NotificationType.PAYMENT_FAILED ||
-                notif.type == NotificationEvent_NotificationType.PAYMENT_SENT) && 
-                notif.data[0] == paymentRequest);
+  Stream<NotificationEvent> trackPaymentResult(String paymentRequest) {
+    return notificationStream.where((notif) =>
+        (notif.type == NotificationEvent_NotificationType.PAYMENT_FAILED ||
+            notif.type == NotificationEvent_NotificationType.PAYMENT_SENT) &&
+        notif.data[0] == paymentRequest);
   }
 
   Future waitPayment(String paymentRequest) {
@@ -166,8 +165,7 @@ class BreezBridge {
   }
 
   Future<ReverseSwap> fetchReverseSwap(String hash) {
-    return _invokeMethodWhenReady(
-            "fetchReverseSwap", {"argument": hash})
+    return _invokeMethodWhenReady("fetchReverseSwap", {"argument": hash})
         .then((res) => ReverseSwap()..mergeFromBuffer(res ?? []));
   }
 
@@ -176,19 +174,20 @@ class BreezBridge {
   }
 
   Future<ClaimFeeEstimates> reverseSwapClaimFeeEstimates(String claimAddress) {
-    return _invokeMethodWhenReady("reverseSwapClaimFeeEstimates", {"argument": claimAddress})
-      .then((res) => ClaimFeeEstimates()..mergeFromBuffer(res ?? []));    
+    return _invokeMethodWhenReady(
+            "reverseSwapClaimFeeEstimates", {"argument": claimAddress})
+        .then((res) => ClaimFeeEstimates()..mergeFromBuffer(res ?? []));
   }
 
   Future setReverseSwapClaimFee(String hash, Int64 fee) {
     var arg = ReverseSwapClaimFee()
-                ..fee = fee
-                ..hash = hash;
-    return _invokeMethodWhenReady("setReverseSwapClaimFee", {"argument": arg.writeToBuffer()});
+      ..fee = fee
+      ..hash = hash;
+    return _invokeMethodWhenReady(
+        "setReverseSwapClaimFee", {"argument": arg.writeToBuffer()});
   }
 
-  Future sendPaymentForRequest(
-      String blankInvoicePaymentRequest,
+  Future sendPaymentForRequest(String blankInvoicePaymentRequest,
       {Int64 amount}) {
     PayInvoiceRequest invoice = PayInvoiceRequest();
     if (amount == null) {
@@ -197,7 +196,7 @@ class BreezBridge {
     invoice.amount = amount;
     invoice.paymentRequest = blankInvoicePaymentRequest;
     return _invokeMethodWhenReady(
-            "sendPaymentForRequest", {"argument": invoice.writeToBuffer()});        
+        "sendPaymentForRequest", {"argument": invoice.writeToBuffer()});
   }
 
   Future sendPaymentFailureBugReport(String traceReport) {

@@ -35,8 +35,7 @@ class PaymentRequestDialog extends StatefulWidget {
   }
 }
 
-class PaymentRequestDialogState extends State<PaymentRequestDialog> {  
-
+class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   PaymentRequestState _state;
   double _initialDialogSize;
   String _amountToPayStr;
@@ -46,7 +45,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   @override
   void initState() {
     super.initState();
-    _state = PaymentRequestState.PAYMENT_REQUEST;    
+    _state = PaymentRequestState.PAYMENT_REQUEST;
   }
 
   @override

@@ -34,7 +34,7 @@ class FeeChooser extends StatelessWidget {
           Expanded(child: buildFeeOption(context, 2, economyFee, "Priority"))
         ])
       ],
-    );    
+    );
   }
 
   Widget buildFeeOption(
@@ -111,7 +111,7 @@ class ProcessingSpeed extends StatelessWidget {
     }
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[          
+        children: <Widget>[
           Text(
             "Estimated Delivery: ~$estimatedDelivery",
             style: Theme.of(context).textTheme.button.copyWith(

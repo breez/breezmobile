@@ -324,11 +324,11 @@ class HomeState extends State<Home> {
           accountSettings.failePaymentBehavior == BugReportBehavior.PROMPT;
       bool send =
           accountSettings.failePaymentBehavior == BugReportBehavior.SEND_REPORT;
-      
-      var errorString = error.toString().isEmpty ? "" : ": ${error.toString().split("\n").first}";
-      showFlushbar(context,
-          message:
-              "Failed to send payment$errorString");
+
+      var errorString = error.toString().isEmpty
+          ? ""
+          : ": ${error.toString().split("\n").first}";
+      showFlushbar(context, message: "Failed to send payment$errorString");
       if (!error.validationError) {
         if (prompt) {
           send = await showDialog(

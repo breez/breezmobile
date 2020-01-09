@@ -15,27 +15,27 @@ class AmountFormField extends TextFormField {
   final Function(String amount) returnFN;
   final String Function(Int64 amount) validatorFn;
 
-  AmountFormField({
-    this.context,
-    this.accountModel,
-    this.iconColor,
-    this.returnFN,
-    this.validatorFn,
-    TextEditingController controller,
-    Key key,
-    String initialValue,
-    FocusNode focusNode,
-    InputDecoration decoration = const InputDecoration(),
-    TextStyle style,
-    TextAlign textAlign = TextAlign.start,
-    int maxLines = 1,
-    int maxLength,
-    ValueChanged<String> onFieldSubmitted,
-    FormFieldSetter<String> onSaved,
-    bool enabled,
-    ValueChanged<String> onChanged,
-    bool readOnly
-  }) : super(
+  AmountFormField(
+      {this.context,
+      this.accountModel,
+      this.iconColor,
+      this.returnFN,
+      this.validatorFn,
+      TextEditingController controller,
+      Key key,
+      String initialValue,
+      FocusNode focusNode,
+      InputDecoration decoration = const InputDecoration(),
+      TextStyle style,
+      TextAlign textAlign = TextAlign.start,
+      int maxLines = 1,
+      int maxLength,
+      ValueChanged<String> onFieldSubmitted,
+      FormFieldSetter<String> onSaved,
+      bool enabled,
+      ValueChanged<String> onChanged,
+      bool readOnly})
+      : super(
             focusNode: focusNode,
             keyboardType: TextInputType.numberWithOptions(
                 decimal: accountModel.currency != Currency.SAT),

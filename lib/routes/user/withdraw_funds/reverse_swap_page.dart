@@ -18,7 +18,7 @@ class ReverseSwapPage extends StatefulWidget {
 
 class ReverseSwapPageState extends State<ReverseSwapPage> {
   StreamController<ReverseSwapInfo> _reverseSwapsStream =
-      new BehaviorSubject<ReverseSwapInfo>();
+      BehaviorSubject<ReverseSwapInfo>();
   PageController _pageController = PageController();
 
   @override
@@ -37,11 +37,12 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
 
   @override
   Widget build(BuildContext context) {
-    ReverseSwapBloc reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
+    ReverseSwapBloc reverseSwapBloc =
+        AppBlocsProvider.of<ReverseSwapBloc>(context);
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        physics: new NeverScrollableScrollPhysics(),
+        physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
           WithdrawFundsPage(onNext: (swap) {
             _reverseSwapsStream.add(swap);
