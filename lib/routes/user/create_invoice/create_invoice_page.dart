@@ -291,7 +291,15 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     var loaderRoute = createLoaderRoute(context);
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await BarcodeScanner.scan();
+      String pasteText = "";
+      await Clipboard.getData("text/plain").then((clipboardData) {
+        if (clipboardData != null) {
+          setState(() {
+            pasteText = clipboardData.text;
+          });
+        }
+      });
+      String barcode = await BarcodeScanner.scan(pasteText: pasteText);
       Navigator.of(context).push(loaderRoute);
       await _handleLNUrlWithdraw(account, barcode);
       Navigator.of(context).removeRoute(loaderRoute);

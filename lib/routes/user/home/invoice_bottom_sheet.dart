@@ -59,7 +59,15 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                     _buildInvoiceMenuItem("PAY", "src/icon/qr_scan.png",
                         () async {
                       try {
-                        String decodedQr = await BarcodeScanner.scan();
+                        String pasteText = "";
+                        await Clipboard.getData("text/plain").then((clipboardData) {
+                          if (clipboardData != null) {
+                            setState(() {
+                              pasteText = clipboardData.text;
+                            });
+                          }
+                        });
+                        String decodedQr = await BarcodeScanner.scan(pasteText: pasteText);
                         widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
                       } on PlatformException catch (e) {
                         if (e.code == BarcodeScanner.CameraAccessDenied) {

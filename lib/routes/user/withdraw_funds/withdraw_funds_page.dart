@@ -291,7 +291,15 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   Future _scanBarcode() async {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await BarcodeScanner.scan();
+      String pasteText = "";
+      await Clipboard.getData("text/plain").then((clipboardData) {
+        if (clipboardData != null) {
+          setState(() {
+            pasteText = clipboardData.text;
+          });
+        }
+      });
+      String barcode = await BarcodeScanner.scan(pasteText: pasteText);
       setState(() {
         _addressController.text = barcode;
         _scannerErrorMessage = "";
