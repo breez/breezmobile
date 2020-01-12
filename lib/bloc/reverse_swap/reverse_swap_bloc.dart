@@ -5,10 +5,16 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
+import 'package:breez/routes/user/withdraw_funds/swap_in_progress.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
+import 'package:rxdart/subjects.dart';
 
 class ReverseSwapBloc with AsyncActionsHandler {
+  final StreamController<InProgressReverseSwaps> _swapsInProgressController = BehaviorSubject<InProgressReverseSwaps>();
+  Stream<InProgressReverseSwaps> get swapInProgressStream => _swapsInProgressController.stream;
+
   final Stream<PaymentsModel> _paymentsStream;
   BreezBridge _breezLib;
 
@@ -20,14 +26,52 @@ class ReverseSwapBloc with AsyncActionsHandler {
       NewReverseSwap: _newReverseSwap,
       PayReverseSwap: _payReverseSwap,
       GetClaimFeeEstimates: _getFeeClaimEstimates,
+      FetchInProgressSwap: _fetchInProgressSwap,
     });
+
+    // refresh reverse swaps in progress stream
+    _breezLib.notificationStream.where((n) {
+      return [
+        NotificationEvent_NotificationType.REVERSE_SWAP_CLAIM_CONFIRMED,
+        NotificationEvent_NotificationType.REVERSE_SWAP_CLAIM_FAILED,
+        NotificationEvent_NotificationType.REVERSE_SWAP_CLAIM_STARTED,
+        NotificationEvent_NotificationType.REVERSE_SWAP_CLAIM_SUCCEEDED,
+        NotificationEvent_NotificationType.ACCOUNT_CHANGED
+      ].contains(n.type);
+    }).listen((_) {
+      _refreshInProgressSwaps();
+    });
+
     listenActions();
+    _refreshInProgressSwaps();
+  }
+
+  Future _refreshInProgressSwaps() async {
+    String unconfirmedTx =
+        await _breezLib.unconfirmedReverseSwapClaimTransaction();
+    ReverseSwapPaymentStatuses payments = await _breezLib.reverseSwapPayments();
+    InProgressReverseSwaps swap = InProgressReverseSwaps(null, null);
+    if (unconfirmedTx.isNotEmpty || payments.paymentsStatus.length > 0) {
+      swap = InProgressReverseSwaps(payments, unconfirmedTx);
+    }
+    _swapsInProgressController.add(swap);
   }
 
   Future _getFeeClaimEstimates(GetClaimFeeEstimates action) async {
     var estimates =
         await _breezLib.reverseSwapClaimFeeEstimates(action.claimAddress);
     action.resolve(ReverseSwapClaimFeeEstimates(estimates));
+  }
+
+  Future _fetchInProgressSwap(FetchInProgressSwap action) async {
+    String unconfirmedTx =
+        await _breezLib.unconfirmedReverseSwapClaimTransaction();
+    ReverseSwapPaymentStatuses payments = await _breezLib.reverseSwapPayments();
+    if ((unconfirmedTx == null || unconfirmedTx.isEmpty) &&
+        payments.paymentsStatus.length == 0) {
+      action.resolve(null);
+    }
+    action.resolve(InProgressReverseSwaps(payments, unconfirmedTx));
   }
 
   Future _newReverseSwap(NewReverseSwap action) async {

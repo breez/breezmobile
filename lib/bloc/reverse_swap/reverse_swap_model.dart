@@ -25,3 +25,19 @@ class ReverseSwapClaimFeeEstimates {
     return claimFeeEstimates.fees;
   }
 }
+
+class InProgressReverseSwaps {
+  final ReverseSwapPaymentStatuses _statuses;
+  final String claimTxId;
+
+  InProgressReverseSwaps(this._statuses, this.claimTxId);
+
+  int get lockupTxETA { 
+    if (_statuses.paymentsStatus.length == 0) {
+      return -1;
+    }
+    return _statuses.paymentsStatus[0].eta;
+  }
+
+  bool get isEmpty => _statuses == null && claimTxId == null;
+}

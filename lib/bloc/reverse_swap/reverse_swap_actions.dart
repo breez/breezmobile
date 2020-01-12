@@ -22,3 +22,5 @@ class GetClaimFeeEstimates extends AsyncAction {
 
   GetClaimFeeEstimates(this.claimAddress);
 }
+
+class FetchInProgressSwap extends AsyncAction {}
