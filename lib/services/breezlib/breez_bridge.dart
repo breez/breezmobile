@@ -187,6 +187,16 @@ class BreezBridge {
         "setReverseSwapClaimFee", {"argument": arg.writeToBuffer()});
   }
 
+  Future<String> unconfirmedReverseSwapClaimTransaction(){
+    return _invokeMethodWhenReady("unconfirmedReverseSwapClaimTransaction")
+    .then((s) => s as String);
+  }
+
+  Future<ReverseSwapPaymentStatuses> reverseSwapPayments(){
+    return _invokeMethodWhenReady("reverseSwapPayments")
+    .then((p) => ReverseSwapPaymentStatuses()..mergeFromBuffer(p ?? []));
+  }
+
   Future sendPaymentForRequest(String blankInvoicePaymentRequest,
       {Int64 amount}) {
     PayInvoiceRequest invoice = PayInvoiceRequest();
