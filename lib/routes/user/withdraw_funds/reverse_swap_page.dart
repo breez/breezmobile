@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/routes/user/withdraw_funds/reverse_swap_confirmation.dart';
+import 'package:breez/routes/user/withdraw_funds/swap_in_progress.dart';
 import 'package:breez/routes/user/withdraw_funds/withdraw_funds_page.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
@@ -20,6 +22,8 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
   StreamController<ReverseSwapInfo> _reverseSwapsStream =
       BehaviorSubject<ReverseSwapInfo>();
   PageController _pageController = PageController();
+  //ReverseSwapBloc _reverseSwapBloc;
+  //Future _inProgressSwapsFuture;
 
   @override
   void initState() {
@@ -37,43 +41,51 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
 
   @override
   Widget build(BuildContext context) {
-    ReverseSwapBloc reverseSwapBloc =
-        AppBlocsProvider.of<ReverseSwapBloc>(context);
+    var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
-        children: <Widget>[
-          WithdrawFundsPage(onNext: (swap) {
-            _reverseSwapsStream.add(swap);
-            _pageController.nextPage(
-                duration: Duration(milliseconds: 250), curve: Curves.easeInOut);
-          }),
-          StreamBuilder<ReverseSwapInfo>(
-            stream: _reverseSwapsStream.stream,
-            builder: (context, snapshot) {
-              if (snapshot.data == null) {
-                return SizedBox();
-              }
-              return ReverseSwapConfirmation(
-                  swap: snapshot.data,
-                  bloc: reverseSwapBloc,
-                  onSuccess: () {
-                    Navigator.of(context)
-                        .pop("We wil notify you when the swap is confirmed.");
-                  },
-                  onPrevious: () {
-                    _pageController
-                        .previousPage(
-                            duration: Duration(milliseconds: 250),
-                            curve: Curves.easeInOut)
-                        .then((_) {
-                      _reverseSwapsStream.add(null);
-                    });
-                  });
-            },
-          ),
-        ],
+      body: StreamBuilder<InProgressReverseSwaps>(
+        stream: reverseSwapBloc.swapInProgressStream,
+        builder: (context, snapshot) {          
+          var swapInProgress =  snapshot.data;          
+          if (swapInProgress == null || !swapInProgress.isEmpty) {
+            return SwapInProgress(swapInProgress: swapInProgress);
+          }
+          return PageView(
+            controller: _pageController,
+            physics: NeverScrollableScrollPhysics(),
+            children: <Widget>[
+              WithdrawFundsPage(onNext: (swap) {
+                _reverseSwapsStream.add(swap);
+                _pageController.nextPage(
+                    duration: Duration(milliseconds: 250), curve: Curves.easeInOut);
+              }),
+              StreamBuilder<ReverseSwapInfo>(
+                stream: _reverseSwapsStream.stream,
+                builder: (context, snapshot) {
+                  if (snapshot.data == null) {
+                    return SizedBox();
+                  }
+                  return ReverseSwapConfirmation(
+                      swap: snapshot.data,
+                      bloc: reverseSwapBloc,
+                      onSuccess: () {
+                        Navigator.of(context)
+                            .pop("We wil notify you when the swap is confirmed.");
+                      },
+                      onPrevious: () {
+                        _pageController
+                            .previousPage(
+                                duration: Duration(milliseconds: 250),
+                                curve: Curves.easeInOut)
+                            .then((_) {
+                          _reverseSwapsStream.add(null);
+                        });
+                      });
+                },
+              ),
+            ],
+          );
+        }
       ),
     );
   }

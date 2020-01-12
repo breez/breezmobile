@@ -20,19 +20,19 @@ class FeeChooser extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
+      children: <Widget>[                
+        Row(mainAxisSize: MainAxisSize.max, children: <Widget>[
+          Expanded(child: buildFeeOption(context, 0, economyFee, "Economy")),
+          Expanded(child: buildFeeOption(context, 1, economyFee, "Regular")),
+          Expanded(child: buildFeeOption(context, 2, economyFee, "Priority"))
+        ]),
+        SizedBox(height: 12.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             ProcessingSpeed(targetConfirmation: _getSelectedTargetConf())
           ],
         ),
-        SizedBox(height: 12.0),
-        Row(mainAxisSize: MainAxisSize.max, children: <Widget>[
-          Expanded(child: buildFeeOption(context, 0, economyFee, "Economy")),
-          Expanded(child: buildFeeOption(context, 1, economyFee, "Regular")),
-          Expanded(child: buildFeeOption(context, 2, economyFee, "Priority"))
-        ])
       ],
     );
   }
@@ -103,12 +103,13 @@ class ProcessingSpeed extends StatelessWidget {
   Widget build(BuildContext context) {
     String estimatedDelivery = "${targetConfirmation * 10} minutes";
     var hours = targetConfirmation / 6;
-    if (hours == 1.0) {
+    if (hours >= 12.0) {
+      estimatedDelivery = "more than a day";
+    } else if (hours >= 4) {
+      estimatedDelivery = "${hours.ceil()}-24 hours";
+    } else if (hours >= 1.0) {
       estimatedDelivery = "${hours.ceil()} hour";
-    }
-    if (hours > 1.0) {
-      estimatedDelivery = "${hours.ceil()} hours";
-    }
+    }    
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

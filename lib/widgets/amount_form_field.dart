@@ -72,7 +72,7 @@ class AmountFormField extends TextFormField {
             onFieldSubmitted: onFieldSubmitted,
             onSaved: onSaved,
             onChanged: onChanged,
-            readOnly: readOnly);
+            readOnly: readOnly ?? false);
 
   @override
   FormFieldValidator<String> get validator {

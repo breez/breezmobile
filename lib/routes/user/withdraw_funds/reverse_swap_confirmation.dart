@@ -67,7 +67,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
           leading: backBtn.BackButton(onPressed: () {
             widget.onPrevious();
           }),
-          title: Text("Choose Processing Speed",
+          title: Text("Confirm",
               style: Theme.of(context).appBarTheme.textTheme.title),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
@@ -168,7 +168,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
         ListTile(
             title: Container(
               child: AutoSizeText(
-                "You pay:",
+                "You send:",
                 style: TextStyle(color: Colors.white),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
@@ -187,7 +187,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
         ListTile(
             title: Container(
               child: AutoSizeText(
-                "You get:",
+                "You receive:",
                 style: TextStyle(color: Colors.white),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
