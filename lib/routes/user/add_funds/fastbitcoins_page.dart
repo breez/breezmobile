@@ -6,6 +6,8 @@ import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/user/add_funds/fastbitcoins_confirm.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/services/qr_scan_service.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -38,6 +40,13 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
   StreamSubscription _validatedRequestsSubscription;
   StreamSubscription _redeemedRequestsSubscription;
   bool _isInit = false;
+  QRScanService _qrScanService;
+
+  @override
+  void initState() {
+    super.initState();
+    _qrScanService = ServiceInjector().qrScanService;
+  }
 
   @override
   void didChangeDependencies() {
@@ -65,8 +74,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
   Future _scanBarcode() async {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String barcode =
-          await BarcodeScanner.scan(pasteText: await getClipboardData());
+      String barcode = await _qrScanService.scan();
       String _voucherCode = barcode.substring(barcode.lastIndexOf("/") + 1);
       setState(() {
         _codeController.text = _voucherCode;
@@ -86,11 +94,6 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
     } catch (e) {
       setState(() => this._scannerErrorMessage = '');
     }
-  }
-
-  Future<String> getClipboardData() async {
-    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-    return clipboardData.text;
   }
 
   @override

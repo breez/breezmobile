@@ -1,15 +1,17 @@
 import 'dart:async';
-import 'package:breez/services/breezlib/breez_bridge.dart';
+
 import 'package:breez/services/breez_server/server.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/currency_service.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/device.dart';
-import 'package:breez/services/notifications.dart';
-import 'package:breez/services/nfc.dart';
-import 'package:breez/services/permissions.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:breez/services/lightning_links.dart';
-import 'package:breez/services/currency_service.dart';
 import 'package:breez/services/local_auth_service.dart';
+import 'package:breez/services/nfc.dart';
+import 'package:breez/services/notifications.dart';
+import 'package:breez/services/permissions.dart';
+import 'package:breez/services/qr_scan_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'background_task.dart';
 
@@ -29,6 +31,7 @@ class ServiceInjector {
   BackgroundTaskService _backroundTaskService;
   CurrencyService _currencyService;
   LocalAuthenticationService _localAuthService;
+  QRScanService _qrScanService;
 
   factory ServiceInjector() {
     return _injector != null ? _injector : _singleton;
@@ -61,6 +64,7 @@ class ServiceInjector {
   }
 
   DeepLinksService get deepLinks => _deepLinksService ??= DeepLinksService();
+
   LightningLinksService get lightningLinks =>
       _lightningLinksService ??= LightningLinksService();
 
@@ -81,5 +85,9 @@ class ServiceInjector {
 
   LocalAuthenticationService get localAuthService {
     return _localAuthService ??= LocalAuthenticationService();
+  }
+
+  QRScanService get qrScanService {
+    return _qrScanService ??= QRScanService();
   }
 }

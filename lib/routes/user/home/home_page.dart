@@ -14,6 +14,8 @@ import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:breez/routes/user/ctp_join_session_handler.dart';
 import 'package:breez/routes/user/received_invoice_notification.dart';
 import 'package:breez/routes/user/showPinHandler.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/services/qr_scan_service.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -92,10 +94,12 @@ class HomeState extends State<Home> {
   String _activeScreen = "breezHome";
   Set _hiddenRountes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
+  QRScanService _qrScanService;
 
   @override
   void initState() {
     super.initState();
+    _qrScanService = ServiceInjector().qrScanService;
     _registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
@@ -200,8 +204,7 @@ class HomeState extends State<Home> {
       DrawerItemConfig("/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png",
           onItemSelected: (String name) async {
         try {
-          String decodedQr =
-              await BarcodeScanner.scan(pasteText: await getClipboardData());
+          String decodedQr = await _qrScanService.scan();
           widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
         } on PlatformException catch (e) {
           if (e.code == BarcodeScanner.CameraAccessDenied) {
