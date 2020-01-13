@@ -7,8 +7,8 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
-import 'package:breez/services/qr_scan_service.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -35,7 +35,6 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   AccountBloc _accountBloc;
   StreamSubscription<RemoveFundResponseModel> withdrawalResultSubscription;
   BreezBridge _breezLib;
-  QRScanService _qrScanService;
   String _addressValidated;
   bool _inProgress = false;
   bool _isInit = false;
@@ -56,7 +55,6 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   void initState() {
     super.initState();
     _breezLib = ServiceInjector().breezBridge;
-    _qrScanService = ServiceInjector().qrScanService;
     _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
   }
 
@@ -294,7 +292,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   Future _scanBarcode() async {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await _qrScanService.scan();
+      String barcode = await QRScanner.scan();
       setState(() {
         _addressController.text = barcode;
         _scannerErrorMessage = "";

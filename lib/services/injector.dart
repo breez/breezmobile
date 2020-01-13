@@ -10,7 +10,6 @@ import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/services/permissions.dart';
-import 'package:breez/services/qr_scan_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'background_task.dart';
@@ -31,7 +30,6 @@ class ServiceInjector {
   BackgroundTaskService _backroundTaskService;
   CurrencyService _currencyService;
   LocalAuthenticationService _localAuthService;
-  QRScanService _qrScanService;
 
   factory ServiceInjector() {
     return _injector != null ? _injector : _singleton;
@@ -85,9 +83,5 @@ class ServiceInjector {
 
   LocalAuthenticationService get localAuthService {
     return _localAuthService ??= LocalAuthenticationService();
-  }
-
-  QRScanService get qrScanService {
-    return _qrScanService ??= QRScanService();
   }
 }

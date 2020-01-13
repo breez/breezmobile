@@ -3,10 +3,9 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/qr_scan_service.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
@@ -27,12 +26,10 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
     with TickerProviderStateMixin {
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   bool isExpanded;
-  QRScanService _qrScanService;
 
   @override
   void initState() {
     super.initState();
-    _qrScanService = ServiceInjector().qrScanService;
     isExpanded = false;
   }
 
@@ -63,7 +60,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                     _buildInvoiceMenuItem("PAY", "src/icon/qr_scan.png",
                         () async {
                       try {
-                        String decodedQr = await _qrScanService.scan();
+                        String decodedQr = await QRScanner.scan();
                         widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
                       } on PlatformException catch (e) {
                         if (e.code == BarcodeScanner.CameraAccessDenied) {

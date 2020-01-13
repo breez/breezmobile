@@ -14,9 +14,9 @@ import 'package:breez/logger.dart';
 import 'package:breez/routes/user/create_invoice/qr_code_dialog.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
-import 'package:breez/services/qr_scan_service.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -42,7 +42,6 @@ class CreateInvoicePage extends StatefulWidget {
 class CreateInvoicePageState extends State<CreateInvoicePage> {
   LNUrlBloc _lnurlBloc;
   WithdrawFetchResponse _withdrawFetchResponse;
-  QRScanService _qrScanService;
 
   final _formKey = GlobalKey<FormState>();
   var _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -86,7 +85,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   void initState() {
     _lnurlBloc = LNUrlBloc();
     _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
-    _qrScanService = ServiceInjector().qrScanService;
     super.initState();
   }
 
@@ -295,7 +293,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     var loaderRoute = createLoaderRoute(context);
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await _qrScanService.scan();
+      String barcode = await QRScanner.scan();
       Navigator.of(context).push(loaderRoute);
       await _handleLNUrlWithdraw(account, barcode);
       Navigator.of(context).removeRoute(loaderRoute);
