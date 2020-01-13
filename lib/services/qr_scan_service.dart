@@ -9,7 +9,7 @@ class QRScanService {
   Future<String> scan() async {
     try {
       String result = "";
-      BarcodeScanner.scan().then((scanResult) async {
+      await BarcodeScanner.scan().then((scanResult) async {
         if (scanResult == "GET_CLIPBOARD_DATA") {
           result = await _getClipboardData();
         } else {
