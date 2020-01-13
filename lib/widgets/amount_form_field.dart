@@ -40,7 +40,7 @@ class AmountFormField extends TextFormField {
             keyboardType: TextInputType.numberWithOptions(
                 decimal: accountModel.currency != Currency.SAT),
             decoration: InputDecoration(
-              labelText: accountModel.currency.displayName + " Amount",
+              labelText: "Amount in ${accountModel.currency.displayName}",
               suffixIcon: IconButton(
                 icon: Image.asset(
                   (accountModel.fiatCurrency != null)

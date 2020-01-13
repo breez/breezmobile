@@ -67,7 +67,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
           leading: backBtn.BackButton(onPressed: () {
             widget.onPrevious();
           }),
-          title: Text("Confirm",
+          title: Text("Choose Processing Speed",
               style: Theme.of(context).appBarTheme.textTheme.title),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
@@ -126,7 +126,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
               width: 168.0,
               child: RaisedButton(
                 child: Text(
-                  "PAY",
+                  "CONFIRM",
                   style: Theme.of(context).textTheme.button,
                 ),
                 color: Theme.of(context).buttonColor,
@@ -178,6 +178,44 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             trailing: Container(
               child: AutoSizeText(
                 acc.currency.format(widget.swap.amount),
+                style: TextStyle(color: Theme.of(context).errorColor),
+                maxLines: 1,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+              ),
+            )),
+        ListTile(
+            title: Container(
+              child: AutoSizeText(
+                "Boltz service fee:",
+                style: TextStyle(color: Colors.white),
+                maxLines: 1,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+              ),
+            ),
+            trailing: Container(
+              child: AutoSizeText(
+                acc.currency.format(widget.swap.amount - widget.swap.onChainAmount),
+                style: TextStyle(color: Theme.of(context).errorColor),
+                maxLines: 1,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+              ),
+            )),
+        ListTile(
+            title: Container(
+              child: AutoSizeText(
+                "Transaction fee:",
+                style: TextStyle(color: Colors.white),
+                maxLines: 1,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+              ),
+            ),
+            trailing: Container(
+              child: AutoSizeText(
+                acc.currency.format(Int64(feeOptions[selectedFeeIndex].sats)),
                 style: TextStyle(color: Theme.of(context).errorColor),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
