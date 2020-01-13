@@ -59,15 +59,8 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                     _buildInvoiceMenuItem("PAY", "src/icon/qr_scan.png",
                         () async {
                       try {
-                        String pasteText = "";
-                        await Clipboard.getData("text/plain").then((clipboardData) {
-                          if (clipboardData != null) {
-                            setState(() {
-                              pasteText = clipboardData.text;
-                            });
-                          }
-                        });
-                        String decodedQr = await BarcodeScanner.scan(pasteText: pasteText);
+                        String decodedQr = await BarcodeScanner.scan(
+                            pasteText: await getClipboardData());
                         widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
                       } on PlatformException catch (e) {
                         if (e.code == BarcodeScanner.CameraAccessDenied) {
@@ -85,6 +78,11 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                         snapshot.data.themeId),
                   ]));
         });
+  }
+
+  Future<String> getClipboardData() async {
+    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+    return clipboardData.text;
   }
 
   Widget _buildInvoiceMenuItem(

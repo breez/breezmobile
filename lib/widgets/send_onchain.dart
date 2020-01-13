@@ -1,13 +1,14 @@
 import 'dart:async';
+
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
 
 import 'flushbar.dart';
 
@@ -246,15 +247,8 @@ class SendOnchainState extends State<SendOnchain> {
   Future _scanBarcode() async {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String pasteText = "";
-      await Clipboard.getData("text/plain").then((clipboardData) {
-        if (clipboardData != null) {
-          setState(() {
-            pasteText = clipboardData.text;
-          });
-        }
-      });
-      String barcode = await BarcodeScanner.scan(pasteText: pasteText);
+      String barcode =
+          await BarcodeScanner.scan(pasteText: await getClipboardData());
       setState(() {
         _addressController.text = barcode;
         _scannerErrorMessage = "";
@@ -273,6 +267,11 @@ class SendOnchainState extends State<SendOnchain> {
     } catch (e) {
       setState(() => this._scannerErrorMessage = '');
     }
+  }
+
+  Future<String> getClipboardData() async {
+    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+    return clipboardData.text;
   }
 
   Future<bool> _asyncValidate() {

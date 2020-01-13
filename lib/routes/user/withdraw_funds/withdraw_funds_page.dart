@@ -291,15 +291,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   Future _scanBarcode() async {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String pasteText = "";
-      await Clipboard.getData("text/plain").then((clipboardData) {
-        if (clipboardData != null) {
-          setState(() {
-            pasteText = clipboardData.text;
-          });
-        }
-      });
-      String barcode = await BarcodeScanner.scan(pasteText: pasteText);
+      String barcode =
+          await BarcodeScanner.scan(pasteText: await getClipboardData());
       setState(() {
         _addressController.text = barcode;
         _scannerErrorMessage = "";
@@ -318,6 +311,11 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     } catch (e) {
       setState(() => this._scannerErrorMessage = '');
     }
+  }
+
+  Future<String> getClipboardData() async {
+    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+    return clipboardData.text;
   }
 
   Future<bool> _asyncValidate() {

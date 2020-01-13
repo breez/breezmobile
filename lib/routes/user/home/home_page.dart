@@ -200,15 +200,8 @@ class HomeState extends State<Home> {
       DrawerItemConfig("/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png",
           onItemSelected: (String name) async {
         try {
-          String pasteText = "";
-          await Clipboard.getData("text/plain").then((clipboardData) {
-            if (clipboardData != null) {
-              setState(() {
-                pasteText = clipboardData.text;
-              });
-            }
-          });
-          String decodedQr = await BarcodeScanner.scan(pasteText: pasteText);
+          String decodedQr =
+              await BarcodeScanner.scan(pasteText: await getClipboardData());
           widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
         } on PlatformException catch (e) {
           if (e.code == BarcodeScanner.CameraAccessDenied) {
@@ -221,6 +214,11 @@ class HomeState extends State<Home> {
           "/create_invoice", "Receive via Invoice", "src/icon/paste.png"),
     ]);
     return DrawerItemConfigGroup(_filterItems(minorActionsInvoice));
+  }
+
+  Future<String> getClipboardData() async {
+    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+    return clipboardData.text;
   }
 
   _onNavigationItemSelected(String itemName) {

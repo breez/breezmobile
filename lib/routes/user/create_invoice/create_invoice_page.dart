@@ -29,6 +29,7 @@ import 'lnurl_withdraw_dialog.dart';
 
 class CreateInvoicePage extends StatefulWidget {
   final WithdrawFetchResponse lnurlWithdraw;
+
   const CreateInvoicePage({this.lnurlWithdraw});
 
   @override
@@ -291,15 +292,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     var loaderRoute = createLoaderRoute(context);
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String pasteText = "";
-      await Clipboard.getData("text/plain").then((clipboardData) {
-        if (clipboardData != null) {
-          setState(() {
-            pasteText = clipboardData.text;
-          });
-        }
-      });
-      String barcode = await BarcodeScanner.scan(pasteText: pasteText);
+      String barcode =
+          await BarcodeScanner.scan(pasteText: await getClipboardData());
       Navigator.of(context).push(loaderRoute);
       await _handleLNUrlWithdraw(account, barcode);
       Navigator.of(context).removeRoute(loaderRoute);
@@ -322,6 +316,11 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
           Text("Reason: ${e.toString()}",
               style: Theme.of(context).dialogTheme.contentTextStyle));
     }
+  }
+
+  Future<String> getClipboardData() async {
+    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+    return clipboardData.text;
   }
 
   Future _handleLNUrlWithdraw(AccountModel account, String lnurl) async {

@@ -65,15 +65,8 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
   Future _scanBarcode() async {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String pasteText = "";
-      await Clipboard.getData("text/plain").then((clipboardData) {
-        if (clipboardData != null) {
-          setState(() {
-            pasteText = clipboardData.text;
-          });
-        }
-      });
-      String barcode = await BarcodeScanner.scan(pasteText: pasteText);
+      String barcode =
+          await BarcodeScanner.scan(pasteText: await getClipboardData());
       String _voucherCode = barcode.substring(barcode.lastIndexOf("/") + 1);
       setState(() {
         _codeController.text = _voucherCode;
@@ -93,6 +86,11 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
     } catch (e) {
       setState(() => this._scannerErrorMessage = '');
     }
+  }
+
+  Future<String> getClipboardData() async {
+    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+    return clipboardData.text;
   }
 
   @override
