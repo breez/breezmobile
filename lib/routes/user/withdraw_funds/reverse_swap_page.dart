@@ -21,9 +21,7 @@ class ReverseSwapPage extends StatefulWidget {
 class ReverseSwapPageState extends State<ReverseSwapPage> {
   StreamController<ReverseSwapInfo> _reverseSwapsStream =
       BehaviorSubject<ReverseSwapInfo>();
-  PageController _pageController = PageController();
-  //ReverseSwapBloc _reverseSwapBloc;
-  //Future _inProgressSwapsFuture;
+  PageController _pageController = PageController();  
 
   @override
   void initState() {
