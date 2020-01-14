@@ -1,5 +1,6 @@
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
+import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'invoice/invoice_bloc.dart';
 import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -24,6 +25,7 @@ class AppBlocs {
   final MarketplaceBloc marketplaceBloc;
   final FastbitcoinsBloc fastbitcoinsBloc;
   final LSPBloc lspBloc;
+  final ReverseSwapBloc reverseSwapBloc;
   final Map<Type, Object> _blocsByType;
 
   static T _registerBloc<T>(T bloc, Map<Type, Object> blocs) {
@@ -56,6 +58,8 @@ class AppBlocs {
         _registerBloc(MarketplaceBloc(), blocsByType);
     LSPBloc lspBloc =
         _registerBloc(LSPBloc(accountBloc.accountStream), blocsByType);
+    ReverseSwapBloc reverseSwapBloc =
+        _registerBloc(ReverseSwapBloc(accountBloc.paymentsStream), blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc =
         _registerBloc(FastbitcoinsBloc(production: true), blocsByType);
 
@@ -70,6 +74,7 @@ class AppBlocs {
         marketplaceBloc,
         fastbitcoinsBloc,
         lspBloc,
+        reverseSwapBloc,
         blocsByType);
   }
 
@@ -84,6 +89,7 @@ class AppBlocs {
     this.marketplaceBloc,
     this.fastbitcoinsBloc,
     this.lspBloc,
+    this.reverseSwapBloc,
     this._blocsByType,
   );
 }

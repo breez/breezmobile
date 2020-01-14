@@ -12,6 +12,7 @@ import 'package:breez/routes/shared/security_pin/lock_screen.dart';
 import 'package:breez/routes/user/add_funds/deposit_to_btc_address_page.dart';
 import 'package:breez/routes/user/add_funds/moonpay_webview.dart';
 import 'package:breez/routes/user/get_refund/get_refund_page.dart';
+import 'package:breez/routes/user/withdraw_funds/reverse_swap_page.dart';
 import 'package:breez/routes/user/withdraw_funds/send_coins_dialog.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
@@ -177,7 +178,7 @@ class UserApp extends StatelessWidget {
                                       );
                                     case '/withdraw_funds':
                                       return FadeInRoute(
-                                        builder: (_) => WithdrawFundsPage(),
+                                        builder: (_) => ReverseSwapPage(),
                                         settings: settings,
                                       );
                                     case '/send_coins':

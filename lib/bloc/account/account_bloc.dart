@@ -10,6 +10,7 @@ import 'package:breez/bloc/csv_exporter.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
+import 'package:breez/services/breez_server/generated/breez.pb.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/currency_data.dart';
@@ -67,15 +68,6 @@ class AccountBloc {
   final _routingNodeConnectionController = BehaviorSubject<bool>();
   Stream<bool> get routingNodeConnectionStream =>
       _routingNodeConnectionController.stream;
-
-  final _withdrawalController =
-      StreamController<RemoveFundRequestModel>.broadcast();
-  Sink<RemoveFundRequestModel> get withdrawalSink => _withdrawalController.sink;
-
-  final _withdrawalResultController =
-      StreamController<RemoveFundResponseModel>.broadcast();
-  Stream<RemoveFundResponseModel> get withdrawalResultStream =>
-      _withdrawalResultController.stream;
 
   final _paymentsController = BehaviorSubject<PaymentsModel>();
   Stream<PaymentsModel> get paymentsStream => _paymentsController.stream;
@@ -139,7 +131,7 @@ class AccountBloc {
       ResetChainService: _handleResetChainService,
       SendCoins: _handleSendCoins,
       ExportPayments: _exportPaymentsAction,
-      FetchPayments: _handleFetchPayments
+      FetchPayments: _handleFetchPayments,
     };
 
     _accountController.add(AccountModel.initial());
@@ -155,7 +147,6 @@ class AccountBloc {
       _listenAccountActions();
       _hanleAccountSettings();
       _listenUserChanges(userProfileStream);
-      _listenWithdrawalRequests();
       _listenFilterChanges();
       _listenAccountChanges();
       _listenMempoolTransactions();
@@ -271,30 +262,13 @@ class AccountBloc {
 
   Future _sendPayment(SendPayment sendPayment) {
     var payRequest = sendPayment.paymentRequest;
-    _accountController.add(_accountController.value
-        .copyWith(paymentRequestInProgress: payRequest.paymentRequest));
     var sendPaymentFuture = _breezLib
         .sendPaymentForRequest(payRequest.paymentRequest,
             amount: payRequest.amount)
-        .then((response) {
-      _accountController
-          .add(_accountController.value.copyWith(paymentRequestInProgress: ""));
-
-      if (response.paymentError.isNotEmpty) {
-        return Future.error(PaymentError(
-            payRequest, response.paymentError, response.traceReport));
-      }
-
-      _completedPaymentsController.add(CompletedPayment(payRequest));
-      return Future.value(null);
-    }).catchError((err) {
-      _accountController
-          .add(_accountController.value.copyWith(paymentRequestInProgress: ""));
-      var error = (err.runtimeType == PaymentError
-          ? err
-          : PaymentError(payRequest, err, null));
-      _completedPaymentsController.addError(error);
-      return Future.error(error);
+        .catchError((err) {
+      _completedPaymentsController
+          .addError(PaymentError(payRequest, err, null));
+      return Future.error(err);
     });
     _backgroundService.runAsTask(sendPaymentFuture, () {
       log.info("sendpayment background task finished");
@@ -491,20 +465,6 @@ class AccountBloc {
     });
   }
 
-  void _listenWithdrawalRequests() {
-    _withdrawalController.stream.listen((removeFundRequestModel) {
-      Future removeFunds = Future.value(null);
-      removeFunds = _breezLib
-          .removeFund(
-              removeFundRequestModel.address, removeFundRequestModel.amount)
-          .then((res) => _withdrawalResultController.add(
-              RemoveFundResponseModel(res.txid,
-                  errorMessage: res.errorMessage)));
-
-      removeFunds.catchError(_withdrawalResultController.addError);
-    });
-  }
-
   void _listenFilterChanges() {
     _paymentFilterController.stream.skip(1).listen((filter) {
       _refreshPayments();
@@ -583,6 +543,24 @@ class AccountBloc {
           NotificationEvent_NotificationType.BACKUP_NODE_CONFLICT) {
         eventSubscription.cancel();
         _nodeConflictController.add(null);
+      }
+      if (event.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
+        var paymentRequest = event.data[0];
+        var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
+        _completedPaymentsController.add(CompletedPayment(
+            PayRequest(paymentRequest, invoice.amount),
+            cancelled: false));
+      }
+      if (event.type == NotificationEvent_NotificationType.PAYMENT_FAILED) {
+        var paymentRequest = event.data[0];
+        var error = event.data[1];
+        var traceReport;
+        if (event.data.length > 2) {
+          traceReport = event.data[2];
+        }
+        var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
+        _completedPaymentsController.addError(PaymentError(
+            PayRequest(paymentRequest, invoice.amount), error, traceReport));
       }
     });
   }
@@ -677,7 +655,6 @@ class AccountBloc {
     _accountEnableController.close();
     _paymentsController.close();
     _accountNotificationsController.close();
-    _withdrawalController.close();
     _paymentFilterController.close();
     _lightningDownController.close();
     _reconnectStreamController.close();

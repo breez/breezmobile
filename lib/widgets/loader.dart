@@ -6,8 +6,9 @@ class Loader extends StatelessWidget {
   final double value;
   final String label;
   final Color color;
+  final strokeWidth;
 
-  Loader({this.value, this.label, this.color});
+  Loader({this.value, this.label, this.color, this.strokeWidth = 4.0});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +16,7 @@ class Loader extends StatelessWidget {
       CircularProgressIndicator(
         value: this.value,
         semanticsLabel: label,
+        strokeWidth: this.strokeWidth,
         valueColor: AlwaysStoppedAnimation<Color>(
           this.color ?? theme.circularLoaderColor,
         ),

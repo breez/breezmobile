@@ -21,9 +21,11 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final ScrollController scrollController;
   final Function(PaymentRequestState state) _onStateChange;
   final double _initialDialogSize;
+  final String paymentRequest;
 
   ProcessingPaymentDialog(
       this.context,
+      this.paymentRequest,
       this.accountBloc,
       this.firstPaymentItemKey,
       this.scrollController,
@@ -87,23 +89,26 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     _accountSettingsSubscription = widget.accountBloc.accountSettingsStream
         .listen((settings) => _accountSettings = settings);
 
-    _sentPaymentResultSubscription = widget.accountBloc.completedPaymentsStream
-        .listen((fulfilledPayment) {
-      Future scrollAnimationFuture = Future.value(null);
-      if (widget.scrollController.hasClients) {
-        scrollAnimationFuture = widget.scrollController
+    _sentPaymentResultSubscription =
+        widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
+      if (widget.scrollController.hasClients &&
+          fulfilledPayment.paymentRequest.paymentRequest ==
+              widget.paymentRequest) {
+        widget.scrollController
             .animateTo(widget.scrollController.position.minScrollExtent,
                 duration: Duration(milliseconds: 200), curve: Curves.ease)
-            .whenComplete(() => Future.delayed(Duration(milliseconds: 50)));
+            .whenComplete(() {
+          return Future.delayed(Duration(milliseconds: 50)).then((_) {
+            controller.reverse();
+          });
+        });
       }
-      scrollAnimationFuture.whenComplete(() {
-        // Trigger the collapse animation and show flushbar after the animation is completed
-        controller.reverse().whenComplete(() =>
-            showFlushbar(context, message: "Payment was successfuly sent!"));
-      });
-    },
-            onError: (err) =>
-                _onPaymentError(_accountSettings, err as PaymentError));
+    }, onError: (err) {
+      var paymentError = err as PaymentError;
+      if (paymentError.request.paymentRequest == widget.paymentRequest) {
+        widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
+      }
+    });
   }
 
   void _initializeTransitionAnimation() {
@@ -122,39 +127,6 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
             0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
         end: RelativeRect.fromLTRB(40.0, _dialogYMargin, 40.0, _dialogYMargin));
     transitionAnimation = tween.animate(controller);
-  }
-
-  _onPaymentError(AccountSettings accountSettings, PaymentError error) async {
-    bool prompt =
-        accountSettings.failePaymentBehavior == BugReportBehavior.PROMPT;
-    bool send =
-        accountSettings.failePaymentBehavior == BugReportBehavior.SEND_REPORT;
-
-    widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
-    showFlushbar(context,
-        message:
-            "Failed to send payment: ${error.toString().split("\n").first}");
-    if (!error.validationError) {
-      if (prompt) {
-        send = await showDialog(
-            useRootNavigator: false,
-            context: widget.context,
-            barrierDismissible: false,
-            builder: (_) =>
-                PaymentFailedReportDialog(widget.context, widget.accountBloc));
-      }
-
-      if (send) {
-        var sendAction = SendPaymentFailureReport(error.traceReport);
-        widget.accountBloc.userActionsSink.add(sendAction);
-        await Navigator.push(
-            widget.context,
-            createLoaderRoute(widget.context,
-                message: "Sending Report...",
-                opacity: 0.8,
-                action: sendAction.future));
-      }
-    }
   }
 
   @override
