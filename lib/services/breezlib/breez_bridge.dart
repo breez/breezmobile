@@ -169,8 +169,11 @@ class BreezBridge {
         .then((res) => ReverseSwap()..mergeFromBuffer(res ?? []));
   }
 
-  Future payReverseSwap(String hash) {
-    return _invokeMethodWhenReady("payReverseSwap", {"argument": hash});
+  Future payReverseSwap(String hash, String token) {
+    var request = ReverseSwapPaymentRequest()
+      ..deviceId = token
+      ..hash = hash;
+    return _invokeMethodWhenReady("payReverseSwap", {"argument": request.writeToBuffer()});
   }
 
   Future<ClaimFeeEstimates> reverseSwapClaimFeeEstimates(String claimAddress) {

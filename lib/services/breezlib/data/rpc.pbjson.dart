@@ -430,6 +430,14 @@ const ReverseSwap$json = const {
   ],
 };
 
+const ReverseSwapPaymentRequest$json = const {
+  '1': 'ReverseSwapPaymentRequest',
+  '2': const [
+    const {'1': 'hash', '3': 1, '4': 1, '5': 9, '10': 'hash'},
+    const {'1': 'device_id', '3': 2, '4': 1, '5': 9, '10': 'deviceId'},
+  ],
+};
+
 const ReverseSwapPaymentStatus$json = const {
   '1': 'ReverseSwapPaymentStatus',
   '2': const [

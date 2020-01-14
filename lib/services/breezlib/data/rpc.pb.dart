@@ -2085,6 +2085,47 @@ class ReverseSwap extends $pb.GeneratedMessage {
   void clearClaimFee() => clearField(12);
 }
 
+class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ReverseSwapPaymentRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'hash')
+    ..aOS(2, 'deviceId')
+    ..hasRequiredFields = false
+  ;
+
+  ReverseSwapPaymentRequest._() : super();
+  factory ReverseSwapPaymentRequest() => create();
+  factory ReverseSwapPaymentRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ReverseSwapPaymentRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ReverseSwapPaymentRequest clone() => ReverseSwapPaymentRequest()..mergeFromMessage(this);
+  ReverseSwapPaymentRequest copyWith(void Function(ReverseSwapPaymentRequest) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ReverseSwapPaymentRequest create() => ReverseSwapPaymentRequest._();
+  ReverseSwapPaymentRequest createEmptyInstance() => create();
+  static $pb.PbList<ReverseSwapPaymentRequest> createRepeated() => $pb.PbList<ReverseSwapPaymentRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ReverseSwapPaymentRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReverseSwapPaymentRequest>(create);
+  static ReverseSwapPaymentRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get hash => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set hash($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasHash() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearHash() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get deviceId => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set deviceId($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasDeviceId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearDeviceId() => clearField(2);
+}
+
 class ReverseSwapPaymentStatus extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ReverseSwapPaymentStatus', package: const $pb.PackageName('data'), createEmptyInstance: create)
     ..aOS(1, 'hash')

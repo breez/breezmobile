@@ -5,6 +5,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/user/withdraw_funds/swap_in_progress.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
@@ -19,10 +20,12 @@ class ReverseSwapBloc with AsyncActionsHandler {
       _swapsInProgressController.stream;
 
   final Stream<PaymentsModel> _paymentsStream;
+  final Stream<BreezUserModel> _userStream;
   BreezBridge _breezLib;
+  BreezUserModel _currentUser;
   int refreshInProgressIndex = 0;
 
-  ReverseSwapBloc(this._paymentsStream) {
+  ReverseSwapBloc(this._paymentsStream, this._userStream) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
 
@@ -48,7 +51,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
         .listen((_) {
           _refreshInProgressSwaps();
         });
-
+    _userStream.listen((u) => _currentUser = u);
     listenActions();
     _refreshInProgressSwaps();
   }
@@ -108,8 +111,8 @@ class ReverseSwapBloc with AsyncActionsHandler {
     };
 
     await _breezLib.setReverseSwapClaimFee(action.swap.hash, action.claimFee);
-
-    action.resolve(await _breezLib.payReverseSwap(action.swap.hash).then((_) {
+    
+    action.resolve(await _breezLib.payReverseSwap(action.swap.hash, _currentUser.token ?? "").then((_) {
       Future.any([
         _breezLib.waitPayment(action.swap.paymentRequest),
         _paymentsStream
