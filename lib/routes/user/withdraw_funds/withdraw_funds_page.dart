@@ -21,8 +21,10 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class WithdrawFundsPage extends StatefulWidget {
   final Function(ReverseSwapInfo swap) onNext;
+  final String initialAddress;
+  final String initialAmount;
 
-  const WithdrawFundsPage({this.onNext});
+  const WithdrawFundsPage({this.initialAddress, this.initialAmount, this.onNext});
 
   @override
   State<StatefulWidget> createState() {
@@ -46,6 +48,12 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   void initState() {
     super.initState();
     _breezLib = ServiceInjector().breezBridge;
+    if (widget.initialAddress != null) {
+      _addressController.text = widget.initialAddress;      
+    }
+    if (widget.initialAmount != null) {
+      _amountController.text = widget.initialAmount;      
+    }
   }
 
   @override
