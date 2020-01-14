@@ -39,6 +39,11 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     super.dispose();
   }
 
+  @override void didChangeDependencies() {    
+    super.didChangeDependencies();
+    AppBlocsProvider.of<ReverseSwapBloc>(context).actionsSink.add(FetchInProgressSwap());
+  }
+
   @override
   Widget build(BuildContext context) {
     var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
