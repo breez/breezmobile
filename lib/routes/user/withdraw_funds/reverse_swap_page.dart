@@ -90,8 +90,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                       swap: swapSnapshot.data,
                                       bloc: reverseSwapBloc,
                                       onSuccess: () {
-                                        Navigator.of(context).pop(
-                                            "We wil notify you when the swap is confirmed.");
+                                        Navigator.of(context).pop();
                                       },
                                       onPrevious: () {
                                         _pageController
