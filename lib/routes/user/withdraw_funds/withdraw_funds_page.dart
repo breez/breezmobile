@@ -10,6 +10,7 @@ import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
@@ -246,7 +247,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   Future _scanBarcode() async {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await BarcodeScanner.scan();
+      String barcode = await QRScanner.scan();
       setState(() {
         _addressController.text = barcode;
         _scannerErrorMessage = "";

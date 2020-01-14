@@ -17,6 +17,7 @@ import 'package:breez/routes/user/ctp_join_session_handler.dart';
 import 'package:breez/routes/user/received_invoice_notification.dart';
 import 'package:breez/routes/user/showPinHandler.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
@@ -205,7 +206,7 @@ class HomeState extends State<Home> {
       DrawerItemConfig("/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png",
           onItemSelected: (String name) async {
         try {
-          String decodedQr = await BarcodeScanner.scan();
+          String decodedQr = await QRScanner.scan();
           widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
         } on PlatformException catch (e) {
           if (e.code == BarcodeScanner.CameraAccessDenied) {

@@ -5,6 +5,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                     _buildInvoiceMenuItem("PAY", "src/icon/qr_scan.png",
                         () async {
                       try {
-                        String decodedQr = await BarcodeScanner.scan();
+                        String decodedQr = await QRScanner.scan();
                         widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
                       } on PlatformException catch (e) {
                         if (e.code == BarcodeScanner.CameraAccessDenied) {

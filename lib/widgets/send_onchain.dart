@@ -1,13 +1,15 @@
 import 'dart:async';
+
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
 
 import 'flushbar.dart';
 
@@ -246,7 +248,7 @@ class SendOnchainState extends State<SendOnchain> {
   Future _scanBarcode() async {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await BarcodeScanner.scan();
+      String barcode = await QRScanner.scan();
       setState(() {
         _addressController.text = barcode;
         _scannerErrorMessage = "";
