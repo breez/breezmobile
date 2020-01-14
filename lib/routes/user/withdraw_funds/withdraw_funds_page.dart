@@ -313,11 +313,6 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     }
   }
 
-  Future<String> getClipboardData() async {
-    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-    return clipboardData.text;
-  }
-
   Future<bool> _asyncValidate() {
     return _breezLib.validateAddress(_addressController.text).then((data) {
       _addressValidated = data;

@@ -80,11 +80,6 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
         });
   }
 
-  Future<String> getClipboardData() async {
-    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-    return clipboardData.text;
-  }
-
   Widget _buildInvoiceMenuItem(
       String title, String iconPath, Function function, String themeId,
       {bool isFirst = false}) {

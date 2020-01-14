@@ -216,11 +216,6 @@ class HomeState extends State<Home> {
     return DrawerItemConfigGroup(_filterItems(minorActionsInvoice));
   }
 
-  Future<String> getClipboardData() async {
-    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-    return clipboardData.text;
-  }
-
   _onNavigationItemSelected(String itemName) {
     if (widget._screens.map((sc) => sc.name).contains(itemName)) {
       setState(() {

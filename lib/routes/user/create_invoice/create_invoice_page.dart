@@ -318,11 +318,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     }
   }
 
-  Future<String> getClipboardData() async {
-    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-    return clipboardData.text;
-  }
-
   Future _handleLNUrlWithdraw(AccountModel account, String lnurl) async {
     Fetch fetchAction = Fetch(lnurl);
     _lnurlBloc.actionsSink.add(fetchAction);
