@@ -20,6 +20,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
 
   final Stream<PaymentsModel> _paymentsStream;
   BreezBridge _breezLib;
+  int refreshInProgressIndex = 0;
 
   ReverseSwapBloc(this._paymentsStream) {
     ServiceInjector injector = ServiceInjector();
@@ -32,7 +33,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
       FetchInProgressSwap: _fetchInProgressSwap,
     });
 
-    // refresh reverse swaps in progress stream
+    // refresh reverse swaps in progress stream    
     _breezLib.notificationStream
         .where((n) {
           return [
@@ -52,15 +53,14 @@ class ReverseSwapBloc with AsyncActionsHandler {
     _refreshInProgressSwaps();
   }
 
-  Future _refreshInProgressSwaps() async {    
-    String unconfirmedTx =
-        await _breezLib.unconfirmedReverseSwapClaimTransaction();
-    ReverseSwapPaymentStatuses payments = await _breezLib.reverseSwapPayments();
-    InProgressReverseSwaps swap = InProgressReverseSwaps(null, null);
-    if (unconfirmedTx.isNotEmpty || payments.paymentsStatus.length > 0) {      
-      swap = InProgressReverseSwaps(payments, unconfirmedTx);
+  Future _refreshInProgressSwaps() async { 
+    var currentRefresh = this.refreshInProgressIndex;
+    var status = await _fetchInProgressSwap(FetchInProgressSwap());
+
+    // only push to the stream if we didn't get another refresh request.
+    if (currentRefresh == this.refreshInProgressIndex) {
+      _swapsInProgressController.add(status);
     }
-    _swapsInProgressController.add(swap);
   }
 
   Future _getFeeClaimEstimates(GetClaimFeeEstimates action) async {
@@ -69,19 +69,17 @@ class ReverseSwapBloc with AsyncActionsHandler {
     action.resolve(ReverseSwapClaimFeeEstimates(estimates));
   }
 
-  Future _fetchInProgressSwap(FetchInProgressSwap action) async {
-    print("fetching in progress");
+  Future _fetchInProgressSwap(FetchInProgressSwap action) async {    
     String unconfirmedTx =
         await _breezLib.unconfirmedReverseSwapClaimTransaction();
     ReverseSwapPaymentStatuses payments = await _breezLib.reverseSwapPayments();
-    if ((unconfirmedTx == null || unconfirmedTx.isEmpty) &&
-        payments.paymentsStatus.length == 0) {
-      print("fetching in progress results in nothing");
-      action.resolve(null);
-      return;
+    InProgressReverseSwaps swap = InProgressReverseSwaps(null, null);
+    if (unconfirmedTx.isNotEmpty || payments.paymentsStatus.length > 0) {         
+      swap = InProgressReverseSwaps(payments, unconfirmedTx);
     }
-    print("fetching in progress results in payments");
-    action.resolve(InProgressReverseSwaps(payments, unconfirmedTx));
+    _swapsInProgressController.add(swap);    
+    action.resolve(swap);
+    return swap;
   }
 
   Future _newReverseSwap(NewReverseSwap action) async {
