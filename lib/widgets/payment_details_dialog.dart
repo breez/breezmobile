@@ -231,7 +231,7 @@ Future<Null> showPaymentDetailsDialog(
           paymentInfo.redeemTxID == null || paymentInfo.redeemTxID.isEmpty
               ? Container()
               : ShareablePaymentRow(
-                  title: "Claim Transaction",
+                  title: "On-chain Transaction",
                   sharedValue: paymentInfo.redeemTxID),
         ],
       ),
