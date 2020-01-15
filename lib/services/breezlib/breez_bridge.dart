@@ -330,6 +330,11 @@ class BreezBridge {
         .then((result) => InvoiceMemo()..mergeFromBuffer(result ?? []));
   }
 
+  Future<String> getPaymentRequestHash(String payReq) {
+    return _invokeMethodWhenReady("getPaymentRequestHash", {"argument": payReq})
+        .then((result) => result as String);
+  }
+
   Future<String> newAddress(String breezID) {
     return _invokeMethodWhenReady("newAddress", {"argument": breezID})
         .then((address) => address as String);

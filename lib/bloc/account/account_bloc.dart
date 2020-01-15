@@ -9,6 +9,7 @@ import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/csv_exporter.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/routes/user/home/payment_item.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breez_server/generated/breez.pb.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -86,6 +87,17 @@ class AccountBloc {
       StreamController<CompletedPayment>.broadcast();
   Stream<CompletedPayment> get completedPaymentsStream =>
       _completedPaymentsController.stream;
+
+  Stream<PaymentInfo> get pendingPaymentStream => paymentsStream.map((ps) {
+        if (ps.nonFilteredItems.length == 0) {
+          return null;
+        }
+        var topItem = ps.nonFilteredItems.first;
+        if (topItem.type != PaymentType.SENT || !topItem.pending) {
+          return null;
+        }
+        return topItem;
+      }).distinct((p1, p2) => p1?.paymentHash == p2?.paymentHash);
 
   final _lightningDownController = StreamController<bool>.broadcast();
   Stream<bool> get lightningDownStream => _lightningDownController.stream;

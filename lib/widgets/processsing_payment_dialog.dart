@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
@@ -11,6 +12,7 @@ import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:rxdart/rxdart.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
@@ -21,11 +23,11 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final ScrollController scrollController;
   final Function(PaymentRequestState state) _onStateChange;
   final double _initialDialogSize;
-  final String paymentRequest;
+  final PaymentRequestModel paymentRequestModel;
 
   ProcessingPaymentDialog(
       this.context,
-      this.paymentRequest,
+      this.paymentRequestModel,
       this.accountBloc,
       this.firstPaymentItemKey,
       this.scrollController,
@@ -91,24 +93,37 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
     _sentPaymentResultSubscription =
         widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
-      if (widget.scrollController.hasClients &&
-          fulfilledPayment.paymentRequest.paymentRequest ==
-              widget.paymentRequest) {
-        widget.scrollController
-            .animateTo(widget.scrollController.position.minScrollExtent,
-                duration: Duration(milliseconds: 200), curve: Curves.ease)
-            .whenComplete(() {
-          return Future.delayed(Duration(milliseconds: 50)).then((_) {
-            controller.reverse();
-          });
-        });
+      if (fulfilledPayment.paymentRequest.paymentRequest ==
+          widget.paymentRequestModel.rawPayReq) {
+        _animateClose();
       }
     }, onError: (err) {
       var paymentError = err as PaymentError;
-      if (paymentError.request.paymentRequest == widget.paymentRequest) {
+      if (paymentError.request.paymentRequest ==
+          widget.paymentRequestModel.rawPayReq) {
         widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
       }
     });
+
+    widget.accountBloc.pendingPaymentStream
+        .transform(DebounceStreamTransformer(Duration(seconds: 10)))
+        .where((p) => p?.paymentHash == widget.paymentRequestModel.paymentHash)
+        .listen((p) {
+      _animateClose();
+    });
+  }
+
+  void _animateClose() {
+    if (widget.scrollController.hasClients) {
+      widget.scrollController
+          .animateTo(widget.scrollController.position.minScrollExtent,
+              duration: Duration(milliseconds: 200), curve: Curves.ease)
+          .whenComplete(() {
+        return Future.delayed(Duration(milliseconds: 50)).then((_) {
+          controller.reverse();
+        });
+      });
+    }
   }
 
   void _initializeTransitionAnimation() {
