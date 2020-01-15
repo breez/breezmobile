@@ -188,7 +188,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             title: Container(
               child: AutoSizeText(
                 "Boltz service fee:",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white.withOpacity(0.4)),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
                 stepGranularity: 0.1,
@@ -196,8 +196,8 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             ),
             trailing: Container(
               child: AutoSizeText(
-                acc.currency.format(widget.swap.amount - widget.swap.onChainAmount),
-                style: TextStyle(color: Theme.of(context).errorColor),
+                "-${acc.currency.format(widget.swap.amount - widget.swap.onChainAmount)}",
+                style: TextStyle(color: Theme.of(context).errorColor.withOpacity(0.4)),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
                 stepGranularity: 0.1,
@@ -207,7 +207,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             title: Container(
               child: AutoSizeText(
                 "Transaction fee:",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white.withOpacity(0.4)),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
                 stepGranularity: 0.1,
@@ -215,8 +215,8 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             ),
             trailing: Container(
               child: AutoSizeText(
-                acc.currency.format(Int64(feeOptions[selectedFeeIndex].sats)),
-                style: TextStyle(color: Theme.of(context).errorColor),
+                "-${acc.currency.format(Int64(feeOptions[selectedFeeIndex].sats))}",
+                style: TextStyle(color: Theme.of(context).errorColor.withOpacity(0.4)),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
                 stepGranularity: 0.1,
