@@ -196,18 +196,16 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
     );
   }
 
-  Container _buildBiometricsButton(
+  Widget _buildBiometricsButton(
       AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
-    return Container(
-      child: IconButton(
-        onPressed: () => _validateBiometrics(),
-        icon: Icon(
-          snapshot.data.securityModel.enrolledBiometrics.contains("Face")
-              ? Icons.face
-              : Icons.fingerprint,
-          color: Theme.of(context).errorColor,
-        ),
+    return CircularButton(
+      child: Icon(
+        snapshot.data.securityModel.enrolledBiometrics.contains("Face")
+            ? Icons.face
+            : Icons.fingerprint,
+        color: Theme.of(context).errorColor,
       ),
+      onTap: () => _validateBiometrics(),
     );
   }
 
