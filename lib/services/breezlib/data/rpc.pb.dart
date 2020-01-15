@@ -1958,6 +1958,7 @@ class ReverseSwap extends $pb.GeneratedMessage {
     ..aInt64(10, 'timeoutBlockHeight')
     ..aInt64(11, 'startBlockHeight')
     ..aInt64(12, 'claimFee')
+    ..aOS(13, 'claimTxid')
     ..hasRequiredFields = false
   ;
 
@@ -2083,6 +2084,15 @@ class ReverseSwap extends $pb.GeneratedMessage {
   $core.bool hasClaimFee() => $_has(11);
   @$pb.TagNumber(12)
   void clearClaimFee() => clearField(12);
+
+  @$pb.TagNumber(13)
+  $core.String get claimTxid => $_getSZ(12);
+  @$pb.TagNumber(13)
+  set claimTxid($core.String v) { $_setString(12, v); }
+  @$pb.TagNumber(13)
+  $core.bool hasClaimTxid() => $_has(12);
+  @$pb.TagNumber(13)
+  void clearClaimTxid() => clearField(13);
 }
 
 class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {

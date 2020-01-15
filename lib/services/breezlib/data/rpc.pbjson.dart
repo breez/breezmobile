@@ -427,6 +427,7 @@ const ReverseSwap$json = const {
     const {'1': 'timeout_block_height', '3': 10, '4': 1, '5': 3, '10': 'timeoutBlockHeight'},
     const {'1': 'start_block_height', '3': 11, '4': 1, '5': 3, '10': 'startBlockHeight'},
     const {'1': 'claim_fee', '3': 12, '4': 1, '5': 3, '10': 'claimFee'},
+    const {'1': 'claim_txid', '3': 13, '4': 1, '5': 9, '10': 'claimTxid'},
   ],
 };
 
