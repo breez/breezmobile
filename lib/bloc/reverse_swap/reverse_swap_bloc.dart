@@ -36,7 +36,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
       FetchInProgressSwap: _fetchInProgressSwap,
     });
 
-    // refresh reverse swaps in progress stream    
+    // refresh reverse swaps in progress stream
     _breezLib.notificationStream
         .where((n) {
           return [
@@ -56,7 +56,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
     _refreshInProgressSwaps();
   }
 
-  Future _refreshInProgressSwaps() async { 
+  Future _refreshInProgressSwaps() async {
     var currentRefresh = this.refreshInProgressIndex;
     var status = await _fetchInProgressSwap(FetchInProgressSwap());
 
@@ -72,15 +72,15 @@ class ReverseSwapBloc with AsyncActionsHandler {
     action.resolve(ReverseSwapClaimFeeEstimates(estimates));
   }
 
-  Future _fetchInProgressSwap(FetchInProgressSwap action) async {    
+  Future _fetchInProgressSwap(FetchInProgressSwap action) async {
     String unconfirmedTx =
         await _breezLib.unconfirmedReverseSwapClaimTransaction();
     ReverseSwapPaymentStatuses payments = await _breezLib.reverseSwapPayments();
     InProgressReverseSwaps swap = InProgressReverseSwaps(null, null);
-    if (unconfirmedTx.isNotEmpty || payments.paymentsStatus.length > 0) {         
+    if (unconfirmedTx.isNotEmpty || payments.paymentsStatus.length > 0) {
       swap = InProgressReverseSwaps(payments, unconfirmedTx);
     }
-    _swapsInProgressController.add(swap);    
+    _swapsInProgressController.add(swap);
     action.resolve(swap);
     return swap;
   }
@@ -111,8 +111,14 @@ class ReverseSwapBloc with AsyncActionsHandler {
     };
 
     await _breezLib.setReverseSwapClaimFee(action.swap.hash, action.claimFee);
-    
-    action.resolve(await _breezLib.payReverseSwap(action.swap.hash, _currentUser.token ?? "").then((_) {
+
+    action.resolve(await _breezLib
+        .payReverseSwap(
+            action.swap.hash,
+            _currentUser.token ?? "",
+            "Action Required",
+            "Please open Breez to complete your requested transaction.")
+        .then((_) {
       Future.any([
         _breezLib.waitPayment(action.swap.paymentRequest),
         _paymentsStream

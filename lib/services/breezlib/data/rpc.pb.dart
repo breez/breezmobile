@@ -1952,7 +1952,7 @@ class ReverseSwap extends $pb.GeneratedMessage {
     ..aOS(4, 'lockupAddress')
     ..aOS(5, 'preimage')
     ..aOS(6, 'key')
-    ..aOS(7, 'claimAddress', protoName: 'claimAddress')
+    ..aOS(7, 'claimAddress')
     ..aInt64(8, 'lnAmount')
     ..aInt64(9, 'onchainAmount')
     ..aInt64(10, 'timeoutBlockHeight')
@@ -2088,7 +2088,7 @@ class ReverseSwap extends $pb.GeneratedMessage {
 class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ReverseSwapPaymentRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
     ..aOS(1, 'hash')
-    ..aOS(2, 'deviceId')
+    ..aOM<PushNotificationDetails>(2, 'pushNotificationDetails', subBuilder: PushNotificationDetails.create)
     ..hasRequiredFields = false
   ;
 
@@ -2117,13 +2117,66 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
   void clearHash() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get deviceId => $_getSZ(1);
+  PushNotificationDetails get pushNotificationDetails => $_getN(1);
   @$pb.TagNumber(2)
-  set deviceId($core.String v) { $_setString(1, v); }
+  set pushNotificationDetails(PushNotificationDetails v) { setField(2, v); }
   @$pb.TagNumber(2)
-  $core.bool hasDeviceId() => $_has(1);
+  $core.bool hasPushNotificationDetails() => $_has(1);
   @$pb.TagNumber(2)
-  void clearDeviceId() => clearField(2);
+  void clearPushNotificationDetails() => clearField(2);
+  @$pb.TagNumber(2)
+  PushNotificationDetails ensurePushNotificationDetails() => $_ensure(1);
+}
+
+class PushNotificationDetails extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('PushNotificationDetails', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'deviceId')
+    ..aOS(2, 'title')
+    ..aOS(3, 'body')
+    ..hasRequiredFields = false
+  ;
+
+  PushNotificationDetails._() : super();
+  factory PushNotificationDetails() => create();
+  factory PushNotificationDetails.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory PushNotificationDetails.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  PushNotificationDetails clone() => PushNotificationDetails()..mergeFromMessage(this);
+  PushNotificationDetails copyWith(void Function(PushNotificationDetails) updates) => super.copyWith((message) => updates(message as PushNotificationDetails));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static PushNotificationDetails create() => PushNotificationDetails._();
+  PushNotificationDetails createEmptyInstance() => create();
+  static $pb.PbList<PushNotificationDetails> createRepeated() => $pb.PbList<PushNotificationDetails>();
+  @$core.pragma('dart2js:noInline')
+  static PushNotificationDetails getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<PushNotificationDetails>(create);
+  static PushNotificationDetails _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get deviceId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set deviceId($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasDeviceId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearDeviceId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get title => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set title($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasTitle() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearTitle() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get body => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set body($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasBody() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearBody() => clearField(3);
 }
 
 class ReverseSwapPaymentStatus extends $pb.GeneratedMessage {

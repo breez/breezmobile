@@ -421,7 +421,7 @@ const ReverseSwap$json = const {
     const {'1': 'lockup_address', '3': 4, '4': 1, '5': 9, '10': 'lockupAddress'},
     const {'1': 'preimage', '3': 5, '4': 1, '5': 9, '10': 'preimage'},
     const {'1': 'key', '3': 6, '4': 1, '5': 9, '10': 'key'},
-    const {'1': 'claimAddress', '3': 7, '4': 1, '5': 9, '10': 'claimAddress'},
+    const {'1': 'claim_address', '3': 7, '4': 1, '5': 9, '10': 'claimAddress'},
     const {'1': 'ln_amount', '3': 8, '4': 1, '5': 3, '10': 'lnAmount'},
     const {'1': 'onchain_amount', '3': 9, '4': 1, '5': 3, '10': 'onchainAmount'},
     const {'1': 'timeout_block_height', '3': 10, '4': 1, '5': 3, '10': 'timeoutBlockHeight'},
@@ -434,7 +434,16 @@ const ReverseSwapPaymentRequest$json = const {
   '1': 'ReverseSwapPaymentRequest',
   '2': const [
     const {'1': 'hash', '3': 1, '4': 1, '5': 9, '10': 'hash'},
-    const {'1': 'device_id', '3': 2, '4': 1, '5': 9, '10': 'deviceId'},
+    const {'1': 'push_notification_details', '3': 2, '4': 1, '5': 11, '6': '.data.PushNotificationDetails', '10': 'pushNotificationDetails'},
+  ],
+};
+
+const PushNotificationDetails$json = const {
+  '1': 'PushNotificationDetails',
+  '2': const [
+    const {'1': 'device_id', '3': 1, '4': 1, '5': 9, '10': 'deviceId'},
+    const {'1': 'title', '3': 2, '4': 1, '5': 9, '10': 'title'},
+    const {'1': 'body', '3': 3, '4': 1, '5': 9, '10': 'body'},
   ],
 };
 
