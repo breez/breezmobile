@@ -47,10 +47,9 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   Animation<double> borderAnimation;
   Animation<double> opacityAnimation;
   Animation<RelativeRect> transitionAnimation;
-
-  AccountSettings _accountSettings;
-  StreamSubscription<AccountSettings> _accountSettingsSubscription;
+  
   StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
+  StreamSubscription<PaymentInfo> _pendingPaymentSubscription;
 
   bool _isInit = false;
 
@@ -87,9 +86,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     super.didChangeDependencies();
   }
 
-  _listenPaymentsResults() {
-    _accountSettingsSubscription = widget.accountBloc.accountSettingsStream
-        .listen((settings) => _accountSettings = settings);
+  _listenPaymentsResults() {    
 
     _sentPaymentResultSubscription =
         widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
@@ -105,7 +102,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
       }
     });
 
-    widget.accountBloc.pendingPaymentStream
+    _pendingPaymentSubscription = widget.accountBloc.pendingPaymentStream
         .transform(DebounceStreamTransformer(Duration(seconds: 10)))
         .where((p) => p?.paymentHash == widget.paymentRequestModel.paymentHash)
         .listen((p) {
@@ -145,9 +142,9 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 
   @override
-  void dispose() {
-    _accountSettingsSubscription?.cancel();
+  void dispose() {    
     _sentPaymentResultSubscription?.cancel();
+    _pendingPaymentSubscription?.cancel();
     controller?.dispose();
     super.dispose();
   }
