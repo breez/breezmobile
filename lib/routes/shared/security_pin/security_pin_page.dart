@@ -35,10 +35,33 @@ class SecurityPage extends StatefulWidget {
   }
 }
 
-class SecurityPageState extends State<SecurityPage> {
+class SecurityPageState extends State<SecurityPage>
+    with WidgetsBindingObserver {
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
   int _renderIndex = 0;
+  String _enrolledBiometrics;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _enrolledBiometrics = "";
+    _getEnrolledBiometrics();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _getEnrolledBiometrics();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +142,7 @@ class SecurityPageState extends State<SecurityPage> {
         ..add(_buildPINIntervalTile(securityModel, backupSettings))
         ..add(Divider())
         ..add(_buildChangePINTile(securityModel, backupSettings));
-      if (securityModel.enrolledBiometrics.isNotEmpty) {
+      if (_enrolledBiometrics.isNotEmpty) {
         _tiles
           ..add(Divider())
           ..add(_buildEnableBiometricAuthTile(securityModel, backupSettings));
@@ -289,7 +312,7 @@ class SecurityPageState extends State<SecurityPage> {
       SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: AutoSizeText(
-        "Enable ${securityModel.enrolledBiometrics}",
+        "Enable ${_enrolledBiometrics}",
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
@@ -384,6 +407,16 @@ class SecurityPageState extends State<SecurityPage> {
               ));
         });
       }
+    });
+  }
+
+  Future _getEnrolledBiometrics() async {
+    var getEnrolledBiometricsAction = GetEnrolledBiometrics();
+    widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
+    return getEnrolledBiometricsAction.future.then((enrolledBiometrics) {
+      setState(() {
+        _enrolledBiometrics = enrolledBiometrics;
+      });
     });
   }
 
