@@ -41,8 +41,8 @@ class ConnectPayBloc {
   BreezUserModel _currentUser;
   AccountModel _currentAccount;
 
-  ConnectPayBloc(
-      Stream<BreezUserModel> userStream, Stream<AccountModel> accountStream, Sink<AsyncAction> accountActions) {
+  ConnectPayBloc(Stream<BreezUserModel> userStream,
+      Stream<AccountModel> accountStream, Sink<AsyncAction> accountActions) {
     _userStream = userStream;
     _accountActions = accountActions;
     userStream.listen((user) => _currentUser = user);
@@ -72,8 +72,9 @@ class ConnectPayBloc {
     }).onDone(() => preferences.remove(PENDING_CTP_LINK));
   }
 
-  Future _sendPayment(String paymentRequest, Int64 amount) { 
-    var action = SendPayment(PayRequest(paymentRequest, amount), ignoreGlobalFeedback: true);
+  Future _sendPayment(String paymentRequest, Int64 amount) {
+    var action = SendPayment(PayRequest(paymentRequest, amount),
+        ignoreGlobalFeedback: true);
     _accountActions.add(action);
     return action.future;
   }

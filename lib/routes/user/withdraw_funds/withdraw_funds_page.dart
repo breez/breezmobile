@@ -25,7 +25,8 @@ class WithdrawFundsPage extends StatefulWidget {
   final String initialAddress;
   final String initialAmount;
 
-  const WithdrawFundsPage({this.initialAddress, this.initialAmount, this.onNext});
+  const WithdrawFundsPage(
+      {this.initialAddress, this.initialAmount, this.onNext});
 
   @override
   State<StatefulWidget> createState() {
@@ -50,10 +51,10 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     super.initState();
     _breezLib = ServiceInjector().breezBridge;
     if (widget.initialAddress != null) {
-      _addressController.text = widget.initialAddress;      
+      _addressController.text = widget.initialAddress;
     }
     if (widget.initialAmount != null) {
-      _amountController.text = widget.initialAmount;      
+      _amountController.text = widget.initialAmount;
     }
   }
 

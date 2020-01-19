@@ -91,13 +91,14 @@ class BreezBridge {
 
   Stream<NotificationEvent> trackPaymentResult(String paymentRequest) {
     return notificationStream.where((notif) =>
-        (notif.type == NotificationEvent_NotificationType.PAYMENT_FAILED ||            
-            notif.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) &&
+        (notif.type == NotificationEvent_NotificationType.PAYMENT_FAILED ||
+            notif.type ==
+                NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) &&
         notif.data[0] == paymentRequest);
   }
 
-  Future waitPayment(String paymentRequest) async {    
-    var res = await trackPaymentResult(paymentRequest).first;    
+  Future waitPayment(String paymentRequest) async {
+    var res = await trackPaymentResult(paymentRequest).first;
     if (res.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
       return;
     }

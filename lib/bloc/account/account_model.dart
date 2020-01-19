@@ -519,7 +519,8 @@ class CompletedPayment {
   final bool cancelled;
   final bool ignoreGlobalFeeback;
 
-  CompletedPayment(this.paymentRequest, {this.cancelled = false, this.ignoreGlobalFeeback = false});
+  CompletedPayment(this.paymentRequest,
+      {this.cancelled = false, this.ignoreGlobalFeeback = false});
 }
 
 class PaymentError implements Exception {
@@ -532,7 +533,8 @@ class PaymentError implements Exception {
       traceReport == null ||
       traceReport.isEmpty;
 
-  PaymentError(this.request, this.error, this.traceReport, {this.ignoreGlobalFeeback = false});
+  PaymentError(this.request, this.error, this.traceReport,
+      {this.ignoreGlobalFeeback = false});
 
   String errMsg() => error?.toString();
   String toString() => errMsg();

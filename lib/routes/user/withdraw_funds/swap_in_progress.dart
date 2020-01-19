@@ -16,8 +16,7 @@ class SwapInProgress extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget body = Center(child: Loader());
     if (swapInProgress != null) {
-      String message =
-          "Breez is waiting for your transaction to be confirmed.";
+      String message = "Breez is waiting for your transaction to be confirmed.";
       if (swapInProgress.claimTxId.isEmpty) {
         message =
             "Breez is currently processing your previous request (it should take ~${formatConfirmationTime(swapInProgress.lockupTxETA)}). You'll be notified once processing is completed to send your funds to the address you've specified.";

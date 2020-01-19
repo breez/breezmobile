@@ -157,14 +157,13 @@ class InvoiceBloc {
         })
         .where((paymentRequest) => paymentRequest != null)
         .asyncMap((paymentRequest) {
-          return breezLib
-              .decodePaymentRequest(paymentRequest)
-              .then((invoice) async {
-                var paymentHash = await breezLib.getPaymentRequestHash(paymentRequest);
-                return PaymentRequestModel(invoice, paymentRequest, paymentHash);
-              })
-              .catchError((err) => throw PaymentRequestError(
-                  "Lightning invoice was not found."));
+          return breezLib.decodePaymentRequest(paymentRequest).then(
+              (invoice) async {
+            var paymentHash =
+                await breezLib.getPaymentRequestHash(paymentRequest);
+            return PaymentRequestModel(invoice, paymentRequest, paymentHash);
+          }).catchError((err) =>
+              throw PaymentRequestError("Lightning invoice was not found."));
         })
         .listen(_receivedInvoicesController.add)
         .onError(_receivedInvoicesController.addError);

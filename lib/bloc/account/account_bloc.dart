@@ -295,7 +295,7 @@ class AccountBloc {
     _backgroundService.runAsTask(sendPaymentFuture, () {
       log.info("sendpayment background task finished");
     });
-    action.resolve(await sendPaymentFuture);    
+    action.resolve(await sendPaymentFuture);
   }
 
   Future _cancelPaymentRequest(CancelPaymentRequest cancelRequest) {

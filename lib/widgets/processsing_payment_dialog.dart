@@ -47,7 +47,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   Animation<double> borderAnimation;
   Animation<double> opacityAnimation;
   Animation<RelativeRect> transitionAnimation;
-  
+
   StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
   StreamSubscription<PaymentInfo> _pendingPaymentSubscription;
 
@@ -86,8 +86,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     super.didChangeDependencies();
   }
 
-  _listenPaymentsResults() {    
-
+  _listenPaymentsResults() {
     _sentPaymentResultSubscription =
         widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
       if (fulfilledPayment.paymentRequest.paymentRequest ==
@@ -142,7 +141,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 
   @override
-  void dispose() {    
+  void dispose() {
     _sentPaymentResultSubscription?.cancel();
     _pendingPaymentSubscription?.cancel();
     controller?.dispose();

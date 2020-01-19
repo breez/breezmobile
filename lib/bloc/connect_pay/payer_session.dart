@@ -58,8 +58,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
 
   String get sessionID => sessionLink?.sessionID;
 
-  PayerRemoteSession(
-      this._currentUser, this.sendPayment,
+  PayerRemoteSession(this._currentUser, this.sendPayment,
       {PayeeSessionData existingPayeeData})
       : super(_currentUser) {
     var initialState = PaymentSessionState.payerStart(
@@ -242,8 +241,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       _backgroundService.runAsTask(_sessionCompleter.future, () {
         log.info("payer session background task finished");
       });
-      return this.sendPayment(paymentRequest, invoice.amount)      
-          .then((_) {
+      return this.sendPayment(paymentRequest, invoice.amount).then((_) {
         _onPaymenetFulfilled(invoice);
       }).catchError((err) {
         _onError(err);

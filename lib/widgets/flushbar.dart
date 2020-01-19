@@ -11,8 +11,8 @@ Flushbar showFlushbar(BuildContext context,
   flush = Flushbar(
       titleText: Text(title, style: TextStyle(height: 0.0)),
       duration: duration,
-      messageText:
-          messageWidget ?? Text(message, style: theme.snackBarStyle, textAlign: TextAlign.left),
+      messageText: messageWidget ??
+          Text(message, style: theme.snackBarStyle, textAlign: TextAlign.left),
       backgroundColor: theme.snackBarBackgroundColor,
       mainButton: FlatButton(
         onPressed: () {

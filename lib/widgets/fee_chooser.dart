@@ -20,7 +20,7 @@ class FeeChooser extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[                
+      children: <Widget>[
         Row(mainAxisSize: MainAxisSize.max, children: <Widget>[
           Expanded(child: buildFeeOption(context, 0, economyFee, "Economy")),
           Expanded(child: buildFeeOption(context, 1, economyFee, "Regular")),
@@ -109,7 +109,7 @@ class ProcessingSpeed extends StatelessWidget {
       estimatedDelivery = "${hours.ceil()}-24 hours";
     } else if (hours >= 1.0) {
       estimatedDelivery = "${hours.ceil()} hour";
-    }    
+    }
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

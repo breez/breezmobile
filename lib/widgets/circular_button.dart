@@ -13,7 +13,7 @@ class CircularButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        customBorder: new CircleBorder(),
+        customBorder: CircleBorder(),
         child: Container(
             child: FlatButton(padding: EdgeInsets.all(24), child: child)),
         onTap: onTap);

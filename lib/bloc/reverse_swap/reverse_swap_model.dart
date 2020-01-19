@@ -32,7 +32,7 @@ class InProgressReverseSwaps {
 
   InProgressReverseSwaps(this._statuses, this.claimTxId);
 
-  int get lockupTxETA { 
+  int get lockupTxETA {
     if (_statuses.paymentsStatus.length == 0) {
       return -1;
     }
