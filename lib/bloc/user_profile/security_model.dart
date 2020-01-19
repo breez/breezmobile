@@ -15,7 +15,6 @@ class SecurityModel {
   SecurityModel copyWith(
       {bool requiresPin,
       bool isFingerprintEnabled,
-      String enrolledBiometrics,
       int automaticallyLockInterval}) {
     return SecurityModel._(
         requiresPin: requiresPin ?? this.requiresPin,
