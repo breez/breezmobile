@@ -46,10 +46,9 @@ class PinCodeWidgetState extends State<PinCodeWidget>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      if (widget.onFingerprintEntered != null) {
-        _promptBiometrics();
-      }
+    if (state == AppLifecycleState.resumed &&
+        widget.onFingerprintEntered != null) {
+      _promptBiometrics();
     }
   }
 
