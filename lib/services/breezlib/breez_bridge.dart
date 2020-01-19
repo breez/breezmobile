@@ -89,6 +89,17 @@ class BreezBridge {
     _invokeMethodImmediate("log", {"msg": msg, "lvl": level});
   }
 
+  Stream<NotificationEvent> trackPaymentResult(String paymentRequest) {
+    return notificationStream.where((notif) =>
+        (notif.type == NotificationEvent_NotificationType.PAYMENT_FAILED ||
+            notif.type == NotificationEvent_NotificationType.PAYMENT_SENT) &&
+        notif.data[0] == paymentRequest);
+  }
+
+  Future waitPayment(String paymentRequest) {
+    return trackPaymentResult(paymentRequest).first;
+  }
+
   Future<LNUrlResponse> fetchLNUrl(String lnurl) {
     return _invokeMethodImmediate("fetchLnurl", {"argument": lnurl})
         .then((result) => LNUrlResponse()..mergeFromBuffer(result ?? []));
@@ -144,8 +155,58 @@ class BreezBridge {
         .then((res) => RemoveFundReply()..mergeFromBuffer(res ?? []));
   }
 
-  Future<PaymentResponse> sendPaymentForRequest(
-      String blankInvoicePaymentRequest,
+  Future<String> newReverseSwap(String address, Int64 amount) {
+    ReverseSwapRequest request = ReverseSwapRequest()
+      ..address = address
+      ..amount = amount;
+    return _invokeMethodWhenReady(
+            "newReverseSwap", {"argument": request.writeToBuffer()})
+        .then((res) => res as String);
+  }
+
+  Future<ReverseSwap> fetchReverseSwap(String hash) {
+    return _invokeMethodWhenReady("fetchReverseSwap", {"argument": hash})
+        .then((res) => ReverseSwap()..mergeFromBuffer(res ?? []));
+  }
+
+  Future payReverseSwap(
+      String hash, String token, String ntfnTitle, String ntfnBody) {
+    var ntfnDetails = PushNotificationDetails()
+      ..title = ntfnTitle
+      ..body = ntfnBody
+      ..deviceId = token;
+    var request = ReverseSwapPaymentRequest()
+      ..pushNotificationDetails = ntfnDetails
+      ..hash = hash;
+    return _invokeMethodWhenReady(
+        "payReverseSwap", {"argument": request.writeToBuffer()});
+  }
+
+  Future<ClaimFeeEstimates> reverseSwapClaimFeeEstimates(String claimAddress) {
+    return _invokeMethodWhenReady(
+            "reverseSwapClaimFeeEstimates", {"argument": claimAddress})
+        .then((res) => ClaimFeeEstimates()..mergeFromBuffer(res ?? []));
+  }
+
+  Future setReverseSwapClaimFee(String hash, Int64 fee) {
+    var arg = ReverseSwapClaimFee()
+      ..fee = fee
+      ..hash = hash;
+    return _invokeMethodWhenReady(
+        "setReverseSwapClaimFee", {"argument": arg.writeToBuffer()});
+  }
+
+  Future<String> unconfirmedReverseSwapClaimTransaction() {
+    return _invokeMethodWhenReady("unconfirmedReverseSwapClaimTransaction")
+        .then((s) => s as String);
+  }
+
+  Future<ReverseSwapPaymentStatuses> reverseSwapPayments() {
+    return _invokeMethodWhenReady("reverseSwapPayments")
+        .then((p) => ReverseSwapPaymentStatuses()..mergeFromBuffer(p ?? []));
+  }
+
+  Future sendPaymentForRequest(String blankInvoicePaymentRequest,
       {Int64 amount}) {
     PayInvoiceRequest invoice = PayInvoiceRequest();
     if (amount == null) {
@@ -154,8 +215,7 @@ class BreezBridge {
     invoice.amount = amount;
     invoice.paymentRequest = blankInvoicePaymentRequest;
     return _invokeMethodWhenReady(
-            "sendPaymentForRequest", {"argument": invoice.writeToBuffer()})
-        .then((payReq) => PaymentResponse()..mergeFromBuffer(payReq ?? []));
+        "sendPaymentForRequest", {"argument": invoice.writeToBuffer()});
   }
 
   Future sendPaymentFailureBugReport(String traceReport) {
@@ -268,6 +328,11 @@ class BreezBridge {
   Future<InvoiceMemo> decodePaymentRequest(String payReq) {
     return _invokeMethodWhenReady("decodePaymentRequest", {"argument": payReq})
         .then((result) => InvoiceMemo()..mergeFromBuffer(result ?? []));
+  }
+
+  Future<String> getPaymentRequestHash(String payReq) {
+    return _invokeMethodWhenReady("getPaymentRequestHash", {"argument": payReq})
+        .then((result) => result as String);
   }
 
   Future<String> newAddress(String breezID) {

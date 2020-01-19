@@ -141,14 +141,14 @@ class InvoiceBloc {
         .asyncMap((paymentRequest) async {
           // add stream event before processing and decoding
           _receivedInvoicesController
-              .add(PaymentRequestModel(null, paymentRequest));
+              .add(PaymentRequestModel(null, paymentRequest, null));
 
           //filter out our own payment requests
           try {
             await breezLib.getRelatedInvoice(paymentRequest);
             log.info("filtering our invoice from clipboard");
             _receivedInvoicesController
-                .addError(PaymentRequestModel(null, paymentRequest));
+                .addError(PaymentRequestModel(null, paymentRequest, null));
             return null;
           } catch (e) {
             log.info("detected not ours invoice, continue to decoding");
@@ -159,7 +159,10 @@ class InvoiceBloc {
         .asyncMap((paymentRequest) {
           return breezLib
               .decodePaymentRequest(paymentRequest)
-              .then((invoice) => PaymentRequestModel(invoice, paymentRequest))
+              .then((invoice) async {
+                var paymentHash = await breezLib.getPaymentRequestHash(paymentRequest);
+                return PaymentRequestModel(invoice, paymentRequest, paymentHash);
+              })
               .catchError((err) => throw PaymentRequestError(
                   "Lightning invoice was not found."));
         })

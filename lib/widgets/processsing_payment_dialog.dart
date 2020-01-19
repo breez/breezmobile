@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
@@ -11,6 +12,7 @@ import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:rxdart/rxdart.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
@@ -21,9 +23,11 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final ScrollController scrollController;
   final Function(PaymentRequestState state) _onStateChange;
   final double _initialDialogSize;
+  final PaymentRequestModel paymentRequestModel;
 
   ProcessingPaymentDialog(
       this.context,
+      this.paymentRequestModel,
       this.accountBloc,
       this.firstPaymentItemKey,
       this.scrollController,
@@ -43,10 +47,9 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   Animation<double> borderAnimation;
   Animation<double> opacityAnimation;
   Animation<RelativeRect> transitionAnimation;
-
-  AccountSettings _accountSettings;
-  StreamSubscription<AccountSettings> _accountSettingsSubscription;
+  
   StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
+  StreamSubscription<PaymentInfo> _pendingPaymentSubscription;
 
   bool _isInit = false;
 
@@ -83,27 +86,41 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     super.didChangeDependencies();
   }
 
-  _listenPaymentsResults() {
-    _accountSettingsSubscription = widget.accountBloc.accountSettingsStream
-        .listen((settings) => _accountSettings = settings);
+  _listenPaymentsResults() {    
 
-    _sentPaymentResultSubscription = widget.accountBloc.completedPaymentsStream
-        .listen((fulfilledPayment) {
-      Future scrollAnimationFuture = Future.value(null);
-      if (widget.scrollController.hasClients) {
-        scrollAnimationFuture = widget.scrollController
-            .animateTo(widget.scrollController.position.minScrollExtent,
-                duration: Duration(milliseconds: 200), curve: Curves.ease)
-            .whenComplete(() => Future.delayed(Duration(milliseconds: 50)));
+    _sentPaymentResultSubscription =
+        widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
+      if (fulfilledPayment.paymentRequest.paymentRequest ==
+          widget.paymentRequestModel.rawPayReq) {
+        _animateClose();
       }
-      scrollAnimationFuture.whenComplete(() {
-        // Trigger the collapse animation and show flushbar after the animation is completed
-        controller.reverse().whenComplete(() =>
-            showFlushbar(context, message: "Payment was successfuly sent!"));
+    }, onError: (err) {
+      var paymentError = err as PaymentError;
+      if (paymentError.request.paymentRequest ==
+          widget.paymentRequestModel.rawPayReq) {
+        widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
+      }
+    });
+
+    _pendingPaymentSubscription = widget.accountBloc.pendingPaymentStream
+        .transform(DebounceStreamTransformer(Duration(seconds: 10)))
+        .where((p) => p?.paymentHash == widget.paymentRequestModel.paymentHash)
+        .listen((p) {
+      _animateClose();
+    });
+  }
+
+  void _animateClose() {
+    if (widget.scrollController.hasClients) {
+      widget.scrollController
+          .animateTo(widget.scrollController.position.minScrollExtent,
+              duration: Duration(milliseconds: 200), curve: Curves.ease)
+          .whenComplete(() {
+        return Future.delayed(Duration(milliseconds: 50)).then((_) {
+          controller.reverse();
+        });
       });
-    },
-            onError: (err) =>
-                _onPaymentError(_accountSettings, err as PaymentError));
+    }
   }
 
   void _initializeTransitionAnimation() {
@@ -124,43 +141,10 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     transitionAnimation = tween.animate(controller);
   }
 
-  _onPaymentError(AccountSettings accountSettings, PaymentError error) async {
-    bool prompt =
-        accountSettings.failePaymentBehavior == BugReportBehavior.PROMPT;
-    bool send =
-        accountSettings.failePaymentBehavior == BugReportBehavior.SEND_REPORT;
-
-    widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
-    showFlushbar(context,
-        message:
-            "Failed to send payment: ${error.toString().split("\n").first}");
-    if (!error.validationError) {
-      if (prompt) {
-        send = await showDialog(
-            useRootNavigator: false,
-            context: widget.context,
-            barrierDismissible: false,
-            builder: (_) =>
-                PaymentFailedReportDialog(widget.context, widget.accountBloc));
-      }
-
-      if (send) {
-        var sendAction = SendPaymentFailureReport(error.traceReport);
-        widget.accountBloc.userActionsSink.add(sendAction);
-        await Navigator.push(
-            widget.context,
-            createLoaderRoute(widget.context,
-                message: "Sending Report...",
-                opacity: 0.8,
-                action: sendAction.future));
-      }
-    }
-  }
-
   @override
-  void dispose() {
-    _accountSettingsSubscription?.cancel();
+  void dispose() {    
     _sentPaymentResultSubscription?.cancel();
+    _pendingPaymentSubscription?.cancel();
     controller?.dispose();
     super.dispose();
   }

@@ -228,6 +228,11 @@ Future<Null> showPaymentDetailsDialog(
               : ShareablePaymentRow(
                   title: "Transaction Hash",
                   sharedValue: paymentInfo.paymentHash),
+          paymentInfo.redeemTxID == null || paymentInfo.redeemTxID.isEmpty
+              ? Container()
+              : ShareablePaymentRow(
+                  title: "On-chain Transaction",
+                  sharedValue: paymentInfo.redeemTxID),
         ],
       ),
     ),

@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
@@ -15,12 +17,15 @@ import 'package:breez/routes/user/ctp_join_session_handler.dart';
 import 'package:breez/routes/user/received_invoice_notification.dart';
 import 'package:breez/routes/user/showPinHandler.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
 import 'package:breez/widgets/navigation_drawer.dart';
+import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -101,6 +106,7 @@ class HomeState extends State<Home> {
     _listenBackupConflicts();
     _listenWhiltelistPermissionsRequest();
     _listenLSPSelectionPrompt();
+    _listenPaymentResults();
     _hiddenRountes.add("/get_refund");
     widget.accountBloc.accountStream.listen((acc) {
       setState(() {
@@ -200,7 +206,7 @@ class HomeState extends State<Home> {
       DrawerItemConfig("/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png",
           onItemSelected: (String name) async {
         try {
-          String decodedQr = await BarcodeScanner.scan();
+          String decodedQr = await QRScanner.scan();
           widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
         } on PlatformException catch (e) {
           if (e.code == BarcodeScanner.CameraAccessDenied) {
@@ -303,6 +309,48 @@ class HomeState extends State<Home> {
               style: Theme.of(context).dialogTheme.contentTextStyle),
           okFunc: () =>
               widget.accountBloc.optimizationWhitelistRequestSink.add(null));
+    });
+  }
+
+  void _listenPaymentResults() {
+    widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
+      if (!fulfilledPayment.cancelled) {
+        showFlushbar(context, message: "Payment was successfuly sent!");
+      }
+    }, onError: (err) async {
+      var error = err as PaymentError;
+      var accountSettings =
+          await widget.accountBloc.accountSettingsStream.first;
+      bool prompt =
+          accountSettings.failePaymentBehavior == BugReportBehavior.PROMPT;
+      bool send =
+          accountSettings.failePaymentBehavior == BugReportBehavior.SEND_REPORT;
+
+      var errorString = error.toString().isEmpty
+          ? ""
+          : ": ${error.toString().split("\n").first}";
+      showFlushbar(context, message: "Failed to send payment$errorString");
+      if (!error.validationError) {
+        if (prompt) {
+          send = await showDialog(
+              useRootNavigator: false,
+              context: context,
+              barrierDismissible: false,
+              builder: (_) =>
+                  PaymentFailedReportDialog(context, widget.accountBloc));
+        }
+
+        if (send) {
+          var sendAction = SendPaymentFailureReport(error.traceReport);
+          widget.accountBloc.userActionsSink.add(sendAction);
+          await Navigator.push(
+              context,
+              createLoaderRoute(context,
+                  message: "Sending Report...",
+                  opacity: 0.8,
+                  action: sendAction.future));
+        }
+      }
     });
   }
 

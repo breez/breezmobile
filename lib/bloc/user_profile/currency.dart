@@ -24,7 +24,7 @@ class Currency extends Object {
           fixedDecimals: fixedDecimals,
           userInput: userInput);
   Int64 parse(String amountStr) => _CurrencyFormatter().parse(amountStr, this);
-  String get displayName => symbol;
+  String get displayName => symbol == "Sat" ? "sats" : symbol;
 }
 
 class _CurrencyFormatter {

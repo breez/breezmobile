@@ -15,8 +15,9 @@ class InvoiceRequestModel {
 class PaymentRequestModel {
   final InvoiceMemo _invoice;
   final String _rawPayReq;
+  final String _paymentHash;
 
-  PaymentRequestModel(this._invoice, this._rawPayReq);
+  PaymentRequestModel(this._invoice, this._rawPayReq, this._paymentHash);
 
   String get description => _invoice.description;
   String get payeeImageURL => _invoice.payeeImageURL;
@@ -24,6 +25,7 @@ class PaymentRequestModel {
   Int64 get amount => _invoice.amount;
   String get rawPayReq => _rawPayReq;
   bool get loaded => _invoice != null ? true : false;
+  String get paymentHash => _paymentHash;
 }
 
 class PaymentRequestError implements Exception {

@@ -305,8 +305,9 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
               widget
                   ._onStateChange(PaymentRequestState.WAITING_FOR_CONFIRMATION);
             } else {
-              widget.accountBloc.userActionsSink.add(SendPayment(
-                  PayRequest(widget.invoice.rawPayReq, amountToPay(account))));
+              var sendAction = SendPayment(
+                  PayRequest(widget.invoice.rawPayReq, amountToPay(account)));
+              widget.accountBloc.userActionsSink.add(sendAction);
               widget._onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
             }
           }

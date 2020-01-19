@@ -137,7 +137,6 @@ class AccountModel {
   final FiatConversion _fiatCurrency;
   final List<FiatConversion> _fiatConversionList;
   final FundStatusReply addedFundsReply;
-  final String paymentRequestInProgress;
   final Int64 onChainFeeRate;
   final bool initial;
   final bool enableInProgress;
@@ -149,7 +148,6 @@ class AccountModel {
       this._fiatCurrency, this._fiatConversionList,
       {this.initial = true,
       this.addedFundsReply,
-      this.paymentRequestInProgress,
       this.onChainFeeRate,
       this.enableInProgress = false,
       this.syncProgress = 0,
@@ -177,7 +175,6 @@ class AccountModel {
       FiatConversion fiatCurrency,
       List<FiatConversion> fiatConversionList,
       FundStatusReply addedFundsReply,
-      String paymentRequestInProgress,
       Int64 onChainFeeRate,
       bool enableInProgress,
       double syncProgress,
@@ -193,8 +190,6 @@ class AccountModel {
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,
         onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
         enableInProgress: enableInProgress ?? this.enableInProgress,
-        paymentRequestInProgress:
-            paymentRequestInProgress ?? this.paymentRequestInProgress,
         syncProgress: syncProgress ?? this.syncProgress,
         syncedToChain: syncedToChain ?? this.syncedToChain,
         syncUIState: syncUIState ?? this.syncUIState,
@@ -485,21 +480,6 @@ class AddFundResponse {
   String get address => _addfundReply.address;
   String get backupJson => _addfundReply.backupJson;
   Int64 get requiredReserve => _addfundReply.requiredReserve;
-}
-
-class RemoveFundRequestModel {
-  final Int64 amount;
-  final String address;
-  final Int64 satPerByteFee;
-
-  RemoveFundRequestModel(this.amount, this.address, {this.satPerByteFee});
-}
-
-class RemoveFundResponseModel {
-  final String transactionID;
-  final String errorMessage;
-
-  RemoveFundResponseModel(this.transactionID, {this.errorMessage});
 }
 
 class RefundableDepositModel {
