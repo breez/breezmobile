@@ -35,7 +35,8 @@ class SecurityPage extends StatefulWidget {
   }
 }
 
-class SecurityPageState extends State<SecurityPage> {
+class SecurityPageState extends State<SecurityPage>
+    with WidgetsBindingObserver {
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
   int _renderIndex = 0;
@@ -44,8 +45,22 @@ class SecurityPageState extends State<SecurityPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _enrolledBiometrics = "";
     _getEnrolledBiometrics();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _getEnrolledBiometrics();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override

@@ -26,7 +26,8 @@ class PinCodeWidget extends StatefulWidget {
   }
 }
 
-class PinCodeWidgetState extends State<PinCodeWidget> {
+class PinCodeWidgetState extends State<PinCodeWidget>
+    with WidgetsBindingObserver {
   String _enteredPinCode;
   String _errorMessage;
   String _enrolledBiometrics;
@@ -34,12 +35,28 @@ class PinCodeWidgetState extends State<PinCodeWidget> {
   @override
   initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _enteredPinCode = "";
     _errorMessage = "";
     _enrolledBiometrics = "";
     if (widget.onFingerprintEntered != null) {
       _promptBiometrics();
     }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      if (widget.onFingerprintEntered != null) {
+        _promptBiometrics();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   Future _promptBiometrics() async {
