@@ -10,24 +10,35 @@ import 'package:breez/routes/user/withdraw_funds/swap_in_progress.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/services/notifications.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
 
 class ReverseSwapBloc with AsyncActionsHandler {
+  static const NTFN_TITLE = "Action Required";
+  static const NTFN_BODY =
+      "Please open Breez to complete your requested transaction.";
+
   final StreamController<InProgressReverseSwaps> _swapsInProgressController =
       BehaviorSubject<InProgressReverseSwaps>();
   Stream<InProgressReverseSwaps> get swapInProgressStream =>
       _swapsInProgressController.stream;
+
+  final StreamController<void> _broadcastTxStreamController =
+      StreamController<void>.broadcast();
+  Stream<void> get broadcastTxStream => _broadcastTxStreamController.stream;
 
   final Stream<PaymentsModel> _paymentsStream;
   final Stream<BreezUserModel> _userStream;
   BreezBridge _breezLib;
   BreezUserModel _currentUser;
   int refreshInProgressIndex = 0;
+  Notifications _notificationsService;
 
   ReverseSwapBloc(this._paymentsStream, this._userStream) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
+    _notificationsService = injector.notifications;
 
     registerAsyncHandlers({
       NewReverseSwap: _newReverseSwap,
@@ -54,6 +65,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
     _userStream.listen((u) => _currentUser = u);
     listenActions();
     _refreshInProgressSwaps();
+    _listenPushNotification();
   }
 
   Future _refreshInProgressSwaps() async {
@@ -114,10 +126,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
 
     action.resolve(await _breezLib
         .payReverseSwap(
-            action.swap.hash,
-            _currentUser.token ?? "",
-            "Action Required",
-            "Please open Breez to complete your requested transaction.")
+            action.swap.hash, _currentUser.token ?? "", NTFN_TITLE, NTFN_BODY)
         .then((_) {
       Future.any([
         _breezLib.waitPayment(action.swap.paymentRequest),
@@ -132,5 +141,14 @@ class ReverseSwapBloc with AsyncActionsHandler {
 
       return resultCompletor.future;
     }));
+  }
+
+  void _listenPushNotification() {
+    _notificationsService.notifications
+        .where((message) =>
+            message["title"] == NTFN_TITLE && message["body"] == NTFN_BODY)
+        .listen((message) {
+      _broadcastTxStreamController.add(null);
+    });
   }
 }

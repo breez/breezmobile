@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 Flushbar showFlushbar(BuildContext context,
     {String title = "",
     String message = "",
+    Widget messageWidget,
     Duration duration = const Duration(seconds: 8)}) {
   Flushbar flush;
   flush = Flushbar(
       titleText: Text(title, style: TextStyle(height: 0.0)),
       duration: duration,
       messageText:
-          Text(message, style: theme.snackBarStyle, textAlign: TextAlign.left),
+          messageWidget ?? Text(message, style: theme.snackBarStyle, textAlign: TextAlign.left),
       backgroundColor: theme.snackBarBackgroundColor,
       mainButton: FlatButton(
         onPressed: () {

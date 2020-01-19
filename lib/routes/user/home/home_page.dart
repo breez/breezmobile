@@ -9,6 +9,7 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/account_required_actions.dart';
 import 'package:breez/routes/shared/no_connection_dialog.dart';
@@ -23,6 +24,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
 import 'package:breez/widgets/navigation_drawer.dart';
 import 'package:breez/widgets/payment_failed_report_dialog.dart';
@@ -46,9 +48,10 @@ class Home extends StatefulWidget {
   final ConnectPayBloc ctpBloc;
   final BackupBloc backupBloc;
   final LSPBloc lspBloc;
+  final ReverseSwapBloc reverseSwapBloc;
 
   Home(this.accountBloc, this.invoiceBloc, this.userProfileBloc, this.ctpBloc,
-      this.backupBloc, this.lspBloc);
+      this.backupBloc, this.lspBloc, this.reverseSwapBloc);
 
   final List<DrawerItemConfig> _screens = List<DrawerItemConfig>.unmodifiable(
       [DrawerItemConfig("breezHome", "Breez", "")]);
@@ -275,6 +278,11 @@ class HomeState extends State<Home> {
         .accountBloc.accountNotificationsStream
         .listen((data) => showFlushbar(context, message: data),
             onError: (e) => showFlushbar(context, message: e.toString()));
+    widget.reverseSwapBloc.broadcastTxStream.listen((_) {
+      showFlushbar(context,
+          messageWidget: LoadingAnimatedText("Broadcasting your transaction",
+              textStyle: theme.snackBarStyle, textAlign: TextAlign.left));
+    });
   }
 
   void _listenBackupConflicts() {
@@ -314,7 +322,8 @@ class HomeState extends State<Home> {
 
   void _listenPaymentResults() {
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
-      if (!fulfilledPayment.cancelled && !fulfilledPayment.ignoreGlobalFeeback) {
+      if (!fulfilledPayment.cancelled &&
+          !fulfilledPayment.ignoreGlobalFeeback) {
         showFlushbar(context, message: "Payment was successfuly sent!");
       }
     }, onError: (err) async {

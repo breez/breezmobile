@@ -28,7 +28,6 @@ import 'package:breez/routes/user/add_funds/add_funds_page.dart';
 import 'package:breez/routes/user/add_funds/fastbitcoins_page.dart';
 import 'package:breez/routes/user/home/home_page.dart';
 import 'package:breez/routes/user/order_card/order_card_page.dart';
-import 'package:breez/routes/user/withdraw_funds/withdraw_funds_page.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_page.dart';
 import 'package:breez/routes/user/pay_nearby/pay_nearby_complete.dart';
@@ -36,6 +35,7 @@ import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
 import 'package:breez/routes/user/marketplace/marketplace.dart';
 import 'package:flutter/services.dart';
 import 'bloc/lsp/lsp_bloc.dart';
+import 'bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'theme_data.dart' as theme;
 
 class UserApp extends StatelessWidget {
@@ -50,6 +50,7 @@ class UserApp extends StatelessWidget {
     var backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     var connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
     var lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+    var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
 
     return StreamBuilder(
         stream: userProfileBloc.userStream,
@@ -144,7 +145,8 @@ class UserApp extends StatelessWidget {
                                             userProfileBloc,
                                             connectPayBloc,
                                             backupBloc,
-                                            lspBloc),
+                                            lspBloc,
+                                            reverseSwapBloc),
                                         settings: settings,
                                       );
                                     case '/order_card':
