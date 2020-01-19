@@ -55,8 +55,8 @@ class PinCodeWidgetState extends State<PinCodeWidget>
 
   @override
   void dispose() {
-    super.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   Future _promptBiometrics() async {

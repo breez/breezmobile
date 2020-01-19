@@ -59,8 +59,8 @@ class SecurityPageState extends State<SecurityPage>
 
   @override
   void dispose() {
-    super.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
