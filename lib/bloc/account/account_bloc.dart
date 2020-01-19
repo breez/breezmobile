@@ -19,7 +19,6 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -639,16 +638,13 @@ class AccountBloc {
   _updateExchangeRates() {
     _getExchangeRate();
     _startExchangeRateTimer();
-    SystemChannels.lifecycle.setMessageHandler((msg) {
-      switch (msg) {
-        case "AppLifecycleState.resumed":
-          _getExchangeRate();
-          _startExchangeRateTimer();
-          break;
-        default:
-          // cancel timer when AppLifecycleState is paused, inactive or suspending
-          _exchangeRateTimer?.cancel();
-          break;
+    _device.eventStream.listen((e) {
+      if (e == NotificationType.RESUME) {
+        _getExchangeRate();
+        _startExchangeRateTimer();
+      } else {
+        // cancel timer when AppLifecycleState is paused, inactive or suspending
+        _exchangeRateTimer?.cancel();
       }
     });
   }
