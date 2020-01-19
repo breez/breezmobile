@@ -314,11 +314,14 @@ class HomeState extends State<Home> {
 
   void _listenPaymentResults() {
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
-      if (!fulfilledPayment.cancelled) {
+      if (!fulfilledPayment.cancelled && !fulfilledPayment.ignoreGlobalFeeback) {
         showFlushbar(context, message: "Payment was successfuly sent!");
       }
     }, onError: (err) async {
       var error = err as PaymentError;
+      if (error.ignoreGlobalFeeback) {
+        return;
+      }
       var accountSettings =
           await widget.accountBloc.accountSettingsStream.first;
       bool prompt =

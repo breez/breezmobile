@@ -88,6 +88,8 @@ class AccountBloc {
   Stream<CompletedPayment> get completedPaymentsStream =>
       _completedPaymentsController.stream;
 
+  Map<String, bool> _ignoredFeedbackPayments = Map<String, bool>();
+
   Stream<PaymentInfo> get pendingPaymentStream => paymentsStream.map((ps) {
         if (ps.nonFilteredItems.length == 0) {
           return null;
@@ -272,9 +274,12 @@ class AccountBloc {
     action.resolve(await _fetchFundStatus());
   }
 
-  Future _sendPayment(SendPayment sendPayment) {
-    var payRequest = sendPayment.paymentRequest;
-    var sendPaymentFuture = _breezLib
+  Future _sendPayment(SendPayment action) async {
+    var payRequest = action.paymentRequest;
+    if (action.ignoreGlobalFeedback) {
+      _ignoredFeedbackPayments[payRequest.paymentRequest] = true;
+    }
+    var sendRequest = _breezLib
         .sendPaymentForRequest(payRequest.paymentRequest,
             amount: payRequest.amount)
         .catchError((err) {
@@ -282,10 +287,15 @@ class AccountBloc {
           .addError(PaymentError(payRequest, err, null));
       return Future.error(err);
     });
+
+    var sendPaymentFuture = Future.wait(
+        [sendRequest, _breezLib.waitPayment(payRequest.paymentRequest)],
+        eagerError: true);
+
     _backgroundService.runAsTask(sendPaymentFuture, () {
       log.info("sendpayment background task finished");
     });
-    return sendPaymentFuture;
+    action.resolve(await sendPaymentFuture);    
   }
 
   Future _cancelPaymentRequest(CancelPaymentRequest cancelRequest) {
@@ -561,7 +571,10 @@ class AccountBloc {
         var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
         _completedPaymentsController.add(CompletedPayment(
             PayRequest(paymentRequest, invoice.amount),
-            cancelled: false));
+            cancelled: false,
+            ignoreGlobalFeeback:
+                _ignoredFeedbackPayments.containsKey(paymentRequest)));
+        _ignoredFeedbackPayments.remove(paymentRequest);
       }
       if (event.type == NotificationEvent_NotificationType.PAYMENT_FAILED) {
         var paymentRequest = event.data[0];
@@ -572,7 +585,10 @@ class AccountBloc {
         }
         var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
         _completedPaymentsController.addError(PaymentError(
-            PayRequest(paymentRequest, invoice.amount), error, traceReport));
+            PayRequest(paymentRequest, invoice.amount), error, traceReport,
+            ignoreGlobalFeeback:
+                _ignoredFeedbackPayments.containsKey(paymentRequest)));
+        _ignoredFeedbackPayments.remove(paymentRequest);
       }
     });
   }

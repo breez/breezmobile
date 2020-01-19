@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payee_session.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
@@ -13,6 +15,7 @@ import 'package:breez/services/injector.dart';
 import 'package:grpc/grpc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
+import 'package:fixnum/fixnum.dart';
 
 /*
 Bloc that responsible for creating online payments session.
@@ -34,12 +37,14 @@ class ConnectPayBloc {
   Stream<String> get pendingCTPLinkStream => _pendingCTPLinkController.stream;
 
   Stream<BreezUserModel> _userStream;
+  Sink<AsyncAction> _accountActions;
   BreezUserModel _currentUser;
   AccountModel _currentAccount;
 
   ConnectPayBloc(
-      Stream<BreezUserModel> userStream, Stream<AccountModel> accountStream) {
+      Stream<BreezUserModel> userStream, Stream<AccountModel> accountStream, Sink<AsyncAction> accountActions) {
     _userStream = userStream;
+    _accountActions = accountActions;
     userStream.listen((user) => _currentUser = user);
     accountStream.listen(onAccountChanged);
     _monitorSessionInvites();
@@ -67,8 +72,14 @@ class ConnectPayBloc {
     }).onDone(() => preferences.remove(PENDING_CTP_LINK));
   }
 
+  Future _sendPayment(String paymentRequest, Int64 amount) { 
+    var action = SendPayment(PayRequest(paymentRequest, amount), ignoreGlobalFeedback: true);
+    _accountActions.add(action);
+    return action.future;
+  }
+
   PayerRemoteSession createPayerRemoteSession() {
-    return PayerRemoteSession(_currentUser);
+    return PayerRemoteSession(_currentUser, _sendPayment);
   }
 
   Future startSession(PayerRemoteSession currentSession) {
@@ -116,7 +127,7 @@ class ConnectPayBloc {
           sessionID: sessionLink.sessionID);
       //if we have already a session and it is our intiated then we are a returning payer
       if (sessionInfo.initiated) {
-        currentSession = PayerRemoteSession(_currentUser);
+        currentSession = PayerRemoteSession(_currentUser, _sendPayment);
       } else {
         //otherwise we are payee
         if (!existingSession) {

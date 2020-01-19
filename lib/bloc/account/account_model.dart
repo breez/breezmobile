@@ -517,20 +517,22 @@ class PayRequest {
 class CompletedPayment {
   final PayRequest paymentRequest;
   final bool cancelled;
+  final bool ignoreGlobalFeeback;
 
-  CompletedPayment(this.paymentRequest, {this.cancelled = false});
+  CompletedPayment(this.paymentRequest, {this.cancelled = false, this.ignoreGlobalFeeback = false});
 }
 
 class PaymentError implements Exception {
   final PayRequest request;
   final Object error;
   final String traceReport;
+  final bool ignoreGlobalFeeback;
   bool get validationError =>
       error.toString().indexOf("rpc error") >= 0 ||
       traceReport == null ||
       traceReport.isEmpty;
 
-  PaymentError(this.request, this.error, this.traceReport);
+  PaymentError(this.request, this.error, this.traceReport, {this.ignoreGlobalFeeback = false});
 
   String errMsg() => error?.toString();
   String toString() => errMsg();

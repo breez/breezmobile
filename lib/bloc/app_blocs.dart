@@ -50,7 +50,7 @@ class AppBlocs {
     InvoiceBloc invoicesBloc =
         _registerBloc(InvoiceBloc(userProfileBloc), blocsByType);
     ConnectPayBloc connectPayBloc = _registerBloc(
-        ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream),
+        ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream, accountBloc.userActionsSink),
         blocsByType);
     BackupBloc backupBloc =
         _registerBloc(BackupBloc(userProfileBloc.userStream), blocsByType);

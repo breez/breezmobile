@@ -20,8 +20,9 @@ class FetchPayments extends AsyncAction {}
 
 class SendPayment extends AsyncAction {
   final PayRequest paymentRequest;
+  final bool ignoreGlobalFeedback;
 
-  SendPayment(this.paymentRequest);
+  SendPayment(this.paymentRequest, {this.ignoreGlobalFeedback = false});
 }
 
 class CancelPaymentRequest extends AsyncAction {

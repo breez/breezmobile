@@ -15,7 +15,7 @@ import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
 import 'connect_pay_model.dart';
 import 'package:breez/logger.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:fixnum/fixnum.dart';
 
 /*
 A concrete implementation of RemoteSession from the payer side.
@@ -54,10 +54,13 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   SessionLinkModel sessionLink;
   Completer _sessionCompleter = Completer();
   bool _paymentSent = false;
+  Future Function(String paymentRequest, Int64 amount) sendPayment;
 
   String get sessionID => sessionLink?.sessionID;
 
-  PayerRemoteSession(this._currentUser, {PayeeSessionData existingPayeeData})
+  PayerRemoteSession(
+      this._currentUser, this.sendPayment,
+      {PayeeSessionData existingPayeeData})
       : super(_currentUser) {
     var initialState = PaymentSessionState.payerStart(
         sessionID, _currentUser.name, _currentUser.avatarURL);
@@ -239,10 +242,8 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       _backgroundService.runAsTask(_sessionCompleter.future, () {
         log.info("payer session background task finished");
       });
-      return _breezLib.sendPaymentForRequest(paymentRequest).then((res) {
-        if (res.paymentError.isNotEmpty) {
-          throw res.paymentError;
-        }
+      return this.sendPayment(paymentRequest, invoice.amount)      
+          .then((_) {
         _onPaymenetFulfilled(invoice);
       }).catchError((err) {
         _onError(err);
