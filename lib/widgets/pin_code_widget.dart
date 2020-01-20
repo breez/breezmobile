@@ -7,6 +7,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/circular_button.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 const PIN_CODE_LENGTH = 6;
 
@@ -54,6 +55,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
 
   @override
   void dispose() {
+    widget.userProfileBloc.userActionsSink.add(StopBiometrics());
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -72,19 +74,23 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return getEnrolledBiometricsAction.future;
   }
 
-  Future _validateBiometrics() async {
-    var validateBiometricsAction =
-        ValidateBiometrics(localizedReason: widget.localizedReason);
-    widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
-    validateBiometricsAction.future.then((isValid) async {
-      setState(() => _enteredPinCode = (isValid) ? "123456" : "");
-      Future.delayed(Duration(milliseconds: 160), () {
-        return widget.onFingerprintEntered(isValid);
+  bool biometricsValidated = false;
+  void _validateBiometrics({bool force = false}) async {
+    if (!biometricsValidated || force) {      
+      biometricsValidated = true;
+      var validateBiometricsAction =
+          ValidateBiometrics(localizedReason: widget.localizedReason);
+      widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
+      validateBiometricsAction.future.then((isValid) async {
+        setState(() => _enteredPinCode = (isValid) ? "123456" : "");
+        Future.delayed(Duration(milliseconds: 160), () {
+          return widget.onFingerprintEntered(isValid);
+        });
+      }, onError: (error) {
+        setState(() => _enteredPinCode = "");
+        showFlushbar(context, message: error);
       });
-    }, onError: (error) {
-      setState(() => _enteredPinCode = "");
-      showFlushbar(context, message: error);
-    });
+    }
   }
 
   Widget build(BuildContext context) {
@@ -226,7 +232,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         _enrolledBiometrics.contains("Face") ? Icons.face : Icons.fingerprint,
         color: Theme.of(context).errorColor,
       ),
-      onTap: () => _validateBiometrics(),
+      onTap: () => _validateBiometrics(force: true),
     );
   }
 

@@ -41,3 +41,5 @@ class SetLockState extends AsyncAction {
 
   SetLockState(this.locked);
 }
+
+class StopBiometrics extends AsyncAction {}

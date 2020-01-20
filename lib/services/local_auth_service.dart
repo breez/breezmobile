@@ -41,4 +41,8 @@ class LocalAuthenticationService {
       return false;
     }
   }
+
+  Future stopAuthentication() async {
+    await _auth.stopAuthentication();
+  }
 }

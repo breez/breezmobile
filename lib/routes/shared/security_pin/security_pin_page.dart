@@ -59,6 +59,7 @@ class SecurityPageState extends State<SecurityPage>
 
   @override
   void dispose() {
+    widget.userProfileBloc.userActionsSink.add(StopBiometrics());
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
