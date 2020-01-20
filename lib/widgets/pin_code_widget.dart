@@ -32,6 +32,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   String _enteredPinCode;
   String _errorMessage;
   String _enrolledBiometrics;
+  bool biometricsValidated = false;
 
   @override
   initState() {
@@ -47,9 +48,15 @@ class PinCodeWidgetState extends State<PinCodeWidget>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed &&
-        widget.onFingerprintEntered != null) {
-      _promptBiometrics();
+    if (widget.onFingerprintEntered != null) {
+      if (state == AppLifecycleState.resumed) {
+        _promptBiometrics();
+      }
+      if (state == AppLifecycleState.paused) {
+        var stopAction = StopBiometrics();
+        widget.userProfileBloc.userActionsSink.add(stopAction);
+        stopAction.future.then((_) => biometricsValidated = false);
+      }
     }
   }
 
@@ -73,8 +80,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
     return getEnrolledBiometricsAction.future;
   }
-
-  bool biometricsValidated = false;
+  
   void _validateBiometrics({bool force = false}) async {
     if (!biometricsValidated || force) {      
       biometricsValidated = true;
