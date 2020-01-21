@@ -24,10 +24,13 @@ class WithdrawFundsPage extends StatefulWidget {
   final Function(ReverseSwapDetails swap) onNext;
   final String initialAddress;
   final String initialAmount;
-  final ReverseSwapPolicy reverseSwapPolicy;  
+  final ReverseSwapPolicy reverseSwapPolicy;
 
   const WithdrawFundsPage(
-      {this.initialAddress, this.initialAmount, this.onNext, this.reverseSwapPolicy});
+      {this.initialAddress,
+      this.initialAmount,
+      this.onNext,
+      this.reverseSwapPolicy});
 
   @override
   State<StatefulWidget> createState() {
@@ -141,13 +144,18 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                       focusNode: _amountFocusNode,
                       controller: _amountController,
                       validatorFn: (amount) {
-                        if (amount < widget.reverseSwapPolicy.minValue) {
-                          return "Amount is lower than ${acc.currency.format(widget.reverseSwapPolicy.minValue)}";
+                        String err = acc.validateOutgoingPayment(amount);
+                        if (err == null) {
+                          if (amount < widget.reverseSwapPolicy.minValue) {
+                            err =
+                                "Must be less than ${acc.currency.format(widget.reverseSwapPolicy.minValue)}";
+                          }
+                          if (amount > widget.reverseSwapPolicy.maxValue) {
+                            err =
+                                "Must be more than ${acc.currency.format(widget.reverseSwapPolicy.maxValue + 1)}";
+                          }
                         }
-                        if (amount > widget.reverseSwapPolicy.maxValue) {
-                          return "Amount exceeded ${acc.currency.format(widget.reverseSwapPolicy.maxValue + 1)}";
-                        }
-                        return acc.validateOutgoingPayment(amount);
+                        return err;
                       },
                       style: theme.FieldTextStyle.textStyle),
                   Container(
