@@ -21,12 +21,13 @@ import 'package:fixnum/fixnum.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class WithdrawFundsPage extends StatefulWidget {
-  final Function(ReverseSwapInfo swap) onNext;
+  final Function(ReverseSwapDetails swap) onNext;
   final String initialAddress;
   final String initialAmount;
+  final ReverseSwapPolicy reverseSwapPolicy;  
 
   const WithdrawFundsPage(
-      {this.initialAddress, this.initialAmount, this.onNext});
+      {this.initialAddress, this.initialAmount, this.onNext, this.reverseSwapPolicy});
 
   @override
   State<StatefulWidget> createState() {
@@ -139,7 +140,15 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                       accountModel: acc,
                       focusNode: _amountFocusNode,
                       controller: _amountController,
-                      validatorFn: acc.validateOutgoingPayment,
+                      validatorFn: (amount) {
+                        if (amount < widget.reverseSwapPolicy.minValue) {
+                          return "Amount is lower than ${acc.currency.format(widget.reverseSwapPolicy.minValue)}";
+                        }
+                        if (amount > widget.reverseSwapPolicy.maxValue) {
+                          return "Amount exceeded ${acc.currency.format(widget.reverseSwapPolicy.maxValue + 1)}";
+                        }
+                        return acc.validateOutgoingPayment(amount);
+                      },
                       style: theme.FieldTextStyle.textStyle),
                   Container(
                     padding: EdgeInsets.only(top: 36.0),
@@ -229,7 +238,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 
         reverseSwapBloc.actionsSink.add(action);
         action.future.then((swapInfo) {
-          widget.onNext((swapInfo as ReverseSwapInfo));
+          widget.onNext((swapInfo as ReverseSwapDetails));
         }).catchError((error) {
           promptError(
               context,

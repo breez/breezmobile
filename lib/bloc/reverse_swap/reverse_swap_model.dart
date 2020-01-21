@@ -1,11 +1,11 @@
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
-class ReverseSwapInfo {
+class ReverseSwapDetails {
   final String hash;
   final ReverseSwap _response;
 
-  ReverseSwapInfo(this.hash, this._response);
+  ReverseSwapDetails(this.hash, this._response);
 
   String get paymentRequest => _response.invoice;
 
@@ -14,6 +14,16 @@ class ReverseSwapInfo {
   Int64 get onChainAmount => _response.onchainAmount;
 
   String get claimAddress => _response.claimAddress;
+}
+
+class ReverseSwapPolicy {
+  final ReverseSwapInfo _info;
+
+  ReverseSwapPolicy(this._info);
+
+  Int64 get minValue => _info.min;
+
+  Int64 get maxValue => _info.max;
 }
 
 class ReverseSwapClaimFeeEstimates {

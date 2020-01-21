@@ -14,7 +14,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:fixnum/fixnum.dart';
 
 class ReverseSwapConfirmation extends StatefulWidget {
-  final ReverseSwapInfo swap;
+  final ReverseSwapDetails swap;
   final ReverseSwapBloc bloc;
   final Function() onPrevious;
   final Function() onSuccess;

@@ -45,6 +45,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
       PayReverseSwap: _payReverseSwap,
       GetClaimFeeEstimates: _getFeeClaimEstimates,
       FetchInProgressSwap: _fetchInProgressSwap,
+      GetReverseSwapPolicy: _reverseSwapPolicy,
     });
 
     // refresh reverse swaps in progress stream
@@ -97,13 +98,19 @@ class ReverseSwapBloc with AsyncActionsHandler {
     return swap;
   }
 
+  Future _reverseSwapPolicy(GetReverseSwapPolicy action) async {
+    action.resolve(await _breezLib.getReverseSwapPolicy().then((policy) {
+      return ReverseSwapPolicy(policy);
+    }));
+  }
+
   Future _newReverseSwap(NewReverseSwap action) async {
     action.resolve(await _breezLib
         .newReverseSwap(action.address, action.amount)
         .then((hash) {
-      return _breezLib
-          .fetchReverseSwap(hash)
-          .then((resp) => ReverseSwapInfo(hash, resp));
+      return _breezLib.fetchReverseSwap(hash).then((resp) {
+        return ReverseSwapDetails(hash, resp);
+      });
     }));
   }
 

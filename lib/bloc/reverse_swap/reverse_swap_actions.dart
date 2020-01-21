@@ -11,7 +11,7 @@ class NewReverseSwap extends AsyncAction {
 }
 
 class PayReverseSwap extends AsyncAction {
-  final ReverseSwapInfo swap;
+  final ReverseSwapDetails swap;
   final Int64 claimFee;
 
   PayReverseSwap(this.swap, this.claimFee);
@@ -24,3 +24,5 @@ class GetClaimFeeEstimates extends AsyncAction {
 }
 
 class FetchInProgressSwap extends AsyncAction {}
+
+class GetReverseSwapPolicy extends AsyncAction {}

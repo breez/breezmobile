@@ -9,6 +9,7 @@ import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/routes/user/withdraw_funds/reverse_swap_confirmation.dart';
 import 'package:breez/routes/user/withdraw_funds/swap_in_progress.dart';
 import 'package:breez/routes/user/withdraw_funds/withdraw_funds_page.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -21,9 +22,12 @@ class ReverseSwapPage extends StatefulWidget {
 }
 
 class ReverseSwapPageState extends State<ReverseSwapPage> {
-  StreamController<ReverseSwapInfo> _reverseSwapsStream =
-      BehaviorSubject<ReverseSwapInfo>();
+  ReverseSwapBloc _reverseSwapBloc;
+  StreamController<ReverseSwapDetails> _reverseSwapsStream =
+      BehaviorSubject<ReverseSwapDetails>();
   PageController _pageController = PageController();
+  Completer _policyCompleter = new Completer();
+  Object _loadingError;
 
   @override
   void initState() {
@@ -42,9 +46,22 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    AppBlocsProvider.of<ReverseSwapBloc>(context)
-        .actionsSink
-        .add(FetchInProgressSwap());
+    if (_reverseSwapBloc == null) {
+      _reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
+      _reverseSwapBloc.actionsSink.add(FetchInProgressSwap());
+      var getPolicyAction = GetReverseSwapPolicy();
+      _reverseSwapBloc.actionsSink.add(getPolicyAction);
+      getPolicyAction.future.then((res) {
+        setState(() {
+          _policyCompleter.complete(res);
+        });
+      }).catchError((err) {
+        setState(() {
+          _loadingError = err;
+          _policyCompleter.completeError(err);
+        });
+      });
+    }
   }
 
   @override
@@ -52,6 +69,18 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return Scaffold(
+        appBar: !_policyCompleter.isCompleted || _loadingError != null
+            ? AppBar(
+                iconTheme: Theme.of(context).appBarTheme.iconTheme,
+                textTheme: Theme.of(context).appBarTheme.textTheme,
+                backgroundColor: Theme.of(context).canvasColor,
+                leading: backBtn.BackButton(onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+                title: Text("Remove Funds",
+                    style: Theme.of(context).appBarTheme.textTheme.title),
+                elevation: 0.0)
+            : null,
         body: StreamBuilder<AccountModel>(
             stream: accountBloc.accountStream,
             builder: (context, accSnapshot) {
@@ -62,7 +91,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                     if (swapInProgress == null || !swapInProgress.isEmpty) {
                       return SwapInProgress(swapInProgress: swapInProgress);
                     }
-                    return StreamBuilder<ReverseSwapInfo>(
+                    return StreamBuilder<ReverseSwapDetails>(
                         stream: _reverseSwapsStream.stream,
                         builder: (context, swapSnapshot) {
                           String initialAddress, initialAmount;
@@ -74,39 +103,55 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                 userInput: true,
                                 includeSymbol: false);
                           }
-                          return PageView(
-                            controller: _pageController,
-                            physics: NeverScrollableScrollPhysics(),
-                            children: <Widget>[
-                              WithdrawFundsPage(
-                                  initialAddress: initialAddress,
-                                  initialAmount: initialAmount,
-                                  onNext: (swap) {
-                                    _reverseSwapsStream.add(swap);
-                                    _pageController.nextPage(
-                                        duration: Duration(milliseconds: 250),
-                                        curve: Curves.easeInOut);
-                                  }),
-                              currentSwap == null
-                                  ? SizedBox()
-                                  : ReverseSwapConfirmation(
-                                      swap: swapSnapshot.data,
-                                      bloc: reverseSwapBloc,
-                                      onSuccess: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      onPrevious: () {
-                                        _pageController
-                                            .previousPage(
-                                                duration:
-                                                    Duration(milliseconds: 250),
-                                                curve: Curves.easeInOut)
-                                            .then((_) {
-                                          _reverseSwapsStream.add(null);
-                                        });
-                                      }),
-                            ],
-                          );
+                          return FutureBuilder<Object>(
+                              future: _policyCompleter.future,
+                              builder: (context, snapshot) {
+                                if (snapshot.error != null) {
+                                  return Center(
+                                      child: Text(snapshot.error.toString(),
+                                          textAlign: TextAlign.center));
+                                }
+                                if (snapshot.data == null) {
+                                  return Center(child: Loader());
+                                }
+                                ReverseSwapPolicy policy =
+                                    snapshot.data as ReverseSwapPolicy;
+                                return PageView(
+                                  controller: _pageController,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  children: <Widget>[
+                                    WithdrawFundsPage(
+                                        reverseSwapPolicy: policy,
+                                        initialAddress: initialAddress,
+                                        initialAmount: initialAmount,
+                                        onNext: (swap) {
+                                          _reverseSwapsStream.add(swap);
+                                          _pageController.nextPage(
+                                              duration:
+                                                  Duration(milliseconds: 250),
+                                              curve: Curves.easeInOut);
+                                        }),
+                                    currentSwap == null
+                                        ? SizedBox()
+                                        : ReverseSwapConfirmation(
+                                            swap: swapSnapshot.data,
+                                            bloc: reverseSwapBloc,
+                                            onSuccess: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            onPrevious: () {
+                                              _pageController
+                                                  .previousPage(
+                                                      duration: Duration(
+                                                          milliseconds: 250),
+                                                      curve: Curves.easeInOut)
+                                                  .then((_) {
+                                                _reverseSwapsStream.add(null);
+                                              });
+                                            }),
+                                  ],
+                                );
+                              });
                         });
                   });
             }));
