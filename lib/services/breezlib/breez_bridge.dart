@@ -160,6 +160,11 @@ class BreezBridge {
         .then((res) => RemoveFundReply()..mergeFromBuffer(res ?? []));
   }
 
+  Future<ReverseSwapInfo> getReverseSwapPolicy() {
+    return _invokeMethodWhenReady("reverseSwapInfo", {})
+        .then((res) => ReverseSwapInfo()..mergeFromBuffer(res ?? []));
+  }
+
   Future<String> newReverseSwap(String address, Int64 amount) {
     ReverseSwapRequest request = ReverseSwapRequest()
       ..address = address
