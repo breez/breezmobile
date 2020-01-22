@@ -84,38 +84,41 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
         body: StreamBuilder<AccountModel>(
             stream: accountBloc.accountStream,
             builder: (context, accSnapshot) {
-              return StreamBuilder<InProgressReverseSwaps>(
-                  stream: reverseSwapBloc.swapInProgressStream,
+              return FutureBuilder<Object>(
+                  future: _policyCompleter.future,
                   builder: (context, snapshot) {
-                    var swapInProgress = snapshot.data;
-                    if (swapInProgress == null || !swapInProgress.isEmpty) {
-                      return SwapInProgress(swapInProgress: swapInProgress);
+                    if (snapshot.error != null) {
+                      return Center(
+                          child: Text(snapshot.error.toString(),
+                              textAlign: TextAlign.center));
                     }
-                    return StreamBuilder<ReverseSwapDetails>(
-                        stream: _reverseSwapsStream.stream,
-                        builder: (context, swapSnapshot) {
-                          String initialAddress, initialAmount;
-                          var currentSwap = swapSnapshot.data;
-                          if (currentSwap != null) {
-                            initialAddress = currentSwap.claimAddress;
-                            initialAmount = accSnapshot.data.currency.format(
-                                currentSwap.amount,
-                                userInput: true,
-                                includeSymbol: false);
+                    if (snapshot.data == null) {
+                      return Center(child: Loader());
+                    }
+                    ReverseSwapPolicy policy =
+                        snapshot.data as ReverseSwapPolicy;
+                    return StreamBuilder<InProgressReverseSwaps>(
+                        stream: reverseSwapBloc.swapInProgressStream,
+                        builder: (context, snapshot) {
+                          var swapInProgress = snapshot.data;
+                          if (swapInProgress == null ||
+                              !swapInProgress.isEmpty) {
+                            return SwapInProgress(
+                                swapInProgress: swapInProgress);
                           }
-                          return FutureBuilder<Object>(
-                              future: _policyCompleter.future,
-                              builder: (context, snapshot) {
-                                if (snapshot.error != null) {
-                                  return Center(
-                                      child: Text(snapshot.error.toString(),
-                                          textAlign: TextAlign.center));
+                          return StreamBuilder<ReverseSwapDetails>(
+                              stream: _reverseSwapsStream.stream,
+                              builder: (context, swapSnapshot) {
+                                String initialAddress, initialAmount;
+                                var currentSwap = swapSnapshot.data;
+                                if (currentSwap != null) {
+                                  initialAddress = currentSwap.claimAddress;
+                                  initialAmount = accSnapshot.data.currency
+                                      .format(currentSwap.amount,
+                                          userInput: true,
+                                          includeSymbol: false);
                                 }
-                                if (snapshot.data == null) {
-                                  return Center(child: Loader());
-                                }
-                                ReverseSwapPolicy policy =
-                                    snapshot.data as ReverseSwapPolicy;
+
                                 return PageView(
                                   controller: _pageController,
                                   physics: NeverScrollableScrollPhysics(),
