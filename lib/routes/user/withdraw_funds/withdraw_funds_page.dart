@@ -148,7 +148,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                         if (err == null) {
                           if (amount < widget.reverseSwapPolicy.minValue) {
                             err =
-                                "Must be more than ${acc.currency.format(widget.reverseSwapPolicy.minValue-1)}";
+                                "Must be at least ${acc.currency.format(widget.reverseSwapPolicy.minValue)}";
                           }
                           if (amount > widget.reverseSwapPolicy.maxValue) {
                             err =
