@@ -7,6 +7,7 @@ Future<String> scan() async {
   try {
     String result = "";
     await BarcodeScanner.scan().then((scanResult) async {
+      await Future.delayed(Duration(milliseconds: 250));
       if (scanResult == "GET_CLIPBOARD_DATA") {
         result = await _getClipboardData();
       } else {
@@ -21,5 +22,5 @@ Future<String> scan() async {
 
 Future<String> _getClipboardData() async {
   ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-  return clipboardData.text;
+  return clipboardData?.text;
 }
