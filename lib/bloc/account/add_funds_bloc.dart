@@ -140,7 +140,9 @@ class AddFundsBloc extends Bloc {
 
   Future<bool> _isIPMoonpayAllowed() async {
     if (!_ipCheckResult) {
-      var response = await http.get("https://api.moonpay.io/v2/ip_address");
+      Config config = await _readConfig();
+      var response = await http.get(
+          "https://api.moonpay.io/v3/ip_address?apiKey=${config.get("MoonPay Parameters", 'apiKey')}");
       if (response.statusCode != 200) {
         log.severe(
             'moonpay response error: ${response.body.substring(0, 100)}');
@@ -158,7 +160,7 @@ class AddFundsBloc extends Bloc {
     String currencyCode = config.get("MoonPay Parameters", 'currencyCode');
     String colorCode = config.get("MoonPay Parameters", 'colorCode');
     String redirectURL = config.get("MoonPay Parameters", 'redirectURL');
-    return "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&colorCode=$colorCode&redirectURL=${Uri.encodeComponent(redirectURL)}&enabledPaymentMethods=credit_debit_card,sepa_bank_transfer";
+    return "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&colorCode=$colorCode&redirectURL=${Uri.encodeComponent(redirectURL)}&enabledPaymentMethods=credit_debit_card,sepa_bank_transfer,gbp_bank_transfer";
   }
 
   Future<Config> _readConfig() async {
