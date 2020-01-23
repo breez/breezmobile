@@ -64,6 +64,8 @@
 - [x] Fast on-boarding
 - [x] Pay w/o full sync
 - [x] Implement lnurl-withdraw 
+- [x] Send on-chain via reverse Submarine Swaps
+- [x] Improve hodl invoice support
 - [ ] Support zero-conf channels
 - [ ] Async payments via Lightning Rod
 - [ ] Support SD storage
