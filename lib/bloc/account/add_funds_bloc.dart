@@ -89,14 +89,14 @@ class AddFundsBloc extends Bloc {
 
   Future _populateAvailableVendors(bool moonpayAllowed) async {
     List<AddFundVendorModel> _vendorList = [];
-    _vendorList.add(AddFundVendorModel("DEPOSIT TO BTC ADDRESS",
+    _vendorList.add(AddFundVendorModel("Deposit To BTC Address",
         "src/icon/bitcoin.png", "/deposit_btc_address"));
     _vendorList.add(AddFundVendorModel(
         "BUY BITCOIN", "src/icon/credit_card.png", "/buy_bitcoin",
         isAllowed: moonpayAllowed));
-    _vendorList.add(AddFundVendorModel("REDEEM FASTBITCOINS VOUCHER",
+    _vendorList.add(AddFundVendorModel("Redeem Fastbitcoins Voucher",
         "src/icon/vendors/fastbitcoins_logo.png", "/fastbitcoins",
-        requireActiveChannel: true));
+        requireActiveChannel: true, shortName: "Redeem Voucher"));
     _availableVendorsController.add(_vendorList);
   }
 

@@ -1,16 +1,22 @@
-import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/account/add_fund_vendor_model.dart';
+import 'package:breez/bloc/account/add_funds_bloc.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
-import 'package:fixnum/fixnum.dart';
+import 'package:breez/widgets/barcode_scanner_placeholder.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
 
 class FloatingActionsBar extends StatelessWidget {
-  static const double SHIRINKED_BUTTON_SIZE = 56.0;
-  static const double CTP_MAX_WIDTH = 210.0;
-  static const double ADD_FUNDS_MAX_WIDTH = 162.0;
+  static const double EXPANDED_ACTIONS_WIDTH = 253.0;
+  static const double COLLAPSED_ACTIONS_WIDTH = 147.0;
+  static const double TEXT_ACTION_SIZE = 70.0;
   final AccountModel account;
   final double height;
   final double offsetFactor;
@@ -20,71 +26,263 @@ class FloatingActionsBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isSmallView = height < 160;
-    bool hasBalance = (account?.balance ?? Int64(0)) > 0;
 
-    var scaleFactor = MediaQuery.of(context).textScaleFactor;
     return Positioned(
       top: (height - 25.0),
       right: 16.0,
       child: AnimatedContainer(
-          width: isSmallView
-              ? 56.0
-              : (hasBalance ? CTP_MAX_WIDTH : ADD_FUNDS_MAX_WIDTH),
-          duration: Duration(milliseconds: 150),
-          child: RaisedButton(
-            onPressed: () {
-              if (hasBalance) {
-                Navigator.of(context).pushNamed('/connect_to_pay');
-                return;
-              }
-              Navigator.of(context).pushNamed('/add_funds');
-            },
-            shape: isSmallView
-                ? RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(56.0))
-                : RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(42.0)),
+        width: isSmallView ? COLLAPSED_ACTIONS_WIDTH : EXPANDED_ACTIONS_WIDTH,
+        duration: Duration(milliseconds: 150),
+        decoration: new BoxDecoration(
             color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-            padding: isSmallView
-                ? EdgeInsets.all(16.0)
-                : EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: isSmallView
-                  ? <Widget>[
-                      hasBalance
-                          ? ImageIcon(
-                              AssetImage("src/icon/connect_to_pay.png"),
-                              color: Colors.white,
-                              size: 24.0,
-                            )
-                          : Icon(Icons.add),
-                    ]
-                  : <Widget>[
-                      hasBalance
-                          ? ImageIcon(
-                              AssetImage("src/icon/connect_to_pay.png"),
-                              color: Colors.white,
-                              size: 24.0,
-                            )
-                          : Icon(Icons.add),
-                      Padding(padding: EdgeInsets.only(left: 8.0)),
-                      Container(
-                        width: (hasBalance
-                            ? CTP_MAX_WIDTH - 64 / min(scaleFactor, 1.0)
-                            : ADD_FUNDS_MAX_WIDTH - 64 / min(scaleFactor, 1.0)),
-                        child: AutoSizeText(
-                          hasBalance ? "CONNECT TO PAY" : "ADD FUNDS",
-                          style: theme.addFundsBtnStyle,
-                          maxLines: 1,
-                          minFontSize: MinFontSize(context).minFontSize,
-                          stepGranularity: 0.1,
-                        ),
-                      )
-                    ],
+            borderRadius: BorderRadius.circular(24.0)),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              height: 48,
+              width: isSmallView
+                  ? COLLAPSED_ACTIONS_WIDTH
+                  : EXPANDED_ACTIONS_WIDTH,
+              child: _buildActionsBar(context, isSmallView),
             ),
-          )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionsBar(BuildContext context, bool minimized) {
+    AutoSizeGroup actionsGroup = AutoSizeGroup();
+    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _Action(
+                  onPress: () => _showSendOptions(context),
+                  group: actionsGroup,
+                  text: "SEND",
+                  iconAssetPath: "src/icon/send-action.png",
+                  minimized: minimized),
+              Container(
+                alignment: Alignment.center,
+                width: minimized ? 50.0 : 75.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _ActionSeparator(),
+                    _Action(
+                        onPress: () async {
+                          try {
+                            String decodedQr = await QRScanner.scan();
+                            invoiceBloc.decodeInvoiceSink.add(decodedQr);
+                          } on PlatformException catch (e) {
+                            if (e.code == BarcodeScanner.CameraAccessDenied) {
+                              Navigator.of(context).push(FadeInRoute(
+                                  builder: (_) =>
+                                      BarcodeScannerPlaceholder(invoiceBloc)));
+                            }
+                          }
+                        },
+                        iconAssetPath: "src/icon/qr_scan.png",
+                        minimized: minimized),
+                    _ActionSeparator(),
+                  ],
+                ),
+              ),
+              _Action(
+                  onPress: () => _showReceiveOptions(context),
+                  group: actionsGroup,
+                  text: "RECEIVE",
+                  iconAssetPath: "src/icon/receive-action.png",
+                  minimized: minimized),
+            ]),
+      ],
+    );
+  }
+
+  Future _showSendOptions(BuildContext context) {
+    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    return showModalBottomSheet(
+        context: context,
+        builder: (ctx) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: _ActionImage(iconAssetPath: "src/icon/paste.png"),
+                title: Text("PASTE INVOICE"),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  var data = await Clipboard.getData(Clipboard.kTextPlain);
+                  invoiceBloc.decodeInvoiceSink.add(data.text);
+                },
+              ),
+              ListTile(
+                  leading: _ActionImage(
+                      iconAssetPath: "src/icon/connect_to_pay.png"),
+                  title: Text("CONNECT TO PAY"),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushNamed("/connect_to_pay");
+                  }),
+              ListTile(
+                  leading: _ActionImage(iconAssetPath: "src/icon/bitcoin.png"),
+                  title: Text("SEND TO BTC ADDRESS"),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushNamed("/deposit_btc_address");
+                  }),
+            ],
+          );
+        });
+  }
+
+  Future _showReceiveOptions(BuildContext context) {
+    AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
+
+    return showModalBottomSheet(
+        context: context,
+        builder: (ctx) {
+          return StreamBuilder<List<AddFundVendorModel>>(
+              stream: addFundsBloc.availableVendorsStream,
+              builder: (context, snapshot) {
+                if (snapshot.data == null) {
+                  return SizedBox();
+                }
+
+                List<Widget> children =
+                    snapshot.data.where((v) => v.isAllowed).map((v) {
+                  return ListTile(
+                      leading: _ActionImage(iconAssetPath: v.icon),
+                      title: Text(v.name.toUpperCase()),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushNamed(v.route);
+                      }) as Widget;
+                }).toList();
+
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                        leading:
+                            _ActionImage(iconAssetPath: "src/icon/paste.png"),
+                        title: Text("RECEIVE VIA INVOICE"),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pushNamed("/create_invoice");
+                        }),
+                    ...children,
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 36.0, left: 16.0, right: 16.0, bottom: 16.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                            border: Border.all(
+                                color: Theme.of(context).errorColor)),
+                        padding: EdgeInsets.all(16),
+                        child: Text(
+                          "Breez requires you to keep\n${account.currency.format(account.warningMaxChanReserveAmount, fixedDecimals: false)} in your balance.",
+                          style: Theme.of(context).textTheme.caption,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              });
+        });
+  }
+}
+
+class _ActionSeparator extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 32.0, width: 1.0, color: Colors.white.withOpacity(0.4));
+  }
+}
+
+class _Action extends StatelessWidget {
+  final String text;
+  final AutoSizeGroup group;
+  final String iconAssetPath;
+  final bool minimized;
+  final Function() onPress;
+  final Alignment minimizedAlignment;
+
+  const _Action({
+    Key key,
+    this.text,
+    this.group,
+    this.iconAssetPath,
+    this.minimized,
+    this.onPress,
+    this.minimizedAlignment = Alignment.center,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (minimized || text == null) {
+      return IconButton(
+        alignment: minimizedAlignment,
+        onPressed: this.onPress,
+        padding: EdgeInsets.zero,
+        icon: Image(
+          image: AssetImage(iconAssetPath),
+          color: theme.BreezColors.white[500],
+          fit: BoxFit.contain,
+          width: 24.0,
+          height: 24.0,
+        ),
+      );
+    }
+
+    return Container(
+      width: FloatingActionsBar.TEXT_ACTION_SIZE,
+      //decoration: BoxDecoration(color: Colors.red),
+      child: FlatButton(
+        padding: EdgeInsets.zero,
+        onPressed: this.onPress,
+        child: AutoSizeText(
+          text,
+          group: group,
+          textAlign: TextAlign.center,
+          style: theme.addFundsBtnStyle,
+          maxLines: 1,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionImage extends StatelessWidget {
+  final String iconAssetPath;
+
+  const _ActionImage({Key key, this.iconAssetPath}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Image(
+      image: AssetImage(iconAssetPath),
+      color: theme.BreezColors.white[500],
+      fit: BoxFit.contain,
+      width: 24.0,
+      height: 24.0,
     );
   }
 }
