@@ -25,8 +25,9 @@ class DrawerItemConfigGroup {
   final List<DrawerItemConfig> items;
   final String groupTitle;
   final String groupAssetImage;
+  final bool withDivider;
 
-  DrawerItemConfigGroup(this.items, {this.groupTitle, this.groupAssetImage});
+  DrawerItemConfigGroup(this.items, {this.groupTitle, this.groupAssetImage, this.withDivider = true});
 }
 
 class NavigationDrawer extends StatelessWidget {
@@ -47,7 +48,7 @@ class NavigationDrawer extends StatelessWidget {
     List<Widget> children = List<Widget>();
     _drawerGroupedItems.forEach((gropuItems) {
       children.addAll(_createDrawerGroupWidgets(gropuItems, context,
-          withDivider: children.length > 0));
+          withDivider: children.length > 0 && gropuItems.withDivider));
     });
 
     children.insert(0, _breezDrawerHeader(userProfileBloc, _avatar));
@@ -213,9 +214,7 @@ Row _buildBottomRow(
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: <Widget>[
-      _buildUsername(snapshot),
-      Spacer(),
-      buildMarketplaceButton(context),
+      _buildUsername(snapshot),            
     ],
   );
 }
@@ -226,26 +225,6 @@ Padding _buildUsername(AsyncSnapshot<BreezUserModel> snapshot) {
     child: AutoSizeText(
       snapshot.data.name ?? "No Name",
       style: theme.navigationDrawerHandleStyle,
-    ),
-  );
-}
-
-Padding buildMarketplaceButton(BuildContext context) {
-  return Padding(
-    padding: EdgeInsets.only(
-      top: 4.0,
-    ),
-    child: RawMaterialButton(
-      onPressed: () {
-        Navigator.pop(context);
-        Navigator.of(context).pushNamed("/marketplace");
-      },
-      child: ImageIcon(AssetImage("src/icon/ic_market.png"),
-          color: Colors.white, size: 24.0),
-      padding: const EdgeInsets.all(12.0),
-      fillColor: theme.marketplaceButtonColor,
-      shape: CircleBorder(),
-      elevation: 0.0,
     ),
   );
 }
