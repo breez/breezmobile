@@ -204,18 +204,7 @@ class AccountPageState extends State<AccountPage>
                 ? FloatingActionsBar(account, height, heightFactor)
                 : Positioned(top: 0.0, child: SizedBox());
           },
-        ),
-        ScrollWatcher(
-          controller: widget.scrollController,
-          builder: (context, offset) {
-            double height = (DASHBOARD_MAX_HEIGHT - offset)
-                .clamp(DASHBOARD_MIN_HEIGHT, DASHBOARD_MAX_HEIGHT);
-            return (account?.connected ?? false)
-                ? InvoiceBottomSheet(
-                    _invoiceBloc, height < 160.0, _userProfileBloc)
-                : Positioned(top: 0.0, child: SizedBox());
-          },
-        ),
+        ),        
       ],
     );
   }

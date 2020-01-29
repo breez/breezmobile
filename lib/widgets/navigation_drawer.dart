@@ -16,17 +16,19 @@ class DrawerItemConfig {
   final String name;
   final String title;
   final String icon;
+  final bool disabled;
   final void Function(String name) onItemSelected;
 
-  DrawerItemConfig(this.name, this.title, this.icon, {this.onItemSelected});
+  DrawerItemConfig(this.name, this.title, this.icon, {this.onItemSelected, this.disabled = false});
 }
 
 class DrawerItemConfigGroup {
   final List<DrawerItemConfig> items;
   final String groupTitle;
   final String groupAssetImage;
+  final bool withDivider;
 
-  DrawerItemConfigGroup(this.items, {this.groupTitle, this.groupAssetImage});
+  DrawerItemConfigGroup(this.items, {this.groupTitle, this.groupAssetImage, this.withDivider = true});
 }
 
 class NavigationDrawer extends StatelessWidget {
@@ -47,7 +49,7 @@ class NavigationDrawer extends StatelessWidget {
     List<Widget> children = List<Widget>();
     _drawerGroupedItems.forEach((gropuItems) {
       children.addAll(_createDrawerGroupWidgets(gropuItems, context,
-          withDivider: children.length > 0));
+          withDivider: children.length > 0 && gropuItems.withDivider));
     });
 
     children.insert(0, _breezDrawerHeader(userProfileBloc, _avatar));
@@ -213,9 +215,7 @@ Row _buildBottomRow(
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: <Widget>[
-      _buildUsername(snapshot),
-      Spacer(),
-      buildMarketplaceButton(context),
+      _buildUsername(snapshot),            
     ],
   );
 }
@@ -230,29 +230,15 @@ Padding _buildUsername(AsyncSnapshot<BreezUserModel> snapshot) {
   );
 }
 
-Padding buildMarketplaceButton(BuildContext context) {
-  return Padding(
-    padding: EdgeInsets.only(
-      top: 4.0,
-    ),
-    child: RawMaterialButton(
-      onPressed: () {
-        Navigator.pop(context);
-        Navigator.of(context).pushNamed("/marketplace");
-      },
-      child: ImageIcon(AssetImage("src/icon/ic_market.png"),
-          color: Colors.white, size: 24.0),
-      padding: const EdgeInsets.all(12.0),
-      fillColor: theme.marketplaceButtonColor,
-      shape: CircleBorder(),
-      elevation: 0.0,
-    ),
-  );
-}
-
 Widget _actionTile(
     DrawerItemConfig action, BuildContext context, Function onItemSelected,
     [bool subTile]) {
+  TextStyle itemStyle = theme.drawerItemTextStyle;
+  Color color = DefaultTextStyle.of(context).style.color;
+  if (action.disabled) {
+    color = Theme.of(context).disabledColor;
+    itemStyle = itemStyle.copyWith(color: color);
+  }
   return Padding(
     padding: subTile != null
         ? EdgeInsets.only(left: 36.0, right: 8.0)
@@ -261,10 +247,10 @@ Widget _actionTile(
       leading: ImageIcon(
         AssetImage(action.icon),
         size: 26.0,
-        color: Colors.white,
+        color: color,
       ),
-      title: Text(action.title, style: theme.drawerItemTextStyle),
-      onTap: () {
+      title: Text(action.title, style: itemStyle),
+      onTap: action.disabled ? null : () {
         Navigator.pop(context);
         onItemSelected(action.name);
       },

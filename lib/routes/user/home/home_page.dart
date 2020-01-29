@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/account/add_fund_vendor_model.dart';
+import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
@@ -18,8 +20,6 @@ import 'package:breez/routes/user/ctp_join_session_handler.dart';
 import 'package:breez/routes/user/received_invoice_notification.dart';
 import 'package:breez/routes/user/showPinHandler.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/qr_scan.dart' as QRScanner;
-import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -55,36 +55,6 @@ class Home extends StatefulWidget {
 
   final List<DrawerItemConfig> _screens = List<DrawerItemConfig>.unmodifiable(
       [DrawerItemConfig("breezHome", "Breez", "")]);
-
-  final List<DrawerItemConfig> _majorActionsFunds =
-      List<DrawerItemConfig>.unmodifiable([
-    DrawerItemConfig("/add_funds", "Add Funds", "src/icon/add_funds.png"),
-    DrawerItemConfig(
-        "/withdraw_funds", "Remove Funds", "src/icon/withdraw_funds.png"),
-    DrawerItemConfig(
-        "/get_refund", "Get Refund", "src/icon/withdraw_funds.png"),
-  ]);
-
-  final List<DrawerItemConfig> _majorActionsPay =
-      List<DrawerItemConfig>.unmodifiable([
-    DrawerItemConfig(
-        "/connect_to_pay", "Connect to Pay", "src/icon/connect_to_pay.png")
-  ]);
-
-  final List<DrawerItemConfig> _minorActionsCard =
-      List<DrawerItemConfig>.unmodifiable([
-    DrawerItemConfig("/order_card", "Order", "src/icon/order_card.png"),
-    DrawerItemConfig(
-        "/activate_card", "Activate", "src/icon/activate_card.png"),
-    DrawerItemConfig("/lost_card", "Lost or Stolen", "src/icon/lost_card.png"),
-  ]);
-
-  final List<DrawerItemConfig> _minorActionsAdvanced =
-      List<DrawerItemConfig>.unmodifiable([
-    DrawerItemConfig("/network", "Network", "src/icon/network.png"),
-    DrawerItemConfig("/security", "Security & Backup", "src/icon/security.png"),
-    DrawerItemConfig("/developers", "Developers", "src/icon/developers.png"),
-  ]);
 
   final Map<String, Widget> _screenBuilders = {
     "breezHome": AccountPage(firstPaymentItemKey, scrollController)
@@ -144,84 +114,146 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: FadeInWidget(
-        child: Scaffold(
-            key: _scaffoldKey,
-            appBar: AppBar(
-              brightness: theme.themeId == "BLUE"
-                  ? Brightness.light
-                  : Theme.of(context).appBarTheme.brightness,
-              centerTitle: false,
-              actions: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(14.0),
-                  child: AccountRequiredActionsIndicator(
-                      widget.backupBloc,
-                      widget.accountBloc,
-                      widget.userProfileBloc,
-                      widget.lspBloc),
-                ),
-              ],
-              leading: IconButton(
-                  icon: ImageIcon(
-                    AssetImage("src/icon/hamburger.png"),
-                    size: 24.0,
-                    color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-                  ),
-                  onPressed: () => _scaffoldKey.currentState.openDrawer()),
-              title: Image.asset(
-                "src/images/logo-color.png",
-                height: 23.5,
-                width: 62.7,
-                color: Theme.of(context).appBarTheme.color,
-                colorBlendMode: BlendMode.srcATop,
-              ),
-              iconTheme: IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
-              backgroundColor: Theme.of(context).backgroundColor,
-              elevation: 0.0,
-            ),
-            drawer: NavigationDrawer(
-                true,
-                [
-                  DrawerItemConfigGroup(
-                      _filterItems(widget._majorActionsFunds)),
-                  DrawerItemConfigGroup(_filterItems(widget._majorActionsPay)),
-                  _buildMinorActionsInvoice(context),
-                  DrawerItemConfigGroup(_filterItems(widget._minorActionsCard),
-                      groupTitle: "Card", groupAssetImage: "src/icon/card.png"),
-                  DrawerItemConfigGroup(
-                      _filterItems(widget._minorActionsAdvanced),
-                      groupTitle: "Advanced",
-                      groupAssetImage: "src/icon/advanced.png"),
-                ],
-                _onNavigationItemSelected),
-            body: widget._screenBuilders[_activeScreen]),
-      ),
-    );
-  }
+    AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
 
-  DrawerItemConfigGroup _buildMinorActionsInvoice(BuildContext context) {
-    List<DrawerItemConfig> minorActionsInvoice =
-        List<DrawerItemConfig>.unmodifiable([
-      DrawerItemConfig("/pay_invoice", "Pay Invoice", "src/icon/qr_scan.png",
-          onItemSelected: (String name) async {
-        try {
-          String decodedQr = await QRScanner.scan();
-          widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
-        } on PlatformException catch (e) {
-          if (e.code == BarcodeScanner.CameraAccessDenied) {
-            Navigator.of(context).push(FadeInRoute(
-                builder: (_) => BarcodeScannerPlaceholder(widget.invoiceBloc)));
+    return StreamBuilder<AccountModel>(
+        stream: widget.accountBloc.accountStream,
+        builder: (context, accSnapshot) {
+          var account = accSnapshot.data;
+          if (account == null) {
+            return SizedBox();
           }
-        }
-      }),
-      DrawerItemConfig(
-          "/create_invoice", "Receive via Invoice", "src/icon/paste.png"),
-    ]);
-    return DrawerItemConfigGroup(_filterItems(minorActionsInvoice));
+          return StreamBuilder<List<AddFundVendorModel>>(
+              stream: addFundsBloc.availableVendorsStream,
+              builder: (context, snapshot) {
+                List<DrawerItemConfig> addFundsVendors = [];
+                if (snapshot.data != null) {
+                  snapshot.data.forEach((v) {
+                    if (v.isAllowed) {
+                      addFundsVendors.add(DrawerItemConfig(
+                          v.route, v.shortName ?? v.name, v.icon,
+                          disabled:
+                              v.requireActiveChannel && !account.connected));
+                    }
+                  });
+                }
+                var refundableAddresses =
+                    account.swapFundsStatus.maturedRefundableAddresses;
+                var refundItems = <DrawerItemConfigGroup>[];
+                if (refundableAddresses.length > 0) {
+                  refundItems = [
+                    DrawerItemConfigGroup([
+                      DrawerItemConfig("/get_refund", "Get Refund",
+                          "src/icon/withdraw_funds.png")
+                    ])
+                  ];
+                }                
+
+                return Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: FadeInWidget(
+                    child: Scaffold(
+                        key: _scaffoldKey,
+                        appBar: AppBar(
+                          brightness: theme.themeId == "BLUE"
+                              ? Brightness.light
+                              : Theme.of(context).appBarTheme.brightness,
+                          centerTitle: false,
+                          actions: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(14.0),
+                              child: AccountRequiredActionsIndicator(
+                                  widget.backupBloc,
+                                  widget.accountBloc,
+                                  widget.userProfileBloc,
+                                  widget.lspBloc),
+                            ),
+                          ],
+                          leading: IconButton(
+                              icon: ImageIcon(
+                                AssetImage("src/icon/hamburger.png"),
+                                size: 24.0,
+                                color: Theme.of(context)
+                                    .appBarTheme
+                                    .actionsIconTheme
+                                    .color,
+                              ),
+                              onPressed: () =>
+                                  _scaffoldKey.currentState.openDrawer()),
+                          title: Image.asset(
+                            "src/images/logo-color.png",
+                            height: 23.5,
+                            width: 62.7,
+                            color: Theme.of(context).appBarTheme.color,
+                            colorBlendMode: BlendMode.srcATop,
+                          ),
+                          iconTheme: IconThemeData(
+                              color: Color.fromARGB(255, 0, 133, 251)),
+                          backgroundColor: Theme.of(context).backgroundColor,
+                          elevation: 0.0,
+                        ),
+                        drawer: NavigationDrawer(
+                            true,
+                            [
+                              ...refundItems,
+                              DrawerItemConfigGroup([
+                                DrawerItemConfig(
+                                    "", "Paste Invoice", "src/icon/paste.png",
+                                    disabled: !account.connected,
+                                    onItemSelected: (decodedQr) async {
+                                  var data = await Clipboard.getData(
+                                      Clipboard.kTextPlain);
+                                  widget.invoiceBloc.decodeInvoiceSink
+                                      .add(data.text);
+                                }),
+                                DrawerItemConfig(
+                                    "/connect_to_pay",
+                                    "Connect To Pay",
+                                    "src/icon/connect_to_pay.png",
+                                    disabled: !account.connected),
+                                DrawerItemConfig(
+                                    "/withdraw_funds",
+                                    "Send To BTC Address",
+                                    "src/icon/withdraw_funds.png",
+                                    disabled: !account.connected),
+                              ],
+                                  groupTitle: "Send",
+                                  groupAssetImage: "src/icon/send-action.png",
+                                  withDivider: false),
+                              DrawerItemConfigGroup([
+                                DrawerItemConfig("/create_invoice",
+                                    "Receive via Invoice", "src/icon/paste.png",
+                                    disabled: !account.connected),
+                                ...addFundsVendors,
+                              ],
+                                  groupTitle: "Receive",
+                                  groupAssetImage: "src/icon/send-action.png",
+                                  withDivider: false),
+                              DrawerItemConfigGroup([
+                                DrawerItemConfig("/marketplace", "Marketplace",
+                                    "src/icon/ic_market.png"),
+                              ]),
+                              DrawerItemConfigGroup(
+                                  _filterItems([
+                                    DrawerItemConfig("/network", "Network",
+                                        "src/icon/network.png"),
+                                    DrawerItemConfig(
+                                        "/security",
+                                        "Security & Backup",
+                                        "src/icon/security.png"),
+                                    DrawerItemConfig("/developers",
+                                        "Developers", "src/icon/developers.png")
+                                  ]),
+                                  groupTitle: "Advanced",
+                                  groupAssetImage: "src/icon/advanced.png"),
+                            ],
+                            _onNavigationItemSelected),
+                        body: widget._screenBuilders[_activeScreen]),
+                  ),
+                );
+              });
+        });
   }
 
   _onNavigationItemSelected(String itemName) {

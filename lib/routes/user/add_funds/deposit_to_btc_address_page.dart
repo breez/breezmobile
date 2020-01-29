@@ -7,6 +7,8 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
+import 'conditional_deposit.dart';
+
 class DepositToBTCAddressPage extends StatefulWidget {
   final AccountBloc _accountBloc;
 
@@ -38,54 +40,57 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
         }
       });
 
-      widget._accountBloc.accountStream
-          .firstWhere((acc) =>
-              acc?.swapFundsStatus?.unconfirmedTxID?.isNotEmpty == true)
-          .then((acc) {
-        if (this.mounted) {
-          Navigator.of(context).removeRoute(_thisRoute);
-        }
-      });
+      // widget._accountBloc.accountStream
+      //     .firstWhere((acc) =>
+      //         acc?.swapFundsStatus?.unconfirmedTxID?.isNotEmpty == true)
+      //     .then((acc) {
+      //   if (this.mounted) {
+      //     Navigator.of(context).removeRoute(_thisRoute);
+      //   }
+      // });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    return StreamBuilder(
-        stream: accountBloc.accountStream,
-        builder:
-            (BuildContext context, AsyncSnapshot<AccountModel> accSnapshot) {
-          return StreamBuilder(
-              stream: _addFundsBloc.addFundResponseStream,
-              builder: (BuildContext context,
-                  AsyncSnapshot<AddFundResponse> snapshot) {
-                return Material(
-                  child: Scaffold(
-                      appBar: AppBar(
-                        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-                        textTheme: Theme.of(context).appBarTheme.textTheme,
-                        backgroundColor: Theme.of(context).canvasColor,
-                        leading: backBtn.BackButton(),
-                        title: Text(
-                          _title,
-                          style: Theme.of(context).appBarTheme.textTheme.title,
-                        ),
-                        elevation: 0.0,
-                      ),
-                      body: Container(
-                        child: Material(
-                            child: getBody(
-                                context,
-                                accSnapshot.data,
-                                snapshot.data,
-                                snapshot.hasError
-                                    ? "Failed to retrieve an address from Breez server\nPlease check your internet connection."
-                                    : null)),
-                      )),
-                );
-              });
-        });
+    return ConditionalDeposit(
+        title: _title,
+        enabledChild: StreamBuilder(
+            stream: accountBloc.accountStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<AccountModel> accSnapshot) {
+              return StreamBuilder(
+                  stream: _addFundsBloc.addFundResponseStream,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<AddFundResponse> snapshot) {
+                    return Material(
+                      child: Scaffold(
+                          appBar: AppBar(
+                            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+                            textTheme: Theme.of(context).appBarTheme.textTheme,
+                            backgroundColor: Theme.of(context).canvasColor,
+                            leading: backBtn.BackButton(),
+                            title: Text(
+                              _title,
+                              style:
+                                  Theme.of(context).appBarTheme.textTheme.title,
+                            ),
+                            elevation: 0.0,
+                          ),
+                          body: Container(
+                            child: Material(
+                                child: getBody(
+                                    context,
+                                    accSnapshot.data,
+                                    snapshot.data,
+                                    snapshot.hasError
+                                        ? "Failed to retrieve an address from Breez server\nPlease check your internet connection."
+                                        : null)),
+                          )),
+                    );
+                  });
+            }));
   }
 
   Widget getBody(BuildContext context, AccountModel account,
