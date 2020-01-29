@@ -16,9 +16,10 @@ class DrawerItemConfig {
   final String name;
   final String title;
   final String icon;
+  final bool disabled;
   final void Function(String name) onItemSelected;
 
-  DrawerItemConfig(this.name, this.title, this.icon, {this.onItemSelected});
+  DrawerItemConfig(this.name, this.title, this.icon, {this.onItemSelected, this.disabled = false});
 }
 
 class DrawerItemConfigGroup {
@@ -232,6 +233,12 @@ Padding _buildUsername(AsyncSnapshot<BreezUserModel> snapshot) {
 Widget _actionTile(
     DrawerItemConfig action, BuildContext context, Function onItemSelected,
     [bool subTile]) {
+  TextStyle itemStyle = theme.drawerItemTextStyle;
+  Color color = DefaultTextStyle.of(context).style.color;
+  if (action.disabled) {
+    color = Theme.of(context).disabledColor;
+    itemStyle = itemStyle.copyWith(color: color);
+  }
   return Padding(
     padding: subTile != null
         ? EdgeInsets.only(left: 36.0, right: 8.0)
@@ -240,10 +247,10 @@ Widget _actionTile(
       leading: ImageIcon(
         AssetImage(action.icon),
         size: 26.0,
-        color: Colors.white,
+        color: color,
       ),
-      title: Text(action.title, style: theme.drawerItemTextStyle),
-      onTap: () {
+      title: Text(action.title, style: itemStyle),
+      onTap: action.disabled ? null : () {
         Navigator.pop(context);
         onItemSelected(action.name);
       },

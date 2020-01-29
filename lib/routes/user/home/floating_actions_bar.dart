@@ -119,7 +119,10 @@ class FloatingActionsBar extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ListTile(
-                leading: _ActionImage(iconAssetPath: "src/icon/paste.png"),
+                enabled: account.connected,
+                leading: _ActionImage(
+                    iconAssetPath: "src/icon/paste.png",
+                    enabled: account.connected),
                 title: Text("PASTE INVOICE"),
                 onTap: () async {
                   Navigator.of(context).pop();
@@ -128,19 +131,24 @@ class FloatingActionsBar extends StatelessWidget {
                 },
               ),
               ListTile(
+                  enabled: account.connected,
                   leading: _ActionImage(
-                      iconAssetPath: "src/icon/connect_to_pay.png"),
+                      iconAssetPath: "src/icon/connect_to_pay.png",
+                      enabled: account.connected),
                   title: Text("CONNECT TO PAY"),
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pushNamed("/connect_to_pay");
                   }),
               ListTile(
-                  leading: _ActionImage(iconAssetPath: "src/icon/bitcoin.png"),
+                  enabled: account.connected,
+                  leading: _ActionImage(
+                      iconAssetPath: "src/icon/bitcoin.png",
+                      enabled: account.connected),
                   title: Text("SEND TO BTC ADDRESS"),
                   onTap: () {
                     Navigator.of(context).pop();
-                    Navigator.of(context).pushNamed("/deposit_btc_address");
+                    Navigator.of(context).pushNamed("/withdraw_funds");
                   }),
             ],
           );
@@ -163,7 +171,11 @@ class FloatingActionsBar extends StatelessWidget {
                 List<Widget> children =
                     snapshot.data.where((v) => v.isAllowed).map((v) {
                   return ListTile(
-                      leading: _ActionImage(iconAssetPath: v.icon),
+                      enabled: account.connected || !v.requireActiveChannel,
+                      leading: _ActionImage(
+                          iconAssetPath: v.icon,
+                          enabled:
+                              account.connected || !v.requireActiveChannel),
                       title: Text(v.name.toUpperCase()),
                       onTap: () {
                         Navigator.of(context).pop();
@@ -175,8 +187,10 @@ class FloatingActionsBar extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                        leading:
-                            _ActionImage(iconAssetPath: "src/icon/paste.png"),
+                        enabled: account.connected,
+                        leading: _ActionImage(
+                            iconAssetPath: "src/icon/paste.png",
+                            enabled: account.connected),
                         title: Text("RECEIVE VIA INVOICE"),
                         onTap: () {
                           Navigator.of(context).pop();
@@ -272,14 +286,18 @@ class _Action extends StatelessWidget {
 
 class _ActionImage extends StatelessWidget {
   final String iconAssetPath;
+  final bool enabled;
 
-  const _ActionImage({Key key, this.iconAssetPath}) : super(key: key);
+  const _ActionImage({Key key, this.iconAssetPath, this.enabled = true})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Image(
       image: AssetImage(iconAssetPath),
-      color: theme.BreezColors.white[500],
+      color: enabled
+          ? DefaultTextStyle.of(context).style.color
+          : Theme.of(context).disabledColor,
       fit: BoxFit.contain,
       width: 24.0,
       height: 24.0,
