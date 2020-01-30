@@ -9,7 +9,7 @@ class LNURLHandler {
   final BuildContext _context;
   final LNUrlBloc lnurlBloc;
 
-  LNURLHandler(this._context, this.lnurlBloc) {    
+  LNURLHandler(this._context, this.lnurlBloc) {
     lnurlBloc.lnurlWitdrawStream.listen((withdrawResponse) async {
       Navigator.of(_context).push(FadeInRoute(
         builder: (_) => CreateInvoicePage(lnurlWithdraw: withdrawResponse),

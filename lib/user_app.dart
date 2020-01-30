@@ -147,7 +147,7 @@ class UserApp extends StatelessWidget {
                                             connectPayBloc,
                                             backupBloc,
                                             lspBloc,
-                                            reverseSwapBloc, 
+                                            reverseSwapBloc,
                                             lnurlBloc),
                                         settings: settings,
                                       );

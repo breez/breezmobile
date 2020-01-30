@@ -126,7 +126,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                           borderRadius: BorderRadius.circular(42.0)),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          _createInvoice(invoiceBloc, accountBloc, lnurlBloc, account);
+                          _createInvoice(
+                              invoiceBloc, accountBloc, lnurlBloc, account);
                         }
                       },
                     );

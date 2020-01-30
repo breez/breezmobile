@@ -9,13 +9,16 @@ import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/routes/user/withdraw_funds/reverse_swap_confirmation.dart';
 import 'package:breez/routes/user/withdraw_funds/swap_in_progress.dart';
 import 'package:breez/routes/user/withdraw_funds/withdraw_funds_page.dart';
-import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class ReverseSwapPage extends StatefulWidget {
+  final String userAddress;
+
+  const ReverseSwapPage({Key key, this.userAddress}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return ReverseSwapPageState();
@@ -116,6 +119,9 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                               builder: (context, swapSnapshot) {
                                 String initialAddress, initialAmount;
                                 var currentSwap = swapSnapshot.data;
+                                if (widget.userAddress != null) {
+                                  initialAddress = widget.userAddress;
+                                }
                                 if (currentSwap != null) {
                                   initialAddress = currentSwap.claimAddress;
                                   initialAmount = accSnapshot.data.currency

@@ -22,7 +22,7 @@ class FastbitcoinsPage extends StatefulWidget {
   final String fastBitcoinUrl;
 
   const FastbitcoinsPage({Key key, this.fastBitcoinUrl}) : super(key: key);
-  
+
   @override
   FastbitcoinsPageState createState() {
     return FastbitcoinsPageState();
@@ -49,7 +49,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
     if (!_isInit) {
       _fastBitcoinsBloc = AppBlocsProvider.of<FastbitcoinsBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      if (widget.fastBitcoinUrl != null) {        
+      if (widget.fastBitcoinUrl != null) {
         String voucherCode = widget.fastBitcoinUrl.split("/").last;
         _codeController.text = voucherCode;
       }

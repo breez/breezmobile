@@ -12,12 +12,13 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/routes/user/add_funds/fastbitcoins_page.dart';
 import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
+import 'package:breez/routes/user/withdraw_funds/reverse_swap_page.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/fastbitcoin.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
-import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
@@ -129,9 +130,18 @@ class FloatingActionsBar extends StatelessWidget {
                                       FastbitcoinsPage(fastBitcoinUrl: lower),
                                 ));
                                 return;
-                              }                              
-                              showFlushbar(context, message: "QR code cannot be processed.");
-                            }                            
+                              }
+                              if (await _isBTCAddress(scannedString)) {
+                                Navigator.of(context).push(FadeInRoute(
+                                  builder: (_) => ReverseSwapPage(
+                                    userAddress: scannedString,
+                                  ),
+                                ));
+                                return;
+                              }
+                              showFlushbar(context,
+                                  message: "QR code cannot be processed.");
+                            }
                           } on PlatformException catch (e) {
                             if (e.code == BarcodeScanner.CameraAccessDenied) {
                               Navigator.of(context).push(FadeInRoute(
@@ -155,6 +165,14 @@ class FloatingActionsBar extends StatelessWidget {
             ]),
       ],
     );
+  }
+
+  Future<bool> _isBTCAddress(String scannedString) {
+    return ServiceInjector()
+        .breezBridge
+        .validateAddress(scannedString)
+        .then((_) => true)
+        .catchError((err) => false);
   }
 
   Future _handleLNUrl(

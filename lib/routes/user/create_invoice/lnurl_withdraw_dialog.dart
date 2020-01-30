@@ -29,11 +29,11 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog>
     with SingleTickerProviderStateMixin {
   String _error;
   StreamSubscription<bool> _paidInvoicesSubscription;
-  Animation<double> _opacityAnimation;  
+  Animation<double> _opacityAnimation;
 
   @override
   void initState() {
-    super.initState();    
+    super.initState();
     var controller = AnimationController(
         vsync: this, duration: Duration(milliseconds: 1000));
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
@@ -73,7 +73,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog>
 
   @override
   void dispose() {
-    _paidInvoicesSubscription.cancel();    
+    _paidInvoicesSubscription.cancel();
     super.dispose();
   }
 

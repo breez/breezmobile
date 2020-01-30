@@ -133,6 +133,9 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
 
   @override
   Widget build(BuildContext context) {
-    return FullScreenLoader(message: widget.message, opacity: widget.opacity, onClose: widget.onClose);
+    return FullScreenLoader(
+        message: widget.message,
+        opacity: widget.opacity,
+        onClose: widget.onClose);
   }
 }
