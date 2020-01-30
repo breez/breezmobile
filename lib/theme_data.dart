@@ -70,9 +70,11 @@ final ThemeData blueTheme = ThemeData(
   ),
   primaryTextTheme: TextTheme(
     display1: TextStyle(
-      color: Color(0xffffe685),
-      fontSize: 18.0,
-    ),
+        color: BreezColors.grey[500],
+        fontSize: 14.0,
+        letterSpacing: 0.0,
+        height: 1.28,
+        fontFamily: 'IBMPlexSansMedium'),
     display2: TextStyle(
         color: BreezColors.grey[500],
         fontSize: 14.0,
@@ -150,9 +152,11 @@ final ThemeData darkTheme = ThemeData(
   ),
   primaryTextTheme: TextTheme(
     display1: TextStyle(
-      color: Color(0xffffe685),
-      fontSize: 18.0,
-    ),
+        color: Colors.white,
+        fontSize: 14.0,
+        letterSpacing: 0.0,
+        height: 1.28,
+        fontFamily: 'IBMPlexSansMedium'),
     display2: TextStyle(
         color: Colors.white, fontSize: 14.0, letterSpacing: 0.0, height: 1.28),
     headline: TextStyle(

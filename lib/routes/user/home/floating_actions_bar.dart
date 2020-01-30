@@ -201,23 +201,25 @@ class FloatingActionsBar extends StatelessWidget {
                         }),
                     ...children,
                     !account.connected
-                        ? SizedBox()
+                        ? SizedBox(height: 8.0)
                         : Padding(
                             padding: const EdgeInsets.only(
-                                top: 32.0,
+                                top: 16.0,
                                 left: 16.0,
                                 right: 16.0,
                                 bottom: 16.0),
                             child: Container(
-                              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+                              padding: EdgeInsets.only(
+                                  top: 8.0, bottom: 8.0, left: 8.0, right: 8.0),
                               width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(4)),
                                   border: Border.all(
                                       color: Theme.of(context).errorColor)),
-                              child: Text(
-                                "Breez requires you to keep\n${account.currency.format(account.warningMaxChanReserveAmount, fixedDecimals: false)} in your balance.",
+                              child: AutoSizeText(
+                                "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, fixedDecimals: false)} in your balance.",
+                                maxLines: 1,
                                 style: Theme.of(context).textTheme.display1,
                                 textAlign: TextAlign.center,
                               ),
