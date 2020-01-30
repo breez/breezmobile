@@ -15,8 +15,9 @@ import '../sync_progress_dialog.dart';
 class LNURlWidthrawDialog extends StatefulWidget {
   final InvoiceBloc invoiceBloc;
   final AccountBloc accountBloc;
+  final LNUrlBloc lnurlBloc;
 
-  const LNURlWidthrawDialog(this.invoiceBloc, this.accountBloc);
+  const LNURlWidthrawDialog(this.invoiceBloc, this.accountBloc, this.lnurlBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -28,13 +29,11 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog>
     with SingleTickerProviderStateMixin {
   String _error;
   StreamSubscription<bool> _paidInvoicesSubscription;
-  Animation<double> _opacityAnimation;
-  LNUrlBloc lnurlBloc;
+  Animation<double> _opacityAnimation;  
 
   @override
   void initState() {
-    super.initState();
-    lnurlBloc = LNUrlBloc();
+    super.initState();    
     var controller = AnimationController(
         vsync: this, duration: Duration(milliseconds: 1000));
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
@@ -60,7 +59,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog>
           .then((_) {
         if (this.mounted) {
           Withdraw withdrawAction = Withdraw(bolt11);
-          lnurlBloc.actionsSink.add(withdrawAction);
+          widget.lnurlBloc.actionsSink.add(withdrawAction);
           return withdrawAction.future;
         }
         return null;
@@ -74,8 +73,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog>
 
   @override
   void dispose() {
-    _paidInvoicesSubscription.cancel();
-    lnurlBloc.dispose();
+    _paidInvoicesSubscription.cancel();    
     super.dispose();
   }
 

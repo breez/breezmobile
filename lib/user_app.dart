@@ -33,6 +33,7 @@ import 'package:breez/routes/user/pay_nearby/pay_nearby_complete.dart';
 import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
 import 'package:breez/routes/user/marketplace/marketplace.dart';
 import 'package:flutter/services.dart';
+import 'bloc/lnurl/lnurl_bloc.dart';
 import 'bloc/lsp/lsp_bloc.dart';
 import 'bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'theme_data.dart' as theme;
@@ -50,6 +51,7 @@ class UserApp extends StatelessWidget {
     var connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
     var lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
+    var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
 
     return StreamBuilder(
         stream: userProfileBloc.userStream,
@@ -145,7 +147,8 @@ class UserApp extends StatelessWidget {
                                             connectPayBloc,
                                             backupBloc,
                                             lspBloc,
-                                            reverseSwapBloc),
+                                            reverseSwapBloc, 
+                                            lnurlBloc),
                                         settings: settings,
                                       );
                                     case '/order_card':

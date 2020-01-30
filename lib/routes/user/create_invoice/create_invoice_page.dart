@@ -40,7 +40,6 @@ class CreateInvoicePage extends StatefulWidget {
 }
 
 class CreateInvoicePageState extends State<CreateInvoicePage> {
-  LNUrlBloc _lnurlBloc;
   WithdrawFetchResponse _withdrawFetchResponse;
 
   final _formKey = GlobalKey<FormState>();
@@ -83,7 +82,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   void initState() {
-    _lnurlBloc = LNUrlBloc();
     _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
     super.initState();
   }
@@ -92,7 +90,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   void dispose() {
     _paidInvoicesSubscription?.cancel();
     _doneAction.dispose();
-    _lnurlBloc.dispose();
     super.dispose();
   }
 
@@ -101,6 +98,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     final String _title = "Receive via Invoice";
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -128,7 +126,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                           borderRadius: BorderRadius.circular(42.0)),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          _createInvoice(invoiceBloc, accountBloc, account);
+                          _createInvoice(invoiceBloc, accountBloc, lnurlBloc, account);
                         }
                       },
                     );
@@ -299,8 +297,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   Future _handleLNUrlWithdraw(AccountModel account, String lnurl) async {
+    LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     Fetch fetchAction = Fetch(lnurl);
-    _lnurlBloc.actionsSink.add(fetchAction);
+    lnurlBloc.actionsSink.add(fetchAction);
     var response = await fetchAction.future;
     if (response.runtimeType != WithdrawFetchResponse) {
       throw "Invalid URL";
@@ -319,8 +318,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         .format(response.maxAmount, includeSymbol: false, userInput: true);
   }
 
-  Future _createInvoice(
-      InvoiceBloc invoiceBloc, AccountBloc accountBloc, AccountModel account) {
+  Future _createInvoice(InvoiceBloc invoiceBloc, AccountBloc accountBloc,
+      LNUrlBloc lnurlBloc, AccountModel account) {
     invoiceBloc.newInvoiceRequestSink.add(InvoiceRequestModel(
         null,
         _descriptionController.text,
@@ -328,7 +327,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         account.currency.parse(_amountController.text)));
 
     Widget dialog = _withdrawFetchResponse != null
-        ? LNURlWidthrawDialog(invoiceBloc, accountBloc)
+        ? LNURlWidthrawDialog(invoiceBloc, accountBloc, lnurlBloc)
         : QrCodeDialog(context, invoiceBloc, accountBloc);
     Navigator.of(context).pop();
     return _bgService.runAsTask(

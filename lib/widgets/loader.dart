@@ -26,10 +26,10 @@ class Loader extends StatelessWidget {
 }
 
 TransparentPageRoute createLoaderRoute(BuildContext context,
-    {String message, double opacity = 0.5, Future action}) {
+    {String message, double opacity = 0.5, Future action, Function onClose}) {
   return TransparentPageRoute((context) {
     return TransparentRouteLoader(
-        message: message, opacity: opacity, action: action);
+        message: message, opacity: opacity, action: action, onClose: onClose);
   });
 }
 
@@ -106,9 +106,10 @@ class TransparentRouteLoader extends StatefulWidget {
   final String message;
   final double opacity;
   final Future action;
+  final Function onClose;
 
   const TransparentRouteLoader(
-      {Key key, this.message, this.opacity = 0.5, this.action})
+      {Key key, this.message, this.opacity = 0.5, this.action, this.onClose})
       : super(key: key);
 
   @override
@@ -132,6 +133,6 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
 
   @override
   Widget build(BuildContext context) {
-    return FullScreenLoader(message: widget.message, opacity: widget.opacity);
+    return FullScreenLoader(message: widget.message, opacity: widget.opacity, onClose: widget.onClose);
   }
 }

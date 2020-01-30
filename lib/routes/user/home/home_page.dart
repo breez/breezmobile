@@ -10,6 +10,7 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -49,9 +50,10 @@ class Home extends StatefulWidget {
   final BackupBloc backupBloc;
   final LSPBloc lspBloc;
   final ReverseSwapBloc reverseSwapBloc;
+  final LNUrlBloc lnurlBloc;
 
   Home(this.accountBloc, this.invoiceBloc, this.userProfileBloc, this.ctpBloc,
-      this.backupBloc, this.lspBloc, this.reverseSwapBloc);
+      this.backupBloc, this.lspBloc, this.reverseSwapBloc, this.lnurlBloc);
 
   final List<DrawerItemConfig> _screens = List<DrawerItemConfig>.unmodifiable(
       [DrawerItemConfig("breezHome", "Breez", "")]);
@@ -289,7 +291,7 @@ class HomeState extends State<Home> {
         firstPaymentItemKey,
         scrollController,
         _scaffoldKey);
-    LNURLHandler(context);
+    LNURLHandler(context, widget.lnurlBloc);
     CTPJoinSessionHandler(widget.ctpBloc, this.context, (session) {
       Navigator.popUntil(context, (route) {
         return route.settings.name != "/connect_to_pay";

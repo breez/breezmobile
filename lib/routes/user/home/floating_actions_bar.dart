@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -5,9 +7,19 @@ import 'package:breez/bloc/account/add_fund_vendor_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/lnurl/lnurl_actions.dart';
+import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
+import 'package:breez/bloc/lnurl/lnurl_model.dart';
+import 'package:breez/routes/user/add_funds/fastbitcoins_page.dart';
+import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/bip21.dart';
+import 'package:breez/utils/fastbitcoin.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
+import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,6 +70,7 @@ class FloatingActionsBar extends StatelessWidget {
   Widget _buildActionsBar(BuildContext context, bool minimized) {
     AutoSizeGroup actionsGroup = AutoSizeGroup();
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -83,8 +96,42 @@ class FloatingActionsBar extends StatelessWidget {
                     _Action(
                         onPress: () async {
                           try {
-                            String decodedQr = await QRScanner.scan();
-                            invoiceBloc.decodeInvoiceSink.add(decodedQr);
+                            String scannedString = await QRScanner.scan();
+                            if (scannedString != null) {
+                              String lower = scannedString.toLowerCase();
+
+                              // lnurl string
+                              if (lower.startsWith("lightning:lnurl") ||
+                                  lower.startsWith("lnurl")) {
+                                await _handleLNUrl(
+                                    lnurlBloc, context, scannedString);
+                                return;
+                              }
+
+                              // bip 121
+                              String lnInvoice = extractBolt11FromBip21(lower);
+                              if (lnInvoice != null) {
+                                lower = lnInvoice;
+                              }
+
+                              // regular lightning invoice.
+                              if (lower.startsWith("lightning:") ||
+                                  lower.startsWith("ln")) {
+                                invoiceBloc.decodeInvoiceSink
+                                    .add(scannedString);
+                                return;
+                              }
+
+                              // fast bitcoin
+                              if (isFastBitcoinURL(lower)) {
+                                Navigator.of(context).push(FadeInRoute(
+                                  builder: (_) =>
+                                      FastbitcoinsPage(fastBitcoinUrl: lower),
+                                ));
+                                return;
+                              }                              
+                              showFlushbar(context, message: "QR code cannot be processed.");
+                            }                            
                           } on PlatformException catch (e) {
                             if (e.code == BarcodeScanner.CameraAccessDenied) {
                               Navigator.of(context).push(FadeInRoute(
@@ -108,6 +155,35 @@ class FloatingActionsBar extends StatelessWidget {
             ]),
       ],
     );
+  }
+
+  Future _handleLNUrl(
+      LNUrlBloc lnurlBloc, BuildContext context, String lnurl) async {
+    Fetch fetchAction = Fetch(lnurl);
+    var cancelCompleter = Completer();
+    var loaderRoute = createLoaderRoute(context, onClose: () {
+      cancelCompleter.complete();
+    });
+    Navigator.of(context).push(loaderRoute);
+
+    lnurlBloc.actionsSink.add(fetchAction);
+    await Future.any([cancelCompleter.future, fetchAction.future]).then(
+      (response) {
+        Navigator.of(context).removeRoute(loaderRoute);
+        if (cancelCompleter.isCompleted) {
+          return;
+        }
+
+        if (response.runtimeType != WithdrawFetchResponse) {
+          throw "Invalid URL";
+        }
+        WithdrawFetchResponse withdrawResponse =
+            response as WithdrawFetchResponse;
+        Navigator.of(context).push(FadeInRoute(
+          builder: (_) => CreateInvoicePage(lnurlWithdraw: withdrawResponse),
+        ));
+      },
+    ).catchError((err) => Navigator.of(context).removeRoute(loaderRoute));
   }
 
   Future _showSendOptions(BuildContext context) {
