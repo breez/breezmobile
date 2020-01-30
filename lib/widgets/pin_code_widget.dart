@@ -80,9 +80,9 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
     return getEnrolledBiometricsAction.future;
   }
-  
+
   void _validateBiometrics({bool force = false}) async {
-    if (!biometricsValidated || force) {      
+    if (!biometricsValidated || force) {
       biometricsValidated = true;
       var validateBiometricsAction =
           ValidateBiometrics(localizedReason: widget.localizedReason);
@@ -175,11 +175,11 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return _errorMessage.isNotEmpty
         ? Text(
             _errorMessage,
-            style: Theme.of(context).textTheme.caption.copyWith(fontSize: 12),
+            style: Theme.of(context).textTheme.display1.copyWith(fontSize: 12),
           )
         : Text(
             "",
-            style: Theme.of(context).textTheme.caption.copyWith(fontSize: 12),
+            style: Theme.of(context).textTheme.display1.copyWith(fontSize: 12),
           );
   }
 

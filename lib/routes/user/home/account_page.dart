@@ -204,7 +204,7 @@ class AccountPageState extends State<AccountPage>
                 ? FloatingActionsBar(account, height, heightFactor)
                 : Positioned(top: 0.0, child: SizedBox());
           },
-        ),        
+        ),
       ],
     );
   }

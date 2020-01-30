@@ -142,40 +142,38 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   @override
   Widget build(BuildContext context) {
     return ConditionalDeposit(
-      title: "MoonPay",
-      enabledChild: _buildWebView(context)
-    );
+        title: "MoonPay", enabledChild: _buildWebView(context));
   }
 
-  Widget _buildWebView(BuildContext context){
+  Widget _buildWebView(BuildContext context) {
     if (_order == null || _error != null) {
       return _buildLoadingScreen();
     }
 
     return WebviewScaffold(
-        appBar: AppBar(
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color),
-                onPressed: () => Navigator.pop(context))
-          ],
-          automaticallyImplyLeading: false,
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
-          title: Text(
-            "MoonPay",
-            style: Theme.of(context).appBarTheme.textTheme.title,
-          ),
-          elevation: 0.0,
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color),
+              onPressed: () => Navigator.pop(context))
+        ],
+        automaticallyImplyLeading: false,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
+        title: Text(
+          "MoonPay",
+          style: Theme.of(context).appBarTheme.textTheme.title,
         ),
-        url: _order.url,
-        withJavascript: true,
-        withZoom: false,
-        clearCache: false,
-        initialChild:
-            _screenshotData != null ? Image.memory(_screenshotData) : null,
-      );
+        elevation: 0.0,
+      ),
+      url: _order.url,
+      withJavascript: true,
+      withZoom: false,
+      clearCache: false,
+      initialChild:
+          _screenshotData != null ? Image.memory(_screenshotData) : null,
+    );
   }
 
   Future _takeScreenshot() async {

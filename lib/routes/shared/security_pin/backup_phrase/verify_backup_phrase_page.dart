@@ -161,7 +161,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       selectedWordList
         ..add(Text(
           "Failed to verify words. Please write down the words and try again.",
-          style: Theme.of(context).textTheme.caption.copyWith(fontSize: 12),
+          style: Theme.of(context).textTheme.display1.copyWith(fontSize: 12),
         ));
     return selectedWordList;
   }

@@ -159,8 +159,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
   }
 
   Widget buildSummary(AccountModel acc) {
-    var receive = widget.swap.onChainAmount -
-                    feeOptions[selectedFeeIndex].sats;  
+    var receive = widget.swap.onChainAmount - feeOptions[selectedFeeIndex].sats;
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -239,7 +238,8 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             trailing: Container(
               child: AutoSizeText(
                 acc.currency.format(widget.swap.onChainAmount -
-                    feeOptions[selectedFeeIndex].sats) + " (${acc.fiatCurrency.format(receive)})",
+                        feeOptions[selectedFeeIndex].sats) +
+                    " (${acc.fiatCurrency.format(receive)})",
                 style: TextStyle(color: Theme.of(context).errorColor),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,

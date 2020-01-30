@@ -24,7 +24,6 @@ import 'package:breez/routes/shared/network/network.dart';
 import 'package:breez/routes/shared/security_pin/security_pin_page.dart';
 import 'package:breez/routes/shared/dev/dev.dart';
 import 'package:breez/routes/user/activate_card/activate_card_page.dart';
-import 'package:breez/routes/user/add_funds/add_funds_page.dart';
 import 'package:breez/routes/user/add_funds/fastbitcoins_page.dart';
 import 'package:breez/routes/user/home/home_page.dart';
 import 'package:breez/routes/user/order_card/order_card_page.dart';
@@ -159,11 +158,6 @@ class UserApp extends StatelessWidget {
                                       return FadeInRoute(
                                         builder: (_) =>
                                             OrderCardPage(showSkip: true),
-                                        settings: settings,
-                                      );
-                                    case '/add_funds':
-                                      return FadeInRoute(
-                                        builder: (_) => AddFundsPage(),
                                         settings: settings,
                                       );
                                     case '/deposit_btc_address':
