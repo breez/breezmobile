@@ -19,7 +19,8 @@ class DrawerItemConfig {
   final bool disabled;
   final void Function(String name) onItemSelected;
 
-  DrawerItemConfig(this.name, this.title, this.icon, {this.onItemSelected, this.disabled = false});
+  DrawerItemConfig(this.name, this.title, this.icon,
+      {this.onItemSelected, this.disabled = false});
 }
 
 class DrawerItemConfigGroup {
@@ -28,7 +29,8 @@ class DrawerItemConfigGroup {
   final String groupAssetImage;
   final bool withDivider;
 
-  DrawerItemConfigGroup(this.items, {this.groupTitle, this.groupAssetImage, this.withDivider = true});
+  DrawerItemConfigGroup(this.items,
+      {this.groupTitle, this.groupAssetImage, this.withDivider = true});
 }
 
 class NavigationDrawer extends StatelessWidget {
@@ -215,7 +217,7 @@ Row _buildBottomRow(
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: <Widget>[
-      _buildUsername(snapshot),            
+      _buildUsername(snapshot),
     ],
   );
 }
@@ -250,10 +252,12 @@ Widget _actionTile(
         color: color,
       ),
       title: Text(action.title, style: itemStyle),
-      onTap: action.disabled ? null : () {
-        Navigator.pop(context);
-        onItemSelected(action.name);
-      },
+      onTap: action.disabled
+          ? null
+          : () {
+              Navigator.pop(context);
+              onItemSelected(action.name);
+            },
     ),
   );
 }

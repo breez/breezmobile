@@ -27,7 +27,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
   StreamController<ReverseSwapDetails> _reverseSwapsStream =
       BehaviorSubject<ReverseSwapDetails>();
   PageController _pageController = PageController();
-  Completer _policyCompleter = new Completer();
+  Completer _policyCompleter = Completer();
   Object _loadingError;
 
   @override

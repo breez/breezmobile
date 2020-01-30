@@ -147,7 +147,7 @@ class HomeState extends State<Home> {
                           "src/icon/withdraw_funds.png")
                     ])
                   ];
-                }                
+                }
 
                 return Container(
                   height: MediaQuery.of(context).size.height,
@@ -228,11 +228,13 @@ class HomeState extends State<Home> {
                                 ...addFundsVendors,
                               ],
                                   groupTitle: "Receive",
-                                  groupAssetImage: "src/icon/receive-action.png",
+                                  groupAssetImage:
+                                      "src/icon/receive-action.png",
                                   withDivider: false),
                               DrawerItemConfigGroup([
                                 DrawerItemConfig("/marketplace", "Marketplace",
-                                    "src/icon/ic_market.png", disabled: !account.connected),
+                                    "src/icon/ic_market.png",
+                                    disabled: !account.connected),
                               ]),
                               DrawerItemConfigGroup(
                                   _filterItems([

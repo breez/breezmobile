@@ -80,9 +80,9 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
     return getEnrolledBiometricsAction.future;
   }
-  
+
   void _validateBiometrics({bool force = false}) async {
-    if (!biometricsValidated || force) {      
+    if (!biometricsValidated || force) {
       biometricsValidated = true;
       var validateBiometricsAction =
           ValidateBiometrics(localizedReason: widget.localizedReason);

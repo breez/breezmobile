@@ -33,7 +33,7 @@ class FloatingActionsBar extends StatelessWidget {
       child: AnimatedContainer(
         width: isSmallView ? COLLAPSED_ACTIONS_WIDTH : EXPANDED_ACTIONS_WIDTH,
         duration: Duration(milliseconds: 150),
-        decoration: new BoxDecoration(
+        decoration: BoxDecoration(
             color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
             borderRadius: BorderRadius.circular(24.0)),
         child: Row(

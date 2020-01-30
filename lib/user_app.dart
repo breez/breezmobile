@@ -159,7 +159,7 @@ class UserApp extends StatelessWidget {
                                         builder: (_) =>
                                             OrderCardPage(showSkip: true),
                                         settings: settings,
-                                      );                                    
+                                      );
                                     case '/deposit_btc_address':
                                       return FadeInRoute(
                                         builder: (_) => DepositToBTCAddressPage(

@@ -267,7 +267,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
           includeSymbol: false,
           userInput: true),
     );
-  }  
+  }
 
   Future _scanBarcode(AccountModel account) async {
     var loaderRoute = createLoaderRoute(context);

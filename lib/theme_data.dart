@@ -64,15 +64,15 @@ final ThemeData blueTheme = ThemeData(
     button: TextStyle(
         color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
     display1: TextStyle(
-        color: Color(0xffffe685),
-        fontSize: 18.0,        
-        ),
+      color: Color(0xffffe685),
+      fontSize: 18.0,
+    ),
   ),
   primaryTextTheme: TextTheme(
     display1: TextStyle(
-        color: Color(0xffffe685),
-        fontSize: 18.0,        
-        ),
+      color: Color(0xffffe685),
+      fontSize: 18.0,
+    ),
     display2: TextStyle(
         color: BreezColors.grey[500],
         fontSize: 14.0,
@@ -144,15 +144,15 @@ final ThemeData darkTheme = ThemeData(
     headline: TextStyle(color: Colors.white, fontSize: 26.0),
     button: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
     display1: TextStyle(
-        color: Color(0xffffe685),
-        fontSize: 18.0,        
-        ),
+      color: Color(0xffffe685),
+      fontSize: 18.0,
+    ),
   ),
   primaryTextTheme: TextTheme(
     display1: TextStyle(
-        color: Color(0xffffe685),
-        fontSize: 18.0,        
-        ),
+      color: Color(0xffffe685),
+      fontSize: 18.0,
+    ),
     display2: TextStyle(
         color: Colors.white, fontSize: 14.0, letterSpacing: 0.0, height: 1.28),
     headline: TextStyle(

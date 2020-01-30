@@ -7,7 +7,9 @@ class AddFundVendorModel {
   final bool requireActiveChannel;
 
   AddFundVendorModel(this.name, this.icon, this.route,
-      {this.isAllowed = true, this.requireActiveChannel = false, this.shortName});
+      {this.isAllowed = true,
+      this.requireActiveChannel = false,
+      this.shortName});
 
   AddFundVendorModel copyWith({bool isAllowed}) {
     return AddFundVendorModel(this.name, this.icon, this.route,

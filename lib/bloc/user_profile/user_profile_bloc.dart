@@ -79,7 +79,7 @@ class UserProfileBloc {
       ValidateBiometrics: _validateBiometrics,
       StopBiometrics: _stopBiometrics,
       GetEnrolledBiometrics: _getEnrolledBiometrics,
-      SetLockState: _setLockState,      
+      SetLockState: _setLockState,
     };
     print("UserProfileBloc started");
 
@@ -198,7 +198,8 @@ class UserProfileBloc {
 
   Future _resetSecurityModelAction(
       ResetSecurityModel resetSecurityModelAction) async {
-    var updateSecurityModelAction = UpdateSecurityModel(SecurityModel.initial());
+    var updateSecurityModelAction =
+        UpdateSecurityModel(SecurityModel.initial());
     resetSecurityModelAction
         .resolve(await _updateSecurityModel(updateSecurityModelAction));
   }
