@@ -9,6 +9,7 @@ import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/routes/user/withdraw_funds/reverse_swap_confirmation.dart';
 import 'package:breez/routes/user/withdraw_funds/swap_in_progress.dart';
 import 'package:breez/routes/user/withdraw_funds/withdraw_funds_page.dart';
+import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
@@ -77,7 +78,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                 leading: backBtn.BackButton(onPressed: () {
                   Navigator.of(context).pop();
                 }),
-                title: Text("Remove Funds",
+                title: Text("Send to BTC Address",
                     style: Theme.of(context).appBarTheme.textTheme.title),
                 elevation: 0.0)
             : null,
@@ -93,7 +94,11 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                               textAlign: TextAlign.center));
                     }
                     if (snapshot.data == null) {
-                      return Center(child: Loader());
+                      return Center(
+                          child: Loader(
+                              color: Theme.of(context)
+                                  .primaryColor
+                                  .withOpacity(0.5)));
                     }
                     ReverseSwapPolicy policy =
                         snapshot.data as ReverseSwapPolicy;

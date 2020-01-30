@@ -118,12 +118,13 @@ class FloatingActionsBar extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              SizedBox(height: 8.0),
               ListTile(
                 enabled: account.connected,
                 leading: _ActionImage(
                     iconAssetPath: "src/icon/paste.png",
                     enabled: account.connected),
-                title: Text("PASTE INVOICE"),
+                title: Text("Paste Invoice"),
                 onTap: () async {
                   Navigator.of(context).pop();
                   var data = await Clipboard.getData(Clipboard.kTextPlain);
@@ -135,7 +136,7 @@ class FloatingActionsBar extends StatelessWidget {
                   leading: _ActionImage(
                       iconAssetPath: "src/icon/connect_to_pay.png",
                       enabled: account.connected),
-                  title: Text("CONNECT TO PAY"),
+                  title: Text("Connect to Pay"),
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pushNamed("/connect_to_pay");
@@ -145,11 +146,12 @@ class FloatingActionsBar extends StatelessWidget {
                   leading: _ActionImage(
                       iconAssetPath: "src/icon/bitcoin.png",
                       enabled: account.connected),
-                  title: Text("SEND TO BTC ADDRESS"),
+                  title: Text("Send to BTC Address"),
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pushNamed("/withdraw_funds");
                   }),
+              SizedBox(height: 8.0)
             ],
           );
         });
@@ -176,7 +178,7 @@ class FloatingActionsBar extends StatelessWidget {
                           iconAssetPath: v.icon,
                           enabled:
                               account.connected || !v.requireActiveChannel),
-                      title: Text(v.name.toUpperCase()),
+                      title: Text(v.name),
                       onTap: () {
                         Navigator.of(context).pop();
                         Navigator.of(context).pushNamed(v.route);
@@ -186,34 +188,41 @@ class FloatingActionsBar extends StatelessWidget {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
+                    SizedBox(height: 8.0),
                     ListTile(
                         enabled: account.connected,
                         leading: _ActionImage(
                             iconAssetPath: "src/icon/paste.png",
                             enabled: account.connected),
-                        title: Text("RECEIVE VIA INVOICE"),
+                        title: Text("Receive via Invoice"),
                         onTap: () {
                           Navigator.of(context).pop();
                           Navigator.of(context).pushNamed("/create_invoice");
                         }),
                     ...children,
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 36.0, left: 16.0, right: 16.0, bottom: 16.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(4)),
-                            border: Border.all(
-                                color: Theme.of(context).errorColor)),
-                        padding: EdgeInsets.all(16),
-                        child: Text(
-                          "Breez requires you to keep\n${account.currency.format(account.warningMaxChanReserveAmount, fixedDecimals: false)} in your balance.",
-                          style: Theme.of(context).textTheme.caption,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    )
+                    !account.connected
+                        ? SizedBox()
+                        : Padding(
+                            padding: const EdgeInsets.only(
+                                top: 32.0,
+                                left: 16.0,
+                                right: 16.0,
+                                bottom: 16.0),
+                            child: Container(
+                              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4)),
+                                  border: Border.all(
+                                      color: Theme.of(context).errorColor)),
+                              child: Text(
+                                "Breez requires you to keep\n${account.currency.format(account.warningMaxChanReserveAmount, fixedDecimals: false)} in your balance.",
+                                style: Theme.of(context).textTheme.display1,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          )
                   ],
                 );
               });

@@ -209,13 +209,13 @@ class HomeState extends State<Home> {
                                 }),
                                 DrawerItemConfig(
                                     "/connect_to_pay",
-                                    "Connect To Pay",
+                                    "Connect to Pay",
                                     "src/icon/connect_to_pay.png",
                                     disabled: !account.connected),
                                 DrawerItemConfig(
                                     "/withdraw_funds",
-                                    "Send To BTC Address",
-                                    "src/icon/withdraw_funds.png",
+                                    "Send to BTC Address",
+                                    "src/icon/bitcoin.png",
                                     disabled: !account.connected),
                               ],
                                   groupTitle: "Send",
@@ -228,11 +228,11 @@ class HomeState extends State<Home> {
                                 ...addFundsVendors,
                               ],
                                   groupTitle: "Receive",
-                                  groupAssetImage: "src/icon/send-action.png",
+                                  groupAssetImage: "src/icon/receive-action.png",
                                   withDivider: false),
                               DrawerItemConfigGroup([
                                 DrawerItemConfig("/marketplace", "Marketplace",
-                                    "src/icon/ic_market.png"),
+                                    "src/icon/ic_market.png", disabled: !account.connected),
                               ]),
                               DrawerItemConfigGroup(
                                   _filterItems([

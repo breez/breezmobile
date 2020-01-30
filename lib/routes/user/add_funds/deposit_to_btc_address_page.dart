@@ -132,7 +132,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                       account.currency.format(response.maxAllowedDeposit,
                           includeSymbol: true) +
                       " to this address.",
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.display1,
                   textAlign: TextAlign.center,
                 ),
               ),

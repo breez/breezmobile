@@ -143,7 +143,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
                 payments.nonFilteredItems[0].paymentHash == action.swap.hash)
             .first
       ]).then((_) => onComplete()).catchError((err) {
-        onComplete(error: "failed to initiate payment");
+        onComplete(error: "Failed to execute payment.");
       });
 
       return resultCompletor.future;

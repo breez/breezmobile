@@ -61,7 +61,7 @@ class SwapInProgress extends StatelessWidget {
           leading: backBtn.BackButton(onPressed: () {
             Navigator.of(context).pop();
           }),
-          title: Text("Remove Funds",
+          title: Text("Send to BTC Address",
               style: Theme.of(context).appBarTheme.textTheme.title),
           elevation: 0.0),
       body: body,
