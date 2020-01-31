@@ -272,7 +272,7 @@ class FloatingActionsBar extends StatelessWidget {
                           iconAssetPath: v.icon,
                           enabled:
                               account.connected || !v.requireActiveChannel),
-                      title: Text(v.name),
+                      title: Text(v.shortName ?? v.name),
                       onTap: () {
                         Navigator.of(context).pop();
                         Navigator.of(context).pushNamed(v.route);
