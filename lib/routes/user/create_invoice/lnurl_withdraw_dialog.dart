@@ -78,16 +78,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog>
   }
 
   @override
-  Widget build(BuildContext context) {
-    var actions = <Widget>[];
-    if (_error != null) {
-      actions.add(FlatButton(
-          child:
-              Text("CLOSE", style: Theme.of(context).primaryTextTheme.button),
-          onPressed: () {
-            Navigator.of(context).pop();
-          }));
-    }
+  Widget build(BuildContext context) {   
     return FadeTransition(
       opacity: _opacityAnimation,
       child: AlertDialog(
