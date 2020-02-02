@@ -1,21 +1,11 @@
 # Breez Mobile Client
 
 <p align='center'>
-  <a href='https://drive.google.com/open?id=1MXnG6dhqagHVbAdjNwive4rq-92RFonk'>
-    <img src='https://drive.google.com/open?id=1MXnG6dhqagHVbAdjNwive4rq-92RFonk&export=download' height='350' alt='screenshot' />
-  </a>
-  <a href='https://drive.google.com/open?id=1gFrIkWyIH6HgX34o9eH-uz9IwpsimykM'>
-    <img src='https://drive.google.com/open?id=1gFrIkWyIH6HgX34o9eH-uz9IwpsimykM&export=download' height='350' alt='screenshot' />
-  </a>
-  <a href='https://drive.google.com/open?id=1vJyZLKB0zWnY_-LQ1CbrMRiAeqLJrHh5'>
-    <img src='https://drive.google.com/open?id=1vJyZLKB0zWnY_-LQ1CbrMRiAeqLJrHh5&export=download' height='350' alt='screenshot' />
-  </a>
-    <a href='https://drive.google.com/open?id=1eXdWqmkzWLAL9SL208LZQTVD5nPCoieV'>
-    <img src='https://drive.google.com/open?id=1eXdWqmkzWLAL9SL208LZQTVD5nPCoieV&export=download' height='350' alt='screenshot' />
-  </a>
-  <a href='https://drive.google.com/open?id=1LiCLAzoat3JA2nnqh1ivgD8WNric2Kyy'>
-    <img src='https://drive.google.com/open?id=1LiCLAzoat3JA2nnqh1ivgD8WNric2Kyy&export=download' height='350' alt='screenshot' />
-  </a>
+  <img src='https://breez.technology//prod/images/app/personal/1.jpg' height='350' alt='screenshot' />
+  <img src='https://breez.technology//prod/images/app/personal/2.jpg' height='350' alt='screenshot' />
+  <img src='https://breez.technology//prod/images/app/personal/3.jpg' height='350' alt='screenshot' />
+  <img src='https://breez.technology//prod/images/app/personal/4.jpg' height='350' alt='screenshot' />
+  <img src='https://breez.technology//prod/images/app/personal/5.jpg' height='350' alt='screenshot' />
 </p>
 
 [Breez](https://breez.technology) is a Lightning Network [mobile client](https://github.com/breez/breezmobile) and a [hub](https://github.com/breez/server). It provides a platform for simple, instantaneous bitcoin payments.
