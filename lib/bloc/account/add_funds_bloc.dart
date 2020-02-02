@@ -89,7 +89,7 @@ class AddFundsBloc extends Bloc {
 
   Future _populateAvailableVendors(bool moonpayAllowed) async {
     List<AddFundVendorModel> _vendorList = [];
-    _vendorList.add(AddFundVendorModel("Receive to BTC Address",
+    _vendorList.add(AddFundVendorModel("Receive via BTC Address",
         "src/icon/bitcoin.png", "/deposit_btc_address"));
     _vendorList.add(AddFundVendorModel(
         "Buy Bitcoin", "src/icon/credit_card.png", "/buy_bitcoin",

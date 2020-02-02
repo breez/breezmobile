@@ -21,7 +21,7 @@ class DepositToBTCAddressPage extends StatefulWidget {
 }
 
 class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
-  final String _title = "Receive To Bitcoin Address";
+  final String _title = "Receive via BTC Address";
   AddFundsBloc _addFundsBloc;
   Route _thisRoute;
 
