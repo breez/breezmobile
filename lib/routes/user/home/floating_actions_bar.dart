@@ -390,7 +390,7 @@ class _Action extends StatelessWidget {
           text,
           group: group,
           textAlign: TextAlign.center,
-          style: theme.addFundsBtnStyle,
+          style: theme.addFundsBtnStyle.copyWith(fontSize: 15.0 / MediaQuery.of(context).textScaleFactor),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
           stepGranularity: 0.1,
