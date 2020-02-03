@@ -386,6 +386,10 @@ class BreezBridge {
         .then((response) => response as String);
   }
 
+  Future checkVersion(){    
+    return _invokeMethodWhenReady("checkVersion");
+  }
+
   Future<String> validateAddress(String address) {
     String addr = address;
     if (addr.startsWith("bitcoin:")) {

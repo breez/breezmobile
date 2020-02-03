@@ -43,3 +43,5 @@ class SetLockState extends AsyncAction {
 }
 
 class StopBiometrics extends AsyncAction {}
+
+class CheckVersion extends AsyncAction {}
