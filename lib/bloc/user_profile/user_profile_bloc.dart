@@ -10,6 +10,7 @@ import 'package:breez/bloc/user_profile/default_profile_generator.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/local_auth_service.dart';
@@ -31,6 +32,7 @@ class UserProfileBloc {
   Device _deviceService;
   LocalAuthenticationService _localAuthService;
   Future<SharedPreferences> _preferences;
+  BreezBridge _breezBridge;
 
   Map<Type, Function> _actionHandlers = Map();
   final _userActionsController = StreamController<AsyncAction>.broadcast();
@@ -70,6 +72,7 @@ class UserProfileBloc {
     _preferences = injector.sharedPreferences;
     _localAuthService = injector.localAuthService;
     _notifications = injector.notifications;
+    _breezBridge = injector.breezBridge;
     _actionHandlers = {
       UpdateSecurityModel: _updateSecurityModelAction,
       ResetSecurityModel: _resetSecurityModelAction,
@@ -80,6 +83,7 @@ class UserProfileBloc {
       StopBiometrics: _stopBiometrics,
       GetEnrolledBiometrics: _getEnrolledBiometrics,
       SetLockState: _setLockState,
+      CheckVersion: _checkVersion,
     };
     print("UserProfileBloc started");
 
@@ -174,6 +178,10 @@ class UserProfileBloc {
     _saveChanges(
         await _preferences, _currentUser.copyWith(locked: action.locked));
     action.resolve(action.locked);
+  }
+
+  Future _checkVersion(CheckVersion action) async {
+    action.resolve(await _breezBridge.checkVersion());
   }
 
   Future _updatePinCode(UpdatePinCode action) async {

@@ -16,6 +16,7 @@ import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/shared/account_required_actions.dart';
 import 'package:breez/routes/shared/no_connection_dialog.dart';
+import 'package:breez/routes/user/check_version_handler.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
 import 'package:breez/routes/user/ctp_join_session_handler.dart';
 import 'package:breez/routes/user/received_invoice_notification.dart';
@@ -319,6 +320,7 @@ class HomeState extends State<Home> {
           messageWidget: LoadingAnimatedText("Broadcasting your transaction",
               textStyle: theme.snackBarStyle, textAlign: TextAlign.left));
     });
+    CheckVersionHandler(context, widget.userProfileBloc);    
   }
 
   void _listenBackupConflicts() {
