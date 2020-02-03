@@ -223,7 +223,7 @@ class HomeState extends State<Home> {
                               ],
                                   groupTitle: "Send",
                                   groupAssetImage: "src/icon/send-action.png",
-                                  withDivider: false),
+                                  withDivider: true),
                               DrawerItemConfigGroup([
                                 DrawerItemConfig("/create_invoice",
                                     "Receive via Invoice", "src/icon/paste.png",
