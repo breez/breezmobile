@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -104,8 +105,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                             color:
                                 Theme.of(context).primaryTextTheme.button.color,
                             onPressed: () {
-                              Clipboard.setData(
-                                  ClipboardData(text: snapshot.data));
+                              ServiceInjector().device.setClipboardText(snapshot.data);
                               showFlushbar(context,
                                   message:
                                       "Invoice address was copied to your clipboard.",

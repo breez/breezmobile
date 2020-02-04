@@ -204,50 +204,53 @@ class FloatingActionsBar extends StatelessWidget {
     ).catchError((err) => Navigator.of(context).removeRoute(loaderRoute));
   }
 
-  Future _showSendOptions(BuildContext context) {
+  Future _showSendOptions(BuildContext context) async {
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    return showModalBottomSheet(
+    await showModalBottomSheet(
         context: context,
         builder: (ctx) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              SizedBox(height: 8.0),
-              ListTile(
-                enabled: account.connected,
-                leading: _ActionImage(
-                    iconAssetPath: "src/icon/paste.png",
-                    enabled: account.connected),
-                title: Text("Paste Invoice"),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  var data = await Clipboard.getData(Clipboard.kTextPlain);
-                  invoiceBloc.decodeInvoiceSink.add(data.text);
-                },
-              ),
-              ListTile(
-                  enabled: account.connected,
-                  leading: _ActionImage(
-                      iconAssetPath: "src/icon/connect_to_pay.png",
-                      enabled: account.connected),
-                  title: Text("Connect to Pay"),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pushNamed("/connect_to_pay");
-                  }),
-              ListTile(
-                  enabled: account.connected,
-                  leading: _ActionImage(
-                      iconAssetPath: "src/icon/bitcoin.png",
-                      enabled: account.connected),
-                  title: Text("Send to BTC Address"),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pushNamed("/withdraw_funds");
-                  }),
-              SizedBox(height: 8.0)
-            ],
-          );
+          return StreamBuilder<String>(
+              stream: invoiceBloc.clipboardInvoiceStream,
+              builder: (context, snapshot) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(height: 8.0),
+                    ListTile(
+                      enabled: account.connected && snapshot.data != null,
+                      leading: _ActionImage(
+                          iconAssetPath: "src/icon/paste.png",
+                          enabled: account.connected),
+                      title: Text("Paste Invoice"),
+                      onTap: () async {
+                        Navigator.of(context).pop();
+                        invoiceBloc.decodeInvoiceSink.add(snapshot.data);
+                      },
+                    ),
+                    ListTile(
+                        enabled: account.connected,
+                        leading: _ActionImage(
+                            iconAssetPath: "src/icon/connect_to_pay.png",
+                            enabled: account.connected),
+                        title: Text("Connect to Pay"),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pushNamed("/connect_to_pay");
+                        }),
+                    ListTile(
+                        enabled: account.connected,
+                        leading: _ActionImage(
+                            iconAssetPath: "src/icon/bitcoin.png",
+                            enabled: account.connected),
+                        title: Text("Send to BTC Address"),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pushNamed("/withdraw_funds");
+                        }),
+                    SizedBox(height: 8.0)
+                  ],
+                );
+              });
         });
   }
 
@@ -390,7 +393,8 @@ class _Action extends StatelessWidget {
           text,
           group: group,
           textAlign: TextAlign.center,
-          style: theme.addFundsBtnStyle.copyWith(fontSize: 14.3 / MediaQuery.of(context).textScaleFactor),
+          style: theme.addFundsBtnStyle.copyWith(
+              fontSize: 14.3 / MediaQuery.of(context).textScaleFactor),
           maxLines: 1,
           maxFontSize: 14.3,
           minFontSize: MinFontSize(context).minFontSize,

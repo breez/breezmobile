@@ -18,8 +18,11 @@ class Device {
       StreamController<NotificationType>.broadcast();
   Stream<NotificationType> get eventStream => _eventsController.stream;
 
-  final _deviceClipboardController = BehaviorSubject<String>();
-  Stream get deviceClipboardStream => _deviceClipboardController.stream;
+  final _distinctClipboardController = BehaviorSubject<String>();
+  Stream get distinctClipboardStream => _distinctClipboardController.stream;
+
+  final _rawClipboardController = BehaviorSubject<String>();
+  Stream<String> get rawClipboardStream => _rawClipboardController.stream;
 
   String _lastClipping = "";
   static const String LAST_CLIPPING_PREFERENCES_KEY = "lastClipping";
@@ -45,6 +48,11 @@ class Device {
     });
   }
 
+  Future setClipboardText(String text) async {
+    await Clipboard.setData(ClipboardData(text: text));
+    fetchClipboard(await SharedPreferences.getInstance());
+  }
+
   Future shareText(String text) {
     if (defaultTargetPlatform == TargetPlatform.android) {
       return _breezShareChannel.invokeMethod("share", {"text": text});
@@ -57,8 +65,9 @@ class Device {
       if (clipboardData != null) {
         var text = clipboardData.text;
 
+        _rawClipboardController.add(text);
         if (text != _lastClipping) {
-          _deviceClipboardController.add(text);
+          _distinctClipboardController.add(text);
           preferences.setString(LAST_CLIPPING_PREFERENCES_KEY, text);
           _lastClipping = text;
         }

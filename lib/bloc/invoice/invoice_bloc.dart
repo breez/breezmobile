@@ -40,6 +40,7 @@ class InvoiceBloc {
 
   Int64 payBlankAmount = Int64(-1);
   UserProfileBloc _userProfileBloc;
+  Device device;
 
   InvoiceBloc(this._userProfileBloc) {
     ServiceInjector injector = ServiceInjector();
@@ -48,7 +49,7 @@ class InvoiceBloc {
     BreezServer server = injector.breezServer;
     Notifications notificationsService = injector.notifications;
     LightningLinksService lightningLinks = ServiceInjector().lightningLinks;
-    Device device = injector.device;
+    device = injector.device;
 
     _listenInvoiceRequests(breezLib, nfc);
     _listenNFCStream(nfc, server, breezLib);
@@ -56,6 +57,21 @@ class InvoiceBloc {
         notificationsService, breezLib, nfc, lightningLinks, device);
     _listenPaidInvoices(breezLib);
   }
+
+  Stream<String> get clipboardInvoiceStream =>
+      device.rawClipboardStream.map((s) {
+        String normalized = s?.toLowerCase();
+        if (normalized == null) {
+          return null;
+        }
+        if (normalized.startsWith("lightning:")) {
+          normalized = normalized.substring(10);
+        }
+        if (normalized.startsWith("ln") && !normalized.startsWith("lnurl")) {
+          return s;
+        }
+        return null;
+      });
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
     _newInvoiceRequestController.stream.listen((invoiceRequest) {
@@ -119,7 +135,7 @@ class InvoiceBloc {
       _decodeInvoiceController.stream,
       _newLightningLinkController.stream,
       links.linksNotifications,
-      device.deviceClipboardStream.where((s) =>
+      device.distinctClipboardStream.where((s) =>
           s.toLowerCase().startsWith("ln") ||
           s.toLowerCase().startsWith("lightning:"))
     ])
