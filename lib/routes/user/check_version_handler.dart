@@ -15,7 +15,7 @@ class CheckVersionHandler {
     CheckVersion action = CheckVersion();
     userProfileBloc.userActionsSink.add(action);
     action.future.catchError((err) {
-      showFlushbar(context, buttonText: "Update", onDismiss: () {
+      showFlushbar(context, buttonText: "UPDATE", onDismiss: () {
         if (defaultTargetPlatform == TargetPlatform.iOS) {
           launch("https://testflight.apple.com/join/wPju2Du7");
         }
