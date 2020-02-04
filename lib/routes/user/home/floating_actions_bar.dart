@@ -220,7 +220,7 @@ class FloatingActionsBar extends StatelessWidget {
                       enabled: account.connected && snapshot.data != null,
                       leading: _ActionImage(
                           iconAssetPath: "src/icon/paste.png",
-                          enabled: account.connected),
+                          enabled: account.connected && snapshot.data != null),
                       title: Text("Paste Invoice"),
                       onTap: () async {
                         Navigator.of(context).pop();
