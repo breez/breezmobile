@@ -152,111 +152,127 @@ class HomeState extends State<Home> {
                   ];
                 }
 
-                return Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: FadeInWidget(
-                    child: Scaffold(
-                        key: _scaffoldKey,
-                        appBar: AppBar(
-                          brightness: theme.themeId == "BLUE"
-                              ? Brightness.light
-                              : Theme.of(context).appBarTheme.brightness,
-                          centerTitle: false,
-                          actions: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(14.0),
-                              child: AccountRequiredActionsIndicator(
-                                  widget.backupBloc,
-                                  widget.accountBloc,
-                                  widget.userProfileBloc,
-                                  widget.lspBloc),
-                            ),
-                          ],
-                          leading: IconButton(
-                              icon: ImageIcon(
-                                AssetImage("src/icon/hamburger.png"),
-                                size: 24.0,
-                                color: Theme.of(context)
-                                    .appBarTheme
-                                    .actionsIconTheme
-                                    .color,
+                return StreamBuilder<String>(
+                    stream: widget.invoiceBloc.clipboardInvoiceStream,
+                    builder: (context, snapshot) {
+                      return Container(
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        child: FadeInWidget(
+                          child: Scaffold(
+                              key: _scaffoldKey,
+                              appBar: AppBar(
+                                brightness: theme.themeId == "BLUE"
+                                    ? Brightness.light
+                                    : Theme.of(context).appBarTheme.brightness,
+                                centerTitle: false,
+                                actions: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(14.0),
+                                    child: AccountRequiredActionsIndicator(
+                                        widget.backupBloc,
+                                        widget.accountBloc,
+                                        widget.userProfileBloc,
+                                        widget.lspBloc),
+                                  ),
+                                ],
+                                leading: IconButton(
+                                    icon: ImageIcon(
+                                      AssetImage("src/icon/hamburger.png"),
+                                      size: 24.0,
+                                      color: Theme.of(context)
+                                          .appBarTheme
+                                          .actionsIconTheme
+                                          .color,
+                                    ),
+                                    onPressed: () =>
+                                        _scaffoldKey.currentState.openDrawer()),
+                                title: Image.asset(
+                                  "src/images/logo-color.png",
+                                  height: 23.5,
+                                  width: 62.7,
+                                  color: Theme.of(context).appBarTheme.color,
+                                  colorBlendMode: BlendMode.srcATop,
+                                ),
+                                iconTheme: IconThemeData(
+                                    color: Color.fromARGB(255, 0, 133, 251)),
+                                backgroundColor:
+                                    Theme.of(context).backgroundColor,
+                                elevation: 0.0,
                               ),
-                              onPressed: () =>
-                                  _scaffoldKey.currentState.openDrawer()),
-                          title: Image.asset(
-                            "src/images/logo-color.png",
-                            height: 23.5,
-                            width: 62.7,
-                            color: Theme.of(context).appBarTheme.color,
-                            colorBlendMode: BlendMode.srcATop,
-                          ),
-                          iconTheme: IconThemeData(
-                              color: Color.fromARGB(255, 0, 133, 251)),
-                          backgroundColor: Theme.of(context).backgroundColor,
-                          elevation: 0.0,
+                              drawer: NavigationDrawer(
+                                  true,
+                                  [
+                                    ...refundItems,
+                                    DrawerItemConfigGroup([
+                                      DrawerItemConfig("", "Paste Invoice",
+                                          "src/icon/paste.png",
+                                          disabled: !account.connected ||
+                                              snapshot.data == null,
+                                          onItemSelected: (decodedQr) async {
+                                        var data = await Clipboard.getData(
+                                            Clipboard.kTextPlain);
+                                        widget.invoiceBloc.decodeInvoiceSink
+                                            .add(data.text);
+                                      }),
+                                      DrawerItemConfig(
+                                          "/connect_to_pay",
+                                          "Connect to Pay",
+                                          "src/icon/connect_to_pay.png",
+                                          disabled: !account.connected),
+                                      DrawerItemConfig(
+                                          "/withdraw_funds",
+                                          "Send to BTC Address",
+                                          "src/icon/bitcoin.png",
+                                          disabled: !account.connected),
+                                    ],
+                                        groupTitle: "Send",
+                                        groupAssetImage:
+                                            "src/icon/send-action.png",
+                                        withDivider: true),
+                                    DrawerItemConfigGroup([
+                                      DrawerItemConfig(
+                                          "/create_invoice",
+                                          "Receive via Invoice",
+                                          "src/icon/paste.png",
+                                          disabled: !account.connected),
+                                      ...addFundsVendors,
+                                    ],
+                                        groupTitle: "Receive",
+                                        groupAssetImage:
+                                            "src/icon/receive-action.png",
+                                        withDivider: false),
+                                    DrawerItemConfigGroup([
+                                      DrawerItemConfig(
+                                          "/marketplace",
+                                          "Marketplace",
+                                          "src/icon/ic_market.png",
+                                          disabled: !account.connected),
+                                    ]),
+                                    DrawerItemConfigGroup(
+                                        _filterItems([
+                                          DrawerItemConfig(
+                                              "/network",
+                                              "Network",
+                                              "src/icon/network.png"),
+                                          DrawerItemConfig(
+                                              "/security",
+                                              "Security & Backup",
+                                              "src/icon/security.png"),
+                                          DrawerItemConfig(
+                                              "/developers",
+                                              "Developers",
+                                              "src/icon/developers.png")
+                                        ]),
+                                        groupTitle: "Advanced",
+                                        groupAssetImage:
+                                            "src/icon/advanced.png"),
+                                  ],
+                                  _onNavigationItemSelected),
+                              body: widget._screenBuilders[_activeScreen]),
                         ),
-                        drawer: NavigationDrawer(
-                            true,
-                            [
-                              ...refundItems,
-                              DrawerItemConfigGroup([
-                                DrawerItemConfig(
-                                    "", "Paste Invoice", "src/icon/paste.png",
-                                    disabled: !account.connected,
-                                    onItemSelected: (decodedQr) async {
-                                  var data = await Clipboard.getData(
-                                      Clipboard.kTextPlain);
-                                  widget.invoiceBloc.decodeInvoiceSink
-                                      .add(data.text);
-                                }),
-                                DrawerItemConfig(
-                                    "/connect_to_pay",
-                                    "Connect to Pay",
-                                    "src/icon/connect_to_pay.png",
-                                    disabled: !account.connected),
-                                DrawerItemConfig(
-                                    "/withdraw_funds",
-                                    "Send to BTC Address",
-                                    "src/icon/bitcoin.png",
-                                    disabled: !account.connected),
-                              ],
-                                  groupTitle: "Send",
-                                  groupAssetImage: "src/icon/send-action.png",
-                                  withDivider: true),
-                              DrawerItemConfigGroup([
-                                DrawerItemConfig("/create_invoice",
-                                    "Receive via Invoice", "src/icon/paste.png",
-                                    disabled: !account.connected),
-                                ...addFundsVendors,
-                              ],
-                                  groupTitle: "Receive",
-                                  groupAssetImage:
-                                      "src/icon/receive-action.png",
-                                  withDivider: false),
-                              DrawerItemConfigGroup([
-                                DrawerItemConfig("/marketplace", "Marketplace",
-                                    "src/icon/ic_market.png",
-                                    disabled: !account.connected),
-                              ]),
-                              DrawerItemConfigGroup(
-                                  _filterItems([
-                                    DrawerItemConfig("/network", "Network",
-                                        "src/icon/network.png"),
-                                    DrawerItemConfig(
-                                        "/security",
-                                        "Security & Backup",
-                                        "src/icon/security.png"),
-                                    DrawerItemConfig("/developers",
-                                        "Developers", "src/icon/developers.png")
-                                  ]),
-                                  groupTitle: "Advanced",
-                                  groupAssetImage: "src/icon/advanced.png"),
-                            ],
-                            _onNavigationItemSelected),
-                        body: widget._screenBuilders[_activeScreen]),
-                  ),
-                );
+                      );
+                    });
               });
         });
   }
@@ -320,7 +336,7 @@ class HomeState extends State<Home> {
           messageWidget: LoadingAnimatedText("Broadcasting your transaction",
               textStyle: theme.snackBarStyle, textAlign: TextAlign.left));
     });
-    CheckVersionHandler(context, widget.userProfileBloc);    
+    CheckVersionHandler(context, widget.userProfileBloc);
   }
 
   void _listenBackupConflicts() {
