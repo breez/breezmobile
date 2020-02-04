@@ -1,8 +1,8 @@
+import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:share_extend/share_extend.dart';
 
@@ -55,7 +55,7 @@ class AddressWidget extends StatelessWidget {
                   padding: EdgeInsets.only(top: 16.0),
                   child: GestureDetector(
                     onTap: () {
-                      Clipboard.setData(ClipboardData(text: address));
+                      ServiceInjector().device.setClipboardText(address);
                       showFlushbar(context,
                           message:
                               "Deposit address was copied to your clipboard.");
@@ -105,7 +105,7 @@ class AddressWidget extends StatelessWidget {
       icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
       color: Theme.of(context).buttonColor,
       onPressed: () {
-        Clipboard.setData(ClipboardData(text: address));
+        ServiceInjector().device.setClipboardText(address);
         showFlushbar(context,
             message: "Deposit address was copied to your clipboard.");
       },

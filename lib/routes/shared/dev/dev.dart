@@ -240,10 +240,7 @@ class DevViewState extends State<DevView> {
                                                             'Copy to Clipboard',
                                                         iconSize: 19.0,
                                                         onPressed: () {
-                                                          Clipboard.setData(
-                                                              ClipboardData(
-                                                                  text:
-                                                                      _cliText));
+                                                          ServiceInjector().device.setClipboardText(_cliText);
                                                           _scaffoldKey
                                                               .currentState
                                                               .showSnackBar(

@@ -1,10 +1,10 @@
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/utils/conf_estimate.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class SwapInProgress extends StatelessWidget {
@@ -39,8 +39,7 @@ class SwapInProgress extends StatelessWidget {
                       linkAddress:
                           "https://blockstream.info/tx/${swapInProgress.claimTxId}",
                       onCopy: () {
-                        Clipboard.setData(
-                            ClipboardData(text: swapInProgress.claimTxId));
+                        ServiceInjector().device.setClipboardText(swapInProgress.claimTxId);
                         showFlushbar(context,
                             message:
                                 "Transaction ID was copied to your clipboard.",

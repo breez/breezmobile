@@ -1,12 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/user/home/payment_item_avatar.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -306,11 +306,12 @@ class ShareablePaymentRow extends StatelessWidget {
                               IconData(0xe90b, fontFamily: 'icomoon'),
                             ),
                             onPressed: () {
-                              Clipboard.setData(
-                                  ClipboardData(text: sharedValue));
+                              ServiceInjector().device.setClipboardText(sharedValue);
                               Navigator.pop(context);
-                              Scaffold.of(context)
-                                  .showSnackBar(_buildSnackBar(title));
+                              showFlushbar(context,
+                                  message:
+                                      "$title was copied to your clipboard.",
+                                  duration: Duration(seconds: 4));
                             },
                           ),
                           IconButton(
@@ -437,7 +438,7 @@ class _TxWidget extends StatelessWidget {
               linkName: this.txID,
               linkAddress: this.txURL,
               onCopy: () {
-                Clipboard.setData(ClipboardData(text: this.txID));
+                ServiceInjector().device.setClipboardText(this.txID);
                 showFlushbar(context,
                     message: "Transaction ID was copied to your clipboard.",
                     duration: Duration(seconds: 3));
