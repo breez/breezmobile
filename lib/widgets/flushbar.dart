@@ -3,7 +3,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
 Flushbar showFlushbar(BuildContext context,
-    {String title = "",
+    {String title,
     String message = "",
     Widget messageWidget,
     String buttonText = "OK",
@@ -13,19 +13,22 @@ Flushbar showFlushbar(BuildContext context,
   Flushbar flush;
   flush = Flushbar(
       flushbarPosition: position,
-      titleText: Text(title, style: TextStyle(height: 0.0)),
+      titleText:
+          title == null ? null : Text(title, style: TextStyle(height: 0.0)),
       duration: duration == Duration.zero ? null : duration,
       messageText: messageWidget ??
           Text(message, style: theme.snackBarStyle, textAlign: TextAlign.left),
-      backgroundColor: theme.snackBarBackgroundColor,      
+      backgroundColor: theme.snackBarBackgroundColor,
       mainButton: FlatButton(
-        onPressed: () {          
-          bool dismiss = onDismiss != null ? onDismiss() : true;          
+        onPressed: () {
+          bool dismiss = onDismiss != null ? onDismiss() : true;
           if (dismiss) {
             flush.dismiss(true);
           }
         },
-        child: Text(buttonText, style: theme.validatorStyle),
+        child: Text(buttonText,
+            style: theme.snackBarStyle
+                .copyWith(color: Theme.of(context).errorColor)),
       ))
     ..show(context);
 
