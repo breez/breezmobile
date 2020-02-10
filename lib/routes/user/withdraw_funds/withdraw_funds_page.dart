@@ -4,9 +4,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -21,16 +19,15 @@ import 'package:fixnum/fixnum.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class WithdrawFundsPage extends StatefulWidget {
-  final Function(ReverseSwapDetails swap) onNext;
+  final Future Function(Int64 amount, String destAddress) onNext;
   final String initialAddress;
   final String initialAmount;
-  final ReverseSwapPolicy reverseSwapPolicy;
+  final WithdrawFundsPolicy policy;
+  final String title;
+  final String optionalMessage;
 
   const WithdrawFundsPage(
-      {this.initialAddress,
-      this.initialAmount,
-      this.onNext,
-      this.reverseSwapPolicy});
+      {this.initialAddress, this.initialAmount, this.onNext, this.policy, this.title, this.optionalMessage});
 
   @override
   State<StatefulWidget> createState() {
@@ -86,7 +83,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           leading: backBtn.BackButton(onPressed: () {
             Navigator.of(context).pop();
           }),
-          title: Text("Send to BTC Address",
+          title: Text(widget.title,
               style: Theme.of(context).appBarTheme.textTheme.title),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
@@ -96,6 +93,39 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
             return StaticLoader();
           }
           AccountModel acc = snapshot.data;
+          List<Widget> optionalMessage = widget.optionalMessage == null ? [] : [
+            Text(widget.optionalMessage,
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .errorColor,
+                                fontSize: 16.0,
+                                height: 1.2)),
+                                SizedBox(height: 40.0),
+          ];
+          List<Widget> amountWidget = [];          
+          if (widget.policy.minValue != widget.policy.maxValue) {
+            amountWidget.add(AmountFormField(
+                readOnly: fetching,
+                context: context,
+                accountModel: acc,
+                focusNode: _amountFocusNode,
+                controller: _amountController,
+                validatorFn: (amount) {
+                  String err = acc.validateOutgoingPayment(amount);
+                  if (err == null) {
+                    if (amount < widget.policy.minValue) {
+                      err =
+                          "Must be at least ${acc.currency.format(widget.policy.minValue)}";
+                    }
+                    if (amount > widget.policy.maxValue) {
+                      err =
+                          "Must be less than ${acc.currency.format(widget.policy.maxValue + 1)}";
+                    }
+                  }
+                  return err;
+                },
+                style: theme.FieldTextStyle.textStyle));
+          }
           return Form(
             key: _formKey,
             child: Padding(
@@ -105,6 +135,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  ...optionalMessage,
                   TextFormField(
                     readOnly: fetching,
                     controller: _addressController,
@@ -137,27 +168,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                           style: theme.validatorStyle,
                         )
                       : SizedBox(),
-                  AmountFormField(
-                      readOnly: fetching,
-                      context: context,
-                      accountModel: acc,
-                      focusNode: _amountFocusNode,
-                      controller: _amountController,
-                      validatorFn: (amount) {
-                        String err = acc.validateOutgoingPayment(amount);
-                        if (err == null) {
-                          if (amount < widget.reverseSwapPolicy.minValue) {
-                            err =
-                                "Must be at least ${acc.currency.format(widget.reverseSwapPolicy.minValue)}";
-                          }
-                          if (amount > widget.reverseSwapPolicy.maxValue) {
-                            err =
-                                "Must be less than ${acc.currency.format(widget.reverseSwapPolicy.maxValue + 1)}";
-                          }
-                        }
-                        return err;
-                      },
-                      style: theme.FieldTextStyle.textStyle),
+                  ...amountWidget,
                   Container(
                     padding: EdgeInsets.only(top: 36.0),
                     child: _buildAvailableBTC(acc),
@@ -224,7 +235,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
         Text("Available:", style: theme.textStyle),
         Padding(
           padding: EdgeInsets.only(left: 3.0),
-          child: Text(acc.currency.format(acc.balance), style: theme.textStyle),
+          child: Text(acc.currency.format(widget.policy.available),
+              style: theme.textStyle),
         )
       ],
     );
@@ -241,24 +253,20 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           fetching = true;
         });
         FocusScope.of(context).requestFocus(FocusNode());
-        var action = NewReverseSwap(acc.currency.parse(_amountController.text),
-            _addressValidated, Int64(0));
 
-        reverseSwapBloc.actionsSink.add(action);
-        action.future.then((swapInfo) {
-          widget.onNext((swapInfo as ReverseSwapDetails));
-        }).catchError((error) {
-          promptError(
-              context,
-              null,
-              Text(error.toString(),
-                  style: Theme.of(context).dialogTheme.contentTextStyle));
-        }).whenComplete(() {
-          setState(() {
-            fetching = false;
-          });
-        });
+        return widget.onNext(
+            acc.currency.parse(_amountController.text), _addressValidated);
       }
+    }).catchError((error) {
+      promptError(
+          context,
+          null,
+          Text(error.toString(),
+              style: Theme.of(context).dialogTheme.contentTextStyle));
+    }).whenComplete(() {
+      setState(() {
+        fetching = false;
+      });
     });
   }
 
@@ -295,4 +303,12 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
       return _formKey.currentState.validate();
     });
   }
+}
+
+class WithdrawFundsPolicy {
+  final Int64 minValue;
+  final Int64 maxValue;
+  final Int64 available;
+
+  WithdrawFundsPolicy(this.minValue, this.maxValue, this.available);
 }

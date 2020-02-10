@@ -13,6 +13,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:fixnum/fixnum.dart';
 
 class ReverseSwapPage extends StatefulWidget {
   final String userAddress;
@@ -135,23 +136,39 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                   physics: NeverScrollableScrollPhysics(),
                                   children: <Widget>[
                                     WithdrawFundsPage(
-                                        reverseSwapPolicy: policy,
+                                        title: "Send to BTC Address",
+                                        policy: WithdrawFundsPolicy(
+                                            policy.minValue, policy.maxValue, accSnapshot.data.balance),
                                         initialAddress: initialAddress,
                                         initialAmount: initialAmount,
-                                        onNext: (swap) {
-                                          _reverseSwapsStream.add(swap);
-                                          _pageController.nextPage(
-                                              duration:
-                                                  Duration(milliseconds: 250),
-                                              curve: Curves.easeInOut);
+                                        onNext: (amount, address) {
+                                          var action = NewReverseSwap(
+                                              amount, address, Int64(0));
+                                          reverseSwapBloc.actionsSink
+                                              .add(action);
+                                          return action.future.then((swap) {
+                                            _reverseSwapsStream.add(swap);
+                                            _pageController.nextPage(
+                                                duration:
+                                                    Duration(milliseconds: 250),
+                                                curve: Curves.easeInOut);
+                                          });
                                         }),
                                     currentSwap == null
                                         ? SizedBox()
                                         : ReverseSwapConfirmation(
                                             swap: swapSnapshot.data,
                                             bloc: reverseSwapBloc,
-                                            onSuccess: () {
-                                              Navigator.of(context).pop();
+                                            onFeeConfirmed: (fee) {
+                                              var action = PayReverseSwap(
+                                                  swapSnapshot.data, fee);
+                                              reverseSwapBloc.actionsSink
+                                                  .add(action);
+                                              return action.future
+                                                  .then((value) => () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      });
                                             },
                                             onPrevious: () {
                                               _pageController

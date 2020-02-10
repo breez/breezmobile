@@ -17,10 +17,10 @@ class ReverseSwapConfirmation extends StatefulWidget {
   final ReverseSwapDetails swap;
   final ReverseSwapBloc bloc;
   final Function() onPrevious;
-  final Function() onSuccess;
+  final Future Function(Int64 fee) onFeeConfirmed;
 
   const ReverseSwapConfirmation(
-      {Key key, this.swap, this.onPrevious, this.onSuccess, this.bloc})
+      {Key key, this.swap, this.onPrevious, this.onFeeConfirmed, this.bloc})
       : super(key: key);
 
   @override
@@ -135,12 +135,10 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                     borderRadius: BorderRadius.circular(42.0)),
                 onPressed: () {
                   Navigator.of(context).push(createLoaderRoute(context));
-                  var action = PayReverseSwap(
-                      widget.swap, Int64(feeOptions[selectedFeeIndex].sats));
-                  reverseSwapBloc.actionsSink.add(action);
-                  action.future.then((_) {
+                  widget
+                      .onFeeConfirmed(Int64(feeOptions[selectedFeeIndex].sats))
+                      .then((_) {
                     Navigator.of(context).pop();
-                    widget.onSuccess();
                   }).catchError((error) {
                     Navigator.of(context).pop();
                     promptError(
