@@ -36,8 +36,6 @@ class BackupPhraseGeneratorConfirmationPageState
             ),
             elevation: 0.0),
         body: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             _buildBackupPhraseImage(),
             _buildInstructions(),
@@ -49,7 +47,7 @@ class BackupPhraseGeneratorConfirmationPageState
 
   _buildBackupPhraseImage() {
     return Expanded(
-      flex: 4,
+      flex: 2,
       child: Image(
         image: AssetImage("src/images/generate_backup_phrase.png"),
         height: 100,
@@ -59,47 +57,46 @@ class BackupPhraseGeneratorConfirmationPageState
   }
 
   _buildInstructions() {
-    return Expanded(
-      flex: 2,
-      child: Padding(
-        padding: EdgeInsets.only(left: 48, right: 48),
-        child: Container(
-          height: 96,
-          child: AutoSizeText(
-            _instructions,
-            style: theme.backupPhraseInformationTextStyle,
-            textAlign: TextAlign.center,
-            minFontSize: MinFontSize(context).minFontSize,
-            stepGranularity: 0.1,
-            maxLines: 5,
-          ),
+    return Padding(
+      padding: EdgeInsets.only(left: 48, right: 48,),
+      child: Container(
+        height: 96,
+        child: AutoSizeText(
+          _instructions,
+          style: theme.backupPhraseInformationTextStyle,
+          textAlign: TextAlign.center,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
         ),
       ),
     );
   }
 
   _buildCheckbox() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Theme(
-          data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
-          child: Checkbox(
-              activeColor: Colors.white,
-              checkColor: Theme.of(context).canvasColor,
-              value: _isUnderstood,
-              onChanged: (value) {
-                setState(() {
-                  _isUnderstood = value;
-                });
-              }),
-        ),
-        Text(
-          "I UNDERSTAND",
-          style: theme.backupPhraseConfirmationTextStyle,
-        )
-      ],
+    return Expanded(
+      flex: 1,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Theme(
+            data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+            child: Checkbox(
+                activeColor: Colors.white,
+                checkColor: Theme.of(context).canvasColor,
+                value: _isUnderstood,
+                onChanged: (value) {
+                  setState(() {
+                    _isUnderstood = value;
+                  });
+                }),
+          ),
+          Text(
+            "I UNDERSTAND",
+            style: theme.backupPhraseConfirmationTextStyle,
+          )
+        ],
+      ),
     );
   }
 
