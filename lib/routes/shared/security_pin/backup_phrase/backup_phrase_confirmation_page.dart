@@ -36,67 +36,70 @@ class BackupPhraseGeneratorConfirmationPageState
             ),
             elevation: 0.0),
         body: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            SizedBox(height: 105),
             _buildBackupPhraseImage(),
-            SizedBox(height: 72),
             _buildInstructions(),
-            SizedBox(height: 48),
             _buildCheckbox(),
           ],
         ),
         bottomNavigationBar: _buildNextBtn(_isUnderstood));
   }
 
-  Image _buildBackupPhraseImage() {
-    return Image(
-      image: AssetImage("src/images/generate_backup_phrase.png"),
-      height: 100,
-      width: 100,
+  _buildBackupPhraseImage() {
+    return Expanded(
+      flex: 4,
+      child: Image(
+        image: AssetImage("src/images/generate_backup_phrase.png"),
+        height: 100,
+        width: 100,
+      ),
     );
   }
 
-  Padding _buildInstructions() {
-    return Padding(
-      padding: EdgeInsets.only(left: 48, right: 48),
-      child: Container(
-        height: 96,
-        child: AutoSizeText(
-          _instructions,
-          style: theme.backupPhraseInformationTextStyle,
-          textAlign: TextAlign.center,
-          minFontSize: MinFontSize(context).minFontSize,
-          stepGranularity: 0.1,
+  _buildInstructions() {
+    return Expanded(
+      flex: 2,
+      child: Padding(
+        padding: EdgeInsets.only(left: 48, right: 48),
+        child: Container(
+          height: 96,
+          child: AutoSizeText(
+            _instructions,
+            style: theme.backupPhraseInformationTextStyle,
+            textAlign: TextAlign.center,
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
+            maxLines: 5,
+          ),
         ),
       ),
     );
   }
 
   _buildCheckbox() {
-    return SizedBox(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Theme(
-            data:
-                Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
-            child: Checkbox(
-                activeColor: Colors.white,
-                checkColor: Theme.of(context).canvasColor,
-                value: _isUnderstood,
-                onChanged: (value) {
-                  setState(() {
-                    _isUnderstood = value;
-                  });
-                }),
-          ),
-          Text(
-            "I UNDERSTAND",
-            style: theme.backupPhraseConfirmationTextStyle,
-          )
-        ],
-      ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Theme(
+          data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+          child: Checkbox(
+              activeColor: Colors.white,
+              checkColor: Theme.of(context).canvasColor,
+              value: _isUnderstood,
+              onChanged: (value) {
+                setState(() {
+                  _isUnderstood = value;
+                });
+              }),
+        ),
+        Text(
+          "I UNDERSTAND",
+          style: theme.backupPhraseConfirmationTextStyle,
+        )
+      ],
     );
   }
 
