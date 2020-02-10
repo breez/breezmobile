@@ -37,28 +37,29 @@ class BackupPhraseGeneratorConfirmationPageState
             elevation: 0.0),
         body: Column(
           children: <Widget>[
-            SizedBox(height: 105),
             _buildBackupPhraseImage(),
-            SizedBox(height: 72),
             _buildInstructions(),
-            SizedBox(height: 48),
             _buildCheckbox(),
+            SizedBox(height: _isUnderstood ? 0 : 48,)
           ],
         ),
         bottomNavigationBar: _buildNextBtn(_isUnderstood));
   }
 
-  Image _buildBackupPhraseImage() {
-    return Image(
-      image: AssetImage("src/images/generate_backup_phrase.png"),
-      height: 100,
-      width: 100,
+  _buildBackupPhraseImage() {
+    return Expanded(
+      flex: 2,
+      child: Image(
+        image: AssetImage("src/images/generate_backup_phrase.png"),
+        height: 100,
+        width: 100,
+      ),
     );
   }
 
-  Padding _buildInstructions() {
+  _buildInstructions() {
     return Padding(
-      padding: EdgeInsets.only(left: 48, right: 48),
+      padding: EdgeInsets.only(left: 48, right: 48,),
       child: Container(
         height: 96,
         child: AutoSizeText(
@@ -73,14 +74,14 @@ class BackupPhraseGeneratorConfirmationPageState
   }
 
   _buildCheckbox() {
-    return SizedBox(
+    return Expanded(
+      flex: 1,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Theme(
-            data:
-                Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+            data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
             child: Checkbox(
                 activeColor: Colors.white,
                 checkColor: Theme.of(context).canvasColor,
