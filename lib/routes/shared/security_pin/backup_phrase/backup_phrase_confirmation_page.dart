@@ -40,6 +40,7 @@ class BackupPhraseGeneratorConfirmationPageState
             _buildBackupPhraseImage(),
             _buildInstructions(),
             _buildCheckbox(),
+            SizedBox(height: _isUnderstood ? 0 : 48,)
           ],
         ),
         bottomNavigationBar: _buildNextBtn(_isUnderstood));
