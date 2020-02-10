@@ -47,3 +47,15 @@ class SendCoins extends AsyncAction {
 }
 
 class ExportPayments extends AsyncAction {}
+
+class SweepAllCoinsTxsAction extends AsyncAction {
+  final String address;
+
+  SweepAllCoinsTxsAction(this.address);
+}
+
+class PublishTransaction extends AsyncAction {
+  final List<int> tx;
+
+  PublishTransaction(this.tx);
+}
