@@ -3,18 +3,17 @@ import 'package:intl/intl.dart';
 import 'package:intl/number_symbols.dart';
 import 'package:intl/number_symbols_data.dart';
 
-enum CurrencyID { BTC, BIT, SAT }
+enum CurrencyID { BTC, SAT }
 
 class Currency extends Object {
   final String symbol;
   static const Currency BTC = Currency._internal("BTC");
-  static const Currency BIT = Currency._internal("Bit");
   static const Currency SAT = Currency._internal("Sat");
-  static final List<Currency> currencies = List.unmodifiable([BTC, BIT, SAT]);
+  static final List<Currency> currencies = List.unmodifiable([BTC, SAT]);
 
   const Currency._internal(this.symbol);
   factory Currency.fromSymbol(String symbol) {
-    return currencies.firstWhere((c) => c.symbol == symbol);
+    return currencies.firstWhere((c) => c.symbol == symbol, orElse: () => SAT);
   }
 
   String format(Int64 sat,
@@ -66,9 +65,6 @@ class _CurrencyFormatter {
           formattedAmount = (satoshies.toInt() / 100000000).toString();
         }
         break;
-      case Currency.BIT:
-        formattedAmount = formatter.format((satoshies.toInt() / 100));
-        break;
       case Currency.SAT:
         formattedAmount = formatter.format(satoshies);
         break;
@@ -88,8 +84,6 @@ class _CurrencyFormatter {
     switch (currency) {
       case Currency.BTC:
         return Int64((double.parse(amount) * 100000000).round());
-      case Currency.BIT:
-        return Int64((double.parse(amount) * 100).round());
       case Currency.SAT:
         return Int64(int.parse(amount));
       default:
