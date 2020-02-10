@@ -14,7 +14,7 @@ class Currency extends Object {
 
   const Currency._internal(this.symbol);
   factory Currency.fromSymbol(String symbol) {
-    return currencies.firstWhere((c) => c.symbol == symbol);
+    return currencies.firstWhere((c) => c.symbol == symbol, orElse: () => SAT);
   }
 
   String format(Int64 sat,
