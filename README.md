@@ -16,7 +16,7 @@
 - [x] Neutrino on Android
 - [x] Seamless hub channel creation
 - [x] Adding funds using on-chain tx
-- [x] BTC, Bit & Satoshi units
+- [x] BTC & Satoshi units
 - [x] Random avatars
 - [x] Connect to Pay: simple interface to execute payments between users
 - [x] Pay someone nearby: pay to another Breez user using NFC
