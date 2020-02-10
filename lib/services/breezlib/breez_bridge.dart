@@ -160,6 +160,17 @@ class BreezBridge {
         .then((res) => RemoveFundReply()..mergeFromBuffer(res ?? []));
   }
 
+  Future<SweepAllCoinsTransactions> sweepAllCoinsTransactions(String address) {
+    return _invokeMethodWhenReady(
+            "sweepAllCoinsTransactions", {"argument": address})
+        .then((res) => SweepAllCoinsTransactions()..mergeFromBuffer(res ?? []));
+  }
+
+  Future publishTransaction(List<int> tx){
+    return _invokeMethodWhenReady(
+            "publishTransaction", {"argument": tx});        
+  }
+
   Future<ReverseSwapInfo> getReverseSwapPolicy() {
     return _invokeMethodWhenReady("reverseSwapInfo", {})
         .then((res) => ReverseSwapInfo()..mergeFromBuffer(res ?? []));
@@ -386,7 +397,7 @@ class BreezBridge {
         .then((response) => response as String);
   }
 
-  Future checkVersion(){    
+  Future checkVersion() {
     return _invokeMethodWhenReady("checkVersion");
   }
 
