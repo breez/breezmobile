@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
@@ -37,9 +39,12 @@ class POSInvoiceState extends State<POSInvoice> {
 
   BreezUserModel _userProfile;
   Currency _currency = Currency.BTC;
+  bool _usingFiat = false;
+  FiatConversion _fiatCurrencyConversion;
   double itemHeight;
   double itemWidth;
   int _currentAmount = 0;
+  double _currentFiatAmount = 0;
   int _totalAmount = 0;
   Int64 _maxPaymentAmount;
   Int64 _maxAllowedToReceive;
@@ -78,14 +83,10 @@ class POSInvoiceState extends State<POSInvoice> {
     _accountSubscription = _accountBloc.accountStream.listen((acc) {
       setState(() {
         _currency = acc.currency;
+        _fiatCurrencyConversion = acc.fiatCurrency;
         _maxPaymentAmount = acc.maxPaymentAmount;
         _maxAllowedToReceive = acc.maxAllowedToReceive;
-        _amountController.text = _currency.format((Int64(_currentAmount)),
-            fixedDecimals: true, includeSymbol: false);
-        _chargeAmountController.text = _currency.format(
-            (Int64(_totalAmount + _currentAmount)),
-            fixedDecimals: true,
-            includeSymbol: true);
+        _updateAmountControllers();
       });
     });
     _userProfileSubscription = _userProfileBloc.userStream.listen((user) {
@@ -106,14 +107,9 @@ class POSInvoiceState extends State<POSInvoice> {
                   _invoiceBloc, _userProfileBloc, _scaffoldKey);
             }).then((result) {
           setState(() {
-            _currentAmount = 0;
+            _clearCurrentAmounts();
             _totalAmount = 0;
-            _amountController.text = _currency.format((Int64(_currentAmount)),
-                fixedDecimals: true, includeSymbol: false);
-            _chargeAmountController.text = _currency.format(
-                (Int64(_totalAmount + _currentAmount)),
-                fixedDecimals: true,
-                includeSymbol: true);
+            _updateAmountControllers();
             _invoiceDescriptionController.text = "";
           });
         });
@@ -257,43 +253,90 @@ class POSInvoiceState extends State<POSInvoice> {
                             textAlign: TextAlign.right,
                           )),
                           Theme(
-                            data: Theme.of(context).copyWith(
-                                canvasColor: Theme.of(context).backgroundColor),
-                            child: DropdownButtonHideUnderline(
-                              child: ButtonTheme(
-                                alignedDropdown: true,
-                                child: BreezDropdownButton(
-                                  onChanged: (value) => changeCurrency(value),
-                                  iconEnabledColor: Theme.of(context)
-                                      .textTheme
-                                      .headline
-                                      .color,
-                                  value: _currency.displayName,
-                                  style: theme.invoiceAmountStyle.copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .headline
-                                          .color),
-                                  items:
-                                      Currency.currencies.map((Currency value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value.displayName,
-                                      child: Text(
-                                        value.displayName,
-                                        textAlign: TextAlign.right,
-                                        style: theme.invoiceAmountStyle
-                                            .copyWith(
-                                                color: Theme.of(context)
-                                                    .textTheme
-                                                    .headline
-                                                    .color),
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                          ),
+                              data: Theme.of(context).copyWith(
+                                  canvasColor:
+                                      Theme.of(context).backgroundColor),
+                              child: new StreamBuilder<AccountSettings>(
+                                  stream: _accountBloc.accountSettingsStream,
+                                  builder: (settingCtx, settingSnapshot) {
+                                    return StreamBuilder<AccountModel>(
+                                        stream: _accountBloc.accountStream,
+                                        builder: (context, snapshot) {
+                                          AccountModel acc = snapshot.data;
+                                          return DropdownButtonHideUnderline(
+                                            child: ButtonTheme(
+                                              alignedDropdown: true,
+                                              child: BreezDropdownButton(
+                                                  onChanged: (value) =>
+                                                      changeCurrency(value),
+                                                  iconEnabledColor:
+                                                      Theme.of(context)
+                                                          .textTheme
+                                                          .headline
+                                                          .color,
+                                                  value: _usingFiat
+                                                      ? _fiatCurrencyConversion
+                                                          .currencyData
+                                                          .shortName
+                                                      : _currency.displayName,
+                                                  style: theme
+                                                      .invoiceAmountStyle
+                                                      .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .headline
+                                                                  .color),
+                                                  items: Currency.currencies
+                                                      .map((Currency value) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      value: value.displayName,
+                                                      child: Text(
+                                                        value.displayName,
+                                                        textAlign:
+                                                            TextAlign.right,
+                                                        style: theme
+                                                            .invoiceAmountStyle
+                                                            .copyWith(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .headline
+                                                                    .color),
+                                                      ),
+                                                    );
+                                                  }).toList()
+                                                        ..addAll(
+                                                          acc.fiatConversionList
+                                                              .map(
+                                                                  (FiatConversion
+                                                                      fiat) {
+                                                            return new DropdownMenuItem<
+                                                                String>(
+                                                              value: fiat
+                                                                  .currencyData
+                                                                  .shortName,
+                                                              child: new Text(
+                                                                fiat.currencyData
+                                                                    .shortName,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .right,
+                                                                style: theme.invoiceAmountStyle.copyWith(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .headline
+                                                                        .color),
+                                                              ),
+                                                            );
+                                                          }).toList(),
+                                                        )),
+                                            ),
+                                          );
+                                        });
+                                  })),
                         ]),
                       ),
                     ],
@@ -389,56 +432,87 @@ class POSInvoiceState extends State<POSInvoice> {
   onAddition() {
     setState(() {
       _totalAmount += _currentAmount;
-      _chargeAmountController.text = _currency.format((Int64(_totalAmount)),
-          fixedDecimals: true, includeSymbol: true);
-      _currentAmount = 0;
-      _amountController.text = _currency.format((Int64(_currentAmount)),
-          fixedDecimals: true, includeSymbol: false);
+      _clearCurrentAmounts();
+      _updateAmountControllers();
     });
   }
 
   onNumButtonPressed(String numberText) {
     setState(() {
-      _currentAmount = (_currentAmount * 10) + int.parse(numberText);
-      _amountController.text = _currency.format((Int64(_currentAmount)),
-          fixedDecimals: true, includeSymbol: false);
-      _chargeAmountController.text = _currency.format(
-          (Int64(_totalAmount + _currentAmount)),
-          fixedDecimals: true,
-          includeSymbol: true);
+      if (!_usingFiat) {
+        _currentAmount = (_currentAmount * 10) + int.parse(numberText);
+      } else {
+        _currentFiatAmount = _currentFiatAmount * 10 +
+            int.parse(numberText) /
+                pow(10, _fiatCurrencyConversion.currencyData.fractionSize);
+        _currentAmount =
+            _fiatCurrencyConversion.fiatToSat(_currentFiatAmount).toInt();
+      }
+      _updateAmountControllers();
     });
   }
 
   changeCurrency(value) {
     setState(() {
-      _currency = Currency.fromSymbol(value);
-      _userProfileBloc.currencySink
-          .add(Currency.currencies[Currency.currencies.indexOf(_currency)]);
+      bool usingFiat = _fiatCurrencyConversion != null ? true : false;
+      Currency.currencies.forEach((currency) {
+        if (currency.displayName == value) {
+          usingFiat = false;
+          _currency = Currency.fromSymbol(value);
+          if (_usingFiat) {
+            // We are switching back from fiat
+            _usingFiat = false;
+            _clearCurrentAmounts();
+            _totalAmount = 0;
+          }
+          _userProfileBloc.currencySink
+              .add(Currency.currencies[Currency.currencies.indexOf(_currency)]);
+        }
+      });
+
+      if (usingFiat) {
+        _usingFiat = true;
+        _clearCurrentAmounts();
+        _totalAmount = 0;
+        _userProfileBloc.fiatConversionSink.add(value);
+      }
     });
+  }
+
+  _clearCurrentAmounts() {
+    setState(() {
+      _currentAmount = 0;
+      _currentFiatAmount = 0;
+      _updateAmountControllers();
+    });
+  }
+
+  _updateAmountControllers() {
+    if (!_usingFiat) {
+      _amountController.text = _currency.format((Int64(_currentAmount)),
+          fixedDecimals: true, includeSymbol: false);
+    } else {
+      _amountController.text = _currentFiatAmount
+          .toStringAsFixed(_fiatCurrencyConversion.currencyData.fractionSize);
+    }
+    _chargeAmountController.text = _currency.format(
+        (Int64(_totalAmount + _currentAmount)),
+        fixedDecimals: true,
+        includeSymbol: true);
   }
 
   onClear() {
     setState(() {
-      _currentAmount = 0;
-      _amountController.text = _currency.format((Int64(_currentAmount)),
-          fixedDecimals: true, includeSymbol: false);
-      _chargeAmountController.text = _currency.format(
-          (Int64(_totalAmount + _currentAmount)),
-          fixedDecimals: true,
-          includeSymbol: true);
+      _clearCurrentAmounts();
+      _updateAmountControllers();
     });
   }
 
   clearSale() {
     setState(() {
-      _currentAmount = 0;
+      _clearCurrentAmounts();
       _totalAmount = 0;
-      _amountController.text = _currency.format((Int64(_currentAmount)),
-          fixedDecimals: true, includeSymbol: false);
-      _chargeAmountController.text = _currency.format(
-          (Int64(_totalAmount + _currentAmount)),
-          fixedDecimals: true,
-          includeSymbol: true);
+      _updateAmountControllers();
       _invoiceDescriptionController.text = "";
     });
   }
