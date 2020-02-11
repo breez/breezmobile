@@ -894,7 +894,7 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
       case TargetPlatform.fuchsia:
         HapticFeedback.vibrate();
         break;
-      case TargetPlatform.iOS:
+      default:
         break;
     }
   }

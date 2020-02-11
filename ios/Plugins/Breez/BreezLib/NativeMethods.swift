@@ -58,6 +58,8 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "sendPaymentFailureBugReport": SingleArgBindingExecutor(f: BindingsSendPaymentFailureBugReport),
     "sendPaymentForRequest": SingleArgBindingExecutor(f: BindingsSendPaymentForRequest),
     "sendWalletCoins": SingleArgBindingExecutor(f: BindingsSendWalletCoins),
+    "sweepAllCoinsTransactions": SingleArgBindingExecutor(f: BindingsSweepAllCoinsTransactions),
+    "publishTransaction": SingleArgBindingExecutor(f: BindingsPublishTransaction),
     "validateAddress": SingleArgBindingExecutor(f: BindingsValidateAddress),
     "removeFund": SingleArgBindingExecutor(f: BindingsRemoveFund),
     "newReverseSwap": SingleArgBindingExecutor(f: BindingsNewReverseSwap),

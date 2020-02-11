@@ -39,11 +39,16 @@ class ChangeSyncUIState extends AsyncAction {
 
 class FetchRates extends AsyncAction {}
 
-class SendCoins extends AsyncAction {
-  final int feeRate;
-  final String destAddress;
+class ExportPayments extends AsyncAction {}
 
-  SendCoins(this.feeRate, this.destAddress);
+class SweepAllCoinsTxsAction extends AsyncAction {
+  final String address;
+
+  SweepAllCoinsTxsAction(this.address);
 }
 
-class ExportPayments extends AsyncAction {}
+class PublishTransaction extends AsyncAction {
+  final List<int> tx;
+
+  PublishTransaction(this.tx);
+}

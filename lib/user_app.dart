@@ -13,7 +13,7 @@ import 'package:breez/routes/user/add_funds/deposit_to_btc_address_page.dart';
 import 'package:breez/routes/user/add_funds/moonpay_webview.dart';
 import 'package:breez/routes/user/get_refund/get_refund_page.dart';
 import 'package:breez/routes/user/withdraw_funds/reverse_swap_page.dart';
-import 'package:breez/routes/user/withdraw_funds/send_coins_dialog.dart';
+import 'package:breez/routes/user/withdraw_funds/unexpected_funds.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
@@ -183,8 +183,7 @@ class UserApp extends StatelessWidget {
                                     case '/send_coins':
                                       return MaterialPageRoute(
                                         fullscreenDialog: true,
-                                        builder: (_) => SendCoinsDialog(
-                                            accountBloc: accountBloc),
+                                        builder: (_) => UnexpectedFunds(),
                                         settings: settings,
                                       );
                                     case '/select_lsp':

@@ -1,10 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fee_chooser.dart';
@@ -13,52 +11,65 @@ import 'package:flutter/material.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:fixnum/fixnum.dart';
 
-class ReverseSwapConfirmation extends StatefulWidget {
-  final ReverseSwapDetails swap;
-  final ReverseSwapBloc bloc;
+class SweepAllCoinsConfirmation extends StatefulWidget {
+  final AccountBloc accountBloc;
+  final String address;
   final Function() onPrevious;
-  final Future Function(Int64 fee) onFeeConfirmed;
+  final Future Function(TxDetail tx) onConfirm;
 
-  const ReverseSwapConfirmation(
-      {Key key, this.swap, this.onPrevious, this.onFeeConfirmed, this.bloc})
+  const SweepAllCoinsConfirmation(
+      {Key key,
+      this.onPrevious,
+      this.onConfirm,
+      this.accountBloc,
+      this.address})
       : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return ReverseSwapConfirmationState();
+    return SweepAllCoinsConfirmationState();
   }
 }
 
-class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
+class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
   List<FeeOption> feeOptions;
+  List<TxDetail> transactions;
   int selectedFeeIndex = 1;
-  Future _claimFeeFuture;
+  Future _txsDetailsFuture;
+  Int64 _sweepAmount;
 
   @override
   void initState() {
     super.initState();
-    var action = GetClaimFeeEstimates(widget.swap.claimAddress);
-    widget.bloc.actionsSink.add(action);
-    _claimFeeFuture = action.future.then((r) {
-      ReverseSwapClaimFeeEstimates feeEstimates =
-          r as ReverseSwapClaimFeeEstimates;
-      List<int> targetConfirmations = feeEstimates.fees.keys.toList()..sort();
+
+    var action = SweepAllCoinsTxsAction(widget.address);
+    widget.accountBloc.userActionsSink.add(action);
+    _txsDetailsFuture = action.future.then((r) {
+      SweepAllCoinsTxs response = r as SweepAllCoinsTxs;
+      _sweepAmount = response.amount;
+      List<int> targetConfirmations = response.transactions.keys.toList()
+        ..sort();
       var middle = (targetConfirmations.length / 2).floor();
-      feeOptions = [
-        FeeOption(feeEstimates.fees[targetConfirmations.last].toInt(),
-            targetConfirmations.last),
-        FeeOption(feeEstimates.fees[targetConfirmations[middle]].toInt(),
-            targetConfirmations[middle]),
-        FeeOption(feeEstimates.fees[targetConfirmations.first].toInt(),
-            targetConfirmations.first)
+      var trimmedTargetConfirmations = [
+        targetConfirmations.last,
+        targetConfirmations[middle],
+        targetConfirmations.first
       ];
+
+      transactions = trimmedTargetConfirmations
+          .map((index) => response.transactions[index])
+          .toList();
+
+      feeOptions =
+          List.generate(trimmedTargetConfirmations.length, (index) => index)
+              .map((index) => FeeOption(transactions[index].fees.toInt(),
+                  trimmedTargetConfirmations[index]))
+              .toList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    ReverseSwapBloc reverseSwapBloc =
-        AppBlocsProvider.of<ReverseSwapBloc>(context);
     return Scaffold(
       appBar: AppBar(
           iconTheme: Theme.of(context).appBarTheme.iconTheme,
@@ -75,7 +86,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
           builder: (context, snapshot) {
             AccountModel acc = snapshot.data;
             return FutureBuilder(
-                future: _claimFeeFuture,
+                future: _txsDetailsFuture,
                 builder: (context, futureSnapshot) {
                   if (futureSnapshot.error != null) {
                     //render error
@@ -135,9 +146,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                     borderRadius: BorderRadius.circular(42.0)),
                 onPressed: () {
                   Navigator.of(context).push(createLoaderRoute(context));
-                  widget
-                      .onFeeConfirmed(Int64(feeOptions[selectedFeeIndex].sats))
-                      .then((_) {
+                  widget.onConfirm(transactions[selectedFeeIndex]).then((_) {
                     Navigator.of(context).pop();
                   }).catchError((error) {
                     Navigator.of(context).pop();
@@ -157,7 +166,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
   }
 
   Widget buildSummary(AccountModel acc) {
-    var receive = widget.swap.onChainAmount - feeOptions[selectedFeeIndex].sats;
+    var receive = _sweepAmount - feeOptions[selectedFeeIndex].sats;
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -176,28 +185,8 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             ),
             trailing: Container(
               child: AutoSizeText(
-                acc.currency.format(widget.swap.amount),
+                acc.currency.format(_sweepAmount),
                 style: TextStyle(color: Theme.of(context).errorColor),
-                maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
-              ),
-            )),
-        ListTile(
-            title: Container(
-              child: AutoSizeText(
-                "Boltz service fee:",
-                style: TextStyle(color: Colors.white.withOpacity(0.4)),
-                maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
-              ),
-            ),
-            trailing: Container(
-              child: AutoSizeText(
-                "-${acc.currency.format(widget.swap.amount - widget.swap.onChainAmount)}",
-                style: TextStyle(
-                    color: Theme.of(context).errorColor.withOpacity(0.4)),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
                 stepGranularity: 0.1,
@@ -235,9 +224,11 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             ),
             trailing: Container(
               child: AutoSizeText(
-                acc.currency.format(widget.swap.onChainAmount -
-                        feeOptions[selectedFeeIndex].sats) +
-                    " (${acc.fiatCurrency.format(receive)})",
+                acc.currency.format(
+                        _sweepAmount - feeOptions[selectedFeeIndex].sats) +
+                    (acc.fiatCurrency == null
+                        ? ""
+                        : " (${acc.fiatCurrency.format(receive)})"),
                 style: TextStyle(color: Theme.of(context).errorColor),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,

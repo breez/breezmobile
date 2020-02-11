@@ -539,3 +539,24 @@ class PaymentError implements Exception {
   String errMsg() => error?.toString();
   String toString() => errMsg();
 }
+
+class TxDetail {
+  final TransactionDetails _tx;
+
+  TxDetail(this._tx);
+
+  List<int> get txBytes => _tx.tx;
+  String get txHash => _tx.txHash;
+  Int64 get fees => _tx.fees;
+}
+
+class SweepAllCoinsTxs {
+  final SweepAllCoinsTransactions _sweepTxs;
+
+  SweepAllCoinsTxs(this._sweepTxs);
+  
+  Int64 get amount => _sweepTxs.amt;
+  Map<int, TxDetail> get transactions {
+    return _sweepTxs.transactions.map((key, value) => MapEntry(key, TxDetail(value)));
+  } 
+}

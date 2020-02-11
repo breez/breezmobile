@@ -151,13 +151,15 @@ class BreezBridge {
     return _invokeMethodWhenReady("connectToLnurl", {"argument": lnurl});
   }
 
-  Future<RemoveFundReply> removeFund(String address, Int64 amount) {
-    RemoveFundRequest request = RemoveFundRequest()
-      ..address = address
-      ..amount = amount;
+  Future<SweepAllCoinsTransactions> sweepAllCoinsTransactions(String address) {
     return _invokeMethodWhenReady(
-            "removeFund", {"argument": request.writeToBuffer()})
-        .then((res) => RemoveFundReply()..mergeFromBuffer(res ?? []));
+            "sweepAllCoinsTransactions", {"argument": address})
+        .then((res) => SweepAllCoinsTransactions()..mergeFromBuffer(res ?? []));
+  }
+
+  Future publishTransaction(List<int> tx){
+    return _invokeMethodWhenReady(
+            "publishTransaction", {"argument": tx});        
   }
 
   Future<ReverseSwapInfo> getReverseSwapPolicy() {
@@ -386,7 +388,7 @@ class BreezBridge {
         .then((response) => response as String);
   }
 
-  Future checkVersion(){    
+  Future checkVersion() {
     return _invokeMethodWhenReady("checkVersion");
   }
 
@@ -397,15 +399,6 @@ class BreezBridge {
     }
     return _invokeMethodWhenReady("validateAddress", {"argument": addr})
         .then((response) => addr);
-  }
-
-  Future<String> sendWalletCoins(String address, Int64 satPerByteFee) {
-    var request = SendWalletCoinsRequest()
-      ..address = address
-      ..satPerByteFee = satPerByteFee;
-    return _invokeMethodWhenReady(
-            "sendWalletCoins", {"argument": request.writeToBuffer()})
-        .then((txid) => txid as String);
   }
 
   Future<Int64> getDefaultOnChainFeeRate() {

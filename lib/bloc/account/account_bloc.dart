@@ -141,10 +141,11 @@ class AccountBloc {
       CancelPaymentRequest: _cancelPaymentRequest,
       ChangeSyncUIState: _collapseSyncUI,
       FetchRates: _fetchRates,
-      ResetChainService: _handleResetChainService,
-      SendCoins: _handleSendCoins,
+      ResetChainService: _handleResetChainService,      
       ExportPayments: _exportPaymentsAction,
       FetchPayments: _handleFetchPayments,
+      SweepAllCoinsTxsAction: _sweepAllCoinsTransactions,
+      PublishTransaction: _publishTransaction,
     };
 
     _accountController.add(AccountModel.initial());
@@ -246,9 +247,13 @@ class AccountBloc {
     action.resolve(_paymentsController.value);
   }
 
-  Future _handleSendCoins(SendCoins action) async {
-    action.resolve(await _breezLib.sendWalletCoins(
-        action.destAddress, Int64(action.feeRate)));
+  Future _sweepAllCoinsTransactions(SweepAllCoinsTxsAction action) async {
+    var response = await _breezLib.sweepAllCoinsTransactions(action.address);
+    action.resolve(SweepAllCoinsTxs(response));
+  }
+
+  Future _publishTransaction(PublishTransaction action) async {
+    action.resolve(await _breezLib.publishTransaction(action.tx));
   }
 
   Future _exportPaymentsAction(ExportPayments action) async {
