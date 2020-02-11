@@ -188,9 +188,6 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                     ],
                                     keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
-                                        // contentPadding:
-                                        //           new EdgeInsets.only(
-                                        //               bottom: 10.74*5),
                                         labelText: "Voucher Value",
                                         hintText:
                                             "Provide the redeemable value of your voucher",
@@ -215,38 +212,35 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                   flex: 4,
                                   child: FormField(
                                     builder: (FormFieldState state) {
-                                      return InputDecorator(
-                                        decoration: InputDecoration(
-                                          labelText: 'Currency',
-                                        ),
-                                        child: Container(
-                                          height: 28.3,
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButton(
-                                              value: _currency,
-                                              onChanged: (String newValue) {
-                                                setState(() {
-                                                  _currency = newValue;
-                                                  state.didChange(newValue);
-                                                });
-                                              },
-                                              items: [
-                                                "USD",
-                                                "GBP",
-                                                "EUR",
-                                                "CAD",
-                                                "AUD"
-                                              ].map((String value) {
-                                                return DropdownMenuItem(
-                                                  value: value,
-                                                  child: Text(value,
-                                                      style: theme
-                                                          .FieldTextStyle
-                                                          .textStyle),
-                                                );
-                                              }).toList(),
-                                            ),
+                                      return DropdownButtonHideUnderline(
+                                        child: DropdownButtonFormField(
+                                          isDense: true,
+                                          decoration: InputDecoration(
+                                            labelText: 'Currency',
+                                            contentPadding: EdgeInsets.symmetric(vertical: 10.6),
                                           ),
+                                          value: _currency,
+                                          onChanged: (String newValue) {
+                                            setState(() {
+                                              _currency = newValue;
+                                              state.didChange(newValue);
+                                            });
+                                          },
+                                          items: [
+                                            "USD",
+                                            "GBP",
+                                            "EUR",
+                                            "CAD",
+                                            "AUD"
+                                          ].map((String value) {
+                                            return DropdownMenuItem(
+                                              value: value,
+                                              child: Text(value,
+                                                  style: theme
+                                                      .FieldTextStyle
+                                                      .textStyle),
+                                            );
+                                          }).toList(),
                                         ),
                                       );
                                     },
