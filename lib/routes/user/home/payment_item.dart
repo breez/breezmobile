@@ -13,11 +13,12 @@ class PaymentItem extends StatelessWidget {
   final bool _firstItem;
   final GlobalKey firstPaymentItemKey;
 
-  PaymentItem(this._paymentInfo, this._lastItem, this._firstItem, this.firstPaymentItemKey);
+  PaymentItem(this._paymentInfo, this._lastItem, this._firstItem,
+      this.firstPaymentItemKey);
 
   @override
   Widget build(BuildContext context) {
-    return new Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+    return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
       ListTile(
         leading: _buildPaymentItemAvatar(),
         key: _firstItem ? firstPaymentItemKey : null,
@@ -52,7 +53,8 @@ class PaymentItem extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     (_paymentInfo.type == PaymentType.SENT ||
-                                _paymentInfo.type == PaymentType.WITHDRAWAL
+                                _paymentInfo.type == PaymentType.WITHDRAWAL ||
+                                _paymentInfo.type == PaymentType.CLOSED_CHANNEL
                             ? "- "
                             : "+ ") +
                         _paymentInfo.currency
@@ -76,7 +78,7 @@ class PaymentItem extends StatelessWidget {
         ),
         onTap: () => showPaymentDetailsDialog(context, _paymentInfo),
       ),
-      new Divider(
+      Divider(
         height: 0.0,
         color: _lastItem
             ? Color.fromRGBO(255, 255, 255, 0.0)
@@ -97,9 +99,9 @@ class PaymentItem extends StatelessWidget {
 
   bool _createdWithin(Duration duration) {
     return DateTime.fromMillisecondsSinceEpoch(
-        _paymentInfo.creationTimestamp.toInt() * 1000)
-        .difference(DateTime.fromMillisecondsSinceEpoch(
-        DateTime.now().millisecondsSinceEpoch)) <
-        - duration;
+                _paymentInfo.creationTimestamp.toInt() * 1000)
+            .difference(DateTime.fromMillisecondsSinceEpoch(
+                DateTime.now().millisecondsSinceEpoch)) <
+        -duration;
   }
 }

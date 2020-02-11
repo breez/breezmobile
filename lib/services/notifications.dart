@@ -5,29 +5,26 @@ import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
 
 abstract class Notifications {
-    Future<String> getToken();
-    Stream<Map<dynamic, dynamic>> get notifications;
+  Future<String> getToken();
+  Stream<Map<dynamic, dynamic>> get notifications;
 }
 
-
 class FirebaseNotifications implements Notifications {
-  
   FirebaseMessaging _firebaseMessaging;
 
-  final StreamController<Map<dynamic, dynamic>> _notificationController = new BehaviorSubject<Map<dynamic, dynamic>>();
-  Stream<Map<dynamic, dynamic>> get notifications => _notificationController.stream;
+  final StreamController<Map<dynamic, dynamic>> _notificationController =
+      BehaviorSubject<Map<dynamic, dynamic>>();
+  Stream<Map<dynamic, dynamic>> get notifications =>
+      _notificationController.stream;
 
-  FirebaseNotifications() {    
-    _firebaseMessaging = new FirebaseMessaging();
+  FirebaseNotifications() {
+    _firebaseMessaging = FirebaseMessaging();
     _firebaseMessaging.configure(
-      onMessage: _onMessage,
-      onResume: _onResume,
-      onLaunch: _onResume
-    );
+        onMessage: _onMessage, onResume: _onResume, onLaunch: _onResume);
   }
 
   Future<dynamic> _onMessage(Map<String, dynamic> message) {
-    log.info("_onMessage = " + message.toString());     
+    log.info("_onMessage = " + message.toString());
     var data = message["data"] ?? message["aps"] ?? message;
     if (data != null) {
       _notificationController.add(data);
@@ -35,12 +32,12 @@ class FirebaseNotifications implements Notifications {
     return null;
   }
 
-  Future<dynamic> _onResume(Map<String, dynamic> message) { 
-    log.info("_onResume = " + message.toString());    
+  Future<dynamic> _onResume(Map<String, dynamic> message) {
+    log.info("_onResume = " + message.toString());
     var data = message["data"] ?? message;
     if (data != null) {
       _notificationController.add(data);
-    }    
+    }
     return null;
   }
 
@@ -50,5 +47,4 @@ class FirebaseNotifications implements Notifications {
         const IosNotificationSettings(sound: true, badge: true, alert: true));
     return _firebaseMessaging.getToken();
   }
-
 }

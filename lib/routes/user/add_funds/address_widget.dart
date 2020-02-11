@@ -1,34 +1,32 @@
+import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:share_extend/share_extend.dart';
 
 class AddressWidget extends StatelessWidget {
-  
   final String address;
   final String backupJson;
 
   AddressWidget(this.address, this.backupJson);
 
   @override
-  Widget build(
-      BuildContext context) {
-    return new Column(
+  Widget build(BuildContext context) {
+    return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        new Container(
-          padding: new EdgeInsets.only(left: 16.0, top: 24.0, right: 16.0),
-          child: new Row(
+        Container(
+          padding: EdgeInsets.only(left: 16.0, top: 24.0, right: 16.0),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              new Text(
+              Text(
                 "Deposit Address",
                 style: theme.FieldTextStyle.labelStyle,
               ),
-              new Container(
+              Container(
                 child: Row(
                   children: _buildShareAndCopyIcons(context),
                 ),
@@ -38,15 +36,14 @@ class AddressWidget extends StatelessWidget {
         ),
         address == null
             ? _buildQRPlaceholder()
-            : new Column(children: <Widget>[
-                new GestureDetector(
-                  child: new Container(
+            : Column(children: <Widget>[
+                GestureDetector(
+                  child: Container(
                     margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
                     padding: const EdgeInsets.all(8.6),
-                    decoration: theme.qrImageStyle,
-                    child: new Container(
-                      color: theme.whiteColor,
-                      child: new CompactQRImage(
+                    child: Container(
+                      color: Theme.of(context).accentColor,
+                      child: CompactQRImage(
                         data: "bitcoin:" + address,
                         size: 180.0,
                       ),
@@ -54,16 +51,18 @@ class AddressWidget extends StatelessWidget {
                   ),
                   onLongPress: () => _showAlertDialog(context),
                 ),
-                new Container(
+                Container(
                   padding: EdgeInsets.only(top: 16.0),
-                  child: new GestureDetector(
+                  child: GestureDetector(
                     onTap: () {
-                      Clipboard.setData(new ClipboardData(text: address));
-                      showFlushbar(context, message: "Deposit address was copied to your clipboard.");
+                      ServiceInjector().device.setClipboardText(address);
+                      showFlushbar(context,
+                          message:
+                              "Deposit address was copied to your clipboard.");
                     },
-                    child: new Text(
+                    child: Text(
                       address,
-                      style: theme.smallTextStyle,
+                      style: Theme.of(context).primaryTextTheme.subtitle,
                     ),
                   ),
                 ),
@@ -88,26 +87,27 @@ class AddressWidget extends StatelessWidget {
   List<Widget> _buildShareAndCopyIcons(BuildContext context) {
     List<Widget> _icons = List();
     if (address == null) {
-      _icons.add(SizedBox(height: 48.0,));
+      _icons.add(SizedBox(
+        height: 48.0,
+      ));
       return _icons;
     }
-    Widget _shareIcon = new IconButton(
-      icon: new Icon(IconData(0xe917, fontFamily: 'icomoon')),
-      color: theme.whiteColor,
+    Widget _shareIcon = IconButton(
+      icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
+      color: Theme.of(context).buttonColor,
       onPressed: () {
         final RenderBox box = context.findRenderObject();
-        ShareExtend.share(address,
-            "text",
-            sharePositionOrigin:
-            box.localToGlobal(Offset.zero) & box.size);
+        ShareExtend.share(address, "text",
+            sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
       },
     );
-    Widget _copyIcon = new IconButton(
-      icon: new Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-      color: theme.whiteColor,
+    Widget _copyIcon = IconButton(
+      icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+      color: Theme.of(context).buttonColor,
       onPressed: () {
-        Clipboard.setData(new ClipboardData(text: address));
-        showFlushbar(context, message: "Deposit address was copied to your clipboard.");
+        ServiceInjector().device.setClipboardText(address);
+        showFlushbar(context,
+            message: "Deposit address was copied to your clipboard.");
       },
     );
     _icons.add(_shareIcon);
@@ -116,34 +116,38 @@ class AddressWidget extends StatelessWidget {
   }
 
   void _showAlertDialog(BuildContext context) {
-    AlertDialog dialog = new AlertDialog(
-      contentPadding: EdgeInsets.fromLTRB(20.0,20.0,20.0,4.0),
+    AlertDialog dialog = AlertDialog(
+      contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 4.0),
       content: RichText(
         text: TextSpan(
-            style: theme.alertStyle,
-            text: "Breez is using Submarine Swaps to execute on-chain transactions. Click ",
+            style: Theme.of(context).dialogTheme.contentTextStyle,
+            text:
+                "Breez is using Submarine Swaps to execute on-chain transactions. Click ",
             children: <TextSpan>[
               TextSpan(
                 text: "here",
                 style: TextStyle(color: Colors.blue),
-                recognizer: new TapGestureRecognizer()
+                recognizer: TapGestureRecognizer()
                   ..onTap = () {
                     final RenderBox box = context.findRenderObject();
-                    ShareExtend.share(backupJson, "text", sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+                    ShareExtend.share(backupJson, "text",
+                        sharePositionOrigin:
+                            box.localToGlobal(Offset.zero) & box.size);
                   },
               ),
-              TextSpan(text: " to view the script associated with this address.")
+              TextSpan(
+                  text: " to view the script associated with this address.")
             ]),
       ),
       actions: <Widget>[
-        new FlatButton(
+        FlatButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: new Text("OK", style: theme.buttonStyle))
+            child: Text("OK", style: Theme.of(context).primaryTextTheme.button))
       ],
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
-    showDialog(context: context, builder: (_) => dialog);
+    showDialog(
+        useRootNavigator: false, context: context, builder: (_) => dialog);
   }
 }

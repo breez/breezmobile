@@ -4,18 +4,16 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class PaymentFailedReportDialog extends StatefulWidget {
   final BuildContext context;
-  final AccountBloc _accountBloc;  
+  final AccountBloc _accountBloc;
 
-  PaymentFailedReportDialog(
-      this.context, this._accountBloc);
+  PaymentFailedReportDialog(this.context, this._accountBloc);
 
   @override
   PaymentFailedReportDialogState createState() {
-    return new PaymentFailedReportDialogState();
+    return PaymentFailedReportDialogState();
   }
 }
 
@@ -49,11 +47,11 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
         data: Theme.of(context).copyWith(
           unselectedWidgetColor: Theme.of(context).canvasColor,
         ),
-        child: new AlertDialog(
+        child: AlertDialog(
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-          title: new Text(
+          title: Text(
             "Failed Payment",
-            style: theme.alertTitleStyle,
+            style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
           contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
           content: _settings == null
@@ -64,28 +62,39 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(left: 15.0, right: 12.0),
-                      child: new Text(
+                      child: Text(
                         "Sending failed payment details to Breez could help increase successful transactions rate.\nDo you want to send this failed payment details to Breez?",
-                        style: theme.paymentRequestSubtitleStyle,
+                        style: Theme.of(context)
+                            .primaryTextTheme
+                            .display2
+                            .copyWith(fontSize: 16),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: Row(
                         children: <Widget>[
-                          Checkbox(
-                              activeColor: theme.BreezColors.blue[500],
-                              value: _doneAsk ??
-                                  _settings.failePaymentBehavior !=
-                                      BugReportBehavior.PROMPT,
-                              onChanged: (v) {
-                                setState(() {
-                                  _doneAsk = v;
-                                });
-                              }),
+                          Theme(
+                            data: Theme.of(context).copyWith(
+                                unselectedWidgetColor:
+                                    Theme.of(context).textTheme.button.color),
+                            child: Checkbox(
+                                activeColor: Theme.of(context).canvasColor,
+                                value: _doneAsk ??
+                                    _settings.failePaymentBehavior !=
+                                        BugReportBehavior.PROMPT,
+                                onChanged: (v) {
+                                  setState(() {
+                                    _doneAsk = v;
+                                  });
+                                }),
+                          ),
                           Text(
                             "Don't ask me again",
-                            style: theme.paymentRequestSubtitleStyle,
+                            style: Theme.of(context)
+                                .primaryTextTheme
+                                .display2
+                                .copyWith(fontSize: 16),
                           )
                         ],
                       ),
@@ -93,23 +102,23 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                   ],
                 ),
           actions: [
-            new SimpleDialogOption(
+            SimpleDialogOption(
               onPressed: () {
                 onSubmit(false);
                 Navigator.pop(widget.context, false);
               },
-              child: new Text("NO", style: theme.buttonStyle),
+              child:
+                  Text("NO", style: Theme.of(context).primaryTextTheme.button),
             ),
-            new SimpleDialogOption(
+            SimpleDialogOption(
               onPressed: (() async {
-                onSubmit(true);                
+                onSubmit(true);
                 Navigator.pop(widget.context, true);
               }),
-              child: new Text("YES", style: theme.buttonStyle),
+              child:
+                  Text("YES", style: Theme.of(context).primaryTextTheme.button),
             ),
           ],
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12.0))),
         ));
   }
 

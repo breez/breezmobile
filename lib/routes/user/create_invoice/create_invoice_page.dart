@@ -1,60 +1,88 @@
 import 'dart:async';
+
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/services/background_task.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/widgets/form_keyboard_actions.dart';
-import 'package:breez/widgets/keyboard_done_action.dart';
-import 'package:breez/widgets/static_loader.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/routes/user/create_invoice/qr_code_dialog.dart';
+import 'package:breez/bloc/lnurl/lnurl_actions.dart';
+import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
+import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/routes/user/create_invoice/qr_code_dialog.dart';
+import 'package:breez/services/background_task.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
+import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/keyboard_done_action.dart';
+import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/static_loader.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'lnurl_withdraw_dialog.dart';
 
 class CreateInvoicePage extends StatefulWidget {
-  
-  const CreateInvoicePage();
+  final WithdrawFetchResponse lnurlWithdraw;
+
+  const CreateInvoicePage({this.lnurlWithdraw});
 
   @override
   State<StatefulWidget> createState() {
-    return new CreateInvoicePageState();
+    return CreateInvoicePageState();
   }
 }
 
 class CreateInvoicePageState extends State<CreateInvoicePage> {
-  final _formKey = GlobalKey<FormState>();
-  var _scaffoldKey = new GlobalKey<ScaffoldState>();
+  WithdrawFetchResponse _withdrawFetchResponse;
 
-  final TextEditingController _descriptionController =
-      new TextEditingController();
-  final TextEditingController _amountController = new TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  var _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
 
   StreamSubscription<bool> _paidInvoicesSubscription;
   bool _isInit = false;
   final FocusNode _amountFocusNode = FocusNode();
-  final BackgroundTaskService _bgService = ServiceInjector().backgroundTaskService;
+  final BackgroundTaskService _bgService =
+      ServiceInjector().backgroundTaskService;
   KeyboardDoneAction _doneAction;
 
-  @override void didChangeDependencies(){        
+  @override
+  void didChangeDependencies() {
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    if (!_isInit) {      
-      _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {            
-            Navigator.popUntil(context, ModalRoute.withName("/create_invoice"));  
-            Navigator.pop(context, "Payment was successfuly received!");            
+    AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
+    if (!_isInit) {
+      _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {
+        Navigator.pop(context, "Payment was successfuly received!");
       });
+      if (widget.lnurlWithdraw != null) {
+        accBloc.accountStream.first.then((account) {
+          setState(() {
+            applyWithdrawFetchResponse(widget.lnurlWithdraw, account);
+          });
+        });
+      }
+
       _isInit = true;
+      if (widget.lnurlWithdraw == null) {
+        Future.delayed(Duration(milliseconds: 200),
+            () => FocusScope.of(context).requestFocus(_amountFocusNode));
+      }
     }
     super.didChangeDependencies();
   }
 
-  @override 
+  @override
   void initState() {
-    _doneAction = new KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
+    _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
     super.initState();
   }
 
@@ -67,16 +95,17 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final String _title = "Create an Invoice";
+    final String _title = "Receive via Invoice";
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
 
-    return new Scaffold(
+    return Scaffold(
       key: _scaffoldKey,
-      bottomNavigationBar: new Padding(
-          padding: new EdgeInsets.only(bottom: 40.0),
-          child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            new SizedBox(
+      bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(bottom: 40.0),
+          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            SizedBox(
               height: 48.0,
               width: 168.0,
               child: StreamBuilder<AccountModel>(
@@ -87,43 +116,51 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                     }
                     var account = snapshot.data;
                     return RaisedButton(
-                      padding: EdgeInsets.only(
-                          top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
-                      child: new Text(
-                        "CREATE",
-                        style: theme.buttonStyle,
+                      child: Text(
+                        _withdrawFetchResponse == null ? "CREATE" : "WITHDRAW",
+                        style: Theme.of(context).textTheme.button,
                       ),
-                      color: Colors.white,
+                      color: Theme.of(context).buttonColor,
                       elevation: 0.0,
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(42.0)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(42.0)),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          invoiceBloc.newInvoiceRequestSink.add(
-                              new InvoiceRequestModel(
-                                  null,
-                                  _descriptionController.text,
-                                  null,
-                                  account.currency
-                                      .parse(_amountController.text)));
-                          _bgService.runAsTask(
-                            showDialog(
-                              context: context, builder: (_) => QrCodeDialog(context, invoiceBloc)),
-                            (){
-                              log.info("waiting for payment background task finished");
-                            });
+                          _createInvoice(
+                              invoiceBloc, accountBloc, lnurlBloc, account);
                         }
                       },
                     );
                   }),
             )
           ])),
-      appBar: new AppBar(
-        iconTheme: theme.appBarIconTheme,
-        textTheme: theme.appBarTextTheme,
-        backgroundColor: theme.BreezColors.blue[500],
+      appBar: AppBar(
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
-        title: new Text(_title, style: theme.appBarTextStyle),
+        actions: <Widget>[
+          StreamBuilder<Object>(
+              stream: accountBloc.accountStream,
+              builder: (context, snapshot) {
+                var account = snapshot.data;
+                return IconButton(
+                  alignment: Alignment.center,
+                  icon: Image(
+                    image: AssetImage("src/icon/qr_scan.png"),
+                    color: theme.BreezColors.white[500],
+                    fit: BoxFit.contain,
+                    width: 24.0,
+                    height: 24.0,
+                  ),
+                  tooltip: 'Scan Barcode',
+                  onPressed: () =>
+                      account != null ? _scanBarcode(account) : null,
+                );
+              })
+        ],
+        title:
+            Text(_title, style: Theme.of(context).appBarTheme.textTheme.title),
         elevation: 0.0,
       ),
       body: StreamBuilder<AccountModel>(
@@ -134,46 +171,46 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
           }
           AccountModel acc = snapshot.data;
           return Form(
-              key: _formKey,
-              child: new Padding(
+            key: _formKey,
+            child: Padding(
               padding: EdgeInsets.only(
                   left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-              child: new Column(
+              child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  new TextFormField(
+                  TextFormField(
                     controller: _descriptionController,
                     keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.done,
                     maxLines: null,
                     maxLength: 90,
                     maxLengthEnforced: true,
-                    decoration: new InputDecoration(
-                      labelText: "Description",
+                    decoration: InputDecoration(
+                      labelText: "Description (optional)",
                     ),
                     style: theme.FieldTextStyle.textStyle,
-                    validator: (text) {
-                      if (text.length == 0) {
-                        return "Please enter a description";
-                      }
-                    },),
-                  new AmountFormField(
+                  ),
+                  AmountFormField(
                       context: context,
                       accountModel: acc,
                       focusNode: _amountFocusNode,
                       controller: _amountController,
                       validatorFn: acc.validateIncomingPayment,
                       style: theme.FieldTextStyle.textStyle),
-                  new Container(
-                    padding: new EdgeInsets.only(top: 16.0),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 48,
+                    padding: EdgeInsets.only(top: 16.0),
                     child: _buildReceivableBTC(acc),
                   ),
                   StreamBuilder(
                       stream: accountBloc.accountStream,
                       builder: (BuildContext context,
                           AsyncSnapshot<AccountModel> accSnapshot) {
-
+                        if (!accSnapshot.hasData) {
+                          return Container();
+                        }
                         AccountModel acc = accSnapshot.data;
 
                         String message;
@@ -182,7 +219,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                         } else if (!accSnapshot.hasData) {
                           message =
                               'Receiving payments will be available as soon as Breez is synchronized.';
-                        } else if (acc.processingBreezConnection) {
+                        } else if (acc.processingConnection) {
                           message =
                               'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
                         }
@@ -199,17 +236,17 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                 Text(
                                   message,
                                   textAlign: TextAlign.center,
-                                  style: theme.warningStyle,
+                                  style: theme.warningStyle.copyWith(
+                                      color: Theme.of(context).errorColor),
                                 ),
                               ]));
-                        }
-                        else {
-                          return Container();
+                        } else {
+                          return SizedBox();
                         }
                       })
                 ],
               ),
-            ),            
+            ),
           );
         },
       ),
@@ -217,15 +254,89 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   Widget _buildReceivableBTC(AccountModel acc) {
-    return new Row(
-      children: <Widget>[
-        new Text("Receive up to:", style: theme.textStyle),
-        new Padding(
-          padding: EdgeInsets.only(left: 3.0),
-          child: new Text(acc.currency.format(acc.maxAllowedToReceive),
-              style: theme.textStyle),
-        )
-      ],
+    return GestureDetector(
+      child: AutoSizeText(
+        "Receive up to: ${acc.currency.format(acc.maxAllowedToReceive)}",
+        style: theme.textStyle,
+        maxLines: 1,
+        minFontSize: MinFontSize(context).minFontSize,
+      ),
+      onTap: () => _amountController.text = acc.currency.format(
+          acc.maxAllowedToReceive,
+          includeSymbol: false,
+          userInput: true),
     );
+  }
+
+  Future _scanBarcode(AccountModel account) async {
+    var loaderRoute = createLoaderRoute(context);
+    try {
+      FocusScope.of(context).requestFocus(FocusNode());
+      String barcode = await QRScanner.scan();
+      Navigator.of(context).push(loaderRoute);
+      await _handleLNUrlWithdraw(account, barcode);
+      Navigator.of(context).removeRoute(loaderRoute);
+    } on PlatformException catch (e) {
+      Navigator.of(context).removeRoute(loaderRoute);
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        promptError(
+            context,
+            "",
+            Text(
+              "Please grant Breez camera permission to scan QR codes.",
+              style: Theme.of(context).dialogTheme.contentTextStyle,
+            ));
+      }
+    } catch (e) {
+      Navigator.of(context).removeRoute(loaderRoute);
+      promptError(
+          context,
+          "Receive Failed",
+          Text("Reason: ${e.toString()}",
+              style: Theme.of(context).dialogTheme.contentTextStyle));
+    }
+  }
+
+  Future _handleLNUrlWithdraw(AccountModel account, String lnurl) async {
+    LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+    Fetch fetchAction = Fetch(lnurl);
+    lnurlBloc.actionsSink.add(fetchAction);
+    var response = await fetchAction.future;
+    if (response.runtimeType != WithdrawFetchResponse) {
+      throw "Invalid URL";
+    }
+    WithdrawFetchResponse withdrawResponse = response as WithdrawFetchResponse;
+    setState(() {
+      applyWithdrawFetchResponse(withdrawResponse, account);
+    });
+  }
+
+  void applyWithdrawFetchResponse(
+      WithdrawFetchResponse response, AccountModel account) {
+    _withdrawFetchResponse = response;
+    _descriptionController.text = response.defaultDescription;
+    _amountController.text = account.currency
+        .format(response.maxAmount, includeSymbol: false, userInput: true);
+  }
+
+  Future _createInvoice(InvoiceBloc invoiceBloc, AccountBloc accountBloc,
+      LNUrlBloc lnurlBloc, AccountModel account) {
+    invoiceBloc.newInvoiceRequestSink.add(InvoiceRequestModel(
+        null,
+        _descriptionController.text,
+        null,
+        account.currency.parse(_amountController.text)));
+
+    Widget dialog = _withdrawFetchResponse != null
+        ? LNURlWidthrawDialog(invoiceBloc, accountBloc, lnurlBloc)
+        : QrCodeDialog(context, invoiceBloc, accountBloc);
+    Navigator.of(context).pop();
+    return _bgService.runAsTask(
+        showDialog(
+            useRootNavigator: false,
+            context: context,
+            builder: (_) => dialog), () {
+      log.info("waiting for payment background task finished");
+    });
   }
 }

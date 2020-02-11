@@ -11,17 +11,15 @@ import "package:ini/ini.dart";
 //proto command:
 //protoc --dart_out=grpc:lib/services/breez_server/generated/ -Ilib/services/breez_server/protobuf/ lib/services/breez_server/protobuf/breez.proto
 class BreezServer {
-  static final defaultCallOptions =
-      new CallOptions(timeout: Duration(seconds: 10));
+  static final defaultCallOptions = CallOptions(timeout: Duration(seconds: 10));
 
   ClientChannel _channel;
 
   Future<String> registerDevice(String id) async {
     await _ensureValidChannel();
-    var invoicerClient =
-        new InvoicerClient(_channel, options: defaultCallOptions);
-    var response = await invoicerClient
-        .registerDevice(new RegisterRequest()..deviceID = id);
+    var invoicerClient = InvoicerClient(_channel, options: defaultCallOptions);
+    var response =
+        await invoicerClient.registerDevice(RegisterRequest()..deviceID = id);
     log.info('registerDevice response: $response');
     return response.breezID;
   }
@@ -29,23 +27,22 @@ class BreezServer {
   Future<String> sendInvoice(
       String breezId, String bolt11, String payee, Int64 amount) async {
     await _ensureValidChannel();
-    var invoicerClient =
-        new InvoicerClient(_channel, options: defaultCallOptions);
-    var response = await invoicerClient.sendInvoice(new PaymentRequest()
+    var invoicerClient = InvoicerClient(_channel, options: defaultCallOptions);
+    var response = await invoicerClient.sendInvoice(PaymentRequest()
       ..breezID = breezId
       ..invoice = bolt11
       ..payee = payee
       ..amount = amount);
     log.info('sendInvoice response: $response');
     return response.toString();
-  }  
+  }
 
   Future<String> uploadLogo(List<int> logo) async {
     await _ensureValidChannel();
-    var posClient = new PosClient(_channel,
+    var posClient = PosClient(_channel,
         options: CallOptions(timeout: Duration(seconds: 30)));
     return posClient
-        .uploadLogo(new UploadFileRequest()..content = logo)
+        .uploadLogo(UploadFileRequest()..content = logo)
         .then((reply) => reply.url);
   }
 
@@ -53,8 +50,8 @@ class BreezServer {
       String city, String state, String zip, String country) async {
     await _ensureValidChannel();
     var cardOrderClient =
-        new CardOrdererClient(_channel, options: defaultCallOptions);
-    var response = await cardOrderClient.order(new OrderRequest()
+        CardOrdererClient(_channel, options: defaultCallOptions);
+    var response = await cardOrderClient.order(OrderRequest()
       ..fullName = fullName
       ..email = email
       ..address = address
@@ -70,8 +67,8 @@ class BreezServer {
       bool payer, String userName, String notificationToken,
       {String sessionID}) async {
     await _ensureValidChannel();
-    var ctpClient = new CTPClient(_channel, options: defaultCallOptions);
-    return await ctpClient.joinCTPSession(new JoinCTPSessionRequest()
+    var ctpClient = CTPClient(_channel, options: defaultCallOptions);
+    return await ctpClient.joinCTPSession(JoinCTPSessionRequest()
       ..partyType = payer
           ? JoinCTPSessionRequest_PartyType.PAYER
           : JoinCTPSessionRequest_PartyType.PAYEE
@@ -82,7 +79,7 @@ class BreezServer {
 
   Future<TerminateCTPSessionResponse> terminateSession(String sessionID) async {
     await _ensureValidChannel();
-    var ctpClient = new CTPClient(_channel, options: defaultCallOptions);
+    var ctpClient = CTPClient(_channel, options: defaultCallOptions);
     return await ctpClient.terminateCTPSession(
         TerminateCTPSessionRequest()..sessionID = sessionID);
   }
@@ -93,10 +90,10 @@ class BreezServer {
       return;
     }
 
-    var infoClient = new InformationClient(_channel,
+    var infoClient = InformationClient(_channel,
         options: CallOptions(timeout: Duration(seconds: 2)));
     try {
-      await infoClient.ping(new PingRequest());
+      await infoClient.ping(PingRequest());
     } catch (e) {
       _channel.shutdown();
       _channel = await _createChannel();
@@ -112,7 +109,7 @@ class BreezServer {
     if (hostdetails.length < 2) {
       hostdetails.add("443");
     }
-    return new ClientChannel(hostdetails[0],
+    return ClientChannel(hostdetails[0],
         port: int.parse(hostdetails[1]),
         options: ChannelOptions(
             credentials: ChannelCredentials.secure(

@@ -15,39 +15,52 @@ class AmountFormField extends TextFormField {
   final Function(String amount) returnFN;
   final String Function(Int64 amount) validatorFn;
 
-  AmountFormField({
-    this.context,
-    this.accountModel,
-    this.iconColor,
-    this.returnFN,
-    this.validatorFn,
-    TextEditingController controller,
-    Key key,
-    String initialValue,
-    FocusNode focusNode,
-    InputDecoration decoration: const InputDecoration(),
-    TextStyle style,
-    TextAlign textAlign: TextAlign.start,
-    int maxLines: 1,
-    int maxLength,
-    ValueChanged<String> onFieldSubmitted,
-    FormFieldSetter<String> onSaved,
-    bool enabled,
-  }) : super(
+  AmountFormField(
+      {this.context,
+      this.accountModel,
+      this.iconColor,
+      this.returnFN,
+      this.validatorFn,
+      TextEditingController controller,
+      Key key,
+      String initialValue,
+      FocusNode focusNode,
+      InputDecoration decoration = const InputDecoration(),
+      TextStyle style,
+      TextAlign textAlign = TextAlign.start,
+      int maxLines = 1,
+      int maxLength,
+      ValueChanged<String> onFieldSubmitted,
+      FormFieldSetter<String> onSaved,
+      bool enabled,
+      ValueChanged<String> onChanged,
+      bool readOnly})
+      : super(
             focusNode: focusNode,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            decoration: new InputDecoration(
-              labelText: accountModel.currency.displayName + " Amount",
+            keyboardType: TextInputType.numberWithOptions(
+                decimal: accountModel.currency != Currency.SAT),
+            decoration: InputDecoration(
+              labelText: "Amount in ${accountModel.currency.displayName}",
               suffixIcon: IconButton(
-                icon: new Image.asset(
-                  (accountModel.fiatCurrency != null) ? accountModel.fiatCurrency.logoPath : "src/icon/btc_convert.png",
-                  color: iconColor != null ? iconColor : theme.BreezColors.white[500],
+                icon: Image.asset(
+                  (accountModel.fiatCurrency != null)
+                      ? accountModel.fiatCurrency.logoPath
+                      : "src/icon/btc_convert.png",
+                  color: iconColor != null
+                      ? iconColor
+                      : theme.BreezColors.white[500],
                 ),
                 padding: EdgeInsets.only(top: 21.0),
                 alignment: Alignment.bottomRight,
                 onPressed: () => showDialog(
-                    context: context,
-                    builder: (_) => CurrencyConverterDialog(returnFN != null ? returnFN : (value) => controller.text = value, validatorFn),),
+                  useRootNavigator: false,
+                  context: context,
+                  builder: (_) => CurrencyConverterDialog(
+                      returnFN != null
+                          ? returnFN
+                          : (value) => controller.text = value,
+                      validatorFn),
+                ),
               ),
             ),
             style: style,
@@ -57,13 +70,16 @@ class AmountFormField extends TextFormField {
                 ? [WhitelistingTextInputFormatter(RegExp(r'\d+\.?\d*'))]
                 : [WhitelistingTextInputFormatter.digitsOnly],
             onFieldSubmitted: onFieldSubmitted,
-            onSaved: onSaved);
+            onSaved: onSaved,
+            onChanged: onChanged,
+            readOnly: readOnly ?? false);
 
   @override
   FormFieldValidator<String> get validator {
     return (value) {
       if (value.isEmpty) {
-        return "Please enter the amount in " + accountModel.currency.displayName;
+        return "Please enter the amount in " +
+            accountModel.currency.displayName;
       }
       Int64 intAmount = accountModel.currency.parse(value);
       if (intAmount <= 0) {

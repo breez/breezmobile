@@ -9,7 +9,11 @@ lib/services/breez_server/protobuf/breez.proto
 build/
 packages
 .flutter-plugins
-/conf/
+/conf/testnet
+/conf/simnet
+/conf/mainnet
+/conf/local
+/conf/staging
 /android/app/src/pos/google-services.json
 /android/app/src/client/google-services.json
 lib/services/breezlib/rpc.proto
@@ -19,3 +23,5 @@ ios/Runner/GoogleService-Info.plist
 ios/bindings.framework/*
 travis/config.sh
 android/key.properties
+ios/Flutter/flutter_export_environment.sh
+manual-build/

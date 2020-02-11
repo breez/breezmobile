@@ -3,17 +3,20 @@ import 'package:flutter/services.dart';
 import 'package:breez/logger.dart';
 
 class NFCService {
-  static const _platform = const MethodChannel('com.breez.client/nfc');
-  StreamController<String> _breezIdStreamController = new StreamController<String>();
+  static const _platform = MethodChannel('com.breez.client/nfc');
+  StreamController<String> _breezIdStreamController =
+      StreamController<String>();
 
-  StreamController<bool> _cardActivationController = new StreamController<bool>();
-  Stream<bool> get cardActivationStream => _cardActivationController.stream.asBroadcastStream();
+  StreamController<bool> _cardActivationController = StreamController<bool>();
+  Stream<bool> get cardActivationStream =>
+      _cardActivationController.stream.asBroadcastStream();
 
   StreamController<String> _bolt11BeamController;
   StreamController<String> _p2pBeamController;
 
-  StreamController<String> _bolt11StreamController = new StreamController<String>.broadcast();
-  StreamController<String> _blankInvoiceController = new StreamController<String>();
+  StreamController<String> _bolt11StreamController =
+      StreamController<String>.broadcast();
+  StreamController<String> _blankInvoiceController = StreamController<String>();
 
   void startCardActivation(String breezId) {
     _platform.invokeMethod("startCardActivation", {"breezId": breezId});
@@ -33,19 +36,19 @@ class NFCService {
       if (success) {
         //_cardActivationController.close();
       } else {
-        _cardActivationController.addError(new Error());
+        _cardActivationController.addError(Error());
       }
     });
   }
 
   Stream<String> startBolt11Beam(String bolt11) {
-    _bolt11BeamController = new StreamController<String>();
+    _bolt11BeamController = StreamController<String>();
     _platform.invokeMethod("startBolt11Beam", {"bolt11": bolt11});
     return _bolt11BeamController.stream;
   }
 
   Stream<String> startP2PBeam() {
-    _p2pBeamController = new StreamController<String>();
+    _p2pBeamController = StreamController<String>();
     _p2pBeamController.onCancel = () {
       stopP2PBeam();
     };
@@ -75,7 +78,6 @@ class NFCService {
     _breezIdStreamController.add(breezId);
   }
 
-
   NFCService() {
     _platform.setMethodCallHandler((MethodCall call) {
       if (call.method == 'receivedBreezId') {
@@ -85,9 +87,9 @@ class NFCService {
       if (call.method == 'receivedBlankInvoice') {
         log.info("Received a blank invoice: " + call.arguments);
         if (call.arguments == 'NOT_AVAILABLE') {
-          _blankInvoiceController.addError("User not ready to receieve payments!");
-        }
-        else {
+          _blankInvoiceController
+              .addError("User not ready to receieve payments!");
+        } else {
           _blankInvoiceController.add(call.arguments);
         }
       }

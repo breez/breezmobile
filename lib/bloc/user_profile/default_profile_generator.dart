@@ -59,7 +59,7 @@ final List<String> animals = [
 ];
 
 List generateDefaultProfile() {
-  var random = new Random();
+  var random = Random();
   var randomColor = colors.elementAt(random.nextInt(colors.length));
   var randomAnimal = animals.elementAt(random.nextInt(animals.length));
 

@@ -5,27 +5,19 @@ import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
-enum BugReportBehavior {
-  PROMPT,
-  SEND_REPORT,
-  IGNORE
-}
+enum BugReportBehavior { PROMPT, SEND_REPORT, IGNORE }
 
-enum SyncUIState {
-  BLOCKING,
-  COLLAPSED,
-  NONE
-}
+enum SyncUIState { BLOCKING, COLLAPSED, NONE }
 
 class AccountSettings {
   final bool ignoreWalletBalance;
   final bool showConnectProgress;
   final BugReportBehavior failePaymentBehavior;
 
-  AccountSettings(
-      this.ignoreWalletBalance,
+  AccountSettings(this.ignoreWalletBalance,
       {this.showConnectProgress = false,
       this.failePaymentBehavior = BugReportBehavior.PROMPT});
+
   AccountSettings.start() : this(false);
 
   AccountSettings copyWith(
@@ -33,21 +25,22 @@ class AccountSettings {
       bool showConnectProgress,
       BugReportBehavior failePaymentBehavior}) {
     return AccountSettings(ignoreWalletBalance ?? this.ignoreWalletBalance,
+        showConnectProgress: showConnectProgress ?? this.showConnectProgress,
         failePaymentBehavior:
-            failePaymentBehavior ?? this.failePaymentBehavior,
-        showConnectProgress: showConnectProgress ?? this.showConnectProgress);
+            failePaymentBehavior ?? this.failePaymentBehavior);
   }
 
   AccountSettings.fromJson(Map<String, dynamic> json)
       : this(json["ignoreWalletBalance"] ?? false,
-            failePaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0],
-            showConnectProgress: json["showConnectProgress"] ?? false);
+            showConnectProgress: json["showConnectProgress"] ?? false,
+            failePaymentBehavior:
+                BugReportBehavior.values[json["failePaymentBehavior"] ?? 0]);
 
   Map<String, dynamic> toJson() {
     return {
       "ignoreWalletBalance": ignoreWalletBalance,
+      "showConnectProgress": showConnectProgress,
       "failePaymentBehavior": failePaymentBehavior.index,
-      "showConnectProgress": showConnectProgress ?? false
     };
   }
 }
@@ -58,15 +51,18 @@ class SwapFundStatus {
   SwapFundStatus(this._addedFundsReply);
 
   String get unconfirmedTxID {
-      if (_addedFundsReply == null || _addedFundsReply.unConfirmedAddresses.length == 0) {
-        return null;
-      }
-      return _addedFundsReply.unConfirmedAddresses[0].fundingTxID;
+    if (_addedFundsReply == null ||
+        _addedFundsReply.unConfirmedAddresses.length == 0) {
+      return null;
+    }
+    return _addedFundsReply.unConfirmedAddresses[0].fundingTxID;
   }
 
   bool get depositConfirmed {
-      var waitingPaymentAddresses = _addedFundsReply?.confirmedAddresses?.where((a) => a.errorMessage.isEmpty);
-      return waitingPaymentAddresses != null && waitingPaymentAddresses.length > 0;
+    var waitingPaymentAddresses = _addedFundsReply?.confirmedAddresses
+        ?.where((a) => a.errorMessage.isEmpty);
+    return waitingPaymentAddresses != null &&
+        waitingPaymentAddresses.length > 0;
   }
 
   // in case of status is error, these fields will be populated.
@@ -76,7 +72,8 @@ class SwapFundStatus {
       return refundAddresses[0].refundableError;
     }
 
-    var errorAddresses = _addedFundsReply?.confirmedAddresses?.where((a) => a.errorMessage.isNotEmpty);    
+    var errorAddresses = _addedFundsReply?.confirmedAddresses
+        ?.where((a) => a.errorMessage.isNotEmpty);
     if (errorAddresses == null || errorAddresses.isEmpty) {
       return null;
     }
@@ -84,8 +81,21 @@ class SwapFundStatus {
     return errorAddresses.first.errorMessage;
   }
 
+  List<String> get unConfirmedAddresses {
+    var unConfirmedAddresses =
+        _addedFundsReply?.unConfirmedAddresses ?? List<SwapAddressInfo>();
+    return unConfirmedAddresses.map((a) => a.address).toList();
+  }
+
+  List<String> get confirmedAddresses {
+    var unConfirmedAddresses =
+        _addedFundsReply?.confirmedAddresses ?? List<SwapAddressInfo>();
+    return unConfirmedAddresses.map((a) => a.address).toList();
+  }
+
   List<RefundableAddress> get refundableAddresses {
-    var refundableAddresses = _addedFundsReply?.refundableAddresses ?? List<RefundableAddress>();
+    var refundableAddresses =
+        _addedFundsReply?.refundableAddresses ?? List<SwapAddressInfo>();
     return refundableAddresses.map((a) => RefundableAddress(a)).toList();
   }
 
@@ -105,7 +115,7 @@ class RefundableAddress {
   int get lockHeight => _refundableInfo.lockHeight;
   double get hoursToUnlock => _refundableInfo.hoursToUnlock;
   String get refundableError {
-    switch(_refundableInfo.swapError) {
+    switch (_refundableInfo.swapError) {
       case SwapError.FUNDS_EXCEED_LIMIT:
         return "the executed transaction was above the specified limit.";
       case SwapError.INVOICE_AMOUNT_MISMATCH:
@@ -127,26 +137,21 @@ class AccountModel {
   final FiatConversion _fiatCurrency;
   final List<FiatConversion> _fiatConversionList;
   final FundStatusReply addedFundsReply;
-  final String paymentRequestInProgress;
-  final bool connected;
   final Int64 onChainFeeRate;
   final bool initial;
-  final bool bootstraping;
-  final double bootstrapProgress;
   final bool enableInProgress;
   final double syncProgress;
+  final bool syncedToChain;
   final SyncUIState syncUIState;
 
-  AccountModel(this._accountResponse, this._currency, this._fiatShortName, this._fiatCurrency, this._fiatConversionList,
+  AccountModel(this._accountResponse, this._currency, this._fiatShortName,
+      this._fiatCurrency, this._fiatConversionList,
       {this.initial = true,
       this.addedFundsReply,
-      this.paymentRequestInProgress,
-      this.connected = false,
       this.onChainFeeRate,
-      this.bootstraping = false,
       this.enableInProgress = false,
-      this.bootstrapProgress = 0,
       this.syncProgress = 0,
+      this.syncedToChain = false,
       this.syncUIState = SyncUIState.NONE});
 
   AccountModel.initial()
@@ -154,7 +159,7 @@ class AccountModel {
             Account()
               ..balance = Int64(0)
               ..walletBalance = Int64(0)
-              ..status = Account_AccountStatus.WAITING_DEPOSIT
+              ..status = Account_AccountStatus.DISCONNECTED
               ..maxAllowedToReceive = Int64(0)
               ..maxPaymentAmount = Int64(0)
               ..enabled = true,
@@ -162,8 +167,7 @@ class AccountModel {
             "USD",
             null,
             List(),
-            initial: true,
-            bootstraping: true);
+            initial: true);
   AccountModel copyWith(
       {Account accountResponse,
       Currency currency,
@@ -171,50 +175,48 @@ class AccountModel {
       FiatConversion fiatCurrency,
       List<FiatConversion> fiatConversionList,
       FundStatusReply addedFundsReply,
-      String paymentRequestInProgress,
-      bool connected,
       Int64 onChainFeeRate,
-      bool bootstraping,
       bool enableInProgress,
-      double bootstrapProgress,
       double syncProgress,
+      bool syncedToChain,
       bool initial,
       SyncUIState syncUIState}) {
     return AccountModel(
-        accountResponse ?? this._accountResponse, currency ?? this.currency,
+        accountResponse ?? this._accountResponse,
+        currency ?? this.currency,
         fiatShortName ?? this._fiatShortName,
         fiatCurrency ?? this._fiatCurrency,
         fiatConversionList ?? this._fiatConversionList,
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,
-        connected: connected ?? this.connected,
         onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
-        bootstraping: bootstraping ?? this.bootstraping,
-        bootstrapProgress: bootstrapProgress ?? this.bootstrapProgress,
         enableInProgress: enableInProgress ?? this.enableInProgress,
-        paymentRequestInProgress:
-            paymentRequestInProgress ?? this.paymentRequestInProgress,
         syncProgress: syncProgress ?? this.syncProgress,
+        syncedToChain: syncedToChain ?? this.syncedToChain,
         syncUIState: syncUIState ?? this.syncUIState,
         initial: initial ?? this.initial);
   }
 
   String get id => _accountResponse.id;
   SwapFundStatus get swapFundsStatus => SwapFundStatus(this.addedFundsReply);
-  bool get processingBreezConnection =>
-      _accountResponse.status ==
-      Account_AccountStatus.PROCESSING_BREEZ_CONNECTION;
-  bool get processingWithdrawal =>
-      _accountResponse.status == Account_AccountStatus.PROCESSING_WITHDRAWAL;
-  bool get active => _accountResponse.status == Account_AccountStatus.ACTIVE;
+  bool get disconnected =>
+      _accountResponse.status == Account_AccountStatus.DISCONNECTED;
+  bool get processingConnection =>
+      _accountResponse.status == Account_AccountStatus.PROCESSING_CONNECTION;
+  bool get closingConnection =>
+      _accountResponse.status == Account_AccountStatus.CLOSING_CONNECTION;
+  bool get connected =>
+      _accountResponse.status == Account_AccountStatus.CONNECTED;
   bool get isInitialBootstrap =>
-      (bootstraping ||
-      (!active && !processingWithdrawal && !processingBreezConnection)) && !initial;
+      !initial && (disconnected || closingConnection);
+  Int64 get tipHeight => _accountResponse.tipHeight;
   Int64 get balance => _accountResponse.balance;
   String get formattedFiatBalance => fiatCurrency?.format(balance);
   Int64 get walletBalance => _accountResponse.walletBalance;
   String get statusLine => _accountResponse.status.toString();
   Currency get currency => _currency;
-  FiatConversion get fiatCurrency => _fiatConversionList.firstWhere((f) => f.currencyData.shortName == _fiatShortName, orElse: () => null);
+  FiatConversion get fiatCurrency => _fiatConversionList.firstWhere(
+      (f) => f.currencyData.shortName == _fiatShortName,
+      orElse: () => null);
   List<FiatConversion> get fiatConversionList => _fiatConversionList;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
   Int64 get maxAllowedToPay => Int64(min(
@@ -223,18 +225,21 @@ class AccountModel {
   Int64 get reserveAmount => balance - maxAllowedToPay;
   Int64 get warningMaxChanReserveAmount => _accountResponse.maxChanReserve;
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
-  Int64 get routingNodeFee => _accountResponse.routingNodeFee;
   bool get enabled => _accountResponse.enabled;
-  bool get synced => syncProgress == 1.0;
+  Int64 get routingNodeFee => _accountResponse.routingNodeFee;
+  bool get readyForPayments => _accountResponse.readyForPayments;
+
+  bool get synced => syncedToChain;
+  String get channelFundingTxUrl {
+    if (_accountResponse.channelPoint.isEmpty) {
+      return null;
+    }
+    return "https://blockstream.info/tx/${_accountResponse.channelPoint.split(":")[0]}";
+  }
 
   String get statusMessage {
-
     if (this.isInitialBootstrap) {
-      return "Please wait a minute while Breez is bootstrapping (keep the app open).";
-    }
-
-    if (this.processingBreezConnection) {
-      return "Breez is opening a secure channel with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments";
+      return "Please wait a minute while Breez is initializing (keep the app open).";
     }
 
     SwapFundStatus swapStatus = this.swapFundsStatus;
@@ -254,7 +259,8 @@ class AccountModel {
     return null;
   }
 
-  bool get transferringOnChainDeposit => swapFundsStatus.depositConfirmed && this.active;  
+  bool get transferringOnChainDeposit =>
+      swapFundsStatus.depositConfirmed && this.connected;
 
   String validateOutgoingOnChainPayment(Int64 amount) {
     if (amount > walletBalance) {
@@ -279,7 +285,9 @@ class AccountModel {
     }
 
     if (amount > maxAmount) {
-      return "Not enough funds.";
+      return outgoing
+          ? "Not enough funds"
+          : "Amount exceeds available capacity";
     }
 
     if (outgoing && amount > maxAllowedToPay) {
@@ -296,19 +304,23 @@ class PaymentsModel {
   final PaymentFilterModel filter;
   final DateTime firstDate;
 
-  PaymentsModel(this.nonFilteredItems, this.paymentsList, this.filter, [this.firstDate]);
+  PaymentsModel(this.nonFilteredItems, this.paymentsList, this.filter,
+      [this.firstDate]);
 
   PaymentsModel.initial()
-      : this(List<PaymentInfo>(), List<PaymentInfo>(), PaymentFilterModel.initial(),
-            DateTime(DateTime.now().year));
+      : this(List<PaymentInfo>(), List<PaymentInfo>(),
+            PaymentFilterModel.initial(), DateTime(DateTime.now().year));
 
   PaymentsModel copyWith(
       {List<PaymentInfo> nonFilteredItems,
       List<PaymentInfo> paymentsList,
       PaymentFilterModel filter,
       DateTime firstDate}) {
-    return PaymentsModel(nonFilteredItems ?? this.nonFilteredItems, paymentsList ?? this.paymentsList,
-        filter ?? this.filter, firstDate ?? this.firstDate);
+    return PaymentsModel(
+        nonFilteredItems ?? this.nonFilteredItems,
+        paymentsList ?? this.paymentsList,
+        filter ?? this.filter,
+        firstDate ?? this.firstDate);
   }
 }
 
@@ -326,7 +338,8 @@ class PaymentFilterModel {
           PaymentType.SENT,
           PaymentType.DEPOSIT,
           PaymentType.WITHDRAWAL,
-          PaymentType.RECEIVED
+          PaymentType.RECEIVED,
+          PaymentType.CLOSED_CHANNEL,
         ], null, null, initial: true);
 
   PaymentFilterModel copyWith(
@@ -336,17 +349,18 @@ class PaymentFilterModel {
   }
 }
 
-enum PaymentType { DEPOSIT, WITHDRAWAL, SENT, RECEIVED }
+enum PaymentType { DEPOSIT, WITHDRAWAL, SENT, RECEIVED, CLOSED_CHANNEL }
 
 class PaymentInfo {
   final Payment _paymentResponse;
-  final Currency _currency;
+  final AccountModel _account;
 
   Map _typeMap = {
     Payment_PaymentType.DEPOSIT: PaymentType.DEPOSIT,
     Payment_PaymentType.WITHDRAWAL: PaymentType.WITHDRAWAL,
     Payment_PaymentType.SENT: PaymentType.SENT,
     Payment_PaymentType.RECEIVED: PaymentType.RECEIVED,
+    Payment_PaymentType.CLOSED_CHANNEL: PaymentType.CLOSED_CHANNEL,
   };
 
   PaymentType get type => _typeMap[_paymentResponse.type];
@@ -357,11 +371,30 @@ class PaymentInfo {
   String get redeemTxID => _paymentResponse.redeemTxID;
   String get paymentHash => _paymentResponse.paymentHash;
   String get preimage => _paymentResponse.preimage;
-  bool get pending => _paymentResponse.pendingExpirationHeight > 0;
-  int get pendingExpirationHeight => _paymentResponse.pendingExpirationHeight;
-  Int64 get pendingExpirationTimestamp =>
-      _paymentResponse.pendingExpirationTimestamp;
+  bool get pending =>
+      _paymentResponse.pendingExpirationHeight > 0 ||
+      _paymentResponse.isChannelPending;
+  bool get channelCloseConfirmed => _paymentResponse.isChannelCloseConfimed;
+  String get closeChannelTx => _paymentResponse.closedChannelTxID;
+  String get closeChannelTxUrl {
+    if (closeChannelTx.isEmpty) {
+      return null;
+    }
+    return "https://blockstream.info/tx/$closeChannelTx";
+  }
 
+  int get pendingExpirationHeight => _paymentResponse.pendingExpirationHeight;
+  double get hoursToExpire =>
+      max(_paymentResponse.pendingExpirationHeight - _account.tipHeight.toInt(),
+          0) *
+      10 /
+      60;
+  Int64 get pendingExpirationTimestamp =>
+      _paymentResponse.pendingExpirationTimestamp > 0
+          ? _paymentResponse.pendingExpirationTimestamp
+          : Int64(DateTime.now()
+              .add(Duration(hours: hoursToExpire.round()))
+              .millisecondsSinceEpoch);
   bool get containsPaymentInfo {
     String remoteName = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeName
@@ -376,7 +409,8 @@ class PaymentInfo {
   String get description =>
       _paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
           ? _paymentResponse.invoiceMemo.description
-              .substring(10, _paymentResponse.invoiceMemo.description.length)
+              .substring(9, _paymentResponse.invoiceMemo.description.length)
+              .trimLeft()
           : type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL
               ? "Bitcoin Transfer"
               : _paymentResponse.invoiceMemo?.description;
@@ -409,6 +443,9 @@ class PaymentInfo {
     if (type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL) {
       return "Bitcoin Transfer";
     }
+    if (type == PaymentType.CLOSED_CHANNEL) {
+      return "Closed Channel";
+    }
     String result = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeName
         : _paymentResponse.invoiceMemo?.payerName);
@@ -418,12 +455,19 @@ class PaymentInfo {
     return (result == null || result.isEmpty) ? "Unknown" : result;
   }
 
-  Currency get currency => _currency;
+  String get dialogTitle {
+    if (this.pending && this.type == PaymentType.CLOSED_CHANNEL) {
+      return "Pending Closed Channel";
+    }
+    return title;
+  }
 
-  PaymentInfo(this._paymentResponse, this._currency);
+  Currency get currency => _account.currency;
 
-  PaymentInfo copyWith(Currency currency) {
-    return PaymentInfo(this._paymentResponse, currency);
+  PaymentInfo(this._paymentResponse, this._account);
+
+  PaymentInfo copyWith(AccountModel account) {
+    return PaymentInfo(this._paymentResponse, account);
   }
 }
 
@@ -436,23 +480,6 @@ class AddFundResponse {
   String get address => _addfundReply.address;
   String get backupJson => _addfundReply.backupJson;
   Int64 get requiredReserve => _addfundReply.requiredReserve;
-}
-
-class RemoveFundRequestModel {
-  final Int64 amount;
-  final String address;
-  final bool fromWallet;
-  final Int64 satPerByteFee;
-
-  RemoveFundRequestModel(this.amount, this.address,
-      {this.fromWallet = false, this.satPerByteFee});
-}
-
-class RemoveFundResponseModel {
-  final String transactionID;
-  final String errorMessage;
-
-  RemoveFundResponseModel(this.transactionID, {this.errorMessage});
 }
 
 class RefundableDepositModel {
@@ -468,8 +495,9 @@ class RefundableDepositModel {
 class BroadcastRefundRequestModel {
   final String fromAddress;
   final String toAddress;
+  final Int64 feeRate;
 
-  BroadcastRefundRequestModel(this.fromAddress, this.toAddress);
+  BroadcastRefundRequestModel(this.fromAddress, this.toAddress, this.feeRate);
 }
 
 class BroadcastRefundResponseModel {
@@ -489,17 +517,24 @@ class PayRequest {
 class CompletedPayment {
   final PayRequest paymentRequest;
   final bool cancelled;
+  final bool ignoreGlobalFeeback;
 
-  CompletedPayment(this.paymentRequest, {this.cancelled = false});
+  CompletedPayment(this.paymentRequest,
+      {this.cancelled = false, this.ignoreGlobalFeeback = false});
 }
 
 class PaymentError implements Exception {
   final PayRequest request;
   final Object error;
   final String traceReport;
-  bool get validationError => error.toString().indexOf("rpc error") >= 0 || traceReport == null || traceReport.isEmpty;
+  final bool ignoreGlobalFeeback;
+  bool get validationError =>
+      error.toString().indexOf("rpc error") >= 0 ||
+      traceReport == null ||
+      traceReport.isEmpty;
 
-  PaymentError(this.request, this.error, this.traceReport);
+  PaymentError(this.request, this.error, this.traceReport,
+      {this.ignoreGlobalFeeback = false});
 
   String errMsg() => error?.toString();
   String toString() => errMsg();

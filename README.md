@@ -1,21 +1,11 @@
 # Breez Mobile Client
 
 <p align='center'>
-  <a href='https://drive.google.com/open?id=1MHi-sdhoOXTxnlkwa2Eg0e6LThr0r_x-'>
-    <img src='https://drive.google.com/uc?id=1MHi-sdhoOXTxnlkwa2Eg0e6LThr0r_x-&export=download' height='350' alt='screenshot' />
-  </a>
-  <a href='https://drive.google.com/open?id=16gD7djk_o8YZnk8BMypVAR8HPdI4cRRd'>
-    <img src='https://drive.google.com/uc?id=16gD7djk_o8YZnk8BMypVAR8HPdI4cRRd&export=download' height='350' alt='screenshot' />
-  </a>
-  <a href='https://drive.google.com/open?id=1hHzDMW4JlauGlgOncUpCyzjk8qmeD4QI'>
-    <img src='https://drive.google.com/uc?id=1hHzDMW4JlauGlgOncUpCyzjk8qmeD4QI&export=download' height='350' alt='screenshot' />
-  </a>
-    <a href='https://drive.google.com/open?id=1oOxChmEKd7c_AKZ_2ACgIBA56OFt6wGo'>
-    <img src='https://drive.google.com/uc?id=1oOxChmEKd7c_AKZ_2ACgIBA56OFt6wGo&export=download' height='350' alt='screenshot' />
-  </a>
-  <a href='https://drive.google.com/open?id=1Cf1-9hX5ri0gsgU4qhM3-Flt-J5RWuFK'>
-    <img src='https://drive.google.com/uc?id=1Cf1-9hX5ri0gsgU4qhM3-Flt-J5RWuFK&export=download' height='350' alt='screenshot' />
-  </a>
+  <img src='https://breez.technology/prod/images/app/personal/2-66afa45814.png' height='300' alt='screenshot' />
+  <img src='https://breez.technology/prod/images/app/personal/4-2e00fa09ab.png' height='300' alt='screenshot' />
+  <img src='https://breez.technology/prod/images/app/personal/9-fb03a82c84.png' height='300' alt='screenshot' />
+  <img src='https://breez.technology/prod/images/app/personal/8-4ba5326fc1.png' height='300' alt='screenshot' />
+  <img src='https://breez.technology/prod/images/app/personal/10-a91670ec8d.png' height='300' alt='screenshot' />
 </p>
 
 [Breez](https://breez.technology) is a Lightning Network [mobile client](https://github.com/breez/breezmobile) and a [hub](https://github.com/breez/server). It provides a platform for simple, instantaneous bitcoin payments.
@@ -26,10 +16,9 @@
 - [x] Neutrino on Android
 - [x] Seamless hub channel creation
 - [x] Adding funds using on-chain tx
-- [x] BTC, Bit & Satoshi units
+- [x] BTC & Satoshi units
 - [x] Random avatars
 - [x] Connect to Pay: simple interface to execute payments between users
-- [x] POS interface
 - [x] Pay someone nearby: pay to another Breez user using NFC
 - [x] NFC card support: activate an NFC card to be used by POS
 - [x] A full lncli interface to query and execute ln commands
@@ -54,47 +43,46 @@
 - [x] iOS support
 - [x] Add webLN support
 - [x] Fiat units
-- [ ] iCloud backup option
-- [ ] Add encryption to cloud backup
-- [ ] Use static card IDs
-- [ ] NFC card deactivation
-- [ ] Adding funds via credit card
-- [ ] Simplify P2P payments
-- [ ] Support zero-conf 
+- [x] Optional PIN
+- [x] Adding funds via credit card
+- [x] Add stronger encryption to cloud backup
+- [x] iCloud backup option
+- [x] Dark mode
+- [x] Export payments to .csv
+- [x] Support 3rd-party LSPs
+- [x] Biometric login
+- [x] Fast on-boarding
+- [x] Pay w/o full sync
+- [x] Implement lnurl-withdraw 
+- [x] Send on-chain via reverse Submarine Swaps
+- [x] Improve hodl invoice support
+- [ ] Support zero-conf channels
+- [ ] Async payments via Lightning Rod
+- [ ] Support SD storage
+- [ ] NFC card support
+- [ ] NFC device support
+- [ ] POS POC release
 
 ## System Requirements
 * Android 7+ 64bit
 
-## Build & Run
-1. Build `breez.aar` as decribed in https://github.com/breez/breez
-2. Put `breez.aar` in `android/app/libs/` directory
-3. Create `lnd.conf` in the `conf` directory with the following content:
-```
-[Application Options]
-debuglevel=debug
-noseedbackup=1
-nolisten=1
-rpcmemlisten=1
-nobootstrap=1
-maxbackoff=2s
-[Bitcoin]
-bitcoin.active=1
-bitcoin.node=neutrino
-bitcoin.defaultchanconfs=1
-[Routing]
-routing.assumechanvalid=1
-[Neutrino]
-neutrino.connect=<bitcoin node supporting bip157/bip158>
-```
-4. Create `breez.conf` in the `conf` directory with the following content:
-```
-[Application Options]
-network=simnet #or testnet/mainnet
-routingnodehost=<hubnode hostname:port>
-routingnodepubkey=<hubnode pubkey>
-breezserver=<host:port> #This is the server running https://github.com/breez/server
-```
-5. Assuming that you have already installed and configured flutter, you can use the following commands to run in a connected device the client app or the pos or to build the corresponding apks:
+## Build
+1. Build `breez.aar` and `bindings.framework` as decribed in https://github.com/breez/breez
+2. For Android: 
+- Copy `breez.aar` to the `android/app/libs/` directory
+- Create a firebase Android app using the [firebase console](https://console.firebase.google.com/)
+- Generate the google-services.json and copy it to the android/app/src/client directory
+3. For iOS:
+- Copy the bindings.framework directory to the ios directory.
+- Create a firebase iOS app using the [firebase console](https://console.firebase.google.com/)
+- Generate the GoogleServices-info.plist and copy it to ios/Runner directory
+3. Flutter beta channel
+- Install [flutter](https://flutter.dev/docs/get-started/install)
+Run these command to switch to beta channel:
+- flutter channel beta
+- flutter upgrade
+## Run
+Now you can use the following commands to run in a connected device the client app or the pos or to build the corresponding apks:
  - flutter run --flavor=client --target=lib/main.dart
  - flutter run --flavor=pos    --target=lib/main_pos.dart
  - flutter build apk --target-platform=android-arm64 --flavor=client --debug   --target=lib/main.dart

@@ -1,18 +1,16 @@
-import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/widgets/form_keyboard_actions.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/static_loader.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:fixnum/fixnum.dart';
-import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/widgets/currency_converter_dialog.dart';
+import 'package:flutter/material.dart';
 
-class PayNearbyPage extends StatefulWidget {  
+class PayNearbyPage extends StatefulWidget {
   PayNearbyPage();
 
   @override
@@ -28,13 +26,13 @@ class PayNearbyPageState extends State<PayNearbyPage> {
   final FocusNode _amountFocusNode = FocusNode();
   KeyboardDoneAction _doneAction;
 
-  @override 
+  @override
   void initState() {
-    _doneAction = new KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
+    _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
     super.initState();
   }
 
-  @override 
+  @override
   void dispose() {
     _doneAction.dispose();
     super.dispose();
@@ -45,23 +43,25 @@ class PayNearbyPageState extends State<PayNearbyPage> {
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-    return new Material(
-      child: new Scaffold(
-        bottomNavigationBar: new Padding(
-            padding: new EdgeInsets.only(bottom: 40.0),
-            child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              new SizedBox(
+    return Material(
+      child: Scaffold(
+        bottomNavigationBar: Padding(
+            padding: EdgeInsets.only(bottom: 40.0),
+            child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              SizedBox(
                 height: 48.0,
                 width: 168.0,
-                child: new RaisedButton(
-                  padding: EdgeInsets.only(top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
-                  child: new Text(
+                child: RaisedButton(
+                  padding: EdgeInsets.only(
+                      top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
+                  child: Text(
                     "PAY",
-                    style: theme.buttonStyle,
+                    style: Theme.of(context).textTheme.button,
                   ),
-                  color: Colors.white,
+                  color: Theme.of(context).buttonColor,
                   elevation: 0.0,
-                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(42.0)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(42.0)),
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
@@ -72,14 +72,14 @@ class PayNearbyPageState extends State<PayNearbyPage> {
                 ),
               ),
             ])),
-        appBar: new AppBar(
-          iconTheme: theme.appBarIconTheme,
-          textTheme: theme.appBarTextTheme,
-          backgroundColor: theme.BreezColors.blue[500],
+        appBar: AppBar(
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(),
-          title: new Text(
+          title: Text(
             _title,
-            style: theme.appBarTextStyle,
+            style: Theme.of(context).appBarTheme.textTheme.title,
           ),
           elevation: 0.0,
         ),
@@ -92,36 +92,40 @@ class PayNearbyPageState extends State<PayNearbyPage> {
             var account = snapshot.data;
             return Form(
               key: _formKey,
-              child: new Padding(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-                child: new Column(
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+                child: Column(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    new AmountFormField(
+                    AmountFormField(
                       focusNode: _amountFocusNode,
-                      returnFN: (value) => _amountToSendSatoshi = account.currency.parse(value),
+                      returnFN: (value) =>
+                          _amountToSendSatoshi = account.currency.parse(value),
                       validatorFn: account.validateOutgoingPayment,
                       style: theme.FieldTextStyle.textStyle,
                       onFieldSubmitted: (String value) {
                         _amountToSendSatoshi = account.currency.parse(value);
                       },
                     ),
-                    new Container(
-                      padding: new EdgeInsets.only(top: 32.0),
-                      child: new Row(
+                    Container(
+                      padding: EdgeInsets.only(top: 32.0),
+                      child: Row(
                         children: <Widget>[
-                          new Text("Available:", style: theme.textStyle),
-                          new Padding(
+                          Text("Available:", style: theme.textStyle),
+                          Padding(
                             padding: EdgeInsets.only(left: 3.0),
-                            child: new Text(account.currency.format(account.balance), style: theme.textStyle),
+                            child: Text(
+                                account.currency.format(account.balance),
+                                style: theme.textStyle),
                           )
                         ],
                       ),
                     )
                   ],
                 ),
-              ),            
+              ),
             );
           },
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class SingleButtonBottomBar extends StatelessWidget {
   final VoidCallback onPressed;
@@ -9,12 +8,12 @@ class SingleButtonBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Padding(
-        padding: new EdgeInsets.only(bottom: 40.0),
-        child: new Column(
+    return Padding(
+        padding: EdgeInsets.only(bottom: 40.0),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            new SizedBox(
+            SizedBox(
                 height: 48.0,
                 width: 168.0,
                 child: SubmitButton(
@@ -34,15 +33,15 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new SizedBox(
+    return SizedBox(
         height: 48.0,
         width: 168.0,
-        child: new RaisedButton(
-          child: new Text(
+        child: RaisedButton(
+          child: Text(
             this.text,
-            style: theme.buttonStyle,
+            style: Theme.of(context).textTheme.button,
           ),
-          color: theme.BreezColors.white[500],
+          color: Theme.of(context).buttonColor,
           elevation: 0.0,
           shape: const StadiumBorder(),
           onPressed: this.onPressed,

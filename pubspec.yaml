@@ -5,17 +5,13 @@ dependencies:
   flutter:
     sdk: flutter
   grpc: ^1.0.1
-  protobuf: any
+  protobuf: ^1.0.1
 
   path_provider: any
   firebase_core: 0.4.0+3
   firebase_database: ^3.0.0
   firebase_messaging: ^5.0.1+1
-  firebase_dynamic_links:
-    git:
-      url: https://github.com/breez/plugins.git
-      ref: running_app_link
-      path: packages/firebase_dynamic_links
+  firebase_dynamic_links: ^0.5.0    
   shared_preferences: ^0.5.1+2
   share_extend:
     git:
@@ -23,40 +19,50 @@ dependencies:
   qr_flutter: ^2.0.0  
   hex: "^0.1.1"
   rxdart: "^0.18.1"  
-  flutter_advanced_networkimage: any
+  flutter_advanced_networkimage: 0.6.0-alpha.1
   intl: ^0.15.7
   flushbar: ^1.3.0
-  barcode_scan:
-    git:
-       url: https://github.com/breez/flutter_barcode_reader.git  
-       ref: ios
+  barcode_scan: ^1.0.0
   image_picker: ^0.5.0+9
   image: any
-  package_info: any  
+  package_info: ^0.4.0+13  
   uuid: ^1.0.3
   ini: ^2.0.1
-  connectivity: ^0.4.2
+  connectivity: ^0.4.5+3  
   logging: ^0.11.3+2
-  auto_size_text: ^0.2.1
-  flutter_svg: "^0.13.0"
+  flutter_svg: "^0.14.2"
   json_annotation: ^2.0.0
   http: ^0.12.0+1
   url_launcher: ^5.0.1
-  archive: ^2.0.8  
-  #simple_share: ^0.0.1+4
+  archive: ^2.0.8
+  duration: ^2.0.8
+  dio: ^2.1.13
+  
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.0
-  image_cropper: ^1.0.2
+  image_cropper: ^1.1.1
   uni_links: ^0.2.0
   flutter_webview_plugin:
     git:
       url: https://github.com/breez/flutter_webview_plugin.git
   keyboard_actions: ^2.1.1
-
+  flutter_secure_storage: ^3.2.1+1
+  auto_size_text: 2.0.2+1
+  app_settings: ^1.0.6+2
+  bip39: ^1.0.3
+  crypto: ^2.1.2
+  flutter_typeahead:
+    git:
+      url: https://github.com/breez/flutter_typeahead.git
+  csv: ^4.0.3
+  local_auth:
+    git:
+      url: https://github.com/breez/local_auth.git
+  
 dev_dependencies:
   mockito: "^3.0.0"
-  protoc_plugin: ^16.0.1
+  protoc_plugin: ^19.0.1
   build_runner: ^1.0.0
   json_serializable: ^2.0.0
   flutter_test:
@@ -74,6 +80,7 @@ flutter:
     - conf/lnd.conf
     - conf/breez.conf
     - conf/marketplace.conf
+    - conf/moonpay.conf
     - src/json/
     - src/images/
     - src/icon/

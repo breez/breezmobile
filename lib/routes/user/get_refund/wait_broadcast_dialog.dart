@@ -2,17 +2,20 @@ import 'dart:async';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/services/injector.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:flutter/services.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 class WaitBroadcastDialog extends StatefulWidget {
   final AccountBloc _accountBloc;
   final String _fromAddress;
   final String _toAddress;
+  final Int64 _feeRate;
 
-  WaitBroadcastDialog(this._accountBloc, this._fromAddress, this._toAddress);
+  WaitBroadcastDialog(
+      this._accountBloc, this._fromAddress, this._toAddress, this._feeRate);
 
   @override
   State<StatefulWidget> createState() {
@@ -31,6 +34,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
     _broadcastSubscription =
         widget._accountBloc.broadcastRefundResponseStream.listen((response) {
       setState(() {
+        _error = null;
         _response = response;
       });
     }, onError: (e) {
@@ -39,11 +43,13 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
       });
     });
 
-    var broadcastModel = new BroadcastRefundRequestModel(widget._fromAddress, widget._toAddress);                             
+    var broadcastModel = BroadcastRefundRequestModel(
+        widget._fromAddress, widget._toAddress, widget._feeRate);
     widget._accountBloc.broadcastRefundRequestSink.add(broadcastModel);
   }
 
-  @override void dispose() {
+  @override
+  void dispose() {
     _broadcastSubscription.cancel();
     super.dispose();
   }
@@ -54,21 +60,23 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
       data: Theme.of(context).copyWith(
           unselectedWidgetColor: Theme.of(context).canvasColor,
           accentColor: Theme.of(context).canvasColor),
-      child: new AlertDialog(
-          title: Text(getTitleText(),
-              style: theme.alertTitleStyle, textAlign: TextAlign.center),
-          content: getContent(),
-          actions: _response == null && _error == null
-              ? []
-              : <Widget>[
-                  new FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: new Text("CLOSE", style: theme.buttonStyle)),
-                ],
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12.0))),),
+      child: AlertDialog(
+        title: Text(getTitleText(),
+            style: Theme.of(context).dialogTheme.titleTextStyle,
+            textAlign: TextAlign.center),
+        content: getContent(),
+        actions: _response == null && _error == null
+            ? []
+            : <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(_error != null &&
+                          _response?.txID?.isNotEmpty == true);
+                    },
+                    child: Text("CLOSE",
+                        style: Theme.of(context).primaryTextTheme.button)),
+              ],
+      ),
     );
   }
 
@@ -82,7 +90,8 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
   getContent() {
     if (_error != null) {
       return Text("Error in broadcasting transaction: " + _error.toString(),
-          style: theme.alertStyle, textAlign: TextAlign.center);
+          style: Theme.of(context).dialogTheme.contentTextStyle,
+          textAlign: TextAlign.center);
     }
     if (_response == null) {
       return getWaitingContent();
@@ -95,15 +104,15 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        new Text(
+        Text(
           "Please wait while Breez is sending the funds to the specified address.",
-          style: theme.alertStyle,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
           textAlign: TextAlign.center,
         ),
         Padding(
             padding: EdgeInsets.only(top: 8.0),
-            child: new Image.asset(
-              'src/images/breez_loader.gif',
+            child: Image.asset(
+              theme.customData[theme.themeId].loaderAssetPath,
               gaplessPlayback: true,
             ))
       ],
@@ -121,7 +130,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
               Expanded(
                 child: Text(
                   "Funds were successfully sent to the specified address.",
-                  style: theme.alertStyle,
+                  style: Theme.of(context).dialogTheme.contentTextStyle,
                   textAlign: TextAlign.center,
                 ),
               )
@@ -135,7 +144,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
               Expanded(
                 flex: 1,
                 child: Text("Transaction ID:",
-                    style: theme.paymentDetailsTitleStyle),
+                    style: Theme.of(context).primaryTextTheme.display1),
               ),
               Expanded(
                   child: Container(
@@ -148,12 +157,12 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                       padding: EdgeInsets.only(top: 4.0, right: 0.0, left: 0.0),
                       tooltip: "Copy Transaction Hash",
                       iconSize: 16.0,
-                      color: theme.BreezColors.blue[500],
+                      color: Theme.of(context).primaryTextTheme.button.color,
                       icon: Icon(
                         IconData(0xe90b, fontFamily: 'icomoon'),
                       ),
                       onPressed: () {
-                        Clipboard.setData(ClipboardData(text: _response.txID));
+                        ServiceInjector().device.setClipboardText(_response.txID);
                       },
                     ),
                     IconButton(
@@ -161,7 +170,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                       padding: EdgeInsets.only(top: 4.0, right: 0.0, left: 0.0),
                       tooltip: "Share Transaction Hash",
                       iconSize: 16.0,
-                      color: theme.BreezColors.blue[500],
+                      color: Theme.of(context).primaryTextTheme.button.color,
                       icon: Icon(Icons.share),
                       onPressed: () {
                         ShareExtend.share(_response.txID, "text");
@@ -183,7 +192,10 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.clip,
                       maxLines: 4,
-                      style: theme.paymentDetailsNodeIdStyle),
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .display2
+                          .copyWith(fontSize: 10)),
                 ),
               ),
             ],

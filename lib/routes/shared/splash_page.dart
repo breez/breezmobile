@@ -30,12 +30,12 @@ class SplashPageState extends State<SplashPage> {
       _startTime();
     } else {
       prefs.setBool('isFirstRun', true);
-      Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context).pushReplacementNamed('/');
     }
   }
 
   _startTime() async {
-    return new Timer(new Duration(milliseconds: 3600), () {
+    return Timer(Duration(milliseconds: 3600), () {
       Navigator.of(context).pushReplacementNamed('/intro');
     });
   }
@@ -43,21 +43,21 @@ class SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: new Stack(children: <Widget>[
-      new Center(
-        child: new Image.asset(
+        body: Stack(children: <Widget>[
+      Center(
+        child: Image.asset(
           'src/images/splash-animation.gif',
           fit: BoxFit.contain,
           gaplessPlayback: true,
           width: MediaQuery.of(context).size.width / 3,
         ),
       ),
-      new Column(
+      Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            new Image.asset('src/images/waves-bottom.png', fit: BoxFit.cover)
+            Image.asset('src/images/waves-bottom.png', fit: BoxFit.cover)
           ])
     ]));
   }

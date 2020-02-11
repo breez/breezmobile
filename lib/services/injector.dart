@@ -1,22 +1,24 @@
 import 'dart:async';
-import 'package:breez/services/breezlib/breez_bridge.dart';
+
 import 'package:breez/services/breez_server/server.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/currency_service.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/device.dart';
-import 'package:breez/services/notifications.dart';
+import 'package:breez/services/lightning_links.dart';
+import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/services/nfc.dart';
+import 'package:breez/services/notifications.dart';
 import 'package:breez/services/permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:breez/services/lightning_links.dart';
-import 'package:breez/services/currency_service.dart';
 
 import 'background_task.dart';
 
 class ServiceInjector {
-  static final _singleton = new ServiceInjector._internal();
+  static final _singleton = ServiceInjector._internal();
   static ServiceInjector _injector;
 
-  BreezServer _breezServer;  
+  BreezServer _breezServer;
   FirebaseNotifications _notifications;
   BreezBridge _breezBridge;
   NFCService _nfcService;
@@ -27,6 +29,7 @@ class ServiceInjector {
   Permissions _permissions;
   BackgroundTaskService _backroundTaskService;
   CurrencyService _currencyService;
+  LocalAuthenticationService _localAuthService;
 
   factory ServiceInjector() {
     return _injector != null ? _injector : _singleton;
@@ -43,27 +46,30 @@ class ServiceInjector {
   }
 
   NFCService get nfc {
-    return _nfcService ??= new NFCService();
+    return _nfcService ??= NFCService();
   }
 
   BreezServer get breezServer {
-    return _breezServer ??= new BreezServer();
+    return _breezServer ??= BreezServer();
   }
 
   BreezBridge get breezBridge {
-    return _breezBridge ??= new BreezBridge();
+    return _breezBridge ??= BreezBridge();
   }
 
   Device get device {
     return _device ??= Device();
   }
 
-  DeepLinksService get deepLinks => _deepLinksService ??= new DeepLinksService();
-  LightningLinksService get lightningLinks => _lightningLinksService ??= new LightningLinksService();
+  DeepLinksService get deepLinks => _deepLinksService ??= DeepLinksService();
 
-  Future<SharedPreferences> get sharedPreferences => _sharedPreferences ??= SharedPreferences.getInstance();     
+  LightningLinksService get lightningLinks =>
+      _lightningLinksService ??= LightningLinksService();
 
-  Permissions get permissions  {
+  Future<SharedPreferences> get sharedPreferences =>
+      _sharedPreferences ??= SharedPreferences.getInstance();
+
+  Permissions get permissions {
     return _permissions ??= Permissions();
   }
 
@@ -73,5 +79,9 @@ class ServiceInjector {
 
   CurrencyService get currencyService {
     return _currencyService ??= CurrencyService();
+  }
+
+  LocalAuthenticationService get localAuthService {
+    return _localAuthService ??= LocalAuthenticationService();
   }
 }

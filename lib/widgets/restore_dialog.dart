@@ -1,25 +1,25 @@
-import 'dart:async';
+import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/bloc/backup/backup_bloc.dart';
 
 class RestoreDialog extends StatefulWidget {
   final BuildContext context;
   final BackupBloc backupBloc;
   final List<SnapshotInfo> snapshots;
 
-  RestoreDialog(
-      this.context, this.backupBloc, this.snapshots);
+  RestoreDialog(this.context, this.backupBloc, this.snapshots);
 
   @override
   RestoreDialogState createState() {
-    return new RestoreDialogState();
+    return RestoreDialogState();
   }
 }
 
-class RestoreDialogState extends State<RestoreDialog> {  
-  String _selectedKey;
+class RestoreDialogState extends State<RestoreDialog> {
+  SnapshotInfo _selectedSnapshot;
 
   @override
   Widget build(BuildContext context) {
@@ -27,23 +27,33 @@ class RestoreDialogState extends State<RestoreDialog> {
   }
 
   Widget createRestoreDialog() {
-    return new AlertDialog(
+    return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-      title: new Text(
+      title: Text(
         "Restore",
-        style: theme.alertTitleStyle,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          new Text(
-            "You have mulitple Breez backups on your Google Drive, please choose which to restore:",
-            style: theme.paymentRequestSubtitleStyle,
-          ),
-         
-          new Padding(
+          StreamBuilder<BackupSettings>(
+              stream: widget.backupBloc.backupSettingsStream,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return SizedBox();
+                }
+
+                return Text(
+                  "You have multiple Breez backups on ${snapshot.data.backupProvider.displayName}, please choose which one to restore:",
+                  style: Theme.of(context)
+                      .primaryTextTheme
+                      .display2
+                      .copyWith(fontSize: 16),
+                );
+              }),
+          Padding(
             padding: EdgeInsets.only(top: 16.0),
             child: Container(
               width: 150.0,
@@ -51,22 +61,41 @@ class RestoreDialogState extends State<RestoreDialog> {
               child: ListView.builder(
                 shrinkWrap: false,
                 itemCount: widget.snapshots.length,
-                itemBuilder: (BuildContext context, int index) {                  
-                  return ListTile(          
-                    selected: _selectedKey == widget.snapshots[index].nodeID  ,
-                    trailing: _selectedKey == widget.snapshots[index].nodeID ? Icon(Icons.check, color: theme.BreezColors.blue[500],) : Icon(Icons.check),
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
+                    selected: _selectedSnapshot?.nodeID ==
+                        widget.snapshots[index].nodeID,
+                    trailing: _selectedSnapshot?.nodeID ==
+                            widget.snapshots[index].nodeID
+                        ? Icon(
+                            Icons.check,
+                            color: theme.BreezColors.blue[500],
+                          )
+                        : Icon(Icons.check),
                     title: Text(
-                      widget.snapshots[index].modifiedTime,                      
-                      style: theme.bolt11Style.apply(fontSizeDelta: 1.3),
+                      DateUtils.formatYearMonthDayHourMinute(DateTime.parse(
+                              widget.snapshots[index].modifiedTime)) +
+                          (widget.snapshots[index].encrypted
+                              ? " - (Requires key)"
+                              : ""),
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .caption
+                          .copyWith(fontSize: 9)
+                          .apply(fontSizeDelta: 1.3),
                     ),
                     subtitle: Text(
                       widget.snapshots[index].nodeID,
-                      style: theme.bolt11Style,
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .caption
+                          .copyWith(fontSize: 9),
                     ),
                     onTap: () {
                       setState(() {
-                        _selectedKey = widget.snapshots[index].nodeID;
-                      });                      
+                        _selectedSnapshot = widget.snapshots[index];
+                      });
                     },
                   );
                 },
@@ -77,31 +106,31 @@ class RestoreDialogState extends State<RestoreDialog> {
               stream: widget.backupBloc.restoreFinishedStream,
               builder: (context, snapshot) {
                 return snapshot.hasError
-                    ? new Text(
+                    ? Text(
                         snapshot.error.toString(),
                         style: theme.errorStyle,
                       )
                     : Container();
-              }),          
+              }),
         ],
       ),
       actions: <Widget>[
-        new FlatButton(
-          onPressed: () =>  Navigator.pop(widget.context, false),
-          child: new Text("CANCEL", style: theme.buttonStyle),
+        FlatButton(
+          onPressed: () => Navigator.pop(widget.context, null),
+          child:
+              Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
         ),
-        new FlatButton(     
+        FlatButton(
           textColor: theme.BreezColors.blue[500],
-          disabledTextColor: theme.BreezColors.blue[500].withOpacity(0.4),               
-          onPressed: _selectedKey == null ? null : () { 
-            Navigator.pop(widget.context, true);
-            widget.backupBloc.restoreRequestSink.add(_selectedKey);
-          },
-          child: new Text("OK"),
+          disabledTextColor: theme.BreezColors.blue[500].withOpacity(0.4),
+          onPressed: _selectedSnapshot == null
+              ? null
+              : () {
+                  Navigator.pop(widget.context, _selectedSnapshot);
+                },
+          child: Text("OK"),
         )
       ],
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
   }
 }
