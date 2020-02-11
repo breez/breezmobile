@@ -162,8 +162,6 @@ class HomeState extends State<Home> {
                           DrawerItemConfigGroup([
                             DrawerItemConfig("/transactions", "Transactions",
                                 "src/icon/transactions.png"),
-                            DrawerItemConfig("/settings", "Settings",
-                                "src/icon/settings.png")
                           ])
                         ];
                       }
@@ -288,6 +286,10 @@ class HomeState extends State<Home> {
                                                     "/security",
                                                     "Security & Backup",
                                                     "src/icon/security.png"),
+                                                DrawerItemConfig(
+                                                    "/settings",
+                                                    "POS",
+                                                    "src/icon/settings.png"),
                                                 DrawerItemConfig(
                                                     "/developers",
                                                     "Developers",
