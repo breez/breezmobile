@@ -15,6 +15,7 @@ class BreezUserModel {
   final bool locked;
   final bool registrationRequested;
   final bool isPOS;
+  final double cancellationTimeoutValue;
 
   BreezUserModel._(this.userID, this.name, this.color, this.animal,
       {this.currency = Currency.SAT,
@@ -25,7 +26,8 @@ class BreezUserModel {
       this.token = '',
       this.themeId = "BLUE",
       this.registrationRequested = false,
-      this.isPOS = false});
+      this.isPOS = false,
+      this.cancellationTimeoutValue = 90.0});
 
   BreezUserModel copyWith(
       {String name,
@@ -40,7 +42,8 @@ class BreezUserModel {
       String userID,
       String themeId,
       bool registrationRequested,
-      bool isPOS}) {
+      bool isPOS,
+      double cancellationTimeoutValue}) {
     return BreezUserModel._(userID ?? this.userID, name ?? this.name,
         color ?? this.color, animal ?? this.animal,
         currency: currency ?? this.currency,
@@ -52,7 +55,9 @@ class BreezUserModel {
         themeId: themeId ?? this.themeId,
         registrationRequested:
             registrationRequested ?? this.registrationRequested,
-        isPOS: isPOS ?? this.isPOS);
+        isPOS: isPOS ?? this.isPOS,
+        cancellationTimeoutValue:
+            cancellationTimeoutValue ?? this.cancellationTimeoutValue);
   }
 
   bool get registered {
@@ -84,7 +89,10 @@ class BreezUserModel {
         themeId = json['themeId'] == null ? "BLUE" : json['themeId'],
         registrationRequested =
             json['registrationRequested'] ?? json['token'] != null,
-        isPOS = json['isPOS'] ?? false;
+        isPOS = json['isPOS'] ?? false,
+        cancellationTimeoutValue = json['cancellationTimeoutValue'] == null
+            ? 90.0
+            : json['cancellationTimeoutValue'];
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -97,6 +105,7 @@ class BreezUserModel {
         'image': image,
         'securityModel': securityModel?.toJson(),
         'themeId': themeId,
-        'registrationRequested': registrationRequested
+        'registrationRequested': registrationRequested,
+        'cancellationTimeoutValue': cancellationTimeoutValue
       };
 }

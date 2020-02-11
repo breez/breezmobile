@@ -1,20 +1,21 @@
 import 'dart:async';
+
 import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:fixnum/fixnum.dart';
-import 'package:flutter/material.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/bloc/pos_profile/pos_profile_model.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
-import '../status_indicator.dart';
-import 'package:breez/widgets/pos_payment_dialog.dart';
 import 'package:breez/widgets/breez_dropdown.dart';
+import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/pos_payment_dialog.dart';
+import 'package:fixnum/fixnum.dart';
+import 'package:flutter/material.dart';
+
+import '../status_indicator.dart';
 
 var cancellationTimeoutValue;
 
@@ -34,7 +35,7 @@ class POSInvoiceState extends State<POSInvoice> {
   TextEditingController _chargeAmountController = TextEditingController();
   TextEditingController _invoiceDescriptionController = TextEditingController();
 
-  POSProfileModel _posProfile;
+  BreezUserModel _userProfile;
   Currency _currency = Currency.BTC;
   double itemHeight;
   double itemWidth;
@@ -47,10 +48,9 @@ class POSInvoiceState extends State<POSInvoice> {
   AccountBloc _accountBloc;
   InvoiceBloc _invoiceBloc;
   UserProfileBloc _userProfileBloc;
-  POSProfileBloc _posProfileBloc;
 
   StreamSubscription<AccountModel> _accountSubscription;
-  StreamSubscription<POSProfileModel> _posProfileSubscription;
+  StreamSubscription<BreezUserModel> _userProfileSubscription;
   StreamSubscription<String> _invoiceReadyNotificationsSubscription;
   StreamSubscription<String> _invoiceNotificationsSubscription;
 
@@ -63,7 +63,6 @@ class POSInvoiceState extends State<POSInvoice> {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      _posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);
       registerListeners();
       _isInit = true;
     }
@@ -89,11 +88,10 @@ class POSInvoiceState extends State<POSInvoice> {
             includeSymbol: true);
       });
     });
-    _posProfileSubscription =
-        _posProfileBloc.posProfileStream.listen((posProfile) {
-      _posProfile = posProfile;
+    _userProfileSubscription = _userProfileBloc.userStream.listen((user) {
+      _userProfile = user;
       cancellationTimeoutValue =
-          _posProfile.cancellationTimeoutValue.toStringAsFixed(0);
+          _userProfile.cancellationTimeoutValue.toStringAsFixed(0);
     });
     _invoiceReadyNotificationsSubscription = _invoiceBloc.readyInvoicesStream
         .listen((invoiceReady) {
@@ -105,7 +103,7 @@ class POSInvoiceState extends State<POSInvoice> {
             barrierDismissible: false,
             builder: (BuildContext context) {
               return PosPaymentDialog(
-                  _invoiceBloc, _posProfileBloc, _scaffoldKey);
+                  _invoiceBloc, _userProfileBloc, _scaffoldKey);
             }).then((result) {
           setState(() {
             _currentAmount = 0;
@@ -135,7 +133,7 @@ class POSInvoiceState extends State<POSInvoice> {
 
   void closeListeners() {
     _accountSubscription?.cancel();
-    _posProfileSubscription?.cancel();
+    _userProfileSubscription?.cancel();
     _invoiceReadyNotificationsSubscription?.cancel();
     _invoiceNotificationsSubscription?.cancel();
   }
@@ -319,13 +317,14 @@ class POSInvoiceState extends State<POSInvoice> {
   }
 
   onInvoiceSubmitted() {
-    if (_posProfile.invoiceString == null || _posProfile.logo == null) {
+    if (_userProfile.name == null || _userProfile.avatarURL == null) {
       String errorMessage = "Please";
-      if (_posProfile.invoiceString == null)
+      if (_userProfile.name == null)
         errorMessage += " enter your business name";
-      if (_posProfile.logo == null && _posProfile.invoiceString == null)
+      if (_userProfile.avatarURL == null && _userProfile.name == null)
         errorMessage += " and ";
-      if (_posProfile.logo == null) errorMessage += " select a business logo";
+      if (_userProfile.avatarURL == null)
+        errorMessage += " select a business logo";
       return showDialog<Null>(
           useRootNavigator: false,
           context: context,
@@ -371,9 +370,9 @@ class POSInvoiceState extends State<POSInvoice> {
       } else if (_totalAmount < _maxPaymentAmount.toInt() ||
           _totalAmount < _maxPaymentAmount.toInt()) {
         _invoiceBloc.newInvoiceRequestSink.add(InvoiceRequestModel(
-            _posProfile.invoiceString,
+            _userProfile.name,
             _invoiceDescriptionController.text,
-            _posProfile.logo,
+            _userProfile.avatarURL,
             Int64(_totalAmount),
             expiry: Int64(int.parse(cancellationTimeoutValue))));
       } else {

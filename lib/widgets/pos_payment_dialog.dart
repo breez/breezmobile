@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'package:breez/widgets/compact_qr_image.dart';
-import 'package:breez/services/countdown.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
+
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/pos_profile/pos_profile_model.dart';
-import 'package:breez/bloc/pos_profile/pos_profile_bloc.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/services/countdown.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/compact_qr_image.dart';
+import 'package:flutter/material.dart';
 
 enum _PosPaymentState { WAITING_FOR_PAYMENT, PAYMENT_RECEIVED }
 
@@ -18,17 +19,16 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
 
   StreamSubscription<String> _sentInvoicesSubscription;
   StreamSubscription<bool> _paidInvoicesSubscription;
-  StreamSubscription<POSProfileModel> _posProfileSubscription;
+  StreamSubscription<BreezUserModel> _userProfileSubscription;
 
   @override
   void initState() {
     super.initState();
 
-    _posProfileSubscription = widget._posProfileBloc.posProfileStream
-        .asBroadcastStream()
-        .listen((posProfile) {
-      _paymentTimer = CountDown(
-          Duration(seconds: posProfile.cancellationTimeoutValue.toInt()));
+    _userProfileSubscription =
+        widget._userProfileBloc.userStream.asBroadcastStream().listen((user) {
+      _paymentTimer =
+          CountDown(Duration(seconds: user.cancellationTimeoutValue.toInt()));
       _timerSubscription = _paymentTimer.stream.listen(null);
       _timerSubscription.onData((Duration d) {
         setState(() {
@@ -93,7 +93,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     _timerSubscription?.cancel();
     _paidInvoicesSubscription?.cancel();
     _sentInvoicesSubscription?.cancel();
-    _posProfileSubscription?.cancel();
+    _userProfileSubscription?.cancel();
     super.dispose();
   }
 
@@ -200,11 +200,11 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
 
 class PosPaymentDialog extends StatefulWidget {
   final InvoiceBloc _invoiceBloc;
-  final POSProfileBloc _posProfileBloc;
+  final UserProfileBloc _userProfileBloc;
 
   final GlobalKey<ScaffoldState> _scaffoldKey;
 
-  PosPaymentDialog(this._invoiceBloc, this._posProfileBloc, this._scaffoldKey);
+  PosPaymentDialog(this._invoiceBloc, this._userProfileBloc, this._scaffoldKey);
 
   @override
   _PosPaymentDialogState createState() {
