@@ -1,28 +1,37 @@
-import 'package:breez/bloc/async_action.dart';
+
+import 'dart:async';
+import 'package:breez/bloc/account/fiat_conversion.dart';
 
 import 'account_model.dart';
 
-class SendPaymentFailureReport extends AsyncAction {
-  final String traceReport;
+class AsyncAction {
+  Completer _completer = new Completer(); 
+  Future get future => _completer.future;  
 
-  SendPaymentFailureReport(this.traceReport);
+  void resolve(Object value){    
+    _completer.complete(value);
+  }
+  void resolveError(error) {
+    _completer.completeError(error);
+  }
+}
+
+class SendPaymentFailureReport extends AsyncAction {
+  final String traceReport;  
+
+  SendPaymentFailureReport(this.traceReport);  
 }
 
 class ResetNetwork extends AsyncAction {}
 
-class ResetChainService extends AsyncAction {}
-
 class RestartDaemon extends AsyncAction {}
 
-class FetchSwapFundStatus extends AsyncAction {}
+class FetchSwapFundStatus extends AsyncAction{}
 
-class FetchPayments extends AsyncAction {}
-
-class SendPayment extends AsyncAction {
+class SendPayment extends AsyncAction{
   final PayRequest paymentRequest;
-  final bool ignoreGlobalFeedback;
 
-  SendPayment(this.paymentRequest, {this.ignoreGlobalFeedback = false});
+  SendPayment(this.paymentRequest);
 }
 
 class CancelPaymentRequest extends AsyncAction {
@@ -38,12 +47,3 @@ class ChangeSyncUIState extends AsyncAction {
 }
 
 class FetchRates extends AsyncAction {}
-
-class SendCoins extends AsyncAction {
-  final int feeRate;
-  final String destAddress;
-
-  SendCoins(this.feeRate, this.destAddress);
-}
-
-class ExportPayments extends AsyncAction {}

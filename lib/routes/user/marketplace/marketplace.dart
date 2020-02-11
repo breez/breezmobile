@@ -1,21 +1,22 @@
-import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/routes/user/marketplace/vendor_row.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/bloc/account/account_bloc.dart';
 
 class MarketplacePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return MarketplacePageState();
+    return new MarketplacePageState();
   }
 }
 
 class MarketplacePageState extends State<MarketplacePage> {
   final String _title = "Marketplace";
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   AccountBloc _accountBloc;
   MarketplaceBloc _marketplaceBloc;
   bool _isInit = false;
@@ -47,16 +48,16 @@ class MarketplacePageState extends State<MarketplacePage> {
   }
 
   Widget _buildScaffold(Widget body) {
-    return Scaffold(
+    return new Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+      appBar: new AppBar(
+        iconTheme: theme.appBarIconTheme,
+        textTheme: theme.appBarTextTheme,
+        backgroundColor: theme.BreezColors.blue[500],
         leading: backBtn.BackButton(),
-        title: Text(
+        title: new Text(
           _title,
-          style: Theme.of(context).appBarTheme.textTheme.title,
+          style: theme.appBarTextStyle,
         ),
         elevation: 0.0,
       ),
@@ -66,8 +67,7 @@ class MarketplacePageState extends State<MarketplacePage> {
 
   Widget _buildVendors(List<VendorModel> vendorModel) {
     return ListView.builder(
-      itemBuilder: (context, index) =>
-          VendorRow(_accountBloc, vendorModel[index]),
+      itemBuilder: (context, index) => new VendorRow(_accountBloc, vendorModel[index]),
       itemCount: vendorModel.length,
       itemExtent: 200.0,
     );

@@ -1,6 +1,8 @@
 import UIKit
-import CoreFoundation
+import Flutter
 
-UserDefaults.standard.setValue("en_US", forKey: "AppleLocale");
-UIApplicationMain(CommandLine.argc, CommandLine.unsafeArgv,
-                  NSStringFromClass(UIApplication.self), NSStringFromClass(AppDelegate.self))
+int main(int argc, char * argv[]) {
+  @autoreleasepool {
+    return UIApplicationMain(argc, argv, nil, NSStringFromClass(AppDelegate));
+  }
+}

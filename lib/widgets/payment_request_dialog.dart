@@ -11,13 +11,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-enum PaymentRequestState {
-  PAYMENT_REQUEST,
-  WAITING_FOR_CONFIRMATION,
-  PROCESSING_PAYMENT,
-  USER_CANCELLED,
-  PAYMENT_COMPLETED
-}
+enum PaymentRequestState { PAYMENT_REQUEST, WAITING_FOR_CONFIRMATION, PROCESSING_PAYMENT, USER_CANCELLED, PAYMENT_COMPLETED }
 
 class PaymentRequestDialog extends StatefulWidget {
   final BuildContext context;
@@ -26,8 +20,7 @@ class PaymentRequestDialog extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
   final ScrollController scrollController;
 
-  PaymentRequestDialog(this.context, this.accountBloc, this.invoice,
-      this.firstPaymentItemKey, this.scrollController);
+  PaymentRequestDialog(this.context, this.accountBloc, this.invoice, this.firstPaymentItemKey, this.scrollController);
 
   @override
   State<StatefulWidget> createState() {
@@ -36,6 +29,9 @@ class PaymentRequestDialog extends StatefulWidget {
 }
 
 class PaymentRequestDialogState extends State<PaymentRequestDialog> {
+  StreamSubscription<AccountModel> _paymentInProgressSubscription;
+  bool _inProgress = false;
+
   PaymentRequestState _state;
   double _initialDialogSize;
   String _amountToPayStr;
@@ -46,58 +42,45 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   void initState() {
     super.initState();
     _state = PaymentRequestState.PAYMENT_REQUEST;
+    _paymentInProgressSubscription = widget.accountBloc.accountStream.listen((acc) {
+      _inProgress = acc.paymentRequestInProgress != null && acc.paymentRequestInProgress.isNotEmpty;
+    });
+  }
+
+  @override void didChangeDependencies() {    
+    super.didChangeDependencies();
+    if (_currentRoute == null) {
+      _currentRoute = ModalRoute.of(context);      
+    }
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_currentRoute == null) {
-      _currentRoute = ModalRoute.of(context);
-    }
+  dispose() {
+    _paymentInProgressSubscription?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: _onWillPop, child: showPaymentRequestDialog());
+    return WillPopScope(onWillPop: _onWillPop, child: showPaymentRequestDialog());
   }
 
   // Do not pop dialog if there's a payment being processed
   Future<bool> _onWillPop() async {
-    if (this._state == PaymentRequestState.PROCESSING_PAYMENT) {
+    if (_inProgress) {
       return false;
     }
-    widget.accountBloc.userActionsSink.add(CancelPaymentRequest(
-        PayRequest(widget.invoice.rawPayReq, _amountToPay)));
+    widget.accountBloc.userActionsSink.add(CancelPaymentRequest(PayRequest(widget.invoice.rawPayReq, _amountToPay)));
     return true;
   }
 
   Widget showPaymentRequestDialog() {
     if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
-      return ProcessingPaymentDialog(
-          widget.context,
-          widget.invoice,
-          widget.accountBloc,
-          widget.firstPaymentItemKey,
-          widget.scrollController,
-          _initialDialogSize,
-          _onStateChange);
+      return ProcessingPaymentDialog(widget.context, widget.accountBloc, widget.firstPaymentItemKey, widget.scrollController, _initialDialogSize, _onStateChange);
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
-      return PaymentConfirmationDialog(
-          widget.accountBloc,
-          widget.invoice,
-          _initialDialogSize,
-          _amountToPay,
-          _amountToPayStr,
-          (state) => _onStateChange(state));
+      return PaymentConfirmationDialog(widget.accountBloc, widget.invoice, _initialDialogSize, _amountToPay, _amountToPayStr, (state) => _onStateChange(state));
     } else {
-      return PaymentRequestInfoDialog(
-          widget.context,
-          widget.accountBloc,
-          widget.invoice,
-          (state) => _onStateChange(state),
-          (height) => _setDialogHeight(height),
-          (map) => _setAmountToPay(map));
+      return PaymentRequestInfoDialog(widget.context, widget.accountBloc, widget.invoice, (state) => _onStateChange(state), (height) => _setDialogHeight(height), (map) => _setAmountToPay(map));
     }
   }
 
@@ -108,8 +91,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     }
     if (state == PaymentRequestState.USER_CANCELLED) {
       Navigator.of(context).removeRoute(_currentRoute);
-      widget.accountBloc.userActionsSink.add(CancelPaymentRequest(
-          PayRequest(widget.invoice.rawPayReq, _amountToPay)));
+      widget.accountBloc.userActionsSink.add(CancelPaymentRequest(PayRequest(widget.invoice.rawPayReq, _amountToPay)));
       return;
     }
     setState(() {

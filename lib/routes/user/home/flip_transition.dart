@@ -23,7 +23,7 @@ class FlipTransitionState extends State<FlipTransition>
   void initState() {
     super.initState();
     _flipAnimationController =
-        AnimationController(vsync: this, duration: flipDuration);
+        new AnimationController(vsync: this, duration: flipDuration);
     _flipAnimation = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
         parent: _flipAnimationController,
         curve: Interval(0.0, 1.0, curve: Curves.fastOutSlowIn)));
@@ -54,9 +54,7 @@ class FlipTransitionState extends State<FlipTransition>
                 transform: Matrix4.identity()
                   ..rotateY(pi * _flipAnimation.value),
                 alignment: Alignment.center,
-                child: _flipAnimationController.value >= 0.4
-                    ? widget.secondChild
-                    : widget.firstChild,
+                child:_flipAnimationController.value >= 0.4 ? widget.secondChild : widget.firstChild,
               ));
         });
   }

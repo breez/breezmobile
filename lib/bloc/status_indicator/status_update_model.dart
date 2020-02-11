@@ -1,4 +1,6 @@
+
 enum StatusUpdatePriority { LOW, HIGH }
+
 
 class StatusUpdateModel {
   final String message;

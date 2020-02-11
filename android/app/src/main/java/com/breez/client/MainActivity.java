@@ -6,15 +6,18 @@ import android.os.Bundle;
 
 import android.content.Intent;
 import android.nfc.NfcAdapter;
-import io.flutter.app.FlutterFragmentActivity;
+import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 import android.util.Log;
 
-public class MainActivity extends FlutterFragmentActivity {
+public class MainActivity extends FlutterActivity {
     private static final String TAG = "Breez";
-    private LifecycleEvents _lifecycleEventsPlugin;
+    public static final int NOTIFICATION_ID = 200;
+    private static final String MAIN_CHANNEL = "com.breez.client/main";
     public boolean isPos = false;
+
+    MethodChannel mainMethodChannel;
     NfcHandler m_nfc;
 
     @Override
@@ -39,7 +42,7 @@ public class MainActivity extends FlutterFragmentActivity {
     void registerBreezPlugins() {
         BreezApplication.breezShare = new BreezShare(this.registrarFor("com.breez.client.plugins.breez_share"), this);
         new Breez(this.registrarFor("com.breez.client.plugins.breez_lib"));
-        _lifecycleEventsPlugin = new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
+        new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
         new Permissions(this.registrarFor("com.breez.client.plugins.permissions"), this);        
     }
 

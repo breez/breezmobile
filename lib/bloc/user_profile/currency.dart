@@ -3,34 +3,30 @@ import 'package:intl/intl.dart';
 import 'package:intl/number_symbols.dart';
 import 'package:intl/number_symbols_data.dart';
 
-enum CurrencyID { BTC, SAT }
+enum CurrencyID { BTC, BIT, SAT }
 
-class Currency extends Object {
+class Currency extends Object{
   final String symbol;
   static const Currency BTC = Currency._internal("BTC");
+  static const Currency BIT = Currency._internal("Bit");
   static const Currency SAT = Currency._internal("Sat");
-  static final List<Currency> currencies = List.unmodifiable([BTC, SAT]);
+  static final List<Currency> currencies = List.unmodifiable([BTC, BIT, SAT]);
 
   const Currency._internal(this.symbol);
   factory Currency.fromSymbol(String symbol) {
-    return currencies.firstWhere((c) => c.symbol == symbol, orElse: () => SAT);
+    return currencies.firstWhere((c) => c.symbol == symbol);
   }
 
-  String format(Int64 sat,
-          {includeSymbol = true, fixedDecimals = true, userInput = false}) =>
-      _CurrencyFormatter().format(sat, this,
-          addCurrencySuffix: includeSymbol,
-          fixedDecimals: fixedDecimals,
-          userInput: userInput);
-  Int64 parse(String amountStr) => _CurrencyFormatter().parse(amountStr, this);
-  String get displayName => symbol == "Sat" ? "sats" : symbol;
+  String format(Int64 sat, {includeSymbol = true, fixedDecimals = true, userInput = false}) => _CurrencyFormatter().format(sat, this, addCurrencySuffix: includeSymbol, fixedDecimals: fixedDecimals, userInput: userInput);
+  Int64 parse(String amountStr) =>  _CurrencyFormatter().parse(amountStr, this);
+  String get displayName => symbol;
 }
 
 class _CurrencyFormatter {
   static final formatter = _defineFormatter();
 
   static NumberFormat _defineFormatter() {
-    numberFormatSymbols['space-between'] = NumberSymbols(
+    numberFormatSymbols['space-between'] = new NumberSymbols(
       NAME: "zz",
       DECIMAL_SEP: '.',
       GROUP_SEP: '\u00A0',
@@ -48,22 +44,23 @@ class _CurrencyFormatter {
       CURRENCY_PATTERN: '\u00A4#,##0.00',
       DEF_CURRENCY_CODE: 'AUD',
     );
-    final formatter = NumberFormat('###,###.##', 'space-between');
+    final formatter = new NumberFormat('###,###.##', 'space-between');
     return formatter;
   }
 
-  String format(satoshies, Currency currency,
-      {bool addCurrencySuffix = true,
-      fixedDecimals = true,
-      userInput = false}) {
+  String format(satoshies, Currency currency, {bool addCurrencySuffix = true, fixedDecimals = true, userInput = false}) {
     String formattedAmount = formatter.format(satoshies);
     switch (currency) {
       case Currency.BTC:
         if (fixedDecimals) {
           formattedAmount = (satoshies.toInt() / 100000000).toStringAsFixed(8);
-        } else {
+        }
+        else {
           formattedAmount = (satoshies.toInt() / 100000000).toString();
         }
+        break;
+      case Currency.BIT:
+        formattedAmount = formatter.format((satoshies.toInt() / 100));
         break;
       case Currency.SAT:
         formattedAmount = formatter.format(satoshies);
@@ -74,7 +71,7 @@ class _CurrencyFormatter {
     }
 
     if (userInput) {
-      return formattedAmount.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+      return formattedAmount.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
     }
 
     return formattedAmount;
@@ -84,10 +81,12 @@ class _CurrencyFormatter {
     switch (currency) {
       case Currency.BTC:
         return Int64((double.parse(amount) * 100000000).round());
+      case Currency.BIT:
+        return Int64((double.parse(amount) * 100).round());
       case Currency.SAT:
         return Int64(int.parse(amount));
       default:
         return Int64((double.parse(amount) * 100000000).round());
     }
-  }
+  }  
 }

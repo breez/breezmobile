@@ -1,11 +1,9 @@
 import 'dart:async';
-
+import 'package:breez/widgets/loader.dart';
+import 'package:flutter/material.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_request_dialog.dart' as paymentRequest;
-import 'package:flutter/material.dart';
 
 class InvoiceNotificationsHandler {
   final BuildContext _context;
@@ -19,30 +17,24 @@ class InvoiceNotificationsHandler {
   bool _handlingRequest = false;
 
   InvoiceNotificationsHandler(
-      this._context,
-      this._accountBloc,
-      this._receivedInvoicesStream,
-      this.firstPaymentItemKey,
-      this.scrollController,
-      this.scaffoldController) {
+      this._context, this._accountBloc, this._receivedInvoicesStream, this.firstPaymentItemKey, this.scrollController, this.scaffoldController) {
     _listenPaymentRequests();
     _listenCompletedPayments();
   }
 
   _listenCompletedPayments() {
-    _accountBloc.completedPaymentsStream.listen((completedPayment) {
-      _handlingRequest = false;
-    }, onError: (err) {
-      _handlingRequest = false;
-    });
+    _accountBloc.completedPaymentsStream.listen( (completedPayment){ _handlingRequest = false;}, onError: (err){
+        _handlingRequest = false;
+      });
   }
 
   _listenPaymentRequests() {
-    _accountBloc.accountStream.where((acc) => acc.connected).first.then((acc) {
+    _accountBloc.accountStream.where((acc) => acc.active).first.then((acc) {
       // show payment request dialog for decoded requests
       _receivedInvoicesStream
           .where((payreq) => payreq != null && !_handlingRequest)
           .listen((payreq) {
+
         if (!payreq.loaded) {
           _setLoading(true);
           return;
@@ -56,17 +48,13 @@ class InvoiceNotificationsHandler {
           Navigator.pop(_context);
         }
         showDialog(
-            useRootNavigator: false,
             context: _context,
             barrierDismissible: false,
-            builder: (_) => paymentRequest.PaymentRequestDialog(_context,
-                _accountBloc, payreq, firstPaymentItemKey, scrollController));
+            builder: (_) => paymentRequest.PaymentRequestDialog(
+                        _context, _accountBloc, payreq, firstPaymentItemKey, scrollController));            
       }).onError((error) {
         _setLoading(false);
         _handlingRequest = false;
-        if (error is PaymentRequestError) {
-          showFlushbar(_context, message: error.message);
-        }
       });
     });
   }
@@ -83,4 +71,5 @@ class InvoiceNotificationsHandler {
       _loaderRoute = null;
     }
   }
+
 }

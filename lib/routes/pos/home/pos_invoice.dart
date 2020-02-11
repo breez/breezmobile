@@ -29,11 +29,12 @@ class POSInvoice extends StatefulWidget {
 }
 
 class POSInvoiceState extends State<POSInvoice> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  TextEditingController _amountController = TextEditingController();
-  TextEditingController _chargeAmountController = TextEditingController();
-  TextEditingController _invoiceDescriptionController = TextEditingController();
+  TextEditingController _amountController = new TextEditingController();
+  TextEditingController _chargeAmountController = new TextEditingController();
+  TextEditingController _invoiceDescriptionController =
+      new TextEditingController();
 
   POSProfileModel _posProfile;
   Currency _currency = Currency.BTC;
@@ -62,22 +63,22 @@ class POSInvoiceState extends State<POSInvoice> {
   bool _isInit = false;
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() {    
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      _posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);
-      registerListeners();
-      _isInit = true;
-    }
+      _posProfileBloc = AppBlocsProvider.of<POSProfileBloc>(context);      
+      registerListeners();      
+      _isInit = true;  
+    } 
     itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
-    itemWidth = (MediaQuery.of(context).size.width) / 2;
+    itemWidth = (MediaQuery.of(context).size.width) / 2; 
     super.didChangeDependencies();
   }
 
-  void registerListeners() {
-    _focusNode = FocusNode();
+  void registerListeners() {    
+    _focusNode = new FocusNode();
     _focusNode.addListener(_onOnFocusNodeEvent);
     _invoiceDescriptionController.text = "";
     _accountSubscription = _accountBloc.accountStream.listen((acc) {
@@ -95,17 +96,15 @@ class POSInvoiceState extends State<POSInvoice> {
       cancellationTimeoutValue =
           _posProfile.cancellationTimeoutValue.toStringAsFixed(0);
     });
-    _invoiceReadyNotificationsSubscription = _invoiceBloc.readyInvoicesStream
-        .listen((invoiceReady) {
+    _invoiceReadyNotificationsSubscription =
+        _invoiceBloc.readyInvoicesStream.listen((invoiceReady) {
       // show the simple dialog with 3 states
       if (invoiceReady != null) {
         showDialog<bool>(
-            useRootNavigator: false,
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
-              return PosPaymentDialog(
-                  _invoiceBloc, _posProfileBloc, _scaffoldKey);
+              return new PosPaymentDialog(_invoiceBloc, _posProfileBloc, _scaffoldKey);
             }).then((result) {
           setState(() {
             clearCurrentAmounts();
@@ -115,10 +114,11 @@ class POSInvoiceState extends State<POSInvoice> {
           });
         });
       }
-    },
-            onError: (err) => _scaffoldKey.currentState.showSnackBar(SnackBar(
-                duration: Duration(seconds: 10),
-                content: Text(err.toString()))));
+      },
+      onError: (err) => _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+              duration: new Duration(seconds: 10),
+              content: new Text(err.toString()))));
   }
 
   @override
@@ -132,58 +132,54 @@ class POSInvoiceState extends State<POSInvoice> {
     _accountSubscription?.cancel();
     _posProfileSubscription?.cancel();
     _invoiceReadyNotificationsSubscription?.cancel();
-    _invoiceNotificationsSubscription?.cancel();
+    _invoiceNotificationsSubscription?.cancel();    
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: GestureDetector(
+      body: new GestureDetector(
         onTap: () {
           // call this method here to hide soft keyboard
-          FocusScope.of(context).requestFocus(FocusNode());
+          FocusScope.of(context).requestFocus(new FocusNode());
           setState(() {
             _isButtonDisabled = false;
           });
         },
-        child: Builder(builder: (BuildContext context) {
+        child: new Builder(builder: (BuildContext context) {
           return Column(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Container(
-                  child: Column(
+              new Container(
+                  child: new Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      StreamBuilder<AccountSettings>(
+                      new StreamBuilder<AccountSettings>(
                           stream: _accountBloc.accountSettingsStream,
                           builder: (settingCtx, settingSnapshot) {
                             return StreamBuilder<AccountModel>(
                                 stream: _accountBloc.accountStream,
                                 builder: (context, snapshot) {
                                   AccountModel acc = snapshot.data;
-                                  AccountSettings settings =
-                                      settingSnapshot.data;
-                                  if (settings?.showConnectProgress == true ||
-                                      acc?.isInitialBootstrap == true) {
-                                    return StatusIndicator(
-                                        context, snapshot.data);
+                                  AccountSettings settings = settingSnapshot.data;
+                                  if (settings?.showConnectProgress == true || acc?.isInitialBootstrap == true ) {
+                                    return new StatusIndicator(snapshot.data);
                                   }
                                   return SizedBox();
                                 });
                           }),
-                      Padding(
+                      new Padding(
                         padding:
                             EdgeInsets.only(top: 0.0, left: 16.0, right: 16.0),
-                        child: ConstrainedBox(
+                        child: new ConstrainedBox(
                           constraints:
                               const BoxConstraints(minWidth: double.infinity),
                           child: IgnorePointer(
                             ignoring: _isButtonDisabled,
-                            child: RaisedButton(
-                              color: Theme.of(context).primaryColorLight,
+                            child: new RaisedButton(
                               padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
-                              child: Text(
+                              child: new Text(
                                 "Charge ${_chargeAmountController.text}"
                                     .toUpperCase(),
                                 maxLines: 1,
@@ -195,12 +191,12 @@ class POSInvoiceState extends State<POSInvoice> {
                           ),
                         ),
                       ),
-                      Container(
-                        height: 80.0,
-                        child: Padding(
+                      new Container(
+                        height: 50.0,
+                        child: new Padding(
                           padding: EdgeInsets.only(
-                              left: 16.0, right: 16.0, top: 0.0),
-                          child: TextField(
+                              left: 28.0, right: 28.0, top: 8.0),
+                          child: new TextField(
                             focusNode: _focusNode,
                             textInputAction: TextInputAction.done,
                             keyboardType: TextInputType.multiline,
@@ -223,37 +219,24 @@ class POSInvoiceState extends State<POSInvoice> {
                                   color: Color(0xFFc5cedd),
                                 ),
                               ),
-                              counterStyle:
-                                  Theme.of(context).primaryTextTheme.caption,
                               hintText: 'Add Note',
-                              hintStyle: theme.invoiceMemoStyle.copyWith(
-                                  color: Theme.of(context)
-                                      .primaryTextTheme
-                                      .display1
-                                      .color),
+                              hintStyle: theme.invoiceMemoStyle,
                             ),
-                            style: theme.invoiceMemoStyle.copyWith(
-                                color: Theme.of(context)
-                                    .primaryTextTheme
-                                    .display1
-                                    .color),
+                            style: theme.invoiceMemoStyle,
                           ),
                         ),
                       ),
-                      Padding(
+                      new Padding(
                         padding: EdgeInsets.only(left: 16.0, right: 16.0),
                         child: Row(children: <Widget>[
-                          Flexible(
-                              child: TextField(
-                            decoration: InputDecoration.collapsed(hintText: ''),
+                          new Flexible(
+                              child: new TextField(
                             enabled: false,
                             controller: _amountController,
-                            style: theme.invoiceAmountStyle.copyWith(
-                                color:
-                                    Theme.of(context).textTheme.headline.color),
+                            style: theme.invoiceAmountStyle,
                             textAlign: TextAlign.right,
                           )),
-                          Theme(
+                          new Theme(
                             data: Theme.of(context).copyWith(
                               brightness: Brightness.light,
                               canvasColor: theme.BreezColors.white[500],
@@ -317,11 +300,11 @@ class POSInvoiceState extends State<POSInvoice> {
                       ),
                     ],
                   ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
+                  decoration: new BoxDecoration(
+                    color: Colors.white,
                   ),
                   height: MediaQuery.of(context).size.height * 0.29),
-              Expanded(child: _numPad())
+              new Expanded(child: _numPad())
             ],
           );
         }),
@@ -344,23 +327,22 @@ class POSInvoiceState extends State<POSInvoice> {
         errorMessage += " and ";
       if (_posProfile.logo == null) errorMessage += " select a business logo";
       return showDialog<Null>(
-          useRootNavigator: false,
           context: context,
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(
+            return new AlertDialog(
+              title: new Text(
                 "Required Information",
-                style: Theme.of(context).dialogTheme.titleTextStyle,
+                style: theme.alertTitleStyle,
               ),
               contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
-              content: SingleChildScrollView(
-                child: Text("$errorMessage in the Settings screen.",
-                    style: Theme.of(context).dialogTheme.contentTextStyle),
+              content: new SingleChildScrollView(
+                child: new Text("$errorMessage in the Settings screen.",
+                    style: theme.alertStyle),
               ),
               actions: <Widget>[
-                FlatButton(
-                  child: Text("Go to Settings", style: theme.buttonStyle),
+                new FlatButton(
+                  child: new Text("Go to Settings", style: theme.buttonStyle),
                   onPressed: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pushNamed("/settings");
@@ -384,22 +366,23 @@ class POSInvoiceState extends State<POSInvoice> {
             "You don't have the capacity to receive such payment.",
             Text(
                 "Maximum payment size you can receive is ${_currency.format(_maxAllowedToReceive, includeSymbol: true)}. Please enter a smaller value.",
-                style: Theme.of(context).dialogTheme.contentTextStyle));
+                style: theme.alertStyle));
       } else if (_totalAmount < _maxPaymentAmount.toInt() ||
           _totalAmount < _maxPaymentAmount.toInt()) {
-        _invoiceBloc.newInvoiceRequestSink.add(InvoiceRequestModel(
-            _posProfile.invoiceString,
-            _invoiceDescriptionController.text,
-            _posProfile.logo,
-            Int64(_totalAmount),
-            expiry: Int64(int.parse(cancellationTimeoutValue))));
+        _invoiceBloc.newInvoiceRequestSink.add(
+            new InvoiceRequestModel(
+                _posProfile.invoiceString,
+                _invoiceDescriptionController.text,
+                _posProfile.logo,
+                Int64(_totalAmount),
+                expiry: Int64(int.parse(cancellationTimeoutValue))));
       } else {
         promptError(
             context,
             "You have exceeded the maximum payment size.",
             Text(
                 "Maximum payment size on the Lightning Network is ${_currency.format(_maxPaymentAmount, includeSymbol: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
-                style: Theme.of(context).dialogTheme.contentTextStyle));
+                style: theme.alertStyle));
       }
     }
   }
@@ -495,51 +478,49 @@ class POSInvoiceState extends State<POSInvoice> {
 
   approveClear() {
     if (_totalAmount + _currentAmount != 0) {
-      AlertDialog dialog = AlertDialog(
-        title: Text(
+      AlertDialog dialog = new AlertDialog(
+        title: new Text(
           "Clear Sale?",
           textAlign: TextAlign.center,
-          style: Theme.of(context).dialogTheme.titleTextStyle,
+          style: theme.alertTitleStyle,
         ),
-        content: Text("This will clear the current transaction.",
-            style: Theme.of(context).dialogTheme.contentTextStyle),
+        content: new Text("This will clear the current transaction.",
+            style: theme.alertStyle),
         contentPadding:
             EdgeInsets.only(left: 24.0, right: 24.0, bottom: 12.0, top: 24.0),
         actions: <Widget>[
-          FlatButton(
+          new FlatButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("Cancel", style: theme.buttonStyle)),
-          FlatButton(
+              child: new Text("Cancel", style: theme.buttonStyle)),
+          new FlatButton(
               onPressed: () {
                 Navigator.pop(context);
                 clearSale();
               },
-              child: Text("Clear", style: theme.buttonStyle))
+              child: new Text("Clear", style: theme.buttonStyle))
         ],
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
       );
-      showDialog(
-          useRootNavigator: false, context: context, builder: (_) => dialog);
+      showDialog(context: context, builder: (_) => dialog);
     }
   }
 
   Container _numberButton(String number) {
     return Container(
-        decoration: BoxDecoration(
-            border: Border.all(
-                color: Theme.of(context).backgroundColor, width: 0.5)),
+        decoration: new BoxDecoration(
+            border: new Border.all(color: Colors.white, width: 0.5)),
         child: IgnorePointer(
             ignoring: _isButtonDisabled,
-            child: FlatButton(
+            child: new FlatButton(
                 onPressed: () => onNumButtonPressed(number),
-                child: Text(number,
+                child: new Text(number,
                     textAlign: TextAlign.center,
                     style: theme.numPadNumberStyle))));
   }
 
   Widget _numPad() {
-    return GridView.count(
+    return new GridView.count(
         crossAxisCount: 3,
         childAspectRatio: (itemWidth / itemHeight),
         padding: EdgeInsets.zero,
@@ -547,22 +528,20 @@ class POSInvoiceState extends State<POSInvoice> {
             .map((index) => _numberButton((index + 1).toString()))
             .followedBy([
           Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Theme.of(context).backgroundColor, width: 0.5)),
-              child: GestureDetector(
+              decoration: new BoxDecoration(
+                  border: new Border.all(color: Colors.white, width: 0.5)),
+              child: new GestureDetector(
                   onLongPress: approveClear,
-                  child: FlatButton(
+                  child: new FlatButton(
                       onPressed: onClear,
-                      child: Text("C", style: theme.numPadNumberStyle)))),
+                      child: new Text("C", style: theme.numPadNumberStyle)))),
           _numberButton("0"),
           Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Theme.of(context).backgroundColor, width: 0.5)),
-              child: FlatButton(
+              decoration: new BoxDecoration(
+                  border: new Border.all(color: Colors.white, width: 0.5)),
+              child: new FlatButton(
                   onPressed: onAddition,
-                  child: Text("+", style: theme.numPadAdditionStyle))),
+                  child: new Text("+", style: theme.numPadAdditionStyle))),
         ]).toList());
   }
 }

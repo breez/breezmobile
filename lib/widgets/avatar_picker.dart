@@ -33,7 +33,7 @@ class AvatarPicker extends StatelessWidget {
           FocusScope.of(context).requestFocus(FocusNode());
           _pickImage(context);
         },
-        child: Padding(
+        child: new Padding(
           padding: EdgeInsets.only(top: 16.0),
           child: _getPickerWidget(),
         ));
@@ -45,10 +45,10 @@ class AvatarPicker extends StatelessWidget {
         : Color.fromRGBO(51, 69, 96, 0.4);
     var _posAvatar = imagePath == null
         ? AssetImage("src/images/avatarbg.png")
-        : FileImage(File(imagePath));
+        : new FileImage(new File(imagePath));
 
-    return Container(
-        child: Column(
+    return new Container(
+        child: new Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -71,13 +71,13 @@ class AvatarPicker extends StatelessWidget {
         ),
         width: renderedWidth.roundToDouble(),
         height: renderedWidth.roundToDouble(),
-        decoration: BoxDecoration(
+        decoration: new BoxDecoration(
             shape: BoxShape.circle,
             border: imagePath == null
                 ? Border.all(
                     color: Colors.white, width: 2.0, style: BorderStyle.solid)
                 : null,
-            image: DecorationImage(
+            image: new DecorationImage(
                 colorFilter: ColorFilter.mode(_overlayColor, BlendMode.srcATop),
                 image: _posAvatar,
                 fit: BoxFit.cover)));
@@ -85,9 +85,7 @@ class AvatarPicker extends StatelessWidget {
 
   Future _pickImage(BuildContext context) async {
     return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
-      ImageCropper.cropImage(
-              sourcePath: file.path,
-              aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0))
+      ImageCropper.cropImage(sourcePath: file.path, ratioX: 1.0, ratioY: 1.0)
           .then((file) {
         if (file != null) {
           file

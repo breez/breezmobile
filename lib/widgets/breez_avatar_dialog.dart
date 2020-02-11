@@ -1,21 +1,19 @@
-import 'dart:async';
-
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/breez_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/widgets/breez_avatar.dart';
 import 'package:image/image.dart' as DartImage;
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/services.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 
 int scaledWidth = 200;
 var _transparentImage = DartImage.Image(scaledWidth, scaledWidth);
 
 Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
-  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   BreezUserModel _currentSettings;
 
   final _nameInputController = TextEditingController();
@@ -24,105 +22,77 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     _currentSettings = user;
   });
 
-  Future _pickImage(BuildContext context) async {
+  Future _pickImage(BuildContext context) async {    
     return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
+
       ImageCropper.cropImage(
         sourcePath: file.path,
-        aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
-      ).then((file) {
-        if (file != null) {
-          file.readAsBytes().then(scaleAndFormatPNG).then((image) {
-            userBloc.uploadImageSink.add(image);
-          });
-        }
-      });
+        ratioX: 1.0,
+        ratioY: 1.0        
+      ).then((file){
+          if (file != null) {
+            file.readAsBytes()
+              .then(scaleAndFormatPNG)
+              .then((image) {
+                userBloc.uploadImageSink.add(image);
+              });
+          }
+      });      
     }).catchError((err) {});
   }
 
-  return AlertDialog(
+  return new AlertDialog(
     titlePadding: EdgeInsets.all(0.0),
-    title: Stack(children: <Widget>[
-      Container(
+    title: new Stack(children: <Widget>[
+      new Container(
         height: 70.0,
+        width: 300.0,
         decoration: ShapeDecoration(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
-          color: theme.themeId == "BLUE"
-              ? Theme.of(context).primaryColorDark
-              : Theme.of(context).canvasColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12.0))),
+          color: theme.BreezColors.blue[900],
         ),
       ),
-      Container(
-        width: MediaQuery.of(context).size.width,
-        height: 100.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: FlatButton(
-                padding: EdgeInsets.only(
-                  bottom: 20.0,
-                  top: 26.0,
-                ),
-                child: AutoSizeText(
-                  'RANDOM',
-                  style: theme.whiteButtonStyle,
-                  maxLines: 1,
-                  minFontSize: MinFontSize(context).minFontSize,
-                  stepGranularity: 0.1,
-                  group: _autoSizeGroup,
-                ),
-                onPressed: () {
-                  userBloc.randomizeSink.add(null);
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-              ),
-            ),
-            StreamBuilder<BreezUserModel>(
-                stream: userBloc.userPreviewStream,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Container();
-                  } else {
-                    return Padding(
-                      child: BreezAvatar(snapshot.data.avatarURL, radius: 44.0),
-                      padding: EdgeInsets.only(top: 26.0),
-                    );
-                  }
-                }),
-            Expanded(
-              child: FlatButton(
-                padding: EdgeInsets.only(
-                  bottom: 20.0,
-                  top: 26.0,
-                ),
-                child: AutoSizeText(
-                  'GALLERY',
-                  style: theme.whiteButtonStyle,
-                  maxLines: 1,
-                  minFontSize: MinFontSize(context).minFontSize,
-                  stepGranularity: 0.1,
-                  group: _autoSizeGroup,
-                ),
-                onPressed: () {
-                  _pickImage(context);
-                },
-              ),
-            ),
-          ],
-        ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          FlatButton(
+            padding: EdgeInsets.only(bottom: 20.0, top: 26.0),
+            child: new Text('RANDOM', style: theme.whiteButtonStyle),
+            onPressed: () {
+              userBloc.randomizeSink.add(null);
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+          ),
+          StreamBuilder<BreezUserModel>(
+              stream: userBloc.userPreviewStream,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Container();
+                } else {
+                  return Padding(
+                    child: BreezAvatar(snapshot.data.avatarURL, radius: 44.0),
+                    padding: EdgeInsets.only(top: 26.0),
+                  );
+                }
+              }),
+          FlatButton(
+            padding: EdgeInsets.only(bottom: 20.0, top: 26.0),
+            child: new Text('GALLERY', style: theme.whiteButtonStyle),
+            onPressed: () {
+              _pickImage(context);
+            },
+          ),
+        ],
       ),
     ]),
-    content: SingleChildScrollView(
-      child: ListBody(
+    content: new SingleChildScrollView(
+      child: new ListBody(
         children: <Widget>[
-          Theme(
-            data: ThemeData(
-                primaryColor: Theme.of(context).primaryTextTheme.body1.color,
-                hintColor: Theme.of(context).primaryTextTheme.body1.color),
-            child: TextField(
-                style: Theme.of(context).primaryTextTheme.body1,
+          new Theme(
+            data: new ThemeData(primaryColor: theme.BreezColors.blue[900], hintColor: theme.BreezColors.blue[900]),
+            child: new TextField(
+                style: theme.avatarDialogStyle,
                 controller: _nameInputController,
                 decoration: InputDecoration(hintText: 'Enter your name'),
                 onSubmitted: (text) {}),
@@ -131,34 +101,31 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
       ),
     ),
     actions: <Widget>[
-      FlatButton(
-        child: Text('CANCEL', style: Theme.of(context).primaryTextTheme.button),
+      new FlatButton(
+        child: new Text('CANCEL', style: theme.buttonStyle),
         onPressed: () {
           Navigator.of(context).pop();
         },
       ),
-      FlatButton(
-        child: Text('SAVE', style: Theme.of(context).primaryTextTheme.button),
+      new FlatButton(
+        child: new Text('SAVE', style: theme.buttonStyle),
         onPressed: () {
-          userBloc.userSink
-              .add(_currentSettings.copyWith(name: _nameInputController.text));
+          userBloc.userSink.add(_currentSettings.copyWith(name: _nameInputController.text));
           Navigator.of(context).pop();
         },
       ),
     ],
-    shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(12.0), top: Radius.circular(13.0))),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(12.0), top: Radius.circular(13.0))),
   );
 }
 
 List<int> scaleAndFormatPNG(List<int> imageBytes) {
-  DartImage.Image image = DartImage.decodeImage(imageBytes);
-  DartImage.Image resized = DartImage.copyResize(image,
+  DartImage.Image image = DartImage.decodeImage(imageBytes);  
+  DartImage.Image resized = DartImage.copyResize(
+      image,
       width: image.width < image.height ? -1 : scaledWidth,
       height: image.width < image.height ? scaledWidth : -1);
   DartImage.Image centered = DartImage.copyInto(_transparentImage, resized,
-      dstX: ((scaledWidth - resized.width) / 2).round(),
-      dstY: ((scaledWidth - resized.height) / 2).round());
+      dstX: ((scaledWidth - resized.width) / 2).round(), dstY: ((scaledWidth - resized.height) / 2).round());
   return DartImage.encodePng(centered);
 }

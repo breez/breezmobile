@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.OnLifecycleEvent;
-import androidx.lifecycle.ProcessLifecycleOwner;
 import io.flutter.plugin.common.ActivityLifecycleListener;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.EventChannel;
@@ -20,7 +16,7 @@ import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class LifecycleEvents implements StreamHandler, LifecycleObserver {
+public class LifecycleEvents implements StreamHandler, ActivityLifecycleListener {
 
     public static final String EVENTS_STREAM_NAME = "com.breez.client/lifecycle_events_notifications";
 
@@ -31,7 +27,7 @@ public class LifecycleEvents implements StreamHandler, LifecycleObserver {
     public LifecycleEvents(PluginRegistry.Registrar registrar) {
         m_activity = registrar.activity();
         new EventChannel(registrar.messenger(), EVENTS_STREAM_NAME).setStreamHandler(this);
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+        registrar.view().addActivityLifecycleListener(this);
     }
 
     @Override
@@ -45,25 +41,16 @@ public class LifecycleEvents implements StreamHandler, LifecycleObserver {
     }
 
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    public void onResume() {
+    @Override
+    public void onPostResume() {
         Log.d("Breez", "App Resumed - OnPostResume called");
         if (m_eventsListener != null) {
             _executor.execute(() -> {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {}
                 m_activity.runOnUiThread(() -> {
                     m_eventsListener.success("resume");
-                });
-            });
-        }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    public void onStop() {
-        Log.d("Breez", "App Paused - onPause called");
-        if (m_eventsListener != null) {
-            _executor.execute(() -> {
-                m_activity.runOnUiThread(() -> {
-                    m_eventsListener.success("pause");
                 });
             });
         }

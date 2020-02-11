@@ -13,7 +13,7 @@ class SuccessAvatar extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            borderRadius: new BorderRadius.all(new Radius.circular(20.0))),
         width: 20.0 * 2,
         height: 20.0 * 2,
         alignment: FractionalOffset.center,

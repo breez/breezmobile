@@ -1,36 +1,24 @@
 import 'dart:async';
-
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/qr_scan.dart' as QRScanner;
-import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/form_keyboard_actions.dart';
+import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fixnum/fixnum.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/services.dart';
+import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/injector.dart';
 
 class WithdrawFundsPage extends StatefulWidget {
-  final Function(ReverseSwapDetails swap) onNext;
-  final String initialAddress;
-  final String initialAmount;
-  final ReverseSwapPolicy reverseSwapPolicy;
 
-  const WithdrawFundsPage(
-      {this.initialAddress,
-      this.initialAmount,
-      this.onNext,
-      this.reverseSwapPolicy});
+  const WithdrawFundsPage();
 
   @override
   State<StatefulWidget> createState() {
@@ -41,56 +29,122 @@ class WithdrawFundsPage extends StatefulWidget {
 class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   final _formKey = GlobalKey<FormState>();
   String _scannerErrorMessage = "";
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
-
+  final TextEditingController _addressController = new TextEditingController();
+  final TextEditingController _amountController = new TextEditingController();  
+  
+  AccountBloc _accountBloc;
+  StreamSubscription<RemoveFundResponseModel> withdrawalResultSubscription;  
   BreezBridge _breezLib;
   String _addressValidated;
+  bool _inProgress = false;
+  bool _isInit = false;
   final FocusNode _amountFocusNode = FocusNode();
-  int selectedFeeIndex = 1;
-  bool fetching = false;
+  KeyboardDoneAction _doneAction;
+
+  @override
+  void didChangeDependencies() {        
+    if (!_isInit) {
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+      registerWithdrawalResult();
+      _isInit = true;
+    }
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
-    super.initState();
-    _breezLib = ServiceInjector().breezBridge;
-    if (widget.initialAddress != null) {
-      _addressController.text = widget.initialAddress;
+    super.initState();    
+    _breezLib = new ServiceInjector().breezBridge;  
+    _doneAction = new KeyboardDoneAction(<FocusNode>[_amountFocusNode]);     
+  }
+
+  @override
+  void dispose() {
+    withdrawalResultSubscription.cancel();
+    _doneAction.dispose();
+    super.dispose();
+  }
+
+  Future<bool> _onWillPop() async {
+    if (_inProgress) {
+      return false;
     }
-    if (widget.initialAmount != null) {
-      _amountController.text = widget.initialAmount;
-    }
+    return true;
+  }
+
+  void registerWithdrawalResult(){    
+    withdrawalResultSubscription = _accountBloc.withdrawalResultStream
+      .listen((response) {
+          setState(() {
+            _inProgress = false;
+          });
+          Navigator.of(context).pop(); //remove the loading dialog
+          if (response.errorMessage?.isNotEmpty == true) {
+            promptError(context, null,
+                Text(response.errorMessage, style: theme.alertStyle));
+            return;
+          }
+          Navigator.of(context).pop(
+              "The funds were successfully sent to the address you have specified.");
+        }, onError: (err) {
+          setState(() {
+            _inProgress = false;
+          });
+          Navigator.of(context).pop(); //remove the loading dialog
+          promptError(context, null, Text(err.toString(), style: theme.alertStyle));
+      });
   }
 
   @override
   Widget build(BuildContext context) {
-    ReverseSwapBloc reverseSwapBloc =
-        AppBlocsProvider.of<ReverseSwapBloc>(context);
-    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    Widget buttonChild = Text(
-      "NEXT",
-      style: Theme.of(context).textTheme.button,
-    );
-    if (fetching) {
-      buttonChild = Container(
-        width: 18.0,
-        height: 18.0,
-        child: Loader(strokeWidth: 2.0),
-      );
-    }
-    return Scaffold(
-      appBar: AppBar(
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
-          leading: backBtn.BackButton(onPressed: () {
-            Navigator.of(context).pop();
+    final String _title = "Remove Funds";
+    return new Scaffold(
+      bottomNavigationBar: StreamBuilder<AccountModel>(
+          stream: _accountBloc.accountStream,
+          builder: (context, snapshot) {
+            AccountModel acc = snapshot.data;
+            return new Padding(
+                padding: new EdgeInsets.only(bottom: 40.0),
+                child: new Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      new SizedBox(
+                        height: 48.0,
+                        width: 168.0,
+                        child: RaisedButton(
+                          padding: EdgeInsets.only(
+                              top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
+                          child: new Text(
+                            "REMOVE",
+                            style: theme.buttonStyle,
+                          ),
+                          color: Colors.white,
+                          elevation: 0.0,
+                          shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(42.0)),
+                          onPressed: acc == null
+                              ? null
+                              : () {
+                                  _asyncValidate().then((validated) {
+                                    if (validated) {
+                                      _formKey.currentState.save();
+                                      _showAlertDialog(acc.currency);
+                                    }
+                                  });
+                                },
+                        ),
+                      ),
+                    ]));
           }),
-          title: Text("Send to BTC Address",
-              style: Theme.of(context).appBarTheme.textTheme.title),
+      appBar: new AppBar(
+          iconTheme: theme.appBarIconTheme,
+          textTheme: theme.appBarTextTheme,
+          backgroundColor: theme.BreezColors.blue[500],
+          leading: backBtn.BackButton(),
+          title: new Text(_title, style: theme.appBarTextStyle),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
-        stream: accountBloc.accountStream,
+        stream: _accountBloc.accountStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return StaticLoader();
@@ -98,23 +152,22 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           AccountModel acc = snapshot.data;
           return Form(
             key: _formKey,
-            child: Padding(
+            child: new Padding(
               padding: EdgeInsets.only(
                   left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-              child: Column(
+              child: new Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  TextFormField(
-                    readOnly: fetching,
+                children: <Widget>[                  
+                  new TextFormField(
                     controller: _addressController,
-                    decoration: InputDecoration(
+                    decoration: new InputDecoration(
                       labelText: "BTC Address",
-                      suffixIcon: IconButton(
+                      suffixIcon: new IconButton(
                         padding: EdgeInsets.only(top: 21.0),
                         alignment: Alignment.bottomRight,
-                        icon: Image(
-                          image: AssetImage("src/icon/qr_scan.png"),
+                        icon: new Image(
+                          image: new AssetImage("src/icon/qr_scan.png"),
                           color: theme.BreezColors.white[500],
                           fit: BoxFit.contain,
                           width: 24.0,
@@ -132,140 +185,112 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                     },
                   ),
                   _scannerErrorMessage.length > 0
-                      ? Text(
+                      ? new Text(
                           _scannerErrorMessage,
                           style: theme.validatorStyle,
                         )
                       : SizedBox(),
-                  AmountFormField(
-                      readOnly: fetching,
+                  new AmountFormField(
                       context: context,
                       accountModel: acc,
                       focusNode: _amountFocusNode,
                       controller: _amountController,
-                      validatorFn: (amount) {
-                        String err = acc.validateOutgoingPayment(amount);
-                        if (err == null) {
-                          if (amount < widget.reverseSwapPolicy.minValue) {
-                            err =
-                                "Must be at least ${acc.currency.format(widget.reverseSwapPolicy.minValue)}";
-                          }
-                          if (amount > widget.reverseSwapPolicy.maxValue) {
-                            err =
-                                "Must be less than ${acc.currency.format(widget.reverseSwapPolicy.maxValue + 1)}";
-                          }
-                        }
-                        return err;
-                      },
+                      validatorFn: acc.validateOutgoingPayment,
                       style: theme.FieldTextStyle.textStyle),
-                  Container(
-                    padding: EdgeInsets.only(top: 36.0),
+                  new Container(
+                    padding: new EdgeInsets.only(top: 36.0),
                     child: _buildAvailableBTC(acc),
                   ),
-                  SizedBox(height: 40.0),
-                  !fetching
-                      ? SizedBox()
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                              Container(
-                                width: 18.0,
-                                height: 18.0,
-                                child: Loader(
-                                    strokeWidth: 2.0,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface
-                                        .withOpacity(0.6)),
-                              )
-                            ])
                 ],
               ),
-            ),
+            ),            
           );
         },
       ),
-      bottomNavigationBar: fetching
-          ? null
-          : StreamBuilder<AccountModel>(
-              stream: accountBloc.accountStream,
-              builder: (context, snapshot) {
-                AccountModel acc = snapshot.data;
-                return Padding(
-                    padding: EdgeInsets.only(bottom: 40.0),
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 48.0,
-                            width: 168.0,
-                            child: RaisedButton(
-                              child: buttonChild,
-                              color: Theme.of(context).buttonColor,
-                              elevation: 0.0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(42.0)),
-                              onPressed: acc == null
-                                  ? null
-                                  : () {
-                                      _onNext(acc, reverseSwapBloc);
-                                    },
-                            ),
-                          ),
-                        ]));
-              }),
     );
   }
 
   Widget _buildAvailableBTC(AccountModel acc) {
-    return Row(
+    return new Row(
       children: <Widget>[
-        Text("Available:", style: theme.textStyle),
-        Padding(
+        new Text("Available:", style: theme.textStyle),
+        new Padding(
           padding: EdgeInsets.only(left: 3.0),
-          child: Text(acc.currency.format(acc.balance), style: theme.textStyle),
+          child: new Text(acc.currency.format(acc.balance),
+              style: theme.textStyle),
         )
       ],
     );
   }
 
-  void _onNext(AccountModel acc, ReverseSwapBloc reverseSwapBloc) {
-    if (fetching) {
-      return;
-    }
-    _asyncValidate().then((validated) {
-      if (validated) {
-        _formKey.currentState.save();
-        setState(() {
-          fetching = true;
-        });
-        FocusScope.of(context).requestFocus(FocusNode());
-        var action = NewReverseSwap(acc.currency.parse(_amountController.text),
-            _addressValidated, Int64(0));
+  void _showAlertDialog(Currency currency) {
+    AlertDialog dialog = new AlertDialog(
+      content: new Text(
+          "Are you sure you want to remove " +
+              currency.format(currency.parse(_amountController.text)) +
+              " from Breez and send this amount to the address you've specified?",
+          style: theme.alertStyle),
+      actions: <Widget>[
+        new FlatButton(
+            onPressed: () => Navigator.pop(context),
+            child: new Text("NO", style: theme.buttonStyle)),
+        new FlatButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _showLoadingDialog();
+              _accountBloc.withdrawalSink.add(new RemoveFundRequestModel(
+                  currency.parse(_amountController.text),
+                  _addressValidated                  
+                ));
+            },
+            child: new Text("YES", style: theme.buttonStyle))
+      ],
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
+    );
+    showDialog(context: context, builder: (_) => dialog);
+  }
 
-        reverseSwapBloc.actionsSink.add(action);
-        action.future.then((swapInfo) {
-          widget.onNext((swapInfo as ReverseSwapDetails));
-        }).catchError((error) {
-          promptError(
-              context,
-              null,
-              Text(error.toString(),
-                  style: Theme.of(context).dialogTheme.contentTextStyle));
-        }).whenComplete(() {
-          setState(() {
-            fetching = false;
-          });
-        });
-      }
+  _showLoadingDialog() {
+    setState(() {
+      _inProgress = true;
     });
+    AlertDialog dialog = new AlertDialog(
+      title: Text(
+        "Removing Funds",
+        style: theme.alertTitleStyle,
+        textAlign: TextAlign.center,
+      ),
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          new Text(
+            "Please wait while Breez is sending the funds to the specified address.",
+            style: theme.alertStyle,
+            textAlign: TextAlign.center,
+          ),
+          Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: new Image.asset(
+                'src/images/breez_loader.gif',
+                gaplessPlayback: true,
+              ))
+        ],
+      ),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
+    );
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => WillPopScope(onWillPop: _onWillPop, child: dialog));
   }
 
   Future _scanBarcode() async {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await QRScanner.scan();
+      String barcode = await BarcodeScanner.scan();
       setState(() {
         _addressController.text = barcode;
         _scannerErrorMessage = "";

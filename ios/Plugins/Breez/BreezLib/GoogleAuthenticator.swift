@@ -8,9 +8,8 @@
 
 import Foundation
 import GoogleSignIn
-import Bindings;
 
-class GoogleAuthenticator : NSObject, BackupAuthenticatorProtocol {
+class GoogleAuthenticator : NSObject {
     private var queue : DispatchQueue = DispatchQueue(label: "com.breez.client.gdrive.oauth")
     private var inProgressOperation : SignInOperation?
     
@@ -32,7 +31,7 @@ class GoogleAuthenticator : NSObject, BackupAuthenticatorProtocol {
         GIDSignIn.sharedInstance()?.signOut();
     }
     
-    func getAccessToken(silentOnly: Bool) throws -> String{        
+    func getAccessToken(silentOnly: Bool) throws -> String{
         let signInOperation = startSignInOperation(silentOnly: silentOnly);
         signInOperation.waitUntilFinished();
         queue.sync{
@@ -44,20 +43,9 @@ class GoogleAuthenticator : NSObject, BackupAuthenticatorProtocol {
         }
         return signInOperation.accessToken!;
     }
-    
-    func backupProviderSignIn(silent: Bool, in err: NSErrorPointer) -> String {
-        do {
-            return try self.getAccessToken(silentOnly: silent);
-        }
-        catch {
-            err?.pointee = NSError(domain: "AuthError " + error.localizedDescription, code: 0, userInfo: nil);
-        }
-        return "";
-    }
-    
 }
 
-class SignInOperation : Operation, GIDSignInDelegate {
+class SignInOperation : Operation, GIDSignInUIDelegate, GIDSignInDelegate {
     
     private enum State {
         case ready
@@ -96,12 +84,11 @@ class SignInOperation : Operation, GIDSignInDelegate {
         if let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") {
             if let plist = NSMutableDictionary.init(contentsOfFile: path) {
                 GIDSignIn.sharedInstance()?.delegate = self;
-                let viewController = UIApplication.shared.keyWindow!.rootViewController;
-                GIDSignIn.sharedInstance()?.presentingViewController = viewController;
+                GIDSignIn.sharedInstance()?.uiDelegate = self;
                 GIDSignIn.sharedInstance()?.clientID = plist["CLIENT_ID"] as? String;
                 GIDSignIn.sharedInstance()?.scopes = ["https://www.googleapis.com/auth/drive.appdata"];
                 state = .executing;
-                GIDSignIn.sharedInstance()?.restorePreviousSignIn()
+                GIDSignIn.sharedInstance()?.signInSilently();
                 return;
             }
         }
@@ -144,4 +131,5 @@ class SignInOperation : Operation, GIDSignInDelegate {
         self.state = .finished;
         self.didChangeValue(forKey: "isFinished");
     }
+    
 }

@@ -2,6 +2,7 @@ import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 class FastBitcoinsConfirmWidget extends StatelessWidget {
   final ValidateRequestModel request;
@@ -16,8 +17,7 @@ class FastBitcoinsConfirmWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     String btcReceived = user.currency.format(Int64(response.satoshiAmount));
     String comissionRate =
-        (response.commissionTotal / response.value * 100).toStringAsFixed(2) +
-            "%";
+        (response.commissionTotal / response.value * 100).toStringAsFixed(2) + "%";
 
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -25,17 +25,14 @@ class FastBitcoinsConfirmWidget extends StatelessWidget {
         children: <Widget>[
           ConfirmationItem(
               title: "Voucher value",
-              details:
-                  '${response.value.toStringAsFixed(2)} ${request.currency}'),
+              details: '${response.value.toStringAsFixed(2)} ${request.currency}'),
           ConfirmationItem(
               title: "Exchange rate",
-              details:
-                  '${response.exchangeRate.toStringAsFixed(2)} ${request.currency}'),
+              details: '${response.exchangeRate.toStringAsFixed(2)} ${request.currency}'),
           ConfirmationItem(title: "Commission rate", details: comissionRate),
           ConfirmationItem(
               title: "Commission total",
-              details:
-                  '${response.commissionTotal.toStringAsFixed(2)} ${request.currency}'),
+              details: '${response.commissionTotal.toStringAsFixed(2)} ${request.currency}'),
           ConfirmationItem(title: "Bitcoins received", details: btcReceived),
         ],
       ),
@@ -56,12 +53,12 @@ class ConfirmationItem extends StatelessWidget {
       child: ListTile(
         title: Text(
           title,
-          style: Theme.of(context).primaryTextTheme.display1,
+          style: theme.paymentDetailsTitleStyle,
           textAlign: TextAlign.left,
         ),
         trailing: Text(
           details,
-          style: Theme.of(context).primaryTextTheme.display2,
+          style: theme.paymentDetailsSubtitleStyle,
           textAlign: TextAlign.left,
         ),
       ),

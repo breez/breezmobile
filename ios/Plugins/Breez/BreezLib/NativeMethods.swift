@@ -30,21 +30,17 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "connectAccount": EmptyArgsBindingExecutor(f: BindingsConnectAccount),
     
     "decodePaymentRequest": SingleArgBindingExecutor(f: BindingsDecodePaymentRequest),
-    "getPaymentRequestHash": SingleArgBindingExecutor(f: BindingsGetPaymentRequestHash),
-    "getAccountInfo": EmptyArgsBindingExecutor(f: BindingsGetAccountInfo),
-    "lspList": EmptyArgsBindingExecutor(f: BindingsLSPList),
-    "connectToLSP": SingleArgBindingExecutor(f: BindingsConnectToLSP),
-    "connectToLnurl": SingleArgBindingExecutor(f: BindingsConnectToLnurl),
     "enableAccount": SingleArgBindingExecutor(f: BindingsEnableAccount),
+    "getAccountInfo": EmptyArgsBindingExecutor(f: BindingsGetAccountInfo),
     
     "getFundStatus": SingleArgBindingExecutor(f: BindingsGetFundStatus),
-    "getPayments": EmptyArgsBindingExecutor(f: BindingsGetPayments),    
+    "getPayments": EmptyArgsBindingExecutor(f: BindingsGetPayments),
+    "getRefundableSwapAddresses": EmptyArgsBindingExecutor(f: BindingsGetRefundableSwapAddresses),
     
     "getRelatedInvoice": SingleArgBindingExecutor(f: BindingsGetRelatedInvoice),
     "getLogger": SingleArgBindingExecutor(f: BindingsGetLogger),
     "setPeers": SingleArgBindingExecutor(f: BindingsSetPeers),
     "getPeers": EmptyArgsBindingExecutor(f: BindingsGetPeers),
-    "testPeer": SingleArgBindingExecutor(f: BindingsTestPeer),
     "createRatchetSession": SingleArgBindingExecutor(f: BindingsCreateRatchetSession),
     "ratchetDecrypt": SingleArgBindingExecutor(f: BindingsRatchetDecrypt),
     "ratchetEncrypt": SingleArgBindingExecutor(f: BindingsRatchetEncrypt),
@@ -53,30 +49,24 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "refund": SingleArgBindingExecutor(f: BindingsRefund),
     "registerChannelOpenedNotification": SingleArgBindingExecutor(f: BindingsRegisterChannelOpenedNotification),
     "registerPeriodicSync": SingleArgBindingExecutor(f: BindingsRegisterPeriodicSync),
-    "registerReceivePaymentReadyNotification": SingleArgBindingExecutor(f: BindingsRegisterReceivePaymentReadyNotification),    
+    "registerReceivePaymentReadyNotification": SingleArgBindingExecutor(f: BindingsRegisterReceivePaymentReadyNotification),
+    "restoreBackup": SingleArgBindingExecutor(f: BindingsRestoreBackup),
     "sendCommand": SingleArgBindingExecutor(f: BindingsSendCommand),
     "sendPaymentFailureBugReport": SingleArgBindingExecutor(f: BindingsSendPaymentFailureBugReport),
     "sendPaymentForRequest": SingleArgBindingExecutor(f: BindingsSendPaymentForRequest),
     "sendWalletCoins": SingleArgBindingExecutor(f: BindingsSendWalletCoins),
     "validateAddress": SingleArgBindingExecutor(f: BindingsValidateAddress),
     "removeFund": SingleArgBindingExecutor(f: BindingsRemoveFund),
-    "newReverseSwap": SingleArgBindingExecutor(f: BindingsNewReverseSwap),
-    "payReverseSwap": SingleArgBindingExecutor(f: BindingsPayReverseSwap),
-    "reverseSwapClaimFeeEstimates": SingleArgBindingExecutor(f: BindingsReverseSwapClaimFeeEstimates),
-    "fetchReverseSwap": SingleArgBindingExecutor(f: BindingsFetchReverseSwap),
-    "setReverseSwapClaimFee": SingleArgBindingExecutor(f: BindingsSetReverseSwapClaimFee),
-    "unconfirmedReverseSwapClaimTransaction": EmptyArgsBindingExecutor(f: BindingsUnconfirmedReverseSwapClaimTransaction),
-    "reverseSwapPayments": EmptyArgsBindingExecutor(f: BindingsReverseSwapPayments),
-    "reverseSwapInfo": EmptyArgsBindingExecutor(f: BindingsReverseSwapInfo),
     
     "daemonReady": VoidBindingExecutor(f: BindingsDaemonReady),
-    "getDefaultOnChainFeeRate": DefaultOnChainFeeRateExecutor(),
+    "getDefaultOnChainFeeRate": VoidBindingExecutor(f: BindingsGetDefaultOnChainFeeRate),
     "rate": EmptyArgsBindingExecutor(f: BindingsRate),
+    "isConnectedToRoutingNode": VoidBindingExecutor(f: BindingsIsConnectedToRoutingNode),
     "onResume": VoidBindingExecutor(f: BindingsOnResume),
     "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),    
     "getLogPath": VoidBindingExecutor(f: BindingsGetLogPath),
-    "withdrawLnurl": SingleArgBindingExecutor(f: BindingsWithdrawLnurl),
-    "fetchLnurl": SingleArgBindingExecutor(f: BindingsFetchLnurl),
+    "needsBootstrap": VoidBindingExecutor(f: BindingsNeedsBootstrap),
+    "bootstrapHeaders": SingleArgBindingExecutor(f: BindingsBootstrapHeaders)
     
     //jobs
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewClosedChannelsJob(NSString* workingDir, NSError** error);
@@ -104,27 +94,12 @@ fileprivate extension BindingExecutor {
             return FlutterStandardTypedData(bytes: data);
         }
         if let err = arg as? NSError {
-            return FlutterError(code: "Method Error", message: err.localizedDescription, details: err.description);
+            return FlutterError(code: "Method Error", message: err.description, details: err.description);
         }
         if let _ = arg as? Void {
             return nil;
         }
         return arg;
-    }
-}
-
-fileprivate class DefaultOnChainFeeRateExecutor : BindingExecutor {
-    func execute(call : FlutterMethodCall, result : @escaping FlutterResult){
-        DispatchQueue.global().async {
-            var arg : Int64 = 0;
-            var error : NSError?;
-            BindingsGetDefaultOnChainFeeRate(&arg, &error);
-            if let err = error {
-                result(self.wrapOutputType(arg: err));
-            } else {
-                result(self.wrapOutputType(arg: arg))
-            }
-        }
     }
 }
 

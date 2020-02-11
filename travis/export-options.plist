@@ -9,10 +9,10 @@
 	<key>provisioningProfiles</key>
 	<dict>
 		<key>technology.breez.client</key>
-		<string>BREEZ-DIST</string>
+		<string>DIST_PROFILE</string>
 	</dict>
 	<key>signingCertificate</key>
-	<string>Apple Distribution</string>
+	<string>iPhone Distribution</string>
 	<key>signingStyle</key>
 	<string>manual</string>
 	<key>stripSwiftSymbols</key>

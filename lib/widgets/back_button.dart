@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BackButton extends StatelessWidget {
+
   final Function onPressed;
 
   BackButton({this.onPressed});
@@ -8,10 +9,9 @@ class BackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        icon: Icon(IconData(0xe906, fontFamily: 'icomoon')),
-        onPressed: this.onPressed ??
-            () {
-              Navigator.pop(context);
-            });
+        icon: new Icon(IconData(0xe906, fontFamily: 'icomoon')),
+        onPressed: this.onPressed ?? () {
+          Navigator.pop(context);
+        });
   }
 }

@@ -24,11 +24,9 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   void initState() {
     super.initState();
 
-    _posProfileSubscription = widget._posProfileBloc.posProfileStream
-        .asBroadcastStream()
-        .listen((posProfile) {
+    _posProfileSubscription = widget._posProfileBloc.posProfileStream.asBroadcastStream().listen((posProfile) {
       _paymentTimer = CountDown(
-          Duration(seconds: posProfile.cancellationTimeoutValue.toInt()));
+          new Duration(seconds: posProfile.cancellationTimeoutValue.toInt()));
       _timerSubscription = _paymentTimer.stream.listen(null);
       _timerSubscription.onData((Duration d) {
         setState(() {
@@ -72,8 +70,9 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       });
     }, onError: (err) {
       Navigator.of(context).pop(false);
-      widget._scaffoldKey.currentState.showSnackBar(SnackBar(
-          duration: Duration(seconds: 3), content: Text(err.toString())));
+      widget._scaffoldKey.currentState.showSnackBar(new SnackBar(
+          duration: new Duration(seconds: 3),
+          content: new Text(err.toString())));
     });
 
     _paidInvoicesSubscription =
@@ -83,8 +82,9 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       });
     }, onError: (err) {
       Navigator.of(context).pop(false);
-      widget._scaffoldKey.currentState.showSnackBar(SnackBar(
-          duration: Duration(seconds: 3), content: Text(err.toString())));
+      widget._scaffoldKey.currentState.showSnackBar(new SnackBar(
+          duration: new Duration(seconds: 3),
+          content: new Text(err.toString())));
     });
   }
 
@@ -98,9 +98,9 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   }
 
   Widget _cancelButton() {
-    return FlatButton(
+    return new FlatButton(
       padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
-      child: Text(
+      child: new Text(
         'CANCEL PAYMENT',
         textAlign: TextAlign.center,
         style: theme.cancelButtonStyle,
@@ -115,9 +115,9 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
-      content: SingleChildScrollView(
+      content: new SingleChildScrollView(
           child: _state == _PosPaymentState.WAITING_FOR_PAYMENT
-              ? ListBody(
+              ? new ListBody(
                   children: <Widget>[
                     _buildDialogBody(
                         'Scan the QR code to process this payment.',
@@ -141,35 +141,29 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                                             data: snapshot.data,
                                           ))));
                             })),
-                    Padding(
+                    new Padding(
                         padding: EdgeInsets.only(top: 15.0),
-                        child: Text(_countdownString,
+                        child: new Text(_countdownString,
                             textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .primaryTextTheme
-                                .display1
-                                .copyWith(fontSize: 16))),
+                            style: theme.paymentRequestTitleStyle)),
                     _cancelButton(),
                   ],
                 )
-              : GestureDetector(
+              : new GestureDetector(
                   onTap: () {
                     Navigator.of(context).pop(true);
                   },
-                  child: ListBody(
+                  child: new ListBody(
                     children: <Widget>[
-                      Padding(
+                      new Padding(
                         padding: EdgeInsets.only(bottom: 40.0),
-                        child: Text(
+                        child: new Text(
                           'Payment approved!',
                           textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .primaryTextTheme
-                              .display1
-                              .copyWith(fontSize: 16),
+                          style: theme.paymentRequestTitleStyle,
                         ),
                       ),
-                      Padding(
+                      new Padding(
                           padding: EdgeInsets.only(bottom: 40.0),
                           child: ImageIcon(
                             AssetImage("src/icon/ic_done.png"),
@@ -179,18 +173,19 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                     ],
                   ),
                 )),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
   }
 
   ListBody _buildDialogBody(String title, Widget body) {
-    return ListBody(children: <Widget>[
-      Text(
+    return new ListBody(children: <Widget>[
+      new Text(
         title,
         textAlign: TextAlign.center,
-        style:
-            Theme.of(context).primaryTextTheme.display1.copyWith(fontSize: 16),
+        style: theme.paymentRequestTitleStyle,
       ),
-      Padding(
+      new Padding(
         padding: EdgeInsets.only(top: 15.0),
         child: body,
       )

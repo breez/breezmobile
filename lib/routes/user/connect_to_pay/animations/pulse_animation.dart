@@ -14,16 +14,14 @@ class PulseAnimationDecorator extends StatefulWidget {
   }
 }
 
-class _PulseAnimationDecoratorState extends State<PulseAnimationDecorator>
-    with TickerProviderStateMixin {
+class _PulseAnimationDecoratorState extends State<PulseAnimationDecorator> with TickerProviderStateMixin {
   AnimationController _animationController;
   Animation<double> _decorationRadius;
 
   @override
   void initState() {
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    _animationController = new AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     _decorationRadius = Tween<double>(
       begin: widget._minRadius,
       end: widget._maxRadius,
@@ -40,7 +38,7 @@ class _PulseAnimationDecoratorState extends State<PulseAnimationDecorator>
     _startAnimation();
   }
 
-  _startAnimation() {
+  _startAnimation() {    
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _animationController.reverse();
@@ -63,25 +61,22 @@ class _PulseAnimationDecoratorState extends State<PulseAnimationDecorator>
       child: widget._child,
       builder: _buildAnimation,
       animation: _animationController,
-    );
+    );    
   }
 
-  Widget _buildAnimation(BuildContext context, Widget child) {
+  Widget _buildAnimation(BuildContext context, Widget child) {    
     return Stack(
       alignment: AlignmentDirectional.center,
       children: <Widget>[
-        Positioned(
+        Positioned(child: Container(width: widget._maxRadius * 2, height: widget._maxRadius * 2)),        
+        Positioned(        
+          top: widget._maxRadius - _decorationRadius.value,
+          left: widget._maxRadius - _decorationRadius.value,
             child: Container(
-                width: widget._maxRadius * 2, height: widget._maxRadius * 2)),
-        Positioned(
-            top: widget._maxRadius - _decorationRadius.value,
-            left: widget._maxRadius - _decorationRadius.value,
-            child: Container(
-              height: _decorationRadius.value * 2,
-              width: _decorationRadius.value * 2,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle, color: theme.pulseAnimationColor),
-            )),
+          height: _decorationRadius.value * 2,
+          width: _decorationRadius.value * 2,
+          decoration: BoxDecoration(shape: BoxShape.circle, color: theme.pulseAnimationColor),
+        )),
         Positioned(child: child)
       ],
     );

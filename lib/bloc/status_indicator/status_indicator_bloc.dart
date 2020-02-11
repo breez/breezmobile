@@ -6,7 +6,7 @@ class StatusIndicatorBloc {
   final _statusUpdateController = BehaviorSubject<StatusUpdateModel>();
   Sink<StatusUpdateModel> get statusUpdateSink => _statusUpdateController.sink;
 
-  final _statusIndicatorUpdatesController = BehaviorSubject<String>();
+  final _statusIndicatorUpdatesController = new BehaviorSubject<String>();
   Stream<String> get statusIndicatorUpdatesStream =>
       _statusIndicatorUpdatesController.stream.asBroadcastStream();
 

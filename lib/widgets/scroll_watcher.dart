@@ -13,11 +13,12 @@ class ScrollWatcher extends StatefulWidget {
 }
 
 class _ScrollWatcherState extends State<ScrollWatcher> {
+  
   @override
-  void initState() {
-    super.initState();
-    widget.controller.addListener(() => setState(() {}));
-  }
+    void initState() {      
+      super.initState();
+      widget.controller.addListener(() => setState((){}));
+    }
 
   @override
   Widget build(BuildContext context) {

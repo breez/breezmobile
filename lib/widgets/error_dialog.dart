@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 Future<Null> promptError(BuildContext context, String title, Widget body,
     {String okText = "OK",
@@ -13,36 +13,32 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
   Future<bool> Function() canPopCallback = () => Future.value(canPop);
 
   return showDialog<Null>(
-      useRootNavigator: false,
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return WillPopScope(
           onWillPop: canPopCallback,
-          child: AlertDialog(
+          child: new AlertDialog(
             contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
             title: title == null
                 ? null
-                : Text(
+                : new Text(
                     title,
-                    style: Theme.of(context).dialogTheme.titleTextStyle,
+                    style: theme.alertTitleStyle,
                   ),
-            content: SingleChildScrollView(
+            content: new SingleChildScrollView(
               child: body,
             ),
             actions: <Widget>[
               optionText != null
-                  ? FlatButton(
-                      child: Text(
+                  ? new FlatButton(
+                      child: new Text(
                         optionText,
-                        style: TextStyle(
+                        style: new TextStyle(
                             fontFamily: "IBMPlexSansMedium",
                             fontSize: 16.4,
                             letterSpacing: 0.0,
-                            color: Theme.of(context)
-                                .dialogTheme
-                                .titleTextStyle
-                                .color),
+                            color: Colors.black),
                       ),
                       onPressed: () {
                         canPop = true;
@@ -50,9 +46,8 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                       },
                     )
                   : null,
-              FlatButton(
-                child: Text(okText,
-                    style: Theme.of(context).primaryTextTheme.button),
+              new FlatButton(
+                child: new Text(okText, style: theme.buttonStyle),
                 onPressed: () {
                   canPop = true;
                   Navigator.of(context).pop();
@@ -62,20 +57,21 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                 },
               ),
             ],
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12.0))),
           ),
         );
       });
 }
 
-Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
+Future promptAreYouSure(BuildContext context, String title, Widget body,
     {contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
     bool wideTitle = false,
     String okText = "YES",
     String cancelText = "NO",
     TextStyle textStyle = const TextStyle(color: Colors.white)}) {
-  Widget titleWidget = title == null
-      ? null
-      : Text(title, style: Theme.of(context).dialogTheme.titleTextStyle);
+  
+  Widget titleWidget = title == null ? null : Text(title, style: theme.alertTitleStyle);
   if (titleWidget != null && wideTitle) {
     titleWidget = Container(
       child: titleWidget,
@@ -83,32 +79,31 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
     );
   }
   return showDialog<bool>(
-      useRootNavigator: false,
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog(
-          contentPadding: contentPadding,
+        return new AlertDialog(
+          contentPadding: contentPadding,          
           title: titleWidget,
-          content: SingleChildScrollView(
+          content: new SingleChildScrollView(
             child: body,
           ),
           actions: <Widget>[
-            FlatButton(
-              child: Text(cancelText,
-                  style: Theme.of(context).primaryTextTheme.button),
+            new FlatButton(
+              child: new Text(cancelText, style: theme.buttonStyle),              
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
-            FlatButton(
-              child: Text(okText,
-                  style: Theme.of(context).primaryTextTheme.button),
+            new FlatButton(
+              child: new Text(okText, style: theme.buttonStyle),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
             ),
           ],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.0))),
         );
       });
 }

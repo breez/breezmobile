@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 
 class MarketplaceBloc {
-  final _vendorController = BehaviorSubject<List<VendorModel>>();
+  final _vendorController = new BehaviorSubject<List<VendorModel>>();
   Stream<List<VendorModel>> get vendorsStream => _vendorController.stream;
 
   MarketplaceBloc() {
@@ -21,8 +21,7 @@ class MarketplaceBloc {
       String _url = config.get(vendorOptions, 'url');
       String _logo = config.get(vendorOptions, 'logo');
       bool _onlyShowLogo = config.get(vendorOptions, 'onlyShowLogo') == "true";
-      VendorModel _vendorModel = VendorModel(_url, vendorOptions,
-          logo: _logo, onlyShowLogo: _onlyShowLogo);
+      VendorModel _vendorModel = VendorModel(_url, vendorOptions, logo: _logo, onlyShowLogo: _onlyShowLogo);
       _vendorList.add(_vendorModel);
     });
     _vendorController.add(_vendorList);

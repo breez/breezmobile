@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Bindings
 
 class LifecycleEvents : NSObject, FlutterPlugin, FlutterStreamHandler {
     var eventSink : FlutterEventSink?;
@@ -34,7 +33,8 @@ class LifecycleEvents : NSObject, FlutterPlugin, FlutterStreamHandler {
         return nil;
     }
     
-    func applicationDidBecomeActive(_ application : UIApplication) {        
+    func applicationDidBecomeActive(_ application : UIApplication) {
+        sleep(1);
         DispatchQueue.global().async {            
             if let sink = self.eventSink {
                 if (self.resumed) {
@@ -43,7 +43,6 @@ class LifecycleEvents : NSObject, FlutterPlugin, FlutterStreamHandler {
             }
             self.resumed = true;
         }
-        BindingsOnResume();
     }
     
     func applicationDidEnterBackground(_ application : UIApplication) {

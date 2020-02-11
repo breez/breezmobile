@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 Widget buildBackupInProgressDialog(
     BuildContext context, Stream<BackupState> backupStateStream) {
-  return _BackupInProgressDialog(backupStateStream: backupStateStream);
+  return new _BackupInProgressDialog(backupStateStream: backupStateStream);
 }
 
 class _BackupInProgressDialog extends StatefulWidget {

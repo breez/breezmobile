@@ -1,8 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:flushbar/flushbar.dart';
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flushbar/flushbar.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 Flushbar _lostCardFlush;
 
@@ -11,59 +11,53 @@ class LostCardDialog extends StatelessWidget {
 
   LostCardDialog({this.context});
 
-  final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
-
   @override
   Widget build(BuildContext context) {
     return showLostCardDialog();
   }
 
-  Widget showLostCardDialog() {
-    _lostCardFlush = Flushbar(
-        titleText: Text("", style: TextStyle(height: 0.0)),
-        messageText: Text(
-            "Your card has been deactivated.\nYou may order a new card now.",
-            style: theme.snackBarStyle,
-            textAlign: TextAlign.left),
-        duration: Duration(seconds: 8),
-        backgroundColor: theme.snackBarBackgroundColor,
-        mainButton: FlatButton(
-          onPressed: () {
-            _lostCardFlush.dismiss(true);
-            Navigator.pushReplacementNamed(context, "/order_card");
-          },
-          child: Text("ORDER", style: theme.validatorStyle),
-        ));
-
-    return AlertDialog(
-      title: Text(
+  Widget showLostCardDialog() {    
+    _lostCardFlush =
+        Flushbar(
+          titleText: new Text("", style: TextStyle(height: 0.0)),
+          messageText: new Text("Your card has been deactivated.\nYou may order a new card now.",
+            style: theme.snackBarStyle, textAlign: TextAlign.left),
+          duration: Duration(seconds: 8),
+          backgroundColor: theme.snackBarBackgroundColor,
+          mainButton: FlatButton(
+            onPressed: () {
+              _lostCardFlush.dismiss(true);
+              Navigator.pushReplacementNamed(context, "/order_card");
+            },
+            child: Text("ORDER", style: theme.validatorStyle),
+          )
+        );
+                  
+    return new AlertDialog(
+      title: new Text(
         "Lost or Stolen Card",
-        style: Theme.of(context).dialogTheme.titleTextStyle,
-        maxLines: 2,
+        style: theme.alertTitleStyle,
       ),
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
-      content: Container(
-        width: MediaQuery.of(context).size.width,
-        child: AutoSizeText(
-            "If your card has been lost or stolen, you should deactivate it now to prevent it from being used by others. Deactivate means you won't be able to use any of your existing cards until you re-activate them.",
-            style: Theme.of(context).dialogTheme.contentTextStyle),
-      ),
+      content: new Text(
+          "If your card has been lost or stolen, you should deactivate it now to prevent it from being used by others. Deactivate means you won't be able to use any of your existing cards until you re-activate them.",
+          style: theme.alertStyle),
       contentPadding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 8.0),
       actions: <Widget>[
-        FlatButton(
+        new FlatButton(
           onPressed: () => Navigator.pop(context),
-          child:
-              Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
+          child: new Text("CANCEL", style: theme.buttonStyle),
         ),
-        FlatButton(
+        new FlatButton(
           onPressed: (() {
             Navigator.pop(context);
             _lostCardFlush.show(context);
           }),
-          child: Text("DEACTIVATE",
-              style: Theme.of(context).primaryTextTheme.button),
+          child: new Text("DEACTIVATE", style: theme.buttonStyle),
         ),
       ],
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
     );
   }
 }
