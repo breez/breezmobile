@@ -7,31 +7,33 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/routes/shared/lsp/select_lsp_page.dart';
-import 'package:breez/routes/shared/security_pin/lock_screen.dart';
-import 'package:breez/routes/user/add_funds/deposit_to_btc_address_page.dart';
-import 'package:breez/routes/user/add_funds/moonpay_webview.dart';
-import 'package:breez/routes/user/get_refund/get_refund_page.dart';
-import 'package:breez/routes/user/withdraw_funds/reverse_swap_page.dart';
-import 'package:breez/routes/user/withdraw_funds/unexpected_funds.dart';
+import 'routes/settings/pos_settings_page.dart';
+import 'routes/transactions/pos_transactions_page.dart';
+import 'routes/lsp/select_lsp_page.dart';
+import 'routes/security_pin/lock_screen.dart';
+import 'routes/add_funds/deposit_to_btc_address_page.dart';
+import 'routes/add_funds/moonpay_webview.dart';
+import 'routes/get_refund/get_refund_page.dart';
+import 'routes/withdraw_funds/reverse_swap_page.dart';
+import 'routes/withdraw_funds/send_coins_dialog.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:breez/routes/user/connect_to_pay/connect_to_pay_page.dart';
+import 'routes/connect_to_pay/connect_to_pay_page.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/routes/shared/splash_page.dart';
-import 'package:breez/routes/shared/initial_walkthrough.dart';
-import 'package:breez/routes/shared/network/network.dart';
-import 'package:breez/routes/shared/security_pin/security_pin_page.dart';
-import 'package:breez/routes/shared/dev/dev.dart';
-import 'package:breez/routes/user/activate_card/activate_card_page.dart';
-import 'package:breez/routes/user/add_funds/fastbitcoins_page.dart';
-import 'package:breez/routes/user/home/home_page.dart';
-import 'package:breez/routes/user/order_card/order_card_page.dart';
+import 'routes/splash_page.dart';
+import 'routes/initial_walkthrough.dart';
+import 'routes/network/network.dart';
+import 'routes/security_pin/security_pin_page.dart';
+import 'routes/dev/dev.dart';
+import 'routes/activate_card/activate_card_page.dart';
+import 'routes/add_funds/fastbitcoins_page.dart';
+import 'home_page.dart';
+import 'routes/order_card/order_card_page.dart';
 import 'package:breez/widgets/route.dart';
-import 'package:breez/routes/user/pay_nearby/pay_nearby_page.dart';
-import 'package:breez/routes/user/pay_nearby/pay_nearby_complete.dart';
-import 'package:breez/routes/user/create_invoice/create_invoice_page.dart';
-import 'package:breez/routes/user/marketplace/marketplace.dart';
+import 'routes/pay_nearby/pay_nearby_page.dart';
+import 'routes/pay_nearby/pay_nearby_complete.dart';
+import 'routes/create_invoice/create_invoice_page.dart';
+import 'routes/marketplace/marketplace.dart';
 import 'package:flutter/services.dart';
 import 'bloc/lnurl/lnurl_bloc.dart';
 import 'bloc/lsp/lsp_bloc.dart';
@@ -89,7 +91,7 @@ class UserApp extends StatelessWidget {
                         case '/intro':
                           return FadeInRoute(
                             builder: (_) => InitialWalkthroughPage(
-                                user, userProfileBloc, backupBloc, false),
+                                userProfileBloc, backupBloc),
                             settings: settings,
                           );
                         case '/splash':
@@ -247,6 +249,18 @@ class UserApp extends StatelessWidget {
                                     case '/fastbitcoins':
                                       return FadeInRoute(
                                         builder: (_) => FastbitcoinsPage(),
+                                        settings: settings,
+                                      );
+                                    
+                                    // POS routes
+                                    case '/transactions':
+                                      return FadeInRoute(
+                                        builder: (_) => PosTransactionsPage(),
+                                        settings: settings,
+                                      );
+                                    case '/settings':
+                                      return FadeInRoute(
+                                        builder: (_) => PosSettingsPage(),
                                         settings: settings,
                                       );
                                   }

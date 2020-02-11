@@ -1,12 +1,9 @@
 import 'dart:async';
-
-import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/routes/user/withdraw_funds/swap_in_progress.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
