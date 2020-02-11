@@ -24,6 +24,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserProfileBloc {
   static const PROFILE_DATA_FOLDER_PATH = "profile";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
+  static const String POS_FLAVOR_PREFERENCES_KEY = "BreezUserModel.isPos";
 
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   BreezServer _breezServer;
@@ -84,6 +85,7 @@ class UserProfileBloc {
       GetEnrolledBiometrics: _getEnrolledBiometrics,
       SetLockState: _setLockState,
       CheckVersion: _checkVersion,
+      SetPOSFlavor: _setPOSFlavor,
     };
     print("UserProfileBloc started");
 
@@ -182,6 +184,12 @@ class UserProfileBloc {
 
   Future _checkVersion(CheckVersion action) async {
     action.resolve(await _breezBridge.checkVersion());
+  }
+
+  Future _setPOSFlavor(SetPOSFlavor action) async {
+    _saveChanges(
+        await _preferences, _currentUser.copyWith(isPOS: action.isPos));
+    action.resolve(action.isPos); 
   }
 
   Future _updatePinCode(UpdatePinCode action) async {
