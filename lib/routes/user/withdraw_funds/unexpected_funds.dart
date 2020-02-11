@@ -53,7 +53,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                 children: <Widget>[
                   WithdrawFundsPage(
                       title: "Unexpected Funds",
-                      optionalMessage: "Breez found unexpected funds in its underlying  wallet. These funds cannot be used for Breez payments, so it is highly recommended you send them to an external address as soon as possible.",
+                      optionalMessage: "Breez found unexpected funds in its underlying wallet (probably due to a closed channel). It is highly recommended you send these fund to a BTC address as soon as possible.",
                       policy: WithdrawFundsPolicy(
                           accSnapshot.data.walletBalance,
                           accSnapshot.data.walletBalance,
