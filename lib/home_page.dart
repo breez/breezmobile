@@ -16,16 +16,6 @@ import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
-import 'handlers/lnurl_handler.dart';
-import 'handlers/sync_ui_handler.dart';
-import 'routes/account_required_actions.dart';
-import 'routes/home/account_page.dart';
-import 'routes/no_connection_dialog.dart';
-import 'handlers/check_version_handler.dart';
-import 'routes/connect_to_pay/connect_to_pay_page.dart';
-import 'handlers/ctp_join_session_handler.dart';
-import 'handlers/received_invoice_notification.dart';
-import 'handlers/showPinHandler.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
@@ -39,6 +29,17 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'handlers/check_version_handler.dart';
+import 'handlers/ctp_join_session_handler.dart';
+import 'handlers/lnurl_handler.dart';
+import 'handlers/received_invoice_notification.dart';
+import 'handlers/showPinHandler.dart';
+import 'handlers/sync_ui_handler.dart';
+import 'routes/account_required_actions.dart';
+import 'routes/connect_to_pay/connect_to_pay_page.dart';
+import 'routes/home/account_page.dart';
+import 'routes/no_connection_dialog.dart';
 
 final GlobalKey firstPaymentItemKey = GlobalKey();
 final ScrollController scrollController = ScrollController();
@@ -157,12 +158,17 @@ class HomeState extends State<Home> {
                       }
 
                       var posItems = <DrawerItemConfigGroup>[];
+                      var advancedPosItems = <DrawerItemConfig>[];
                       if (user.isPOS) {
                         posItems = [
                           DrawerItemConfigGroup([
                             DrawerItemConfig("/transactions", "Transactions",
                                 "src/icon/transactions.png"),
                           ])
+                        ];
+                        advancedPosItems = [
+                          DrawerItemConfig(
+                              "/settings", "POS", "src/icon/settings.png"),
                         ];
                       }
 
@@ -286,10 +292,7 @@ class HomeState extends State<Home> {
                                                     "/security",
                                                     "Security & Backup",
                                                     "src/icon/security.png"),
-                                                DrawerItemConfig(
-                                                    "/settings",
-                                                    "POS",
-                                                    "src/icon/settings.png"),
+                                                ...advancedPosItems,
                                                 DrawerItemConfig(
                                                     "/developers",
                                                     "Developers",
