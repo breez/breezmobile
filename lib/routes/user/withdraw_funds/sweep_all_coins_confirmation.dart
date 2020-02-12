@@ -37,6 +37,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
   int selectedFeeIndex = 1;
   Future _txsDetailsFuture;
   Int64 _sweepAmount;
+  bool _showConfirm = false;
 
   @override
   void initState() {
@@ -49,12 +50,15 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
       _sweepAmount = response.amount;
       List<int> targetConfirmations = response.transactions.keys.toList()
         ..sort();
-      var middle = (targetConfirmations.length / 2).floor();
-      var trimmedTargetConfirmations = [
-        targetConfirmations.last,
-        targetConfirmations[middle],
-        targetConfirmations.first
-      ];
+      var trimmedTargetConfirmations = targetConfirmations.reversed.toList();
+      if (trimmedTargetConfirmations.length > 3) {
+        var middle = (targetConfirmations.length / 2).floor();
+        trimmedTargetConfirmations = [
+          targetConfirmations.last,
+          targetConfirmations[middle],
+          targetConfirmations.first
+        ];
+      }
 
       transactions = trimmedTargetConfirmations
           .map((index) => response.transactions[index])
@@ -65,6 +69,16 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
               .map((index) => FeeOption(transactions[index].fees.toInt(),
                   trimmedTargetConfirmations[index]))
               .toList();
+      if (feeOptions.length > 0) {
+        setState(() {
+          _showConfirm = true;
+        });
+      }
+      selectedFeeIndex = (feeOptions.length / 2).floor();
+      while (feeOptions.length < 3) {
+        feeOptions.add(null);
+        transactions.add(null);
+      }
     });
   }
 
@@ -90,14 +104,20 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                 builder: (context, futureSnapshot) {
                   if (futureSnapshot.error != null) {
                     //render error
-                    return Center(
-                        child: Text(
-                            "Failed to retrive fees. Please try again later: ${futureSnapshot.error.toString()}"));
+                    return _ErrorMessage(
+                        message:
+                            "Failed to retrieve fees. Please try again later.");
                   }
                   if (futureSnapshot.connectionState != ConnectionState.done ||
                       acc == null) {
                     //render loader
                     return SizedBox();
+                  }
+
+                  if (feeOptions.where((f) => f != null).length == 0) {
+                    return _ErrorMessage(
+                        message:
+                            "The amount is too small to broadcast. Please try again later.");
                   }
 
                   return Container(
@@ -129,39 +149,43 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                   );
                 });
           }),
-      bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(bottom: 40.0),
-          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            SizedBox(
-              height: 48.0,
-              width: 168.0,
-              child: RaisedButton(
-                child: Text(
-                  "CONFIRM",
-                  style: Theme.of(context).textTheme.button,
+      bottomNavigationBar: !_showConfirm
+          ? null
+          : Padding(
+              padding: EdgeInsets.only(bottom: 40.0),
+              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                SizedBox(
+                  height: 48.0,
+                  width: 168.0,
+                  child: RaisedButton(
+                    child: Text(
+                      "CONFIRM",
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                    color: Theme.of(context).buttonColor,
+                    elevation: 0.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(42.0)),
+                    onPressed: () {
+                      Navigator.of(context).push(createLoaderRoute(context));
+                      widget
+                          .onConfirm(transactions[selectedFeeIndex])
+                          .then((_) {
+                        Navigator.of(context).pop();
+                      }).catchError((error) {
+                        Navigator.of(context).pop();
+                        promptError(
+                            context,
+                            null,
+                            Text(error.toString(),
+                                style: Theme.of(context)
+                                    .dialogTheme
+                                    .contentTextStyle));
+                      });
+                    },
+                  ),
                 ),
-                color: Theme.of(context).buttonColor,
-                elevation: 0.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(42.0)),
-                onPressed: () {
-                  Navigator.of(context).push(createLoaderRoute(context));
-                  widget.onConfirm(transactions[selectedFeeIndex]).then((_) {
-                    Navigator.of(context).pop();
-                  }).catchError((error) {
-                    Navigator.of(context).pop();
-                    promptError(
-                        context,
-                        null,
-                        Text(error.toString(),
-                            style: Theme.of(context)
-                                .dialogTheme
-                                .contentTextStyle));
-                  });
-                },
-              ),
-            ),
-          ])),
+              ])),
     );
   }
 
@@ -237,5 +261,29 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
             ))
       ]),
     );
+  }
+}
+
+class _ErrorMessage extends StatelessWidget {
+  final String message;
+
+  const _ErrorMessage({Key key, this.message}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.only(top: 40.0, left: 40.0, right: 40.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Text(
+                message,
+                textAlign: TextAlign.center,
+              ),
+            )
+          ],
+        ));
   }
 }

@@ -22,9 +22,13 @@ class FeeChooser extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Row(mainAxisSize: MainAxisSize.max, children: <Widget>[
-          Expanded(child: buildFeeOption(context, 0, economyFee, "Economy")),
-          Expanded(child: buildFeeOption(context, 1, economyFee, "Regular")),
-          Expanded(child: buildFeeOption(context, 2, economyFee, "Priority"))
+          Expanded(
+              child: buildFeeOption(context, 0, economyFee == null, "Economy")),
+          Expanded(
+              child: buildFeeOption(context, 1, regularFee == null, "Regular")),
+          Expanded(
+              child:
+                  buildFeeOption(context, 2, priorityFee == null, "Priority"))
         ]),
         SizedBox(height: 12.0),
         Row(
@@ -38,7 +42,7 @@ class FeeChooser extends StatelessWidget {
   }
 
   Widget buildFeeOption(
-      BuildContext context, int index, FeeOption option, String text) {
+      BuildContext context, int index, bool disabled, String text) {
     var borderColor = Theme.of(context).colorScheme.onSurface.withOpacity(0.4);
     Border border;
     var borderRadius;
@@ -66,14 +70,18 @@ class FeeChooser extends StatelessWidget {
               : Theme.of(context).canvasColor,
           border: border),
       child: FlatButton(
-          onPressed: () {
-            onSelect(index);
-          },
+          onPressed: disabled
+              ? null
+              : () {
+                  onSelect(index);
+                },
           child: Text(text,
               style: Theme.of(context).textTheme.button.copyWith(
-                  color: isSelected
-                      ? Theme.of(context).canvasColor
-                      : Theme.of(context).colorScheme.onSurface))),
+                  color: disabled
+                      ? Theme.of(context).colorScheme.onSurface.withOpacity(0.4)
+                      : isSelected
+                          ? Theme.of(context).canvasColor
+                          : Theme.of(context).colorScheme.onSurface))),
     );
   }
 

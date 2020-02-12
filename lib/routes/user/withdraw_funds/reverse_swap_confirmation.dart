@@ -33,6 +33,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
   List<FeeOption> feeOptions;
   int selectedFeeIndex = 1;
   Future _claimFeeFuture;
+  bool _showConfirm = false;
 
   @override
   void initState() {
@@ -43,22 +44,34 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
       ReverseSwapClaimFeeEstimates feeEstimates =
           r as ReverseSwapClaimFeeEstimates;
       List<int> targetConfirmations = feeEstimates.fees.keys.toList()..sort();
-      var middle = (targetConfirmations.length / 2).floor();
-      feeOptions = [
-        FeeOption(feeEstimates.fees[targetConfirmations.last].toInt(),
-            targetConfirmations.last),
-        FeeOption(feeEstimates.fees[targetConfirmations[middle]].toInt(),
-            targetConfirmations[middle]),
-        FeeOption(feeEstimates.fees[targetConfirmations.first].toInt(),
-            targetConfirmations.first)
-      ];
+      var trimmedTargetConfirmations = targetConfirmations.reversed.toList();
+      if (trimmedTargetConfirmations.length > 3) {
+        var middle = (targetConfirmations.length / 2).floor();
+        trimmedTargetConfirmations = [
+          targetConfirmations.last,
+          targetConfirmations[middle],
+          targetConfirmations.first
+        ];
+      }
+
+      feeOptions = trimmedTargetConfirmations
+          .map((e) => FeeOption(feeEstimates.fees[e].toInt(), e))
+          .toList();
+
+      if (feeOptions.length > 0) {
+        setState(() {
+          _showConfirm = true;
+        });
+      }
+      selectedFeeIndex = (feeOptions.length / 2).floor();
+      while (feeOptions.length < 3) {
+        feeOptions.add(null);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    ReverseSwapBloc reverseSwapBloc =
-        AppBlocsProvider.of<ReverseSwapBloc>(context);
     return Scaffold(
       appBar: AppBar(
           iconTheme: Theme.of(context).appBarTheme.iconTheme,
@@ -79,14 +92,20 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                 builder: (context, futureSnapshot) {
                   if (futureSnapshot.error != null) {
                     //render error
-                    return Center(
-                        child: Text(
-                            "Failed to retrive fees. Please try again later: ${futureSnapshot.error.toString()}"));
+                    return _ErrorMessage(
+                        message:
+                            "Failed to retrieve fees. Please try again later.");
                   }
                   if (futureSnapshot.connectionState != ConnectionState.done ||
                       acc == null) {
                     //render loader
                     return SizedBox();
+                  }
+
+                  if (feeOptions.where((f) => f != null).length == 0) {
+                    return _ErrorMessage(
+                        message:
+                            "The amount is too small to broadcast. Please try again later.");
                   }
 
                   return Container(
@@ -118,41 +137,44 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                   );
                 });
           }),
-      bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(bottom: 40.0),
-          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            SizedBox(
-              height: 48.0,
-              width: 168.0,
-              child: RaisedButton(
-                child: Text(
-                  "CONFIRM",
-                  style: Theme.of(context).textTheme.button,
+      bottomNavigationBar: !_showConfirm
+          ? null
+          : Padding(
+              padding: EdgeInsets.only(bottom: 40.0),
+              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                SizedBox(
+                  height: 48.0,
+                  width: 168.0,
+                  child: RaisedButton(
+                    child: Text(
+                      "CONFIRM",
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                    color: Theme.of(context).buttonColor,
+                    elevation: 0.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(42.0)),
+                    onPressed: () {
+                      Navigator.of(context).push(createLoaderRoute(context));
+                      widget
+                          .onFeeConfirmed(
+                              Int64(feeOptions[selectedFeeIndex].sats))
+                          .then((_) {
+                        Navigator.of(context).pop();
+                      }).catchError((error) {
+                        Navigator.of(context).pop();
+                        promptError(
+                            context,
+                            null,
+                            Text(error.toString(),
+                                style: Theme.of(context)
+                                    .dialogTheme
+                                    .contentTextStyle));
+                      });
+                    },
+                  ),
                 ),
-                color: Theme.of(context).buttonColor,
-                elevation: 0.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(42.0)),
-                onPressed: () {
-                  Navigator.of(context).push(createLoaderRoute(context));
-                  widget
-                      .onFeeConfirmed(Int64(feeOptions[selectedFeeIndex].sats))
-                      .then((_) {
-                    Navigator.of(context).pop();
-                  }).catchError((error) {
-                    Navigator.of(context).pop();
-                    promptError(
-                        context,
-                        null,
-                        Text(error.toString(),
-                            style: Theme.of(context)
-                                .dialogTheme
-                                .contentTextStyle));
-                  });
-                },
-              ),
-            ),
-          ])),
+              ])),
     );
   }
 
@@ -237,7 +259,9 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
               child: AutoSizeText(
                 acc.currency.format(widget.swap.onChainAmount -
                         feeOptions[selectedFeeIndex].sats) +
-                    (acc.fiatCurrency == null ? "" :" (${acc.fiatCurrency.format(receive)})"),
+                    (acc.fiatCurrency == null
+                        ? ""
+                        : " (${acc.fiatCurrency.format(receive)})"),
                 style: TextStyle(color: Theme.of(context).errorColor),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
@@ -246,5 +270,29 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             ))
       ]),
     );
+  }
+}
+
+class _ErrorMessage extends StatelessWidget {
+  final String message;
+
+  const _ErrorMessage({Key key, this.message}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.only(top: 40.0, left: 40.0, right: 40.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Text(
+                message,
+                textAlign: TextAlign.center,
+              ),
+            )
+          ],
+        ));
   }
 }
