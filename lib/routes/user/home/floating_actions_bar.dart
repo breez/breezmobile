@@ -389,16 +389,12 @@ class _Action extends StatelessWidget {
       child: FlatButton(
         padding: EdgeInsets.zero,
         onPressed: this.onPress,
-        child: AutoSizeText(
+        child: Text(
           text,
-          group: group,
           textAlign: TextAlign.center,
           style: theme.addFundsBtnStyle.copyWith(
               fontSize: 14.3 / MediaQuery.of(context).textScaleFactor),
           maxLines: 1,
-          maxFontSize: 14.3,
-          minFontSize: MinFontSize(context).minFontSize,
-          stepGranularity: 0.1,
         ),
       ),
     );
