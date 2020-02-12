@@ -165,7 +165,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                               reverseSwapBloc.actionsSink
                                                   .add(action);
                                               return action.future
-                                                  .then((value) => () {
+                                                  .then((value){
                                                         Navigator.of(context)
                                                             .pop();
                                                       });

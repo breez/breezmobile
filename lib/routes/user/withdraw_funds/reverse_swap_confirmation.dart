@@ -237,7 +237,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
               child: AutoSizeText(
                 acc.currency.format(widget.swap.onChainAmount -
                         feeOptions[selectedFeeIndex].sats) +
-                    " (${acc.fiatCurrency.format(receive)})",
+                    (acc.fiatCurrency == null ? "" :" (${acc.fiatCurrency.format(receive)})"),
                 style: TextStyle(color: Theme.of(context).errorColor),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
