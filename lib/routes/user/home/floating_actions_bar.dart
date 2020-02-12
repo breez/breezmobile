@@ -17,14 +17,13 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/fastbitcoin.dart';
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:breez/utils/qr_scan.dart' as QRScanner;
 
 class FloatingActionsBar extends StatelessWidget {
   static const double EXPANDED_ACTIONS_WIDTH = 253.0;
@@ -392,8 +391,8 @@ class _Action extends StatelessWidget {
         child: Text(
           text,
           textAlign: TextAlign.center,
-          style: theme.addFundsBtnStyle.copyWith(
-              fontSize: 14.3 / MediaQuery.of(context).textScaleFactor),
+          style: theme.addFundsBtnStyle
+              .copyWith(fontSize: 12.3 / MediaQuery.of(context).textScaleFactor),
           maxLines: 1,
         ),
       ),
