@@ -78,16 +78,16 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                             ),
                             elevation: 0.0,
                           ),
-                          body: Container(
-                            child: Material(
-                                child: getBody(
-                                    context,
-                                    accSnapshot.data,
-                                    snapshot.data,
-                                    snapshot.hasError
-                                        ? "Failed to retrieve an address from Breez server\nPlease check your internet connection."
-                                        : null)),
-                          )),
+                          body: getBody(
+                              context,
+                              accSnapshot.data,
+                              snapshot.data,
+                              snapshot.hasError
+                                  ? "Failed to retrieve an address from Breez server\nPlease check your internet connection."
+                                  : null),
+                          bottomNavigationBar: _buildBottomBar(
+                              snapshot.data, accSnapshot.data,
+                              hasError: snapshot.hasError)),
                     );
                   });
             }));
@@ -116,31 +116,34 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
         ],
       );
     }
-    return Column(children: <Widget>[
-      AddressWidget(response?.address, response?.backupJson),
-      response == null
-          ? SizedBox()
-          : Padding(
-              padding: const EdgeInsets.all(16),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                    border: Border.all(color: Theme.of(context).errorColor)),
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  "Send up to " +
-                      account.currency.format(response.maxAllowedDeposit,
-                          includeSymbol: true) +
-                      " to this address.",
-                  style: Theme.of(context).textTheme.display1,
-                  textAlign: TextAlign.center,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          AddressWidget(response?.address, response?.backupJson),
+          response == null
+              ? SizedBox()
+              : Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                        border:
+                            Border.all(color: Theme.of(context).errorColor)),
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      "Send up to " +
+                          account.currency.format(response.maxAllowedDeposit,
+                              includeSymbol: true) +
+                          " to this address.",
+                      style: Theme.of(context).textTheme.display1,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-      Expanded(child: SizedBox()),
-      _buildBottomBar(response, account,
-          hasError: error != null ? true : false),
-    ]);
+        ],
+      ),
+    );
   }
 
   Widget _buildBottomBar(AddFundResponse response, AccountModel account,
