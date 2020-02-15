@@ -115,8 +115,9 @@ class BreezBridge {
   }
 
   Future<String> getLogPath() {
-    return _invokeMethodImmediate("getLogPath")
-        .then((logPath) => logPath as String);
+    return getApplicationDocumentsDirectory().then((workingDir) {
+      return workingDir.path + "/logs/bitcoin/mainnet/lnd.log";
+    });    
   }
 
   Future<int> lastSyncedHeaderTimestamp() {
