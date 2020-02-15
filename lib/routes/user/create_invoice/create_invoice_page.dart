@@ -103,7 +103,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     return Scaffold(
       key: _scaffoldKey,
       bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(bottom: 40.0),
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40.0,),
           child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
             SizedBox(
               height: 48.0,
