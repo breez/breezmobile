@@ -454,10 +454,8 @@ class POSInvoiceState extends State<POSInvoice> {
 
   changeCurrency(value) {
     setState(() {
-      bool usingFiat = true;
       Currency currency = Currency.fromSymbol(value);
       if (currency != null) {
-        usingFiat = false;
         if (_usingFiat) {
           // We are switching back from fiat
           _usingFiat = false;
@@ -465,9 +463,7 @@ class POSInvoiceState extends State<POSInvoice> {
           _totalAmount = 0;
         }
         _userProfileBloc.currencySink.add(currency);
-      }
-
-      if (usingFiat) {
+      } else {
         _usingFiat = true;
         _clearCurrentAmounts();
         _totalAmount = 0;
