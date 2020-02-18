@@ -43,6 +43,7 @@ class POSInvoiceState extends State<POSInvoice> {
   double itemWidth;
   int _currentAmount = 0;
   double _currentFiatAmount = 0;
+  String _totalSatAmount = "0";
   String _satAmount = "0";
   String _fiatAmount = "0";
   int _totalAmount = 0;
@@ -183,7 +184,7 @@ class POSInvoiceState extends State<POSInvoice> {
                               color: Theme.of(context).primaryColorLight,
                               padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
                               child: Text(
-                                "Charge $_satAmount ${_currency.symbol}"
+                                "Charge $_totalSatAmount ${_currency.symbol}"
                                     .toUpperCase(),
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
@@ -463,10 +464,10 @@ class POSInvoiceState extends State<POSInvoice> {
         _userProfileBloc.currencySink.add(currency);
       } else {
         _usingFiat = true;
-        _clearCurrentAmounts();
         _totalAmount = 0;
         _userProfileBloc.fiatConversionSink.add(value);
       }
+      _updateAmountControllers();
     });
   }
 
@@ -479,10 +480,16 @@ class POSInvoiceState extends State<POSInvoice> {
   }
 
   _updateAmountControllers() {
+    if (_usingFiat) {
+      _currentAmount =
+          _fiatCurrencyConversion.fiatToSat(_currentFiatAmount).toInt();
+    }
     _satAmount = _currency.format((Int64(_currentAmount)),
         fixedDecimals: true, includeSymbol: false);
     _fiatAmount = _currentFiatAmount
         .toStringAsFixed(_fiatCurrencyConversion.currencyData.fractionSize);
+    _totalSatAmount = _currency.format((Int64(_totalAmount + _currentAmount)),
+        fixedDecimals: true, includeSymbol: false);
   }
 
   onClear() {
