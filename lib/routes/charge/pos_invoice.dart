@@ -37,16 +37,10 @@ class POSInvoiceState extends State<POSInvoice> {
 
   BreezUserModel _userProfile;
   Currency _currency = Currency.BTC;
-  bool _usingFiat = false;
-  FiatConversion _fiatCurrencyConversion;
   double itemHeight;
   double itemWidth;
-  int _currentAmount = 0;
-  double _currentFiatAmount = 0;
-  String _totalSatAmount = "0";
-  String _satAmount = "0";
-  String _fiatAmount = "0";
-  int _totalAmount = 0;
+  Amount _amount;
+
   Int64 _maxPaymentAmount;
   Int64 _maxAllowedToReceive;
   bool _isButtonDisabled = false;
@@ -62,6 +56,12 @@ class POSInvoiceState extends State<POSInvoice> {
 
   FocusNode _focusNode;
   bool _isInit = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _amount = Amount(null, null, false, 0, 0, 0);
+  }
 
   @override
   void didChangeDependencies() {
@@ -84,9 +84,11 @@ class POSInvoiceState extends State<POSInvoice> {
     _accountSubscription = _accountBloc.accountStream.listen((acc) {
       setState(() {
         _currency = acc.currency;
-        _fiatCurrencyConversion = acc.fiatCurrency;
+
         _maxPaymentAmount = acc.maxPaymentAmount;
         _maxAllowedToReceive = acc.maxAllowedToReceive;
+        _amount = _amount.copyWith(
+            currency: _currency, fiatConversion: acc.fiatCurrency);
         _updateAmountControllers();
       });
     });
@@ -109,7 +111,7 @@ class POSInvoiceState extends State<POSInvoice> {
             }).then((result) {
           setState(() {
             _clearCurrentAmounts();
-            _totalAmount = 0;
+            _amount = _amount.copyWith(totalAmount: 0);
             _updateAmountControllers();
             _invoiceDescriptionController.text = "";
           });
@@ -184,7 +186,7 @@ class POSInvoiceState extends State<POSInvoice> {
                               color: Theme.of(context).primaryColorLight,
                               padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
                               child: Text(
-                                "Charge $_totalSatAmount ${_currency.symbol}"
+                                "Charge ${_amount.totalSatAmount} ${_currency.symbol}"
                                     .toUpperCase(),
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
@@ -245,7 +247,7 @@ class POSInvoiceState extends State<POSInvoice> {
                         child: Row(children: <Widget>[
                           Expanded(
                               child: Text(
-                            _usingFiat ? _fiatAmount : _satAmount,
+                            _amount.amount,
                             style: theme.invoiceAmountStyle.copyWith(
                                 color:
                                     Theme.of(context).textTheme.headline.color),
@@ -273,11 +275,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                           .textTheme
                                                           .headline
                                                           .color,
-                                                  value: _usingFiat
-                                                      ? _fiatCurrencyConversion
-                                                          .currencyData
-                                                          .shortName
-                                                      : _currency.symbol,
+                                                  value: _amount.displayName,
                                                   style: theme
                                                       .invoiceAmountStyle
                                                       .copyWith(
@@ -396,26 +394,26 @@ class POSInvoiceState extends State<POSInvoice> {
             );
           });
     } else {
-      if (_totalAmount == 0 && _currentAmount > 0) {
-        _totalAmount = _currentAmount;
+      if (_amount.totalAmount == 0 && _amount.currentAmount > 0) {
+        _amount = _amount.copyWith(totalAmount: _amount.currentAmount);
       }
 
-      if (_totalAmount == 0) {
+      if (_amount.totalAmount == 0) {
         return null;
-      } else if (_totalAmount > _maxAllowedToReceive.toInt()) {
+      } else if (_amount.totalAmount > _maxAllowedToReceive.toInt()) {
         promptError(
             context,
             "You don't have the capacity to receive such payment.",
             Text(
                 "Maximum payment size you can receive is ${_currency.format(_maxAllowedToReceive, includeSymbol: true)}. Please enter a smaller value.",
                 style: Theme.of(context).dialogTheme.contentTextStyle));
-      } else if (_totalAmount < _maxPaymentAmount.toInt() ||
-          _totalAmount < _maxPaymentAmount.toInt()) {
+      } else if (_amount.totalAmount < _maxPaymentAmount.toInt() ||
+          _amount.totalAmount < _maxPaymentAmount.toInt()) {
         _invoiceBloc.newInvoiceRequestSink.add(InvoiceRequestModel(
             _userProfile.name,
             _invoiceDescriptionController.text,
             _userProfile.avatarURL,
-            Int64(_totalAmount),
+            Int64(_amount.totalAmount),
             expiry: Int64(int.parse(cancellationTimeoutValue))));
       } else {
         promptError(
@@ -430,7 +428,8 @@ class POSInvoiceState extends State<POSInvoice> {
 
   onAddition() {
     setState(() {
-      _totalAmount += _currentAmount;
+      _amount = _amount.copyWith(
+          totalAmount: _amount.totalAmount + _amount.currentAmount);
       _clearCurrentAmounts();
       _updateAmountControllers();
     });
@@ -438,14 +437,17 @@ class POSInvoiceState extends State<POSInvoice> {
 
   onNumButtonPressed(String numberText) {
     setState(() {
-      if (!_usingFiat) {
-        _currentAmount = (_currentAmount * 10) + int.parse(numberText);
+      if (!_amount.useFiatCurrency) {
+        _amount = _amount.copyWith(
+            currentAmount: _amount.currentAmount * 10 + int.parse(numberText));
       } else {
-        _currentFiatAmount = _currentFiatAmount * 10 +
-            int.parse(numberText) /
-                pow(10, _fiatCurrencyConversion.currencyData.fractionSize);
-        _currentAmount =
-            _fiatCurrencyConversion.fiatToSat(_currentFiatAmount).toInt();
+        _amount = _amount.copyWith(
+            currentAmount: _amount.fiatConversion
+                .fiatToSat(_amount.currentFiatAmount)
+                .toInt(),
+            currentFiatAmount: _amount.currentFiatAmount * 10 +
+                int.parse(numberText) /
+                    pow(10, _amount.fiatConversion.currencyData.fractionSize));
       }
       _updateAmountControllers();
     });
@@ -455,16 +457,14 @@ class POSInvoiceState extends State<POSInvoice> {
     setState(() {
       Currency currency = Currency.fromSymbol(value);
       if (currency != null) {
-        if (_usingFiat) {
+        if (_amount.useFiatCurrency) {
           // We are switching back from fiat
-          _usingFiat = false;
           _clearCurrentAmounts();
-          _totalAmount = 0;
+          _amount = _amount.copyWith(totalAmount: 0, useFiatCurrency: false);
         }
         _userProfileBloc.currencySink.add(currency);
       } else {
-        _usingFiat = true;
-        _totalAmount = 0;
+        _amount = _amount.copyWith(totalAmount: 0, useFiatCurrency: true);
         _userProfileBloc.fiatConversionSink.add(value);
       }
       _updateAmountControllers();
@@ -473,23 +473,18 @@ class POSInvoiceState extends State<POSInvoice> {
 
   _clearCurrentAmounts() {
     setState(() {
-      _currentAmount = 0;
-      _currentFiatAmount = 0;
+      _amount = _amount.copyWith(currentAmount: 0, currentFiatAmount: 0);
       _updateAmountControllers();
     });
   }
 
   _updateAmountControllers() {
-    if (_usingFiat) {
-      _currentAmount =
-          _fiatCurrencyConversion.fiatToSat(_currentFiatAmount).toInt();
+    if (_amount.useFiatCurrency) {
+      _amount = _amount.copyWith(
+          currentAmount: _amount.fiatConversion
+              .fiatToSat(_amount.currentFiatAmount)
+              .toInt());
     }
-    _satAmount = _currency.format((Int64(_currentAmount)),
-        fixedDecimals: true, includeSymbol: false);
-    _fiatAmount = _currentFiatAmount
-        .toStringAsFixed(_fiatCurrencyConversion.currencyData.fractionSize);
-    _totalSatAmount = _currency.format((Int64(_totalAmount + _currentAmount)),
-        fixedDecimals: true, includeSymbol: false);
   }
 
   onClear() {
@@ -502,14 +497,14 @@ class POSInvoiceState extends State<POSInvoice> {
   clearSale() {
     setState(() {
       _clearCurrentAmounts();
-      _totalAmount = 0;
+      _amount = _amount.copyWith(totalAmount: 0);
       _updateAmountControllers();
       _invoiceDescriptionController.text = "";
     });
   }
 
   approveClear() {
-    if (_totalAmount + _currentAmount != 0) {
+    if (_amount.totalAmount + _amount.currentAmount != 0) {
       AlertDialog dialog = AlertDialog(
         title: Text(
           "Clear Sale?",
@@ -580,4 +575,47 @@ class POSInvoiceState extends State<POSInvoice> {
                   child: Text("+", style: theme.numPadAdditionStyle))),
         ]).toList());
   }
+}
+
+class Amount {
+  Currency currency;
+  FiatConversion fiatConversion;
+  bool useFiatCurrency;
+  int currentAmount;
+  int totalAmount;
+  double currentFiatAmount;
+
+  Amount(this.currency, this.fiatConversion, this.useFiatCurrency,
+      this.currentAmount, this.totalAmount, this.currentFiatAmount);
+
+  Amount copyWith(
+      {Currency currency,
+      FiatConversion fiatConversion,
+      bool useFiatCurrency,
+      int currentAmount,
+      int totalAmount,
+      double currentFiatAmount}) {
+    return Amount(
+        currency ?? this.currency,
+        fiatConversion ?? this.fiatConversion,
+        useFiatCurrency ?? this.useFiatCurrency,
+        currentAmount ?? this.currentAmount,
+        totalAmount ?? this.totalAmount,
+        currentFiatAmount ?? this.currentFiatAmount);
+  }
+
+  String get amount => useFiatCurrency ? fiatAmount : satAmount;
+
+  String get displayName =>
+      useFiatCurrency ? fiatConversion.currencyData.shortName : currency.symbol;
+
+  String get satAmount => currency.format((Int64(currentAmount)),
+      fixedDecimals: true, includeSymbol: false);
+
+  String get fiatAmount => currentFiatAmount
+      .toStringAsFixed(fiatConversion.currencyData.fractionSize);
+
+  String get totalSatAmount =>
+      currency.format((Int64(totalAmount + currentAmount)),
+          fixedDecimals: true, includeSymbol: false);
 }
