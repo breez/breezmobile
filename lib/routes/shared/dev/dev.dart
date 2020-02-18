@@ -240,7 +240,10 @@ class DevViewState extends State<DevView> {
                                                             'Copy to Clipboard',
                                                         iconSize: 19.0,
                                                         onPressed: () {
-                                                          ServiceInjector().device.setClipboardText(_cliText);
+                                                          ServiceInjector()
+                                                              .device
+                                                              .setClipboardText(
+                                                                  _cliText);
                                                           _scaffoldKey
                                                               .currentState
                                                               .showSnackBar(
@@ -356,6 +359,23 @@ class DevViewState extends State<DevView> {
           var rescanFile = File(workingDir.path + "/$FORCE_RESCAN_FILE_NAME");
           await rescanFile.create(recursive: true);
           _promptForRestart();
+        }));
+    choices.add(Choice(
+        title: "Export DB Files",
+        icon: Icons.phone_android,
+        function: () async {
+          Directory tempDir = await getTemporaryDirectory();
+          tempDir = await tempDir.createTemp("graph");
+          var walletFiles =
+              await ServiceInjector().breezBridge.getWalletDBpFilePath();
+          var encoder = ZipFileEncoder();
+          var zipFile = '${tempDir.path}/wallet-files.zip';
+          encoder.create(zipFile);
+          walletFiles.forEach((f) {
+            encoder.addFile(File(f));
+          });
+          encoder.close();
+          ShareExtend.share(zipFile, "file");
         }));
 
     return choices;

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
+import 'package:ini/ini.dart';
 import 'package:path_provider/path_provider.dart';
 
 // This is the bridge to the native breez library. Protobuf messages are used as the interface and to generate the classes use the bellow command.
@@ -117,7 +118,7 @@ class BreezBridge {
   Future<String> getLogPath() {
     return getApplicationDocumentsDirectory().then((workingDir) {
       return workingDir.path + "/logs/bitcoin/mainnet/lnd.log";
-    });    
+    });
   }
 
   Future<int> lastSyncedHeaderTimestamp() {
@@ -158,9 +159,8 @@ class BreezBridge {
         .then((res) => SweepAllCoinsTransactions()..mergeFromBuffer(res ?? []));
   }
 
-  Future publishTransaction(List<int> tx){
-    return _invokeMethodWhenReady(
-            "publishTransaction", {"argument": tx});        
+  Future publishTransaction(List<int> tx) {
+    return _invokeMethodWhenReady("publishTransaction", {"argument": tx});
   }
 
   Future<ReverseSwapInfo> getReverseSwapPolicy() {
@@ -495,5 +495,17 @@ class BreezBridge {
         throw err;
       });
     });
+  }
+
+  Future<List<String>> getWalletDBpFilePath() async {
+    String lines = await rootBundle.loadString('conf/breez.conf');
+    var config = Config.fromString(lines);
+    String lndDir = (await getApplicationDocumentsDirectory()).path;
+    String network = config.get('Application Options', 'network');
+    return [
+      '$lndDir/data/chain/bitcoin/$network/wallet.db',
+      '$lndDir/breez.db',
+      '$lndDir/data/graph/$network/channel.db'
+    ];
   }
 }
