@@ -278,7 +278,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                       ? _fiatCurrencyConversion
                                                           .currencyData
                                                           .shortName
-                                                      : _currency.displayName,
+                                                      : _currency.symbol,
                                                   style: theme
                                                       .invoiceAmountStyle
                                                       .copyWith(
@@ -291,7 +291,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                       .map((Currency value) {
                                                     return DropdownMenuItem<
                                                         String>(
-                                                      value: value.displayName,
+                                                      value: value.symbol,
                                                       child: Text(
                                                         value.displayName,
                                                         textAlign:
@@ -454,21 +454,18 @@ class POSInvoiceState extends State<POSInvoice> {
 
   changeCurrency(value) {
     setState(() {
-      bool usingFiat = _fiatCurrencyConversion != null ? true : false;
-      Currency.currencies.forEach((currency) {
-        if (currency.displayName == value) {
-          usingFiat = false;
-          _currency = Currency.fromSymbol(value);
-          if (_usingFiat) {
-            // We are switching back from fiat
-            _usingFiat = false;
-            _clearCurrentAmounts();
-            _totalAmount = 0;
-          }
-          _userProfileBloc.currencySink
-              .add(Currency.currencies[Currency.currencies.indexOf(_currency)]);
+      bool usingFiat = true;
+      Currency currency = Currency.fromSymbol(value);
+      if (currency != null) {
+        usingFiat = false;
+        if (_usingFiat) {
+          // We are switching back from fiat
+          _usingFiat = false;
+          _clearCurrentAmounts();
+          _totalAmount = 0;
         }
-      });
+        _userProfileBloc.currencySink.add(currency);
+      }
 
       if (usingFiat) {
         _usingFiat = true;
