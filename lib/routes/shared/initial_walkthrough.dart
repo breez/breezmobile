@@ -99,16 +99,14 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
             return;
           }
 
-          if (toRestore.encryptionType == "Pin") {
-            restoreUsingPIN((pin) async {
-              var updateAction = UpdateBackupSettings(
-                  BackupSettings.start().copyWith(keyType: BackupKeyType.NONE));
-              var key = sha256.convert(utf8.encode(pin));
-              widget._backupBloc.backupActionsSink.add(updateAction);
-              updateAction.future.then((_) => restore(toRestore, key.bytes));
-            });
-            return;
-          }
+          restoreUsingPIN((pin) async {
+            var updateAction = UpdateBackupSettings(
+                BackupSettings.start().copyWith(keyType: BackupKeyType.NONE));
+            var key = sha256.convert(utf8.encode(pin));
+            widget._backupBloc.backupActionsSink.add(updateAction);
+            updateAction.future.then((_) => restore(toRestore, key.bytes));
+          });
+          return;
         }
 
         restore(toRestore, null);
