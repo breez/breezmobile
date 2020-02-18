@@ -33,8 +33,6 @@ class POSInvoice extends StatefulWidget {
 class POSInvoiceState extends State<POSInvoice> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TextEditingController _amountController = TextEditingController();
-  TextEditingController _chargeAmountController = TextEditingController();
   TextEditingController _invoiceDescriptionController = TextEditingController();
 
   BreezUserModel _userProfile;
@@ -45,6 +43,8 @@ class POSInvoiceState extends State<POSInvoice> {
   double itemWidth;
   int _currentAmount = 0;
   double _currentFiatAmount = 0;
+  String _satAmount = "0";
+  String _fiatAmount = "0";
   int _totalAmount = 0;
   Int64 _maxPaymentAmount;
   Int64 _maxAllowedToReceive;
@@ -183,7 +183,7 @@ class POSInvoiceState extends State<POSInvoice> {
                               color: Theme.of(context).primaryColorLight,
                               padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
                               child: Text(
-                                "Charge ${_chargeAmountController.text}"
+                                "Charge $_satAmount ${_currency.symbol}"
                                     .toUpperCase(),
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
@@ -242,11 +242,9 @@ class POSInvoiceState extends State<POSInvoice> {
                       Padding(
                         padding: EdgeInsets.only(left: 16.0, right: 16.0),
                         child: Row(children: <Widget>[
-                          Flexible(
-                              child: TextField(
-                            decoration: InputDecoration.collapsed(hintText: ''),
-                            enabled: false,
-                            controller: _amountController,
+                          Expanded(
+                              child: Text(
+                            _usingFiat ? _fiatAmount : _satAmount,
                             style: theme.invoiceAmountStyle.copyWith(
                                 color:
                                     Theme.of(context).textTheme.headline.color),
@@ -481,17 +479,10 @@ class POSInvoiceState extends State<POSInvoice> {
   }
 
   _updateAmountControllers() {
-    if (!_usingFiat) {
-      _amountController.text = _currency.format((Int64(_currentAmount)),
-          fixedDecimals: true, includeSymbol: false);
-    } else {
-      _amountController.text = _currentFiatAmount
-          .toStringAsFixed(_fiatCurrencyConversion.currencyData.fractionSize);
-    }
-    _chargeAmountController.text = _currency.format(
-        (Int64(_totalAmount + _currentAmount)),
-        fixedDecimals: true,
-        includeSymbol: true);
+    _satAmount = _currency.format((Int64(_currentAmount)),
+        fixedDecimals: true, includeSymbol: false);
+    _fiatAmount = _currentFiatAmount
+        .toStringAsFixed(_fiatCurrencyConversion.currencyData.fractionSize);
   }
 
   onClear() {
