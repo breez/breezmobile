@@ -504,7 +504,17 @@ class BreezBridge {
     String network = config.get('Application Options', 'network');
     return [
       '$lndDir/data/chain/bitcoin/$network/admin.macaroon',
-      '$lndDir/data/chain/bitcoin/$network/signer.macaroon'
+      '$lndDir/data/chain/bitcoin/$network/backupevents.macaroon',
+      '$lndDir/data/chain/bitcoin/$network/breezbackup.macaroon',
+      '$lndDir/data/chain/bitcoin/$network/chainnotifier.macaroon',
+      '$lndDir/data/chain/bitcoin/$network/invoice.macaroon',
+      '$lndDir/data/chain/bitcoin/$network/invoices.macaroon',
+      '$lndDir/data/chain/bitcoin/$network/readonly.macaroon',
+      '$lndDir/data/chain/bitcoin/$network/router.macaroon',
+      '$lndDir/data/chain/bitcoin/$network/signer.macaroon',
+      '$lndDir/data/chain/bitcoin/$network/submarineswap.macaroon',
+      '$lndDir/data/chain/bitcoin/$network/walletkit.macaroon',
+      '$lndDir/data/chain/bitcoin/$network/macaroons.db'
     ];
   }
 }
