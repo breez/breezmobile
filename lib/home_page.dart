@@ -30,6 +30,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'bloc/user_profile/user_actions.dart';
 import 'handlers/check_version_handler.dart';
 import 'handlers/ctp_join_session_handler.dart';
 import 'handlers/lnurl_handler.dart';
@@ -158,19 +159,35 @@ class HomeState extends State<Home> {
                       }
 
                       var posItems = <DrawerItemConfigGroup>[];
-                      var advancedPosItems = <DrawerItemConfig>[];
-                      if (user.isPOS) {
-                        posItems = [
-                          DrawerItemConfigGroup([
-                            DrawerItemConfig("/transactions", "Transactions",
-                                "src/icon/transactions.png"),
-                          ])
-                        ];
-                        advancedPosItems = [
-                          DrawerItemConfig(
-                              "/settings", "POS", "src/icon/settings.png"),
-                        ];
-                      }
+                      posItems = [
+                        DrawerItemConfigGroup([
+                          user.isPOS
+                              ? DrawerItemConfig("/transactions",
+                                  "Transactions", "src/icon/transactions.png")
+                              : DrawerItemConfig("/marketplace", "Marketplace",
+                                  "src/icon/ic_market.png",
+                                  disabled: !account.connected)
+                        ])
+                      ];
+                      var advancedPosItems = List<DrawerItemConfig>();
+                      advancedPosItems = user.isPOS
+                          ? [
+                              DrawerItemConfig(
+                                  "/settings", "POS Settings", "src/icon/settings.png"),
+                              DrawerItemConfig("", "Wallet Mode", "src/icon/wallet.png",
+                                  onItemSelected: (test) {
+                                widget.userProfileBloc.userActionsSink
+                                    .add(SetPOSFlavor(!user.isPOS));
+                              })
+                            ]
+                          : [
+                              DrawerItemConfig(
+                                  "", "POS Mode", "src/icon/pos.png",
+                                  onItemSelected: (test) {
+                                widget.userProfileBloc.userActionsSink
+                                    .add(SetPOSFlavor(!user.isPOS));
+                              }),
+                            ];
 
                       return StreamBuilder<String>(
                           stream: widget.invoiceBloc.clipboardInvoiceStream,
@@ -274,13 +291,6 @@ class HomeState extends State<Home> {
                                               groupAssetImage:
                                                   "src/icon/receive-action.png",
                                               withDivider: false),
-                                          DrawerItemConfigGroup([
-                                            DrawerItemConfig(
-                                                "/marketplace",
-                                                "Marketplace",
-                                                "src/icon/ic_market.png",
-                                                disabled: !account.connected),
-                                          ]),
                                           ...posItems,
                                           DrawerItemConfigGroup(
                                               _filterItems([
