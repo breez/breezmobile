@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:breez/bloc/invoice/actions.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/services/injector.dart';
@@ -14,7 +15,9 @@ import 'package:fixnum/fixnum.dart';
 import 'package:breez/services/lightning_links.dart';
 import 'package:breez/services/device.dart';
 
-class InvoiceBloc {
+import '../async_actions_handler.dart';
+
+class InvoiceBloc with AsyncActionsHandler {
   final _newInvoiceRequestController = StreamController<InvoiceRequestModel>();
   Sink<InvoiceRequestModel> get newInvoiceRequestSink =>
       _newInvoiceRequestController.sink;
@@ -39,23 +42,27 @@ class InvoiceBloc {
   Stream<bool> get paidInvoicesStream => _paidInvoicesController.stream;
 
   Int64 payBlankAmount = Int64(-1);
-  UserProfileBloc _userProfileBloc;
+  BreezBridge _breezLib;
   Device device;
 
-  InvoiceBloc(this._userProfileBloc) {
+  InvoiceBloc() {
     ServiceInjector injector = ServiceInjector();
-    BreezBridge breezLib = injector.breezBridge;
+    _breezLib = injector.breezBridge;
     NFCService nfc = injector.nfc;
     BreezServer server = injector.breezServer;
     Notifications notificationsService = injector.notifications;
     LightningLinksService lightningLinks = ServiceInjector().lightningLinks;
     device = injector.device;
 
-    _listenInvoiceRequests(breezLib, nfc);
-    _listenNFCStream(nfc, server, breezLib);
+    _listenInvoiceRequests(_breezLib, nfc);
+    _listenNFCStream(nfc, server, _breezLib);
     _listenIncomingInvoices(
-        notificationsService, breezLib, nfc, lightningLinks, device);
-    _listenPaidInvoices(breezLib);
+        notificationsService, _breezLib, nfc, lightningLinks, device);
+    _listenPaidInvoices(_breezLib);
+    registerAsyncHandlers({
+      NewInvoice: _newInvoice,      
+    });
+    listenActions();
   }
 
   Stream<String> get clipboardInvoiceStream =>
@@ -89,6 +96,17 @@ class InvoiceBloc {
         _readyInvoicesController.add(paymentRequest);
       }).catchError(_readyInvoicesController.addError);
     });
+  }
+
+  Future _newInvoice(NewInvoice action) async {
+    var invoiceRequest = action.request;
+    var payReq = await _breezLib
+          .addInvoice(invoiceRequest.amount,
+              payeeName: invoiceRequest.payeeName,
+              payeeImageURL: invoiceRequest.logo,
+              description: invoiceRequest.description,
+              expiry: invoiceRequest.expiry);
+    action.resolve(payReq);
   }
 
   void _listenNFCStream(
