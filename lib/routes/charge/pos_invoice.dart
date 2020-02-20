@@ -523,7 +523,7 @@ class POSInvoiceState extends State<POSInvoice> {
           .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize);
     }
     return acc.currency.format(Int64((charge).toInt()),
-        fixedDecimals: true, includeSymbol: false);
+        fixedDecimals: true, includeSymbol: false, userInput: true);
   }
 
   Int64 _satAmount(AccountModel acc) {
