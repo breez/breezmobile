@@ -45,3 +45,9 @@ class SetLockState extends AsyncAction {
 class StopBiometrics extends AsyncAction {}
 
 class CheckVersion extends AsyncAction {}
+
+class SetPOSFlavor extends AsyncAction {
+  final bool isPos;
+
+  SetPOSFlavor(this.isPos);
+}

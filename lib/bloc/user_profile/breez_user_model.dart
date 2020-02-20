@@ -14,6 +14,8 @@ class BreezUserModel {
   final String themeId;
   final bool locked;
   final bool registrationRequested;
+  final bool isPOS;
+  final double cancellationTimeoutValue;
 
   BreezUserModel._(this.userID, this.name, this.color, this.animal,
       {this.currency = Currency.SAT,
@@ -23,7 +25,9 @@ class BreezUserModel {
       this.locked,
       this.token = '',
       this.themeId = "BLUE",
-      this.registrationRequested = false});
+      this.registrationRequested = false,
+      this.isPOS = false,
+      this.cancellationTimeoutValue = 90.0});
 
   BreezUserModel copyWith(
       {String name,
@@ -37,7 +41,9 @@ class BreezUserModel {
       String token,
       String userID,
       String themeId,
-      bool registrationRequested}) {
+      bool registrationRequested,
+      bool isPOS,
+      double cancellationTimeoutValue}) {
     return BreezUserModel._(userID ?? this.userID, name ?? this.name,
         color ?? this.color, animal ?? this.animal,
         currency: currency ?? this.currency,
@@ -48,7 +54,10 @@ class BreezUserModel {
         token: token ?? this.token,
         themeId: themeId ?? this.themeId,
         registrationRequested:
-            registrationRequested ?? this.registrationRequested);
+            registrationRequested ?? this.registrationRequested,
+        isPOS: isPOS ?? this.isPOS,
+        cancellationTimeoutValue:
+            cancellationTimeoutValue ?? this.cancellationTimeoutValue);
   }
 
   bool get registered {
@@ -79,7 +88,11 @@ class BreezUserModel {
               ),
         themeId = json['themeId'] == null ? "BLUE" : json['themeId'],
         registrationRequested =
-            json['registrationRequested'] ?? json['token'] != null;
+            json['registrationRequested'] ?? json['token'] != null,
+        isPOS = json['isPOS'] ?? false,
+        cancellationTimeoutValue = json['cancellationTimeoutValue'] == null
+            ? 90.0
+            : json['cancellationTimeoutValue'];
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -92,6 +105,7 @@ class BreezUserModel {
         'image': image,
         'securityModel': securityModel?.toJson(),
         'themeId': themeId,
-        'registrationRequested': registrationRequested
+        'registrationRequested': registrationRequested,
+        'cancellationTimeoutValue': cancellationTimeoutValue
       };
 }

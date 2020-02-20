@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/routes/user/home/payment_item_avatar.dart';
+import 'package:breez/routes/home/payment_item_avatar.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
