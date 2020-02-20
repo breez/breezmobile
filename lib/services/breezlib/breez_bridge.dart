@@ -503,9 +503,8 @@ class BreezBridge {
     String lndDir = (await getApplicationDocumentsDirectory()).path;
     String network = config.get('Application Options', 'network');
     return [
-      '$lndDir/data/chain/bitcoin/$network/wallet.db',
-      '$lndDir/breez.db',
-      '$lndDir/data/graph/$network/channel.db'
+      '$lndDir/data/chain/bitcoin/$network/admin.macaroon',
+      '$lndDir/data/chain/bitcoin/$network/signer.macaroon'
     ];
   }
 }
