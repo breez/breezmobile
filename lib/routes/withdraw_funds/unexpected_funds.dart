@@ -4,8 +4,8 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/routes/user/withdraw_funds/sweep_all_coins_confirmation.dart';
-import 'package:breez/routes/user/withdraw_funds/withdraw_funds_page.dart';
+import 'sweep_all_coins_confirmation.dart';
+import 'withdraw_funds_page.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 

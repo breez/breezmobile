@@ -129,178 +129,200 @@ class DevViewState extends State<DevView> {
                       stream: addFundsBloc.addFundsSettingsStream,
                       builder: (context, addFundsSettingsSnapshot) {
                         return StreamBuilder<BreezUserModel>(
-                          stream: userBloc.userStream,
-                          builder: (context, userSnapshot) {
-                            return Scaffold(
-                              key: _scaffoldKey,
-                              appBar: AppBar(
-                                iconTheme: Theme.of(context).appBarTheme.iconTheme,
-                                textTheme: Theme.of(context).appBarTheme.textTheme,
-                                backgroundColor: Theme.of(context).canvasColor,
-                                leading: backBtn.BackButton(),
-                                elevation: 0.0,
-                                actions: <Widget>[
-                                  PopupMenuButton<Choice>(
-                                    onSelected: widget._select,
-                                    color: Theme.of(context).backgroundColor,
-                                    icon: Icon(
-                                      Icons.more_vert,
-                                      color: Theme.of(context).iconTheme.color,
-                                    ),
-                                    itemBuilder: (BuildContext context) {
-                                      return getChoices(
-                                              accBloc,
-                                              settingsSnapshot.data,
-                                              account,
-                                              addFundsBloc,
-                                              addFundsSettingsSnapshot.data,
-                                              userBloc,
-                                              userSnapshot.data)
-                                          .map((Choice choice) {
-                                        return PopupMenuItem<Choice>(
-                                          value: choice,
-                                          child: Text(choice.title,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .button),
-                                        );
-                                      }).toList();
-                                    },
-                                  ),
-                                ],
-                                title: Text(
-                                  "Developers",
-                                  style:
-                                      Theme.of(context).appBarTheme.textTheme.title,
-                                ),
-                              ),
-                              body: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 10.0),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Flexible(
-                                              child: TextField(
-                                            focusNode: _cliEntryFocusNode,
-                                            controller: _cliInputController,
-                                            decoration: InputDecoration(
-                                                hintText:
-                                                    'Enter a command or use the links below'),
-                                            onSubmitted: (command) {
-                                              _sendCommand(command);
-                                            },
-                                          )),
-                                          IconButton(
-                                            icon: Icon(Icons.play_arrow),
-                                            tooltip: 'Run',
-                                            onPressed: () {
-                                              _sendCommand(
-                                                  _cliInputController.text);
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: Icon(Icons.clear),
-                                            tooltip: 'Clear',
-                                            onPressed: () {
-                                              setState(() {
-                                                _cliInputController.clear();
-                                                _showDefaultCommands = true;
-                                                _cliText = "";
-                                                _richCliText =
-                                                    defaultCliCommandsText;
-                                              });
-                                            },
-                                          ),
-                                        ],
+                            stream: userBloc.userStream,
+                            builder: (context, userSnapshot) {
+                              return Scaffold(
+                                key: _scaffoldKey,
+                                appBar: AppBar(
+                                  iconTheme:
+                                      Theme.of(context).appBarTheme.iconTheme,
+                                  textTheme:
+                                      Theme.of(context).appBarTheme.textTheme,
+                                  backgroundColor:
+                                      Theme.of(context).canvasColor,
+                                  leading: backBtn.BackButton(),
+                                  elevation: 0.0,
+                                  actions: <Widget>[
+                                    PopupMenuButton<Choice>(
+                                      onSelected: widget._select,
+                                      color: Theme.of(context).backgroundColor,
+                                      icon: Icon(
+                                        Icons.more_vert,
+                                        color:
+                                            Theme.of(context).iconTheme.color,
                                       ),
+                                      itemBuilder: (BuildContext context) {
+                                        return getChoices(
+                                                accBloc,
+                                                settingsSnapshot.data,
+                                                account,
+                                                addFundsBloc,
+                                                addFundsSettingsSnapshot.data,
+                                                userBloc,
+                                                userSnapshot.data)
+                                            .map((Choice choice) {
+                                          return PopupMenuItem<Choice>(
+                                            value: choice,
+                                            child: Text(choice.title,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .button),
+                                          );
+                                        }).toList();
+                                      },
                                     ),
-                                    Expanded(
-                                        flex: 1,
-                                        child: Container(
-                                          padding: EdgeInsets.only(
-                                              top: 10.0, left: 10.0, right: 10.0),
-                                          child: Container(
-                                            padding: _showDefaultCommands
-                                                ? EdgeInsets.all(0.0)
-                                                : EdgeInsets.all(2.0),
-                                            decoration: BoxDecoration(
-                                                border: _showDefaultCommands
-                                                    ? null
-                                                    : Border.all(
-                                                        width: 1.0,
-                                                        color: Color(0x80FFFFFF))),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                _showDefaultCommands
-                                                    ? Container()
-                                                    : Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment.end,
-                                                        children: <Widget>[
-                                                          IconButton(
-                                                            icon: Icon(
-                                                                Icons.content_copy),
-                                                            tooltip:
-                                                                'Copy to Clipboard',
-                                                            iconSize: 19.0,
-                                                            onPressed: () {
-                                                              ServiceInjector().device.setClipboardText(_cliText);
-                                                              _scaffoldKey
-                                                                  .currentState
-                                                                  .showSnackBar(
-                                                                      SnackBar(
-                                                                content: Text(
-                                                                  'Copied to clipboard.',
-                                                                  style: theme
-                                                                      .snackBarStyle,
-                                                                ),
-                                                                backgroundColor: theme
-                                                                    .snackBarBackgroundColor,
-                                                                duration: Duration(
-                                                                    seconds: 2),
-                                                              ));
-                                                            },
-                                                          ),
-                                                          IconButton(
-                                                            icon: Icon(Icons.share),
-                                                            iconSize: 19.0,
-                                                            tooltip: 'Share',
-                                                            onPressed: () {
-                                                              ShareExtend.share(
-                                                                  _cliText, "text");
-                                                            },
-                                                          )
-                                                        ],
-                                                      ),
-                                                Expanded(
-                                                    child: SingleChildScrollView(
-                                                        child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    children: <Widget>[
-                                                      Expanded(
-                                                          child: RichText(
-                                                              text: TextSpan(
-                                                                  style:
-                                                                      _cliTextStyle,
-                                                                  children:
-                                                                      _richCliText)))
-                                                    ],
-                                                  ),
-                                                )))
-                                              ],
+                                  ],
+                                  title: Text(
+                                    "Developers",
+                                    style: Theme.of(context)
+                                        .appBarTheme
+                                        .textTheme
+                                        .title,
+                                  ),
+                                ),
+                                body: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Flexible(
+                                                child: TextField(
+                                              focusNode: _cliEntryFocusNode,
+                                              controller: _cliInputController,
+                                              decoration: InputDecoration(
+                                                  hintText:
+                                                      'Enter a command or use the links below'),
+                                              onSubmitted: (command) {
+                                                _sendCommand(command);
+                                              },
+                                            )),
+                                            IconButton(
+                                              icon: Icon(Icons.play_arrow),
+                                              tooltip: 'Run',
+                                              onPressed: () {
+                                                _sendCommand(
+                                                    _cliInputController.text);
+                                              },
                                             ),
-                                          ),
-                                        )),
-                                  ]),
-                            );
-                          }
-                        );
+                                            IconButton(
+                                              icon: Icon(Icons.clear),
+                                              tooltip: 'Clear',
+                                              onPressed: () {
+                                                setState(() {
+                                                  _cliInputController.clear();
+                                                  _showDefaultCommands = true;
+                                                  _cliText = "";
+                                                  _richCliText =
+                                                      defaultCliCommandsText;
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            padding: EdgeInsets.only(
+                                                top: 10.0,
+                                                left: 10.0,
+                                                right: 10.0),
+                                            child: Container(
+                                              padding: _showDefaultCommands
+                                                  ? EdgeInsets.all(0.0)
+                                                  : EdgeInsets.all(2.0),
+                                              decoration: BoxDecoration(
+                                                  border: _showDefaultCommands
+                                                      ? null
+                                                      : Border.all(
+                                                          width: 1.0,
+                                                          color: Color(
+                                                              0x80FFFFFF))),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  _showDefaultCommands
+                                                      ? Container()
+                                                      : Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .end,
+                                                          children: <Widget>[
+                                                            IconButton(
+                                                              icon: Icon(Icons
+                                                                  .content_copy),
+                                                              tooltip:
+                                                                  'Copy to Clipboard',
+                                                              iconSize: 19.0,
+                                                              onPressed: () {
+                                                                ServiceInjector()
+                                                                    .device
+                                                                    .setClipboardText(
+                                                                        _cliText);
+                                                                _scaffoldKey
+                                                                    .currentState
+                                                                    .showSnackBar(
+                                                                        SnackBar(
+                                                                  content: Text(
+                                                                    'Copied to clipboard.',
+                                                                    style: theme
+                                                                        .snackBarStyle,
+                                                                  ),
+                                                                  backgroundColor:
+                                                                      theme
+                                                                          .snackBarBackgroundColor,
+                                                                  duration:
+                                                                      Duration(
+                                                                          seconds:
+                                                                              2),
+                                                                ));
+                                                              },
+                                                            ),
+                                                            IconButton(
+                                                              icon: Icon(
+                                                                  Icons.share),
+                                                              iconSize: 19.0,
+                                                              tooltip: 'Share',
+                                                              onPressed: () {
+                                                                ShareExtend
+                                                                    .share(
+                                                                        _cliText,
+                                                                        "text");
+                                                              },
+                                                            )
+                                                          ],
+                                                        ),
+                                                  Expanded(
+                                                      child:
+                                                          SingleChildScrollView(
+                                                              child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Row(
+                                                      children: <Widget>[
+                                                        Expanded(
+                                                            child: RichText(
+                                                                text: TextSpan(
+                                                                    style:
+                                                                        _cliTextStyle,
+                                                                    children:
+                                                                        _richCliText)))
+                                                      ],
+                                                    ),
+                                                  )))
+                                                ],
+                                              ),
+                                            ),
+                                          )),
+                                    ]),
+                              );
+                            });
                       });
                 });
           }),
@@ -361,8 +383,7 @@ class DevViewState extends State<DevView> {
         icon: Icons.network_check,
         function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));
     choices.add(Choice(
-        title:
-            "Switch to ${userModel.isPOS ? 'User flavor' : 'POS flavor'}",
+        title: "Switch to ${userModel.isPOS ? 'User flavor' : 'POS flavor'}",
         icon: Icons.network_check,
         function: () => _setPOS(userBloc, !userModel.isPOS)));
     choices.add(Choice(
@@ -373,6 +394,23 @@ class DevViewState extends State<DevView> {
           var rescanFile = File(workingDir.path + "/$FORCE_RESCAN_FILE_NAME");
           await rescanFile.create(recursive: true);
           _promptForRestart();
+        }));
+    choices.add(Choice(
+        title: "Export DB Files",
+        icon: Icons.phone_android,
+        function: () async {
+          Directory tempDir = await getTemporaryDirectory();
+          tempDir = await tempDir.createTemp("graph");
+          var walletFiles =
+              await ServiceInjector().breezBridge.getWalletDBpFilePath();
+          var encoder = ZipFileEncoder();
+          var zipFile = '${tempDir.path}/wallet-files.zip';
+          encoder.create(zipFile);
+          walletFiles.forEach((f) {
+            encoder.addFile(File(f));
+          });
+          encoder.close();
+          ShareExtend.share(zipFile, "file");
         }));
 
     return choices;
@@ -411,8 +449,7 @@ class DevViewState extends State<DevView> {
         moonpayIpCheck: !addFundsSettings.moonpayIpCheck));
   }
 
-  void _setPOS(
-      UserProfileBloc userBloc, bool isPOS) {
+  void _setPOS(UserProfileBloc userBloc, bool isPOS) {
     userBloc.userActionsSink.add(SetPOSFlavor(isPOS));
   }
 
