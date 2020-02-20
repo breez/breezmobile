@@ -81,7 +81,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       child: Text(
         'CANCEL PAYMENT',
         textAlign: TextAlign.center,
-        style: theme.cancelButtonStyle,
+        style: Theme.of(context).primaryTextTheme.button,
       ),
       onPressed: () {
         Navigator.of(context).pop(false);
