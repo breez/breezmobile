@@ -1,10 +1,9 @@
-import 'dart:async';
 import 'dart:math';
-
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/invoice/actions.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -13,13 +12,13 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/pos_payment_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 import '../status_indicator.dart';
-
-var cancellationTimeoutValue;
 
 class POSInvoice extends StatefulWidget {
   POSInvoice();
@@ -34,111 +33,36 @@ class POSInvoiceState extends State<POSInvoice> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController _invoiceDescriptionController = TextEditingController();
-
-  BreezUserModel _userProfile;
-  Currency _currency = Currency.BTC;
   double itemHeight;
   double itemWidth;
-  Amount _amount;
 
-  Int64 _maxPaymentAmount;
-  Int64 _maxAllowedToReceive;
+  double amount = 0;
+  double currentAmount = 0;
+  bool _useFiat = false;
+
   bool _isButtonDisabled = false;
-
-  AccountBloc _accountBloc;
-  InvoiceBloc _invoiceBloc;
-  UserProfileBloc _userProfileBloc;
-
-  StreamSubscription<AccountModel> _accountSubscription;
-  StreamSubscription<BreezUserModel> _userProfileSubscription;
-  StreamSubscription<String> _invoiceReadyNotificationsSubscription;
-  StreamSubscription<String> _invoiceNotificationsSubscription;
-
   FocusNode _focusNode;
-  bool _isInit = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _amount = Amount(null, null, false, 0, 0, 0);
-  }
 
   @override
   void didChangeDependencies() {
-    if (!_isInit) {
-      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-      _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-      _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      registerListeners();
-      _isInit = true;
-    }
     itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
     itemWidth = (MediaQuery.of(context).size.width) / 2;
     super.didChangeDependencies();
   }
 
-  void registerListeners() {
-    _focusNode = FocusNode();
-    _focusNode.addListener(_onOnFocusNodeEvent);
-    _invoiceDescriptionController.text = "";
-    _accountSubscription = _accountBloc.accountStream.listen((acc) {
-      setState(() {
-        _currency = acc.currency;
-
-        _maxPaymentAmount = acc.maxPaymentAmount;
-        _maxAllowedToReceive = acc.maxAllowedToReceive;
-        _amount = _amount.copyWith(
-            currency: _currency, fiatConversion: acc.fiatCurrency);
-        _updateAmountControllers();
-      });
-    });
-    _userProfileSubscription = _userProfileBloc.userStream.listen((user) {
-      _userProfile = user;
-      cancellationTimeoutValue =
-          _userProfile.cancellationTimeoutValue.toStringAsFixed(0);
-    });
-    _invoiceReadyNotificationsSubscription = _invoiceBloc.readyInvoicesStream
-        .listen((invoiceReady) {
-      // show the simple dialog with 3 states
-      if (invoiceReady != null) {
-        showDialog<bool>(
-            useRootNavigator: false,
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return PosPaymentDialog(
-                  _invoiceBloc, _userProfileBloc, _scaffoldKey);
-            }).then((result) {
-          setState(() {
-            _clearCurrentAmounts();
-            _amount = _amount.copyWith(totalAmount: 0);
-            _updateAmountControllers();
-            _invoiceDescriptionController.text = "";
-          });
-        });
-      }
-    },
-            onError: (err) => _scaffoldKey.currentState.showSnackBar(SnackBar(
-                duration: Duration(seconds: 10),
-                content: Text(err.toString()))));
-  }
-
   @override
   void dispose() {
-    closeListeners();
     _focusNode?.dispose();
     super.dispose();
   }
 
-  void closeListeners() {
-    _accountSubscription?.cancel();
-    _userProfileSubscription?.cancel();
-    _invoiceReadyNotificationsSubscription?.cancel();
-    _invoiceNotificationsSubscription?.cancel();
-  }
-
   @override
   Widget build(BuildContext context) {
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    UserProfileBloc userProfileBloc =
+        AppBlocsProvider.of<UserProfileBloc>(context);
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       body: GestureDetector(
@@ -150,201 +74,220 @@ class POSInvoiceState extends State<POSInvoice> {
           });
         },
         child: Builder(builder: (BuildContext context) {
-          return Column(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      StreamBuilder<AccountSettings>(
-                          stream: _accountBloc.accountSettingsStream,
-                          builder: (settingCtx, settingSnapshot) {
-                            return StreamBuilder<AccountModel>(
-                                stream: _accountBloc.accountStream,
-                                builder: (context, snapshot) {
-                                  AccountModel acc = snapshot.data;
-                                  AccountSettings settings =
-                                      settingSnapshot.data;
-                                  if (settings?.showConnectProgress == true ||
-                                      acc?.isInitialBootstrap == true) {
-                                    return StatusIndicator(
-                                        context, snapshot.data);
-                                  }
-                                  return SizedBox();
-                                });
-                          }),
-                      Padding(
-                        padding:
-                            EdgeInsets.only(top: 0.0, left: 16.0, right: 16.0),
-                        child: ConstrainedBox(
-                          constraints:
-                              const BoxConstraints(minWidth: double.infinity),
-                          child: IgnorePointer(
-                            ignoring: _isButtonDisabled,
-                            child: RaisedButton(
-                              color: Theme.of(context).primaryColorLight,
-                              padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
-                              child: Text(
-                                "Charge ${_amount.totalSatAmount} ${_currency.symbol}"
-                                    .toUpperCase(),
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
-                                style: theme.invoiceChargeAmountStyle,
-                              ),
-                              onPressed: () => onInvoiceSubmitted(),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        height: 80.0,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              left: 16.0, right: 16.0, top: 0.0),
-                          child: TextField(
-                            focusNode: _focusNode,
-                            textInputAction: TextInputAction.done,
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            enabled: true,
-                            textAlign: TextAlign.left,
-                            maxLength: 90,
-                            maxLengthEnforced: true,
-                            controller: _invoiceDescriptionController,
-                            decoration: InputDecoration(
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  style: BorderStyle.solid,
-                                  color: Color(0xFFc5cedd),
-                                ),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  style: BorderStyle.solid,
-                                  color: Color(0xFFc5cedd),
-                                ),
-                              ),
-                              counterStyle:
-                                  Theme.of(context).primaryTextTheme.caption,
-                              hintText: 'Add Note',
-                              hintStyle: theme.invoiceMemoStyle.copyWith(
-                                  color: Theme.of(context)
-                                      .primaryTextTheme
-                                      .display1
-                                      .color),
-                            ),
-                            style: theme.invoiceMemoStyle.copyWith(
-                                color: Theme.of(context)
-                                    .primaryTextTheme
-                                    .display1
-                                    .color),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                        child: Row(children: <Widget>[
-                          Expanded(
-                              child: Text(
-                            _amount.amount,
-                            style: theme.invoiceAmountStyle.copyWith(
-                                color:
-                                    Theme.of(context).textTheme.headline.color),
-                            textAlign: TextAlign.right,
-                          )),
-                          Theme(
-                              data: Theme.of(context).copyWith(
-                                  canvasColor:
-                                      Theme.of(context).backgroundColor),
-                              child: new StreamBuilder<AccountSettings>(
-                                  stream: _accountBloc.accountSettingsStream,
-                                  builder: (settingCtx, settingSnapshot) {
-                                    return StreamBuilder<AccountModel>(
-                                        stream: _accountBloc.accountStream,
-                                        builder: (context, snapshot) {
-                                          AccountModel acc = snapshot.data;
-                                          return DropdownButtonHideUnderline(
-                                            child: ButtonTheme(
-                                              alignedDropdown: true,
-                                              child: BreezDropdownButton(
-                                                  onChanged: (value) =>
-                                                      changeCurrency(value),
-                                                  iconEnabledColor:
-                                                      Theme.of(context)
-                                                          .textTheme
-                                                          .headline
-                                                          .color,
-                                                  value: _amount.displayName,
-                                                  style: theme
-                                                      .invoiceAmountStyle
-                                                      .copyWith(
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .headline
-                                                                  .color),
-                                                  items: Currency.currencies
-                                                      .map((Currency value) {
-                                                    return DropdownMenuItem<
-                                                        String>(
-                                                      value: value.symbol,
-                                                      child: Text(
-                                                        value.displayName,
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                        style: theme
-                                                            .invoiceAmountStyle
-                                                            .copyWith(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .headline
-                                                                    .color),
-                                                      ),
-                                                    );
-                                                  }).toList()
-                                                        ..addAll(
-                                                          acc.fiatConversionList
-                                                              .map(
-                                                                  (FiatConversion
-                                                                      fiat) {
-                                                            return new DropdownMenuItem<
-                                                                String>(
-                                                              value: fiat
-                                                                  .currencyData
-                                                                  .shortName,
-                                                              child: new Text(
-                                                                fiat.currencyData
-                                                                    .shortName,
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .right,
-                                                                style: theme.invoiceAmountStyle.copyWith(
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .textTheme
-                                                                        .headline
-                                                                        .color),
-                                                              ),
-                                                            );
-                                                          }).toList(),
-                                                        )),
+          return StreamBuilder<BreezUserModel>(
+              stream: userProfileBloc.userStream,
+              builder: (context, snapshot) {
+                var userProfile = snapshot.data;
+                if (userProfile == null) {
+                  return Loader();
+                }
+                return StreamBuilder<AccountModel>(
+                    stream: accountBloc.accountStream,
+                    builder: (context, snapshot) {
+                      var accountModel = snapshot.data;
+                      if (accountModel == null) {
+                        return Loader();
+                      }
+                      return Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          Container(
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  StreamBuilder<AccountSettings>(
+                                      stream: accountBloc.accountSettingsStream,
+                                      builder: (settingCtx, settingSnapshot) {
+                                        AccountSettings settings =
+                                            settingSnapshot.data;
+                                        if (settings?.showConnectProgress ==
+                                                true ||
+                                            accountModel.isInitialBootstrap ==
+                                                true) {
+                                          return StatusIndicator(
+                                              context, snapshot.data);
+                                        }
+                                        return SizedBox();
+                                      }),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 0.0, left: 16.0, right: 16.0),
+                                    child: ConstrainedBox(
+                                      constraints: const BoxConstraints(
+                                          minWidth: double.infinity),
+                                      child: IgnorePointer(
+                                        ignoring: _isButtonDisabled,
+                                        child: RaisedButton(
+                                          color: Theme.of(context)
+                                              .primaryColorLight,
+                                          padding: EdgeInsets.only(
+                                              top: 14.0, bottom: 14.0),
+                                          child: Text(
+                                            "Charge ${_formattedTotalCharge(accountModel)} ${_currencySymbol(accountModel)}"
+                                                .toUpperCase(),
+                                            maxLines: 1,
+                                            textAlign: TextAlign.center,
+                                            style:
+                                                theme.invoiceChargeAmountStyle,
+                                          ),
+                                          onPressed: () => onInvoiceSubmitted(
+                                              invoiceBloc,
+                                              userProfile,
+                                              accountModel),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 80.0,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 16.0, right: 16.0, top: 0.0),
+                                      child: TextField(
+                                        focusNode: _focusNode,
+                                        textInputAction: TextInputAction.done,
+                                        keyboardType: TextInputType.multiline,
+                                        maxLines: null,
+                                        enabled: true,
+                                        textAlign: TextAlign.left,
+                                        maxLength: 90,
+                                        maxLengthEnforced: true,
+                                        controller:
+                                            _invoiceDescriptionController,
+                                        decoration: InputDecoration(
+                                          focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              style: BorderStyle.solid,
+                                              color: Color(0xFFc5cedd),
                                             ),
-                                          );
-                                        });
-                                  })),
-                        ]),
-                      ),
-                    ],
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
-                  ),
-                  height: MediaQuery.of(context).size.height * 0.29),
-              Expanded(child: _numPad())
-            ],
-          );
+                                          ),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              style: BorderStyle.solid,
+                                              color: Color(0xFFc5cedd),
+                                            ),
+                                          ),
+                                          counterStyle: Theme.of(context)
+                                              .primaryTextTheme
+                                              .caption,
+                                          hintText: 'Add Note',
+                                          hintStyle: theme.invoiceMemoStyle
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .primaryTextTheme
+                                                      .display1
+                                                      .color),
+                                        ),
+                                        style: theme.invoiceMemoStyle.copyWith(
+                                            color: Theme.of(context)
+                                                .primaryTextTheme
+                                                .display1
+                                                .color),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 16.0, right: 16.0),
+                                    child: Row(children: <Widget>[
+                                      Expanded(
+                                          child: Text(
+                                        _formattedCurrentCharge(accountModel),
+                                        style: theme.invoiceAmountStyle
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .headline
+                                                    .color),
+                                        textAlign: TextAlign.right,
+                                      )),
+                                      Theme(
+                                          data: Theme.of(context).copyWith(
+                                              canvasColor: Theme.of(context)
+                                                  .backgroundColor),
+                                          child:
+                                              new StreamBuilder<
+                                                      AccountSettings>(
+                                                  stream: accountBloc
+                                                      .accountSettingsStream,
+                                                  builder: (settingCtx,
+                                                      settingSnapshot) {
+                                                    return StreamBuilder<
+                                                            AccountModel>(
+                                                        stream: accountBloc
+                                                            .accountStream,
+                                                        builder: (context,
+                                                            snapshot) {
+                                                          return DropdownButtonHideUnderline(
+                                                            child: ButtonTheme(
+                                                              alignedDropdown:
+                                                                  true,
+                                                              child:
+                                                                  BreezDropdownButton(
+                                                                      onChanged: (value) => changeCurrency(
+                                                                          value,
+                                                                          userProfileBloc),
+                                                                      iconEnabledColor: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .headline
+                                                                          .color,
+                                                                      value: _currencySymbol(
+                                                                          accountModel),
+                                                                      style: theme.invoiceAmountStyle.copyWith(
+                                                                          color: Theme.of(context)
+                                                                              .textTheme
+                                                                              .headline
+                                                                              .color),
+                                                                      items: Currency
+                                                                          .currencies
+                                                                          .map((Currency
+                                                                              value) {
+                                                                        return DropdownMenuItem<
+                                                                            String>(
+                                                                          value:
+                                                                              value.symbol,
+                                                                          child:
+                                                                              Text(
+                                                                            value.displayName,
+                                                                            textAlign:
+                                                                                TextAlign.right,
+                                                                            style:
+                                                                                theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                          ),
+                                                                        );
+                                                                      }).toList()
+                                                                            ..addAll(
+                                                                              accountModel.fiatConversionList.map((FiatConversion fiat) {
+                                                                                return new DropdownMenuItem<String>(
+                                                                                  value: fiat.currencyData.shortName,
+                                                                                  child: new Text(
+                                                                                    fiat.currencyData.shortName,
+                                                                                    textAlign: TextAlign.right,
+                                                                                    style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                                  ),
+                                                                                );
+                                                                              }).toList(),
+                                                                            )),
+                                                            ),
+                                                          );
+                                                        });
+                                                  })),
+                                    ]),
+                                  ),
+                                ],
+                              ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).backgroundColor,
+                              ),
+                              height:
+                                  MediaQuery.of(context).size.height * 0.29),
+                          Expanded(child: _numPad())
+                        ],
+                      );
+                    });
+              });
         }),
       ),
     );
@@ -356,15 +299,13 @@ class POSInvoiceState extends State<POSInvoice> {
     });
   }
 
-  onInvoiceSubmitted() {
-    if (_userProfile.name == null || _userProfile.avatarURL == null) {
+  onInvoiceSubmitted(
+      InvoiceBloc invoiceBloc, BreezUserModel user, AccountModel account) {
+    if (user.name == null || user.avatarURL == null) {
       String errorMessage = "Please";
-      if (_userProfile.name == null)
-        errorMessage += " enter your business name";
-      if (_userProfile.avatarURL == null && _userProfile.name == null)
-        errorMessage += " and ";
-      if (_userProfile.avatarURL == null)
-        errorMessage += " select a business logo";
+      if (user.name == null) errorMessage += " enter your business name";
+      if (user.avatarURL == null && user.name == null) errorMessage += " and ";
+      if (user.avatarURL == null) errorMessage += " select a business logo";
       return showDialog<Null>(
           useRootNavigator: false,
           context: context,
@@ -394,117 +335,98 @@ class POSInvoiceState extends State<POSInvoice> {
             );
           });
     } else {
-      if (_amount.totalAmount == 0 && _amount.currentAmount > 0) {
-        _amount = _amount.copyWith(totalAmount: _amount.currentAmount);
-      }
-
-      if (_amount.totalAmount == 0) {
+      var satAmount = _satAmount(account);
+      if (satAmount == 0) {
         return null;
-      } else if (_amount.totalAmount > _maxAllowedToReceive.toInt()) {
+      } else if (satAmount > account.maxAllowedToReceive) {
         promptError(
             context,
             "You don't have the capacity to receive such payment.",
             Text(
-                "Maximum payment size you can receive is ${_currency.format(_maxAllowedToReceive, includeSymbol: true)}. Please enter a smaller value.",
+                "Maximum payment size you can receive is ${account.currency.format(account.maxAllowedToReceive, includeSymbol: true)}. Please enter a smaller value.",
                 style: Theme.of(context).dialogTheme.contentTextStyle));
-      } else if (_amount.totalAmount < _maxPaymentAmount.toInt() ||
-          _amount.totalAmount < _maxPaymentAmount.toInt()) {
-        _invoiceBloc.newInvoiceRequestSink.add(InvoiceRequestModel(
-            _userProfile.name,
-            _invoiceDescriptionController.text,
-            _userProfile.avatarURL,
-            Int64(_amount.totalAmount),
-            expiry: Int64(int.parse(cancellationTimeoutValue))));
+      } else if (satAmount < account.maxPaymentAmount) {
+        var newInvoiceAction = NewInvoice(InvoiceRequestModel(user.name,
+            _invoiceDescriptionController.text, user.avatarURL, satAmount,
+            expiry: Int64(user.cancellationTimeoutValue.toInt())));
+        invoiceBloc.actionsSink.add(newInvoiceAction);
+        newInvoiceAction.future.then((value) {
+          return showPaymentDialog(invoiceBloc, user, value as String);
+        }).catchError((error) {
+          showFlushbar(context,
+              message: error.toString(), duration: Duration(seconds: 10));
+        });
       } else {
         promptError(
             context,
             "You have exceeded the maximum payment size.",
             Text(
-                "Maximum payment size on the Lightning Network is ${_currency.format(_maxPaymentAmount, includeSymbol: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
+                "Maximum payment size on the Lightning Network is ${account.currency.format(account.maxPaymentAmount, includeSymbol: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
                 style: Theme.of(context).dialogTheme.contentTextStyle));
       }
     }
   }
 
+  Future showPaymentDialog(
+      InvoiceBloc invoiceBloc, BreezUserModel user, String payReq) {
+    return showDialog<bool>(
+        useRootNavigator: false,
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return PosPaymentDialog(invoiceBloc, user, payReq);
+        }).then((result) {
+      setState(() {
+        clearSale();
+      });
+    });
+  }
+
   onAddition() {
     setState(() {
-      _amount = _amount.copyWith(
-          totalAmount: _amount.totalAmount + _amount.currentAmount);
-      _clearCurrentAmounts();
-      _updateAmountControllers();
+      amount += currentAmount;
+      currentAmount = 0;
     });
   }
 
   onNumButtonPressed(String numberText) {
     setState(() {
-      if (!_amount.useFiatCurrency) {
-        _amount = _amount.copyWith(
-            currentAmount: _amount.currentAmount * 10 + int.parse(numberText));
-      } else {
-        _amount = _amount.copyWith(
-            currentAmount: _amount.fiatConversion
-                .fiatToSat(_amount.currentFiatAmount)
-                .toInt(),
-            currentFiatAmount: _amount.currentFiatAmount * 10 +
-                int.parse(numberText) /
-                    pow(10, _amount.fiatConversion.currencyData.fractionSize));
-      }
-      _updateAmountControllers();
+      currentAmount = currentAmount * 10 + int.parse(numberText);
     });
   }
 
-  changeCurrency(value) {
+  changeCurrency(value, UserProfileBloc userProfileBloc) {
     setState(() {
       Currency currency = Currency.fromSymbol(value);
       if (currency != null) {
-        if (_amount.useFiatCurrency) {
-          // We are switching back from fiat
-          _clearCurrentAmounts();
-          _amount = _amount.copyWith(totalAmount: 0, useFiatCurrency: false);
-        }
-        _userProfileBloc.currencySink.add(currency);
+        userProfileBloc.currencySink.add(currency);
       } else {
-        _amount = _amount.copyWith(totalAmount: 0, useFiatCurrency: true);
-        _userProfileBloc.fiatConversionSink.add(value);
+        userProfileBloc.fiatConversionSink.add(value);
       }
-      _updateAmountControllers();
+
+      bool flipFiat = _useFiat == (currency != null);
+      if (flipFiat) {
+        _useFiat = !_useFiat;
+        _clearAmounts(clearTotal: true);
+      }
     });
   }
 
-  _clearCurrentAmounts() {
+  _clearAmounts({bool clearTotal = false}) {
     setState(() {
-      _amount = _amount.copyWith(currentAmount: 0, currentFiatAmount: 0);
-      _updateAmountControllers();
-    });
-  }
-
-  _updateAmountControllers() {
-    if (_amount.useFiatCurrency) {
-      _amount = _amount.copyWith(
-          currentAmount: _amount.fiatConversion
-              .fiatToSat(_amount.currentFiatAmount)
-              .toInt());
-    }
-  }
-
-  onClear() {
-    setState(() {
-      _clearCurrentAmounts();
-      _updateAmountControllers();
+      amount = currentAmount = 0;
     });
   }
 
   clearSale() {
     setState(() {
-      _clearCurrentAmounts();
-      _amount = _amount.copyWith(totalAmount: 0);
-      _updateAmountControllers();
+      _clearAmounts(clearTotal: true);
       _invoiceDescriptionController.text = "";
     });
   }
 
   approveClear() {
-    if (_amount.totalAmount + _amount.currentAmount != 0) {
+    if (amount > 0 || currentAmount > 0) {
       AlertDialog dialog = AlertDialog(
         title: Text(
           "Clear Sale?",
@@ -563,7 +485,7 @@ class POSInvoiceState extends State<POSInvoice> {
               child: GestureDetector(
                   onLongPress: approveClear,
                   child: FlatButton(
-                      onPressed: onClear,
+                      onPressed: _clearAmounts,
                       child: Text("C", style: theme.numPadNumberStyle)))),
           _numberButton("0"),
           Container(
@@ -575,47 +497,34 @@ class POSInvoiceState extends State<POSInvoice> {
                   child: Text("+", style: theme.numPadAdditionStyle))),
         ]).toList());
   }
-}
 
-class Amount {
-  Currency currency;
-  FiatConversion fiatConversion;
-  bool useFiatCurrency;
-  int currentAmount;
-  int totalAmount;
-  double currentFiatAmount;
-
-  Amount(this.currency, this.fiatConversion, this.useFiatCurrency,
-      this.currentAmount, this.totalAmount, this.currentFiatAmount);
-
-  Amount copyWith(
-      {Currency currency,
-      FiatConversion fiatConversion,
-      bool useFiatCurrency,
-      int currentAmount,
-      int totalAmount,
-      double currentFiatAmount}) {
-    return Amount(
-        currency ?? this.currency,
-        fiatConversion ?? this.fiatConversion,
-        useFiatCurrency ?? this.useFiatCurrency,
-        currentAmount ?? this.currentAmount,
-        totalAmount ?? this.totalAmount,
-        currentFiatAmount ?? this.currentFiatAmount);
+  String _formattedTotalCharge(AccountModel acc) {
+    return _formatedCharge(acc, amount + currentAmount);
   }
 
-  String get amount => useFiatCurrency ? fiatAmount : satAmount;
+  String _formattedCurrentCharge(AccountModel acc) {
+    return _formatedCharge(acc, currentAmount);
+  }
 
-  String get displayName =>
-      useFiatCurrency ? fiatConversion.currencyData.shortName : currency.symbol;
+  String _currencySymbol(AccountModel accountModel) {
+    return _useFiat
+        ? accountModel.fiatCurrency.currencyData.shortName
+        : accountModel.currency.symbol;
+  }
 
-  String get satAmount => currency.format((Int64(currentAmount)),
-      fixedDecimals: true, includeSymbol: false);
+  String _formatedCharge(AccountModel acc, double charge) {
+    if (_useFiat) {
+      return (charge)
+          .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize);
+    }
+    return acc.currency.format(Int64((charge).toInt()),
+        fixedDecimals: true, includeSymbol: false);
+  }
 
-  String get fiatAmount => currentFiatAmount
-      .toStringAsFixed(fiatConversion.currencyData.fractionSize);
-
-  String get totalSatAmount =>
-      currency.format((Int64(totalAmount + currentAmount)),
-          fixedDecimals: true, includeSymbol: false);
+  Int64 _satAmount(AccountModel acc) {
+    if (_useFiat) {
+      return acc.fiatCurrency.fiatToSat(amount + currentAmount);
+    }
+    return acc.currency.parse(_formattedTotalCharge(acc));
+  }
 }
