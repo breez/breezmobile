@@ -125,7 +125,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                           padding: EdgeInsets.only(
                                               top: 14.0, bottom: 14.0),
                                           child: Text(
-                                            "Charge ${_formattedTotalCharge(accountModel)} ${_currencySymbol(accountModel)}"
+                                            "Charge ${_cryptoAmount(accountModel)}"
                                                 .toUpperCase(),
                                             maxLines: 1,
                                             textAlign: TextAlign.center,
@@ -524,6 +524,11 @@ class POSInvoiceState extends State<POSInvoice> {
     }
     return acc.currency.format(Int64((charge).toInt()),
         fixedDecimals: true, includeSymbol: false, userInput: true);
+  }
+
+  String _cryptoAmount(AccountModel acc) {
+    return acc.currency.format(_satAmount(acc),
+        fixedDecimals: true, userInput: false, includeSymbol: true);
   }
 
   Int64 _satAmount(AccountModel acc) {
