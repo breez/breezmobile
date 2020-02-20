@@ -2,14 +2,13 @@ import 'dart:async';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:share_extend/share_extend.dart';
 
 class QrCodeDialog extends StatefulWidget {
@@ -161,7 +160,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                         Container(
                           width: 230.0,
                           height: 230.0,
-                          color: Colors.white,
+                          color: Theme.of(context).accentColor,
                           child: CompactQRImage(
                             data: snapshot.data,
                           ),

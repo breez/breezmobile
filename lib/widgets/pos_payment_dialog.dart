@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/countdown.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -106,11 +104,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                             child: Container(
                                 height: 230.0,
                                 width: 230.0,
-                                child: AspectRatio(
-                                    aspectRatio: 1.0,
-                                    child: CompactQRImage(
-                                      data: widget.paymentRequest,
-                                    ))))),
+                                color: Theme.of(context).accentColor,
+                                child: CompactQRImage(
+                                  data: widget.paymentRequest,
+                                )))),
                     Padding(
                         padding: EdgeInsets.only(top: 15.0),
                         child: Text(_countdownString,
