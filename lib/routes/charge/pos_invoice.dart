@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -283,7 +284,7 @@ class POSInvoiceState extends State<POSInvoice> {
                               ),
                               height:
                                   MediaQuery.of(context).size.height * 0.29),
-                          Expanded(child: _numPad())
+                          Expanded(child: _numPad(accountModel))
                         ],
                       );
                     });
@@ -389,9 +390,13 @@ class POSInvoiceState extends State<POSInvoice> {
     });
   }
 
-  onNumButtonPressed(String numberText) {
+  onNumButtonPressed(String numberText, AccountModel acc) {
     setState(() {
-      currentAmount = currentAmount * 10 + int.parse(numberText);
+      currentAmount = _useFiat
+          ? currentAmount * 10 +
+              int.parse(numberText) /
+                  pow(10, acc.fiatCurrency.currencyData.fractionSize)
+          : currentAmount * 10 + int.parse(numberText);
     });
   }
 
@@ -456,7 +461,7 @@ class POSInvoiceState extends State<POSInvoice> {
     }
   }
 
-  Container _numberButton(String number) {
+  Container _numberButton(String number, AccountModel acc) {
     return Container(
         decoration: BoxDecoration(
             border: Border.all(
@@ -464,19 +469,19 @@ class POSInvoiceState extends State<POSInvoice> {
         child: IgnorePointer(
             ignoring: _isButtonDisabled,
             child: FlatButton(
-                onPressed: () => onNumButtonPressed(number),
+                onPressed: () => onNumButtonPressed(number, acc),
                 child: Text(number,
                     textAlign: TextAlign.center,
                     style: theme.numPadNumberStyle))));
   }
 
-  Widget _numPad() {
+  Widget _numPad(AccountModel acc) {
     return GridView.count(
         crossAxisCount: 3,
         childAspectRatio: (itemWidth / itemHeight),
         padding: EdgeInsets.zero,
         children: List<int>.generate(9, (i) => i)
-            .map((index) => _numberButton((index + 1).toString()))
+            .map((index) => _numberButton((index + 1).toString(), acc))
             .followedBy([
           Container(
               decoration: BoxDecoration(
@@ -487,7 +492,7 @@ class POSInvoiceState extends State<POSInvoice> {
                   child: FlatButton(
                       onPressed: _clearAmounts,
                       child: Text("C", style: theme.numPadNumberStyle)))),
-          _numberButton("0"),
+          _numberButton("0", acc),
           Container(
               decoration: BoxDecoration(
                   border: Border.all(
