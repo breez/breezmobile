@@ -259,6 +259,7 @@ Widget _actionTile(
       title: Text(action.title, style: itemStyle),
       trailing: action.onToggle != null
           ? Switch(
+              activeColor: Colors.white,
               value: action.toggleValue,
               onChanged: (_) {
                 action.onToggle();
