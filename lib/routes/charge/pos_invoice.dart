@@ -45,6 +45,13 @@ class POSInvoiceState extends State<POSInvoice> {
   FocusNode _focusNode;
 
   @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    _focusNode.addListener(_onOnFocusNodeEvent);
+  }
+
+  @override
   void didChangeDependencies() {
     itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
     itemWidth = (MediaQuery.of(context).size.width) / 2;
