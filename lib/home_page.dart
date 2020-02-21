@@ -158,8 +158,8 @@ class HomeState extends State<Home> {
                         ];
                       }
 
-                      var posItems = <DrawerItemConfigGroup>[];
-                      posItems = [
+                      var flavorItems = <DrawerItemConfigGroup>[];
+                      flavorItems = [
                         DrawerItemConfigGroup([
                           user.isPOS
                               ? DrawerItemConfig("/transactions",
@@ -169,25 +169,19 @@ class HomeState extends State<Home> {
                                   disabled: !account.connected)
                         ])
                       ];
-                      var advancedPosItems = List<DrawerItemConfig>();
-                      advancedPosItems = user.isPOS
-                          ? [
-                              DrawerItemConfig(
-                                  "/settings", "POS Settings", "src/icon/settings.png"),
-                              DrawerItemConfig("", "Wallet Mode", "src/icon/wallet.png",
-                                  onItemSelected: (test) {
-                                widget.userProfileBloc.userActionsSink
-                                    .add(SetPOSFlavor(!user.isPOS));
-                              })
-                            ]
-                          : [
-                              DrawerItemConfig(
-                                  "", "POS Mode", "src/icon/pos.png",
-                                  onItemSelected: (test) {
-                                widget.userProfileBloc.userActionsSink
-                                    .add(SetPOSFlavor(!user.isPOS));
-                              }),
-                            ];
+                      var advancedFlavorItems = List<DrawerItemConfig>();
+                      advancedFlavorItems = [
+                        DrawerItemConfig(
+                          user.isPOS ? "/settings" : "",
+                          "Pos Mode",
+                          "src/icon/pos.png",
+                          toggleValue: user.isPOS,
+                          onToggle: () {
+                            widget.userProfileBloc.userActionsSink
+                                .add(SetPOSFlavor(!user.isPOS));
+                          },
+                        )
+                      ];
 
                       return StreamBuilder<String>(
                           stream: widget.invoiceBloc.clipboardInvoiceStream,
@@ -291,7 +285,7 @@ class HomeState extends State<Home> {
                                               groupAssetImage:
                                                   "src/icon/receive-action.png",
                                               withDivider: false),
-                                          ...posItems,
+                                          ...flavorItems,
                                           DrawerItemConfigGroup(
                                               _filterItems([
                                                 DrawerItemConfig(
@@ -302,7 +296,7 @@ class HomeState extends State<Home> {
                                                     "/security",
                                                     "Security & Backup",
                                                     "src/icon/security.png"),
-                                                ...advancedPosItems,
+                                                ...advancedFlavorItems,
                                                 DrawerItemConfig(
                                                     "/developers",
                                                     "Developers",
