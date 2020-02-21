@@ -23,6 +23,7 @@ class Currency extends Object {
           fixedDecimals: fixedDecimals,
           userInput: userInput);
   Int64 parse(String amountStr) => _CurrencyFormatter().parse(amountStr, this);
+  Int64 toSats(double amount) => _CurrencyFormatter().toSats(amount, this);
   String get displayName => symbol == "Sat" ? "sats" : symbol;
 }
 
@@ -81,13 +82,17 @@ class _CurrencyFormatter {
   }
 
   Int64 parse(String amount, Currency currency) {
+    return toSats(double.parse(amount), currency);
+  }
+
+  Int64 toSats(double amount, Currency currency) {
     switch (currency) {
       case Currency.BTC:
-        return Int64((double.parse(amount) * 100000000).round());
+        return Int64((amount * 100000000).round());
       case Currency.SAT:
-        return Int64(int.parse(amount));
+        return Int64(amount.toInt());
       default:
-        return Int64((double.parse(amount) * 100000000).round());
+        return Int64((amount * 100000000).round());
     }
   }
 }

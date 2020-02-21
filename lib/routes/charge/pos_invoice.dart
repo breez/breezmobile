@@ -226,6 +226,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                               child:
                                                                   BreezDropdownButton(
                                                                       onChanged: (value) => changeCurrency(
+                                                                        accountModel,
                                                                           value,
                                                                           userProfileBloc),
                                                                       iconEnabledColor: Theme.of(
@@ -283,7 +284,7 @@ class POSInvoiceState extends State<POSInvoice> {
                               ),
                               height:
                                   MediaQuery.of(context).size.height * 0.29),
-                          Expanded(child: _numPad())
+                          Expanded(child: _numPad(accountModel))
                         ],
                       );
                     });
@@ -291,12 +292,6 @@ class POSInvoiceState extends State<POSInvoice> {
         }),
       ),
     );
-  }
-
-  _onOnFocusNodeEvent() {
-    setState(() {
-      _isButtonDisabled = true;
-    });
   }
 
   onInvoiceSubmitted(
@@ -335,7 +330,7 @@ class POSInvoiceState extends State<POSInvoice> {
             );
           });
     } else {
-      var satAmount = _satAmount(account);
+      var satAmount = _satAmount(account, amount + currentAmount);
       if (satAmount == 0) {
         return null;
       } else if (satAmount > account.maxAllowedToReceive) {
@@ -389,13 +384,17 @@ class POSInvoiceState extends State<POSInvoice> {
     });
   }
 
-  onNumButtonPressed(String numberText) {
+  onNumButtonPressed(AccountModel accountModel, String numberText) {
     setState(() {
-      currentAmount = currentAmount * 10 + int.parse(numberText);
+      double addition = int.parse(numberText).toDouble();
+      if (_useFiat) {
+        addition = addition / pow(10, accountModel.fiatCurrency.currencyData.fractionSize);
+      }
+      currentAmount = currentAmount * 10 + addition;
     });
   }
 
-  changeCurrency(value, UserProfileBloc userProfileBloc) {
+  changeCurrency(AccountModel accountModel, value, UserProfileBloc userProfileBloc) {
     setState(() {
       Currency currency = Currency.fromSymbol(value);
       if (currency != null) {
@@ -405,9 +404,16 @@ class POSInvoiceState extends State<POSInvoice> {
       }
 
       bool flipFiat = _useFiat == (currency != null);
+      Int64 oldSatAmount = _satAmount(accountModel, amount);
+      Int64 oldCurrentSatAmount = _satAmount(accountModel, currentAmount);
       if (flipFiat) {
         _useFiat = !_useFiat;
-        _clearAmounts(clearTotal: true);
+        currentAmount = oldCurrentSatAmount.toDouble();
+        amount = oldSatAmount.toDouble();
+        if (_useFiat) {
+          amount = accountModel.fiatCurrency.satToFiat(oldSatAmount);
+          currentAmount = accountModel.fiatCurrency.satToFiat(oldCurrentSatAmount);
+        }
       }
     });
   }
@@ -456,7 +462,7 @@ class POSInvoiceState extends State<POSInvoice> {
     }
   }
 
-  Container _numberButton(String number) {
+  Container _numberButton(AccountModel accountModel, String number) {
     return Container(
         decoration: BoxDecoration(
             border: Border.all(
@@ -464,19 +470,19 @@ class POSInvoiceState extends State<POSInvoice> {
         child: IgnorePointer(
             ignoring: _isButtonDisabled,
             child: FlatButton(
-                onPressed: () => onNumButtonPressed(number),
+                onPressed: () => onNumButtonPressed(accountModel, number),
                 child: Text(number,
                     textAlign: TextAlign.center,
                     style: theme.numPadNumberStyle))));
   }
 
-  Widget _numPad() {
+  Widget _numPad(AccountModel accountModel) {
     return GridView.count(
         crossAxisCount: 3,
         childAspectRatio: (itemWidth / itemHeight),
         padding: EdgeInsets.zero,
         children: List<int>.generate(9, (i) => i)
-            .map((index) => _numberButton((index + 1).toString()))
+            .map((index) => _numberButton(accountModel, (index + 1).toString()))
             .followedBy([
           Container(
               decoration: BoxDecoration(
@@ -487,7 +493,7 @@ class POSInvoiceState extends State<POSInvoice> {
                   child: FlatButton(
                       onPressed: _clearAmounts,
                       child: Text("C", style: theme.numPadNumberStyle)))),
-          _numberButton("0"),
+          _numberButton(accountModel, "0"),
           Container(
               decoration: BoxDecoration(
                   border: Border.all(
@@ -521,10 +527,10 @@ class POSInvoiceState extends State<POSInvoice> {
         fixedDecimals: true, includeSymbol: false);
   }
 
-  Int64 _satAmount(AccountModel acc) {
+  Int64 _satAmount(AccountModel acc, double nativeAmount) {
     if (_useFiat) {
-      return acc.fiatCurrency.fiatToSat(amount + currentAmount);
+      return acc.fiatCurrency.fiatToSat(nativeAmount);
     }
-    return acc.currency.parse(_formattedTotalCharge(acc));
+    return acc.currency.toSats(nativeAmount);
   }
 }
