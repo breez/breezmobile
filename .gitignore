@@ -9,6 +9,7 @@ lib/services/breez_server/protobuf/breez.proto
 build/
 packages
 .flutter-plugins
+.flutter-plugins-dependencies
 /conf/testnet
 /conf/simnet
 /conf/mainnet
