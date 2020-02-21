@@ -31,8 +31,6 @@ class POSInvoice extends StatefulWidget {
 }
 
 class POSInvoiceState extends State<POSInvoice> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   TextEditingController _invoiceDescriptionController = TextEditingController();
   double itemHeight;
   double itemWidth;
@@ -511,11 +509,11 @@ class POSInvoiceState extends State<POSInvoice> {
   }
 
   String _formattedTotalCharge(AccountModel acc) {
-    return _formatedCharge(acc, amount + currentAmount);
+    return _formattedCharge(acc, amount + currentAmount);
   }
 
   String _formattedCurrentCharge(AccountModel acc) {
-    return _formatedCharge(acc, currentAmount);
+    return _formattedCharge(acc, currentAmount);
   }
 
   String _currencySymbol(AccountModel accountModel) {
@@ -524,7 +522,7 @@ class POSInvoiceState extends State<POSInvoice> {
         : accountModel.currency.symbol;
   }
 
-  String _formatedCharge(AccountModel acc, double charge) {
+  String _formattedCharge(AccountModel acc, double charge) {
     if (_useFiat) {
       return (charge)
           .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize);
