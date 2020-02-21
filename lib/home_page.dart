@@ -173,7 +173,7 @@ class HomeState extends State<Home> {
                       advancedFlavorItems = [
                         DrawerItemConfig(
                           user.isPOS ? "/settings" : "",
-                          "Pos Mode",
+                          "POS",
                           "src/icon/pos.png",
                           toggleValue: user.isPOS,
                           onToggle: () {
