@@ -416,16 +416,9 @@ class POSInvoiceState extends State<POSInvoice> {
       }
 
       bool flipFiat = _useFiat == (currency != null);
-      Int64 oldSatAmount = _satAmount(accountModel, amount);
-      Int64 oldCurrentSatAmount = _satAmount(accountModel, currentAmount);
       if (flipFiat) {
         _useFiat = !_useFiat;
-        currentAmount = oldCurrentSatAmount.toDouble();
-        amount = oldSatAmount.toDouble();
-        if (_useFiat) {
-          amount = accountModel.fiatCurrency.satToFiat(oldSatAmount);
-          currentAmount = accountModel.fiatCurrency.satToFiat(oldCurrentSatAmount);
-        }
+        _clearAmounts(clearTotal: true);
       }
     });
   }
