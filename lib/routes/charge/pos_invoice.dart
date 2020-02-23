@@ -518,22 +518,18 @@ class POSInvoiceState extends State<POSInvoice> {
   }
 
   String _formattedCurrentCharge(AccountModel acc) {
-    return _formattedCharge(acc, currentAmount);
+    if (_useFiat) {
+      return (currentAmount)
+          .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize);
+    }
+    return acc.currency.format(Int64((currentAmount).toInt()),
+        fixedDecimals: true, includeSymbol: false);
   }
 
   String _currencySymbol(AccountModel accountModel) {
     return _useFiat
         ? accountModel.fiatCurrency.currencyData.shortName
         : accountModel.currency.symbol;
-  }
-
-  String _formattedCharge(AccountModel acc, double charge) {
-    if (_useFiat) {
-      return (charge)
-          .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize);
-    }
-    return acc.currency.format(Int64((charge).toInt()),
-        fixedDecimals: true, includeSymbol: false);
   }
 
   Int64 _satAmount(AccountModel acc, double nativeAmount) {
