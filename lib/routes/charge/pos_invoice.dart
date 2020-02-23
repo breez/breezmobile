@@ -330,7 +330,7 @@ class POSInvoiceState extends State<POSInvoice> {
               ),
               actions: <Widget>[
                 FlatButton(
-                  child: Text("Go to Settings", style: theme.buttonStyle),
+                  child: Text("Go to Settings", style: Theme.of(context).primaryTextTheme.button),
                   onPressed: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pushNamed("/settings");
@@ -451,13 +451,15 @@ class POSInvoiceState extends State<POSInvoice> {
         actions: <Widget>[
           FlatButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("Cancel", style: theme.buttonStyle)),
+              child: Text("Cancel",
+                  style: Theme.of(context).primaryTextTheme.button)),
           FlatButton(
               onPressed: () {
                 Navigator.pop(context);
                 clearSale();
               },
-              child: Text("Clear", style: theme.buttonStyle))
+              child: Text("Clear",
+                  style: Theme.of(context).primaryTextTheme.button))
         ],
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
