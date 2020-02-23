@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/countdown.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +81,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       child: Text(
         'CANCEL PAYMENT',
         textAlign: TextAlign.center,
-        style: theme.cancelButtonStyle,
+        style: Theme.of(context).primaryTextTheme.button,
       ),
       onPressed: () {
         Navigator.of(context).pop(false);
