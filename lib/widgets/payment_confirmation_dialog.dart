@@ -37,7 +37,7 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
       child: Container(
           height: widget._initialDialogSize,
           width: MediaQuery.of(context).size.width,
-          constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
+          constraints: BoxConstraints(minHeight: 220.0, maxHeight: 350.0),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
