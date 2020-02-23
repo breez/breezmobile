@@ -137,11 +137,17 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                       ),
                       Padding(
                           padding: EdgeInsets.only(bottom: 40.0),
-                          child: ImageIcon(
-                            AssetImage("src/icon/ic_done.png"),
-                            size: 48.0,
-                            color: Color.fromRGBO(0, 133, 251, 1.0),
-                          )),
+                          child: Container(
+                            decoration: new BoxDecoration(
+                              color: Theme.of(context).buttonColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Image(
+                              image: AssetImage("src/icon/ic_done.png"),
+                              height: 48.0,
+                              color: Theme.of(context).primaryTextTheme.body1.color,
+                            ),
+                          ),),
                     ],
                   ),
                 )),
