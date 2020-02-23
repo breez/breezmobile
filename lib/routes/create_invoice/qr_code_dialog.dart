@@ -161,7 +161,6 @@ class QrCodeDialogState extends State<QrCodeDialog>
                         Container(
                           width: 230.0,
                           height: 230.0,
-                          color: Colors.white,
                           child: CompactQRImage(
                             data: snapshot.data,
                           ),

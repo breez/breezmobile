@@ -53,6 +53,7 @@ class CompactQRImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return QrImage(
+      backgroundColor: Colors.white,
       version: _calculateVersion(),
       data: data,
       size: this.size,
