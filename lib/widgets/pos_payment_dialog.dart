@@ -106,11 +106,9 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                             child: Container(
                                 height: 230.0,
                                 width: 230.0,
-                                child: AspectRatio(
-                                    aspectRatio: 1.0,
-                                    child: CompactQRImage(
-                                      data: widget.paymentRequest,
-                                    ))))),
+                                child: CompactQRImage(
+                                  data: widget.paymentRequest,
+                                )))),
                     Padding(
                         padding: EdgeInsets.only(top: 15.0),
                         child: Text(_countdownString,

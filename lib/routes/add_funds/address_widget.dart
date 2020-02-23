@@ -41,12 +41,9 @@ class AddressWidget extends StatelessWidget {
                   child: Container(
                     margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
                     padding: const EdgeInsets.all(8.6),
-                    child: Container(
-                      color: Theme.of(context).accentColor,
-                      child: CompactQRImage(
-                        data: "bitcoin:" + address,
-                        size: 180.0,
-                      ),
+                    child: CompactQRImage(
+                      data: "bitcoin:" + address,
+                      size: 180.0,
                     ),
                   ),
                   onLongPress: () => _showAlertDialog(context),
