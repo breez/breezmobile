@@ -5,11 +5,11 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/breez_avatar.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:image/image.dart' as DartImage;
 
 import 'keyboard_done_action.dart';
@@ -71,7 +71,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       child: Container(
           key: _dialogKey,
           width: MediaQuery.of(context).size.width,
-          constraints: BoxConstraints(minHeight: 220.0, maxHeight: 320.0),
+          constraints: BoxConstraints(minHeight: 220.0, maxHeight: 350.0),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -82,34 +82,13 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   Widget _buildPaymentRequestTitle() {
     return widget.invoice.payeeImageURL.isEmpty
         ? null
-        : Container(
-            height: widget.invoice.payeeImageURL.isEmpty ? 64.0 : 128.0,
-            padding: widget.invoice.payeeImageURL.isEmpty
-                ? EdgeInsets.zero
-                : EdgeInsets.only(top: 48.0),
-            child: Stack(
-              children: <Widget>[
-                Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).primaryTextTheme.button.color,
-                    ),
-                    backgroundColor: Theme.of(context).backgroundColor,
-                  ),
-                ),
-                Center(
-                    child: ClipOval(
-                  child: FadeInImage(
-                      width: 64.0,
-                      height: 64.0,
-                      placeholder: MemoryImage(widget._transparentImage),
-                      image: AdvancedNetworkImage(widget.invoice.payeeImageURL,
-                          useDiskCache: true),
-                      fadeOutDuration: Duration(milliseconds: 200),
-                      fadeInDuration: Duration(milliseconds: 200)),
-                )),
-              ],
-            ));
+        : Padding(
+            padding: EdgeInsets.only(top: 48, bottom: 8),
+            child: BreezAvatar(
+              widget.invoice.payeeImageURL,
+              radius: 32.0,
+            ),
+          );
   }
 
   Widget _buildPaymentRequestContent() {
