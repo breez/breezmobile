@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -30,8 +31,6 @@ class POSInvoice extends StatefulWidget {
 }
 
 class POSInvoiceState extends State<POSInvoice> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   TextEditingController _invoiceDescriptionController = TextEditingController();
   double itemHeight;
   double itemWidth;
@@ -42,6 +41,13 @@ class POSInvoiceState extends State<POSInvoice> {
 
   bool _isButtonDisabled = false;
   FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    _focusNode.addListener(_onOnFocusNodeEvent);
+  }
 
   @override
   void didChangeDependencies() {
@@ -124,7 +130,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                           padding: EdgeInsets.only(
                                               top: 14.0, bottom: 14.0),
                                           child: Text(
-                                            "Charge ${_formattedTotalCharge(accountModel)} ${_currencySymbol(accountModel)}"
+                                            "Charge ${_formattedTotalCharge(accountModel)}"
                                                 .toUpperCase(),
                                             maxLines: 1,
                                             textAlign: TextAlign.center,
@@ -294,6 +300,12 @@ class POSInvoiceState extends State<POSInvoice> {
     );
   }
 
+  _onOnFocusNodeEvent() {
+    setState(() {
+      _isButtonDisabled = true;
+    });
+  }
+
   onInvoiceSubmitted(
       InvoiceBloc invoiceBloc, BreezUserModel user, AccountModel account) {
     if (user.name == null || user.avatarURL == null) {
@@ -318,7 +330,7 @@ class POSInvoiceState extends State<POSInvoice> {
               ),
               actions: <Widget>[
                 FlatButton(
-                  child: Text("Go to Settings", style: theme.buttonStyle),
+                  child: Text("Go to Settings", style: Theme.of(context).primaryTextTheme.button),
                   onPressed: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pushNamed("/settings");
@@ -404,16 +416,9 @@ class POSInvoiceState extends State<POSInvoice> {
       }
 
       bool flipFiat = _useFiat == (currency != null);
-      Int64 oldSatAmount = _satAmount(accountModel, amount);
-      Int64 oldCurrentSatAmount = _satAmount(accountModel, currentAmount);
       if (flipFiat) {
         _useFiat = !_useFiat;
-        currentAmount = oldCurrentSatAmount.toDouble();
-        amount = oldSatAmount.toDouble();
-        if (_useFiat) {
-          amount = accountModel.fiatCurrency.satToFiat(oldSatAmount);
-          currentAmount = accountModel.fiatCurrency.satToFiat(oldCurrentSatAmount);
-        }
+        _clearAmounts(clearTotal: true);
       }
     });
   }
@@ -446,13 +451,15 @@ class POSInvoiceState extends State<POSInvoice> {
         actions: <Widget>[
           FlatButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("Cancel", style: theme.buttonStyle)),
+              child: Text("Cancel",
+                  style: Theme.of(context).primaryTextTheme.button)),
           FlatButton(
               onPressed: () {
                 Navigator.pop(context);
                 clearSale();
               },
-              child: Text("Clear", style: theme.buttonStyle))
+              child: Text("Clear",
+                  style: Theme.of(context).primaryTextTheme.button))
         ],
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
@@ -505,26 +512,26 @@ class POSInvoiceState extends State<POSInvoice> {
   }
 
   String _formattedTotalCharge(AccountModel acc) {
-    return _formatedCharge(acc, amount + currentAmount);
+    var satoshies = Int64((amount + currentAmount).toInt());
+    if (_useFiat) {
+      satoshies = _satAmount(acc, amount + currentAmount);
+    }
+    return acc.currency.format(satoshies, includeSymbol: true);
   }
 
   String _formattedCurrentCharge(AccountModel acc) {
-    return _formatedCharge(acc, currentAmount);
+    if (_useFiat) {
+      return (currentAmount)
+          .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize);
+    }
+    return acc.currency.format(Int64((currentAmount).toInt()),
+        fixedDecimals: true, includeSymbol: false);
   }
 
   String _currencySymbol(AccountModel accountModel) {
     return _useFiat
         ? accountModel.fiatCurrency.currencyData.shortName
         : accountModel.currency.symbol;
-  }
-
-  String _formatedCharge(AccountModel acc, double charge) {
-    if (_useFiat) {
-      return (charge)
-          .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize);
-    }
-    return acc.currency.format(Int64((charge).toInt()),
-        fixedDecimals: true, includeSymbol: false);
   }
 
   Int64 _satAmount(AccountModel acc, double nativeAmount) {
