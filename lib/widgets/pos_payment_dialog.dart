@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/countdown.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -136,18 +137,21 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                         ),
                       ),
                       Padding(
-                          padding: EdgeInsets.only(bottom: 40.0),
-                          child: Container(
-                            decoration: new BoxDecoration(
-                              color: Theme.of(context).buttonColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Image(
-                              image: AssetImage("src/icon/ic_done.png"),
-                              height: 48.0,
-                              color: Theme.of(context).primaryTextTheme.body1.color,
-                            ),
-                          ),),
+                        padding: EdgeInsets.only(bottom: 40.0),
+                        child: Container(
+                          decoration: new BoxDecoration(
+                            color: Theme.of(context).buttonColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Image(
+                            image: AssetImage("src/icon/ic_done.png"),
+                            height: 48.0,
+                            color: theme.themeId == "BLUE"
+                                ? Color.fromRGBO(0, 133, 251, 1.0)
+                                : Colors.white,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 )),

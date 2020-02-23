@@ -87,7 +87,7 @@ final ThemeData blueTheme = ThemeData(
         height: 1.28,
         fontFamily: 'IBMPlexSansMedium'),
     body1: TextStyle(
-        color: Color.fromRGBO(0, 133, 251, 1.0),
+        color: BreezColors.blue[900],
         fontSize: 16.4,
         letterSpacing: 0.15,
         fontFamily: 'IBMPlexSansMedium'),
