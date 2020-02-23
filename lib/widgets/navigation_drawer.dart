@@ -18,14 +18,10 @@ class DrawerItemConfig {
   final String icon;
   final bool disabled;
   final void Function(String name) onItemSelected;
-  final void Function() onToggle;
-  final toggleValue;
+  final Widget switchWidget;
 
   DrawerItemConfig(this.name, this.title, this.icon,
-      {this.onItemSelected,
-      this.disabled = false,
-      this.onToggle,
-      this.toggleValue});
+      {this.onItemSelected, this.disabled = false, this.switchWidget});
 }
 
 class DrawerItemConfigGroup {
@@ -257,14 +253,7 @@ Widget _actionTile(
         color: color,
       ),
       title: Text(action.title, style: itemStyle),
-      trailing: action.onToggle != null
-          ? Switch(
-              activeColor: Colors.white,
-              value: action.toggleValue,
-              onChanged: (_) {
-                action.onToggle();
-              })
-          : null,
+      trailing: action.switchWidget,
       onTap: action.disabled
           ? null
           : () {
