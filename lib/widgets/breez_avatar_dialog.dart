@@ -86,7 +86,10 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                     return Container();
                   } else {
                     return Padding(
-                      child: BreezAvatar(snapshot.data.avatarURL, radius: 44.0),
+                      child: AspectRatio(
+                          aspectRatio: 1,
+                          child: BreezAvatar(snapshot.data.avatarURL,
+                              radius: 44.0)),
                       padding: EdgeInsets.only(top: 26.0),
                     );
                   }
