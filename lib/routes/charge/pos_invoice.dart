@@ -430,7 +430,11 @@ class POSInvoiceState extends State<POSInvoice> {
 
   _clearAmounts({bool clearTotal = false}) {
     setState(() {
-      amount = currentAmount = 0;
+      if (clearTotal) {
+        amount = currentAmount = 0;
+      } else {
+        currentAmount = 0;
+      }
     });
   }
 
@@ -503,7 +507,9 @@ class POSInvoiceState extends State<POSInvoice> {
               child: GestureDetector(
                   onLongPress: approveClear,
                   child: FlatButton(
-                      onPressed: _clearAmounts,
+                      onPressed: () {
+                        _clearAmounts(clearTotal: false);
+                      },
                       child: Text("C", style: theme.numPadNumberStyle)))),
           _numberButton(accountModel, "0"),
           Container(
