@@ -398,18 +398,14 @@ class POSInvoiceState extends State<POSInvoice> {
       bool flipFiat = _useFiat == (currency != null);
       if (flipFiat) {
         _useFiat = !_useFiat;
-        _clearAmounts(clearTotal: true);
+        _clearAmounts(clearTotal: false);
       }
     });
   }
 
   _clearAmounts({bool clearTotal = false}) {
     setState(() {
-      if (clearTotal) {
-        amount = currentAmount = 0;
-      } else {
-        currentAmount = 0;
-      }
+      clearTotal ? amount = currentAmount = 0 : currentAmount = 0;
     });
   }
 
