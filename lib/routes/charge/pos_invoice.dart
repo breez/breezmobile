@@ -404,7 +404,7 @@ class POSInvoiceState extends State<POSInvoice> {
         _useFiat = !_useFiat;
         _clearAmounts();
       }
-      amount = (flipFiat && _useFiat || _useFiat)
+      amount = (flipFiat && _useFiat || _useFiat) // For Sat->Fiat or Fiat->Fiat
           ? newFiatCurrency.satToFiat(oldSatAmount)
           : accountModel.fiatCurrency.fiatToSat(amount).toDouble();
     });
