@@ -7,11 +7,12 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/breez_avatar.dart';
-import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'flushbar.dart';
 
 int scaledWidth = 200;
 var _transparentImage = DartImage.Image(scaledWidth, scaledWidth);
@@ -35,20 +36,8 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
       ).then((file) {
         if (file != null) {
           file.readAsBytes().then(scaleAndFormatPNG).then((image) {
-            var action = UploadProfilePicture(image);
-            userBloc.userActionsSink.add(action);
-            action.future.then((_) async {
-              setState(() {
-                _imageData = image;
-              });
-            }, onError: (error) {
-              setState(() {
-                //_imageData = null;
-              });
-              return showFlushbar(
-                context,
-                message: "Failed to upload profile picture",
-              );
+            setState(() {
+              _imageData = image;
             });
           });
         }
@@ -171,6 +160,21 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
             child:
                 Text('SAVE', style: Theme.of(context).primaryTextTheme.button),
             onPressed: () async {
+              if (_imageData != null) {
+                var action = UploadProfilePicture(_imageData);
+                userBloc.userActionsSink.add(action);
+                await action.future.then((_) async {
+                  Navigator.of(context).pop();
+                }, onError: (error) {
+                  setState(() {
+                    _imageData = null;
+                  });
+                  return showFlushbar(
+                    context,
+                    message: "Failed to upload profile picture",
+                  );
+                });
+              }
               userBloc.userSink.add(
                   _currentSettings.copyWith(name: _nameInputController.text));
               Navigator.of(context).pop();
