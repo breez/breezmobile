@@ -234,7 +234,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                               child:
                                                                   BreezDropdownButton(
                                                                       onChanged: (value) => changeCurrency(
-                                                                        accountModel,
+                                                                          accountModel,
                                                                           value,
                                                                           userProfileBloc),
                                                                       iconEnabledColor: Theme.of(
@@ -332,7 +332,8 @@ class POSInvoiceState extends State<POSInvoice> {
               ),
               actions: <Widget>[
                 FlatButton(
-                  child: Text("Go to Settings", style: Theme.of(context).primaryTextTheme.button),
+                  child: Text("Go to Settings",
+                      style: Theme.of(context).primaryTextTheme.button),
                   onPressed: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pushNamed("/settings");
@@ -402,13 +403,15 @@ class POSInvoiceState extends State<POSInvoice> {
     setState(() {
       double addition = int.parse(numberText).toDouble();
       if (_useFiat) {
-        addition = addition / pow(10, accountModel.fiatCurrency.currencyData.fractionSize);
+        addition = addition /
+            pow(10, accountModel.fiatCurrency.currencyData.fractionSize);
       }
       currentAmount = currentAmount * 10 + addition;
     });
   }
 
-  changeCurrency(AccountModel accountModel, value, UserProfileBloc userProfileBloc) {
+  changeCurrency(
+      AccountModel accountModel, value, UserProfileBloc userProfileBloc) {
     setState(() {
       Currency currency = Currency.fromSymbol(value);
       if (currency != null) {
@@ -540,6 +543,6 @@ class POSInvoiceState extends State<POSInvoice> {
     if (_useFiat) {
       return acc.fiatCurrency.fiatToSat(nativeAmount);
     }
-    return acc.currency.toSats(nativeAmount);
+    return acc.currency.parse(_formattedTotalCharge(acc));
   }
 }
