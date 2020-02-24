@@ -130,10 +130,10 @@ class POSInvoiceState extends State<POSInvoice> {
                                           padding: EdgeInsets.only(
                                               top: 14.0, bottom: 14.0),
                                           child: Text(
-                                            "Charge ${_formattedTotalCharge(accountModel)} "
+                                            "Charge ${_formattedCharge(accountModel, amount + currentAmount)} "
                                                     .toUpperCase() +
-                                                accountModel
-                                                    .currency.displayName,
+                                                _currencySymbol(accountModel,
+                                                    showDisplayName: true),
                                             maxLines: 1,
                                             textAlign: TextAlign.center,
                                             style:
@@ -201,7 +201,8 @@ class POSInvoiceState extends State<POSInvoice> {
                                     child: Row(children: <Widget>[
                                       Expanded(
                                           child: Text(
-                                        _formattedCurrentCharge(accountModel),
+                                        _formattedCharge(
+                                            accountModel, currentAmount),
                                         style: theme.invoiceAmountStyle
                                             .copyWith(
                                                 color: Theme.of(context)
@@ -522,33 +523,28 @@ class POSInvoiceState extends State<POSInvoice> {
         ]).toList());
   }
 
-  String _formattedTotalCharge(AccountModel acc) {
-    var satoshies = Int64((amount + currentAmount).toInt());
-    if (_useFiat) {
-      satoshies = _satAmount(acc, amount + currentAmount);
-    }
-    return acc.currency.format(satoshies, includeSymbol: false);
+  String _formattedCharge(AccountModel acc, double nativeAmount,
+      {bool userInput = false}) {
+    return _useFiat
+        ? (nativeAmount)
+            .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize)
+        : acc.currency.format(Int64((nativeAmount).toInt()),
+            includeSymbol: false, userInput: userInput);
   }
 
-  String _formattedCurrentCharge(AccountModel acc) {
-    if (_useFiat) {
-      return (currentAmount)
-          .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize);
-    }
-    return acc.currency.format(Int64((currentAmount).toInt()),
-        fixedDecimals: true, includeSymbol: false);
-  }
-
-  String _currencySymbol(AccountModel accountModel) {
+  String _currencySymbol(AccountModel accountModel,
+      {bool showDisplayName = false}) {
     return _useFiat
         ? accountModel.fiatCurrency.currencyData.shortName
-        : accountModel.currency.symbol;
+        : showDisplayName
+            ? accountModel.currency.displayName
+            : accountModel.currency.symbol;
   }
 
   Int64 _satAmount(AccountModel acc, double nativeAmount) {
-    if (_useFiat) {
-      return acc.fiatCurrency.fiatToSat(nativeAmount);
-    }
-    return acc.currency.parse(_formattedTotalCharge(acc));
+    return _useFiat
+        ? acc.fiatCurrency.fiatToSat(nativeAmount)
+        : acc.currency
+            .parse(_formattedCharge(acc, nativeAmount, userInput: true));
   }
 }
