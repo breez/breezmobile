@@ -389,16 +389,26 @@ class POSInvoiceState extends State<POSInvoice> {
       AccountModel accountModel, value, UserProfileBloc userProfileBloc) {
     setState(() {
       Currency currency = Currency.fromSymbol(value);
+      FiatConversion newFiatCurrency;
       if (currency != null) {
         userProfileBloc.currencySink.add(currency);
       } else {
+        newFiatCurrency = accountModel.fiatConversionList
+            .firstWhere((f) => f.currencyData.shortName == value);
         userProfileBloc.fiatConversionSink.add(value);
       }
 
       bool flipFiat = _useFiat == (currency != null);
+      Int64 oldSatAmount = _satAmount(accountModel, amount);
       if (flipFiat) {
         _useFiat = !_useFiat;
         _clearAmounts(clearTotal: false);
+        amount = _useFiat
+            ? newFiatCurrency.satToFiat(oldSatAmount)
+            : accountModel.fiatCurrency.fiatToSat(amount).toDouble();
+      } else if (_useFiat) {
+        // Convert between fiat currencies
+        amount = newFiatCurrency.satToFiat(oldSatAmount);
       }
     });
   }
