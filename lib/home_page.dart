@@ -170,17 +170,43 @@ class HomeState extends State<Home> {
                         ])
                       ];
                       var advancedFlavorItems = List<DrawerItemConfig>();
-                      advancedFlavorItems = [
-                        DrawerItemConfig(user.isPOS ? "/settings" : "", "POS",
-                            "src/icon/pos.png",
-                            switchWidget: Switch(
-                                activeColor: Colors.white,
-                                value: user.isPOS,
-                                onChanged: (_) {
-                                  widget.userProfileBloc.userActionsSink
-                                      .add(SetPOSFlavor(!user.isPOS));
-                                }))
-                      ];
+                      advancedFlavorItems = user.isPOS
+                          ? [
+                              DrawerItemConfig("", "POS", "src/icon/pos.png",
+                                  onItemSelected: (_) {
+                                widget.userProfileBloc.userActionsSink
+                                    .add(SetPOSFlavor(!user.isPOS));
+                              },
+                                  switchWidget: Switch(
+                                      activeColor: Colors.white,
+                                      value: user.isPOS,
+                                      onChanged: (_) {
+                                        widget.userProfileBloc.userActionsSink
+                                            .add(SetPOSFlavor(!user.isPOS));
+                                      })),
+                              DrawerItemConfig(
+                                "/settings",
+                                "Settings",
+                                "src/icon/settings.png",
+                              ),
+                            ]
+                          : [
+                              DrawerItemConfig("", "POS", "src/icon/pos.png",
+                                  onItemSelected: (_) {
+                                widget.userProfileBloc.userActionsSink
+                                    .add(SetPOSFlavor(!user.isPOS));
+                              },
+                                  switchWidget: Switch(
+                                      activeColor: Colors.white,
+                                      value: user.isPOS,
+                                      onChanged: (_) {
+                                        widget.userProfileBloc.userActionsSink
+                                            .add(SetPOSFlavor(!user.isPOS));
+                                      })),
+                              DrawerItemConfig("/developers", "Developers",
+                                  "src/icon/developers.png")
+                            ];
+
                       return StreamBuilder<String>(
                           stream: widget.invoiceBloc.clipboardInvoiceStream,
                           builder: (context, snapshot) {
@@ -295,10 +321,6 @@ class HomeState extends State<Home> {
                                                     "Security & Backup",
                                                     "src/icon/security.png"),
                                                 ...advancedFlavorItems,
-                                                DrawerItemConfig(
-                                                    "/developers",
-                                                    "Developers",
-                                                    "src/icon/developers.png")
                                               ]),
                                               groupTitle: "Advanced",
                                               groupAssetImage:
