@@ -36,13 +36,20 @@ class BreezAvatar extends StatelessWidget {
   final String avatarURL;
   final double radius;
   final Color backgroundColor;
+  final List<int> bytes;
 
-  BreezAvatar(this.avatarURL, {this.radius = 20.0, this.backgroundColor});
+  BreezAvatar(this.avatarURL,
+      {this.radius = 20.0, this.backgroundColor, this.bytes});
 
   @override
   Widget build(BuildContext context) {
     Color avatarBgColor =
         this.backgroundColor ?? theme.sessionAvatarBackgroundColor;
+
+    if (bytes != null) {
+      return _MemoryImageAvatar(radius, bytes);
+    }
+
     if (avatarURL != null && avatarURL.isNotEmpty) {
       if (avatarURL.startsWith("breez://profile_image?")) {
         var queryParams = Uri.parse(avatarURL).queryParameters;
@@ -106,6 +113,27 @@ class _GeneratedAvatar extends StatelessWidget {
               size: radius * 2 * 0.75,
               color: _breezAvatarColors[color.toLowerCase()]),
         ));
+  }
+}
+
+class _MemoryImageAvatar extends StatelessWidget {
+  final double radius;
+  final List<int> bytes;
+
+  _MemoryImageAvatar(this.radius, this.bytes);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: radius * 2,
+      width: radius * 2,
+      decoration: new BoxDecoration(
+        shape: BoxShape.circle,
+        image: DecorationImage(
+          image: MemoryImage(bytes),
+        ),
+      ),
+    );
   }
 }
 
