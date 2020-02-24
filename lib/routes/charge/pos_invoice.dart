@@ -39,27 +39,11 @@ class POSInvoiceState extends State<POSInvoice> {
   double currentAmount = 0;
   bool _useFiat = false;
 
-  bool _isButtonDisabled = false;
-  FocusNode _focusNode;
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode = FocusNode();
-    _focusNode.addListener(_onOnFocusNodeEvent);
-  }
-
   @override
   void didChangeDependencies() {
     itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
     itemWidth = (MediaQuery.of(context).size.width) / 2;
     super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    _focusNode?.dispose();
-    super.dispose();
   }
 
   @override
@@ -75,9 +59,6 @@ class POSInvoiceState extends State<POSInvoice> {
         onTap: () {
           // call this method here to hide soft keyboard
           FocusScope.of(context).requestFocus(FocusNode());
-          setState(() {
-            _isButtonDisabled = false;
-          });
         },
         child: Builder(builder: (BuildContext context) {
           return StreamBuilder<BreezUserModel>(
@@ -123,7 +104,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                       constraints: const BoxConstraints(
                                           minWidth: double.infinity),
                                       child: IgnorePointer(
-                                        ignoring: _isButtonDisabled,
+                                        ignoring: false,
                                         child: RaisedButton(
                                           color: Theme.of(context)
                                               .primaryColorLight,
@@ -153,7 +134,6 @@ class POSInvoiceState extends State<POSInvoice> {
                                       padding: EdgeInsets.only(
                                           left: 16.0, right: 16.0, top: 0.0),
                                       child: TextField(
-                                        focusNode: _focusNode,
                                         textInputAction: TextInputAction.done,
                                         keyboardType: TextInputType.multiline,
                                         maxLines: null,
@@ -301,12 +281,6 @@ class POSInvoiceState extends State<POSInvoice> {
         }),
       ),
     );
-  }
-
-  _onOnFocusNodeEvent() {
-    setState(() {
-      _isButtonDisabled = true;
-    });
   }
 
   onInvoiceSubmitted(
@@ -484,13 +458,10 @@ class POSInvoiceState extends State<POSInvoice> {
         decoration: BoxDecoration(
             border: Border.all(
                 color: Theme.of(context).backgroundColor, width: 0.5)),
-        child: IgnorePointer(
-            ignoring: _isButtonDisabled,
-            child: FlatButton(
-                onPressed: () => onNumButtonPressed(accountModel, number),
-                child: Text(number,
-                    textAlign: TextAlign.center,
-                    style: theme.numPadNumberStyle))));
+        child: FlatButton(
+            onPressed: () => onNumButtonPressed(accountModel, number),
+            child: Text(number,
+                textAlign: TextAlign.center, style: theme.numPadNumberStyle)));
   }
 
   Widget _numPad(AccountModel accountModel) {
