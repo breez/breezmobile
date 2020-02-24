@@ -106,6 +106,7 @@ class BreezUserModel {
         'securityModel': securityModel?.toJson(),
         'themeId': themeId,
         'registrationRequested': registrationRequested,
-        'cancellationTimeoutValue': cancellationTimeoutValue
+        'cancellationTimeoutValue': cancellationTimeoutValue,
+        'isPOS': isPOS,
       };
 }
