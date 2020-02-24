@@ -130,8 +130,10 @@ class POSInvoiceState extends State<POSInvoice> {
                                           padding: EdgeInsets.only(
                                               top: 14.0, bottom: 14.0),
                                           child: Text(
-                                            "Charge ${_formattedTotalCharge(accountModel)}"
-                                                .toUpperCase(),
+                                            "Charge ${_formattedTotalCharge(accountModel)} "
+                                                    .toUpperCase() +
+                                                accountModel
+                                                    .currency.displayName,
                                             maxLines: 1,
                                             textAlign: TextAlign.center,
                                             style:
@@ -516,7 +518,7 @@ class POSInvoiceState extends State<POSInvoice> {
     if (_useFiat) {
       satoshies = _satAmount(acc, amount + currentAmount);
     }
-    return acc.currency.format(satoshies, includeSymbol: true);
+    return acc.currency.format(satoshies, includeSymbol: false);
   }
 
   String _formattedCurrentCharge(AccountModel acc) {
