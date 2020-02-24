@@ -62,9 +62,6 @@ class UserProfileBloc {
   final _randomizeController = BehaviorSubject<void>();
   Sink<void> get randomizeSink => _randomizeController.sink;
 
-  final _uploadImageController = StreamController<List<int>>();
-  Sink<List<int>> get uploadImageSink => _uploadImageController.sink;
-
   UserProfileBloc() {
     ServiceInjector injector = ServiceInjector();
     _nfc = injector.nfc;
@@ -86,6 +83,7 @@ class UserProfileBloc {
       SetLockState: _setLockState,
       CheckVersion: _checkVersion,
       SetPOSFlavor: _setPOSFlavor,
+      UploadProfilePicture: _uploadProfilePicture,
     };
     print("UserProfileBloc started");
 
@@ -108,9 +106,6 @@ class UserProfileBloc {
 
       //listen to randomize profile requests
       _listenRandomizeRequest(injector);
-
-      //listen upload image requests
-      _listenUploadImageRequests(injector);
 
       startPINIntervalWatcher();
 
@@ -189,7 +184,25 @@ class UserProfileBloc {
   Future _setPOSFlavor(SetPOSFlavor action) async {
     _saveChanges(
         await _preferences, _currentUser.copyWith(isPOS: action.isPos));
-    action.resolve(action.isPos); 
+    action.resolve(action.isPos);
+  }
+
+  Future _uploadProfilePicture(UploadProfilePicture action) async {
+    action.resolve(await _uploadImage(action.bytes));
+  }
+
+  Future _uploadImage(List<int> bytes) async {
+    try {
+      return _saveImage(bytes).then((file) {
+        return _breezServer.uploadLogo(bytes).then((imageUrl) async {
+          _userStreamPreviewController
+              .add(_currentUser.copyWith(image: imageUrl));
+        });
+      });
+    } catch (error) {
+      log.severe(error);
+      throw error;
+    }
   }
 
   Future _updatePinCode(UpdatePinCode action) async {
@@ -308,20 +321,6 @@ class UserProfileBloc {
     });
   }
 
-  void _listenUploadImageRequests(ServiceInjector injector) {
-    BreezServer breezServer = injector.breezServer;
-    _uploadImageController.stream.listen((image) {
-      _saveImage(image).then((file) {
-        return breezServer.uploadLogo(image).then((imageUrl) async {
-          _userStreamPreviewController
-              .add(_currentUser.copyWith(image: imageUrl));
-        });
-      }).catchError((err) {
-        log.severe(err);
-      });
-    });
-  }
-
   _saveImage(List<int> logoBytes) {
     return getApplicationDocumentsDirectory()
         .then((docDir) =>
@@ -364,7 +363,6 @@ class UserProfileBloc {
     _fiatConversionController.close();
     _userActionsController.close();
     _userController.close();
-    _uploadImageController.close();
     _randomizeController.close();
     _userStreamPreviewController.close();
   }
