@@ -199,7 +199,7 @@ class HomeState extends State<Home> {
                                   switchWidget: Switch(
                                       activeColor: Colors.white,
                                       value: user.isPOS,
-                                      onChanged: (_) {
+                                      onChanged: !account.connected ? null : (_) {
                                         widget.userProfileBloc.userActionsSink
                                             .add(SetPOSFlavor(!user.isPOS));
                                       })),
