@@ -401,11 +401,14 @@ class POSInvoiceState extends State<POSInvoice> {
         _useFiat = !_useFiat;
         _clearAmounts();
       }
-      amount = (flipFiat && _useFiat || _useFiat) // For Sat->Fiat or Fiat->Fiat
-          ? accountModel.fiatConversionList
-              .firstWhere((f) => f.currencyData.shortName == value)
-              .satToFiat(oldSatAmount)
-          : accountModel.fiatCurrency.fiatToSat(amount).toDouble();
+      amount = oldSatAmount.toDouble();
+
+      // We need to convert only in case we use fiat.
+      if (_useFiat) {
+        amount = accountModel.fiatConversionList
+            .firstWhere((f) => f.currencyData.shortName == value)
+            .satToFiat(oldSatAmount);
+      }
     });
   }
 
