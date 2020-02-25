@@ -186,7 +186,7 @@ class HomeState extends State<Home> {
                                       })),
                               DrawerItemConfig(
                                 "/settings",
-                                "Settings",
+                                "POS Settings",
                                 "src/icon/settings.png",
                               ),
                             ]
