@@ -396,20 +396,25 @@ class POSInvoiceState extends State<POSInvoice> {
       }
 
       bool flipFiat = _useFiat == (currency != null);
+      Int64 oldSatAmount = _satAmount(accountModel, amount);
       if (flipFiat) {
         _useFiat = !_useFiat;
-        _clearAmounts(clearTotal: true);
+        _clearAmounts();
+      }
+      amount = oldSatAmount.toDouble();
+
+      // We need to convert only in case we use fiat.
+      if (_useFiat) {
+        amount = accountModel.fiatConversionList
+            .firstWhere((f) => f.currencyData.shortName == value)
+            .satToFiat(oldSatAmount);
       }
     });
   }
 
   _clearAmounts({bool clearTotal = false}) {
     setState(() {
-      if (clearTotal) {
-        amount = currentAmount = 0;
-      } else {
-        currentAmount = 0;
-      }
+      clearTotal ? amount = currentAmount = 0 : currentAmount = 0;
     });
   }
 
@@ -480,7 +485,7 @@ class POSInvoiceState extends State<POSInvoice> {
                   onLongPress: approveClear,
                   child: FlatButton(
                       onPressed: () {
-                        _clearAmounts(clearTotal: false);
+                        _clearAmounts();
                       },
                       child: Text("C", style: theme.numPadNumberStyle)))),
           _numberButton(accountModel, "0"),
