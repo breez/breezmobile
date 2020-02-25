@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -22,7 +23,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   UPLOAD_STATE _state;
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   BreezUserModel _currentSettings;
-  List<int> _imageData;
+  File _pickedImage;
 
   final _nameInputController = TextEditingController();
   userBloc.userPreviewStream.listen((user) {
@@ -30,21 +31,24 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     _currentSettings = user;
   });
 
-  Future _pickImage(BuildContext context, setState) async {
-    return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
-      ImageCropper.cropImage(
-        sourcePath: file.path,
-        aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
-      ).then((file) {
-        if (file != null) {
-          file.readAsBytes().then(scaleAndFormatPNG).then((image) {
-            setState(() {
-              _imageData = image;
-            });
-          });
-        }
+  Future<File> _pickImage() async {
+    try {
+      File image;
+      await ImagePicker.pickImage(source: ImageSource.gallery)
+          .then((file) async {
+        await ImageCropper.cropImage(
+          sourcePath: file.path,
+          aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+        ).then((file) {
+          if (file != null) {
+            image = file;
+          }
+        });
       });
-    }).catchError((err) {});
+      return image;
+    } catch (e) {
+      throw e;
+    }
   }
 
   return WillPopScope(
@@ -88,7 +92,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                       ),
                       onPressed: () {
                         userBloc.randomizeSink.add(null);
-                        _imageData = null;
+                        _pickedImage = null;
                         FocusScope.of(context).requestFocus(FocusNode());
                       },
                     ),
@@ -121,9 +125,9 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                                 child: AspectRatio(
                                     aspectRatio: 1,
                                     child: BreezAvatar(
-                                      snapshot.data.avatarURL,
+                                      _pickedImage?.path ??
+                                          snapshot.data.avatarURL,
                                       radius: 36.0,
-                                      bytes: _imageData,
                                     )),
                                 padding: EdgeInsets.only(top: 26.0),
                               )
@@ -134,9 +138,8 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                           child: AspectRatio(
                               aspectRatio: 1,
                               child: BreezAvatar(
-                                snapshot.data.avatarURL,
+                                _pickedImage?.path ?? snapshot.data.avatarURL,
                                 radius: 36.0,
-                                bytes: _imageData,
                               )),
                           padding: EdgeInsets.only(top: 26.0),
                         );
@@ -157,8 +160,14 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                         stepGranularity: 0.1,
                         group: _autoSizeGroup,
                       ),
-                      onPressed: () {
-                        _pickImage(context, setState);
+                      onPressed: () async {
+                        await _pickImage().then(
+                          (file) {
+                            setState(() {
+                              _pickedImage = file;
+                            });
+                          },
+                        );
                       },
                     ),
                   ),
@@ -198,26 +207,31 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
               child: Text('SAVE',
                   style: Theme.of(context).primaryTextTheme.button),
               onPressed: () async {
-                if (_imageData != null) {
-                  var action = UploadProfilePicture(_imageData);
-                  userBloc.userActionsSink.add(action);
-                  setState(() {
-                    _state = UPLOAD_STATE.UPLOAD_IN_PROGRESS;
-                  });
-                  await action.future.then((_) async {
+                if (_pickedImage != null) {
+                  await _pickedImage
+                      .readAsBytes()
+                      .then(scaleAndFormatPNG)
+                      .then((imageBytes) async {
+                    var action = UploadProfilePicture(imageBytes);
+                    userBloc.userActionsSink.add(action);
                     setState(() {
-                      _state = null;
+                      _state = UPLOAD_STATE.UPLOAD_IN_PROGRESS;
                     });
-                    Navigator.of(context).pop();
-                  }, onError: (error) {
-                    setState(() {
-                      _imageData = null;
-                      _state = null;
+                    await action.future.then((_) {
+                      setState(() {
+                        _state = null;
+                      });
+                      Navigator.of(context).pop();
+                    }, onError: (error) {
+                      setState(() {
+                        _pickedImage = null;
+                        _state = null;
+                      });
+                      return showFlushbar(
+                        context,
+                        message: "Failed to upload profile picture",
+                      );
                     });
-                    return showFlushbar(
-                      context,
-                      message: "Failed to upload profile picture",
-                    );
                   });
                 }
                 userBloc.userSink.add(

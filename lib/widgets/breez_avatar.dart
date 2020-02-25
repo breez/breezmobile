@@ -1,8 +1,10 @@
-import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'dart:io';
+
 import 'package:breez/bloc/user_profile/default_profile_generator.dart'
     as generator;
+import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter/material.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
 
 final _breezAvatarColors = {
   "salmon": Color(0xFFFA8072),
@@ -36,21 +38,19 @@ class BreezAvatar extends StatelessWidget {
   final String avatarURL;
   final double radius;
   final Color backgroundColor;
-  final List<int> bytes;
 
-  BreezAvatar(this.avatarURL,
-      {this.radius = 20.0, this.backgroundColor, this.bytes});
+  BreezAvatar(this.avatarURL, {this.radius = 20.0, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
     Color avatarBgColor =
         this.backgroundColor ?? theme.sessionAvatarBackgroundColor;
 
-    if (bytes != null) {
-      return _MemoryImageAvatar(radius, bytes);
-    }
-
     if (avatarURL != null && avatarURL.isNotEmpty) {
+      if (avatarURL.startsWith("/data")) {
+        return _FileImageAvatar(radius, avatarURL);
+      }
+
       if (avatarURL.startsWith("breez://profile_image?")) {
         var queryParams = Uri.parse(avatarURL).queryParameters;
         return _GeneratedAvatar(
@@ -116,11 +116,11 @@ class _GeneratedAvatar extends StatelessWidget {
   }
 }
 
-class _MemoryImageAvatar extends StatelessWidget {
+class _FileImageAvatar extends StatelessWidget {
   final double radius;
-  final List<int> bytes;
+  final String filePath;
 
-  _MemoryImageAvatar(this.radius, this.bytes);
+  _FileImageAvatar(this.radius, this.filePath);
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +130,9 @@ class _MemoryImageAvatar extends StatelessWidget {
       decoration: new BoxDecoration(
         shape: BoxShape.circle,
         image: DecorationImage(
-          image: MemoryImage(bytes),
+          image: FileImage(
+            File(filePath),
+          ),
         ),
       ),
     );
