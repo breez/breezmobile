@@ -1,12 +1,18 @@
 import 'dart:async';
 
+import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/routes/sync_progress_dialog.dart';
 import 'package:breez/services/countdown.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
+
+import 'loader.dart';
 
 enum _PosPaymentState { WAITING_FOR_PAYMENT, PAYMENT_RECEIVED }
 
@@ -26,22 +32,19 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
 
     _paymentTimer = CountDown(
         Duration(seconds: widget._user.cancellationTimeoutValue.toInt()));
-    _timerSubscription = _paymentTimer.stream.listen(
-      (d){
-        setState(() {
+    _timerSubscription = _paymentTimer.stream.listen((d) {
+      setState(() {
         _countdownString = d.inMinutes.toRadixString(10) +
             ":" +
             (d.inSeconds - (d.inMinutes * 60))
                 .toRadixString(10)
                 .padLeft(2, '0');
       });
-      }, 
-      onDone: (){
-        if (Navigator.of(context).canPop()) {
-          Navigator.of(context).pop(false);
-        }
-      });
-    
+    }, onDone: () {
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop(false);
+      }
+    });
 
     _sentInvoicesSubscription =
         widget._invoiceBloc.sentInvoicesStream.listen((message) {
@@ -90,35 +93,57 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     );
   }
 
+  Widget buildWaitingPayment(BuildContext context) {
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
+    return StreamBuilder<AccountModel>(
+        stream: accountBloc.accountStream,
+        builder: (context, snapshot) {         
+          var account = snapshot.data;
+          if (account == null) {
+            return Loader();
+          }
+
+          if (account.syncedToChain == false) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 40.0),
+              child: SyncProgressDialog(closeOnSync: false),
+            );
+          }
+          
+          return ListBody(
+            children: <Widget>[
+              _buildDialogBody(
+                  'Scan the QR code to process this payment.',
+                  AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Container(
+                          height: 230.0,
+                          width: 230.0,
+                          child: CompactQRImage(
+                            data: widget.paymentRequest,
+                          )))),
+              Padding(
+                  padding: EdgeInsets.only(top: 15.0),
+                  child: Text(_countdownString,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .display1
+                          .copyWith(fontSize: 16))),
+              _cancelButton(),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
       content: SingleChildScrollView(
           child: _state == _PosPaymentState.WAITING_FOR_PAYMENT
-              ? ListBody(
-                  children: <Widget>[
-                    _buildDialogBody(
-                        'Scan the QR code to process this payment.',
-                        AspectRatio(
-                            aspectRatio: 1.0,
-                            child: Container(
-                                height: 230.0,
-                                width: 230.0,
-                                child: CompactQRImage(
-                                  data: widget.paymentRequest,
-                                )))),
-                    Padding(
-                        padding: EdgeInsets.only(top: 15.0),
-                        child: Text(_countdownString,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .primaryTextTheme
-                                .display1
-                                .copyWith(fontSize: 16))),
-                    _cancelButton(),
-                  ],
-                )
+              ? buildWaitingPayment(context)
               : GestureDetector(
                   onTap: () {
                     Navigator.of(context).pop(true);

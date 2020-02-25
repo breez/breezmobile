@@ -323,15 +323,29 @@ class POSInvoiceState extends State<POSInvoice> {
       var satAmount = _satAmount(account, amount + currentAmount);
       if (satAmount == 0) {
         return null;
-      } else if (satAmount > account.maxAllowedToReceive) {
+      }
+      
+      if (satAmount > account.maxAllowedToReceive) {
         promptError(
             context,
             "You don't have the capacity to receive such payment.",
             Text(
                 "Maximum payment size you can receive is ${account.currency.format(account.maxAllowedToReceive, includeSymbol: true)}. Please enter a smaller value.",
                 style: Theme.of(context).dialogTheme.contentTextStyle));
-      } else if (satAmount < account.maxPaymentAmount) {
-        var newInvoiceAction = NewInvoice(InvoiceRequestModel(user.name,
+          return;
+      }
+
+      if (satAmount > account.maxPaymentAmount) {
+        promptError(
+            context,
+            "You have exceeded the maximum payment size.",
+            Text(
+                "Maximum payment size on the Lightning Network is ${account.currency.format(account.maxPaymentAmount, includeSymbol: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
+                style: Theme.of(context).dialogTheme.contentTextStyle));
+        return;        
+      }
+
+      var newInvoiceAction = NewInvoice(InvoiceRequestModel(user.name,
             _invoiceDescriptionController.text, user.avatarURL, satAmount,
             expiry: Int64(user.cancellationTimeoutValue.toInt())));
         invoiceBloc.actionsSink.add(newInvoiceAction);
@@ -341,14 +355,6 @@ class POSInvoiceState extends State<POSInvoice> {
           showFlushbar(context,
               message: error.toString(), duration: Duration(seconds: 10));
         });
-      } else {
-        promptError(
-            context,
-            "You have exceeded the maximum payment size.",
-            Text(
-                "Maximum payment size on the Lightning Network is ${account.currency.format(account.maxPaymentAmount, includeSymbol: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
-                style: Theme.of(context).dialogTheme.contentTextStyle));
-      }
     }
   }
 
