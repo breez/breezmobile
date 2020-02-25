@@ -221,7 +221,6 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                       setState(() {
                         _state = null;
                       });
-                      Navigator.of(context).pop();
                     }, onError: (error) {
                       setState(() {
                         _pickedImage = null;
