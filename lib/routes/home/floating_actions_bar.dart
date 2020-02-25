@@ -19,6 +19,7 @@ import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/fastbitcoin.dart';
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
@@ -200,7 +201,14 @@ class FloatingActionsBar extends StatelessWidget {
           builder: (_) => CreateInvoicePage(lnurlWithdraw: withdrawResponse),
         ));
       },
-    ).catchError((err) => Navigator.of(context).removeRoute(loaderRoute));
+    ).catchError((err) {
+      Navigator.of(context).removeRoute(loaderRoute);
+      promptError(
+          context,
+          "Link Error",
+          Text("Failed to process link: " + err.toString(),
+              style: Theme.of(context).dialogTheme.contentTextStyle));      
+    });
   }
 
   Future _showSendOptions(BuildContext context) async {
