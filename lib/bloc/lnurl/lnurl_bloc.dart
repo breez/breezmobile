@@ -23,18 +23,27 @@ class LNUrlBloc with AsyncActionsHandler {
     registerAsyncHandlers({
       Fetch: _fetch,
       Withdraw: _withdraw,
+      OpenChannel: _openChannel,
     });
     listenActions();
   }
 
-  Stream<WithdrawFetchResponse> get lnurlWitdrawStream => Observable.merge([
+  Stream get lnurlStream => Observable.merge([
         ServiceInjector().lightningLinks.linksNotifications,
         lnurlRequestsStreamController.stream
       ])
           .where((l) => l.toLowerCase().startsWith("lightning:lnurl"))
           .asyncMap((l) => _breezLib.fetchLNUrl(l))
-          .where((response) => response.hasWithdraw())
-          .map((response) => WithdrawFetchResponse(response.withdraw));
+          .map((response) {
+        if (response.hasWithdraw()) {
+          return WithdrawFetchResponse(response.withdraw);
+        }
+        if (response.hasChannel()) {
+          return ChannelFetchResponse(response.channel);
+        }
+
+        return Future.error("Unsupported lnurl");
+      });
 
   Future _fetch(Fetch action) async {
     LNUrlResponse res = await _breezLib.fetchLNUrl(action.lnurl);
@@ -46,6 +55,10 @@ class LNUrlBloc with AsyncActionsHandler {
 
   Future _withdraw(Withdraw action) async {
     action.resolve(await _breezLib.withdrawLNUrl(action.bolt11Invoice));
+  }
+
+  Future _openChannel(OpenChannel action) async {
+    action.resolve(await _breezLib.connectDirectToLnurl(action.uri, action.k1, action.callback));
   }
 
   @override
