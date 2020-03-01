@@ -14,15 +14,8 @@ class LNURLHandler {
   final LNUrlBloc lnurlBloc;
 
   LNURLHandler(this._context, this.lnurlBloc) {
-    lnurlBloc.lnurlStream.listen((response) async {
-      if (response.runtimeType == ChannelFetchResponse) {
-        _openLNURLChannel(response);
-      }
-      if (response.runtimeType == WithdrawFetchResponse) {
-        Navigator.of(_context).push(FadeInRoute(
-          builder: (_) => CreateInvoicePage(lnurlWithdraw: response),
-        ));
-      }
+    lnurlBloc.lnurlStream.listen((response) {
+      return executeLNURLResponse(this._context, this.lnurlBloc, response);
     }).onError((err) async {
       promptError(
           this._context,
@@ -31,44 +24,56 @@ class LNURLHandler {
               style: Theme.of(this._context).dialogTheme.contentTextStyle));
     });
   }
+}
 
-  void _openLNURLChannel(ChannelFetchResponse response) {
-    var host = Uri.parse(response.callback).host;
-    promptAreYouSure(this._context, "Open Channel",
-            Text("Are you sure you want to open a channel with $host?"))
-        .then((value) async {
-      if (value) {
-        var synced = await showDialog(
-            context: this._context,
-            useRootNavigator: false,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                content: SyncProgressDialog(closeOnSync: true),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text("CANCEL",
-                        style: Theme.of(context).primaryTextTheme.button),
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-                  ),
-                ],
-              );
-            });
-        if (synced == true) {
-          var loaderRoute = createLoaderRoute(this._context);
-          Navigator.of(this._context).push(loaderRoute);
-          var action =
-              OpenChannel(response.uri, response.callback, response.k1);
-          this.lnurlBloc.actionsSink.add(action);
-          action.future.catchError((err) {
-            promptError(this._context, "Open Channel Error",
-                Text("Failed to open channel.\n" + err.toString()));
-          }).whenComplete(
-              () => Navigator.of(this._context).removeRoute(loaderRoute));
-        }
-      }
-    });
+void executeLNURLResponse(
+    BuildContext context, LNUrlBloc lnurlBloc, dynamic response) {
+  if (response.runtimeType == ChannelFetchResponse) {
+    _openLNURLChannel(context, lnurlBloc, response);
+  } else if (response.runtimeType == WithdrawFetchResponse) {
+    Navigator.of(context).push(FadeInRoute(
+      builder: (_) => CreateInvoicePage(lnurlWithdraw: response),
+    ));
+  } else {
+    throw "Unsupported LNUrl";
   }
+}
+
+void _openLNURLChannel(
+    BuildContext context, LNUrlBloc lnurlBloc, ChannelFetchResponse response) {
+  var host = Uri.parse(response.callback).host;
+  promptAreYouSure(context, "Open Channel",
+          Text("Are you sure you want to open a channel with $host?"))
+      .then((value) async {
+    if (value) {
+      var synced = await showDialog(
+          context: context,
+          useRootNavigator: false,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: SyncProgressDialog(closeOnSync: true),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("CANCEL",
+                      style: Theme.of(context).primaryTextTheme.button),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+              ],
+            );
+          });
+      if (synced == true) {
+        var loaderRoute = createLoaderRoute(context);
+        Navigator.of(context).push(loaderRoute);
+        var action = OpenChannel(response.uri, response.callback, response.k1);
+        lnurlBloc.actionsSink.add(action);
+        action.future.catchError((err) {
+          promptError(context, "Open Channel Error",
+              Text("Failed to open channel.\n" + err.toString()));
+        }).whenComplete(() => Navigator.of(context).removeRoute(loaderRoute));
+      }
+    }
+  });
 }

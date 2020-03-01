@@ -49,6 +49,11 @@ class LNUrlBloc with AsyncActionsHandler {
     LNUrlResponse res = await _breezLib.fetchLNUrl(action.lnurl);
     if (res.hasWithdraw()) {
       action.resolve(WithdrawFetchResponse(res.withdraw));
+      return;
+    }
+    if (res.hasChannel()) {
+      action.resolve(ChannelFetchResponse(res.channel));
+      return;
     }
     throw "Unsupported LNUrl action";
   }
