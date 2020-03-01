@@ -389,6 +389,7 @@ const LNUrlResponse$json = const {
   '1': 'LNUrlResponse',
   '2': const [
     const {'1': 'withdraw', '3': 1, '4': 1, '5': 11, '6': '.data.LNUrlWithdraw', '9': 0, '10': 'withdraw'},
+    const {'1': 'channel', '3': 2, '4': 1, '5': 11, '6': '.data.LNURLChannel', '9': 0, '10': 'channel'},
   ],
   '8': const [
     const {'1': 'action'},
@@ -401,6 +402,15 @@ const LNUrlWithdraw$json = const {
     const {'1': 'min_amount', '3': 1, '4': 1, '5': 3, '10': 'minAmount'},
     const {'1': 'max_amount', '3': 2, '4': 1, '5': 3, '10': 'maxAmount'},
     const {'1': 'default_description', '3': 3, '4': 1, '5': 9, '10': 'defaultDescription'},
+  ],
+};
+
+const LNURLChannel$json = const {
+  '1': 'LNURLChannel',
+  '2': const [
+    const {'1': 'k1', '3': 1, '4': 1, '5': 9, '10': 'k1'},
+    const {'1': 'callback', '3': 2, '4': 1, '5': 9, '10': 'callback'},
+    const {'1': 'uri', '3': 3, '4': 1, '5': 9, '10': 'uri'},
   ],
 };
 
