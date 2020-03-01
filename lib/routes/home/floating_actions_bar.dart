@@ -9,9 +9,8 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/bloc/lnurl/lnurl_model.dart';
+import 'package:breez/handlers/lnurl_handler.dart';
 import 'package:breez/routes/add_funds/fastbitcoins_page.dart';
-import 'package:breez/routes/create_invoice/create_invoice_page.dart';
 import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -192,14 +191,7 @@ class FloatingActionsBar extends StatelessWidget {
           return;
         }
 
-        if (response.runtimeType != WithdrawFetchResponse) {
-          throw "Invalid URL";
-        }
-        WithdrawFetchResponse withdrawResponse =
-            response as WithdrawFetchResponse;
-        Navigator.of(context).push(FadeInRoute(
-          builder: (_) => CreateInvoicePage(lnurlWithdraw: withdrawResponse),
-        ));
+        executeLNURLResponse(context, lnurlBloc, response);
       },
     ).catchError((err) {
       Navigator.of(context).removeRoute(loaderRoute);

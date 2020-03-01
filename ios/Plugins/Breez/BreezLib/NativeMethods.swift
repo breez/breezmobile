@@ -78,6 +78,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),    
     "getLogPath": VoidBindingExecutor(f: BindingsGetLogPath),
     "withdrawLnurl": SingleArgBindingExecutor(f: BindingsWithdrawLnurl),
+    "connectDirectToLnurl": SingleArgBindingExecutor(f: BindingsConnectDirectToLnurl),
     "fetchLnurl": SingleArgBindingExecutor(f: BindingsFetchLnurl),
     
     //jobs

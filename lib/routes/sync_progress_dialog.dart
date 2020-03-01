@@ -28,7 +28,7 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
           .firstWhere((a) => a?.syncedToChain == true, orElse: () => null)
           .then((a) {
         if (this.mounted) {
-          Navigator.of(context).pop();
+          Navigator.of(context).pop(true);
         }
       });
     }

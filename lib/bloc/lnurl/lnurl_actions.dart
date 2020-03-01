@@ -11,3 +11,11 @@ class Withdraw extends AsyncAction {
 
   Withdraw(this.bolt11Invoice);
 }
+
+class OpenChannel extends AsyncAction {
+  final String uri;
+  final String callback;
+  final String k1;
+
+  OpenChannel(this.uri, this.callback, this.k1);
+}
