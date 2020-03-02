@@ -32,17 +32,11 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   });
 
   Future<File> _pickImage() async {
-  return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
-    return ImageCropper.cropImage(
-        sourcePath: file.path,
-        aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0));
-  });
-}
-      });
-      return image;
-    } catch (e) {
-      throw e;
-    }
+    return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
+      return ImageCropper.cropImage(
+          sourcePath: file.path,
+          aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0));
+    });
   }
 
   return WillPopScope(
