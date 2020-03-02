@@ -7,37 +7,39 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'routes/settings/pos_settings_page.dart';
-import 'routes/transactions/pos_transactions_page.dart';
-import 'routes/lsp/select_lsp_page.dart';
-import 'routes/security_pin/lock_screen.dart';
-import 'routes/add_funds/deposit_to_btc_address_page.dart';
-import 'routes/add_funds/moonpay_webview.dart';
-import 'routes/get_refund/get_refund_page.dart';
-import 'routes/withdraw_funds/unexpected_funds.dart';
-import 'routes/withdraw_funds/reverse_swap_page.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
-import 'routes/connect_to_pay/connect_to_pay_page.dart';
 import 'package:flutter/material.dart';
-import 'routes/splash_page.dart';
-import 'routes/initial_walkthrough.dart';
-import 'routes/network/network.dart';
-import 'routes/security_pin/security_pin_page.dart';
-import 'routes/dev/dev.dart';
-import 'routes/activate_card/activate_card_page.dart';
-import 'routes/add_funds/fastbitcoins_page.dart';
-import 'home_page.dart';
-import 'routes/order_card/order_card_page.dart';
-import 'package:breez/widgets/route.dart';
-import 'routes/pay_nearby/pay_nearby_page.dart';
-import 'routes/pay_nearby/pay_nearby_complete.dart';
-import 'routes/create_invoice/create_invoice_page.dart';
-import 'routes/marketplace/marketplace.dart';
 import 'package:flutter/services.dart';
+
 import 'bloc/lnurl/lnurl_bloc.dart';
 import 'bloc/lsp/lsp_bloc.dart';
 import 'bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'home_page.dart';
+import 'routes/activate_card/activate_card_page.dart';
+import 'routes/add_funds/deposit_to_btc_address_page.dart';
+import 'routes/add_funds/fastbitcoins_page.dart';
+import 'routes/add_funds/moonpay_webview.dart';
+import 'routes/charge/items/create_item.dart';
+import 'routes/connect_to_pay/connect_to_pay_page.dart';
+import 'routes/create_invoice/create_invoice_page.dart';
+import 'routes/dev/dev.dart';
+import 'routes/get_refund/get_refund_page.dart';
+import 'routes/initial_walkthrough.dart';
+import 'routes/lsp/select_lsp_page.dart';
+import 'routes/marketplace/marketplace.dart';
+import 'routes/network/network.dart';
+import 'routes/order_card/order_card_page.dart';
+import 'routes/pay_nearby/pay_nearby_complete.dart';
+import 'routes/pay_nearby/pay_nearby_page.dart';
+import 'routes/security_pin/lock_screen.dart';
+import 'routes/security_pin/security_pin_page.dart';
+import 'routes/settings/pos_settings_page.dart';
+import 'routes/splash_page.dart';
+import 'routes/transactions/pos_transactions_page.dart';
+import 'routes/withdraw_funds/reverse_swap_page.dart';
+import 'routes/withdraw_funds/unexpected_funds.dart';
 import 'theme_data.dart' as theme;
 
 class UserApp extends StatelessWidget {
@@ -251,8 +253,13 @@ class UserApp extends StatelessWidget {
                                         builder: (_) => FastbitcoinsPage(),
                                         settings: settings,
                                       );
-                                    
+
                                     // POS routes
+                                    case '/create_item':
+                                      return FadeInRoute(
+                                        builder: (_) => CreateItemPage(),
+                                        settings: settings,
+                                      );
                                     case '/transactions':
                                       return FadeInRoute(
                                         builder: (_) => PosTransactionsPage(),
