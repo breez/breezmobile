@@ -47,7 +47,7 @@ class BreezAvatar extends StatelessWidget {
         this.backgroundColor ?? theme.sessionAvatarBackgroundColor;
 
     if (avatarURL != null && avatarURL.isNotEmpty) {
-      if (avatarURL.startsWith("/data")) {
+      if (avatarURL.contains("/image_cropper")) {
         return _FileImageAvatar(radius, avatarURL);
       }
 
