@@ -12,8 +12,8 @@ Future<Database> getDB() async {
       await db.execute(
         """
         CREATE TABLE asset(          
-          url TEXT PRIMARY, 
-          data BLOB,          
+          url TEXT PRIMARY KEY,
+          data BLOB 
         )
         """,
       );
@@ -21,11 +21,11 @@ Future<Database> getDB() async {
       await db.execute(
         """
         CREATE TABLE item(
-          id INTEGER PRIMARY KEY AUTOINCREMENT, 
+          id INTEGER PRIMARY KEY,
           name TEXT, 
           imageURL TEXT,
           price REAL, 
-          currency TEXT,          
+          currency TEXT        
         )
         """,
       );
@@ -33,8 +33,7 @@ Future<Database> getDB() async {
       await db.execute(
         """
         CREATE TABLE sale(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          sale_id INTEGER,
+          id INTEGER PRIMARY KEY          
         )
         """,
       );
@@ -42,7 +41,7 @@ Future<Database> getDB() async {
       await db.execute(
         """
         CREATE TABLE sale_line(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          id INTEGER PRIMARY KEY,
           sale_id INTEGER,
           item_name TEXT,
           item_image_url TEXT,
@@ -50,7 +49,7 @@ Future<Database> getDB() async {
           price_per_item REAL,          
           currency TEXT,
           sat_conversion_rate REAL,
-          FOREIGN KEY(sale) REFERENCES sale(id),
+          FOREIGN KEY(sale_id) REFERENCES sale(id)
         )
         """,
       );

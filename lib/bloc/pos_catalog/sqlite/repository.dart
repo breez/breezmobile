@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:crypto/crypto.dart';
@@ -8,6 +9,13 @@ import '../repository.dart';
 import 'db.dart';
 
 class SqliteRepository implements Repository {
+  Future dropDB() async {
+    Database db = await getDB();
+    await db.close();
+    await File(db.path).delete();
+    print("deleted ${db.path}");
+  }
+
   /*
    * Images
    */
@@ -33,7 +41,7 @@ class SqliteRepository implements Repository {
    * Items
    */
   @override
-  Future<void> addItem(Item item) async {
+  Future<int> addItem(Item item) async {
     return _addDBItem(await getDB(), "item", item);
   }
 
@@ -66,19 +74,21 @@ class SqliteRepository implements Repository {
    * Sales
    */
   @override
-  Future<void> addSale(Sale sale) async {
-    (await getDB()).transaction((txn) async {
-      await _addDBItem(txn, "sale", sale);
+  Future<int> addSale(Sale sale) async {
+    return (await getDB()).transaction((txn) async {
+      int saleID = await _addDBItem(txn, "sale", sale);
       sale.saleLines.forEach((sl) async {
-        await _addDBItem(txn, "sale_line", sl);
+        var saleLineWithID = sl.copywith(saleID: saleID);
+        await _addDBItem(txn, "sale_line", saleLineWithID);
       });
+      return saleID;
     });
   }
 
   @override
   Future<Sale> fetchSaleByID(int id) async {
     var items = await _fetchDBItems(
-        await getDB(), "item", (e) => Sale.fromMap(e),
+        await getDB(), "sale", (e) => Sale.fromMap(e),
         where: "id = ?", whereArgs: [id]);
     if (items.length == 0) {
       return null;
@@ -121,10 +131,10 @@ class SqliteRepository implements Repository {
 
   Future<List<T>> _fetchDBItems<T>(DatabaseExecutor executor, String table,
       T Function(Map<String, dynamic>) fromMapFunc,
-      {String where, List whereArgs}) async {
+      {String where = "true", List whereArgs}) async {
     var map = await executor.query(table, where: where, whereArgs: whereArgs);
     if (map.length == 0) {
-      return null;
+      return [];
     }
     return map.map((row) => fromMapFunc(row)).toList();
   }

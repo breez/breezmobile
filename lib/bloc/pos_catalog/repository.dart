@@ -7,7 +7,7 @@ abstract class Repository {
   Future<List<int>> fetchAssetByURL(String url);
 
   // Item
-  Future<void> addItem(Item item);
+  Future<int> addItem(Item item);
   Future<void> deleteItem(int id);
   Future<void> updateItem(Item item);
   Future<Item> fetchItemByID(int id);
@@ -15,6 +15,6 @@ abstract class Repository {
   Future<List<Item>> fetchAllItems();
 
   // Sale
-  Future<void> addSale(Sale sale);
+  Future<int> addSale(Sale sale);
   Future<Sale> fetchSaleByID(int id);
 }
