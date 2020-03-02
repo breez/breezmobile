@@ -77,7 +77,7 @@ class SaleLine implements DBItem {
       this.satConversionRate});
 
   SaleLine copywith(
-      {String saleID,
+      {int saleID,
       String itemName,
       int quantity,
       String itemImageURL,
@@ -101,20 +101,20 @@ class SaleLine implements DBItem {
         itemName = json["item_name"],
         quantity = json["quantity"],
         itemImageURL = json["item_image_url"],
-        pricePerItem = json["pricePerItem"],
+        pricePerItem = json["price_per_item"],
         currency = json["currency"],
-        satConversionRate = json["satConversionRate"];
+        satConversionRate = json["sat_conversion_rate"];
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'sale_id': saleID,
-      'itemName': itemName,
+      'item_name': itemName,
       'quantity': quantity,
-      'itemImageURL': itemImageURL,
-      'pricePerItem': pricePerItem,
+      'item_image_url': itemImageURL,
+      'price_per_item': pricePerItem,
       'currency': currency,
-      'satConversionRate': satConversionRate,
+      'sat_conversion_rate': satConversionRate,
     };
   }
 }
