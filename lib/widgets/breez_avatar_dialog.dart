@@ -17,13 +17,12 @@ import 'flushbar.dart';
 
 int scaledWidth = 200;
 var _transparentImage = DartImage.Image(scaledWidth, scaledWidth);
-enum UPLOAD_STATE { UPLOAD_IN_PROGRESS }
 
 Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
-  UPLOAD_STATE _state;
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   BreezUserModel _currentSettings;
   File _pickedImage;
+  bool _isUploading = false;
 
   final _nameInputController = TextEditingController();
   userBloc.userPreviewStream.listen((user) {
@@ -40,7 +39,9 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   }
 
   return WillPopScope(
-    onWillPop: () => _onWillPop(_state),
+    onWillPop: () {
+      return Future.value(!_isUploading);
+    },
     child: StatefulBuilder(
       builder: (context, setState) {
         return AlertDialog(
@@ -91,45 +92,37 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                       if (!snapshot.hasData) {
                         return Container();
                       } else {
-                        if (_state == UPLOAD_STATE.UPLOAD_IN_PROGRESS) {
-                          return Stack(
-                            children: [
-                              Padding(
-                                child: AspectRatio(
+                        return Stack(
+                          children: [
+                            _isUploading
+                                ? Padding(
+                                    child: AspectRatio(
+                                      aspectRatio: 1,
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Theme.of(context)
+                                                    .primaryTextTheme
+                                                    .button
+                                                    .color),
+                                        backgroundColor:
+                                            Theme.of(context).backgroundColor,
+                                      ),
+                                    ),
+                                    padding: EdgeInsets.only(top: 26.0),
+                                  )
+                                : SizedBox(),
+                            Padding(
+                              child: AspectRatio(
                                   aspectRatio: 1,
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Theme.of(context)
-                                            .primaryTextTheme
-                                            .button
-                                            .color),
-                                    backgroundColor:
-                                        Theme.of(context).backgroundColor,
-                                  ),
-                                ),
-                                padding: EdgeInsets.only(top: 26.0),
-                              ),
-                              Padding(
-                                child: AspectRatio(
-                                    aspectRatio: 1,
-                                    child: BreezAvatar(
-                                      _pickedImage?.path ??
-                                          snapshot.data.avatarURL,
-                                      radius: 36.0,
-                                    )),
-                                padding: EdgeInsets.only(top: 26.0),
-                              )
-                            ],
-                          );
-                        }
-                        return Padding(
-                          child: AspectRatio(
-                              aspectRatio: 1,
-                              child: BreezAvatar(
-                                _pickedImage?.path ?? snapshot.data.avatarURL,
-                                radius: 36.0,
-                              )),
-                          padding: EdgeInsets.only(top: 26.0),
+                                  child: BreezAvatar(
+                                    _pickedImage?.path ??
+                                        snapshot.data.avatarURL,
+                                    radius: 36.0,
+                                  )),
+                              padding: EdgeInsets.only(top: 26.0),
+                            )
+                          ],
                         );
                       }
                     },
@@ -185,7 +178,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
             FlatButton(
               child: Text('CANCEL',
                   style: Theme.of(context).primaryTextTheme.button),
-              onPressed: _state == UPLOAD_STATE.UPLOAD_IN_PROGRESS
+              onPressed: _isUploading
                   ? null
                   : () {
                       Navigator.of(context).pop();
@@ -195,35 +188,25 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
               child: Text('SAVE',
                   style: Theme.of(context).primaryTextTheme.button),
               onPressed: () async {
-                if (_pickedImage != null) {
-                  await _pickedImage
-                      .readAsBytes()
-                      .then(scaleAndFormatPNG)
-                      .then((imageBytes) async {
-                    var action = UploadProfilePicture(imageBytes);
-                    userBloc.userActionsSink.add(action);
-                    setState(() {
-                      _state = UPLOAD_STATE.UPLOAD_IN_PROGRESS;
-                    });
-                    await action.future.then((_) {
-                      setState(() {
-                        _state = null;
-                      });
-                    }, onError: (error) {
-                      setState(() {
-                        _pickedImage = null;
-                        _state = null;
-                      });
-                      return showFlushbar(
+                setState(() {
+                  _isUploading = true;
+                });
+                await _uploadImage(_pickedImage, userBloc).then((uploaded) {
+                  setState(() {
+                    _isUploading = false;
+                    if (uploaded) {
+                      userBloc.userSink.add(_currentSettings.copyWith(
+                          name: _nameInputController.text));
+                      Navigator.of(context).pop();
+                    } else {
+                      _pickedImage = null;
+                      showFlushbar(
                         context,
                         message: "Failed to upload profile picture",
                       );
-                    });
+                    }
                   });
-                }
-                userBloc.userSink.add(
-                    _currentSettings.copyWith(name: _nameInputController.text));
-                Navigator.of(context).pop();
+                });
               },
             ),
           ],
@@ -236,12 +219,23 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   );
 }
 
-// Do not pop dialog if there's a upload in progress
-Future<bool> _onWillPop(UPLOAD_STATE _state) async {
-  if (_state == UPLOAD_STATE.UPLOAD_IN_PROGRESS) {
-    return false;
+Future<bool> _uploadImage(File _pickedImage, UserProfileBloc userBloc) async {
+  if (_pickedImage != null) {
+    return _pickedImage
+        .readAsBytes()
+        .then(scaleAndFormatPNG)
+        .then((imageBytes) async {
+      var action = UploadProfilePicture(imageBytes);
+      userBloc.userActionsSink.add(action);
+      return action.future.then((_) {
+        return true;
+      }, onError: (error) {
+        return false;
+      });
+    });
+  } else {
+    return true;
   }
-  return true;
 }
 
 List<int> scaleAndFormatPNG(List<int> imageBytes) {
