@@ -189,26 +189,31 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                   style: Theme.of(context).primaryTextTheme.button),
               onPressed: _isUploading
                   ? null
-                  : () {
-                      setState(() {
-                        _isUploading = true;
-                      });
-                      _uploadImage(_pickedImage, userBloc).then((uploaded) {
+                  : () async {
+                      try {
+                        if (_pickedImage != null) {
+                          setState(() {
+                            _isUploading = true;
+                          });
+                          await _uploadImage(_pickedImage, userBloc).then((_) {
+                            setState(() {
+                              _isUploading = false;
+                            });
+                          });
+                        }
+                        userBloc.userSink.add(_currentSettings.copyWith(
+                            name: _nameInputController.text));
+                        Navigator.of(context).pop();
+                      } catch (e) {
                         setState(() {
                           _isUploading = false;
-                          if (uploaded) {
-                            userBloc.userSink.add(_currentSettings.copyWith(
-                                name: _nameInputController.text));
-                            Navigator.of(context).pop();
-                          } else {
-                            _pickedImage = null;
-                            showFlushbar(
-                              context,
-                              message: "Failed to upload profile picture",
-                            );
-                          }
+                          _pickedImage = null;
                         });
-                      });
+                        showFlushbar(
+                          context,
+                          message: "Failed to upload profile picture",
+                        );
+                      }
                     },
             ),
           ],
@@ -221,23 +226,15 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   );
 }
 
-Future<bool> _uploadImage(File _pickedImage, UserProfileBloc userBloc) async {
-  if (_pickedImage != null) {
-    return _pickedImage
-        .readAsBytes()
-        .then(scaleAndFormatPNG)
-        .then((imageBytes) async {
-      var action = UploadProfilePicture(imageBytes);
-      userBloc.userActionsSink.add(action);
-      return action.future.then((_) {
-        return true;
-      }, onError: (error) {
-        return false;
-      });
-    });
-  } else {
-    return true;
-  }
+Future _uploadImage(File _pickedImage, UserProfileBloc userBloc) async {
+  return _pickedImage
+      .readAsBytes()
+      .then(scaleAndFormatPNG)
+      .then((imageBytes) async {
+    var action = UploadProfilePicture(imageBytes);
+    userBloc.userActionsSink.add(action);
+    return action.future;
+  });
 }
 
 List<int> scaleAndFormatPNG(List<int> imageBytes) {
