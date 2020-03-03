@@ -57,7 +57,7 @@ class BreezAvatar extends StatelessWidget {
         return _VendorAvatar(radius, avatarURL);
       }
 
-      if (Uri.parse(avatarURL).scheme.startsWith("http")) {
+      if (Uri.tryParse(avatarURL)?.scheme?.startsWith("http") ?? false) {
         return _NetworkImageAvatar(avatarURL, radius);
       }
 
