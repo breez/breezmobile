@@ -187,27 +187,30 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
             FlatButton(
               child: Text('SAVE',
                   style: Theme.of(context).primaryTextTheme.button),
-              onPressed: () async {
-                setState(() {
-                  _isUploading = true;
-                });
-                await _uploadImage(_pickedImage, userBloc).then((uploaded) {
-                  setState(() {
-                    _isUploading = false;
-                    if (uploaded) {
-                      userBloc.userSink.add(_currentSettings.copyWith(
-                          name: _nameInputController.text));
-                      Navigator.of(context).pop();
-                    } else {
-                      _pickedImage = null;
-                      showFlushbar(
-                        context,
-                        message: "Failed to upload profile picture",
-                      );
-                    }
-                  });
-                });
-              },
+              onPressed: _isUploading
+                  ? null
+                  : () async {
+                      setState(() {
+                        _isUploading = true;
+                      });
+                      await _uploadImage(_pickedImage, userBloc)
+                          .then((uploaded) {
+                        setState(() {
+                          _isUploading = false;
+                          if (uploaded) {
+                            userBloc.userSink.add(_currentSettings.copyWith(
+                                name: _nameInputController.text));
+                            Navigator.of(context).pop();
+                          } else {
+                            _pickedImage = null;
+                            showFlushbar(
+                              context,
+                              message: "Failed to upload profile picture",
+                            );
+                          }
+                        });
+                      });
+                    },
             ),
           ],
           shape: RoundedRectangleBorder(
