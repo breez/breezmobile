@@ -47,10 +47,6 @@ class BreezAvatar extends StatelessWidget {
         this.backgroundColor ?? theme.sessionAvatarBackgroundColor;
 
     if (avatarURL != null && avatarURL.isNotEmpty) {
-      if (avatarURL.contains("/image_cropper")) {
-        return _FileImageAvatar(radius, avatarURL);
-      }
-
       if (avatarURL.startsWith("breez://profile_image?")) {
         var queryParams = Uri.parse(avatarURL).queryParameters;
         return _GeneratedAvatar(
@@ -61,7 +57,11 @@ class BreezAvatar extends StatelessWidget {
         return _VendorAvatar(radius, avatarURL);
       }
 
-      return _NetworkImageAvatar(avatarURL, radius);
+      if (Uri.parse(avatarURL).scheme.startsWith("http")) {
+        return _NetworkImageAvatar(avatarURL, radius);
+      }
+
+      return _FileImageAvatar(radius, avatarURL);
     }
 
     return _UnknownAvatar(radius, avatarBgColor);
