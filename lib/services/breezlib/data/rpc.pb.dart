@@ -1808,17 +1808,20 @@ class LSPList extends $pb.GeneratedMessage {
 
 enum LNUrlResponse_Action {
   withdraw, 
+  channel, 
   notSet
 }
 
 class LNUrlResponse extends $pb.GeneratedMessage {
   static const $core.Map<$core.int, LNUrlResponse_Action> _LNUrlResponse_ActionByTag = {
     1 : LNUrlResponse_Action.withdraw,
+    2 : LNUrlResponse_Action.channel,
     0 : LNUrlResponse_Action.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('LNUrlResponse', package: const $pb.PackageName('data'), createEmptyInstance: create)
-    ..oo(0, [1])
+    ..oo(0, [1, 2])
     ..aOM<LNUrlWithdraw>(1, 'withdraw', subBuilder: LNUrlWithdraw.create)
+    ..aOM<LNURLChannel>(2, 'channel', subBuilder: LNURLChannel.create)
     ..hasRequiredFields = false
   ;
 
@@ -1850,6 +1853,17 @@ class LNUrlResponse extends $pb.GeneratedMessage {
   void clearWithdraw() => clearField(1);
   @$pb.TagNumber(1)
   LNUrlWithdraw ensureWithdraw() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  LNURLChannel get channel => $_getN(1);
+  @$pb.TagNumber(2)
+  set channel(LNURLChannel v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasChannel() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearChannel() => clearField(2);
+  @$pb.TagNumber(2)
+  LNURLChannel ensureChannel() => $_ensure(1);
 }
 
 class LNUrlWithdraw extends $pb.GeneratedMessage {
@@ -1901,6 +1915,57 @@ class LNUrlWithdraw extends $pb.GeneratedMessage {
   $core.bool hasDefaultDescription() => $_has(2);
   @$pb.TagNumber(3)
   void clearDefaultDescription() => clearField(3);
+}
+
+class LNURLChannel extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('LNURLChannel', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'k1')
+    ..aOS(2, 'callback')
+    ..aOS(3, 'uri')
+    ..hasRequiredFields = false
+  ;
+
+  LNURLChannel._() : super();
+  factory LNURLChannel() => create();
+  factory LNURLChannel.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNURLChannel.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  LNURLChannel clone() => LNURLChannel()..mergeFromMessage(this);
+  LNURLChannel copyWith(void Function(LNURLChannel) updates) => super.copyWith((message) => updates(message as LNURLChannel));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LNURLChannel create() => LNURLChannel._();
+  LNURLChannel createEmptyInstance() => create();
+  static $pb.PbList<LNURLChannel> createRepeated() => $pb.PbList<LNURLChannel>();
+  @$core.pragma('dart2js:noInline')
+  static LNURLChannel getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNURLChannel>(create);
+  static LNURLChannel _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get k1 => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set k1($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasK1() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearK1() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get callback => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set callback($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasCallback() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearCallback() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get uri => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set uri($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasUri() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearUri() => clearField(3);
 }
 
 class ReverseSwapRequest extends $pb.GeneratedMessage {

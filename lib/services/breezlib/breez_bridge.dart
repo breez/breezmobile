@@ -153,6 +153,14 @@ class BreezBridge {
     return _invokeMethodWhenReady("connectToLnurl", {"argument": lnurl});
   }
 
+  Future connectDirectToLnurl(String uri, String k1, String callback) {
+    var channel = LNURLChannel()
+      ..uri = uri
+      ..k1 = k1
+      ..callback = callback;
+    return _invokeMethodWhenReady("connectDirectToLnurl", {"argument": channel.writeToBuffer()});
+  }
+
   Future<SweepAllCoinsTransactions> sweepAllCoinsTransactions(String address) {
     return _invokeMethodWhenReady(
             "sweepAllCoinsTransactions", {"argument": address})
