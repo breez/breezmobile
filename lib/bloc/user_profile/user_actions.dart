@@ -51,3 +51,9 @@ class SetPOSFlavor extends AsyncAction {
 
   SetPOSFlavor(this.isPos);
 }
+
+class UploadProfilePicture extends AsyncAction {
+  final List<int> bytes;
+
+  UploadProfilePicture(this.bytes);
+}

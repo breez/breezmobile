@@ -1,8 +1,10 @@
-import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'dart:io';
+
 import 'package:breez/bloc/user_profile/default_profile_generator.dart'
     as generator;
+import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter/material.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
 
 final _breezAvatarColors = {
   "salmon": Color(0xFFFA8072),
@@ -43,6 +45,7 @@ class BreezAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     Color avatarBgColor =
         this.backgroundColor ?? theme.sessionAvatarBackgroundColor;
+
     if (avatarURL != null && avatarURL.isNotEmpty) {
       if (avatarURL.startsWith("breez://profile_image?")) {
         var queryParams = Uri.parse(avatarURL).queryParameters;
@@ -54,7 +57,11 @@ class BreezAvatar extends StatelessWidget {
         return _VendorAvatar(radius, avatarURL);
       }
 
-      return _NetworkImageAvatar(avatarURL, radius);
+      if (Uri.tryParse(avatarURL)?.scheme?.startsWith("http") ?? false) {
+        return _NetworkImageAvatar(avatarURL, radius);
+      }
+
+      return _FileImageAvatar(radius, avatarURL);
     }
 
     return _UnknownAvatar(radius, avatarBgColor);
@@ -106,6 +113,29 @@ class _GeneratedAvatar extends StatelessWidget {
               size: radius * 2 * 0.75,
               color: _breezAvatarColors[color.toLowerCase()]),
         ));
+  }
+}
+
+class _FileImageAvatar extends StatelessWidget {
+  final double radius;
+  final String filePath;
+
+  _FileImageAvatar(this.radius, this.filePath);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: radius * 2,
+      width: radius * 2,
+      decoration: new BoxDecoration(
+        shape: BoxShape.circle,
+        image: DecorationImage(
+          image: FileImage(
+            File(filePath),
+          ),
+        ),
+      ),
+    );
   }
 }
 
