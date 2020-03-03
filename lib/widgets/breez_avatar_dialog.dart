@@ -189,12 +189,11 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                   style: Theme.of(context).primaryTextTheme.button),
               onPressed: _isUploading
                   ? null
-                  : () async {
+                  : () {
                       setState(() {
                         _isUploading = true;
                       });
-                      await _uploadImage(_pickedImage, userBloc)
-                          .then((uploaded) {
+                      _uploadImage(_pickedImage, userBloc).then((uploaded) {
                         setState(() {
                           _isUploading = false;
                           if (uploaded) {
