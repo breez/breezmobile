@@ -25,10 +25,12 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   bool _isUploading = false;
 
   final _nameInputController = TextEditingController();
-  userBloc.userPreviewStream.listen((user) {
-    _nameInputController.text = user.name;
-    _currentSettings = user;
-  });
+
+  userBloc.userPreviewStream
+      .firstWhere((u) => u != null)
+      .then((user) => _nameInputController.text = user.name);
+
+  userBloc.userPreviewStream.listen((user) => _currentSettings = user);
 
   Future<File> _pickImage() async {
     return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
