@@ -25,12 +25,10 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   bool _isUploading = false;
 
   final _nameInputController = TextEditingController();
-
-  userBloc.userPreviewStream
-      .firstWhere((u) => u != null)
-      .then((user) => _nameInputController.text = user.name);
-
-  userBloc.userPreviewStream.listen((user) => _currentSettings = user);
+  userBloc.userPreviewStream.listen((user) {
+    _nameInputController.text = user.name;
+    _currentSettings = user;
+  });
 
   Future<File> _pickImage() async {
     return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
@@ -194,6 +192,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                   ? null
                   : () async {
                       try {
+                        var userName = _nameInputController.text;
                         if (_pickedImage != null) {
                           setState(() {
                             _isUploading = true;
@@ -204,8 +203,8 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                             });
                           });
                         }
-                        userBloc.userSink.add(_currentSettings.copyWith(
-                            name: _nameInputController.text));
+                        userBloc.userSink
+                            .add(_currentSettings.copyWith(name: userName));
                         Navigator.of(context).pop();
                       } catch (e) {
                         setState(() {
