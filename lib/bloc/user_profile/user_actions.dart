@@ -52,6 +52,17 @@ class SetPOSFlavor extends AsyncAction {
   SetPOSFlavor(this.isPos);
 }
 
+class SetAdminPassword extends AsyncAction {
+  final String password;
+
+  SetAdminPassword(this.password);
+}
+
+class VerifyAdminPassword extends AsyncAction {
+  final String password;
+
+  VerifyAdminPassword(this.password);
+}
 class UploadProfilePicture extends AsyncAction {
   final List<int> bytes;
 

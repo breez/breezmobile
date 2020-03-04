@@ -16,6 +16,7 @@ class BreezUserModel {
   final bool registrationRequested;
   final bool isPOS;
   final double cancellationTimeoutValue;
+  final bool hasAdminPassword;
 
   BreezUserModel._(this.userID, this.name, this.color, this.animal,
       {this.currency = Currency.SAT,
@@ -27,7 +28,8 @@ class BreezUserModel {
       this.themeId = "BLUE",
       this.registrationRequested = false,
       this.isPOS = false,
-      this.cancellationTimeoutValue = 90.0});
+      this.cancellationTimeoutValue = 90.0,
+      this.hasAdminPassword = false});
 
   BreezUserModel copyWith(
       {String name,
@@ -43,7 +45,8 @@ class BreezUserModel {
       String themeId,
       bool registrationRequested,
       bool isPOS,
-      double cancellationTimeoutValue}) {
+      double cancellationTimeoutValue,
+      bool hasAdminPassword}) {
     return BreezUserModel._(userID ?? this.userID, name ?? this.name,
         color ?? this.color, animal ?? this.animal,
         currency: currency ?? this.currency,
@@ -57,7 +60,8 @@ class BreezUserModel {
             registrationRequested ?? this.registrationRequested,
         isPOS: isPOS ?? this.isPOS,
         cancellationTimeoutValue:
-            cancellationTimeoutValue ?? this.cancellationTimeoutValue);
+            cancellationTimeoutValue ?? this.cancellationTimeoutValue,
+        hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword);
   }
 
   bool get registered {
@@ -92,7 +96,8 @@ class BreezUserModel {
         isPOS = json['isPOS'] ?? false,
         cancellationTimeoutValue = json['cancellationTimeoutValue'] == null
             ? 90.0
-            : json['cancellationTimeoutValue'];
+            : json['cancellationTimeoutValue'],
+        hasAdminPassword = json['hasAdminPassword'] ?? false;
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -108,5 +113,6 @@ class BreezUserModel {
         'registrationRequested': registrationRequested,
         'cancellationTimeoutValue': cancellationTimeoutValue,
         'isPOS': isPOS,
+        'hasAdminPassword': hasAdminPassword,
       };
 }

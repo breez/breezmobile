@@ -15,6 +15,7 @@ import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/error_dialog.dart';
@@ -152,8 +153,10 @@ class HomeState extends State<Home> {
                       if (refundableAddresses.length > 0) {
                         refundItems = [
                           DrawerItemConfigGroup([
-                            DrawerItemConfig("/get_refund", "Get Refund",
-                                "src/icon/withdraw_funds.png")
+                            DrawerItemConfig(
+                                "", "Get Refund", "src/icon/withdraw_funds.png",
+                                onItemSelected: (_) => protectAdminRoute(
+                                    context, user, "/get_refund"))
                           ])
                         ];
                       }
@@ -185,10 +188,9 @@ class HomeState extends State<Home> {
                                             .add(SetPOSFlavor(!user.isPOS));
                                       })),
                               DrawerItemConfig(
-                                "/settings",
-                                "POS Settings",
-                                "src/icon/settings.png",
-                              ),
+                                  "", "POS Settings", "src/icon/settings.png",
+                                  onItemSelected: (_) => protectAdminRoute(
+                                      context, user, "/settings")),
                             ]
                           : [
                               DrawerItemConfig("", "POS", "src/icon/pos.png",
@@ -199,10 +201,14 @@ class HomeState extends State<Home> {
                                   switchWidget: Switch(
                                       activeColor: Colors.white,
                                       value: user.isPOS,
-                                      onChanged: !account.connected ? null : (_) {
-                                        widget.userProfileBloc.userActionsSink
-                                            .add(SetPOSFlavor(!user.isPOS));
-                                      })),
+                                      onChanged: !account.connected
+                                          ? null
+                                          : (_) {
+                                              widget.userProfileBloc
+                                                  .userActionsSink
+                                                  .add(SetPOSFlavor(
+                                                      !user.isPOS));
+                                            })),
                               DrawerItemConfig("/developers", "Developers",
                                   "src/icon/developers.png")
                             ];
@@ -283,15 +289,25 @@ class HomeState extends State<Home> {
                                                   .add(data.text);
                                             }),
                                             DrawerItemConfig(
-                                                "/connect_to_pay",
+                                                "",
                                                 "Connect to Pay",
                                                 "src/icon/connect_to_pay.png",
-                                                disabled: !account.connected),
+                                                disabled: !account.connected,
+                                                onItemSelected: (_) =>
+                                                    protectAdminRoute(
+                                                        context,
+                                                        user,
+                                                        "/connect_to_pay")),
                                             DrawerItemConfig(
-                                                "/withdraw_funds",
+                                                "",
                                                 "Send to BTC Address",
                                                 "src/icon/bitcoin.png",
-                                                disabled: !account.connected),
+                                                disabled: !account.connected,
+                                                onItemSelected: (_) =>
+                                                    protectAdminRoute(
+                                                        context,
+                                                        user,
+                                                        "/withdraw_funds")),
                                           ],
                                               groupTitle: "Send",
                                               groupAssetImage:
@@ -370,13 +386,15 @@ class HomeState extends State<Home> {
   void _registerNotificationHandlers() {
     InvoiceNotificationsHandler(
         context,
+        widget.userProfileBloc,
         widget.accountBloc,
         widget.invoiceBloc.receivedInvoicesStream,
         firstPaymentItemKey,
         scrollController,
         _scaffoldKey);
     LNURLHandler(context, widget.lnurlBloc);
-    CTPJoinSessionHandler(widget.ctpBloc, this.context, (session) {
+    CTPJoinSessionHandler(widget.userProfileBloc, widget.ctpBloc, this.context,
+        (session) {
       Navigator.popUntil(context, (route) {
         return route.settings.name != "/connect_to_pay";
       });
