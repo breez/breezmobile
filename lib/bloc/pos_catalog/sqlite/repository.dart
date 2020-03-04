@@ -131,11 +131,17 @@ class SqliteRepository implements Repository {
 
   Future<List<T>> _fetchDBItems<T>(DatabaseExecutor executor, String table,
       T Function(Map<String, dynamic>) fromMapFunc,
-      {String where = "true", List whereArgs}) async {
-    var map = await executor.query(table, where: where, whereArgs: whereArgs);
-    if (map.length == 0) {
+      {String where, List whereArgs}) async {
+    
+    List<Map<String, dynamic>> items;
+    if (where == null) {
+      items = await executor.query(table);
+    } else {
+      items = await executor.query(table, where: where, whereArgs: whereArgs);
+    }    
+    if (items.length == 0) {
       return [];
     }
-    return map.map((row) => fromMapFunc(row)).toList();
+    return items.map((row) => fromMapFunc(row)).toList();
   }
 }
