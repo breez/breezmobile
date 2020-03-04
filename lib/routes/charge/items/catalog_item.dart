@@ -2,8 +2,9 @@ import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/breez_avatar.dart';
 import 'package:flutter/material.dart';
+
+import 'item_avatar.dart';
 
 class CatalogItem extends StatelessWidget {
   final PosCatalogBloc posCatalogBloc;
@@ -38,7 +39,6 @@ class CatalogItem extends StatelessWidget {
                 ]),
           ],
         ),
-        onTap: () => showAddToCatalogPage,
       ),
       Divider(
         height: 0.0,
@@ -50,27 +50,7 @@ class CatalogItem extends StatelessWidget {
     ]);
   }
 
-  showAddToCatalogPage(BuildContext context) {
-    // Show add to catalog page with the given item
-    // return AddItemToCatalog(_itemInfo);
-  }
-
   Widget _buildCatalogItemAvatar() {
-    if (_itemInfo.imageURL != null) {
-      return CatalogItemAvatar(_itemInfo.imageURL);
-    } else {
-      return Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(16.0))),
-          width: 32.0,
-          height: 32.0,
-          child: Icon(Icons.close, color: theme.BreezColors.blue[500]));
-    }
-  }
-
-  // Separate this to it's own class
-  Widget CatalogItemAvatar(String avatarURL) {
-    return BreezAvatar(avatarURL);
+    return ItemAvatar(_itemInfo.imageURL);
   }
 }
