@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
@@ -202,19 +203,29 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
           : Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
       onTap: user.hasAdminPassword
           ? null
-          : () => _onChangeAdminPasswordSelected(
-              isNew: !user.hasAdminPassword),
+          : () => _onChangeAdminPasswordSelected(isNew: !user.hasAdminPassword),
     );
   }
 
   _onChangeAdminPasswordSelected({bool isNew = false}) async {
+    BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    var backupState = await backupBloc.backupStateStream.first;
+    if (backupState.lastBackupTime == null) {
+      await promptError(
+          context,
+          "Admin Password",
+          Text(
+              "Admin Password can be configured only if you have an active backup. To trigger a backup process, go to Receive > Receive via BTC Address."));
+      return;
+    }
+
     bool confirmed = true;
     if (isNew) {
       confirmed = await promptAreYouSure(
           context,
           "Admin Password",
           Text(
-              "If Admin Password is activated, sending funds from Breez will require you to enter a password. Breez doesn't offer any way to restore this password in case it is lost.\nAre you sure you want to activate Admin Password?"));
+              "If Admin Password is activated, sending funds from Breez will require you to enter a password.\nAre you sure you want to activate Admin Password?"));
     }
     if (confirmed) {
       Navigator.of(context).push(FadeInRoute(
