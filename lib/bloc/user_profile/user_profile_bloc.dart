@@ -16,7 +16,10 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
+import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hex/hex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,6 +89,8 @@ class UserProfileBloc {
       SetLockState: _setLockState,
       CheckVersion: _checkVersion,
       SetPOSFlavor: _setPOSFlavor,
+      SetAdminPassword: _setAdminPassword,
+      VerifyAdminPassword: _verifyAdminPassword,
     };
     print("UserProfileBloc started");
 
@@ -189,7 +194,7 @@ class UserProfileBloc {
   Future _setPOSFlavor(SetPOSFlavor action) async {
     _saveChanges(
         await _preferences, _currentUser.copyWith(isPOS: action.isPos));
-    action.resolve(action.isPos); 
+    action.resolve(action.isPos);
   }
 
   Future _updatePinCode(UpdatePinCode action) async {
@@ -204,6 +209,26 @@ class UserProfileBloc {
       throw Exception("Incorrect PIN");
     }
     action.resolve(pinCode == action.enteredPin);
+  }
+
+  Future _setAdminPassword(SetAdminPassword action) async {
+    if (action.password == null) {
+      await _secureStorage.delete(key: 'adminPassword');
+    } else {
+      var hashedPassword = sha256.convert(utf8.encode(action.password)).bytes;
+      String hexHash = HEX.encode(hashedPassword);
+      await _secureStorage.write(key: 'adminPassword', value: hexHash);
+    }
+    await _saveChanges(await _preferences,
+        _currentUser.copyWith(hasAdminPassword: action.password != null));
+    action.resolve(null);
+  }
+
+  Future _verifyAdminPassword(VerifyAdminPassword action) async {
+    var encodedHash = await _secureStorage.read(key: 'adminPassword');
+    var decodedHash = HEX.decode(encodedHash);
+    var hashedPassword = sha256.convert(utf8.encode(action.password)).bytes;
+    action.resolve(listEquals(decodedHash, hashedPassword));
   }
 
   Future _updateSecurityModelAction(
