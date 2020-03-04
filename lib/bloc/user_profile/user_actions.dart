@@ -63,3 +63,8 @@ class VerifyAdminPassword extends AsyncAction {
 
   VerifyAdminPassword(this.password);
 }
+class UploadProfilePicture extends AsyncAction {
+  final List<int> bytes;
+
+  UploadProfilePicture(this.bytes);
+}
