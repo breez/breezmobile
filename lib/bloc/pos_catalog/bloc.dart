@@ -26,6 +26,7 @@ class PosCatalogBloc with AsyncActionsHandler {
       AddSale: _addSale,
       FetchSale: _fetchSale
     });
+    listenActions();
   }
 
   Future _loadItems() async {
@@ -54,7 +55,7 @@ class PosCatalogBloc with AsyncActionsHandler {
   }
 
   Future _addSale(AddSale action) async {
-    action.resolve(await _repository.addSale(action.sale));    
+    action.resolve(await _repository.addSale(action.sale));
   }
 
   Future _fetchSale(FetchSale action) async {
