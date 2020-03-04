@@ -358,7 +358,7 @@ class POSInvoiceState extends State<POSInvoice> {
       stream: posCatalogBloc.itemsStream,
       builder: (context, snapshot) {
         return Scaffold(
-          body: _buildCatalogContent(snapshot.data),
+          body: _buildCatalogContent(posCatalogBloc, snapshot.data),
           floatingActionButton: FloatingActionButton(
               child: Icon(
                 Icons.add,
@@ -371,7 +371,7 @@ class POSInvoiceState extends State<POSInvoice> {
     );
   }
 
-  _buildCatalogContent(List<Item> catalogItems) {
+  _buildCatalogContent(PosCatalogBloc posCatalogBloc, List<Item> catalogItems) {
     return ListView(
       children: <Widget>[
         TextField(
@@ -388,7 +388,7 @@ class POSInvoiceState extends State<POSInvoice> {
                 padding: const EdgeInsets.only(top: 160.0),
                 child: Text("Please add items to use catalog"),
               ))
-            : ItemsList(catalogItems)
+            : ItemsList(posCatalogBloc, catalogItems)
       ],
     );
   }

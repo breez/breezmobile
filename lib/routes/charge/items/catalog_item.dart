@@ -1,3 +1,4 @@
+import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -5,10 +6,11 @@ import 'package:breez/widgets/breez_avatar.dart';
 import 'package:flutter/material.dart';
 
 class CatalogItem extends StatelessWidget {
+  final PosCatalogBloc posCatalogBloc;
   final Item _itemInfo;
   final bool _lastItem;
 
-  CatalogItem(this._itemInfo, this._lastItem);
+  CatalogItem(this.posCatalogBloc, this._itemInfo, this._lastItem);
 
   @override
   Widget build(BuildContext context) {

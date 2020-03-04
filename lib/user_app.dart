@@ -4,6 +4,7 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -56,6 +57,7 @@ class UserApp extends StatelessWidget {
     var lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+    var posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
 
     return StreamBuilder(
         stream: userProfileBloc.userStream,
@@ -257,7 +259,8 @@ class UserApp extends StatelessWidget {
                                     // POS routes
                                     case '/create_item':
                                       return FadeInRoute(
-                                        builder: (_) => CreateItemPage(),
+                                        builder: (_) =>
+                                            CreateItemPage(posCatalogBloc),
                                         settings: settings,
                                       );
                                     case '/transactions':
