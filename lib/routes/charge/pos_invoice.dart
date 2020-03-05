@@ -381,24 +381,29 @@ class POSInvoiceState extends State<POSInvoice> {
 
   _buildCatalogContent(AccountModel accountModel, PosCatalogBloc posCatalogBloc,
       List<Item> catalogItems) {
-    return ListView(
-      children: <Widget>[
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: ListView(
+        primary: false,
+        shrinkWrap: true,
+        children: <Widget>[
 /*        TextField(
-          onChanged: (value) {},
-          enabled: catalogItems != null,
-          decoration: InputDecoration(
-              hintText: "Search Items",
-              prefixIcon: Icon(Icons.search),
-              border: UnderlineInputBorder()),
-        ),*/
-        catalogItems?.length == 0
-            ? Center(
-                child: Padding(
-                padding: const EdgeInsets.only(top: 160.0),
-                child: Text("Please add items to use catalog"),
-              ))
-            : ItemsList(accountModel, posCatalogBloc, catalogItems, _addItem)
-      ],
+            onChanged: (value) {},
+            enabled: catalogItems != null,
+            decoration: InputDecoration(
+                hintText: "Search Items",
+                prefixIcon: Icon(Icons.search),
+                border: UnderlineInputBorder()),
+          ),*/
+          catalogItems?.length == 0
+              ? Center(
+                  child: Padding(
+                  padding: const EdgeInsets.only(top: 160.0),
+                  child: Text("Please add items to use catalog"),
+                ))
+              : ItemsList(accountModel, posCatalogBloc, catalogItems, _addItem)
+        ],
+      ),
     );
   }
 
