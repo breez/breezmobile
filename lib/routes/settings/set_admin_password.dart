@@ -71,7 +71,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
                     },
                     controller: _passwordController,
                     decoration: InputDecoration(
-                        labelText: "Enter new password",
+                        labelText: "Enter a new password",
                         suffixIcon: IconButton(
                           icon: Icon(Icons.remove_red_eye),
                           onPressed: () {

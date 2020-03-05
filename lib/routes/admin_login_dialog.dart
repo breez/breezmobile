@@ -98,7 +98,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                   },
                   controller: _passwordController,
                   decoration: InputDecoration(
-                      labelText: "Admin Password",
+                      labelText: "Enter your password",
                       suffixIcon: IconButton(
                         icon: Icon(Icons.remove_red_eye),
                         onPressed: () {
