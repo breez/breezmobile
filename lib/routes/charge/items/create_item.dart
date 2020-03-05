@@ -1,7 +1,9 @@
 import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,27 +44,46 @@ class CreateItemPageState extends State<CreateItemPage> {
                     decoration: InputDecoration(
                         hintText: "Name", border: UnderlineInputBorder()),
                   ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextFormField(
-                          keyboardType:
-                              TextInputType.numberWithOptions(decimal: true),
-                          inputFormatters: [
-                            WhitelistingTextInputFormatter.digitsOnly
+                  Row(children: <Widget>[
+                    Expanded(
+                      child: TextFormField(
+                        keyboardType:
+                            TextInputType.numberWithOptions(decimal: true),
+                        inputFormatters: [
+                          WhitelistingTextInputFormatter.digitsOnly
+                        ],
+                        controller: _priceController,
+                        decoration: InputDecoration(
+                            hintText: "Price", border: UnderlineInputBorder()),
+                      ),
+                    ),
+                    DropdownButtonHideUnderline(
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: BreezDropdownButton<String>(
+                          value: "Sat",
+                          iconEnabledColor: Colors.white,
+                          style: theme.invoiceAmountStyle
+                              .copyWith(color: Colors.white),
+                          onChanged: (value) {},
+                          items: [
+                            DropdownMenuItem<String>(
+                              value: "Sat",
+                              child: Text(
+                                "sats",
+                                style: theme.invoiceAmountStyle
+                                    .copyWith(color: Colors.white),
+                              ),
+                            )
                           ],
-                          controller: _priceController,
-                          decoration: InputDecoration(
-                              hintText: "Price",
-                              border: UnderlineInputBorder()),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ]),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -90,7 +111,7 @@ class CreateItemPageState extends State<CreateItemPage> {
           {
             if (_formKey.currentState.validate()) {
               AddItem addItem = AddItem(Item(
-                name: _nameController.text,
+                name: _nameController.text.trimRight(),
                 currency: "Sat",
                 price: double.parse(_priceController.text),
               ));
