@@ -357,8 +357,12 @@ class POSInvoiceState extends State<POSInvoice> {
     return StreamBuilder(
       stream: posCatalogBloc.itemsStream,
       builder: (context, snapshot) {
+        var posCatalog = snapshot.data;
+        if (posCatalog == null) {
+          return Loader();
+        }
         return Scaffold(
-          body: _buildCatalogContent(posCatalogBloc, snapshot.data),
+          body: _buildCatalogContent(posCatalogBloc, posCatalog),
           floatingActionButton: FloatingActionButton(
               child: Icon(
                 Icons.add,
@@ -382,7 +386,7 @@ class POSInvoiceState extends State<POSInvoice> {
               prefixIcon: Icon(Icons.search),
               border: UnderlineInputBorder()),
         ),
-        catalogItems == null
+        catalogItems?.length == 0
             ? Center(
                 child: Padding(
                 padding: const EdgeInsets.only(top: 160.0),
