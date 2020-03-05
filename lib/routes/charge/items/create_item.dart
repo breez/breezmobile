@@ -203,8 +203,6 @@ class CreateItemPageState extends State<CreateItemPage> {
       if (isFiat) {
         _selectedFiatCurrency = accountModel.fiatConversionList
             .firstWhere((f) => f.currencyData.shortName == value);
-        _priceController.text =
-            _formattedPrice(fiatCurrency: _selectedFiatCurrency);
       } else {
         _selectedCurrency = currency;
       }
