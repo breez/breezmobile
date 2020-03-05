@@ -392,7 +392,7 @@ class POSInvoiceState extends State<POSInvoice> {
                 padding: const EdgeInsets.only(top: 160.0),
                 child: Text("Please add items to use catalog"),
               ))
-            : ItemsList(posCatalogBloc, catalogItems)
+            : ItemsList(posCatalogBloc, catalogItems, _addItem)
       ],
     );
   }
@@ -491,6 +491,12 @@ class POSInvoiceState extends State<POSInvoice> {
     setState(() {
       amount += currentAmount;
       currentAmount = 0;
+    });
+  }
+
+  _addItem(double itemPrice) {
+    setState(() {
+      amount += itemPrice;
     });
   }
 

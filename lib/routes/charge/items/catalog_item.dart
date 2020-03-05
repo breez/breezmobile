@@ -14,8 +14,10 @@ class CatalogItem extends StatelessWidget {
   final PosCatalogBloc posCatalogBloc;
   final Item _itemInfo;
   final bool _lastItem;
+  final Function(double price) _addItem;
 
-  CatalogItem(this.posCatalogBloc, this._itemInfo, this._lastItem);
+  CatalogItem(
+      this.posCatalogBloc, this._itemInfo, this._lastItem, this._addItem);
 
   @override
   Widget build(BuildContext context) {
