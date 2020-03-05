@@ -1,3 +1,4 @@
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
@@ -11,13 +12,14 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'item_avatar.dart';
 
 class CatalogItem extends StatelessWidget {
+  final AccountModel accountModel;
   final PosCatalogBloc posCatalogBloc;
   final Item _itemInfo;
   final bool _lastItem;
   final Function(String symbol, double price) _addItem;
 
-  CatalogItem(
-      this.posCatalogBloc, this._itemInfo, this._lastItem, this._addItem);
+  CatalogItem(this.accountModel, this.posCatalogBloc, this._itemInfo,
+      this._lastItem, this._addItem);
 
   @override
   Widget build(BuildContext context) {

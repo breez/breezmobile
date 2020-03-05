@@ -295,7 +295,7 @@ class POSInvoiceState extends State<POSInvoice> {
                           Expanded(
                               child: _isKeypadView
                                   ? _numPad(accountModel)
-                                  : _itemsView(posCatalogBloc))
+                                  : _itemsView(accountModel, posCatalogBloc))
                         ],
                       );
                     });
@@ -357,7 +357,7 @@ class POSInvoiceState extends State<POSInvoice> {
     });
   }
 
-  _itemsView(PosCatalogBloc posCatalogBloc) {
+  _itemsView(AccountModel accountModel, PosCatalogBloc posCatalogBloc) {
     return StreamBuilder(
       stream: posCatalogBloc.itemsStream,
       builder: (context, snapshot) {
@@ -366,7 +366,7 @@ class POSInvoiceState extends State<POSInvoice> {
           return Loader();
         }
         return Scaffold(
-          body: _buildCatalogContent(posCatalogBloc, posCatalog),
+          body: _buildCatalogContent(accountModel, posCatalogBloc, posCatalog),
           floatingActionButton: FloatingActionButton(
               child: Icon(
                 Icons.add,
@@ -379,7 +379,8 @@ class POSInvoiceState extends State<POSInvoice> {
     );
   }
 
-  _buildCatalogContent(PosCatalogBloc posCatalogBloc, List<Item> catalogItems) {
+  _buildCatalogContent(AccountModel accountModel, PosCatalogBloc posCatalogBloc,
+      List<Item> catalogItems) {
     return ListView(
       children: <Widget>[
 /*        TextField(
@@ -396,7 +397,7 @@ class POSInvoiceState extends State<POSInvoice> {
                 padding: const EdgeInsets.only(top: 160.0),
                 child: Text("Please add items to use catalog"),
               ))
-            : ItemsList(posCatalogBloc, catalogItems, _addItem)
+            : ItemsList(accountModel, posCatalogBloc, catalogItems, _addItem)
       ],
     );
   }
