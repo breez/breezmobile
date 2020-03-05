@@ -7,7 +7,7 @@ import 'catalog_item.dart';
 class ItemsList extends StatelessWidget {
   final PosCatalogBloc posCatalogBloc;
   final List<Item> _items;
-  final Function(double price) _addItem;
+  final Function(String symbol, double price) _addItem;
 
   ItemsList(this.posCatalogBloc, this._items, this._addItem);
 

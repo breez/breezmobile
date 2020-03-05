@@ -498,7 +498,8 @@ class POSInvoiceState extends State<POSInvoice> {
     });
   }
 
-  _addItem(double itemPrice) {
+  _addItem(String symbol, double itemPrice) {
+    // TODO: Convert to current currency
     setState(() {
       amount += itemPrice;
     });

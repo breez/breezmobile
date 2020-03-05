@@ -14,7 +14,7 @@ class CatalogItem extends StatelessWidget {
   final PosCatalogBloc posCatalogBloc;
   final Item _itemInfo;
   final bool _lastItem;
-  final Function(double price) _addItem;
+  final Function(String symbol, double price) _addItem;
 
   CatalogItem(
       this.posCatalogBloc, this._itemInfo, this._lastItem, this._addItem);
@@ -63,7 +63,7 @@ class CatalogItem extends StatelessWidget {
             ],
           ),
           onTap: () {
-            _addItem(_itemInfo.price);
+            _addItem(_itemInfo.currency, _itemInfo.price);
           },
         ),
       ),
