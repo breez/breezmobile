@@ -32,22 +32,21 @@ class FiatConversion {
     return satoshies.toDouble() / 100000000 * this.exchangeRate;
   }
 
-  String formatFiat(double fiatAmount) {
-    return format(fiatToSat(fiatAmount));
+  String format(Int64 amount) {
+    double fiatValue = satToFiat(amount);
+    return formatFiat(fiatValue);
   }
 
-  String format(Int64 amount) {
+  String formatFiat(double fiatAmount) {
     int fractionSize = this.currencyData.fractionSize;
     double minimumAmount = 1 / (pow(10, fractionSize));
-    double fiatValue = satToFiat(amount);
-
-    // if conversion result is less than the minimum it doesn't make sence to display
+    // if conversion result is less than the minimum it doesn't make sense to display
     // it.
-    if (fiatValue < minimumAmount) {
+    if (fiatAmount < minimumAmount) {
       return "< ${this.currencyData.symbol}${minimumAmount.toStringAsFixed(fractionSize)}";
     }
 
     // Otherwise just show the formatted value.
-    return "${this.currencyData.symbol}${fiatValue.toStringAsFixed(fractionSize)}";
+    return "${this.currencyData.symbol}${fiatAmount.toStringAsFixed(fractionSize)}";
   }
 }
