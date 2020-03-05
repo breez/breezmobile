@@ -84,10 +84,7 @@ class CatalogItem extends StatelessWidget {
 
   String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
     return Currency.fromSymbol(_itemInfo.currency) != null
-        ? Currency.fromSymbol(_itemInfo.currency).format(
-            Int64(_itemInfo.price.toInt()),
-            userInput: userInput,
-            includeSymbol: includeSymbol)
+        ? Currency.fromSymbol(_itemInfo.currency).formatSat(_itemInfo.price)
         : accountModel
             .getFiatCurrencyByShortName(_itemInfo.currency)
             .formatFiat(_itemInfo.price);
