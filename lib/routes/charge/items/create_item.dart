@@ -207,7 +207,10 @@ class CreateItemPageState extends State<CreateItemPage> {
             _formattedPrice(fiatCurrency: _selectedFiatCurrency);
       } else {
         _selectedCurrency = currency;
-        _priceController.text = _formattedPrice(currency: _selectedCurrency);
+      }
+      if (_priceController.text.isNotEmpty) {
+        _priceController.text = _formattedPrice(
+            currency: _selectedCurrency, fiatCurrency: _selectedFiatCurrency);
       }
     });
   }
