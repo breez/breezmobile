@@ -73,38 +73,49 @@ class CreateItemPageState extends State<CreateItemPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TextFormField(
-                    textCapitalization: TextCapitalization.words,
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                        hintText: "Name", border: UnderlineInputBorder()),
-                  ),
+                      textCapitalization: TextCapitalization.words,
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                          hintText: "Name", border: UnderlineInputBorder()),
+                      validator: (value) {
+                        if (value.length == 0) {
+                          return "Name is required";
+                        }
+                      }),
                   Row(
                     children: <Widget>[
                       Expanded(
                         child: TextFormField(
-                          keyboardType:
-                              TextInputType.numberWithOptions(decimal: true),
-                          inputFormatters: _isFiat
-                              ? [
-                                  WhitelistingTextInputFormatter(
-                                      _selectedFiatCurrency
-                                                  .currencyData.fractionSize ==
-                                              0
-                                          ? RegExp(r'\d+')
-                                          : RegExp(
-                                              "^\\d+\\.?\\d{0,${_selectedFiatCurrency.currencyData.fractionSize ?? 2}}"))
-                                ]
-                              : _selectedCurrency != Currency.SAT
-                                  ? [
-                                      WhitelistingTextInputFormatter(
-                                          RegExp(r'\d+\.?\d*'))
-                                    ]
-                                  : [WhitelistingTextInputFormatter.digitsOnly],
-                          controller: _priceController,
-                          decoration: InputDecoration(
-                              hintText: "Price",
-                              border: UnderlineInputBorder()),
-                        ),
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: _isFiat
+                                ? [
+                                    WhitelistingTextInputFormatter(
+                                        _selectedFiatCurrency.currencyData
+                                                    .fractionSize ==
+                                                0
+                                            ? RegExp(r'\d+')
+                                            : RegExp(
+                                                "^\\d+\\.?\\d{0,${_selectedFiatCurrency.currencyData.fractionSize ?? 2}}"))
+                                  ]
+                                : _selectedCurrency != Currency.SAT
+                                    ? [
+                                        WhitelistingTextInputFormatter(
+                                            RegExp(r'\d+\.?\d*'))
+                                      ]
+                                    : [
+                                        WhitelistingTextInputFormatter
+                                            .digitsOnly
+                                      ],
+                            controller: _priceController,
+                            decoration: InputDecoration(
+                                hintText: "Price",
+                                border: UnderlineInputBorder()),
+                            validator: (value) {
+                              if (value.length == 0) {
+                                return "Price is required";
+                              }
+                            }),
                       ),
                       Theme(
                           data: Theme.of(context).copyWith(
