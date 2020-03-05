@@ -32,6 +32,10 @@ class FiatConversion {
     return satoshies.toDouble() / 100000000 * this.exchangeRate;
   }
 
+  String formatFiat(double fiatAmount) {
+    return format(fiatToSat(fiatAmount));
+  }
+
   String format(Int64 amount) {
     int fractionSize = this.currencyData.fractionSize;
     double minimumAmount = 1 / (pow(10, fractionSize));
