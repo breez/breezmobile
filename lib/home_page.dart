@@ -184,8 +184,12 @@ class HomeState extends State<Home> {
                                       activeColor: Colors.white,
                                       value: user.isPOS,
                                       onChanged: (_) {
-                                        widget.userProfileBloc.userActionsSink
-                                            .add(SetPOSFlavor(!user.isPOS));
+                                        protectAdminAction(context, user, () {
+                                          var action = SetPOSFlavor(false);
+                                          widget.userProfileBloc.userActionsSink
+                                              .add(action);
+                                          return action.future;
+                                        });
                                       })),
                               DrawerItemConfig(
                                   "", "POS Settings", "src/icon/settings.png",
@@ -204,10 +208,11 @@ class HomeState extends State<Home> {
                                       onChanged: !account.connected
                                           ? null
                                           : (_) {
+                                              var action =
+                                                  SetPOSFlavor(!user.isPOS);
                                               widget.userProfileBloc
                                                   .userActionsSink
-                                                  .add(SetPOSFlavor(
-                                                      !user.isPOS));
+                                                  .add(action);
                                             })),
                               DrawerItemConfig("/developers", "Developers",
                                   "src/icon/developers.png")
