@@ -83,11 +83,14 @@ class CatalogItem extends StatelessWidget {
   }
 
   String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
-    return Currency.fromSymbol(_itemInfo.currency) != null
-        ? Currency.fromSymbol(_itemInfo.currency).formatSat(_itemInfo.price)
-        : accountModel
-            .getFiatCurrencyByShortName(_itemInfo.currency)
-            .formatFiat(_itemInfo.price);
+    if (Currency.fromSymbol(_itemInfo.currency) != null) {
+      var currency = Currency.fromSymbol(_itemInfo.currency);
+      return currency.format(currency.toSats(_itemInfo.price));
+    } else {
+      return accountModel
+          .getFiatCurrencyByShortName(_itemInfo.currency)
+          .formatFiat(_itemInfo.price);
+    }
   }
 
   Int64 _itemPriceInSat() {

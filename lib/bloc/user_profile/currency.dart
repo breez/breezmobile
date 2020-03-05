@@ -12,6 +12,7 @@ class Currency extends Object {
   static final List<Currency> currencies = List.unmodifiable([BTC, SAT]);
 
   const Currency._internal(this.symbol);
+
   factory Currency.fromSymbol(String symbol) {
     return currencies.firstWhere((c) => c.symbol == symbol, orElse: () => null);
   }
@@ -22,10 +23,10 @@ class Currency extends Object {
           addCurrencySuffix: includeSymbol,
           fixedDecimals: fixedDecimals,
           userInput: userInput);
+
   Int64 parse(String amountStr) => _CurrencyFormatter().parse(amountStr, this);
+
   Int64 toSats(double amount) => _CurrencyFormatter().toSats(amount, this);
-  String formatSat(double amount) =>
-      _CurrencyFormatter().formatSat(amount, this);
 
   String get displayName => symbol == "Sat" ? "sats" : symbol;
 }
@@ -54,11 +55,6 @@ class _CurrencyFormatter {
     );
     final formatter = NumberFormat('###,###.##', 'space-between');
     return formatter;
-  }
-
-  String formatSat(double amount, Currency currency) {
-    Int64 satValue = toSats(amount, currency);
-    return format(satValue, currency);
   }
 
   String format(satoshies, Currency currency,
