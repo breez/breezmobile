@@ -539,8 +539,8 @@ class POSInvoiceState extends State<POSInvoice> {
 
       // We need to convert only in case we use fiat.
       if (_useFiat) {
-        amount = accountModel.fiatConversionList
-            .firstWhere((f) => f.currencyData.shortName == value)
+        amount = accountModel
+            .getFiatCurrencyByShortName(value)
             .satToFiat(oldSatAmount);
       }
     });

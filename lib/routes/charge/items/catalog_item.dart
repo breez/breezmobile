@@ -88,20 +88,17 @@ class CatalogItem extends StatelessWidget {
             Int64(_itemInfo.price.toInt()),
             userInput: userInput,
             includeSymbol: includeSymbol)
-        : accountModel.fiatConversionList
-            .firstWhere((f) => f.currencyData.shortName == _itemInfo.currency)
-            .format(accountModel.fiatConversionList
-                .firstWhere(
-                    (f) => f.currencyData.shortName == _itemInfo.currency)
-                .fiatToSat(_itemInfo.price));
+        : accountModel
+            .getFiatCurrencyByShortName(_itemInfo.currency)
+            .formatFiat(_itemInfo.price);
   }
 
   Int64 _itemPriceInSat() {
     return Currency.fromSymbol(_itemInfo.currency) != null
         ? Currency.fromSymbol(_itemInfo.currency)
             .parse(_formattedPrice(userInput: true, includeSymbol: false))
-        : accountModel.fiatConversionList
-            .firstWhere((f) => f.currencyData.shortName == _itemInfo.currency)
+        : accountModel
+            .getFiatCurrencyByShortName(_itemInfo.currency)
             .fiatToSat(_itemInfo.price);
   }
 

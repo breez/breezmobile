@@ -201,8 +201,7 @@ class CreateItemPageState extends State<CreateItemPage> {
       bool isFiat = (currency == null);
       _isFiat = isFiat;
       if (isFiat) {
-        _selectedFiatCurrency = accountModel.fiatConversionList
-            .firstWhere((f) => f.currencyData.shortName == value);
+        _selectedFiatCurrency = accountModel.getFiatCurrencyByShortName(value);
       } else {
         _selectedCurrency = currency;
       }
