@@ -12,7 +12,6 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -209,26 +208,24 @@ class CreateItemPageState extends State<CreateItemPage> {
   _changeCurrency(AccountModel accountModel, value) {
     setState(() {
       Currency currency = Currency.fromSymbol(value);
-      bool isFiat = (currency == null);
-      _isFiat = isFiat;
-      if (isFiat) {
-        _selectedFiatCurrency = accountModel.getFiatCurrencyByShortName(value);
-      } else {
-        _selectedCurrency = currency;
-      }
+      _isFiat = (currency == null);
+      _selectedFiatCurrency =
+          _isFiat ? accountModel.getFiatCurrencyByShortName(value) : null;
+      _selectedCurrency = !_isFiat ? currency : null;
       if (_priceController.text.isNotEmpty) {
-        _priceController.text = _formattedPrice(
-            currency: _selectedCurrency, fiatCurrency: _selectedFiatCurrency);
+        _priceController.text = _formattedPrice();
       }
     });
   }
 
-  String _formattedPrice({Currency currency, FiatConversion fiatCurrency}) {
+  String _formattedPrice() {
     return _isFiat
         ? (double.parse(_priceController.text))
-            .toStringAsFixed(fiatCurrency.currencyData.fractionSize)
-        : currency.format(Int64((double.parse(_priceController.text)).toInt()),
-            includeSymbol: false, userInput: true);
+            .toStringAsFixed(_selectedFiatCurrency.currencyData.fractionSize)
+        : _selectedCurrency.format(
+            _selectedCurrency.parse(_priceController.text),
+            includeSymbol: false,
+            userInput: true);
   }
 
   Widget _buildScaffold(Widget body, [List<Widget> actions]) {
@@ -252,11 +249,13 @@ class CreateItemPageState extends State<CreateItemPage> {
         onPressed: () {
           {
             if (_formKey.currentState.validate()) {
-              AddItem addItem = AddItem(Item(
-                name: _nameController.text.trimRight(),
-                currency: _currencySymbol(),
-                price: double.parse(_priceController.text),
-              ));
+              AddItem addItem = AddItem(
+                Item(
+                  name: _nameController.text.trimRight(),
+                  currency: _currencySymbol(),
+                  price: double.parse(_formattedPrice()),
+                ),
+              );
               widget._posCatalogBloc.actionsSink.add(addItem);
               addItem.future.then((_) {
                 Navigator.pop(context);
