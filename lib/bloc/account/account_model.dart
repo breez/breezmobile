@@ -262,6 +262,12 @@ class AccountModel {
   bool get transferringOnChainDeposit =>
       swapFundsStatus.depositConfirmed && this.connected;
 
+  FiatConversion getFiatCurrencyByShortName(String fiatShortName) {
+    return _fiatConversionList.firstWhere(
+        (f) => f.currencyData.shortName == fiatShortName,
+        orElse: () => null);
+  }
+
   String validateOutgoingOnChainPayment(Int64 amount) {
     if (amount > walletBalance) {
       String message = "Not enough funds.";
