@@ -48,9 +48,10 @@ class FiatConversion {
     if (fiatAmount < minimumAmount) {
       formattedAmount += minimumAmount.toStringAsFixed(fractionSize);
       prefix = '< ' + prefix;
+    } else {
+      // Otherwise just show the formatted value.
+      formattedAmount += fiatAmount.toStringAsFixed(fractionSize);
     }
-    // Otherwise just show the formatted value.
-    formattedAmount += fiatAmount.toStringAsFixed(fractionSize);
     if (addCurrencyPrefix) {
       formattedAmount = prefix + formattedAmount;
     }
