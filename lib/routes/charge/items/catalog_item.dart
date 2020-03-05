@@ -57,15 +57,14 @@ class CatalogItem extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
-                      Currency.fromSymbol(_itemInfo.currency)
-                          .format(Int64(_itemInfo.price.toInt())),
+                      _formattedPrice(),
                       style: theme.transactionAmountStyle,
                     )
                   ]),
             ],
           ),
           onTap: () {
-            _addItem(_itemInfo.currency, _itemInfo.price);
+            _addItem(_itemInfo.currency, _satAmount().toDouble());
           },
         ),
       ),
@@ -77,6 +76,29 @@ class CatalogItem extends StatelessWidget {
         indent: 72.0,
       ),
     ]);
+  }
+
+  String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
+    return Currency.fromSymbol(_itemInfo.currency) != null
+        ? Currency.fromSymbol(_itemInfo.currency).format(
+            Int64(_itemInfo.price.toInt()),
+            userInput: userInput,
+            includeSymbol: includeSymbol)
+        : accountModel.fiatConversionList
+            .firstWhere((f) => f.currencyData.shortName == _itemInfo.currency)
+            .format(accountModel.fiatConversionList
+                .firstWhere(
+                    (f) => f.currencyData.shortName == _itemInfo.currency)
+                .fiatToSat(_itemInfo.price));
+  }
+
+  Int64 _satAmount() {
+    return Currency.fromSymbol(_itemInfo.currency) != null
+        ? Currency.fromSymbol(_itemInfo.currency)
+            .parse(_formattedPrice(userInput: true, includeSymbol: false))
+        : accountModel.fiatConversionList
+            .firstWhere((f) => f.currencyData.shortName == _itemInfo.currency)
+            .fiatToSat(_itemInfo.price);
   }
 
   Widget _buildCatalogItemAvatar() {
