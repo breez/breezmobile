@@ -62,6 +62,9 @@ class CatalogItem extends StatelessWidget {
                   ]),
             ],
           ),
+          onTap: () {
+            _addItem(_itemInfo.price);
+          },
         ),
       ),
       Divider(
