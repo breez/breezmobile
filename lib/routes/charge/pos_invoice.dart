@@ -499,8 +499,10 @@ class POSInvoiceState extends State<POSInvoice> {
     });
   }
 
-  _addItem(String symbol, double itemPrice) {
-    // TODO: Convert to current currency
+  _addItem(AccountModel accountModel, String symbol, Int64 itemPriceInSat) {
+    var itemPrice = _useFiat
+        ? accountModel.fiatCurrency.satToFiat(itemPriceInSat)
+        : itemPriceInSat.toDouble();
     setState(() {
       amount += itemPrice;
     });

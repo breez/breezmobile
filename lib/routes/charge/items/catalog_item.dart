@@ -16,7 +16,8 @@ class CatalogItem extends StatelessWidget {
   final PosCatalogBloc posCatalogBloc;
   final Item _itemInfo;
   final bool _lastItem;
-  final Function(String symbol, double price) _addItem;
+  final Function(AccountModel accountModel, String symbol, Int64 itemPriceInSat)
+      _addItem;
 
   CatalogItem(this.accountModel, this.posCatalogBloc, this._itemInfo,
       this._lastItem, this._addItem);
@@ -64,7 +65,7 @@ class CatalogItem extends StatelessWidget {
             ],
           ),
           onTap: () {
-            _addItem(_itemInfo.currency, _satAmount().toDouble());
+            _addItem(accountModel, _itemInfo.currency, _itemPriceInSat());
           },
         ),
       ),
@@ -92,7 +93,7 @@ class CatalogItem extends StatelessWidget {
                 .fiatToSat(_itemInfo.price));
   }
 
-  Int64 _satAmount() {
+  Int64 _itemPriceInSat() {
     return Currency.fromSymbol(_itemInfo.currency) != null
         ? Currency.fromSymbol(_itemInfo.currency)
             .parse(_formattedPrice(userInput: true, includeSymbol: false))
