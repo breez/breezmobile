@@ -220,8 +220,8 @@ class CreateItemPageState extends State<CreateItemPage> {
 
   String _formattedPrice() {
     return _isFiat
-        ? (double.parse(_priceController.text))
-            .toStringAsFixed(_selectedFiatCurrency.currencyData.fractionSize)
+        ? _selectedFiatCurrency.formatFiat(double.parse(_priceController.text),
+            addCurrencyPrefix: false)
         : _selectedCurrency.format(
             _selectedCurrency.parse(_priceController.text),
             includeSymbol: false,
