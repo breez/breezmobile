@@ -378,14 +378,14 @@ class POSInvoiceState extends State<POSInvoice> {
   _buildCatalogContent(PosCatalogBloc posCatalogBloc, List<Item> catalogItems) {
     return ListView(
       children: <Widget>[
-        TextField(
+/*        TextField(
           onChanged: (value) {},
           enabled: catalogItems != null,
           decoration: InputDecoration(
               hintText: "Search Items",
               prefixIcon: Icon(Icons.search),
               border: UnderlineInputBorder()),
-        ),
+        ),*/
         catalogItems?.length == 0
             ? Center(
                 child: Padding(
