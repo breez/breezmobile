@@ -44,11 +44,7 @@ class AccountPageState extends State<AccountPage>
 
   AccountBloc _accountBloc;
   UserProfileBloc _userProfileBloc;
-  ConnectPayBloc _connectPayBloc;
-  InvoiceBloc _invoiceBloc;
-
-  StreamSubscription<String> _accountActionsSubscription;
-  StreamSubscription<bool> _paidInvoicesSubscription;
+  ConnectPayBloc _connectPayBloc;  
   bool _isInit = false;
 
   @override
@@ -56,18 +52,10 @@ class AccountPageState extends State<AccountPage>
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
-      _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+      _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);      
       _isInit = true;
     }
     super.didChangeDependencies();
-  }
-
-  @override
-  dispose() {
-    _accountActionsSubscription.cancel();
-    _paidInvoicesSubscription.cancel();
-    super.dispose();
   }
 
   @override
