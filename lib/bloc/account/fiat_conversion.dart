@@ -33,17 +33,28 @@ class FiatConversion {
   }
 
   String format(Int64 amount) {
+    double fiatValue = satToFiat(amount);
+    return formatFiat(fiatValue);
+  }
+
+  String formatFiat(double fiatAmount, {bool addCurrencyPrefix = true}) {
     int fractionSize = this.currencyData.fractionSize;
     double minimumAmount = 1 / (pow(10, fractionSize));
-    double fiatValue = satToFiat(amount);
 
-    // if conversion result is less than the minimum it doesn't make sence to display
+    String formattedAmount = "";
+    String prefix = '${this.currencyData.symbol}';
+    // if conversion result is less than the minimum it doesn't make sense to display
     // it.
-    if (fiatValue < minimumAmount) {
-      return "< ${this.currencyData.symbol}${minimumAmount.toStringAsFixed(fractionSize)}";
+    if (fiatAmount < minimumAmount) {
+      formattedAmount += minimumAmount.toStringAsFixed(fractionSize);
+      prefix = '< ' + prefix;
+    } else {
+      // Otherwise just show the formatted value.
+      formattedAmount += fiatAmount.toStringAsFixed(fractionSize);
     }
-
-    // Otherwise just show the formatted value.
-    return "${this.currencyData.symbol}${fiatValue.toStringAsFixed(fractionSize)}";
+    if (addCurrencyPrefix) {
+      formattedAmount = prefix + formattedAmount;
+    }
+    return formattedAmount;
   }
 }

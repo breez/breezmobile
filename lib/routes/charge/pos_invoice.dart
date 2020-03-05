@@ -7,6 +7,8 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/actions.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/bloc/pos_catalog/bloc.dart';
+import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -20,6 +22,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 import '../status_indicator.dart';
+import 'items/items_list.dart';
 
 class POSInvoice extends StatefulWidget {
   POSInvoice();
@@ -38,6 +41,7 @@ class POSInvoiceState extends State<POSInvoice> {
   double amount = 0;
   double currentAmount = 0;
   bool _useFiat = false;
+  bool _isKeypadView = true;
 
   @override
   void didChangeDependencies() {
@@ -52,6 +56,8 @@ class POSInvoiceState extends State<POSInvoice> {
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     UserProfileBloc userProfileBloc =
         AppBlocsProvider.of<UserProfileBloc>(context);
+    PosCatalogBloc posCatalogBloc =
+        AppBlocsProvider.of<PosCatalogBloc>(context);
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -176,21 +182,34 @@ class POSInvoiceState extends State<POSInvoice> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 16.0, right: 16.0),
+                                    padding:
+                                        EdgeInsets.only(left: 0.0, right: 16.0),
                                     child: Row(children: <Widget>[
+                                      _buildViewSwitch(context),
                                       Expanded(
-                                          child: Text(
-                                        _formattedCharge(
-                                            accountModel, currentAmount),
-                                        style: theme.invoiceAmountStyle
-                                            .copyWith(
-                                                color: Theme.of(context)
-                                                    .textTheme
-                                                    .headline
-                                                    .color),
-                                        textAlign: TextAlign.right,
-                                      )),
+                                        child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 8.0),
+                                              child: Text(
+                                                _formattedCharge(accountModel,
+                                                    currentAmount),
+                                                maxLines: 1,
+                                                style: theme.invoiceAmountStyle
+                                                    .copyWith(
+                                                        color: Theme.of(context)
+                                                            .textTheme
+                                                            .headline
+                                                            .color),
+                                                textAlign: TextAlign.right,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                       Theme(
                                           data: Theme.of(context).copyWith(
                                               canvasColor: Theme.of(context)
@@ -273,12 +292,117 @@ class POSInvoiceState extends State<POSInvoice> {
                               ),
                               height:
                                   MediaQuery.of(context).size.height * 0.29),
-                          Expanded(child: _numPad(accountModel))
+                          Expanded(
+                              child: _isKeypadView
+                                  ? _numPad(accountModel)
+                                  : _itemsView(accountModel, posCatalogBloc))
                         ],
                       );
                     });
               });
         }),
+      ),
+    );
+  }
+
+  GestureDetector _buildViewSwitch(BuildContext context) {
+    return GestureDetector(
+      onTap: _changeView,
+      child: Container(
+        padding: EdgeInsets.zero,
+        width: itemWidth / 1.5,
+        color: Theme.of(context).backgroundColor,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Expanded(
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.dialpad,
+                    color: Theme.of(context)
+                        .primaryTextTheme
+                        .button
+                        .color
+                        .withOpacity(_isKeypadView ? 1 : 0.5)),
+              ),
+            ),
+            Container(
+              height: 20,
+              width: 8,
+              child: VerticalDivider(
+                color: Theme.of(context).canvasColor,
+              ),
+            ),
+            Expanded(
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.playlist_add,
+                    color: Theme.of(context)
+                        .primaryTextTheme
+                        .button
+                        .color
+                        .withOpacity(_isKeypadView ? 0.5 : 1)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _changeView() {
+    setState(() {
+      _isKeypadView = !_isKeypadView;
+    });
+  }
+
+  _itemsView(AccountModel accountModel, PosCatalogBloc posCatalogBloc) {
+    return StreamBuilder(
+      stream: posCatalogBloc.itemsStream,
+      builder: (context, snapshot) {
+        var posCatalog = snapshot.data;
+        if (posCatalog == null) {
+          return Loader();
+        }
+        return Scaffold(
+          body: _buildCatalogContent(accountModel, posCatalogBloc, posCatalog),
+          floatingActionButton: FloatingActionButton(
+              child: Icon(
+                Icons.add,
+              ),
+              backgroundColor: Theme.of(context).buttonColor,
+              foregroundColor: Theme.of(context).textTheme.button.color,
+              onPressed: () => Navigator.of(context).pushNamed("/create_item")),
+        );
+      },
+    );
+  }
+
+  _buildCatalogContent(AccountModel accountModel, PosCatalogBloc posCatalogBloc,
+      List<Item> catalogItems) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: ListView(
+        primary: false,
+        shrinkWrap: true,
+        children: <Widget>[
+/*        TextField(
+            onChanged: (value) {},
+            enabled: catalogItems != null,
+            decoration: InputDecoration(
+                hintText: "Search Items",
+                prefixIcon: Icon(Icons.search),
+                border: UnderlineInputBorder()),
+          ),*/
+          catalogItems?.length == 0
+              ? Center(
+                  child: Padding(
+                  padding: const EdgeInsets.only(top: 160.0),
+                  child: Text("Please add items to use catalog"),
+                ))
+              : ItemsList(accountModel, posCatalogBloc, catalogItems, _addItem)
+        ],
       ),
     );
   }
@@ -324,7 +448,7 @@ class POSInvoiceState extends State<POSInvoice> {
       if (satAmount == 0) {
         return null;
       }
-      
+
       if (satAmount > account.maxAllowedToReceive) {
         promptError(
             context,
@@ -332,7 +456,7 @@ class POSInvoiceState extends State<POSInvoice> {
             Text(
                 "Maximum payment size you can receive is ${account.currency.format(account.maxAllowedToReceive, includeSymbol: true)}. Please enter a smaller value.",
                 style: Theme.of(context).dialogTheme.contentTextStyle));
-          return;
+        return;
       }
 
       if (satAmount > account.maxPaymentAmount) {
@@ -342,19 +466,19 @@ class POSInvoiceState extends State<POSInvoice> {
             Text(
                 "Maximum payment size on the Lightning Network is ${account.currency.format(account.maxPaymentAmount, includeSymbol: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
                 style: Theme.of(context).dialogTheme.contentTextStyle));
-        return;        
+        return;
       }
 
       var newInvoiceAction = NewInvoice(InvoiceRequestModel(user.name,
-            _invoiceDescriptionController.text, user.avatarURL, satAmount,
-            expiry: Int64(user.cancellationTimeoutValue.toInt())));
-        invoiceBloc.actionsSink.add(newInvoiceAction);
-        newInvoiceAction.future.then((value) {
-          return showPaymentDialog(invoiceBloc, user, value as String);
-        }).catchError((error) {
-          showFlushbar(context,
-              message: error.toString(), duration: Duration(seconds: 10));
-        });
+          _invoiceDescriptionController.text, user.avatarURL, satAmount,
+          expiry: Int64(user.cancellationTimeoutValue.toInt())));
+      invoiceBloc.actionsSink.add(newInvoiceAction);
+      newInvoiceAction.future.then((value) {
+        return showPaymentDialog(invoiceBloc, user, value as String);
+      }).catchError((error) {
+        showFlushbar(context,
+            message: error.toString(), duration: Duration(seconds: 10));
+      });
     }
   }
 
@@ -377,6 +501,15 @@ class POSInvoiceState extends State<POSInvoice> {
     setState(() {
       amount += currentAmount;
       currentAmount = 0;
+    });
+  }
+
+  _addItem(AccountModel accountModel, String symbol, Int64 itemPriceInSat) {
+    var itemPrice = _useFiat
+        ? accountModel.fiatCurrency.satToFiat(itemPriceInSat)
+        : itemPriceInSat.toDouble();
+    setState(() {
+      amount += itemPrice;
     });
   }
 
@@ -411,8 +544,8 @@ class POSInvoiceState extends State<POSInvoice> {
 
       // We need to convert only in case we use fiat.
       if (_useFiat) {
-        amount = accountModel.fiatConversionList
-            .firstWhere((f) => f.currencyData.shortName == value)
+        amount = accountModel
+            .getFiatCurrencyByShortName(value)
             .satToFiat(oldSatAmount);
       }
     });

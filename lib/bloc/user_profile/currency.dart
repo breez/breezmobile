@@ -12,6 +12,7 @@ class Currency extends Object {
   static final List<Currency> currencies = List.unmodifiable([BTC, SAT]);
 
   const Currency._internal(this.symbol);
+
   factory Currency.fromSymbol(String symbol) {
     return currencies.firstWhere((c) => c.symbol == symbol, orElse: () => null);
   }
@@ -22,7 +23,11 @@ class Currency extends Object {
           addCurrencySuffix: includeSymbol,
           fixedDecimals: fixedDecimals,
           userInput: userInput);
+
   Int64 parse(String amountStr) => _CurrencyFormatter().parse(amountStr, this);
+
+  Int64 toSats(double amount) => _CurrencyFormatter().toSats(amount, this);
+
   String get displayName => symbol == "Sat" ? "sats" : symbol;
 }
 
@@ -88,6 +93,17 @@ class _CurrencyFormatter {
         return Int64(int.parse(amount));
       default:
         return Int64((double.parse(amount) * 100000000).round());
+    }
+  }
+
+  Int64 toSats(double amount, Currency currency) {
+    switch (currency) {
+      case Currency.BTC:
+        return Int64((amount * 100000000).round());
+      case Currency.SAT:
+        return Int64(amount.toInt());
+      default:
+        return Int64((amount * 100000000).round());
     }
   }
 }
