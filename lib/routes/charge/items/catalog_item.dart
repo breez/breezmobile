@@ -92,8 +92,7 @@ class CatalogItem extends StatelessWidget {
 
   Int64 _itemPriceInSat() {
     return Currency.fromSymbol(_itemInfo.currency) != null
-        ? Currency.fromSymbol(_itemInfo.currency)
-            .parse(_formattedPrice(userInput: true, includeSymbol: false))
+        ? Currency.fromSymbol(_itemInfo.currency).toSats(_itemInfo.price)
         : accountModel
             .getFiatCurrencyByShortName(_itemInfo.currency)
             .fiatToSat(_itemInfo.price);
