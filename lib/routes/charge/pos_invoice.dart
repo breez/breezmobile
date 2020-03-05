@@ -321,7 +321,9 @@ class POSInvoiceState extends State<POSInvoice> {
                 padding: EdgeInsets.zero,
                 icon: Icon(Icons.dialpad,
                     color: Theme.of(context)
-                        .canvasColor
+                        .primaryTextTheme
+                        .button
+                        .color
                         .withOpacity(_isKeypadView ? 1 : 0.5)),
               ),
             ),
@@ -337,7 +339,9 @@ class POSInvoiceState extends State<POSInvoice> {
                 padding: EdgeInsets.zero,
                 icon: Icon(Icons.playlist_add,
                     color: Theme.of(context)
-                        .canvasColor
+                        .primaryTextTheme
+                        .button
+                        .color
                         .withOpacity(_isKeypadView ? 0.5 : 1)),
               ),
             ),
