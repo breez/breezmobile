@@ -12,11 +12,12 @@ class ItemsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverFixedExtentList(
-      itemExtent: 72.0,
-      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-        return CatalogItem(posCatalogBloc, _items[index], _items.length - 1 == index);
-      }, childCount: _items.length),
-    );
+    return ListView.builder(
+        itemCount: _items.length,
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int index) {
+          return CatalogItem(posCatalogBloc, _items[index],
+              _items.length - 1 == index);
+        });
   }
 }
