@@ -75,120 +75,150 @@ class CreateItemPageState extends State<CreateItemPage> {
                       textCapitalization: TextCapitalization.words,
                       controller: _nameController,
                       decoration: InputDecoration(
-                          hintText: "Name", border: UnderlineInputBorder()),
+                          hintText: "Item Name",
+                          border: UnderlineInputBorder()),
                       validator: (value) {
                         if (value.length == 0) {
-                          return "Name is required";
+                          return "Item Name is required";
                         }
                       }),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextFormField(
-                            keyboardType:
-                                TextInputType.numberWithOptions(decimal: true),
-                            inputFormatters: _isFiat
-                                ? [
-                                    WhitelistingTextInputFormatter(
-                                        _selectedFiatCurrency.currencyData
-                                                    .fractionSize ==
-                                                0
-                                            ? RegExp(r'\d+')
-                                            : RegExp(
-                                                "^\\d+\\.?\\d{0,${_selectedFiatCurrency.currencyData.fractionSize ?? 2}}"))
-                                  ]
-                                : _selectedCurrency != Currency.SAT
-                                    ? [
-                                        WhitelistingTextInputFormatter(
-                                            RegExp(r'\d+\.?\d*'))
-                                      ]
-                                    : [
-                                        WhitelistingTextInputFormatter
-                                            .digitsOnly
-                                      ],
-                            controller: _priceController,
-                            decoration: InputDecoration(
-                                hintText: "Price",
-                                border: UnderlineInputBorder()),
-                            validator: (value) {
-                              if (value.length == 0) {
-                                return "Price is required";
-                              }
-                            }),
-                      ),
-                      Theme(
-                          data: Theme.of(context).copyWith(
-                              canvasColor: Theme.of(context).canvasColor),
-                          child: new StreamBuilder<AccountSettings>(
-                              stream: _accountBloc.accountSettingsStream,
-                              builder: (settingCtx, settingSnapshot) {
-                                return StreamBuilder<AccountModel>(
-                                    stream: _accountBloc.accountStream,
-                                    builder: (context, snapshot) {
-                                      AccountModel account = snapshot.data;
-                                      if (!snapshot.hasData) {
-                                        return Container();
-                                      }
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(
+                          flex: 10,
+                          child: TextFormField(
+                              keyboardType: TextInputType.numberWithOptions(
+                                  decimal: true),
+                              inputFormatters: _isFiat
+                                  ? [
+                                      WhitelistingTextInputFormatter(
+                                          _selectedFiatCurrency.currencyData
+                                                      .fractionSize ==
+                                                  0
+                                              ? RegExp(r'\d+')
+                                              : RegExp(
+                                                  "^\\d+\\.?\\d{0,${_selectedFiatCurrency.currencyData.fractionSize ?? 2}}"))
+                                    ]
+                                  : _selectedCurrency != Currency.SAT
+                                      ? [
+                                          WhitelistingTextInputFormatter(
+                                              RegExp(r'\d+\.?\d*'))
+                                        ]
+                                      : [
+                                          WhitelistingTextInputFormatter
+                                              .digitsOnly
+                                        ],
+                              controller: _priceController,
+                              decoration: InputDecoration(
+                                  hintText: "Item Price",
+                                  border: UnderlineInputBorder()),
+                              validator: (value) {
+                                if (value.length == 0) {
+                                  return "Item Price is required";
+                                }
+                              }),
+                        ),
+                        SizedBox(
+                          width: 8.0,
+                        ),
+                        Theme(
+                            data: Theme.of(context).copyWith(
+                                canvasColor: Theme.of(context).canvasColor),
+                            child: new StreamBuilder<AccountSettings>(
+                                stream: _accountBloc.accountSettingsStream,
+                                builder: (settingCtx, settingSnapshot) {
+                                  return StreamBuilder<AccountModel>(
+                                      stream: _accountBloc.accountStream,
+                                      builder: (context, snapshot) {
+                                        AccountModel account = snapshot.data;
+                                        if (!snapshot.hasData) {
+                                          return Container();
+                                        }
 
-                                      return DropdownButtonHideUnderline(
-                                        child: ButtonTheme(
-                                          alignedDropdown: true,
-                                          child: BreezDropdownButton(
-                                              onChanged: (value) =>
-                                                  _changeCurrency(
-                                                      account, value),
-                                              iconEnabledColor:
-                                                  Theme.of(context).accentColor,
-                                              value: _currencySymbol(),
-                                              style: theme.invoiceAmountStyle
-                                                  .copyWith(
-                                                      color: Theme.of(context)
-                                                          .accentColor),
-                                              items: Currency.currencies
-                                                  .map((Currency value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value.symbol,
-                                                  child: Text(
-                                                    value.displayName,
-                                                    textAlign: TextAlign.right,
-                                                    style: theme
-                                                        .invoiceAmountStyle
+                                        return DropdownButtonHideUnderline(
+                                          child: ButtonTheme(
+                                            alignedDropdown: true,
+                                            child: Expanded(
+                                              flex: 4,
+                                              child: InputDecorator(
+                                                decoration: InputDecoration(
+                                                  labelText: 'Currency',
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          vertical: 2.6),
+                                                ),
+                                                child: BreezDropdownButton(
+                                                    isDense: true,
+                                                    onChanged: (value) =>
+                                                        _changeCurrency(
+                                                            account, value),
+                                                    iconEnabledColor:
+                                                        Theme.of(context)
+                                                            .accentColor,
+                                                    value: _currencySymbol(),
+                                                    style: theme.FieldTextStyle
+                                                        .textStyle
                                                         .copyWith(
                                                             color: Theme.of(
                                                                     context)
                                                                 .accentColor),
-                                                  ),
-                                                );
-                                              }).toList()
-                                                    ..addAll(
-                                                      account.fiatConversionList
-                                                          .map((FiatConversion
-                                                              fiat) {
-                                                        return new DropdownMenuItem<
-                                                            String>(
-                                                          value: fiat
-                                                              .currencyData
-                                                              .shortName,
-                                                          child: new Text(
-                                                            fiat.currencyData
-                                                                .shortName,
-                                                            textAlign:
-                                                                TextAlign.right,
-                                                            style: theme
-                                                                .invoiceAmountStyle
-                                                                .copyWith(
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .accentColor),
-                                                          ),
-                                                        );
-                                                      }).toList(),
-                                                    )),
-                                        ),
-                                      );
-                                    });
-                              })),
-                    ],
+                                                    items: Currency.currencies
+                                                        .map((Currency value) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: value.symbol,
+                                                        child: Text(
+                                                          value.displayName,
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                          style: theme
+                                                              .FieldTextStyle
+                                                              .textStyle
+                                                              .copyWith(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .accentColor),
+                                                        ),
+                                                      );
+                                                    }).toList()
+                                                          ..addAll(
+                                                            account
+                                                                .fiatConversionList
+                                                                .map(
+                                                                    (FiatConversion
+                                                                        fiat) {
+                                                              return new DropdownMenuItem<
+                                                                  String>(
+                                                                value: fiat
+                                                                    .currencyData
+                                                                    .shortName,
+                                                                child: new Text(
+                                                                  fiat.currencyData
+                                                                      .shortName,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .right,
+                                                                  style: theme
+                                                                      .invoiceAmountStyle
+                                                                      .copyWith(
+                                                                          color:
+                                                                              Theme.of(context).accentColor),
+                                                                ),
+                                                              );
+                                                            }).toList(),
+                                                          )),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                })),
+                      ],
+                    ),
                   ),
                 ],
               ),
