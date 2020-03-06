@@ -24,26 +24,27 @@ class CatalogItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-      child: Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-        Slidable(
-          actionPane: SlidableDrawerActionPane(),
-          actionExtentRatio: 0.25,
-          secondaryActions: <Widget>[
-            IconSlideAction(
-              color: Colors.red,
-              icon: Icons.delete_forever,
-              onTap: () {
-                DeleteItem deleteItem = DeleteItem(_itemInfo.id);
-                posCatalogBloc.actionsSink.add(deleteItem);
-                deleteItem.future.then((_) {},
-                    onError: (err) => showFlushbar(context,
-                        message: "Failed to delete ${_itemInfo.name}"));
-              },
-            ),
-          ],
-          key: Key(_itemInfo.id.toString()),
+    return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+      Slidable(
+        actionPane: SlidableDrawerActionPane(),
+        actionExtentRatio: 0.25,
+        secondaryActions: <Widget>[
+          IconSlideAction(
+            foregroundColor: Colors.white,
+            color: Theme.of(context).primaryColorLight,
+            icon: Icons.delete_forever,
+            onTap: () {
+              DeleteItem deleteItem = DeleteItem(_itemInfo.id);
+              posCatalogBloc.actionsSink.add(deleteItem);
+              deleteItem.future.then((_) {},
+                  onError: (err) => showFlushbar(context,
+                      message: "Failed to delete ${_itemInfo.name}"));
+            },
+          ),
+        ],
+        key: Key(_itemInfo.id.toString()),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
           child: ListTile(
             leading: _buildCatalogItemAvatar(),
             title: Text(
@@ -71,15 +72,15 @@ class CatalogItem extends StatelessWidget {
             },
           ),
         ),
-        Divider(
-          height: 0.0,
-          color: _lastItem
-              ? Color.fromRGBO(255, 255, 255, 0.0)
-              : Color.fromRGBO(255, 255, 255, 0.12),
-          indent: 72.0,
-        ),
-      ]),
-    );
+      ),
+      Divider(
+        height: 0.0,
+        color: _lastItem
+            ? Color.fromRGBO(255, 255, 255, 0.0)
+            : Color.fromRGBO(255, 255, 255, 0.12),
+        indent: 72.0,
+      ),
+    ]);
   }
 
   String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
