@@ -81,13 +81,17 @@ class CatalogItem extends StatelessWidget {
   }
 
   String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
+    RegExp removeTrailingZeros = RegExp(r"([.]0*)(?!.*\d)");
     if (Currency.fromSymbol(_itemInfo.currency) != null) {
       var currency = Currency.fromSymbol(_itemInfo.currency);
-      return currency.format(currency.toSats(_itemInfo.price));
+      return currency
+          .format(currency.toSats(_itemInfo.price), fixedDecimals: false)
+          .replaceAll(removeTrailingZeros, "");
     } else {
       return accountModel
           .getFiatCurrencyByShortName(_itemInfo.currency)
-          .formatFiat(_itemInfo.price);
+          .formatFiat(_itemInfo.price)
+          .replaceAll(removeTrailingZeros, "");
     }
   }
 
