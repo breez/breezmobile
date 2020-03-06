@@ -105,7 +105,10 @@ class POSInvoiceState extends State<POSInvoice> {
                                       }),
                                   Padding(
                                     padding: EdgeInsets.only(
-                                        top: 0.0, left: 16.0, right: 16.0),
+                                        top: 0.0,
+                                        left: 16.0,
+                                        right: 16.0,
+                                        bottom: 24.0),
                                     child: ConstrainedBox(
                                       constraints: const BoxConstraints(
                                           minWidth: double.infinity),
@@ -179,7 +182,10 @@ class POSInvoiceState extends State<POSInvoice> {
                                       ),
                                     ),
                                   ),*/
-                                  _buildViewSwitch(context),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 24),
+                                    child: _buildViewSwitch(context),
+                                  ),
                                   Padding(
                                     padding:
                                         EdgeInsets.only(left: 0.0, right: 16.0),
