@@ -32,7 +32,7 @@ class Currency extends Object {
 
   Int64 toSats(double amount) => _CurrencyFormatter().toSats(amount, this);
 
-  String get displayName => symbol == "Sat" ? "sats" : symbol;
+  String get displayName => symbol.toLowerCase() == "sat" ? "sats" : symbol;
 }
 
 class _CurrencyFormatter {

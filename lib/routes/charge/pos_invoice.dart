@@ -117,10 +117,8 @@ class POSInvoiceState extends State<POSInvoice> {
                                           padding: EdgeInsets.only(
                                               top: 14.0, bottom: 14.0),
                                           child: Text(
-                                            "Charge ${_formattedCharge(accountModel, amount + currentAmount)} "
-                                                    .toUpperCase() +
-                                                _currencySymbol(accountModel,
-                                                    showDisplayName: true),
+                                            "Charge ${_formattedCharge(accountModel, amount + currentAmount)} ${_currencySymbol(accountModel)}"
+                                                .toUpperCase(),
                                             maxLines: 1,
                                             textAlign: TextAlign.center,
                                             style:
@@ -262,7 +260,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                                               value.symbol,
                                                                           child:
                                                                               Text(
-                                                                            value.displayName,
+                                                                            value.symbol.toUpperCase(),
                                                                             textAlign:
                                                                                 TextAlign.right,
                                                                             style:
@@ -691,13 +689,10 @@ class POSInvoiceState extends State<POSInvoice> {
             includeDisplayName: false, userInput: userInput);
   }
 
-  String _currencySymbol(AccountModel accountModel,
-      {bool showDisplayName = false}) {
+  String _currencySymbol(AccountModel accountModel) {
     return _useFiat
         ? accountModel.fiatCurrency.currencyData.shortName
-        : showDisplayName
-            ? accountModel.currency.displayName
-            : accountModel.currency.symbol;
+        : accountModel.currency.symbol;
   }
 
   Int64 _satAmount(AccountModel acc, double nativeAmount) {

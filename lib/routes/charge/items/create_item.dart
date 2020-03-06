@@ -160,7 +160,7 @@ class CreateItemPageState extends State<CreateItemPage> {
                                                 return DropdownMenuItem<String>(
                                                   value: value.symbol,
                                                   child: Text(
-                                                    value.displayName,
+                                                    value.symbol.toUpperCase(),
                                                     style: theme.FieldTextStyle
                                                         .textStyle
                                                         .copyWith(
