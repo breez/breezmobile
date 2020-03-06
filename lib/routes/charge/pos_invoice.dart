@@ -317,6 +317,7 @@ class POSInvoiceState extends State<POSInvoice> {
           child: Align(
             alignment: Alignment.centerRight,
             child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () => _changeView(true),
                 child: Padding(
                   padding: EdgeInsets.only(right: itemWidth / 4),
@@ -358,6 +359,7 @@ class POSInvoiceState extends State<POSInvoice> {
           child: Align(
             alignment: Alignment.centerLeft,
             child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () => _changeView(false),
                 child: Padding(
                   padding: EdgeInsets.only(left: itemWidth / 4),
