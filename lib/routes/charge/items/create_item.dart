@@ -237,7 +237,7 @@ class CreateItemPageState extends State<CreateItemPage> {
         backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
-          "Create Item",
+          "Add Item",
           style: Theme.of(context).appBarTheme.textTheme.title,
         ),
         actions: actions == null ? <Widget>[] : actions,
