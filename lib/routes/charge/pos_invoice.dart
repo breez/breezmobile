@@ -442,7 +442,8 @@ class POSInvoiceState extends State<POSInvoice> {
               ? Center(
                   child: Padding(
                   padding: const EdgeInsets.only(top: 160.0),
-                  child: Text("Please add items to use catalog"),
+                  child: Text(
+                      "No items to display. Add items to this view using the '+' button."),
                 ))
               : ItemsList(accountModel, posCatalogBloc, catalogItems, _addItem)
         ],
