@@ -331,7 +331,7 @@ class POSInvoiceState extends State<POSInvoice> {
               height: 20,
               width: 8,
               child: VerticalDivider(
-                color: Theme.of(context).canvasColor,
+                color: Theme.of(context).primaryTextTheme.button.color,
               ),
             ),
             Expanded(
