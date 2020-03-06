@@ -34,7 +34,7 @@ class PosPaymentItem extends StatelessWidget {
                             ? "- "
                             : "") +
                         _paymentInfo.currency
-                            .format(_paymentInfo.amount, includeSymbol: false),
+                            .format(_paymentInfo.amount, includeDisplayName: false),
                     style: _paymentInfo.type == PaymentType.SENT
                         ? theme.posWithdrawalTransactionAmountStyle
                         : theme.transactionAmountStyle),

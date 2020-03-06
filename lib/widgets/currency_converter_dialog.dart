@@ -256,7 +256,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                   child: Column(
                     children: <Widget>[
                       Text(
-                          "${_fiatAmountController.text.isNotEmpty ? account.currency.format(_convertedSatoshies(account), includeSymbol: false) : 0} ${account.currency.symbol}",
+                          "${_fiatAmountController.text.isNotEmpty ? account.currency.format(_convertedSatoshies(account), includeDisplayName: false) : 0} ${account.currency.symbol}",
                           style: Theme.of(context)
                               .textTheme
                               .headline
@@ -288,7 +288,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             if (_formKey.currentState.validate()) {
               widget._onConvert(account.currency.format(
                   _convertedSatoshies(account),
-                  includeSymbol: false,
+                  includeDisplayName: false,
                   userInput: true));
               Navigator.pop(context);
             }

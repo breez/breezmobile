@@ -85,7 +85,8 @@ class CatalogItem extends StatelessWidget {
     if (Currency.fromSymbol(_itemInfo.currency) != null) {
       var currency = Currency.fromSymbol(_itemInfo.currency);
       return currency
-          .format(currency.toSats(_itemInfo.price), fixedDecimals: false)
+          .format(currency.toSats(_itemInfo.price),
+              fixedDecimals: false, useSymbol: true)
           .replaceAll(removeTrailingZeros, "");
     } else {
       return accountModel

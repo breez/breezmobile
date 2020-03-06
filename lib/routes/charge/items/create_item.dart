@@ -232,7 +232,7 @@ class CreateItemPageState extends State<CreateItemPage> {
             addCurrencyPrefix: false)
         : _selectedCurrency.format(
             _selectedCurrency.parse(_priceController.text),
-            includeSymbol: false,
+            includeDisplayName: false,
             userInput: true);
   }
 

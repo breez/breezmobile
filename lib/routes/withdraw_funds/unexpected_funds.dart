@@ -62,7 +62,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                       initialAmount: accSnapshot.data.currency.format(
                           accSnapshot.data.walletBalance,
                           userInput: true,
-                          includeSymbol: false),
+                          includeDisplayName: false),
                       onNext: (amount, address) {
                         setState(() {
                           this._destAddress = address;

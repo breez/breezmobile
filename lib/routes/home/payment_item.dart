@@ -58,7 +58,7 @@ class PaymentItem extends StatelessWidget {
                             ? "- "
                             : "+ ") +
                         _paymentInfo.currency
-                            .format(_paymentInfo.amount, includeSymbol: false),
+                            .format(_paymentInfo.amount, includeDisplayName: false),
                     style: theme.transactionAmountStyle,
                   )
                 ]),
@@ -71,7 +71,7 @@ class PaymentItem extends StatelessWidget {
                       : Text(
                           "FEE " +
                               _paymentInfo.currency.format(_paymentInfo.fee,
-                                  includeSymbol: false),
+                                  includeDisplayName: false),
                           style: theme.transactionSubtitleStyle)
                 ]),
           ],

@@ -134,7 +134,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                     child: Text(
                       "Send up to " +
                           account.currency.format(response.maxAllowedDeposit,
-                              includeSymbol: true) +
+                              includeDisplayName: true) +
                           " to this address.",
                       style: Theme.of(context).textTheme.display1,
                       textAlign: TextAlign.center,

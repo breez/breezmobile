@@ -498,7 +498,7 @@ class POSInvoiceState extends State<POSInvoice> {
             context,
             "You don't have the capacity to receive such payment.",
             Text(
-                "Maximum payment size you can receive is ${account.currency.format(account.maxAllowedToReceive, includeSymbol: true)}. Please enter a smaller value.",
+                "Maximum payment size you can receive is ${account.currency.format(account.maxAllowedToReceive, includeDisplayName: true)}. Please enter a smaller value.",
                 style: Theme.of(context).dialogTheme.contentTextStyle));
         return;
       }
@@ -508,7 +508,7 @@ class POSInvoiceState extends State<POSInvoice> {
             context,
             "You have exceeded the maximum payment size.",
             Text(
-                "Maximum payment size on the Lightning Network is ${account.currency.format(account.maxPaymentAmount, includeSymbol: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
+                "Maximum payment size on the Lightning Network is ${account.currency.format(account.maxPaymentAmount, includeDisplayName: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
                 style: Theme.of(context).dialogTheme.contentTextStyle));
         return;
       }
@@ -688,7 +688,7 @@ class POSInvoiceState extends State<POSInvoice> {
         ? (nativeAmount)
             .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize)
         : acc.currency.format(Int64((nativeAmount).toInt()),
-            includeSymbol: false, userInput: userInput);
+            includeDisplayName: false, userInput: userInput);
   }
 
   String _currencySymbol(AccountModel accountModel,
