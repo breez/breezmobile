@@ -24,60 +24,63 @@ class CatalogItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-      Slidable(
-        actionPane: SlidableDrawerActionPane(),
-        actionExtentRatio: 0.25,
-        secondaryActions: <Widget>[
-          IconSlideAction(
-            caption: 'Delete',
-            color: Colors.red,
-            icon: Icons.delete_forever,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+        Slidable(
+          actionPane: SlidableDrawerActionPane(),
+          actionExtentRatio: 0.25,
+          secondaryActions: <Widget>[
+            IconSlideAction(
+              caption: 'Delete',
+              color: Colors.red,
+              icon: Icons.delete_forever,
+              onTap: () {
+                DeleteItem deleteItem = DeleteItem(_itemInfo.id);
+                posCatalogBloc.actionsSink.add(deleteItem);
+                deleteItem.future.then((_) {},
+                    onError: (err) => showFlushbar(context,
+                        message: "Failed to delete ${_itemInfo.name}"));
+              },
+            ),
+          ],
+          key: Key(_itemInfo.id.toString()),
+          child: ListTile(
+            leading: _buildCatalogItemAvatar(),
+            title: Text(
+              _itemInfo.name,
+              style: theme.transactionTitleStyle,
+              overflow: TextOverflow.ellipsis,
+            ),
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        _formattedPrice(),
+                        style: theme.transactionAmountStyle,
+                      )
+                    ]),
+              ],
+            ),
             onTap: () {
-              DeleteItem deleteItem = DeleteItem(_itemInfo.id);
-              posCatalogBloc.actionsSink.add(deleteItem);
-              deleteItem.future.then((_) {},
-                  onError: (err) => showFlushbar(context,
-                      message: "Failed to delete ${_itemInfo.name}"));
+              _addItem(accountModel, _itemInfo.currency, _itemPriceInSat());
             },
           ),
-        ],
-        key: Key(_itemInfo.id.toString()),
-        child: ListTile(
-          leading: _buildCatalogItemAvatar(),
-          title: Text(
-            _itemInfo.name,
-            style: theme.transactionTitleStyle,
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      _formattedPrice(),
-                      style: theme.transactionAmountStyle,
-                    )
-                  ]),
-            ],
-          ),
-          onTap: () {
-            _addItem(accountModel, _itemInfo.currency, _itemPriceInSat());
-          },
         ),
-      ),
-      Divider(
-        height: 0.0,
-        color: _lastItem
-            ? Color.fromRGBO(255, 255, 255, 0.0)
-            : Color.fromRGBO(255, 255, 255, 0.12),
-        indent: 72.0,
-      ),
-    ]);
+        Divider(
+          height: 0.0,
+          color: _lastItem
+              ? Color.fromRGBO(255, 255, 255, 0.0)
+              : Color.fromRGBO(255, 255, 255, 0.12),
+          indent: 72.0,
+        ),
+      ]),
+    );
   }
 
   String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
