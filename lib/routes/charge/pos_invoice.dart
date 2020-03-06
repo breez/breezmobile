@@ -134,7 +134,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                       ),
                                     ),
                                   ),
-                                  Container(
+                                  /*Container(
                                     height: 80.0,
                                     child: Padding(
                                       padding: EdgeInsets.only(
@@ -180,7 +180,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                 .color),
                                       ),
                                     ),
-                                  ),
+                                  ),*/
                                   Padding(
                                     padding:
                                         EdgeInsets.only(left: 0.0, right: 16.0),
