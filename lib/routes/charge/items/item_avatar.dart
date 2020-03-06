@@ -32,13 +32,8 @@ class _UnknownAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(16.0))),
-        width: radius * 2,
-        height: radius * 2,
-        child: Icon(Icons.close, color: Theme.of(context).primaryColorDark));
+    return Icon(Icons.image,
+        size: radius * 2, color: Theme.of(context).accentColor);
   }
 }
 

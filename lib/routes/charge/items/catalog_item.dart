@@ -25,7 +25,7 @@ class CatalogItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
       child: Stack(alignment: Alignment.bottomCenter, children: <Widget>[
         Slidable(
           actionPane: SlidableDrawerActionPane(),
