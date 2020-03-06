@@ -195,8 +195,11 @@ class POSInvoiceState extends State<POSInvoice> {
                                               padding:
                                                   EdgeInsets.only(left: 8.0),
                                               child: Text(
-                                                _formattedCharge(accountModel,
-                                                    currentAmount),
+                                                _isKeypadView
+                                                    ? _formattedCharge(
+                                                        accountModel,
+                                                        currentAmount)
+                                                    : "",
                                                 maxLines: 1,
                                                 style: theme.invoiceAmountStyle
                                                     .copyWith(
