@@ -32,7 +32,6 @@ class CatalogItem extends StatelessWidget {
           actionExtentRatio: 0.25,
           secondaryActions: <Widget>[
             IconSlideAction(
-              caption: 'Delete',
               color: Colors.red,
               icon: Icons.delete_forever,
               onTap: () {
