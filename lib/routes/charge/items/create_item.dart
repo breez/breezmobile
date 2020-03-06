@@ -9,7 +9,6 @@ import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +63,7 @@ class CreateItemPageState extends State<CreateItemPage> {
       ListView(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
+            padding: EdgeInsets.only(top: 16, left: 16.0, right: 16.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -75,7 +74,8 @@ class CreateItemPageState extends State<CreateItemPage> {
                       textCapitalization: TextCapitalization.words,
                       controller: _nameController,
                       decoration: InputDecoration(
-                          hintText: "Item Name",
+                          labelText: "Item Name",
+                          hintText: "Enter an item name",
                           border: UnderlineInputBorder()),
                       validator: (value) {
                         if (value.length == 0) {
@@ -114,7 +114,8 @@ class CreateItemPageState extends State<CreateItemPage> {
                                         ],
                               controller: _priceController,
                               decoration: InputDecoration(
-                                  hintText: "Item Price",
+                                  labelText: "Item Price",
+                                  hintText: "Enter an item price",
                                   border: UnderlineInputBorder()),
                               validator: (value) {
                                 if (value.length == 0) {
@@ -139,79 +140,56 @@ class CreateItemPageState extends State<CreateItemPage> {
                                           return Container();
                                         }
 
-                                        return DropdownButtonHideUnderline(
-                                          child: ButtonTheme(
-                                            alignedDropdown: true,
-                                            child: Expanded(
-                                              flex: 4,
-                                              child: InputDecorator(
-                                                decoration: InputDecoration(
-                                                  labelText: 'Currency',
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          vertical: 2.6),
-                                                ),
-                                                child: BreezDropdownButton(
-                                                    isDense: true,
-                                                    onChanged: (value) =>
-                                                        _changeCurrency(
-                                                            account, value),
-                                                    iconEnabledColor:
-                                                        Theme.of(context)
-                                                            .accentColor,
-                                                    value: _currencySymbol(),
+                                        return Expanded(
+                                          flex: 4,
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButtonFormField(
+                                              isDense: true,
+                                              decoration: InputDecoration(
+                                                labelText: 'Currency',
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        vertical: 10.6),
+                                              ),
+                                              value: _currencySymbol(),
+                                              onChanged: (value) =>
+                                                  _changeCurrency(
+                                                      account, value),
+                                              items: Currency.currencies.map(
+                                                  (Currency value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value.symbol,
+                                                  child: Text(
+                                                    value.displayName,
                                                     style: theme.FieldTextStyle
                                                         .textStyle
                                                         .copyWith(
                                                             color: Theme.of(
                                                                     context)
                                                                 .accentColor),
-                                                    items: Currency.currencies
-                                                        .map((Currency value) {
-                                                      return DropdownMenuItem<
-                                                          String>(
-                                                        value: value.symbol,
-                                                        child: Text(
-                                                          value.displayName,
-                                                          textAlign:
-                                                              TextAlign.right,
-                                                          style: theme
-                                                              .FieldTextStyle
-                                                              .textStyle
-                                                              .copyWith(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .accentColor),
-                                                        ),
-                                                      );
-                                                    }).toList()
-                                                          ..addAll(
-                                                            account
-                                                                .fiatConversionList
-                                                                .map(
-                                                                    (FiatConversion
-                                                                        fiat) {
-                                                              return new DropdownMenuItem<
-                                                                  String>(
-                                                                value: fiat
-                                                                    .currencyData
-                                                                    .shortName,
-                                                                child: new Text(
-                                                                  fiat.currencyData
-                                                                      .shortName,
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .right,
-                                                                  style: theme
-                                                                      .invoiceAmountStyle
-                                                                      .copyWith(
-                                                                          color:
-                                                                              Theme.of(context).accentColor),
-                                                                ),
-                                                              );
-                                                            }).toList(),
-                                                          )),
-                                              ),
+                                                  ),
+                                                );
+                                              }).toList()
+                                                ..addAll(account
+                                                    .fiatConversionList
+                                                    .map((FiatConversion fiat) {
+                                                  return new DropdownMenuItem<
+                                                      String>(
+                                                    value: fiat
+                                                        .currencyData.shortName,
+                                                    child: new Text(
+                                                      fiat.currencyData
+                                                          .shortName,
+                                                      style: theme
+                                                          .FieldTextStyle
+                                                          .textStyle
+                                                          .copyWith(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .accentColor),
+                                                    ),
+                                                  );
+                                                }).toList()),
                                             ),
                                           ),
                                         );
