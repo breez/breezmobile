@@ -181,11 +181,11 @@ class POSInvoiceState extends State<POSInvoice> {
                                       ),
                                     ),
                                   ),*/
+                                  _buildViewSwitch(context),
                                   Padding(
                                     padding:
                                         EdgeInsets.only(left: 0.0, right: 16.0),
                                     child: Row(children: <Widget>[
-                                      _buildViewSwitch(context),
                                       Expanded(
                                         child: Align(
                                           alignment: Alignment.centerRight,
@@ -305,55 +305,95 @@ class POSInvoiceState extends State<POSInvoice> {
     );
   }
 
-  GestureDetector _buildViewSwitch(BuildContext context) {
-    return GestureDetector(
-      onTap: _changeView,
-      child: Container(
-        padding: EdgeInsets.zero,
-        width: itemWidth / 1.5,
-        color: Theme.of(context).backgroundColor,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Expanded(
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(Icons.dialpad,
-                    color: Theme.of(context)
-                        .primaryTextTheme
-                        .button
-                        .color
-                        .withOpacity(_isKeypadView ? 1 : 0.5)),
-              ),
-            ),
-            Container(
-              height: 20,
-              width: 8,
-              child: VerticalDivider(
-                color: Theme.of(context).primaryTextTheme.button.color,
-              ),
-            ),
-            Expanded(
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(Icons.playlist_add,
-                    color: Theme.of(context)
-                        .primaryTextTheme
-                        .button
-                        .color
-                        .withOpacity(_isKeypadView ? 0.5 : 1)),
-              ),
-            ),
-          ],
+  Widget _buildViewSwitch(BuildContext context) {
+    // This method is a work-around to center align the buttons
+    // Use Align to stick items to center and set padding to give equal distance
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Flexible(
+          flex: 1,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+                onTap: () => _changeView(true),
+                child: Padding(
+                  padding: EdgeInsets.only(right: itemWidth / 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Icon(Icons.dialpad,
+                            color: Theme.of(context)
+                                .primaryTextTheme
+                                .button
+                                .color
+                                .withOpacity(_isKeypadView ? 1 : 0.5)),
+                      ),
+                      Text(
+                        "Keypad",
+                        style: Theme.of(context).textTheme.button.copyWith(
+                            color: Theme.of(context)
+                                .textTheme
+                                .button
+                                .color
+                                .withOpacity(_isKeypadView ? 1 : 0.5)),
+                      )
+                    ],
+                  ),
+                )),
+          ),
         ),
-      ),
+        Container(
+          height: 20,
+          child: VerticalDivider(
+            color: Theme.of(context).primaryTextTheme.button.color,
+          ),
+        ),
+        Flexible(
+          flex: 1,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: GestureDetector(
+                onTap: () => _changeView(false),
+                child: Padding(
+                  padding: EdgeInsets.only(left: itemWidth / 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Icon(Icons.playlist_add,
+                            color: Theme.of(context)
+                                .primaryTextTheme
+                                .button
+                                .color
+                                .withOpacity(!_isKeypadView ? 1 : 0.5)),
+                      ),
+                      Text(
+                        "Items",
+                        style: Theme.of(context).textTheme.button.copyWith(
+                            color: Theme.of(context)
+                                .textTheme
+                                .button
+                                .color
+                                .withOpacity(!_isKeypadView ? 1 : 0.5)),
+                      )
+                    ],
+                  ),
+                )),
+          ),
+        ),
+      ],
     );
   }
 
-  _changeView() {
+  _changeView(bool isKeypadView) {
     setState(() {
-      _isKeypadView = !_isKeypadView;
+      _isKeypadView = isKeypadView;
     });
   }
 
