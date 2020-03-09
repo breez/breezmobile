@@ -197,7 +197,7 @@ class HomeState extends State<Home> {
                                       context, user, "/settings")),
                             ]
                           : [
-                              /*DrawerItemConfig("", "POS", "src/icon/pos.png",
+                              DrawerItemConfig("", "POS", "src/icon/pos.png",
                                   onItemSelected: (_) {
                                 widget.userProfileBloc.userActionsSink
                                     .add(SetPOSFlavor(!user.isPOS));
@@ -213,7 +213,7 @@ class HomeState extends State<Home> {
                                               widget.userProfileBloc
                                                   .userActionsSink
                                                   .add(action);
-                                            })),*/
+                                            })),
                               DrawerItemConfig("/developers", "Developers",
                                   "src/icon/developers.png")
                             ];
