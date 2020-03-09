@@ -268,7 +268,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                                               value.symbol,
                                                                           child:
                                                                               Text(
-                                                                            value.symbol.toUpperCase(),
+                                                                            value.symbol,
                                                                             textAlign:
                                                                                 TextAlign.right,
                                                                             style:

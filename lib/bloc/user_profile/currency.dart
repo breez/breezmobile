@@ -8,13 +8,15 @@ enum CurrencyID { BTC, SAT }
 class Currency extends Object {
   final String symbol;
   static const Currency BTC = Currency._internal("BTC");
-  static const Currency SAT = Currency._internal("Sat");
+  static const Currency SAT = Currency._internal("SAT");
   static final List<Currency> currencies = List.unmodifiable([BTC, SAT]);
 
   const Currency._internal(this.symbol);
 
   factory Currency.fromSymbol(String symbol) {
-    return currencies.firstWhere((c) => c.symbol == symbol, orElse: () => null);
+    return currencies.firstWhere(
+        (c) => c.symbol.toUpperCase() == symbol.toUpperCase(),
+        orElse: () => null);
   }
 
   String format(Int64 sat,
