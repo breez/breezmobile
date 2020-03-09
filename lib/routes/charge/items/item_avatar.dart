@@ -32,7 +32,7 @@ class _UnknownAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(Icons.image,
+    return Icon(Icons.airplanemode_active,
         size: radius * 2, color: Theme.of(context).accentColor);
   }
 }
