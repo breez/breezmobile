@@ -36,8 +36,7 @@ class CatalogItem extends StatelessWidget {
             onTap: () {
               DeleteItem deleteItem = DeleteItem(_itemInfo.id);
               posCatalogBloc.actionsSink.add(deleteItem);
-              deleteItem.future.then((_) {},
-                  onError: (err) => showFlushbar(context,
+              deleteItem.future.catchError((err) => showFlushbar(context,
                       message: "Failed to delete ${_itemInfo.name}"));
             },
           ),
