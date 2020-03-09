@@ -21,12 +21,14 @@ class Currency extends Object {
           {includeDisplayName = true,
           fixedDecimals = true,
           userInput = false,
-          bool useSymbol = false}) =>
+          bool useSymbol = false,
+          bool removeTrailingZeros = false}) =>
       _CurrencyFormatter().format(sat, this,
           addCurrencySuffix: includeDisplayName,
           useSymbol: useSymbol,
           fixedDecimals: fixedDecimals,
-          userInput: userInput);
+          userInput: userInput,
+          removeTrailingZeros: removeTrailingZeros);
 
   Int64 parse(String amountStr) => _CurrencyFormatter().parse(amountStr, this);
 
@@ -65,7 +67,8 @@ class _CurrencyFormatter {
       {bool addCurrencySuffix = true,
       bool useSymbol = false,
       fixedDecimals = true,
-      userInput = false}) {
+      userInput = false,
+      removeTrailingZeros = false}) {
     String formattedAmount = formatter.format(satoshies);
     switch (currency) {
       case Currency.BTC:
@@ -86,6 +89,11 @@ class _CurrencyFormatter {
 
     if (userInput) {
       return formattedAmount.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+    }
+
+    if (removeTrailingZeros) {
+      RegExp removeTrailingZeros = RegExp(r"([.]0*)(?!.*\d)");
+      formattedAmount.replaceAll(removeTrailingZeros, "");
     }
 
     return formattedAmount;

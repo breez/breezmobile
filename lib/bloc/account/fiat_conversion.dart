@@ -37,7 +37,8 @@ class FiatConversion {
     return formatFiat(fiatValue);
   }
 
-  String formatFiat(double fiatAmount, {bool addCurrencyPrefix = true}) {
+  String formatFiat(double fiatAmount,
+      {bool addCurrencyPrefix = true, bool removeTrailingZeros = false}) {
     int fractionSize = this.currencyData.fractionSize;
     double minimumAmount = 1 / (pow(10, fractionSize));
 
@@ -54,6 +55,10 @@ class FiatConversion {
     }
     if (addCurrencyPrefix) {
       formattedAmount = prefix + formattedAmount;
+    }
+    if (removeTrailingZeros) {
+      RegExp removeTrailingZeros = RegExp(r"([.]0*)(?!.*\d)");
+      formattedAmount.replaceAll(removeTrailingZeros, "");
     }
     return formattedAmount;
   }
