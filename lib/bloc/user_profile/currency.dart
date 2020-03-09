@@ -19,18 +19,18 @@ class Currency extends Object {
         orElse: () => null);
   }
 
-  String format(Int64 sat,
-          {includeDisplayName = true,
-          fixedDecimals = true,
-          userInput = false,
-          bool useSymbol = false,
-          bool removeTrailingZeros = false}) =>
+  String format(
+    Int64 sat, {
+    includeDisplayName = true,
+    fixedDecimals = true,
+    userInput = false,
+    bool useSymbol = false,
+  }) =>
       _CurrencyFormatter().format(sat, this,
           addCurrencySuffix: includeDisplayName,
           useSymbol: useSymbol,
           fixedDecimals: fixedDecimals,
-          userInput: userInput,
-          removeTrailingZeros: removeTrailingZeros);
+          userInput: userInput);
 
   Int64 parse(String amountStr) => _CurrencyFormatter().parse(amountStr, this);
 
@@ -69,15 +69,18 @@ class _CurrencyFormatter {
       {bool addCurrencySuffix = true,
       bool useSymbol = false,
       fixedDecimals = true,
-      userInput = false,
-      removeTrailingZeros = false}) {
+      userInput = false}) {
     String formattedAmount = formatter.format(satoshies);
     switch (currency) {
       case Currency.BTC:
+        double amountInBTC = (satoshies.toInt() / 100000000);
         if (fixedDecimals) {
-          formattedAmount = (satoshies.toInt() / 100000000).toStringAsFixed(8);
+          formattedAmount = amountInBTC.toStringAsFixed(8);
         } else {
-          formattedAmount = (satoshies.toInt() / 100000000).toString();
+          // #.0* should be displayed without trailing zeros
+          formattedAmount = amountInBTC.truncateToDouble() == amountInBTC
+              ? amountInBTC.toStringAsFixed(0)
+              : amountInBTC.toString();
         }
         break;
       case Currency.SAT:
@@ -91,11 +94,6 @@ class _CurrencyFormatter {
 
     if (userInput) {
       return formattedAmount.replaceAll(RegExp(r"\s+\b|\b\s"), "");
-    }
-
-    if (removeTrailingZeros) {
-      RegExp removeTrailingZeros = RegExp(r"([.]0*)(?!.*\d)");
-      formattedAmount.replaceAll(removeTrailingZeros, "");
     }
 
     return formattedAmount;

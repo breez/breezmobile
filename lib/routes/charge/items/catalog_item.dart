@@ -86,7 +86,7 @@ class CatalogItem extends StatelessWidget {
     if (Currency.fromSymbol(_itemInfo.currency) != null) {
       var currency = Currency.fromSymbol(_itemInfo.currency);
       return currency.format(currency.toSats(_itemInfo.price),
-          fixedDecimals: false, useSymbol: true, removeTrailingZeros: true);
+          fixedDecimals: false, useSymbol: true);
     } else {
       return accountModel
           .getFiatCurrencyByShortName(_itemInfo.currency)
