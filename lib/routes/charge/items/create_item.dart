@@ -231,7 +231,8 @@ class CreateItemPageState extends State<CreateItemPage> {
         ? _selectedFiatCurrency.formatFiat(double.parse(_priceController.text),
             addCurrencyPrefix: false)
         : _selectedCurrency.format(
-            _selectedCurrency.parse(_priceController.text),
+            _selectedCurrency.toSats(double.parse(_priceController.text)),
+            fixedDecimals: false,
             includeDisplayName: false,
             userInput: true);
   }
