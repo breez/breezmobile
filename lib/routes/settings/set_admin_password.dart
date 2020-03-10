@@ -43,7 +43,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
             automaticallyImplyLeading: false,
             leading: backBtn.BackButton(),
             title: Text(
-              "Admin Password",
+              "Manager Password",
               style: Theme.of(context).appBarTheme.textTheme.title,
             ),
             elevation: 0.0),

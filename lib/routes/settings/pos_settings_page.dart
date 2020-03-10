@@ -163,7 +163,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Change Admin Password",
+          "Change Manager Password",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -182,8 +182,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     return ListTile(
       title: AutoSizeText(
         user.hasAdminPassword
-            ? "Activate Admin Password"
-            : "Create Admin Password",
+            ? "Activate Manager Password"
+            : "Create Manager Password",
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
@@ -213,9 +213,9 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     if (backupState.lastBackupTime == null) {
       await promptError(
           context,
-          "Admin Password",
+          "Manager Password",
           Text(
-              "Admin Password can be configured only if you have an active backup. To trigger a backup process, go to Receive > Receive via BTC Address."));
+              "Manager Password can be configured only if you have an active backup. To trigger a backup process, go to Receive > Receive via BTC Address."));
       return;
     }
 
@@ -223,9 +223,9 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     if (isNew) {
       confirmed = await promptAreYouSure(
           context,
-          "Admin Password",
+          "Manager Password",
           Text(
-              "If Admin Password is activated, sending funds from Breez will require you to enter a password.\nAre you sure you want to activate Admin Password?"));
+              "If Manager Password is activated, sending funds from Breez will require you to enter a password.\nAre you sure you want to activate Manager Password?"));
     }
     if (confirmed) {
       Navigator.of(context).push(FadeInRoute(

@@ -23,7 +23,7 @@ Future protectAdminRoute(
     bool loggedIn = await showDialog(
         useRootNavigator: false, context: context, child: _AdminLoginDialog());
     if (!loggedIn) {
-      return Future.error("failed to log in as admin");
+      return Future.error("Failed to authenticate as manager");
     }
   }
   Navigator.of(context).pushNamed(route);
@@ -54,7 +54,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
     UserProfileBloc userProfileBloc =
         AppBlocsProvider.of<UserProfileBloc>(context);
     return AlertDialog(
-      title: Text("Admin Password"),
+      title: Text("Manager Password"),
       content: Theme(
         data: Theme.of(context).copyWith(
             inputDecorationTheme: InputDecorationTheme(
