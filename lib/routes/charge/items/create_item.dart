@@ -103,10 +103,10 @@ class CreateItemPageState extends State<CreateItemPage> {
                                               : RegExp(
                                                   "^\\d+\\.?\\d{0,${_selectedFiatCurrency.currencyData.fractionSize ?? 2}}"))
                                     ]
-                                  : _selectedCurrency != Currency.SAT
+                                  : _selectedCurrency == Currency.BTC
                                       ? [
                                           WhitelistingTextInputFormatter(
-                                              RegExp(r'\d+\.?\d*'))
+                                              RegExp("^\\d+\\.?\\d{0,8}"))
                                         ]
                                       : [
                                           WhitelistingTextInputFormatter
