@@ -103,7 +103,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                                       fontSize: startHeaderSize -
                                           (startHeaderSize - endHeaderFontSize) *
                                               widget._offsetFactor))
-                          : Text(widget._accountModel.currency.format(widget._accountModel.balance, fixedDecimals: false),
+                          : Text(widget._accountModel.currency.format(widget._accountModel.balance, removeTrailingZeros: true),
                               style: Theme.of(context)
                                   .textTheme
                                   .headline

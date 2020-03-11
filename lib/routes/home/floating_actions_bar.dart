@@ -314,7 +314,7 @@ class FloatingActionsBar extends StatelessWidget {
                                   border: Border.all(
                                       color: Theme.of(context).errorColor)),
                               child: AutoSizeText(
-                                "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, fixedDecimals: false)} in your balance.",
+                                "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
                                 maxLines: 1,
                                 maxFontSize: Theme.of(context)
                                     .textTheme

@@ -1,3 +1,5 @@
+import 'package:fixnum/fixnum.dart';
+
 abstract class DBItem {
   Map<String, dynamic> toMap();
 }
@@ -59,6 +61,7 @@ class Item implements DBItem {
 class SaleLine implements DBItem {
   final int id;
   final int saleID;
+  final int itemID;
   final String itemName;
   final int quantity;
   final String itemImageURL;
@@ -69,6 +72,7 @@ class SaleLine implements DBItem {
   SaleLine(
       {this.id,
       this.saleID,
+      this.itemID,
       this.itemName,
       this.quantity,
       this.itemImageURL,
@@ -87,6 +91,7 @@ class SaleLine implements DBItem {
     return SaleLine(
         id: this.id,
         saleID: saleID ?? this.saleID,
+        itemID: this.itemID,
         itemName: itemName ?? this.itemName,
         quantity: quantity ?? this.quantity,
         itemImageURL: itemImageURL ?? this.itemImageURL,
@@ -95,9 +100,21 @@ class SaleLine implements DBItem {
         satConversionRate: satConversionRate ?? this.satConversionRate);
   }
 
+  SaleLine.fromItem(Item item, int quantity, double satConversionRate)
+      : id = null,
+        saleID = null,
+        itemID = item.id,
+        itemName = item.name,
+        quantity = quantity,
+        itemImageURL = item.imageURL,
+        pricePerItem = item.price,
+        currency = item.currency,
+        satConversionRate = satConversionRate;
+
   SaleLine.fromMap(Map<String, dynamic> json)
       : id = json["id"],
         saleID = json["sale_id"],
+        itemID = json["item_id"],
         itemName = json["item_name"],
         quantity = json["quantity"],
         itemImageURL = json["item_image_url"],
@@ -136,5 +153,55 @@ class Sale implements DBItem {
   @override
   Map<String, dynamic> toMap() {
     return {'id': id};
+  }
+
+  Sale addItem(Item item, double satConversionRate, {int quantity = 1}) {
+    bool hasSaleLine = false;
+    var saleLines = this.saleLines.map((sl) {
+      if (sl.itemID == item.id) {
+        hasSaleLine = true;
+        return sl.copywith(quantity: sl.quantity + quantity);
+      }
+      return sl;
+    }).toList();
+
+    if (!hasSaleLine) {
+      saleLines.add(SaleLine.fromItem(item, quantity, satConversionRate)
+          .copywith(saleID: this.id));
+    }
+    return this.copyWith(saleLines: saleLines);
+  }
+
+  Sale incrementQuantity(int itemID, double satConversionRate, {int quantity = 1}) {
+    var saleLines = this.saleLines.map((sl) {
+      if (sl.itemID == itemID) {  
+        return sl.copywith(quantity: sl.quantity + quantity);
+      }
+      return sl;
+    }).toList();
+
+    return this.copyWith(saleLines: saleLines.where((s) => s.quantity > 0).toList());
+  }
+
+  Sale addCustomItem(double price, String currency, double satConversionRate) {
+    int customItemsCount =
+        this.saleLines.where((element) => element.itemID == null).length;
+    var newSaleLines = this.saleLines.toList()
+      ..add(SaleLine(
+          itemName: "Item ${customItemsCount + 1}",
+          saleID: this.id,
+          pricePerItem: price,
+          quantity: 1,
+          currency: currency,
+          satConversionRate: satConversionRate));
+    return this.copyWith(saleLines: newSaleLines);
+  }
+
+  Int64 get totalChargeSat {
+    double totalSat = 0;
+    saleLines.forEach((sl) {
+      totalSat += sl.pricePerItem * sl.satConversionRate * sl.quantity;
+    });
+    return Int64(totalSat.toInt());
   }
 }
