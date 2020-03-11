@@ -13,7 +13,6 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
-import 'default_commands.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/permissions.dart';
@@ -26,6 +25,8 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'default_commands.dart';
 
 final _cliInputController = TextEditingController();
 final FocusNode _cliEntryFocusNode = FocusNode();
@@ -341,6 +342,7 @@ class DevViewState extends State<DevView> {
     List<Choice> choices = List<Choice>();
     choices.addAll([
       Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
+      /*
       Choice(
           title: 'Show Initial Screen',
           icon: Icons.phone_android,
@@ -352,6 +354,7 @@ class DevViewState extends State<DevView> {
           function: () {
             toggleConnectProgress(accBloc, settings);
           }),
+          */
       Choice(
           title: 'Describe Graph',
           icon: Icons.phone_android,
@@ -383,10 +386,12 @@ class DevViewState extends State<DevView> {
             "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
         icon: Icons.network_check,
         function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));
+    /*
     choices.add(Choice(
         title: "Switch to ${userModel.isPOS ? 'User flavor' : 'POS flavor'}",
         icon: Icons.network_check,
         function: () => _setPOS(userBloc, !userModel.isPOS)));
+        */
     choices.add(Choice(
         title: "Force Rescan",
         icon: Icons.phone_android,
@@ -396,6 +401,7 @@ class DevViewState extends State<DevView> {
           await rescanFile.create(recursive: true);
           _promptForRestart();
         }));
+    /*
     choices.add(Choice(
         title: "Export DB Files",
         icon: Icons.phone_android,
@@ -413,14 +419,15 @@ class DevViewState extends State<DevView> {
           encoder.close();
           ShareExtend.share(zipFile, "file");
         }));
+    
+        */
     choices.add(Choice(
-          title: 'Reset POS DB',
-          icon: Icons.phone_android,
-          function: () {
-            PosCatalogBloc bloc = AppBlocsProvider.of<PosCatalogBloc>(context);
-            bloc.resetDB();
-          }));
-
+        title: 'Reset POS DB',
+        icon: Icons.phone_android,
+        function: () {
+          PosCatalogBloc bloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+          bloc.resetDB();
+        }));
     return choices;
   }
 

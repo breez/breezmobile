@@ -36,9 +36,8 @@ class CatalogItem extends StatelessWidget {
             onTap: () {
               DeleteItem deleteItem = DeleteItem(_itemInfo.id);
               posCatalogBloc.actionsSink.add(deleteItem);
-              deleteItem.future.then((_) {},
-                  onError: (err) => showFlushbar(context,
-                      message: "Failed to delete ${_itemInfo.name}"));
+              deleteItem.future.catchError((err) => showFlushbar(context,
+                  message: "Failed to delete ${_itemInfo.name}"));
             },
           ),
         ],
@@ -84,18 +83,14 @@ class CatalogItem extends StatelessWidget {
   }
 
   String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
-    RegExp removeTrailingZeros = RegExp(r"([.]0*)(?!.*\d)");
     if (Currency.fromSymbol(_itemInfo.currency) != null) {
       var currency = Currency.fromSymbol(_itemInfo.currency);
-      return currency
-          .format(currency.toSats(_itemInfo.price),
-              fixedDecimals: false, useSymbol: true)
-          .replaceAll(removeTrailingZeros, "");
+      return currency.format(currency.toSats(_itemInfo.price),
+          fixedDecimals: false, useSymbol: true);
     } else {
       return accountModel
           .getFiatCurrencyByShortName(_itemInfo.currency)
-          .formatFiat(_itemInfo.price)
-          .replaceAll(removeTrailingZeros, "");
+          .formatFiat(_itemInfo.price, removeTrailingZeros: true);
     }
   }
 

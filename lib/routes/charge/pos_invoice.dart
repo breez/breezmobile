@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -16,6 +17,7 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/badge.dart';
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -24,7 +26,6 @@ import 'package:breez/widgets/pos_payment_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart';
 
 import '../status_indicator.dart';
 import 'items/items_list.dart';
@@ -481,12 +482,16 @@ class POSInvoiceState extends State<POSInvoice> {
                 border: UnderlineInputBorder()),
           ),*/
           catalogItems?.length == 0
-              ? Center(
-                  child: Padding(
-                  padding: const EdgeInsets.only(top: 160.0),
-                  child: Text(
-                      "No items to display. Add items to this view using the '+' button."),
-                ))
+              ? Padding(
+                  padding: const EdgeInsets.only(
+                      top: 180.0, left: 40.0, right: 40.0),
+                  child: AutoSizeText(
+                    "No items to display. Add items to this view using the '+' button.",
+                    textAlign: TextAlign.center,
+                    minFontSize: MinFontSize(context).minFontSize,
+                    stepGranularity: 0.1,
+                  ),
+                )
               : ItemsList(accountModel, posCatalogBloc, catalogItems, _addItem)
         ],
       ),

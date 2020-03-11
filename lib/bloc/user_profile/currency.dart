@@ -8,20 +8,24 @@ enum CurrencyID { BTC, SAT }
 class Currency extends Object {
   final String symbol;
   static const Currency BTC = Currency._internal("BTC");
-  static const Currency SAT = Currency._internal("Sat");
+  static const Currency SAT = Currency._internal("SAT");
   static final List<Currency> currencies = List.unmodifiable([BTC, SAT]);
 
   const Currency._internal(this.symbol);
 
   factory Currency.fromSymbol(String symbol) {
-    return currencies.firstWhere((c) => c.symbol == symbol, orElse: () => null);
+    return currencies.firstWhere(
+        (c) => c.symbol.toUpperCase() == symbol.toUpperCase(),
+        orElse: () => null);
   }
 
-  String format(Int64 sat,
-          {includeDisplayName = true,
-          fixedDecimals = true,
-          userInput = false,
-          bool useSymbol = false}) =>
+  String format(
+    Int64 sat, {
+    includeDisplayName = true,
+    fixedDecimals = true,
+    userInput = false,
+    bool useSymbol = false,
+  }) =>
       _CurrencyFormatter().format(sat, this,
           addCurrencySuffix: includeDisplayName,
           useSymbol: useSymbol,
@@ -69,10 +73,14 @@ class _CurrencyFormatter {
     String formattedAmount = formatter.format(satoshies);
     switch (currency) {
       case Currency.BTC:
+        double amountInBTC = (satoshies.toInt() / 100000000);
         if (fixedDecimals) {
-          formattedAmount = (satoshies.toInt() / 100000000).toStringAsFixed(8);
+          formattedAmount = amountInBTC.toStringAsFixed(8);
         } else {
-          formattedAmount = (satoshies.toInt() / 100000000).toString();
+          // #.0* should be displayed without trailing zeros
+          formattedAmount = amountInBTC.truncateToDouble() == amountInBTC
+              ? amountInBTC.toStringAsFixed(0)
+              : amountInBTC.toString();
         }
         break;
       case Currency.SAT:

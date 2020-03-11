@@ -103,10 +103,10 @@ class CreateItemPageState extends State<CreateItemPage> {
                                               : RegExp(
                                                   "^\\d+\\.?\\d{0,${_selectedFiatCurrency.currencyData.fractionSize ?? 2}}"))
                                     ]
-                                  : _selectedCurrency != Currency.SAT
+                                  : _selectedCurrency == Currency.BTC
                                       ? [
                                           WhitelistingTextInputFormatter(
-                                              RegExp(r'\d+\.?\d*'))
+                                              RegExp("^\\d+\\.?\\d{0,8}"))
                                         ]
                                       : [
                                           WhitelistingTextInputFormatter
@@ -160,7 +160,7 @@ class CreateItemPageState extends State<CreateItemPage> {
                                                 return DropdownMenuItem<String>(
                                                   value: value.symbol,
                                                   child: Text(
-                                                    value.symbol.toUpperCase(),
+                                                    value.symbol,
                                                     style: theme.FieldTextStyle
                                                         .textStyle
                                                         .copyWith(
@@ -231,7 +231,8 @@ class CreateItemPageState extends State<CreateItemPage> {
         ? _selectedFiatCurrency.formatFiat(double.parse(_priceController.text),
             addCurrencyPrefix: false)
         : _selectedCurrency.format(
-            _selectedCurrency.parse(_priceController.text),
+            _selectedCurrency.toSats(double.parse(_priceController.text)),
+            fixedDecimals: false,
             includeDisplayName: false,
             userInput: true);
   }
