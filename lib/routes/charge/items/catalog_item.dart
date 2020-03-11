@@ -62,19 +62,27 @@ class CatalogItem extends StatelessWidget {
                     children: <Widget>[
                       RichText(
                         text: new TextSpan(
-                          // Note: Styles for TextSpans must be explicitly defined.
-                          // Child text spans will inherit styles from parent
                           style: theme.transactionAmountStyle,
-                          children: <TextSpan>[
-                            new TextSpan(
-                                text: _formattedPrice().substring(0, 1),
-                                style: TextStyle(
-                                    fontFamily: _itemInfo.currency == "SAT"
-                                        ? 'SAT'
-                                        : "IBMPlexSansMedium")),
-                            new TextSpan(
+                          children: <InlineSpan>[
+                            _itemInfo.currency == "SAT"
+                                ? WidgetSpan(
+                                    child: Container(
+                                      height: 20,
+                                      child: Center(
+                                        child: Text(
+                                            _formattedPrice().substring(0, 1),
+                                            style: TextStyle(
+                                                fontSize: 13.4,
+                                                fontFamily: 'SAT')),
+                                      ),
+                                    ),
+                                  )
+                                : TextSpan(
+                                    text: _formattedPrice().substring(0, 1),
+                                  ),
+                            TextSpan(
                               text: _formattedPrice().substring(1),
-                            )
+                            ),
                           ],
                         ),
                       ),
