@@ -116,9 +116,10 @@ class _TotalSaleCharge extends StatelessWidget {
     var totalSats = currentSale.totalChargeSat;
     String formattedCharge;
     if (useFiat) {
-      formattedCharge = accountModel.fiatCurrency.format(totalSats);
+      var fiatValue = accountModel.fiatCurrency.satToFiat(totalSats);
+      formattedCharge = accountModel.fiatCurrency.formatFiat(fiatValue, allowBelowMin: true, removeTrailingZeros: true);
     } else {
-      formattedCharge = accountModel.currency.format(totalSats);
+      formattedCharge = accountModel.currency.format(totalSats, removeTrailingZeros: true);
     }
     return Text(
       "Total: $formattedCharge",
@@ -146,6 +147,10 @@ class SaleLinesList extends StatelessWidget {
           return Column(
             children: [
               SaleLineWidget(
+                  onDelete: (){
+                    var newSale = currentSale.copyWith(saleLines: currentSale.saleLines..removeAt(index));
+                    posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
+                  },
                   onChangeQuantity: (int delta) {
                     var saleLine = currentSale.saleLines[index];
                     var newSale = currentSale.incrementQuantity(
@@ -173,9 +178,10 @@ class SaleLineWidget extends StatelessWidget {
   final SaleLine saleLine;
   final AccountModel accountModel;
   final Function(int delta) onChangeQuantity;
+  final Function() onDelete;
 
   const SaleLineWidget(
-      {Key key, this.saleLine, this.accountModel, this.onChangeQuantity})
+      {Key key, this.saleLine, this.accountModel, this.onChangeQuantity, this.onDelete})
       : super(key: key);
 
   @override
@@ -189,9 +195,11 @@ class SaleLineWidget extends StatelessWidget {
           title: Text(saleLine.itemName),
           subtitle: Text(currrency.format(
               saleLine.pricePerItem * saleLine.quantity,
-              includeCurencySuffix: true)),
+              includeCurencySuffix: true, removeTrailingZeros: true)),
           trailing: saleLine.itemID == null
-              ? null
+              ? IconButton(
+                        icon: Icon(Icons.delete_forever),
+                        onPressed: () => onDelete())
               : Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,

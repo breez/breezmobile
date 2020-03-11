@@ -50,7 +50,7 @@ class CurrencyWrapper {
     if (btc != null) {
       var satValue = btc.toSats(value);
       return btc.format(satValue,
-          userInput: userInput, includeDisplayName: includeCurencySuffix);
+          userInput: userInput, includeDisplayName: includeCurencySuffix, removeTrailingZeros: removeTrailingZeros);
     }
     return fiat.formatFiat(value,
         addCurrencyPrefix: includeCurencySuffix, allowBelowMin: true, removeTrailingZeros: removeTrailingZeros);
