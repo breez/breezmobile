@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -14,6 +15,7 @@ import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/badge.dart';
@@ -25,6 +27,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/pos_payment_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../status_indicator.dart';
@@ -44,16 +47,33 @@ class POSInvoiceState extends State<POSInvoice> {
   double itemHeight;
   double itemWidth;
 
-  double amount = 0;
+  // double amount = 0;
   double currentAmount = 0;
   bool _useFiat = false;
+  CurrencyWrapper currentCurrency;
   bool _isKeypadView = true;
+
+  StreamSubscription accountSubscription;
 
   @override
   void didChangeDependencies() {
     itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
     itemWidth = (MediaQuery.of(context).size.width) / 2;
+    if (accountSubscription == null) {
+      AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+      accountSubscription = accountBloc.accountStream.listen((acc) {
+        currentCurrency = _useFiat
+            ? CurrencyWrapper.fromFiat(acc.fiatCurrency)
+            : CurrencyWrapper.fromBTC(acc.currency);
+      });
+    }
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    accountSubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -91,6 +111,10 @@ class POSInvoiceState extends State<POSInvoice> {
                             if (accountModel == null) {
                               return Loader();
                             }
+                            double totalAmount =
+                                currentCurrency.satConversionRate *
+                                        currentSale.totalChargeSat.toInt() +
+                                    currentAmount;
                             return Column(
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
@@ -133,7 +157,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                 padding: EdgeInsets.only(
                                                     top: 14.0, bottom: 14.0),
                                                 child: Text(
-                                                  "Charge ${_formattedSaleCharge(accountModel, currentSale, currentAmount)} ${_currencySymbol(accountModel)}"
+                                                  "Charge ${currentCurrency.format(totalAmount)} ${currentCurrency.shortName}"
                                                       .toUpperCase(),
                                                   maxLines: 1,
                                                   textAlign: TextAlign.center,
@@ -142,6 +166,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                 ),
                                                 onPressed: () =>
                                                     onInvoiceSubmitted(
+                                                        currentSale,
                                                         invoiceBloc,
                                                         userProfile,
                                                         accountModel),
@@ -210,12 +235,24 @@ class POSInvoiceState extends State<POSInvoice> {
                                                     alignment:
                                                         Alignment.centerLeft,
                                                     child: BadgeIcon(
-                                                      number: currentSale.saleLines.length,
+                                                        number: currentSale
+                                                            .saleLines.length,
                                                         onPress: () {
                                                           var currentSaleRoute =
-                                                              FadeInRoute(
-                                                                  builder: (_) =>
-                                                                      SaleView(useFiat: _useFiat,));
+                                                              CupertinoPageRoute(
+                                                                fullscreenDialog: true,
+                                                                builder: (_) =>
+                                                                      SaleView(
+                                                                        useFiat:
+                                                                            _useFiat,
+                                                                      )
+                                                              );
+                                                              // FadeInRoute(
+                                                              //     builder: (_) =>
+                                                              //         SaleView(
+                                                              //           useFiat:
+                                                              //               _useFiat,
+                                                              //         ));
                                                           Navigator.of(context)
                                                               .push(
                                                                   currentSaleRoute);
@@ -234,9 +271,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                         left: 8.0),
                                                     child: Text(
                                                       _isKeypadView
-                                                          ? _formattedCharge(
-                                                              accountModel,
-                                                              currentAmount)
+                                                          ? currentCurrency.format(currentAmount)
                                                           : "",
                                                       maxLines: 1,
                                                       style: theme
@@ -272,6 +307,22 @@ class POSInvoiceState extends State<POSInvoice> {
                                                               .accountStream,
                                                           builder: (context,
                                                               snapshot) {
+                                                            List<CurrencyWrapper>
+                                                                currencies =
+                                                                Currency
+                                                                    .currencies
+                                                                    .map((c) =>
+                                                                        CurrencyWrapper
+                                                                            .fromBTC(c))
+                                                                    .toList();
+                                                            currencies
+                                                              ..addAll(accountModel
+                                                                  .fiatConversionList
+                                                                  .map((f) =>
+                                                                      CurrencyWrapper
+                                                                          .fromFiat(
+                                                                              f)));
+
                                                             return DropdownButtonHideUnderline(
                                                               child:
                                                                   ButtonTheme(
@@ -280,15 +331,14 @@ class POSInvoiceState extends State<POSInvoice> {
                                                                 child:
                                                                     BreezDropdownButton(
                                                                         onChanged: (value) => changeCurrency(
-                                                                            accountModel,
                                                                             value,
                                                                             userProfileBloc),
                                                                         iconEnabledColor: Theme.of(context)
                                                                             .textTheme
                                                                             .headline
                                                                             .color,
-                                                                        value: _currencySymbol(
-                                                                            accountModel),
+                                                                        value: currentCurrency
+                                                                            .shortName,
                                                                         style: theme.invoiceAmountStyle.copyWith(
                                                                             color: Theme.of(context)
                                                                                 .textTheme
@@ -336,9 +386,9 @@ class POSInvoiceState extends State<POSInvoice> {
                                         0.29),
                                 Expanded(
                                     child: _isKeypadView
-                                        ? _numPad(posCatalogBloc, accountModel, currentSale)
-                                        : _itemsView(
-                                            accountModel, posCatalogBloc))
+                                        ? _numPad(posCatalogBloc, currentSale)
+                                        : _itemsView(currentSale, accountModel,
+                                            posCatalogBloc))
                               ],
                             );
                           });
@@ -443,7 +493,8 @@ class POSInvoiceState extends State<POSInvoice> {
     });
   }
 
-  _itemsView(AccountModel accountModel, PosCatalogBloc posCatalogBloc) {
+  _itemsView(Sale currentSale, AccountModel accountModel,
+      PosCatalogBloc posCatalogBloc) {
     return StreamBuilder(
       stream: posCatalogBloc.itemsStream,
       builder: (context, snapshot) {
@@ -452,7 +503,8 @@ class POSInvoiceState extends State<POSInvoice> {
           return Loader();
         }
         return Scaffold(
-          body: _buildCatalogContent(accountModel, posCatalogBloc, posCatalog),
+          body: _buildCatalogContent(
+              currentSale, accountModel, posCatalogBloc, posCatalog),
           floatingActionButton: FloatingActionButton(
               child: Icon(
                 Icons.add,
@@ -465,8 +517,8 @@ class POSInvoiceState extends State<POSInvoice> {
     );
   }
 
-  _buildCatalogContent(AccountModel accountModel, PosCatalogBloc posCatalogBloc,
-      List<Item> catalogItems) {
+  _buildCatalogContent(Sale currentSale, AccountModel accountModel,
+      PosCatalogBloc posCatalogBloc, List<Item> catalogItems) {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: ListView(
@@ -492,14 +544,19 @@ class POSInvoiceState extends State<POSInvoice> {
                     stepGranularity: 0.1,
                   ),
                 )
-              : ItemsList(accountModel, posCatalogBloc, catalogItems, _addItem)
+              : ItemsList(
+                  accountModel,
+                  posCatalogBloc,
+                  catalogItems,
+                  (item) =>
+                      _addItem(posCatalogBloc, currentSale, accountModel, item))
         ],
       ),
     );
   }
 
-  onInvoiceSubmitted(
-      InvoiceBloc invoiceBloc, BreezUserModel user, AccountModel account) {
+  onInvoiceSubmitted(Sale currentSale, InvoiceBloc invoiceBloc,
+      BreezUserModel user, AccountModel account) {
     if (user.name == null || user.avatarURL == null) {
       String errorMessage = "Please";
       if (user.name == null) errorMessage += " enter your business name";
@@ -535,7 +592,8 @@ class POSInvoiceState extends State<POSInvoice> {
             );
           });
     } else {
-      var satAmount = _satAmount(account, amount + currentAmount);
+      var satAmount =
+          currentSale.totalChargeSat + (currentCurrency.satConversionRate * currentAmount).toInt();
       if (satAmount == 0) {
         return null;
       }
@@ -588,68 +646,75 @@ class POSInvoiceState extends State<POSInvoice> {
     });
   }
 
-  onAddition(PosCatalogBloc posCatalogBloc, Sale currentSale, String currencySymobl, double satConversionRate) {
+  onAddition(PosCatalogBloc posCatalogBloc, Sale currentSale,
+      double satConversionRate) {
     setState(() {
-      //amount += currentAmount;
-      var newSale = currentSale.addCustomItem(currentAmount, currencySymobl, satConversionRate);
+      var newSale = currentSale.addCustomItem(
+          currentAmount, currentCurrency.shortName, satConversionRate);
       posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
       currentAmount = 0;
     });
   }
 
-  _addItem(AccountModel accountModel, String symbol, Int64 itemPriceInSat) {
-    var itemPrice = _useFiat
-        ? accountModel.fiatCurrency.satToFiat(itemPriceInSat)
-        : itemPriceInSat.toDouble();
+  _addItem(PosCatalogBloc posCatalogBloc, Sale currentSale,
+      AccountModel account, Item item) {
+    var btcCurrency = Currency.fromSymbol(item.currency);
+    var currencyWrapper = btcCurrency != null
+        ? CurrencyWrapper.fromBTC(btcCurrency)
+        : CurrencyWrapper.fromFiat(account.fiatCurrency);
+
     setState(() {
-      amount += itemPrice;
+      var newSale =
+          currentSale.addItem(item, 1 / currencyWrapper.satConversionRate);
+      posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
+      currentAmount = 0;
     });
   }
 
-  onNumButtonPressed(AccountModel accountModel, String numberText) {
+  onNumButtonPressed(String numberText) {
     setState(() {
-      double addition = int.parse(numberText).toDouble();
-      if (_useFiat) {
-        addition = addition /
-            pow(10, accountModel.fiatCurrency.currencyData.fractionSize);
-      }
+      double addition = int.parse(numberText).toDouble() / pow(10, currentCurrency.fractionSize);      
       currentAmount = currentAmount * 10 + addition;
     });
   }
 
-  changeCurrency(
-      AccountModel accountModel, value, UserProfileBloc userProfileBloc) {
+  changeCurrency(String value, UserProfileBloc userProfileBloc) {
     setState(() {
       Currency currency = Currency.fromSymbol(value);
+      bool flipFiat = _useFiat == (currency != null);
+      if (flipFiat) {
+        _useFiat = !_useFiat;
+        _clearAmounts();
+      } else if (currency != null) {
+        var conversionRate = currency == Currency.SAT ? 100000000 : 1 / 100000000;
+        currentAmount = currentAmount * conversionRate;
+      }
+
       if (currency != null) {
         userProfileBloc.currencySink.add(currency);
       } else {
         userProfileBloc.fiatConversionSink.add(value);
       }
-
-      bool flipFiat = _useFiat == (currency != null);      
-      if (flipFiat) {
-        _useFiat = !_useFiat;
-        _clearAmounts();
-      }
     });
   }
 
-  _clearAmounts({bool clearTotal = false}) {
+  _clearAmounts() {
     setState(() {
-      clearTotal ? amount = currentAmount = 0 : currentAmount = 0;
+      currentAmount = 0;
     });
   }
 
   clearSale() {
+    PosCatalogBloc posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
-      _clearAmounts(clearTotal: true);
+      currentAmount = 0;
       _invoiceDescriptionController.text = "";
+      posCatalogBloc.actionsSink.add(SetCurrentSale(Sale(saleLines: [])));
     });
   }
 
-  approveClear() {
-    if (amount > 0 || currentAmount > 0) {
+  approveClear(Sale currentSale) {
+    if (currentSale.totalChargeSat > 0 || currentAmount > 0) {
       AlertDialog dialog = AlertDialog(
         title: Text(
           "Clear Sale?",
@@ -681,88 +746,45 @@ class POSInvoiceState extends State<POSInvoice> {
     }
   }
 
-  Container _numberButton(AccountModel accountModel, String number) {
+  Container _numberButton(String number) {
     return Container(
         decoration: BoxDecoration(
             border: Border.all(
                 color: Theme.of(context).backgroundColor, width: 0.5)),
         child: FlatButton(
-            onPressed: () => onNumButtonPressed(accountModel, number),
+            onPressed: () => onNumButtonPressed(number),
             child: Text(number,
                 textAlign: TextAlign.center, style: theme.numPadNumberStyle)));
   }
 
-  Widget _numPad(PosCatalogBloc posCatalogBloc, AccountModel accountModel, Sale currentSale) {
+  Widget _numPad(PosCatalogBloc posCatalogBloc, Sale currentSale) {
     return GridView.count(
         crossAxisCount: 3,
         childAspectRatio: (itemWidth / itemHeight),
         padding: EdgeInsets.zero,
         children: List<int>.generate(9, (i) => i)
-            .map((index) => _numberButton(accountModel, (index + 1).toString()))
+            .map((index) => _numberButton((index + 1).toString()))
             .followedBy([
           Container(
               decoration: BoxDecoration(
                   border: Border.all(
                       color: Theme.of(context).backgroundColor, width: 0.5)),
               child: GestureDetector(
-                  onLongPress: approveClear,
+                  onLongPress: () => approveClear(currentSale),
                   child: FlatButton(
                       onPressed: () {
                         _clearAmounts();
                       },
                       child: Text("C", style: theme.numPadNumberStyle)))),
-          _numberButton(accountModel, "0"),
+          _numberButton("0"),
           Container(
               decoration: BoxDecoration(
                   border: Border.all(
                       color: Theme.of(context).backgroundColor, width: 0.5)),
               child: FlatButton(
-                  onPressed: () => onAddition(posCatalogBloc, currentSale, _currencySymbol(accountModel), _currencySatConversionRate(accountModel)),
+                  onPressed: () => onAddition(posCatalogBloc, currentSale,
+                      currentCurrency.satConversionRate),
                   child: Text("+", style: theme.numPadAdditionStyle))),
         ]).toList());
-  }
-
-  String _formattedCharge(AccountModel acc, double nativeAmount,
-      {bool userInput = false}) {
-    return _useFiat
-        ? (nativeAmount)
-            .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize)
-        : acc.currency.format(Int64((nativeAmount).toInt()),
-            includeDisplayName: false, userInput: userInput);
-  }
-
-  String _formattedSaleCharge(AccountModel acc, Sale currentSale, double currentAmount) {
-    double satExchangeRate = _satExchangeRate(acc);
-    var totalSatAmount = currentSale.totalChargeSat + currentAmount * satExchangeRate;    
-    return _useFiat
-        ? (totalSatAmount / 100000000 * satExchangeRate)
-            .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize)
-        : acc.currency.format(Int64((totalSatAmount).toInt()),
-            includeDisplayName: false, userInput: false);
-  }
-
-  String _currencySymbol(AccountModel accountModel) {
-    return _useFiat
-        ? accountModel.fiatCurrency.currencyData.shortName
-        : accountModel.currency.symbol;
-  }
-
-  double _satExchangeRate(AccountModel accountModel) {
-    return _useFiat
-        ? accountModel.fiatCurrency.exchangeRate
-        : 1;
-  }
-
-  double _currencySatConversionRate(AccountModel accountModel) {
-    return _useFiat
-        ? accountModel.fiatCurrency.exchangeRate
-        : 1.0;
-  }
-
-  Int64 _satAmount(AccountModel acc, double nativeAmount) {
-    return _useFiat
-        ? acc.fiatCurrency.fiatToSat(nativeAmount)
-        : acc.currency
-            .parse(_formattedCharge(acc, nativeAmount, userInput: true));
   }
 }

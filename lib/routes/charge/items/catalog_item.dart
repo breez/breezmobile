@@ -3,6 +3,7 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:fixnum/fixnum.dart';
@@ -16,7 +17,7 @@ class CatalogItem extends StatelessWidget {
   final PosCatalogBloc posCatalogBloc;
   final Item _itemInfo;
   final bool _lastItem;
-  final Function(AccountModel accountModel, String symbol, Int64 itemPriceInSat)
+  final Function(Item item)
       _addItem;
 
   CatalogItem(this.accountModel, this.posCatalogBloc, this._itemInfo,
@@ -67,7 +68,7 @@ class CatalogItem extends StatelessWidget {
               ],
             ),
             onTap: () {
-              _addItem(accountModel, _itemInfo.currency, _itemPriceInSat());
+              _addItem(_itemInfo);
             },
           ),
         ),
@@ -82,24 +83,9 @@ class CatalogItem extends StatelessWidget {
     ]);
   }
 
-  String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
-    if (Currency.fromSymbol(_itemInfo.currency) != null) {
-      var currency = Currency.fromSymbol(_itemInfo.currency);
-      return currency.format(currency.toSats(_itemInfo.price),
-          fixedDecimals: false, useSymbol: true);
-    } else {
-      return accountModel
-          .getFiatCurrencyByShortName(_itemInfo.currency)
-          .formatFiat(_itemInfo.price, removeTrailingZeros: true);
-    }
-  }
-
-  Int64 _itemPriceInSat() {
-    return Currency.fromSymbol(_itemInfo.currency) != null
-        ? Currency.fromSymbol(_itemInfo.currency).toSats(_itemInfo.price)
-        : accountModel
-            .getFiatCurrencyByShortName(_itemInfo.currency)
-            .fiatToSat(_itemInfo.price);
+  String _formattedPrice() {
+    var formatter = CurrencyWrapper.fromShortName(_itemInfo.currency, accountModel);
+    return formatter.format(_itemInfo.price, includeCurencySuffix: true, removeTrailingZeros: true);
   }
 
   Widget _buildCatalogItemAvatar() {
