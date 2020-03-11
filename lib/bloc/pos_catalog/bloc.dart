@@ -15,6 +15,9 @@ class PosCatalogBloc with AsyncActionsHandler {
       BehaviorSubject<List<Item>>();
   Stream<List<Item>> get itemsStream => _itemsStreamController.stream;
 
+  final StreamController<Sale> _currentSaleController = BehaviorSubject<Sale>();
+  Stream<Sale> get currentSaleStream => _currentSaleController.stream;
+
   PosCatalogBloc() {
     _repository = SqliteRepository();
     _loadItems();
@@ -24,9 +27,11 @@ class PosCatalogBloc with AsyncActionsHandler {
       DeleteItem: _deleteItem,
       FetchItem: _fetchItem,
       AddSale: _addSale,
-      FetchSale: _fetchSale
+      FetchSale: _fetchSale,
+      SetCurrentSale: _setCurrentSale,
     });
     listenActions();
+    _currentSaleController.add(Sale(saleLines: List()));
   }
 
   Future _loadItems() async {
@@ -60,5 +65,14 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Future _fetchSale(FetchSale action) async {
     action.resolve(await _repository.fetchSaleByID(action.id));
+  }
+
+  Future _setCurrentSale(SetCurrentSale action) async {
+    _currentSaleController.add(action.currentSale);
+    action.resolve(action.currentSale);
+  }
+
+  Future resetDB() async {
+    await (_repository as SqliteRepository).dropDB();
   }
 }

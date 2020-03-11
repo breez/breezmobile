@@ -38,7 +38,7 @@ class FiatConversion {
   }
 
   String formatFiat(double fiatAmount,
-      {bool addCurrencyPrefix = true, bool removeTrailingZeros = false}) {
+      {bool addCurrencyPrefix = true, bool removeTrailingZeros = false, bool allowBelowMin = false}) {
     int fractionSize = this.currencyData.fractionSize;
     double minimumAmount = 1 / (pow(10, fractionSize));
 
@@ -46,7 +46,7 @@ class FiatConversion {
     String prefix = '${this.currencyData.symbol}';
     // if conversion result is less than the minimum it doesn't make sense to display
     // it.
-    if (fiatAmount < minimumAmount) {
+    if (!allowBelowMin && fiatAmount < minimumAmount) {
       formattedAmount += minimumAmount.toStringAsFixed(fractionSize);
       prefix = '< ' + prefix;
     } else {

@@ -107,7 +107,7 @@ class AddFundsBloc extends Bloc {
       String maxQuoteCurrencyAmount = Currency.BTC.format(
           response.maxAllowedDeposit,
           includeDisplayName: false,
-          fixedDecimals: false);
+          removeTrailingZeros: true);
       moonpayUrl +=
           "&walletAddress=$walletAddress&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
       _moonpayNextOrderController

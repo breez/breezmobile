@@ -8,6 +8,7 @@ import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -418,8 +419,15 @@ class DevViewState extends State<DevView> {
           encoder.close();
           ShareExtend.share(zipFile, "file");
         }));
+    
         */
-
+    choices.add(Choice(
+        title: 'Reset POS DB',
+        icon: Icons.phone_android,
+        function: () {
+          PosCatalogBloc bloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+          bloc.resetDB();
+        }));
     return choices;
   }
 
