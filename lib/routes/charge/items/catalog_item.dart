@@ -45,10 +45,11 @@ class CatalogItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
           child: ListTile(
-            leading: _buildCatalogItemAvatar(),
+            leading: ItemAvatar(_itemInfo.imageURL),
             title: Text(
               _itemInfo.name,
-              style: theme.transactionTitleStyle.copyWith(fontWeight: FontWeight.bold),
+              style: theme.transactionTitleStyle
+                  .copyWith(fontWeight: FontWeight.bold),
               overflow: TextOverflow.ellipsis,
             ),
             trailing: Column(
@@ -100,9 +101,5 @@ class CatalogItem extends StatelessWidget {
         : accountModel
             .getFiatCurrencyByShortName(_itemInfo.currency)
             .fiatToSat(_itemInfo.price);
-  }
-
-  Widget _buildCatalogItemAvatar() {
-    return ItemAvatar(_itemInfo.imageURL);
   }
 }
