@@ -38,3 +38,9 @@ class FetchSale extends AsyncAction {
 
   FetchSale(this.id);
 }
+
+class SetCurrentSale extends AsyncAction {
+  final Sale currentSale;
+
+  SetCurrentSale(this.currentSale);
+}
