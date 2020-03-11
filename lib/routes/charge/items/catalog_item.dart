@@ -48,7 +48,7 @@ class CatalogItem extends StatelessWidget {
             leading: _buildCatalogItemAvatar(),
             title: Text(
               _itemInfo.name,
-              style: theme.transactionTitleStyle,
+              style: theme.transactionTitleStyle.copyWith(fontWeight: FontWeight.bold),
               overflow: TextOverflow.ellipsis,
             ),
             trailing: Column(
