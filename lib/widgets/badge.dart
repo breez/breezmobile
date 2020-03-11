@@ -12,9 +12,8 @@ class BadgeIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Badge(
-      position: BadgePosition.topRight(top: 0, right: 3),
-      animationDuration: Duration(milliseconds: 300),
-      animationType: BadgeAnimationType.slide,
+      position: BadgePosition.topRight(top: 0, right: 3),     
+      animationType: BadgeAnimationType.scale,
       badgeContent: Text(
         number.toString(),
         style: TextStyle(color: Colors.white),

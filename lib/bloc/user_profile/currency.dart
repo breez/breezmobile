@@ -22,14 +22,12 @@ class Currency extends Object {
   String format(
     Int64 sat, {
     includeDisplayName = true,
-    fixedDecimals = true,
-    userInput = false,
-    bool useSymbol = false,
+    removeTrailingZeros = false,
+    userInput = false,    
   }) =>
       _CurrencyFormatter().format(sat, this,
-          addCurrencySuffix: includeDisplayName,
-          useSymbol: useSymbol,
-          fixedDecimals: fixedDecimals,
+          addCurrencySuffix: includeDisplayName,          
+          removeTrailingZeros: removeTrailingZeros,
           userInput: userInput);
 
   Int64 parse(String amountStr) => _CurrencyFormatter().parse(amountStr, this);
@@ -67,14 +65,13 @@ class _CurrencyFormatter {
 
   String format(satoshies, Currency currency,
       {bool addCurrencySuffix = true,
-      bool useSymbol = false,
-      fixedDecimals = true,
+      removeTrailingZeros = false,
       userInput = false}) {
     String formattedAmount = formatter.format(satoshies);
     switch (currency) {
       case Currency.BTC:
         double amountInBTC = (satoshies.toInt() / 100000000);
-        if (fixedDecimals) {
+        if (!removeTrailingZeros) {
           formattedAmount = amountInBTC.toStringAsFixed(8);
         } else {
           // #.0* should be displayed without trailing zeros
@@ -89,7 +86,7 @@ class _CurrencyFormatter {
     }
     if (addCurrencySuffix) {
       formattedAmount +=
-          ' ${useSymbol ? currency.symbol : currency.displayName}';
+          ' ${currency.displayName}';
     }
 
     if (userInput) {

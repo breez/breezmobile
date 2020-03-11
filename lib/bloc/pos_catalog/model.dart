@@ -91,6 +91,7 @@ class SaleLine implements DBItem {
     return SaleLine(
         id: this.id,
         saleID: saleID ?? this.saleID,
+        itemID: this.itemID,
         itemName: itemName ?? this.itemName,
         quantity: quantity ?? this.quantity,
         itemImageURL: itemImageURL ?? this.itemImageURL,
@@ -171,6 +172,17 @@ class Sale implements DBItem {
     return this.copyWith(saleLines: saleLines);
   }
 
+  Sale incrementQuantity(int itemID, double satConversionRate, {int quantity = 1}) {
+    var saleLines = this.saleLines.map((sl) {
+      if (sl.itemID == itemID) {  
+        return sl.copywith(quantity: sl.quantity + quantity);
+      }
+      return sl;
+    }).toList();
+
+    return this.copyWith(saleLines: saleLines.where((s) => s.quantity > 0).toList());
+  }
+
   Sale addCustomItem(double price, String currency, double satConversionRate) {
     int customItemsCount =
         this.saleLines.where((element) => element.itemID == null).length;
@@ -185,11 +197,11 @@ class Sale implements DBItem {
     return this.copyWith(saleLines: newSaleLines);
   }
 
-  double get totalChargeSat {
+  Int64 get totalChargeSat {
     double totalSat = 0;
     saleLines.forEach((sl) {
-      totalSat += sl.pricePerItem * sl.satConversionRate;
+      totalSat += sl.pricePerItem * sl.satConversionRate * sl.quantity;
     });
-    return totalSat;
+    return Int64(totalSat.toInt());
   }
 }
