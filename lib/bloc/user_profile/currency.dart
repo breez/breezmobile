@@ -88,8 +88,11 @@ class _CurrencyFormatter {
         break;
     }
     if (addCurrencySuffix) {
-      formattedAmount +=
-          ' ${useSymbol ? currency.symbol : currency.displayName}';
+      if (useSymbol) {
+        formattedAmount = _symbol(currency.symbol) + formattedAmount;
+      } else {
+        formattedAmount += ' ${currency.displayName}';
+      }
     }
 
     if (userInput) {
@@ -97,6 +100,17 @@ class _CurrencyFormatter {
     }
 
     return formattedAmount;
+  }
+
+  String _symbol(String symbol) {
+    switch (symbol) {
+      case "BTC":
+        return "₿";
+      case "SAT":
+        return "\$";
+      default:
+        return symbol;
+    }
   }
 
   Int64 parse(String amount, Currency currency) {

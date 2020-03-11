@@ -60,10 +60,24 @@ class CatalogItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Text(
-                        _formattedPrice(),
-                        style: theme.transactionAmountStyle,
-                      )
+                      RichText(
+                        text: new TextSpan(
+                          // Note: Styles for TextSpans must be explicitly defined.
+                          // Child text spans will inherit styles from parent
+                          style: theme.transactionAmountStyle,
+                          children: <TextSpan>[
+                            new TextSpan(
+                                text: _formattedPrice().substring(0, 1),
+                                style: TextStyle(
+                                    fontFamily: _itemInfo.currency == "SAT"
+                                        ? 'SAT'
+                                        : "IBMPlexSansMedium")),
+                            new TextSpan(
+                              text: _formattedPrice().substring(1),
+                            )
+                          ],
+                        ),
+                      ),
                     ]),
               ],
             ),
