@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -13,6 +14,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -105,7 +107,10 @@ class POSInvoiceState extends State<POSInvoice> {
                                       }),
                                   Padding(
                                     padding: EdgeInsets.only(
-                                        top: 0.0, left: 16.0, right: 16.0),
+                                        top: 0.0,
+                                        left: 16.0,
+                                        right: 16.0,
+                                        bottom: 24.0),
                                     child: ConstrainedBox(
                                       constraints: const BoxConstraints(
                                           minWidth: double.infinity),
@@ -117,10 +122,8 @@ class POSInvoiceState extends State<POSInvoice> {
                                           padding: EdgeInsets.only(
                                               top: 14.0, bottom: 14.0),
                                           child: Text(
-                                            "Charge ${_formattedCharge(accountModel, amount + currentAmount)} "
-                                                    .toUpperCase() +
-                                                _currencySymbol(accountModel,
-                                                    showDisplayName: true),
+                                            "Charge ${_formattedCharge(accountModel, amount + currentAmount)} ${_currencySymbol(accountModel)}"
+                                                .toUpperCase(),
                                             maxLines: 1,
                                             textAlign: TextAlign.center,
                                             style:
@@ -134,7 +137,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                       ),
                                     ),
                                   ),
-                                  Container(
+                                  /*Container(
                                     height: 80.0,
                                     child: Padding(
                                       padding: EdgeInsets.only(
@@ -180,12 +183,15 @@ class POSInvoiceState extends State<POSInvoice> {
                                                 .color),
                                       ),
                                     ),
+                                  ),*/
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 24),
+                                    child: _buildViewSwitch(context),
                                   ),
                                   Padding(
                                     padding:
                                         EdgeInsets.only(left: 0.0, right: 16.0),
                                     child: Row(children: <Widget>[
-                                      _buildViewSwitch(context),
                                       Expanded(
                                         child: Align(
                                           alignment: Alignment.centerRight,
@@ -195,8 +201,11 @@ class POSInvoiceState extends State<POSInvoice> {
                                               padding:
                                                   EdgeInsets.only(left: 8.0),
                                               child: Text(
-                                                _formattedCharge(accountModel,
-                                                    currentAmount),
+                                                _isKeypadView
+                                                    ? _formattedCharge(
+                                                        accountModel,
+                                                        currentAmount)
+                                                    : "",
                                                 maxLines: 1,
                                                 style: theme.invoiceAmountStyle
                                                     .copyWith(
@@ -259,7 +268,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                                               value.symbol,
                                                                           child:
                                                                               Text(
-                                                                            value.displayName,
+                                                                            value.symbol,
                                                                             textAlign:
                                                                                 TextAlign.right,
                                                                             style:
@@ -305,55 +314,97 @@ class POSInvoiceState extends State<POSInvoice> {
     );
   }
 
-  GestureDetector _buildViewSwitch(BuildContext context) {
-    return GestureDetector(
-      onTap: _changeView,
-      child: Container(
-        padding: EdgeInsets.zero,
-        width: itemWidth / 1.5,
-        color: Theme.of(context).backgroundColor,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Expanded(
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(Icons.dialpad,
-                    color: Theme.of(context)
-                        .primaryTextTheme
-                        .button
-                        .color
-                        .withOpacity(_isKeypadView ? 1 : 0.5)),
-              ),
-            ),
-            Container(
-              height: 20,
-              width: 8,
-              child: VerticalDivider(
-                color: Theme.of(context).canvasColor,
-              ),
-            ),
-            Expanded(
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(Icons.playlist_add,
-                    color: Theme.of(context)
-                        .primaryTextTheme
-                        .button
-                        .color
-                        .withOpacity(_isKeypadView ? 0.5 : 1)),
-              ),
-            ),
-          ],
+  Widget _buildViewSwitch(BuildContext context) {
+    // This method is a work-around to center align the buttons
+    // Use Align to stick items to center and set padding to give equal distance
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Flexible(
+          flex: 1,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => _changeView(true),
+                child: Padding(
+                  padding: EdgeInsets.only(right: itemWidth / 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Icon(Icons.dialpad,
+                            color: Theme.of(context)
+                                .primaryTextTheme
+                                .button
+                                .color
+                                .withOpacity(_isKeypadView ? 1 : 0.5)),
+                      ),
+                      Text(
+                        "Keypad",
+                        style: Theme.of(context).textTheme.button.copyWith(
+                            color: Theme.of(context)
+                                .textTheme
+                                .button
+                                .color
+                                .withOpacity(_isKeypadView ? 1 : 0.5)),
+                      )
+                    ],
+                  ),
+                )),
+          ),
         ),
-      ),
+        Container(
+          height: 20,
+          child: VerticalDivider(
+            color: Theme.of(context).primaryTextTheme.button.color,
+          ),
+        ),
+        Flexible(
+          flex: 1,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => _changeView(false),
+                child: Padding(
+                  padding: EdgeInsets.only(left: itemWidth / 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Icon(Icons.playlist_add,
+                            color: Theme.of(context)
+                                .primaryTextTheme
+                                .button
+                                .color
+                                .withOpacity(!_isKeypadView ? 1 : 0.5)),
+                      ),
+                      Text(
+                        "Items",
+                        style: Theme.of(context).textTheme.button.copyWith(
+                            color: Theme.of(context)
+                                .textTheme
+                                .button
+                                .color
+                                .withOpacity(!_isKeypadView ? 1 : 0.5)),
+                      )
+                    ],
+                  ),
+                )),
+          ),
+        ),
+      ],
     );
   }
 
-  _changeView() {
+  _changeView(bool isKeypadView) {
     setState(() {
-      _isKeypadView = !_isKeypadView;
+      _isKeypadView = isKeypadView;
     });
   }
 
@@ -396,11 +447,16 @@ class POSInvoiceState extends State<POSInvoice> {
                 border: UnderlineInputBorder()),
           ),*/
           catalogItems?.length == 0
-              ? Center(
-                  child: Padding(
-                  padding: const EdgeInsets.only(top: 160.0),
-                  child: Text("Please add items to use catalog"),
-                ))
+              ? Padding(
+                  padding: const EdgeInsets.only(
+                      top: 180.0, left: 40.0, right: 40.0),
+                  child: AutoSizeText(
+                    "No items to display. Add items to this view using the '+' button.",
+                    textAlign: TextAlign.center,
+                    minFontSize: MinFontSize(context).minFontSize,
+                    stepGranularity: 0.1,
+                  ),
+                )
               : ItemsList(accountModel, posCatalogBloc, catalogItems, _addItem)
         ],
       ),
@@ -454,7 +510,7 @@ class POSInvoiceState extends State<POSInvoice> {
             context,
             "You don't have the capacity to receive such payment.",
             Text(
-                "Maximum payment size you can receive is ${account.currency.format(account.maxAllowedToReceive, includeSymbol: true)}. Please enter a smaller value.",
+                "Maximum payment size you can receive is ${account.currency.format(account.maxAllowedToReceive, includeDisplayName: true)}. Please enter a smaller value.",
                 style: Theme.of(context).dialogTheme.contentTextStyle));
         return;
       }
@@ -464,7 +520,7 @@ class POSInvoiceState extends State<POSInvoice> {
             context,
             "You have exceeded the maximum payment size.",
             Text(
-                "Maximum payment size on the Lightning Network is ${account.currency.format(account.maxPaymentAmount, includeSymbol: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
+                "Maximum payment size on the Lightning Network is ${account.currency.format(account.maxPaymentAmount, includeDisplayName: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
                 style: Theme.of(context).dialogTheme.contentTextStyle));
         return;
       }
@@ -644,16 +700,13 @@ class POSInvoiceState extends State<POSInvoice> {
         ? (nativeAmount)
             .toStringAsFixed(acc.fiatCurrency.currencyData.fractionSize)
         : acc.currency.format(Int64((nativeAmount).toInt()),
-            includeSymbol: false, userInput: userInput);
+            includeDisplayName: false, userInput: userInput);
   }
 
-  String _currencySymbol(AccountModel accountModel,
-      {bool showDisplayName = false}) {
+  String _currencySymbol(AccountModel accountModel) {
     return _useFiat
         ? accountModel.fiatCurrency.currencyData.shortName
-        : showDisplayName
-            ? accountModel.currency.displayName
-            : accountModel.currency.symbol;
+        : accountModel.currency.symbol;
   }
 
   Int64 _satAmount(AccountModel acc, double nativeAmount) {

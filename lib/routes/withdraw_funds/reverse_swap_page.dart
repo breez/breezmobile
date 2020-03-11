@@ -128,7 +128,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                   initialAmount = accSnapshot.data.currency
                                       .format(currentSwap.amount,
                                           userInput: true,
-                                          includeSymbol: false);
+                                          includeDisplayName: false);
                                 }
 
                                 return PageView(

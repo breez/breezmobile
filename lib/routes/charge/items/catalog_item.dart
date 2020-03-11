@@ -30,46 +30,46 @@ class CatalogItem extends StatelessWidget {
         actionExtentRatio: 0.25,
         secondaryActions: <Widget>[
           IconSlideAction(
-            caption: 'Delete',
-            color: Colors.red,
+            foregroundColor: Colors.white,
+            color: Theme.of(context).primaryColorLight,
             icon: Icons.delete_forever,
             onTap: () {
               DeleteItem deleteItem = DeleteItem(_itemInfo.id);
               posCatalogBloc.actionsSink.add(deleteItem);
-              deleteItem.future.then(
-                  (_) => showFlushbar(context,
-                      message: "${_itemInfo.name} is successfully deleted"),
-                  onError: (err) => showFlushbar(context,
-                      message: "Failed to delete ${_itemInfo.name}"));
+              deleteItem.future.catchError((err) => showFlushbar(context,
+                  message: "Failed to delete ${_itemInfo.name}"));
             },
           ),
         ],
         key: Key(_itemInfo.id.toString()),
-        child: ListTile(
-          leading: _buildCatalogItemAvatar(),
-          title: Text(
-            _itemInfo.name,
-            style: theme.transactionTitleStyle,
-            overflow: TextOverflow.ellipsis,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+          child: ListTile(
+            leading: _buildCatalogItemAvatar(),
+            title: Text(
+              _itemInfo.name,
+              style: theme.transactionTitleStyle,
+              overflow: TextOverflow.ellipsis,
+            ),
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        _formattedPrice(),
+                        style: theme.transactionAmountStyle,
+                      )
+                    ]),
+              ],
+            ),
+            onTap: () {
+              _addItem(accountModel, _itemInfo.currency, _itemPriceInSat());
+            },
           ),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      _formattedPrice(),
-                      style: theme.transactionAmountStyle,
-                    )
-                  ]),
-            ],
-          ),
-          onTap: () {
-            _addItem(accountModel, _itemInfo.currency, _itemPriceInSat());
-          },
         ),
       ),
       Divider(
@@ -85,11 +85,12 @@ class CatalogItem extends StatelessWidget {
   String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
     if (Currency.fromSymbol(_itemInfo.currency) != null) {
       var currency = Currency.fromSymbol(_itemInfo.currency);
-      return currency.format(currency.toSats(_itemInfo.price));
+      return currency.format(currency.toSats(_itemInfo.price),
+          fixedDecimals: false, useSymbol: true);
     } else {
       return accountModel
           .getFiatCurrencyByShortName(_itemInfo.currency)
-          .formatFiat(_itemInfo.price);
+          .formatFiat(_itemInfo.price, removeTrailingZeros: true);
     }
   }
 

@@ -8,19 +8,27 @@ enum CurrencyID { BTC, SAT }
 class Currency extends Object {
   final String symbol;
   static const Currency BTC = Currency._internal("BTC");
-  static const Currency SAT = Currency._internal("Sat");
+  static const Currency SAT = Currency._internal("SAT");
   static final List<Currency> currencies = List.unmodifiable([BTC, SAT]);
 
   const Currency._internal(this.symbol);
 
   factory Currency.fromSymbol(String symbol) {
-    return currencies.firstWhere((c) => c.symbol == symbol, orElse: () => null);
+    return currencies.firstWhere(
+        (c) => c.symbol.toUpperCase() == symbol.toUpperCase(),
+        orElse: () => null);
   }
 
-  String format(Int64 sat,
-          {includeSymbol = true, fixedDecimals = true, userInput = false}) =>
+  String format(
+    Int64 sat, {
+    includeDisplayName = true,
+    fixedDecimals = true,
+    userInput = false,
+    bool useSymbol = false,
+  }) =>
       _CurrencyFormatter().format(sat, this,
-          addCurrencySuffix: includeSymbol,
+          addCurrencySuffix: includeDisplayName,
+          useSymbol: useSymbol,
           fixedDecimals: fixedDecimals,
           userInput: userInput);
 
@@ -28,7 +36,7 @@ class Currency extends Object {
 
   Int64 toSats(double amount) => _CurrencyFormatter().toSats(amount, this);
 
-  String get displayName => symbol == "Sat" ? "sats" : symbol;
+  String get displayName => symbol.toLowerCase() == "sat" ? "sats" : symbol;
 }
 
 class _CurrencyFormatter {
@@ -59,15 +67,20 @@ class _CurrencyFormatter {
 
   String format(satoshies, Currency currency,
       {bool addCurrencySuffix = true,
+      bool useSymbol = false,
       fixedDecimals = true,
       userInput = false}) {
     String formattedAmount = formatter.format(satoshies);
     switch (currency) {
       case Currency.BTC:
+        double amountInBTC = (satoshies.toInt() / 100000000);
         if (fixedDecimals) {
-          formattedAmount = (satoshies.toInt() / 100000000).toStringAsFixed(8);
+          formattedAmount = amountInBTC.toStringAsFixed(8);
         } else {
-          formattedAmount = (satoshies.toInt() / 100000000).toString();
+          // #.0* should be displayed without trailing zeros
+          formattedAmount = amountInBTC.truncateToDouble() == amountInBTC
+              ? amountInBTC.toStringAsFixed(0)
+              : amountInBTC.toString();
         }
         break;
       case Currency.SAT:
@@ -75,7 +88,8 @@ class _CurrencyFormatter {
         break;
     }
     if (addCurrencySuffix) {
-      formattedAmount += ' ${currency.displayName}';
+      formattedAmount +=
+          ' ${useSymbol ? currency.symbol : currency.displayName}';
     }
 
     if (userInput) {

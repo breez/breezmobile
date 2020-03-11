@@ -325,7 +325,7 @@ final TextStyle invoiceChargeAmountStyle = TextStyle(
     letterSpacing: 1.25);
 final TextStyle invoiceAmountStyle = TextStyle(
     color: BreezColors.grey[600],
-    fontSize: 22.0,
+    fontSize: 18.0,
     height: 1.32,
     letterSpacing: 0.2);
 final TextStyle currencyDropdownStyle = TextStyle(
