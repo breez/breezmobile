@@ -6,16 +6,16 @@ import 'package:intl/number_symbols_data.dart';
 enum CurrencyID { BTC, SAT }
 
 class Currency extends Object {
-  final String symbol;
+  final String tickerSymbol;
   static const Currency BTC = Currency._internal("BTC");
   static const Currency SAT = Currency._internal("SAT");
   static final List<Currency> currencies = List.unmodifiable([BTC, SAT]);
 
-  const Currency._internal(this.symbol);
+  const Currency._internal(this.tickerSymbol);
 
-  factory Currency.fromSymbol(String symbol) {
+  factory Currency.fromTickerSymbol(String tickerSymbol) {
     return currencies.firstWhere(
-        (c) => c.symbol.toUpperCase() == symbol.toUpperCase(),
+        (c) => c.tickerSymbol.toUpperCase() == tickerSymbol.toUpperCase(),
         orElse: () => null);
   }
 
@@ -24,11 +24,9 @@ class Currency extends Object {
     includeDisplayName = true,
     fixedDecimals = true,
     userInput = false,
-    bool useSymbol = false,
   }) =>
       _CurrencyFormatter().format(sat, this,
           addCurrencySuffix: includeDisplayName,
-          useSymbol: useSymbol,
           fixedDecimals: fixedDecimals,
           userInput: userInput);
 
@@ -36,7 +34,19 @@ class Currency extends Object {
 
   Int64 toSats(double amount) => _CurrencyFormatter().toSats(amount, this);
 
-  String get displayName => symbol.toLowerCase() == "sat" ? "sats" : symbol;
+  String get displayName =>
+      tickerSymbol.toLowerCase() == "sat" ? "sats" : tickerSymbol;
+
+  String get symbol {
+    switch (this.tickerSymbol) {
+      case "BTC":
+        return "₿";
+      case "SAT":
+        return "\$";
+      default:
+        return tickerSymbol;
+    }
+  }
 }
 
 class _CurrencyFormatter {
@@ -67,7 +77,6 @@ class _CurrencyFormatter {
 
   String format(satoshies, Currency currency,
       {bool addCurrencySuffix = true,
-      bool useSymbol = false,
       fixedDecimals = true,
       userInput = false}) {
     String formattedAmount = formatter.format(satoshies);
@@ -88,11 +97,7 @@ class _CurrencyFormatter {
         break;
     }
     if (addCurrencySuffix) {
-      if (useSymbol) {
-        formattedAmount = _symbol(currency.symbol) + formattedAmount;
-      } else {
-        formattedAmount += ' ${currency.displayName}';
-      }
+      formattedAmount += ' ${currency.displayName}';
     }
 
     if (userInput) {
@@ -100,17 +105,6 @@ class _CurrencyFormatter {
     }
 
     return formattedAmount;
-  }
-
-  String _symbol(String symbol) {
-    switch (symbol) {
-      case "BTC":
-        return "₿";
-      case "SAT":
-        return "\$";
-      default:
-        return symbol;
-    }
   }
 
   Int64 parse(String amount, Currency currency) {

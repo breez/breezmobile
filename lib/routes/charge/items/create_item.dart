@@ -158,9 +158,9 @@ class CreateItemPageState extends State<CreateItemPage> {
                                               items: Currency.currencies.map(
                                                   (Currency value) {
                                                 return DropdownMenuItem<String>(
-                                                  value: value.symbol,
+                                                  value: value.tickerSymbol,
                                                   child: Text(
-                                                    value.symbol,
+                                                    value.tickerSymbol,
                                                     style: theme.FieldTextStyle
                                                         .textStyle
                                                         .copyWith(
@@ -210,12 +210,12 @@ class CreateItemPageState extends State<CreateItemPage> {
   String _currencySymbol({bool showDisplayName = false}) {
     return _isFiat
         ? _selectedFiatCurrency.currencyData.shortName
-        : _selectedCurrency.symbol;
+        : _selectedCurrency.tickerSymbol;
   }
 
   _changeCurrency(AccountModel accountModel, value) {
     setState(() {
-      Currency currency = Currency.fromSymbol(value);
+      Currency currency = Currency.fromTickerSymbol(value);
       _isFiat = (currency == null);
       _selectedFiatCurrency =
           _isFiat ? accountModel.getFiatCurrencyByShortName(value) : null;

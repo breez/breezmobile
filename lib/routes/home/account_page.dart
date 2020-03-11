@@ -40,7 +40,7 @@ class AccountPage extends StatefulWidget {
 class AccountPageState extends State<AccountPage>
     with SingleTickerProviderStateMixin {
   final List<String> currencyList =
-      Currency.currencies.map((c) => c.symbol).toList();
+      Currency.currencies.map((c) => c.tickerSymbol).toList();
 
   AccountBloc _accountBloc;
   UserProfileBloc _userProfileBloc;

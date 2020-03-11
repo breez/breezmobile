@@ -77,7 +77,7 @@ class BreezUserModel {
         token = json['token'],
         currency = json['currency'] == null
             ? Currency.SAT
-            : Currency.fromSymbol(json['currency']),
+            : Currency.fromTickerSymbol(json['currency']),
         fiatCurrency =
             json['fiatCurrency'] == null ? "USD" : json['fiatCurrency'],
         name = json['name'],
@@ -102,7 +102,7 @@ class BreezUserModel {
   Map<String, dynamic> toJson() => {
         'userID': userID,
         'token': token,
-        'currency': currency.symbol,
+        'currency': currency.tickerSymbol,
         'fiatCurrency': fiatCurrency,
         'name': name,
         'color': color,

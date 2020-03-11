@@ -61,27 +61,12 @@ class CatalogItem extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       RichText(
-                        text: new TextSpan(
+                        text: TextSpan(
                           style: theme.transactionAmountStyle,
                           children: <InlineSpan>[
-                            _itemInfo.currency == "SAT"
-                                ? WidgetSpan(
-                                    child: Container(
-                                      height: 20,
-                                      child: Center(
-                                        child: Text(
-                                            _formattedPrice().substring(0, 1),
-                                            style: TextStyle(
-                                                fontSize: 13.4,
-                                                fontFamily: 'SAT')),
-                                      ),
-                                    ),
-                                  )
-                                : TextSpan(
-                                    text: _formattedPrice().substring(0, 1),
-                                  ),
+                            _buildCurrencySymbol(),
                             TextSpan(
-                              text: _formattedPrice().substring(1),
+                              text: _formattedPrice(), // Price
                             ),
                           ],
                         ),
@@ -105,21 +90,51 @@ class CatalogItem extends StatelessWidget {
     ]);
   }
 
-  String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
-    if (Currency.fromSymbol(_itemInfo.currency) != null) {
-      var currency = Currency.fromSymbol(_itemInfo.currency);
-      return currency.format(currency.toSats(_itemInfo.price),
-          fixedDecimals: false, useSymbol: true);
+  InlineSpan _buildCurrencySymbol() {
+    return _itemInfo.currency == "SAT"
+        ? WidgetSpan(
+            child: Container(
+              height: 20,
+              child: Align(
+                child: Text(_getSymbol(), // Icon
+                    style: TextStyle(fontSize: 13.4, fontFamily: 'SAT')),
+                alignment: Alignment.center,
+              ),
+            ),
+          )
+        : TextSpan(
+            text: _getSymbol(), // Icon
+          );
+  }
+
+  String _getSymbol() {
+    var currency = Currency.fromTickerSymbol(_itemInfo.currency);
+    if (currency != null) {
+      return currency.symbol;
     } else {
       return accountModel
           .getFiatCurrencyByShortName(_itemInfo.currency)
-          .formatFiat(_itemInfo.price, removeTrailingZeros: true);
+          .currencyData
+          .symbol;
+    }
+  }
+
+  String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
+    var currency = Currency.fromTickerSymbol(_itemInfo.currency);
+    if (currency != null) {
+      return currency.format(currency.toSats(_itemInfo.price),
+          fixedDecimals: false, includeDisplayName: false);
+    } else {
+      return accountModel
+          .getFiatCurrencyByShortName(_itemInfo.currency)
+          .formatFiat(_itemInfo.price,
+              removeTrailingZeros: true, addCurrencyPrefix: false);
     }
   }
 
   Int64 _itemPriceInSat() {
-    return Currency.fromSymbol(_itemInfo.currency) != null
-        ? Currency.fromSymbol(_itemInfo.currency).toSats(_itemInfo.price)
+    return Currency.fromTickerSymbol(_itemInfo.currency) != null
+        ? Currency.fromTickerSymbol(_itemInfo.currency).toSats(_itemInfo.price)
         : accountModel
             .getFiatCurrencyByShortName(_itemInfo.currency)
             .fiatToSat(_itemInfo.price);

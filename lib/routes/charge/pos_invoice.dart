@@ -265,10 +265,10 @@ class POSInvoiceState extends State<POSInvoice> {
                                                                         return DropdownMenuItem<
                                                                             String>(
                                                                           value:
-                                                                              value.symbol,
+                                                                              value.tickerSymbol,
                                                                           child:
                                                                               Text(
-                                                                            value.symbol,
+                                                                            value.tickerSymbol,
                                                                             textAlign:
                                                                                 TextAlign.right,
                                                                             style:
@@ -583,7 +583,7 @@ class POSInvoiceState extends State<POSInvoice> {
   changeCurrency(
       AccountModel accountModel, value, UserProfileBloc userProfileBloc) {
     setState(() {
-      Currency currency = Currency.fromSymbol(value);
+      Currency currency = Currency.fromTickerSymbol(value);
       if (currency != null) {
         userProfileBloc.currencySink.add(currency);
       } else {
@@ -706,7 +706,7 @@ class POSInvoiceState extends State<POSInvoice> {
   String _currencySymbol(AccountModel accountModel) {
     return _useFiat
         ? accountModel.fiatCurrency.currencyData.shortName
-        : accountModel.currency.symbol;
+        : accountModel.currency.tickerSymbol;
   }
 
   Int64 _satAmount(AccountModel acc, double nativeAmount) {
