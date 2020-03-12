@@ -37,7 +37,7 @@ class ItemPageState extends State<ItemPage> {
   AccountBloc _accountBloc;
   bool _isInit = false;
   bool _isFiat = false;
-  Currency _selectedCurrency;
+  Currency _selectedCurrency = Currency.BTC;
   FiatConversion _selectedFiatCurrency;
   String currency;
   String _titlePrefix = "Add";
@@ -247,7 +247,7 @@ class ItemPageState extends State<ItemPage> {
     );
   }
 
-  String _currencySymbol({bool showDisplayName = false}) {
+  String _currencySymbol() {
     return _isFiat
         ? _selectedFiatCurrency.currencyData.shortName
         : _selectedCurrency.tickerSymbol;
