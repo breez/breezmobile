@@ -44,7 +44,7 @@ class Currency extends Object {
       case "SAT":
         return "\$";
       default:
-        return tickerSymbol;
+        return "₿";
     }
   }
 }
