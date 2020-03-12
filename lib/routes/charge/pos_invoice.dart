@@ -683,11 +683,6 @@ class POSInvoiceState extends State<POSInvoice> {
   changeCurrency(String value, UserProfileBloc userProfileBloc) {
     setState(() {
       Currency currency = Currency.fromTickerSymbol(value);
-      if (currency != null) {
-        userProfileBloc.currencySink.add(currency);
-      } else {
-        userProfileBloc.fiatConversionSink.add(value);
-      }
 
       bool flipFiat = _useFiat == (currency != null);
       if (flipFiat) {
