@@ -6,7 +6,6 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -17,8 +16,7 @@ class CatalogItem extends StatelessWidget {
   final PosCatalogBloc posCatalogBloc;
   final Item _itemInfo;
   final bool _lastItem;
-  final Function(Item item)
-      _addItem;
+  final Function(Item item) _addItem;
 
   CatalogItem(this.accountModel, this.posCatalogBloc, this._itemInfo,
       this._lastItem, this._addItem);
@@ -46,10 +44,11 @@ class CatalogItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
           child: ListTile(
-            leading: _buildCatalogItemAvatar(),
+            leading: ItemAvatar(_itemInfo.imageURL),
             title: Text(
               _itemInfo.name,
-              style: theme.transactionTitleStyle,
+              style: theme.transactionTitleStyle
+                  .copyWith(fontWeight: FontWeight.bold),
               overflow: TextOverflow.ellipsis,
             ),
             trailing: Column(
@@ -60,10 +59,22 @@ class CatalogItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Text(
-                        _formattedPrice(),
-                        style: theme.transactionAmountStyle,
-                      )
+                      RichText(
+                        text: TextSpan(
+                          style: theme.transactionAmountStyle,
+                          children: <InlineSpan>[
+                            TextSpan(
+                              text: _getSymbol(),
+                              /*style: _itemInfo.currency == "SAT"
+                                  ? TextStyle(fontSize: 13.4, fontFamily: 'SAT')
+                                  : null,*/
+                            ),
+                            TextSpan(
+                              text: _formattedPrice(), // Price
+                            ),
+                          ],
+                        ),
+                      ),
                     ]),
               ],
             ),
@@ -83,12 +94,14 @@ class CatalogItem extends StatelessWidget {
     ]);
   }
 
-  String _formattedPrice() {
-    var formatter = CurrencyWrapper.fromShortName(_itemInfo.currency, accountModel);
-    return formatter.format(_itemInfo.price, includeCurencySuffix: true, removeTrailingZeros: true);
+  String _getSymbol() {
+    return CurrencyWrapper.fromShortName(_itemInfo.currency, accountModel)
+        .symbol;
   }
 
-  Widget _buildCatalogItemAvatar() {
-    return ItemAvatar(_itemInfo.imageURL);
+  String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
+    var formatter =
+        CurrencyWrapper.fromShortName(_itemInfo.currency, accountModel);
+    return formatter.format(_itemInfo.price, removeTrailingZeros: true);
   }
 }

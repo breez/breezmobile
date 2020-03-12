@@ -58,7 +58,7 @@ class FiatConversion {
     }
     if (removeTrailingZeros) {
       RegExp removeTrailingZeros = RegExp(r"([.]0*)(?!.*\d)");
-      formattedAmount.replaceAll(removeTrailingZeros, "");
+      formattedAmount = formattedAmount.replaceAll(removeTrailingZeros, "");
     }
     return formattedAmount;
   }

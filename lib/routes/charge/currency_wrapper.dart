@@ -17,7 +17,7 @@ class CurrencyWrapper {
   }
 
   factory CurrencyWrapper.fromShortName(String symbol, AccountModel account) {
-    var btcCurrency = Currency.fromSymbol(symbol);
+    var btcCurrency = Currency.fromTickerSymbol(symbol);
     if (btcCurrency != null) {
       return CurrencyWrapper.fromBTC(btcCurrency);
     }
@@ -28,7 +28,9 @@ class CurrencyWrapper {
     return null;
   }
 
-  String get shortName => btc?.symbol ?? fiat.currencyData.shortName;
+  String get shortName => btc?.tickerSymbol ?? fiat.currencyData.shortName;
+
+  String get symbol => btc?.symbol ?? fiat.currencyData.symbol;
 
   String get chargeSuffix => btc?.displayName ?? fiat.currencyData.shortName;
 

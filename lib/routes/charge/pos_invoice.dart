@@ -18,14 +18,13 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/badge.dart';
 import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/widgets/badge.dart';
 import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/pos_payment_dialog.dart';
-import 'package:breez/widgets/route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -240,19 +239,19 @@ class POSInvoiceState extends State<POSInvoice> {
                                                         onPress: () {
                                                           var currentSaleRoute =
                                                               CupertinoPageRoute(
-                                                                fullscreenDialog: true,
-                                                                builder: (_) =>
+                                                                  fullscreenDialog:
+                                                                      true,
+                                                                  builder: (_) =>
                                                                       SaleView(
                                                                         useFiat:
                                                                             _useFiat,
-                                                                      )
-                                                              );
-                                                              // FadeInRoute(
-                                                              //     builder: (_) =>
-                                                              //         SaleView(
-                                                              //           useFiat:
-                                                              //               _useFiat,
-                                                              //         ));
+                                                                      ));
+                                                          // FadeInRoute(
+                                                          //     builder: (_) =>
+                                                          //         SaleView(
+                                                          //           useFiat:
+                                                          //               _useFiat,
+                                                          //         ));
                                                           Navigator.of(context)
                                                               .push(
                                                                   currentSaleRoute);
@@ -271,7 +270,9 @@ class POSInvoiceState extends State<POSInvoice> {
                                                         left: 8.0),
                                                     child: Text(
                                                       _isKeypadView
-                                                          ? currentCurrency.format(currentAmount)
+                                                          ? currentCurrency
+                                                              .format(
+                                                                  currentAmount)
                                                           : "",
                                                       maxLines: 1,
                                                       style: theme
@@ -349,10 +350,10 @@ class POSInvoiceState extends State<POSInvoice> {
                                                                           return DropdownMenuItem<
                                                                               String>(
                                                                             value:
-                                                                                value.symbol,
+                                                                                value.tickerSymbol,
                                                                             child:
                                                                                 Text(
-                                                                              value.symbol.toUpperCase(),
+                                                                              value.tickerSymbol.toUpperCase(),
                                                                               textAlign: TextAlign.right,
                                                                               style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
                                                                             ),
@@ -592,8 +593,8 @@ class POSInvoiceState extends State<POSInvoice> {
             );
           });
     } else {
-      var satAmount =
-          currentSale.totalChargeSat + (currentCurrency.satConversionRate * currentAmount).toInt();
+      var satAmount = currentSale.totalChargeSat +
+          (currentCurrency.satConversionRate * currentAmount).toInt();
       if (satAmount == 0) {
         return null;
       }
@@ -658,7 +659,7 @@ class POSInvoiceState extends State<POSInvoice> {
 
   _addItem(PosCatalogBloc posCatalogBloc, Sale currentSale,
       AccountModel account, Item item) {
-    var btcCurrency = Currency.fromSymbol(item.currency);
+    var btcCurrency = Currency.fromTickerSymbol(item.currency);
     var currencyWrapper = btcCurrency != null
         ? CurrencyWrapper.fromBTC(btcCurrency)
         : CurrencyWrapper.fromFiat(account.fiatCurrency);
@@ -673,20 +674,23 @@ class POSInvoiceState extends State<POSInvoice> {
 
   onNumButtonPressed(String numberText) {
     setState(() {
-      double addition = int.parse(numberText).toDouble() / pow(10, currentCurrency.fractionSize);      
+      double addition = int.parse(numberText).toDouble() /
+          pow(10, currentCurrency.fractionSize);
       currentAmount = currentAmount * 10 + addition;
     });
   }
 
   changeCurrency(String value, UserProfileBloc userProfileBloc) {
     setState(() {
-      Currency currency = Currency.fromSymbol(value);
+      Currency currency = Currency.fromTickerSymbol(value);
+
       bool flipFiat = _useFiat == (currency != null);
       if (flipFiat) {
         _useFiat = !_useFiat;
         _clearAmounts();
       } else if (currency != null) {
-        var conversionRate = currency == Currency.SAT ? 100000000 : 1 / 100000000;
+        var conversionRate =
+            currency == Currency.SAT ? 100000000 : 1 / 100000000;
         currentAmount = currentAmount * conversionRate;
       }
 
@@ -705,7 +709,8 @@ class POSInvoiceState extends State<POSInvoice> {
   }
 
   clearSale() {
-    PosCatalogBloc posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+    PosCatalogBloc posCatalogBloc =
+        AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
       currentAmount = 0;
       _invoiceDescriptionController.text = "";

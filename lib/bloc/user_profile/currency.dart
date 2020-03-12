@@ -6,16 +6,16 @@ import 'package:intl/number_symbols_data.dart';
 enum CurrencyID { BTC, SAT }
 
 class Currency extends Object {
-  final String symbol;
+  final String tickerSymbol;
   static const Currency BTC = Currency._internal("BTC");
   static const Currency SAT = Currency._internal("SAT");
   static final List<Currency> currencies = List.unmodifiable([BTC, SAT]);
 
-  const Currency._internal(this.symbol);
+  const Currency._internal(this.tickerSymbol);
 
-  factory Currency.fromSymbol(String symbol) {
+  factory Currency.fromTickerSymbol(String tickerSymbol) {
     return currencies.firstWhere(
-        (c) => c.symbol.toUpperCase() == symbol.toUpperCase(),
+        (c) => c.tickerSymbol.toUpperCase() == tickerSymbol.toUpperCase(),
         orElse: () => null);
   }
 
@@ -23,10 +23,10 @@ class Currency extends Object {
     Int64 sat, {
     includeDisplayName = true,
     removeTrailingZeros = false,
-    userInput = false,    
+    userInput = false,
   }) =>
       _CurrencyFormatter().format(sat, this,
-          addCurrencySuffix: includeDisplayName,          
+          addCurrencySuffix: includeDisplayName,
           removeTrailingZeros: removeTrailingZeros,
           userInput: userInput);
 
@@ -34,7 +34,19 @@ class Currency extends Object {
 
   Int64 toSats(double amount) => _CurrencyFormatter().toSats(amount, this);
 
-  String get displayName => symbol.toLowerCase() == "sat" ? "sats" : symbol;
+  String get displayName =>
+      tickerSymbol.toLowerCase() == "sat" ? "sats" : tickerSymbol;
+
+  String get symbol {
+    switch (this.tickerSymbol) {
+      case "BTC":
+        return "₿";
+      case "SAT":
+        return "S";
+      default:
+        return "₿";
+    }
+  }
 }
 
 class _CurrencyFormatter {
@@ -85,8 +97,7 @@ class _CurrencyFormatter {
         break;
     }
     if (addCurrencySuffix) {
-      formattedAmount +=
-          ' ${currency.displayName}';
+      formattedAmount += ' ${currency.displayName}';
     }
 
     if (userInput) {
