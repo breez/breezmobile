@@ -6,9 +6,11 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import 'edit_item_page.dart';
 import 'item_avatar.dart';
 
 class CatalogItem extends StatelessWidget {
@@ -26,8 +28,18 @@ class CatalogItem extends StatelessWidget {
     return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
       Slidable(
         actionPane: SlidableDrawerActionPane(),
-        actionExtentRatio: 0.25,
+        actionExtentRatio: 0.20,
         secondaryActions: <Widget>[
+          IconSlideAction(
+            foregroundColor: Colors.white,
+            color: Theme.of(context).primaryColorLight,
+            icon: Icons.edit,
+            onTap: () {
+              Navigator.of(context).push(FadeInRoute(
+                  builder: (_) =>
+                      EditItemPage(_itemInfo, accountModel, posCatalogBloc)));
+            },
+          ),
           IconSlideAction(
             foregroundColor: Colors.white,
             color: Theme.of(context).primaryColorLight,
