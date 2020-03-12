@@ -6,7 +6,6 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -123,13 +122,5 @@ class CatalogItem extends StatelessWidget {
     var formatter =
         CurrencyWrapper.fromShortName(_itemInfo.currency, accountModel);
     return formatter.format(_itemInfo.price, removeTrailingZeros: true);
-  }
-
-  Int64 _itemPriceInSat() {
-    return Currency.fromTickerSymbol(_itemInfo.currency) != null
-        ? Currency.fromTickerSymbol(_itemInfo.currency).toSats(_itemInfo.price)
-        : accountModel
-            .getFiatCurrencyByShortName(_itemInfo.currency)
-            .fiatToSat(_itemInfo.price);
   }
 }
