@@ -14,6 +14,8 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../currency_wrapper.dart';
+
 class ItemPage extends StatefulWidget {
   final Item item;
   final AccountModel accountModel;
@@ -36,12 +38,9 @@ class ItemPageState extends State<ItemPage> {
   TextEditingController _skuController = TextEditingController();
   AccountBloc _accountBloc;
   bool _isInit = false;
-  bool _isFiat = false;
-  Currency _selectedCurrency = Currency.BTC;
-  FiatConversion _selectedFiatCurrency;
-  String currency;
-  String _titlePrefix = "Add";
   bool _inEditMode = false;
+  String _titlePrefix = "Add";
+  CurrencyWrapper _selectedCurrency = CurrencyWrapper.fromBTC(Currency.BTC);
 
   @override
   void initState() {
@@ -58,12 +57,8 @@ class ItemPageState extends State<ItemPage> {
   }
 
   _getCurrency() {
-    Currency currency = Currency.fromTickerSymbol(widget.item.currency);
-    _isFiat = (currency == null);
-    _selectedFiatCurrency = _isFiat
-        ? widget.accountModel.getFiatCurrencyByShortName(widget.item.currency)
-        : null;
-    _selectedCurrency = !_isFiat ? currency : null;
+    _selectedCurrency = CurrencyWrapper.fromShortName(
+        widget.item.currency, widget.accountModel);
     _priceController.text = _formattedPrice(widget.item.price);
   }
 
@@ -124,25 +119,19 @@ class ItemPageState extends State<ItemPage> {
                           child: TextFormField(
                               keyboardType: TextInputType.numberWithOptions(
                                   decimal: true),
-                              inputFormatters: _isFiat
+                              inputFormatters: _selectedCurrency.chargeSuffix ==
+                                      "BTC"
                                   ? [
                                       WhitelistingTextInputFormatter(
-                                          _selectedFiatCurrency.currencyData
-                                                      .fractionSize ==
-                                                  0
+                                          RegExp("^\\d+\\.?\\d{0,8}"))
+                                    ]
+                                  : [
+                                      WhitelistingTextInputFormatter(
+                                          _selectedCurrency.fractionSize == 0
                                               ? RegExp(r'\d+')
                                               : RegExp(
-                                                  "^\\d+\\.?\\d{0,${_selectedFiatCurrency.currencyData.fractionSize ?? 2}}"))
-                                    ]
-                                  : _selectedCurrency == Currency.BTC
-                                      ? [
-                                          WhitelistingTextInputFormatter(
-                                              RegExp("^\\d+\\.?\\d{0,8}"))
-                                        ]
-                                      : [
-                                          WhitelistingTextInputFormatter
-                                              .digitsOnly
-                                        ],
+                                                  "^\\d+\\.?\\d{0,${_selectedCurrency.fractionSize ?? 2}}"))
+                                    ],
                               controller: _priceController,
                               decoration: InputDecoration(
                                   labelText: "Item Price",
@@ -183,7 +172,8 @@ class ItemPageState extends State<ItemPage> {
                                                     EdgeInsets.symmetric(
                                                         vertical: 10.6),
                                               ),
-                                              value: _currencySymbol(),
+                                              value:
+                                                  _selectedCurrency.shortName,
                                               onChanged: (value) =>
                                                   _changeCurrency(
                                                       account, value),
@@ -247,19 +237,9 @@ class ItemPageState extends State<ItemPage> {
     );
   }
 
-  String _currencySymbol() {
-    return _isFiat
-        ? _selectedFiatCurrency.currencyData.shortName
-        : _selectedCurrency.tickerSymbol;
-  }
-
   _changeCurrency(AccountModel accountModel, value) {
     setState(() {
-      Currency currency = Currency.fromTickerSymbol(value);
-      _isFiat = (currency == null);
-      _selectedFiatCurrency =
-          _isFiat ? accountModel.getFiatCurrencyByShortName(value) : null;
-      _selectedCurrency = !_isFiat ? currency : null;
+      _selectedCurrency = CurrencyWrapper.fromShortName(value, accountModel);
       if (_priceController.text.isNotEmpty) {
         _priceController.text =
             _formattedPrice(double.parse(_priceController.text));
@@ -268,12 +248,8 @@ class ItemPageState extends State<ItemPage> {
   }
 
   String _formattedPrice(double price) {
-    return _isFiat
-        ? _selectedFiatCurrency.formatFiat(price, addCurrencyPrefix: false)
-        : _selectedCurrency.format(_selectedCurrency.toSats(price),
-            removeTrailingZeros: true,
-            includeDisplayName: false,
-            userInput: true);
+    return _selectedCurrency.format(price,
+        userInput: true, removeTrailingZeros: true);
   }
 
   Widget _buildScaffold(Widget body, [List<Widget> actions]) {
@@ -302,7 +278,7 @@ class ItemPageState extends State<ItemPage> {
                   Item(
                     id: widget.item.id,
                     name: _nameController.text.trimRight(),
-                    currency: _currencySymbol(),
+                    currency: _selectedCurrency.shortName,
                     price: double.parse(
                         _formattedPrice(double.parse(_priceController.text))),
                     sku: _skuController.text,
@@ -316,7 +292,7 @@ class ItemPageState extends State<ItemPage> {
                 AddItem addItem = AddItem(
                   Item(
                     name: _nameController.text.trimRight(),
-                    currency: _currencySymbol(),
+                    currency: _selectedCurrency.shortName,
                     price: double.parse(
                         _formattedPrice(double.parse(_priceController.text))),
                     sku: _skuController.text,
