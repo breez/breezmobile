@@ -30,6 +30,8 @@ class CurrencyWrapper {
 
   String get shortName => btc?.tickerSymbol ?? fiat.currencyData.shortName;
 
+  String get symbol => btc?.symbol ?? fiat.currencyData.symbol;
+
   String get chargeSuffix => btc?.displayName ?? fiat.currencyData.shortName;
 
   int get fractionSize {

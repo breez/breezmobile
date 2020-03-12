@@ -95,15 +95,8 @@ class CatalogItem extends StatelessWidget {
   }
 
   String _getSymbol() {
-    var currency = Currency.fromTickerSymbol(_itemInfo.currency);
-    if (currency != null) {
-      return currency.symbol;
-    } else {
-      return accountModel
-          .getFiatCurrencyByShortName(_itemInfo.currency)
-          .currencyData
-          .symbol;
-    }
+    return CurrencyWrapper.fromShortName(_itemInfo.currency, accountModel)
+        .symbol;
   }
 
   String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
