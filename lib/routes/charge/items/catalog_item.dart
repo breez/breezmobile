@@ -75,7 +75,12 @@ class CatalogItem extends StatelessWidget {
                         text: TextSpan(
                           style: theme.transactionAmountStyle,
                           children: <InlineSpan>[
-                            _buildCurrencySymbol(),
+                            TextSpan(
+                              text: _getSymbol(),
+                              /*style: _itemInfo.currency == "SAT"
+                                  ? TextStyle(fontSize: 13.4, fontFamily: 'SAT')
+                                  : null,*/
+                            ),
                             TextSpan(
                               text: _formattedPrice(), // Price
                             ),
@@ -101,33 +106,9 @@ class CatalogItem extends StatelessWidget {
     ]);
   }
 
-  InlineSpan _buildCurrencySymbol() {
-    return _itemInfo.currency == "SAT"
-        ? WidgetSpan(
-            child: Container(
-              height: 20,
-              child: Align(
-                child: Text(_getSymbol(), // Icon
-                    style: TextStyle(fontSize: 13.4, fontFamily: 'SAT')),
-                alignment: Alignment.center,
-              ),
-            ),
-          )
-        : TextSpan(
-            text: _getSymbol(), // Icon
-          );
-  }
-
   String _getSymbol() {
-    var currency = Currency.fromTickerSymbol(_itemInfo.currency);
-    if (currency != null) {
-      return currency.symbol;
-    } else {
-      return accountModel
-          .getFiatCurrencyByShortName(_itemInfo.currency)
-          .currencyData
-          .symbol;
-    }
+    return CurrencyWrapper.fromShortName(_itemInfo.currency, accountModel)
+        .symbol;
   }
 
   String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
