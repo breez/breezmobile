@@ -14,18 +14,18 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CreateItemPage extends StatefulWidget {
+class AddItemPage extends StatefulWidget {
   final PosCatalogBloc _posCatalogBloc;
 
-  CreateItemPage(this._posCatalogBloc);
+  AddItemPage(this._posCatalogBloc);
 
   @override
   State<StatefulWidget> createState() {
-    return CreateItemPageState();
+    return AddItemPageState();
   }
 }
 
-class CreateItemPageState extends State<CreateItemPage> {
+class AddItemPageState extends State<AddItemPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _formKey = GlobalKey<FormState>();
