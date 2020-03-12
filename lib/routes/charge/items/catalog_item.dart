@@ -59,7 +59,7 @@ class CatalogItem extends StatelessWidget {
             title: Text(
               _itemInfo.name,
               style: theme.transactionTitleStyle
-                  .copyWith(fontWeight: FontWeight.bold),
+                  .copyWith(fontSize: 16.4, fontWeight: FontWeight.bold),
               overflow: TextOverflow.ellipsis,
             ),
             trailing: Column(
