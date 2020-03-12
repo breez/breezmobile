@@ -31,6 +31,7 @@ class CreateItemPageState extends State<CreateItemPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
+  TextEditingController _skuController = TextEditingController();
   AccountBloc _accountBloc;
   bool _isInit = false;
   bool _isFiat = false;
@@ -71,17 +72,19 @@ class CreateItemPageState extends State<CreateItemPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TextFormField(
-                      textCapitalization: TextCapitalization.words,
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                          labelText: "Item Name",
-                          hintText: "Enter an item name",
-                          border: UnderlineInputBorder()),
-                      validator: (value) {
-                        if (value.length == 0) {
-                          return "Item Name is required";
-                        }
-                      }),
+                    textCapitalization: TextCapitalization.words,
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                        labelText: "Item Name",
+                        hintText: "Enter an item name",
+                        border: UnderlineInputBorder()),
+                    style: theme.FieldTextStyle.textStyle,
+                    validator: (value) {
+                      if (value.length == 0) {
+                        return "Item Name is required";
+                      }
+                    },
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Row(
@@ -117,6 +120,7 @@ class CreateItemPageState extends State<CreateItemPage> {
                                   labelText: "Item Price",
                                   hintText: "Enter an item price",
                                   border: UnderlineInputBorder()),
+                              style: theme.FieldTextStyle.textStyle,
                               validator: (value) {
                                 if (value.length == 0) {
                                   return "Item Price is required";
@@ -198,6 +202,14 @@ class CreateItemPageState extends State<CreateItemPage> {
                       ],
                     ),
                   ),
+                  TextFormField(
+                    controller: _skuController,
+                    decoration: InputDecoration(
+                        labelText: "Item SKU",
+                        hintText: "Enter a SKU",
+                        border: UnderlineInputBorder()),
+                    style: theme.FieldTextStyle.textStyle,
+                  ),
                 ],
               ),
             ),
@@ -263,6 +275,7 @@ class CreateItemPageState extends State<CreateItemPage> {
                   name: _nameController.text.trimRight(),
                   currency: _currencySymbol(),
                   price: double.parse(_formattedPrice()),
+                  sku: _skuController.text,
                 ),
               );
               widget._posCatalogBloc.actionsSink.add(addItem);
