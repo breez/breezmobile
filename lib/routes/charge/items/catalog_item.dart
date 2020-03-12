@@ -2,7 +2,6 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
@@ -48,7 +47,7 @@ class CatalogItem extends StatelessWidget {
             title: Text(
               _itemInfo.name,
               style: theme.transactionTitleStyle
-                  .copyWith(fontWeight: FontWeight.bold),
+                  .copyWith(fontSize: 16.4, fontWeight: FontWeight.bold),
               overflow: TextOverflow.ellipsis,
             ),
             trailing: Column(
