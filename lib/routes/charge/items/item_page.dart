@@ -14,18 +14,20 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class AddItemPage extends StatefulWidget {
+class ItemPage extends StatefulWidget {
+  final Item item;
+  final AccountModel accountModel;
   final PosCatalogBloc _posCatalogBloc;
 
-  AddItemPage(this._posCatalogBloc);
+  ItemPage(this._posCatalogBloc, {this.item, this.accountModel});
 
   @override
   State<StatefulWidget> createState() {
-    return AddItemPageState();
+    return ItemPageState();
   }
 }
 
-class AddItemPageState extends State<AddItemPage> {
+class ItemPageState extends State<ItemPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _formKey = GlobalKey<FormState>();
@@ -35,9 +37,35 @@ class AddItemPageState extends State<AddItemPage> {
   AccountBloc _accountBloc;
   bool _isInit = false;
   bool _isFiat = false;
-  Currency _selectedCurrency = Currency.BTC;
+  Currency _selectedCurrency;
   FiatConversion _selectedFiatCurrency;
   String currency;
+  String _titlePrefix = "Add";
+  bool _inEditMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _inEditMode = widget.item != null;
+    if (_inEditMode) _initializeFields();
+  }
+
+  _initializeFields() {
+    _titlePrefix = "Edit";
+    _nameController.text = widget.item.name;
+    _skuController.text = widget.item.sku;
+    _getCurrency();
+  }
+
+  _getCurrency() {
+    Currency currency = Currency.fromTickerSymbol(widget.item.currency);
+    _isFiat = (currency == null);
+    _selectedFiatCurrency = _isFiat
+        ? widget.accountModel.getFiatCurrencyByShortName(widget.item.currency)
+        : null;
+    _selectedCurrency = !_isFiat ? currency : null;
+    _priceController.text = _formattedPrice(widget.item.price);
+  }
 
   @override
   void didChangeDependencies() {
@@ -233,17 +261,16 @@ class AddItemPageState extends State<AddItemPage> {
           _isFiat ? accountModel.getFiatCurrencyByShortName(value) : null;
       _selectedCurrency = !_isFiat ? currency : null;
       if (_priceController.text.isNotEmpty) {
-        _priceController.text = _formattedPrice();
+        _priceController.text =
+            _formattedPrice(double.parse(_priceController.text));
       }
     });
   }
 
-  String _formattedPrice() {
+  String _formattedPrice(double price) {
     return _isFiat
-        ? _selectedFiatCurrency.formatFiat(double.parse(_priceController.text),
-            addCurrencyPrefix: false)
-        : _selectedCurrency.format(
-            _selectedCurrency.toSats(double.parse(_priceController.text)),
+        ? _selectedFiatCurrency.formatFiat(price, addCurrencyPrefix: false)
+        : _selectedCurrency.format(_selectedCurrency.toSats(price),
             removeTrailingZeros: true,
             includeDisplayName: false,
             userInput: true);
@@ -258,7 +285,7 @@ class AddItemPageState extends State<AddItemPage> {
         backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
-          "Add Item",
+          "$_titlePrefix Item",
           style: Theme.of(context).appBarTheme.textTheme.title,
         ),
         actions: actions == null ? <Widget>[] : actions,
@@ -266,22 +293,40 @@ class AddItemPageState extends State<AddItemPage> {
       ),
       body: body,
       bottomNavigationBar: SingleButtonBottomBar(
-        text: "Add Item",
+        text: "$_titlePrefix Item",
         onPressed: () {
           {
             if (_formKey.currentState.validate()) {
-              AddItem addItem = AddItem(
-                Item(
-                  name: _nameController.text.trimRight(),
-                  currency: _currencySymbol(),
-                  price: double.parse(_formattedPrice()),
-                  sku: _skuController.text,
-                ),
-              );
-              widget._posCatalogBloc.actionsSink.add(addItem);
-              addItem.future.then((_) {
-                Navigator.pop(context);
-              });
+              if (_inEditMode) {
+                UpdateItem updateItem = UpdateItem(
+                  Item(
+                    id: widget.item.id,
+                    name: _nameController.text.trimRight(),
+                    currency: _currencySymbol(),
+                    price: double.parse(
+                        _formattedPrice(double.parse(_priceController.text))),
+                    sku: _skuController.text,
+                  ),
+                );
+                widget._posCatalogBloc.actionsSink.add(updateItem);
+                updateItem.future.then((_) {
+                  Navigator.pop(context);
+                });
+              } else {
+                AddItem addItem = AddItem(
+                  Item(
+                    name: _nameController.text.trimRight(),
+                    currency: _currencySymbol(),
+                    price: double.parse(
+                        _formattedPrice(double.parse(_priceController.text))),
+                    sku: _skuController.text,
+                  ),
+                );
+                widget._posCatalogBloc.actionsSink.add(addItem);
+                addItem.future.then((_) {
+                  Navigator.pop(context);
+                });
+              }
             }
           }
         },

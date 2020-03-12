@@ -2,7 +2,6 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
@@ -10,8 +9,8 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import 'edit_item_page.dart';
 import 'item_avatar.dart';
+import 'item_page.dart';
 
 class CatalogItem extends StatelessWidget {
   final AccountModel accountModel;
@@ -36,8 +35,8 @@ class CatalogItem extends StatelessWidget {
             icon: Icons.edit,
             onTap: () {
               Navigator.of(context).push(FadeInRoute(
-                  builder: (_) =>
-                      EditItemPage(_itemInfo, accountModel, posCatalogBloc)));
+                  builder: (_) => ItemPage(posCatalogBloc,
+                      item: _itemInfo, accountModel: accountModel)));
             },
           ),
           IconSlideAction(

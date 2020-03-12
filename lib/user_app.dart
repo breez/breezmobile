@@ -22,7 +22,7 @@ import 'routes/activate_card/activate_card_page.dart';
 import 'routes/add_funds/deposit_to_btc_address_page.dart';
 import 'routes/add_funds/fastbitcoins_page.dart';
 import 'routes/add_funds/moonpay_webview.dart';
-import 'routes/charge/items/add_item_page.dart';
+import 'routes/charge/items/item_page.dart';
 import 'routes/connect_to_pay/connect_to_pay_page.dart';
 import 'routes/create_invoice/create_invoice_page.dart';
 import 'routes/dev/dev.dart';
@@ -260,7 +260,7 @@ class UserApp extends StatelessWidget {
                                     case '/add_item':
                                       return FadeInRoute(
                                         builder: (_) =>
-                                            AddItemPage(posCatalogBloc),
+                                            ItemPage(posCatalogBloc),
                                         settings: settings,
                                       );
                                     case '/transactions':
