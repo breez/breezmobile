@@ -233,31 +233,59 @@ class POSInvoiceState extends State<POSInvoice> {
                                                 child: Align(
                                                     alignment:
                                                         Alignment.centerLeft,
-                                                    child: BadgeIcon(
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        var currentSaleRoute =
+                                                            CupertinoPageRoute(
+                                                                fullscreenDialog:
+                                                                    true,
+                                                                builder: (_) =>
+                                                                    SaleView(
+                                                                      onCharge: () => onInvoiceSubmitted(
+                                                                          currentSale,
+                                                                          invoiceBloc,
+                                                                          userProfile,
+                                                                          accountModel),
+                                                                      onDeleteSale:
+                                                                          () =>
+                                                                              approveClear(currentSale),
+                                                                      useFiat:
+                                                                          _useFiat,
+                                                                    ));
+                                                        Navigator.of(context)
+                                                            .push(
+                                                                currentSaleRoute);
+                                                      },
+                                                      child: BadgeIcon(
+                                                        badgeBGColor: Theme.of(
+                                                                context)
+                                                            .primaryTextTheme
+                                                            .button
+                                                            .color,
+                                                        textColor: Colors.white,
+                                                        icon: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 8.0,
+                                                                  bottom: 8.0,
+                                                                  right: 4.0,
+                                                                  top: 20.0),
+                                                          child: Image.asset(
+                                                            "src/icon/cart.png",
+                                                            width: 24.0,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryTextTheme
+                                                                .button
+                                                                .color,
+                                                          ),
+                                                        ),
                                                         number: currentSale
                                                             .saleLines.length,
-                                                        onPress: () {
-                                                          var currentSaleRoute =
-                                                              CupertinoPageRoute(
-                                                                  fullscreenDialog:
-                                                                      true,
-                                                                  builder: (_) =>
-                                                                      SaleView(
-                                                                        useFiat:
-                                                                            _useFiat,
-                                                                      ));
-                                                          // FadeInRoute(
-                                                          //     builder: (_) =>
-                                                          //         SaleView(
-                                                          //           useFiat:
-                                                          //               _useFiat,
-                                                          //         ));
-                                                          Navigator.of(context)
-                                                              .push(
-                                                                  currentSaleRoute);
-                                                        },
-                                                        iconData: Icons
-                                                            .shopping_cart))),
+                                                        onPress: () {},
+                                                      ),
+                                                    ))),
                                             Expanded(
                                               child: Align(
                                                 alignment:

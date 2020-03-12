@@ -8,16 +8,19 @@ import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/theme_data.dart' as theme;
 
 import 'items/item_avatar.dart';
 
 class SaleView extends StatefulWidget {
   final bool useFiat;
+  final Function() onDeleteSale;
+  final Function() onCharge;
 
-  const SaleView({Key key, this.useFiat}) : super(key: key);
+  const SaleView({Key key, this.useFiat, this.onDeleteSale, this.onCharge})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -26,14 +29,16 @@ class SaleView extends StatefulWidget {
 }
 
 class SaleViewState extends State<SaleView> {
-
   StreamSubscription<Sale> _currentSaleSubscrription;
+  ScrollController _scrollController = new ScrollController();
 
-  @override void didChangeDependencies() {
+  @override
+  void didChangeDependencies() {
     if (_currentSaleSubscrription == null) {
       PosCatalogBloc posCatalogBloc =
-        AppBlocsProvider.of<PosCatalogBloc>(context);
-      _currentSaleSubscrription = posCatalogBloc.currentSaleStream.listen((sale) {
+          AppBlocsProvider.of<PosCatalogBloc>(context);
+      _currentSaleSubscrription =
+          posCatalogBloc.currentSaleStream.listen((sale) {
         if (sale.saleLines.length == 0) {
           Navigator.of(context).pop();
         }
@@ -42,12 +47,12 @@ class SaleViewState extends State<SaleView> {
     super.didChangeDependencies();
   }
 
-  @override 
+  @override
   void dispose() {
     _currentSaleSubscrription.cancel();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     PosCatalogBloc posCatalogBloc =
@@ -70,31 +75,98 @@ class SaleViewState extends State<SaleView> {
                     iconTheme: Theme.of(context).appBarTheme.iconTheme,
                     textTheme: Theme.of(context).appBarTheme.textTheme,
                     backgroundColor: Theme.of(context).canvasColor,
-                    leading: backBtn.BackButton(iconData: Icons.close),
-                    title: _TotalSaleCharge(
-                      accountModel: accModel,
-                      currentSale: currentSale,
-                      useFiat: widget.useFiat,
-                    ),
+                    leading: backBtn.BackButton(),
+                    title: Text("Current Sale"),
                     actions: <Widget>[
                       IconButton(
                         icon: Icon(
-                          Icons.note_add,
+                          Icons.delete_forever,
                           color: Theme.of(context).iconTheme.color,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          widget.onDeleteSale();
+                        },
                       )
                     ],
                     elevation: 0.0,
                   ),
-                  body: SaleLinesList(
-                      accountModel: accModel, currentSale: currentSale),
-                  bottomNavigationBar: SingleButtonBottomBar(
-                    text: "Clear Sale",
-                    onPressed: () {
-                      posCatalogBloc.actionsSink
-                          .add(SetCurrentSale(Sale(saleLines: [])));
-                    },
+                  extendBody: false,
+                  backgroundColor: Theme.of(context).backgroundColor,
+                  body: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                              color: Theme.of(context).canvasColor,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 16.0, right: 16.0, bottom: 8.0),
+                                child: TextField(
+                                  keyboardType: TextInputType.multiline,
+
+                                  maxLength: 90,
+                                  maxLengthEnforced: true,
+                                  buildCounter: (BuildContext ctx,
+                                          {int currentLength,
+                                          bool isFocused,
+                                          int maxLength}) =>
+                                      SizedBox(),
+                                  // controller:
+                                  //     _invoiceDescriptionController,
+                                  decoration: InputDecoration(
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          style: BorderStyle.solid,
+                                          color: Color(0xFFc5cedd),
+                                        ),
+                                      ),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          style: BorderStyle.solid,
+                                          color: Color(0xFFc5cedd),
+                                        ),
+                                      ),
+                                      hintText: 'Add Note',
+                                      hintStyle: TextStyle(fontSize: 14.0)),
+                                ),
+                              )),
+                          Expanded(
+                            child: SaleLinesList(
+                                scrollController: _scrollController,
+                                accountModel: accModel,
+                                currentSale: currentSale),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  bottomNavigationBar: Container(
+                    decoration: BoxDecoration(
+                      color: theme.themeId == "BLUE"
+                          ? Theme.of(context).backgroundColor
+                          : Theme.of(context).canvasColor,
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            offset: Offset(0.5, 0.5),
+                            blurRadius: 5.0),
+                        BoxShadow(color: Colors.white)
+                      ],
+                    ),
+                    //color: Theme.of(context).canvasColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(36),
+                      child: Container(
+                          child: _TotalSaleCharge(
+                        onCharge: widget.onCharge,
+                        accountModel: accModel,
+                        currentSale: currentSale,
+                        useFiat: widget.useFiat,
+                      )),
+                    ),
                   ),
                 );
               });
@@ -106,9 +178,14 @@ class _TotalSaleCharge extends StatelessWidget {
   final AccountModel accountModel;
   final Sale currentSale;
   final bool useFiat;
+  final Function() onCharge;
 
   const _TotalSaleCharge(
-      {Key key, this.accountModel, this.currentSale, this.useFiat})
+      {Key key,
+      this.accountModel,
+      this.currentSale,
+      this.useFiat,
+      this.onCharge})
       : super(key: key);
 
   @override
@@ -117,13 +194,24 @@ class _TotalSaleCharge extends StatelessWidget {
     String formattedCharge;
     if (useFiat) {
       var fiatValue = accountModel.fiatCurrency.satToFiat(totalSats);
-      formattedCharge = accountModel.fiatCurrency.formatFiat(fiatValue, allowBelowMin: true, removeTrailingZeros: true);
+      formattedCharge = accountModel.fiatCurrency.formatFiat(fiatValue,
+          allowBelowMin: true, removeTrailingZeros: true);
     } else {
-      formattedCharge = accountModel.currency.format(totalSats, removeTrailingZeros: true);
+      formattedCharge =
+          accountModel.currency.format(totalSats, removeTrailingZeros: true);
     }
-    return Text(
-      "Total: $formattedCharge",
-      style: Theme.of(context).appBarTheme.textTheme.title,
+    return RaisedButton(
+      color: Theme.of(context).primaryColorLight,
+      padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
+      child: Text(
+        "Charge $formattedCharge".toUpperCase(),
+        maxLines: 1,
+        textAlign: TextAlign.center,
+        style: theme.invoiceChargeAmountStyle,
+      ),
+      onPressed: () {
+        onCharge();
+      },
     );
   }
 }
@@ -131,45 +219,70 @@ class _TotalSaleCharge extends StatelessWidget {
 class SaleLinesList extends StatelessWidget {
   final Sale currentSale;
   final AccountModel accountModel;
+  final ScrollController scrollController;
 
-  const SaleLinesList({Key key, this.currentSale, this.accountModel})
+  const SaleLinesList(
+      {Key key, this.currentSale, this.accountModel, this.scrollController})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     PosCatalogBloc posCatalogBloc =
         AppBlocsProvider.of<PosCatalogBloc>(context);
-    return ListView.builder(
-        itemCount: currentSale.saleLines.length,
-        shrinkWrap: true,
-        primary: false,
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            children: [
-              SaleLineWidget(
-                  onDelete: (){
-                    var newSale = currentSale.copyWith(saleLines: currentSale.saleLines..removeAt(index));
-                    posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
-                  },
-                  onChangeQuantity: (int delta) {
-                    var saleLine = currentSale.saleLines[index];
-                    var newSale = currentSale.incrementQuantity(
-                        saleLine.itemID, saleLine.satConversionRate,
-                        quantity: delta);
-                    posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
-                  },
-                  accountModel: accountModel,
-                  saleLine: currentSale.saleLines[index]),
-              Divider(
-                height: 0.0,
-                color: index == currentSale.saleLines.length - 1
-                    ? Color.fromRGBO(255, 255, 255, 0.0)
-                    : Color.fromRGBO(255, 255, 255, 0.12),
-                indent: 72.0,
-              )
-            ],
-          );
-        });
+    return SingleChildScrollView(
+      child: ListView.builder(
+          itemCount: currentSale.saleLines.length,
+          shrinkWrap: true,
+          controller: scrollController,
+          //primary: false,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTileTheme(
+              textColor: theme.themeId == "BLUE"
+                  ? Theme.of(context).canvasColor
+                  : Theme.of(context).textTheme.subtitle1.color,
+              iconColor: theme.themeId == "BLUE"
+                  ? Theme.of(context).canvasColor
+                  : Theme.of(context).textTheme.subtitle1.color,
+              child: Column(children: [
+                SaleLineWidget(
+                    onDelete: () {
+                      var newSale = currentSale.copyWith(
+                          saleLines: currentSale.saleLines..removeAt(index));
+                      posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
+                    },
+                    onChangeQuantity: (int delta) {
+                      var saleLine = currentSale.saleLines[index];
+                      var saleLines = currentSale.saleLines.toList();
+                      var newQuantity = saleLine.quantity + delta;
+                      if (saleLine.quantity == 0) {
+                        saleLines.removeAt(index);
+                      } else {
+                        saleLines = saleLines.map((sl) {
+                          if (sl != saleLine) {
+                            return sl;
+                          }
+                          return sl.copywith(quantity: newQuantity);
+                        }).toList();
+                      }
+                      var newSale = currentSale.copyWith(saleLines: saleLines);
+                      posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
+                    },
+                    accountModel: accountModel,
+                    saleLine: currentSale.saleLines[index]),
+                Divider(
+                  height: 0.0,
+                  color: index == currentSale.saleLines.length - 1
+                      ? Colors.white.withOpacity(0.0)
+                      : (theme.themeId == "BLUE"
+                              ? Theme.of(context).canvasColor
+                              : Theme.of(context).textTheme.subtitle1.color)
+                          .withOpacity(0.5),
+                  indent: 72.0,
+                )
+              ]),
+            );
+          }),
+    );
   }
 }
 
@@ -181,7 +294,11 @@ class SaleLineWidget extends StatelessWidget {
   final Function() onDelete;
 
   const SaleLineWidget(
-      {Key key, this.saleLine, this.accountModel, this.onChangeQuantity, this.onDelete})
+      {Key key,
+      this.saleLine,
+      this.accountModel,
+      this.onChangeQuantity,
+      this.onDelete})
       : super(key: key);
 
   @override
@@ -192,29 +309,36 @@ class SaleLineWidget extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
       child: ListTile(
           leading: ItemAvatar(saleLine.itemImageURL),
-          title: Text(saleLine.itemName),
-          subtitle: Text(currrency.format(
-              saleLine.pricePerItem * saleLine.quantity,
-              includeCurencySuffix: true, removeTrailingZeros: true)),
-          trailing: saleLine.itemID == null
-              ? IconButton(
-                        icon: Icon(Icons.delete_forever),
-                        onPressed: () => onDelete())
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    IconButton(
-                        icon: Icon(saleLine.quantity == 1
-                            ? Icons.delete_forever
-                            : Icons.remove),
-                        onPressed: () => onChangeQuantity(-1)),
-                    Text(saleLine.quantity.toString()),
-                    IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () => onChangeQuantity(1)),
-                  ],
-                )),
+          title: Text(
+            saleLine.itemName,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(
+              currrency.symbol +
+                  currrency.format(saleLine.pricePerItem * saleLine.quantity,
+                      removeTrailingZeros: true),
+              style: TextStyle(
+                  color: ListTileTheme.of(context).textColor.withOpacity(0.5))),
+          trailing: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              IconButton(
+                  color: ListTileTheme.of(context).iconColor.withOpacity(0.5),
+                  icon: Icon(Icons.add),
+                  onPressed: () => onChangeQuantity(1)),
+              Text(saleLine.quantity.toString(),
+                  style: TextStyle(color: ListTileTheme.of(context).textColor)),
+              IconButton(
+                  color: ListTileTheme.of(context).iconColor.withOpacity(0.5),
+                  icon: Icon(saleLine.quantity == 1
+                      ? Icons.delete_outline
+                      : Icons.remove),
+                  onPressed: () => saleLine.quantity == 1
+                      ? onDelete()
+                      : onChangeQuantity(-1)),
+            ],
+          )),
     );
   }
 }

@@ -36,8 +36,7 @@ class _UnknownAvatar extends StatelessWidget {
       width: radius * 2,
       height: radius * 2,
       child: Center(
-        child: Icon(Icons.airplanemode_active,
-            size: radius * 1.5, color: Theme.of(context).accentColor),
+        child: Icon(Icons.airplanemode_active, size: radius * 1.5),
       ),
     );
   }
