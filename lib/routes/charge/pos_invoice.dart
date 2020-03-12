@@ -43,6 +43,8 @@ class POSInvoice extends StatefulWidget {
 
 class POSInvoiceState extends State<POSInvoice> {
   TextEditingController _invoiceDescriptionController = TextEditingController();
+  TextEditingController _itemFilterController = TextEditingController();
+
   double itemHeight;
   double itemWidth;
 
@@ -56,6 +58,7 @@ class POSInvoiceState extends State<POSInvoice> {
 
   @override
   void didChangeDependencies() {
+    _itemFilterController.addListener(() => setState(() {}));
     itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
     itemWidth = (MediaQuery.of(context).size.width) / 2;
     if (accountSubscription == null) {
@@ -526,14 +529,21 @@ class POSInvoiceState extends State<POSInvoice> {
         primary: false,
         shrinkWrap: true,
         children: <Widget>[
-/*        TextField(
-            onChanged: (value) {},
+          TextField(
+            controller: _itemFilterController,
             enabled: catalogItems != null,
             decoration: InputDecoration(
                 hintText: "Search Items",
-                prefixIcon: Icon(Icons.search),
+                contentPadding: const EdgeInsets.only(top: 16, left: 16),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    Icons.search,
+                    size: 20,
+                  ),
+                  padding: EdgeInsets.only(right: 24, top: 4),
+                ),
                 border: UnderlineInputBorder()),
-          ),*/
+          ),
           catalogItems?.length == 0
               ? Padding(
                   padding: const EdgeInsets.only(
@@ -550,7 +560,8 @@ class POSInvoiceState extends State<POSInvoice> {
                   posCatalogBloc,
                   catalogItems,
                   (item) =>
-                      _addItem(posCatalogBloc, currentSale, accountModel, item))
+                      _addItem(posCatalogBloc, currentSale, accountModel, item),
+                  _itemFilterController.text)
         ],
       ),
     );
