@@ -63,7 +63,12 @@ class CatalogItem extends StatelessWidget {
                         text: TextSpan(
                           style: theme.transactionAmountStyle,
                           children: <InlineSpan>[
-                            _buildCurrencySymbol(),
+                            TextSpan(
+                              text: _getSymbol(),
+                              /*style: _itemInfo.currency == "SAT"
+                                  ? TextStyle(fontSize: 13.4, fontFamily: 'SAT')
+                                  : null,*/
+                            ),
                             TextSpan(
                               text: _formattedPrice(), // Price
                             ),
@@ -87,23 +92,6 @@ class CatalogItem extends StatelessWidget {
         indent: 72.0,
       ),
     ]);
-  }
-
-  InlineSpan _buildCurrencySymbol() {
-    return _itemInfo.currency == "SAT"
-        ? WidgetSpan(
-            child: Container(
-              height: 20,
-              child: Align(
-                child: Text(_getSymbol(), // Icon
-                    style: TextStyle(fontSize: 13.4, fontFamily: 'SAT')),
-                alignment: Alignment.center,
-              ),
-            ),
-          )
-        : TextSpan(
-            text: _getSymbol(), // Icon
-          );
   }
 
   String _getSymbol() {
