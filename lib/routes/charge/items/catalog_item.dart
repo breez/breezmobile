@@ -60,7 +60,7 @@ class CatalogItem extends StatelessWidget {
                       RichText(
                         text: TextSpan(
                           style: theme.transactionAmountStyle
-                              .copyWith(fontSize: 15.5),
+                              .copyWith(fontSize: 15.5, fontFamily: 'IBMPlexSans'),
                           children: <InlineSpan>[
                             TextSpan(
                               text: _getSymbol(),
