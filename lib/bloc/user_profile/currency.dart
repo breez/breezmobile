@@ -42,7 +42,7 @@ class Currency extends Object {
       case "BTC":
         return "₿";
       case "SAT":
-        return "S";
+        return "Ş";
       default:
         return "₿";
     }

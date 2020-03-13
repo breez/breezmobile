@@ -46,8 +46,7 @@ class CatalogItem extends StatelessWidget {
             leading: ItemAvatar(_itemInfo.imageURL),
             title: Text(
               _itemInfo.name,
-              style: theme.transactionTitleStyle
-                  .copyWith(fontSize: 16.4, fontWeight: FontWeight.bold),
+              style: theme.transactionTitleStyle.copyWith(fontSize: 15.5),
               overflow: TextOverflow.ellipsis,
             ),
             trailing: Column(
@@ -60,7 +59,8 @@ class CatalogItem extends StatelessWidget {
                     children: <Widget>[
                       RichText(
                         text: TextSpan(
-                          style: theme.transactionAmountStyle,
+                          style: theme.transactionAmountStyle
+                              .copyWith(fontSize: 15.5),
                           children: <InlineSpan>[
                             TextSpan(
                               text: _getSymbol(),
