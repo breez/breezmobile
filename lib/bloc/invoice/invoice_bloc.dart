@@ -1,19 +1,19 @@
 import 'dart:async';
+
 import 'package:breez/bloc/invoice/actions.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/services/injector.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/device.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/services/lightning_links.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/bip21.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:breez/services/lightning_links.dart';
-import 'package:breez/services/device.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../async_actions_handler.dart';
 
@@ -60,7 +60,7 @@ class InvoiceBloc with AsyncActionsHandler {
         notificationsService, _breezLib, nfc, lightningLinks, device);
     _listenPaidInvoices(_breezLib);
     registerAsyncHandlers({
-      NewInvoice: _newInvoice,      
+      NewInvoice: _newInvoice,
     });
     listenActions();
   }
@@ -100,12 +100,11 @@ class InvoiceBloc with AsyncActionsHandler {
 
   Future _newInvoice(NewInvoice action) async {
     var invoiceRequest = action.request;
-    var payReq = await _breezLib
-          .addInvoice(invoiceRequest.amount,
-              payeeName: invoiceRequest.payeeName,
-              payeeImageURL: invoiceRequest.logo,
-              description: invoiceRequest.description,
-              expiry: invoiceRequest.expiry);
+    var payReq = await _breezLib.addInvoice(invoiceRequest.amount,
+        payeeName: invoiceRequest.payeeName,
+        payeeImageURL: invoiceRequest.logo,
+        description: invoiceRequest.description,
+        expiry: invoiceRequest.expiry);
     action.resolve(payReq);
   }
 

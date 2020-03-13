@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'package:rxdart/rxdart.dart';
+
 import 'package:breez/bloc/status_indicator/status_update_model.dart';
+import 'package:rxdart/rxdart.dart';
 
 class StatusIndicatorBloc {
   final _statusUpdateController = BehaviorSubject<StatusUpdateModel>();

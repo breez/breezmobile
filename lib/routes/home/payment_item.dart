@@ -1,11 +1,12 @@
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/date.dart';
+import 'package:breez/widgets/payment_details_dialog.dart';
+import 'package:flutter/material.dart';
+
+import 'flip_transition.dart';
 import 'payment_item_avatar.dart';
 import 'success_avatar.dart';
-import 'package:breez/utils/date.dart';
-import 'package:flutter/material.dart';
-import 'flip_transition.dart';
-import 'package:breez/widgets/payment_details_dialog.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
@@ -57,8 +58,8 @@ class PaymentItem extends StatelessWidget {
                                 _paymentInfo.type == PaymentType.CLOSED_CHANNEL
                             ? "- "
                             : "+ ") +
-                        _paymentInfo.currency
-                            .format(_paymentInfo.amount, includeDisplayName: false),
+                        _paymentInfo.currency.format(_paymentInfo.amount,
+                            includeDisplayName: false),
                     style: theme.transactionAmountStyle,
                   )
                 ]),

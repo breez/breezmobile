@@ -172,15 +172,17 @@ class Sale implements DBItem {
     return this.copyWith(saleLines: saleLines);
   }
 
-  Sale incrementQuantity(int itemID, double satConversionRate, {int quantity = 1}) {
+  Sale incrementQuantity(int itemID, double satConversionRate,
+      {int quantity = 1}) {
     var saleLines = this.saleLines.map((sl) {
-      if (sl.itemID == itemID) {  
+      if (sl.itemID == itemID) {
         return sl.copywith(quantity: sl.quantity + quantity);
       }
       return sl;
     }).toList();
 
-    return this.copyWith(saleLines: saleLines.where((s) => s.quantity > 0).toList());
+    return this
+        .copyWith(saleLines: saleLines.where((s) => s.quantity > 0).toList());
   }
 
   Sale addCustomItem(double price, String currency, double satConversionRate) {

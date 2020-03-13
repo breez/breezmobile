@@ -7,7 +7,6 @@ import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
-import 'backup_phrase/backup_phrase_warning_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/min_font_size.dart';
@@ -19,6 +18,7 @@ import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 
 import 'backup_phrase/backup_phrase_confirmation_page.dart';
+import 'backup_phrase/backup_phrase_warning_dialog.dart';
 import 'change_pin_code.dart';
 import 'lock_screen.dart';
 

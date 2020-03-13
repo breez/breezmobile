@@ -18,7 +18,6 @@ import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -139,7 +138,7 @@ class AccountBloc {
       CancelPaymentRequest: _cancelPaymentRequest,
       ChangeSyncUIState: _collapseSyncUI,
       FetchRates: _fetchRates,
-      ResetChainService: _handleResetChainService,      
+      ResetChainService: _handleResetChainService,
       ExportPayments: _exportPaymentsAction,
       FetchPayments: _handleFetchPayments,
       SweepAllCoinsTxsAction: _sweepAllCoinsTransactions,

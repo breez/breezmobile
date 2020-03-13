@@ -1,4 +1,3 @@
-import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:flutter/foundation.dart';
 
 class BackupProvider {

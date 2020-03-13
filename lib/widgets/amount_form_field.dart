@@ -1,12 +1,12 @@
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/currency_converter_dialog.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
-import 'package:fixnum/fixnum.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/widgets/currency_converter_dialog.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter/widgets.dart';
 
 class AmountFormField extends TextFormField {
   final BuildContext context;

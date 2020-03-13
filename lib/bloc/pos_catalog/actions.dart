@@ -1,4 +1,3 @@
-
 import 'package:breez/bloc/async_action.dart';
 
 import 'model.dart';

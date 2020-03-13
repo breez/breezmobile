@@ -9,8 +9,7 @@ class ItemsList extends StatelessWidget {
   final AccountModel accountModel;
   final PosCatalogBloc posCatalogBloc;
   final List<Item> _items;
-  final Function(Item item)
-      _addItem;
+  final Function(Item item) _addItem;
 
   ItemsList(this.accountModel, this.posCatalogBloc, this._items, this._addItem);
 

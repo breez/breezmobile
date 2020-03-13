@@ -306,7 +306,9 @@ class ShareablePaymentRow extends StatelessWidget {
                               IconData(0xe90b, fontFamily: 'icomoon'),
                             ),
                             onPressed: () {
-                              ServiceInjector().device.setClipboardText(sharedValue);
+                              ServiceInjector()
+                                  .device
+                                  .setClipboardText(sharedValue);
                               Navigator.pop(context);
                               showFlushbar(context,
                                   message:

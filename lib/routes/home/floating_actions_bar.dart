@@ -199,7 +199,7 @@ class FloatingActionsBar extends StatelessWidget {
           context,
           "Link Error",
           Text("Failed to process link: " + err.toString(),
-              style: Theme.of(context).dialogTheme.contentTextStyle));      
+              style: Theme.of(context).dialogTheme.contentTextStyle));
     });
   }
 
@@ -391,8 +391,8 @@ class _Action extends StatelessWidget {
         child: Text(
           text,
           textAlign: TextAlign.center,
-          style: theme.addFundsBtnStyle
-              .copyWith(fontSize: 12.3 / MediaQuery.of(context).textScaleFactor),
+          style: theme.addFundsBtnStyle.copyWith(
+              fontSize: 12.3 / MediaQuery.of(context).textScaleFactor),
           maxLines: 1,
         ),
       ),

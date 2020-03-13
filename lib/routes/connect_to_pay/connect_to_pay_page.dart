@@ -5,14 +5,15 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
-import 'payee_session_widget.dart';
-import 'payer_session_widget.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+
+import 'payee_session_widget.dart';
+import 'payer_session_widget.dart';
 
 class ConnectToPayPage extends StatefulWidget {
   final RemoteSession _currentSession;

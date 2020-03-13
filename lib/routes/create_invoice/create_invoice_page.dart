@@ -11,7 +11,6 @@ import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart';
-import 'qr_code_dialog.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -27,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'lnurl_withdraw_dialog.dart';
+import 'qr_code_dialog.dart';
 
 class CreateInvoicePage extends StatefulWidget {
   final WithdrawFetchResponse lnurlWithdraw;
@@ -103,7 +103,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     return Scaffold(
       key: _scaffoldKey,
       bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40.0,),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + 40.0,
+          ),
           child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
             SizedBox(
               height: 48.0,

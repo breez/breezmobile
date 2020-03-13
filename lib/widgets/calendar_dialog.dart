@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';

@@ -2,10 +2,10 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class ConditionalDeposit extends StatelessWidget {
   final Widget enabledChild;
@@ -74,7 +74,9 @@ class ConditionalDeposit extends StatelessWidget {
                                 linkAddress:
                                     "https://blockstream.info/tx/$unconfirmedTxID",
                                 onCopy: () {
-                                  ServiceInjector().device.setClipboardText(unconfirmedTxID);
+                                  ServiceInjector()
+                                      .device
+                                      .setClipboardText(unconfirmedTxID);
                                   showFlushbar(context,
                                       message:
                                           "Transaction ID was copied to your clipboard.",

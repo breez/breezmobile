@@ -1,11 +1,11 @@
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class CheckVersionHandler {
   final BuildContext context;

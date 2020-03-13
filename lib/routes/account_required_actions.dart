@@ -8,9 +8,6 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'funds_over_limit_dialog.dart';
-import 'lsp/select_lsp_page.dart';
-import 'select_provider_error_dialog.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/rotator.dart';
@@ -20,6 +17,9 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'backup_in_progress_dialog.dart';
+import 'funds_over_limit_dialog.dart';
+import 'lsp/select_lsp_page.dart';
+import 'select_provider_error_dialog.dart';
 import 'transfer_funds_in_progress_dialog.dart';
 
 class AccountRequiredActionsIndicator extends StatefulWidget {

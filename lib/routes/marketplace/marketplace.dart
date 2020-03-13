@@ -2,9 +2,10 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
-import 'vendor_row.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
+
+import 'vendor_row.dart';
 
 class MarketplacePage extends StatefulWidget {
   @override

@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:breez/bloc/connect_pay/firebase_session_channel.dart';
 import 'package:breez/bloc/connect_pay/online_status_updater.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -12,10 +14,10 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
-import 'package:rxdart/rxdart.dart';
-import 'connect_pay_model.dart';
-import 'package:breez/logger.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:rxdart/rxdart.dart';
+
+import 'connect_pay_model.dart';
 
 /*
 A concrete implementation of RemoteSession from the payer side.

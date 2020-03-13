@@ -1,7 +1,7 @@
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 void showProvierErrorDialog(
     BuildContext context, String error, Function() onSelect) {

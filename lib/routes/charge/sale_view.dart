@@ -7,10 +7,10 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/theme_data.dart' as theme;
 
 import 'items/item_avatar.dart';
 

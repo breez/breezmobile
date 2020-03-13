@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:rxdart/rxdart.dart';

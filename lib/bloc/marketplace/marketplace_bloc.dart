@@ -1,8 +1,9 @@
 import 'dart:async';
+
+import 'package:breez/bloc/marketplace/vendor_model.dart';
+import 'package:flutter/services.dart';
 import "package:ini/ini.dart";
 import 'package:rxdart/rxdart.dart';
-import 'package:flutter/services.dart';
-import 'package:breez/bloc/marketplace/vendor_model.dart';
 
 class MarketplaceBloc {
   final _vendorController = BehaviorSubject<List<VendorModel>>();

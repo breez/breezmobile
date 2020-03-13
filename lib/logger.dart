@@ -1,12 +1,12 @@
 library breez.logger;
 
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/injector.dart';
-import 'package:logging/logging.dart';
-import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:io';
 
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/injector.dart';
+import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
 import 'package:share_extend/share_extend.dart';
 
 final Logger log = Logger('Breez');

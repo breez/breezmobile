@@ -4,10 +4,11 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'sweep_all_coins_confirmation.dart';
-import 'withdraw_funds_page.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
+
+import 'sweep_all_coins_confirmation.dart';
+import 'withdraw_funds_page.dart';
 
 class UnexpectedFunds extends StatefulWidget {
   @override
@@ -53,7 +54,8 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                 children: <Widget>[
                   WithdrawFundsPage(
                       title: "Unexpected Funds",
-                      optionalMessage: "Breez found unexpected funds in its underlying wallet (probably due to a closed channel). It is highly recommended you send these fund to a BTC address as soon as possible.",
+                      optionalMessage:
+                          "Breez found unexpected funds in its underlying wallet (probably due to a closed channel). It is highly recommended you send these fund to a BTC address as soon as possible.",
                       policy: WithdrawFundsPolicy(
                           accSnapshot.data.walletBalance,
                           accSnapshot.data.walletBalance,
@@ -80,7 +82,8 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                           onConfirm: (txDetails) {
                             var action = PublishTransaction(txDetails.txBytes);
                             accountBloc.userActionsSink.add(action);
-                            return action.future.then((value) => Navigator.of(context).pop());                            
+                            return action.future
+                                .then((value) => Navigator.of(context).pop());
                           },
                           onPrevious: () {
                             _pageController.previousPage(

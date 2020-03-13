@@ -2,8 +2,9 @@ import 'dart:math';
 
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import '../status_indicator.dart';
 import 'package:flutter/material.dart';
+
+import '../status_indicator.dart';
 
 class WalletDashboard extends StatefulWidget {
   final AccountModel _accountModel;

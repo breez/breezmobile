@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/utils/date.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:breez/logger.dart';
 
 class CsvExporter {
   final List paymentList;
