@@ -459,5 +459,5 @@ extension CustomStyles on TextTheme {
       color: BreezColors.white[500],
       letterSpacing: 0.5,
       height: 1.28,
-      fontSize: 15.5);
+      fontSize: 14.4);
 }
