@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:badges/badges.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -19,7 +20,6 @@ import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/badge.dart';
 import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -173,53 +173,6 @@ class POSInvoiceState extends State<POSInvoice> {
                                             ),
                                           ),
                                         ),
-                                        /*Container(
-                                        height: 80.0,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 16.0, right: 16.0, top: 0.0),
-                                          child: TextField(
-                                            textInputAction: TextInputAction.done,
-                                            keyboardType: TextInputType.multiline,
-                                            maxLines: null,
-                                            enabled: true,
-                                            textAlign: TextAlign.left,
-                                            maxLength: 90,
-                                            maxLengthEnforced: true,
-                                            controller:
-                                                _invoiceDescriptionController,
-                                            decoration: InputDecoration(
-                                              focusedBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  style: BorderStyle.solid,
-                                                  color: Color(0xFFc5cedd),
-                                                ),
-                                              ),
-                                              enabledBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  style: BorderStyle.solid,
-                                                  color: Color(0xFFc5cedd),
-                                                ),
-                                              ),
-                                              counterStyle: Theme.of(context)
-                                                  .primaryTextTheme
-                                                  .caption,
-                                              hintText: 'Add Note',
-                                              hintStyle: theme.invoiceMemoStyle
-                                                  .copyWith(
-                                                      color: Theme.of(context)
-                                                          .primaryTextTheme
-                                                          .display1
-                                                          .color),
-                                            ),
-                                            style: theme.invoiceMemoStyle.copyWith(
-                                                color: Theme.of(context)
-                                                    .primaryTextTheme
-                                                    .display1
-                                                    .color),
-                                          ),
-                                        ),
-                                      ),*/
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(bottom: 24),
@@ -234,58 +187,74 @@ class POSInvoiceState extends State<POSInvoice> {
                                                     alignment:
                                                         Alignment.centerLeft,
                                                     child: GestureDetector(
-                                                      onTap: () {
-                                                        var currentSaleRoute =
-                                                            CupertinoPageRoute(
-                                                                fullscreenDialog:
-                                                                    true,
-                                                                builder: (_) =>
-                                                                    SaleView(
-                                                                      onCharge: () => onInvoiceSubmitted(
-                                                                          currentSale,
-                                                                          invoiceBloc,
-                                                                          userProfile,
-                                                                          accountModel),
-                                                                      onDeleteSale:
-                                                                          () =>
-                                                                              approveClear(currentSale),
-                                                                      useFiat:
-                                                                          _useFiat,
-                                                                    ));
-                                                        Navigator.of(context)
-                                                            .push(
-                                                                currentSaleRoute);
-                                                      },
-                                                      child: BadgeIcon(
-                                                        badgeBGColor: Theme.of(
-                                                                context)
-                                                            .primaryTextTheme
-                                                            .button
-                                                            .color,
-                                                        textColor: Colors.white,
-                                                        icon: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 8.0,
-                                                                  bottom: 8.0,
-                                                                  right: 4.0,
-                                                                  top: 20.0),
-                                                          child: Image.asset(
-                                                            "src/icon/cart.png",
-                                                            width: 24.0,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryTextTheme
-                                                                .button
-                                                                .color,
+                                                        behavior:
+                                                            HitTestBehavior
+                                                                .translucent,
+                                                        onTap: () {
+                                                          var currentSaleRoute =
+                                                              CupertinoPageRoute(
+                                                                  fullscreenDialog:
+                                                                      true,
+                                                                  builder: (_) =>
+                                                                      SaleView(
+                                                                        onCharge: () => onInvoiceSubmitted(
+                                                                            currentSale,
+                                                                            invoiceBloc,
+                                                                            userProfile,
+                                                                            accountModel),
+                                                                        onDeleteSale:
+                                                                            () =>
+                                                                                approveClear(currentSale),
+                                                                        useFiat:
+                                                                            _useFiat,
+                                                                      ));
+                                                          Navigator.of(context)
+                                                              .push(
+                                                                  currentSaleRoute);
+                                                        },
+                                                        child: Badge(
+                                                          position:
+                                                              BadgePosition
+                                                                  .topRight(
+                                                                      top: -5,
+                                                                      right:
+                                                                          -5),
+                                                          animationType:
+                                                              BadgeAnimationType
+                                                                  .scale,
+                                                          badgeColor: Theme.of(
+                                                                  context)
+                                                              .primaryTextTheme
+                                                              .button
+                                                              .color,
+                                                          badgeContent: Text(
+                                                            currentSale
+                                                                .saleLines
+                                                                .length
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
                                                           ),
-                                                        ),
-                                                        number: currentSale
-                                                            .saleLines.length,
-                                                        onPress: () {},
-                                                      ),
-                                                    ))),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 20.0,
+                                                                    bottom: 8.0,
+                                                                    right: 4.0,
+                                                                    top: 20.0),
+                                                            child: Image.asset(
+                                                              "src/icon/cart.png",
+                                                              width: 24.0,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryTextTheme
+                                                                  .button
+                                                                  .color,
+                                                            ),
+                                                          ),
+                                                        )))),
                                             Expanded(
                                               child: Align(
                                                 alignment:
