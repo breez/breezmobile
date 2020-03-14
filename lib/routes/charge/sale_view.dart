@@ -31,6 +31,7 @@ class SaleView extends StatefulWidget {
 class SaleViewState extends State<SaleView> {
   StreamSubscription<Sale> _currentSaleSubscrription;
   ScrollController _scrollController = new ScrollController();
+  FocusNode _noteFocus = new FocusNode();
 
   @override
   void didChangeDependencies() {
@@ -92,56 +93,68 @@ class SaleViewState extends State<SaleView> {
                   ),
                   extendBody: false,
                   backgroundColor: Theme.of(context).backgroundColor,
-                  body: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                              color: Theme.of(context).canvasColor,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16.0, right: 16.0, bottom: 8.0),
-                                child: TextField(
-                                  keyboardType: TextInputType.multiline,
+                  body: GestureDetector(
+                    onTap: () {
+                      FocusScopeNode currentFocus = FocusScope.of(context);
 
-                                  maxLength: 90,
-                                  maxLengthEnforced: true,
-                                  buildCounter: (BuildContext ctx,
-                                          {int currentLength,
-                                          bool isFocused,
-                                          int maxLength}) =>
-                                      SizedBox(),
-                                  // controller:
-                                  //     _invoiceDescriptionController,
-                                  decoration: InputDecoration(
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          style: BorderStyle.solid,
-                                          color: Color(0xFFc5cedd),
+                      if (!currentFocus.hasPrimaryFocus) {
+                        currentFocus.unfocus();
+                      }
+                    },
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                                color: Theme.of(context).canvasColor,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 16.0, right: 16.0, bottom: 8.0),
+                                  child: TextField(
+                                    keyboardType: TextInputType.multiline,
+                                    maxLength: 90,
+                                    maxLengthEnforced: true,
+                                    textInputAction: TextInputAction.done,
+                                    onSubmitted: (_) {
+                                      _noteFocus.requestFocus();
+                                    },
+                                    buildCounter: (BuildContext ctx,
+                                            {int currentLength,
+                                            bool isFocused,
+                                            int maxLength}) =>
+                                        SizedBox(),
+                                    // controller:
+                                    //     _invoiceDescriptionController,
+                                    decoration: InputDecoration(
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            style: BorderStyle.solid,
+                                            color: Color(0xFFc5cedd),
+                                          ),
                                         ),
-                                      ),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          style: BorderStyle.solid,
-                                          color: Color(0xFFc5cedd),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            style: BorderStyle.solid,
+                                            color: Color(0xFFc5cedd),
+                                          ),
                                         ),
-                                      ),
-                                      hintText: 'Add Note',
-                                      hintStyle: TextStyle(fontSize: 14.0)),
-                                ),
-                              )),
-                          Expanded(
-                            child: SaleLinesList(
-                                scrollController: _scrollController,
-                                accountModel: accModel,
-                                currentSale: currentSale),
-                          ),
-                        ],
-                      )
-                    ],
+                                        hintText: 'Add Note',
+                                        hintStyle: TextStyle(fontSize: 14.0)),
+                                  ),
+                                )),
+                            Expanded(
+                              child: SaleLinesList(
+                                  scrollController: _scrollController,
+                                  accountModel: accModel,
+                                  currentSale: currentSale),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                   bottomNavigationBar: Container(
                     decoration: BoxDecoration(
@@ -153,7 +166,7 @@ class SaleViewState extends State<SaleView> {
                             color: Colors.black.withOpacity(0.3),
                             offset: Offset(0.5, 0.5),
                             blurRadius: 5.0),
-                        BoxShadow(color: Colors.white)
+                        BoxShadow(color: Theme.of(context).backgroundColor)
                       ],
                     ),
                     //color: Theme.of(context).canvasColor,
@@ -190,21 +203,21 @@ class _TotalSaleCharge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var totalSats = currentSale.totalChargeSat;
-    String formattedCharge;
+    CurrencyWrapper currentCurrency;
     if (useFiat) {
-      var fiatValue = accountModel.fiatCurrency.satToFiat(totalSats);
-      formattedCharge = accountModel.fiatCurrency.formatFiat(fiatValue,
-          allowBelowMin: true, removeTrailingZeros: true);
+      currentCurrency = CurrencyWrapper.fromFiat(accountModel.fiatCurrency);
     } else {
-      formattedCharge =
-          accountModel.currency.format(totalSats, removeTrailingZeros: true);
+      currentCurrency = CurrencyWrapper.fromBTC(accountModel.currency);
     }
+    var totalAmount =
+        currentCurrency.satConversionRate * currentSale.totalChargeSat.toInt();
+
     return RaisedButton(
       color: Theme.of(context).primaryColorLight,
       padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
       child: Text(
-        "Charge $formattedCharge".toUpperCase(),
+        "Charge ${currentCurrency.format(totalAmount)} ${currentCurrency.shortName}"
+            .toUpperCase(),
         maxLines: 1,
         textAlign: TextAlign.center,
         style: theme.invoiceChargeAmountStyle,
@@ -305,32 +318,48 @@ class SaleLineWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var currrency =
         CurrencyWrapper.fromShortName(saleLine.currency, accountModel);
+    var iconColor = theme.themeId == "BLUE"
+        ? Colors.black.withOpacity(0.3)
+        : ListTileTheme.of(context).iconColor.withOpacity(0.5);
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
       child: ListTile(
           leading: ItemAvatar(saleLine.itemImageURL),
           title: Text(
             saleLine.itemName,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            //style: TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
               currrency.symbol +
                   currrency.format(saleLine.pricePerItem * saleLine.quantity,
                       removeTrailingZeros: true),
               style: TextStyle(
-                  color: ListTileTheme.of(context).textColor.withOpacity(0.5))),
+                  color: ListTileTheme.of(context)
+                      .textColor
+                      .withOpacity(theme.themeId == "BLUE" ? 0.75 : 0.5))),
           trailing: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               IconButton(
-                  color: ListTileTheme.of(context).iconColor.withOpacity(0.5),
+                  iconSize: 22.0,
+                  color: iconColor,
                   icon: Icon(Icons.add),
                   onPressed: () => onChangeQuantity(1)),
-              Text(saleLine.quantity.toString(),
-                  style: TextStyle(color: ListTileTheme.of(context).textColor)),
+              Container(
+                width: 40.0,
+                child: Center(
+                  child: Text(saleLine.quantity.toString(),
+                      style: TextStyle(
+                          color: theme.themeId == "BLUE"
+                              ? Colors.black.withOpacity(0.7)
+                              : ListTileTheme.of(context).textColor,
+                          fontSize: 18.0)),
+                ),
+              ),
               IconButton(
-                  color: ListTileTheme.of(context).iconColor.withOpacity(0.5),
+                  iconSize: 22.0,
+                  color: iconColor,
                   icon: Icon(saleLine.quantity == 1
                       ? Icons.delete_outline
                       : Icons.remove),

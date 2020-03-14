@@ -216,9 +216,9 @@ class POSInvoiceState extends State<POSInvoice> {
                                                           position:
                                                               BadgePosition
                                                                   .topRight(
-                                                                      top: -5,
+                                                                      top: 5,
                                                                       right:
-                                                                          -5),
+                                                                          -10),
                                                           animationType:
                                                               BadgeAnimationType
                                                                   .scale,
