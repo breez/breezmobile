@@ -110,9 +110,8 @@ class POSInvoiceState extends State<POSInvoice> {
                             if (accountModel == null) {
                               return Loader();
                             }
-                            double totalAmount =
-                                currentCurrency.satConversionRate *
-                                        currentSale.totalChargeSat.toInt() +
+                            double totalAmount =                                
+                                        currentSale.totalChargeSat / currentCurrency.satConversionRate +
                                     currentAmount;
                             return Column(
                               mainAxisSize: MainAxisSize.max,
@@ -592,7 +591,7 @@ class POSInvoiceState extends State<POSInvoice> {
         return null;
       }
 
-      if (satAmount > account.maxAllowedToReceive) {
+      if (satAmount > account.maxAllowedToReceive.toDouble()) {
         promptError(
             context,
             "You don't have the capacity to receive such payment.",
@@ -602,7 +601,7 @@ class POSInvoiceState extends State<POSInvoice> {
         return;
       }
 
-      if (satAmount > account.maxPaymentAmount) {
+      if (satAmount > account.maxPaymentAmount.toDouble()) {
         promptError(
             context,
             "You have exceeded the maximum payment size.",
@@ -613,7 +612,7 @@ class POSInvoiceState extends State<POSInvoice> {
       }
 
       var newInvoiceAction = NewInvoice(InvoiceRequestModel(user.name,
-          _invoiceDescriptionController.text, user.avatarURL, satAmount,
+          _invoiceDescriptionController.text, user.avatarURL, Int64(satAmount.toInt()),
           expiry: Int64(user.cancellationTimeoutValue.toInt())));
       invoiceBloc.actionsSink.add(newInvoiceAction);
       newInvoiceAction.future.then((value) {
