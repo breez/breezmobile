@@ -662,14 +662,11 @@ class POSInvoiceState extends State<POSInvoice> {
 
   _addItem(PosCatalogBloc posCatalogBloc, Sale currentSale,
       AccountModel account, Item item) {
-    var btcCurrency = Currency.fromTickerSymbol(item.currency);
-    var currencyWrapper = btcCurrency != null
-        ? CurrencyWrapper.fromBTC(btcCurrency)
-        : CurrencyWrapper.fromFiat(account.fiatCurrency);
+    var itemCurrency = CurrencyWrapper.fromShortName(item.currency, account);
 
     setState(() {
       var newSale =
-          currentSale.addItem(item, currencyWrapper.satConversionRate);
+          currentSale.addItem(item, itemCurrency.satConversionRate);
       posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
       currentAmount = 0;
     });
