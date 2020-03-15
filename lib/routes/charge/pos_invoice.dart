@@ -45,14 +45,13 @@ class POSInvoiceState extends State<POSInvoice> {
   TextEditingController _invoiceDescriptionController = TextEditingController();
   double itemHeight;
   double itemWidth;
-
-  // double amount = 0;
-  double currentAmount = 0;
   bool _useFiat = false;
   CurrencyWrapper currentCurrency;
   bool _isKeypadView = true;
-
+  SaleLine currentPendingItem;
   StreamSubscription accountSubscription;
+
+  double get currentAmount => currentPendingItem?.total ?? 0;
 
   @override
   void didChangeDependencies() {
@@ -111,8 +110,7 @@ class POSInvoiceState extends State<POSInvoice> {
                               return Loader();
                             }
                             double totalAmount = currentSale.totalChargeSat /
-                                    currentCurrency.satConversionRate +
-                                currentAmount;
+                                    currentCurrency.satConversionRate;
                             return Column(
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
@@ -327,6 +325,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                                 child:
                                                                     BreezDropdownButton(
                                                                         onChanged: (value) => changeCurrency(
+                                                                            currentSale,
                                                                             value,
                                                                             userProfileBloc),
                                                                         iconEnabledColor: Theme.of(context)
@@ -588,8 +587,7 @@ class POSInvoiceState extends State<POSInvoice> {
             );
           });
     } else {
-      var satAmount = currentSale.totalChargeSat +
-          ( currentAmount / currentCurrency.satConversionRate);
+      var satAmount = currentSale.totalChargeSat;
       if (satAmount == 0) {
         return null;
       }
@@ -653,10 +651,7 @@ class POSInvoiceState extends State<POSInvoice> {
   onAddition(PosCatalogBloc posCatalogBloc, Sale currentSale,
       double satConversionRate) {
     setState(() {
-      var newSale = currentSale.addCustomItem(
-          currentAmount, currentCurrency.shortName, satConversionRate);
-      posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
-      currentAmount = 0;
+      currentPendingItem = null;
     });
   }
 
@@ -671,30 +666,43 @@ class POSInvoiceState extends State<POSInvoice> {
       var newSale =
           currentSale.addItem(item, currencyWrapper.satConversionRate);
       posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
-      currentAmount = 0;
+      currentPendingItem = null;
     });
   }
 
-  onNumButtonPressed(String numberText) {
+  onNumButtonPressed(Sale currentSale, String numberText) {
+    PosCatalogBloc posCatalogBloc =
+        AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
       double addition = int.parse(numberText).toDouble() /
           pow(10, currentCurrency.fractionSize);
-      currentAmount = currentAmount * 10 + addition;
+      var newSale = currentSale;
+      var newPrice = currentAmount * 10 + addition;      
+      if (currentPendingItem == null) {
+        newSale = currentSale.addCustomItem(
+          newPrice, currentCurrency.shortName, currentCurrency.satConversionRate);          
+        currentPendingItem = newSale.saleLines.last;
+      } else {
+        currentPendingItem = currentPendingItem.copywith(pricePerItem: newPrice);
+        newSale = currentSale.updateItems((sl) {
+          if (sl.isCustom && sl.itemName == currentPendingItem.itemName) {
+              return currentPendingItem;
+            }
+            return sl;
+        });
+      }      
+      posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
     });
   }
 
-  changeCurrency(String value, UserProfileBloc userProfileBloc) {
+  changeCurrency(Sale currentSale, String value, UserProfileBloc userProfileBloc) {
     setState(() {
       Currency currency = Currency.fromTickerSymbol(value);
 
       bool flipFiat = _useFiat == (currency != null);
       if (flipFiat) {
         _useFiat = !_useFiat;
-        _clearAmounts();
-      } else if (currency != null) {
-        var conversionRate =
-            currency == Currency.SAT ? 100000000 : 1 / 100000000;
-        currentAmount = currentAmount * conversionRate;
+        _clearAmounts(currentSale);
       }
 
       if (currency != null) {
@@ -705,9 +713,15 @@ class POSInvoiceState extends State<POSInvoice> {
     });
   }
 
-  _clearAmounts() {
+  _clearAmounts(Sale currentSale) {
+    PosCatalogBloc posCatalogBloc =
+        AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
-      currentAmount = 0;
+      if (currentPendingItem != null) {
+        currentSale = currentSale.removeItem((sl) => sl.isCustom && sl.itemName == currentPendingItem.itemName);
+        currentPendingItem = null;
+        posCatalogBloc.actionsSink.add(SetCurrentSale(currentSale));
+      }
     });
   }
 
@@ -715,7 +729,7 @@ class POSInvoiceState extends State<POSInvoice> {
     PosCatalogBloc posCatalogBloc =
         AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
-      currentAmount = 0;
+      currentPendingItem = null;
       _invoiceDescriptionController.text = "";
       posCatalogBloc.actionsSink.add(SetCurrentSale(Sale(saleLines: [])));
     });
@@ -754,13 +768,13 @@ class POSInvoiceState extends State<POSInvoice> {
     }
   }
 
-  Container _numberButton(String number) {
+  Container _numberButton(Sale currentSale, String number) {
     return Container(
         decoration: BoxDecoration(
             border: Border.all(
                 color: Theme.of(context).backgroundColor, width: 0.5)),
         child: FlatButton(
-            onPressed: () => onNumButtonPressed(number),
+            onPressed: () => onNumButtonPressed(currentSale, number),
             child: Text(number,
                 textAlign: TextAlign.center, style: theme.numPadNumberStyle)));
   }
@@ -771,7 +785,7 @@ class POSInvoiceState extends State<POSInvoice> {
         childAspectRatio: (itemWidth / itemHeight),
         padding: EdgeInsets.zero,
         children: List<int>.generate(9, (i) => i)
-            .map((index) => _numberButton((index + 1).toString()))
+            .map((index) => _numberButton(currentSale, (index + 1).toString()))
             .followedBy([
           Container(
               decoration: BoxDecoration(
@@ -781,10 +795,10 @@ class POSInvoiceState extends State<POSInvoice> {
                   onLongPress: () => approveClear(currentSale),
                   child: FlatButton(
                       onPressed: () {
-                        _clearAmounts();
+                        _clearAmounts(currentSale);
                       },
                       child: Text("C", style: theme.numPadNumberStyle)))),
-          _numberButton("0"),
+          _numberButton(currentSale, "0"),
           Container(
               decoration: BoxDecoration(
                   border: Border.all(
