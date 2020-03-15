@@ -144,7 +144,7 @@ class Sale implements DBItem {
   Sale copyWith({List<SaleLine> saleLines, priceLocked}) {
     return Sale(
       id: this.id, 
-      saleLines: saleLines.toList(),
+      saleLines: (saleLines ?? this.saleLines).toList(),
       priceLocked: priceLocked ?? this.priceLocked);
   }
 
