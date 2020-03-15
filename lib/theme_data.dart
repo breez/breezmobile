@@ -74,7 +74,8 @@ final ThemeData blueTheme = ThemeData(
         fontSize: 14.0,
         letterSpacing: 0.0,
         height: 1.28,
-        fontFamily: 'IBMPlexSansMedium'),
+        fontWeight: FontWeight.w500,
+        fontFamily: 'IBMPlexSans'),
     display2: TextStyle(
         color: BreezColors.grey[500],
         fontSize: 14.0,
@@ -85,12 +86,14 @@ final ThemeData blueTheme = ThemeData(
         fontSize: 24.0,
         letterSpacing: 0.0,
         height: 1.28,
-        fontFamily: 'IBMPlexSansMedium'),
+        fontWeight: FontWeight.w500,
+        fontFamily: 'IBMPlexSans'),
     body1: TextStyle(
         color: BreezColors.blue[900],
         fontSize: 16.4,
         letterSpacing: 0.15,
-        fontFamily: 'IBMPlexSansMedium'),
+        fontWeight: FontWeight.w500,
+        fontFamily: 'IBMPlexSans'),
     subtitle: TextStyle(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     button: TextStyle(
@@ -100,7 +103,7 @@ final ThemeData blueTheme = ThemeData(
   textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
   primaryIconTheme: IconThemeData(color: BreezColors.grey[500]),
   textSelectionHandleColor: Color(0xFF0085fb),
-  fontFamily: 'IBMPlexSansRegular',
+  fontFamily: 'IBMPlexSans',
 );
 
 // Color(0xFF121212) values are tbd
@@ -156,7 +159,8 @@ final ThemeData darkTheme = ThemeData(
         fontSize: 14.0,
         letterSpacing: 0.0,
         height: 1.28,
-        fontFamily: 'IBMPlexSansMedium'),
+        fontWeight: FontWeight.w500,
+        fontFamily: 'IBMPlexSans'),
     display2: TextStyle(
         color: Colors.white, fontSize: 14.0, letterSpacing: 0.0, height: 1.28),
     headline: TextStyle(
@@ -164,12 +168,14 @@ final ThemeData darkTheme = ThemeData(
         fontSize: 24.0,
         letterSpacing: 0.0,
         height: 1.28,
-        fontFamily: 'IBMPlexSansMedium'),
+        fontWeight: FontWeight.w500,
+        fontFamily: 'IBMPlexSans'),
     body1: TextStyle(
         color: Colors.white,
         fontSize: 16.4,
         letterSpacing: 0.15,
-        fontFamily: 'IBMPlexSansMedium'),
+        fontWeight: FontWeight.w500,
+        fontFamily: 'IBMPlexSans'),
     button: TextStyle(
         color: Color(0xFF7aa5eb), fontSize: 14.3, letterSpacing: 1.25),
     subtitle: TextStyle(
@@ -179,7 +185,7 @@ final ThemeData darkTheme = ThemeData(
   primaryIconTheme: IconThemeData(color: Color(0xFF7aa5eb)),
   textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
   textSelectionHandleColor: Color(0xFF0085fb),
-  fontFamily: 'IBMPlexSansRegular',
+  fontFamily: 'IBMPlexSans',
 );
 
 final VendorTheme bitrefill = VendorTheme(
@@ -221,7 +227,8 @@ final TextStyle addFundsItemsStyle = TextStyle(
     fontSize: 14.3,
     letterSpacing: 1.25,
     height: 1.16,
-    fontFamily: 'IBMPlexSansMedium');
+    fontWeight: FontWeight.w500,
+    fontFamily: 'IBMPlexSans');
 final TextStyle bottomSheetMenuItemStyle = TextStyle(
     color: BreezColors.white[400], fontSize: 14.3, letterSpacing: 0.55);
 final TextStyle autoCompleteStyle =
@@ -232,7 +239,8 @@ final TextStyle avatarDialogStyle = TextStyle(
     color: BreezColors.blue[900],
     fontSize: 16.4,
     letterSpacing: 0.15,
-    fontFamily: 'IBMPlexSansMedium');
+    fontWeight: FontWeight.w500,
+    fontFamily: 'IBMPlexSans');
 final TextStyle errorStyle = TextStyle(color: errorColor, fontSize: 12.0);
 final TextStyle textStyle =
     TextStyle(color: BreezColors.white[400], fontSize: 16.0);
@@ -279,7 +287,8 @@ final TextStyle transactionAmountStyle = TextStyle(
     fontSize: 16.4,
     letterSpacing: 0.5,
     height: 1.28,
-    fontFamily: 'IBMPlexSansMedium');
+    fontWeight: FontWeight.w500,
+    fontFamily: 'IBMPlexSans');
 final TextStyle posWithdrawalTransactionTitleStyle = TextStyle(
     color: Color.fromRGBO(255, 255, 255, 0.7),
     fontSize: 14.4,
@@ -290,13 +299,15 @@ final TextStyle posWithdrawalTransactionAmountStyle = TextStyle(
     fontSize: 16.4,
     letterSpacing: 0.5,
     height: 1.28,
-    fontFamily: 'IBMPlexSansMedium');
+    fontWeight: FontWeight.w500,
+    fontFamily: 'IBMPlexSans');
 final TextStyle cancelButtonStyle = TextStyle(
     color: BreezColors.red[600],
     letterSpacing: 1.25,
     height: 1.16,
     fontSize: 14.0,
-    fontFamily: "IBMPlexSansMedium");
+    fontWeight: FontWeight.w500,
+    fontFamily: 'IBMPlexSans');
 final TextStyle backupPhraseInformationTextStyle = TextStyle(
     color: BreezColors.white[500],
     fontSize: 14.3,
@@ -307,7 +318,8 @@ final TextStyle backupPhraseConfirmationTextStyle = TextStyle(
     fontSize: 14.3,
     letterSpacing: 1.25,
     height: 1.16,
-    fontFamily: 'IBMPlexSansMedium');
+    fontWeight: FontWeight.w500,
+    fontFamily: 'IBMPlexSans');
 final TextStyle mnemonicsTextStyle = TextStyle(
     color: BreezColors.white[400],
     fontSize: 16.4,
@@ -365,7 +377,8 @@ final TextStyle paymentDetailsTitleStyle = TextStyle(
     fontSize: 14.0,
     letterSpacing: 0.0,
     height: 1.28,
-    fontFamily: 'IBMPlexSansMedium');
+    fontWeight: FontWeight.w500,
+    fontFamily: 'IBMPlexSans');
 final TextStyle paymentDetailsSubtitleStyle = TextStyle(
     color: BreezColors.grey[500],
     fontSize: 14.0,
