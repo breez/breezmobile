@@ -110,9 +110,9 @@ class POSInvoiceState extends State<POSInvoice> {
                             if (accountModel == null) {
                               return Loader();
                             }
-                            double totalAmount =                                
-                                        currentSale.totalChargeSat / currentCurrency.satConversionRate +
-                                    currentAmount;
+                            double totalAmount = currentSale.totalChargeSat /
+                                    currentCurrency.satConversionRate +
+                                currentAmount;
                             return Column(
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
@@ -221,7 +221,10 @@ class POSInvoiceState extends State<POSInvoice> {
                                                           animationType:
                                                               BadgeAnimationType
                                                                   .scale,
-                                                          badgeColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+                                                          badgeColor: Theme.of(
+                                                                  context)
+                                                              .floatingActionButtonTheme
+                                                              .backgroundColor,
                                                           badgeContent: Text(
                                                             currentSale
                                                                 .saleLines
@@ -586,7 +589,7 @@ class POSInvoiceState extends State<POSInvoice> {
           });
     } else {
       var satAmount = currentSale.totalChargeSat +
-          (currentCurrency.satConversionRate * currentAmount).toInt();
+          ( currentAmount / currentCurrency.satConversionRate);
       if (satAmount == 0) {
         return null;
       }
@@ -610,16 +613,24 @@ class POSInvoiceState extends State<POSInvoice> {
                 style: Theme.of(context).dialogTheme.contentTextStyle));
         return;
       }
-
-      var newInvoiceAction = NewInvoice(InvoiceRequestModel(user.name,
-          _invoiceDescriptionController.text, user.avatarURL, Int64(satAmount.toInt()),
-          expiry: Int64(user.cancellationTimeoutValue.toInt())));
-      invoiceBloc.actionsSink.add(newInvoiceAction);
-      newInvoiceAction.future.then((value) {
-        return showPaymentDialog(invoiceBloc, user, value as String);
-      }).catchError((error) {
-        showFlushbar(context,
-            message: error.toString(), duration: Duration(seconds: 10));
+      PosCatalogBloc posCatalogBloc =
+          AppBlocsProvider.of<PosCatalogBloc>(context);
+      var lockSale = SetCurrentSale(currentSale.copyWith(priceLocked: true));
+      posCatalogBloc.actionsSink.add(lockSale);
+      lockSale.future.then((value) {
+        var newInvoiceAction = NewInvoice(InvoiceRequestModel(
+            user.name,
+            _invoiceDescriptionController.text,
+            user.avatarURL,
+            Int64(satAmount.toInt()),
+            expiry: Int64(user.cancellationTimeoutValue.toInt())));
+        invoiceBloc.actionsSink.add(newInvoiceAction);
+        newInvoiceAction.future.then((value) {
+          return showPaymentDialog(invoiceBloc, user, value as String);
+        }).catchError((error) {
+          showFlushbar(context,
+              message: error.toString(), duration: Duration(seconds: 10));
+        });
       });
     }
   }
@@ -658,7 +669,7 @@ class POSInvoiceState extends State<POSInvoice> {
 
     setState(() {
       var newSale =
-          currentSale.addItem(item, 1 / currencyWrapper.satConversionRate);
+          currentSale.addItem(item, currencyWrapper.satConversionRate);
       posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
       currentAmount = 0;
     });
