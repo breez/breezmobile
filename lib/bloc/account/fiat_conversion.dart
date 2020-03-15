@@ -64,4 +64,6 @@ class FiatConversion {
     }
     return formattedAmount;
   }
+
+  double get satConversionRate => exchangeRate * 100000000;
 }

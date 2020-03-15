@@ -47,6 +47,8 @@ class Currency extends Object {
         return "₿";
     }
   }
+
+  double get satConversionRate => this == SAT ? 1.0 : 100000000;
 }
 
 class _CurrencyFormatter {
