@@ -449,15 +449,9 @@ class VendorTheme {
 }
 
 extension CustomStyles on TextTheme {
-  TextStyle get itemTitleStyle => TextStyle(
-      color: BreezColors.white[500],
-      fontSize: 15.5,
-      letterSpacing: 0.25,
-      height: 1.2);
+  TextStyle get itemTitleStyle =>
+      TextStyle(color: BreezColors.white[500], fontSize: 16.4);
 
   TextStyle get itemPriceStyle => TextStyle(
-      color: BreezColors.white[500],
-      letterSpacing: 0.5,
-      height: 1.28,
-      fontSize: 14.4);
+      color: BreezColors.white[500], letterSpacing: 0.5, fontSize: 14.3);
 }
