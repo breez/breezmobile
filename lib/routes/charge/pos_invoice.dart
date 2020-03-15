@@ -222,11 +222,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                           animationType:
                                                               BadgeAnimationType
                                                                   .scale,
-                                                          badgeColor: Theme.of(
-                                                                  context)
-                                                              .primaryTextTheme
-                                                              .button
-                                                              .color,
+                                                          badgeColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
                                                           badgeContent: Text(
                                                             currentSale
                                                                 .saleLines
