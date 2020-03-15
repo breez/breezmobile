@@ -43,9 +43,9 @@ class CurrencyWrapper {
 
   double get satConversionRate {
     if (btc != null) {
-      return btc == Currency.SAT ? 1 : 1 / 100000000;
+      return btc.satConversionRate;
     }
-    return fiat.exchangeRate / 100000000;
+    return fiat.satConversionRate;
   }
 
   String format(double value,

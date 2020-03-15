@@ -210,7 +210,7 @@ class _TotalSaleCharge extends StatelessWidget {
       currentCurrency = CurrencyWrapper.fromBTC(accountModel.currency);
     }
     var totalAmount =
-        currentCurrency.satConversionRate * currentSale.totalChargeSat.toInt();
+        currentSale.totalChargeSat / currentCurrency.satConversionRate;
 
     return RaisedButton(
       color: Theme.of(context).primaryColorLight,

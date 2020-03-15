@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/repository.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'model.dart';
@@ -15,10 +17,10 @@ class PosCatalogBloc with AsyncActionsHandler {
       BehaviorSubject<List<Item>>();
   Stream<List<Item>> get itemsStream => _itemsStreamController.stream;
 
-  final StreamController<Sale> _currentSaleController = BehaviorSubject<Sale>();
+  final BehaviorSubject<Sale> _currentSaleController = BehaviorSubject<Sale>();
   Stream<Sale> get currentSaleStream => _currentSaleController.stream;
 
-  PosCatalogBloc() {
+  PosCatalogBloc(Stream<AccountModel> accountStream) {
     _repository = SqliteRepository();
     _loadItems();
     registerAsyncHandlers({
@@ -32,6 +34,31 @@ class PosCatalogBloc with AsyncActionsHandler {
     });
     listenActions();
     _currentSaleController.add(Sale(saleLines: List()));
+    _trackCurrentSaleRates(accountStream);
+  }
+
+  void _trackCurrentSaleRates(Stream<AccountModel> accountStream){
+    accountStream.listen((acc) {
+      var currentSale = _currentSaleController.value;
+
+      // In case the price is locked we don't calculate the charge.
+      if (currentSale.priceLocked) {
+        return;
+      }
+      _currentSaleController.add(currentSale.copyWith(
+        saleLines: currentSale.saleLines.map(
+          (sl){
+            double rate = sl.satConversionRate;
+            Currency curr = Currency.fromTickerSymbol(sl.currency);
+            if (curr != null) {
+              rate = curr.satConversionRate;
+            } else {
+              rate = acc.getFiatCurrencyByShortName(sl.currency).satConversionRate;
+            }
+            return sl.copywith(satConversionRate: rate);
+          })
+          .toList()));
+    });
   }
 
   Future _loadItems() async {

@@ -110,10 +110,9 @@ class POSInvoiceState extends State<POSInvoice> {
                             if (accountModel == null) {
                               return Loader();
                             }
-                            double totalAmount =
-                                currentCurrency.satConversionRate *
-                                        currentSale.totalChargeSat.toInt() +
-                                    currentAmount;
+                            double totalAmount = currentSale.totalChargeSat /
+                                    currentCurrency.satConversionRate +
+                                currentAmount;
                             return Column(
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
@@ -222,7 +221,10 @@ class POSInvoiceState extends State<POSInvoice> {
                                                           animationType:
                                                               BadgeAnimationType
                                                                   .scale,
-                                                          badgeColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+                                                          badgeColor: Theme.of(
+                                                                  context)
+                                                              .floatingActionButtonTheme
+                                                              .backgroundColor,
                                                           badgeContent: Text(
                                                             currentSale
                                                                 .saleLines
@@ -587,12 +589,12 @@ class POSInvoiceState extends State<POSInvoice> {
           });
     } else {
       var satAmount = currentSale.totalChargeSat +
-          (currentCurrency.satConversionRate * currentAmount).toInt();
+          ( currentAmount / currentCurrency.satConversionRate);
       if (satAmount == 0) {
         return null;
       }
 
-      if (satAmount > account.maxAllowedToReceive) {
+      if (satAmount > account.maxAllowedToReceive.toDouble()) {
         promptError(
             context,
             "You don't have the capacity to receive such payment.",
@@ -602,7 +604,7 @@ class POSInvoiceState extends State<POSInvoice> {
         return;
       }
 
-      if (satAmount > account.maxPaymentAmount) {
+      if (satAmount > account.maxPaymentAmount.toDouble()) {
         promptError(
             context,
             "You have exceeded the maximum payment size.",
@@ -611,16 +613,24 @@ class POSInvoiceState extends State<POSInvoice> {
                 style: Theme.of(context).dialogTheme.contentTextStyle));
         return;
       }
-
-      var newInvoiceAction = NewInvoice(InvoiceRequestModel(user.name,
-          _invoiceDescriptionController.text, user.avatarURL, satAmount,
-          expiry: Int64(user.cancellationTimeoutValue.toInt())));
-      invoiceBloc.actionsSink.add(newInvoiceAction);
-      newInvoiceAction.future.then((value) {
-        return showPaymentDialog(invoiceBloc, user, value as String);
-      }).catchError((error) {
-        showFlushbar(context,
-            message: error.toString(), duration: Duration(seconds: 10));
+      PosCatalogBloc posCatalogBloc =
+          AppBlocsProvider.of<PosCatalogBloc>(context);
+      var lockSale = SetCurrentSale(currentSale.copyWith(priceLocked: true));
+      posCatalogBloc.actionsSink.add(lockSale);
+      lockSale.future.then((value) {
+        var newInvoiceAction = NewInvoice(InvoiceRequestModel(
+            user.name,
+            _invoiceDescriptionController.text,
+            user.avatarURL,
+            Int64(satAmount.toInt()),
+            expiry: Int64(user.cancellationTimeoutValue.toInt())));
+        invoiceBloc.actionsSink.add(newInvoiceAction);
+        newInvoiceAction.future.then((value) {
+          return showPaymentDialog(invoiceBloc, user, value as String);
+        }).catchError((error) {
+          showFlushbar(context,
+              message: error.toString(), duration: Duration(seconds: 10));
+        });
       });
     }
   }
@@ -652,14 +662,11 @@ class POSInvoiceState extends State<POSInvoice> {
 
   _addItem(PosCatalogBloc posCatalogBloc, Sale currentSale,
       AccountModel account, Item item) {
-    var btcCurrency = Currency.fromTickerSymbol(item.currency);
-    var currencyWrapper = btcCurrency != null
-        ? CurrencyWrapper.fromBTC(btcCurrency)
-        : CurrencyWrapper.fromFiat(account.fiatCurrency);
+    var itemCurrency = CurrencyWrapper.fromShortName(item.currency, account);
 
     setState(() {
       var newSale =
-          currentSale.addItem(item, 1 / currencyWrapper.satConversionRate);
+          currentSale.addItem(item, itemCurrency.satConversionRate);
       posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
       currentAmount = 0;
     });

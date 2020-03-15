@@ -63,7 +63,7 @@ class AppBlocs {
         ReverseSwapBloc(accountBloc.paymentsStream, userProfileBloc.userStream),
         blocsByType);
     PosCatalogBloc posCatalogBloc =
-        _registerBloc(PosCatalogBloc(), blocsByType);
+        _registerBloc(PosCatalogBloc(accountBloc.accountStream), blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc =
         _registerBloc(FastbitcoinsBloc(production: true), blocsByType);
 
