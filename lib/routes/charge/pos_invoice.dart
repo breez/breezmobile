@@ -550,7 +550,7 @@ class POSInvoiceState extends State<POSInvoice> {
                   padding: const EdgeInsets.only(
                       top: 180.0, left: 40.0, right: 40.0),
                   child: AutoSizeText(
-                    "No items to display.\nAdd items to this view using the '+' button.",
+                    _itemFilterController.text != null ? "No matching items found." : "No items to display.\nAdd items to this view using the '+' button.",
                     textAlign: TextAlign.center,
                     minFontSize: MinFontSize(context).minFontSize,
                     stepGranularity: 0.1,
