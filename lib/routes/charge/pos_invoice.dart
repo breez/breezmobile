@@ -30,6 +30,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../status_indicator.dart';
+import 'items/item_avatar.dart';
 import 'items/items_list.dart';
 
 class POSInvoice extends StatefulWidget {
@@ -41,7 +42,9 @@ class POSInvoice extends StatefulWidget {
   }
 }
 
-class POSInvoiceState extends State<POSInvoice> {
+class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
+  final GlobalKey badgeKey = GlobalKey();
+
   TextEditingController _invoiceDescriptionController = TextEditingController();
   double itemHeight;
   double itemWidth;
@@ -50,6 +53,10 @@ class POSInvoiceState extends State<POSInvoice> {
   bool _isKeypadView = true;
   SaleLine currentPendingItem;
   StreamSubscription accountSubscription;
+  Animation<RelativeRect> _transitionAnimation;
+  Animation<double> _scaleTransition;
+  Animation<double> _opacityTransition;
+  Item _itemInTransition;
 
   double get currentAmount => currentPendingItem?.total ?? 0;
 
@@ -110,237 +117,232 @@ class POSInvoiceState extends State<POSInvoice> {
                               return Loader();
                             }
                             double totalAmount = currentSale.totalChargeSat /
-                                    currentCurrency.satConversionRate;
-                            return Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Container(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        StreamBuilder<AccountSettings>(
-                                            stream: accountBloc
-                                                .accountSettingsStream,
-                                            builder:
-                                                (settingCtx, settingSnapshot) {
-                                              AccountSettings settings =
-                                                  settingSnapshot.data;
-                                              if (settings?.showConnectProgress ==
-                                                      true ||
-                                                  accountModel
-                                                          .isInitialBootstrap ==
-                                                      true) {
-                                                return StatusIndicator(
-                                                    context, snapshot.data);
-                                              }
-                                              return SizedBox();
-                                            }),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              top: 0.0,
-                                              left: 16.0,
-                                              right: 16.0,
-                                              bottom: 24.0),
-                                          child: ConstrainedBox(
-                                            constraints: const BoxConstraints(
-                                                minWidth: double.infinity),
-                                            child: IgnorePointer(
-                                              ignoring: false,
-                                              child: RaisedButton(
-                                                color: Theme.of(context)
-                                                    .primaryColorLight,
-                                                padding: EdgeInsets.only(
-                                                    top: 14.0, bottom: 14.0),
-                                                child: Text(
-                                                  "Charge ${currentCurrency.format(totalAmount)} ${currentCurrency.shortName}"
-                                                      .toUpperCase(),
-                                                  maxLines: 1,
-                                                  textAlign: TextAlign.center,
-                                                  style: theme
-                                                      .invoiceChargeAmountStyle,
+                                currentCurrency.satConversionRate;
+                            return Stack(
+                              children: [
+                                Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Container(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            StreamBuilder<AccountSettings>(
+                                                stream: accountBloc
+                                                    .accountSettingsStream,
+                                                builder: (settingCtx,
+                                                    settingSnapshot) {
+                                                  AccountSettings settings =
+                                                      settingSnapshot.data;
+                                                  if (settings?.showConnectProgress ==
+                                                          true ||
+                                                      accountModel
+                                                              .isInitialBootstrap ==
+                                                          true) {
+                                                    return StatusIndicator(
+                                                        context, snapshot.data);
+                                                  }
+                                                  return SizedBox();
+                                                }),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: 0.0,
+                                                  left: 16.0,
+                                                  right: 16.0,
+                                                  bottom: 24.0),
+                                              child: ConstrainedBox(
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        minWidth:
+                                                            double.infinity),
+                                                child: IgnorePointer(
+                                                  ignoring: false,
+                                                  child: RaisedButton(
+                                                    color: Theme.of(context)
+                                                        .primaryColorLight,
+                                                    padding: EdgeInsets.only(
+                                                        top: 14.0,
+                                                        bottom: 14.0),
+                                                    child: Text(
+                                                      "Charge ${currentCurrency.format(totalAmount)} ${currentCurrency.shortName}"
+                                                          .toUpperCase(),
+                                                      maxLines: 1,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: theme
+                                                          .invoiceChargeAmountStyle,
+                                                    ),
+                                                    onPressed: () =>
+                                                        onInvoiceSubmitted(
+                                                            currentSale,
+                                                            invoiceBloc,
+                                                            userProfile,
+                                                            accountModel),
+                                                  ),
                                                 ),
-                                                onPressed: () =>
-                                                    onInvoiceSubmitted(
-                                                        currentSale,
-                                                        invoiceBloc,
-                                                        userProfile,
-                                                        accountModel),
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 24),
-                                          child: _buildViewSwitch(context),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 0.0, right: 16.0),
-                                          child: Row(children: <Widget>[
-                                            Expanded(
-                                                child: Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: GestureDetector(
-                                                        behavior:
-                                                            HitTestBehavior
-                                                                .translucent,
-                                                        onTap: () {
-                                                          var currentSaleRoute =
-                                                              CupertinoPageRoute(
-                                                                  fullscreenDialog:
-                                                                      true,
-                                                                  builder: (_) =>
-                                                                      SaleView(
-                                                                        onCharge: () => onInvoiceSubmitted(
-                                                                            currentSale,
-                                                                            invoiceBloc,
-                                                                            userProfile,
-                                                                            accountModel),
-                                                                        onDeleteSale:
-                                                                            () =>
-                                                                                approveClear(currentSale),
-                                                                        useFiat:
-                                                                            _useFiat,
-                                                                      ));
-                                                          Navigator.of(context)
-                                                              .push(
-                                                                  currentSaleRoute);
-                                                        },
-                                                        child: Badge(
-                                                          position:
-                                                              BadgePosition
-                                                                  .topRight(
-                                                                      top: 5,
-                                                                      right:
-                                                                          -10),
-                                                          animationType:
-                                                              BadgeAnimationType
-                                                                  .scale,
-                                                          badgeColor: Theme.of(
-                                                                  context)
-                                                              .floatingActionButtonTheme
-                                                              .backgroundColor,
-                                                          badgeContent: Text(
-                                                            currentSale
-                                                                .saleLines
-                                                                .length
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 24),
+                                              child: _buildViewSwitch(context),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 0.0, right: 16.0),
+                                              child: Row(children: <Widget>[
+                                                Expanded(
+                                                    child: Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: GestureDetector(
+                                                            behavior:
+                                                                HitTestBehavior
+                                                                    .translucent,
+                                                            onTap: () {
+                                                              var currentSaleRoute =
+                                                                  CupertinoPageRoute(
+                                                                      fullscreenDialog:
+                                                                          true,
+                                                                      builder:
+                                                                          (_) =>
+                                                                              SaleView(
+                                                                                onCharge: () => onInvoiceSubmitted(currentSale, invoiceBloc, userProfile, accountModel),
+                                                                                onDeleteSale: () => approveClear(currentSale),
+                                                                                useFiat: _useFiat,
+                                                                              ));
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .push(
+                                                                      currentSaleRoute);
+                                                            },
+                                                            child: Badge(
+                                                              key: badgeKey,
+                                                              animationDuration:
+                                                                  Duration(
+                                                                      seconds:
+                                                                          1),
+                                                              position:
+                                                                  BadgePosition
+                                                                      .topRight(
+                                                                          top:
+                                                                              5,
+                                                                          right:
+                                                                              -10),
+                                                              animationType:
+                                                                  BadgeAnimationType
+                                                                      .scale,
+                                                              badgeColor: Theme
+                                                                      .of(context)
+                                                                  .floatingActionButtonTheme
+                                                                  .backgroundColor,
+                                                              badgeContent:
+                                                                  Text(
+                                                                currentSale
+                                                                    .saleLines
+                                                                    .length
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                              child: Padding(
+                                                                padding: const EdgeInsets
                                                                         .only(
                                                                     left: 20.0,
                                                                     bottom: 8.0,
                                                                     right: 4.0,
                                                                     top: 20.0),
-                                                            child: Image.asset(
-                                                              "src/icon/cart.png",
-                                                              width: 24.0,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .primaryTextTheme
-                                                                  .button
-                                                                  .color,
-                                                            ),
-                                                          ),
-                                                        )))),
-                                            Expanded(
-                                              child: Align(
-                                                alignment:
-                                                    Alignment.centerRight,
-                                                child: SingleChildScrollView(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 8.0),
-                                                    child: Text(
-                                                      _isKeypadView
-                                                          ? currentCurrency
-                                                              .format(
-                                                                  currentAmount)
-                                                          : "",
-                                                      maxLines: 1,
-                                                      style: theme
-                                                          .invoiceAmountStyle
-                                                          .copyWith(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .headline
-                                                                  .color),
-                                                      textAlign:
-                                                          TextAlign.right,
+                                                                child:
+                                                                    Image.asset(
+                                                                  "src/icon/cart.png",
+                                                                  width: 24.0,
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .primaryTextTheme
+                                                                      .button
+                                                                      .color,
+                                                                ),
+                                                              ),
+                                                            )))),
+                                                Expanded(
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child:
+                                                        SingleChildScrollView(
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      child: Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 8.0),
+                                                        child: Text(
+                                                          _isKeypadView
+                                                              ? currentCurrency
+                                                                  .format(
+                                                                      currentAmount)
+                                                              : "",
+                                                          maxLines: 1,
+                                                          style: theme
+                                                              .invoiceAmountStyle
+                                                              .copyWith(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .headline
+                                                                      .color),
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                            ),
-                                            Theme(
-                                                data: Theme.of(context)
-                                                    .copyWith(
-                                                        canvasColor: Theme.of(
-                                                                context)
-                                                            .backgroundColor),
-                                                child: new StreamBuilder<
-                                                        AccountSettings>(
-                                                    stream: accountBloc
-                                                        .accountSettingsStream,
-                                                    builder: (settingCtx,
-                                                        settingSnapshot) {
-                                                      return StreamBuilder<
-                                                              AccountModel>(
-                                                          stream: accountBloc
-                                                              .accountStream,
-                                                          builder: (context,
-                                                              snapshot) {
-                                                            List<CurrencyWrapper>
-                                                                currencies =
-                                                                Currency
-                                                                    .currencies
-                                                                    .map((c) =>
-                                                                        CurrencyWrapper
-                                                                            .fromBTC(c))
-                                                                    .toList();
-                                                            currencies
-                                                              ..addAll(accountModel
-                                                                  .fiatConversionList
-                                                                  .map((f) =>
-                                                                      CurrencyWrapper
-                                                                          .fromFiat(
+                                                Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                            canvasColor: Theme
+                                                                    .of(context)
+                                                                .backgroundColor),
+                                                    child: new StreamBuilder<
+                                                            AccountSettings>(
+                                                        stream: accountBloc
+                                                            .accountSettingsStream,
+                                                        builder: (settingCtx,
+                                                            settingSnapshot) {
+                                                          return StreamBuilder<
+                                                                  AccountModel>(
+                                                              stream: accountBloc
+                                                                  .accountStream,
+                                                              builder: (context,
+                                                                  snapshot) {
+                                                                List<CurrencyWrapper>
+                                                                    currencies =
+                                                                    Currency
+                                                                        .currencies
+                                                                        .map((c) =>
+                                                                            CurrencyWrapper.fromBTC(c))
+                                                                        .toList();
+                                                                currencies
+                                                                  ..addAll(accountModel
+                                                                      .fiatConversionList
+                                                                      .map((f) =>
+                                                                          CurrencyWrapper.fromFiat(
                                                                               f)));
 
-                                                            return DropdownButtonHideUnderline(
-                                                              child:
-                                                                  ButtonTheme(
-                                                                alignedDropdown:
-                                                                    true,
-                                                                child:
-                                                                    BreezDropdownButton(
-                                                                        onChanged: (value) => changeCurrency(
-                                                                            currentSale,
-                                                                            value,
-                                                                            userProfileBloc),
-                                                                        iconEnabledColor: Theme.of(context)
-                                                                            .textTheme
-                                                                            .headline
-                                                                            .color,
-                                                                        value: currentCurrency
-                                                                            .shortName,
-                                                                        style: theme.invoiceAmountStyle.copyWith(
-                                                                            color: Theme.of(context)
-                                                                                .textTheme
-                                                                                .headline
-                                                                                .color),
-                                                                        items: Currency.currencies.map((Currency
-                                                                            value) {
+                                                                return DropdownButtonHideUnderline(
+                                                                  child:
+                                                                      ButtonTheme(
+                                                                    alignedDropdown:
+                                                                        true,
+                                                                    child: BreezDropdownButton(
+                                                                        onChanged: (value) => changeCurrency(currentSale, value, userProfileBloc),
+                                                                        iconEnabledColor: Theme.of(context).textTheme.headline.color,
+                                                                        value: currentCurrency.shortName,
+                                                                        style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                        items: Currency.currencies.map((Currency value) {
                                                                           return DropdownMenuItem<
                                                                               String>(
                                                                             value:
@@ -366,24 +368,42 @@ class POSInvoiceState extends State<POSInvoice> {
                                                                               );
                                                                             }).toList(),
                                                                           )),
-                                                              ),
-                                                            );
-                                                          });
-                                                    })),
-                                          ]),
+                                                                  ),
+                                                                );
+                                                              });
+                                                        })),
+                                              ]),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).backgroundColor,
-                                    ),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.29),
-                                Expanded(
-                                    child: _isKeypadView
-                                        ? _numPad(posCatalogBloc, currentSale)
-                                        : _itemsView(currentSale, accountModel,
-                                            posCatalogBloc))
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Theme.of(context).backgroundColor,
+                                        ),
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.29),
+                                    Expanded(
+                                        child: _isKeypadView
+                                            ? _numPad(
+                                                posCatalogBloc, currentSale)
+                                            : _itemsView(currentSale,
+                                                accountModel, posCatalogBloc))
+                                  ],
+                                ),
+                                _itemInTransition != null
+                                    ? Positioned(
+                                        child: ScaleTransition(
+                                          scale: _scaleTransition,
+                                          child: Opacity(
+                                            opacity: _opacityTransition.value,
+                                            child: ItemAvatar(
+                                                _itemInTransition.imageURL),
+                                          ),
+                                        ),
+                                        left: _transitionAnimation.value.left,
+                                        top: _transitionAnimation.value.top)
+                                    : SizedBox()
                               ],
                             );
                           });
@@ -543,8 +563,8 @@ class POSInvoiceState extends State<POSInvoice> {
                   accountModel,
                   posCatalogBloc,
                   catalogItems,
-                  (item) =>
-                      _addItem(posCatalogBloc, currentSale, accountModel, item))
+                  (item, avatarKey) => _addItem(posCatalogBloc, currentSale,
+                      accountModel, item, avatarKey))
         ],
       ),
     );
@@ -643,8 +663,8 @@ class POSInvoiceState extends State<POSInvoice> {
           return PosPaymentDialog(invoiceBloc, user, payReq);
         }).then((clear) {
       if (clear) {
-          clearSale();
-        }
+        clearSale();
+      }
     });
   }
 
@@ -656,15 +676,71 @@ class POSInvoiceState extends State<POSInvoice> {
   }
 
   _addItem(PosCatalogBloc posCatalogBloc, Sale currentSale,
-      AccountModel account, Item item) {
+      AccountModel account, Item item, GlobalKey avatarKey) {
     var itemCurrency = CurrencyWrapper.fromShortName(item.currency, account);
 
     setState(() {
-      var newSale =
-          currentSale.addItem(item, itemCurrency.satConversionRate);
+      var newSale = currentSale.addItem(item, itemCurrency.satConversionRate);
       posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
       currentPendingItem = null;
+      _animateAddItem(item, avatarKey);
     });
+  }
+
+  void _animateAddItem(Item item, GlobalKey avatarKey) {
+    // start position
+    RenderBox avatarPos = avatarKey.currentContext.findRenderObject();
+    var startPos = avatarPos.localToGlobal(Offset.zero,
+        ancestor: this.context.findRenderObject());
+    var begin = RelativeRect.fromLTRB(startPos.dx, startPos.dy, 0, 0);
+
+    // end position
+    RenderBox cartBox = badgeKey.currentContext.findRenderObject();
+    var endPos = cartBox.localToGlobal(Offset.zero,
+        ancestor: this.context.findRenderObject());
+    var end = RelativeRect.fromLTRB(startPos.dx, endPos.dy, 0, 0);
+
+    var tween = RelativeRectTween(begin: begin, end: end);
+
+    var controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 700));
+
+    //CurveTween(curve: Curves.easeInOut).
+    _transitionAnimation = tween
+        .chain(CurveTween(curve: Curves.easeOutCubic))
+        .animate(controller);
+    _itemInTransition = item;
+    // controller.addStatusListener((status) {
+    //   setState(() {
+    //     print("state changed");
+    //     if (status == AnimationStatus.completed) {
+    //       _itemInTransition = null;
+    //     }
+    //   });
+    // });
+    controller.addListener(() {
+      setState(() {
+        if (controller.status == AnimationStatus.completed) {
+          _itemInTransition = null;
+        }
+      });
+    });
+
+    // handle scale animation.
+    var scaleController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 700));
+    _scaleTransition = CurvedAnimation(
+        parent: scaleController, curve: Curves.easeInExpo.flipped);
+
+    // handle opcity animation.
+    var opacityController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 700));
+    _opacityTransition = CurvedAnimation(
+        parent: opacityController, curve: Curves.easeInExpo);
+    
+    scaleController.reverse(from: 1.0);
+    opacityController.forward(from: 0.7);
+    controller.forward();
   }
 
   onNumButtonPressed(Sale currentSale, String numberText) {
@@ -674,25 +750,27 @@ class POSInvoiceState extends State<POSInvoice> {
       double addition = int.parse(numberText).toDouble() /
           pow(10, currentCurrency.fractionSize);
       var newSale = currentSale;
-      var newPrice = currentAmount * 10 + addition;      
+      var newPrice = currentAmount * 10 + addition;
       if (currentPendingItem == null) {
-        newSale = currentSale.addCustomItem(
-          newPrice, currentCurrency.shortName, currentCurrency.satConversionRate);          
+        newSale = currentSale.addCustomItem(newPrice, currentCurrency.shortName,
+            currentCurrency.satConversionRate);
         currentPendingItem = newSale.saleLines.last;
       } else {
-        currentPendingItem = currentPendingItem.copywith(pricePerItem: newPrice);
+        currentPendingItem =
+            currentPendingItem.copywith(pricePerItem: newPrice);
         newSale = currentSale.updateItems((sl) {
           if (sl.isCustom && sl.itemName == currentPendingItem.itemName) {
-              return currentPendingItem;
-            }
-            return sl;
+            return currentPendingItem;
+          }
+          return sl;
         });
-      }      
+      }
       posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
     });
   }
 
-  changeCurrency(Sale currentSale, String value, UserProfileBloc userProfileBloc) {
+  changeCurrency(
+      Sale currentSale, String value, UserProfileBloc userProfileBloc) {
     setState(() {
       Currency currency = Currency.fromTickerSymbol(value);
 
@@ -715,7 +793,8 @@ class POSInvoiceState extends State<POSInvoice> {
         AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
       if (currentPendingItem != null) {
-        currentSale = currentSale.removeItem((sl) => sl.isCustom && sl.itemName == currentPendingItem.itemName);
+        currentSale = currentSale.removeItem(
+            (sl) => sl.isCustom && sl.itemName == currentPendingItem.itemName);
         currentPendingItem = null;
         posCatalogBloc.actionsSink.add(SetCurrentSale(currentSale));
       }
