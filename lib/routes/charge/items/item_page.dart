@@ -37,7 +37,7 @@ class ItemPageState extends State<ItemPage> {
   TextEditingController _skuController = TextEditingController();
   AccountBloc _accountBloc;
   bool _isInit = false;
-  String _titlePrefix = "Add";
+  String _title = "Add Item";
   CurrencyWrapper _selectedCurrency = CurrencyWrapper.fromBTC(Currency.BTC);
 
   @override
@@ -227,7 +227,7 @@ class ItemPageState extends State<ItemPage> {
         backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
-          "$_titlePrefix Item",
+          _title,
           style: Theme.of(context).appBarTheme.textTheme.title,
         ),
         actions: actions == null ? <Widget>[] : actions,
@@ -235,7 +235,7 @@ class ItemPageState extends State<ItemPage> {
       ),
       body: body,
       bottomNavigationBar: SingleButtonBottomBar(
-        text: "$_titlePrefix Item",
+        text: widget.item != null ? "SAVE" : _title,
         onPressed: () {
           {
             if (_formKey.currentState.validate()) {
