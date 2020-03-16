@@ -266,8 +266,7 @@ class ItemPageState extends State<ItemPage> {
                 UpdateItem updateItem = UpdateItem(widget.item.copyWith(
                     name: _nameController.text.trimRight(),
                     currency: _selectedCurrency.shortName,
-                    price: double.parse(
-                        _formattedPrice(double.parse(_priceController.text))),
+                    price: double.parse(_priceController.text),
                     sku: _skuController.text.isNotEmpty
                         ? _skuController.text
                         : null));
@@ -280,8 +279,7 @@ class ItemPageState extends State<ItemPage> {
                   Item(
                       name: _nameController.text.trimRight(),
                       currency: _selectedCurrency.shortName,
-                      price: double.parse(
-                          _formattedPrice(double.parse(_priceController.text))),
+                      price: double.parse(_priceController.text),
                       sku: _skuController.text.isNotEmpty
                           ? _skuController.text
                           : null),
