@@ -6,14 +6,15 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/loader.dart';
+import 'package:fixnum/fixnum.dart';
+import 'package:flutter/material.dart';
+import 'package:rxdart/subjects.dart';
+
 import 'reverse_swap_confirmation.dart';
 import 'swap_in_progress.dart';
 import 'withdraw_funds_page.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:flutter/material.dart';
-import 'package:rxdart/subjects.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:fixnum/fixnum.dart';
 
 class ReverseSwapPage extends StatefulWidget {
   final String userAddress;
@@ -138,7 +139,9 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                     WithdrawFundsPage(
                                         title: "Send to BTC Address",
                                         policy: WithdrawFundsPolicy(
-                                            policy.minValue, policy.maxValue, accSnapshot.data.balance),
+                                            policy.minValue,
+                                            policy.maxValue,
+                                            accSnapshot.data.balance),
                                         initialAddress: initialAddress,
                                         initialAmount: initialAmount,
                                         onNext: (amount, address) {
@@ -165,10 +168,9 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                               reverseSwapBloc.actionsSink
                                                   .add(action);
                                               return action.future
-                                                  .then((value){
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      });
+                                                  .then((value) {
+                                                Navigator.of(context).pop();
+                                              });
                                             },
                                             onPrevious: () {
                                               _pageController

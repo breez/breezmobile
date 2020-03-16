@@ -43,20 +43,28 @@ class CurrencyWrapper {
 
   double get satConversionRate {
     if (btc != null) {
-      return btc == Currency.SAT ? 1 : 1 / 100000000;
+      return btc.satConversionRate;
     }
-    return fiat.exchangeRate / 100000000;
+    return fiat.satConversionRate;
   }
 
-  RegExp get whitelistedPattern => btc?.whitelistedPattern ?? fiat.whitelistedPattern;
+  RegExp get whitelistedPattern =>
+      btc?.whitelistedPattern ?? fiat.whitelistedPattern;
 
-  String format(double value, {userInput = false, bool includeCurencySuffix = false, removeTrailingZeros = false}) {
+  String format(double value,
+      {userInput = false,
+      bool includeCurencySuffix = false,
+      removeTrailingZeros = false}) {
     if (btc != null) {
       var satValue = btc.toSats(value);
       return btc.format(satValue,
-          userInput: userInput, includeDisplayName: includeCurencySuffix, removeTrailingZeros: removeTrailingZeros);
+          userInput: userInput,
+          includeDisplayName: includeCurencySuffix,
+          removeTrailingZeros: removeTrailingZeros);
     }
     return fiat.formatFiat(value,
-        addCurrencyPrefix: includeCurencySuffix, allowBelowMin: true, removeTrailingZeros: removeTrailingZeros);
+        addCurrencyPrefix: includeCurencySuffix,
+        allowBelowMin: true,
+        removeTrailingZeros: removeTrailingZeros);
   }
 }

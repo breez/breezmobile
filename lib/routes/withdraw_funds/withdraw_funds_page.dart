@@ -10,13 +10,13 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/static_loader.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fixnum/fixnum.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class WithdrawFundsPage extends StatefulWidget {
   final Future Function(Int64 amount, String destAddress) onNext;
@@ -27,7 +27,12 @@ class WithdrawFundsPage extends StatefulWidget {
   final String optionalMessage;
 
   const WithdrawFundsPage(
-      {this.initialAddress, this.initialAmount, this.onNext, this.policy, this.title, this.optionalMessage});
+      {this.initialAddress,
+      this.initialAmount,
+      this.onNext,
+      this.policy,
+      this.title,
+      this.optionalMessage});
 
   @override
   State<StatefulWidget> createState() {
@@ -93,16 +98,17 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
             return StaticLoader();
           }
           AccountModel acc = snapshot.data;
-          List<Widget> optionalMessage = widget.optionalMessage == null ? [] : [
-            Text(widget.optionalMessage,
-                            style: TextStyle(
-                                color: Theme.of(context)
-                                    .errorColor,
-                                fontSize: 16.0,
-                                height: 1.2)),
-                                SizedBox(height: 40.0),
-          ];
-          List<Widget> amountWidget = [];          
+          List<Widget> optionalMessage = widget.optionalMessage == null
+              ? []
+              : [
+                  Text(widget.optionalMessage,
+                      style: TextStyle(
+                          color: Theme.of(context).errorColor,
+                          fontSize: 16.0,
+                          height: 1.2)),
+                  SizedBox(height: 40.0),
+                ];
+          List<Widget> amountWidget = [];
           if (widget.policy.minValue != widget.policy.maxValue) {
             amountWidget.add(AmountFormField(
                 readOnly: fetching,

@@ -8,9 +8,6 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'security_pin/backup_phrase/enter_backup_phrase_page.dart';
-import 'security_pin/restore_pin.dart';
-import 'beta_warning_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -22,9 +19,13 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:hex/hex.dart';
 
-class InitialWalkthroughPage extends StatefulWidget {  
+import 'beta_warning_dialog.dart';
+import 'security_pin/backup_phrase/enter_backup_phrase_page.dart';
+import 'security_pin/restore_pin.dart';
+
+class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
-  final BackupBloc _backupBloc;  
+  final BackupBloc _backupBloc;
 
   InitialWalkthroughPage(this._registrationBloc, this._backupBloc);
 
@@ -48,7 +49,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   void initState() {
     super.initState();
 
-    _instructions = "The simplest, fastest & safest way\nto spend your bitcoins";
+    _instructions =
+        "The simplest, fastest & safest way\nto spend your bitcoins";
 
     _multipleRestoreSubscription =
         widget._backupBloc.multipleRestoreStream.listen((options) async {

@@ -7,7 +7,6 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/circular_button.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 
 const PIN_CODE_LENGTH = 6;
 

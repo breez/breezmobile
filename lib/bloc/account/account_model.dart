@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -560,9 +560,10 @@ class SweepAllCoinsTxs {
   final SweepAllCoinsTransactions _sweepTxs;
 
   SweepAllCoinsTxs(this._sweepTxs);
-  
+
   Int64 get amount => _sweepTxs.amt;
   Map<int, TxDetail> get transactions {
-    return _sweepTxs.transactions.map((key, value) => MapEntry(key, TxDetail(value)));
-  } 
+    return _sweepTxs.transactions
+        .map((key, value) => MapEntry(key, TxDetail(value)));
+  }
 }

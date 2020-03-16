@@ -2,8 +2,8 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter/material.dart';
 
 Future protectAdminAction(
     BuildContext context, BreezUserModel user, Future onNext()) async {
@@ -123,8 +123,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
           },
         ),
         FlatButton(
-          child:
-              Text("OK", style: Theme.of(context).primaryTextTheme.button),
+          child: Text("OK", style: Theme.of(context).primaryTextTheme.button),
           onPressed: () async {
             if (_formKey.currentState.validate()) {
               try {

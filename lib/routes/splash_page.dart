@@ -1,7 +1,8 @@
+import 'dart:async';
+
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'dart:async';
 
 class SplashPage extends StatefulWidget {
   final BreezUserModel _user;

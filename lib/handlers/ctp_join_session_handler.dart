@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class CTPJoinSessionHandler {
   CTPJoinSessionHandler(
-    UserProfileBloc userProfileBloc,
+      UserProfileBloc userProfileBloc,
       ConnectPayBloc ctpBloc,
       BuildContext context,
       Function(RemoteSession session) onValidSession,
@@ -14,19 +14,18 @@ class CTPJoinSessionHandler {
     ctpBloc.sessionInvites.listen((sessionLink) async {
       if (ctpBloc.currentSession?.sessionID != sessionLink.sessionID) {
         var loaderRoute = createLoaderRoute(context);
-        try {          
+        try {
           Navigator.of(context).push(loaderRoute);
-          var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
-          await  protectAdminAction(
-            context, user, () async {
-              var currentSession = await ctpBloc.joinSessionByLink(sessionLink);
-              Navigator.of(context).removeRoute(loaderRoute);
-              onValidSession(currentSession);
-            });                  
-        } catch (e) {          
+          var user =
+              await userProfileBloc.userStream.firstWhere((u) => u != null);
+          await protectAdminAction(context, user, () async {
+            var currentSession = await ctpBloc.joinSessionByLink(sessionLink);
+            Navigator.of(context).removeRoute(loaderRoute);
+            onValidSession(currentSession);
+          });
+        } catch (e) {
           onError(e);
-        }
-        finally {
+        } finally {
           if (loaderRoute.isActive) {
             Navigator.of(context).removeRoute(loaderRoute);
           }

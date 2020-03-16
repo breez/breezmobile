@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:breez/bloc/marketplace/vendor_model.dart';
-import 'package:breez/widgets/route.dart';
-import 'vendor_webview.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/marketplace/vendor_model.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/route.dart';
+import 'package:flutter/material.dart';
+
+import 'vendor_webview.dart';
 
 class VendorRow extends StatelessWidget {
   final AccountBloc accountBloc;

@@ -40,7 +40,9 @@ class BackupPhraseGeneratorConfirmationPageState
             _buildBackupPhraseImage(),
             _buildInstructions(),
             _buildCheckbox(),
-            SizedBox(height: _isUnderstood ? 0 : 48,)
+            SizedBox(
+              height: _isUnderstood ? 0 : 48,
+            )
           ],
         ),
         bottomNavigationBar: _buildNextBtn(_isUnderstood));
@@ -59,7 +61,10 @@ class BackupPhraseGeneratorConfirmationPageState
 
   _buildInstructions() {
     return Padding(
-      padding: EdgeInsets.only(left: 48, right: 48,),
+      padding: EdgeInsets.only(
+        left: 48,
+        right: 48,
+      ),
       child: Container(
         height: 96,
         child: AutoSizeText(
@@ -81,7 +86,8 @@ class BackupPhraseGeneratorConfirmationPageState
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Theme(
-            data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+            data:
+                Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
             child: Checkbox(
                 activeColor: Colors.white,
                 checkColor: Theme.of(context).canvasColor,

@@ -1,4 +1,4 @@
-import 'package:fixnum/fixnum.dart';
+
 
 abstract class DBItem {
   Map<String, dynamic> toMap();
@@ -80,6 +80,10 @@ class SaleLine implements DBItem {
   final String currency;
   final double satConversionRate;
 
+  double get total => quantity * pricePerItem;
+
+  bool get isCustom => itemID == null;
+
   SaleLine(
       {this.id,
       this.saleID,
@@ -156,16 +160,21 @@ class SaleLine implements DBItem {
 class Sale implements DBItem {
   final int id;
   final List<SaleLine> saleLines;
+  final bool priceLocked;
 
-  Sale copyWith({List<SaleLine> saleLines}) {
-    return Sale(id: this.id, saleLines: saleLines.toList());
+  Sale copyWith({List<SaleLine> saleLines, priceLocked}) {
+    return Sale(
+        id: this.id,
+        saleLines: (saleLines ?? this.saleLines).toList(),
+        priceLocked: priceLocked ?? this.priceLocked);
   }
 
-  Sale({this.id, this.saleLines});
+  Sale({this.id, this.saleLines, this.priceLocked = false});
 
   Sale.fromMap(Map<String, dynamic> json)
       : id = json["id"],
-        saleLines = [];
+        saleLines = [],
+        priceLocked = false;
 
   @override
   Map<String, dynamic> toMap() {
@@ -187,6 +196,20 @@ class Sale implements DBItem {
           .copywith(saleID: this.id));
     }
     return this.copyWith(saleLines: saleLines);
+  }
+
+  Sale removeItem(bool Function(SaleLine) predicate) {
+    var saleLines = this.saleLines.toList();
+    return this.copyWith(
+        saleLines: saleLines..removeWhere((element) => predicate(element)));
+  }
+
+  Sale updateItems(SaleLine Function(SaleLine) predicate) {
+    var saleLines = this.saleLines.toList();
+    return this.copyWith(
+        saleLines: saleLines.map((element) {
+      return predicate(element);
+    }).toList());
   }
 
   Sale incrementQuantity(int itemID, double satConversionRate,
@@ -216,11 +239,17 @@ class Sale implements DBItem {
     return this.copyWith(saleLines: newSaleLines);
   }
 
-  Int64 get totalChargeSat {
+  double get totalChargeSat {
     double totalSat = 0;
-    saleLines.forEach((sl) {
-      totalSat += sl.pricePerItem * sl.satConversionRate * sl.quantity;
+    Map<double, double> perCurency = Map();
+    saleLines.forEach((element) {
+      perCurency[element.satConversionRate] =
+          (perCurency[element.satConversionRate] ?? 0) +
+              element.pricePerItem * element.quantity;
     });
-    return Int64(totalSat.toInt());
+    perCurency.forEach((rate, value) {
+      totalSat += rate * value;
+    });
+    return totalSat;
   }
 }

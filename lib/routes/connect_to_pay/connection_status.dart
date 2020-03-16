@@ -1,7 +1,9 @@
 import 'dart:core';
+
+import 'package:flutter/material.dart';
+
 import 'animations/connected.dart';
 import 'animations/waiting_peer_connect.dart';
-import 'package:flutter/material.dart';
 
 enum ConnectionState { IDLE, WAITING_PEER_CONNECT, CONNECTED, WAITING_ACTION }
 

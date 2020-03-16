@@ -98,7 +98,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
 
     return StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
-        builder: (context, snapshot) {         
+        builder: (context, snapshot) {
           var account = snapshot.data;
           if (account == null) {
             return Loader();
@@ -110,7 +110,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               child: SyncProgressDialog(closeOnSync: false),
             );
           }
-          
+
           return ListBody(
             children: <Widget>[
               _buildDialogBody(

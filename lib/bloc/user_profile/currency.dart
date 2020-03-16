@@ -42,7 +42,7 @@ class Currency extends Object {
       case "BTC":
         return "₿";
       case "SAT":
-        return "S";
+        return "Ş";
       default:
         return "₿";
     }
@@ -58,6 +58,8 @@ class Currency extends Object {
         return RegExp("^\\d+\\.?\\d{0,8}");
     }
   }
+
+  double get satConversionRate => this == SAT ? 1.0 : 100000000;
 }
 
 class _CurrencyFormatter {

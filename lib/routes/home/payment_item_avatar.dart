@@ -1,7 +1,7 @@
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 class PaymentItemAvatar extends StatelessWidget {
   final PaymentInfo paymentItem;
