@@ -57,6 +57,12 @@ class SqliteRepository implements Repository {
   }
 
   @override
+  Future<List<Item>> fetchItemsByFilter(String filter) async {
+    return await _fetchDBItems(await getDB(), "item", (e) => Item.fromMap(e),
+        where: "name LIKE ?", whereArgs: ['%$filter%']);
+  }
+
+  @override
   Future<void> deleteItem(int id) async {
     return _deleteDBItems(await getDB(), "item",
         where: "id = ?", whereArgs: [id]);
@@ -132,13 +138,12 @@ class SqliteRepository implements Repository {
   Future<List<T>> _fetchDBItems<T>(DatabaseExecutor executor, String table,
       T Function(Map<String, dynamic>) fromMapFunc,
       {String where, List whereArgs}) async {
-    
     List<Map<String, dynamic>> items;
     if (where == null) {
       items = await executor.query(table);
     } else {
       items = await executor.query(table, where: where, whereArgs: whereArgs);
-    }    
+    }
     if (items.length == 0) {
       return [];
     }

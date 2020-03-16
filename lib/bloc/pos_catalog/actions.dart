@@ -1,4 +1,3 @@
-
 import 'package:breez/bloc/async_action.dart';
 
 import 'model.dart';
@@ -43,4 +42,10 @@ class SetCurrentSale extends AsyncAction {
   final Sale currentSale;
 
   SetCurrentSale(this.currentSale);
+}
+
+class FilterSales extends AsyncAction {
+  final String filter;
+
+  FilterSales(this.filter);
 }

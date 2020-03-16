@@ -10,10 +10,8 @@ class ItemsList extends StatelessWidget {
   final PosCatalogBloc posCatalogBloc;
   final List<Item> _items;
   final Function(Item item) _addItem;
-  final String _filter;
 
-  ItemsList(this.accountModel, this.posCatalogBloc, this._items, this._addItem,
-      this._filter);
+  ItemsList(this.accountModel, this.posCatalogBloc, this._items, this._addItem);
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +20,8 @@ class ItemsList extends StatelessWidget {
         shrinkWrap: true,
         primary: false,
         itemBuilder: (BuildContext context, int index) {
-          return _filter.isNotEmpty && _containsItem(index) || _filter.isEmpty
-              ? CatalogItem(accountModel, posCatalogBloc, _items[index],
-                  _items.length - 1 == index, _addItem)
-              : Container();
+          return CatalogItem(accountModel, posCatalogBloc, _items[index],
+              _items.length - 1 == index, _addItem);
         });
-  }
-
-  _containsItem(int index) {
-    // items that contains the filtered text in their name or sku, case insensitive
-    return _items[index].name.toLowerCase().contains(_filter.toLowerCase());
-    //|| _items[index].sku.toLowerCase().contains(_filter.toLowerCase());
   }
 }

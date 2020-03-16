@@ -13,6 +13,7 @@ abstract class Repository {
   Future<Item> fetchItemByID(int id);
   //This should be converted later to support pagination.
   Future<List<Item>> fetchAllItems();
+  Future<List<Item>> fetchItemsByFilter(String filter);
 
   // Sale
   Future<int> addSale(Sale sale);

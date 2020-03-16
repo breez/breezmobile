@@ -58,7 +58,15 @@ class POSInvoiceState extends State<POSInvoice> {
 
   @override
   void didChangeDependencies() {
-    _itemFilterController.addListener(() => setState(() {}));
+    PosCatalogBloc posCatalogBloc =
+        AppBlocsProvider.of<PosCatalogBloc>(context);
+    _itemFilterController.addListener(
+      () => setState(() {
+        FilterSales filterSales = FilterSales(_itemFilterController.text);
+        posCatalogBloc.actionsSink.add(filterSales);
+        filterSales.future.then((_) {});
+      }),
+    );
     itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
     itemWidth = (MediaQuery.of(context).size.width) / 2;
     if (accountSubscription == null) {
@@ -560,8 +568,7 @@ class POSInvoiceState extends State<POSInvoice> {
                   posCatalogBloc,
                   catalogItems,
                   (item) =>
-                      _addItem(posCatalogBloc, currentSale, accountModel, item),
-                  _itemFilterController.text)
+                      _addItem(posCatalogBloc, currentSale, accountModel, item))
         ],
       ),
     );
