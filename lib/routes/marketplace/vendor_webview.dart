@@ -7,9 +7,10 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'webln_handlers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+
+import 'webln_handlers.dart';
 
 class VendorWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;

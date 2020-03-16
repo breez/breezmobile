@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'package:breez/logger.dart' as logger;
 import 'dart:io';
+
+import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
@@ -158,7 +159,8 @@ class BreezBridge {
       ..uri = uri
       ..k1 = k1
       ..callback = callback;
-    return _invokeMethodWhenReady("connectDirectToLnurl", {"argument": channel.writeToBuffer()});
+    return _invokeMethodWhenReady(
+        "connectDirectToLnurl", {"argument": channel.writeToBuffer()});
   }
 
   Future<SweepAllCoinsTransactions> sweepAllCoinsTransactions(String address) {

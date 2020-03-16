@@ -63,7 +63,8 @@ class LNUrlBloc with AsyncActionsHandler {
   }
 
   Future _openChannel(OpenChannel action) async {
-    action.resolve(await _breezLib.connectDirectToLnurl(action.uri, action.k1, action.callback));
+    action.resolve(await _breezLib.connectDirectToLnurl(
+        action.uri, action.k1, action.callback));
   }
 
   @override

@@ -1,12 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:breez/services/breez_server/server.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:convert';
-import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/breez_server/server.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
 
 class _CustomerData {
   String fullName = '';

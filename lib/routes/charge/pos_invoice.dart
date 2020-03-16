@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:badges/badges.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -19,7 +20,6 @@ import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/badge.dart';
 import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -47,14 +47,13 @@ class POSInvoiceState extends State<POSInvoice> {
 
   double itemHeight;
   double itemWidth;
-
-  // double amount = 0;
-  double currentAmount = 0;
   bool _useFiat = false;
   CurrencyWrapper currentCurrency;
   bool _isKeypadView = true;
-
+  SaleLine currentPendingItem;
   StreamSubscription accountSubscription;
+
+  double get currentAmount => currentPendingItem?.total ?? 0;
 
   @override
   void didChangeDependencies() {
@@ -120,10 +119,8 @@ class POSInvoiceState extends State<POSInvoice> {
                             if (accountModel == null) {
                               return Loader();
                             }
-                            double totalAmount =
-                                currentCurrency.satConversionRate *
-                                        currentSale.totalChargeSat.toInt() +
-                                    currentAmount;
+                            double totalAmount = currentSale.totalChargeSat /
+                                    currentCurrency.satConversionRate;
                             return Column(
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
@@ -183,53 +180,6 @@ class POSInvoiceState extends State<POSInvoice> {
                                             ),
                                           ),
                                         ),
-                                        /*Container(
-                                        height: 80.0,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 16.0, right: 16.0, top: 0.0),
-                                          child: TextField(
-                                            textInputAction: TextInputAction.done,
-                                            keyboardType: TextInputType.multiline,
-                                            maxLines: null,
-                                            enabled: true,
-                                            textAlign: TextAlign.left,
-                                            maxLength: 90,
-                                            maxLengthEnforced: true,
-                                            controller:
-                                                _invoiceDescriptionController,
-                                            decoration: InputDecoration(
-                                              focusedBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  style: BorderStyle.solid,
-                                                  color: Color(0xFFc5cedd),
-                                                ),
-                                              ),
-                                              enabledBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  style: BorderStyle.solid,
-                                                  color: Color(0xFFc5cedd),
-                                                ),
-                                              ),
-                                              counterStyle: Theme.of(context)
-                                                  .primaryTextTheme
-                                                  .caption,
-                                              hintText: 'Add Note',
-                                              hintStyle: theme.invoiceMemoStyle
-                                                  .copyWith(
-                                                      color: Theme.of(context)
-                                                          .primaryTextTheme
-                                                          .display1
-                                                          .color),
-                                            ),
-                                            style: theme.invoiceMemoStyle.copyWith(
-                                                color: Theme.of(context)
-                                                    .primaryTextTheme
-                                                    .display1
-                                                    .color),
-                                          ),
-                                        ),
-                                      ),*/
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(bottom: 24),
@@ -243,31 +193,74 @@ class POSInvoiceState extends State<POSInvoice> {
                                                 child: Align(
                                                     alignment:
                                                         Alignment.centerLeft,
-                                                    child: BadgeIcon(
-                                                        number: currentSale
-                                                            .saleLines.length,
-                                                        onPress: () {
+                                                    child: GestureDetector(
+                                                        behavior:
+                                                            HitTestBehavior
+                                                                .translucent,
+                                                        onTap: () {
                                                           var currentSaleRoute =
                                                               CupertinoPageRoute(
                                                                   fullscreenDialog:
                                                                       true,
                                                                   builder: (_) =>
                                                                       SaleView(
+                                                                        onCharge: () => onInvoiceSubmitted(
+                                                                            currentSale,
+                                                                            invoiceBloc,
+                                                                            userProfile,
+                                                                            accountModel),
+                                                                        onDeleteSale:
+                                                                            () =>
+                                                                                approveClear(currentSale),
                                                                         useFiat:
                                                                             _useFiat,
                                                                       ));
-                                                          // FadeInRoute(
-                                                          //     builder: (_) =>
-                                                          //         SaleView(
-                                                          //           useFiat:
-                                                          //               _useFiat,
-                                                          //         ));
                                                           Navigator.of(context)
                                                               .push(
                                                                   currentSaleRoute);
                                                         },
-                                                        iconData: Icons
-                                                            .shopping_cart))),
+                                                        child: Badge(
+                                                          position:
+                                                              BadgePosition
+                                                                  .topRight(
+                                                                      top: 5,
+                                                                      right:
+                                                                          -10),
+                                                          animationType:
+                                                              BadgeAnimationType
+                                                                  .scale,
+                                                          badgeColor: Theme.of(
+                                                                  context)
+                                                              .floatingActionButtonTheme
+                                                              .backgroundColor,
+                                                          badgeContent: Text(
+                                                            currentSale
+                                                                .saleLines
+                                                                .length
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 20.0,
+                                                                    bottom: 8.0,
+                                                                    right: 4.0,
+                                                                    top: 20.0),
+                                                            child: Image.asset(
+                                                              "src/icon/cart.png",
+                                                              width: 24.0,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryTextTheme
+                                                                  .button
+                                                                  .color,
+                                                            ),
+                                                          ),
+                                                        )))),
                                             Expanded(
                                               child: Align(
                                                 alignment:
@@ -342,6 +335,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                                 child:
                                                                     BreezDropdownButton(
                                                                         onChanged: (value) => changeCurrency(
+                                                                            currentSale,
                                                                             value,
                                                                             userProfileBloc),
                                                                         iconEnabledColor: Theme.of(context)
@@ -610,13 +604,12 @@ class POSInvoiceState extends State<POSInvoice> {
             );
           });
     } else {
-      var satAmount = currentSale.totalChargeSat +
-          (currentCurrency.satConversionRate * currentAmount).toInt();
+      var satAmount = currentSale.totalChargeSat;
       if (satAmount == 0) {
         return null;
       }
 
-      if (satAmount > account.maxAllowedToReceive) {
+      if (satAmount > account.maxAllowedToReceive.toDouble()) {
         promptError(
             context,
             "You don't have the capacity to receive such payment.",
@@ -626,7 +619,7 @@ class POSInvoiceState extends State<POSInvoice> {
         return;
       }
 
-      if (satAmount > account.maxPaymentAmount) {
+      if (satAmount > account.maxPaymentAmount.toDouble()) {
         promptError(
             context,
             "You have exceeded the maximum payment size.",
@@ -635,16 +628,24 @@ class POSInvoiceState extends State<POSInvoice> {
                 style: Theme.of(context).dialogTheme.contentTextStyle));
         return;
       }
-
-      var newInvoiceAction = NewInvoice(InvoiceRequestModel(user.name,
-          _invoiceDescriptionController.text, user.avatarURL, satAmount,
-          expiry: Int64(user.cancellationTimeoutValue.toInt())));
-      invoiceBloc.actionsSink.add(newInvoiceAction);
-      newInvoiceAction.future.then((value) {
-        return showPaymentDialog(invoiceBloc, user, value as String);
-      }).catchError((error) {
-        showFlushbar(context,
-            message: error.toString(), duration: Duration(seconds: 10));
+      PosCatalogBloc posCatalogBloc =
+          AppBlocsProvider.of<PosCatalogBloc>(context);
+      var lockSale = SetCurrentSale(currentSale.copyWith(priceLocked: true));
+      posCatalogBloc.actionsSink.add(lockSale);
+      lockSale.future.then((value) {
+        var newInvoiceAction = NewInvoice(InvoiceRequestModel(
+            user.name,
+            _invoiceDescriptionController.text,
+            user.avatarURL,
+            Int64(satAmount.toInt()),
+            expiry: Int64(user.cancellationTimeoutValue.toInt())));
+        invoiceBloc.actionsSink.add(newInvoiceAction);
+        newInvoiceAction.future.then((value) {
+          return showPaymentDialog(invoiceBloc, user, value as String);
+        }).catchError((error) {
+          showFlushbar(context,
+              message: error.toString(), duration: Duration(seconds: 10));
+        });
       });
     }
   }
@@ -657,58 +658,65 @@ class POSInvoiceState extends State<POSInvoice> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return PosPaymentDialog(invoiceBloc, user, payReq);
-        }).then((result) {
-      setState(() {
-        clearSale();
-      });
+        }).then((clear) {
+      if (clear) {
+          clearSale();
+        }
     });
   }
 
   onAddition(PosCatalogBloc posCatalogBloc, Sale currentSale,
       double satConversionRate) {
     setState(() {
-      var newSale = currentSale.addCustomItem(
-          currentAmount, currentCurrency.shortName, satConversionRate);
-      posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
-      currentAmount = 0;
+      currentPendingItem = null;
     });
   }
 
   _addItem(PosCatalogBloc posCatalogBloc, Sale currentSale,
       AccountModel account, Item item) {
-    var btcCurrency = Currency.fromTickerSymbol(item.currency);
-    var currencyWrapper = btcCurrency != null
-        ? CurrencyWrapper.fromBTC(btcCurrency)
-        : CurrencyWrapper.fromFiat(account.fiatCurrency);
+    var itemCurrency = CurrencyWrapper.fromShortName(item.currency, account);
 
     setState(() {
       var newSale =
-          currentSale.addItem(item, 1 / currencyWrapper.satConversionRate);
+          currentSale.addItem(item, itemCurrency.satConversionRate);
       posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
-      currentAmount = 0;
+      currentPendingItem = null;
     });
   }
 
-  onNumButtonPressed(String numberText) {
+  onNumButtonPressed(Sale currentSale, String numberText) {
+    PosCatalogBloc posCatalogBloc =
+        AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
       double addition = int.parse(numberText).toDouble() /
           pow(10, currentCurrency.fractionSize);
-      currentAmount = currentAmount * 10 + addition;
+      var newSale = currentSale;
+      var newPrice = currentAmount * 10 + addition;      
+      if (currentPendingItem == null) {
+        newSale = currentSale.addCustomItem(
+          newPrice, currentCurrency.shortName, currentCurrency.satConversionRate);          
+        currentPendingItem = newSale.saleLines.last;
+      } else {
+        currentPendingItem = currentPendingItem.copywith(pricePerItem: newPrice);
+        newSale = currentSale.updateItems((sl) {
+          if (sl.isCustom && sl.itemName == currentPendingItem.itemName) {
+              return currentPendingItem;
+            }
+            return sl;
+        });
+      }      
+      posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
     });
   }
 
-  changeCurrency(String value, UserProfileBloc userProfileBloc) {
+  changeCurrency(Sale currentSale, String value, UserProfileBloc userProfileBloc) {
     setState(() {
       Currency currency = Currency.fromTickerSymbol(value);
 
       bool flipFiat = _useFiat == (currency != null);
       if (flipFiat) {
         _useFiat = !_useFiat;
-        _clearAmounts();
-      } else if (currency != null) {
-        var conversionRate =
-            currency == Currency.SAT ? 100000000 : 1 / 100000000;
-        currentAmount = currentAmount * conversionRate;
+        _clearAmounts(currentSale);
       }
 
       if (currency != null) {
@@ -719,9 +727,15 @@ class POSInvoiceState extends State<POSInvoice> {
     });
   }
 
-  _clearAmounts() {
+  _clearAmounts(Sale currentSale) {
+    PosCatalogBloc posCatalogBloc =
+        AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
-      currentAmount = 0;
+      if (currentPendingItem != null) {
+        currentSale = currentSale.removeItem((sl) => sl.isCustom && sl.itemName == currentPendingItem.itemName);
+        currentPendingItem = null;
+        posCatalogBloc.actionsSink.add(SetCurrentSale(currentSale));
+      }
     });
   }
 
@@ -729,7 +743,7 @@ class POSInvoiceState extends State<POSInvoice> {
     PosCatalogBloc posCatalogBloc =
         AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
-      currentAmount = 0;
+      currentPendingItem = null;
       _invoiceDescriptionController.text = "";
       posCatalogBloc.actionsSink.add(SetCurrentSale(Sale(saleLines: [])));
     });
@@ -768,13 +782,13 @@ class POSInvoiceState extends State<POSInvoice> {
     }
   }
 
-  Container _numberButton(String number) {
+  Container _numberButton(Sale currentSale, String number) {
     return Container(
         decoration: BoxDecoration(
             border: Border.all(
                 color: Theme.of(context).backgroundColor, width: 0.5)),
         child: FlatButton(
-            onPressed: () => onNumButtonPressed(number),
+            onPressed: () => onNumButtonPressed(currentSale, number),
             child: Text(number,
                 textAlign: TextAlign.center, style: theme.numPadNumberStyle)));
   }
@@ -785,7 +799,7 @@ class POSInvoiceState extends State<POSInvoice> {
         childAspectRatio: (itemWidth / itemHeight),
         padding: EdgeInsets.zero,
         children: List<int>.generate(9, (i) => i)
-            .map((index) => _numberButton((index + 1).toString()))
+            .map((index) => _numberButton(currentSale, (index + 1).toString()))
             .followedBy([
           Container(
               decoration: BoxDecoration(
@@ -795,10 +809,10 @@ class POSInvoiceState extends State<POSInvoice> {
                   onLongPress: () => approveClear(currentSale),
                   child: FlatButton(
                       onPressed: () {
-                        _clearAmounts();
+                        _clearAmounts(currentSale);
                       },
                       child: Text("C", style: theme.numPadNumberStyle)))),
-          _numberButton("0"),
+          _numberButton(currentSale, "0"),
           Container(
               decoration: BoxDecoration(
                   border: Border.all(

@@ -1,15 +1,16 @@
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:flutter/material.dart';
 
 class SetAdminPasswordPage extends StatefulWidget {
   final String submitAction;
 
-  const SetAdminPasswordPage({Key key, @required this.submitAction}) : super(key: key);
+  const SetAdminPasswordPage({Key key, @required this.submitAction})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -27,14 +28,15 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
   final FocusNode _repeatPasswordFocus = FocusNode();
 
   @override
-  void initState() {    
+  void initState() {
     super.initState();
     _passwordFocus.requestFocus();
   }
 
   @override
   Widget build(BuildContext context) {
-    UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    UserProfileBloc userProfileBloc =
+        AppBlocsProvider.of<UserProfileBloc>(context);
     return Scaffold(
         appBar: AppBar(
             iconTheme: Theme.of(context).appBarTheme.iconTheme,
@@ -118,7 +120,8 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
             text: widget.submitAction,
             onPressed: () async {
               if (_formKey.currentState.validate()) {
-                SetAdminPassword action = SetAdminPassword(_passwordController.text);
+                SetAdminPassword action =
+                    SetAdminPassword(_passwordController.text);
                 userProfileBloc.userActionsSink.add(action);
                 await action.future;
                 Navigator.of(context).pop();

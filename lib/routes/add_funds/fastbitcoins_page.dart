@@ -5,9 +5,8 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'fastbitcoins_confirm.dart';
-import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -17,6 +16,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'fastbitcoins_confirm.dart';
 
 class FastbitcoinsPage extends StatefulWidget {
   final String fastBitcoinUrl;
@@ -217,7 +218,9 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                           isDense: true,
                                           decoration: InputDecoration(
                                             labelText: 'Currency',
-                                            contentPadding: EdgeInsets.symmetric(vertical: 10.6),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    vertical: 10.6),
                                           ),
                                           value: _currency,
                                           onChanged: (String newValue) {
@@ -236,8 +239,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                             return DropdownMenuItem(
                                               value: value,
                                               child: Text(value,
-                                                  style: theme
-                                                      .FieldTextStyle
+                                                  style: theme.FieldTextStyle
                                                       .textStyle),
                                             );
                                           }).toList(),

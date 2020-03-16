@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert' as JSON;
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';

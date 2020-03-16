@@ -3,7 +3,7 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -46,8 +46,7 @@ class CatalogItem extends StatelessWidget {
             leading: ItemAvatar(_itemInfo.imageURL),
             title: Text(
               _itemInfo.name,
-              style: theme.transactionTitleStyle
-                  .copyWith(fontSize: 16.4, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.itemTitleStyle,
               overflow: TextOverflow.ellipsis,
             ),
             trailing: Column(
@@ -60,7 +59,7 @@ class CatalogItem extends StatelessWidget {
                     children: <Widget>[
                       RichText(
                         text: TextSpan(
-                          style: theme.transactionAmountStyle,
+                          style: Theme.of(context).textTheme.itemPriceStyle,
                           children: <InlineSpan>[
                             TextSpan(
                               text: _getSymbol(),

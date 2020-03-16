@@ -38,7 +38,9 @@ class FiatConversion {
   }
 
   String formatFiat(double fiatAmount,
-      {bool addCurrencyPrefix = true, bool removeTrailingZeros = false, bool allowBelowMin = false}) {
+      {bool addCurrencyPrefix = true,
+      bool removeTrailingZeros = false,
+      bool allowBelowMin = false}) {
     int fractionSize = this.currencyData.fractionSize;
     double minimumAmount = 1 / (pow(10, fractionSize));
 
@@ -62,4 +64,6 @@ class FiatConversion {
     }
     return formattedAmount;
   }
+
+  double get satConversionRate => 1 / exchangeRate * 100000000;
 }

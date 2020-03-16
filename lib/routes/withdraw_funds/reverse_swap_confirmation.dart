@@ -6,12 +6,12 @@ import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fee_chooser.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:flutter/material.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/material.dart';
 
 class ReverseSwapConfirmation extends StatefulWidget {
   final ReverseSwapDetails swap;

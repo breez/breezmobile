@@ -1,8 +1,8 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:async';
 
-import 'package:rxdart/rxdart.dart';
 import 'package:breez/logger.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:rxdart/rxdart.dart';
 
 abstract class Notifications {
   Future<String> getToken();

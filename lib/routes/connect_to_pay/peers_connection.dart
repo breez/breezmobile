@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
-import 'connected_peer.dart';
-import 'connection_status.dart';
 import 'package:breez/widgets/layouts.dart';
 import 'package:flutter/material.dart';
 
+import 'connected_peer.dart';
+import 'connection_status.dart';
 import 'connection_status.dart' as sessionConnection;
 
 class PeersConnection extends StatelessWidget {

@@ -1,7 +1,8 @@
 import 'dart:async';
+
 import 'package:breez/logger.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:rxdart/rxdart.dart';
 
 class DeepLinksService {
   static const SESSION_SECRET = "sessionSecret";

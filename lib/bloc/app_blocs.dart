@@ -47,8 +47,7 @@ class AppBlocs {
         _registerBloc(UserProfileBloc(), blocsByType);
     AccountBloc accountBloc =
         _registerBloc(AccountBloc(userProfileBloc.userStream), blocsByType);
-    InvoiceBloc invoicesBloc =
-        _registerBloc(InvoiceBloc(), blocsByType);
+    InvoiceBloc invoicesBloc = _registerBloc(InvoiceBloc(), blocsByType);
     ConnectPayBloc connectPayBloc = _registerBloc(
         ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream,
             accountBloc.userActionsSink),
@@ -64,7 +63,7 @@ class AppBlocs {
         ReverseSwapBloc(accountBloc.paymentsStream, userProfileBloc.userStream),
         blocsByType);
     PosCatalogBloc posCatalogBloc =
-        _registerBloc(PosCatalogBloc(), blocsByType);
+        _registerBloc(PosCatalogBloc(accountBloc.accountStream), blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc =
         _registerBloc(FastbitcoinsBloc(production: true), blocsByType);
 

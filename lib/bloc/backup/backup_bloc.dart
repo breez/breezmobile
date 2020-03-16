@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/background_task.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
-import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../async_action.dart';
