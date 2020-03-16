@@ -36,7 +36,8 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                       child: Text(
                         optionText,
                         style: TextStyle(
-                            fontFamily: "IBMPlexSansMedium",
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'IBMPlexSans',
                             fontSize: 16.4,
                             letterSpacing: 0.0,
                             color: Theme.of(context)
