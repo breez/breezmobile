@@ -49,7 +49,7 @@ class ItemPageState extends State<ItemPage> {
       if (widget.item != null) {
         _accountBloc.accountStream.first.then((accountModel) {
           setState(() {
-            _titlePrefix = "Edit";
+            _title = "Edit Item";
             _nameController.text = widget.item.name;
             _skuController.text = widget.item.sku;
             _selectedCurrency = CurrencyWrapper.fromShortName(
