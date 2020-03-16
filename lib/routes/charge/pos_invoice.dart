@@ -538,9 +538,14 @@ class POSInvoiceState extends State<POSInvoice> {
                 contentPadding: const EdgeInsets.only(top: 16, left: 16),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    Icons.search,
+                    _itemFilterController.text.isEmpty
+                        ? Icons.search
+                        : Icons.delete_forever,
                     size: 20,
                   ),
+                  onPressed: _itemFilterController.text.isEmpty 
+                      ? null
+                      : () => _itemFilterController.text = "",
                   padding: EdgeInsets.only(right: 24, top: 4),
                 ),
                 border: UnderlineInputBorder()),
