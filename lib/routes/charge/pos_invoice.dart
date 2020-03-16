@@ -524,13 +524,12 @@ class POSInvoiceState extends State<POSInvoice> {
 
   _buildCatalogContent(Sale currentSale, AccountModel accountModel,
       PosCatalogBloc posCatalogBloc, List<Item> catalogItems) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: ListView(
-        primary: false,
-        shrinkWrap: true,
-        children: <Widget>[
-          TextField(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Expanded(
+          flex: 0,
+          child: TextField(
             controller: _itemFilterController,
             enabled: catalogItems != null,
             decoration: InputDecoration(
@@ -543,7 +542,7 @@ class POSInvoiceState extends State<POSInvoice> {
                         : Icons.close,
                     size: 20,
                   ),
-                  onPressed: _itemFilterController.text.isEmpty 
+                  onPressed: _itemFilterController.text.isEmpty
                       ? null
                       : () {
                           _itemFilterController.text = "";
@@ -553,27 +552,38 @@ class POSInvoiceState extends State<POSInvoice> {
                 ),
                 border: UnderlineInputBorder()),
           ),
-          catalogItems?.length == 0
-              ? Padding(
-                  padding: const EdgeInsets.only(
-                      top: 180.0, left: 40.0, right: 40.0),
-                  child: AutoSizeText(
-                    _itemFilterController.text.isNotEmpty
-                        ? "No matching items found."
-                        : "No items to display.\nAdd items to this view using the '+' button.",
-                    textAlign: TextAlign.center,
-                    minFontSize: MinFontSize(context).minFontSize,
-                    stepGranularity: 0.1,
-                  ),
-                )
-              : ItemsList(
-                  accountModel,
-                  posCatalogBloc,
-                  catalogItems,
-                  (item) =>
-                      _addItem(posCatalogBloc, currentSale, accountModel, item))
-        ],
-      ),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: ListView(
+              primary: false,
+              shrinkWrap: true,
+              children: <Widget>[
+                catalogItems?.length == 0
+                    ? Padding(
+                        padding: const EdgeInsets.only(
+                            top: 180.0, left: 40.0, right: 40.0),
+                        child: AutoSizeText(
+                          _itemFilterController.text.isNotEmpty
+                              ? "No matching items found."
+                              : "No items to display.\nAdd items to this view using the '+' button.",
+                          textAlign: TextAlign.center,
+                          minFontSize: MinFontSize(context).minFontSize,
+                          stepGranularity: 0.1,
+                        ),
+                      )
+                    : ItemsList(
+                        accountModel,
+                        posCatalogBloc,
+                        catalogItems,
+                        (item) => _addItem(
+                            posCatalogBloc, currentSale, accountModel, item))
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
