@@ -641,10 +641,10 @@ class POSInvoiceState extends State<POSInvoice> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return PosPaymentDialog(invoiceBloc, user, payReq);
-        }).then((result) {
-      setState(() {
-        clearSale();
-      });
+        }).then((clear) {
+      if (clear) {
+          clearSale();
+        }
     });
   }
 
