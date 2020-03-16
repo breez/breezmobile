@@ -1,4 +1,4 @@
-import 'package:fixnum/fixnum.dart';
+
 
 abstract class DBItem {
   Map<String, dynamic> toMap();
@@ -25,16 +25,24 @@ class Asset implements DBItem {
 class Item implements DBItem {
   final int id;
   final String name;
+  final String sku;
   final String imageURL;
   final String currency;
   final double price;
 
-  Item({this.id, this.name, this.imageURL, this.currency, this.price});
+  Item(
+      {this.id, this.name, this.sku, this.imageURL, this.currency, this.price});
 
-  Item copyWith({String name, String imageURL, String currency, double price}) {
+  Item copyWith(
+      {String name,
+      String sku,
+      String imageURL,
+      String currency,
+      double price}) {
     return Item(
         id: this.id,
         name: name ?? this.name,
+        sku: sku ?? this.sku,
         imageURL: imageURL ?? this.imageURL,
         currency: currency ?? this.currency,
         price: price ?? this.price);
@@ -43,6 +51,7 @@ class Item implements DBItem {
   Item.fromMap(Map<String, dynamic> json)
       : id = json["id"],
         name = json["name"],
+        sku = json["sku"],
         imageURL = json["imageURL"],
         currency = json["currency"],
         price = json["price"];
@@ -51,6 +60,7 @@ class Item implements DBItem {
     return {
       'id': id,
       'name': name,
+      'sku': sku,
       'imageURL': imageURL,
       'currency': currency,
       'price': price,
@@ -63,6 +73,7 @@ class SaleLine implements DBItem {
   final int saleID;
   final int itemID;
   final String itemName;
+  final String itemSKU;
   final int quantity;
   final String itemImageURL;
   final double pricePerItem;
@@ -70,6 +81,7 @@ class SaleLine implements DBItem {
   final double satConversionRate;
 
   double get total => quantity * pricePerItem;
+
   bool get isCustom => itemID == null;
 
   SaleLine(
@@ -77,6 +89,7 @@ class SaleLine implements DBItem {
       this.saleID,
       this.itemID,
       this.itemName,
+      this.itemSKU,
       this.quantity,
       this.itemImageURL,
       this.pricePerItem,
@@ -86,6 +99,7 @@ class SaleLine implements DBItem {
   SaleLine copywith(
       {int saleID,
       String itemName,
+      String itemSKU,
       int quantity,
       String itemImageURL,
       double pricePerItem,
@@ -96,6 +110,7 @@ class SaleLine implements DBItem {
         saleID: saleID ?? this.saleID,
         itemID: this.itemID,
         itemName: itemName ?? this.itemName,
+        itemSKU: itemSKU ?? this.itemSKU,
         quantity: quantity ?? this.quantity,
         itemImageURL: itemImageURL ?? this.itemImageURL,
         pricePerItem: pricePerItem ?? this.pricePerItem,
@@ -108,6 +123,7 @@ class SaleLine implements DBItem {
         saleID = null,
         itemID = item.id,
         itemName = item.name,
+        itemSKU = item.sku,
         quantity = quantity,
         itemImageURL = item.imageURL,
         pricePerItem = item.price,
@@ -119,6 +135,7 @@ class SaleLine implements DBItem {
         saleID = json["sale_id"],
         itemID = json["item_id"],
         itemName = json["item_name"],
+        itemSKU = json["item_sku"],
         quantity = json["quantity"],
         itemImageURL = json["item_image_url"],
         pricePerItem = json["price_per_item"],
@@ -130,6 +147,7 @@ class SaleLine implements DBItem {
       'id': id,
       'sale_id': saleID,
       'item_name': itemName,
+      'item_sku': itemSKU,
       'quantity': quantity,
       'item_image_url': itemImageURL,
       'price_per_item': pricePerItem,
@@ -146,9 +164,9 @@ class Sale implements DBItem {
 
   Sale copyWith({List<SaleLine> saleLines, priceLocked}) {
     return Sale(
-      id: this.id, 
-      saleLines: (saleLines ?? this.saleLines).toList(),
-      priceLocked: priceLocked ?? this.priceLocked);
+        id: this.id,
+        saleLines: (saleLines ?? this.saleLines).toList(),
+        priceLocked: priceLocked ?? this.priceLocked);
   }
 
   Sale({this.id, this.saleLines, this.priceLocked = false});
@@ -183,15 +201,15 @@ class Sale implements DBItem {
   Sale removeItem(bool Function(SaleLine) predicate) {
     var saleLines = this.saleLines.toList();
     return this.copyWith(
-      saleLines: saleLines..removeWhere((element) => predicate(element)));
+        saleLines: saleLines..removeWhere((element) => predicate(element)));
   }
 
   Sale updateItems(SaleLine Function(SaleLine) predicate) {
     var saleLines = this.saleLines.toList();
     return this.copyWith(
-      saleLines: saleLines.map((element){
-        return predicate(element);
-      }).toList());
+        saleLines: saleLines.map((element) {
+      return predicate(element);
+    }).toList());
   }
 
   Sale incrementQuantity(int itemID, double satConversionRate,
@@ -225,7 +243,9 @@ class Sale implements DBItem {
     double totalSat = 0;
     Map<double, double> perCurency = Map();
     saleLines.forEach((element) {
-      perCurency[element.satConversionRate] = (perCurency[element.satConversionRate] ?? 0) + element.pricePerItem * element.quantity;
+      perCurency[element.satConversionRate] =
+          (perCurency[element.satConversionRate] ?? 0) +
+              element.pricePerItem * element.quantity;
     });
     perCurency.forEach((rate, value) {
       totalSat += rate * value;
