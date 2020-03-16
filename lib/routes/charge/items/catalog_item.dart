@@ -35,8 +35,7 @@ class CatalogItem extends StatelessWidget {
             icon: Icons.edit,
             onTap: () {
               Navigator.of(context).push(FadeInRoute(
-                  builder: (_) => ItemPage(posCatalogBloc,
-                      item: _itemInfo, accountModel: accountModel)));
+                  builder: (_) => ItemPage(posCatalogBloc, item: _itemInfo)));
             },
           ),
           IconSlideAction(

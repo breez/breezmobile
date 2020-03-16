@@ -18,10 +18,9 @@ import '../currency_wrapper.dart';
 
 class ItemPage extends StatefulWidget {
   final Item item;
-  final AccountModel accountModel;
   final PosCatalogBloc _posCatalogBloc;
 
-  ItemPage(this._posCatalogBloc, {this.item, this.accountModel});
+  ItemPage(this._posCatalogBloc, {this.item});
 
   @override
   State<StatefulWidget> createState() {
@@ -38,29 +37,8 @@ class ItemPageState extends State<ItemPage> {
   TextEditingController _skuController = TextEditingController();
   AccountBloc _accountBloc;
   bool _isInit = false;
-  bool _inEditMode = false;
   String _titlePrefix = "Add";
   CurrencyWrapper _selectedCurrency = CurrencyWrapper.fromBTC(Currency.BTC);
-
-  @override
-  void initState() {
-    super.initState();
-    _inEditMode = widget.item != null;
-    if (_inEditMode) _initializeFields();
-  }
-
-  _initializeFields() {
-    _titlePrefix = "Edit";
-    _nameController.text = widget.item.name;
-    _skuController.text = widget.item.sku;
-    _getCurrency();
-  }
-
-  _getCurrency() {
-    _selectedCurrency = CurrencyWrapper.fromShortName(
-        widget.item.currency, widget.accountModel);
-    _priceController.text = _formattedPrice(widget.item.price);
-  }
 
   @override
   void didChangeDependencies() {
@@ -68,6 +46,18 @@ class ItemPageState extends State<ItemPage> {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       FetchRates fetchRatesAction = FetchRates();
       _accountBloc.userActionsSink.add(fetchRatesAction);
+      if (widget.item != null) {
+        _accountBloc.accountStream.first.then((accountModel) {
+          setState(() {
+            _titlePrefix = "Edit";
+            _nameController.text = widget.item.name;
+            _skuController.text = widget.item.sku;
+            _selectedCurrency = CurrencyWrapper.fromShortName(
+                widget.item.currency, accountModel);
+            _priceController.text = _formattedPrice(widget.item.price);
+          });
+        });
+      }
 
       fetchRatesAction.future.catchError((err) {
         if (this.mounted) {
@@ -249,7 +239,7 @@ class ItemPageState extends State<ItemPage> {
         onPressed: () {
           {
             if (_formKey.currentState.validate()) {
-              if (_inEditMode) {
+              if (widget.item != null) {
                 UpdateItem updateItem = UpdateItem(widget.item.copyWith(
                     name: _nameController.text.trimRight(),
                     currency: _selectedCurrency.shortName,
