@@ -710,14 +710,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         .chain(CurveTween(curve: Curves.easeOutCubic))
         .animate(controller);
     _itemInTransition = item;
-    // controller.addStatusListener((status) {
-    //   setState(() {
-    //     print("state changed");
-    //     if (status == AnimationStatus.completed) {
-    //       _itemInTransition = null;
-    //     }
-    //   });
-    // });
     controller.addListener(() {
       setState(() {
         if (controller.status == AnimationStatus.completed) {
