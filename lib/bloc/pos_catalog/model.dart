@@ -69,6 +69,9 @@ class SaleLine implements DBItem {
   final String currency;
   final double satConversionRate;
 
+  double get total => quantity * pricePerItem;
+  bool get isCustom => itemID == null;
+
   SaleLine(
       {this.id,
       this.saleID,
@@ -175,6 +178,20 @@ class Sale implements DBItem {
           .copywith(saleID: this.id));
     }
     return this.copyWith(saleLines: saleLines);
+  }
+
+  Sale removeItem(bool Function(SaleLine) predicate) {
+    var saleLines = this.saleLines.toList();
+    return this.copyWith(
+      saleLines: saleLines..removeWhere((element) => predicate(element)));
+  }
+
+  Sale updateItems(SaleLine Function(SaleLine) predicate) {
+    var saleLines = this.saleLines.toList();
+    return this.copyWith(
+      saleLines: saleLines.map((element){
+        return predicate(element);
+      }).toList());
   }
 
   Sale incrementQuantity(int itemID, double satConversionRate,
