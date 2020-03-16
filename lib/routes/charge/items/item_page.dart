@@ -109,8 +109,10 @@ class ItemPageState extends State<ItemPage> {
                           child: TextFormField(
                               keyboardType: TextInputType.numberWithOptions(
                                   decimal: true),
-                              inputFormatters:
-                                  _selectedCurrency.inputFormatters,
+                              inputFormatters: [
+                                WhitelistingTextInputFormatter(
+                                    _selectedCurrency.whitelistedPattern)
+                              ],
                               controller: _priceController,
                               decoration: InputDecoration(
                                   labelText: "Item Price",

@@ -1,7 +1,6 @@
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:flutter/services.dart';
 
 class CurrencyWrapper {
   final Currency btc;
@@ -49,17 +48,7 @@ class CurrencyWrapper {
     return fiat.exchangeRate / 100000000;
   }
 
-  List<TextInputFormatter> get inputFormatters {
-    if (btc != null && btc == Currency.BTC) {
-      return [WhitelistingTextInputFormatter(RegExp("^\\d+\\.?\\d{0,8}"))];
-    }
-
-    return [
-      WhitelistingTextInputFormatter(this.fractionSize == 0
-          ? RegExp(r'\d+')
-          : RegExp("^\\d+\\.?\\d{0,${this.fractionSize ?? 2}}"))
-    ];
-  }
+  RegExp get whitelistedPattern => btc?.whitelistedPattern ?? fiat.whitelistedPattern;
 
   String format(double value, {userInput = false, bool includeCurencySuffix = false, removeTrailingZeros = false}) {
     if (btc != null) {

@@ -24,6 +24,10 @@ class FiatConversion {
     }
   }
 
+  RegExp get whitelistedPattern => this.currencyData.fractionSize == 0
+      ? RegExp(r'\d+')
+      : RegExp("^\\d+\\.?\\d{0,${this.currencyData.fractionSize ?? 2}}");
+
   Int64 fiatToSat(double fiatAmount) {
     return Int64((fiatAmount / this.exchangeRate * 100000000).round());
   }

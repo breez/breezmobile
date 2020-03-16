@@ -47,6 +47,17 @@ class Currency extends Object {
         return "₿";
     }
   }
+
+  RegExp get whitelistedPattern {
+    switch (this.tickerSymbol) {
+      case "BTC":
+        return RegExp("^\\d+\\.?\\d{0,8}");
+      case "SAT":
+        return RegExp(r'\d+');
+      default:
+        return RegExp("^\\d+\\.?\\d{0,8}");
+    }
+  }
 }
 
 class _CurrencyFormatter {
