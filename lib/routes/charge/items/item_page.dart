@@ -263,17 +263,14 @@ class ItemPageState extends State<ItemPage> {
           {
             if (_formKey.currentState.validate()) {
               if (_inEditMode) {
-                UpdateItem updateItem = UpdateItem(
-                  Item(
-                      id: widget.item.id,
-                      name: _nameController.text.trimRight(),
-                      currency: _selectedCurrency.shortName,
-                      price: double.parse(
-                          _formattedPrice(double.parse(_priceController.text))),
-                      sku: _skuController.text.isNotEmpty
-                          ? _skuController.text
-                          : null),
-                );
+                UpdateItem updateItem = UpdateItem(widget.item.copyWith(
+                    name: _nameController.text.trimRight(),
+                    currency: _selectedCurrency.shortName,
+                    price: double.parse(
+                        _formattedPrice(double.parse(_priceController.text))),
+                    sku: _skuController.text.isNotEmpty
+                        ? _skuController.text
+                        : null));
                 widget._posCatalogBloc.actionsSink.add(updateItem);
                 updateItem.future.then((_) {
                   Navigator.pop(context);
