@@ -540,12 +540,15 @@ class POSInvoiceState extends State<POSInvoice> {
                   icon: Icon(
                     _itemFilterController.text.isEmpty
                         ? Icons.search
-                        : Icons.delete_forever,
+                        : Icons.close,
                     size: 20,
                   ),
                   onPressed: _itemFilterController.text.isEmpty 
                       ? null
-                      : () => _itemFilterController.text = "",
+                      : () {
+                          _itemFilterController.text = "";
+                          FocusScope.of(context).requestFocus(FocusNode());
+                        },
                   padding: EdgeInsets.only(right: 24, top: 4),
                 ),
                 border: UnderlineInputBorder()),
