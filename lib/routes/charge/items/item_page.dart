@@ -119,19 +119,8 @@ class ItemPageState extends State<ItemPage> {
                           child: TextFormField(
                               keyboardType: TextInputType.numberWithOptions(
                                   decimal: true),
-                              inputFormatters: _selectedCurrency.chargeSuffix ==
-                                      "BTC"
-                                  ? [
-                                      WhitelistingTextInputFormatter(
-                                          RegExp("^\\d+\\.?\\d{0,8}"))
-                                    ]
-                                  : [
-                                      WhitelistingTextInputFormatter(
-                                          _selectedCurrency.fractionSize == 0
-                                              ? RegExp(r'\d+')
-                                              : RegExp(
-                                                  "^\\d+\\.?\\d{0,${_selectedCurrency.fractionSize ?? 2}}"))
-                                    ],
+                              inputFormatters:
+                                  _selectedCurrency.inputFormatters,
                               controller: _priceController,
                               decoration: InputDecoration(
                                   labelText: "Item Price",
