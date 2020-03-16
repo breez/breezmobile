@@ -526,7 +526,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               ),
               backgroundColor: Theme.of(context).buttonColor,
               foregroundColor: Theme.of(context).textTheme.button.color,
-              onPressed: () => Navigator.of(context).pushNamed("/create_item")),
+              onPressed: () => Navigator.of(context).pushNamed("/add_item")),
         );
       },
     );

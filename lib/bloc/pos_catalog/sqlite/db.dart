@@ -23,6 +23,7 @@ Future<Database> getDB() async {
         CREATE TABLE item(
           id INTEGER PRIMARY KEY,
           name TEXT, 
+          sku TEXT,
           imageURL TEXT,
           price REAL, 
           currency TEXT        
@@ -44,6 +45,7 @@ Future<Database> getDB() async {
           id INTEGER PRIMARY KEY,
           sale_id INTEGER,
           item_name TEXT,
+          item_sku TEXT,
           item_image_url TEXT,
           quantity INTEGER, 
           price_per_item REAL,          
