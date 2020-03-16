@@ -52,14 +52,10 @@ class SqliteRepository implements Repository {
   }
 
   @override
-  Future<List<Item>> fetchAllItems() async {
-    return _fetchDBItems(await getDB(), "item", (e) => Item.fromMap(e));
-  }
-
-  @override
-  Future<List<Item>> fetchItemsByFilter(String filter) async {
-    return await _fetchDBItems(await getDB(), "item", (e) => Item.fromMap(e),
-        where: "name LIKE ?", whereArgs: ['%$filter%']);
+  Future<List<Item>> fetchItems({String filter}) async {
+    return _fetchDBItems(await getDB(), "item", (e) => Item.fromMap(e),
+        where: filter == null ? null : "name LIKE ? OR sku LIKE ?",
+        whereArgs: ['%$filter%', '%$filter%']);
   }
 
   @override

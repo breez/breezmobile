@@ -61,11 +61,10 @@ class POSInvoiceState extends State<POSInvoice> {
     PosCatalogBloc posCatalogBloc =
         AppBlocsProvider.of<PosCatalogBloc>(context);
     _itemFilterController.addListener(
-      () => setState(() {
-        FilterSales filterSales = FilterSales(_itemFilterController.text);
-        posCatalogBloc.actionsSink.add(filterSales);
-        filterSales.future.then((_) {});
-      }),
+      () {
+        FilterItems filterItems = FilterItems(_itemFilterController.text);
+        posCatalogBloc.actionsSink.add(filterItems);
+      },
     );
     itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
     itemWidth = (MediaQuery.of(context).size.width) / 2;

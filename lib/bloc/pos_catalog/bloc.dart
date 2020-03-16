@@ -31,22 +31,18 @@ class PosCatalogBloc with AsyncActionsHandler {
       AddSale: _addSale,
       FetchSale: _fetchSale,
       SetCurrentSale: _setCurrentSale,
-      FilterSales: _filterSales,
+      FilterItems: _filterItems,
     });
     listenActions();
     _currentSaleController.add(Sale(saleLines: List()));
   }
 
-  Future _loadItems() async {
-    _itemsStreamController.add(await _repository.fetchAllItems());
+  Future _loadItems({String filter}) async {
+    _itemsStreamController.add(await _repository.fetchItems(filter: filter));
   }
 
-  Future _filterSales(FilterSales action) async {
-    if (action.filter.isNotEmpty)
-      _itemsStreamController
-          .add(await _repository.fetchItemsByFilter(action.filter));
-    else
-      _loadItems();
+  _filterItems(FilterItems action) {
+    _loadItems(filter: action.filter);
   }
 
   Future _addItem(AddItem action) async {
