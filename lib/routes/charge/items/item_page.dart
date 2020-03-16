@@ -139,72 +139,59 @@ class ItemPageState extends State<ItemPage> {
                         Theme(
                             data: Theme.of(context).copyWith(
                                 canvasColor: Theme.of(context).canvasColor),
-                            child: new StreamBuilder<AccountSettings>(
-                                stream: _accountBloc.accountSettingsStream,
-                                builder: (settingCtx, settingSnapshot) {
-                                  return StreamBuilder<AccountModel>(
-                                      stream: _accountBloc.accountStream,
-                                      builder: (context, snapshot) {
-                                        AccountModel account = snapshot.data;
-                                        if (!snapshot.hasData) {
-                                          return Container();
-                                        }
+                            child: StreamBuilder<AccountModel>(
+                                stream: _accountBloc.accountStream,
+                                builder: (settingCtx, snapshot) {
+                                  AccountModel account = snapshot.data;
+                                  if (!snapshot.hasData) {
+                                    return Container();
+                                  }
 
-                                        return Expanded(
-                                          flex: 4,
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButtonFormField(
-                                              isDense: true,
-                                              decoration: InputDecoration(
-                                                labelText: 'Currency',
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        vertical: 10.6),
-                                              ),
-                                              value:
-                                                  _selectedCurrency.shortName,
-                                              onChanged: (value) =>
-                                                  _changeCurrency(
-                                                      account, value),
-                                              items: Currency.currencies.map(
-                                                  (Currency value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value.tickerSymbol,
-                                                  child: Text(
-                                                    value.tickerSymbol,
-                                                    style: theme.FieldTextStyle
-                                                        .textStyle
-                                                        .copyWith(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .accentColor),
-                                                  ),
-                                                );
-                                              }).toList()
-                                                ..addAll(account
-                                                    .fiatConversionList
-                                                    .map((FiatConversion fiat) {
-                                                  return new DropdownMenuItem<
-                                                      String>(
-                                                    value: fiat
-                                                        .currencyData.shortName,
-                                                    child: new Text(
-                                                      fiat.currencyData
-                                                          .shortName,
-                                                      style: theme
-                                                          .FieldTextStyle
-                                                          .textStyle
-                                                          .copyWith(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .accentColor),
-                                                    ),
-                                                  );
-                                                }).toList()),
+                                  return Expanded(
+                                    flex: 4,
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButtonFormField(
+                                        isDense: true,
+                                        decoration: InputDecoration(
+                                          labelText: 'Currency',
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 10.6),
+                                        ),
+                                        value: _selectedCurrency.shortName,
+                                        onChanged: (value) =>
+                                            _changeCurrency(account, value),
+                                        items: Currency.currencies.map(
+                                            (Currency value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value.tickerSymbol,
+                                            child: Text(
+                                              value.tickerSymbol,
+                                              style: theme
+                                                  .FieldTextStyle.textStyle
+                                                  .copyWith(
+                                                      color: Theme.of(context)
+                                                          .accentColor),
                                             ),
-                                          ),
-                                        );
-                                      });
+                                          );
+                                        }).toList()
+                                          ..addAll(account.fiatConversionList
+                                              .map((FiatConversion fiat) {
+                                            return new DropdownMenuItem<String>(
+                                              value:
+                                                  fiat.currencyData.shortName,
+                                              child: new Text(
+                                                fiat.currencyData.shortName,
+                                                style: theme
+                                                    .FieldTextStyle.textStyle
+                                                    .copyWith(
+                                                        color: Theme.of(context)
+                                                            .accentColor),
+                                              ),
+                                            );
+                                          }).toList()),
+                                      ),
+                                    ),
+                                  );
                                 })),
                       ],
                     ),
