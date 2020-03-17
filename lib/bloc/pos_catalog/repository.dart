@@ -15,6 +15,7 @@ abstract class Repository {
   Future<List<Item>> fetchItems({String filter});
 
   // Sale
-  Future<int> addSale(Sale sale);
+  Future<int> addSale(Sale sale, String paymentHash);
   Future<Sale> fetchSaleByID(int id);
+  Future<Sale> fetchSaleByPaymentHash(String paymentHash);
 }

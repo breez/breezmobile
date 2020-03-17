@@ -29,7 +29,6 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   final ScrollController _scrollController = ScrollController();
 
   AccountBloc _accountBloc;
-  StreamSubscription<String> _accountActionsSubscription;
   bool _isInit = false;
 
   @override
@@ -39,12 +38,6 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
       _isInit = true;
     }
     super.didChangeDependencies();
-  }
-
-  @override
-  dispose() {
-    _accountActionsSubscription.cancel();
-    super.dispose();
   }
 
   @override

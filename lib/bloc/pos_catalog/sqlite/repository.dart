@@ -76,13 +76,14 @@ class SqliteRepository implements Repository {
    * Sales
    */
   @override
-  Future<int> addSale(Sale sale) async {
+  Future<int> addSale(Sale sale, String paymentHash) async {
     return (await getDB()).transaction((txn) async {
       int saleID = await _addDBItem(txn, "sale", sale);
       sale.saleLines.forEach((sl) async {
         var saleLineWithID = sl.copywith(saleID: saleID);
         await _addDBItem(txn, "sale_line", saleLineWithID);
       });
+      await _addSalePayment(txn, saleID, paymentHash);
       return saleID;
     });
   }
@@ -100,6 +101,32 @@ class SqliteRepository implements Repository {
         await getDB(), "sale_line", (e) => SaleLine.fromMap(e),
         where: "sale_id = ?", whereArgs: [s.id]);
     return s.copyWith(saleLines: saleLines);
+  }
+
+  @override
+  Future<Sale> fetchSaleByPaymentHash(String paymentHash) async {
+    int saleID = await (await getDB()).transaction((txn) async {
+      var salePayment = await txn.query("sale_payments",
+          where: "payment_hash = ?", whereArgs: [paymentHash]);
+      if (salePayment.length == 0) {
+        return null;
+      }
+      return salePayment.first["sale_id"];
+    });
+
+    if (saleID != null) {
+      return fetchSaleByID(saleID);
+    }
+    return null;
+  }
+
+  Future<int> _addSalePayment(
+      DatabaseExecutor executor, int saleID, String paymentHash) async {
+    return await executor.insert(
+      "sale_payments",
+      {"sale_id": saleID, "payment_hash": paymentHash},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   /*

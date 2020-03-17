@@ -28,14 +28,16 @@ class FetchItem extends AsyncAction {
 
 class AddSale extends AsyncAction {
   final Sale sale;
+  final String paymentHash;
 
-  AddSale(this.sale);
+  AddSale(this.sale, this.paymentHash);
 }
 
 class FetchSale extends AsyncAction {
   final int id;
+  final String paymentHash;
 
-  FetchSale(this.id);
+  FetchSale({this.id, this.paymentHash});
 }
 
 class SetCurrentSale extends AsyncAction {
