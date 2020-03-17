@@ -93,11 +93,15 @@ class PosCatalogBloc with AsyncActionsHandler {
   }
 
   Future _addSale(AddSale action) async {
-    action.resolve(await _repository.addSale(action.sale));
+    action.resolve(await _repository.addSale(action.sale, action.paymentHash));
   }
 
   Future _fetchSale(FetchSale action) async {
-    action.resolve(await _repository.fetchSaleByID(action.id));
+    if (action.id != null) {
+      action.resolve(await _repository.fetchSaleByID(action.id));
+    } else {
+      action.resolve(await _repository.fetchSaleByPaymentHash(action.paymentHash));
+    }
   }
 
   Future _setCurrentSale(SetCurrentSale action) async {

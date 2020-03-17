@@ -158,25 +158,28 @@ class SaleLine implements DBItem {
 class Sale implements DBItem {
   final int id;
   final List<SaleLine> saleLines;
+  final String note;
   final bool priceLocked;
 
-  Sale copyWith({List<SaleLine> saleLines, priceLocked}) {
+  Sale copyWith({List<SaleLine> saleLines, bool priceLocked, String note}) {
     return Sale(
         id: this.id,
+        note: note ?? this.note,
         saleLines: (saleLines ?? this.saleLines).toList(),
         priceLocked: priceLocked ?? this.priceLocked);
   }
 
-  Sale({this.id, this.saleLines, this.priceLocked = false});
+  Sale({this.id, this.saleLines, this.note, this.priceLocked = false});
 
   Sale.fromMap(Map<String, dynamic> json)
       : id = json["id"],
         saleLines = [],
+        note = json["note"],
         priceLocked = false;
 
   @override
   Map<String, dynamic> toMap() {
-    return {'id': id};
+    return {'id': id, 'note': note};
   }
 
   Sale addItem(Item item, double satConversionRate, {int quantity = 1}) {

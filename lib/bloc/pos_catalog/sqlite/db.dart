@@ -34,7 +34,18 @@ Future<Database> getDB() async {
       await db.execute(
         """
         CREATE TABLE sale(
-          id INTEGER PRIMARY KEY          
+          id INTEGER PRIMARY KEY,
+          note TEXT      
+        )
+        """,
+      );
+
+      await db.execute(
+        """
+        CREATE TABLE sale_payments(
+          id INTEGER PRIMARY KEY,
+          sale_id INTEGER,
+          payment_hash TEXT
         )
         """,
       );
