@@ -88,13 +88,13 @@ class ItemPageState extends State<ItemPage> {
                     textCapitalization: TextCapitalization.words,
                     controller: _nameController,
                     decoration: InputDecoration(
-                        labelText: "Item Name",
-                        hintText: "Enter an item name",
+                        labelText: "Name",
+                        hintText: "Enter a name",
                         border: UnderlineInputBorder()),
                     style: theme.FieldTextStyle.textStyle,
                     validator: (value) {
                       if (value.length == 0) {
-                        return "Item Name is required";
+                        return "Name is required";
                       }
                     },
                   ),
@@ -115,13 +115,13 @@ class ItemPageState extends State<ItemPage> {
                               ],
                               controller: _priceController,
                               decoration: InputDecoration(
-                                  labelText: "Item Price",
-                                  hintText: "Enter an item price",
+                                  labelText: "Price",
+                                  hintText: "Enter a price",
                                   border: UnderlineInputBorder()),
                               style: theme.FieldTextStyle.textStyle,
                               validator: (value) {
                                 if (value.length == 0) {
-                                  return "Item Price is required";
+                                  return "Price is required";
                                 }
                               }),
                         ),
@@ -191,7 +191,7 @@ class ItemPageState extends State<ItemPage> {
                   TextFormField(
                     controller: _skuController,
                     decoration: InputDecoration(
-                        labelText: "Item SKU",
+                        labelText: "SKU",
                         hintText: "Enter a SKU",
                         border: UnderlineInputBorder()),
                     style: theme.FieldTextStyle.textStyle,
