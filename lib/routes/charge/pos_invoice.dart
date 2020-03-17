@@ -746,13 +746,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     _transitionAnimation =
         tween.chain(CurveTween(curve: Curves.easeOutCubic)).animate(controller);
     _itemInTransition = item;
-    controller.addListener(() {
-      setState(() {
-        if (controller.status == AnimationStatus.completed) {
-          _itemInTransition = null;
-        }
-      });
-    });
 
     // handle scale animation.
     var scaleController =
@@ -765,6 +758,17 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         AnimationController(vsync: this, duration: Duration(milliseconds: 700));
     _opacityTransition =
         CurvedAnimation(parent: opacityController, curve: Curves.easeInExpo);
+
+  controller.addListener(() {
+      setState(() {
+        if (controller.status == AnimationStatus.completed) {
+          _itemInTransition = null;
+          controller.dispose();
+          scaleController.dispose();
+          opacityController.dispose();
+        }
+      });
+    });
 
     scaleController.reverse(from: 1.0);
     opacityController.forward(from: 0.7);
