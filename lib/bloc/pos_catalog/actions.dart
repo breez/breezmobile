@@ -43,3 +43,9 @@ class SetCurrentSale extends AsyncAction {
 
   SetCurrentSale(this.currentSale);
 }
+
+class FilterItems extends AsyncAction {
+  final String filter;
+
+  FilterItems(this.filter);
+}
