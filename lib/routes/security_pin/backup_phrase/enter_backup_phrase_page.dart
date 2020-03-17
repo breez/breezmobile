@@ -5,6 +5,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
@@ -209,40 +210,25 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   _buildBottomBtn(UserProfileBloc userProfileBloc) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 40),
-      child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        SizedBox(
-          height: 48.0,
-          width: 168.0,
-          child: RaisedButton(
-            child: Text(
-              _currentPage + 1 == 5 ? "RESTORE" : "NEXT",
-              style: Theme.of(context).textTheme.button,
-            ),
-            color: Theme.of(context).buttonColor,
-            elevation: 0.0,
-            shape: const StadiumBorder(),
-            onPressed: () {
-              setState(() {
-                _hasError = false;
-                if (_formKey.currentState.validate() && !_hasError) {
-                  _autoValidate = false;
-                  if (_currentPage + 1 == 5) {
-                    _validateBackupPhrase(userProfileBloc);
-                  } else {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    _formKey.currentState.reset();
-                    _currentPage++;
-                  }
-                } else {
-                  _autoValidate = true;
-                }
-              });
-            },
-          ),
-        )
-      ]),
+    return SingleButtonBottomBar(
+      text: _currentPage + 1 == 5 ? "RESTORE" : "NEXT",
+      onPressed: () {
+        setState(() {
+          _hasError = false;
+          if (_formKey.currentState.validate() && !_hasError) {
+            _autoValidate = false;
+            if (_currentPage + 1 == 5) {
+              _validateBackupPhrase(userProfileBloc);
+            } else {
+              FocusScope.of(context).requestFocus(FocusNode());
+              _formKey.currentState.reset();
+              _currentPage++;
+            }
+          } else {
+            _autoValidate = true;
+          }
+        });
+      },
     );
   }
 

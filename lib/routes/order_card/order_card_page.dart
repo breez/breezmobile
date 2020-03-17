@@ -5,6 +5,7 @@ import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +22,7 @@ class _CustomerData {
 
 class OrderCardPage extends StatefulWidget {
   final bool showSkip;
+
   OrderCardPage({Key key, this.showSkip}) : super(key: key);
 
   @override
@@ -595,47 +597,25 @@ class OrderCardPageState extends State<OrderCardPage> {
                   ),
                 ],
               ))),
-      bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(bottom: 40.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              SizedBox(
-                  height: 48.0,
-                  width: 168.0,
-                  child: RaisedButton(
-                    child: Text(
-                      "ORDER",
-                      style: Theme.of(context).textTheme.button,
-                    ),
-                    color: Theme.of(context).buttonColor,
-                    elevation: 0.0,
-                    shape: const StadiumBorder(),
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        _formKey.currentState.save();
-                        _breezServer
-                            .orderCard(
-                                _data.fullName,
-                                _data.email,
-                                _data.address,
-                                _data.city,
-                                _data.state,
-                                _data.zip,
-                                _data.country)
-                            .then((reply) {
-                          Navigator.pop(context,
-                              "Breez card will be sent shortly to the address you have specified.");
-                        }).catchError((error) {
-                          print(error.toString());
-                          Scaffold.of(context).showSnackBar(
-                              SnackBar(content: Text(error.toString())));
-                        });
-                      } else {}
-                    },
-                  ))
-            ],
-          )),
+      bottomNavigationBar: SingleButtonBottomBar(
+        text: "ORDER",
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            _formKey.currentState.save();
+            _breezServer
+                .orderCard(_data.fullName, _data.email, _data.address,
+                    _data.city, _data.state, _data.zip, _data.country)
+                .then((reply) {
+              Navigator.pop(context,
+                  "Breez card will be sent shortly to the address you have specified.");
+            }).catchError((error) {
+              print(error.toString());
+              Scaffold.of(context)
+                  .showSnackBar(SnackBar(content: Text(error.toString())));
+            });
+          } else {}
+        },
+      ),
     );
   }
 }

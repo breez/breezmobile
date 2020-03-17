@@ -8,6 +8,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fee_chooser.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
@@ -151,41 +152,23 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
           }),
       bottomNavigationBar: !_showConfirm
           ? null
-          : Padding(
-              padding: EdgeInsets.only(bottom: 40.0),
-              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                SizedBox(
-                  height: 48.0,
-                  width: 168.0,
-                  child: RaisedButton(
-                    child: Text(
-                      "CONFIRM",
-                      style: Theme.of(context).textTheme.button,
-                    ),
-                    color: Theme.of(context).buttonColor,
-                    elevation: 0.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(42.0)),
-                    onPressed: () {
-                      Navigator.of(context).push(createLoaderRoute(context));
-                      widget
-                          .onConfirm(transactions[selectedFeeIndex])
-                          .then((_) {
-                        Navigator.of(context).pop();
-                      }).catchError((error) {
-                        Navigator.of(context).pop();
-                        promptError(
-                            context,
-                            null,
-                            Text(error.toString(),
-                                style: Theme.of(context)
-                                    .dialogTheme
-                                    .contentTextStyle));
-                      });
-                    },
-                  ),
-                ),
-              ])),
+          : SingleButtonBottomBar(
+              text: "CONFIRM",
+              onPressed: () {
+                Navigator.of(context).push(createLoaderRoute(context));
+                widget.onConfirm(transactions[selectedFeeIndex]).then((_) {
+                  Navigator.of(context).pop();
+                }).catchError((error) {
+                  Navigator.of(context).pop();
+                  promptError(
+                      context,
+                      null,
+                      Text(error.toString(),
+                          style:
+                              Theme.of(context).dialogTheme.contentTextStyle));
+                });
+              },
+            ),
     );
   }
 
