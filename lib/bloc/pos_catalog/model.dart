@@ -1,5 +1,3 @@
-
-
 abstract class DBItem {
   Map<String, dynamic> toMap();
 }
@@ -251,5 +249,13 @@ class Sale implements DBItem {
       totalSat += rate * value;
     });
     return totalSat;
+  }
+
+  int get totalNumOfItems {
+    int total = 0;
+    saleLines.forEach((sl) {
+      total += sl.quantity;
+    });
+    return total;
   }
 }

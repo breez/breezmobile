@@ -240,8 +240,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                               .backgroundColor,
                                                           badgeContent: Text(
                                                             currentSale
-                                                                .saleLines
-                                                                .length
+                                                                .totalNumOfItems
                                                                 .toString(),
                                                             style: TextStyle(
                                                                 color: Colors
