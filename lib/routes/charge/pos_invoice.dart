@@ -225,7 +225,8 @@ class POSInvoiceState extends State<POSInvoice> {
                                                                   currentSaleRoute);
                                                         },
                                                         child: Container(
-                                                          alignment: Alignment.centerLeft,
+                                                          alignment: Alignment
+                                                              .centerLeft,
                                                           width: 80.0,
                                                           child: Badge(
                                                             position:
@@ -237,8 +238,8 @@ class POSInvoiceState extends State<POSInvoice> {
                                                             animationType:
                                                                 BadgeAnimationType
                                                                     .scale,
-                                                            badgeColor: Theme.of(
-                                                                    context)
+                                                            badgeColor: Theme
+                                                                    .of(context)
                                                                 .floatingActionButtonTheme
                                                                 .backgroundColor,
                                                             badgeContent: Text(
@@ -253,11 +254,16 @@ class POSInvoiceState extends State<POSInvoice> {
                                                               padding:
                                                                   const EdgeInsets
                                                                           .only(
-                                                                      left: 20.0,
-                                                                      bottom: 8.0,
-                                                                      right: 4.0,
-                                                                      top: 20.0),
-                                                              child: Image.asset(
+                                                                      left:
+                                                                          20.0,
+                                                                      bottom:
+                                                                          8.0,
+                                                                      right:
+                                                                          4.0,
+                                                                      top:
+                                                                          20.0),
+                                                              child:
+                                                                  Image.asset(
                                                                 "src/icon/cart.png",
                                                                 width: 24.0,
                                                                 color: Theme.of(
@@ -669,7 +675,12 @@ class POSInvoiceState extends State<POSInvoice> {
             expiry: Int64(user.cancellationTimeoutValue.toInt())));
         invoiceBloc.actionsSink.add(newInvoiceAction);
         newInvoiceAction.future.then((value) {
-          return showPaymentDialog(invoiceBloc, user, value as String);
+          var payReq = value as PaymentRequestModel;
+          var addSaleAction = AddSale(currentSale, payReq.paymentHash);
+          posCatalogBloc.actionsSink.add(addSaleAction);
+          return addSaleAction.future.then((value) {
+            return showPaymentDialog(invoiceBloc, user, payReq.rawPayReq);
+          });
         }).then((cleared) {
           if (!cleared) {
             var unLockSale =

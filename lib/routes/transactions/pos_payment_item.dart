@@ -1,7 +1,13 @@
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/pos_catalog/actions.dart';
+import 'package:breez/bloc/pos_catalog/bloc.dart';
+import 'package:breez/bloc/pos_catalog/model.dart';
+import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
 class PosPaymentItem extends StatelessWidget {
@@ -39,7 +45,7 @@ class PosPaymentItem extends StatelessWidget {
                         ? theme.posWithdrawalTransactionAmountStyle
                         : theme.transactionAmountStyle),
               ]),
-          onTap: () => showPaymentDetailsDialog(context, _paymentInfo),
+          onTap: () => showSaleView(context),
         ),
       ),
       Divider(
@@ -50,5 +56,23 @@ class PosPaymentItem extends StatelessWidget {
         indent: 16.0,
       ),
     ]);
+  }
+
+  showSaleView(BuildContext context) {
+    var action = FetchSale(paymentHash: _paymentInfo.paymentHash);
+    PosCatalogBloc posBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+    posBloc.actionsSink.add(action);
+    action.future.then((sale) {
+      if (sale != null) {
+        Navigator.of(context).push(FadeInRoute(
+          builder: (context) => SaleView(
+              useFiat: false,
+              readOnlySale: sale as Sale,
+              salePayment: _paymentInfo),
+        ));
+      } else {
+        showPaymentDetailsDialog(context, _paymentInfo);
+      }
+    });
   }
 }
