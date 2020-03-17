@@ -541,7 +541,7 @@ class POSInvoiceState extends State<POSInvoice> {
             controller: _itemFilterController,
             enabled: catalogItems != null,
             decoration: InputDecoration(
-                hintText: "Search Items",
+                hintText: "Search for name or SKU",
                 contentPadding: const EdgeInsets.only(top: 16, left: 16),
                 suffixIcon: IconButton(
                   icon: Icon(
