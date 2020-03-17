@@ -21,7 +21,10 @@ dependencies:
   rxdart: "^0.18.1"
   flutter_advanced_networkimage: 0.6.0-alpha.1
   intl: ^0.15.7
-  flushbar: ^1.3.0
+  flushbar:
+   git:
+     url: https://github.com/AndreHaueisen/flushbar.git
+     ref: 13c55a8
   barcode_scan: ^1.0.0
   image_picker: ^0.5.0+9
   image: any
