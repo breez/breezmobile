@@ -4,6 +4,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
+import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
 import 'generate_backup_phrase_page.dart';
@@ -109,29 +110,19 @@ class BackupPhraseGeneratorConfirmationPageState
 
   _buildNextBtn(bool isUnderstood) {
     return Padding(
-      padding: EdgeInsets.only(top: 24, bottom: 40),
+      padding: EdgeInsets.only(top: 24),
       child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
         isUnderstood
-            ? SizedBox(
-                height: 48.0,
-                width: 168.0,
-                child: RaisedButton(
-                  onPressed: () {
-                    String mnemonics = bip39.generateMnemonic(strength: 256);
-                    Navigator.pushReplacement(
-                        context,
-                        FadeInRoute(
-                            builder: (BuildContext context) =>
-                                GenerateBackupPhrasePage(mnemonics)));
-                  },
-                  child: Text(
-                    "NEXT",
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                  color: Theme.of(context).buttonColor,
-                  elevation: 0.0,
-                  shape: const StadiumBorder(),
-                ),
+            ? SingleButtonBottomBar(
+                text: "NEXT",
+                onPressed: () {
+                  String mnemonics = bip39.generateMnemonic(strength: 256);
+                  Navigator.pushReplacement(
+                      context,
+                      FadeInRoute(
+                          builder: (BuildContext context) =>
+                              GenerateBackupPhrasePage(mnemonics)));
+                },
               )
             : Container()
       ]),

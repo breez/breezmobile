@@ -9,6 +9,7 @@ import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
 class VerifyBackupPhrasePage extends StatefulWidget {
@@ -76,32 +77,17 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   }
 
   _buildBackupBtn(BackupSettings backupSettings, BackupBloc backupBloc) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 40),
-      child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        SizedBox(
-          height: 48.0,
-          width: 168.0,
-          child: RaisedButton(
-            child: Text(
-              "BACKUP",
-              style: Theme.of(context).textTheme.button,
-            ),
-            color: Theme.of(context).buttonColor,
-            elevation: 0.0,
-            shape: const StadiumBorder(),
-            onPressed: () {
-              // reset state
-              setState(() {
-                _hasError = false;
-              });
-              if (_formKey.currentState.validate() && !_hasError) {
-                _createBackupPhrase(backupSettings, backupBloc);
-              }
-            },
-          ),
-        )
-      ]),
+    return SingleButtonBottomBar(
+      text: "BACKUP",
+      onPressed: () {
+        // reset state
+        setState(() {
+          _hasError = false;
+        });
+        if (_formKey.currentState.validate() && !_hasError) {
+          _createBackupPhrase(backupSettings, backupBloc);
+        }
+      },
     );
   }
 
