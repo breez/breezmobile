@@ -21,6 +21,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -102,40 +103,27 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
     return Scaffold(
       key: _scaffoldKey,
-      bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom + 40.0,
-          ),
-          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            SizedBox(
-              height: 48.0,
-              width: 168.0,
-              child: StreamBuilder<AccountModel>(
-                  stream: accountBloc.accountStream,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return StaticLoader();
-                    }
-                    var account = snapshot.data;
-                    return RaisedButton(
-                      child: Text(
-                        _withdrawFetchResponse == null ? "CREATE" : "WITHDRAW",
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                      color: Theme.of(context).buttonColor,
-                      elevation: 0.0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(42.0)),
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          _createInvoice(
-                              invoiceBloc, accountBloc, lnurlBloc, account);
-                        }
-                      },
-                    );
-                  }),
-            )
-          ])),
+      bottomNavigationBar: StreamBuilder<AccountModel>(
+          stream: accountBloc.accountStream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return StaticLoader();
+            }
+            var account = snapshot.data;
+            return Padding(
+              padding: const EdgeInsets.only(top: 24.0),
+              child: SingleButtonBottomBar(
+                stickToBottom: true,
+                text: _withdrawFetchResponse == null ? "CREATE" : "WITHDRAW",
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    _createInvoice(
+                        invoiceBloc, accountBloc, lnurlBloc, account);
+                  }
+                },
+              ),
+            );
+          }),
       appBar: AppBar(
         iconTheme: Theme.of(context).appBarTheme.iconTheme,
         textTheme: Theme.of(context).appBarTheme.textTheme,

@@ -11,6 +11,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -176,7 +177,8 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                       Container(
                           padding: EdgeInsets.only(top: 8.0),
                           child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Expanded(
@@ -253,37 +255,21 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                   ),
                 ],
               ))),
-      bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(bottom: 40.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              SizedBox(
-                  height: 48.0,
-                  width: 168.0,
-                  child: RaisedButton(
-                    child: Text(
-                      "CALCULATE",
-                      style: Theme.of(context).textTheme.button,
-                    ),
-                    color: Theme.of(context).buttonColor,
-                    elevation: 0.0,
-                    shape: const StadiumBorder(),
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        var _request = ValidateRequestModel(
-                            _emailController.text.trim(),
-                            _codeController.text.trim(),
-                            double.parse(_valueController.text),
-                            _currency);
-                        Navigator.of(context).push(TransparentPageRoute(
-                            (context) => RedeemVoucherRoute(_userProfileBloc,
-                                _fastBitcoinsBloc, _request)));
-                      }
-                    },
-                  ))
-            ],
-          )),
+      bottomNavigationBar: SingleButtonBottomBar(
+        text: "CALCULATE",
+        onPressed: (() {
+          if (_formKey.currentState.validate()) {
+            var _request = ValidateRequestModel(
+                _emailController.text.trim(),
+                _codeController.text.trim(),
+                double.parse(_valueController.text),
+                _currency);
+            Navigator.of(context).push(TransparentPageRoute((context) =>
+                RedeemVoucherRoute(
+                    _userProfileBloc, _fastBitcoinsBloc, _request)));
+          }
+        }),
+      ),
     );
   }
 }

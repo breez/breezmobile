@@ -79,18 +79,41 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     super.dispose();
   }
 
+  Widget _actionsWidget(){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        _clearSaleButton(), _cancelButton()
+      ],
+    );
+  }
+
   Widget _cancelButton() {
     return FlatButton(
-      padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
-      child: Text(
-        'CANCEL PAYMENT',
-        textAlign: TextAlign.center,
-        style: Theme.of(context).primaryTextTheme.button,
-      ),
-      onPressed: () {
-        Navigator.of(context).pop(false);
-      },
-    );
+        padding: EdgeInsets.only(top: 8.0, bottom: 16.0, left: 0.0),
+        child: Text(
+          'CANCEL',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).primaryTextTheme.button,
+        ),
+        onPressed: () {
+          Navigator.of(context).pop(false);
+        },
+      );
+  }
+
+  Widget _clearSaleButton() {
+    return FlatButton(
+        padding: EdgeInsets.only(top: 8.0, bottom: 16.0, right: 0.0),
+        child: Text(
+          'CLEAR SALE',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).primaryTextTheme.button,
+        ),
+        onPressed: () {
+          Navigator.of(context).pop(true);
+        },
+      );
   }
 
   Widget buildWaitingPayment(BuildContext context) {
@@ -131,7 +154,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                           .primaryTextTheme
                           .display1
                           .copyWith(fontSize: 16))),
-              _cancelButton(),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: _actionsWidget(),
+              ),
             ],
           );
         });

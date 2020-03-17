@@ -6,6 +6,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/keyboard_done_action.dart';
+import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -45,33 +46,16 @@ class PayNearbyPageState extends State<PayNearbyPage> {
 
     return Material(
       child: Scaffold(
-        bottomNavigationBar: Padding(
-            padding: EdgeInsets.only(bottom: 40.0),
-            child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              SizedBox(
-                height: 48.0,
-                width: 168.0,
-                child: RaisedButton(
-                  padding: EdgeInsets.only(
-                      top: 16.0, bottom: 16.0, right: 39.0, left: 39.0),
-                  child: Text(
-                    "PAY",
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                  color: Theme.of(context).buttonColor,
-                  elevation: 0.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(42.0)),
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      _formKey.currentState.save();
-                      invoiceBloc.payBlankAmount = _amountToSendSatoshi;
-                      Navigator.of(context).pushNamed('/pay_nearby_complete');
-                    }
-                  },
-                ),
-              ),
-            ])),
+        bottomNavigationBar: SingleButtonBottomBar(
+          text: "PAY",
+          onPressed: () {
+            if (_formKey.currentState.validate()) {
+              _formKey.currentState.save();
+              invoiceBloc.payBlankAmount = _amountToSendSatoshi;
+              Navigator.of(context).pushNamed('/pay_nearby_complete');
+            }
+          },
+        ),
         appBar: AppBar(
           iconTheme: Theme.of(context).appBarTheme.iconTheme,
           textTheme: Theme.of(context).appBarTheme.textTheme,

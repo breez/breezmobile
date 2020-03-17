@@ -67,7 +67,7 @@ class PosCatalogBloc with AsyncActionsHandler {
     _itemsStreamController.add(await _repository.fetchItems(filter: filter));
   }
 
-  _filterItems(FilterItems action) {
+  _filterItems(FilterItems action) async {
     _loadItems(filter: action.filter);
   }
 

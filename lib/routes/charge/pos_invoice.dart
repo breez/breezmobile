@@ -129,187 +129,185 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                             double totalAmount = currentSale.totalChargeSat /
                                 currentCurrency.satConversionRate;
                             return Stack(
-                              children: [
-                                Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Container(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            StreamBuilder<AccountSettings>(
-                                                stream: accountBloc
-                                                    .accountSettingsStream,
-                                                builder: (settingCtx,
-                                                    settingSnapshot) {
-                                                  AccountSettings settings =
-                                                      settingSnapshot.data;
-                                                  if (settings?.showConnectProgress ==
-                                                          true ||
-                                                      accountModel
-                                                              .isInitialBootstrap ==
-                                                          true) {
-                                                    return StatusIndicator(
-                                                        context, snapshot.data);
-                                                  }
-                                                  return SizedBox();
-                                                }),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  top: 0.0,
-                                                  left: 16.0,
-                                                  right: 16.0,
-                                                  bottom: 24.0),
-                                              child: ConstrainedBox(
-                                                constraints:
-                                                    const BoxConstraints(
-                                                        minWidth:
-                                                            double.infinity),
-                                                child: IgnorePointer(
-                                                  ignoring: false,
-                                                  child: RaisedButton(
-                                                    color: Theme.of(context)
-                                                        .primaryColorLight,
-                                                    padding: EdgeInsets.only(
-                                                        top: 14.0,
-                                                        bottom: 14.0),
-                                                    child: Text(
-                                                      "Charge ${currentCurrency.format(totalAmount)} ${currentCurrency.shortName}"
-                                                          .toUpperCase(),
-                                                      maxLines: 1,
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: theme
-                                                          .invoiceChargeAmountStyle,
-                                                    ),
-                                                    onPressed: () =>
-                                                        onInvoiceSubmitted(
-                                                            currentSale,
-                                                            invoiceBloc,
-                                                            userProfile,
-                                                            accountModel),
-                                                  ),
+                              children: [ Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Container(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        StreamBuilder<AccountSettings>(
+                                            stream: accountBloc
+                                                .accountSettingsStream,
+                                            builder:
+                                                (settingCtx, settingSnapshot) {
+                                              AccountSettings settings =
+                                                  settingSnapshot.data;
+                                              if (settings?.showConnectProgress ==
+                                                      true ||
+                                                  accountModel
+                                                          .isInitialBootstrap ==
+                                                      true) {
+                                                return StatusIndicator(
+                                                    context, snapshot.data);
+                                              }
+                                              return SizedBox();
+                                            }),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: 0.0,
+                                              left: 16.0,
+                                              right: 16.0,
+                                              bottom: 24.0),
+                                          child: ConstrainedBox(
+                                            constraints: const BoxConstraints(
+                                                minWidth: double.infinity),
+                                            child: IgnorePointer(
+                                              ignoring: false,
+                                              child: RaisedButton(
+                                                color: Theme.of(context)
+                                                    .primaryColorLight,
+                                                padding: EdgeInsets.only(
+                                                    top: 14.0, bottom: 14.0),
+                                                child: Text(
+                                                  "Charge ${currentCurrency.format(totalAmount)} ${currentCurrency.shortName}"
+                                                      .toUpperCase(),
+                                                  maxLines: 1,
+                                                  textAlign: TextAlign.center,
+                                                  style: theme
+                                                      .invoiceChargeAmountStyle,
                                                 ),
+                                                onPressed: () {
+                                                  onInvoiceSubmitted(
+                                                      currentSale,
+                                                      invoiceBloc,
+                                                      userProfile,
+                                                      accountModel);
+                                                },
                                               ),
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 24),
-                                              child: _buildViewSwitch(context),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 0.0, right: 16.0),
-                                              child: Row(children: <Widget>[
-                                                Expanded(
-                                                    child: Align(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        child: GestureDetector(
-                                                            behavior:
-                                                                HitTestBehavior
-                                                                    .translucent,
-                                                            onTap: () {
-                                                              var currentSaleRoute =
-                                                                  CupertinoPageRoute(
-                                                                      fullscreenDialog:
-                                                                          true,
-                                                                      builder:
-                                                                          (_) =>
-                                                                              SaleView(
-                                                                                onCharge: () => onInvoiceSubmitted(currentSale, invoiceBloc, userProfile, accountModel),
-                                                                                onDeleteSale: () => approveClear(currentSale),
-                                                                                useFiat: _useFiat,
-                                                                              ));
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .push(
-                                                                      currentSaleRoute);
-                                                            },
-                                                            child: Badge(
-                                                              key: badgeKey,
-                                                              animationDuration:
-                                                                  Duration(
-                                                                      seconds:
-                                                                          1),
-                                                              position:
-                                                                  BadgePosition
-                                                                      .topRight(
-                                                                          top:
-                                                                              5,
-                                                                          right:
-                                                                              -10),
-                                                              animationType:
-                                                                  BadgeAnimationType
-                                                                      .scale,
-                                                              badgeColor: Theme
-                                                                      .of(context)
-                                                                  .floatingActionButtonTheme
-                                                                  .backgroundColor,
-                                                              badgeContent:
-                                                                  Text(
-                                                                currentSale
-                                                                    .saleLines
-                                                                    .length
-                                                                    .toString(),
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                              child: Padding(
-                                                                padding: const EdgeInsets
-                                                                        .only(
-                                                                    left: 20.0,
-                                                                    bottom: 8.0,
-                                                                    right: 4.0,
-                                                                    top: 20.0),
-                                                                child:
-                                                                    Image.asset(
-                                                                  "src/icon/cart.png",
-                                                                  width: 24.0,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .primaryTextTheme
-                                                                      .button
-                                                                      .color,
-                                                                ),
-                                                              ),
-                                                            )))),
-                                                Expanded(
-                                                  child: Align(
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 24),
+                                          child: _buildViewSwitch(context),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 0.0, right: 16.0),
+                                          child: Row(children: <Widget>[
+                                            Expanded(
+                                                child: Align(
                                                     alignment:
-                                                        Alignment.centerRight,
-                                                    child:
-                                                        SingleChildScrollView(
-                                                      scrollDirection:
-                                                          Axis.horizontal,
-                                                      child: Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 8.0),
-                                                        child: Text(
-                                                          _isKeypadView
-                                                              ? currentCurrency
-                                                                  .format(
-                                                                      currentAmount)
-                                                              : "",
-                                                          maxLines: 1,
-                                                          style: theme
-                                                              .invoiceAmountStyle
-                                                              .copyWith(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .headline
-                                                                      .color),
-                                                          textAlign:
-                                                              TextAlign.right,
-                                                        ),
-                                                      ),
+                                                        Alignment.centerLeft,
+                                                    child: GestureDetector(
+                                                        behavior:
+                                                            HitTestBehavior
+                                                                .translucent,
+                                                        onTap: () {
+                                                          var currentSaleRoute =
+                                                              CupertinoPageRoute(
+                                                                  fullscreenDialog:
+                                                                      true,
+                                                                  builder: (_) =>
+                                                                      SaleView(
+                                                                        onCharge:
+                                                                            (accModel,
+                                                                                sale) {
+                                                                          onInvoiceSubmitted(
+                                                                              sale,
+                                                                              invoiceBloc,
+                                                                              userProfile,
+                                                                              accModel);
+                                                                        },
+                                                                        onDeleteSale:
+                                                                            () =>
+                                                                                approveClear(currentSale),
+                                                                        useFiat:
+                                                                            _useFiat,
+                                                                      ));
+                                                          Navigator.of(context)
+                                                              .push(
+                                                                  currentSaleRoute);
+                                                        },
+                                                        child: Container(
+                                                          alignment: Alignment.centerLeft,
+                                                          width: 80.0,
+                                                          child: Badge(
+                                                            key: badgeKey,
+                                                            position:
+                                                                BadgePosition
+                                                                    .topRight(
+                                                                        top: 5,
+                                                                        right:
+                                                                            -10),
+                                                            animationType:
+                                                                BadgeAnimationType
+                                                                    .scale,
+                                                            badgeColor: Theme.of(
+                                                                    context)
+                                                                .floatingActionButtonTheme
+                                                                .backgroundColor,
+                                                            badgeContent: Text(
+                                                              currentSale
+                                                                  .totalNumOfItems
+                                                                  .toString(),
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 20.0,
+                                                                      bottom: 8.0,
+                                                                      right: 4.0,
+                                                                      top: 20.0),
+                                                              child: Image.asset(
+                                                                "src/icon/cart.png",
+                                                                width: 24.0,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .primaryTextTheme
+                                                                    .button
+                                                                    .color,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )))),
+                                            Expanded(
+                                              child: Align(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 8.0),
+                                                    child: Text(
+                                                      _isKeypadView
+                                                          ? currentCurrency
+                                                              .format(
+                                                                  currentAmount)
+                                                          : "",
+                                                      maxLines: 1,
+                                                      style: theme
+                                                          .invoiceAmountStyle
+                                                          .copyWith(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline
+                                                                  .color),
+                                                      textAlign:
+                                                          TextAlign.right,
                                                     ),
                                                   ),
-                                                ),
+                                                ))),
                                                 Theme(
                                                     data: Theme.of(context)
                                                         .copyWith(
@@ -553,7 +551,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             controller: _itemFilterController,
             enabled: catalogItems != null,
             decoration: InputDecoration(
-                hintText: "Search Items",
+                hintText: "Search for name or SKU",
                 contentPadding: const EdgeInsets.only(top: 16, left: 16),
                 suffixIcon: IconButton(
                   icon: Icon(
@@ -682,6 +680,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         invoiceBloc.actionsSink.add(newInvoiceAction);
         newInvoiceAction.future.then((value) {
           return showPaymentDialog(invoiceBloc, user, value as String);
+        }).then((cleared) {
+          if (!cleared) {
+            var unLockSale =
+                SetCurrentSale(currentSale.copyWith(priceLocked: false));
+            posCatalogBloc.actionsSink.add(unLockSale);
+          }
         }).catchError((error) {
           showFlushbar(context,
               message: error.toString(), duration: Duration(seconds: 10));
@@ -699,9 +703,11 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         builder: (BuildContext context) {
           return PosPaymentDialog(invoiceBloc, user, payReq);
         }).then((clear) {
-      if (clear) {
+      if (clear == true) {
         clearSale();
+        return true;
       }
+      return false;
     });
   }
 

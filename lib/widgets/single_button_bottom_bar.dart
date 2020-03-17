@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 class SingleButtonBottomBar extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
+  final bool stickToBottom;
 
-  const SingleButtonBottomBar({this.text, this.onPressed});
+  const SingleButtonBottomBar({this.text, this.onPressed, this.stickToBottom = false});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.only(bottom: 40.0),
+        padding: EdgeInsets.only(
+            bottom: this.stickToBottom
+                ? MediaQuery.of(context).viewInsets.bottom + 40.0
+                : 40.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[

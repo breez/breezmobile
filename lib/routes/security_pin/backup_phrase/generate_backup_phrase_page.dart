@@ -3,6 +3,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
+import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
 import 'verify_backup_phrase_page.dart';
@@ -117,43 +118,28 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   }
 
   _buildNextBtn() {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 40),
-      child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        SizedBox(
-          height: 48.0,
-          width: 168.0,
-          child: RaisedButton(
-            child: Text(
-              "NEXT",
-              style: Theme.of(context).textTheme.button,
+    return SingleButtonBottomBar(
+      text: "NEXT",
+      onPressed: () {
+        if (_currentPage == 2) {
+          Navigator.push(
+            context,
+            FadeInRoute(
+              builder: (_) => VerifyBackupPhrasePage(widget.mnemonics),
             ),
-            color: Theme.of(context).buttonColor,
-            elevation: 0.0,
-            shape: const StadiumBorder(),
-            onPressed: () {
-              if (_currentPage == 2) {
-                Navigator.push(
-                  context,
-                  FadeInRoute(
-                    builder: (_) => VerifyBackupPhrasePage(widget.mnemonics),
-                  ),
-                );
-              } else {
-                _pageController
-                    .nextPage(
-                        duration: Duration(milliseconds: 400),
-                        curve: Curves.easeInOut)
-                    .whenComplete(() {
-                  setState(() {
-                    _currentPage = _pageController.page.toInt() + 1;
-                  });
-                });
-              }
-            },
-          ),
-        )
-      ]),
+          );
+        } else {
+          _pageController
+              .nextPage(
+                  duration: Duration(milliseconds: 400),
+                  curve: Curves.easeInOut)
+              .whenComplete(() {
+            setState(() {
+              _currentPage = _pageController.page.toInt() + 1;
+            });
+          });
+        }
+      },
     );
   }
 
