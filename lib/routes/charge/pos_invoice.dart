@@ -224,44 +224,48 @@ class POSInvoiceState extends State<POSInvoice> {
                                                               .push(
                                                                   currentSaleRoute);
                                                         },
-                                                        child: Badge(
-                                                          position:
-                                                              BadgePosition
-                                                                  .topRight(
-                                                                      top: 5,
-                                                                      right:
-                                                                          -10),
-                                                          animationType:
-                                                              BadgeAnimationType
-                                                                  .scale,
-                                                          badgeColor: Theme.of(
-                                                                  context)
-                                                              .floatingActionButtonTheme
-                                                              .backgroundColor,
-                                                          badgeContent: Text(
-                                                            currentSale
-                                                                .totalNumOfItems
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 20.0,
-                                                                    bottom: 8.0,
-                                                                    right: 4.0,
-                                                                    top: 20.0),
-                                                            child: Image.asset(
-                                                              "src/icon/cart.png",
-                                                              width: 24.0,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .primaryTextTheme
-                                                                  .button
-                                                                  .color,
+                                                        child: Container(
+                                                          alignment: Alignment.centerLeft,
+                                                          width: 80.0,
+                                                          child: Badge(
+                                                            position:
+                                                                BadgePosition
+                                                                    .topRight(
+                                                                        top: 5,
+                                                                        right:
+                                                                            -10),
+                                                            animationType:
+                                                                BadgeAnimationType
+                                                                    .scale,
+                                                            badgeColor: Theme.of(
+                                                                    context)
+                                                                .floatingActionButtonTheme
+                                                                .backgroundColor,
+                                                            badgeContent: Text(
+                                                              currentSale
+                                                                  .totalNumOfItems
+                                                                  .toString(),
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 20.0,
+                                                                      bottom: 8.0,
+                                                                      right: 4.0,
+                                                                      top: 20.0),
+                                                              child: Image.asset(
+                                                                "src/icon/cart.png",
+                                                                width: 24.0,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .primaryTextTheme
+                                                                    .button
+                                                                    .color,
+                                                              ),
                                                             ),
                                                           ),
                                                         )))),
