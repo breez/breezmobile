@@ -17,7 +17,7 @@ import 'items/item_avatar.dart';
 class SaleView extends StatefulWidget {
   final bool useFiat;
   final Function() onDeleteSale;
-  final Function() onCharge;
+  final Function(AccountModel, Sale) onCharge;
 
   const SaleView({Key key, this.useFiat, this.onDeleteSale, this.onCharge})
       : super(key: key);
@@ -191,7 +191,7 @@ class _TotalSaleCharge extends StatelessWidget {
   final AccountModel accountModel;
   final Sale currentSale;
   final bool useFiat;
-  final Function() onCharge;
+  final Function(AccountModel accModel, Sale sale) onCharge;
 
   const _TotalSaleCharge(
       {Key key,
@@ -223,7 +223,7 @@ class _TotalSaleCharge extends StatelessWidget {
         style: theme.invoiceChargeAmountStyle,
       ),
       onPressed: () {
-        onCharge();
+        onCharge(accountModel, currentSale);
       },
     );
   }
