@@ -237,7 +237,7 @@ class ItemPageState extends State<ItemPage> {
       ),
       body: body,
       bottomNavigationBar: SingleButtonBottomBar(
-        text: widget.item != null ? "SAVE" : _title,
+        text: widget.item != null ? "SAVE" : _title.toUpperCase(),
         onPressed: () {
           {
             if (_formKey.currentState.validate()) {
