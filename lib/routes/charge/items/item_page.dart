@@ -189,13 +189,16 @@ class ItemPageState extends State<ItemPage> {
                       ],
                     ),
                   ),
-                  TextFormField(
-                    controller: _skuController,
-                    decoration: InputDecoration(
-                        labelText: "SKU",
-                        hintText: "Enter a SKU",
-                        border: UnderlineInputBorder()),
-                    style: theme.FieldTextStyle.textStyle,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: TextFormField(
+                      controller: _skuController,
+                      decoration: InputDecoration(
+                          labelText: "SKU",
+                          hintText: "Enter a SKU",
+                          border: UnderlineInputBorder()),
+                      style: theme.FieldTextStyle.textStyle,
+                    ),
                   ),
                 ],
               ),
