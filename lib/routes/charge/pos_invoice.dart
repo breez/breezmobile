@@ -30,6 +30,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../status_indicator.dart';
+import 'items/item_avatar.dart';
 import 'items/items_list.dart';
 
 class POSInvoice extends StatefulWidget {
@@ -41,7 +42,9 @@ class POSInvoice extends StatefulWidget {
   }
 }
 
-class POSInvoiceState extends State<POSInvoice> {
+class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
+  final GlobalKey badgeKey = GlobalKey();
+
   TextEditingController _invoiceDescriptionController = TextEditingController();
   TextEditingController _itemFilterController = TextEditingController();
 
@@ -52,6 +55,10 @@ class POSInvoiceState extends State<POSInvoice> {
   bool _isKeypadView = true;
   SaleLine currentPendingItem;
   StreamSubscription accountSubscription;
+  Animation<RelativeRect> _transitionAnimation;
+  Animation<double> _scaleTransition;
+  Animation<double> _opacityTransition;
+  Item _itemInTransition;
 
   double get currentAmount => currentPendingItem?.total ?? 0;
 
@@ -121,7 +128,8 @@ class POSInvoiceState extends State<POSInvoice> {
                             }
                             double totalAmount = currentSale.totalChargeSat /
                                 currentCurrency.satConversionRate;
-                            return Column(
+                            return Stack(
+                              children: [ Column(
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
                                 Container(
@@ -228,6 +236,7 @@ class POSInvoiceState extends State<POSInvoice> {
                                                           alignment: Alignment.centerLeft,
                                                           width: 80.0,
                                                           child: Badge(
+                                                            key: badgeKey,
                                                             position:
                                                                 BadgePosition
                                                                     .topRight(
@@ -298,67 +307,50 @@ class POSInvoiceState extends State<POSInvoice> {
                                                           TextAlign.right,
                                                     ),
                                                   ),
-                                                ),
-                                              ),
-                                            ),
-                                            Theme(
-                                                data: Theme.of(context)
-                                                    .copyWith(
-                                                        canvasColor: Theme.of(
-                                                                context)
-                                                            .backgroundColor),
-                                                child: new StreamBuilder<
-                                                        AccountSettings>(
-                                                    stream: accountBloc
-                                                        .accountSettingsStream,
-                                                    builder: (settingCtx,
-                                                        settingSnapshot) {
-                                                      return StreamBuilder<
-                                                              AccountModel>(
-                                                          stream: accountBloc
-                                                              .accountStream,
-                                                          builder: (context,
-                                                              snapshot) {
-                                                            List<CurrencyWrapper>
-                                                                currencies =
-                                                                Currency
-                                                                    .currencies
-                                                                    .map((c) =>
-                                                                        CurrencyWrapper
-                                                                            .fromBTC(c))
-                                                                    .toList();
-                                                            currencies
-                                                              ..addAll(accountModel
-                                                                  .fiatConversionList
-                                                                  .map((f) =>
-                                                                      CurrencyWrapper
-                                                                          .fromFiat(
+                                                ))),
+                                                Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                            canvasColor: Theme
+                                                                    .of(context)
+                                                                .backgroundColor),
+                                                    child: new StreamBuilder<
+                                                            AccountSettings>(
+                                                        stream: accountBloc
+                                                            .accountSettingsStream,
+                                                        builder: (settingCtx,
+                                                            settingSnapshot) {
+                                                          return StreamBuilder<
+                                                                  AccountModel>(
+                                                              stream: accountBloc
+                                                                  .accountStream,
+                                                              builder: (context,
+                                                                  snapshot) {
+                                                                List<CurrencyWrapper>
+                                                                    currencies =
+                                                                    Currency
+                                                                        .currencies
+                                                                        .map((c) =>
+                                                                            CurrencyWrapper.fromBTC(c))
+                                                                        .toList();
+                                                                currencies
+                                                                  ..addAll(accountModel
+                                                                      .fiatConversionList
+                                                                      .map((f) =>
+                                                                          CurrencyWrapper.fromFiat(
                                                                               f)));
 
-                                                            return DropdownButtonHideUnderline(
-                                                              child:
-                                                                  ButtonTheme(
-                                                                alignedDropdown:
-                                                                    true,
-                                                                child:
-                                                                    BreezDropdownButton(
-                                                                        onChanged: (value) => changeCurrency(
-                                                                            currentSale,
-                                                                            value,
-                                                                            userProfileBloc),
-                                                                        iconEnabledColor: Theme.of(context)
-                                                                            .textTheme
-                                                                            .headline
-                                                                            .color,
-                                                                        value: currentCurrency
-                                                                            .shortName,
-                                                                        style: theme.invoiceAmountStyle.copyWith(
-                                                                            color: Theme.of(context)
-                                                                                .textTheme
-                                                                                .headline
-                                                                                .color),
-                                                                        items: Currency.currencies.map((Currency
-                                                                            value) {
+                                                                return DropdownButtonHideUnderline(
+                                                                  child:
+                                                                      ButtonTheme(
+                                                                    alignedDropdown:
+                                                                        true,
+                                                                    child: BreezDropdownButton(
+                                                                        onChanged: (value) => changeCurrency(currentSale, value, userProfileBloc),
+                                                                        iconEnabledColor: Theme.of(context).textTheme.headline.color,
+                                                                        value: currentCurrency.shortName,
+                                                                        style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                        items: Currency.currencies.map((Currency value) {
                                                                           return DropdownMenuItem<
                                                                               String>(
                                                                             value:
@@ -384,24 +376,42 @@ class POSInvoiceState extends State<POSInvoice> {
                                                                               );
                                                                             }).toList(),
                                                                           )),
-                                                              ),
-                                                            );
-                                                          });
-                                                    })),
-                                          ]),
+                                                                  ),
+                                                                );
+                                                              });
+                                                        })),
+                                              ]),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).backgroundColor,
-                                    ),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.29),
-                                Expanded(
-                                    child: _isKeypadView
-                                        ? _numPad(posCatalogBloc, currentSale)
-                                        : _itemsView(currentSale, accountModel,
-                                            posCatalogBloc))
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Theme.of(context).backgroundColor,
+                                        ),
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.29),
+                                    Expanded(
+                                        child: _isKeypadView
+                                            ? _numPad(
+                                                posCatalogBloc, currentSale)
+                                            : _itemsView(currentSale,
+                                                accountModel, posCatalogBloc))
+                                  ],
+                                ),
+                                _itemInTransition != null
+                                    ? Positioned(
+                                        child: ScaleTransition(
+                                          scale: _scaleTransition,
+                                          child: Opacity(
+                                            opacity: _opacityTransition.value,
+                                            child: ItemAvatar(
+                                                _itemInTransition.imageURL),
+                                          ),
+                                        ),
+                                        left: _transitionAnimation.value.left,
+                                        top: _transitionAnimation.value.top)
+                                    : SizedBox()
                               ],
                             );
                           });
@@ -585,8 +595,8 @@ class POSInvoiceState extends State<POSInvoice> {
                         accountModel,
                         posCatalogBloc,
                         catalogItems,
-                        (item) => _addItem(
-                            posCatalogBloc, currentSale, accountModel, item))
+                        (item, avatarKey) => _addItem(posCatalogBloc,
+                            currentSale, accountModel, item, avatarKey))
               ],
             ),
           ),
@@ -709,14 +719,66 @@ class POSInvoiceState extends State<POSInvoice> {
   }
 
   _addItem(PosCatalogBloc posCatalogBloc, Sale currentSale,
-      AccountModel account, Item item) {
+      AccountModel account, Item item, GlobalKey avatarKey) {
     var itemCurrency = CurrencyWrapper.fromShortName(item.currency, account);
 
     setState(() {
       var newSale = currentSale.addItem(item, itemCurrency.satConversionRate);
       posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
       currentPendingItem = null;
+      _animateAddItem(item, avatarKey);
     });
+  }
+
+  void _animateAddItem(Item item, GlobalKey avatarKey) {
+    // start position
+    RenderBox avatarPos = avatarKey.currentContext.findRenderObject();
+    var startPos = avatarPos.localToGlobal(Offset.zero,
+        ancestor: this.context.findRenderObject());
+    var begin = RelativeRect.fromLTRB(startPos.dx, startPos.dy, 0, 0);
+
+    // end position
+    RenderBox cartBox = badgeKey.currentContext.findRenderObject();
+    var endPos = cartBox.localToGlobal(Offset.zero,
+        ancestor: this.context.findRenderObject());
+    var end = RelativeRect.fromLTRB(startPos.dx, endPos.dy, 0, 0);
+
+    var tween = RelativeRectTween(begin: begin, end: end);
+
+    var controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 700));
+
+    //CurveTween(curve: Curves.easeInOut).
+    _transitionAnimation =
+        tween.chain(CurveTween(curve: Curves.easeOutCubic)).animate(controller);
+    _itemInTransition = item;
+
+    // handle scale animation.
+    var scaleController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 700));
+    _scaleTransition = CurvedAnimation(
+        parent: scaleController, curve: Curves.easeInExpo.flipped);
+
+    // handle opcity animation.
+    var opacityController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 700));
+    _opacityTransition =
+        CurvedAnimation(parent: opacityController, curve: Curves.easeInExpo);
+
+  controller.addListener(() {
+      setState(() {
+        if (controller.status == AnimationStatus.completed) {
+          _itemInTransition = null;
+          controller.dispose();
+          scaleController.dispose();
+          opacityController.dispose();
+        }
+      });
+    });
+
+    scaleController.reverse(from: 1.0);
+    opacityController.forward(from: 0.7);
+    controller.forward();
   }
 
   onNumButtonPressed(Sale currentSale, String numberText) {

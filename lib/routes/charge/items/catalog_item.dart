@@ -17,7 +17,8 @@ class CatalogItem extends StatelessWidget {
   final PosCatalogBloc posCatalogBloc;
   final Item _itemInfo;
   final bool _lastItem;
-  final Function(Item item) _addItem;
+  final Function(Item item, GlobalKey avatarKey) _addItem;
+  final GlobalKey _avatarKey = GlobalKey();
 
   CatalogItem(this.accountModel, this.posCatalogBloc, this._itemInfo,
       this._lastItem, this._addItem);
@@ -54,7 +55,7 @@ class CatalogItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
           child: ListTile(
-            leading: ItemAvatar(_itemInfo.imageURL),
+            leading: ItemAvatar(_itemInfo.imageURL, key: _avatarKey),
             title: Text(
               _itemInfo.name,
               style: Theme.of(context).textTheme.itemTitleStyle,
@@ -88,7 +89,7 @@ class CatalogItem extends StatelessWidget {
               ],
             ),
             onTap: () {
-              _addItem(_itemInfo);
+              _addItem(_itemInfo, _avatarKey);
             },
           ),
         ),

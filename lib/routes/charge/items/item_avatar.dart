@@ -7,7 +7,7 @@ class ItemAvatar extends StatelessWidget {
   final String avatarURL;
   final double radius;
 
-  ItemAvatar(this.avatarURL, {this.radius = 20.0});
+  ItemAvatar(this.avatarURL, {Key key, this.radius = 20.0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
