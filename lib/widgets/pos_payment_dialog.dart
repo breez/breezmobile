@@ -79,16 +79,39 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     super.dispose();
   }
 
+  Widget _actionsWidget(){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        _clearSaleButton(), _cancelButton()
+      ],
+    );
+  }
+
   Widget _cancelButton() {
     return FlatButton(
       padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
       child: Text(
-        'CANCEL PAYMENT',
+        'CANCEL',
         textAlign: TextAlign.center,
         style: Theme.of(context).primaryTextTheme.button,
       ),
       onPressed: () {
         Navigator.of(context).pop(false);
+      },
+    );
+  }
+
+  Widget _clearSaleButton() {
+    return FlatButton(
+      padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
+      child: Text(
+        'CLEAR SALE',
+        textAlign: TextAlign.center,
+        style: Theme.of(context).primaryTextTheme.button,
+      ),
+      onPressed: () {
+        Navigator.of(context).pop(true);
       },
     );
   }
@@ -131,7 +154,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                           .primaryTextTheme
                           .display1
                           .copyWith(fontSize: 16))),
-              _cancelButton(),
+              _actionsWidget(),
             ],
           );
         });

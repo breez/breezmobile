@@ -662,7 +662,14 @@ class POSInvoiceState extends State<POSInvoice> {
         invoiceBloc.actionsSink.add(newInvoiceAction);
         newInvoiceAction.future.then((value) {
           return showPaymentDialog(invoiceBloc, user, value as String);
-        }).catchError((error) {
+        })
+        .then((cleared) {
+          if (!cleared) {
+            var unLockSale = SetCurrentSale(currentSale.copyWith(priceLocked: false));
+            posCatalogBloc.actionsSink.add(unLockSale);
+          }
+        })
+        .catchError((error) {
           showFlushbar(context,
               message: error.toString(), duration: Duration(seconds: 10));
         });
@@ -679,9 +686,11 @@ class POSInvoiceState extends State<POSInvoice> {
         builder: (BuildContext context) {
           return PosPaymentDialog(invoiceBloc, user, payReq);
         }).then((clear) {
-      if (clear) {
+      if (clear == true) {
           clearSale();
+          return true;
         }
+        return false;
     });
   }
 
