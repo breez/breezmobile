@@ -105,7 +105,9 @@ class InvoiceBloc with AsyncActionsHandler {
         payeeImageURL: invoiceRequest.logo,
         description: invoiceRequest.description,
         expiry: invoiceRequest.expiry);
-    action.resolve(payReq);
+    var memo = await _breezLib.decodePaymentRequest(payReq);
+    var paymentHash = await _breezLib.getPaymentRequestHash(payReq);
+    action.resolve(PaymentRequestModel(memo, payReq, paymentHash));
   }
 
   void _listenNFCStream(
