@@ -120,7 +120,7 @@ class POSInvoiceState extends State<POSInvoice> {
                               return Loader();
                             }
                             double totalAmount = currentSale.totalChargeSat /
-                                    currentCurrency.satConversionRate;
+                                currentCurrency.satConversionRate;
                             return Column(
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
@@ -170,12 +170,13 @@ class POSInvoiceState extends State<POSInvoice> {
                                                   style: theme
                                                       .invoiceChargeAmountStyle,
                                                 ),
-                                                onPressed: () =>
-                                                    onInvoiceSubmitted(
-                                                        currentSale,
-                                                        invoiceBloc,
-                                                        userProfile,
-                                                        accountModel),
+                                                onPressed: () {
+                                                  onInvoiceSubmitted(
+                                                      currentSale,
+                                                      invoiceBloc,
+                                                      userProfile,
+                                                      accountModel);
+                                                },
                                               ),
                                             ),
                                           ),
@@ -204,11 +205,15 @@ class POSInvoiceState extends State<POSInvoice> {
                                                                       true,
                                                                   builder: (_) =>
                                                                       SaleView(
-                                                                        onCharge: () => onInvoiceSubmitted(
-                                                                            currentSale,
-                                                                            invoiceBloc,
-                                                                            userProfile,
-                                                                            accountModel),
+                                                                        onCharge:
+                                                                            (accModel,
+                                                                                sale) {
+                                                                          onInvoiceSubmitted(
+                                                                              sale,
+                                                                              invoiceBloc,
+                                                                              userProfile,
+                                                                              accModel);
+                                                                        },
                                                                         onDeleteSale:
                                                                             () =>
                                                                                 approveClear(currentSale),
@@ -662,14 +667,13 @@ class POSInvoiceState extends State<POSInvoice> {
         invoiceBloc.actionsSink.add(newInvoiceAction);
         newInvoiceAction.future.then((value) {
           return showPaymentDialog(invoiceBloc, user, value as String);
-        })
-        .then((cleared) {
+        }).then((cleared) {
           if (!cleared) {
-            var unLockSale = SetCurrentSale(currentSale.copyWith(priceLocked: false));
+            var unLockSale =
+                SetCurrentSale(currentSale.copyWith(priceLocked: false));
             posCatalogBloc.actionsSink.add(unLockSale);
           }
-        })
-        .catchError((error) {
+        }).catchError((error) {
           showFlushbar(context,
               message: error.toString(), duration: Duration(seconds: 10));
         });
@@ -687,10 +691,10 @@ class POSInvoiceState extends State<POSInvoice> {
           return PosPaymentDialog(invoiceBloc, user, payReq);
         }).then((clear) {
       if (clear == true) {
-          clearSale();
-          return true;
-        }
-        return false;
+        clearSale();
+        return true;
+      }
+      return false;
     });
   }
 
@@ -706,8 +710,7 @@ class POSInvoiceState extends State<POSInvoice> {
     var itemCurrency = CurrencyWrapper.fromShortName(item.currency, account);
 
     setState(() {
-      var newSale =
-          currentSale.addItem(item, itemCurrency.satConversionRate);
+      var newSale = currentSale.addItem(item, itemCurrency.satConversionRate);
       posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
       currentPendingItem = null;
     });
@@ -720,25 +723,27 @@ class POSInvoiceState extends State<POSInvoice> {
       double addition = int.parse(numberText).toDouble() /
           pow(10, currentCurrency.fractionSize);
       var newSale = currentSale;
-      var newPrice = currentAmount * 10 + addition;      
+      var newPrice = currentAmount * 10 + addition;
       if (currentPendingItem == null) {
-        newSale = currentSale.addCustomItem(
-          newPrice, currentCurrency.shortName, currentCurrency.satConversionRate);          
+        newSale = currentSale.addCustomItem(newPrice, currentCurrency.shortName,
+            currentCurrency.satConversionRate);
         currentPendingItem = newSale.saleLines.last;
       } else {
-        currentPendingItem = currentPendingItem.copywith(pricePerItem: newPrice);
+        currentPendingItem =
+            currentPendingItem.copywith(pricePerItem: newPrice);
         newSale = currentSale.updateItems((sl) {
           if (sl.isCustom && sl.itemName == currentPendingItem.itemName) {
-              return currentPendingItem;
-            }
-            return sl;
+            return currentPendingItem;
+          }
+          return sl;
         });
-      }      
+      }
       posCatalogBloc.actionsSink.add(SetCurrentSale(newSale));
     });
   }
 
-  changeCurrency(Sale currentSale, String value, UserProfileBloc userProfileBloc) {
+  changeCurrency(
+      Sale currentSale, String value, UserProfileBloc userProfileBloc) {
     setState(() {
       Currency currency = Currency.fromTickerSymbol(value);
 
@@ -761,7 +766,8 @@ class POSInvoiceState extends State<POSInvoice> {
         AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
       if (currentPendingItem != null) {
-        currentSale = currentSale.removeItem((sl) => sl.isCustom && sl.itemName == currentPendingItem.itemName);
+        currentSale = currentSale.removeItem(
+            (sl) => sl.isCustom && sl.itemName == currentPendingItem.itemName);
         currentPendingItem = null;
         posCatalogBloc.actionsSink.add(SetCurrentSale(currentSale));
       }
