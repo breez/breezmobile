@@ -15,6 +15,7 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   final StreamController<List<Item>> _itemsStreamController =
       BehaviorSubject<List<Item>>();
+
   Stream<List<Item>> get itemsStream => _itemsStreamController.stream;
 
   final BehaviorSubject<Sale> _currentSaleController = BehaviorSubject<Sale>();
@@ -31,6 +32,7 @@ class PosCatalogBloc with AsyncActionsHandler {
       AddSale: _addSale,
       FetchSale: _fetchSale,
       SetCurrentSale: _setCurrentSale,
+      FilterItems: _filterItems,
     });
     listenActions();
     _currentSaleController.add(Sale(saleLines: List()));
@@ -61,8 +63,12 @@ class PosCatalogBloc with AsyncActionsHandler {
     });
   }
 
-  Future _loadItems() async {
-    _itemsStreamController.add(await _repository.fetchAllItems());
+  Future _loadItems({String filter}) async {
+    _itemsStreamController.add(await _repository.fetchItems(filter: filter));
+  }
+
+  _filterItems(FilterItems action) {
+    _loadItems(filter: action.filter);
   }
 
   Future _addItem(AddItem action) async {

@@ -21,7 +21,7 @@ void main() {
       expect(id, 1);
       var id2 = await repo.addItem(Item(name: "item2", currency: "USD", price: 1.0));
       expect(id2, 2);     
-      var items = await repo.fetchAllItems();
+      var items = await repo.fetchItems();
       expect(items.length, 2);
       var item1 = await repo.fetchItemByID(1);
       expect(item1.name, "item1");
@@ -42,7 +42,7 @@ void main() {
 
       repo.deleteItem(1);
       repo.deleteItem(2);
-      items = await repo.fetchAllItems();
+      items = await repo.fetchItems();
       expect(items.length, 0);
     });
 

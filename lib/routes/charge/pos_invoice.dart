@@ -46,6 +46,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   final GlobalKey badgeKey = GlobalKey();
 
   TextEditingController _invoiceDescriptionController = TextEditingController();
+  TextEditingController _itemFilterController = TextEditingController();
+
   double itemHeight;
   double itemWidth;
   bool _useFiat = false;
@@ -62,6 +64,14 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   @override
   void didChangeDependencies() {
+    PosCatalogBloc posCatalogBloc =
+        AppBlocsProvider.of<PosCatalogBloc>(context);
+    _itemFilterController.addListener(
+      () {
+        FilterItems filterItems = FilterItems(_itemFilterController.text);
+        posCatalogBloc.actionsSink.add(filterItems);
+      },
+    );
     itemHeight = (MediaQuery.of(context).size.height - kToolbarHeight - 16) / 4;
     itemWidth = (MediaQuery.of(context).size.width) / 2;
     if (accountSubscription == null) {
@@ -534,39 +544,66 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   _buildCatalogContent(Sale currentSale, AccountModel accountModel,
       PosCatalogBloc posCatalogBloc, List<Item> catalogItems) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: ListView(
-        primary: false,
-        shrinkWrap: true,
-        children: <Widget>[
-/*        TextField(
-            onChanged: (value) {},
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Expanded(
+          flex: 0,
+          child: TextField(
+            controller: _itemFilterController,
             enabled: catalogItems != null,
             decoration: InputDecoration(
                 hintText: "Search Items",
-                prefixIcon: Icon(Icons.search),
-                border: UnderlineInputBorder()),
-          ),*/
-          catalogItems?.length == 0
-              ? Padding(
-                  padding: const EdgeInsets.only(
-                      top: 180.0, left: 40.0, right: 40.0),
-                  child: AutoSizeText(
-                    "No items to display.\nAdd items to this view using the '+' button.",
-                    textAlign: TextAlign.center,
-                    minFontSize: MinFontSize(context).minFontSize,
-                    stepGranularity: 0.1,
+                contentPadding: const EdgeInsets.only(top: 16, left: 16),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _itemFilterController.text.isEmpty
+                        ? Icons.search
+                        : Icons.close,
+                    size: 20,
                   ),
-                )
-              : ItemsList(
-                  accountModel,
-                  posCatalogBloc,
-                  catalogItems,
-                  (item, avatarKey) => _addItem(posCatalogBloc, currentSale,
-                      accountModel, item, avatarKey))
-        ],
-      ),
+                  onPressed: _itemFilterController.text.isEmpty
+                      ? null
+                      : () {
+                          _itemFilterController.text = "";
+                          FocusScope.of(context).requestFocus(FocusNode());
+                        },
+                  padding: EdgeInsets.only(right: 24, top: 4),
+                ),
+                border: UnderlineInputBorder()),
+          ),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: ListView(
+              primary: false,
+              shrinkWrap: true,
+              children: <Widget>[
+                catalogItems?.length == 0
+                    ? Padding(
+                        padding: const EdgeInsets.only(
+                            top: 180.0, left: 40.0, right: 40.0),
+                        child: AutoSizeText(
+                          _itemFilterController.text.isNotEmpty
+                              ? "No matching items found."
+                              : "No items to display.\nAdd items to this view using the '+' button.",
+                          textAlign: TextAlign.center,
+                          minFontSize: MinFontSize(context).minFontSize,
+                          stepGranularity: 0.1,
+                        ),
+                      )
+                    : ItemsList(
+                        accountModel,
+                        posCatalogBloc,
+                        catalogItems,
+                        (item, avatarKey) => _addItem(posCatalogBloc,
+                            currentSale, accountModel, item, avatarKey))
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -706,9 +743,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         AnimationController(vsync: this, duration: Duration(milliseconds: 700));
 
     //CurveTween(curve: Curves.easeInOut).
-    _transitionAnimation = tween
-        .chain(CurveTween(curve: Curves.easeOutCubic))
-        .animate(controller);
+    _transitionAnimation =
+        tween.chain(CurveTween(curve: Curves.easeOutCubic)).animate(controller);
     _itemInTransition = item;
     controller.addListener(() {
       setState(() {
@@ -727,9 +763,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     // handle opcity animation.
     var opacityController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 700));
-    _opacityTransition = CurvedAnimation(
-        parent: opacityController, curve: Curves.easeInExpo);
-    
+    _opacityTransition =
+        CurvedAnimation(parent: opacityController, curve: Curves.easeInExpo);
+
     scaleController.reverse(from: 1.0);
     opacityController.forward(from: 0.7);
     controller.forward();
