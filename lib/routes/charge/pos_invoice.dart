@@ -847,8 +847,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       bool flipFiat = _useFiat == (currency != null);
       if (flipFiat) {
         _useFiat = !_useFiat;
-        _clearAmounts(currentSale);
       }
+      _clearAmounts(currentSale);
 
       if (currency != null) {
         userProfileBloc.currencySink.add(currency);
