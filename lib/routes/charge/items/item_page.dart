@@ -106,7 +106,7 @@ class ItemPageState extends State<ItemPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Expanded(
-                          flex: 10,
+                          flex: 1,
                           child: TextFormField(
                               keyboardType: TextInputType.numberWithOptions(
                                   decimal: true),
@@ -129,20 +129,20 @@ class ItemPageState extends State<ItemPage> {
                         SizedBox(
                           width: 8.0,
                         ),
-                        Theme(
-                            data: Theme.of(context).copyWith(
-                                canvasColor: Theme.of(context).canvasColor),
-                            child: StreamBuilder<AccountModel>(
-                                stream: _accountBloc.accountStream,
-                                builder: (settingCtx, snapshot) {
-                                  AccountModel account = snapshot.data;
-                                  if (!snapshot.hasData) {
-                                    return Container();
-                                  }
+                        Container(
+                          width: 80,
+                          child: Theme(
+                              data: Theme.of(context).copyWith(
+                                  canvasColor: Theme.of(context).canvasColor),
+                              child: StreamBuilder<AccountModel>(
+                                  stream: _accountBloc.accountStream,
+                                  builder: (settingCtx, snapshot) {
+                                    AccountModel account = snapshot.data;
+                                    if (!snapshot.hasData) {
+                                      return Container();
+                                    }
 
-                                  return Expanded(
-                                    flex: 4,
-                                    child: DropdownButtonHideUnderline(
+                                    return DropdownButtonHideUnderline(
                                       child: DropdownButtonFormField(
                                         isDense: true,
                                         decoration: InputDecoration(
@@ -183,9 +183,9 @@ class ItemPageState extends State<ItemPage> {
                                             );
                                           }).toList()),
                                       ),
-                                    ),
-                                  );
-                                })),
+                                    );
+                                  })),
+                        ),
                       ],
                     ),
                   ),
