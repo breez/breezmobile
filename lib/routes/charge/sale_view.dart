@@ -102,8 +102,8 @@ class SaleViewState extends State<SaleView> {
               textTheme: Theme.of(context).appBarTheme.textTheme,
               backgroundColor: Theme.of(context).canvasColor,
               leading: backBtn.BackButton(),
-              title: Text("Current Sale"),
-              actions: <Widget>[
+              title: Text(widget.salePayment?.title ?? "Current Sale"),
+              actions: widget.readOnly ? [] : <Widget>[
                 IconButton(
                   icon: Icon(
                     Icons.delete_forever,
