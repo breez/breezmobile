@@ -55,6 +55,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   bool _isKeypadView = true;
   SaleLine currentPendingItem;
   StreamSubscription accountSubscription;
+  StreamSubscription<Sale> currentSaleSubscription;
   Animation<RelativeRect> _transitionAnimation;
   Animation<double> _scaleTransition;
   Animation<double> _opacityTransition;
@@ -82,6 +83,22 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           posCatalogBloc.actionsSink.add(filterItems);
         },
       );
+
+      currentSaleSubscription = posCatalogBloc.currentSaleStream.listen((s) {
+        if (currentPendingItem == null || !this.mounted) {
+          return;
+        }
+
+        // if the current pending item does not exist, then it was removed.
+        if (s.saleLines.firstWhere(
+                (s) => s.isCustom && s.itemName == currentPendingItem.itemName,
+                orElse: () => null) ==
+            null) {
+          setState(() {
+            currentPendingItem = null;
+          });
+        }
+      });
     }
     super.didChangeDependencies();
   }
@@ -89,6 +106,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   @override
   void dispose() {
     accountSubscription.cancel();
+    currentSaleSubscription?.cancel();
     super.dispose();
   }
 
