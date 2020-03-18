@@ -6,6 +6,8 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/repository.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/injector.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'model.dart';
@@ -29,7 +31,7 @@ class PosCatalogBloc with AsyncActionsHandler {
       UpdateItem: _updateItem,
       DeleteItem: _deleteItem,
       FetchItem: _fetchItem,
-      AddSale: _addSale,
+      SubmitCurrentSale: _submitSale,
       FetchSale: _fetchSale,
       SetCurrentSale: _setCurrentSale,
       FilterItems: _filterItems,
@@ -37,9 +39,25 @@ class PosCatalogBloc with AsyncActionsHandler {
     listenActions();
     _currentSaleController.add(Sale(saleLines: List()));
     _trackCurrentSaleRates(accountStream);
+    _trackSalePayments();
   }
 
-  void _trackCurrentSaleRates(Stream<AccountModel> accountStream){
+  void _trackSalePayments() {
+    var breezBridge = ServiceInjector().breezBridge;
+
+    breezBridge.notificationStream
+        .where((event) =>
+            event.type == NotificationEvent_NotificationType.INVOICE_PAID)
+        .listen((event) async {
+      var paymentHash = await breezBridge.getPaymentRequestHash(event.data[0]);
+      var paidSale = await _repository.fetchSaleByPaymentHash(paymentHash);
+      if (paidSale != null && paidSale.id == _currentSaleController.value.id) {
+        _currentSaleController.add(Sale(saleLines: []));
+      }
+    });
+  }
+
+  void _trackCurrentSaleRates(Stream<AccountModel> accountStream) {
     accountStream.listen((acc) {
       var currentSale = _currentSaleController.value;
 
@@ -48,18 +66,16 @@ class PosCatalogBloc with AsyncActionsHandler {
         return;
       }
       _currentSaleController.add(currentSale.copyWith(
-        saleLines: currentSale.saleLines.map(
-          (sl){
-            double rate = sl.satConversionRate;
-            Currency curr = Currency.fromTickerSymbol(sl.currency);
-            if (curr != null) {
-              rate = curr.satConversionRate;
-            } else {
-              rate = acc.getFiatCurrencyByShortName(sl.currency).satConversionRate;
-            }
-            return sl.copywith(satConversionRate: rate);
-          })
-          .toList()));
+          saleLines: currentSale.saleLines.map((sl) {
+        double rate = sl.satConversionRate;
+        Currency curr = Currency.fromTickerSymbol(sl.currency);
+        if (curr != null) {
+          rate = curr.satConversionRate;
+        } else {
+          rate = acc.getFiatCurrencyByShortName(sl.currency).satConversionRate;
+        }
+        return sl.copywith(satConversionRate: rate);
+      }).toList()));
     });
   }
 
@@ -92,15 +108,19 @@ class PosCatalogBloc with AsyncActionsHandler {
     action.resolve(await _repository.fetchItemByID(action.id));
   }
 
-  Future _addSale(AddSale action) async {
-    action.resolve(await _repository.addSale(action.sale, action.paymentHash));
+  Future _submitSale(SubmitCurrentSale action) async {
+    var currentSale = _currentSaleController.value;
+    int saleID = await _repository.addSale(currentSale, action.paymentHash);
+    _currentSaleController.add(await _repository.fetchSaleByID(saleID));
+    action.resolve(saleID);
   }
 
   Future _fetchSale(FetchSale action) async {
     if (action.id != null) {
       action.resolve(await _repository.fetchSaleByID(action.id));
     } else {
-      action.resolve(await _repository.fetchSaleByPaymentHash(action.paymentHash));
+      action.resolve(
+          await _repository.fetchSaleByPaymentHash(action.paymentHash));
     }
   }
 
