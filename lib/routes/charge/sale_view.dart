@@ -47,6 +47,7 @@ class SaleViewState extends State<SaleView> {
   Sale saleInProgress;
 
   Sale get currentSale => widget.readOnlySale ?? saleInProgress;
+
   @override
   void didChangeDependencies() {
     if (_currentSaleSubscrription == null && !widget.readOnly) {
@@ -103,17 +104,19 @@ class SaleViewState extends State<SaleView> {
               backgroundColor: Theme.of(context).canvasColor,
               leading: backBtn.BackButton(),
               title: Text(widget.salePayment?.title ?? "Current Sale"),
-              actions: widget.readOnly ? [] : <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.delete_forever,
-                    color: Theme.of(context).iconTheme.color,
-                  ),
-                  onPressed: () {
-                    widget.onDeleteSale();
-                  },
-                )
-              ],
+              actions: widget.readOnly
+                  ? []
+                  : <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete_forever,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        onPressed: () {
+                          widget.onDeleteSale();
+                        },
+                      )
+                    ],
               elevation: 0.0,
             ),
             extendBody: false,
@@ -381,7 +384,7 @@ class SaleLineWidget extends StatelessWidget {
           subtitle: Text(
               currrency.symbol +
                   currrency.format(saleLine.pricePerItem * saleLine.quantity,
-                      removeTrailingZeros: true),
+                      removeTrailingZeros: true, useBlankGroupSeparator: true),
               style: TextStyle(
                   color: ListTileTheme.of(context)
                       .textColor

@@ -54,7 +54,8 @@ class CurrencyWrapper {
   String format(double value,
       {userInput = false,
       bool includeCurencySuffix = false,
-      removeTrailingZeros = false}) {
+      removeTrailingZeros = false,
+      bool useBlankGroupSeparator = false}) {
     if (btc != null) {
       var satValue = btc.toSats(value);
       return btc.format(satValue,
@@ -65,6 +66,7 @@ class CurrencyWrapper {
     return fiat.formatFiat(value,
         addCurrencyPrefix: includeCurencySuffix,
         allowBelowMin: true,
-        removeTrailingZeros: removeTrailingZeros);
+        removeTrailingZeros: removeTrailingZeros,
+        useBlankGroupSeparator: useBlankGroupSeparator);
   }
 }
