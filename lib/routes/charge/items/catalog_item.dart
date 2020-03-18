@@ -106,12 +106,12 @@ class CatalogItem extends StatelessWidget {
 
   String _getSymbol() {
     return CurrencyWrapper.fromShortName(_itemInfo.currency, accountModel)
-        .symbol;
+        ?.symbol;
   }
 
   String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
     var formatter =
         CurrencyWrapper.fromShortName(_itemInfo.currency, accountModel);
-    return formatter.format(_itemInfo.price, removeTrailingZeros: true);
+    return formatter?.format(_itemInfo.price, removeTrailingZeros: true);
   }
 }

@@ -54,14 +54,16 @@ class SaleViewState extends State<SaleView> {
           AppBlocsProvider.of<PosCatalogBloc>(context);
       _currentSaleSubscrription =
           posCatalogBloc.currentSaleStream.listen((sale) {
-        bool updateNote = saleInProgress == null;
-        saleInProgress = sale;
-        if (updateNote) {
-          _noteController.text = sale.note;
-        }
-        if (saleInProgress.saleLines.length == 0) {
-          Navigator.of(context).pop();
-        }
+        setState(() {
+          bool updateNote = saleInProgress == null;
+          saleInProgress = sale;
+          if (updateNote) {
+            _noteController.text = sale.note;
+          }
+          if (saleInProgress.saleLines.length == 0) {
+            Navigator.of(context).pop();
+          }
+        });
       });
 
       _noteController.addListener(() {
@@ -309,8 +311,8 @@ class SaleLinesList extends StatelessWidget {
                     onChangeQuantity: readOnly
                         ? null
                         : (int delta) {
-                            var saleLine = currentSale.saleLines[index];
                             var saleLines = currentSale.saleLines.toList();
+                            var saleLine = currentSale.saleLines[index];
                             var newQuantity = saleLine.quantity + delta;
                             if (saleLine.quantity == 0) {
                               saleLines.removeAt(index);
