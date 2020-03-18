@@ -705,7 +705,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         invoiceBloc.actionsSink.add(newInvoiceAction);
         newInvoiceAction.future.then((value) {
           var payReq = value as PaymentRequestModel;
-          var addSaleAction = AddSale(currentSale, payReq.paymentHash);
+          var addSaleAction = SubmitCurrentSale(payReq.paymentHash);
           posCatalogBloc.actionsSink.add(addSaleAction);
           return addSaleAction.future.then((value) {
             return showPaymentDialog(invoiceBloc, user, payReq.rawPayReq);
