@@ -9,6 +9,7 @@ import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
@@ -100,13 +101,19 @@ class SaleViewState extends State<SaleView> {
 
           CurrencyWrapper saleCurrency =
               widget.saleCurrency ?? CurrencyWrapper.fromBTC(Currency.SAT);
+          String title = "Current Sale";
+          if (widget.salePayment != null) {
+            title = DateUtils.formatYearMonthDayHourMinute(
+                DateTime.fromMillisecondsSinceEpoch(
+                    widget.salePayment.creationTimestamp.toInt() * 1000));
+          }
           return Scaffold(
             appBar: AppBar(
               iconTheme: Theme.of(context).appBarTheme.iconTheme,
               textTheme: Theme.of(context).appBarTheme.textTheme,
               backgroundColor: Theme.of(context).canvasColor,
               leading: backBtn.BackButton(),
-              title: Text(widget.salePayment?.title ?? "Current Sale"),
+              title: Text(title),
               actions: widget.readOnly
                   ? []
                   : <Widget>[
