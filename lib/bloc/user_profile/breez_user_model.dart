@@ -31,7 +31,7 @@ class BreezUserModel {
       this.isPOS = false,
       this.cancellationTimeoutValue = 90.0,
       this.hasAdminPassword = false,
-      this.posCurrencyShortName});
+      this.posCurrencyShortName = "SAT"});
 
   BreezUserModel copyWith(
       {String name,
