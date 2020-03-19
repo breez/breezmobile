@@ -134,15 +134,20 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                     builder: (context, snapshot) {
                       var userProfile = snapshot.data;
                       if (userProfile == null) {
-                        return Loader();
+                        return Center(child: Loader());
                       }
                       return StreamBuilder<AccountModel>(
                           stream: accountBloc.accountStream,
                           builder: (context, snapshot) {
                             var accountModel = snapshot.data;
                             if (accountModel == null) {
-                              return Loader();
+                              return Container();
                             }
+
+                            if (accountModel.fiatConversionList.isEmpty) {
+                              return Center(child: Loader());
+                            }
+
                             double totalAmount = currentSale.totalChargeSat /
                                 currentCurrency.satConversionRate;
                             return Stack(
@@ -850,10 +855,10 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
       if (currency != null) {
         userProfileBloc.currencySink.add(currency);
-        accountBloc.posCurrencySink.add(currency.tickerSymbol);
+        userProfileBloc.posCurrencySink.add(currency.tickerSymbol);
       } else {
         userProfileBloc.fiatConversionSink.add(value);
-        accountBloc.posCurrencySink.add(value);
+        userProfileBloc.posCurrencySink.add(value);
       }
     });
   }

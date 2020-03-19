@@ -62,9 +62,6 @@ class AccountBloc {
   Sink<AccountSettings> get accountSettingsSink =>
       _accountSettingsController.sink;
 
-  final _posCurrencyController = BehaviorSubject<String>();
-  Sink<String> get posCurrencySink => _posCurrencyController.sink;
-
   final _routingNodeConnectionController = BehaviorSubject<bool>();
   Stream<bool> get routingNodeConnectionStream =>
       _routingNodeConnectionController.stream;
@@ -160,7 +157,6 @@ class AccountBloc {
       //listen streams
       _listenAccountActions();
       _hanleAccountSettings();
-      _listenPosCurrencyChanges();
       _listenUserChanges(userProfileStream);
       _listenFilterChanges();
       _listenAccountChanges();
@@ -395,13 +391,6 @@ class AccountBloc {
     });
   }
 
-  _listenPosCurrencyChanges() {
-    _posCurrencyController.listen((shortName) {
-      _accountController
-          .add(_accountController.value.copyWith(posCurrencyShortName: shortName));
-    });
-  }
-
   _listenUserChanges(Stream<BreezUserModel> userProfileStream) {
     userProfileStream.listen((user) async {
       if (user.token != null && user.token != _currentUser?.token) {
@@ -416,6 +405,8 @@ class AccountBloc {
           .add(_accountController.value.copyWith(currency: user.currency));
       _accountController.add(
           _accountController.value.copyWith(fiatShortName: user.fiatCurrency));
+      _accountController.add(
+          _accountController.value.copyWith(posCurrencyShortName: user.posCurrencyShortName));
       var updatedPayments = _paymentsController.value.copyWith(
         nonFilteredItems: _paymentsController.value.nonFilteredItems
             .map((p) => p.copyWith(_accountController.value))
@@ -689,7 +680,6 @@ class AccountBloc {
   }
 
   close() {
-    _posCurrencyController.close();
     _accountEnableController.close();
     _paymentsController.close();
     _accountNotificationsController.close();

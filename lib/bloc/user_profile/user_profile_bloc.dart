@@ -59,6 +59,9 @@ class UserProfileBloc {
   final _fiatConversionController = BehaviorSubject<String>();
   Sink<String> get fiatConversionSink => _fiatConversionController.sink;
 
+  final _posCurrencyController = BehaviorSubject<String>();
+  Sink<String> get posCurrencySink => _posCurrencyController.sink;
+
   final _userController = BehaviorSubject<BreezUserModel>();
   Sink<BreezUserModel> get userSink => _userController.sink;
 
@@ -105,6 +108,7 @@ class UserProfileBloc {
       //listen to changes in user preferences
       _listenCurrencyChange(injector);
       _listenFiatCurrencyChange(injector);
+      _listenPosCurrencyChanges(injector);
 
       //listen to changes in user avatar
       _listenUserChange(injector);
@@ -329,6 +333,14 @@ class UserProfileBloc {
     });
   }
 
+  _listenPosCurrencyChanges(ServiceInjector injector) {
+    _posCurrencyController.listen((shortName) async {
+      var preferences = await injector.sharedPreferences;
+      await _saveChanges(
+          preferences, _currentUser.copyWith(posCurrencyShortName: shortName));
+    });
+  }
+
   void _listenUserChange(ServiceInjector injector) {
     _userController.stream.listen((userData) async {
       var preferences = await injector.sharedPreferences;
@@ -387,6 +399,7 @@ class UserProfileBloc {
     _registrationController.close();
     _currencyController.close();
     _fiatConversionController.close();
+    _posCurrencyController.close();
     _userActionsController.close();
     _userController.close();
     _randomizeController.close();
