@@ -66,7 +66,6 @@ class PosPaymentItem extends StatelessWidget {
       if (sale != null) {
         Navigator.of(context).push(FadeInRoute(
           builder: (context) => SaleView(
-              useFiat: false,
               readOnlySale: sale as Sale,
               salePayment: _paymentInfo),
         ));

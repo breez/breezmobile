@@ -242,7 +242,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                                   onInvoiceSubmitted(sale, invoiceBloc, userProfile, accModel);
                                                                                 },
                                                                                 onDeleteSale: () => approveClear(currentSale),
-                                                                                useFiat: _useFiat,
+                                                                                saleCurrency: currentCurrency,
                                                                               ));
                                                               Navigator.of(
                                                                       context)
@@ -381,11 +381,13 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                             value:
                                                                                 value.tickerSymbol,
                                                                             child:
-                                                                                Text(
+                                                                                Material(
+                                                                                  child: Text(
                                                                               value.tickerSymbol.toUpperCase(),
                                                                               textAlign: TextAlign.right,
                                                                               style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
                                                                             ),
+                                                                                ),
                                                                           );
                                                                         }).toList()
                                                                           ..addAll(
@@ -393,10 +395,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                                 fiat) {
                                                                               return new DropdownMenuItem<String>(
                                                                                 value: fiat.currencyData.shortName,
-                                                                                child: new Text(
-                                                                                  fiat.currencyData.shortName,
-                                                                                  textAlign: TextAlign.right,
-                                                                                  style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                                child: Material(
+                                                                                  child: new Text(
+                                                                                    fiat.currencyData.shortName,
+                                                                                    textAlign: TextAlign.right,
+                                                                                    style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                                  ),
                                                                                 ),
                                                                               );
                                                                             }).toList(),
@@ -847,8 +851,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       bool flipFiat = _useFiat == (currency != null);
       if (flipFiat) {
         _useFiat = !_useFiat;
-        _clearAmounts(currentSale);
       }
+      _clearAmounts(currentSale);
 
       if (currency != null) {
         userProfileBloc.currencySink.add(currency);
