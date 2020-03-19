@@ -6,6 +6,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -16,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'items/item_avatar.dart';
 
 class SaleView extends StatefulWidget {
-  final bool useFiat;
+  final CurrencyWrapper saleCurrency;
   final Function() onDeleteSale;
   final Function(AccountModel, Sale) onCharge;
   final PaymentInfo salePayment;
@@ -24,7 +25,7 @@ class SaleView extends StatefulWidget {
 
   const SaleView(
       {Key key,
-      this.useFiat,
+      this.saleCurrency,
       this.onDeleteSale,
       this.onCharge,
       this.salePayment,
@@ -96,6 +97,9 @@ class SaleViewState extends State<SaleView> {
           if (accModel == null) {
             return Loader();
           }
+
+          CurrencyWrapper saleCurrency =
+              widget.saleCurrency ?? CurrencyWrapper.fromBTC(Currency.SAT);
           return Scaffold(
             appBar: AppBar(
               iconTheme: Theme.of(context).appBarTheme.iconTheme,
@@ -103,17 +107,19 @@ class SaleViewState extends State<SaleView> {
               backgroundColor: Theme.of(context).canvasColor,
               leading: backBtn.BackButton(),
               title: Text(widget.salePayment?.title ?? "Current Sale"),
-              actions: widget.readOnly ? [] : <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.delete_forever,
-                    color: Theme.of(context).iconTheme.color,
-                  ),
-                  onPressed: () {
-                    widget.onDeleteSale();
-                  },
-                )
-              ],
+              actions: widget.readOnly
+                  ? []
+                  : <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete_forever,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        onPressed: () {
+                          widget.onDeleteSale();
+                        },
+                      )
+                    ],
               elevation: 0.0,
             ),
             extendBody: false,
@@ -174,6 +180,7 @@ class SaleViewState extends State<SaleView> {
                               )),
                       Expanded(
                         child: SaleLinesList(
+                            saleCurrency: saleCurrency,
                             readOnly: widget.readOnly,
                             scrollController: _scrollController,
                             accountModel: accModel,
@@ -206,7 +213,7 @@ class SaleViewState extends State<SaleView> {
                   onCharge: widget.onCharge,
                   accountModel: accModel,
                   currentSale: currentSale,
-                  useFiat: widget.useFiat,
+                  saleCurrency: saleCurrency,
                 )),
               ),
             ),
@@ -218,7 +225,7 @@ class SaleViewState extends State<SaleView> {
 class _TotalSaleCharge extends StatelessWidget {
   final AccountModel accountModel;
   final Sale currentSale;
-  final bool useFiat;
+  final CurrencyWrapper saleCurrency;
   final Function(AccountModel accModel, Sale sale) onCharge;
   final PaymentInfo salePayment;
 
@@ -226,29 +233,23 @@ class _TotalSaleCharge extends StatelessWidget {
       {Key key,
       this.accountModel,
       this.currentSale,
-      this.useFiat,
       this.onCharge,
-      this.salePayment})
+      this.salePayment,
+      this.saleCurrency})
       : super(key: key);
 
   bool get readOnly => salePayment != null;
 
   @override
   Widget build(BuildContext context) {
-    CurrencyWrapper currentCurrency;
-    if (useFiat) {
-      currentCurrency = CurrencyWrapper.fromFiat(accountModel.fiatCurrency);
-    } else {
-      currentCurrency = CurrencyWrapper.fromBTC(accountModel.currency);
-    }
     var totalAmount =
-        currentSale.totalChargeSat / currentCurrency.satConversionRate;
+        currentSale.totalChargeSat / saleCurrency.satConversionRate;
 
     return RaisedButton(
       color: Theme.of(context).primaryColorLight,
       padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
       child: Text(
-        "${readOnly ? '' : 'Charge '}${currentCurrency.format(totalAmount)} ${currentCurrency.shortName}"
+        "${readOnly ? '' : 'Charge '}${saleCurrency.format(totalAmount)} ${saleCurrency.shortName}"
             .toUpperCase(),
         maxLines: 1,
         textAlign: TextAlign.center,
@@ -267,6 +268,7 @@ class _TotalSaleCharge extends StatelessWidget {
 
 class SaleLinesList extends StatelessWidget {
   final Sale currentSale;
+  final CurrencyWrapper saleCurrency;
   final AccountModel accountModel;
   final ScrollController scrollController;
   final bool readOnly;
@@ -276,7 +278,8 @@ class SaleLinesList extends StatelessWidget {
       this.currentSale,
       this.accountModel,
       this.scrollController,
-      this.readOnly})
+      this.readOnly,
+      this.saleCurrency})
       : super(key: key);
 
   @override
@@ -299,6 +302,7 @@ class SaleLinesList extends StatelessWidget {
                   : Theme.of(context).textTheme.subtitle1.color,
               child: Column(children: [
                 SaleLineWidget(
+                    saleCurrency: saleCurrency,
                     onDelete: readOnly
                         ? null
                         : () {
@@ -349,7 +353,7 @@ class SaleLinesList extends StatelessWidget {
 }
 
 class SaleLineWidget extends StatelessWidget {
-  //final Sale sale;
+  final CurrencyWrapper saleCurrency;
   final SaleLine saleLine;
   final AccountModel accountModel;
   final Function(int delta) onChangeQuantity;
@@ -360,13 +364,19 @@ class SaleLineWidget extends StatelessWidget {
       this.saleLine,
       this.accountModel,
       this.onChangeQuantity,
-      this.onDelete})
+      this.onDelete,
+      this.saleCurrency})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var currrency =
         CurrencyWrapper.fromShortName(saleLine.currency, accountModel);
+    double priceInFiat = saleLine.pricePerItem * saleLine.quantity;
+    double priceInSats = currrency.satConversionRate * priceInFiat;
+    String priceInSaleCurrency = saleCurrency.symbol == currrency.symbol
+        ? ""
+        : " (${saleCurrency.symbol}${saleCurrency.format(priceInSats / saleCurrency.satConversionRate, removeTrailingZeros: true)})";
     var iconColor = theme.themeId == "BLUE"
         ? Colors.black.withOpacity(0.3)
         : ListTileTheme.of(context).iconColor.withOpacity(0.5);
@@ -379,9 +389,7 @@ class SaleLineWidget extends StatelessWidget {
             //style: TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
-              currrency.symbol +
-                  currrency.format(saleLine.pricePerItem * saleLine.quantity,
-                      removeTrailingZeros: true),
+              "${currrency.symbol}${currrency.format(priceInFiat, removeTrailingZeros: true)}$priceInSaleCurrency",
               style: TextStyle(
                   color: ListTileTheme.of(context)
                       .textColor

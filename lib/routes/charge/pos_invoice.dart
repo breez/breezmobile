@@ -242,7 +242,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                                   onInvoiceSubmitted(sale, invoiceBloc, userProfile, accModel);
                                                                                 },
                                                                                 onDeleteSale: () => approveClear(currentSale),
-                                                                                useFiat: _useFiat,
+                                                                                saleCurrency: currentCurrency,
                                                                               ));
                                                               Navigator.of(
                                                                       context)
