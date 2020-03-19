@@ -225,7 +225,6 @@ class AccountModel {
       orElse: () => null);
   List<FiatConversion> get fiatConversionList => _fiatConversionList;
   String get posCurrencyShortName => _posCurrencyShortName;
-  CurrencyWrapper get posCurrency => CurrencyWrapper.fromShortName(_posCurrencyShortName, this);
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
   Int64 get maxAllowedToPay => Int64(min(
       _accountResponse.maxAllowedToPay.toInt(),

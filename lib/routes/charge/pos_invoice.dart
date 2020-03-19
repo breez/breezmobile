@@ -73,7 +73,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     if (accountSubscription == null) {
       AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       accountSubscription = accountBloc.accountStream.listen((acc) {
-        currentCurrency = acc.posCurrency;
+        currentCurrency =
+            CurrencyWrapper.fromShortName(acc.posCurrencyShortName, acc);
       });
       FetchRates fetchRatesAction = FetchRates();
       accountBloc.userActionsSink.add(fetchRatesAction);
