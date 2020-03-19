@@ -42,7 +42,7 @@ class SaleView extends StatefulWidget {
 }
 
 class SaleViewState extends State<SaleView> {
-  StreamSubscription<Sale> _currentSaleSubscrription;
+  StreamSubscription<Sale> _currentSaleSubscription;
   ScrollController _scrollController = new ScrollController();
   TextEditingController _noteController = new TextEditingController();
   FocusNode _noteFocus = new FocusNode();
@@ -51,10 +51,10 @@ class SaleViewState extends State<SaleView> {
   Sale get currentSale => widget.readOnlySale ?? saleInProgress;
   @override
   void didChangeDependencies() {
-    if (_currentSaleSubscrription == null && !widget.readOnly) {
+    if (_currentSaleSubscription == null && !widget.readOnly) {
       PosCatalogBloc posCatalogBloc =
           AppBlocsProvider.of<PosCatalogBloc>(context);
-      _currentSaleSubscrription =
+      _currentSaleSubscription =
           posCatalogBloc.currentSaleStream.listen((sale) {
         setState(() {
           bool updateNote = saleInProgress == null;
@@ -80,7 +80,7 @@ class SaleViewState extends State<SaleView> {
 
   @override
   void dispose() {
-    _currentSaleSubscrription?.cancel();
+    _currentSaleSubscription?.cancel();
     super.dispose();
   }
 
@@ -377,11 +377,11 @@ class SaleLineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var currrency =
+    var currency =
         CurrencyWrapper.fromShortName(saleLine.currency, accountModel);
     double priceInFiat = saleLine.pricePerItem * saleLine.quantity;
-    double priceInSats = currrency.satConversionRate * priceInFiat;
-    String priceInSaleCurrency = saleCurrency.symbol == currrency.symbol
+    double priceInSats = currency.satConversionRate * priceInFiat;
+    String priceInSaleCurrency = saleCurrency.symbol == currency.symbol
         ? ""
         : " (${saleCurrency.symbol}${saleCurrency.format(priceInSats / saleCurrency.satConversionRate, removeTrailingZeros: true)})";
     var iconColor = theme.themeId == "BLUE"
@@ -396,7 +396,7 @@ class SaleLineWidget extends StatelessWidget {
             //style: TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
-              "${currrency.symbol}${currrency.format(priceInFiat, removeTrailingZeros: true)}$priceInSaleCurrency",
+              "${currency.symbol}${currency.format(priceInFiat, removeTrailingZeros: true)}$priceInSaleCurrency",
               style: TextStyle(
                   color: ListTileTheme.of(context)
                       .textColor
