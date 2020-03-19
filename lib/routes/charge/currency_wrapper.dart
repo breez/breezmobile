@@ -51,11 +51,12 @@ class CurrencyWrapper {
   RegExp get whitelistedPattern =>
       btc?.whitelistedPattern ?? fiat.whitelistedPattern;
 
-  String format(double value,
-      {userInput = false,
-      bool includeCurrencySuffix = false,
-      removeTrailingZeros = false,
-      bool useBlankGroupSeparator = false}) {
+  String format(
+    double value, {
+    userInput = false,
+    bool includeCurrencySuffix = false,
+    removeTrailingZeros = false,
+  }) {
     if (btc != null) {
       var satValue = btc.toSats(value);
       return btc.format(satValue,
@@ -66,7 +67,6 @@ class CurrencyWrapper {
     return fiat.formatFiat(value,
         addCurrencyPrefix: includeCurrencySuffix,
         allowBelowMin: true,
-        removeTrailingZeros: removeTrailingZeros,
-        useBlankGroupSeparator: useBlankGroupSeparator);
+        removeTrailingZeros: removeTrailingZeros);
   }
 }

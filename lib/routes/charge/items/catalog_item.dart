@@ -112,7 +112,6 @@ class CatalogItem extends StatelessWidget {
   String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
     var formatter =
         CurrencyWrapper.fromShortName(_itemInfo.currency, accountModel);
-    return formatter?.format(_itemInfo.price,
-        removeTrailingZeros: true, useBlankGroupSeparator: true);
+    return formatter?.format(_itemInfo.price, removeTrailingZeros: true);
   }
 }

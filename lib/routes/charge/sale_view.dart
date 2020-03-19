@@ -384,7 +384,7 @@ class SaleLineWidget extends StatelessWidget {
           subtitle: Text(
               currrency.symbol +
                   currrency.format(saleLine.pricePerItem * saleLine.quantity,
-                      removeTrailingZeros: true, useBlankGroupSeparator: true),
+                      removeTrailingZeros: true),
               style: TextStyle(
                   color: ListTileTheme.of(context)
                       .textColor

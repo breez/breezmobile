@@ -194,7 +194,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                         top: 14.0,
                                                         bottom: 14.0),
                                                     child: Text(
-                                                      "Charge ${currentCurrency.format(totalAmount, useBlankGroupSeparator: true)} ${currentCurrency.shortName}"
+                                                      "Charge ${currentCurrency.format(totalAmount)} ${currentCurrency.shortName}"
                                                           .toUpperCase(),
                                                       maxLines: 1,
                                                       textAlign:
@@ -314,10 +314,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                     left: 8.0),
                                                             child: Text(
                                                               _isKeypadView
-                                                                  ? currentCurrency.format(
-                                                                      currentAmount,
-                                                                      useBlankGroupSeparator:
-                                                                          true)
+                                                                  ? currentCurrency
+                                                                      .format(
+                                                                          currentAmount)
                                                                   : "",
                                                               maxLines: 1,
                                                               style: theme

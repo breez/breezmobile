@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:breez/services/currency_data.dart';
-import 'package:breez/utils/currency_formatter.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/number_symbols.dart';
@@ -45,11 +44,12 @@ class FiatConversion {
     return formatFiat(fiatValue);
   }
 
-  String formatFiat(double fiatAmount,
-      {bool addCurrencyPrefix = true,
-      bool removeTrailingZeros = false,
-      bool allowBelowMin = false,
-      bool useBlankGroupSeparator = false}) {
+  String formatFiat(
+    double fiatAmount, {
+    bool addCurrencyPrefix = true,
+    bool removeTrailingZeros = false,
+    bool allowBelowMin = false,
+  }) {
     int fractionSize = this.currencyData.fractionSize;
     double minimumAmount = 1 / (pow(10, fractionSize));
 
@@ -61,32 +61,27 @@ class FiatConversion {
       formattedAmount = minimumAmount.toStringAsFixed(fractionSize);
       prefix = '< ' + prefix;
     } else {
-      if (useBlankGroupSeparator) {
-        numberFormatSymbols['space-between'] = NumberSymbols(
-          NAME: "zz",
-          DECIMAL_SEP: '.',
-          GROUP_SEP: '\u00A0',
-          PERCENT: '%',
-          ZERO_DIGIT: '0',
-          PLUS_SIGN: '+',
-          MINUS_SIGN: '-',
-          EXP_SYMBOL: 'e',
-          PERMILL: '\u2030',
-          INFINITY: '\u221E',
-          NAN: 'NaN',
-          DECIMAL_PATTERN: '#,##0.###',
-          SCIENTIFIC_PATTERN: '#E0',
-          PERCENT_PATTERN: '#,##0%',
-          CURRENCY_PATTERN: '\u00A4#,##0.00',
-          DEF_CURRENCY_CODE: 'AUD',
-        );
-        final formatter = NumberFormat('###,###.##', 'space-between');
-        formatter.minimumFractionDigits = fractionSize;
-        formattedAmount = formatter.format(fiatAmount);
-      } else {
-        // Otherwise just show the formatted value.
-        formattedAmount = fiatAmount.toStringAsFixed(fractionSize);
-      }
+      numberFormatSymbols['space-between'] = NumberSymbols(
+        NAME: "zz",
+        DECIMAL_SEP: '.',
+        GROUP_SEP: '\u00A0',
+        PERCENT: '%',
+        ZERO_DIGIT: '0',
+        PLUS_SIGN: '+',
+        MINUS_SIGN: '-',
+        EXP_SYMBOL: 'e',
+        PERMILL: '\u2030',
+        INFINITY: '\u221E',
+        NAN: 'NaN',
+        DECIMAL_PATTERN: '#,##0.###',
+        SCIENTIFIC_PATTERN: '#E0',
+        PERCENT_PATTERN: '#,##0%',
+        CURRENCY_PATTERN: '\u00A4#,##0.00',
+        DEF_CURRENCY_CODE: 'AUD',
+      );
+      final formatter = NumberFormat('###,###.##', 'space-between');
+      formatter.minimumFractionDigits = fractionSize;
+      formattedAmount = formatter.format(fiatAmount);
     }
     if (addCurrencyPrefix) {
       formattedAmount = prefix + formattedAmount;
