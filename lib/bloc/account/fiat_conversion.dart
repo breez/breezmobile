@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:breez/services/currency_data.dart';
+import 'package:breez/utils/currency_formatter.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/number_symbols.dart';
@@ -61,25 +62,7 @@ class FiatConversion {
       formattedAmount = minimumAmount.toStringAsFixed(fractionSize);
       prefix = '< ' + prefix;
     } else {
-      numberFormatSymbols['space-between'] = NumberSymbols(
-        NAME: "zz",
-        DECIMAL_SEP: '.',
-        GROUP_SEP: '\u00A0',
-        PERCENT: '%',
-        ZERO_DIGIT: '0',
-        PLUS_SIGN: '+',
-        MINUS_SIGN: '-',
-        EXP_SYMBOL: 'e',
-        PERMILL: '\u2030',
-        INFINITY: '\u221E',
-        NAN: 'NaN',
-        DECIMAL_PATTERN: '#,##0.###',
-        SCIENTIFIC_PATTERN: '#E0',
-        PERCENT_PATTERN: '#,##0%',
-        CURRENCY_PATTERN: '\u00A4#,##0.00',
-        DEF_CURRENCY_CODE: 'AUD',
-      );
-      final formatter = NumberFormat('###,###.##', 'space-between');
+      final formatter = CurrencyFormatter.formatter;
       formatter.minimumFractionDigits = fractionSize;
       formattedAmount = formatter.format(fiatAmount);
     }
