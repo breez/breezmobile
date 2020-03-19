@@ -60,7 +60,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   Animation<double> _scaleTransition;
   Animation<double> _opacityTransition;
   Item _itemInTransition;
-  bool bypassExchangeRateLock = true;
+  bool bypassExchangeRateLock = false;
 
   double get currentAmount => currentPendingItem?.total ?? 0;
 
@@ -74,16 +74,15 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       accountSubscription = accountBloc.accountStream.listen((acc) {
         currentCurrency =
-            CurrencyWrapper.fromShortName(acc.posCurrencyShortName, acc) ?? CurrencyWrapper.fromBTC(Currency.BTC);
+            CurrencyWrapper.fromShortName(acc.posCurrencyShortName, acc) ??
+                CurrencyWrapper.fromBTC(Currency.BTC);
       });
       FetchRates fetchRatesAction = FetchRates();
       accountBloc.userActionsSink.add(fetchRatesAction);
       fetchRatesAction.future.catchError((err) {
         if (this.mounted) {
-          UserProfileBloc userProfileBloc =
-              AppBlocsProvider.of<UserProfileBloc>(context);
           setState(() {
-            bypassExchangeRateLock = false;
+            bypassExchangeRateLock = true;
             showFlushbar(context,
                 message: "Failed to retrieve fiat exchange rates.");
           });
@@ -158,7 +157,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                               return Container();
                             }
 
-                            if (bypassExchangeRateLock && accountModel.fiatConversionList.isEmpty) {
+                            if (!bypassExchangeRateLock &&
+                                accountModel.fiatConversionList.isEmpty) {
                               return Center(child: Loader());
                             }
 
@@ -398,12 +398,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                                 value.tickerSymbol,
                                                                             child:
                                                                                 Material(
-                                                                                  child: Text(
-                                                                              value.tickerSymbol.toUpperCase(),
-                                                                              textAlign: TextAlign.right,
-                                                                              style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                              child: Text(
+                                                                                value.tickerSymbol.toUpperCase(),
+                                                                                textAlign: TextAlign.right,
+                                                                                style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                              ),
                                                                             ),
-                                                                                ),
                                                                           );
                                                                         }).toList()
                                                                           ..addAll(
