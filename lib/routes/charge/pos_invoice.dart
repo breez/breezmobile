@@ -77,7 +77,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       accountSubscription = accountBloc.accountStream.listen((acc) {
         currentCurrency =
             CurrencyWrapper.fromShortName(acc.posCurrencyShortName, acc) ??
-                CurrencyWrapper.fromBTC(Currency.BTC);
+                CurrencyWrapper.fromBTC(Currency.SAT);
       });
 
       FetchRates fetchRatesAction = FetchRates();
