@@ -72,9 +72,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     if (accountSubscription == null) {
       AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       accountSubscription = accountBloc.accountStream.listen((acc) {
-        currentCurrency = _useFiat
-            ? CurrencyWrapper.fromFiat(acc.fiatCurrency)
-            : CurrencyWrapper.fromBTC(acc.currency);
+        currentCurrency = acc.posCurrency;
       });
 
       _itemFilterController.addListener(
@@ -371,7 +369,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                     alignedDropdown:
                                                                         true,
                                                                     child: BreezDropdownButton(
-                                                                        onChanged: (value) => changeCurrency(currentSale, value, userProfileBloc),
+                                                                        onChanged: (value) => changeCurrency(currentSale, value, userProfileBloc, accountBloc),
                                                                         iconEnabledColor: Theme.of(context).textTheme.headline.color,
                                                                         value: currentCurrency.shortName,
                                                                         style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
@@ -839,8 +837,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     });
   }
 
-  changeCurrency(
-      Sale currentSale, String value, UserProfileBloc userProfileBloc) {
+  changeCurrency(Sale currentSale, String value,
+      UserProfileBloc userProfileBloc, AccountBloc accountBloc) {
     setState(() {
       Currency currency = Currency.fromTickerSymbol(value);
 
@@ -852,8 +850,10 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
       if (currency != null) {
         userProfileBloc.currencySink.add(currency);
+        accountBloc.posCurrencySink.add(currency.tickerSymbol);
       } else {
         userProfileBloc.fiatConversionSink.add(value);
+        accountBloc.posCurrencySink.add(value);
       }
     });
   }

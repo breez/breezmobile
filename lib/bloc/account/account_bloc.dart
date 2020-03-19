@@ -62,6 +62,9 @@ class AccountBloc {
   Sink<AccountSettings> get accountSettingsSink =>
       _accountSettingsController.sink;
 
+  final _posCurrencyController = BehaviorSubject<String>();
+  Sink<String> get posCurrencySink => _posCurrencyController.sink;
+
   final _routingNodeConnectionController = BehaviorSubject<bool>();
   Stream<bool> get routingNodeConnectionStream =>
       _routingNodeConnectionController.stream;
@@ -157,6 +160,7 @@ class AccountBloc {
       //listen streams
       _listenAccountActions();
       _hanleAccountSettings();
+      _listenPosCurrencyChanges();
       _listenUserChanges(userProfileStream);
       _listenFilterChanges();
       _listenAccountChanges();
@@ -388,6 +392,13 @@ class AccountBloc {
     _device.eventStream.where((e) => e == NotificationType.RESUME).listen((e) {
       log.info("App Resumed - flutter resume called, adding reconnect request");
       _reconnectSink.add(null);
+    });
+  }
+
+  _listenPosCurrencyChanges() {
+    _posCurrencyController.listen((shortName) {
+      _accountController
+          .add(_accountController.value.copyWith(posCurrencyShortName: shortName));
     });
   }
 
@@ -678,6 +689,7 @@ class AccountBloc {
   }
 
   close() {
+    _posCurrencyController.close();
     _accountEnableController.close();
     _paymentsController.close();
     _accountNotificationsController.close();
