@@ -60,6 +60,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   Animation<double> _scaleTransition;
   Animation<double> _opacityTransition;
   Item _itemInTransition;
+  bool bypassExchangeRateLock = true;
 
   double get currentAmount => currentPendingItem?.total ?? 0;
 
@@ -82,6 +83,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               AppBlocsProvider.of<UserProfileBloc>(context);
           setState(() {
             userProfileBloc.posCurrencySink.add("BTC");
+            bypassExchangeRateLock = false;
             showFlushbar(context,
                 message: "Failed to retrieve fiat exchange rates.");
           });
@@ -156,7 +158,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                               return Container();
                             }
 
-                            if (accountModel.fiatConversionList.isEmpty) {
+                            if (bypassExchangeRateLock && accountModel.fiatConversionList.isEmpty) {
                               return Center(child: Loader());
                             }
 
