@@ -74,7 +74,19 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       accountSubscription = accountBloc.accountStream.listen((acc) {
         currentCurrency = acc.posCurrency;
       });
-
+      FetchRates fetchRatesAction = FetchRates();
+      accountBloc.userActionsSink.add(fetchRatesAction);
+      fetchRatesAction.future.catchError((err) {
+        if (this.mounted) {
+          UserProfileBloc userProfileBloc =
+              AppBlocsProvider.of<UserProfileBloc>(context);
+          setState(() {
+            userProfileBloc.posCurrencySink.add("BTC");
+            showFlushbar(context,
+                message: "Failed to retrieve fiat exchange rates.");
+          });
+        }
+      });
       _itemFilterController.addListener(
         () {
           FilterItems filterItems = FilterItems(_itemFilterController.text);
