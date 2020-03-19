@@ -59,9 +59,6 @@ class UserProfileBloc {
   final _fiatConversionController = BehaviorSubject<String>();
   Sink<String> get fiatConversionSink => _fiatConversionController.sink;
 
-  final _posCurrencyController = BehaviorSubject<String>();
-  Sink<String> get posCurrencySink => _posCurrencyController.sink;
-
   final _userController = BehaviorSubject<BreezUserModel>();
   Sink<BreezUserModel> get userSink => _userController.sink;
 
@@ -92,6 +89,7 @@ class UserProfileBloc {
       SetAdminPassword: _setAdminPassword,
       VerifyAdminPassword: _verifyAdminPassword,
       UploadProfilePicture: _uploadProfilePicture,
+      SetPOSCurrency: _setPOSCurrency,
     };
     print("UserProfileBloc started");
 
@@ -108,7 +106,6 @@ class UserProfileBloc {
       //listen to changes in user preferences
       _listenCurrencyChange(injector);
       _listenFiatCurrencyChange(injector);
-      _listenPosCurrencyChanges(injector);
 
       //listen to changes in user avatar
       _listenUserChange(injector);
@@ -194,6 +191,12 @@ class UserProfileBloc {
     _saveChanges(
         await _preferences, _currentUser.copyWith(isPOS: action.isPos));
     action.resolve(action.isPos);
+  }
+
+  Future _setPOSCurrency(SetPOSCurrency action) async {
+    _saveChanges(await _preferences,
+        _currentUser.copyWith(posCurrencyShortName: action.shortName));
+    action.resolve(action.shortName);
   }
 
   Future _uploadProfilePicture(UploadProfilePicture action) async {
@@ -333,14 +336,6 @@ class UserProfileBloc {
     });
   }
 
-  _listenPosCurrencyChanges(ServiceInjector injector) {
-    _posCurrencyController.listen((shortName) async {
-      var preferences = await injector.sharedPreferences;
-      await _saveChanges(
-          preferences, _currentUser.copyWith(posCurrencyShortName: shortName));
-    });
-  }
-
   void _listenUserChange(ServiceInjector injector) {
     _userController.stream.listen((userData) async {
       var preferences = await injector.sharedPreferences;
@@ -399,7 +394,6 @@ class UserProfileBloc {
     _registrationController.close();
     _currencyController.close();
     _fiatConversionController.close();
-    _posCurrencyController.close();
     _userActionsController.close();
     _userController.close();
     _randomizeController.close();

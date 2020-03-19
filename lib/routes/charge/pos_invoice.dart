@@ -16,6 +16,7 @@ import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/sale_view.dart';
@@ -873,11 +874,11 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
       if (currency != null) {
         userProfileBloc.currencySink.add(currency);
-        userProfileBloc.posCurrencySink.add(currency.tickerSymbol);
       } else {
         userProfileBloc.fiatConversionSink.add(value);
-        userProfileBloc.posCurrencySink.add(value);
       }
+      SetPOSCurrency setPOSCurrency = SetPOSCurrency(value);
+      userProfileBloc.userActionsSink.add(setPOSCurrency);
     });
   }
 
