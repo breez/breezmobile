@@ -169,7 +169,7 @@ class AccountModel {
             "USD",
             null,
             List(),
-            "BTC",
+            "SAT",
             initial: true);
 
   AccountModel copyWith(
