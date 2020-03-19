@@ -401,12 +401,10 @@ class AccountBloc {
       _currentUser = user;
       log.info("account: got new user $user");
       //convert currency.
-      _accountController
-          .add(_accountController.value.copyWith(currency: user.currency));
-      _accountController.add(
-          _accountController.value.copyWith(fiatShortName: user.fiatCurrency));
-      _accountController.add(
-          _accountController.value.copyWith(posCurrencyShortName: user.posCurrencyShortName));
+      _accountController.add(_accountController.value.copyWith(
+          currency: user.currency,
+          fiatShortName: user.fiatCurrency,
+          posCurrencyShortName: user.posCurrencyShortName));
       var updatedPayments = _paymentsController.value.copyWith(
         nonFilteredItems: _paymentsController.value.nonFilteredItems
             .map((p) => p.copyWith(_accountController.value))
