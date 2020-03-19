@@ -51,6 +51,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   double itemHeight;
   double itemWidth;
+  bool _useFiat = false;
   CurrencyWrapper currentCurrency;
   bool _isKeypadView = true;
   SaleLine currentPendingItem;
@@ -862,13 +863,17 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   changeCurrency(Sale currentSale, String value,
       UserProfileBloc userProfileBloc, AccountModel accountModel) {
     setState(() {
-      CurrencyWrapper currency =
-          CurrencyWrapper.fromShortName(value, accountModel);
+      Currency currency = Currency.fromTickerSymbol(value);
+
+      bool flipFiat = _useFiat == (currency != null);
+      if (flipFiat) {
+        _useFiat = !_useFiat;
+      }
       _clearAmounts(currentSale);
 
-      if (currency.btc != null) {
-        userProfileBloc.currencySink.add(currency.btc);
-        userProfileBloc.posCurrencySink.add(currency.btc.tickerSymbol);
+      if (currency != null) {
+        userProfileBloc.currencySink.add(currency);
+        userProfileBloc.posCurrencySink.add(currency.tickerSymbol);
       } else {
         userProfileBloc.fiatConversionSink.add(value);
         userProfileBloc.posCurrencySink.add(value);
