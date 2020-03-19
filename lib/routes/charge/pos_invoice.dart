@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart';
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -50,7 +51,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   double itemHeight;
   double itemWidth;
-  bool _useFiat = false;
   CurrencyWrapper currentCurrency;
   bool _isKeypadView = true;
   SaleLine currentPendingItem;
@@ -245,7 +245,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                                   onInvoiceSubmitted(sale, invoiceBloc, userProfile, accModel);
                                                                                 },
                                                                                 onDeleteSale: () => approveClear(currentSale),
-                                                                                useFiat: _useFiat,
                                                                               ));
                                                               Navigator.of(
                                                                       context)
@@ -374,7 +373,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                     alignedDropdown:
                                                                         true,
                                                                     child: BreezDropdownButton(
-                                                                        onChanged: (value) => changeCurrency(currentSale, value, userProfileBloc, accountBloc),
+                                                                        onChanged: (value) => changeCurrency(currentSale, value, userProfileBloc, accountModel),
                                                                         iconEnabledColor: Theme.of(context).textTheme.headline.color,
                                                                         value: currentCurrency.shortName,
                                                                         style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
@@ -843,19 +842,15 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   changeCurrency(Sale currentSale, String value,
-      UserProfileBloc userProfileBloc, AccountBloc accountBloc) {
+      UserProfileBloc userProfileBloc, AccountModel accountModel) {
     setState(() {
-      Currency currency = Currency.fromTickerSymbol(value);
-
-      bool flipFiat = _useFiat == (currency != null);
-      if (flipFiat) {
-        _useFiat = !_useFiat;
-      }
+      CurrencyWrapper currency =
+          CurrencyWrapper.fromShortName(value, accountModel);
       _clearAmounts(currentSale);
 
-      if (currency != null) {
-        userProfileBloc.currencySink.add(currency);
-        userProfileBloc.posCurrencySink.add(currency.tickerSymbol);
+      if (currency.btc != null) {
+        userProfileBloc.currencySink.add(currency.btc);
+        userProfileBloc.posCurrencySink.add(currency.btc.tickerSymbol);
       } else {
         userProfileBloc.fiatConversionSink.add(value);
         userProfileBloc.posCurrencySink.add(value);

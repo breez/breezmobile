@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'items/item_avatar.dart';
 
 class SaleView extends StatefulWidget {
-  final bool useFiat;
   final Function() onDeleteSale;
   final Function(AccountModel, Sale) onCharge;
   final PaymentInfo salePayment;
@@ -24,7 +23,6 @@ class SaleView extends StatefulWidget {
 
   const SaleView(
       {Key key,
-      this.useFiat,
       this.onDeleteSale,
       this.onCharge,
       this.salePayment,
@@ -47,6 +45,7 @@ class SaleViewState extends State<SaleView> {
   Sale saleInProgress;
 
   Sale get currentSale => widget.readOnlySale ?? saleInProgress;
+
   @override
   void didChangeDependencies() {
     if (_currentSaleSubscrription == null && !widget.readOnly) {
@@ -103,17 +102,19 @@ class SaleViewState extends State<SaleView> {
               backgroundColor: Theme.of(context).canvasColor,
               leading: backBtn.BackButton(),
               title: Text(widget.salePayment?.title ?? "Current Sale"),
-              actions: widget.readOnly ? [] : <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.delete_forever,
-                    color: Theme.of(context).iconTheme.color,
-                  ),
-                  onPressed: () {
-                    widget.onDeleteSale();
-                  },
-                )
-              ],
+              actions: widget.readOnly
+                  ? []
+                  : <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete_forever,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        onPressed: () {
+                          widget.onDeleteSale();
+                        },
+                      )
+                    ],
               elevation: 0.0,
             ),
             extendBody: false,
@@ -206,7 +207,6 @@ class SaleViewState extends State<SaleView> {
                   onCharge: widget.onCharge,
                   accountModel: accModel,
                   currentSale: currentSale,
-                  useFiat: widget.useFiat,
                 )),
               ),
             ),
@@ -218,7 +218,6 @@ class SaleViewState extends State<SaleView> {
 class _TotalSaleCharge extends StatelessWidget {
   final AccountModel accountModel;
   final Sale currentSale;
-  final bool useFiat;
   final Function(AccountModel accModel, Sale sale) onCharge;
   final PaymentInfo salePayment;
 
@@ -226,7 +225,6 @@ class _TotalSaleCharge extends StatelessWidget {
       {Key key,
       this.accountModel,
       this.currentSale,
-      this.useFiat,
       this.onCharge,
       this.salePayment})
       : super(key: key);
@@ -235,12 +233,8 @@ class _TotalSaleCharge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CurrencyWrapper currentCurrency;
-    if (useFiat) {
-      currentCurrency = CurrencyWrapper.fromFiat(accountModel.fiatCurrency);
-    } else {
-      currentCurrency = CurrencyWrapper.fromBTC(accountModel.currency);
-    }
+    CurrencyWrapper currentCurrency = CurrencyWrapper.fromShortName(
+        accountModel.posCurrencyShortName, accountModel);
     var totalAmount =
         currentSale.totalChargeSat / currentCurrency.satConversionRate;
 
