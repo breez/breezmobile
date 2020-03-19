@@ -82,9 +82,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
       FetchRates fetchRatesAction = FetchRates();
       accountBloc.userActionsSink.add(fetchRatesAction);
-      setState(() {
-        _fetchRatesActionFuture = fetchRatesAction.future;
-      });
+      _fetchRatesActionFuture = fetchRatesAction.future;
       _fetchRatesActionFuture.catchError((err) {
         if (this.mounted) {
           setState(() {
@@ -394,7 +392,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                         alignedDropdown:
                                                                             true,
                                                                         child: BreezDropdownButton(
-                                                                            onChanged: (value) => changeCurrency(currentSale, value, userProfileBloc, accountModel),
+                                                                            onChanged: (value) => changeCurrency(currentSale, value, userProfileBloc),
                                                                             iconEnabledColor: Theme.of(context).textTheme.headline.color,
                                                                             value: currentCurrency.shortName,
                                                                             style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
@@ -869,8 +867,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     });
   }
 
-  changeCurrency(Sale currentSale, String value,
-      UserProfileBloc userProfileBloc, AccountModel accountModel) {
+  changeCurrency(
+      Sale currentSale, String value, UserProfileBloc userProfileBloc) {
     setState(() {
       Currency currency = Currency.fromTickerSymbol(value);
 
