@@ -83,7 +83,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           UserProfileBloc userProfileBloc =
               AppBlocsProvider.of<UserProfileBloc>(context);
           setState(() {
-            userProfileBloc.posCurrencySink.add("BTC");
+            currentCurrency = CurrencyWrapper.fromBTC(Currency.BTC);
             bypassExchangeRateLock = false;
             showFlushbar(context,
                 message: "Failed to retrieve fiat exchange rates.");
