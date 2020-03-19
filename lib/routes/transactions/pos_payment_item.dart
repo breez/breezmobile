@@ -65,9 +65,8 @@ class PosPaymentItem extends StatelessWidget {
     action.future.then((sale) {
       if (sale != null) {
         Navigator.of(context).push(FadeInRoute(
-          builder: (context) => SaleView(
-              readOnlySale: sale as Sale,
-              salePayment: _paymentInfo),
+          builder: (context) =>
+              SaleView(readOnlySale: sale as Sale, salePayment: _paymentInfo),
         ));
       } else {
         showPaymentDetailsDialog(context, _paymentInfo);

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -136,6 +137,7 @@ class AccountModel {
   final String _fiatShortName;
   final FiatConversion _fiatCurrency;
   final List<FiatConversion> _fiatConversionList;
+  final String _posCurrencyShortName;
   final FundStatusReply addedFundsReply;
   final Int64 onChainFeeRate;
   final bool initial;
@@ -145,7 +147,7 @@ class AccountModel {
   final SyncUIState syncUIState;
 
   AccountModel(this._accountResponse, this._currency, this._fiatShortName,
-      this._fiatCurrency, this._fiatConversionList,
+      this._fiatCurrency, this._fiatConversionList, this._posCurrencyShortName,
       {this.initial = true,
       this.addedFundsReply,
       this.onChainFeeRate,
@@ -167,13 +169,16 @@ class AccountModel {
             "USD",
             null,
             List(),
+            "BTC",
             initial: true);
+
   AccountModel copyWith(
       {Account accountResponse,
       Currency currency,
       String fiatShortName,
       FiatConversion fiatCurrency,
       List<FiatConversion> fiatConversionList,
+      String posCurrencyShortName,
       FundStatusReply addedFundsReply,
       Int64 onChainFeeRate,
       bool enableInProgress,
@@ -187,6 +192,7 @@ class AccountModel {
         fiatShortName ?? this._fiatShortName,
         fiatCurrency ?? this._fiatCurrency,
         fiatConversionList ?? this._fiatConversionList,
+        posCurrencyShortName ?? this._posCurrencyShortName,
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,
         onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
         enableInProgress: enableInProgress ?? this.enableInProgress,
@@ -218,6 +224,7 @@ class AccountModel {
       (f) => f.currencyData.shortName == _fiatShortName,
       orElse: () => null);
   List<FiatConversion> get fiatConversionList => _fiatConversionList;
+  String get posCurrencyShortName => _posCurrencyShortName;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
   Int64 get maxAllowedToPay => Int64(min(
       _accountResponse.maxAllowedToPay.toInt(),
