@@ -381,9 +381,14 @@ class SaleLineWidget extends StatelessWidget {
         CurrencyWrapper.fromShortName(saleLine.currency, accountModel);
     double priceInFiat = saleLine.pricePerItem * saleLine.quantity;
     double priceInSats = currency.satConversionRate * priceInFiat;
-    String priceInSaleCurrency = saleCurrency.symbol == currency.symbol
-        ? ""
-        : " (${saleCurrency.symbol}${saleCurrency.format(priceInSats / saleCurrency.satConversionRate, removeTrailingZeros: true)})";
+    String priceInSaleCurrency = "";
+    if (saleCurrency.symbol != currency.symbol) {
+      String salePrice = saleCurrency.format(
+          priceInSats / saleCurrency.satConversionRate,
+          removeTrailingZeros: true);
+      priceInSaleCurrency = " (${saleCurrency.symbol}$salePrice)";
+    }
+
     var iconColor = theme.themeId == "BLUE"
         ? Colors.black.withOpacity(0.3)
         : ListTileTheme.of(context).iconColor.withOpacity(0.5);
