@@ -381,11 +381,13 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                             value:
                                                                                 value.tickerSymbol,
                                                                             child:
-                                                                                Text(
+                                                                                Material(
+                                                                                  child: Text(
                                                                               value.tickerSymbol.toUpperCase(),
                                                                               textAlign: TextAlign.right,
                                                                               style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
                                                                             ),
+                                                                                ),
                                                                           );
                                                                         }).toList()
                                                                           ..addAll(
@@ -393,10 +395,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                                 fiat) {
                                                                               return new DropdownMenuItem<String>(
                                                                                 value: fiat.currencyData.shortName,
-                                                                                child: new Text(
-                                                                                  fiat.currencyData.shortName,
-                                                                                  textAlign: TextAlign.right,
-                                                                                  style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                                child: Material(
+                                                                                  child: new Text(
+                                                                                    fiat.currencyData.shortName,
+                                                                                    textAlign: TextAlign.right,
+                                                                                    style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                                  ),
                                                                                 ),
                                                                               );
                                                                             }).toList(),
