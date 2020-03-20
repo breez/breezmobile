@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/sync_progress_dialog.dart';
 import 'package:breez/services/countdown.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -15,6 +17,21 @@ import 'package:flutter/material.dart';
 import 'loader.dart';
 
 enum _PosPaymentState { WAITING_FOR_PAYMENT, PAYMENT_RECEIVED }
+
+class PosPaymentDialog extends StatefulWidget {
+  final InvoiceBloc _invoiceBloc;
+  final BreezUserModel _user;
+  final String paymentRequest;
+  final double satAmount;
+
+  PosPaymentDialog(
+      this._invoiceBloc, this._user, this.paymentRequest, this.satAmount);
+
+  @override
+  _PosPaymentDialogState createState() {
+    return _PosPaymentDialogState();
+  }
+}
 
 class _PosPaymentDialogState extends State<PosPaymentDialog> {
   _PosPaymentState _state = _PosPaymentState.WAITING_FOR_PAYMENT;
@@ -79,41 +96,39 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     super.dispose();
   }
 
-  Widget _actionsWidget(){
+  Widget _actionsWidget() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        _clearSaleButton(), _cancelButton()
-      ],
+      children: <Widget>[_clearSaleButton(), _cancelButton()],
     );
   }
 
   Widget _cancelButton() {
     return FlatButton(
-        padding: EdgeInsets.only(top: 8.0, bottom: 16.0, left: 0.0),
-        child: Text(
-          'CANCEL',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).primaryTextTheme.button,
-        ),
-        onPressed: () {
-          Navigator.of(context).pop(false);
-        },
-      );
+      padding: EdgeInsets.only(top: 8.0, bottom: 16.0, left: 0.0),
+      child: Text(
+        'CANCEL',
+        textAlign: TextAlign.center,
+        style: Theme.of(context).primaryTextTheme.button,
+      ),
+      onPressed: () {
+        Navigator.of(context).pop(false);
+      },
+    );
   }
 
   Widget _clearSaleButton() {
     return FlatButton(
-        padding: EdgeInsets.only(top: 8.0, bottom: 16.0, right: 0.0),
-        child: Text(
-          'CLEAR SALE',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).primaryTextTheme.button,
-        ),
-        onPressed: () {
-          Navigator.of(context).pop(true);
-        },
-      );
+      padding: EdgeInsets.only(top: 8.0, bottom: 16.0, right: 0.0),
+      child: Text(
+        'CLEAR SALE',
+        textAlign: TextAlign.center,
+        style: Theme.of(context).primaryTextTheme.button,
+      ),
+      onPressed: () {
+        Navigator.of(context).pop(true);
+      },
+    );
   }
 
   Widget buildWaitingPayment(BuildContext context) {
@@ -134,18 +149,37 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
             );
           }
 
+          var saleCurrency = CurrencyWrapper.fromShortName(
+              widget._user.posCurrencyShortName, account);
+          var userCurrency = CurrencyWrapper.fromBTC(widget._user.currency);
+          var priceInSaleCurrency = "";
+          if (saleCurrency.symbol != userCurrency.symbol) {
+            String salePrice = saleCurrency.format(
+                widget.satAmount / saleCurrency.satConversionRate,
+                removeTrailingZeros: true);
+            priceInSaleCurrency = "(${saleCurrency.symbol}$salePrice)";
+          }
           return ListBody(
             children: <Widget>[
+              Text(
+                userCurrency.format(
+                    widget.satAmount / userCurrency.satConversionRate,
+                    includeCurrencySuffix: true) + " " + priceInSaleCurrency,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
               _buildDialogBody(
-                  'Scan the QR code to process this payment.',
-                  AspectRatio(
-                      aspectRatio: 1.0,
-                      child: Container(
-                          height: 230.0,
-                          width: 230.0,
-                          child: CompactQRImage(
-                            data: widget.paymentRequest,
-                          )))),
+                AspectRatio(
+                  aspectRatio: 1.0,
+                  child: Container(
+                    height: 230.0,
+                    width: 230.0,
+                    child: CompactQRImage(
+                      data: widget.paymentRequest,
+                    ),
+                  ),
+                ),
+              ),
               Padding(
                   padding: EdgeInsets.only(top: 15.0),
                   child: Text(_countdownString,
@@ -166,6 +200,11 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      title: AutoSizeText(
+        "Scan to Process Payment",
+        style: Theme.of(context).dialogTheme.titleTextStyle,
+        maxLines: 1,
+      ),
       contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
       content: SingleChildScrollView(
           child: _state == _PosPaymentState.WAITING_FOR_PAYMENT
@@ -209,31 +248,12 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     );
   }
 
-  ListBody _buildDialogBody(String title, Widget body) {
+  ListBody _buildDialogBody(Widget body) {
     return ListBody(children: <Widget>[
-      Text(
-        title,
-        textAlign: TextAlign.center,
-        style:
-            Theme.of(context).primaryTextTheme.display1.copyWith(fontSize: 16),
-      ),
       Padding(
         padding: EdgeInsets.only(top: 15.0),
         child: body,
       )
     ]);
-  }
-}
-
-class PosPaymentDialog extends StatefulWidget {
-  final InvoiceBloc _invoiceBloc;
-  final BreezUserModel _user;
-  final String paymentRequest;
-
-  PosPaymentDialog(this._invoiceBloc, this._user, this.paymentRequest);
-
-  @override
-  _PosPaymentDialogState createState() {
-    return _PosPaymentDialogState();
   }
 }
