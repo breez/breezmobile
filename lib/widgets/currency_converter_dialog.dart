@@ -168,19 +168,21 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                                 .map((FiatConversion value) {
                               return DropdownMenuItem<String>(
                                 value: value.currencyData.shortName,
-                                child: Container(
-                                  width: 36,
-                                  child: AutoSizeText(
-                                    value.currencyData.shortName,
-                                    textAlign: TextAlign.left,
-                                    style: Theme.of(context)
-                                        .dialogTheme
-                                        .titleTextStyle,
-                                    maxLines: 1,
-                                    minFontSize:
-                                        MinFontSize(context).minFontSize,
-                                    stepGranularity: 0.1,
-                                    group: _autoSizeGroup,
+                                child: Material(
+                                  child: Container(
+                                    width: 36,
+                                    child: AutoSizeText(
+                                      value.currencyData.shortName,
+                                      textAlign: TextAlign.left,
+                                      style: Theme.of(context)
+                                          .dialogTheme
+                                          .titleTextStyle,
+                                      maxLines: 1,
+                                      minFontSize:
+                                          MinFontSize(context).minFontSize,
+                                      stepGranularity: 0.1,
+                                      group: _autoSizeGroup,
+                                    ),
                                   ),
                                 ),
                               );
