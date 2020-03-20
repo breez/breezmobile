@@ -89,6 +89,7 @@ class UserProfileBloc {
       SetAdminPassword: _setAdminPassword,
       VerifyAdminPassword: _verifyAdminPassword,
       UploadProfilePicture: _uploadProfilePicture,
+      SetPOSCurrency: _setPOSCurrency,
     };
     print("UserProfileBloc started");
 
@@ -190,6 +191,12 @@ class UserProfileBloc {
     _saveChanges(
         await _preferences, _currentUser.copyWith(isPOS: action.isPos));
     action.resolve(action.isPos);
+  }
+
+  Future _setPOSCurrency(SetPOSCurrency action) async {
+    _saveChanges(await _preferences,
+        _currentUser.copyWith(posCurrencyShortName: action.shortName));
+    action.resolve(action.shortName);
   }
 
   Future _uploadProfilePicture(UploadProfilePicture action) async {
