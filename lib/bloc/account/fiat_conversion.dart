@@ -62,7 +62,7 @@ class FiatConversion {
       formattedAmount = minimumAmount.toStringAsFixed(fractionSize);
       prefix = '< ' + prefix;
     } else {
-      final formatter = CurrencyFormatter.formatter;
+      final formatter = CurrencyFormatter().formatter;
       formatter.minimumFractionDigits = fractionSize;
       formattedAmount = formatter.format(fiatAmount);
     }

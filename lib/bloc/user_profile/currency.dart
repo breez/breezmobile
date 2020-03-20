@@ -64,7 +64,7 @@ class Currency extends Object {
 }
 
 class _CurrencyFormatter {
-  static final formatter = CurrencyFormatter.formatter;
+  static final formatter = CurrencyFormatter().formatter;
 
   String format(satoshies, Currency currency,
       {bool addCurrencySuffix = true,

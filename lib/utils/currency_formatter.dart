@@ -3,7 +3,7 @@ import 'package:intl/number_symbols.dart';
 import 'package:intl/number_symbols_data.dart';
 
 class CurrencyFormatter {
-  static final NumberFormat formatter = _defineFormatter();
+  final NumberFormat formatter = _defineFormatter();
 
   static NumberFormat _defineFormatter() {
     numberFormatSymbols['space-between'] = NumberSymbols(
