@@ -16,12 +16,17 @@ class CurrencyWrapper {
     return CurrencyWrapper._internal(null, fiat);
   }
 
-  factory CurrencyWrapper.fromShortName(String symbol, AccountModel account) {
+  factory CurrencyWrapper.fromShortName(String symbol, AccountModel account,
+      {List<FiatConversion> fiatConversionList}) {
     var btcCurrency = Currency.fromTickerSymbol(symbol);
     if (btcCurrency != null) {
       return CurrencyWrapper.fromBTC(btcCurrency);
     }
-    var fiatCurrency = account.getFiatCurrencyByShortName(symbol);
+    var fiatCurrency = (fiatConversionList != null)
+        ? fiatConversionList.firstWhere(
+            (f) => f.currencyData.shortName == symbol,
+            orElse: () => null)
+        : account.getFiatCurrencyByShortName(symbol);
     if (fiatCurrency != null) {
       return CurrencyWrapper.fromFiat(fiatCurrency);
     }

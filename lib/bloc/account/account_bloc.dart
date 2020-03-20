@@ -221,10 +221,18 @@ class AccountBloc {
   }
 
   Future _fetchRates(FetchRates rates) async {
-    if (this._accountController.value.fiatConversionList.isEmpty) {
-      await _getExchangeRate();
-    }
-    rates.resolve(this._accountController.value.fiatConversionList);
+    rates.resolve(await _getExchangeRates());
+  }
+
+  Future<List<FiatConversion>> _getExchangeRates() async {
+    _currencyData = await _currencyService.currencies();
+    Rates _rate = await _breezLib.rate();
+    List<FiatConversion> _fiatConversionList = _rate.rates
+        .map((rate) => FiatConversion(_currencyData[rate.coin], rate.value))
+        .toList();
+    _fiatConversionList.sort(
+        (a, b) => a.currencyData.shortName.compareTo(b.currencyData.shortName));
+    return _fiatConversionList;
   }
 
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
