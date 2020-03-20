@@ -157,14 +157,14 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
             String salePrice = saleCurrency.format(
                 widget.satAmount / saleCurrency.satConversionRate,
                 removeTrailingZeros: true);
-            priceInSaleCurrency = "(${saleCurrency.symbol}$salePrice)";
+            priceInSaleCurrency = " (${saleCurrency.symbol}$salePrice)";
           }
           return ListBody(
             children: <Widget>[
               Text(
                 userCurrency.format(
                     widget.satAmount / userCurrency.satConversionRate,
-                    includeCurrencySuffix: true) + " " + priceInSaleCurrency,
+                    includeCurrencySuffix: true) + priceInSaleCurrency,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.subtitle1,
               ),
