@@ -62,8 +62,13 @@ class SaleViewState extends State<SaleView> {
           if (updateNote) {
             _noteController.text = sale.note;
           }
+          var thisRoute = ModalRoute.of(context);
           if (saleInProgress.saleLines.length == 0) {
-            Navigator.of(context).pop();
+            if (thisRoute.isCurrent) {
+              Navigator.of(context).pop();
+            } else {
+              Navigator.of(context).removeRoute(thisRoute);
+            }
           }
         });
       });

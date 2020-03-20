@@ -7,24 +7,22 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/sync_progress_dialog.dart';
 import 'package:breez/services/countdown.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/compact_qr_image.dart';
-import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 
-import 'loader.dart';
+class PosPaymentResult {
+  final bool paid;
+  final bool clearSale;
 
-enum _PosPaymentState { WAITING_FOR_PAYMENT, PAYMENT_RECEIVED }
+  PosPaymentResult({this.paid = false, this.clearSale = false});
+}
 
 class _PosPaymentDialogState extends State<PosPaymentDialog> {
-  _PosPaymentState _state = _PosPaymentState.WAITING_FOR_PAYMENT;
   CountDown _paymentTimer;
   StreamSubscription<Duration> _timerSubscription;
+  StreamSubscription<String> _paidInvoiceSubscription;
   String _countdownString = "3:00";
-  String _debugMessage = "";
-
-  StreamSubscription<String> _sentInvoicesSubscription;
-  StreamSubscription<bool> _paidInvoicesSubscription;
 
   @override
   void initState() {
@@ -42,40 +40,24 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       });
     }, onDone: () {
       if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop(false);
+        Navigator.of(context).pop(PosPaymentResult());
       }
     });
 
-    _sentInvoicesSubscription =
-        widget._invoiceBloc.sentInvoicesStream.listen((message) {
-      _debugMessage = message;
-
-      setState(() {
-        _state = _PosPaymentState.WAITING_FOR_PAYMENT;
+    _paidInvoiceSubscription =
+          widget._invoiceBloc.paidInvoicesStream.listen((paidRequest) {
+        setState(() {
+          if (paidRequest == widget.paymentRequest) {
+            Navigator.of(context).pop(PosPaymentResult(paid: true));
+          }
+        });
       });
-    }, onError: (err) {
-      Navigator.of(context).pop(false);
-      showFlushbar(context,
-          message: err.toString(), duration: Duration(seconds: 3));
-    });
-
-    _paidInvoicesSubscription =
-        widget._invoiceBloc.paidInvoicesStream.listen((paid) {
-      setState(() {
-        _state = _PosPaymentState.PAYMENT_RECEIVED;
-      });
-    }, onError: (err) {
-      Navigator.of(context).pop(false);
-      showFlushbar(context,
-          message: err.toString(), duration: Duration(seconds: 3));
-    });
   }
 
   @override
   void dispose() {
     _timerSubscription?.cancel();
-    _paidInvoicesSubscription?.cancel();
-    _sentInvoicesSubscription?.cancel();
+    _paidInvoiceSubscription?.cancel();
     super.dispose();
   }
 
@@ -97,7 +79,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
           style: Theme.of(context).primaryTextTheme.button,
         ),
         onPressed: () {
-          Navigator.of(context).pop(false);
+          Navigator.of(context).pop(PosPaymentResult());
         },
       );
   }
@@ -111,7 +93,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
           style: Theme.of(context).primaryTextTheme.button,
         ),
         onPressed: () {
-          Navigator.of(context).pop(true);
+          Navigator.of(context).pop(PosPaymentResult(clearSale: true));
         },
       );
   }
@@ -168,44 +150,8 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     return AlertDialog(
       contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
       content: SingleChildScrollView(
-          child: _state == _PosPaymentState.WAITING_FOR_PAYMENT
-              ? buildWaitingPayment(context)
-              : GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop(true);
-                  },
-                  child: ListBody(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 40.0),
-                        child: Text(
-                          'Payment approved!',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .primaryTextTheme
-                              .display1
-                              .copyWith(fontSize: 16),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 40.0),
-                        child: Container(
-                          decoration: new BoxDecoration(
-                            color: Theme.of(context).buttonColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Image(
-                            image: AssetImage("src/icon/ic_done.png"),
-                            height: 48.0,
-                            color: theme.themeId == "BLUE"
-                                ? Color.fromRGBO(0, 133, 251, 1.0)
-                                : Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
+          child: buildWaitingPayment(context)
+      )
     );
   }
 
