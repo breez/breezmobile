@@ -64,6 +64,7 @@ class FiatConversion {
     } else {
       final formatter = CurrencyFormatter().formatter;
       formatter.minimumFractionDigits = fractionSize;
+      formatter.maximumFractionDigits = fractionSize;
       formattedAmount = formatter.format(fiatAmount);
     }
     if (addCurrencyPrefix) {
