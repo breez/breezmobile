@@ -26,7 +26,7 @@ class QrCodeDialog extends StatefulWidget {
 
 class QrCodeDialogState extends State<QrCodeDialog>
     with SingleTickerProviderStateMixin {
-  StreamSubscription<bool> _paidInvoicesSubscription;
+  StreamSubscription<String> _paidInvoicesSubscription;
   Animation<double> _opacityAnimation;
 
   @override

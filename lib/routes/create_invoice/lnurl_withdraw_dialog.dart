@@ -28,7 +28,7 @@ class LNURlWidthrawDialog extends StatefulWidget {
 class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog>
     with SingleTickerProviderStateMixin {
   String _error;
-  StreamSubscription<bool> _paidInvoicesSubscription;
+  StreamSubscription<String> _paidInvoicesSubscription;
   Animation<double> _opacityAnimation;
 
   @override

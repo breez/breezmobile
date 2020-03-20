@@ -49,7 +49,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
 
-  StreamSubscription<bool> _paidInvoicesSubscription;
+  StreamSubscription<String> _paidInvoicesSubscription;
   bool _isInit = false;
   final FocusNode _amountFocusNode = FocusNode();
   final BackgroundTaskService _bgService =
