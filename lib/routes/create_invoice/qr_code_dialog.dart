@@ -120,7 +120,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                 }),
           ],
         ),
-        titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 8.0),
+        titlePadding: EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
         contentPadding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
         children: <Widget>[
           StreamBuilder<AccountModel>(

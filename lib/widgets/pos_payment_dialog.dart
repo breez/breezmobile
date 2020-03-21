@@ -104,7 +104,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      titlePadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      titlePadding: EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
       title: _syncedToChain
           ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Expanded(
@@ -152,7 +152,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               )
             ])
           : Container(),
-      contentPadding: EdgeInsets.symmetric(horizontal: 16),
+      contentPadding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
       content: SingleChildScrollView(
           child: _state == _PosPaymentState.WAITING_FOR_PAYMENT
               ? buildWaitingPayment(context)
@@ -237,7 +237,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                     .copyWith(fontSize: 14.3),
               ),
               Padding(
-                padding:  const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical:8.0),
                 child: AspectRatio(
                   aspectRatio: 1.0,
                   child: Container(
