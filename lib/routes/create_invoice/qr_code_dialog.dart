@@ -87,6 +87,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
                       return Row(
                         children: <Widget>[
                           IconButton(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
                             padding: EdgeInsets.only(
                                 top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
                             icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
@@ -98,6 +100,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
                             },
                           ),
                           IconButton(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
                             padding: EdgeInsets.only(
                                 top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
                             icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),

@@ -106,35 +106,31 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
       title: _syncedToChain
-          ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: AutoSizeText(
-                    "Scan to Process Payment",
-                    style: Theme.of(context).dialogTheme.titleTextStyle,
-                    maxLines: 1,
-                    minFontSize: MinFontSize(context).minFontSize,
-                    stepGranularity: 0.1,
-                  ),
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Scan to Pay",
+                  style: Theme.of(context).dialogTheme.titleTextStyle,
                 ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Row(children: [
-                  IconButton(
-                    iconSize: 16,
-                    icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-                    color: Theme.of(context).primaryTextTheme.button.color,
-                    onPressed: () {
-                      ShareExtend.share(
-                          "lightning:" + widget.paymentRequest, "text");
-                    },
-                  ),
-                  Expanded(
-                    child: IconButton(
-                      iconSize: 16,
+                Row(
+                  children: <Widget>[
+                    IconButton(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      padding: EdgeInsets.only(
+                          top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
+                      icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
+                      color: Theme.of(context).primaryTextTheme.button.color,
+                      onPressed: () {
+                        ShareExtend.share("lightning:" + widget.paymentRequest, "text");
+                      },
+                    ),
+                    IconButton(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      padding: EdgeInsets.only(
+                          top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
                       icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
                       color: Theme.of(context).primaryTextTheme.button.color,
                       onPressed: () {
@@ -146,11 +142,11 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                                 "Invoice address was copied to your clipboard.",
                             duration: Duration(seconds: 3));
                       },
-                    ),
-                  )
-                ]),
-              )
-            ])
+                    )
+                  ],
+                )
+              ],
+            )
           : Container(),
       contentPadding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
       content: SingleChildScrollView(
