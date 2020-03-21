@@ -99,110 +99,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     super.dispose();
   }
 
-  Widget _actionsWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[_clearSaleButton(), _cancelButton()],
-    );
-  }
-
-  Widget _cancelButton() {
-    return FlatButton(
-      padding: EdgeInsets.only(top: 8.0, bottom: 16.0, left: 0.0),
-      child: Text(
-        'CANCEL',
-        textAlign: TextAlign.center,
-        style: Theme.of(context).primaryTextTheme.button,
-      ),
-      onPressed: () {
-        Navigator.of(context).pop(false);
-      },
-    );
-  }
-
-  Widget _clearSaleButton() {
-    return FlatButton(
-      padding: EdgeInsets.only(top: 8.0, bottom: 16.0, right: 0.0),
-      child: Text(
-        'CLEAR SALE',
-        textAlign: TextAlign.center,
-        style: Theme.of(context).primaryTextTheme.button,
-      ),
-      onPressed: () {
-        Navigator.of(context).pop(true);
-      },
-    );
-  }
-
-  Widget buildWaitingPayment(BuildContext context) {
-    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-
-    return StreamBuilder<AccountModel>(
-        stream: accountBloc.accountStream,
-        builder: (context, snapshot) {
-          var account = snapshot.data;
-          if (account == null) {
-            return Loader();
-          }
-
-          if (account.syncedToChain == false) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 40.0),
-              child: SyncProgressDialog(closeOnSync: false),
-            );
-          }
-
-          var saleCurrency = CurrencyWrapper.fromShortName(
-              widget._user.posCurrencyShortName, account);
-          var userCurrency = CurrencyWrapper.fromBTC(widget._user.currency);
-          var priceInSaleCurrency = "";
-          if (saleCurrency.symbol != userCurrency.symbol) {
-            String salePrice = saleCurrency.format(
-                widget.satAmount / saleCurrency.satConversionRate,
-                removeTrailingZeros: true);
-            priceInSaleCurrency = " (${saleCurrency.symbol}$salePrice)";
-          }
-          return ListBody(
-            children: <Widget>[
-              Text(
-                userCurrency.format(
-                    widget.satAmount / userCurrency.satConversionRate,
-                    includeCurrencySuffix: true) + priceInSaleCurrency,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-              _buildDialogBody(
-                AspectRatio(
-                  aspectRatio: 1.0,
-                  child: Container(
-                    height: 230.0,
-                    width: 230.0,
-                    child: CompactQRImage(
-                      data: widget.paymentRequest,
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                  padding: EdgeInsets.only(top: 15.0),
-                  child: Text(_countdownString,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .display1
-                          .copyWith(fontSize: 16))),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                child: _actionsWidget(),
-              ),
-            ],
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      titlePadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Expanded(
           flex: 2,
@@ -214,6 +114,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
             stepGranularity: 0.1,
           ),
         ),
+        // TODO: Hide share & copy icons during sync
         Expanded(
           flex: 1,
           child: Row(children: [
@@ -243,7 +144,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
           ]),
         )
       ]),
-      contentPadding: EdgeInsets.fromLTRB(20.0, 28.0, 20.0, 0.0),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16),
       content: SingleChildScrollView(
           child: _state == _PosPaymentState.WAITING_FOR_PAYMENT
               ? buildWaitingPayment(context)
@@ -286,12 +187,107 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     );
   }
 
-  ListBody _buildDialogBody(Widget body) {
-    return ListBody(children: <Widget>[
-      Padding(
-        padding: EdgeInsets.only(top: 15.0),
-        child: body,
-      )
-    ]);
+  Widget buildWaitingPayment(BuildContext context) {
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
+    return StreamBuilder<AccountModel>(
+        stream: accountBloc.accountStream,
+        builder: (context, snapshot) {
+          var account = snapshot.data;
+          if (account == null) {
+            return Loader();
+          }
+
+          if (account.syncedToChain == false) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 40.0),
+              child: SyncProgressDialog(closeOnSync: false),
+            );
+          }
+
+          var saleCurrency = CurrencyWrapper.fromShortName(
+              widget._user.posCurrencyShortName, account);
+          var userCurrency = CurrencyWrapper.fromBTC(widget._user.currency);
+          var priceInSaleCurrency = "";
+          if (saleCurrency.symbol != userCurrency.symbol) {
+            String salePrice = saleCurrency.format(
+                widget.satAmount / saleCurrency.satConversionRate,
+                removeTrailingZeros: true);
+            priceInSaleCurrency = " (${saleCurrency.symbol}$salePrice)";
+          }
+          return ListBody(
+            children: <Widget>[
+              Text(
+                userCurrency.format(
+                        widget.satAmount / userCurrency.satConversionRate,
+                        includeCurrencySuffix: true) +
+                    priceInSaleCurrency,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 16.0),
+                child: AspectRatio(
+                  aspectRatio: 1.0,
+                  child: Container(
+                    height: 230.0,
+                    width: 230.0,
+                    child: CompactQRImage(
+                      data: widget.paymentRequest,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                  padding: EdgeInsets.only(top: 16.0),
+                  child: Text(_countdownString,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .display1
+                          .copyWith(fontSize: 16))),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 17),
+                child: _actionsWidget(),
+              ),
+            ],
+          );
+        });
+  }
+
+  Widget _actionsWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[_clearSaleButton(), _cancelButton()],
+    );
+  }
+
+  Widget _clearSaleButton() {
+    return FlatButton(
+      padding: EdgeInsets.only(top: 8.0, bottom: 16.0, right: 0.0),
+      child: Text(
+        'CLEAR SALE',
+        textAlign: TextAlign.center,
+        style: Theme.of(context).primaryTextTheme.button,
+      ),
+      onPressed: () {
+        Navigator.of(context).pop(true);
+      },
+    );
+  }
+
+  Widget _cancelButton() {
+    return FlatButton(
+      padding: EdgeInsets.only(top: 8.0, bottom: 16.0, left: 0.0),
+      child: Text(
+        'CANCEL',
+        textAlign: TextAlign.center,
+        style: Theme.of(context).primaryTextTheme.button,
+      ),
+      onPressed: () {
+        Navigator.of(context).pop(false);
+      },
+    );
   }
 }
