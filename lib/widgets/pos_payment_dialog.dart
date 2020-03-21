@@ -231,7 +231,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                         includeCurrencySuffix: true) +
                     priceInSaleCurrency,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle1
+                    .copyWith(fontSize: 14.3),
               ),
               Padding(
                 padding:  const EdgeInsets.symmetric(vertical: 12),
