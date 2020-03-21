@@ -163,11 +163,14 @@ class QrCodeDialogState extends State<QrCodeDialog>
                     }
                     return Column(
                       children: [
-                        Container(
-                          width: 230.0,
-                          height: 230.0,
-                          child: CompactQRImage(
-                            data: snapshot.data,
+                        AspectRatio(
+                          aspectRatio: 1,
+                          child: Container(
+                            width: 230.0,
+                            height: 230.0,
+                            child: CompactQRImage(
+                              data: snapshot.data,
+                            ),
                           ),
                         ),
                         Padding(padding: EdgeInsets.only(top: 8.0)),
