@@ -46,6 +46,8 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   StreamSubscription<String> _sentInvoicesSubscription;
   StreamSubscription<bool> _paidInvoicesSubscription;
 
+  bool _syncedToChain = false;
+
   @override
   void initState() {
     super.initState();
@@ -103,47 +105,53 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       titlePadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-      title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Expanded(
-          flex: 2,
-          child: AutoSizeText(
-            "Scan to Process Payment",
-            style: Theme.of(context).dialogTheme.titleTextStyle,
-            maxLines: 1,
-            minFontSize: MinFontSize(context).minFontSize,
-            stepGranularity: 0.1,
-          ),
-        ),
-        // TODO: Hide share & copy icons during sync
-        Expanded(
-          flex: 1,
-          child: Row(children: [
-            IconButton(
-              padding: EdgeInsets.only(
-                  top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
-              icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-              color: Theme.of(context).primaryTextTheme.button.color,
-              onPressed: () {
-                ShareExtend.share("lightning:" + widget.paymentRequest, "text");
-              },
-            ),
-            IconButton(
-              padding: EdgeInsets.only(
-                  top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
-              icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-              color: Theme.of(context).primaryTextTheme.button.color,
-              onPressed: () {
-                ServiceInjector()
-                    .device
-                    .setClipboardText(widget.paymentRequest);
-                showFlushbar(context,
-                    message: "Invoice address was copied to your clipboard.",
-                    duration: Duration(seconds: 3));
-              },
-            )
-          ]),
-        )
-      ]),
+      title: _syncedToChain
+          ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: AutoSizeText(
+                    "Scan to Process Payment",
+                    style: Theme.of(context).dialogTheme.titleTextStyle,
+                    maxLines: 1,
+                    minFontSize: MinFontSize(context).minFontSize,
+                    stepGranularity: 0.1,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Row(children: [
+                  IconButton(
+                    iconSize: 16,
+                    icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
+                    color: Theme.of(context).primaryTextTheme.button.color,
+                    onPressed: () {
+                      ShareExtend.share(
+                          "lightning:" + widget.paymentRequest, "text");
+                    },
+                  ),
+                  Expanded(
+                    child: IconButton(
+                      iconSize: 16,
+                      icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+                      color: Theme.of(context).primaryTextTheme.button.color,
+                      onPressed: () {
+                        ServiceInjector()
+                            .device
+                            .setClipboardText(widget.paymentRequest);
+                        showFlushbar(context,
+                            message:
+                                "Invoice address was copied to your clipboard.",
+                            duration: Duration(seconds: 3));
+                      },
+                    ),
+                  )
+                ]),
+              )
+            ])
+          : Container(),
       contentPadding: EdgeInsets.symmetric(horizontal: 16),
       content: SingleChildScrollView(
           child: _state == _PosPaymentState.WAITING_FOR_PAYMENT
@@ -197,8 +205,8 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
           if (account == null) {
             return Loader();
           }
-
-          if (account.syncedToChain == false) {
+          _syncedToChain = account.syncedToChain;
+          if (_syncedToChain == false) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 40.0),
               child: SyncProgressDialog(closeOnSync: false),
@@ -226,7 +234,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                 style: Theme.of(context).textTheme.subtitle1,
               ),
               Padding(
-                padding: EdgeInsets.only(top: 16.0),
+                padding:  const EdgeInsets.symmetric(vertical: 12),
                 child: AspectRatio(
                   aspectRatio: 1.0,
                   child: Container(
@@ -238,17 +246,15 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                   ),
                 ),
               ),
-              Padding(
-                  padding: EdgeInsets.only(top: 16.0),
-                  child: Text(_countdownString,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .display1
-                          .copyWith(fontSize: 16))),
+              Text(_countdownString,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .primaryTextTheme
+                      .display1
+                      .copyWith(fontSize: 16)),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 17),
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: _actionsWidget(),
               ),
             ],
