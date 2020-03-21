@@ -9,10 +9,13 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/sync_progress_dialog.dart';
 import 'package:breez/services/countdown.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:share_extend/share_extend.dart';
 
 import 'loader.dart';
 
@@ -200,12 +203,47 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: AutoSizeText(
-        "Scan to Process Payment",
-        style: Theme.of(context).dialogTheme.titleTextStyle,
-        maxLines: 1,
-      ),
-      contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
+      title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Expanded(
+          flex: 2,
+          child: AutoSizeText(
+            "Scan to Process Payment",
+            style: Theme.of(context).dialogTheme.titleTextStyle,
+            maxLines: 1,
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Row(children: [
+            IconButton(
+              padding: EdgeInsets.only(
+                  top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
+              icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
+              color: Theme.of(context).primaryTextTheme.button.color,
+              onPressed: () {
+                ShareExtend.share("lightning:" + widget.paymentRequest, "text");
+              },
+            ),
+            IconButton(
+              padding: EdgeInsets.only(
+                  top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
+              icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+              color: Theme.of(context).primaryTextTheme.button.color,
+              onPressed: () {
+                ServiceInjector()
+                    .device
+                    .setClipboardText(widget.paymentRequest);
+                showFlushbar(context,
+                    message: "Invoice address was copied to your clipboard.",
+                    duration: Duration(seconds: 3));
+              },
+            )
+          ]),
+        )
+      ]),
+      contentPadding: EdgeInsets.fromLTRB(20.0, 28.0, 20.0, 0.0),
       content: SingleChildScrollView(
           child: _state == _PosPaymentState.WAITING_FOR_PAYMENT
               ? buildWaitingPayment(context)
