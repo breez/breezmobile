@@ -5,6 +5,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/breez_dropdown.dart';
@@ -167,19 +168,21 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                                 .map((FiatConversion value) {
                               return DropdownMenuItem<String>(
                                 value: value.currencyData.shortName,
-                                child: Container(
-                                  width: 36,
-                                  child: AutoSizeText(
-                                    value.currencyData.shortName,
-                                    textAlign: TextAlign.left,
-                                    style: Theme.of(context)
-                                        .dialogTheme
-                                        .titleTextStyle,
-                                    maxLines: 1,
-                                    minFontSize:
-                                        MinFontSize(context).minFontSize,
-                                    stepGranularity: 0.1,
-                                    group: _autoSizeGroup,
+                                child: Material(
+                                  child: Container(
+                                    width: 36,
+                                    child: AutoSizeText(
+                                      value.currencyData.shortName,
+                                      textAlign: TextAlign.left,
+                                      style: Theme.of(context)
+                                          .dialogTheme
+                                          .titleTextStyle,
+                                      maxLines: 1,
+                                      minFontSize:
+                                          MinFontSize(context).minFontSize,
+                                      stepGranularity: 0.1,
+                                      group: _autoSizeGroup,
+                                    ),
                                   ),
                                 ),
                               );
@@ -318,10 +321,13 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
   Widget _buildExchangeRateLabel(FiatConversion fiatConversion) {
     // Empty string widget is returned so that the dialogs height is not changed when the exchange rate is shown
+    var currency = CurrencyWrapper.fromFiat(fiatConversion);
+    var formattedExchangeRate =
+        currency.format(_exchangeRate, removeTrailingZeros: true);
     return _exchangeRate == null
         ? Text("", style: Theme.of(context).primaryTextTheme.subtitle)
         : Text(
-            "1 BTC = $_exchangeRate ${fiatConversion.currencyData.shortName}",
+            "1 BTC = $formattedExchangeRate ${fiatConversion.currencyData.shortName}",
             style: Theme.of(context)
                 .primaryTextTheme
                 .subtitle

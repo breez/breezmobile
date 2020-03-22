@@ -1,7 +1,11 @@
 import 'dart:math';
 
 import 'package:breez/services/currency_data.dart';
+import 'package:breez/utils/currency_formatter.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/number_symbols.dart';
+import 'package:intl/number_symbols_data.dart';
 
 class FiatConversion {
   CurrencyData currencyData;
@@ -41,10 +45,12 @@ class FiatConversion {
     return formatFiat(fiatValue);
   }
 
-  String formatFiat(double fiatAmount,
-      {bool addCurrencyPrefix = true,
-      bool removeTrailingZeros = false,
-      bool allowBelowMin = false}) {
+  String formatFiat(
+    double fiatAmount, {
+    bool addCurrencyPrefix = true,
+    bool removeTrailingZeros = false,
+    bool allowBelowMin = false,
+  }) {
     int fractionSize = this.currencyData.fractionSize;
     double minimumAmount = 1 / (pow(10, fractionSize));
 
@@ -53,11 +59,13 @@ class FiatConversion {
     // if conversion result is less than the minimum it doesn't make sense to display
     // it.
     if (!allowBelowMin && fiatAmount < minimumAmount) {
-      formattedAmount += minimumAmount.toStringAsFixed(fractionSize);
+      formattedAmount = minimumAmount.toStringAsFixed(fractionSize);
       prefix = '< ' + prefix;
     } else {
-      // Otherwise just show the formatted value.
-      formattedAmount += fiatAmount.toStringAsFixed(fractionSize);
+      final formatter = CurrencyFormatter().formatter;
+      formatter.minimumFractionDigits = fractionSize;
+      formatter.maximumFractionDigits = fractionSize;
+      formattedAmount = formatter.format(fiatAmount);
     }
     if (addCurrencyPrefix) {
       formattedAmount = prefix + formattedAmount;

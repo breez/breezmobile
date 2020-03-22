@@ -17,6 +17,7 @@ class BreezUserModel {
   final bool isPOS;
   final double cancellationTimeoutValue;
   final bool hasAdminPassword;
+  final String posCurrencyShortName;
 
   BreezUserModel._(this.userID, this.name, this.color, this.animal,
       {this.currency = Currency.SAT,
@@ -29,7 +30,8 @@ class BreezUserModel {
       this.registrationRequested = false,
       this.isPOS = false,
       this.cancellationTimeoutValue = 90.0,
-      this.hasAdminPassword = false});
+      this.hasAdminPassword = false,
+      this.posCurrencyShortName = "SAT"});
 
   BreezUserModel copyWith(
       {String name,
@@ -46,7 +48,8 @@ class BreezUserModel {
       bool registrationRequested,
       bool isPOS,
       double cancellationTimeoutValue,
-      bool hasAdminPassword}) {
+      bool hasAdminPassword,
+      String posCurrencyShortName}) {
     return BreezUserModel._(userID ?? this.userID, name ?? this.name,
         color ?? this.color, animal ?? this.animal,
         currency: currency ?? this.currency,
@@ -61,7 +64,8 @@ class BreezUserModel {
         isPOS: isPOS ?? this.isPOS,
         cancellationTimeoutValue:
             cancellationTimeoutValue ?? this.cancellationTimeoutValue,
-        hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword);
+        hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword,
+        posCurrencyShortName: posCurrencyShortName ?? this.posCurrencyShortName);
   }
 
   bool get registered {
@@ -97,7 +101,8 @@ class BreezUserModel {
         cancellationTimeoutValue = json['cancellationTimeoutValue'] == null
             ? 90.0
             : json['cancellationTimeoutValue'],
-        hasAdminPassword = json['hasAdminPassword'] ?? false;
+        hasAdminPassword = json['hasAdminPassword'] ?? false,
+        posCurrencyShortName = json['posCurrencyShortName'] ?? "BTC";
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -114,5 +119,6 @@ class BreezUserModel {
         'cancellationTimeoutValue': cancellationTimeoutValue,
         'isPOS': isPOS,
         'hasAdminPassword': hasAdminPassword,
+        'posCurrencyShortName': posCurrencyShortName,
       };
 }

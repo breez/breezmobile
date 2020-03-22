@@ -49,6 +49,7 @@ class SaleViewState extends State<SaleView> {
   Sale saleInProgress;
 
   Sale get currentSale => widget.readOnlySale ?? saleInProgress;
+
   @override
   void didChangeDependencies() {
     if (_currentSaleSubscription == null && !widget.readOnly) {

@@ -38,7 +38,7 @@ class ItemPageState extends State<ItemPage> {
   AccountBloc _accountBloc;
   bool _isInit = false;
   String _title = "Add Item";
-  CurrencyWrapper _selectedCurrency = CurrencyWrapper.fromBTC(Currency.BTC);
+  CurrencyWrapper _selectedCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
 
   @override
   void didChangeDependencies() {

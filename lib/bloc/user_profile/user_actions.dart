@@ -69,3 +69,9 @@ class UploadProfilePicture extends AsyncAction {
 
   UploadProfilePicture(this.bytes);
 }
+
+class SetPOSCurrency extends AsyncAction {
+  final String shortName;
+
+  SetPOSCurrency(this.shortName);
+}

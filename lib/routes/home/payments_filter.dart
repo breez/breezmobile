@@ -154,8 +154,10 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                   .map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(
-                    value,
+                  child: Material(
+                    child: Text(
+                      value,
+                    ),
                   ),
                 );
               }).toList(),
