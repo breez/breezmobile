@@ -38,8 +38,8 @@ class InvoiceBloc with AsyncActionsHandler {
   Stream<PaymentRequestModel> get receivedInvoicesStream =>
       _receivedInvoicesController.stream;
 
-  final _paidInvoicesController = StreamController<bool>.broadcast();
-  Stream<bool> get paidInvoicesStream => _paidInvoicesController.stream;
+  final _paidInvoicesController = StreamController<String>.broadcast();
+  Stream<String> get paidInvoicesStream => _paidInvoicesController.stream;
 
   Int64 payBlankAmount = Int64(-1);
   BreezBridge _breezLib;
@@ -209,7 +209,7 @@ class InvoiceBloc with AsyncActionsHandler {
         .where((event) =>
             event.type == NotificationEvent_NotificationType.INVOICE_PAID)
         .listen((invoice) {
-      _paidInvoicesController.add(true);
+      _paidInvoicesController.add(invoice.data[0]);
     });
   }
 

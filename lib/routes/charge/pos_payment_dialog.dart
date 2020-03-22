@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -9,17 +8,17 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/sync_progress_dialog.dart';
 import 'package:breez/services/countdown.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
-import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
-import 'loader.dart';
+class PosPaymentResult {
+  final bool paid;
+  final bool clearSale;
 
-enum _PosPaymentState { WAITING_FOR_PAYMENT, PAYMENT_RECEIVED }
+  PosPaymentResult({this.paid = false, this.clearSale = false});
+}
 
 class PosPaymentDialog extends StatefulWidget {
   final InvoiceBloc _invoiceBloc;
@@ -37,14 +36,10 @@ class PosPaymentDialog extends StatefulWidget {
 }
 
 class _PosPaymentDialogState extends State<PosPaymentDialog> {
-  _PosPaymentState _state = _PosPaymentState.WAITING_FOR_PAYMENT;
   CountDown _paymentTimer;
   StreamSubscription<Duration> _timerSubscription;
+  StreamSubscription<String> _paidInvoiceSubscription;
   String _countdownString = "3:00";
-  String _debugMessage = "";
-
-  StreamSubscription<String> _sentInvoicesSubscription;
-  StreamSubscription<bool> _paidInvoicesSubscription;
 
   bool _syncedToChain = false;
 
@@ -64,131 +59,77 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       });
     }, onDone: () {
       if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop(false);
+        Navigator.of(context).pop(PosPaymentResult());
       }
     });
 
-    _sentInvoicesSubscription =
-        widget._invoiceBloc.sentInvoicesStream.listen((message) {
-      _debugMessage = message;
-
+    _paidInvoiceSubscription =
+        widget._invoiceBloc.paidInvoicesStream.listen((paidRequest) {
       setState(() {
-        _state = _PosPaymentState.WAITING_FOR_PAYMENT;
+        if (paidRequest == widget.paymentRequest) {
+          Navigator.of(context).pop(PosPaymentResult(paid: true));
+        }
       });
-    }, onError: (err) {
-      Navigator.of(context).pop(false);
-      showFlushbar(context,
-          message: err.toString(), duration: Duration(seconds: 3));
-    });
-
-    _paidInvoicesSubscription =
-        widget._invoiceBloc.paidInvoicesStream.listen((paid) {
-      setState(() {
-        _state = _PosPaymentState.PAYMENT_RECEIVED;
-      });
-    }, onError: (err) {
-      Navigator.of(context).pop(false);
-      showFlushbar(context,
-          message: err.toString(), duration: Duration(seconds: 3));
     });
   }
 
   @override
   void dispose() {
     _timerSubscription?.cancel();
-    _paidInvoicesSubscription?.cancel();
-    _sentInvoicesSubscription?.cancel();
+    _paidInvoiceSubscription?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      titlePadding: EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
-      title: _syncedToChain
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Scan to Pay",
-                  style: Theme.of(context).dialogTheme.titleTextStyle,
-                ),
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      padding: EdgeInsets.only(
-                          top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
-                      icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-                      color: Theme.of(context).primaryTextTheme.button.color,
-                      onPressed: () {
-                        ShareExtend.share("lightning:" + widget.paymentRequest, "text");
-                      },
-                    ),
-                    IconButton(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      padding: EdgeInsets.only(
-                          top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
-                      icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-                      color: Theme.of(context).primaryTextTheme.button.color,
-                      onPressed: () {
-                        ServiceInjector()
-                            .device
-                            .setClipboardText(widget.paymentRequest);
-                        showFlushbar(context,
-                            message:
-                                "Invoice address was copied to your clipboard.",
-                            duration: Duration(seconds: 3));
-                      },
-                    )
-                  ],
-                )
-              ],
-            )
-          : Container(),
-      contentPadding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
-      content: SingleChildScrollView(
-          child: _state == _PosPaymentState.WAITING_FOR_PAYMENT
-              ? buildWaitingPayment(context)
-              : GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop(true);
-                  },
-                  child: ListBody(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 40.0),
-                        child: Text(
-                          'Payment approved!',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .primaryTextTheme
-                              .display1
-                              .copyWith(fontSize: 16),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 40.0),
-                        child: Container(
-                          decoration: new BoxDecoration(
-                            color: Theme.of(context).buttonColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Image(
-                            image: AssetImage("src/icon/ic_done.png"),
-                            height: 48.0,
-                            color: theme.themeId == "BLUE"
-                                ? Color.fromRGBO(0, 133, 251, 1.0)
-                                : Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
+        titlePadding: EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
+        title: _syncedToChain
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Scan to Pay",
+                    style: Theme.of(context).dialogTheme.titleTextStyle,
                   ),
-                )),
-    );
+                  Row(
+                    children: <Widget>[
+                      IconButton(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        padding: EdgeInsets.only(
+                            top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
+                        icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
+                        color: Theme.of(context).primaryTextTheme.button.color,
+                        onPressed: () {
+                          ShareExtend.share(
+                              "lightning:" + widget.paymentRequest, "text");
+                        },
+                      ),
+                      IconButton(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        padding: EdgeInsets.only(
+                            top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
+                        icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+                        color: Theme.of(context).primaryTextTheme.button.color,
+                        onPressed: () {
+                          ServiceInjector()
+                              .device
+                              .setClipboardText(widget.paymentRequest);
+                          showFlushbar(context,
+                              message:
+                                  "Invoice address was copied to your clipboard.",
+                              duration: Duration(seconds: 3));
+                        },
+                      )
+                    ],
+                  )
+                ],
+              )
+            : Container(),
+        contentPadding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+        content: SingleChildScrollView(child: buildWaitingPayment(context)));
   }
 
   Widget buildWaitingPayment(BuildContext context) {
@@ -233,7 +174,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                     .copyWith(fontSize: 14.3),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical:8.0),
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: AspectRatio(
                   aspectRatio: 1.0,
                   child: Container(

@@ -111,8 +111,9 @@ class PosCatalogBloc with AsyncActionsHandler {
   Future _submitSale(SubmitCurrentSale action) async {
     var currentSale = _currentSaleController.value;
     int saleID = await _repository.addSale(currentSale, action.paymentHash);
-    _currentSaleController.add(await _repository.fetchSaleByID(saleID));
-    action.resolve(saleID);
+    var submittedSale = await _repository.fetchSaleByID(saleID);
+    _currentSaleController.add(submittedSale);
+    action.resolve(submittedSale);
   }
 
   Future _fetchSale(FetchSale action) async {
