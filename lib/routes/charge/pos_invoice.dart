@@ -20,13 +20,15 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/sale_view.dart';
+import 'package:breez/routes/charge/succesfull_payment.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/pos_payment_dialog.dart';
+import 'package:breez/widgets/route.dart';
+import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +36,7 @@ import 'package:flutter/material.dart';
 import '../status_indicator.dart';
 import 'items/item_avatar.dart';
 import 'items/items_list.dart';
+import 'pos_payment_dialog.dart';
 
 class POSInvoice extends StatefulWidget {
   POSInvoice();
@@ -114,8 +117,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           });
         }
       });
+
+      super.didChangeDependencies();
     }
-    super.didChangeDependencies();
   }
 
   @override
@@ -735,15 +739,16 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           var payReq = value as PaymentRequestModel;
           var addSaleAction = SubmitCurrentSale(payReq.paymentHash);
           posCatalogBloc.actionsSink.add(addSaleAction);
-          return addSaleAction.future.then((value) {
-            return showPaymentDialog(invoiceBloc, user, payReq.rawPayReq);
+          return addSaleAction.future.then((submittedSale) {
+            return showPaymentDialog(invoiceBloc, user, payReq.rawPayReq)
+                .then((cleared) {
+              if (!cleared) {
+                var unLockSale =
+                    SetCurrentSale(submittedSale.copyWith(priceLocked: false));
+                posCatalogBloc.actionsSink.add(unLockSale);
+              }
+            });
           });
-        }).then((cleared) {
-          if (!cleared) {
-            var unLockSale =
-                SetCurrentSale(currentSale.copyWith(priceLocked: false));
-            posCatalogBloc.actionsSink.add(unLockSale);
-          }
         }).catchError((error) {
           showFlushbar(context,
               message: error.toString(), duration: Duration(seconds: 10));
@@ -754,14 +759,19 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   Future showPaymentDialog(
       InvoiceBloc invoiceBloc, BreezUserModel user, String payReq) {
-    return showDialog<bool>(
+    return showDialog<PosPaymentResult>(
         useRootNavigator: false,
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
           return PosPaymentDialog(invoiceBloc, user, payReq);
-        }).then((clear) {
-      if (clear == true) {
+        }).then((res) {
+      if (res.paid) {
+        Navigator.of(context).push(TransparentPageRoute((context) {
+          return SuccesfullPaymentRoute();
+        }));
+      }
+      if (res.clearSale) {
         clearSale();
         return true;
       }
