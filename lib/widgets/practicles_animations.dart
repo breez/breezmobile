@@ -85,7 +85,7 @@ class ParticlePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.white.withAlpha(50);
+    final paint = Paint()..color = Colors.white.withAlpha(100);
 
     particles.forEach((particle) {
       var progress = particle.animationProgress.progress(time);
