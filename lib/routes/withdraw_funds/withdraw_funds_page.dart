@@ -89,7 +89,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
             Navigator.of(context).pop();
           }),
           title: Text(widget.title,
-              style: Theme.of(context).appBarTheme.textTheme.title),
+              style: Theme.of(context).appBarTheme.textTheme.headline6),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,

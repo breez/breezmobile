@@ -66,7 +66,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                         "Sending failed payment details to Breez could help increase successful transactions rate.\nDo you want to send this failed payment details to Breez?",
                         style: Theme.of(context)
                             .primaryTextTheme
-                            .display2
+                            .headline3
                             .copyWith(fontSize: 16),
                       ),
                     ),
@@ -93,7 +93,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                             "Don't ask me again",
                             style: Theme.of(context)
                                 .primaryTextTheme
-                                .display2
+                                .headline3
                                 .copyWith(fontSize: 16),
                           )
                         ],

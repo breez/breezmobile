@@ -24,7 +24,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
           "Since Breez is still in beta, there is a chance your money will be lost. Use this app only if you are willing to take this risk.",
           style: Theme.of(context)
               .primaryTextTheme
-              .display2
+              .headline3
               .copyWith(fontSize: 16),
         ),
       ),
@@ -49,7 +49,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
               "I understand",
               style: Theme.of(context)
                   .primaryTextTheme
-                  .display2
+                  .headline3
                   .copyWith(fontSize: 16),
             )
           ],
@@ -64,7 +64,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
               "Please confirm that you understand before you continue.",
               style: Theme.of(context)
                   .primaryTextTheme
-                  .display2
+                  .headline3
                   .copyWith(fontSize: 16)
                   .copyWith(fontSize: 12.0, color: Colors.red),
             )),

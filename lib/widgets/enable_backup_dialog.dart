@@ -60,7 +60,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                           "If you want to be able to restore your funds in case this mobile device or this app are no longer available (e.g. lost or stolen device or app uninstall), you are required to backup your information.",
                           style: Theme.of(context)
                               .primaryTextTheme
-                              .display2
+                              .headline3
                               .copyWith(fontSize: 16),
                           minFontSize: MinFontSize(context).minFontSize,
                           stepGranularity: 0.1,
@@ -91,7 +91,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                               "Don't prompt again",
                               style: Theme.of(context)
                                   .primaryTextTheme
-                                  .display2
+                                  .headline3
                                   .copyWith(fontSize: 16),
                               maxLines: 1,
                               minFontSize: MinFontSize(context).minFontSize,

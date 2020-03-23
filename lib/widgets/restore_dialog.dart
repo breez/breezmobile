@@ -49,7 +49,7 @@ class RestoreDialogState extends State<RestoreDialog> {
                   "You have multiple Breez backups on ${snapshot.data.backupProvider.displayName}, please choose which one to restore:",
                   style: Theme.of(context)
                       .primaryTextTheme
-                      .display2
+                      .headline3
                       .copyWith(fontSize: 16),
                 );
               }),

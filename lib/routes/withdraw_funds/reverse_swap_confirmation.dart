@@ -82,7 +82,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             widget.onPrevious();
           }),
           title: Text("Choose Processing Speed",
-              style: Theme.of(context).appBarTheme.textTheme.title),
+              style: Theme.of(context).appBarTheme.textTheme.headline6),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
           stream: AppBlocsProvider.of<AccountBloc>(context).accountStream,

@@ -84,7 +84,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                   Navigator.of(context).pop();
                 }),
                 title: Text("Send to BTC Address",
-                    style: Theme.of(context).appBarTheme.textTheme.title),
+                    style: Theme.of(context).appBarTheme.textTheme.headline6),
                 elevation: 0.0)
             : null,
         body: StreamBuilder<AccountModel>(

@@ -352,7 +352,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                       .copyWith(
                                                                           color: Theme.of(context)
                                                                               .textTheme
-                                                                              .headline
+                              .headline5
                                                                               .color),
                                                                   textAlign:
                                                                       TextAlign
@@ -397,9 +397,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                             true,
                                                                         child: BreezDropdownButton(
                                                                             onChanged: (value) => changeCurrency(currentSale, value, userProfileBloc),
-                                                                            iconEnabledColor: Theme.of(context).textTheme.headline.color,
+                                                                            iconEnabledColor: Theme.of(context).textTheme.headline5.color,
                                                                             value: currentCurrency.shortName,
-                                                                            style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                            style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline5.color),
                                                                             items: Currency.currencies.map((Currency value) {
                                                                               return DropdownMenuItem<String>(
                                                                                 value: value.tickerSymbol,
@@ -407,7 +407,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                                   child: Text(
                                                                                     value.tickerSymbol.toUpperCase(),
                                                                                     textAlign: TextAlign.right,
-                                                                                    style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                                    style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline5.color),
                                                                                   ),
                                                                                 ),
                                                                               );
@@ -420,7 +420,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                                       child: new Text(
                                                                                         fiat.currencyData.shortName,
                                                                                         textAlign: TextAlign.right,
-                                                                                        style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                                        style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline5.color),
                                                                                       ),
                                                                                     ),
                                                                                   );

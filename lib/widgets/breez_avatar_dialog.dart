@@ -162,12 +162,12 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                 Theme(
                   data: ThemeData(
                       primaryColor:
-                          Theme.of(context).primaryTextTheme.body1.color,
+                          Theme.of(context).primaryTextTheme.bodyText2.color,
                       hintColor:
-                          Theme.of(context).primaryTextTheme.body1.color),
+                          Theme.of(context).primaryTextTheme.bodyText2.color),
                   child: TextField(
                       enabled: !_isUploading,
-                      style: Theme.of(context).primaryTextTheme.body1,
+                      style: Theme.of(context).primaryTextTheme.bodyText2,
                       controller: _nameInputController,
                       decoration: InputDecoration(hintText: 'Enter your name'),
                       onSubmitted: (text) {}),

@@ -175,7 +175,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                 priceInSaleCurrency,
             textAlign: TextAlign.center,
             style:
-                Theme.of(context).primaryTextTheme.display1,
+                Theme.of(context).primaryTextTheme.headline4,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -194,7 +194,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .primaryTextTheme
-                  .display1
+                  .headline4
                   .copyWith(fontSize: 16)),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),

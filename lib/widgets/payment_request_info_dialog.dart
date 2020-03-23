@@ -133,7 +133,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             "${widget.invoice.payeeName}",
             style: Theme.of(context)
                 .primaryTextTheme
-                .display1
+                .headline4
                 .copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );
@@ -145,7 +145,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             "You are requested to pay:",
             style: Theme.of(context)
                 .primaryTextTheme
-                .display2
+                .headline3
                 .copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           )
@@ -153,7 +153,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             "is requesting you to pay:",
             style: Theme.of(context)
                 .primaryTextTheme
-                .display2
+                .headline3
                 .copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );
@@ -203,7 +203,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           _showFiatCurrency && account.fiatCurrency != null
               ? "${account.fiatCurrency.format(widget.invoice.amount)}"
               : account.currency.format(widget.invoice.amount),
-          style: Theme.of(context).primaryTextTheme.headline,
+          style: Theme.of(context).primaryTextTheme.headline5,
           textAlign: TextAlign.center,
         ),
       ),
@@ -231,7 +231,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
               widget.invoice.description,
               style: Theme.of(context)
                   .primaryTextTheme
-                  .display2
+                  .headline3
                   .copyWith(fontSize: 16),
               textAlign: widget.invoice.description.length > 40
                   ? TextAlign.justify
@@ -253,7 +253,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       child: AutoSizeText(validationError,
           maxLines: 3,
           textAlign: TextAlign.center,
-          style: Theme.of(context).primaryTextTheme.display2.copyWith(
+          style: Theme.of(context).primaryTextTheme.headline3.copyWith(
               fontSize: 16,
               color: theme.themeId == "BLUE"
                   ? Colors.red

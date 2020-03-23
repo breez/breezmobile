@@ -23,7 +23,7 @@ class GetRefundPage extends StatelessWidget {
             backgroundColor: Theme.of(context).canvasColor,
             leading: backBtn.BackButton(),
             title: Text(TITLE,
-                style: Theme.of(context).appBarTheme.textTheme.title),
+                style: Theme.of(context).appBarTheme.textTheme.headline6),
             elevation: 0.0),
         body: StreamBuilder<AccountModel>(
             stream: accountBloc.accountStream,

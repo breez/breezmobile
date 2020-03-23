@@ -60,7 +60,7 @@ class _SuccessfullPaymentMessage extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .primaryTextTheme
-                  .display1
+                  .headline4
                   .copyWith(fontSize: 16),
             ),
           ),

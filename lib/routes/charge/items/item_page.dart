@@ -234,7 +234,7 @@ class ItemPageState extends State<ItemPage> {
         leading: backBtn.BackButton(),
         title: Text(
           _title,
-          style: Theme.of(context).appBarTheme.textTheme.title,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         actions: actions == null ? <Widget>[] : actions,
         elevation: 0.0,

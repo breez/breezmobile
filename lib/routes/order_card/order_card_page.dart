@@ -353,7 +353,7 @@ class OrderCardPageState extends State<OrderCardPage> {
           leading: _showLeadingButton(_showSkip),
           title: Text(
             _title,
-            style: Theme.of(context).appBarTheme.textTheme.title,
+            style: Theme.of(context).appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0,
           actions: _showSkipButton(_showSkip)),

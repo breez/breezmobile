@@ -74,7 +74,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                             title: Text(
                               _title,
                               style:
-                                  Theme.of(context).appBarTheme.textTheme.title,
+                                  Theme.of(context).appBarTheme.textTheme.headline6,
                             ),
                             elevation: 0.0,
                           ),
@@ -136,7 +136,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                           account.currency.format(response.maxAllowedDeposit,
                               includeDisplayName: true) +
                           " to this address.",
-                      style: Theme.of(context).textTheme.display1,
+                      style: Theme.of(context).textTheme.headline4,
                       textAlign: TextAlign.center,
                     ),
                   ),

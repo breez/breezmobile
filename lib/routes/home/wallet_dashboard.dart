@@ -30,9 +30,9 @@ class WalletDashboardState extends State<WalletDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    double startHeaderSize = Theme.of(context).textTheme.headline.fontSize;
+    double startHeaderSize = Theme.of(context).textTheme.headline5.fontSize;
     double endHeaderFontSize =
-        Theme.of(context).textTheme.headline.fontSize - 8.0;
+        Theme.of(context).textTheme.headline5.fontSize - 8.0;
     bool showProgressBar = (widget._accSettings?.showConnectProgress == true &&
             !widget._accountModel.initial) ||
         widget._accountModel?.isInitialBootstrap == true;
@@ -72,10 +72,10 @@ class WalletDashboardState extends State<WalletDashboard> {
                 child: widget._accountModel != null &&
                         !widget._accountModel.initial
                     ? Text("Balance",
-                        style: Theme.of(context).textTheme.subtitle.copyWith(
+                        style: Theme.of(context).textTheme.subtitle2.copyWith(
                             color: Theme.of(context)
                                 .textTheme
-                                .subtitle
+                                .subtitle2
                                 .color
                                 .withOpacity(pow(1 - widget._offsetFactor, 8))))
                     : SizedBox(),
@@ -99,7 +99,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                           ? Text("${widget._accountModel.formattedFiatBalance}",
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline
+                              .headline5
                                   .copyWith(
                                       fontSize: startHeaderSize -
                                           (startHeaderSize - endHeaderFontSize) *
@@ -107,7 +107,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                           : Text(widget._accountModel.currency.format(widget._accountModel.balance, removeTrailingZeros: true),
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline
+                              .headline5
                                   .copyWith(
                                       fontSize: startHeaderSize -
                                           (startHeaderSize - endHeaderFontSize) *

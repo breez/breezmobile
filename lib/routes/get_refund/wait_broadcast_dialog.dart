@@ -144,7 +144,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
               Expanded(
                 flex: 1,
                 child: Text("Transaction ID:",
-                    style: Theme.of(context).primaryTextTheme.display1),
+                    style: Theme.of(context).primaryTextTheme.headline4),
               ),
               Expanded(
                   child: Container(
@@ -196,7 +196,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                       maxLines: 4,
                       style: Theme.of(context)
                           .primaryTextTheme
-                          .display2
+                          .headline3
                           .copyWith(fontSize: 10)),
                 ),
               ),
