@@ -35,7 +35,8 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Positioned.fill(child: Particles(50, color: Colors.blue.withAlpha(150))),
+        Positioned.fill(
+            child: Particles(50, color: Colors.blue.withAlpha(150))),
       ],
     );
   }

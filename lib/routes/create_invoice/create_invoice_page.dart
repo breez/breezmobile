@@ -149,8 +149,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                 );
               })
         ],
-        title:
-            Text(_title, style: Theme.of(context).appBarTheme.textTheme.headline6),
+        title: Text(_title,
+            style: Theme.of(context).appBarTheme.textTheme.headline6),
         elevation: 0.0,
       ),
       body: StreamBuilder<AccountModel>(

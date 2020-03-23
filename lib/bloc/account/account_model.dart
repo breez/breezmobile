@@ -29,6 +29,7 @@ class AccountSettings {
         failedPaymentBehavior:
             failedPaymentBehavior ?? this.failedPaymentBehavior);
   }
+
   // typo isn't fixed on json to prevent unexpected behavior
   AccountSettings.fromJson(Map<String, dynamic> json)
       : this(json["ignoreWalletBalance"] ?? false,

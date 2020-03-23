@@ -544,7 +544,8 @@ class AccountBloc {
         Observable(_breezLib.notificationStream).listen((event) async {
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
-            _accountController.add(_accountController.value.copyWith(serverReady: false));
+        _accountController
+            .add(_accountController.value.copyWith(serverReady: false));
         _pollSyncStatus();
         if (!_retryingLightningService) {
           _retryingLightningService = true;
@@ -558,7 +559,8 @@ class AccountBloc {
         _refreshAccountAndPayments();
       }
       if (event.type == NotificationEvent_NotificationType.READY) {
-        _accountController.add(_accountController.value.copyWith(serverReady: true));
+        _accountController
+            .add(_accountController.value.copyWith(serverReady: true));
         _refreshAccountAndPayments();
       }
       if (event.type ==

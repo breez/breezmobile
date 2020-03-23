@@ -478,8 +478,8 @@ class HomeState extends State<Home> {
           await widget.accountBloc.accountSettingsStream.first;
       bool prompt =
           accountSettings.failedPaymentBehavior == BugReportBehavior.PROMPT;
-      bool send =
-          accountSettings.failedPaymentBehavior == BugReportBehavior.SEND_REPORT;
+      bool send = accountSettings.failedPaymentBehavior ==
+          BugReportBehavior.SEND_REPORT;
 
       var errorString = error.toString().isEmpty
           ? ""

@@ -99,7 +99,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                           ? Text("${widget._accountModel.formattedFiatBalance}",
                               style: Theme.of(context)
                                   .textTheme
-                              .headline5
+                                  .headline5
                                   .copyWith(
                                       fontSize: startHeaderSize -
                                           (startHeaderSize - endHeaderFontSize) *
@@ -107,7 +107,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                           : Text(widget._accountModel.currency.format(widget._accountModel.balance, removeTrailingZeros: true),
                               style: Theme.of(context)
                                   .textTheme
-                              .headline5
+                                  .headline5
                                   .copyWith(
                                       fontSize: startHeaderSize -
                                           (startHeaderSize - endHeaderFontSize) *

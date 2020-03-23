@@ -352,7 +352,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                       .copyWith(
                                                                           color: Theme.of(context)
                                                                               .textTheme
-                              .headline5
+                                                                              .headline5
                                                                               .color),
                                                                   textAlign:
                                                                       TextAlign

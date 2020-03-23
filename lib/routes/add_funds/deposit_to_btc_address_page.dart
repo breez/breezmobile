@@ -71,8 +71,10 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                             leading: backBtn.BackButton(),
                             title: Text(
                               _title,
-                              style:
-                                  Theme.of(context).appBarTheme.textTheme.headline6,
+                              style: Theme.of(context)
+                                  .appBarTheme
+                                  .textTheme
+                                  .headline6,
                             ),
                             elevation: 0.0,
                           ),
