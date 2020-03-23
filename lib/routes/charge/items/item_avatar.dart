@@ -17,7 +17,7 @@ class ItemAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     if (avatarURL != null && avatarURL.isNotEmpty) {
       if (Uri.tryParse(avatarURL)?.scheme?.startsWith("http") ?? false) {
-        return _NetworkImageAvatar(avatarURL, radius);
+        return _NetworkImageAvatar(radius, avatarURL);
       }
       if (avatarURL.startsWith("#")) {
         return _ColorAvatar(radius, avatarURL);
@@ -37,7 +37,7 @@ class _NetworkImageAvatar extends StatelessWidget {
   final double radius;
   final String avatarURL;
 
-  _NetworkImageAvatar(this.avatarURL, this.radius);
+  _NetworkImageAvatar(this.radius, this.avatarURL);
 
   @override
   Widget build(BuildContext context) {

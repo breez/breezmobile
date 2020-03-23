@@ -57,7 +57,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
         leading: backBtn.BackButton(),
         title: Text(
           "Select Image",
-          style: Theme.of(context).appBarTheme.textTheme.title,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
