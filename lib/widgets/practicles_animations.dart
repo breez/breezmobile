@@ -5,8 +5,9 @@ import 'package:simple_animations/simple_animations.dart';
 
 class Particles extends StatefulWidget {
   final int numberOfParticles;
+  final Color color;
 
-  Particles(this.numberOfParticles);
+  Particles(this.numberOfParticles, {this.color = Colors.white});
 
   @override
   _ParticlesState createState() => _ParticlesState();
@@ -32,7 +33,7 @@ class _ParticlesState extends State<Particles> {
       onTick: _simulateParticles,
       builder: (context, time) {
         return CustomPaint(
-          painter: ParticlePainter(particles, time),
+          painter: ParticlePainter(particles, time, widget.color),
         );
       },
     );
@@ -80,12 +81,13 @@ class ParticleModel {
 class ParticlePainter extends CustomPainter {
   List<ParticleModel> particles;
   Duration time;
+  Color color;
 
-  ParticlePainter(this.particles, this.time);
+  ParticlePainter(this.particles, this.time, this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.white.withAlpha(100);
+    final paint = Paint()..color = color.withAlpha(150);
 
     particles.forEach((particle) {
       var progress = particle.animationProgress.progress(time);
