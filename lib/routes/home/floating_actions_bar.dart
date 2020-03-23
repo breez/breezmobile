@@ -278,7 +278,7 @@ class FloatingActionsBar extends StatelessWidget {
                       onTap: () {
                         Navigator.of(context).pop();
                         Navigator.of(context).pushNamed(v.route);
-                      }) as Widget;
+                      });
                 }).toList();
 
                 return Column(
@@ -318,15 +318,15 @@ class FloatingActionsBar extends StatelessWidget {
                                 maxLines: 1,
                                 maxFontSize: Theme.of(context)
                                     .textTheme
-                                    .subhead
+                                    .subtitle1
                                     .fontSize,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .display1
+                                    .headline4
                                     .copyWith(
                                         fontSize: Theme.of(context)
                                             .textTheme
-                                            .subhead
+                                            .subtitle1
                                             .fontSize),
                                 textAlign: TextAlign.center,
                               ),

@@ -5,10 +5,8 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'flushbar.dart';
 import 'link_launcher.dart';
@@ -81,7 +79,7 @@ Future<Null> showPaymentDetailsDialog(
                           : 8),
                   child: AutoSizeText(
                     paymentInfo.dialogTitle,
-                    style: Theme.of(context).primaryTextTheme.headline,
+                    style: Theme.of(context).primaryTextTheme.headline5,
                     textAlign: TextAlign.center,
                     maxLines: 1,
                   ),
@@ -92,7 +90,7 @@ Future<Null> showPaymentDetailsDialog(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: AutoSizeText(
                     paymentInfo.description,
-                    style: Theme.of(context).primaryTextTheme.display1,
+                    style: Theme.of(context).primaryTextTheme.headline4,
                     textAlign: paymentInfo.description.length > 40
                         ? TextAlign.justify
                         : TextAlign.center,
@@ -111,7 +109,7 @@ Future<Null> showPaymentDetailsDialog(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: AutoSizeText(
                           "Amount",
-                          style: Theme.of(context).primaryTextTheme.display1,
+                          style: Theme.of(context).primaryTextTheme.headline4,
                           textAlign: TextAlign.left,
                           maxLines: 1,
                           group: _labelGroup,
@@ -128,7 +126,7 @@ Future<Null> showPaymentDetailsDialog(
                                     ? "-"
                                     : "+") +
                                 paymentInfo.currency.format(paymentInfo.amount),
-                            style: Theme.of(context).primaryTextTheme.display2,
+                            style: Theme.of(context).primaryTextTheme.headline3,
                             textAlign: TextAlign.right,
                             maxLines: 1,
                             group: _valueGroup,
@@ -150,7 +148,7 @@ Future<Null> showPaymentDetailsDialog(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: AutoSizeText(
                           "Date & Time",
-                          style: Theme.of(context).primaryTextTheme.display1,
+                          style: Theme.of(context).primaryTextTheme.headline4,
                           textAlign: TextAlign.left,
                           maxLines: 1,
                           group: _labelGroup,
@@ -166,7 +164,7 @@ Future<Null> showPaymentDetailsDialog(
                                 DateTime.fromMillisecondsSinceEpoch(
                                     paymentInfo.creationTimestamp.toInt() *
                                         1000)),
-                            style: Theme.of(context).primaryTextTheme.display2,
+                            style: Theme.of(context).primaryTextTheme.headline3,
                             textAlign: TextAlign.right,
                             maxLines: 1,
                             group: _valueGroup,
@@ -188,7 +186,7 @@ Future<Null> showPaymentDetailsDialog(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: AutoSizeText(
                           "Expiration",
-                          style: Theme.of(context).primaryTextTheme.display1,
+                          style: Theme.of(context).primaryTextTheme.headline4,
                           textAlign: TextAlign.left,
                           maxLines: 1,
                           group: _labelGroup,
@@ -205,7 +203,7 @@ Future<Null> showPaymentDetailsDialog(
                                         .pendingExpirationTimestamp
                                         .toInt() *
                                     1000)),
-                            style: Theme.of(context).primaryTextTheme.display2,
+                            style: Theme.of(context).primaryTextTheme.headline3,
                             textAlign: TextAlign.right,
                             maxLines: 1,
                             group: _valueGroup,
@@ -265,7 +263,7 @@ class ShareablePaymentRow extends StatelessWidget {
       child: ExpansionTile(
           title: AutoSizeText(
             title,
-            style: Theme.of(context).primaryTextTheme.display1,
+            style: Theme.of(context).primaryTextTheme.headline4,
             maxLines: 1,
             group: _labelGroup,
           ),
@@ -283,7 +281,7 @@ class ShareablePaymentRow extends StatelessWidget {
                         maxLines: 4,
                         style: Theme.of(context)
                             .primaryTextTheme
-                            .display2
+                            .headline3
                             .copyWith(fontSize: 10)),
                   ),
                 ),
@@ -337,7 +335,7 @@ class ShareablePaymentRow extends StatelessWidget {
   }
 }
 
-_buildSnackBar(String item) {
+/*_buildSnackBar(String item) {
   final snackBar = SnackBar(
     content: Text(
       '$item was copied to your clipboard.',
@@ -347,7 +345,7 @@ _buildSnackBar(String item) {
     duration: Duration(seconds: 4),
   );
   return snackBar;
-}
+}*/
 
 class ClosedChannelPaymentDetails extends StatelessWidget {
   final PaymentInfo closedChannel;
@@ -403,17 +401,6 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
       ],
     );
   }
-}
-
-class _LinkTextSpan extends TextSpan {
-  _LinkTextSpan({TextStyle style, String url, String text})
-      : super(
-            style: style,
-            text: text ?? url,
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                launch(url, forceSafariVC: false);
-              });
 }
 
 class _TxWidget extends StatelessWidget {

@@ -18,11 +18,11 @@ class MakeInvoiceRequest extends StatelessWidget {
       Text("This site wants to pay you:",
           style: Theme.of(context)
               .primaryTextTheme
-              .display2
+              .headline3
               .copyWith(fontSize: 16),
           textAlign: TextAlign.center),
       Text(account.currency.format(Int64(amount)),
-          style: Theme.of(context).primaryTextTheme.headline,
+          style: Theme.of(context).primaryTextTheme.headline5,
           textAlign: TextAlign.center)
     ];
 
@@ -33,7 +33,7 @@ class MakeInvoiceRequest extends StatelessWidget {
           description,
           style: Theme.of(context)
               .primaryTextTheme
-              .display2
+              .headline3
               .copyWith(fontSize: 16),
           textAlign:
               description.length > 40 ? TextAlign.justify : TextAlign.center,

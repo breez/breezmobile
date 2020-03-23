@@ -46,7 +46,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
             leading: backBtn.BackButton(),
             title: Text(
               "Manager Password",
-              style: Theme.of(context).appBarTheme.textTheme.title,
+              style: Theme.of(context).appBarTheme.textTheme.headline6,
             ),
             elevation: 0.0),
         body: Padding(
@@ -70,6 +70,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
                       if (value.length < 8) {
                         return "At least 8 characters are required";
                       }
+                      return null;
                     },
                     controller: _passwordController,
                     decoration: InputDecoration(
@@ -111,6 +112,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
                       if (value != _passwordController.text) {
                         return "Passwords don't match";
                       }
+                      return null;
                     },
                   )
                 ],

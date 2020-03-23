@@ -12,11 +12,11 @@ class DelayRender extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return DelatedRenderState();
+    return DelayedRenderState();
   }
 }
 
-class DelatedRenderState extends State<DelayRender> {
+class DelayedRenderState extends State<DelayRender> {
   bool _childVisible = false;
   Timer _timer;
 

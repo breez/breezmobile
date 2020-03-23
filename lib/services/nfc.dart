@@ -108,4 +108,12 @@ class NFCService {
       }
     });
   }
+
+  close() {
+    _breezIdStreamController.close();
+    _cardActivationController.close();
+    _bolt11BeamController.close();
+    _p2pBeamController.close();
+    _bolt11StreamController.close();
+  }
 }

@@ -113,16 +113,16 @@ class ReverseSwapBloc with AsyncActionsHandler {
   }
 
   Future _payReverseSwap(PayReverseSwap action) async {
-    var resultCompletor = Completer();
+    var resultCompleter = Completer();
     StreamSubscription<PaymentsModel> paymentsSubscription;
     var onComplete = ({String error}) {
-      if (resultCompletor.isCompleted) {
+      if (resultCompleter.isCompleted) {
         return;
       }
       if (error != null) {
-        resultCompletor.completeError(error);
+        resultCompleter.completeError(error);
       } else {
-        resultCompletor.complete();
+        resultCompleter.complete();
       }
       paymentsSubscription.cancel();
     };
@@ -144,7 +144,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
         onComplete(error: "Failed to execute payment.");
       });
 
-      return resultCompletor.future;
+      return resultCompleter.future;
     }));
   }
 

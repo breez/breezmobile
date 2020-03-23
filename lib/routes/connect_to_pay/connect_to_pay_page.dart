@@ -162,7 +162,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
           leading: backBtn.BackButton(onPressed: _onBackPressed),
           title: Text(
             _title,
-            style: Theme.of(context).appBarTheme.textTheme.title,
+            style: Theme.of(context).appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0,
         ),

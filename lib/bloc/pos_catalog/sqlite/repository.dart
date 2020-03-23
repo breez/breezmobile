@@ -80,7 +80,7 @@ class SqliteRepository implements Repository {
     return (await getDB()).transaction((txn) async {
       int saleID = await _addDBItem(txn, "sale", sale);
       sale.saleLines.forEach((sl) async {
-        var saleLineWithID = sl.copywith(saleID: saleID);
+        var saleLineWithID = sl.copyWith(saleID: saleID);
         await _addDBItem(txn, "sale_line", saleLineWithID);
       });
       await _addSalePayment(txn, saleID, paymentHash);

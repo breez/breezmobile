@@ -94,7 +94,7 @@ class SaleLine implements DBItem {
       this.currency,
       this.satConversionRate});
 
-  SaleLine copywith(
+  SaleLine copyWith(
       {int saleID,
       String itemName,
       String itemSKU,
@@ -187,14 +187,14 @@ class Sale implements DBItem {
     var saleLines = this.saleLines.map((sl) {
       if (sl.itemID == item.id) {
         hasSaleLine = true;
-        return sl.copywith(quantity: sl.quantity + quantity);
+        return sl.copyWith(quantity: sl.quantity + quantity);
       }
       return sl;
     }).toList();
 
     if (!hasSaleLine) {
       saleLines.add(SaleLine.fromItem(item, quantity, satConversionRate)
-          .copywith(saleID: this.id));
+          .copyWith(saleID: this.id));
     }
     return this.copyWith(saleLines: saleLines);
   }
@@ -217,7 +217,7 @@ class Sale implements DBItem {
       {int quantity = 1}) {
     var saleLines = this.saleLines.map((sl) {
       if (sl.itemID == itemID) {
-        return sl.copywith(quantity: sl.quantity + quantity);
+        return sl.copyWith(quantity: sl.quantity + quantity);
       }
       return sl;
     }).toList();
@@ -242,13 +242,13 @@ class Sale implements DBItem {
 
   double get totalChargeSat {
     double totalSat = 0;
-    Map<double, double> perCurency = Map();
+    Map<double, double> perCurrency = Map();
     saleLines.forEach((element) {
-      perCurency[element.satConversionRate] =
-          (perCurency[element.satConversionRate] ?? 0) +
+      perCurrency[element.satConversionRate] =
+          (perCurrency[element.satConversionRate] ?? 0) +
               element.pricePerItem * element.quantity;
     });
-    perCurency.forEach((rate, value) {
+    perCurrency.forEach((rate, value) {
       totalSat += rate * value;
     });
     return totalSat;

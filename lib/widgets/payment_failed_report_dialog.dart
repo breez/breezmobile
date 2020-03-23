@@ -66,7 +66,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                         "Sending failed payment details to Breez could help increase successful transactions rate.\nDo you want to send this failed payment details to Breez?",
                         style: Theme.of(context)
                             .primaryTextTheme
-                            .display2
+                            .headline3
                             .copyWith(fontSize: 16),
                       ),
                     ),
@@ -81,7 +81,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                             child: Checkbox(
                                 activeColor: Theme.of(context).canvasColor,
                                 value: _doneAsk ??
-                                    _settings.failePaymentBehavior !=
+                                    _settings.failedPaymentBehavior !=
                                         BugReportBehavior.PROMPT,
                                 onChanged: (v) {
                                   setState(() {
@@ -93,7 +93,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                             "Don't ask me again",
                             style: Theme.of(context)
                                 .primaryTextTheme
-                                .display2
+                                .headline3
                                 .copyWith(fontSize: 16),
                           )
                         ],
@@ -124,10 +124,10 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
 
   void onSubmit(bool yesNo) {
     var dontAsk =
-        _doneAsk ?? _settings.failePaymentBehavior != BugReportBehavior.PROMPT;
+        _doneAsk ?? _settings.failedPaymentBehavior != BugReportBehavior.PROMPT;
     if (dontAsk) {
       widget._accountBloc.accountSettingsSink.add(_settings.copyWith(
-          failePaymentBehavior: yesNo
+          failedPaymentBehavior: yesNo
               ? BugReportBehavior.SEND_REPORT
               : BugReportBehavior.IGNORE));
     }

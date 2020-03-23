@@ -86,9 +86,9 @@ class _DatePickerHeader extends StatelessWidget {
         break;
     }
     final TextStyle dayStyle =
-        headerTextTheme.display1.copyWith(color: dayColor, height: 1.4);
+        headerTextTheme.headline4.copyWith(color: dayColor, height: 1.4);
     final TextStyle yearStyle =
-        headerTextTheme.subhead.copyWith(color: yearColor, height: 1.4);
+        headerTextTheme.subtitle1.copyWith(color: yearColor, height: 1.4);
 
     Color backgroundColor;
     switch (themeData.brightness) {
@@ -968,7 +968,8 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
         child: _buildPicker(),
       ),
     );
-    final Widget actions = ButtonTheme.bar(
+    final Widget actions = ButtonBarTheme(
+      data: Theme.of(context).buttonBarTheme,
       child: ButtonBar(
         children: <Widget>[
           FlatButton(

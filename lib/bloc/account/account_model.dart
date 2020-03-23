@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -13,35 +12,36 @@ enum SyncUIState { BLOCKING, COLLAPSED, NONE }
 class AccountSettings {
   final bool ignoreWalletBalance;
   final bool showConnectProgress;
-  final BugReportBehavior failePaymentBehavior;
+  final BugReportBehavior failedPaymentBehavior;
 
   AccountSettings(this.ignoreWalletBalance,
       {this.showConnectProgress = false,
-      this.failePaymentBehavior = BugReportBehavior.PROMPT});
+      this.failedPaymentBehavior = BugReportBehavior.PROMPT});
 
   AccountSettings.start() : this(false);
 
   AccountSettings copyWith(
       {bool ignoreWalletBalance,
       bool showConnectProgress,
-      BugReportBehavior failePaymentBehavior}) {
+      BugReportBehavior failedPaymentBehavior}) {
     return AccountSettings(ignoreWalletBalance ?? this.ignoreWalletBalance,
         showConnectProgress: showConnectProgress ?? this.showConnectProgress,
-        failePaymentBehavior:
-            failePaymentBehavior ?? this.failePaymentBehavior);
+        failedPaymentBehavior:
+            failedPaymentBehavior ?? this.failedPaymentBehavior);
   }
 
+  // typo isn't fixed on json to prevent unexpected behavior
   AccountSettings.fromJson(Map<String, dynamic> json)
       : this(json["ignoreWalletBalance"] ?? false,
             showConnectProgress: json["showConnectProgress"] ?? false,
-            failePaymentBehavior:
+            failedPaymentBehavior:
                 BugReportBehavior.values[json["failePaymentBehavior"] ?? 0]);
 
   Map<String, dynamic> toJson() {
     return {
       "ignoreWalletBalance": ignoreWalletBalance,
       "showConnectProgress": showConnectProgress,
-      "failePaymentBehavior": failePaymentBehavior.index,
+      "failePaymentBehavior": failedPaymentBehavior.index,
     };
   }
 }
@@ -538,24 +538,24 @@ class PayRequest {
 class CompletedPayment {
   final PayRequest paymentRequest;
   final bool cancelled;
-  final bool ignoreGlobalFeeback;
+  final bool ignoreGlobalFeedback;
 
   CompletedPayment(this.paymentRequest,
-      {this.cancelled = false, this.ignoreGlobalFeeback = false});
+      {this.cancelled = false, this.ignoreGlobalFeedback = false});
 }
 
 class PaymentError implements Exception {
   final PayRequest request;
   final Object error;
   final String traceReport;
-  final bool ignoreGlobalFeeback;
+  final bool ignoreGlobalFeedback;
   bool get validationError =>
       error.toString().indexOf("rpc error") >= 0 ||
       traceReport == null ||
       traceReport.isEmpty;
 
   PaymentError(this.request, this.error, this.traceReport,
-      {this.ignoreGlobalFeeback = false});
+      {this.ignoreGlobalFeedback = false});
 
   String errMsg() => error?.toString();
   String toString() => errMsg();

@@ -50,7 +50,7 @@ class ConditionalDeposit extends StatelessWidget {
               leading: backBtn.BackButton(),
               title: Text(
                 title,
-                style: Theme.of(context).appBarTheme.textTheme.title,
+                style: Theme.of(context).appBarTheme.textTheme.headline6,
               ),
               elevation: 0.0,
             ),

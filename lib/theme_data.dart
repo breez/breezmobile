@@ -33,7 +33,7 @@ final ThemeData blueTheme = ThemeData(
   backgroundColor: Colors.white,
   appBarTheme: AppBarTheme(
     textTheme: TextTheme(
-      title:
+      headline6:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
     ),
     iconTheme: IconThemeData(
@@ -58,43 +58,43 @@ final ThemeData blueTheme = ThemeData(
   cardColor: BreezColors.blue[500],
   highlightColor: BreezColors.blue[200],
   textTheme: TextTheme(
-    subtitle: TextStyle(
+    subtitle2: TextStyle(
         color: BreezColors.grey[600], fontSize: 14.3, letterSpacing: 0.2),
-    headline: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
+    headline5: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
     button: TextStyle(
         color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
-    display1: TextStyle(
+    headline4: TextStyle(
       color: Color(0xffffe685),
       fontSize: 18.0,
     ),
   ),
   primaryTextTheme: TextTheme(
-    display1: TextStyle(
+    headline4: TextStyle(
         color: BreezColors.grey[500],
         fontSize: 14.0,
         letterSpacing: 0.0,
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    display2: TextStyle(
+    headline3: TextStyle(
         color: BreezColors.grey[500],
         fontSize: 14.0,
         letterSpacing: 0.0,
         height: 1.28),
-    headline: TextStyle(
+    headline5: TextStyle(
         color: BreezColors.grey[500],
         fontSize: 24.0,
         letterSpacing: 0.0,
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    body1: TextStyle(
+    bodyText2: TextStyle(
         color: BreezColors.blue[900],
         fontSize: 16.4,
         letterSpacing: 0.15,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    subtitle: TextStyle(
+    subtitle2: TextStyle(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     button: TextStyle(
         color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
@@ -119,7 +119,7 @@ final ThemeData darkTheme = ThemeData(
   backgroundColor: Color(0xFF152a3d),
   appBarTheme: AppBarTheme(
     textTheme: TextTheme(
-      title:
+      headline6:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
     ),
     iconTheme: IconThemeData(
@@ -144,33 +144,33 @@ final ThemeData darkTheme = ThemeData(
   cardColor: Color(0xFF121212),
   highlightColor: Color(0xFF4B88EB),
   textTheme: TextTheme(
-    subtitle:
+    subtitle2:
         TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
-    headline: TextStyle(color: Colors.white, fontSize: 26.0),
+    headline5: TextStyle(color: Colors.white, fontSize: 26.0),
     button: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
-    display1: TextStyle(
+    headline4: TextStyle(
       color: Color(0xffffe685),
       fontSize: 18.0,
     ),
   ),
   primaryTextTheme: TextTheme(
-    display1: TextStyle(
+    headline4: TextStyle(
         color: Colors.white,
         fontSize: 14.0,
         letterSpacing: 0.0,
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    display2: TextStyle(
+    headline3: TextStyle(
         color: Colors.white, fontSize: 14.0, letterSpacing: 0.0, height: 1.28),
-    headline: TextStyle(
+    headline5: TextStyle(
         color: Colors.white,
         fontSize: 24.0,
         letterSpacing: 0.0,
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    body1: TextStyle(
+    bodyText2: TextStyle(
         color: Colors.white,
         fontSize: 16.4,
         letterSpacing: 0.15,
@@ -178,7 +178,7 @@ final ThemeData darkTheme = ThemeData(
         fontFamily: 'IBMPlexSans'),
     button: TextStyle(
         color: Color(0xFF7aa5eb), fontSize: 14.3, letterSpacing: 1.25),
-    subtitle: TextStyle(
+    subtitle2: TextStyle(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     caption: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
   ),

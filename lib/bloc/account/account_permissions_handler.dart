@@ -38,7 +38,7 @@ class AccountPermissionsHandler {
     // });
   }
 
-  void triggerOptimizeWhitelistExplenation() async {
+  void triggerOptimizeWhitelistExplanation() async {
     var preferences = await _preferences;
     bool optimized = await _permissionsService.isInOptimizationWhitelist();
     if (!optimized && preferences.get(PERMISSION_DIALOG_SHOWN_KEY) != true) {

@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 class WaitingPeerConnectWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _WaitingPeerConnecWidgettState();
+    return _WaitingPeerConnectWidgetState();
   }
 }
 
-class _WaitingPeerConnecWidgettState extends State<WaitingPeerConnectWidget>
+class _WaitingPeerConnectWidgetState extends State<WaitingPeerConnectWidget>
     with TickerProviderStateMixin {
   AnimationController _animationController;
 

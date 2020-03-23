@@ -20,14 +20,14 @@ class ConnectedPeer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String imagURL = _renderPayer
+    String imageURL = _renderPayer
         ? _paymentSessionData.payerData.imageURL
         : _paymentSessionData.payeeData.imageURL;
     bool showShare = !_renderPayer &&
         !_me &&
         !_paymentSessionData.invitationSent &&
-        imagURL == null;
-    bool showAlien = !_renderPayer && imagURL == null;
+        imageURL == null;
+    bool showAlien = !_renderPayer && imageURL == null;
 
     return Container(
         child: Column(children: <Widget>[
@@ -46,7 +46,7 @@ class ConnectedPeer extends StatelessWidget {
                 child: AlienAvatar())),
         Positioned(
             child: !showShare && !showAlien
-                ? buildPeerAvatar(imagURL)
+                ? buildPeerAvatar(imageURL)
                 : SizedBox()),
         Positioned(
             child: showShare

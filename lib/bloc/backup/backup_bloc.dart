@@ -18,7 +18,7 @@ import '../async_action.dart';
 import 'backup_actions.dart';
 
 class BackupBloc {
-  static const String _signInFaileCode = "AuthError";
+  static const String _signInFailedCode = "AuthError";
 
   final BehaviorSubject<BackupState> _backupStateController =
       BehaviorSubject<BackupState>();
@@ -59,7 +59,7 @@ class BackupBloc {
 
   BreezBridge _breezLib;
   BackgroundTaskService _tasksService;
-  SharedPreferences _sharedPrefrences;
+  SharedPreferences _sharedPreferences;
   bool _backupServiceNeedLogin = false;
   bool _enableBackupPrompt = false;
   Map<Type, Function> _actionHandlers = Map();
@@ -74,13 +74,13 @@ class BackupBloc {
     _breezLib = injector.breezBridge;
     _tasksService = injector.backgroundTaskService;
     _actionHandlers = {
-      UpdateBackupSettings: _setBackupProvier,
+      UpdateBackupSettings: _setBackupProvider,
       SaveBackupKey: _saveBackupKey,
       UpdateBackupSettings: _updateBackupSettings,
     };
 
     SharedPreferences.getInstance().then((sp) async {
-      _sharedPrefrences = sp;
+      _sharedPreferences = sp;
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
       _initializePersistentData();
       _listenBackupPaths();
@@ -123,7 +123,7 @@ class BackupBloc {
   void _initializePersistentData() {
     //last backup time persistency
     String backupStateJson =
-        _sharedPrefrences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
+        _sharedPreferences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
     BackupState backupState = BackupState(null, false, null);
     if (backupStateJson != null) {
       backupState = BackupState.fromJson(json.decode(backupStateJson));
@@ -131,7 +131,7 @@ class BackupBloc {
 
     _backupStateController.add(backupState);
     _backupStateController.stream.listen((state) {
-      _sharedPrefrences.setString(
+      _sharedPreferences.setString(
           LAST_BACKUP_STATE_PREFERENCE_KEY, json.encode(state.toJson()));
     }, onError: (e) {
       _pushPromptIfNeeded();
@@ -139,12 +139,12 @@ class BackupBloc {
 
     //settings persistency
     var backupSettings =
-        _sharedPrefrences.getString(BACKUP_SETTINGS_PREFERENCES_KEY);
+        _sharedPreferences.getString(BACKUP_SETTINGS_PREFERENCES_KEY);
     if (backupSettings != null) {
       Map<String, dynamic> settings = json.decode(backupSettings);
       var backupSettingsModel = BackupSettings.fromJson(settings);
 
-      // For backward competability migrate backup provider by assigning "Google Drive"
+      // For backward compatibility migrate backup provider by assigning "Google Drive"
       // in case we had backup and the provider is not set.
       if (backupSettingsModel.backupProvider == null &&
           backupState?.lastBackupTime != null) {
@@ -155,12 +155,12 @@ class BackupBloc {
     }
 
     _backupSettingsController.stream.listen((settings) {
-      _sharedPrefrences.setString(
+      _sharedPreferences.setString(
           BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
     });
   }
 
-  Future _setBackupProvier(UpdateBackupSettings action) async {
+  Future _setBackupProvider(UpdateBackupSettings action) async {
     _backupSettingsController.add(action.settings);
     if (action.settings.backupProvider != null) {
       action.resolve(
@@ -305,7 +305,7 @@ class BackupBloc {
         }).catchError((error) {
           if (error.runtimeType == PlatformException) {
             PlatformException e = (error as PlatformException);
-            if (e.code == _signInFaileCode || e.message == _signInFaileCode) {
+            if (e.code == _signInFailedCode || e.message == _signInFailedCode) {
               error = SignInFailedException(
                   _backupSettingsController.value.backupProvider);
             } else {

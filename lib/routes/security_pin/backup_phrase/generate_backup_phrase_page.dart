@@ -39,7 +39,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
             ),
             title: AutoSizeText(
               "Write these words ($_currentPage/2)",
-              style: Theme.of(context).appBarTheme.textTheme.title,
+              style: Theme.of(context).appBarTheme.textTheme.headline6,
               maxLines: 1,
             ),
             elevation: 0.0),

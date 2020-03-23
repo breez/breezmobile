@@ -63,7 +63,7 @@ class SwapInProgress extends StatelessWidget {
             Navigator.of(context).pop();
           }),
           title: Text("Send to BTC Address",
-              style: Theme.of(context).appBarTheme.textTheme.title),
+              style: Theme.of(context).appBarTheme.textTheme.headline6),
           elevation: 0.0),
       body: body,
     );

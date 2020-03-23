@@ -81,7 +81,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
           ),
           title: Text(
             "Enter your backup phrase ($_currentPage/4)",
-            style: Theme.of(context).appBarTheme.textTheme.title,
+            style: Theme.of(context).appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0),
       body: SingleChildScrollView(
@@ -133,7 +133,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
         padding: EdgeInsets.only(left: 16, right: 16),
         child: Text(errorMessage,
             style:
-                Theme.of(context).textTheme.display1.copyWith(fontSize: 12)));
+                Theme.of(context).textTheme.headline4.copyWith(fontSize: 12)));
   }
 
   TypeAheadFormField<String> _typeAheadFormField(int itemIndex) {

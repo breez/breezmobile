@@ -171,7 +171,7 @@ class _VendorAvatar extends StatelessWidget {
         ));
   }
 
-  Widget _bitrefillAvatar() {
+/*  Widget _bitrefillAvatar() {
     return Container(
       decoration: ShapeDecoration(
           color: theme.bitrefill.iconBgColor,
@@ -184,7 +184,7 @@ class _VendorAvatar extends StatelessWidget {
       width: radius * 2,
       height: radius * 2,
     );
-  }
+  }*/
 
   Widget _vendorAvatar() {
     var _bgColor = avatarURL.contains("lnpizza")

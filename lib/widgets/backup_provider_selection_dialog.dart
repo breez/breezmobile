@@ -45,7 +45,7 @@ class BackupProviderSelectionDialogState
                 : "Store backup data in:",
             style: Theme.of(context)
                 .primaryTextTheme
-                .display2
+                .headline3
                 .copyWith(fontSize: 16),
           ),
           StreamBuilder<BackupSettings>(

@@ -127,7 +127,7 @@ class ConnectPayBloc {
       var sessionResponse = await _breezServer.joinSession(
           sessionInfo.initiated, _currentUser.name, _currentUser.token,
           sessionID: sessionLink.sessionID);
-      //if we have already a session and it is our intiated then we are a returning payer
+      //if we have already a session and it is our initiated then we are a returning payer
       if (sessionInfo.initiated) {
         currentSession = PayerRemoteSession(_currentUser, _sendPayment);
       } else {
@@ -167,8 +167,8 @@ class ConnectPayBloc {
   RemoteSession get currentSession => _currentSession;
 
   _monitorSessionInvites() async {
-    var preferenes = await ServiceInjector().sharedPreferences;
-    var pendingLink = preferenes.getString(PENDING_CTP_LINK);
+    var preferences = await ServiceInjector().sharedPreferences;
+    var pendingLink = preferences.getString(PENDING_CTP_LINK);
     if (pendingLink != null) {
       _pendingCTPLinkController.add(pendingLink);
     }
@@ -188,7 +188,7 @@ class ConnectPayBloc {
         return;
       }
 
-      //othersise push the link to the invites stream.
+      // otherwise push the link to the invites stream.
       SessionLinkModel sessionLink = deepLinks.parseSessionInviteLink(link);
       if (sessionLink != null && sessionLink.sessionID != null) {
         _sessionInvitesController.add(sessionLink);

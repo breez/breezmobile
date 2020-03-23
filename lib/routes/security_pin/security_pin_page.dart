@@ -103,7 +103,8 @@ class SecurityPageState extends State<SecurityPage>
                       leading: backBtn.BackButton(),
                       title: Text(
                         _title,
-                        style: Theme.of(context).appBarTheme.textTheme.title,
+                        style:
+                            Theme.of(context).appBarTheme.textTheme.headline6,
                       ),
                       elevation: 0.0),
                   body: ListView(
@@ -313,7 +314,7 @@ class SecurityPageState extends State<SecurityPage>
       SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: AutoSizeText(
-        "Enable ${_enrolledBiometrics}",
+        "Enable $_enrolledBiometrics",
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,

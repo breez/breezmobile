@@ -338,7 +338,7 @@ class SaleLinesList extends StatelessWidget {
                                 if (sl != saleLine) {
                                   return sl;
                                 }
-                                return sl.copywith(quantity: newQuantity);
+                                return sl.copyWith(quantity: newQuantity);
                               }).toList();
                             }
                             var newSale =

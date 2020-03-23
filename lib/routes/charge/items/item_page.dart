@@ -96,6 +96,7 @@ class ItemPageState extends State<ItemPage> {
                       if (value.length == 0) {
                         return "Name is required";
                       }
+                      return null;
                     },
                   ),
                   Padding(
@@ -124,6 +125,7 @@ class ItemPageState extends State<ItemPage> {
                                 if (value.length == 0) {
                                   return "Price is required";
                                 }
+                                return null;
                               }),
                         ),
                         SizedBox(
@@ -234,7 +236,7 @@ class ItemPageState extends State<ItemPage> {
         leading: backBtn.BackButton(),
         title: Text(
           _title,
-          style: Theme.of(context).appBarTheme.textTheme.title,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         actions: actions == null ? <Widget>[] : actions,
         elevation: 0.0,

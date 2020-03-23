@@ -62,7 +62,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
         elevation: 0.0,
         title: Text(
           "Select a Lightning Provider",
-          style: Theme.of(context).appBarTheme.textTheme.title,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         actions: <Widget>[
           IconButton(
