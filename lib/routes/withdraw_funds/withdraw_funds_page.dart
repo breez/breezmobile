@@ -166,6 +166,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                       if (_addressValidated == null) {
                         return "Please enter a valid BTC Address";
                       }
+                      return null;
                     },
                   ),
                   _scannerErrorMessage.length > 0

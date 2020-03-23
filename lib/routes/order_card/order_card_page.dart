@@ -380,6 +380,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                             if (value.isEmpty) {
                               return "Please enter your full name";
                             }
+                            return null;
                           },
                         ),
                       ),
@@ -399,6 +400,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                             } else if (!_validateEmail(value)) {
                               return "Invalid e-mail";
                             }
+                            return null;
                           },
                         ),
                       ),
@@ -415,6 +417,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                             if (value.isEmpty) {
                               return "Please enter your address";
                             }
+                            return null;
                           },
                         ),
                       ),
@@ -443,6 +446,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                           if (value.isEmpty) {
                                             return "Please enter your city";
                                           }
+                                          return null;
                                         },
                                       ),
                                     ),
@@ -474,6 +478,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                               _checkStates(value)) {
                                             return "Invalid state";
                                           }
+                                          return null;
                                         },
                                       ),
                                     ),
@@ -512,6 +517,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                                   value)) {
                                                 return "Invalid country";
                                               }
+                                              return null;
                                             },
                                           ),
                                         ),
@@ -537,6 +543,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                                   !_validateZip(value)) {
                                                 return "Invalid zip code";
                                               }
+                                              return null;
                                             },
                                           ),
                                         ),

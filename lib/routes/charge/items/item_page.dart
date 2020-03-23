@@ -96,6 +96,7 @@ class ItemPageState extends State<ItemPage> {
                       if (value.length == 0) {
                         return "Name is required";
                       }
+                      return null;
                     },
                   ),
                   Padding(
@@ -124,6 +125,7 @@ class ItemPageState extends State<ItemPage> {
                                 if (value.length == 0) {
                                   return "Price is required";
                                 }
+                                return null;
                               }),
                         ),
                         SizedBox(
