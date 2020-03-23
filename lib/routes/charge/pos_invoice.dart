@@ -33,6 +33,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../status_indicator.dart';
+import '../sync_progress_dialog.dart';
 import 'items/item_avatar.dart';
 import 'items/items_list.dart';
 import 'pos_payment_dialog.dart';
@@ -726,37 +727,62 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           AppBlocsProvider.of<PosCatalogBloc>(context);
       var lockSale = SetCurrentSale(currentSale.copyWith(priceLocked: true));
       posCatalogBloc.actionsSink.add(lockSale);
-      lockSale.future.then((value) {
-        var newInvoiceAction = NewInvoice(InvoiceRequestModel(
-            user.name,
-            _invoiceDescriptionController.text,
-            user.avatarURL,
-            Int64(satAmount.toInt()),
-            expiry: Int64(user.cancellationTimeoutValue.toInt())));
-        invoiceBloc.actionsSink.add(newInvoiceAction);
-        newInvoiceAction.future.then((value) {
-          var payReq = value as PaymentRequestModel;
-          var addSaleAction = SubmitCurrentSale(payReq.paymentHash);
-          posCatalogBloc.actionsSink.add(addSaleAction);
-          return addSaleAction.future.then((submittedSale) {
-            return showPaymentDialog(invoiceBloc, user, payReq.rawPayReq, satAmount).then((cleared) {
-              if (!cleared) {
-                var unLockSale =
-                SetCurrentSale(submittedSale.copyWith(priceLocked: false));
-                posCatalogBloc.actionsSink.add(unLockSale);
-              }
+      waitForSync().then((value) {
+        if (!value) {
+          return;
+        }
+        lockSale.future.then((value) {
+          var newInvoiceAction = NewInvoice(InvoiceRequestModel(
+              user.name,
+              _invoiceDescriptionController.text,
+              user.avatarURL,
+              Int64(satAmount.toInt()),
+              expiry: Int64(user.cancellationTimeoutValue.toInt())));
+          invoiceBloc.actionsSink.add(newInvoiceAction);
+          newInvoiceAction.future.then((value) {
+            var payReq = value as PaymentRequestModel;
+            var addSaleAction = SubmitCurrentSale(payReq.paymentHash);
+            posCatalogBloc.actionsSink.add(addSaleAction);
+            return addSaleAction.future.then((submittedSale) {
+              return showPaymentDialog(
+                      invoiceBloc, user, payReq.rawPayReq, satAmount)
+                  .then((cleared) {
+                if (!cleared) {
+                  var unLockSale = SetCurrentSale(
+                      submittedSale.copyWith(priceLocked: false));
+                  posCatalogBloc.actionsSink.add(unLockSale);
+                }
+              });
             });
+          }).catchError((error) {
+            showFlushbar(context,
+                message: error.toString(), duration: Duration(seconds: 10));
           });
-        }).catchError((error) {
-          showFlushbar(context,
-              message: error.toString(), duration: Duration(seconds: 10));
         });
       });
     }
   }
 
-  Future showPaymentDialog(
-      InvoiceBloc invoiceBloc, BreezUserModel user, String payReq, double satAmount) {
+  Future<bool> waitForSync() {
+    return showDialog(
+        useRootNavigator: false,
+        context: context,
+        builder: (context) => AlertDialog(
+              content: SyncProgressDialog(closeOnSync: true),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: (() {
+                    Navigator.pop(context, false);
+                  }),
+                  child: Text("CLOSE",
+                      style: Theme.of(context).primaryTextTheme.button),
+                )
+              ],
+            ));
+  }
+
+  Future showPaymentDialog(InvoiceBloc invoiceBloc, BreezUserModel user,
+      String payReq, double satAmount) {
     return showDialog<PosPaymentResult>(
         useRootNavigator: false,
         context: context,

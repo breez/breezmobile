@@ -57,6 +57,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 
       feeOptions = trimmedTargetConfirmations
           .map((e) => FeeOption(feeEstimates.fees[e].toInt(), e))
+          .where((e) => widget.swap.onChainAmount > e.sats)
           .toList();
 
       if (feeOptions.length > 0) {

@@ -147,6 +147,7 @@ class AccountModel {
   final bool enableInProgress;
   final double syncProgress;
   final bool syncedToChain;
+  final bool serverReady;
   final SyncUIState syncUIState;
 
   AccountModel(this._accountResponse, this._currency, this._fiatShortName,
@@ -157,6 +158,7 @@ class AccountModel {
       this.enableInProgress = false,
       this.syncProgress = 0,
       this.syncedToChain = false,
+      this.serverReady = false,
       this.syncUIState = SyncUIState.NONE});
 
   AccountModel.initial()
@@ -187,6 +189,7 @@ class AccountModel {
       bool enableInProgress,
       double syncProgress,
       bool syncedToChain,
+      bool serverReady,
       bool initial,
       SyncUIState syncUIState}) {
     return AccountModel(
@@ -201,6 +204,7 @@ class AccountModel {
         enableInProgress: enableInProgress ?? this.enableInProgress,
         syncProgress: syncProgress ?? this.syncProgress,
         syncedToChain: syncedToChain ?? this.syncedToChain,
+        serverReady: serverReady ?? this.serverReady,
         syncUIState: syncUIState ?? this.syncUIState,
         initial: initial ?? this.initial);
   }
