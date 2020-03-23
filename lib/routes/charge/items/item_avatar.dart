@@ -183,6 +183,7 @@ class _UnknownAvatar extends StatelessWidget {
             style: TextStyle(
                 fontSize: useDecoration ? 48 : radius * 1.5,
                 color: Color.fromRGBO(255, 255, 255, 0.88),
+                decoration: TextDecoration.underline,
                 letterSpacing: 0.0,
                 fontFamily: "IBMPlexSans"),
           ),
