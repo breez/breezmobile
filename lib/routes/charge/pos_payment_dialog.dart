@@ -6,7 +6,6 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
-import 'package:breez/routes/sync_progress_dialog.dart';
 import 'package:breez/services/countdown.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
@@ -101,60 +100,49 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   }
 
   Widget _buildDialogTitle(AccountModel account, BuildContext context) {
-    return account.syncedToChain
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Scan to Pay",
-                style: Theme.of(context).dialogTheme.titleTextStyle,
-              ),
-              Row(
-                children: <Widget>[
-                  IconButton(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    padding: EdgeInsets.only(
-                        top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
-                    icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-                    color: Theme.of(context).primaryTextTheme.button.color,
-                    onPressed: () {
-                      ShareExtend.share(
-                          "lightning:" + widget.paymentRequest, "text");
-                    },
-                  ),
-                  IconButton(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    padding: EdgeInsets.only(
-                        top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
-                    icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-                    color: Theme.of(context).primaryTextTheme.button.color,
-                    onPressed: () {
-                      ServiceInjector()
-                          .device
-                          .setClipboardText(widget.paymentRequest);
-                      showFlushbar(context,
-                          message:
-                              "Invoice address was copied to your clipboard.",
-                          duration: Duration(seconds: 3));
-                    },
-                  )
-                ],
-              )
-            ],
-          )
-        : Container();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "Scan to Pay",
+          style: Theme.of(context).dialogTheme.titleTextStyle,
+        ),
+        Row(
+          children: <Widget>[
+            IconButton(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              padding: EdgeInsets.only(
+                  top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
+              icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
+              color: Theme.of(context).primaryTextTheme.button.color,
+              onPressed: () {
+                ShareExtend.share("lightning:" + widget.paymentRequest, "text");
+              },
+            ),
+            IconButton(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              padding: EdgeInsets.only(
+                  top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
+              icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+              color: Theme.of(context).primaryTextTheme.button.color,
+              onPressed: () {
+                ServiceInjector()
+                    .device
+                    .setClipboardText(widget.paymentRequest);
+                showFlushbar(context,
+                    message: "Invoice address was copied to your clipboard.",
+                    duration: Duration(seconds: 3));
+              },
+            )
+          ],
+        )
+      ],
+    );
   }
 
   Widget _buildWaitingPayment(AccountModel account, BuildContext context) {
-    if (account.syncedToChain == false) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 40.0),
-        child: SyncProgressDialog(closeOnSync: false),
-      );
-    }
-
     var saleCurrency = CurrencyWrapper.fromShortName(
         widget._user.posCurrencyShortName, account);
     var userCurrency = CurrencyWrapper.fromBTC(widget._user.currency);
@@ -174,8 +162,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                     includeCurrencySuffix: true) +
                 priceInSaleCurrency,
             textAlign: TextAlign.center,
-            style:
-                Theme.of(context).primaryTextTheme.display1,
+            style: Theme.of(context).primaryTextTheme.display1,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),

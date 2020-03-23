@@ -34,7 +34,7 @@ class CircularProgress extends StatelessWidget {
                 ),
               ),
             ),
-            Center(
+            value == null ? SizedBox() : Center(
                 child: Container(
               width: size * 0.6,
               child: AutoSizeText("${(value * 100).round().toString()}%",
