@@ -5,17 +5,36 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/sync_progress_dialog.dart';
 import 'package:breez/services/countdown.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:share_extend/share_extend.dart';
 
 class PosPaymentResult {
   final bool paid;
   final bool clearSale;
 
   PosPaymentResult({this.paid = false, this.clearSale = false});
+}
+
+class PosPaymentDialog extends StatefulWidget {
+  final InvoiceBloc _invoiceBloc;
+  final BreezUserModel _user;
+  final String paymentRequest;
+  final double satAmount;
+
+  PosPaymentDialog(
+      this._invoiceBloc, this._user, this.paymentRequest, this.satAmount);
+
+  @override
+  _PosPaymentDialogState createState() {
+    return _PosPaymentDialogState();
+  }
 }
 
 class _PosPaymentDialogState extends State<PosPaymentDialog> {
@@ -45,13 +64,13 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     });
 
     _paidInvoiceSubscription =
-          widget._invoiceBloc.paidInvoicesStream.listen((paidRequest) {
-        setState(() {
-          if (paidRequest == widget.paymentRequest) {
-            Navigator.of(context).pop(PosPaymentResult(paid: true));
-          }
-        });
+        widget._invoiceBloc.paidInvoicesStream.listen((paidRequest) {
+      setState(() {
+        if (paidRequest == widget.paymentRequest) {
+          Navigator.of(context).pop(PosPaymentResult(paid: true));
+        }
       });
+    });
   }
 
   @override
@@ -61,46 +80,9 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     super.dispose();
   }
 
-  Widget _actionsWidget(){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        _clearSaleButton(), _cancelButton()
-      ],
-    );
-  }
-
-  Widget _cancelButton() {
-    return FlatButton(
-        padding: EdgeInsets.only(top: 8.0, bottom: 16.0, left: 0.0),
-        child: Text(
-          'CANCEL',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).primaryTextTheme.button,
-        ),
-        onPressed: () {
-          Navigator.of(context).pop(PosPaymentResult());
-        },
-      );
-  }
-
-  Widget _clearSaleButton() {
-    return FlatButton(
-        padding: EdgeInsets.only(top: 8.0, bottom: 16.0, right: 0.0),
-        child: Text(
-          'CLEAR SALE',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).primaryTextTheme.button,
-        ),
-        onPressed: () {
-          Navigator.of(context).pop(PosPaymentResult(clearSale: true));
-        },
-      );
-  }
-
-  Widget buildWaitingPayment(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-
     return StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
         builder: (context, snapshot) {
@@ -109,77 +91,152 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
             return Loader();
           }
 
-          if (account.syncedToChain == false) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 40.0),
-              child: SyncProgressDialog(closeOnSync: false),
-            );
-          }
-
-          return ListBody(
-            children: <Widget>[
-              _buildDialogBody(
-                  'Scan the QR code to process this payment.',
-                  AspectRatio(
-                      aspectRatio: 1.0,
-                      child: Container(
-                          height: 230.0,
-                          width: 230.0,
-                          child: CompactQRImage(
-                            data: widget.paymentRequest,
-                          )))),
-              Padding(
-                  padding: EdgeInsets.only(top: 15.0),
-                  child: Text(_countdownString,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .display1
-                          .copyWith(fontSize: 16))),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                child: _actionsWidget(),
-              ),
-            ],
-          );
+          return AlertDialog(
+              titlePadding: EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
+              title: _buildDialogTitle(account, context),
+              contentPadding:
+                  EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+              content: _buildWaitingPayment(account, context));
         });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
-      content: SingleChildScrollView(
-          child: buildWaitingPayment(context)
-      )
+  Widget _buildDialogTitle(AccountModel account, BuildContext context) {
+    return account.syncedToChain
+        ? Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Scan to Pay",
+                style: Theme.of(context).dialogTheme.titleTextStyle,
+              ),
+              Row(
+                children: <Widget>[
+                  IconButton(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    padding: EdgeInsets.only(
+                        top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
+                    icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
+                    color: Theme.of(context).primaryTextTheme.button.color,
+                    onPressed: () {
+                      ShareExtend.share(
+                          "lightning:" + widget.paymentRequest, "text");
+                    },
+                  ),
+                  IconButton(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    padding: EdgeInsets.only(
+                        top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
+                    icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+                    color: Theme.of(context).primaryTextTheme.button.color,
+                    onPressed: () {
+                      ServiceInjector()
+                          .device
+                          .setClipboardText(widget.paymentRequest);
+                      showFlushbar(context,
+                          message:
+                              "Invoice address was copied to your clipboard.",
+                          duration: Duration(seconds: 3));
+                    },
+                  )
+                ],
+              )
+            ],
+          )
+        : Container();
+  }
+
+  Widget _buildWaitingPayment(AccountModel account, BuildContext context) {
+    if (account.syncedToChain == false) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 40.0),
+        child: SyncProgressDialog(closeOnSync: false),
+      );
+    }
+
+    var saleCurrency = CurrencyWrapper.fromShortName(
+        widget._user.posCurrencyShortName, account);
+    var userCurrency = CurrencyWrapper.fromBTC(widget._user.currency);
+    var priceInSaleCurrency = "";
+    if (saleCurrency != null && saleCurrency.symbol != userCurrency.symbol) {
+      String salePrice = saleCurrency.format(
+          widget.satAmount / saleCurrency.satConversionRate,
+          removeTrailingZeros: true);
+      priceInSaleCurrency = " (${saleCurrency.symbol}$salePrice)";
+    }
+    return SingleChildScrollView(
+      child: ListBody(
+        children: <Widget>[
+          Text(
+            userCurrency.format(
+                    widget.satAmount / userCurrency.satConversionRate,
+                    includeCurrencySuffix: true) +
+                priceInSaleCurrency,
+            textAlign: TextAlign.center,
+            style:
+                Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 14.3),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: AspectRatio(
+              aspectRatio: 1.0,
+              child: Container(
+                height: 230.0,
+                width: 230.0,
+                child: CompactQRImage(
+                  data: widget.paymentRequest,
+                ),
+              ),
+            ),
+          ),
+          Text(_countdownString,
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .primaryTextTheme
+                  .display1
+                  .copyWith(fontSize: 16)),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: _actionsWidget(),
+          ),
+        ],
+      ),
     );
   }
 
-  ListBody _buildDialogBody(String title, Widget body) {
-    return ListBody(children: <Widget>[
-      Text(
-        title,
-        textAlign: TextAlign.center,
-        style:
-            Theme.of(context).primaryTextTheme.display1.copyWith(fontSize: 16),
-      ),
-      Padding(
-        padding: EdgeInsets.only(top: 15.0),
-        child: body,
-      )
-    ]);
+  Widget _actionsWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[_clearSaleButton(), _cancelButton()],
+    );
   }
-}
 
-class PosPaymentDialog extends StatefulWidget {
-  final InvoiceBloc _invoiceBloc;
-  final BreezUserModel _user;
-  final String paymentRequest;
+  Widget _clearSaleButton() {
+    return FlatButton(
+      padding: EdgeInsets.only(top: 8.0, bottom: 16.0, right: 0.0),
+      child: Text(
+        'CLEAR SALE',
+        textAlign: TextAlign.center,
+        style: Theme.of(context).primaryTextTheme.button,
+      ),
+      onPressed: () {
+        Navigator.of(context).pop(PosPaymentResult(clearSale: true));
+      },
+    );
+  }
 
-  PosPaymentDialog(this._invoiceBloc, this._user, this.paymentRequest);
-
-  @override
-  _PosPaymentDialogState createState() {
-    return _PosPaymentDialogState();
+  Widget _cancelButton() {
+    return FlatButton(
+      padding: EdgeInsets.only(top: 8.0, bottom: 16.0, left: 0.0),
+      child: Text(
+        'CANCEL',
+        textAlign: TextAlign.center,
+        style: Theme.of(context).primaryTextTheme.button,
+      ),
+      onPressed: () {
+        Navigator.of(context).pop(PosPaymentResult());
+      },
+    );
   }
 }
