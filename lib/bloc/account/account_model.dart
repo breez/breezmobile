@@ -103,6 +103,10 @@ class SwapFundStatus {
   List<RefundableAddress> get maturedRefundableAddresses {
     return refundableAddresses.where((a) => a.hoursToUnlock <= 0).toList();
   }
+
+  List<RefundableAddress> get waitingRefundAddresses {
+    return refundableAddresses.where((r) => r.lastRefundTxID.isEmpty).toList();
+  }
 }
 
 class RefundableAddress {

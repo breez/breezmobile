@@ -173,12 +173,8 @@ class AccountRequiredActionsIndicatorState
 
                                   // only warn on refundable addresses that weren't refunded in the past.
                                   var shouldWarnRefund = swapStatus != null &&
-                                      swapStatus.refundableAddresses
-                                              .where((r) =>
-                                                  r.lastRefundTxID.isEmpty)
-                                              .length >
+                                      swapStatus.waitingRefundAddresses.length >
                                           0;
-
                                   if (shouldWarnRefund) {
                                     warnings.add(WarningAction(() => showDialog(
                                         useRootNavigator: false,

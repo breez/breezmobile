@@ -55,7 +55,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
 
                   String reason = "";
                   RefundableAddress swapAddress =
-                      swapStatus.refundableAddresses[0];
+                      swapStatus.waitingRefundAddresses[0];
                   int lockHeight = swapAddress.lockHeight;
                   double hoursToUnlock = swapAddress.hoursToUnlock;
                   if (swapAddress.refundableError != null) {
