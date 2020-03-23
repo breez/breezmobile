@@ -278,7 +278,7 @@ class FloatingActionsBar extends StatelessWidget {
                       onTap: () {
                         Navigator.of(context).pop();
                         Navigator.of(context).pushNamed(v.route);
-                      }) as Widget;
+                      });
                 }).toList();
 
                 return Column(
