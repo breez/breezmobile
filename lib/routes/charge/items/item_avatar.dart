@@ -155,8 +155,6 @@ class _UnknownAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (itemName != null && itemName.isNotEmpty) {
-      var whitespaceRemovedName =
-          itemName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
       return Container(
         width: radius * 2,
         height: radius * 2,
@@ -173,13 +171,7 @@ class _UnknownAvatar extends StatelessWidget {
             : null,
         child: Center(
           child: Text(
-            whitespaceRemovedName
-                .substring(
-                    0,
-                    whitespaceRemovedName.length >= 2
-                        ? 2
-                        : whitespaceRemovedName.length)
-                .trim(),
+            _getFirstTwoLetters(),
             style: TextStyle(
                 fontSize: useDecoration ? 48 : radius,
                 color: Color.fromRGBO(255, 255, 255, 0.88),
@@ -220,5 +212,16 @@ class _UnknownAvatar extends StatelessWidget {
         ),
       );
     }
+  }
+
+  String _getFirstTwoLetters() {
+    var whitespaceRemovedName = itemName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+    return whitespaceRemovedName
+        .substring(
+            0,
+            whitespaceRemovedName.length >= 2
+                ? 2
+                : whitespaceRemovedName.length)
+        .trim();
   }
 }
