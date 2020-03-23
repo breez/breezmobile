@@ -7,14 +7,18 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/routes/charge/items/item_avatar.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../currency_wrapper.dart';
+import 'item_avatar_picker.dart';
 
 class ItemPage extends StatefulWidget {
   final Item item;
@@ -38,6 +42,7 @@ class ItemPageState extends State<ItemPage> {
   AccountBloc _accountBloc;
   bool _isInit = false;
   String _title = "Add Item";
+  String _itemImage;
   CurrencyWrapper _selectedCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
 
   @override
@@ -50,6 +55,7 @@ class ItemPageState extends State<ItemPage> {
         _accountBloc.accountStream.first.then((accountModel) {
           setState(() {
             _title = "Edit Item";
+            _itemImage = widget.item.imageURL ?? "";
             _nameController.text = widget.item.name;
             _skuController.text = widget.item.sku;
             _selectedCurrency = CurrencyWrapper.fromShortName(
@@ -67,6 +73,7 @@ class ItemPageState extends State<ItemPage> {
           });
         }
       });
+      _nameController.addListener(() => setState(() {}));
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -84,6 +91,7 @@ class ItemPageState extends State<ItemPage> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  _buildItemAvatarPicker(context),
                   TextFormField(
                     textCapitalization: TextCapitalization.words,
                     controller: _nameController,
@@ -211,6 +219,31 @@ class ItemPageState extends State<ItemPage> {
     );
   }
 
+  _buildItemAvatarPicker(BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          var avatarPickerRoute = FadeInRoute(
+              builder: (_) => ItemAvatarPicker(
+                    _itemImage,
+                    (value) => _onImageSelected(value),
+                    itemName: _nameController.text,
+                  ));
+          Navigator.of(context).push(avatarPickerRoute);
+        },
+        child: ItemAvatar(
+          _itemImage,
+          itemName: _nameController.text,
+          radius: 48,
+          useDecoration: true,
+        ));
+  }
+
+  _onImageSelected(String selectedImage) {
+    setState(() {
+      _itemImage = selectedImage;
+    });
+  }
+
   _changeCurrency(AccountModel accountModel, value) {
     setState(() {
       _selectedCurrency = CurrencyWrapper.fromShortName(value, accountModel);
@@ -249,6 +282,7 @@ class ItemPageState extends State<ItemPage> {
             if (_formKey.currentState.validate()) {
               if (widget.item != null) {
                 UpdateItem updateItem = UpdateItem(widget.item.copyWith(
+                    imageURL: _itemImage,
                     name: _nameController.text.trimRight(),
                     currency: _selectedCurrency.shortName,
                     price: double.parse(_priceController.text),
@@ -262,6 +296,9 @@ class ItemPageState extends State<ItemPage> {
               } else {
                 AddItem addItem = AddItem(
                   Item(
+                      imageURL: _itemImage != null && _itemImage.isNotEmpty
+                          ? _itemImage
+                          : null,
                       name: _nameController.text.trimRight(),
                       currency: _selectedCurrency.shortName,
                       price: double.parse(_priceController.text),
