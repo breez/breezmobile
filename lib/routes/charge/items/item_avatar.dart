@@ -23,21 +23,22 @@ class ItemAvatar extends StatelessWidget {
         return _ColorAvatar(radius, avatarURL);
       }
       if (avatarURL.startsWith("icon:")) {
-        return _IconAvatar(radius, avatarURL, useDecoration: useDecoration);
+        return _IconAvatar(radius, avatarURL, useDecoration);
       }
 
       return _FileImageAvatar(radius, avatarURL);
     }
 
-    return _UnknownAvatar(radius, itemName);
+    return _UnknownAvatar(radius, itemName, useDecoration);
   }
 }
 
 class _UnknownAvatar extends StatelessWidget {
   final double radius;
   final String itemName;
+  final bool useDecoration;
 
-  _UnknownAvatar(this.radius, this.itemName);
+  _UnknownAvatar(this.radius, this.itemName, this.useDecoration);
 
   @override
   Widget build(BuildContext context) {
@@ -47,15 +48,17 @@ class _UnknownAvatar extends StatelessWidget {
       return Container(
         width: radius * 2,
         height: radius * 2,
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-                color: Colors.white, width: 1.0, style: BorderStyle.solid),
-            image: DecorationImage(
-                colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorLight, BlendMode.srcATop),
-                image: AssetImage("src/images/avatarbg.png"),
-                fit: BoxFit.cover)),
+        decoration: useDecoration
+            ? BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                    color: Colors.white, width: 1.0, style: BorderStyle.solid),
+                image: DecorationImage(
+                    colorFilter: ColorFilter.mode(
+                        Theme.of(context).primaryColorLight, BlendMode.srcATop),
+                    image: AssetImage("src/images/avatarbg.png"),
+                    fit: BoxFit.cover))
+            : null,
         child: Center(
           child: Text(
             whitespaceRemovedName
@@ -66,7 +69,7 @@ class _UnknownAvatar extends StatelessWidget {
                         : whitespaceRemovedName.length)
                 .trim(),
             style: TextStyle(
-                fontSize: radius > 20 ? 48 : null,
+                fontSize: useDecoration ? 48 : radius * 1.5,
                 color: Color.fromRGBO(255, 255, 255, 0.88),
                 letterSpacing: 0.0,
                 fontFamily: "IBMPlexSans"),
@@ -176,7 +179,7 @@ class _IconAvatar extends StatelessWidget {
   final String iconName;
   final bool useDecoration;
 
-  _IconAvatar(this.radius, this.iconName, {this.useDecoration = false});
+  _IconAvatar(this.radius, this.iconName, this.useDecoration);
 
   @override
   Widget build(BuildContext context) {
