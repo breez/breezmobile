@@ -313,7 +313,7 @@ class SecurityPageState extends State<SecurityPage>
       SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: AutoSizeText(
-        "Enable ${_enrolledBiometrics}",
+        "Enable $_enrolledBiometrics",
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
