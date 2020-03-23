@@ -19,7 +19,6 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'account_model.dart';
 import 'account_synchronizer.dart';
@@ -113,7 +112,6 @@ class AccountBloc {
   BreezUserModel _currentUser;
   bool _startedLightning = false;
   bool _retryingLightningService = false;
-  SharedPreferences _sharedPreferences;
   BreezBridge _breezLib;
   Notifications _notificationsService;
   Device _device;
@@ -152,7 +150,6 @@ class AccountBloc {
 
     log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
-      _sharedPreferences = preferences;
       _refreshAccountAndPayments();
       //listen streams
       _listenAccountActions();

@@ -7,7 +7,6 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/rotator.dart';
@@ -25,11 +24,10 @@ import 'transfer_funds_in_progress_dialog.dart';
 class AccountRequiredActionsIndicator extends StatefulWidget {
   final BackupBloc _backupBloc;
   final AccountBloc _accountBloc;
-  final UserProfileBloc _userProfileBloc;
   final LSPBloc lspBloc;
 
   AccountRequiredActionsIndicator(
-      this._backupBloc, this._accountBloc, this._userProfileBloc, this.lspBloc);
+      this._backupBloc, this._accountBloc, this.lspBloc);
 
   @override
   AccountRequiredActionsIndicatorState createState() {

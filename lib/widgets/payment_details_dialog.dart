@@ -5,10 +5,8 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'flushbar.dart';
 import 'link_launcher.dart';
@@ -337,7 +335,7 @@ class ShareablePaymentRow extends StatelessWidget {
   }
 }
 
-_buildSnackBar(String item) {
+/*_buildSnackBar(String item) {
   final snackBar = SnackBar(
     content: Text(
       '$item was copied to your clipboard.',
@@ -347,7 +345,7 @@ _buildSnackBar(String item) {
     duration: Duration(seconds: 4),
   );
   return snackBar;
-}
+}*/
 
 class ClosedChannelPaymentDetails extends StatelessWidget {
   final PaymentInfo closedChannel;
@@ -403,17 +401,6 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
       ],
     );
   }
-}
-
-class _LinkTextSpan extends TextSpan {
-  _LinkTextSpan({TextStyle style, String url, String text})
-      : super(
-            style: style,
-            text: text ?? url,
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                launch(url, forceSafariVC: false);
-              });
 }
 
 class _TxWidget extends StatelessWidget {

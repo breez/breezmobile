@@ -46,7 +46,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
   @override
   Widget build(BuildContext context) {
     const double bottomBarHeight = 96.0;
-    const double bottomBarTopMargin = 24.0;
+    //const double bottomBarTopMargin = 24.0;
     const double formMinHeight = 250.0;
 
     return LayoutBuilder(builder: (context, constraints) {

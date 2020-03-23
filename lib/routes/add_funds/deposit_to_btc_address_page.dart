@@ -23,13 +23,11 @@ class DepositToBTCAddressPage extends StatefulWidget {
 class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   final String _title = "Receive via BTC Address";
   AddFundsBloc _addFundsBloc;
-  Route _thisRoute;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_addFundsBloc == null) {
-      _thisRoute = ModalRoute.of(context);
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
       _addFundsBloc.addFundRequestSink.add(false);
       widget._accountBloc.accountStream

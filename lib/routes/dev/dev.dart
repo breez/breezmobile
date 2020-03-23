@@ -10,7 +10,7 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
+//import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -24,7 +24,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 
 import 'default_commands.dart';
 
@@ -431,12 +431,12 @@ class DevViewState extends State<DevView> {
     return choices;
   }
 
-  void _gotoInitialScreen() async {
+/*  void _gotoInitialScreen() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('isFirstRun', true);
     Navigator.of(_scaffoldKey.currentState.context)
         .pushReplacementNamed("/splash");
-  }
+  }*/
 
   void _showOptimizationsSettings() async {
     widget._permissionsService.requestOptimizationSettings();
@@ -464,9 +464,9 @@ class DevViewState extends State<DevView> {
         moonpayIpCheck: !addFundsSettings.moonpayIpCheck));
   }
 
-  void _setPOS(UserProfileBloc userBloc, bool isPOS) {
+/*  void _setPOS(UserProfileBloc userBloc, bool isPOS) {
     userBloc.userActionsSink.add(SetPOSFlavor(isPOS));
-  }
+  }*/
 
   void _describeGraph() async {
     Directory tempDir = await getTemporaryDirectory();

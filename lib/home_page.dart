@@ -241,7 +241,6 @@ class HomeState extends State<Home> {
                                               AccountRequiredActionsIndicator(
                                                   widget.backupBloc,
                                                   widget.accountBloc,
-                                                  widget.userProfileBloc,
                                                   widget.lspBloc),
                                         ),
                                       ],

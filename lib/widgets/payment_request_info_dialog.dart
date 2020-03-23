@@ -10,7 +10,6 @@ import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as DartImage;
 
 import 'keyboard_done_action.dart';
 
@@ -21,7 +20,6 @@ class PaymentRequestInfoDialog extends StatefulWidget {
   final Function(PaymentRequestState state) _onStateChange;
   final Function(double height) _setDialogHeight;
   final Function(Map map) _setAmountToPay;
-  final _transparentImage = DartImage.encodePng(DartImage.Image(300, 300));
 
   PaymentRequestInfoDialog(this.context, this.accountBloc, this.invoice,
       this._onStateChange, this._setDialogHeight, this._setAmountToPay);

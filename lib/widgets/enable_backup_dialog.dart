@@ -24,7 +24,6 @@ class EnableBackupDialog extends StatefulWidget {
 
 class EnableBackupDialogState extends State<EnableBackupDialog> {
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
-  AutoSizeGroup _autoSizeActionBtnGroup = AutoSizeGroup();
   @override
   Widget build(BuildContext context) {
     return createEnableBackupDialog();

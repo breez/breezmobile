@@ -11,8 +11,6 @@ class LostCardDialog extends StatelessWidget {
 
   LostCardDialog({this.context});
 
-  final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
-
   @override
   Widget build(BuildContext context) {
     return showLostCardDialog();
