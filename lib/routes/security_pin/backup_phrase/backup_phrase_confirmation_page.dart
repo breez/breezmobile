@@ -32,7 +32,7 @@ class BackupPhraseGeneratorConfirmationPageState
             leading: backBtn.BackButton(),
             title: AutoSizeText(
               "Generate Backup Phrase",
-              style: Theme.of(context).appBarTheme.textTheme.title,
+              style: Theme.of(context).appBarTheme.textTheme.headline6,
               maxLines: 1,
             ),
             elevation: 0.0),

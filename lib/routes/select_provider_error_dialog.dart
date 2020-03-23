@@ -3,7 +3,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-void showProvierErrorDialog(
+void showProviderErrorDialog(
     BuildContext context, String error, Function() onSelect) {
   String message = "In order to activate Breez, please ";
   if (error != null) {

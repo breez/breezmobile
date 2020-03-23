@@ -23,13 +23,11 @@ class DepositToBTCAddressPage extends StatefulWidget {
 class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   final String _title = "Receive via BTC Address";
   AddFundsBloc _addFundsBloc;
-  Route _thisRoute;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_addFundsBloc == null) {
-      _thisRoute = ModalRoute.of(context);
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
       _addFundsBloc.addFundRequestSink.add(false);
       widget._accountBloc.accountStream
@@ -73,8 +71,10 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                             leading: backBtn.BackButton(),
                             title: Text(
                               _title,
-                              style:
-                                  Theme.of(context).appBarTheme.textTheme.title,
+                              style: Theme.of(context)
+                                  .appBarTheme
+                                  .textTheme
+                                  .headline6,
                             ),
                             elevation: 0.0,
                           ),
@@ -136,7 +136,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                           account.currency.format(response.maxAllowedDeposit,
                               includeDisplayName: true) +
                           " to this address.",
-                      style: Theme.of(context).textTheme.display1,
+                      style: Theme.of(context).textTheme.headline4,
                       textAlign: TextAlign.center,
                     ),
                   ),

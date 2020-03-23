@@ -19,7 +19,6 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'account_model.dart';
 import 'account_synchronizer.dart';
@@ -113,7 +112,6 @@ class AccountBloc {
   BreezUserModel _currentUser;
   bool _startedLightning = false;
   bool _retryingLightningService = false;
-  SharedPreferences _sharedPreferences;
   BreezBridge _breezLib;
   Notifications _notificationsService;
   Device _device;
@@ -152,11 +150,10 @@ class AccountBloc {
 
     log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
-      _sharedPreferences = preferences;
       _refreshAccountAndPayments();
       //listen streams
       _listenAccountActions();
-      _hanleAccountSettings();
+      _handleAccountSettings();
       _listenUserChanges(userProfileStream);
       _listenFilterChanges();
       _listenAccountChanges();
@@ -187,7 +184,7 @@ class AccountBloc {
   }
 
   //settings persistency
-  Future _hanleAccountSettings() async {
+  Future _handleAccountSettings() async {
     var preferences = await ServiceInjector().sharedPreferences;
     var accountSettings =
         preferences.getString(ACCOUNT_SETTINGS_PREFERENCES_KEY);
@@ -547,7 +544,8 @@ class AccountBloc {
         Observable(_breezLib.notificationStream).listen((event) async {
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
-            _accountController.add(_accountController.value.copyWith(serverReady: false));
+        _accountController
+            .add(_accountController.value.copyWith(serverReady: false));
         _pollSyncStatus();
         if (!_retryingLightningService) {
           _retryingLightningService = true;
@@ -561,7 +559,8 @@ class AccountBloc {
         _refreshAccountAndPayments();
       }
       if (event.type == NotificationEvent_NotificationType.READY) {
-        _accountController.add(_accountController.value.copyWith(serverReady: true));
+        _accountController
+            .add(_accountController.value.copyWith(serverReady: true));
         _refreshAccountAndPayments();
       }
       if (event.type ==
@@ -575,7 +574,7 @@ class AccountBloc {
         _completedPaymentsController.add(CompletedPayment(
             PayRequest(paymentRequest, invoice.amount),
             cancelled: false,
-            ignoreGlobalFeeback:
+            ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
         _ignoredFeedbackPayments.remove(paymentRequest);
       }
@@ -589,7 +588,7 @@ class AccountBloc {
         var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
         _completedPaymentsController.addError(PaymentError(
             PayRequest(paymentRequest, invoice.amount), error, traceReport,
-            ignoreGlobalFeeback:
+            ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
         _ignoredFeedbackPayments.remove(paymentRequest);
       }

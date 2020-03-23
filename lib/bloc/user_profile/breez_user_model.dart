@@ -65,7 +65,8 @@ class BreezUserModel {
         cancellationTimeoutValue:
             cancellationTimeoutValue ?? this.cancellationTimeoutValue,
         hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword,
-        posCurrencyShortName: posCurrencyShortName ?? this.posCurrencyShortName);
+        posCurrencyShortName:
+            posCurrencyShortName ?? this.posCurrencyShortName);
   }
 
   bool get registered {

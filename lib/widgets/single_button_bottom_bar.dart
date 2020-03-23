@@ -6,7 +6,8 @@ class SingleButtonBottomBar extends StatelessWidget {
   final String text;
   final bool stickToBottom;
 
-  const SingleButtonBottomBar({this.text, this.onPressed, this.stickToBottom = false});
+  const SingleButtonBottomBar(
+      {this.text, this.onPressed, this.stickToBottom = false});
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +43,8 @@ class SubmitButton extends StatelessWidget {
         height: 48.0,
         width: 168.0,
         child: RaisedButton(
-          child: AutoSizeText(            
-            this.text,            
+          child: AutoSizeText(
+            this.text,
             maxLines: 1,
             style: Theme.of(context).textTheme.button,
           ),

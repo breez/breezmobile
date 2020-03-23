@@ -27,7 +27,6 @@ import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
@@ -353,7 +352,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                       .copyWith(
                                                                           color: Theme.of(context)
                                                                               .textTheme
-                                                                              .headline
+                                                                              .headline5
                                                                               .color),
                                                                   textAlign:
                                                                       TextAlign
@@ -398,9 +397,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                             true,
                                                                         child: BreezDropdownButton(
                                                                             onChanged: (value) => changeCurrency(currentSale, value, userProfileBloc),
-                                                                            iconEnabledColor: Theme.of(context).textTheme.headline.color,
+                                                                            iconEnabledColor: Theme.of(context).textTheme.headline5.color,
                                                                             value: currentCurrency.shortName,
-                                                                            style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                            style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline5.color),
                                                                             items: Currency.currencies.map((Currency value) {
                                                                               return DropdownMenuItem<String>(
                                                                                 value: value.tickerSymbol,
@@ -408,7 +407,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                                   child: Text(
                                                                                     value.tickerSymbol.toUpperCase(),
                                                                                     textAlign: TextAlign.right,
-                                                                                    style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                                    style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline5.color),
                                                                                   ),
                                                                                 ),
                                                                               );
@@ -421,7 +420,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                                       child: new Text(
                                                                                         fiat.currencyData.shortName,
                                                                                         textAlign: TextAlign.right,
-                                                                                        style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline.color),
+                                                                                        style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline5.color),
                                                                                       ),
                                                                                     ),
                                                                                   );
@@ -793,7 +792,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         }).then((res) {
       if (res.paid) {
         Navigator.of(context).push(TransparentPageRoute((context) {
-          return SuccesfullPaymentRoute();
+          return SuccessfulPaymentRoute();
         }));
       }
       if (res.clearSale) {
@@ -852,7 +851,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     _scaleTransition = CurvedAnimation(
         parent: scaleController, curve: Curves.easeInExpo.flipped);
 
-    // handle opcity animation.
+    // handle opacity animation.
     var opacityController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 700));
     _opacityTransition =
@@ -890,7 +889,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         currentPendingItem = newSale.saleLines.last;
       } else {
         currentPendingItem =
-            currentPendingItem.copywith(pricePerItem: newPrice);
+            currentPendingItem.copyWith(pricePerItem: newPrice);
         newSale = currentSale.updateItems((sl) {
           if (sl.isCustom && sl.itemName == currentPendingItem.itemName) {
             return currentPendingItem;

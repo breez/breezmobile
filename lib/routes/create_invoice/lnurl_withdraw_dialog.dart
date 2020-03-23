@@ -12,12 +12,12 @@ import 'package:flutter/material.dart';
 
 import '../sync_progress_dialog.dart';
 
-class LNURlWidthrawDialog extends StatefulWidget {
+class LNURlWithdrawDialog extends StatefulWidget {
   final InvoiceBloc invoiceBloc;
   final AccountBloc accountBloc;
   final LNUrlBloc lnurlBloc;
 
-  const LNURlWidthrawDialog(this.invoiceBloc, this.accountBloc, this.lnurlBloc);
+  const LNURlWithdrawDialog(this.invoiceBloc, this.accountBloc, this.lnurlBloc);
 
   @override
   State<StatefulWidget> createState() {
@@ -25,7 +25,7 @@ class LNURlWidthrawDialog extends StatefulWidget {
   }
 }
 
-class LNUrlWithdrawDialogState extends State<LNURlWidthrawDialog>
+class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
     with SingleTickerProviderStateMixin {
   String _error;
   StreamSubscription<String> _paidInvoicesSubscription;

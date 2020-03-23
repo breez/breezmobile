@@ -90,6 +90,7 @@ class UserApp extends StatelessWidget {
                     initialRoute: user.registrationRequested
                         ? (user.locked ? '/lockscreen' : "/")
                         : '/splash',
+                    // ignore: missing_return
                     onGenerateRoute: (RouteSettings settings) {
                       switch (settings.name) {
                         case '/intro':
@@ -142,6 +143,7 @@ class UserApp extends StatelessWidget {
                               child: Navigator(
                                 key: _homeNavigatorKey,
                                 initialRoute: "/",
+                                // ignore: missing_return
                                 onGenerateRoute: (RouteSettings settings) {
                                   switch (settings.name) {
                                     case '/':

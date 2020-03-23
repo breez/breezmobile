@@ -13,4 +13,8 @@ class LightningLinksService {
         .where((l) => l != null && l.startsWith("lightning:"))
         .listen(_linksNotificationsController.add);
   }
+
+  close() {
+    _linksNotificationsController.close();
+  }
 }

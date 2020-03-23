@@ -50,9 +50,9 @@ class NavigationDrawer extends StatelessWidget {
         AppBlocsProvider.of<UserProfileBloc>(context);
 
     List<Widget> children = List<Widget>();
-    _drawerGroupedItems.forEach((gropuItems) {
-      children.addAll(_createDrawerGroupWidgets(gropuItems, context,
-          withDivider: children.length > 0 && gropuItems.withDivider));
+    _drawerGroupedItems.forEach((groupItems) {
+      children.addAll(_createDrawerGroupWidgets(groupItems, context,
+          withDivider: children.length > 0 && groupItems.withDivider));
     });
 
     children.insert(0, _breezDrawerHeader(userProfileBloc, _avatar));

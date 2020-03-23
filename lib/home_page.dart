@@ -73,7 +73,7 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
   String _activeScreen = "breezHome";
-  Set _hiddenRountes = Set<String>();
+  Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
 
   @override
@@ -82,17 +82,17 @@ class HomeState extends State<Home> {
     _registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
-    _listenWhiltelistPermissionsRequest();
+    _listenWhitelistPermissionsRequest();
     _listenLSPSelectionPrompt();
     _listenPaymentResults();
-    _hiddenRountes.add("/get_refund");
+    _hiddenRoutes.add("/get_refund");
     widget.accountBloc.accountStream.listen((acc) {
       setState(() {
         if (acc != null &&
             acc.swapFundsStatus.maturedRefundableAddresses.length > 0) {
-          _hiddenRountes.remove("/get_refund");
+          _hiddenRoutes.remove("/get_refund");
         } else {
-          _hiddenRountes.add("/get_refund");
+          _hiddenRoutes.add("/get_refund");
         }
       });
     });
@@ -104,7 +104,7 @@ class HomeState extends State<Home> {
         "/create_invoice"
       ];
       Function addOrRemove =
-          acc.connected ? _hiddenRountes.remove : _hiddenRountes.add;
+          acc.connected ? _hiddenRoutes.remove : _hiddenRoutes.add;
       setState(() {
         activeAccountRoutes.forEach((r) => addOrRemove(r));
       });
@@ -241,7 +241,6 @@ class HomeState extends State<Home> {
                                               AccountRequiredActionsIndicator(
                                                   widget.backupBloc,
                                                   widget.accountBloc,
-                                                  widget.userProfileBloc,
                                                   widget.lspBloc),
                                         ),
                                       ],
@@ -451,7 +450,7 @@ class HomeState extends State<Home> {
         .then((_) => Navigator.of(context).pushNamed("/select_lsp"));
   }
 
-  void _listenWhiltelistPermissionsRequest() {
+  void _listenWhitelistPermissionsRequest() {
     widget.accountBloc.optimizationWhitelistExplainStream.listen((_) async {
       await promptError(
           context,
@@ -467,20 +466,20 @@ class HomeState extends State<Home> {
   void _listenPaymentResults() {
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
       if (!fulfilledPayment.cancelled &&
-          !fulfilledPayment.ignoreGlobalFeeback) {
+          !fulfilledPayment.ignoreGlobalFeedback) {
         showFlushbar(context, message: "Payment was successfuly sent!");
       }
     }, onError: (err) async {
       var error = err as PaymentError;
-      if (error.ignoreGlobalFeeback) {
+      if (error.ignoreGlobalFeedback) {
         return;
       }
       var accountSettings =
           await widget.accountBloc.accountSettingsStream.first;
       bool prompt =
-          accountSettings.failePaymentBehavior == BugReportBehavior.PROMPT;
-      bool send =
-          accountSettings.failePaymentBehavior == BugReportBehavior.SEND_REPORT;
+          accountSettings.failedPaymentBehavior == BugReportBehavior.PROMPT;
+      bool send = accountSettings.failedPaymentBehavior ==
+          BugReportBehavior.SEND_REPORT;
 
       var errorString = error.toString().isEmpty
           ? ""
@@ -511,7 +510,7 @@ class HomeState extends State<Home> {
   }
 
   List<DrawerItemConfig> _filterItems(List<DrawerItemConfig> items) {
-    return items.where((c) => !_hiddenRountes.contains(c.name)).toList();
+    return items.where((c) => !_hiddenRoutes.contains(c.name)).toList();
   }
 
   DrawerItemConfig get activeScreen {

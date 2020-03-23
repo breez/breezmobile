@@ -14,7 +14,7 @@ class AppBlocsProvider extends InheritedWidget {
 
   static T of<T>(BuildContext context) {
     AppBlocsProvider widget =
-        context.inheritFromWidgetOfExactType(AppBlocsProvider);
+        context.dependOnInheritedWidgetOfExactType<AppBlocsProvider>();
     if (widget == null) {
       return null;
     }
@@ -75,9 +75,8 @@ class _Inherited<T> extends InheritedWidget {
   }
 
   static T of<T>(BuildContext context) {
-    Type typeOf<T>() => T;
     _Inherited widget =
-        context.inheritFromWidgetOfExactType(typeOf<_Inherited<T>>());
+        context.dependOnInheritedWidgetOfExactType<_Inherited<T>>();
     if (widget == null) {
       return null;
     }

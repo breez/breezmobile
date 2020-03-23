@@ -6,7 +6,6 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
-import 'package:breez/bloc/status_indicator/status_indicator_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 
 import 'invoice/invoice_bloc.dart';
@@ -20,7 +19,6 @@ class AppBlocs {
   final AccountBloc accountBloc;
   final InvoiceBloc invoicesBloc;
   final ConnectPayBloc connectPayBloc;
-  final StatusIndicatorBloc statusIndicatorBloc;
   final BackupBloc backupBloc;
   final MarketplaceBloc marketplaceBloc;
   final FastbitcoinsBloc fastbitcoinsBloc;
@@ -41,8 +39,6 @@ class AppBlocs {
 
   factory AppBlocs() {
     var blocsByType = Map<Type, Object>();
-    StatusIndicatorBloc statusIndicatorBloc =
-        _registerBloc(StatusIndicatorBloc(), blocsByType);
     UserProfileBloc userProfileBloc =
         _registerBloc(UserProfileBloc(), blocsByType);
     AccountBloc accountBloc =
@@ -72,7 +68,6 @@ class AppBlocs {
         accountBloc,
         invoicesBloc,
         connectPayBloc,
-        statusIndicatorBloc,
         backupBloc,
         marketplaceBloc,
         fastbitcoinsBloc,
@@ -88,7 +83,6 @@ class AppBlocs {
     this.accountBloc,
     this.invoicesBloc,
     this.connectPayBloc,
-    this.statusIndicatorBloc,
     this.backupBloc,
     this.marketplaceBloc,
     this.fastbitcoinsBloc,

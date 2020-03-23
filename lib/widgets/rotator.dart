@@ -25,7 +25,7 @@ class _RotatorState extends State<Rotator> with SingleTickerProviderStateMixin {
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
         _animationController); //use Tween animation here, to animate between the values of 1.0 & 2.5.
     _animation.addListener(() {
-      //here, a listener that rebuilds our widget tree when animation.value chnages
+      //here, a listener that rebuilds our widget tree when animation.value changes
       setState(() {});
     });
     _animationController.addStatusListener((status) {

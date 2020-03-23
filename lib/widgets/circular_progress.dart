@@ -34,14 +34,16 @@ class CircularProgress extends StatelessWidget {
                 ),
               ),
             ),
-            value == null ? SizedBox() : Center(
-                child: Container(
-              width: size * 0.6,
-              child: AutoSizeText("${(value * 100).round().toString()}%",
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  style: TextStyle(fontSize: size / 4, color: color)),
-            )),
+            value == null
+                ? SizedBox()
+                : Center(
+                    child: Container(
+                    width: size * 0.6,
+                    child: AutoSizeText("${(value * 100).round().toString()}%",
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        style: TextStyle(fontSize: size / 4, color: color)),
+                  )),
           ],
         ),
         Padding(

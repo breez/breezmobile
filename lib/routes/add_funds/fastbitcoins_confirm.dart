@@ -15,7 +15,7 @@ class FastBitcoinsConfirmWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String btcReceived = user.currency.format(Int64(response.satoshiAmount));
-    String comissionRate =
+    String commissionRate =
         (response.commissionTotal / response.value * 100).toStringAsFixed(2) +
             "%";
 
@@ -31,7 +31,7 @@ class FastBitcoinsConfirmWidget extends StatelessWidget {
               title: "Exchange rate",
               details:
                   '${response.exchangeRate.toStringAsFixed(2)} ${request.currency}'),
-          ConfirmationItem(title: "Commission rate", details: comissionRate),
+          ConfirmationItem(title: "Commission rate", details: commissionRate),
           ConfirmationItem(
               title: "Commission total",
               details:
@@ -56,12 +56,12 @@ class ConfirmationItem extends StatelessWidget {
       child: ListTile(
         title: Text(
           title,
-          style: Theme.of(context).primaryTextTheme.display1,
+          style: Theme.of(context).primaryTextTheme.headline4,
           textAlign: TextAlign.left,
         ),
         trailing: Text(
           details,
-          style: Theme.of(context).primaryTextTheme.display2,
+          style: Theme.of(context).primaryTextTheme.headline3,
           textAlign: TextAlign.left,
         ),
       ),

@@ -10,7 +10,6 @@ import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as DartImage;
 
 import 'keyboard_done_action.dart';
 
@@ -21,7 +20,6 @@ class PaymentRequestInfoDialog extends StatefulWidget {
   final Function(PaymentRequestState state) _onStateChange;
   final Function(double height) _setDialogHeight;
   final Function(Map map) _setAmountToPay;
-  final _transparentImage = DartImage.encodePng(DartImage.Image(300, 300));
 
   PaymentRequestInfoDialog(this.context, this.accountBloc, this.invoice,
       this._onStateChange, this._setDialogHeight, this._setAmountToPay);
@@ -133,7 +131,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             "${widget.invoice.payeeName}",
             style: Theme.of(context)
                 .primaryTextTheme
-                .display1
+                .headline4
                 .copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );
@@ -145,7 +143,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             "You are requested to pay:",
             style: Theme.of(context)
                 .primaryTextTheme
-                .display2
+                .headline3
                 .copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           )
@@ -153,7 +151,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             "is requesting you to pay:",
             style: Theme.of(context)
                 .primaryTextTheme
-                .display2
+                .headline3
                 .copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );
@@ -203,7 +201,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           _showFiatCurrency && account.fiatCurrency != null
               ? "${account.fiatCurrency.format(widget.invoice.amount)}"
               : account.currency.format(widget.invoice.amount),
-          style: Theme.of(context).primaryTextTheme.headline,
+          style: Theme.of(context).primaryTextTheme.headline5,
           textAlign: TextAlign.center,
         ),
       ),
@@ -231,7 +229,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
               widget.invoice.description,
               style: Theme.of(context)
                   .primaryTextTheme
-                  .display2
+                  .headline3
                   .copyWith(fontSize: 16),
               textAlign: widget.invoice.description.length > 40
                   ? TextAlign.justify
@@ -253,7 +251,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       child: AutoSizeText(validationError,
           maxLines: 3,
           textAlign: TextAlign.center,
-          style: Theme.of(context).primaryTextTheme.display2.copyWith(
+          style: Theme.of(context).primaryTextTheme.headline3.copyWith(
               fontSize: 16,
               color: theme.themeId == "BLUE"
                   ? Colors.red

@@ -76,7 +76,8 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                 key: _formKey,
                 child: TextFormField(
                   style: TextStyle(
-                      color: Theme.of(context).primaryTextTheme.display1.color),
+                      color:
+                          Theme.of(context).primaryTextTheme.headline4.color),
                   focusNode: _passwordFocus,
                   obscureText: _passwordObscured,
                   textInputAction: TextInputAction.next,

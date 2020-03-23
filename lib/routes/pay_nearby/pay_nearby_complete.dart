@@ -140,7 +140,7 @@ class PayNearbyCompleteState extends State<PayNearbyComplete>
           leading: backBtn.BackButton(),
           title: Text(
             _title,
-            style: Theme.of(context).appBarTheme.textTheme.title,
+            style: Theme.of(context).appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0,
         ),

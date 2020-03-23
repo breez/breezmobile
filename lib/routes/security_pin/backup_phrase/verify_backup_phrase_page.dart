@@ -39,7 +39,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           leading: backBtn.BackButton(),
           title: Text(
             "Let's verify",
-            style: Theme.of(context).appBarTheme.textTheme.title,
+            style: Theme.of(context).appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0),
       body: SingleChildScrollView(
@@ -147,7 +147,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       selectedWordList
         ..add(Text(
           "Failed to verify words. Please write down the words and try again.",
-          style: Theme.of(context).textTheme.display1.copyWith(fontSize: 12),
+          style: Theme.of(context).textTheme.headline4.copyWith(fontSize: 12),
         ));
     return selectedWordList;
   }

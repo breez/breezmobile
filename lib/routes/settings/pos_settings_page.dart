@@ -68,7 +68,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
         backgroundColor: Theme.of(context).canvasColor,
         title: Text(
           widget._title,
-          style: Theme.of(context).appBarTheme.textTheme.title,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
