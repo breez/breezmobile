@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 class SingleButtonBottomBar extends StatelessWidget {
@@ -41,8 +42,9 @@ class SubmitButton extends StatelessWidget {
         height: 48.0,
         width: 168.0,
         child: RaisedButton(
-          child: Text(
-            this.text,
+          child: AutoSizeText(            
+            this.text,            
+            maxLines: 1,
             style: Theme.of(context).textTheme.button,
           ),
           color: Theme.of(context).buttonColor,
