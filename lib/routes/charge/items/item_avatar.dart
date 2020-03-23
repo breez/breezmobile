@@ -181,7 +181,7 @@ class _UnknownAvatar extends StatelessWidget {
                         : whitespaceRemovedName.length)
                 .trim(),
             style: TextStyle(
-                fontSize: useDecoration ? 48 : radius * 1.5,
+                fontSize: useDecoration ? 48 : radius,
                 color: Color.fromRGBO(255, 255, 255, 0.88),
                 decoration: TextDecoration.underline,
                 letterSpacing: 0.0,
