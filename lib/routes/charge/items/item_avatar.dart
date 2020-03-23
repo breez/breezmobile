@@ -6,9 +6,12 @@ import 'package:flutter_advanced_networkimage/provider.dart';
 class ItemAvatar extends StatelessWidget {
   final String avatarURL;
   final double radius;
+  final String itemName;
   final bool useDecoration;
 
-  ItemAvatar(this.avatarURL, {Key key, this.radius = 20.0}) : super(key: key);
+  ItemAvatar(this.avatarURL,
+      {Key key, this.radius = 20.0, this.itemName, this.useDecoration = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,24 +29,81 @@ class ItemAvatar extends StatelessWidget {
       return _FileImageAvatar(radius, avatarURL);
     }
 
-    return _UnknownAvatar(radius);
+    return _UnknownAvatar(radius, itemName);
   }
 }
 
 class _UnknownAvatar extends StatelessWidget {
   final double radius;
+  final String itemName;
 
-  _UnknownAvatar(this.radius);
+  _UnknownAvatar(this.radius, this.itemName);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: radius * 2,
-      height: radius * 2,
-      child: Center(
-        child: Icon(Icons.airplanemode_active, size: radius * 1.5),
-      ),
-    );
+    if (itemName != null && itemName.isNotEmpty) {
+      var whitespaceRemovedName =
+          itemName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+      return Container(
+        width: radius * 2,
+        height: radius * 2,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+                color: Colors.white, width: 1.0, style: BorderStyle.solid),
+            image: DecorationImage(
+                colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColorLight, BlendMode.srcATop),
+                image: AssetImage("src/images/avatarbg.png"),
+                fit: BoxFit.cover)),
+        child: Center(
+          child: Text(
+            whitespaceRemovedName
+                .substring(
+                    0,
+                    whitespaceRemovedName.length >= 2
+                        ? 2
+                        : whitespaceRemovedName.length)
+                .trim(),
+            style: TextStyle(
+                fontSize: radius > 20 ? 48 : null,
+                color: Color.fromRGBO(255, 255, 255, 0.88),
+                letterSpacing: 0.0,
+                fontFamily: "IBMPlexSans"),
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        width: radius * 2,
+        height: radius * 2,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+                color: Colors.white, width: 1.0, style: BorderStyle.solid),
+            image: DecorationImage(
+                colorFilter: ColorFilter.mode(
+                    Theme.of(context).primaryColorLight, BlendMode.srcATop),
+                image: AssetImage("src/images/avatarbg.png"),
+                fit: BoxFit.cover)),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.edit, size: 24),
+            Text(
+              "Select Image",
+              style: TextStyle(
+                  fontSize: 12.3,
+                  color: Color.fromRGBO(255, 255, 255, 0.88),
+                  letterSpacing: 0.0,
+                  fontFamily: "IBMPlexSans"),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
 
