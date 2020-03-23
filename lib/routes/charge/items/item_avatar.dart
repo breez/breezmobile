@@ -6,6 +6,7 @@ import 'package:flutter_advanced_networkimage/provider.dart';
 class ItemAvatar extends StatelessWidget {
   final String avatarURL;
   final double radius;
+  final bool useDecoration;
 
   ItemAvatar(this.avatarURL, {Key key, this.radius = 20.0}) : super(key: key);
 
@@ -18,6 +19,10 @@ class ItemAvatar extends StatelessWidget {
       if (avatarURL.startsWith("#")) {
         return _ColorAvatar(radius, avatarURL);
       }
+      if (avatarURL.startsWith("icon:")) {
+        return _IconAvatar(radius, avatarURL, useDecoration: useDecoration);
+      }
+
       return _FileImageAvatar(radius, avatarURL);
     }
 
@@ -102,6 +107,54 @@ class _NetworkImageAvatar extends StatelessWidget {
     return CircleAvatar(
       radius: radius,
       backgroundImage: AdvancedNetworkImage(avatarURL, useDiskCache: true),
+    );
+  }
+}
+
+class _IconAvatar extends StatelessWidget {
+  final double radius;
+  final String iconName;
+  final bool useDecoration;
+
+  _IconAvatar(this.radius, this.iconName, {this.useDecoration = false});
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: Map Material Icons library
+    Map<String, IconData> iconMapping = {
+      'account_balance': Icons.account_balance,
+      'map': Icons.map,
+      'airline_seat_individual_suite': Icons.airline_seat_individual_suite,
+      'attach_money': Icons.attach_money,
+      'beach_access': Icons.beach_access,
+      'brush': Icons.brush
+    };
+    String iconName = this.iconName.substring(5);
+    return Container(
+      width: radius * 2,
+      height: radius * 2,
+      decoration: useDecoration
+          ? BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                  color: Colors.white, width: 1.0, style: BorderStyle.solid),
+              image: DecorationImage(
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context).primaryColorLight, BlendMode.srcATop),
+                  image: AssetImage("src/images/avatarbg.png"),
+                  fit: BoxFit.cover))
+          : null,
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Icon(
+            iconMapping[iconName],
+            size: useDecoration ? radius : radius * 1.5,
+          ),
+        ],
+      ),
     );
   }
 }
