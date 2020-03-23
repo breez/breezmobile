@@ -318,7 +318,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         account.currency.parse(_amountController.text)));
 
     Widget dialog = _withdrawFetchResponse != null
-        ? LNURlWidthrawDialog(invoiceBloc, accountBloc, lnurlBloc)
+        ? LNURlWithdrawDialog(invoiceBloc, accountBloc, lnurlBloc)
         : QrCodeDialog(context, invoiceBloc, accountBloc);
     Navigator.of(context).pop();
     return _bgService.runAsTask(

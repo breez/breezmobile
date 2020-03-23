@@ -19,9 +19,7 @@ import 'package:rxdart/rxdart.dart';
 
 import 'connect_pay_model.dart';
 
-/*
-A concrete implementation of RemoteSession from the payer side.
-*/
+// A concrete implementation of RemoteSession from the payer side.
 class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   String _currentSessionInvite;
 
@@ -244,7 +242,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
         log.info("payer session background task finished");
       });
       return this.sendPayment(paymentRequest, invoice.amount).then((_) {
-        _onPaymenetFulfilled(invoice);
+        _onPaymentFulfilled(invoice);
       }).catchError((err) {
         _onError(err);
       });
@@ -263,7 +261,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
         }));
   }
 
-  _onPaymenetFulfilled(InvoiceMemo invoice) {
+  _onPaymentFulfilled(InvoiceMemo invoice) {
     _paymentSessionController.add(_currentSession.copyWith(
         paymentFulfilled: true,
         settledAmount: invoice.amount.toInt(),

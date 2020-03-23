@@ -6,7 +6,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:rxdart/rxdart.dart';
 
 /*
-This class abstracts a "channel" that handles all communciation between payment session peers.
+This class abstracts a "channel" that handles all communication between payment session peers.
 The implementation is based on firebase messaging.
 */
 class PaymentSessionChannel {

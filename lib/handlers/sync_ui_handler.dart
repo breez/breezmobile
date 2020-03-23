@@ -62,9 +62,9 @@ class SyncUIRoute extends TransparentPageRoute {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    var curv = CurvedAnimation(parent: controller, curve: Curves.easeOut);
+    var curve = CurvedAnimation(parent: controller, curve: Curves.easeOut);
     return ScaleTransition(
-        scale: curv, child: child, alignment: Alignment.topRight);
+        scale: curve, child: child, alignment: Alignment.topRight);
   }
 
   @override

@@ -766,7 +766,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         }).then((res) {
       if (res.paid) {
         Navigator.of(context).push(TransparentPageRoute((context) {
-          return SuccesfullPaymentRoute();
+          return SuccessfulPaymentRoute();
         }));
       }
       if (res.clearSale) {
@@ -825,7 +825,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     _scaleTransition = CurvedAnimation(
         parent: scaleController, curve: Curves.easeInExpo.flipped);
 
-    // handle opcity animation.
+    // handle opacity animation.
     var opacityController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 700));
     _opacityTransition =
@@ -863,7 +863,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         currentPendingItem = newSale.saleLines.last;
       } else {
         currentPendingItem =
-            currentPendingItem.copywith(pricePerItem: newPrice);
+            currentPendingItem.copyWith(pricePerItem: newPrice);
         newSale = currentSale.updateItems((sl) {
           if (sl.isCustom && sl.itemName == currentPendingItem.itemName) {
             return currentPendingItem;

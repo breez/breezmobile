@@ -19,7 +19,7 @@ class ConnectedWidgetState extends State<ConnectedWidget>
   AnimationController _animationController;
   AnimationController _circleController;
   Animation<double> _lineWidthFactor;
-  Animation<double> _circleLoation;
+  Animation<double> _circleLocation;
   Animation<double> _circleRadius;
 
   @override
@@ -43,7 +43,7 @@ class ConnectedWidgetState extends State<ConnectedWidget>
       ),
     );
 
-    _circleLoation = Tween<double>(
+    _circleLocation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(
@@ -87,7 +87,7 @@ class ConnectedWidgetState extends State<ConnectedWidget>
     return CustomPaint(
         painter: _ConnectedCustomPainter(_lineWidthFactor,
             showCircle: widget._waitingAction,
-            circleLoation: this._circleLoation,
+            circleLocation: this._circleLocation,
             circleRadius: this._circleRadius));
   }
 }
@@ -95,14 +95,14 @@ class ConnectedWidgetState extends State<ConnectedWidget>
 class _ConnectedCustomPainter extends CustomPainter {
   static const double lineHeight = 8.0;
   final Animation<double> _lineWidthFactor;
-  final Animation<double> circleLoation;
+  final Animation<double> circleLocation;
   final Animation<double> circleRadius;
   final bool showCircle;
   final int numberOfCircles = 10;
   final double circleHeight = 7.0;
 
   _ConnectedCustomPainter(this._lineWidthFactor,
-      {this.showCircle, this.circleLoation, this.circleRadius});
+      {this.showCircle, this.circleLocation, this.circleRadius});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -119,7 +119,7 @@ class _ConnectedCustomPainter extends CustomPainter {
 
     if (showCircle) {
       canvas.drawCircle(
-          Offset(size.width * circleLoation.value, size.height / 2),
+          Offset(size.width * circleLocation.value, size.height / 2),
           (lineHeight / 2) +
               (lineHeight * 2) * (0.5 - (circleRadius.value - 0.5).abs()),
           paint);

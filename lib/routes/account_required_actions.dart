@@ -206,7 +206,7 @@ class AccountRequiredActionsIndicatorState
                                     warnings.add(WarningAction(() {
                                       if (lspStat?.lastConnectionError !=
                                           null) {
-                                        showProvierErrorDialog(context,
+                                        showProviderErrorDialog(context,
                                             lspStat?.lastConnectionError, () {
                                           Navigator.of(context).push(
                                               FadeInRoute(
@@ -264,7 +264,7 @@ class WarningActionState extends State<WarningAction>
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
         _animationController); //use Tween animation here, to animate between the values of 1.0 & 2.5.
     _animation.addListener(() {
-      //here, a listener that rebuilds our widget tree when animation.value chnages
+      //here, a listener that rebuilds our widget tree when animation.value changes
       setState(() {});
     });
     _animationController.forward();

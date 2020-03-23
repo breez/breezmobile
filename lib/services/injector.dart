@@ -27,7 +27,7 @@ class ServiceInjector {
   Device _device;
   Future<SharedPreferences> _sharedPreferences;
   Permissions _permissions;
-  BackgroundTaskService _backroundTaskService;
+  BackgroundTaskService _backgroundTaskService;
   CurrencyService _currencyService;
   LocalAuthenticationService _localAuthService;
 
@@ -74,7 +74,7 @@ class ServiceInjector {
   }
 
   BackgroundTaskService get backgroundTaskService {
-    return _backroundTaskService ??= BackgroundTaskService();
+    return _backgroundTaskService ??= BackgroundTaskService();
   }
 
   CurrencyService get currencyService {

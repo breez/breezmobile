@@ -55,23 +55,23 @@ class AccountSynchronizer {
       }
       _breezLib.sendCommand("getinfo").then((info) {
         Map replyJson = json.decode(info);
-        var sincedToTimestamp =
+        var syncedToTimestamp =
             int.parse(replyJson["best_header_timestamp"].toString()) * 1000;
         var syncedToChain = replyJson["synced_to_chain"].toString() == "true";
 
         if (_startPollTimestamp == 0 &&
-            DateTime.now().millisecondsSinceEpoch - sincedToTimestamp > 0) {
-          _startPollTimestamp = sincedToTimestamp;
+            DateTime.now().millisecondsSinceEpoch - syncedToTimestamp > 0) {
+          _startPollTimestamp = syncedToTimestamp;
         }
-        if (_startPollTimestamp > sincedToTimestamp) {
-          _startPollTimestamp = sincedToTimestamp;
+        if (_startPollTimestamp > syncedToTimestamp) {
+          _startPollTimestamp = syncedToTimestamp;
         }
 
         if (_startPollTimestamp > 0) {
           if (syncedToChain) {
             _chainProgress = 1.0;
           } else if (_chainProgress < 1.0) {
-            _chainProgress = (sincedToTimestamp - _startPollTimestamp) /
+            _chainProgress = (syncedToTimestamp - _startPollTimestamp) /
                 (DateTime.now().millisecondsSinceEpoch - _startPollTimestamp);
           }
           _emitProgress();

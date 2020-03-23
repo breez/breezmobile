@@ -74,7 +74,7 @@ class PosCatalogBloc with AsyncActionsHandler {
         } else {
           rate = acc.getFiatCurrencyByShortName(sl.currency).satConversionRate;
         }
-        return sl.copywith(satConversionRate: rate);
+        return sl.copyWith(satConversionRate: rate);
       }).toList()));
     });
   }

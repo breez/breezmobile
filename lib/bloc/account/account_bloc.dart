@@ -153,7 +153,7 @@ class AccountBloc {
       _refreshAccountAndPayments();
       //listen streams
       _listenAccountActions();
-      _hanleAccountSettings();
+      _handleAccountSettings();
       _listenUserChanges(userProfileStream);
       _listenFilterChanges();
       _listenAccountChanges();
@@ -184,7 +184,7 @@ class AccountBloc {
   }
 
   //settings persistency
-  Future _hanleAccountSettings() async {
+  Future _handleAccountSettings() async {
     var preferences = await ServiceInjector().sharedPreferences;
     var accountSettings =
         preferences.getString(ACCOUNT_SETTINGS_PREFERENCES_KEY);
@@ -570,7 +570,7 @@ class AccountBloc {
         _completedPaymentsController.add(CompletedPayment(
             PayRequest(paymentRequest, invoice.amount),
             cancelled: false,
-            ignoreGlobalFeeback:
+            ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
         _ignoredFeedbackPayments.remove(paymentRequest);
       }
@@ -584,7 +584,7 @@ class AccountBloc {
         var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
         _completedPaymentsController.addError(PaymentError(
             PayRequest(paymentRequest, invoice.amount), error, traceReport,
-            ignoreGlobalFeeback:
+            ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
         _ignoredFeedbackPayments.remove(paymentRequest);
       }

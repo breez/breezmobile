@@ -373,7 +373,7 @@ class DevViewState extends State<DevView> {
           icon: Icons.phone_android,
           function: () => _setShowExcessFunds(accBloc, settings)));
     }
-    if (settings.failePaymentBehavior != BugReportBehavior.PROMPT) {
+    if (settings.failedPaymentBehavior != BugReportBehavior.PROMPT) {
       choices.add(Choice(
           title: 'Reset Payment Report',
           icon: Icons.phone_android,
@@ -449,7 +449,7 @@ class DevViewState extends State<DevView> {
 
   void _resetBugReportBehavior(AccountBloc bloc, AccountSettings settings) {
     bloc.accountSettingsSink
-        .add(settings.copyWith(failePaymentBehavior: BugReportBehavior.PROMPT));
+        .add(settings.copyWith(failedPaymentBehavior: BugReportBehavior.PROMPT));
   }
 
   void _setShowExcessFunds(AccountBloc bloc, AccountSettings settings,

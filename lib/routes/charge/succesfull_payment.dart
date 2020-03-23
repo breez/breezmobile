@@ -2,14 +2,14 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/practicles_animations.dart';
 import 'package:flutter/material.dart';
 
-class SuccesfullPaymentRoute extends StatefulWidget {
+class SuccessfulPaymentRoute extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return SuccesfullPaymentRouteState();
+    return SuccessfulPaymentRouteState();
   }
 }
 
-class SuccesfullPaymentRouteState extends State<SuccesfullPaymentRoute>
+class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
     with WidgetsBindingObserver {
   Future _showFuture;
 
@@ -25,7 +25,7 @@ class SuccesfullPaymentRouteState extends State<SuccesfullPaymentRoute>
             builder: (BuildContext context) {
               return AlertDialog(
                   contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
-                  content: _SuccessfullPaymentMessage());
+                  content: _SuccessfulPaymentMessage());
             }).whenComplete(() => Navigator.of(context).pop());
       });
     }
@@ -41,7 +41,7 @@ class SuccesfullPaymentRouteState extends State<SuccesfullPaymentRoute>
   }
 }
 
-class _SuccessfullPaymentMessage extends StatelessWidget {
+class _SuccessfulPaymentMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

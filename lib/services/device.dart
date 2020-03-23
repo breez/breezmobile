@@ -29,8 +29,8 @@ class Device {
   static const String LAST_CLIPPING_PREFERENCES_KEY = "lastClipping";
 
   Device() {
-    var sharedPrefrences = SharedPreferences.getInstance();
-    sharedPrefrences.then((preferences) {
+    var sharedPreferences = SharedPreferences.getInstance();
+    sharedPreferences.then((preferences) {
       _lastClipping =
           preferences.getString(LAST_CLIPPING_PREFERENCES_KEY) ?? "";
       fetchClipboard(preferences);
@@ -39,7 +39,7 @@ class Device {
     _notificationsChannel.receiveBroadcastStream().listen((event) {
       if (event == "resume") {
         _eventsController.add(NotificationType.RESUME);
-        sharedPrefrences.then((preferences) {
+        sharedPreferences.then((preferences) {
           fetchClipboard(preferences);
         });
       }

@@ -12,10 +12,10 @@ import 'package:flutter/material.dart';
 class PaymentDetailsForm extends StatefulWidget {
   final AccountModel _account;
   final PaymentSessionState _sessionState;
-  final Function(Int64 amount, {String description}) _onSubmitPayementDetails;
+  final Function(Int64 amount, {String description}) _onSubmitPaymentDetails;
 
   PaymentDetailsForm(
-      this._account, this._sessionState, this._onSubmitPayementDetails);
+      this._account, this._sessionState, this._onSubmitPaymentDetails);
 
   @override
   State<StatefulWidget> createState() {
@@ -112,7 +112,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                 if (_formKey.currentState.validate()) {
                   Int64 satoshies =
                       widget._account.currency.parse(_amountController.text);
-                  widget._onSubmitPayementDetails(satoshies,
+                  widget._onSubmitPaymentDetails(satoshies,
                       description: _invoiceDescriptionController.text);
                 }
               }
