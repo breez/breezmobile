@@ -25,7 +25,8 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
     if (_accountBloc == null && this.widget.closeOnSync) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _accountBloc.accountStream
-          .firstWhere((a) => a?.syncedToChain == true, orElse: () => null)
+          .firstWhere((a) => a?.syncedToChain == true && a.serverReady,
+              orElse: () => null)
           .then((a) {
         if (this.mounted) {
           Navigator.of(context).pop(true);
@@ -44,14 +45,17 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
         if (acc == null) {
           return SizedBox();
         }
+
         return Container(
           width: MediaQuery.of(context).size.width,
           height: 150.0,
           child: CircularProgress(
               color: Theme.of(context).textTheme.button.color,
               size: 100.0,
-              value: acc.syncProgress,
-              title: "Synchronizing to the network"),
+              value: acc.serverReady ? acc.syncProgress : null,
+              title: acc.serverReady
+                  ? "Synchronizing to the network"
+                  : "Waiting for network"),
         );
       },
     );
