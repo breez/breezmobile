@@ -11,6 +11,7 @@ import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/routes/charge/succesfull_payment.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -23,6 +24,7 @@ import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
+import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -320,12 +322,19 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     Widget dialog = _withdrawFetchResponse != null
         ? LNURlWidthrawDialog(invoiceBloc, accountBloc, lnurlBloc)
         : QrCodeDialog(context, invoiceBloc, accountBloc);
-    Navigator.of(context).pop();
+    var navigator = Navigator.of(context);
+    navigator.pop();
     return _bgService.runAsTask(
         showDialog(
             useRootNavigator: false,
             context: context,
-            builder: (_) => dialog), () {
+            builder: (_) => dialog).then((success) {
+          if (success == true) {
+            navigator.push(TransparentPageRoute((navigator) {
+              return SuccesfullPaymentRoute();
+            }));
+          }
+        }), () {
       log.info("waiting for payment background task finished");
     });
   }
