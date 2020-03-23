@@ -39,8 +39,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
     controller.value = 1.0;
     controller.addStatusListener((status) {
       if (status == AnimationStatus.dismissed && this.mounted) {
-        Navigator.pop(context);
-        showFlushbar(context, message: "Payment was successfuly received!");
+        Navigator.pop(context, true);        
       }
     });
 
@@ -212,7 +211,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
   Widget _buildCloseButton() {
     return FlatButton(
       onPressed: (() {
-        Navigator.pop(context);
+        Navigator.pop(context, false);
       }),
       child: Text("CLOSE", style: Theme.of(context).primaryTextTheme.button),
     );
