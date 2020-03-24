@@ -199,8 +199,10 @@ class HomeState extends State<Home> {
                           : [
                               DrawerItemConfig("", "POS", "src/icon/pos.png",
                                   onItemSelected: (_) {
-                                widget.userProfileBloc.userActionsSink
-                                    .add(SetPOSFlavor(!user.isPOS));
+                                if (account.connected) {
+                                  widget.userProfileBloc.userActionsSink
+                                      .add(SetPOSFlavor(!user.isPOS));
+                                }
                               },
                                   switchWidget: Switch(
                                       activeColor: Colors.white,
