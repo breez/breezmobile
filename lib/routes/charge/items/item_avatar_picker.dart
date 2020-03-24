@@ -23,7 +23,6 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   Map<String, IconData> iconMap = IconMap().iconMap;
   TextEditingController _imageFilterController = TextEditingController();
   String _selectedImage;
-  Color bgColor = Colors.transparent;
   Map<String, IconData> _iconList;
 
   @override
