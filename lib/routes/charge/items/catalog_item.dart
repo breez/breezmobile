@@ -55,7 +55,8 @@ class CatalogItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
           child: ListTile(
-            leading: ItemAvatar(_itemInfo.imageURL, key: _avatarKey),
+            leading: ItemAvatar(_itemInfo.imageURL,
+                itemName: _itemInfo.name, key: _avatarKey),
             title: Text(
               _itemInfo.name,
               style: Theme.of(context).textTheme.itemTitleStyle,

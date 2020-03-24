@@ -468,3 +468,8 @@ extension CustomStyles on TextTheme {
   TextStyle get itemPriceStyle => TextStyle(
       color: BreezColors.white[500], letterSpacing: 0.5, fontSize: 14.3);
 }
+
+extension CustomIconThemes on IconThemeData {
+  IconThemeData get deleteBadgeIconTheme =>
+      IconThemeData(color: BreezColors.grey[500], size: 20.0);
+}
