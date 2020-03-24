@@ -28,6 +28,8 @@ class CurrencyWrapper {
     return null;
   }
 
+  bool get isFiat => fiat != null;
+
   String get shortName => btc?.tickerSymbol ?? fiat.currencyData.shortName;
 
   String get symbol => btc?.symbol ?? fiat.currencyData.symbol;

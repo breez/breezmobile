@@ -19,7 +19,7 @@ class BackupPhraseGeneratorConfirmationPageState
     extends State<BackupPhraseGeneratorConfirmationPage> {
   bool _isUnderstood = false;
   String _instructions =
-      "You will be shown a list of words. Write down the words and store them in a safe place. Without these words, you won't be able to restore from backup and you funds will be lost. Breez won’t be able to help.";
+      "You will be shown a list of words. Write down the words and store them in a safe place. Without these words, you won't be able to restore from backup and your funds will be lost. Breez won’t be able to help.";
 
   @override
   Widget build(BuildContext context) {
