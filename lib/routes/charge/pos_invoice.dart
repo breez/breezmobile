@@ -202,7 +202,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                               true) {
                                                         return StatusIndicator(
                                                             context,
-                                                            snapshot.data);
+                                                            accountModel);
                                                       }
                                                       return SizedBox();
                                                     }),
