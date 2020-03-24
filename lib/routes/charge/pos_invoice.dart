@@ -169,7 +169,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                               initialData: "Loading",
                               future: _fetchRatesActionFuture,
                               builder: (context, snapshot) {
-                                if (snapshot.data == "Loading") {
+                                var persistedCurrency = CurrencyWrapper.fromShortName(accountModel.posCurrencyShortName, accountModel);
+                                if (persistedCurrency == null && snapshot.data == "Loading") {
                                   return Center(child: Loader());
                                 }
 
