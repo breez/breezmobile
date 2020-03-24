@@ -121,29 +121,23 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
               ],
             ),
             SizedBox(height: 8),
-            Container(
-              height: 176,
-              width: 600,
-              padding: EdgeInsets.only(left: 16, right: 16),
+            AspectRatio(
+              aspectRatio: 1,
               child: GridView.count(
                 crossAxisCount: 4,
                 children: _iconList
                     .map((value, icon) {
                       return MapEntry(
                           value,
-                          Container(
-                            height: 64,
-                            width: 64,
-                            key: Key(value),
-                            child: IconButton(
-                              icon: Icon(icon),
-                              onPressed: () {
-                                setState(() {
-                                  _selectedImage = "icon:$value";
-                                  widget.onImageSelected(_selectedImage);
-                                });
-                              },
-                            ),
+                          IconButton(
+                            icon: Icon(icon),
+                            iconSize: 36,
+                            onPressed: () {
+                              setState(() {
+                                _selectedImage = "icon:$value";
+                                widget.onImageSelected(_selectedImage);
+                              });
+                            },
                           ));
                     })
                     .values
