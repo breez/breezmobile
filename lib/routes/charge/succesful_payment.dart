@@ -21,7 +21,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
         _showFuture = showDialog(
             useRootNavigator: false,
             context: context,
-            barrierDismissible: false,
+            barrierDismissible: true,
             builder: (BuildContext context) {
               return AlertDialog(
                   contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
