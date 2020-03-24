@@ -35,7 +35,8 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
       () {
         setState(() {
           _iconList = Map.from(iconMap)
-            ..removeWhere((k, v) => !k.contains(_imageFilterController.text));
+            ..removeWhere((k, v) =>
+                !k.contains(_imageFilterController.text.toLowerCase().trim()));
         });
       },
     );
@@ -93,6 +94,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
               children: <Widget>[
                 Expanded(
                   child: TextField(
+                    textCapitalization: TextCapitalization.none,
                     controller: _imageFilterController,
                     enabled: _iconList != null,
                     decoration: InputDecoration(
