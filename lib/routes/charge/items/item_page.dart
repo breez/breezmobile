@@ -101,7 +101,7 @@ class ItemPageState extends State<ItemPage> {
                         border: UnderlineInputBorder()),
                     style: theme.FieldTextStyle.textStyle,
                     validator: (value) {
-                      if (value.length == 0) {
+                      if (value.trim().length == 0) {
                         return "Name is required";
                       }
                       return null;
