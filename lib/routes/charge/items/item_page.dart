@@ -55,7 +55,7 @@ class ItemPageState extends State<ItemPage> {
         _accountBloc.accountStream.first.then((accountModel) {
           setState(() {
             _title = "Edit Item";
-            _itemImage = widget.item.imageURL ?? "";
+            _itemImage = widget.item.imageURL;
             _nameController.text = widget.item.name;
             _skuController.text = widget.item.sku;
             _selectedCurrency = CurrencyWrapper.fromShortName(
@@ -320,7 +320,9 @@ class ItemPageState extends State<ItemPage> {
             if (_formKey.currentState.validate()) {
               if (widget.item != null) {
                 UpdateItem updateItem = UpdateItem(widget.item.copyWith(
-                    imageURL: _itemImage,
+                    imageURL:  _itemImage != null && _itemImage.isNotEmpty
+                        ? _itemImage
+                        : null,
                     name: _nameController.text.trimRight(),
                     currency: _selectedCurrency.shortName,
                     price: double.parse(_priceController.text),
