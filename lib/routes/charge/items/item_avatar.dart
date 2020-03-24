@@ -84,7 +84,7 @@ class _IconAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, IconData> iconMapping = IconMap().iconMap;
+    Map<String, IconData> iconMapping = IconMap.iconMap;
     return Container(
       width: radius * 2,
       height: radius * 2,

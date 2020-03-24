@@ -20,7 +20,7 @@ class ItemAvatarPicker extends StatefulWidget {
 }
 
 class ItemAvatarPickerState extends State<ItemAvatarPicker> {
-  Map<String, IconData> iconMap = IconMap().iconMap;
+  Map<String, IconData> iconMap = IconMap.iconMap;
   TextEditingController _imageFilterController = TextEditingController();
   String _selectedImage;
   Map<String, IconData> _iconList;

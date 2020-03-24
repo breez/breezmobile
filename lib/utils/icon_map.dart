@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class IconMap {
-  final Map<String, IconData> iconMap = {
+  static final Map<String, IconData> iconMap = {
     "threesixty": Icons.threesixty,
     "threed_rotation": Icons.threed_rotation,
     "four_k": Icons.four_k,
