@@ -59,7 +59,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
         padding: EdgeInsets.only(top: 16, left: 0.0, right: 0.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildItemAvatar(context),
             SizedBox(height: 16),
@@ -73,9 +73,8 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
     );
   }
 
-  Center _buildItemAvatar(BuildContext context) {
-    return Center(
-        child: Badge(
+  _buildItemAvatar(BuildContext context) {
+    return Badge(
       showBadge: _selectedImage != "",
       position: BadgePosition.topRight(top: 5, right: -10),
       animationType: BadgeAnimationType.fade,
@@ -83,7 +82,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
       badgeContent: _buildResetIconBadge(context),
       child: ItemAvatar(_selectedImage ?? null,
           itemName: widget.itemName, radius: 48, useDecoration: true),
-    ));
+    );
   }
 
   GestureDetector _buildResetIconBadge(BuildContext context) {
