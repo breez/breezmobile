@@ -147,64 +147,48 @@ class _UnknownAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (itemName != null && itemName.isNotEmpty) {
-      return Container(
-        width: radius * 2,
-        height: radius * 2,
-        decoration: useDecoration
-            ? BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                    color: Colors.white, width: 1.0, style: BorderStyle.solid),
-                image: DecorationImage(
-                    colorFilter: ColorFilter.mode(
-                        Theme.of(context).primaryColorLight, BlendMode.srcATop),
-                    image: AssetImage("src/images/avatarbg.png"),
-                    fit: BoxFit.cover))
-            : null,
-        child: Center(
-          child: Text(
-            _getFirstTwoLetters(),
-            style: TextStyle(
-                fontSize: useDecoration ? 48 : radius,
-                color: Color.fromRGBO(255, 255, 255, 0.88),
-                decoration: TextDecoration.underline,
-                letterSpacing: 0.0,
-                fontFamily: "IBMPlexSans"),
-          ),
-        ),
-      );
-    } else {
-      return Container(
-        width: radius * 2,
-        height: radius * 2,
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-                color: Colors.white, width: 1.0, style: BorderStyle.solid),
-            image: DecorationImage(
-                colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorLight, BlendMode.srcATop),
-                image: AssetImage("src/images/avatarbg.png"),
-                fit: BoxFit.cover)),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.edit, size: 24),
-            Text(
-              "Select Image",
+    return Container(
+      width: radius * 2,
+      height: radius * 2,
+      decoration: useDecoration
+          ? BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                  color: Colors.white, width: 1.0, style: BorderStyle.solid),
+              image: DecorationImage(
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context).primaryColorLight, BlendMode.srcATop),
+                  image: AssetImage("src/images/avatarbg.png"),
+                  fit: BoxFit.cover))
+          : null,
+      child: (itemName != null && itemName.isNotEmpty)
+          ? Center(
+              child: Text(
+              _getFirstTwoLetters(),
               style: TextStyle(
-                  fontSize: 12.3,
+                  fontSize: useDecoration ? 48 : radius,
                   color: Color.fromRGBO(255, 255, 255, 0.88),
+                  decoration: TextDecoration.underline,
                   letterSpacing: 0.0,
                   fontFamily: "IBMPlexSans"),
+            ))
+          : Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.edit, size: 24),
+                Text(
+                  "Select Image",
+                  style: TextStyle(
+                      fontSize: 12.3,
+                      color: Color.fromRGBO(255, 255, 255, 0.88),
+                      letterSpacing: 0.0,
+                      fontFamily: "IBMPlexSans"),
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    }
+    );
   }
 
   String _getFirstTwoLetters() {
