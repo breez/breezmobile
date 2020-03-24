@@ -1,5 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:breez/theme_data.dart';
+import 'package:breez/utils/icon_map.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
 
@@ -19,14 +20,7 @@ class ItemAvatarPicker extends StatefulWidget {
 }
 
 class ItemAvatarPickerState extends State<ItemAvatarPicker> {
-  Map<String, IconData> iconMap = {
-    'account_balance': Icons.account_balance,
-    'map': Icons.map,
-    'airline_seat_individual_suite': Icons.airline_seat_individual_suite,
-    'attach_money': Icons.attach_money,
-    'beach_access': Icons.beach_access,
-    'brush': Icons.brush
-  };
+  Map<String, IconData> iconMap = IconMap().iconMap;
   TextEditingController _imageFilterController = TextEditingController();
   String _selectedImage;
   Color bgColor = Colors.transparent;

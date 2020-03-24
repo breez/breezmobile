@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:breez/utils/icon_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 
@@ -83,15 +84,7 @@ class _IconAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Map Material Icons library
-    Map<String, IconData> iconMapping = {
-      'account_balance': Icons.account_balance,
-      'map': Icons.map,
-      'airline_seat_individual_suite': Icons.airline_seat_individual_suite,
-      'attach_money': Icons.attach_money,
-      'beach_access': Icons.beach_access,
-      'brush': Icons.brush
-    };
+    Map<String, IconData> iconMapping = IconMap().iconMap;
     String iconName = this.iconName.substring(5);
     return Container(
       width: radius * 2,
