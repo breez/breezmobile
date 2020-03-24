@@ -24,7 +24,7 @@ class ItemAvatar extends StatelessWidget {
         return _ColorAvatar(radius, avatarURL);
       }
       if (avatarURL.startsWith("icon:")) {
-        return _IconAvatar(radius, avatarURL, useDecoration);
+        return _IconAvatar(radius, avatarURL.substring(5), useDecoration);
       }
 
       return _FileImageAvatar(radius, avatarURL);
@@ -85,7 +85,6 @@ class _IconAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<String, IconData> iconMapping = IconMap().iconMap;
-    String iconName = this.iconName.substring(5);
     return Container(
       width: radius * 2,
       height: radius * 2,
