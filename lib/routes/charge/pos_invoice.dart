@@ -461,7 +461,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                 opacity:
                                                     _opacityTransition.value,
                                                 child: ItemAvatar(
-                                                    _itemInTransition.imageURL),
+                                                    _itemInTransition.imageURL, itemName: _itemInTransition.name),
                                               ),
                                             ),
                                             left:
