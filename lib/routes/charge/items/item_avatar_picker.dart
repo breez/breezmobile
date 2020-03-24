@@ -139,11 +139,10 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
     );
   }
 
-  AspectRatio _buildIconGrid() {
-    return AspectRatio(
-      aspectRatio: 1,
+  _buildIconGrid() {
+    return Expanded(
       child: GridView.count(
-        crossAxisCount: 4,
+        crossAxisCount: 5,
         children: _iconList
             .map((value, icon) {
               return MapEntry(
