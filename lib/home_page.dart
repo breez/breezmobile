@@ -173,6 +173,7 @@ class HomeState extends State<Home> {
                         ])
                       ];
                       var advancedFlavorItems = List<DrawerItemConfig>();
+                      bool isLight = theme.themeId == "BLUE";
                       advancedFlavorItems = user.isPOS
                           ? [
                               DrawerItemConfig("", "POS", "src/icon/pos.png",
@@ -199,21 +200,25 @@ class HomeState extends State<Home> {
                           : [
                               DrawerItemConfig("", "POS", "src/icon/pos.png",
                                   onItemSelected: (_) {
-                                widget.userProfileBloc.userActionsSink
-                                    .add(SetPOSFlavor(!user.isPOS));
+                                if (account.connected) {
+                                  widget.userProfileBloc.userActionsSink
+                                      .add(SetPOSFlavor(!user.isPOS));
+                                }
                               },
-                                  switchWidget: Switch(
-                                      activeColor: Colors.white,
-                                      value: user.isPOS,
-                                      onChanged: !account.connected
-                                          ? null
-                                          : (_) {
-                                              var action =
-                                                  SetPOSFlavor(!user.isPOS);
-                                              widget.userProfileBloc
-                                                  .userActionsSink
-                                                  .add(action);
-                                            })),
+                              disabled: !account.connected,
+                              switchWidget: Switch(
+                                  inactiveThumbColor: !isLight ? Colors.grey.shade800 : Colors.grey.shade400,
+                                  activeColor: Colors.white,                                      
+                                  value: user.isPOS,
+                                  onChanged: !account.connected
+                                      ? null
+                                      : (_) {
+                                          var action =
+                                              SetPOSFlavor(!user.isPOS);
+                                          widget.userProfileBloc
+                                              .userActionsSink
+                                              .add(action);
+                                        })),
                               DrawerItemConfig("/developers", "Developers",
                                   "src/icon/developers.png")
                             ];
