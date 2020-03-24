@@ -23,9 +23,15 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
             context: context,
             barrierDismissible: true,
             builder: (BuildContext context) {
-              return AlertDialog(
-                  contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
-                  content: _SuccessfulPaymentMessage());
+              return GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: AlertDialog(
+                    contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
+                    content: _SuccessfulPaymentMessage()),
+              );
             }).whenComplete(() => Navigator.of(context).pop());
       });
     }
@@ -45,45 +51,38 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
 class _SuccessfulPaymentMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pop();
-      },
-      //child: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(bottom: 40.0),
-            child: Text(
-              'Payment approved!',
-              textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .primaryTextTheme
-                  .headline4
-                  .copyWith(fontSize: 16),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(bottom: 40.0),
+          child: Text(
+            'Payment approved!',
+            textAlign: TextAlign.center,
+            style: Theme.of(context)
+                .primaryTextTheme
+                .headline4
+                .copyWith(fontSize: 16),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(bottom: 40.0),
+          child: Container(
+            decoration: new BoxDecoration(
+              color: Theme.of(context).buttonColor,
+              shape: BoxShape.circle,
+            ),
+            child: Image(
+              image: AssetImage("src/icon/ic_done.png"),
+              height: 48.0,
+              color: theme.themeId == "BLUE"
+                  ? Color.fromRGBO(0, 133, 251, 1.0)
+                  : Colors.white,
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 40.0),
-            child: Container(
-              decoration: new BoxDecoration(
-                color: Theme.of(context).buttonColor,
-                shape: BoxShape.circle,
-              ),
-              child: Image(
-                image: AssetImage("src/icon/ic_done.png"),
-                height: 48.0,
-                color: theme.themeId == "BLUE"
-                    ? Color.fromRGBO(0, 133, 251, 1.0)
-                    : Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
-      // ),
+        ),
+      ],
     );
   }
 }
