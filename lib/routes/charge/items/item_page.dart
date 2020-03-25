@@ -158,7 +158,9 @@ class ItemPageState extends State<ItemPage> {
                                         decoration: InputDecoration(
                                           labelText: 'Currency',
                                           contentPadding: EdgeInsets.symmetric(
-                                              vertical: 10.6),
+                                              vertical: 10.6 *
+                                                  MediaQuery.of(this.context)
+                                                      .textScaleFactor),
                                         ),
                                         value: _selectedCurrency.shortName,
                                         onChanged: (value) =>
