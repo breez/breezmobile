@@ -1,8 +1,11 @@
 import 'package:badges/badges.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/pos_catalog/bloc.dart';
+import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/theme_data.dart';
-import 'package:breez/utils/icon_map.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'item_avatar.dart';
 
@@ -20,23 +23,17 @@ class ItemAvatarPicker extends StatefulWidget {
 }
 
 class ItemAvatarPickerState extends State<ItemAvatarPicker> {
-  Map<String, IconData> iconMap = IconMap.iconMap;
   TextEditingController _imageFilterController = TextEditingController();
   String _selectedImage;
-  Map<String, IconData> _iconList;
+  List<ProductIcon> _iconList = [];
 
   @override
   void initState() {
     super.initState();
     _selectedImage = widget.itemImage ?? "";
-    _iconList = iconMap;
     _imageFilterController.addListener(
       () {
-        setState(() {
-          _iconList = Map.from(iconMap)
-            ..removeWhere((k, v) =>
-                !k.contains(_imageFilterController.text.toLowerCase().trim()));
-        });
+        setState(() {});
       },
     );
   }
@@ -139,27 +136,32 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   }
 
   _buildIconGrid() {
-    return Expanded(
-      child: GridView.count(
-        crossAxisCount: 5,
-        children: _iconList
-            .map((value, icon) {
-              return MapEntry(
-                  value,
-                  IconButton(
-                    icon: Icon(icon),
-                    iconSize: 36,
-                    onPressed: () {
-                      setState(() {
-                        _selectedImage = "icon:$value";
-                        widget.onImageSelected(_selectedImage);
-                      });
-                    },
-                  ));
-            })
-            .values
-            .toList(),
-      ),
-    );
+    PosCatalogBloc posCatalogBloc =
+        AppBlocsProvider.of<PosCatalogBloc>(context);
+    return StreamBuilder<Object>(
+        stream: posCatalogBloc.productIconsStream,
+        builder: (context, snapshot) {
+          List<ProductIcon> allIcons = snapshot.data ?? [];
+          return Expanded(
+            child: GridView.count(
+              crossAxisCount: 5,
+              children: allIcons
+                  .where((icon) => icon.matches(
+                      _imageFilterController.text.toLowerCase().trim()))
+                  .map((icon) {
+                return IconButton(
+                  icon: SvgPicture.asset(icon.assetPath, color: Colors.white),
+                  iconSize: 36,
+                  onPressed: () {
+                    setState(() {
+                      _selectedImage = "icon:${icon.name}";
+                      widget.onImageSelected(_selectedImage);
+                    });
+                  },
+                );
+              }).toList(),
+            ),
+          );
+        });
   }
 }

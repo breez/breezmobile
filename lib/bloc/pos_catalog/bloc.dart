@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
@@ -8,6 +9,7 @@ import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
+import 'package:flutter/services.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'model.dart';
@@ -22,6 +24,9 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   final BehaviorSubject<Sale> _currentSaleController = BehaviorSubject<Sale>();
   Stream<Sale> get currentSaleStream => _currentSaleController.stream;
+
+  final BehaviorSubject<List<ProductIcon>> _productIconsController = BehaviorSubject<List<ProductIcon>>();
+  Stream<List<ProductIcon>> get productIconsStream => _productIconsController.stream;
 
   PosCatalogBloc(Stream<AccountModel> accountStream) {
     _repository = SqliteRepository();
@@ -40,6 +45,14 @@ class PosCatalogBloc with AsyncActionsHandler {
     _currentSaleController.add(Sale(saleLines: List()));
     _trackCurrentSaleRates(accountStream);
     _trackSalePayments();
+    _loadIcons();
+  }
+
+  Future _loadIcons() async {
+    String iconsJson =
+        await rootBundle.loadString('src/json/pos-icons-meta.json');
+   List<dynamic> decoded = json.decode(iconsJson);
+    _productIconsController.add(decoded.map((e) => ProductIcon.fromJson(e)).toList());
   }
 
   void _trackSalePayments() {
