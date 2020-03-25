@@ -79,7 +79,7 @@ Color fromHex(String hexString) {
 class _IconAvatar extends StatelessWidget {
   final double radius;
   final String iconName;
-  final bool useDecoration;  
+  final bool useDecoration;
 
   _IconAvatar(this.radius, this.iconName, this.useDecoration);
 
@@ -105,7 +105,9 @@ class _IconAvatar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          SvgPicture.asset("src/pos-icons/$iconName.svg", color: Colors.white, width: useDecoration ? radius : radius * 1.5)
+          SvgPicture.asset("src/pos-icons/$iconName.svg",
+              color: IconTheme.of(context).color,
+              width: useDecoration ? radius : radius * 1.5)
         ],
       ),
     );
@@ -164,7 +166,7 @@ class _UnknownAvatar extends StatelessWidget {
               _getFirstTwoLetters(),
               style: TextStyle(
                   fontSize: useDecoration ? 48 : radius,
-                  color: Color.fromRGBO(255, 255, 255, 0.88),
+                  color: IconTheme.of(context).color.withOpacity(0.88),                  
                   decoration: TextDecoration.underline,
                   letterSpacing: 0.0,
                   fontFamily: "IBMPlexSans"),

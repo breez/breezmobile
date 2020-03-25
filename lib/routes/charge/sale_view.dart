@@ -52,34 +52,36 @@ class SaleViewState extends State<SaleView> {
 
   @override
   void didChangeDependencies() {
-    if (_currentSaleSubscription == null && !widget.readOnly) {
-      PosCatalogBloc posCatalogBloc =
-          AppBlocsProvider.of<PosCatalogBloc>(context);
-      _currentSaleSubscription =
-          posCatalogBloc.currentSaleStream.listen((sale) {
-        setState(() {
-          bool updateNote = saleInProgress == null;
-          saleInProgress = sale;
-          if (updateNote) {
-            _noteController.text = sale.note;
-          }
-          var thisRoute = ModalRoute.of(context);
-          if (saleInProgress.saleLines.length == 0) {
-            if (thisRoute.isCurrent) {
-              Navigator.of(context).pop();
-            } else {
-              Navigator.of(context).removeRoute(thisRoute);
+    if (_currentSaleSubscription == null) {
+      if (!widget.readOnly) {
+        PosCatalogBloc posCatalogBloc =
+            AppBlocsProvider.of<PosCatalogBloc>(context);
+        _currentSaleSubscription =
+            posCatalogBloc.currentSaleStream.listen((sale) {
+          setState(() {
+            bool updateNote = saleInProgress == null;
+            saleInProgress = sale;
+            if (updateNote) {
+              _noteController.text = sale.note;
             }
-          }
+            var thisRoute = ModalRoute.of(context);
+            if (saleInProgress.saleLines.length == 0) {
+              if (thisRoute.isCurrent) {
+                Navigator.of(context).pop();
+              } else {
+                Navigator.of(context).removeRoute(thisRoute);
+              }
+            }
+          });
         });
-      });
 
-      _noteController.addListener(() {
-        posCatalogBloc.actionsSink.add(SetCurrentSale(
-            saleInProgress.copyWith(note: _noteController.text)));
-      });
-    } else {
-      _noteController.text = widget.readOnlySale.note;
+        _noteController.addListener(() {
+          posCatalogBloc.actionsSink.add(SetCurrentSale(
+              saleInProgress.copyWith(note: _noteController.text)));
+        });
+      } else {
+        _noteController.text = widget.readOnlySale.note;
+      }
     }
     super.didChangeDependencies();
   }
@@ -401,7 +403,7 @@ class SaleLineWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
       child: ListTile(
-          leading: ItemAvatar(saleLine.itemImageURL),
+          leading: ItemAvatar(saleLine.itemImageURL, itemName: saleLine.itemName),
           title: Text(
             saleLine.itemName,
             //style: TextStyle(fontWeight: FontWeight.bold),
