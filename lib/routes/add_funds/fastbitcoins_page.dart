@@ -225,7 +225,10 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                                             labelText: 'Currency',
                                             contentPadding:
                                                 EdgeInsets.symmetric(
-                                                    vertical: 10.6),
+                                                    vertical: 10.6 *
+                                                        MediaQuery.of(
+                                                                this.context)
+                                                            .textScaleFactor),
                                           ),
                                           value: _currency,
                                           onChanged: (String newValue) {

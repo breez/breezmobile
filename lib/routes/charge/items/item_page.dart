@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -9,6 +10,7 @@ import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/items/item_avatar.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
@@ -158,7 +160,9 @@ class ItemPageState extends State<ItemPage> {
                                         decoration: InputDecoration(
                                           labelText: 'Currency',
                                           contentPadding: EdgeInsets.symmetric(
-                                              vertical: 10.6),
+                                              vertical: 10.6 *
+                                                  MediaQuery.of(this.context)
+                                                      .textScaleFactor),
                                         ),
                                         value: _selectedCurrency.shortName,
                                         onChanged: (value) =>
@@ -261,13 +265,20 @@ class ItemPageState extends State<ItemPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Icon(Icons.edit, size: 24),
-          Text(
-            "Select Image",
-            style: TextStyle(
-                fontSize: 12.3,
-                color: Color.fromRGBO(255, 255, 255, 0.88),
-                letterSpacing: 0.0,
-                fontFamily: "IBMPlexSans"),
+          Padding(
+            padding: const EdgeInsets.only(left: 8, right: 8),
+            child: AutoSizeText(
+              "Select Image",
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
+              style: TextStyle(
+                  fontSize: 12.3,
+                  color: Color.fromRGBO(255, 255, 255, 0.88),
+                  letterSpacing: 0.0,
+                  fontFamily: "IBMPlexSans"),
+            ),
           ),
         ],
       ),
