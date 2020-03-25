@@ -278,7 +278,10 @@ class ProductIcon {
             (json["aliases"] as List<dynamic>).cast<String>(), json["name"]);
 
   bool matches(String searchTerm) {
-    return [...tags, ...aliases, name].any(
-        (element) => element.toLowerCase().contains(searchTerm.toLowerCase()));
+    return [...tags, ...aliases, name].any((element) {
+      return element          
+          .toLowerCase()
+          .contains(searchTerm.replaceAll(" ", "-").toLowerCase());
+    });
   }
 }
