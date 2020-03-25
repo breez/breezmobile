@@ -107,11 +107,11 @@ class ItemPageState extends State<ItemPage> {
                       return null;
                     },
                   ),
-                  Padding(
+                  Container(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Expanded(
@@ -199,7 +199,7 @@ class ItemPageState extends State<ItemPage> {
                       ],
                     ),
                   ),
-                  Padding(
+                  Container(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: TextFormField(
                       controller: _skuController,

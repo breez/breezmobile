@@ -180,7 +180,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
                           padding: EdgeInsets.only(top: 8.0),
                           child: Row(
                               mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Expanded(
