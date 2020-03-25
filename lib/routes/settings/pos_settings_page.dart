@@ -230,7 +230,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     if (confirmed) {
       Navigator.of(context).push(FadeInRoute(
         builder: (_) => SetAdminPasswordPage(
-            submitAction: isNew ? "Create Password" : "Change Password"),
+            submitAction: isNew ? "CREATE PASSWORD" : "CHANGE PASSWORD"),
       ));
     }
   }
