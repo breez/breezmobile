@@ -103,7 +103,7 @@ class BreezUserModel {
             ? 90.0
             : json['cancellationTimeoutValue'],
         hasAdminPassword = json['hasAdminPassword'] ?? false,
-        posCurrencyShortName = json['posCurrencyShortName'] ?? "BTC";
+        posCurrencyShortName = json['posCurrencyShortName'] ?? "SAT";
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
