@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pbserver.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/retry.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../async_actions_handler.dart';
@@ -63,8 +64,12 @@ class LNUrlBloc with AsyncActionsHandler {
   }
 
   Future _openChannel(OpenChannel action) async {
-    action.resolve(await _breezLib.connectDirectToLnurl(
-        action.uri, action.k1, action.callback));
+    var openResult = retry(
+        () => _breezLib.connectDirectToLnurl(
+            action.uri, action.k1, action.callback),
+        tryLimit: 3,
+        interval: Duration(seconds: 5));
+    action.resolve(await openResult);
   }
 
   @override
