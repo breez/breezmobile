@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:breez/utils/icon_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:flutter_svg/svg.dart';
 
 class ItemAvatar extends StatelessWidget {
   final String avatarURL;
@@ -78,7 +79,7 @@ Color fromHex(String hexString) {
 class _IconAvatar extends StatelessWidget {
   final double radius;
   final String iconName;
-  final bool useDecoration;
+  final bool useDecoration;  
 
   _IconAvatar(this.radius, this.iconName, this.useDecoration);
 
@@ -104,10 +105,7 @@ class _IconAvatar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Icon(
-            iconMapping[iconName],
-            size: useDecoration ? radius : radius * 1.5,
-          ),
+          SvgPicture.asset("src/pos-icons/$iconName.svg", color: Colors.white, width: useDecoration ? radius : radius * 1.5)
         ],
       ),
     );
