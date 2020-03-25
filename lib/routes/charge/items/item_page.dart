@@ -230,50 +230,48 @@ class ItemPageState extends State<ItemPage> {
                   ));
           Navigator.of(context).push(avatarPickerRoute);
         },
-        child:
-            (_nameController.text == null || _nameController.text.trim() == "")
-                ? _buildSelectImageButton(context)
-                : ItemAvatar(
-                    _itemImage,
-                    itemName: _nameController.text,
-                    radius: 48,
-                    useDecoration: true,
-                  ));
+        child: ((_itemImage == null || _itemImage == "") &&
+                (_nameController.text == null ||
+                    _nameController.text.trim() == ""))
+            ? _buildSelectImageButton(context)
+            : ItemAvatar(
+                _itemImage,
+                itemName: _nameController.text,
+                radius: 48,
+                useDecoration: true,
+              ));
   }
 
   Container _buildSelectImageButton(BuildContext context) {
     return Container(
-                  width: 96,
-                  height: 96,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                          color: Colors.white,
-                          width: 1.0,
-                          style: BorderStyle.solid),
-                      image: DecorationImage(
-                          colorFilter: ColorFilter.mode(
-                              Theme.of(context).primaryColorLight,
-                              BlendMode.srcATop),
-                          image: AssetImage("src/images/avatarbg.png"),
-                          fit: BoxFit.cover)),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(Icons.edit, size: 24),
-                      Text(
-                        "Select Image",
-                        style: TextStyle(
-                            fontSize: 12.3,
-                            color: Color.fromRGBO(255, 255, 255, 0.88),
-                            letterSpacing: 0.0,
-                            fontFamily: "IBMPlexSans"),
-                      ),
-                    ],
-                  ),
-                );
+      width: 96,
+      height: 96,
+      decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+              color: Colors.white, width: 1.0, style: BorderStyle.solid),
+          image: DecorationImage(
+              colorFilter: ColorFilter.mode(
+                  Theme.of(context).primaryColorLight, BlendMode.srcATop),
+              image: AssetImage("src/images/avatarbg.png"),
+              fit: BoxFit.cover)),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Icon(Icons.edit, size: 24),
+          Text(
+            "Select Image",
+            style: TextStyle(
+                fontSize: 12.3,
+                color: Color.fromRGBO(255, 255, 255, 0.88),
+                letterSpacing: 0.0,
+                fontFamily: "IBMPlexSans"),
+          ),
+        ],
+      ),
+    );
   }
 
   _onImageSelected(String selectedImage) {
@@ -320,7 +318,7 @@ class ItemPageState extends State<ItemPage> {
             if (_formKey.currentState.validate()) {
               if (widget.item != null) {
                 UpdateItem updateItem = UpdateItem(widget.item.copyWith(
-                    imageURL:  _itemImage != null && _itemImage.isNotEmpty
+                    imageURL: _itemImage != null && _itemImage.isNotEmpty
                         ? _itemImage
                         : null,
                     name: _nameController.text.trimRight(),
