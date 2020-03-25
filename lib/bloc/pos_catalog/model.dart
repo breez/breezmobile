@@ -145,6 +145,7 @@ class SaleLine implements DBItem {
       'id': id,
       'sale_id': saleID,
       'item_name': itemName,
+      'item_id': itemID,
       'item_sku': itemSKU,
       'quantity': quantity,
       'item_image_url': itemImageURL,
