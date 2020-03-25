@@ -56,6 +56,7 @@ Future<Database> getDB() async {
           id INTEGER PRIMARY KEY,
           sale_id INTEGER,
           item_name TEXT,
+          item_id INTEGER,
           item_sku TEXT,
           item_image_url TEXT,
           quantity INTEGER, 
