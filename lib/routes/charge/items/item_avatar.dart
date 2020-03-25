@@ -24,7 +24,7 @@ class ItemAvatar extends StatelessWidget {
         return _ColorAvatar(radius, avatarURL);
       }
       if (avatarURL.startsWith("icon:")) {
-        return _IconAvatar(radius, avatarURL, useDecoration);
+        return _IconAvatar(radius, avatarURL.substring(5), useDecoration);
       }
 
       return _FileImageAvatar(radius, avatarURL);
@@ -84,8 +84,7 @@ class _IconAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, IconData> iconMapping = IconMap().iconMap;
-    String iconName = this.iconName.substring(5);
+    Map<String, IconData> iconMapping = IconMap.iconMap;
     return Container(
       width: radius * 2,
       height: radius * 2,
@@ -172,22 +171,7 @@ class _UnknownAvatar extends StatelessWidget {
                   letterSpacing: 0.0,
                   fontFamily: "IBMPlexSans"),
             ))
-          : Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.edit, size: 24),
-                Text(
-                  "Select Image",
-                  style: TextStyle(
-                      fontSize: 12.3,
-                      color: Color.fromRGBO(255, 255, 255, 0.88),
-                      letterSpacing: 0.0,
-                      fontFamily: "IBMPlexSans"),
-                ),
-              ],
-            ),
+          : Container(),
     );
   }
 

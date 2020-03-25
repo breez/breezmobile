@@ -20,7 +20,7 @@ class ItemAvatarPicker extends StatefulWidget {
 }
 
 class ItemAvatarPickerState extends State<ItemAvatarPicker> {
-  Map<String, IconData> iconMap = IconMap().iconMap;
+  Map<String, IconData> iconMap = IconMap.iconMap;
   TextEditingController _imageFilterController = TextEditingController();
   String _selectedImage;
   Map<String, IconData> _iconList;
@@ -59,7 +59,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
         padding: EdgeInsets.only(top: 16, left: 0.0, right: 0.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildItemAvatar(context),
             SizedBox(height: 16),
@@ -73,9 +73,8 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
     );
   }
 
-  Center _buildItemAvatar(BuildContext context) {
-    return Center(
-        child: Badge(
+  _buildItemAvatar(BuildContext context) {
+    return Badge(
       showBadge: _selectedImage != "",
       position: BadgePosition.topRight(top: 5, right: -10),
       animationType: BadgeAnimationType.fade,
@@ -83,7 +82,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
       badgeContent: _buildResetIconBadge(context),
       child: ItemAvatar(_selectedImage ?? null,
           itemName: widget.itemName, radius: 48, useDecoration: true),
-    ));
+    );
   }
 
   GestureDetector _buildResetIconBadge(BuildContext context) {
@@ -139,11 +138,10 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
     );
   }
 
-  AspectRatio _buildIconGrid() {
-    return AspectRatio(
-      aspectRatio: 1,
+  _buildIconGrid() {
+    return Expanded(
       child: GridView.count(
-        crossAxisCount: 4,
+        crossAxisCount: 5,
         children: _iconList
             .map((value, icon) {
               return MapEntry(
