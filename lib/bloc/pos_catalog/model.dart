@@ -263,3 +263,22 @@ class Sale implements DBItem {
     return total;
   }
 }
+
+class ProductIcon {
+  final List<String> tags;
+  final List<String> aliases;
+  final String name;
+
+  String get assetPath => "src/pos-icons/$name.svg";
+
+  ProductIcon(this.tags, this.aliases, this.name);
+
+  ProductIcon.fromJson(Map<String, dynamic> json)
+      : this((json["tags"] as List<dynamic>).cast<String>(),
+            (json["aliases"] as List<dynamic>).cast<String>(), json["name"]);
+
+  bool matches(String searchTerm) {
+    return [...tags, ...aliases, name].any(
+        (element) => element.toLowerCase().contains(searchTerm.toLowerCase()));
+  }
+}
