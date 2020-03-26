@@ -150,7 +150,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         ? CurrencyWrapper.fromBTC(Currency.SAT)
         : saleCurrency;
     var priceInSaleCurrency = "";
-    if (saleCurrency != null && saleCurrency.symbol != userCurrency.symbol) {
+    if (saleCurrency.isFiat) {
       String salePrice = saleCurrency.format(
           widget.satAmount / saleCurrency.satConversionRate,
           removeTrailingZeros: true);
