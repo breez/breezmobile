@@ -95,7 +95,8 @@ class SaleLine implements DBItem {
       this.satConversionRate});
 
   SaleLine copyWith(
-      {int saleID,
+      {int id,
+      int saleID,
       String itemName,
       String itemSKU,
       int quantity,
@@ -104,7 +105,7 @@ class SaleLine implements DBItem {
       String currency,
       double satConversionRate}) {
     return SaleLine(
-        id: this.id,
+        id: id != null && id < 0 ? null : this.id,
         saleID: saleID ?? this.saleID,
         itemID: this.itemID,
         itemName: itemName ?? this.itemName,
@@ -114,6 +115,10 @@ class SaleLine implements DBItem {
         pricePerItem: pricePerItem ?? this.pricePerItem,
         currency: currency ?? this.currency,
         satConversionRate: satConversionRate ?? this.satConversionRate);
+  }
+
+  SaleLine copyNew() {
+    return copyWith(id: -1);
   }
 
   SaleLine.fromItem(Item item, int quantity, double satConversionRate)
@@ -162,12 +167,18 @@ class Sale implements DBItem {
   final String note;
   final bool priceLocked;
 
-  Sale copyWith({List<SaleLine> saleLines, bool priceLocked, String note}) {
+  Sale copyWith(
+      {int id, List<SaleLine> saleLines, bool priceLocked, String note}) {
     return Sale(
-        id: this.id,
+        id: id != null && id < 0 ? null : this.id,
         note: note ?? this.note,
         saleLines: (saleLines ?? this.saleLines).toList(),
         priceLocked: priceLocked ?? this.priceLocked);
+  }
+
+  Sale copyNew() {
+    return copyWith(
+        id: -1, saleLines: this.saleLines.map((sl) => sl.copyNew()).toList());
   }
 
   Sale({this.id, this.saleLines, this.note, this.priceLocked = false});
@@ -279,7 +290,7 @@ class ProductIcon {
 
   bool matches(String searchTerm) {
     return [...tags, ...aliases, name].any((element) {
-      return element          
+      return element
           .toLowerCase()
           .contains(searchTerm.replaceAll(" ", "-").toLowerCase());
     });

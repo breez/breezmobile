@@ -137,7 +137,7 @@ class SqliteRepository implements Repository {
     return executor.insert(
       tableName,
       item.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
+      conflictAlgorithm: ConflictAlgorithm.fail,
     );
   }
 

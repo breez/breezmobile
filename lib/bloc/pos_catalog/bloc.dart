@@ -25,8 +25,10 @@ class PosCatalogBloc with AsyncActionsHandler {
   final BehaviorSubject<Sale> _currentSaleController = BehaviorSubject<Sale>();
   Stream<Sale> get currentSaleStream => _currentSaleController.stream;
 
-  final BehaviorSubject<List<ProductIcon>> _productIconsController = BehaviorSubject<List<ProductIcon>>();
-  Stream<List<ProductIcon>> get productIconsStream => _productIconsController.stream;
+  final BehaviorSubject<List<ProductIcon>> _productIconsController =
+      BehaviorSubject<List<ProductIcon>>();
+  Stream<List<ProductIcon>> get productIconsStream =>
+      _productIconsController.stream;
 
   PosCatalogBloc(Stream<AccountModel> accountStream) {
     _repository = SqliteRepository();
@@ -51,8 +53,9 @@ class PosCatalogBloc with AsyncActionsHandler {
   Future _loadIcons() async {
     String iconsJson =
         await rootBundle.loadString('src/json/pos-icons-meta.json');
-   List<dynamic> decoded = json.decode(iconsJson);
-    _productIconsController.add(decoded.map((e) => ProductIcon.fromJson(e)).toList());
+    List<dynamic> decoded = json.decode(iconsJson);
+    _productIconsController
+        .add(decoded.map((e) => ProductIcon.fromJson(e)).toList());
   }
 
   void _trackSalePayments() {
@@ -122,7 +125,7 @@ class PosCatalogBloc with AsyncActionsHandler {
   }
 
   Future _submitSale(SubmitCurrentSale action) async {
-    var currentSale = _currentSaleController.value;
+    var currentSale = _currentSaleController.value.copyNew();
     int saleID = await _repository.addSale(currentSale, action.paymentHash);
     var submittedSale = await _repository.fetchSaleByID(saleID);
     _currentSaleController.add(submittedSale);
