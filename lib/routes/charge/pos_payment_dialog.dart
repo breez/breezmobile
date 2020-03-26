@@ -5,6 +5,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/services/countdown.dart';
 import 'package:breez/services/injector.dart';
@@ -145,7 +146,9 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   Widget _buildWaitingPayment(AccountModel account, BuildContext context) {
     var saleCurrency = CurrencyWrapper.fromShortName(
         widget._user.posCurrencyShortName, account);
-    var userCurrency = CurrencyWrapper.fromBTC(widget._user.currency);
+    var userCurrency = (saleCurrency.isFiat)
+        ? CurrencyWrapper.fromBTC(Currency.SAT)
+        : CurrencyWrapper.fromBTC(widget._user.currency);
     var priceInSaleCurrency = "";
     if (saleCurrency != null && saleCurrency.symbol != userCurrency.symbol) {
       String salePrice = saleCurrency.format(
