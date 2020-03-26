@@ -880,10 +880,15 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     PosCatalogBloc posCatalogBloc =
         AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
-      double addition = int.parse(numberText).toDouble() /
-          pow(10, currentCurrency.fractionSize);
+      var normalizeFactor = pow(10, currentCurrency.fractionSize);     
       var newSale = currentSale;
-      var newPrice = currentAmount * 10 + addition;
+
+      //better to do calculations on integers to avoid precision lose.      
+      var addition = int.parse(numberText);
+      int intAmount = (currentAmount * normalizeFactor).toInt();
+      intAmount = intAmount * 10 + addition;
+      var newPrice = intAmount / normalizeFactor;
+
       if (currentPendingItem == null) {
         newSale = currentSale.addCustomItem(newPrice, currentCurrency.shortName,
             currentCurrency.satConversionRate);
