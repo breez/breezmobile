@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
 void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
-  accountBloc.lightningDownStream.listen((change) {
+  accountBloc.lightningDownStream.listen((allowRetry) {
     promptError(
       context,
       "No Internet Connection",
@@ -85,9 +85,9 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
       // Text(
       //     "You can try:\n• Turning off airplane mode\n• Turning on mobile data or Wi-Fi\n• Checking the signal in your area",
       //     style: Theme.of(context).dialogTheme.contentTextStyle),
-      okText: "Try Again",
-      okFunc: () => accountBloc.userActionsSink.add(RestartDaemon()),
-      optionText: "Exit",
+      okText: allowRetry ? "Try Again" : "Exit",
+      okFunc: allowRetry ? () => accountBloc.userActionsSink.add(RestartDaemon()) : () => exit(0),
+      optionText: allowRetry ? "Exit" : null,
       optionFunc: () => exit(0),
       disableBack: true,
     );

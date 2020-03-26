@@ -423,17 +423,21 @@ class AccountBloc {
             log.info("onboarding background task finished");
           });
           log.info("account: starting lightning...");
-          await _breezLib.startLightning();
-          log.info("account: lightning started");
-          if (user.token != null) {
-            _breezLib.registerPeriodicSync(user.token);
+          try {
+            await _breezLib.startLightning();
+            log.info("account: lightning started");
+            if (user.token != null) {
+              _breezLib.registerPeriodicSync(user.token);
+            }
+            _fetchFundStatus();
+            _listenConnectivityChanges();
+            _listenReconnects();
+            _listenRefundableDeposits();
+            _updateExchangeRates();
+            _listenRefundBroadcasts();
+          } catch (e) {
+            _lightningDownController.add(false);
           }
-          _fetchFundStatus();
-          _listenConnectivityChanges();
-          _listenReconnects();
-          _listenRefundableDeposits();
-          _updateExchangeRates();
-          _listenRefundBroadcasts();
         }
       }
     });
