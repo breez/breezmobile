@@ -144,13 +144,14 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   }
 
   Widget _buildWaitingPayment(AccountModel account, BuildContext context) {
+    // TODO: handle user mode changes to currency
     var saleCurrency = CurrencyWrapper.fromShortName(
         widget._user.posCurrencyShortName, account);
-    var userCurrency = (saleCurrency.isFiat)
-        ? CurrencyWrapper.fromBTC(Currency.SAT)
-        : CurrencyWrapper.fromBTC(widget._user.currency);
+    var userCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
     var priceInSaleCurrency = "";
-    if (saleCurrency != null && saleCurrency.symbol != userCurrency.symbol) {
+    if (saleCurrency != null &&
+        saleCurrency.shortName != "BTC" &&
+        saleCurrency.symbol != userCurrency.symbol) {
       String salePrice = saleCurrency.format(
           widget.satAmount / saleCurrency.satConversionRate,
           removeTrailingZeros: true);
