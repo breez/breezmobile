@@ -71,13 +71,10 @@ class _CurrencyFormatter {
     switch (currency) {
       case Currency.BTC:
         double amountInBTC = (satoshies.toInt() / 100000000);
-        if (!removeTrailingZeros) {
-          formattedAmount = amountInBTC.toStringAsFixed(8);
-        } else {
-          // #.0* should be displayed without trailing zeros
-          formattedAmount = amountInBTC.truncateToDouble() == amountInBTC
-              ? amountInBTC.toStringAsFixed(0)
-              : amountInBTC.toString();
+        formattedAmount = amountInBTC.toStringAsFixed(8);
+        if (removeTrailingZeros) {
+          formattedAmount = formattedAmount.replaceAllMapped(
+              RegExp(r'^(\d+\.\d*?[1-9])0+$'), (match) => match.group(1));
         }
         break;
       case Currency.SAT:
