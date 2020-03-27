@@ -73,8 +73,12 @@ class _CurrencyFormatter {
         double amountInBTC = (satoshies.toInt() / 100000000);
         formattedAmount = amountInBTC.toStringAsFixed(8);
         if (removeTrailingZeros) {
-          formattedAmount = formattedAmount.replaceAllMapped(
-              RegExp(r'^(\d+\.\d*?[1-9])0+$'), (match) => match.group(1));
+          if (amountInBTC.truncateToDouble() == amountInBTC) {
+            formattedAmount = amountInBTC.toInt().toString();
+          } else {
+            formattedAmount = formattedAmount.replaceAllMapped(
+                RegExp(r'^(\d+\.\d*?[1-9])0+$'), (match) => match.group(1));
+          }
         }
         break;
       case Currency.SAT:
