@@ -1,197 +1,92 @@
-import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
-import 'dev.dart';
+class Command extends StatelessWidget {
+  final String command;
+  final Function(String command) onTap;
 
-var defaultCliCommandsText = <TextSpan>[
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'getinfo',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'getbackup',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'listpeers',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'newaddress',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'sendcoins',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'sendmany',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'connect',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'disconnect',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'openchannel',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'closechannel',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'closeallchannels',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'walletbalance',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'channelbalance',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'pendingchannels',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'listchannels',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'closedchannels',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'sendpayment',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'sendtoroute',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'addinvoice',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'lookupinvoice',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'listinvoices',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'describegraph',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'listpayments',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'getchaninfo',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'getnodeinfo',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'queryroutes',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'getnetworkinfo',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'debuglevel',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'decodepayreq',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'listchaintxns',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'stop',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'signmessage',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'verifymessage',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'feereport',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'updatechanpolicy',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'fwdinghistory',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'querymc',
-  ),
-  TextSpan(text: "\n"),
-  LinkTextSpan(
-    style: theme.linkStyle,
-    command: 'resetmc',
-  ),
-  TextSpan(text: "\n"),
-];
+  const Command(this.command, this.onTap, {Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          this.onTap(command);
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 24.0),
+            child: Text(
+          command,
+          textAlign: TextAlign.left,
+        )));
+  }
+}
+
+class Category extends StatelessWidget {
+  final String name;
+
+  const Category(this.name, {Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(name, style: Theme.of(context).textTheme.headline6);
+  }
+}
+
+List<Widget> defaultCliCommandsText(Function(String command) onCommand) => [
+      Category("General"),
+      Command("getinfo", onCommand),
+      Command("debuglevel", onCommand),
+      Command("stop", onCommand),
+      
+      Category("Channels"),
+      Command("openchannel", onCommand),
+      Command("closechannel", onCommand),
+      Command("closeallchannels", onCommand),
+      Command("abandonchannel", onCommand),
+      Command("channelbalance", onCommand),
+      Command("pendingchannels", onCommand),
+      Command("listchannels", onCommand),
+      Command("closedchannels", onCommand),
+      Command("getchaninfo", onCommand),
+      Command("getnetworkinfo", onCommand),
+      Command("feereport", onCommand),
+      Command("updatechanpolicy", onCommand),
+      
+      Category("On-chain"),
+      Command("estimatefee", onCommand),
+      Command("sendmany", onCommand),
+      Command("listunspent", onCommand),
+      
+      Category("Payments"),
+      Command("sendpayment", onCommand),
+      Command("payinvoice", onCommand),
+      Command("sendtoroute", onCommand),
+      Command("addinvoice", onCommand),
+      Command("lookupinvoice", onCommand),
+      Command("listinvoices", onCommand),
+      Command("queryroutes", onCommand),
+      Command("decodepayreq", onCommand),
+      Command("fwdinghistory", onCommand),
+      Command("querymc", onCommand),
+      Command("queryprob", onCommand),
+      Command("resetmc", onCommand),
+      Command("buildroute", onCommand),
+      Command("cancelinvoice", onCommand),
+      Command("addholdinvoice", onCommand),
+      Command("settleinvoice", onCommand),
+      
+      Category("Peers"),
+      Command("connect", onCommand),
+      Command("disconnect", onCommand),
+      Command("listpeers", onCommand),
+      Command("describegraph", onCommand),
+      Command("getnodeinfo", onCommand),
+      
+      Category("Wallet"),
+      Command("newaddress", onCommand),
+      Command("walletbalance", onCommand),
+      Command("signmessage", onCommand),
+      Command("verifymessage", onCommand),
+      Command("wallet pendingsweeps", onCommand),
+      Command("wallet bumpfee", onCommand)
+    ];

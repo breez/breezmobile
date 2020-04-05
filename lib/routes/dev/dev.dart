@@ -31,19 +31,6 @@ import 'default_commands.dart';
 final _cliInputController = TextEditingController();
 final FocusNode _cliEntryFocusNode = FocusNode();
 
-class LinkTextSpan extends TextSpan {
-  LinkTextSpan({TextStyle style, String command, String text})
-      : super(
-            style: style,
-            text: text ?? command,
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                _cliInputController.text = command + " ";
-                FocusScope.of(_scaffoldKey.currentState.context)
-                    .requestFocus(_cliEntryFocusNode);
-              });
-}
-
 class Choice {
   const Choice({this.title, this.icon, this.function});
 
@@ -85,7 +72,6 @@ class DevViewState extends State<DevView> {
 
   @override
   void initState() {
-    _richCliText = defaultCliCommandsText;
     super.initState();
   }
 
@@ -110,6 +96,19 @@ class DevViewState extends State<DevView> {
         ];
       });
     });
+  }
+
+  List<Widget> _renderBody() {
+    if (_showDefaultCommands) {
+      return defaultCliCommandsText((command) {
+        _cliInputController.text = command + " ";
+        FocusScope.of(_scaffoldKey.currentState.context)
+            .requestFocus(_cliEntryFocusNode);
+      });
+    }
+    return [
+      RichText(text: TextSpan(style: _cliTextStyle, children: _richCliText))
+    ];
   }
 
   @override
@@ -219,8 +218,6 @@ class DevViewState extends State<DevView> {
                                                   _cliInputController.clear();
                                                   _showDefaultCommands = true;
                                                   _cliText = "";
-                                                  _richCliText =
-                                                      defaultCliCommandsText;
                                                 });
                                               },
                                             ),
@@ -247,6 +244,7 @@ class DevViewState extends State<DevView> {
                                                               0x80FFFFFF))),
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.max,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   _showDefaultCommands
                                                       ? Container()
@@ -306,17 +304,16 @@ class DevViewState extends State<DevView> {
                                                     padding:
                                                         const EdgeInsets.all(
                                                             8.0),
-                                                    child: Row(
-                                                      children: <Widget>[
-                                                        Expanded(
-                                                            child: RichText(
-                                                                text: TextSpan(
-                                                                    style:
-                                                                        _cliTextStyle,
-                                                                    children:
-                                                                        _richCliText)))
-                                                      ],
-                                                    ),
+                                                    child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        
+                                                        children: _renderBody().map((e) => Row(
+                                                          children: <Widget>[
+                                                            Expanded(child: e)
+                                                          ],
+                                                        )).toList(),
+                                                      ),
+                                                    
                                                   )))
                                                 ],
                                               ),
@@ -448,8 +445,8 @@ class DevViewState extends State<DevView> {
   }
 
   void _resetBugReportBehavior(AccountBloc bloc, AccountSettings settings) {
-    bloc.accountSettingsSink
-        .add(settings.copyWith(failedPaymentBehavior: BugReportBehavior.PROMPT));
+    bloc.accountSettingsSink.add(
+        settings.copyWith(failedPaymentBehavior: BugReportBehavior.PROMPT));
   }
 
   void _setShowExcessFunds(AccountBloc bloc, AccountSettings settings,
