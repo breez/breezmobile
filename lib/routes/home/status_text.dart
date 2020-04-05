@@ -40,7 +40,7 @@ class _StatusTextState extends State<StatusText> {
             // style: theme.blueLinkStyle),
             TextSpan(
                 text:
-                    " with our server. This might take a while, but don't worry, we'll notify when the app is ready to send and receive payments.",
+                    " with our server. This might take a while, but don't worry, we'll notify you when the app is ready to send and receive payments.",
                 style: DefaultTextStyle.of(context).style)
           ]);
     }

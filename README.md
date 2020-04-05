@@ -56,12 +56,10 @@
 - [x] Implement lnurl-withdraw 
 - [x] Send on-chain via reverse Submarine Swaps
 - [x] Improve hodl invoice support
+- [x] POS POC release
 - [ ] Support zero-conf channels
 - [ ] Async payments via Lightning Rod
 - [ ] Support SD storage
-- [ ] NFC card support
-- [ ] NFC device support
-- [ ] POS POC release
 
 ## System Requirements
 * Android 7+ 64bit
