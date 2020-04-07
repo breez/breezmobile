@@ -57,7 +57,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
       appBar: AppBar(
         iconTheme: Theme.of(context).appBarTheme.iconTheme,
         textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: theme.BreezColors.blue[500],
+        backgroundColor: Theme.of(context).canvasColor,
         automaticallyImplyLeading: false,
         elevation: 0.0,
         title: Text(
