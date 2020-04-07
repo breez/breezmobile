@@ -27,7 +27,8 @@ class VendorRow extends StatelessWidget {
     final _vendorLogo = _vendor.logo != null
         ? Image(
             image: AssetImage(_vendor.logo),
-            height: 48.0,
+            height: 48,
+            width: 196,
             color: _vendorFgColor,
             colorBlendMode: BlendMode.srcATop,
           )
