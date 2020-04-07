@@ -204,13 +204,17 @@ final VendorTheme xsats = VendorTheme(
 final VendorTheme lightnite = VendorTheme(
   iconBgColor: Color(0xFF530709),
 );
+final VendorTheme fixedfloat = VendorTheme(
+  iconBgColor: Color(0xFF0B4E7B),
+);
 
 final Map<String, VendorTheme> vendorTheme = {
   "bitrefill": bitrefill,
   "fastbitcoins": fastbitcoins,
   "ln.pizza": lnpizza,
   "xsats": xsats,
-  "lightnite": lightnite
+  "lightnite": lightnite,
+  "fixedfloat": fixedfloat
 };
 
 final TextStyle drawerItemTextStyle =
