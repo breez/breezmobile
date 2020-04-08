@@ -44,7 +44,7 @@ class VendorRow extends StatelessWidget {
               ));
         },
         child: Container(
-          margin: EdgeInsets.fromLTRB(32.0, 16.0, 32.0, 0.0),
+          margin: EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 8.0),
           constraints: BoxConstraints.expand(),
           decoration: BoxDecoration(
               color: _vendorBgColor,
