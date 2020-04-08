@@ -84,10 +84,14 @@ class WeblnHandlers {
   Future<Map<String, dynamic>> _makeInvoice(postMessage) async {
     Map<String, dynamic> invoiceArgs = postMessage["invoiceArgs"];
     if (invoiceArgs == null) {
-      return Future.error("no invoice arguements");
+      return Future.error("no invoice arguments");
     }
     String memo = invoiceArgs["defaultMemo"];
     int amount = invoiceArgs["amount"];
+
+    if (amount == null) {
+      return Future.error("Missing amount argument");
+    }
 
     bool accept = await showDialog<bool>(
         useRootNavigator: false,
