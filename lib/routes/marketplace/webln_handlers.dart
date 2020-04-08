@@ -90,7 +90,7 @@ class WeblnHandlers {
     int amount = invoiceArgs["amount"];
 
     if (amount == null) {
-      return Future.error("Missing amount argument");
+      return Future.error("Zero-amount invoice is not supported.");
     }
 
     bool accept = await showDialog<bool>(
