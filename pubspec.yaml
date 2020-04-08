@@ -19,7 +19,7 @@ dependencies:
   qr_flutter: ^2.0.0
   hex: "^0.1.1"
   rxdart: "^0.18.1"
-  flutter_advanced_networkimage: 0.6.0-alpha.1
+  flutter_advanced_networkimage: 0.7.0
   intl: ^0.15.7
   flushbar:
    git:
@@ -33,7 +33,7 @@ dependencies:
   ini: ^2.0.1
   connectivity: ^0.4.5+3
   logging: ^0.11.3+2
-  flutter_svg: "^0.14.2"
+  flutter_svg: ^0.17.4
   json_annotation: ^2.0.0
   http: ^0.12.0+1
   url_launcher: ^5.0.1
