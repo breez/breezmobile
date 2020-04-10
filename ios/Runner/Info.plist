@@ -36,6 +36,14 @@
 				<string>lightning</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>breez.link</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>breez</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>0.5</string>

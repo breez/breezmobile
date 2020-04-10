@@ -12,9 +12,12 @@ class LightningLinksService {
 
   LightningLinksService() {
     Observable.merge([getInitialLink().asStream(), getLinksStream()])
-        .where((l) => l != null && l.startsWith("lightning:"))
+        .where((l) => l != null && (l.startsWith("lightning:") || l.startsWith("breez:")))
         .listen((l){
           log.info("Got lightning link: $l");
+          if (l.startsWith("breez:")) {
+            l = l.substring(6);
+          }
           _linksNotificationsController.add(l);
         });
   }
