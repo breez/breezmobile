@@ -98,17 +98,23 @@ class DevViewState extends State<DevView> {
     });
   }
 
-  List<Widget> _renderBody() {
+  Widget _renderBody() {
     if (_showDefaultCommands) {
-      return defaultCliCommandsText((command) {
-        _cliInputController.text = command + " ";
-        FocusScope.of(_scaffoldKey.currentState.context)
-            .requestFocus(_cliEntryFocusNode);
-      });
+      return Theme(
+          data: Theme.of(context).copyWith(
+            dividerColor: Colors.transparent,
+          ),
+          child: ListView(children: defaultCliCommandsText((command) {
+            _cliInputController.text = command + " ";
+            FocusScope.of(_scaffoldKey.currentState.context)
+                .requestFocus(_cliEntryFocusNode);
+          })));
     }
-    return [
-      RichText(text: TextSpan(style: _cliTextStyle, children: _richCliText))
-    ];
+    return ListView(
+      children: [
+        RichText(text: TextSpan(style: _cliTextStyle, children: _richCliText))
+      ],
+    );
   }
 
   @override
@@ -244,7 +250,8 @@ class DevViewState extends State<DevView> {
                                                               0x80FFFFFF))),
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.max,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   _showDefaultCommands
                                                       ? Container()
@@ -297,24 +304,7 @@ class DevViewState extends State<DevView> {
                                                             )
                                                           ],
                                                         ),
-                                                  Expanded(
-                                                      child:
-                                                          SingleChildScrollView(
-                                                              child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        
-                                                        children: _renderBody().map((e) => Row(
-                                                          children: <Widget>[
-                                                            Expanded(child: e)
-                                                          ],
-                                                        )).toList(),
-                                                      ),
-                                                    
-                                                  )))
+                                                  Expanded(child: _renderBody())
                                                 ],
                                               ),
                                             ),
