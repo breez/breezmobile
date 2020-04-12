@@ -142,7 +142,7 @@ class HomeState extends State<Home> {
                           if (v.isAllowed) {
                             addFundsVendors.add(DrawerItemConfig(
                                 v.route, v.shortName ?? v.name, v.icon,
-                                disabled: v.requireActiveChannel &&
+                                disabled: !v.enabled || v.requireActiveChannel &&
                                     !account.connected));
                           }
                         });

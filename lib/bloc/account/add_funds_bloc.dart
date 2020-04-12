@@ -22,6 +22,9 @@ class AddFundsBloc extends Bloc {
   static const String ADD_FUNDS_SETTINGS_PREFERENCES_KEY = "add_funds_settings";
   static const String PENDING_MOONPAY_ORDER_KEY = "pending_moonpay_order";
   static bool _ipCheckResult = false;
+  static Duration staleOrderInterval = Duration(hours: 1);
+
+  bool _isMoonpayAllowed = false;
 
   final Stream<AccountModel> accountStream;
   final _addFundRequestController = StreamController<bool>.broadcast();
@@ -81,18 +84,26 @@ class AddFundsBloc extends Bloc {
       });
     });
     _addFundsSettingsController.add(AddFundsSettings.start());
-    _populateAvailableVendors(false);
     _handleAddFundsSettings(injector);
     _handleMoonpayOrders(injector);
   }
 
-  Future _populateAvailableVendors(bool moonpayAllowed) async {
+  Future _populateAvailableVendors() async {
+    var pendingMoonpayOrder = _completedMoonpayOrderController.value;
+    bool hasPendingOrder = false;
+    if (pendingMoonpayOrder != null) {
+      Duration timePending = DateTime.now().difference(
+          DateTime.fromMillisecondsSinceEpoch(
+              pendingMoonpayOrder.orderTimestamp ?? 0));
+      hasPendingOrder = timePending <= staleOrderInterval;
+    }
     List<AddFundVendorModel> _vendorList = [];
     _vendorList.add(AddFundVendorModel("Receive via BTC Address",
-        "src/icon/bitcoin.png", "/deposit_btc_address"));
+        "src/icon/bitcoin.png", "/deposit_btc_address",
+        enabled: !hasPendingOrder));
     _vendorList.add(AddFundVendorModel(
         "Buy Bitcoin", "src/icon/credit_card.png", "/buy_bitcoin",
-        isAllowed: moonpayAllowed));
+        isAllowed: _isMoonpayAllowed, enabled: !hasPendingOrder));
     _vendorList.add(AddFundVendorModel("Redeem Fastbitcoins Voucher",
         "src/icon/vendors/fastbitcoins_logo.png", "/fastbitcoins",
         requireActiveChannel: true, shortName: "Redeem Voucher"));
@@ -120,20 +131,21 @@ class AddFundsBloc extends Bloc {
         preferences.getString(ADD_FUNDS_SETTINGS_PREFERENCES_KEY);
     Map<String, dynamic> settings =
         addFundsSettings != null ? json.decode(addFundsSettings) : {};
-    bool ipAllowed = settings["moonpayIpCheck"] == false;
-    if (!ipAllowed) {
-      ipAllowed = await _isIPMoonpayAllowed();
+    _isMoonpayAllowed = settings["moonpayIpCheck"] == false;
+    if (!_isMoonpayAllowed) {
+      _isMoonpayAllowed = await _isIPMoonpayAllowed();
     }
-    _populateAvailableVendors(ipAllowed);
+    preferences.remove(PENDING_MOONPAY_ORDER_KEY);
+    _populateAvailableVendors();
 
     _addFundsSettingsController.stream.listen((settings) async {
       preferences.setString(
           ADD_FUNDS_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
-      bool ipAllowed = settings.moonpayIpCheck == false;
-      if (!ipAllowed) {
-        ipAllowed = await _isIPMoonpayAllowed();
+      _isMoonpayAllowed = settings.moonpayIpCheck == false;
+      if (!_isMoonpayAllowed) {
+        _isMoonpayAllowed = await _isIPMoonpayAllowed();
       }
-      _populateAvailableVendors(ipAllowed);
+      _populateAvailableVendors();
     });
   }
 
@@ -174,10 +186,17 @@ class AddFundsBloc extends Bloc {
       Map<String, dynamic> settings = json.decode(pendingOrder);
       _completedMoonpayOrderController.add(MoonpayOrder.fromJson(settings));
     }
+
+    Timer checkOrderTimer;
     _completedMoonpayOrderController.stream.listen((order) async {
+      _populateAvailableVendors();
+
+      checkOrderTimer?.cancel();
       if (order != null) {
         preferences.setString(
             PENDING_MOONPAY_ORDER_KEY, json.encode(order.toJson()));
+        checkOrderTimer =
+            Timer(staleOrderInterval, () => _populateAvailableVendors());
       }
     });
 

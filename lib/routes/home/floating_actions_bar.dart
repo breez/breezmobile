@@ -269,7 +269,7 @@ class FloatingActionsBar extends StatelessWidget {
                 List<Widget> children =
                     snapshot.data.where((v) => v.isAllowed).map((v) {
                   return ListTile(
-                      enabled: account.connected || !v.requireActiveChannel,
+                      enabled: v.enabled && (account.connected || !v.requireActiveChannel),
                       leading: _ActionImage(
                           iconAssetPath: v.icon,
                           enabled:
