@@ -182,6 +182,8 @@ class InvoiceBloc with AsyncActionsHandler {
           try {
             await breezLib.getRelatedInvoice(paymentRequest);
             log.info("filtering our invoice from clipboard");
+             _receivedInvoicesController
+              .add(null);
             _receivedInvoicesController
                 .addError(PaymentRequestModel(null, paymentRequest, null));
             return null;
