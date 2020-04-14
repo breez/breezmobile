@@ -11,11 +11,13 @@ import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/handlers/lnurl_handler.dart';
 import 'package:breez/routes/add_funds/fastbitcoins_page.dart';
+import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/fastbitcoin.dart';
+import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -24,6 +26,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
 
 class FloatingActionsBar extends StatelessWidget {
   static const double EXPANDED_ACTIONS_WIDTH = 253.0;
@@ -32,8 +35,9 @@ class FloatingActionsBar extends StatelessWidget {
   final AccountModel account;
   final double height;
   final double offsetFactor;
+  final GlobalKey firstPaymentItemKey;
 
-  FloatingActionsBar(this.account, this.height, this.offsetFactor);
+  FloatingActionsBar(this.account, this.height, this.offsetFactor, this.firstPaymentItemKey);
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +213,10 @@ class FloatingActionsBar extends StatelessWidget {
         context: context,
         builder: (ctx) {
           return StreamBuilder<String>(
-              stream: invoiceBloc.clipboardInvoiceStream,
+              stream: Observable.merge([
+                invoiceBloc.clipboardInvoiceStream,
+                invoiceBloc.clipboardNodeIdStream
+              ]),
               builder: (context, snapshot) {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -220,10 +227,17 @@ class FloatingActionsBar extends StatelessWidget {
                       leading: _ActionImage(
                           iconAssetPath: "src/icon/paste.png",
                           enabled: account.connected && snapshot.data != null),
-                      title: Text("Paste Invoice"),
+                      title: Text("Paste Invoice or Node ID"),
                       onTap: () async {
                         Navigator.of(context).pop();
-                        invoiceBloc.decodeInvoiceSink.add(snapshot.data);
+                        if (!isValidNodeId(snapshot.data)) {
+                          invoiceBloc.decodeInvoiceSink.add(snapshot.data);
+                        } else {
+                          Navigator.of(context).push(FadeInRoute(
+                            builder: (_) => SpontaneousPaymentPage(
+                                snapshot.data, firstPaymentItemKey),
+                          ));
+                        }
                       },
                     ),
                     ListTile(
@@ -269,7 +283,8 @@ class FloatingActionsBar extends StatelessWidget {
                 List<Widget> children =
                     snapshot.data.where((v) => v.isAllowed).map((v) {
                   return ListTile(
-                      enabled: v.enabled && (account.connected || !v.requireActiveChannel),
+                      enabled: v.enabled &&
+                          (account.connected || !v.requireActiveChannel),
                       leading: _ActionImage(
                           iconAssetPath: v.icon,
                           enabled:

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
@@ -227,6 +226,15 @@ class BreezBridge {
   Future<ReverseSwapPaymentStatuses> reverseSwapPayments() {
     return _invokeMethodWhenReady("reverseSwapPayments")
         .then((p) => ReverseSwapPaymentStatuses()..mergeFromBuffer(p ?? []));
+  }
+
+  Future<String> sendSpontaneousPayment(String destNode, Int64 amount, String description) {
+    var request = SpontaneousPaymentRequest()
+      ..description = description
+      ..destNode = destNode
+      ..amount = amount;
+      return _invokeMethodWhenReady(
+        "sendSpontaneousPayment", {"argument": request.writeToBuffer()}).then((res) => res as String);
   }
 
   Future sendPaymentForRequest(String blankInvoicePaymentRequest,

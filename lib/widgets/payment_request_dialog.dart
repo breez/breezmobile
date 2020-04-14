@@ -76,10 +76,9 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return ProcessingPaymentDialog(
           widget.context,
-          widget.invoice,
+          widget.invoice.paymentHash,
           widget.accountBloc,
           widget.firstPaymentItemKey,
-          widget.scrollController,
           _initialDialogSize,
           _onStateChange);
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {

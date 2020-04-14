@@ -13,6 +13,7 @@ import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/bip21.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../async_actions_handler.dart';
@@ -78,7 +79,10 @@ class InvoiceBloc with AsyncActionsHandler {
           return s;
         }
         return null;
-      });
+      }).where((event) => event != null);
+
+  Stream<String> get clipboardNodeIdStream =>
+      device.rawClipboardStream.where((s) => s != null &&s.length == 66);
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
     _newInvoiceRequestController.stream.listen((invoiceRequest) {
@@ -182,8 +186,7 @@ class InvoiceBloc with AsyncActionsHandler {
           try {
             await breezLib.getRelatedInvoice(paymentRequest);
             log.info("filtering our invoice from clipboard");
-             _receivedInvoicesController
-              .add(null);
+            _receivedInvoicesController.add(null);
             _receivedInvoicesController
                 .addError(PaymentRequestModel(null, paymentRequest, null));
             return null;

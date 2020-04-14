@@ -537,15 +537,17 @@ class PayRequest {
 
 class CompletedPayment {
   final PayRequest paymentRequest;
+  final String paymentHash;
   final bool cancelled;
   final bool ignoreGlobalFeedback;
 
-  CompletedPayment(this.paymentRequest,
+  CompletedPayment(this.paymentRequest, this.paymentHash,
       {this.cancelled = false, this.ignoreGlobalFeedback = false});
 }
 
 class PaymentError implements Exception {
   final PayRequest request;
+  final String paymentHash;
   final Object error;
   final String traceReport;
   final bool ignoreGlobalFeedback;
@@ -554,7 +556,7 @@ class PaymentError implements Exception {
       traceReport == null ||
       traceReport.isEmpty;
 
-  PaymentError(this.request, this.error, this.traceReport,
+  PaymentError(this.request, this.paymentHash, this.error, this.traceReport,
       {this.ignoreGlobalFeedback = false});
 
   String errMsg() => error?.toString();

@@ -133,6 +133,7 @@ class AccountBloc {
       RestartDaemon: _handleRestartDaemon,
       FetchSwapFundStatus: _fetchFundStatusAction,
       SendPayment: _sendPayment,
+      SendSpontaneousPayment: _sendSpontaneousPayment,
       CancelPaymentRequest: _cancelPaymentRequest,
       ChangeSyncUIState: _collapseSyncUI,
       FetchRates: _fetchRates,
@@ -272,17 +273,25 @@ class AccountBloc {
     action.resolve(await _fetchFundStatus());
   }
 
+  Future _sendSpontaneousPayment(SendSpontaneousPayment action) async {
+     action.resolve(_breezLib.sendSpontaneousPayment(action.nodeID, action.amount, action.description));
+  }
+
   Future _sendPayment(SendPayment action) async {
     var payRequest = action.paymentRequest;
     if (action.ignoreGlobalFeedback) {
       _ignoredFeedbackPayments[payRequest.paymentRequest] = true;
+    }
+    var paymentHash;
+    if (payRequest.paymentRequest != null) {
+      paymentHash = await _breezLib.getPaymentRequestHash(payRequest.paymentRequest);
     }
     var sendRequest = _breezLib
         .sendPaymentForRequest(payRequest.paymentRequest,
             amount: payRequest.amount)
         .catchError((err) {
       _completedPaymentsController
-          .addError(PaymentError(payRequest, err, null));
+          .addError(PaymentError(payRequest, paymentHash, err, null));
       return Future.error(err);
     });
 
@@ -296,9 +305,10 @@ class AccountBloc {
     action.resolve(await sendPaymentFuture);
   }
 
-  Future _cancelPaymentRequest(CancelPaymentRequest cancelRequest) {
+  Future _cancelPaymentRequest(CancelPaymentRequest cancelRequest) async {
+    var paymentHash = await _breezLib.getPaymentRequestHash(cancelRequest.paymentRequest.paymentRequest);
     _completedPaymentsController
-        .add(CompletedPayment(cancelRequest.paymentRequest, cancelled: true));
+        .add(CompletedPayment(cancelRequest.paymentRequest, paymentHash, cancelled: true));
     return Future.value(null);
   }
 
@@ -574,9 +584,16 @@ class AccountBloc {
       }
       if (event.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
         var paymentRequest = event.data[0];
-        var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
+        var paymentHash = event.data[1];
+        PayRequest pqyreq;
+        if (paymentRequest.isNotEmpty) {
+           var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
+           pqyreq = PayRequest(paymentRequest, invoice.amount);
+        }
+       
         _completedPaymentsController.add(CompletedPayment(
-            PayRequest(paymentRequest, invoice.amount),
+            pqyreq,
+            paymentHash,
             cancelled: false,
             ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
@@ -585,13 +602,18 @@ class AccountBloc {
       if (event.type == NotificationEvent_NotificationType.PAYMENT_FAILED) {
         var paymentRequest = event.data[0];
         var error = event.data[1];
+        var paymentHash = event.data[1];
         var traceReport;
         if (event.data.length > 2) {
           traceReport = event.data[2];
         }
-        var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
+        PayRequest pqyreq;
+        if (paymentRequest.isNotEmpty) {
+           var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
+           pqyreq = PayRequest(paymentRequest, invoice.amount);
+        }
         _completedPaymentsController.addError(PaymentError(
-            PayRequest(paymentRequest, invoice.amount), error, traceReport,
+            pqyreq, paymentHash, error, traceReport,
             ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
         _ignoredFeedbackPayments.remove(paymentRequest);

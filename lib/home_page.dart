@@ -18,6 +18,7 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -30,6 +31,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'bloc/user_profile/user_actions.dart';
 import 'handlers/check_version_handler.dart';
@@ -42,6 +44,7 @@ import 'routes/account_required_actions.dart';
 import 'routes/connect_to_pay/connect_to_pay_page.dart';
 import 'routes/home/account_page.dart';
 import 'routes/no_connection_dialog.dart';
+import 'routes/spontaneous_payment/spontaneous_payment_page.dart';
 
 final GlobalKey firstPaymentItemKey = GlobalKey();
 final ScrollController scrollController = ScrollController();
@@ -142,8 +145,9 @@ class HomeState extends State<Home> {
                           if (v.isAllowed) {
                             addFundsVendors.add(DrawerItemConfig(
                                 v.route, v.shortName ?? v.name, v.icon,
-                                disabled: !v.enabled || v.requireActiveChannel &&
-                                    !account.connected));
+                                disabled: !v.enabled ||
+                                    v.requireActiveChannel &&
+                                        !account.connected));
                           }
                         });
                       }
@@ -223,7 +227,10 @@ class HomeState extends State<Home> {
                             ];
 
                       return StreamBuilder<String>(
-                          stream: widget.invoiceBloc.clipboardInvoiceStream,
+                          stream: Observable.merge([
+                            widget.invoiceBloc.clipboardInvoiceStream,
+                            widget.invoiceBloc.clipboardNodeIdStream
+                          ]),
                           builder: (context, snapshot) {
                             return Container(
                               height: MediaQuery.of(context).size.height,
@@ -283,18 +290,20 @@ class HomeState extends State<Home> {
                                           DrawerItemConfigGroup([
                                             DrawerItemConfig(
                                                 "",
-                                                "Paste Invoice",
+                                                "Paste Invoice or Node ID",
                                                 "src/icon/paste.png",
                                                 disabled: !account.connected ||
                                                     snapshot.data == null,
                                                 onItemSelected:
                                                     (decodedQr) async {
-                                              var data =
-                                                  await Clipboard.getData(
-                                                      Clipboard.kTextPlain);
-                                              widget
-                                                  .invoiceBloc.decodeInvoiceSink
-                                                  .add(data.text);
+                                        
+                                              if (!isValidNodeId(snapshot.data)) {
+                                                widget.invoiceBloc.decodeInvoiceSink.add(snapshot.data);
+                                              } else {
+                                                Navigator.of(context).push(FadeInRoute(
+                                                  builder: (_) => SpontaneousPaymentPage(snapshot.data, firstPaymentItemKey),
+                                                ));
+                                              }
                                             }),
                                             DrawerItemConfig(
                                                 "",
@@ -471,6 +480,9 @@ class HomeState extends State<Home> {
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
       if (!fulfilledPayment.cancelled &&
           !fulfilledPayment.ignoreGlobalFeedback) {
+        scrollController
+          .animateTo(scrollController.position.minScrollExtent,
+              duration: Duration(milliseconds: 10), curve: Curves.ease);
         showFlushbar(context, message: "Payment was successfuly sent!");
       }
     }, onError: (err) async {
