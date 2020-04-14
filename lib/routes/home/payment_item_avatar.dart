@@ -32,5 +32,6 @@ class PaymentItemAvatar extends StatelessWidget {
   bool get _shouldShowLeadingIcon =>
       paymentItem.imageURL == null && paymentItem.containsPaymentInfo ||
       paymentItem.isTransferRequest ||
+      paymentItem.keySend ||
       paymentItem.type == PaymentType.CLOSED_CHANNEL;
 }
