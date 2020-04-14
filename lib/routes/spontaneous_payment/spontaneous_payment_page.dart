@@ -43,6 +43,8 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
   @override
   void initState() {
     _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
+    Future.delayed(Duration(milliseconds: 200),
+            () => FocusScope.of(context).requestFocus(_amountFocusNode));
     super.initState();
   }
 

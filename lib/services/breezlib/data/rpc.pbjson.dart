@@ -72,6 +72,7 @@ const Payment$json = const {
     const {'1': 'isChannelPending', '3': 15, '4': 1, '5': 8, '10': 'isChannelPending'},
     const {'1': 'isChannelCloseConfimed', '3': 16, '4': 1, '5': 8, '10': 'isChannelCloseConfimed'},
     const {'1': 'closedChannelTxID', '3': 17, '4': 1, '5': 9, '10': 'closedChannelTxID'},
+    const {'1': 'isKeySend', '3': 18, '4': 1, '5': 8, '10': 'isKeySend'},
   ],
   '4': const [Payment_PaymentType$json],
 };

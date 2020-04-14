@@ -404,6 +404,8 @@ class PaymentInfo {
     return "https://blockstream.info/tx/$closeChannelTx";
   }
 
+  bool get keySend => _paymentResponse.isKeySend;
+
   int get pendingExpirationHeight => _paymentResponse.pendingExpirationHeight;
   double get hoursToExpire =>
       max(_paymentResponse.pendingExpirationHeight - _account.tipHeight.toInt(),
@@ -467,6 +469,10 @@ class PaymentInfo {
     if (type == PaymentType.CLOSED_CHANNEL) {
       return "Closed Channel";
     }
+    if (keySend && description.isEmpty) {
+      return "Send to Node";
+    }
+
     String result = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeName
         : _paymentResponse.invoiceMemo?.payerName);
@@ -479,6 +485,9 @@ class PaymentInfo {
   String get dialogTitle {
     if (this.pending && this.type == PaymentType.CLOSED_CHANNEL) {
       return "Pending Closed Channel";
+    }
+    if (this.keySend && description.isNotEmpty) {
+      return description;
     }
     return title;
   }

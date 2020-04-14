@@ -223,6 +223,7 @@ class Payment extends $pb.GeneratedMessage {
     ..aOB(15, 'isChannelPending', protoName: 'isChannelPending')
     ..aOB(16, 'isChannelCloseConfimed', protoName: 'isChannelCloseConfimed')
     ..aOS(17, 'closedChannelTxID', protoName: 'closedChannelTxID')
+    ..aOB(18, 'isKeySend', protoName: 'isKeySend')
     ..hasRequiredFields = false
   ;
 
@@ -377,6 +378,15 @@ class Payment extends $pb.GeneratedMessage {
   $core.bool hasClosedChannelTxID() => $_has(14);
   @$pb.TagNumber(17)
   void clearClosedChannelTxID() => clearField(17);
+
+  @$pb.TagNumber(18)
+  $core.bool get isKeySend => $_getBF(15);
+  @$pb.TagNumber(18)
+  set isKeySend($core.bool v) { $_setBool(15, v); }
+  @$pb.TagNumber(18)
+  $core.bool hasIsKeySend() => $_has(15);
+  @$pb.TagNumber(18)
+  void clearIsKeySend() => clearField(18);
 }
 
 class PaymentsList extends $pb.GeneratedMessage {
