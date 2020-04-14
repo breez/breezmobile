@@ -1,5 +1,5 @@
 import 'package:breez/bloc/async_action.dart';
-
+import 'package:fixnum/fixnum.dart';
 import 'account_model.dart';
 
 class SendPaymentFailureReport extends AsyncAction {
@@ -23,6 +23,14 @@ class SendPayment extends AsyncAction {
   final bool ignoreGlobalFeedback;
 
   SendPayment(this.paymentRequest, {this.ignoreGlobalFeedback = false});
+}
+
+class SendSpontaneousPayment extends AsyncAction {
+  final String nodeID;
+  final Int64 amount;
+  final String description;
+
+  SendSpontaneousPayment(this.nodeID, this.amount, this.description);
 }
 
 class CancelPaymentRequest extends AsyncAction {

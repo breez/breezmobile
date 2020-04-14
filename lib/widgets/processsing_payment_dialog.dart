@@ -16,19 +16,19 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final BuildContext context;
   final AccountBloc accountBloc;
   final GlobalKey firstPaymentItemKey;
-  final ScrollController scrollController;
   final Function(PaymentRequestState state) _onStateChange;
   final double _initialDialogSize;
-  final PaymentRequestModel paymentRequestModel;
+  final bool popOnCompletion;
+  final String paymentHash;
 
   ProcessingPaymentDialog(
       this.context,
-      this.paymentRequestModel,
+      this.paymentHash,
       this.accountBloc,
       this.firstPaymentItemKey,
-      this.scrollController,
       this._initialDialogSize,
-      this._onStateChange);
+      this._onStateChange,
+      {this.popOnCompletion = false});
 
   @override
   ProcessingPaymentDialogState createState() {
@@ -46,6 +46,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
   StreamSubscription<PaymentInfo> _pendingPaymentSubscription;
+  ModalRoute _currentRoute;
 
   bool _isInit = false;
 
@@ -57,6 +58,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   void didChangeDependencies() {
     if (!_isInit) {
+      _currentRoute = ModalRoute.of(context);
       controller = AnimationController(
           vsync: this, duration: Duration(milliseconds: 500));
       colorAnimation = ColorTween(
@@ -70,13 +72,16 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
           .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
       opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
           .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
-      _initializeTransitionAnimation();
       controller.value = 1.0;
       controller.addStatusListener((status) {
         if (status == AnimationStatus.dismissed) {
+          if (widget.popOnCompletion) {
+            Navigator.of(context).removeRoute(_currentRoute);
+          }
           widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
         }
       });
+      _initializeTransitionAnimation();
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -85,54 +90,57 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   _listenPaymentsResults() {
     _sentPaymentResultSubscription =
         widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
-      if (fulfilledPayment.paymentRequest.paymentRequest ==
-          widget.paymentRequestModel.rawPayReq) {
+      if (fulfilledPayment.paymentHash == widget.paymentHash) {
         _animateClose();
       }
     }, onError: (err) {
       var paymentError = err as PaymentError;
-      if (paymentError.request.paymentRequest ==
-          widget.paymentRequestModel.rawPayReq) {
+      if (paymentError.paymentHash == widget.paymentHash) {
+        if (widget.popOnCompletion) {
+          Navigator.of(context).removeRoute(_currentRoute);
+        }
         widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
       }
     });
 
     _pendingPaymentSubscription = widget.accountBloc.pendingPaymentStream
         .transform(DebounceStreamTransformer(Duration(seconds: 10)))
-        .where((p) => p?.paymentHash == widget.paymentRequestModel.paymentHash)
+        .where((p) => p?.paymentHash == widget.paymentHash)
         .listen((p) {
       _animateClose();
     });
   }
 
   void _animateClose() {
-    if (widget.scrollController.hasClients) {
-      widget.scrollController
-          .animateTo(widget.scrollController.position.minScrollExtent,
-              duration: Duration(milliseconds: 200), curve: Curves.ease)
-          .whenComplete(() {
-        return Future.delayed(Duration(milliseconds: 50)).then((_) {
-          controller.reverse();
-        });
+    Future.delayed(Duration(milliseconds: 50)).then((_) {
+      _initializeTransitionAnimation();
+      setState(() {
+        controller.reverse();
       });
-    }
+    });
   }
 
   void _initializeTransitionAnimation() {
-    var kSystemStatusBarHeight = MediaQuery.of(widget.context).padding.top;
+    var kSystemStatusBarHeight = MediaQuery.of(context).padding.top;
     var kSafeArea = MediaQuery.of(context).size.height - kSystemStatusBarHeight;
     // We subtract dialog size from safe area and divide by half because the dialog is at the center of the screen(distances to top and bottom are equal).
     double _dialogYMargin = (kSafeArea - widget._initialDialogSize) / 2;
-    RenderBox _paymentTableBox =
-        widget.firstPaymentItemKey.currentContext.findRenderObject();
-    var _paymentItemStartPosition =
-        _paymentTableBox.localToGlobal(Offset.zero).dy - kSystemStatusBarHeight;
-    var _paymentItemEndPosition =
-        (kSafeArea - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT;
+
+    RelativeRect endPosition = RelativeRect.fromLTRB(40.0, _dialogYMargin, 40.0, _dialogYMargin);
+    RelativeRect startPosition = endPosition;
+    if (widget.firstPaymentItemKey.currentContext != null) {
+      RenderBox _paymentTableBox =
+          widget.firstPaymentItemKey.currentContext.findRenderObject();
+      var _paymentItemStartPosition =
+          _paymentTableBox.localToGlobal(Offset.zero).dy - kSystemStatusBarHeight;
+      var _paymentItemEndPosition =
+          (kSafeArea - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT;
+      startPosition = RelativeRect.fromLTRB(
+            0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition);
+    }
     var tween = RelativeRectTween(
-        begin: RelativeRect.fromLTRB(
-            0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition),
-        end: RelativeRect.fromLTRB(40.0, _dialogYMargin, 40.0, _dialogYMargin));
+        begin: startPosition,
+        end: endPosition);
     transitionAnimation = tween.animate(controller);
   }
 

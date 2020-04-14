@@ -6,6 +6,7 @@ import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/home_page.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:breez/widgets/scroll_watcher.dart';
@@ -186,7 +187,7 @@ class AccountPageState extends State<AccountPage>
                 (offset / (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT))
                     .clamp(0.0, 1.0);
             return account != null && !account.initial
-                ? FloatingActionsBar(account, height, heightFactor)
+                ? FloatingActionsBar(account, height, heightFactor, firstPaymentItemKey)
                 : Positioned(top: 0.0, child: SizedBox());
           },
         ),
