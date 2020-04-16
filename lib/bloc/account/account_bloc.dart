@@ -641,10 +641,10 @@ class AccountBloc {
 
   _refreshAccountAndPayments() async {
     print("Account bloc refreshing account...");
+    await _refreshPayments();
     await _fetchAccount()
         .then((acc) => _accountController.add(acc))
         .catchError(_accountController.addError);
-    await _refreshPayments();
     if (_accountController.value.onChainFeeRate == null) {
       _breezLib.getDefaultOnChainFeeRate().then((rate) {
         if (rate.toInt() > 0) {
