@@ -42,8 +42,8 @@ class LifecycleEvents : NSObject, FlutterPlugin, FlutterStreamHandler {
                 }
             }
             self.resumed = true;
+            BindingsOnResume();
         }
-        BindingsOnResume();
     }
     
     func applicationDidEnterBackground(_ application : UIApplication) {
