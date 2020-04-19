@@ -108,6 +108,7 @@ class FloatingActionsBar extends StatelessWidget {
                                   builder: (_) => SpontaneousPaymentPage(
                                       scannedString, firstPaymentItemKey),
                                 ));
+                                return;
                               }
                               String lower = scannedString.toLowerCase();
 
