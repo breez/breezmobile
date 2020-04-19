@@ -103,13 +103,6 @@ class FloatingActionsBar extends StatelessWidget {
                           try {
                             String scannedString = await QRScanner.scan();
                             if (scannedString != null) {
-                              if (isValidNodeId(scannedString)) {
-                                Navigator.of(context).push(FadeInRoute(
-                                  builder: (_) => SpontaneousPaymentPage(
-                                      scannedString, firstPaymentItemKey),
-                                ));
-                                return;
-                              }
                               String lower = scannedString.toLowerCase();
 
                               // lnurl string
@@ -147,6 +140,13 @@ class FloatingActionsBar extends StatelessWidget {
                                   builder: (_) => ReverseSwapPage(
                                     userAddress: scannedString,
                                   ),
+                                ));
+                                return;
+                              }
+                              if (!isValidNodeId(scannedString)) {
+                                Navigator.of(context).push(FadeInRoute(
+                                  builder: (_) => SpontaneousPaymentPage(
+                                      scannedString, firstPaymentItemKey),
                                 ));
                                 return;
                               }
