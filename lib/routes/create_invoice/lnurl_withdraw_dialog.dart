@@ -28,7 +28,6 @@ class LNURlWithdrawDialog extends StatefulWidget {
 class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
     with SingleTickerProviderStateMixin {
   String _error;
-  StreamSubscription<String> _paidInvoicesSubscription;
   Animation<double> _opacityAnimation;
 
   @override
@@ -41,15 +40,8 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
     controller.value = 1.0;
     controller.addStatusListener((status) {
       if (status == AnimationStatus.dismissed && this.mounted) {
-        Navigator.pop(context, true);        
+        Navigator.pop(context, true);
       }
-    });
-
-    _paidInvoicesSubscription =
-        widget.invoiceBloc.paidInvoicesStream.listen((paid) {
-      Timer(Duration(milliseconds: 1000), () {
-        controller.reverse();
-      });
     });
 
     widget.invoiceBloc.readyInvoicesStream.first.then((bolt11) {
@@ -59,6 +51,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
         if (this.mounted) {
           Withdraw withdrawAction = Withdraw(bolt11);
           widget.lnurlBloc.actionsSink.add(withdrawAction);
+          _listenPaidInvoice(bolt11, controller);
           return withdrawAction.future;
         }
         return null;
@@ -70,10 +63,19 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
     });
   }
 
-  @override
-  void dispose() {
-    _paidInvoicesSubscription.cancel();
-    super.dispose();
+  void _listenPaidInvoice(String bolt11, AnimationController controller) async {
+    var payreq = await widget.invoiceBloc.paidInvoicesStream
+        .firstWhere((payreq) {
+          bool ok = payreq == bolt11;
+          return ok;
+        }, orElse: () => null);
+        if (payreq != null) {
+          Timer(Duration(milliseconds: 1000), () {
+                if (this.mounted) {
+                  controller.reverse();
+                }
+              });
+        }
   }
 
   @override

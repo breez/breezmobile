@@ -26,7 +26,6 @@ class QrCodeDialog extends StatefulWidget {
 
 class QrCodeDialogState extends State<QrCodeDialog>
     with SingleTickerProviderStateMixin {
-  StreamSubscription<String> _paidInvoicesSubscription;
   Animation<double> _opacityAnimation;
 
   @override
@@ -43,18 +42,24 @@ class QrCodeDialogState extends State<QrCodeDialog>
       }
     });
 
-    _paidInvoicesSubscription =
-        widget._invoiceBloc.paidInvoicesStream.listen((paid) {
-      Timer(Duration(milliseconds: 1000), () {
-        controller.reverse();
-      });
+    widget._invoiceBloc.readyInvoicesStream.first.then((bolt11) {
+      _listenPaidInvoice(bolt11, controller);
     });
   }
 
-  @override
-  void dispose() {
-    _paidInvoicesSubscription.cancel();
-    super.dispose();
+  void _listenPaidInvoice(String bolt11, AnimationController controller) async {
+    var payreq = await widget._invoiceBloc.paidInvoicesStream
+        .firstWhere((payreq) {
+          bool ok = payreq == bolt11;
+          return ok;
+        }, orElse: () => null);
+        if (payreq != null) {
+          Timer(Duration(milliseconds: 1000), () {
+                if (this.mounted) {
+                  controller.reverse();
+                }
+              });
+        }
   }
 
   @override

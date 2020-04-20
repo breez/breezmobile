@@ -31,6 +31,10 @@ void executeLNURLResponse(
   if (response.runtimeType == ChannelFetchResponse) {
     _openLNURLChannel(context, lnurlBloc, response);
   } else if (response.runtimeType == WithdrawFetchResponse) {
+    Navigator.popUntil(context, (route) {
+        return route.settings.name == "/";
+      });
+
     Navigator.of(context).push(FadeInRoute(
       builder: (_) => CreateInvoicePage(lnurlWithdraw: response),
     ));
