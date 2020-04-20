@@ -143,7 +143,7 @@ class FloatingActionsBar extends StatelessWidget {
                                 ));
                                 return;
                               }
-                              if (!isValidNodeId(scannedString)) {
+                              if (isValidNodeId(scannedString)) {
                                 Navigator.of(context).push(FadeInRoute(
                                   builder: (_) => SpontaneousPaymentPage(
                                       scannedString, firstPaymentItemKey),
