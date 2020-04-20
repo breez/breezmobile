@@ -37,7 +37,8 @@ class FloatingActionsBar extends StatelessWidget {
   final double offsetFactor;
   final GlobalKey firstPaymentItemKey;
 
-  FloatingActionsBar(this.account, this.height, this.offsetFactor, this.firstPaymentItemKey);
+  FloatingActionsBar(
+      this.account, this.height, this.offsetFactor, this.firstPaymentItemKey);
 
   @override
   Widget build(BuildContext context) {
@@ -142,14 +143,21 @@ class FloatingActionsBar extends StatelessWidget {
                                 ));
                                 return;
                               }
+                              if (isValidNodeId(scannedString)) {
+                                Navigator.of(context).push(FadeInRoute(
+                                  builder: (_) => SpontaneousPaymentPage(
+                                      scannedString, firstPaymentItemKey),
+                                ));
+                                return;
+                              }
                               showFlushbar(context,
                                   message: "QR code cannot be processed.");
                             }
                           } on PlatformException catch (e) {
                             if (e.code == BarcodeScanner.CameraAccessDenied) {
                               Navigator.of(context).push(FadeInRoute(
-                                  builder: (_) =>
-                                      BarcodeScannerPlaceholder(invoiceBloc)));
+                                  builder: (_) => BarcodeScannerPlaceholder(
+                                      invoiceBloc, firstPaymentItemKey)));
                             }
                           }
                         },

@@ -3,8 +3,10 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/route.dart';
@@ -15,8 +17,10 @@ class InvoiceBottomSheet extends StatefulWidget {
   final InvoiceBloc invoiceBloc;
   final bool isSmallView;
   final UserProfileBloc userProfileBloc;
+  final GlobalKey firstPaymentItemKey;
 
-  InvoiceBottomSheet(this.invoiceBloc, this.isSmallView, this.userProfileBloc);
+  InvoiceBottomSheet(this.invoiceBloc, this.isSmallView, this.userProfileBloc,
+      this.firstPaymentItemKey);
 
   @override
   State createState() => InvoiceBottomSheetState();
@@ -61,12 +65,21 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                         () async {
                       try {
                         String decodedQr = await QRScanner.scan();
-                        widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
+                        if (!isValidNodeId(decodedQr)) {
+                          widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
+                        } else {
+                          Navigator.of(context).push(FadeInRoute(
+                            builder: (_) =>
+                                SpontaneousPaymentPage(
+                                decodedQr, widget.firstPaymentItemKey),
+                          ));
+                        }
                       } on PlatformException catch (e) {
                         if (e.code == BarcodeScanner.CameraAccessDenied) {
                           Navigator.of(context).push(FadeInRoute(
                               builder: (_) => BarcodeScannerPlaceholder(
-                                  widget.invoiceBloc)));
+                                  widget.invoiceBloc,
+                                  widget.firstPaymentItemKey)));
                         }
                       }
                     }, snapshot.data.themeId),

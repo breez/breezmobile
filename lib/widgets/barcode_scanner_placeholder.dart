@@ -1,13 +1,17 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/node_id.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class BarcodeScannerPlaceholder extends StatefulWidget {
   final InvoiceBloc invoiceBloc;
+  final GlobalKey firstPaymentItemKey;
 
-  BarcodeScannerPlaceholder(this.invoiceBloc);
+  BarcodeScannerPlaceholder(this.invoiceBloc, this.firstPaymentItemKey);
 
   @override
   State<StatefulWidget> createState() {
@@ -32,8 +36,16 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
             onTap: () {
               Clipboard.getData("text/plain").then((clipboardData) {
                 if (clipboardData != null) {
-                  widget.invoiceBloc.decodeInvoiceSink.add(clipboardData.text);
                   Navigator.pop(context);
+                  if (!isValidNodeId(clipboardData.text)) {
+                    widget.invoiceBloc.decodeInvoiceSink
+                        .add(clipboardData.text);
+                  } else {
+                    Navigator.of(context).push(FadeInRoute(
+                      builder: (_) => SpontaneousPaymentPage(
+                          clipboardData.text, widget.firstPaymentItemKey),
+                    ));
+                  }
                 }
               });
             },
