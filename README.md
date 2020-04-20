@@ -60,6 +60,7 @@
 - [x] Send on-chain via reverse Submarine Swaps
 - [x] Improve hodl invoice support
 - [x] POS POC release
+- [x] Spontaneous payments to node id (nodes running with --accept-keysend)
 - [ ] Support zero-conf channels
 - [ ] Async payments via Lightning Rod
 - [ ] Support SD storage
