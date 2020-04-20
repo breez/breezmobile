@@ -109,10 +109,8 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
             child: Padding(
               padding: EdgeInsets.only(
                   left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
+              child: ListView(
+                children: <Widget>[                 
                   _buildNodeIdDescription(),
                   TextFormField(
                     controller: _descriptionController,
