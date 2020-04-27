@@ -600,12 +600,12 @@ class AccountBloc {
         _ignoredFeedbackPayments.remove(paymentRequest);
       }
       if (event.type == NotificationEvent_NotificationType.PAYMENT_FAILED) {
-        var paymentRequest = event.data[0];
-        var error = event.data[1];
+        var paymentRequest = event.data[0];        
         var paymentHash = event.data[1];
+        var error = event.data[2];
         var traceReport;
-        if (event.data.length > 2) {
-          traceReport = event.data[2];
+        if (event.data.length > 3) {
+          traceReport = event.data[3];
         }
         PayRequest pqyreq;
         if (paymentRequest.isNotEmpty) {
