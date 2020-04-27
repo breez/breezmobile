@@ -81,6 +81,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "withdrawLnurl": SingleArgBindingExecutor(f: BindingsWithdrawLnurl),
     "connectDirectToLnurl": SingleArgBindingExecutor(f: BindingsConnectDirectToLnurl),
     "fetchLnurl": SingleArgBindingExecutor(f: BindingsFetchLnurl),
+    "deleteNonTLVNodesFromGraph": EmptyArgsBindingExecutor(f: BindingsDeleteNonTLVNodesFromGraph),
     
     //jobs
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewClosedChannelsJob(NSString* workingDir, NSError** error);
