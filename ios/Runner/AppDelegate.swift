@@ -16,8 +16,20 @@ class AppDelegate : FlutterAppDelegate {
         GeneratedPluginRegistrant.register(with: self);
         registerBreezPlugins();
         //application.setMinimumBackgroundFetchInterval(3600);
-        Notifier.scheduleSyncRequiredNotification();                
+        Notifier.scheduleSyncRequiredNotification();
+        SetCustomLogFilename(name: "logs/bitcoin/mainnet/lnd.log");
         return super.application(application, didFinishLaunchingWithOptions: launchOptions);
+    }
+    
+    func SetCustomLogFilename(name: String) {
+        let fileManager = FileManager.default;
+        do {
+            let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false);
+            let fileURL = documentDirectory.appendingPathComponent(name);
+            freopen(fileURL.path.cString(using: String.defaultCStringEncoding), "a+", stderr);
+        } catch {
+            print(error)
+        }
     }
     
     func registerBreezPlugins(){
