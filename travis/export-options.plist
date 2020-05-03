@@ -15,11 +15,9 @@
 	<string>Apple Distribution</string>
 	<key>signingStyle</key>
 	<string>manual</string>
-	<key>stripSwiftSymbols</key>
-	<false/>
 	<key>teamID</key>
 	<string>F7R2LZH3W5</string>
 	<key>uploadSymbols</key>
-	<false/>
+	<true/>
 </dict>
 </plist>
