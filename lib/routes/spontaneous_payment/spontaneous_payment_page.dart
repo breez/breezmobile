@@ -12,6 +12,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/collapsible_list_item.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/processsing_payment_dialog.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
@@ -210,14 +211,13 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
           SendSpontaneousPayment(widget.nodeID, amount, tipMessage);
       accBloc.userActionsSink.add(sendAction);
       try {
-        String paymentHash = await sendAction.future;
         showDialog(
             useRootNavigator: false,
             context: context,
             barrierDismissible: false,
             builder: (_) => ProcessingPaymentDialog(
                   context,
-                  paymentHash,
+                  sendAction.future.then((s) => s as String),
                   accBloc,
                   widget.firstPaymentItemKey,
                   300,
@@ -225,6 +225,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                   popOnCompletion: true,
                 ));
         Navigator.of(context).removeRoute(_currentRoute);
+        await sendAction.future;
       } catch (err) {
         promptError(
             context,

@@ -19,11 +19,11 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final Function(PaymentRequestState state) _onStateChange;
   final double _initialDialogSize;
   final bool popOnCompletion;
-  final String paymentHash;
+  final Future<String> paymentHashFuture;
 
   ProcessingPaymentDialog(
       this.context,
-      this.paymentHash,
+      this.paymentHashFuture,
       this.accountBloc,
       this.firstPaymentItemKey,
       this._initialDialogSize,
@@ -53,11 +53,14 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   @override
   void initState() {
     super.initState();
-    _listenPaymentsResults();
   }
 
   void didChangeDependencies() {
     if (!_isInit) {
+      widget.paymentHashFuture.then((hash) {
+        _listenPaymentsResults(hash);
+      }).catchError((err) => Navigator.of(context).pop(err));
+
       _currentRoute = ModalRoute.of(context);
       controller = AnimationController(
           vsync: this, duration: Duration(milliseconds: 500));
@@ -87,15 +90,15 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     super.didChangeDependencies();
   }
 
-  _listenPaymentsResults() {
+  _listenPaymentsResults(String paymentHash) {
     _sentPaymentResultSubscription =
         widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
-      if (fulfilledPayment.paymentHash == widget.paymentHash) {
+      if (fulfilledPayment.paymentHash == paymentHash) {
         _animateClose();
       }
     }, onError: (err) {
       var paymentError = err as PaymentError;
-      if (paymentError.paymentHash == widget.paymentHash) {
+      if (paymentError.paymentHash == paymentHash) {
         if (widget.popOnCompletion) {
           Navigator.of(context).removeRoute(_currentRoute);
         }
@@ -105,7 +108,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
     _pendingPaymentSubscription = widget.accountBloc.pendingPaymentStream
         .transform(DebounceStreamTransformer(Duration(seconds: 10)))
-        .where((p) => p?.paymentHash == widget.paymentHash)
+        .where((p) => p?.paymentHash == paymentHash)
         .listen((p) {
       _animateClose();
     });
@@ -126,21 +129,21 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     // We subtract dialog size from safe area and divide by half because the dialog is at the center of the screen(distances to top and bottom are equal).
     double _dialogYMargin = (kSafeArea - widget._initialDialogSize) / 2;
 
-    RelativeRect endPosition = RelativeRect.fromLTRB(40.0, _dialogYMargin, 40.0, _dialogYMargin);
+    RelativeRect endPosition =
+        RelativeRect.fromLTRB(40.0, _dialogYMargin, 40.0, _dialogYMargin);
     RelativeRect startPosition = endPosition;
     if (widget.firstPaymentItemKey.currentContext != null) {
       RenderBox _paymentTableBox =
           widget.firstPaymentItemKey.currentContext.findRenderObject();
       var _paymentItemStartPosition =
-          _paymentTableBox.localToGlobal(Offset.zero).dy - kSystemStatusBarHeight;
+          _paymentTableBox.localToGlobal(Offset.zero).dy -
+              kSystemStatusBarHeight;
       var _paymentItemEndPosition =
           (kSafeArea - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT;
       startPosition = RelativeRect.fromLTRB(
-            0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition);
+          0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition);
     }
-    var tween = RelativeRectTween(
-        begin: startPosition,
-        end: endPosition);
+    var tween = RelativeRectTween(begin: startPosition, end: endPosition);
     transitionAnimation = tween.animate(controller);
   }
 
