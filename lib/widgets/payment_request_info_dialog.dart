@@ -18,11 +18,10 @@ class PaymentRequestInfoDialog extends StatefulWidget {
   final AccountBloc accountBloc;
   final PaymentRequestModel invoice;
   final Function(PaymentRequestState state) _onStateChange;
-  final Function(double height) _setDialogHeight;
   final Function(Map map) _setAmountToPay;
 
   PaymentRequestInfoDialog(this.context, this.accountBloc, this.invoice,
-      this._onStateChange, this._setDialogHeight, this._setAmountToPay);
+      this._onStateChange, this._setAmountToPay);
 
   @override
   State<StatefulWidget> createState() {
@@ -69,7 +68,6 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       child: Container(
           key: _dialogKey,
           width: MediaQuery.of(context).size.width,
-          constraints: BoxConstraints(minHeight: 220.0, maxHeight: 350.0),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -273,7 +271,6 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       actions.add(SimpleDialogOption(
         onPressed: (() async {
           if (widget.invoice.amount > 0 || _formKey.currentState.validate()) {
-            widget._setDialogHeight(_getDialogSize());
             if (widget.invoice.amount == 0) {
               _amountToPayMap["_amountToPay"] = toPay;
               _amountToPayMap["_amountToPayStr"] =

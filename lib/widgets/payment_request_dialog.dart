@@ -37,7 +37,6 @@ class PaymentRequestDialog extends StatefulWidget {
 
 class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   PaymentRequestState _state;
-  double _initialDialogSize;
   String _amountToPayStr;
   Int64 _amountToPay;
   ModalRoute _currentRoute;
@@ -79,13 +78,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
           Future.value(widget.invoice.paymentHash),
           widget.accountBloc,
           widget.firstPaymentItemKey,
-          _initialDialogSize,
           _onStateChange);
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
       return PaymentConfirmationDialog(
           widget.accountBloc,
           widget.invoice,
-          _initialDialogSize,
           _amountToPay,
           _amountToPayStr,
           (state) => _onStateChange(state));
@@ -95,7 +92,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
           widget.accountBloc,
           widget.invoice,
           (state) => _onStateChange(state),
-          (height) => _setDialogHeight(height),
           (map) => _setAmountToPay(map));
     }
   }
@@ -114,10 +110,6 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     setState(() {
       _state = state;
     });
-  }
-
-  void _setDialogHeight(double height) {
-    _initialDialogSize = height;
   }
 
   void _setAmountToPay(Map<String, dynamic> map) {

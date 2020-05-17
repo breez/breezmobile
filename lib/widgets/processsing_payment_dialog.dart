@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
@@ -17,17 +16,11 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final AccountBloc accountBloc;
   final GlobalKey firstPaymentItemKey;
   final Function(PaymentRequestState state) _onStateChange;
-  final double _initialDialogSize;
   final bool popOnCompletion;
   final Future<String> paymentHashFuture;
 
-  ProcessingPaymentDialog(
-      this.context,
-      this.paymentHashFuture,
-      this.accountBloc,
-      this.firstPaymentItemKey,
-      this._initialDialogSize,
-      this._onStateChange,
+  ProcessingPaymentDialog(this.context, this.paymentHashFuture,
+      this.accountBloc, this.firstPaymentItemKey, this._onStateChange,
       {this.popOnCompletion = false});
 
   @override
@@ -39,10 +32,13 @@ class ProcessingPaymentDialog extends StatefulWidget {
 class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
+  bool _animating = false;
+  double startHeight;
   Animation<Color> colorAnimation;
   Animation<double> borderAnimation;
   Animation<double> opacityAnimation;
   Animation<RelativeRect> transitionAnimation;
+  final GlobalKey _dialogKey = GlobalKey();
 
   StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
   StreamSubscription<PaymentInfo> _pendingPaymentSubscription;
@@ -84,7 +80,6 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
           widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
         }
       });
-      _initializeTransitionAnimation();
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -118,6 +113,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     Future.delayed(Duration(milliseconds: 50)).then((_) {
       _initializeTransitionAnimation();
       setState(() {
+        _animating = true;
         controller.reverse();
       });
     });
@@ -127,7 +123,9 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     var kSystemStatusBarHeight = MediaQuery.of(context).padding.top;
     var kSafeArea = MediaQuery.of(context).size.height - kSystemStatusBarHeight;
     // We subtract dialog size from safe area and divide by half because the dialog is at the center of the screen(distances to top and bottom are equal).
-    double _dialogYMargin = (kSafeArea - widget._initialDialogSize) / 2;
+    RenderBox box = _dialogKey.currentContext.findRenderObject();
+    startHeight = box.size.height;
+    double _dialogYMargin = (kSafeArea - box.size.height) / 2;
 
     RelativeRect endPosition =
         RelativeRect.fromLTRB(40.0, _dialogYMargin, 40.0, _dialogYMargin);
@@ -157,34 +155,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Stack(children: <Widget>[
-        PositionedTransition(
-          rect: transitionAnimation,
-          child: Container(
-            height: widget._initialDialogSize,
-            width: MediaQuery.of(context).size.width,
-            constraints: BoxConstraints(minHeight: 220.0, maxHeight: 350.0),
-            child: Opacity(
-                opacity: opacityAnimation.value,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: _buildProcessingPaymentDialog())),
-            decoration: ShapeDecoration(
-              color: theme.themeId == "BLUE"
-                  ? colorAnimation.value
-                  : (controller.value >= 0.25
-                      ? Theme.of(context).backgroundColor
-                      : colorAnimation.value),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderAnimation.value)),
-            ),
-          ),
-        ),
-      ]),
-    );
+    return _animating ? _createAnimatedContent() : _createContentDialog();
   }
 
   List<Widget> _buildProcessingPaymentDialog() {
@@ -192,6 +163,47 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     _processingPaymentDialog.add(_buildTitle());
     _processingPaymentDialog.add(_buildContent());
     return _processingPaymentDialog;
+  }
+
+  Widget _createContentDialog() {
+    return Dialog(
+      child: Column(
+          key: _dialogKey,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: _buildProcessingPaymentDialog()),
+    );
+  }
+
+  Widget _createAnimatedContent() {
+    return Opacity(
+      opacity: opacityAnimation.value,
+      child: Material(
+        color: Colors.transparent,
+        child: Stack(children: <Widget>[
+          PositionedTransition(
+            rect: transitionAnimation,
+            child: Container(
+              height: startHeight,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: _buildProcessingPaymentDialog()),
+              decoration: ShapeDecoration(
+                color: theme.themeId == "BLUE"
+                    ? colorAnimation.value
+                    : (controller.value >= 0.25
+                        ? Theme.of(context).backgroundColor
+                        : colorAnimation.value),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(borderAnimation.value)),
+              ),
+            ),
+          ),
+        ]),
+      ),
+    );
   }
 
   Container _buildTitle() {
@@ -206,9 +218,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     );
   }
 
-  Expanded _buildContent() {
-    return Expanded(
-      flex: 1,
+  Widget _buildContent() {
+    return Container(
       child: Padding(
         padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
         child: Container(

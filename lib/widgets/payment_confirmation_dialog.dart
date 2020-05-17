@@ -11,18 +11,12 @@ import 'package:flutter/material.dart';
 class PaymentConfirmationDialog extends StatefulWidget {
   final AccountBloc accountBloc;
   final PaymentRequestModel invoice;
-  final double _initialDialogSize;
   final Int64 _amountToPay;
   final String _amountToPayStr;
   final Function(PaymentRequestState state) _onStateChange;
 
-  PaymentConfirmationDialog(
-      this.accountBloc,
-      this.invoice,
-      this._initialDialogSize,
-      this._amountToPay,
-      this._amountToPayStr,
-      this._onStateChange);
+  PaymentConfirmationDialog(this.accountBloc, this.invoice, this._amountToPay,
+      this._amountToPayStr, this._onStateChange);
 
   @override
   PaymentConfirmationDialogState createState() {
@@ -35,9 +29,7 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
-          height: widget._initialDialogSize,
           width: MediaQuery.of(context).size.width,
-          constraints: BoxConstraints(minHeight: 220.0, maxHeight: 350.0),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -65,9 +57,8 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
     );
   }
 
-  Expanded _buildContent() {
-    return Expanded(
-      flex: 1,
+  Widget _buildContent() {
+    return Container(
       child: Padding(
         padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
         child: Container(

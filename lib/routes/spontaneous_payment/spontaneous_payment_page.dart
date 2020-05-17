@@ -220,7 +220,6 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                   sendAction.future.then((s) => s as String),
                   accBloc,
                   widget.firstPaymentItemKey,
-                  300,
                   (_) {},
                   popOnCompletion: true,
                 ));
