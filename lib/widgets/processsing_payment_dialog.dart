@@ -18,9 +18,10 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final Function(PaymentRequestState state) _onStateChange;
   final bool popOnCompletion;
   final Future<String> paymentHashFuture;
+  final double minHeight;
 
   ProcessingPaymentDialog(this.context, this.paymentHashFuture,
-      this.accountBloc, this.firstPaymentItemKey, this._onStateChange,
+      this.accountBloc, this.firstPaymentItemKey, this._onStateChange, this.minHeight,
       {this.popOnCompletion = false});
 
   @override
@@ -162,16 +163,30 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     List<Widget> _processingPaymentDialog = <Widget>[];
     _processingPaymentDialog.add(_buildTitle());
     _processingPaymentDialog.add(_buildContent());
+    _processingPaymentDialog.add(Image.asset(
+                theme.customData[theme.themeId].loaderAssetPath,
+                height: 64.0,
+                colorBlendMode:
+                    theme.customData[theme.themeId].loaderColorBlendMode ??
+                        BlendMode.srcIn,
+                color: theme.themeId == "BLUE"
+                    ? colorAnimation?.value ?? Colors.transparent
+                    : null,
+                gaplessPlayback: true,
+              ));
     return _processingPaymentDialog;
   }
 
   Widget _createContentDialog() {
     return Dialog(
-      child: Column(
-          key: _dialogKey,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: _buildProcessingPaymentDialog()),
+      child: Container(
+        constraints: BoxConstraints(minHeight: widget.minHeight),
+        child: Column(
+            key: _dialogKey,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: _buildProcessingPaymentDialog()),
+      ),
     );
   }
 
@@ -233,17 +248,6 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
                 textStyle: Theme.of(context).dialogTheme.contentTextStyle,
                 textAlign: TextAlign.center,
               ),
-              Image.asset(
-                theme.customData[theme.themeId].loaderAssetPath,
-                height: 64.0,
-                colorBlendMode:
-                    theme.customData[theme.themeId].loaderColorBlendMode ??
-                        BlendMode.srcIn,
-                color: theme.themeId == "BLUE"
-                    ? colorAnimation?.value ?? Colors.transparent
-                    : null,
-                gaplessPlayback: true,
-              )
             ],
           ),
         ),

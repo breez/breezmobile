@@ -19,9 +19,10 @@ class PaymentRequestInfoDialog extends StatefulWidget {
   final PaymentRequestModel invoice;
   final Function(PaymentRequestState state) _onStateChange;
   final Function(Map map) _setAmountToPay;
+  final double minHeight;
 
   PaymentRequestInfoDialog(this.context, this.accountBloc, this.invoice,
-      this._onStateChange, this._setAmountToPay);
+      this._onStateChange, this._setAmountToPay, this.minHeight);
 
   @override
   State<StatefulWidget> createState() {
@@ -66,6 +67,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     _addIfNotNull(_paymentRequestDialog, _buildPaymentRequestContent());
     return Dialog(
       child: Container(
+          constraints: BoxConstraints(minHeight: widget.minHeight),
           key: _dialogKey,
           width: MediaQuery.of(context).size.width,
           child: Column(

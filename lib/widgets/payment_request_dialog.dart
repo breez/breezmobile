@@ -72,27 +72,29 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   }
 
   Widget showPaymentRequestDialog() {
+    const double minHeight = 220;
     if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return ProcessingPaymentDialog(
           widget.context,
           Future.value(widget.invoice.paymentHash),
           widget.accountBloc,
           widget.firstPaymentItemKey,
-          _onStateChange);
+          _onStateChange, minHeight);
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
       return PaymentConfirmationDialog(
           widget.accountBloc,
           widget.invoice,
           _amountToPay,
           _amountToPayStr,
-          (state) => _onStateChange(state));
+          (state) => _onStateChange(state),
+          minHeight);
     } else {
       return PaymentRequestInfoDialog(
           widget.context,
           widget.accountBloc,
           widget.invoice,
           (state) => _onStateChange(state),
-          (map) => _setAmountToPay(map));
+          (map) => _setAmountToPay(map), minHeight);
     }
   }
 

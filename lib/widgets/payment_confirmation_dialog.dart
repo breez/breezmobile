@@ -14,9 +14,10 @@ class PaymentConfirmationDialog extends StatefulWidget {
   final Int64 _amountToPay;
   final String _amountToPayStr;
   final Function(PaymentRequestState state) _onStateChange;
+  final double minHeight;
 
   PaymentConfirmationDialog(this.accountBloc, this.invoice, this._amountToPay,
-      this._amountToPayStr, this._onStateChange);
+      this._amountToPayStr, this._onStateChange, this.minHeight);
 
   @override
   PaymentConfirmationDialogState createState() {
@@ -29,9 +30,10 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
+        constraints: BoxConstraints(minHeight: widget.minHeight),
           width: MediaQuery.of(context).size.width,
           child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.min,
               children: _buildConfirmationDialog())),
     );

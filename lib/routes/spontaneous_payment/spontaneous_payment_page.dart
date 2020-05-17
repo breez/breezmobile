@@ -221,6 +221,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                   accBloc,
                   widget.firstPaymentItemKey,
                   (_) {},
+                  220,
                   popOnCompletion: true,
                 ));
         Navigator.of(context).removeRoute(_currentRoute);
