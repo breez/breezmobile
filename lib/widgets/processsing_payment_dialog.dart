@@ -163,17 +163,20 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     List<Widget> _processingPaymentDialog = <Widget>[];
     _processingPaymentDialog.add(_buildTitle());
     _processingPaymentDialog.add(_buildContent());
-    _processingPaymentDialog.add(Image.asset(
-                theme.customData[theme.themeId].loaderAssetPath,
-                height: 64.0,
-                colorBlendMode:
-                    theme.customData[theme.themeId].loaderColorBlendMode ??
-                        BlendMode.srcIn,
-                color: theme.themeId == "BLUE"
-                    ? colorAnimation?.value ?? Colors.transparent
-                    : null,
-                gaplessPlayback: true,
-              ));
+    _processingPaymentDialog.add(Padding(
+      padding: const EdgeInsets.only(bottom: 24.0),
+      child: Image.asset(
+                  theme.customData[theme.themeId].loaderAssetPath,
+                  height: 64.0,
+                  colorBlendMode:
+                      theme.customData[theme.themeId].loaderColorBlendMode ??
+                          BlendMode.srcIn,
+                  color: theme.themeId == "BLUE"
+                      ? colorAnimation?.value ?? Colors.transparent
+                      : null,
+                  gaplessPlayback: true,
+                ),
+    ));
     return _processingPaymentDialog;
   }
 
