@@ -205,7 +205,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
     var amount = account.currency.parse(_amountController.text);
     var ok = await promptAreYouSure(context, "Send Payment",
         Text("Are you sure you want to ${account.currency.format(amount)} to this node?\n\n${this.widget.nodeID}"),
-        okText: "Pay", cancelText: "Cancel");
+        okText: "PAY", cancelText: "CANCEL");
     if (ok) {
       var sendAction =
           SendSpontaneousPayment(widget.nodeID, amount, tipMessage);
