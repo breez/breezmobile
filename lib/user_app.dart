@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -8,6 +10,8 @@ import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/services/device.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,9 +47,25 @@ import 'routes/withdraw_funds/reverse_swap_page.dart';
 import 'routes/withdraw_funds/unexpected_funds.dart';
 import 'theme_data.dart' as theme;
 
-class UserApp extends StatelessWidget {
+class UserApp extends StatefulWidget {
+  @override
+  _UserAppState createState() => _UserAppState();
+}
+
+class _UserAppState extends State<UserApp> {
   GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
+  NotificationType _lastState;
+
+@override
+  void initState() {
+    super.initState();
+    ServiceInjector().device.eventStream.listen((event) {
+      setState((){
+        _lastState = event;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +78,10 @@ class UserApp extends StatelessWidget {
     var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     var posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
-
+    
+    if (_lastState == NotificationType.PAUSE) {
+      return SizedBox();
+    }
     return StreamBuilder(
         stream: userProfileBloc.userStream,
         builder: (context, snapshot) {
