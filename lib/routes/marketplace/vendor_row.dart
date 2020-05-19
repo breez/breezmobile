@@ -15,14 +15,13 @@ class VendorRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color _vendorFgColor =
-        theme.vendorTheme[_vendor.name.toLowerCase()]?.iconFgColor ??
+        theme.vendorTheme[_vendor.id.toLowerCase()]?.iconFgColor ??
             Colors.transparent;
     Color _vendorBgColor =
-        theme.vendorTheme[_vendor.name.toLowerCase()]?.iconBgColor ??
+        theme.vendorTheme[_vendor.id.toLowerCase()]?.iconBgColor ??
             Colors.white;
     Color _vendorTextColor =
-        theme.vendorTheme[_vendor.name.toLowerCase()]?.textColor ??
-            Colors.black;
+        theme.vendorTheme[_vendor.id.toLowerCase()]?.textColor ?? Colors.black;
 
     final _vendorLogo = _vendor.logo != null
         ? Image(
@@ -39,8 +38,8 @@ class VendorRow extends StatelessWidget {
           Navigator.push(
               context,
               FadeInRoute(
-                builder: (_) =>
-                    VendorWebViewPage(accountBloc, _vendor.url, _vendor.name),
+                builder: (_) => VendorWebViewPage(
+                    accountBloc, _vendor.url, _vendor.displayName),
               ));
         },
         child: Container(
@@ -78,7 +77,7 @@ class VendorRow extends StatelessWidget {
       return <Widget>[
         _vendorLogo,
         Padding(padding: EdgeInsets.only(left: 4.0)),
-        Text(_vendor.name,
+        Text(_vendor.displayName,
             style: theme.vendorTitleStyle.copyWith(color: _vendorTextColor)),
       ];
     }
