@@ -10,6 +10,7 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
+import '../../user_app.dart';
 import 'webln_handlers.dart';
 
 class VendorWebViewPage extends StatefulWidget {
@@ -29,13 +30,14 @@ class VendorWebViewPage extends StatefulWidget {
   }
 }
 
-class VendorWebViewPageState extends State<VendorWebViewPage> {
+class VendorWebViewPageState extends State<VendorWebViewPage> with RouteAware {
   final _widgetWebview = FlutterWebviewPlugin();
   StreamSubscription<BreezUserModel> _userSubscription;
   StreamSubscription _postMessageListener;
   WeblnHandlers _weblnHandlers;
   bool _isInit = false;
   Uint8List _screenshotData;
+  ModalRoute _currentRoute;
 
   @override
   void initState() {
@@ -50,12 +52,13 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   @override
   void didChangeDependencies() {
     if (!_isInit) {
+      
       var invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       var userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
       _weblnHandlers =
-          WeblnHandlers(context, accountBloc, invoiceBloc, onBeforeCallHandler);
+          WeblnHandlers(context, accountBloc, invoiceBloc);
 
       String loadedURL;
       _widgetWebview.onStateChanged.listen((state) async {
@@ -83,21 +86,37 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       });
 
       _userSubscription = userBloc.userStream.listen((user) {
-        _hideWebview(user.locked);
+        user.locked ? _hideWebView() : _showWebView();
       });
 
       _isInit = true;
     }
+    routeObserver.subscribe(this, ModalRoute.of(context));
+    _currentRoute = ModalRoute.of(context);
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _postMessageListener?.cancel();
     _widgetWebview.dispose();
     _weblnHandlers?.dispose();
     _userSubscription?.cancel();
     super.dispose();
+  }
+
+
+  @override
+  // Called when the current route has been pushed.
+  void didPushNext() {
+    _hideWebView();
+  }
+
+  @override
+  // Called when the top route has been popped off, and the current route shows up.
+  void didPopNext() {
+    _showWebView();
   }
 
   @override
@@ -131,23 +150,14 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     );
   }
 
-  _hideWebview(bool hide) {
-    if (hide) {
-      onBeforeCallHandler("lockScreen");
-    } else {
-      _widgetWebview.show();
-      setState(() {
-        _screenshotData = null;
-      });
-    }
+  Future _showWebView() async {
+    await _widgetWebview.show();
+    setState(() {
+      _screenshotData = null;
+    });
   }
 
-  Future onBeforeCallHandler(String handlerName) {
-    if (_screenshotData != null ||
-        !["makeInvoice", "sendPayment", "lockScreen"].contains(handlerName)) {
-      return Future.value(null);
-    }
-
+  Future _hideWebView() {
     Completer beforeCompleter = Completer();
     FocusScope.of(context).requestFocus(FocusNode());
     // Wait for keyboard and screen animations to settle

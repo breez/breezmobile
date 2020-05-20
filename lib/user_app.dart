@@ -47,6 +47,8 @@ import 'routes/withdraw_funds/reverse_swap_page.dart';
 import 'routes/withdraw_funds/unexpected_funds.dart';
 import 'theme_data.dart' as theme;
 
+final routeObserver = RouteObserver();
+
 class UserApp extends StatefulWidget {
   @override
   _UserAppState createState() => _UserAppState();
@@ -165,6 +167,7 @@ class _UserAppState extends State<UserApp> {
                               },
                               child: Navigator(
                                 key: _homeNavigatorKey,
+                                observers: [routeObserver],
                                 initialRoute: "/",
                                 // ignore: missing_return
                                 onGenerateRoute: (RouteSettings settings) {

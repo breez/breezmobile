@@ -15,15 +15,13 @@ class WeblnHandlers {
   final BuildContext context;
   final AccountBloc accountBloc;
   final InvoiceBloc invoiceBloc;
-  final Future Function(String handlerName) onBeforeCallHandler;
   StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
   StreamSubscription<String> _readyInvoicesSubscription;
   StreamSubscription<AccountModel> _accountModelSubscription;
   Completer<String> _currentInovoiceRequestCompleter;
   AccountModel _account;
 
-  WeblnHandlers(this.context, this.accountBloc, this.invoiceBloc,
-      this.onBeforeCallHandler) {
+  WeblnHandlers(this.context, this.accountBloc, this.invoiceBloc) {
     _readyInvoicesSubscription = invoiceBloc.readyInvoicesStream
         .asBroadcastStream()
         .where((p) => p != null)
@@ -58,7 +56,6 @@ class WeblnHandlers {
     var requestId = postMessage["requestId"];
     var handler = _handlersMapping[action];
     if (handler != null) {
-      await onBeforeCallHandler(action);
       try {
         var result = await handler(postMessage);
         if (requestId != null) {
@@ -82,12 +79,22 @@ class WeblnHandlers {
   }
 
   Future<Map<String, dynamic>> _makeInvoice(postMessage) async {
-    Map<String, dynamic> invoiceArgs = postMessage["invoiceArgs"];
+    dynamic invoiceArgs = postMessage["invoiceArgs"];
     if (invoiceArgs == null) {
       return Future.error("no invoice arguments");
     }
-    String memo = invoiceArgs["defaultMemo"];
-    int amount = invoiceArgs["amount"];
+    String memo;
+    int amount = 0;
+    if (invoiceArgs is Map<String, dynamic> ) {
+      memo = invoiceArgs["defaultMemo"];
+      amount = invoiceArgs["amount"];
+    }
+    if (invoiceArgs is int) {
+      amount = invoiceArgs;
+    }
+    if (invoiceArgs is String) {
+      amount = int.tryParse(invoiceArgs) ?? 0;
+    }
 
     if (amount == null) {
       return Future.error("Zero-amount invoice is not supported.");
