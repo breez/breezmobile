@@ -57,6 +57,7 @@ List<Widget> defaultCliCommandsText(Function(String command) onCommand) => [
         Command("estimatefee", onCommand),
         Command("sendmany", onCommand),
         Command("listunspent", onCommand),
+        Command("listchaintxns", onCommand),
       ]),
       ExpansionTile(title: Text("Payments"), children: <Widget>[
         Command("sendpayment", onCommand),
