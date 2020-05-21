@@ -657,12 +657,14 @@ class AccountBloc {
 
   void _listenRoutingConnectionChanges() {
     Observable(_accountController.stream)
-        .where((acc) => acc.connected || acc.processingConnection)
-        .listen((acc) {
-      if (!acc.readyForPayments) {
+      .distinct((acc1, acc2) {
+        return acc1?.readyForPayments == acc2?.readyForPayments;
+      })
+      .where((acc) => !acc.readyForPayments && (acc.connected || acc.processingConnection))
+      .skip(1)
+      .listen((acc) {
         _reconnectSink.add(null);
-      }
-    });
+      });
   }
 
   Future<String> getPersistentNodeID() async {
