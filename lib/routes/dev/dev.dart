@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
@@ -27,7 +28,7 @@ import 'package:share_extend/share_extend.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 
 import 'default_commands.dart';
-
+bool allowRebroadcastRefunds = false;
 final _cliInputController = TextEditingController();
 final FocusNode _cliEntryFocusNode = FocusNode();
 
@@ -377,6 +378,12 @@ class DevViewState extends State<DevView> {
             "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
         icon: Icons.network_check,
         function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));
+     choices.add(Choice(
+        title: 'Reset Refunds Status',
+        icon: Icons.phone_android,
+        function: () {
+          allowRebroadcastRefunds = true;
+        }));
     /*
     choices.add(Choice(
         title: "Switch to ${userModel.isPOS ? 'User flavor' : 'POS flavor'}",

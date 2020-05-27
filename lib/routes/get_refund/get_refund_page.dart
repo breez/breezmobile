@@ -1,6 +1,7 @@
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/routes/dev/dev.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/send_onchain.dart';
@@ -65,7 +66,7 @@ class GetRefundPage extends StatelessWidget {
                                     item.lastRefundTxID.isNotEmpty
                                         ? "BROADCASTED"
                                         : "REFUND",
-                                    item.lastRefundTxID.isNotEmpty
+                                    item.lastRefundTxID.isNotEmpty && !allowRebroadcastRefunds
                                         ? null
                                         : () =>
                                             onRefund(context, account, item))),
