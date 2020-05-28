@@ -78,7 +78,6 @@ class HomeState extends State<Home> {
   String _activeScreen = "breezHome";
   Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
-  StreamSubscription<AccountModel> _accountSubscription;
 
   @override
   void initState() {
@@ -90,8 +89,18 @@ class HomeState extends State<Home> {
     _listenLSPSelectionPrompt();
     _listenPaymentResults();
     _hiddenRoutes.add("/get_refund");
+    widget.accountBloc.accountStream.listen((acc) {
+      setState(() {
+        if (acc != null &&
+            acc.swapFundsStatus.maturedRefundableAddresses.length > 0) {
+          _hiddenRoutes.remove("/get_refund");
+        } else {
+          _hiddenRoutes.add("/get_refund");
+        }
+      });
+    });
 
-    _accountSubscription = widget.accountBloc.accountStream.listen((acc) {
+    widget.accountBloc.accountStream.listen((acc) {
       var activeAccountRoutes = [
         "/connect_to_pay",
         "/pay_invoice",
@@ -101,12 +110,6 @@ class HomeState extends State<Home> {
           acc.connected ? _hiddenRoutes.remove : _hiddenRoutes.add;
       setState(() {
         activeAccountRoutes.forEach((r) => addOrRemove(r));
-        if (acc != null &&
-            acc.swapFundsStatus.maturedRefundableAddresses.length > 0) {
-          _hiddenRoutes.remove("/get_refund");
-        } else {
-          _hiddenRoutes.add("/get_refund");
-        }
       });
     });
   }
@@ -114,7 +117,6 @@ class HomeState extends State<Home> {
   @override
   void dispose() {
     _accountNotificationsSubscription?.cancel();
-    _accountSubscription?.cancel();
     super.dispose();
   }
 
