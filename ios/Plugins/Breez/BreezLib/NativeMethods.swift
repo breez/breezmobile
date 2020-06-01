@@ -26,7 +26,6 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "addFundsInit": SingleArgBindingExecutor(f: BindingsAddFundsInit),
     "addInvoice": SingleArgBindingExecutor(f: BindingsAddInvoice),
     "availableSnapshots": EmptyArgsBindingExecutor(f: BindingsAvailableSnapshots),
-    "bootstrapFiles": SingleArgBindingExecutor(f: BindingsBootstrapFiles),
     "connectAccount": EmptyArgsBindingExecutor(f: BindingsConnectAccount),
     
     "decodePaymentRequest": SingleArgBindingExecutor(f: BindingsDecodePaymentRequest),
@@ -81,6 +80,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "withdrawLnurl": SingleArgBindingExecutor(f: BindingsWithdrawLnurl),
     "connectDirectToLnurl": SingleArgBindingExecutor(f: BindingsConnectDirectToLnurl),
     "fetchLnurl": SingleArgBindingExecutor(f: BindingsFetchLnurl),
+    "syncGraphFromFile": SingleArgBindingExecutor(f: BindingsSyncGraphFromFile),
     "deleteNonTLVNodesFromGraph": EmptyArgsBindingExecutor(f: BindingsDeleteNonTLVNodesFromGraph),
     
     //jobs

@@ -82,6 +82,8 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 6.2)
     - Protobuf (~> 3.1)
   - Flutter (1.0.0)
+  - flutter_downloader (0.0.1):
+    - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
   - flutter_webview_plugin (0.0.1):
@@ -150,6 +152,8 @@ PODS:
     - Flutter
   - path_provider (0.0.1):
     - Flutter
+  - path_provider_macos (0.0.1):
+    - Flutter
   - Protobuf (3.10.0)
   - Reachability (3.2)
   - share_extend (0.0.1):
@@ -174,6 +178,7 @@ DEPENDENCIES:
   - firebase_dynamic_links (from `Pods/.symlinks/plugins/firebase_dynamic_links/ios`)
   - firebase_messaging (from `Pods/.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Pods/.symlinks/flutter/ios`)
+  - flutter_downloader (from `Pods/.symlinks/plugins/flutter_downloader/ios`)
   - flutter_secure_storage (from `Pods/.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_webview_plugin (from `Pods/.symlinks/plugins/flutter_webview_plugin/ios`)
   - GoogleSignIn
@@ -183,6 +188,7 @@ DEPENDENCIES:
   - local_auth (from `Pods/.symlinks/plugins/local_auth/ios`)
   - package_info (from `Pods/.symlinks/plugins/package_info/ios`)
   - path_provider (from `Pods/.symlinks/plugins/path_provider/ios`)
+  - path_provider_macos (from `Pods/.symlinks/plugins/path_provider_macos/ios`)
   - share_extend (from `Pods/.symlinks/plugins/share_extend/ios`)
   - shared_preferences (from `Pods/.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `Pods/.symlinks/plugins/sqflite/ios`)
@@ -235,6 +241,8 @@ EXTERNAL SOURCES:
     :path: Pods/.symlinks/plugins/firebase_messaging/ios
   Flutter:
     :path: Pods/.symlinks/flutter/ios
+  flutter_downloader:
+    :path: Pods/.symlinks/plugins/flutter_downloader/ios
   flutter_secure_storage:
     :path: Pods/.symlinks/plugins/flutter_secure_storage/ios
   flutter_webview_plugin:
@@ -251,6 +259,8 @@ EXTERNAL SOURCES:
     :path: Pods/.symlinks/plugins/package_info/ios
   path_provider:
     :path: Pods/.symlinks/plugins/path_provider/ios
+  path_provider_macos:
+    :path: Pods/.symlinks/plugins/path_provider_macos/ios
   share_extend:
     :path: Pods/.symlinks/plugins/share_extend/ios
   shared_preferences:
@@ -283,6 +293,7 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: 550df9be1f99f751d8fcde3ac342a1e21a0e6c42
   FirebaseMessaging: b22b949cc45c14da01e60404dd7bffc78956380c
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
@@ -302,6 +313,7 @@ SPEC CHECKSUMS:
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   Protobuf: a4dc852ad69c027ca2166ed287b856697814375b
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   share_extend: b6748dc53695587891126a89533b862b92548c7b

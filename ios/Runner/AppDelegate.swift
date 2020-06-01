@@ -9,6 +9,7 @@
 import UIKit
 import Flutter
 import Bindings
+import flutter_downloader
 
 class AppDelegate : FlutterAppDelegate {        
     
@@ -18,6 +19,13 @@ class AppDelegate : FlutterAppDelegate {
         //application.setMinimumBackgroundFetchInterval(3600);
         Notifier.scheduleSyncRequiredNotification();
         SetCustomLogFilename(name: "logs/bitcoin/mainnet/lnd.log");
+        FlutterDownloaderPlugin.setPluginRegistrantCallback({ registry in
+            if (!registry.hasPlugin("FlutterDownloaderPlugin")) {
+                if let downloader = registry.registrar(forPlugin: "FlutterDownloaderPlugin") {
+                    FlutterDownloaderPlugin.register(with: downloader);
+                }
+            }
+        });
         return super.application(application, didFinishLaunchingWithOptions: launchOptions);
     }
     
@@ -61,15 +69,5 @@ class AppDelegate : FlutterAppDelegate {
     
     override func applicationWillTerminate(_ application: UIApplication) {
         Breez.logger.log("application is about to terminate!", lvl: "INFO");
-    }
-    
-    override func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Void {
-        Breez.logger.log("background fetch started...", lvl: "INFO");
-        completionHandler(UIBackgroundFetchResult.noData);
-        
-//        ChainSync.run(app: application, completionHandler: {
-//            Notifier.scheduleSyncRequiredNotification();
-//            completionHandler(UIBackgroundFetchResult.newData);
-//        });
     }
 }

@@ -44,7 +44,7 @@ public class ChainSync extends Worker {
                 //if this job was stopped/cancelled, ignore.
                 if (isStopped()) {
                     m_logger.info("ChainSync job ignored because job is cancelled");
-                    return Result.SUCCESS;
+                    return Result.success();
                 }
 
                 String workingDir = getInputData().getString("workingDir");
@@ -62,10 +62,10 @@ public class ChainSync extends Worker {
             m_logger.info("ChainSync job finished succesfully");
             closedchannelsJobController.run();
             m_logger.info("ClosedChannels job finished succesfully");
-            return Result.SUCCESS;
+            return Result.success();
         } catch (Exception e) {
             m_logger.log(Level.SEVERE,"ChainSync job start received error: ", e);
-            return Result.FAILURE;
+            return Result.failure();
         } finally {
             syncJobController = null;
             closedchannelsJobController = null;
@@ -73,9 +73,9 @@ public class ChainSync extends Worker {
     }
 
     @Override
-    public void onStopped(boolean cancelled) {
-        super.onStopped(cancelled);
-        m_logger.info("ChainSync job onStopped called cancelled=: " + cancelled);
+    public void onStopped() {
+        super.onStopped();
+        m_logger.info("ChainSync job onStopped called");
 
         //The stop and start of breez daemon must not overlap, this is why the synchronized block.
         synchronized (this) {
