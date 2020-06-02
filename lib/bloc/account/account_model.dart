@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -13,21 +14,25 @@ class AccountSettings {
   final bool ignoreWalletBalance;
   final bool showConnectProgress;
   final BugReportBehavior failedPaymentBehavior;
+  final bool isEscherEnabled;
 
   AccountSettings(this.ignoreWalletBalance,
       {this.showConnectProgress = false,
-      this.failedPaymentBehavior = BugReportBehavior.PROMPT});
+      this.failedPaymentBehavior = BugReportBehavior.PROMPT,
+      this.isEscherEnabled});
 
   AccountSettings.start() : this(false);
 
   AccountSettings copyWith(
       {bool ignoreWalletBalance,
       bool showConnectProgress,
-      BugReportBehavior failedPaymentBehavior}) {
+      BugReportBehavior failedPaymentBehavior,
+      bool isEscherEnabled}) {
     return AccountSettings(ignoreWalletBalance ?? this.ignoreWalletBalance,
         showConnectProgress: showConnectProgress ?? this.showConnectProgress,
         failedPaymentBehavior:
-            failedPaymentBehavior ?? this.failedPaymentBehavior);
+            failedPaymentBehavior ?? this.failedPaymentBehavior,
+        isEscherEnabled: isEscherEnabled ?? this.isEscherEnabled);
   }
 
   // typo isn't fixed on json to prevent unexpected behavior
@@ -35,13 +40,15 @@ class AccountSettings {
       : this(json["ignoreWalletBalance"] ?? false,
             showConnectProgress: json["showConnectProgress"] ?? false,
             failedPaymentBehavior:
-                BugReportBehavior.values[json["failePaymentBehavior"] ?? 0]);
+                BugReportBehavior.values[json["failePaymentBehavior"] ?? 0],
+            isEscherEnabled: json["isEscherEnabled"] ?? Platform.isIOS);
 
   Map<String, dynamic> toJson() {
     return {
       "ignoreWalletBalance": ignoreWalletBalance,
       "showConnectProgress": showConnectProgress,
       "failePaymentBehavior": failedPaymentBehavior.index,
+      "isEscherEnabled": isEscherEnabled
     };
   }
 }
