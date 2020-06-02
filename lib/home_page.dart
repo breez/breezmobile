@@ -20,6 +20,7 @@ import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/escher_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
@@ -387,7 +388,13 @@ class HomeState extends State<Home> {
             protectAdminRoute(context, user, "/withdraw_funds"));
     DrawerItemConfig escherItem = DrawerItemConfig(
         "", "Cash-Out via Escher", "src/icon/escher.png",
-        disabled: !account.connected, onItemSelected: (_) => {});
+        disabled: !account.connected, onItemSelected: (_) {
+      return showDialog(
+          useRootNavigator: false,
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => EscherDialog(context, widget.accountBloc));
+    });
     itemConfigs.add(pasteItem);
     itemConfigs.add(c2pItem);
     itemConfigs.add(sendToBTCAddressItem);
