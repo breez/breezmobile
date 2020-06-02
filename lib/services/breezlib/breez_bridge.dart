@@ -3,9 +3,13 @@ import 'dart:io';
 import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ini/ini.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+
+import 'graph_downloader.dart';
 
 // This is the bridge to the native breez library. Protobuf messages are used as the interface and to generate the classes use the bellow command.
 // Note that the version of protoc comiler must be 3-4-0
@@ -22,6 +26,7 @@ class BreezBridge {
   Stream<NotificationEvent> get notificationStream => _eventsController.stream;
   bool ready = false;
   Future<Directory> _tempDirFuture;
+  GraphDownloader _graphDownloader;
 
   BreezBridge() {
     _eventChannel.receiveBroadcastStream().listen((event) {
@@ -37,7 +42,14 @@ class BreezBridge {
       _eventsController.add(NotificationEvent()..mergeFromBuffer(event));
     });
     _tempDirFuture = getTemporaryDirectory();
-    initLightningDir();
+     _graphDownloader = GraphDownloader(onGraphDownloadSuccess);
+     _graphDownloader.init().whenComplete(() => initLightningDir());
+  }
+
+  void onGraphDownloadSuccess(String filePath) async {
+    logger.log.info("graph synchronization started");
+    await syncGraphFromFile(filePath);
+    logger.log.info("graph synchronized succesfully");
   }
 
   initLightningDir() {
@@ -47,8 +59,9 @@ class BreezBridge {
       return copyBreezConfig(workingDir.path).then((_) async {
         var tmpDir = await _tempDirFuture;
         await init(workingDir.path, tmpDir.path);
-        logger.log.info("breez library init finished");
-        _startedCompleter.complete(true);
+        _graphDownloader.downloadGraph();
+          logger.log.info("breez library init finished");
+          _startedCompleter.complete(true);
       });
     });
   }
@@ -84,6 +97,10 @@ class BreezBridge {
 
   Future stop({bool permanent = false}) {
     return _methodChannel.invokeMethod("stop", {"permanent": permanent});
+  }
+
+  Future syncGraphFromFile(String sourceFilePath) {
+    return _invokeMethodImmediate("syncGraphFromFile", {"argument": sourceFilePath});
   }
 
   void log(String msg, String level) {
