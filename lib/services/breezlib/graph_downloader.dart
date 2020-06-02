@@ -8,7 +8,8 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 
 class GraphDownloader {
-  static const graphURL = "https://bt2.breez.technology/mainnet/graph/graph-000c.db";
+  static const graphURL =
+      "https://bt2.breez.technology/mainnet/graph/graph-000c.db";
   final Function(String filePath) onDownloadSuccess;
 
   ReceivePort _port = ReceivePort();
@@ -29,7 +30,7 @@ class GraphDownloader {
       var tasks = await FlutterDownloader.loadTasks();
       var currentTask = tasks.firstWhere((t) => t.taskId == id);
       if (currentTask.url == graphURL) {
-       await _onTaskFinished(currentTask);
+        await _onTaskFinished(currentTask);
       }
     });
     FlutterDownloader.registerCallback(downloadCallback);
@@ -42,16 +43,18 @@ class GraphDownloader {
     handlingFile = true;
     try {
       await FlutterDownloader.cancelAll();
-      await onDownloadSuccess(currentTask.savedDir + Platform.pathSeparator + currentTask.filename);
+      await onDownloadSuccess(
+          currentTask.savedDir + Platform.pathSeparator + currentTask.filename);
     } catch (err) {
       handlingFile = false;
       log.severe("failed to sync graph from file ${err.toString()}");
     }
-   
+
     var tasks = await FlutterDownloader.loadTasks();
     tasks.forEach((t) async {
       if (t.status == DownloadTaskStatus.canceled) {
-        await FlutterDownloader.remove(taskId: t.taskId, shouldDeleteContent: true);
+        await FlutterDownloader.remove(
+            taskId: t.taskId, shouldDeleteContent: true);
       }
     });
   }
@@ -65,16 +68,18 @@ class GraphDownloader {
 
     var expiredTime = DateTime.now().millisecondsSinceEpoch - 24 * 3600 * 1000;
     for (var i = 0; i < tasks.length; ++i) {
-      
       if (tasks[i].url == graphURL) {
-        if (tasks[i].status == DownloadTaskStatus.complete && tasks[i].timeCreated > expiredTime) {
-          log.info("Already has a recently completed graph download task, using it");
+        if (tasks[i].status == DownloadTaskStatus.complete &&
+            tasks[i].timeCreated > expiredTime) {
+          log.info(
+              "Already has a recently completed graph download task, using it");
           _onTaskFinished(tasks[i]);
           return;
         }
 
-        if (runningStatuses.indexOf(tasks[i].status) >= 0 ) {
-          log.info("Already has graph download task running, not starting another one");
+        if (runningStatuses.indexOf(tasks[i].status) >= 0) {
+          log.info(
+              "Already has graph download task running, not starting another one");
           return;
         }
       }
@@ -94,7 +99,7 @@ class GraphDownloader {
 
   static void downloadCallback(
       String id, DownloadTaskStatus status, int progress) async {
-    var finalStatuses =  [
+    var finalStatuses = [
       DownloadTaskStatus.complete,
       DownloadTaskStatus.failed,
       DownloadTaskStatus.canceled
