@@ -78,6 +78,10 @@ flutter {
     source '../..'
 }
 
+configurations {
+    all*.exclude group: 'com.google.guava', module: 'listenablefuture'
+}
+
 dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
@@ -96,10 +100,11 @@ dependencies {
         exclude group: 'org.apache.httpcomponents'        
     }
     implementation 'com.felipecsl:gifimageview:2.1.0'
-    implementation 'commons-io:commons-io:2.4'    
-    implementation ('android.arch.work:work-runtime:1.0.0-alpha10') {
+    implementation ('commons-io:commons-io:2.4') {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
+    implementation 'androidx.work:work-runtime:2.3.4'
+    implementation 'androidx.lifecycle:lifecycle-process:2.2.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.3.20'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.3.20'
