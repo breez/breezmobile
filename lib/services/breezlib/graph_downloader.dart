@@ -94,6 +94,7 @@ class GraphDownloader {
         url: graphURL,
         savedDir: downloadDir.path,
         fileName: "graph",
+        showNotification: false,
         openFileFromNotification: false);
   }
 
