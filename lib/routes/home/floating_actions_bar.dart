@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_fund_vendor_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
@@ -217,6 +218,8 @@ class FloatingActionsBar extends StatelessWidget {
 
   Future _showSendOptions(BuildContext context) async {
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
+
     await showModalBottomSheet(
         context: context,
         builder: (ctx) {
@@ -267,6 +270,25 @@ class FloatingActionsBar extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context).pop();
                           Navigator.of(context).pushNamed("/withdraw_funds");
+                        }),
+                    StreamBuilder(
+                        stream: accBloc.accountSettingsStream,
+                        builder: (context, settingsSnapshot) {
+                          if (!settingsSnapshot.hasData) {
+                            return SizedBox();
+                          }
+                          AccountSettings settings = settingsSnapshot.data;
+                          if (settings.isEscherEnabled) {
+                            return ListTile(
+                                enabled: account.connected,
+                                leading: _ActionImage(
+                                    iconAssetPath: "src/icon/escher.png",
+                                    enabled: account.connected),
+                                title: Text("Cash-Out via Escher"),
+                                onTap: () {});
+                          } else {
+                            return SizedBox();
+                          }
                         }),
                     SizedBox(height: 8.0)
                   ],

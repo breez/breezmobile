@@ -136,239 +136,270 @@ class HomeState extends State<Home> {
                 if (account == null) {
                   return SizedBox();
                 }
-                return StreamBuilder<List<AddFundVendorModel>>(
-                    stream: addFundsBloc.availableVendorsStream,
-                    builder: (context, snapshot) {
-                      List<DrawerItemConfig> addFundsVendors = [];
-                      if (snapshot.data != null) {
-                        snapshot.data.forEach((v) {
-                          if (v.isAllowed) {
-                            addFundsVendors.add(DrawerItemConfig(
-                                v.route, v.shortName ?? v.name, v.icon,
-                                disabled: !v.enabled ||
-                                    v.requireActiveChannel &&
-                                        !account.connected));
-                          }
-                        });
-                      }
-                      var refundableAddresses =
-                          account.swapFundsStatus.maturedRefundableAddresses;
-                      var refundItems = <DrawerItemConfigGroup>[];
-                      if (refundableAddresses.length > 0) {
-                        refundItems = [
-                          DrawerItemConfigGroup([
-                            DrawerItemConfig(
-                                "", "Get Refund", "src/icon/withdraw_funds.png",
-                                onItemSelected: (_) => protectAdminRoute(
-                                    context, user, "/get_refund"))
-                          ])
-                        ];
+                return StreamBuilder<AccountSettings>(
+                    stream: widget.accountBloc.accountSettingsStream,
+                    builder: (context, settingsSnapshot) {
+                      var settings = settingsSnapshot.data;
+                      if (settings == null) {
+                        return SizedBox();
                       }
 
-                      var flavorItems = <DrawerItemConfigGroup>[];
-                      flavorItems = [
-                        DrawerItemConfigGroup([
-                          user.isPOS
-                              ? DrawerItemConfig("/transactions",
-                                  "Transactions", "src/icon/transactions.png")
-                              : DrawerItemConfig("/marketplace", "Marketplace",
-                                  "src/icon/ic_market.png",
-                                  disabled: !account.connected)
-                        ])
-                      ];
-                      var advancedFlavorItems = List<DrawerItemConfig>();
-                      advancedFlavorItems = user.isPOS
-                          ? [
-                              DrawerItemConfig("", "POS", "src/icon/pos.png",
-                                  onItemSelected: (_) {
-                                widget.userProfileBloc.userActionsSink
-                                    .add(SetPOSFlavor(!user.isPOS));
-                              },
-                                  switchWidget: Switch(
-                                      activeColor: Colors.white,
-                                      value: user.isPOS,
-                                      onChanged: (_) {
-                                        protectAdminAction(context, user, () {
-                                          var action = SetPOSFlavor(false);
-                                          widget.userProfileBloc.userActionsSink
-                                              .add(action);
-                                          return action.future;
-                                        });
-                                      })),
-                              DrawerItemConfig(
-                                  "", "POS Settings", "src/icon/settings.png",
-                                  onItemSelected: (_) => protectAdminRoute(
-                                      context, user, "/settings")),
-                            ]
-                          : [
-                              DrawerItemConfig("", "POS", "src/icon/pos.png",
-                                  onItemSelected: (_) {
-                                if (account.connected) {
-                                  widget.userProfileBloc.userActionsSink
-                                      .add(SetPOSFlavor(!user.isPOS));
-                                }
-                              },
-                                  disabled: !account.connected,
-                                  switchWidget: Switch(
-                                      inactiveThumbColor: Colors.grey.shade400,
-                                      activeColor: Colors.white,
-                                      value: user.isPOS,
-                                      onChanged: !account.connected
-                                          ? null
-                                          : (_) {
-                                              var action =
-                                                  SetPOSFlavor(!user.isPOS);
-                                              widget.userProfileBloc
-                                                  .userActionsSink
-                                                  .add(action);
-                                            })),
-                              DrawerItemConfig("/developers", "Developers",
-                                  "src/icon/developers.png")
-                            ];
-
-                      return StreamBuilder<String>(
-                          stream: Observable.merge([
-                            widget.invoiceBloc.clipboardInvoiceStream,
-                            widget.invoiceBloc.clipboardNodeIdStream
-                          ]),
+                      return StreamBuilder<List<AddFundVendorModel>>(
+                          stream: addFundsBloc.availableVendorsStream,
                           builder: (context, snapshot) {
-                            return Container(
-                              height: MediaQuery.of(context).size.height,
-                              width: MediaQuery.of(context).size.width,
-                              child: FadeInWidget(
-                                child: Scaffold(
-                                    key: _scaffoldKey,
-                                    appBar: AppBar(
-                                      brightness: theme.themeId == "BLUE"
-                                          ? Brightness.light
-                                          : Theme.of(context)
-                                              .appBarTheme
-                                              .brightness,
-                                      centerTitle: false,
-                                      actions: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.all(14.0),
-                                          child:
-                                              AccountRequiredActionsIndicator(
-                                                  widget.backupBloc,
-                                                  widget.accountBloc,
-                                                  widget.lspBloc),
-                                        ),
-                                      ],
-                                      leading: IconButton(
-                                          icon: ImageIcon(
-                                            AssetImage(
-                                                "src/icon/hamburger.png"),
-                                            size: 24.0,
-                                            color: Theme.of(context)
-                                                .appBarTheme
-                                                .actionsIconTheme
-                                                .color,
+                            List<DrawerItemConfig> addFundsVendors = [];
+                            if (snapshot.data != null) {
+                              snapshot.data.forEach((v) {
+                                if (v.isAllowed) {
+                                  addFundsVendors.add(DrawerItemConfig(
+                                      v.route, v.shortName ?? v.name, v.icon,
+                                      disabled: !v.enabled ||
+                                          v.requireActiveChannel &&
+                                              !account.connected));
+                                }
+                              });
+                            }
+                            var refundableAddresses = account
+                                .swapFundsStatus.maturedRefundableAddresses;
+                            var refundItems = <DrawerItemConfigGroup>[];
+                            if (refundableAddresses.length > 0) {
+                              refundItems = [
+                                DrawerItemConfigGroup([
+                                  DrawerItemConfig("", "Get Refund",
+                                      "src/icon/withdraw_funds.png",
+                                      onItemSelected: (_) => protectAdminRoute(
+                                          context, user, "/get_refund"))
+                                ])
+                              ];
+                            }
+
+                            var flavorItems = <DrawerItemConfigGroup>[];
+                            flavorItems = [
+                              DrawerItemConfigGroup([
+                                user.isPOS
+                                    ? DrawerItemConfig(
+                                        "/transactions",
+                                        "Transactions",
+                                        "src/icon/transactions.png")
+                                    : DrawerItemConfig("/marketplace",
+                                        "Marketplace", "src/icon/ic_market.png",
+                                        disabled: !account.connected)
+                              ])
+                            ];
+                            var advancedFlavorItems = List<DrawerItemConfig>();
+                            advancedFlavorItems = user.isPOS
+                                ? [
+                                    DrawerItemConfig(
+                                        "", "POS", "src/icon/pos.png",
+                                        onItemSelected: (_) {
+                                      widget.userProfileBloc.userActionsSink
+                                          .add(SetPOSFlavor(!user.isPOS));
+                                    },
+                                        switchWidget: Switch(
+                                            activeColor: Colors.white,
+                                            value: user.isPOS,
+                                            onChanged: (_) {
+                                              protectAdminAction(context, user,
+                                                  () {
+                                                var action =
+                                                    SetPOSFlavor(false);
+                                                widget.userProfileBloc
+                                                    .userActionsSink
+                                                    .add(action);
+                                                return action.future;
+                                              });
+                                            })),
+                                    DrawerItemConfig("", "POS Settings",
+                                        "src/icon/settings.png",
+                                        onItemSelected: (_) =>
+                                            protectAdminRoute(
+                                                context, user, "/settings")),
+                                  ]
+                                : [
+                                    DrawerItemConfig(
+                                        "", "POS", "src/icon/pos.png",
+                                        onItemSelected: (_) {
+                                      if (account.connected) {
+                                        widget.userProfileBloc.userActionsSink
+                                            .add(SetPOSFlavor(!user.isPOS));
+                                      }
+                                    },
+                                        disabled: !account.connected,
+                                        switchWidget: Switch(
+                                            inactiveThumbColor:
+                                                Colors.grey.shade400,
+                                            activeColor: Colors.white,
+                                            value: user.isPOS,
+                                            onChanged: !account.connected
+                                                ? null
+                                                : (_) {
+                                                    var action = SetPOSFlavor(
+                                                        !user.isPOS);
+                                                    widget.userProfileBloc
+                                                        .userActionsSink
+                                                        .add(action);
+                                                  })),
+                                    DrawerItemConfig("/developers",
+                                        "Developers", "src/icon/developers.png")
+                                  ];
+
+                            return StreamBuilder<String>(
+                                stream: Observable.merge([
+                                  widget.invoiceBloc.clipboardInvoiceStream,
+                                  widget.invoiceBloc.clipboardNodeIdStream
+                                ]),
+                                builder: (context, snapshot) {
+                                  return Container(
+                                    height: MediaQuery.of(context).size.height,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: FadeInWidget(
+                                      child: Scaffold(
+                                          key: _scaffoldKey,
+                                          appBar: AppBar(
+                                            brightness: theme.themeId == "BLUE"
+                                                ? Brightness.light
+                                                : Theme.of(context)
+                                                    .appBarTheme
+                                                    .brightness,
+                                            centerTitle: false,
+                                            actions: <Widget>[
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(14.0),
+                                                child:
+                                                    AccountRequiredActionsIndicator(
+                                                        widget.backupBloc,
+                                                        widget.accountBloc,
+                                                        widget.lspBloc),
+                                              ),
+                                            ],
+                                            leading: IconButton(
+                                                icon: ImageIcon(
+                                                  AssetImage(
+                                                      "src/icon/hamburger.png"),
+                                                  size: 24.0,
+                                                  color: Theme.of(context)
+                                                      .appBarTheme
+                                                      .actionsIconTheme
+                                                      .color,
+                                                ),
+                                                onPressed: () => _scaffoldKey
+                                                    .currentState
+                                                    .openDrawer()),
+                                            title: Image.asset(
+                                              "src/images/logo-color.png",
+                                              height: 23.5,
+                                              width: 62.7,
+                                              color: Theme.of(context)
+                                                  .appBarTheme
+                                                  .color,
+                                              colorBlendMode: BlendMode.srcATop,
+                                            ),
+                                            iconTheme: IconThemeData(
+                                                color: Color.fromARGB(
+                                                    255, 0, 133, 251)),
+                                            backgroundColor: Theme.of(context)
+                                                .backgroundColor,
+                                            elevation: 0.0,
                                           ),
-                                          onPressed: () => _scaffoldKey
-                                              .currentState
-                                              .openDrawer()),
-                                      title: Image.asset(
-                                        "src/images/logo-color.png",
-                                        height: 23.5,
-                                        width: 62.7,
-                                        color:
-                                            Theme.of(context).appBarTheme.color,
-                                        colorBlendMode: BlendMode.srcATop,
-                                      ),
-                                      iconTheme: IconThemeData(
-                                          color:
-                                              Color.fromARGB(255, 0, 133, 251)),
-                                      backgroundColor:
-                                          Theme.of(context).backgroundColor,
-                                      elevation: 0.0,
+                                          drawer: NavigationDrawer(
+                                              true,
+                                              [
+                                                ...refundItems,
+                                                _buildSendItems(
+                                                    account,
+                                                    snapshot,
+                                                    context,
+                                                    user,
+                                                    settings),
+                                                DrawerItemConfigGroup([
+                                                  DrawerItemConfig(
+                                                      "/create_invoice",
+                                                      "Receive via Invoice",
+                                                      "src/icon/paste.png",
+                                                      disabled:
+                                                          !account.connected),
+                                                  ...addFundsVendors,
+                                                ],
+                                                    groupTitle: "Receive",
+                                                    groupAssetImage:
+                                                        "src/icon/receive-action.png",
+                                                    withDivider: false),
+                                                ...flavorItems,
+                                                DrawerItemConfigGroup(
+                                                    _filterItems([
+                                                      DrawerItemConfig(
+                                                          "/network",
+                                                          "Network",
+                                                          "src/icon/network.png"),
+                                                      DrawerItemConfig(
+                                                          "/security",
+                                                          "Security & Backup",
+                                                          "src/icon/security.png"),
+                                                      ...advancedFlavorItems,
+                                                    ]),
+                                                    groupTitle: "Advanced",
+                                                    groupAssetImage:
+                                                        "src/icon/advanced.png"),
+                                              ],
+                                              _onNavigationItemSelected),
+                                          body: widget._screenBuilders[
+                                                  _activeScreen] ??
+                                              _homePage(user.isPOS)),
                                     ),
-                                    drawer: NavigationDrawer(
-                                        true,
-                                        [
-                                          ...refundItems,
-                                          DrawerItemConfigGroup([
-                                            DrawerItemConfig(
-                                                "",
-                                                "Paste Invoice or Node ID",
-                                                "src/icon/paste.png",
-                                                disabled: !account.connected ||
-                                                    snapshot.data == null,
-                                                onItemSelected:
-                                                    (decodedQr) async {
-                                        
-                                              if (!isValidNodeId(snapshot.data)) {
-                                                widget.invoiceBloc.decodeInvoiceSink.add(snapshot.data);
-                                              } else {
-                                                Navigator.of(context).push(FadeInRoute(
-                                                  builder: (_) => SpontaneousPaymentPage(snapshot.data, firstPaymentItemKey),
-                                                ));
-                                              }
-                                            }),
-                                            DrawerItemConfig(
-                                                "",
-                                                "Connect to Pay",
-                                                "src/icon/connect_to_pay.png",
-                                                disabled: !account.connected,
-                                                onItemSelected: (_) =>
-                                                    protectAdminRoute(
-                                                        context,
-                                                        user,
-                                                        "/connect_to_pay")),
-                                            DrawerItemConfig(
-                                                "",
-                                                "Send to BTC Address",
-                                                "src/icon/bitcoin.png",
-                                                disabled: !account.connected,
-                                                onItemSelected: (_) =>
-                                                    protectAdminRoute(
-                                                        context,
-                                                        user,
-                                                        "/withdraw_funds")),
-                                          ],
-                                              groupTitle: "Send",
-                                              groupAssetImage:
-                                                  "src/icon/send-action.png",
-                                              withDivider: true),
-                                          DrawerItemConfigGroup([
-                                            DrawerItemConfig(
-                                                "/create_invoice",
-                                                "Receive via Invoice",
-                                                "src/icon/paste.png",
-                                                disabled: !account.connected),
-                                            ...addFundsVendors,
-                                          ],
-                                              groupTitle: "Receive",
-                                              groupAssetImage:
-                                                  "src/icon/receive-action.png",
-                                              withDivider: false),
-                                          ...flavorItems,
-                                          DrawerItemConfigGroup(
-                                              _filterItems([
-                                                DrawerItemConfig(
-                                                    "/network",
-                                                    "Network",
-                                                    "src/icon/network.png"),
-                                                DrawerItemConfig(
-                                                    "/security",
-                                                    "Security & Backup",
-                                                    "src/icon/security.png"),
-                                                ...advancedFlavorItems,
-                                              ]),
-                                              groupTitle: "Advanced",
-                                              groupAssetImage:
-                                                  "src/icon/advanced.png"),
-                                        ],
-                                        _onNavigationItemSelected),
-                                    body:
-                                        widget._screenBuilders[_activeScreen] ??
-                                            _homePage(user.isPOS)),
-                              ),
-                            );
+                                  );
+                                });
                           });
                     });
               });
         });
+  }
+
+  DrawerItemConfigGroup _buildSendItems(
+      AccountModel account,
+      AsyncSnapshot<String> snapshot,
+      BuildContext context,
+      BreezUserModel user,
+      AccountSettings settings) {
+    List<DrawerItemConfig> itemConfigs = [];
+    DrawerItemConfig pasteItem = DrawerItemConfig(
+        "", "Paste Invoice or Node ID", "src/icon/paste.png",
+        disabled: !account.connected || snapshot.data == null,
+        onItemSelected: (decodedQr) async {
+      if (!isValidNodeId(snapshot.data)) {
+        widget.invoiceBloc.decodeInvoiceSink.add(snapshot.data);
+      } else {
+        Navigator.of(context).push(FadeInRoute(
+          builder: (_) =>
+              SpontaneousPaymentPage(snapshot.data, firstPaymentItemKey),
+        ));
+      }
+    });
+    DrawerItemConfig c2pItem = DrawerItemConfig(
+        "", "Connect to Pay", "src/icon/connect_to_pay.png",
+        disabled: !account.connected,
+        onItemSelected: (_) =>
+            protectAdminRoute(context, user, "/connect_to_pay"));
+    DrawerItemConfig sendToBTCAddressItem = DrawerItemConfig(
+        "", "Send to BTC Address", "src/icon/bitcoin.png",
+        disabled: !account.connected,
+        onItemSelected: (_) =>
+            protectAdminRoute(context, user, "/withdraw_funds"));
+    DrawerItemConfig escherItem = DrawerItemConfig(
+        "", "Cash-Out via Escher", "src/icon/escher.png",
+        disabled: !account.connected, onItemSelected: (_) => {});
+    itemConfigs.add(pasteItem);
+    itemConfigs.add(c2pItem);
+    itemConfigs.add(sendToBTCAddressItem);
+
+    if (settings.isEscherEnabled) {
+      itemConfigs.add(escherItem);
+    }
+
+    return DrawerItemConfigGroup(itemConfigs,
+        groupTitle: "Send",
+        groupAssetImage: "src/icon/send-action.png",
+        withDivider: true);
   }
 
   _homePage(bool isPOS) {
@@ -480,9 +511,8 @@ class HomeState extends State<Home> {
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
       if (!fulfilledPayment.cancelled &&
           !fulfilledPayment.ignoreGlobalFeedback) {
-        scrollController
-          .animateTo(scrollController.position.minScrollExtent,
-              duration: Duration(milliseconds: 10), curve: Curves.ease);
+        scrollController.animateTo(scrollController.position.minScrollExtent,
+            duration: Duration(milliseconds: 10), curve: Curves.ease);
         showFlushbar(context, message: "Payment was successfuly sent!");
       }
     }, onError: (err) async {
