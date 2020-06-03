@@ -51,8 +51,13 @@ class GraphDownloader {
     }
 
     var tasks = await FlutterDownloader.loadTasks();
+    var finishedStatuses = [
+      DownloadTaskStatus.complete,
+      DownloadTaskStatus.canceled,
+      DownloadTaskStatus.failed
+    ];
     tasks.forEach((t) async {
-      if (t.status == DownloadTaskStatus.canceled) {
+      if (finishedStatuses.contains(t.status)) {
         await FlutterDownloader.remove(
             taskId: t.taskId, shouldDeleteContent: true);
       }
