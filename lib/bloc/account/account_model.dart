@@ -41,7 +41,7 @@ class AccountSettings {
             showConnectProgress: json["showConnectProgress"] ?? false,
             failedPaymentBehavior:
                 BugReportBehavior.values[json["failePaymentBehavior"] ?? 0],
-            isEscherEnabled: json["isEscherEnabled"] ?? Platform.isIOS);
+            isEscherEnabled: json["isEscherEnabled"] ?? false);
 
   Map<String, dynamic> toJson() {
     return {
