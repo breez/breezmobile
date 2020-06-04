@@ -293,8 +293,8 @@ class BreezBridge {
     return _invokeMethodImmediate("testPeer", {"argument": address});
   }
 
-  Future deleteNonTLVNodesFromGraph() {
-    return _invokeMethodImmediate("deleteNonTLVNodesFromGraph", {});
+  Future deleteGraph() {
+    return _invokeMethodImmediate("deleteGraph", {});
   }
 
   Future<String> addInvoice(Int64 amount,

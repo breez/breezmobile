@@ -348,7 +348,7 @@ class DevViewState extends State<DevView> {
           icon: Icons.phone_android,
           function: _describeGraph),
       Choice(
-          title: 'Update TLV',
+          title: 'Update Graph',
           icon: Icons.phone_android,
           function: _refreshGraph),
     ]);
@@ -506,8 +506,8 @@ class DevViewState extends State<DevView> {
     Navigator.push(
             context,
             createLoaderRoute(context,
-                message: "Pruning nodes without TLV support...", opacity: 0.8));
-    widget._breezBridge.deleteNonTLVNodesFromGraph().whenComplete(() {
+                message: "Deleting graph...", opacity: 0.8));
+    widget._breezBridge.deleteGraph().whenComplete(() {
       Navigator.pop(context);
       _promptForRestart();
     });
