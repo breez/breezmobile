@@ -158,7 +158,7 @@ class EscherDialogState extends State<EscherDialog> {
             Navigator.pop(context);
             var satValue = Currency.SAT.format(parsedAmount,
                 includeDisplayName: false, userInput: true);
-            launch("https://hub.escher.app/cashout/breez?amount=$satValue");
+            launch("https://hub.escher.app/cashout/breez?amount=$satValue", forceSafariVC: false, enableJavaScript: true);
           },
           child:
               Text("APPROVE", style: Theme.of(context).primaryTextTheme.button),
