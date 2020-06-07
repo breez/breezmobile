@@ -348,7 +348,7 @@ class DevViewState extends State<DevView> {
           icon: Icons.phone_android,
           function: _describeGraph),
       Choice(
-          title: 'Update TLV',
+          title: 'Update Graph',
           icon: Icons.phone_android,
           function: _refreshGraph),
     ]);
@@ -378,6 +378,10 @@ class DevViewState extends State<DevView> {
             "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
         icon: Icons.network_check,
         function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));
+    choices.add(Choice(
+        title: "${settings.isEscherEnabled ? "Disable" : "Enable"} Escher",
+        icon: Icons.monetization_on,
+        function: () => _enableEscher(accBloc, settings)));
      choices.add(Choice(
         title: 'Reset Refunds Status',
         icon: Icons.phone_android,
@@ -462,6 +466,11 @@ class DevViewState extends State<DevView> {
         moonpayIpCheck: !addFundsSettings.moonpayIpCheck));
   }
 
+  void _enableEscher(AccountBloc bloc, AccountSettings settings) {
+    bloc.accountSettingsSink
+        .add(settings.copyWith(isEscherEnabled: !settings.isEscherEnabled));
+  }
+
 /*  void _setPOS(UserProfileBloc userBloc, bool isPOS) {
     userBloc.userActionsSink.add(SetPOSFlavor(isPOS));
   }*/
@@ -497,8 +506,8 @@ class DevViewState extends State<DevView> {
     Navigator.push(
             context,
             createLoaderRoute(context,
-                message: "Pruning nodes without TLV support...", opacity: 0.8));
-    widget._breezBridge.deleteNonTLVNodesFromGraph().whenComplete(() {
+                message: "Deleting graph...", opacity: 0.8));
+    widget._breezBridge.deleteGraph().whenComplete(() {
       Navigator.pop(context);
       _promptForRestart();
     });

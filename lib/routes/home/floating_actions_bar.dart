@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_fund_vendor_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
@@ -21,6 +22,7 @@ import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/escher_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
@@ -217,6 +219,8 @@ class FloatingActionsBar extends StatelessWidget {
 
   Future _showSendOptions(BuildContext context) async {
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
+
     await showModalBottomSheet(
         context: context,
         builder: (ctx) {
@@ -267,6 +271,33 @@ class FloatingActionsBar extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context).pop();
                           Navigator.of(context).pushNamed("/withdraw_funds");
+                        }),
+                    StreamBuilder(
+                        stream: accBloc.accountSettingsStream,
+                        builder: (context, settingsSnapshot) {
+                          if (!settingsSnapshot.hasData) {
+                            return SizedBox();
+                          }
+                          AccountSettings settings = settingsSnapshot.data;
+                          if (settings.isEscherEnabled) {
+                            return ListTile(
+                                enabled: account.connected,
+                                leading: _ActionImage(
+                                    iconAssetPath: "src/icon/escher.png",
+                                    enabled: account.connected),
+                                title: Text("Cash-Out via Escher"),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  return showDialog(
+                                      useRootNavigator: false,
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (_) =>
+                                          EscherDialog(context, accBloc));
+                                });
+                          } else {
+                            return SizedBox();
+                          }
                         }),
                     SizedBox(height: 8.0)
                   ],
