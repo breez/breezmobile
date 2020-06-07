@@ -85,16 +85,17 @@ class AccountBloc {
 
   Map<String, bool> _ignoredFeedbackPayments = Map<String, bool>();
 
-  Stream<PaymentInfo> get pendingPaymentStream => paymentsStream.map((ps) {
-        if (ps.nonFilteredItems.length == 0) {
-          return null;
-        }
-        var topItem = ps.nonFilteredItems.first;
-        if (topItem.type != PaymentType.SENT || !topItem.pending) {
-          return null;
-        }
-        return topItem;
-      }).distinct((p1, p2) => p1?.paymentHash == p2?.paymentHash);
+  Stream<PaymentInfo> get pendingPaymentStream {
+    var newestPaymentTime =
+        _paymentsController.value.paymentsList.first.creationTimestamp;
+    return paymentsStream
+        .map((ps) => ps.paymentsList.where((p) =>
+            p.creationTimestamp > newestPaymentTime &&
+            p.pending &&
+            p.type == PaymentType.SENT))
+        .expand((ps) => ps)
+        .distinct((p1, p2) => p1?.paymentHash == p2?.paymentHash);
+  }
 
   final _lightningDownController = StreamController<bool>.broadcast();
   Stream<bool> get lightningDownStream => _lightningDownController.stream;
@@ -274,7 +275,26 @@ class AccountBloc {
   }
 
   Future _sendSpontaneousPayment(SendSpontaneousPayment action) async {
-     action.resolve(_breezLib.sendSpontaneousPayment(action.nodeID, action.amount, action.description));
+    var sendRequest = _breezLib
+        .sendSpontaneousPayment(
+            action.nodeID, action.amount, action.description)
+        .catchError((err) {
+      _completedPaymentsController.addError(PaymentError(null, err, null));
+      return Future.error(err);
+    });
+
+    sendRequest.then((response) {
+      if (response.paymentError.isNotEmpty) {
+        _completedPaymentsController.addError(
+            PaymentError(null, response.paymentError, response.traceReport));
+        return Future.error(response.paymentError);
+      }
+    });
+    _backgroundService.runAsTask(sendRequest, () {
+      log.info("sendpayment background task finished");
+    });
+    action.resolve(await sendRequest);
+    _completedPaymentsController.add(CompletedPayment(null, null));
   }
 
   Future _sendPayment(SendPayment action) async {
@@ -282,33 +302,37 @@ class AccountBloc {
     if (action.ignoreGlobalFeedback) {
       _ignoredFeedbackPayments[payRequest.paymentRequest] = true;
     }
-    var paymentHash;
-    if (payRequest.paymentRequest != null) {
-      paymentHash = await _breezLib.getPaymentRequestHash(payRequest.paymentRequest);
-    }
     var sendRequest = _breezLib
         .sendPaymentForRequest(payRequest.paymentRequest,
             amount: payRequest.amount)
         .catchError((err) {
       _completedPaymentsController
-          .addError(PaymentError(payRequest, paymentHash, err, null));
+          .addError(PaymentError(payRequest, err, null));
       return Future.error(err);
     });
+    sendRequest.then((response) {
+      if (response.paymentError.isNotEmpty) {
+        _completedPaymentsController.addError(PaymentError(
+            payRequest, response.paymentError, response.traceReport));
+        return Future.error(response.paymentError);
+      }
+      return Future.value(response);
+    });
 
-    var sendPaymentFuture = Future.wait(
-        [sendRequest, _breezLib.waitPayment(payRequest.paymentRequest)],
-        eagerError: true);
-
-    _backgroundService.runAsTask(sendPaymentFuture, () {
+    _backgroundService.runAsTask(sendRequest, () {
       log.info("sendpayment background task finished");
     });
-    action.resolve(await sendPaymentFuture);
+    action.resolve(await sendRequest);
+    _completedPaymentsController.add(CompletedPayment(payRequest, null,
+        ignoreGlobalFeedback: action.ignoreGlobalFeedback == true));
   }
 
   Future _cancelPaymentRequest(CancelPaymentRequest cancelRequest) async {
-    var paymentHash = await _breezLib.getPaymentRequestHash(cancelRequest.paymentRequest.paymentRequest);
-    _completedPaymentsController
-        .add(CompletedPayment(cancelRequest.paymentRequest, paymentHash, cancelled: true));
+    var paymentHash = await _breezLib
+        .getPaymentRequestHash(cancelRequest.paymentRequest.paymentRequest);
+    _completedPaymentsController.add(CompletedPayment(
+        cancelRequest.paymentRequest, paymentHash,
+        cancelled: true));
     return Future.value(null);
   }
 
@@ -587,21 +611,18 @@ class AccountBloc {
         var paymentHash = event.data[1];
         PayRequest pqyreq;
         if (paymentRequest.isNotEmpty) {
-           var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
-           pqyreq = PayRequest(paymentRequest, invoice.amount);
+          var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
+          pqyreq = PayRequest(paymentRequest, invoice.amount);
         }
-       
-        _completedPaymentsController.add(CompletedPayment(
-            pqyreq,
-            paymentHash,
+
+        _completedPaymentsController.add(CompletedPayment(pqyreq, paymentHash,
             cancelled: false,
             ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
         _ignoredFeedbackPayments.remove(paymentRequest);
       }
       if (event.type == NotificationEvent_NotificationType.PAYMENT_FAILED) {
-        var paymentRequest = event.data[0];        
-        var paymentHash = event.data[1];
+        var paymentRequest = event.data[0];
         var error = event.data[2];
         var traceReport;
         if (event.data.length > 3) {
@@ -609,11 +630,11 @@ class AccountBloc {
         }
         PayRequest pqyreq;
         if (paymentRequest.isNotEmpty) {
-           var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
-           pqyreq = PayRequest(paymentRequest, invoice.amount);
+          var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
+          pqyreq = PayRequest(paymentRequest, invoice.amount);
         }
         _completedPaymentsController.addError(PaymentError(
-            pqyreq, paymentHash, error, traceReport,
+            pqyreq, error, traceReport,
             ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
         _ignoredFeedbackPayments.remove(paymentRequest);
@@ -657,14 +678,16 @@ class AccountBloc {
 
   void _listenRoutingConnectionChanges() {
     Observable(_accountController.stream)
-      .distinct((acc1, acc2) {
-        return acc1?.readyForPayments == acc2?.readyForPayments;
-      })
-      .where((acc) => !acc.readyForPayments && (acc.connected || acc.processingConnection))
-      .skip(1)
-      .listen((acc) {
-        _reconnectSink.add(null);
-      });
+        .distinct((acc1, acc2) {
+          return acc1?.readyForPayments == acc2?.readyForPayments;
+        })
+        .where((acc) =>
+            !acc.readyForPayments &&
+            (acc.connected || acc.processingConnection))
+        .skip(1)
+        .listen((acc) {
+          _reconnectSink.add(null);
+        });
   }
 
   Future<String> getPersistentNodeID() async {

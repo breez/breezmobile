@@ -40,6 +40,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   String _amountToPayStr;
   Int64 _amountToPay;
   ModalRoute _currentRoute;
+  SendPayment _sendPayment;
 
   @override
   void initState() {
@@ -76,7 +77,10 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return ProcessingPaymentDialog(
           widget.context,
-          Future.value(widget.invoice.paymentHash),
+          (){
+            widget.accountBloc.userActionsSink.add(this._sendPayment);
+            return this._sendPayment.future;
+          },
           widget.accountBloc,
           widget.firstPaymentItemKey,
           _onStateChange, minHeight);
@@ -86,14 +90,25 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
           widget.invoice,
           _amountToPay,
           _amountToPayStr,
-          (state) => _onStateChange(state),
+          () => _onStateChange(PaymentRequestState.USER_CANCELLED),
+          (sendPayment) {
+            setState(() {
+              _sendPayment = sendPayment;
+               _onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
+            });
+          },
           minHeight);
     } else {
       return PaymentRequestInfoDialog(
           widget.context,
           widget.accountBloc,
           widget.invoice,
-          (state) => _onStateChange(state),
+          () => _onStateChange(PaymentRequestState.USER_CANCELLED),
+          () => _onStateChange(PaymentRequestState.WAITING_FOR_CONFIRMATION),
+          (sendPayment) {
+            _sendPayment = sendPayment;
+            _onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
+          },
           (map) => _setAmountToPay(map), minHeight);
     }
   }
