@@ -48,14 +48,18 @@ class BreezBridge {
   }
 
   Future syncGraphIfNeeded() async {
-    _inProgressGraphSync = _graphDownloader.downloadGraph().then((file) async {
-      logger.log.info("graph synchronization started");
-      await syncGraphFromFile(file.path);
-      logger.log.info("graph synchronized succesfully");
-      return DateTime.now();
-    }).whenComplete(() {
-      _graphDownloader.deleteDownloads();
-    });
+    var downloadURL = await graphURL();
+      if (downloadURL.isNotEmpty) {
+        logger.log.info("downloading graph");
+      _inProgressGraphSync = _graphDownloader.downloadGraph(downloadURL).then((file) async {
+        logger.log.info("graph synchronization started");
+        await syncGraphFromFile(file.path);
+        logger.log.info("graph synchronized succesfully");
+        return DateTime.now();
+      }).whenComplete(() {
+        _graphDownloader.deleteDownloads();
+      });
+    }
   }
 
   initLightningDir() {
@@ -65,7 +69,7 @@ class BreezBridge {
       return copyBreezConfig(workingDir.path).then((_) async {
         var tmpDir = await _tempDirFuture;
         await init(workingDir.path, tmpDir.path);
-        syncGraphIfNeeded();
+        Timer(Duration(seconds: 2), syncGraphIfNeeded);
         logger.log.info("breez library init finished");
         _startedCompleter.complete(true);
       });
@@ -297,6 +301,11 @@ class BreezBridge {
       }
       return Future.error(err);
     }
+  }
+
+  Future<String> graphURL() {
+    return _invokeMethodImmediate("graphURL")
+        .then((result) => result as String);
   }
 
   Future sendPaymentFailureBugReport(String traceReport) {

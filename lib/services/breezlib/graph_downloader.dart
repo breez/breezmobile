@@ -9,8 +9,8 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 
 class GraphDownloader {
-  static const graphURL =
-      "https://bt2.breez.technology/mainnet/graph/graph-000c.db";
+  static const graphURLPrefix =
+      "https://bt2.breez.technology/mainnet/graph/";
 
   ReceivePort _port = ReceivePort();
   bool handlingFile = false;
@@ -28,9 +28,7 @@ class GraphDownloader {
 
       var tasks = await FlutterDownloader.loadTasks();
       var currentTask = tasks.firstWhere((t) => t.taskId == id);
-      if (currentTask.url == graphURL) {
-        await _onTaskFinished(currentTask);
-      }
+       await _onTaskFinished(currentTask);
     });
     FlutterDownloader.registerCallback(downloadCallback);
   }
@@ -45,7 +43,7 @@ class GraphDownloader {
     }
   }
 
-  Future<File> downloadGraph() async {
+  Future<File> downloadGraph(String downloadURL) async {
     if (_downloadCompleter == null) {
       _downloadCompleter = Completer<File>();
     }
@@ -58,7 +56,7 @@ class GraphDownloader {
 
     var expiredTime = DateTime.now().millisecondsSinceEpoch - 24 * 3600 * 1000;
     for (var i = 0; i < tasks.length; ++i) {
-      if (tasks[i].url == graphURL) {
+      if (tasks[i].url == downloadURL) {
         if (tasks[i].status == DownloadTaskStatus.complete &&
             tasks[i].timeCreated > expiredTime) {
           log.info(
@@ -81,7 +79,7 @@ class GraphDownloader {
     var downloadDir = Directory(downloadDirPath);
     downloadDir.createSync(recursive: true);
     FlutterDownloader.enqueue(
-        url: graphURL,
+        url: downloadURL,
         savedDir: downloadDir.path,
         fileName: "graph",
         showNotification: false,
