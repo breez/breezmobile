@@ -209,7 +209,6 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
     if (ok) {
       var sendAction =
           SendSpontaneousPayment(widget.nodeID, amount, tipMessage);
-      accBloc.userActionsSink.add(sendAction);
       try {
         showDialog(
             useRootNavigator: false,
@@ -217,7 +216,10 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
             barrierDismissible: false,
             builder: (_) => ProcessingPaymentDialog(
                   context,
-                  sendAction.future.then((s) => s as String),
+                  (){
+                    accBloc.userActionsSink.add(sendAction);
+                    return sendAction.future;
+                  },
                   accBloc,
                   widget.firstPaymentItemKey,
                   (_) {},

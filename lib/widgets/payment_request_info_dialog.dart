@@ -17,12 +17,14 @@ class PaymentRequestInfoDialog extends StatefulWidget {
   final BuildContext context;
   final AccountBloc accountBloc;
   final PaymentRequestModel invoice;
-  final Function(PaymentRequestState state) _onStateChange;
+  final Function() _onCancel;
+  final Function() _onWaitingConfirmation;
+  final Function(SendPayment) _onPaymentApproved;
   final Function(Map map) _setAmountToPay;
   final double minHeight;
 
   PaymentRequestInfoDialog(this.context, this.accountBloc, this.invoice,
-      this._onStateChange, this._setAmountToPay, this.minHeight);
+      this._onCancel, this._onWaitingConfirmation, this._onPaymentApproved, this._setAmountToPay, this.minHeight);
 
   @override
   State<StatefulWidget> createState() {
@@ -263,7 +265,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     List<Widget> actions = [
       SimpleDialogOption(
         onPressed: () =>
-            widget._onStateChange(PaymentRequestState.USER_CANCELLED),
+            widget._onCancel(),
         child: Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
       )
     ];
@@ -278,13 +280,11 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
               _amountToPayMap["_amountToPayStr"] =
                   account.currency.format(amountToPay(account));
               widget._setAmountToPay(_amountToPayMap);
-              widget
-                  ._onStateChange(PaymentRequestState.WAITING_FOR_CONFIRMATION);
+              widget._onWaitingConfirmation();
             } else {
               var sendAction = SendPayment(
                   PayRequest(widget.invoice.rawPayReq, amountToPay(account)));
-              widget.accountBloc.userActionsSink.add(sendAction);
-              widget._onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
+              widget._onPaymentApproved(sendAction);
             }
           }
         }),

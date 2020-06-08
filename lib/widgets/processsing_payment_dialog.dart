@@ -17,10 +17,10 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
   final Function(PaymentRequestState state) _onStateChange;
   final bool popOnCompletion;
-  final Future<String> paymentHashFuture;
+  final Future Function() paymentFunc;
   final double minHeight;
 
-  ProcessingPaymentDialog(this.context, this.paymentHashFuture,
+  ProcessingPaymentDialog(this.context, this.paymentFunc,
       this.accountBloc, this.firstPaymentItemKey, this._onStateChange, this.minHeight,
       {this.popOnCompletion = false});
 
@@ -40,8 +40,6 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   Animation<double> opacityAnimation;
   Animation<RelativeRect> transitionAnimation;
   final GlobalKey _dialogKey = GlobalKey();
-
-  StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
   StreamSubscription<PaymentInfo> _pendingPaymentSubscription;
   ModalRoute _currentRoute;
 
@@ -54,10 +52,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   void didChangeDependencies() {
     if (!_isInit) {
-      widget.paymentHashFuture.then((hash) {
-        _listenPaymentsResults(hash);
-      }).catchError((err) => Navigator.of(context).pop(err));
-
+     _payAncClose();
       _currentRoute = ModalRoute.of(context);
       controller = AnimationController(
           vsync: this, duration: Duration(milliseconds: 500));
@@ -86,25 +81,18 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     super.didChangeDependencies();
   }
 
-  _listenPaymentsResults(String paymentHash) {
-    _sentPaymentResultSubscription =
-        widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
-      if (fulfilledPayment.paymentHash == paymentHash) {
-        _animateClose();
-      }
-    }, onError: (err) {
-      var paymentError = err as PaymentError;
-      if (paymentError.paymentHash == paymentHash) {
+  _payAncClose() {
+    widget.paymentFunc()
+      .then((value) => _animateClose())
+      .catchError((err){
         if (widget.popOnCompletion) {
           Navigator.of(context).removeRoute(_currentRoute);
         }
         widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
-      }
-    });
+      });
 
     _pendingPaymentSubscription = widget.accountBloc.pendingPaymentStream
         .transform(DebounceStreamTransformer(Duration(seconds: 10)))
-        .where((p) => p?.paymentHash == paymentHash)
         .listen((p) {
       _animateClose();
     });
@@ -148,7 +136,6 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   @override
   void dispose() {
-    _sentPaymentResultSubscription?.cancel();
     _pendingPaymentSubscription?.cancel();
     controller?.dispose();
     super.dispose();

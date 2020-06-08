@@ -129,23 +129,19 @@ class ReverseSwapBloc with AsyncActionsHandler {
 
     await _breezLib.setReverseSwapClaimFee(action.swap.hash, action.claimFee);
 
-    action.resolve(await _breezLib
-        .payReverseSwap(
-            action.swap.hash, _currentUser.token ?? "", NTFN_TITLE, NTFN_BODY)
-        .then((_) {
-      Future.any([
-        _breezLib.waitPayment(action.swap.paymentRequest),
-        _paymentsStream
-            .where((payments) =>
-                payments.nonFilteredItems.length > 0 &&
-                payments.nonFilteredItems[0].paymentHash == action.swap.hash)
-            .first
-      ]).then((_) => onComplete()).catchError((err) {
-        onComplete(error: "Failed to execute payment.");
-      });
+    Future.any([
+      _breezLib.payReverseSwap(
+          action.swap.hash, _currentUser.token ?? "", NTFN_TITLE, NTFN_BODY),
+      _paymentsStream
+          .where((payments) =>
+              payments.nonFilteredItems.length > 0 &&
+              payments.nonFilteredItems[0].paymentHash == action.swap.hash)
+          .first
+    ]).then((_) => onComplete()).catchError((err) {
+      onComplete(error: "Failed to execute payment.");
+    });
 
-      return resultCompleter.future;
-    }));
+    action.resolve(await resultCompleter.future);
   }
 
   void _listenPushNotification() {

@@ -563,7 +563,6 @@ class CompletedPayment {
 
 class PaymentError implements Exception {
   final PayRequest request;
-  final String paymentHash;
   final Object error;
   final String traceReport;
   final bool ignoreGlobalFeedback;
@@ -572,7 +571,7 @@ class PaymentError implements Exception {
       traceReport == null ||
       traceReport.isEmpty;
 
-  PaymentError(this.request, this.paymentHash, this.error, this.traceReport,
+  PaymentError(this.request, this.error, this.traceReport,
       {this.ignoreGlobalFeedback = false});
 
   String errMsg() => error?.toString();

@@ -27,9 +27,10 @@ class BreezBridge {
   bool ready = false;
   Future<Directory> _tempDirFuture;
   GraphDownloader _graphDownloader;
+  Future<DateTime> _inProgressGraphSync;
 
   BreezBridge() {
-    _eventChannel.receiveBroadcastStream().listen((event) {
+    _eventChannel.receiveBroadcastStream().listen((event) async {
       var notification = NotificationEvent()..mergeFromBuffer(event);
       if (notification.type == NotificationEvent_NotificationType.READY) {
         ready = true;
@@ -42,14 +43,23 @@ class BreezBridge {
       _eventsController.add(NotificationEvent()..mergeFromBuffer(event));
     });
     _tempDirFuture = getTemporaryDirectory();
-     _graphDownloader = GraphDownloader(onGraphDownloadSuccess);
-     _graphDownloader.init().whenComplete(() => initLightningDir());
+    _graphDownloader = GraphDownloader();
+    _graphDownloader.init().whenComplete(() => initLightningDir());
   }
 
-  void onGraphDownloadSuccess(String filePath) async {
-    logger.log.info("graph synchronization started");
-    await syncGraphFromFile(filePath);
-    logger.log.info("graph synchronized succesfully");
+  Future syncGraphIfNeeded() async {
+    var downloadURL = await graphURL();
+      if (downloadURL.isNotEmpty) {
+        logger.log.info("downloading graph");
+      _inProgressGraphSync = _graphDownloader.downloadGraph(downloadURL).then((file) async {
+        logger.log.info("graph synchronization started");
+        await syncGraphFromFile(file.path);
+        logger.log.info("graph synchronized succesfully");
+        return DateTime.now();
+      }).whenComplete(() {
+        _graphDownloader.deleteDownloads();
+      });
+    }
   }
 
   initLightningDir() {
@@ -59,9 +69,9 @@ class BreezBridge {
       return copyBreezConfig(workingDir.path).then((_) async {
         var tmpDir = await _tempDirFuture;
         await init(workingDir.path, tmpDir.path);
-        _graphDownloader.downloadGraph();
-          logger.log.info("breez library init finished");
-          _startedCompleter.complete(true);
+        Timer(Duration(seconds: 2), syncGraphIfNeeded);
+        logger.log.info("breez library init finished");
+        _startedCompleter.complete(true);
       });
     });
   }
@@ -100,27 +110,12 @@ class BreezBridge {
   }
 
   Future syncGraphFromFile(String sourceFilePath) {
-    return _invokeMethodImmediate("syncGraphFromFile", {"argument": sourceFilePath});
+    return _invokeMethodImmediate(
+        "syncGraphFromFile", {"argument": sourceFilePath});
   }
 
   void log(String msg, String level) {
     _invokeMethodImmediate("log", {"msg": msg, "lvl": level});
-  }
-
-  Stream<NotificationEvent> trackPaymentResult(String paymentRequest) {
-    return notificationStream.where((notif) =>
-        (notif.type == NotificationEvent_NotificationType.PAYMENT_FAILED ||
-            notif.type ==
-                NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) &&
-        notif.data[0] == paymentRequest);
-  }
-
-  Future waitPayment(String paymentRequest) async {
-    var res = await trackPaymentResult(paymentRequest).first;
-    if (res.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
-      return;
-    }
-    throw res.data[1];
   }
 
   Future<LNUrlResponse> fetchLNUrl(String lnurl) {
@@ -245,16 +240,22 @@ class BreezBridge {
         .then((p) => ReverseSwapPaymentStatuses()..mergeFromBuffer(p ?? []));
   }
 
-  Future<String> sendSpontaneousPayment(String destNode, Int64 amount, String description) {
+  Future<PaymentResponse> sendSpontaneousPayment(
+      String destNode, Int64 amount, String description) {
     var request = SpontaneousPaymentRequest()
       ..description = description
       ..destNode = destNode
       ..amount = amount;
-      return _invokeMethodWhenReady(
-        "sendSpontaneousPayment", {"argument": request.writeToBuffer()}).then((res) => res as String);
+
+    var payFunc = () => _invokeMethodWhenReady(
+            "sendSpontaneousPayment", {"argument": request.writeToBuffer()})
+        .then((res) => PaymentResponse()..mergeFromBuffer(res ?? []));
+
+    return _invokePaymentWithGraphSyncAndRetry(payFunc);
   }
 
-  Future sendPaymentForRequest(String blankInvoicePaymentRequest,
+  Future<PaymentResponse> sendPaymentForRequest(
+      String blankInvoicePaymentRequest,
       {Int64 amount}) {
     PayInvoiceRequest invoice = PayInvoiceRequest();
     if (amount == null) {
@@ -262,8 +263,49 @@ class BreezBridge {
     }
     invoice.amount = amount;
     invoice.paymentRequest = blankInvoicePaymentRequest;
-    return _invokeMethodWhenReady(
-        "sendPaymentForRequest", {"argument": invoice.writeToBuffer()});
+
+    var payFunc = () => _invokeMethodWhenReady(
+                "sendPaymentForRequest", {"argument": invoice.writeToBuffer()})
+            .then((value) {
+          return PaymentResponse()..mergeFromBuffer(value ?? []);
+        });
+
+    return _invokePaymentWithGraphSyncAndRetry(payFunc);
+  }
+
+  Future<PaymentResponse> _invokePaymentWithGraphSyncAndRetry(
+      Future<PaymentResponse> payFunc()) async {
+    
+    var startPaymentTime = DateTime.now();
+    logger.log.info("payment started at ${startPaymentTime.toString()}");
+    try {
+      var response = await payFunc();
+      if (response.paymentError.isNotEmpty) {
+        throw response.paymentError;
+      }
+      return response;
+    } catch (err) {
+      logger.log.info("payment failed, checking if graph sync is needed");
+      if (_inProgressGraphSync != null) {
+        logger.log.info("has pending graph sync task, wating...");
+        try {
+          var lastSyncTime = await _inProgressGraphSync;
+          if (lastSyncTime.isAfter(startPaymentTime)) {
+            logger.log.info("last sync time is newer than payment start, retrying payment...");
+            var res = await payFunc();
+            return res;
+          }
+        } catch (e) {
+          return Future.error(e);
+        }
+      }
+      return Future.error(err);
+    }
+  }
+
+  Future<String> graphURL() {
+    return _invokeMethodImmediate("graphURL")
+        .then((result) => result as String);
   }
 
   Future sendPaymentFailureBugReport(String traceReport) {

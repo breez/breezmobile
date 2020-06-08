@@ -13,11 +13,12 @@ class PaymentConfirmationDialog extends StatefulWidget {
   final PaymentRequestModel invoice;
   final Int64 _amountToPay;
   final String _amountToPayStr;
-  final Function(PaymentRequestState state) _onStateChange;
+  final Function() _onCancel;
+  final Function(SendPayment payment) _onPaymentApproved;
   final double minHeight;
 
   PaymentConfirmationDialog(this.accountBloc, this.invoice, this._amountToPay,
-      this._amountToPayStr, this._onStateChange, this.minHeight);
+      this._amountToPayStr, this._onCancel, this._onPaymentApproved, this.minHeight);
 
   @override
   PaymentConfirmationDialogState createState() {
@@ -101,16 +102,15 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onPressed: () =>
-            widget._onStateChange(PaymentRequestState.USER_CANCELLED),
+            widget._onCancel(),
       ),
       FlatButton(
         child: Text("YES", style: Theme.of(context).primaryTextTheme.button),
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onPressed: () {
-          widget.accountBloc.userActionsSink.add(SendPayment(
+          widget._onPaymentApproved(SendPayment(
               PayRequest(widget.invoice.rawPayReq, widget._amountToPay)));
-          widget._onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
         },
       ),
     ];
