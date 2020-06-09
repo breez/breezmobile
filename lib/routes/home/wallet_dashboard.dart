@@ -12,9 +12,10 @@ class WalletDashboard extends StatefulWidget {
   final double _height;
   final double _offsetFactor;
   final Function(Currency currency) _onCurrencyChange;
+  final Function(String fiatConversion) _onFiatCurrencyChange;
 
   WalletDashboard(this._accSettings, this._accountModel, this._height,
-      this._offsetFactor, this._onCurrencyChange);
+      this._offsetFactor, this._onCurrencyChange, this._onFiatCurrencyChange);
 
   @override
   State<StatefulWidget> createState() {
@@ -37,6 +38,11 @@ class WalletDashboardState extends State<WalletDashboard> {
             !widget._accountModel.initial) ||
         widget._accountModel?.isInitialBootstrap == true;
 
+    var isAboveMinimumAmount = (widget._accountModel.fiatCurrency
+            .satToFiat(widget._accountModel.balance) >
+        (1 /
+            (pow(10,
+                widget._accountModel.fiatCurrency.currencyData.fractionSize))));
     return GestureDetector(
       child: Stack(
         alignment: AlignmentDirectional.topCenter,
@@ -67,17 +73,39 @@ class WalletDashboardState extends State<WalletDashboard> {
                   child: StatusIndicator(context, widget._accountModel))
               : SizedBox(),
           Positioned(
-              top: 10.0,
+              top: 70 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
               child: Center(
                 child: widget._accountModel != null &&
-                        !widget._accountModel.initial
-                    ? Text("Balance",
-                        style: Theme.of(context).textTheme.subtitle2.copyWith(
-                            color: Theme.of(context)
+                        !widget._accountModel.initial &&
+                        (widget._accountModel.fiatConversionList.isNotEmpty ||
+                            widget._accountModel.fiatCurrency != null) &&
+                        isAboveMinimumAmount
+                    ? FlatButton(
+                        onPressed: () {
+                          var nextCurrencyIndex = (widget
+                                      ._accountModel.fiatConversionList
+                                      .indexOf(
+                                          widget._accountModel.fiatCurrency) +
+                                  1) %
+                              widget._accountModel.fiatConversionList.length;
+                          widget._onFiatCurrencyChange(widget
+                              ._accountModel.fiatConversionList
+                              .elementAt(nextCurrencyIndex)
+                              .currencyData
+                              .shortName);
+                        },
+                        child: Text(
+                            "${widget._accountModel.formattedFiatBalance}",
+                            style: Theme.of(context)
                                 .textTheme
                                 .subtitle2
-                                .color
-                                .withOpacity(pow(1 - widget._offsetFactor, 8))))
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .subtitle2
+                                        .color
+                                        .withOpacity(pow(
+                                            0.95 - widget._offsetFactor, 8)))))
                     : SizedBox(),
               )),
           Positioned(
