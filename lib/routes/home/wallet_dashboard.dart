@@ -155,7 +155,7 @@ class WalletDashboardState extends State<WalletDashboard> {
         widget._accountModel.fiatConversionList.elementAt(nextIndex);
     if (isAboveMinAmount(nextFiatConversion)) {
       widget._onFiatCurrencyChange(nextFiatConversion.currencyData.shortName);
-    } else if (retries < widget._accountModel.fiatConversionList.length * 5) {
+    } else if (retries < widget._accountModel.fiatConversionList.length) {
       findNextValidFiatConversion(
           (nextIndex + 1) % widget._accountModel.fiatConversionList.length,
           retries: retries++);
