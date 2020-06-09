@@ -31,8 +31,6 @@ before_script:
   walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc"
   -o build/ios/bindings.framework github.com/breez/breez/bindings
 - popd
-- brew install --HEAD usbmuxd
-- brew link usbmuxd
 - brew install ideviceinstaller ios-deploy
 - pod setup
 - git clone https://github.com/flutter/flutter.git -b beta
