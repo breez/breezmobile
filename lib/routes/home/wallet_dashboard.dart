@@ -150,14 +150,15 @@ class WalletDashboardState extends State<WalletDashboard> {
     );
   }
 
-  void findNextValidFiatConversion(int nextIndex) {
+  void findNextValidFiatConversion(int nextIndex, {int retries = 0}) {
     var nextFiatConversion =
         widget._accountModel.fiatConversionList.elementAt(nextIndex);
     if (isAboveMinAmount(nextFiatConversion)) {
       widget._onFiatCurrencyChange(nextFiatConversion.currencyData.shortName);
-    } else {
+    } else if (retries < widget._accountModel.fiatConversionList.length * 5) {
       findNextValidFiatConversion(
-          (nextIndex + 1) % widget._accountModel.fiatConversionList.length);
+          (nextIndex + 1) % widget._accountModel.fiatConversionList.length,
+          retries: retries++);
     }
   }
 
