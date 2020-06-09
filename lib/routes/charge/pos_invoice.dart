@@ -687,7 +687,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               ),
               actions: <Widget>[
                 FlatButton(
-                  child: Text("Go to Settings",
+                  child: Text("GO TO SETTINGS",
                       style: Theme.of(context).primaryTextTheme.button),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -966,14 +966,14 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         actions: <Widget>[
           FlatButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("Cancel",
+              child: Text("CANCEL",
                   style: Theme.of(context).primaryTextTheme.button)),
           FlatButton(
               onPressed: () {
                 Navigator.pop(context);
                 clearSale();
               },
-              child: Text("Clear",
+              child: Text("CLEAR",
                   style: Theme.of(context).primaryTextTheme.button))
         ],
         shape: RoundedRectangleBorder(

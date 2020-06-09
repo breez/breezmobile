@@ -76,8 +76,8 @@ class NetworkPageState extends State<NetworkPage> {
             Text(
                 "Please restart Breez to switch to the new Bitcoin Node configuration.",
                 style: Theme.of(context).dialogTheme.contentTextStyle),
-            cancelText: "Cancel",
-            okText: "Exit Breez")
+            cancelText: "CANCEL",
+            okText: "EXIT BREEZ")
         .then((shouldExit) {
       if (shouldExit) {
         exit(0);

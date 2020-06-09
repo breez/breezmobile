@@ -55,7 +55,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
       ),
       actions: <Widget>[
         FlatButton(
-          child: Text("Clear",
+          child: Text("CLEAR",
               style: theme.cancelButtonStyle.copyWith(
                   color: theme.themeId == "BLUE"
                       ? Colors.red
@@ -63,7 +63,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
           onPressed: _clearFilter,
         ),
         FlatButton(
-          child: Text("Apply Filter",
+          child: Text("APPLY FILTER",
               style: Theme.of(context).primaryTextTheme.button),
           onPressed: () {
             _applyFilter();

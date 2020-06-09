@@ -85,9 +85,9 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
       // Text(
       //     "You can try:\n• Turning off airplane mode\n• Turning on mobile data or Wi-Fi\n• Checking the signal in your area",
       //     style: Theme.of(context).dialogTheme.contentTextStyle),
-      okText: allowRetry ? "Try Again" : "Exit",
+      okText: allowRetry ? "TRY AGAIN" : "EXIT",
       okFunc: allowRetry ? () => accountBloc.userActionsSink.add(RestartDaemon()) : () => exit(0),
-      optionText: allowRetry ? "Exit" : null,
+      optionText: allowRetry ? "EXIT" : null,
       optionFunc: () => exit(0),
       disableBack: true,
     );
@@ -100,6 +100,6 @@ Future _promptForRestart(BuildContext context) {
       null,
       Text("Restoring chain information might take several minutes.",
           style: Theme.of(context).dialogTheme.contentTextStyle),
-      cancelText: "Cancel",
-      okText: "Exit Breez");
+      cancelText: "CANCEL",
+      okText: "EXIT BREEZ");
 }

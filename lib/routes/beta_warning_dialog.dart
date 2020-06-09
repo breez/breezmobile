@@ -95,7 +95,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
           actions: [
             FlatButton(
               onPressed: () => exit(0),
-              child: Text("Exit",
+              child: Text("EXIT",
                   style: Theme.of(context).primaryTextTheme.button),
             ),
             FlatButton(
@@ -108,7 +108,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
                   });
                 }
               }),
-              child: Text("Continue",
+              child: Text("CONTINUE",
                   style: Theme.of(context).primaryTextTheme.button),
             ),
           ],

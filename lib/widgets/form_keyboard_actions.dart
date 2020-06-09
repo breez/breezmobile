@@ -52,7 +52,7 @@ class _KeyboardActionsWrapperState extends State<_KeyboardActionsWrapper> {
               focusNode: widget.focusNode,
               closeWidget: Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Text("Done",
+                child: Text("DONE",
                     style: TextStyle(
                         color: theme.BreezColors.blue[500],
                         fontWeight: FontWeight.bold)),

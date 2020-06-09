@@ -519,8 +519,8 @@ class DevViewState extends State<DevView> {
             null,
             Text("Please restart to resynchronize Breez.",
                 style: Theme.of(context).dialogTheme.contentTextStyle),
-            cancelText: "Cancel",
-            okText: "Exit Breez")
+            cancelText: "CANCEL",
+            okText: "EXIT BREEZ")
         .then((shouldExit) {
       if (shouldExit) {
         exit(0);

@@ -280,7 +280,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
       FlatButton(
           onPressed: () => Navigator.pop(context),
           child:
-              Text("Cancel", style: Theme.of(context).primaryTextTheme.button))
+              Text("CANCEL", style: Theme.of(context).primaryTextTheme.button))
     ];
 
     // Show done button only when the converted amount is bigger than 0
@@ -297,7 +297,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             }
           },
           child:
-              Text("Done", style: Theme.of(context).primaryTextTheme.button)));
+              Text("DONE", style: Theme.of(context).primaryTextTheme.button)));
     }
     return actions;
   }
