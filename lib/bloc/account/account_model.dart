@@ -19,7 +19,7 @@ class AccountSettings {
   AccountSettings(this.ignoreWalletBalance,
       {this.showConnectProgress = false,
       this.failedPaymentBehavior = BugReportBehavior.PROMPT,
-      this.isEscherEnabled});
+      this.isEscherEnabled = false});
 
   AccountSettings.start() : this(false);
 
