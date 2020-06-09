@@ -49,7 +49,7 @@ class PayeeSessionWidget extends StatelessWidget {
   }
 
   _onAction(BuildContext context, String action) {
-    if (action == "REJECT") {
+    if (action == "Reject") {
       _currentSession.rejectPaymentSink.add(null);
     } else {
       _currentSession.approvePaymentSink.add(null);
@@ -60,7 +60,7 @@ class PayeeSessionWidget extends StatelessWidget {
     if (_account.synced) {
       if (sessionState.payerData.amount != null &&
           sessionState.payeeData.paymentRequest == null) {
-        return ["REJECT", "APPROVE"];
+        return ["Reject", "Approve"];
       }
     }
     return null;
@@ -69,7 +69,7 @@ class PayeeSessionWidget extends StatelessWidget {
   List<String> _getDisabledActions(PaymentSessionState sessionState) {
     if (sessionState.payerData.amount != null &&
         _account.maxAllowedToReceive < sessionState.payerData.amount) {
-      return ["APPROVE"];
+      return ["Approve"];
     }
     return [];
   }
