@@ -56,7 +56,10 @@ class BreezBridge {
         await syncGraphFromFile(file.path);
         logger.log.info("graph synchronized succesfully");
         return DateTime.now();
-      }).whenComplete(() {
+      }).catchError((err){
+        logger.log.info("graph synchronized failed ${err.toString()}");
+      })
+      .whenComplete(() {
         _graphDownloader.deleteDownloads();
       });
     }
@@ -69,7 +72,6 @@ class BreezBridge {
       return copyBreezConfig(workingDir.path).then((_) async {
         var tmpDir = await _tempDirFuture;
         await init(workingDir.path, tmpDir.path);
-        Timer(Duration(seconds: 2), syncGraphIfNeeded);
         logger.log.info("breez library init finished");
         _startedCompleter.complete(true);
       });
@@ -91,7 +93,9 @@ class BreezBridge {
   }
 
   Future startLightning() {
-    return _startedCompleter.future.then((_) => _start());
+    return _startedCompleter.future
+      .then((_) => _start())
+      .then((_) => syncGraphIfNeeded());
   }
 
   Future restartLightningDaemon() {
@@ -289,14 +293,14 @@ class BreezBridge {
       if (_inProgressGraphSync != null) {
         logger.log.info("has pending graph sync task, wating...");
         try {
-          var lastSyncTime = await _inProgressGraphSync;
+          var lastSyncTime = await _inProgressGraphSync.timeout(Duration(seconds: 30));
           if (lastSyncTime.isAfter(startPaymentTime)) {
             logger.log.info("last sync time is newer than payment start, retrying payment...");
             var res = await payFunc();
             return res;
           }
         } catch (e) {
-          return Future.error(e);
+          return Future.error(err);
         }
       }
       return Future.error(err);
