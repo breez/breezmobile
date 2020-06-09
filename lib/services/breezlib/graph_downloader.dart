@@ -9,8 +9,6 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 
 class GraphDownloader {
-  static const graphURLPrefix =
-      "https://bt2.breez.technology/mainnet/graph/";
 
   ReceivePort _port = ReceivePort();
   bool handlingFile = false;
@@ -81,7 +79,7 @@ class GraphDownloader {
     FlutterDownloader.enqueue(
         url: downloadURL,
         savedDir: downloadDir.path,
-        fileName: "graph",
+        fileName: "channel.db",
         showNotification: false,
         openFileFromNotification: false);
 
