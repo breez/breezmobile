@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:flutter/material.dart';
 
@@ -38,11 +39,6 @@ class WalletDashboardState extends State<WalletDashboard> {
             !widget._accountModel.initial) ||
         widget._accountModel?.isInitialBootstrap == true;
 
-    var isAboveMinimumAmount = (widget._accountModel.fiatCurrency
-            .satToFiat(widget._accountModel.balance) >
-        (1 /
-            (pow(10,
-                widget._accountModel.fiatCurrency.currencyData.fractionSize))));
     return GestureDetector(
       child: Stack(
         alignment: AlignmentDirectional.topCenter,
@@ -79,20 +75,15 @@ class WalletDashboardState extends State<WalletDashboard> {
                         !widget._accountModel.initial &&
                         (widget._accountModel.fiatConversionList.isNotEmpty ||
                             widget._accountModel.fiatCurrency != null) &&
-                        isAboveMinimumAmount
+                        isAboveMinAmount(widget._accountModel.fiatCurrency)
                     ? FlatButton(
                         onPressed: () {
-                          var nextCurrencyIndex = (widget
-                                      ._accountModel.fiatConversionList
-                                      .indexOf(
-                                          widget._accountModel.fiatCurrency) +
-                                  1) %
-                              widget._accountModel.fiatConversionList.length;
-                          widget._onFiatCurrencyChange(widget
-                              ._accountModel.fiatConversionList
-                              .elementAt(nextCurrencyIndex)
-                              .currencyData
-                              .shortName);
+                          var nextFiatCurrencyIndex = widget
+                                  ._accountModel.fiatConversionList
+                                  .indexOf(widget._accountModel.fiatCurrency) +
+                              1;
+                          findNextValidFiatConversion(nextFiatCurrencyIndex %
+                              widget._accountModel.fiatConversionList.length);
                         },
                         child: Text(
                             "${widget._accountModel.formattedFiatBalance}",
@@ -157,5 +148,23 @@ class WalletDashboardState extends State<WalletDashboard> {
         });
       },
     );
+  }
+
+  void findNextValidFiatConversion(int nextIndex) {
+    var nextFiatConversion =
+        widget._accountModel.fiatConversionList.elementAt(nextIndex);
+    if (isAboveMinAmount(nextFiatConversion)) {
+      widget._onFiatCurrencyChange(nextFiatConversion.currencyData.shortName);
+    } else {
+      findNextValidFiatConversion(
+          (nextIndex + 1) % widget._accountModel.fiatConversionList.length);
+    }
+  }
+
+  bool isAboveMinAmount(FiatConversion fiatConversion) {
+    return (fiatConversion.satToFiat(widget._accountModel.balance) >
+        (1 /
+            (pow(10,
+                widget._accountModel.fiatCurrency.currencyData.fractionSize))));
   }
 }
