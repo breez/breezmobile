@@ -69,37 +69,6 @@ class WalletDashboardState extends State<WalletDashboard> {
                   child: StatusIndicator(context, widget._accountModel))
               : SizedBox(),
           Positioned(
-              top: 70 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
-              child: Center(
-                child: widget._accountModel != null &&
-                        !widget._accountModel.initial &&
-                        (widget._accountModel.fiatConversionList.isNotEmpty ||
-                            widget._accountModel.fiatCurrency != null) &&
-                        isAboveMinAmount(widget._accountModel.fiatCurrency)
-                    ? FlatButton(
-                        onPressed: () {
-                          var nextFiatCurrencyIndex = widget
-                                  ._accountModel.fiatConversionList
-                                  .indexOf(widget._accountModel.fiatCurrency) +
-                              1;
-                          findNextValidFiatConversion(nextFiatCurrencyIndex %
-                              widget._accountModel.fiatConversionList.length);
-                        },
-                        child: Text(
-                            "${widget._accountModel.formattedFiatBalance}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2
-                                .copyWith(
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .subtitle2
-                                        .color
-                                        .withOpacity(pow(
-                                            0.95 - widget._offsetFactor, 8)))))
-                    : SizedBox(),
-              )),
-          Positioned(
             top: 30 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
             child: Center(
               child: widget._accountModel != null &&
@@ -133,7 +102,38 @@ class WalletDashboardState extends State<WalletDashboard> {
                                               widget._offsetFactor)))
                   : SizedBox(),
             ),
-          )
+          ),
+          Positioned(
+              top: 70 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
+              child: Center(
+                child: widget._accountModel != null &&
+                        !widget._accountModel.initial &&
+                        (widget._accountModel.fiatConversionList.isNotEmpty ||
+                            widget._accountModel.fiatCurrency != null) &&
+                        isAboveMinAmount(widget._accountModel.fiatCurrency)
+                    ? FlatButton(
+                        onPressed: () {
+                          var nextFiatCurrencyIndex = widget
+                                  ._accountModel.fiatConversionList
+                                  .indexOf(widget._accountModel.fiatCurrency) +
+                              1;
+                          findNextValidFiatConversion(nextFiatCurrencyIndex %
+                              widget._accountModel.fiatConversionList.length);
+                        },
+                        child: Text(
+                            "${widget._accountModel.formattedFiatBalance}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .subtitle2
+                                        .color
+                                        .withOpacity(pow(
+                                            0.95 - widget._offsetFactor, 8)))))
+                    : SizedBox(),
+              )),
         ],
       ),
       behavior: HitTestBehavior.translucent,
