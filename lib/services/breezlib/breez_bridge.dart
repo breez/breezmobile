@@ -311,7 +311,10 @@ class BreezBridge {
 
   Future<String> graphURL() {
     return _invokeMethodImmediate("graphURL")
-        .then((result) => result as String);
+        .then((result) => result as String)
+        .catchError((e) {
+          logger.log.info("Error in graphURL:"+e.toString());
+        });
   }
 
   Future sendPaymentFailureBugReport(String traceReport) {
