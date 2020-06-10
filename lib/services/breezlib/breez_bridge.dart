@@ -95,7 +95,9 @@ class BreezBridge {
   Future startLightning() {
     return _startedCompleter.future
       .then((_) => _start())
-      .then((_) => syncGraphIfNeeded());
+      .then((_) {
+        syncGraphIfNeeded();
+      });
   }
 
   Future restartLightningDaemon() {
