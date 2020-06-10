@@ -62,6 +62,7 @@
 - [x] POS POC release
 - [x] Spontaneous payments to node id (nodes running with --accept-keysend)
 - [ ] Support zero-conf channels
+- [ ] Fast graph sync
 - [ ] Async payments via Lightning Rod
 - [ ] Support SD storage
 
