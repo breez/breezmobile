@@ -49,17 +49,17 @@ class BreezBridge {
 
   Future syncGraphIfNeeded() async {
     var downloadURL = await graphURL();
-      if (downloadURL.isNotEmpty) {
-        logger.log.info("downloading graph");
-      _inProgressGraphSync = _graphDownloader.downloadGraph(downloadURL).then((file) async {
+    if (downloadURL.isNotEmpty) {
+      logger.log.info("downloading graph");
+      _inProgressGraphSync =
+          _graphDownloader.downloadGraph(downloadURL).then((file) async {
         logger.log.info("graph synchronization started");
         await syncGraphFromFile(file.path);
         logger.log.info("graph synchronized succesfully");
         return DateTime.now();
-      }).catchError((err){
+      }).catchError((err) {
         logger.log.info("graph synchronized failed ${err.toString()}");
-      })
-      .whenComplete(() {
+      }).whenComplete(() {
         _graphDownloader.deleteDownloads();
       });
     }
@@ -93,11 +93,9 @@ class BreezBridge {
   }
 
   Future startLightning() {
-    return _startedCompleter.future
-      .then((_) => _start())
-      .then((_) {
-        syncGraphIfNeeded();
-      });
+    return _startedCompleter.future.then((_) => _start()).then((_) {
+      syncGraphIfNeeded();
+    });
   }
 
   Future restartLightningDaemon() {
@@ -260,6 +258,10 @@ class BreezBridge {
     return _invokePaymentWithGraphSyncAndRetry(payFunc);
   }
 
+  Future<PaymentResponse> onErr(err) {
+    return Future.error(err);
+  }
+
   Future<PaymentResponse> sendPaymentForRequest(
       String blankInvoicePaymentRequest,
       {Int64 amount}) {
@@ -281,32 +283,52 @@ class BreezBridge {
 
   Future<PaymentResponse> _invokePaymentWithGraphSyncAndRetry(
       Future<PaymentResponse> payFunc()) async {
-    
     var startPaymentTime = DateTime.now();
     logger.log.info("payment started at ${startPaymentTime.toString()}");
-    try {
-      var response = await payFunc();
-      if (response.paymentError.isNotEmpty) {
-        throw response.paymentError;
+
+    return payFunc().then((response) {
+      if (response.paymentError.isEmpty || _inProgressGraphSync == null) {
+        return response;
       }
-      return response;
-    } catch (err) {
       logger.log.info("payment failed, checking if graph sync is needed");
-      if (_inProgressGraphSync != null) {
-        logger.log.info("has pending graph sync task, wating...");
-        try {
-          var lastSyncTime = await _inProgressGraphSync.timeout(Duration(seconds: 30));
-          if (lastSyncTime.isAfter(startPaymentTime)) {
-            logger.log.info("last sync time is newer than payment start, retrying payment...");
-            var res = await payFunc();
-            return res;
-          }
-        } catch (e) {
-          return Future.error(err);
+      return _inProgressGraphSync
+          .timeout(Duration(seconds: 30))
+          .then((lastSyncTime) {
+        if (lastSyncTime.isAfter(startPaymentTime)) {
+          logger.log.info(
+              "last sync time is newer than payment start, retrying payment...");
+          return payFunc();
         }
-      }
-      return Future.error(err);
-    }
+        return Future.value(response);
+      }).catchError((err) {
+        return Future.value(response);
+      });
+    });
+
+    // try {
+    //   var response = await payFunc();
+    //   if (response.paymentError.isNotEmpty) {
+    //     throw response.paymentError;
+    //   }
+    //   return response;
+    // } catch (err) {
+    //   logger.log.info("payment failed, checking if graph sync is needed");
+    //   if (_inProgressGraphSync != null) {
+    //     logger.log.info("has pending graph sync task, wating...");
+    //     try {
+    //       var lastSyncTime = await _inProgressGraphSync.timeout(Duration(seconds: 30));
+    //       if (lastSyncTime.isAfter(startPaymentTime)) {
+    //         logger.log.info("last sync time is newer than payment start, retrying payment...");
+    //         var res = await payFunc();
+    //         return res;
+    //       }
+    //     } catch (e) {
+    //       throw err;
+    //     }
+    //   }
+
+    //   throw err;
+    // }
   }
 
   Future<String> graphURL() {

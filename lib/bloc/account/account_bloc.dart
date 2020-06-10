@@ -278,23 +278,21 @@ class AccountBloc {
     var sendRequest = _breezLib
         .sendSpontaneousPayment(
             action.nodeID, action.amount, action.description)
-        .catchError((err) {
-      _completedPaymentsController.addError(PaymentError(null, err, null));
-      return Future.error(err);
+        .then((response) {
+      if (response.paymentError.isNotEmpty) {
+        var error =
+            PaymentError(null, response.paymentError, response.traceReport);
+        _completedPaymentsController.addError(error);
+        return Future.error(error);
+      }
+      _completedPaymentsController.add(CompletedPayment(null, null));
+      return response;
     });
 
-    sendRequest.then((response) {
-      if (response.paymentError.isNotEmpty) {
-        _completedPaymentsController.addError(
-            PaymentError(null, response.paymentError, response.traceReport));
-        return Future.error(response.paymentError);
-      }
-    });
     _backgroundService.runAsTask(sendRequest, () {
       log.info("sendpayment background task finished");
     });
     action.resolve(await sendRequest);
-    _completedPaymentsController.add(CompletedPayment(null, null));
   }
 
   Future _sendPayment(SendPayment action) async {
@@ -305,26 +303,22 @@ class AccountBloc {
     var sendRequest = _breezLib
         .sendPaymentForRequest(payRequest.paymentRequest,
             amount: payRequest.amount)
-        .catchError((err) {
-      _completedPaymentsController
-          .addError(PaymentError(payRequest, err, null));
-      return Future.error(err);
-    });
-    sendRequest.then((response) {
+        .then((response) {
       if (response.paymentError.isNotEmpty) {
-        _completedPaymentsController.addError(PaymentError(
-            payRequest, response.paymentError, response.traceReport));
-        return Future.error(response.paymentError);
+        var error = PaymentError(
+            payRequest, response.paymentError, response.traceReport);
+        _completedPaymentsController.addError(error);
+        return Future.error(error);
       }
-      return Future.value(response);
+      _completedPaymentsController.add(CompletedPayment(null, null,
+          ignoreGlobalFeedback: action.ignoreGlobalFeedback == true));
+      return response;
     });
 
     _backgroundService.runAsTask(sendRequest, () {
       log.info("sendpayment background task finished");
     });
     action.resolve(await sendRequest);
-    _completedPaymentsController.add(CompletedPayment(payRequest, null,
-        ignoreGlobalFeedback: action.ignoreGlobalFeedback == true));
   }
 
   Future _cancelPaymentRequest(CancelPaymentRequest cancelRequest) async {
