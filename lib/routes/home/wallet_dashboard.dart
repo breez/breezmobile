@@ -111,12 +111,15 @@ class WalletDashboardState extends State<WalletDashboard> {
                         widget._accountModel.fiatConversionList.isNotEmpty &&
                         isAboveMinAmount(widget._accountModel?.fiatCurrency)
                     ? FlatButton(
-                        onPressed: () {
-                          var newFiatConversion = nextValidFiatConversion();
-                          if (newFiatConversion != null)
-                            widget._onFiatCurrencyChange(
-                                newFiatConversion.currencyData.shortName);
-                        },
+                        onPressed: widget._offsetFactor <= 0.20
+                            ? () {
+                                var newFiatConversion =
+                                    nextValidFiatConversion();
+                                if (newFiatConversion != null)
+                                  widget._onFiatCurrencyChange(
+                                      newFiatConversion.currencyData.shortName);
+                              }
+                            : null,
                         child: Text(
                             "${widget._accountModel.formattedFiatBalance}",
                             style: Theme.of(context)
