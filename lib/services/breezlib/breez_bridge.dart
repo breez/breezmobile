@@ -292,7 +292,7 @@ class BreezBridge {
       }
       logger.log.info("payment failed, checking if graph sync is needed");
       return _inProgressGraphSync
-          .timeout(Duration(seconds: 30))
+          .timeout(Duration(seconds: 50))
           .then((lastSyncTime) {
         if (lastSyncTime.isAfter(startPaymentTime)) {
           logger.log.info(
