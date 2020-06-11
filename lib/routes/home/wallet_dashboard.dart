@@ -162,9 +162,10 @@ class WalletDashboardState extends State<WalletDashboard> {
   }
 
   bool isAboveMinAmount(FiatConversion fiatConversion) {
-    return (fiatConversion.satToFiat(widget._accountModel.balance) >
-        (1 /
-            (pow(10,
-                widget._accountModel.fiatCurrency.currencyData.fractionSize))));
+    double fiatValue = fiatConversion.satToFiat(widget._accountModel.balance);
+    int fractionSize = fiatConversion.currencyData.fractionSize;
+    double minimumAmount = 1 / (pow(10, fractionSize));
+
+    return fiatValue > minimumAmount;
   }
 }
