@@ -108,9 +108,7 @@ class WalletDashboardState extends State<WalletDashboard> {
               child: Center(
                 child: widget._accountModel != null &&
                         !widget._accountModel.initial &&
-                        (widget._accountModel.fiatConversionList.isNotEmpty ||
-                            widget._accountModel.fiatCurrency != null) &&
-                        isAboveMinAmount(widget._accountModel.fiatCurrency)
+                        isAboveMinAmount(widget._accountModel?.fiatCurrency)
                     ? FlatButton(
                         onPressed: () {
                           var newFiatConversion = nextValidFiatConversion();
