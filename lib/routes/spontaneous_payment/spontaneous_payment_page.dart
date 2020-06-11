@@ -45,7 +45,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
   void initState() {
     _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
     Future.delayed(Duration(milliseconds: 200),
-            () => FocusScope.of(context).requestFocus(_amountFocusNode));
+        () => FocusScope.of(context).requestFocus(_amountFocusNode));
     super.initState();
   }
 
@@ -111,7 +111,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
               padding: EdgeInsets.only(
                   left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
               child: ListView(
-                children: <Widget>[                 
+                children: <Widget>[
                   _buildNodeIdDescription(),
                   TextFormField(
                     controller: _descriptionController,
@@ -203,9 +203,14 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
   Future _sendPayment(AccountBloc accBloc, AccountModel account) async {
     String tipMessage = _descriptionController.text;
     var amount = account.currency.parse(_amountController.text);
-    var ok = await promptAreYouSure(context, "Send Payment",
-        Text("Are you sure you want to ${account.currency.format(amount)} to this node?\n\n${this.widget.nodeID}"),
-        okText: "PAY", cancelText: "CANCEL");
+    _amountFocusNode.unfocus();
+    var ok = await promptAreYouSure(
+        context,
+        "Send Payment",
+        Text(
+            "Are you sure you want to ${account.currency.format(amount)} to this node?\n\n${this.widget.nodeID}"),
+        okText: "PAY",
+        cancelText: "CANCEL");
     if (ok) {
       var sendAction =
           SendSpontaneousPayment(widget.nodeID, amount, tipMessage);
@@ -216,9 +221,13 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
             barrierDismissible: false,
             builder: (_) => ProcessingPaymentDialog(
                   context,
-                  (){
-                    accBloc.userActionsSink.add(sendAction);
-                    return sendAction.future;
+                  () {
+                    var sendPayment = Future.delayed(Duration(seconds: 1), () {
+                      accBloc.userActionsSink.add(sendAction);
+                      return sendAction.future;
+                    });
+
+                    return sendPayment;
                   },
                   accBloc,
                   widget.firstPaymentItemKey,
@@ -229,13 +238,15 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
         Navigator.of(context).removeRoute(_currentRoute);
         await sendAction.future;
       } catch (err) {
-        promptError(
-            context,
-            "Payment Error",
-            Text(
-              err.toString(),
-              style: Theme.of(context).dialogTheme.contentTextStyle,
-            ));
+        if (err.runtimeType != PaymentError) {
+          promptError(
+              context,
+              "Payment Error",
+              Text(
+                err.toString(),
+                style: Theme.of(context).dialogTheme.contentTextStyle,
+              ));
+        }
       }
     }
   }

@@ -145,10 +145,11 @@ class FloatingActionsBar extends StatelessWidget {
                                 ));
                                 return;
                               }
-                              if (isValidNodeId(scannedString)) {
+                              var nodeID = parseNodeId(scannedString);
+                              if (nodeID != null) {
                                 Navigator.of(context).push(FadeInRoute(
                                   builder: (_) => SpontaneousPaymentPage(
-                                      scannedString, firstPaymentItemKey),
+                                      nodeID, firstPaymentItemKey),
                                 ));
                                 return;
                               }
@@ -242,12 +243,13 @@ class FloatingActionsBar extends StatelessWidget {
                       title: Text("Paste Invoice or Node ID"),
                       onTap: () async {
                         Navigator.of(context).pop();
-                        if (!isValidNodeId(snapshot.data)) {
+                        var nodeID = parseNodeId(snapshot.data);
+                        if (nodeID == null) {
                           invoiceBloc.decodeInvoiceSink.add(snapshot.data);
                         } else {
                           Navigator.of(context).push(FadeInRoute(
                             builder: (_) => SpontaneousPaymentPage(
-                                snapshot.data, firstPaymentItemKey),
+                                nodeID, firstPaymentItemKey),
                           ));
                         }
                       },

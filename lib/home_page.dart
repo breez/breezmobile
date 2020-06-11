@@ -378,12 +378,13 @@ class HomeState extends State<Home> {
         "", "Paste Invoice or Node ID", "src/icon/paste.png",
         disabled: !account.connected || snapshot.data == null,
         onItemSelected: (decodedQr) async {
-      if (!isValidNodeId(snapshot.data)) {
+      var nodeID = parseNodeId(snapshot.data);
+      if (nodeID == null) {
         widget.invoiceBloc.decodeInvoiceSink.add(snapshot.data);
       } else {
         Navigator.of(context).push(FadeInRoute(
           builder: (_) =>
-              SpontaneousPaymentPage(snapshot.data, firstPaymentItemKey),
+              SpontaneousPaymentPage(nodeID, firstPaymentItemKey),
         ));
       }
     });

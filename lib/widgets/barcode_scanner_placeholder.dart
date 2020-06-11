@@ -37,13 +37,14 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
               Clipboard.getData("text/plain").then((clipboardData) {
                 if (clipboardData != null) {
                   Navigator.pop(context);
-                  if (!isValidNodeId(clipboardData.text)) {
+                  var nodeID = parseNodeId(clipboardData.text);
+                  if (nodeID == null) {
                     widget.invoiceBloc.decodeInvoiceSink
                         .add(clipboardData.text);
                   } else {
                     Navigator.of(context).push(FadeInRoute(
                       builder: (_) => SpontaneousPaymentPage(
-                          clipboardData.text, widget.firstPaymentItemKey),
+                          nodeID, widget.firstPaymentItemKey),
                     ));
                   }
                 }

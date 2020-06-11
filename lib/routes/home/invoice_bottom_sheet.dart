@@ -65,13 +65,14 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                         () async {
                       try {
                         String decodedQr = await QRScanner.scan();
-                        if (!isValidNodeId(decodedQr)) {
+                         var nodeID = parseNodeId(decodedQr);
+                        if (nodeID == null) {
                           widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
                         } else {
                           Navigator.of(context).push(FadeInRoute(
                             builder: (_) =>
                                 SpontaneousPaymentPage(
-                                decodedQr, widget.firstPaymentItemKey),
+                                nodeID, widget.firstPaymentItemKey),
                           ));
                         }
                       } on PlatformException catch (e) {
