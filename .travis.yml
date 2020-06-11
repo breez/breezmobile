@@ -44,7 +44,7 @@ script:
 - sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist
   $TRAVIS_BUILD_DIR/ios/Runner/GoogleService-Info.plist
 - "./flutter/bin/flutter upgrade"
-- "./flutter/bin/flutter build ios --no-codesign"
+- "./flutter/bin/flutter build ios --no-codesign --no-tree-shake-icons"
 after_success:
 - travis_wait ./travis/sign.sh
 cache:
