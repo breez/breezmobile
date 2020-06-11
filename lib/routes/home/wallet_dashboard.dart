@@ -113,12 +113,10 @@ class WalletDashboardState extends State<WalletDashboard> {
                         isAboveMinAmount(widget._accountModel.fiatCurrency)
                     ? FlatButton(
                         onPressed: () {
-                          var nextFiatCurrencyIndex = widget
-                                  ._accountModel.fiatConversionList
-                                  .indexOf(widget._accountModel.fiatCurrency) +
-                              1;
-                          findNextValidFiatConversion(nextFiatCurrencyIndex %
-                              widget._accountModel.fiatConversionList.length);
+                          var newFiatConversion = nextValidFiatConversion();
+                          if (newFiatConversion != null)
+                            widget._onFiatCurrencyChange(
+                                newFiatConversion.currencyData.shortName);
                         },
                         child: Text(
                             "${widget._accountModel.formattedFiatBalance}",
@@ -150,16 +148,18 @@ class WalletDashboardState extends State<WalletDashboard> {
     );
   }
 
-  void findNextValidFiatConversion(int nextIndex, {int retries = 0}) {
-    var nextFiatConversion =
-        widget._accountModel.fiatConversionList.elementAt(nextIndex);
-    if (isAboveMinAmount(nextFiatConversion)) {
-      widget._onFiatCurrencyChange(nextFiatConversion.currencyData.shortName);
-    } else if (retries < widget._accountModel.fiatConversionList.length) {
-      findNextValidFiatConversion(
-          (nextIndex + 1) % widget._accountModel.fiatConversionList.length,
-          retries: retries++);
+  FiatConversion nextValidFiatConversion() {
+    var currentIndex = widget._accountModel.fiatConversionList
+        .indexOf(widget._accountModel.fiatCurrency);
+    for (var i = 1; i < widget._accountModel.fiatConversionList.length; i++) {
+      var nextIndex =
+          (i + currentIndex) % widget._accountModel.fiatConversionList.length;
+      if (isAboveMinAmount(
+          widget._accountModel.fiatConversionList[nextIndex])) {
+        return widget._accountModel.fiatConversionList[nextIndex];
+      }
     }
+    return null;
   }
 
   bool isAboveMinAmount(FiatConversion fiatConversion) {
