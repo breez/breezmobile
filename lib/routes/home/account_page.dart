@@ -240,7 +240,7 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
 
                 return Stack(overflow: Overflow.visible, children: <Widget>[
                   WalletDashboard(settingSnapshot.data, snapshot.data, height,
-                      heightFactor, _userProfileBloc.currencySink.add)
+                      heightFactor, _userProfileBloc.currencySink.add, _userProfileBloc.fiatConversionSink.add)
                 ]);
               });
         });
