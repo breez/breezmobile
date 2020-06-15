@@ -169,13 +169,10 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
                         String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
                         //Get the Text
                         String lnURL = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
-
                         if (lnURL != null && lnURL.startsWith("lightning:lnurl")) {
                             Log.d(TAG, "Discovered LNURL...");
                             m_methodChannel.invokeMethod("receivedLNURL", lnURL);
                         }
-                        Log.d(TAG, "LNURL: " + lnURL);
-
                     } catch (UnsupportedEncodingException exc) {
                         Log.e(TAG, "Error", exc);
                     }
