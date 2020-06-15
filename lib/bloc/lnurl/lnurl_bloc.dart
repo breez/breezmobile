@@ -13,6 +13,7 @@ import 'lnurl_model.dart';
 class LNUrlBloc with AsyncActionsHandler {
   final StreamController<String> lnurlRequestsStreamController =
       StreamController<String>.broadcast();
+
   Sink<String> get lnurlRequestSink => lnurlRequestsStreamController.sink;
 
   BreezBridge _breezLib;
@@ -30,8 +31,9 @@ class LNUrlBloc with AsyncActionsHandler {
   }
 
   Stream get lnurlStream => Observable.merge([
+        ServiceInjector().nfc.receivedLNURLs(),
         ServiceInjector().lightningLinks.linksNotifications,
-        lnurlRequestsStreamController.stream
+        lnurlRequestsStreamController.stream,
       ])
           .where((l) => l.toLowerCase().startsWith("lightning:lnurl"))
           .asyncMap((l) => _breezLib.fetchLNUrl(l))

@@ -9,6 +9,7 @@ class NFCService {
       StreamController<String>();
 
   StreamController<bool> _cardActivationController = StreamController<bool>();
+
   Stream<bool> get cardActivationStream =>
       _cardActivationController.stream.asBroadcastStream();
 
@@ -18,6 +19,8 @@ class NFCService {
   StreamController<String> _bolt11StreamController =
       StreamController<String>.broadcast();
   StreamController<String> _blankInvoiceController = StreamController<String>();
+  StreamController<String> _lnURLController =
+      StreamController<String>.broadcast();
 
   void startCardActivation(String breezId) {
     _platform.invokeMethod("startCardActivation", {"breezId": breezId});
@@ -74,6 +77,10 @@ class NFCService {
     return _blankInvoiceController.stream;
   }
 
+  Stream<String> receivedLNURLs() {
+    return _lnURLController.stream;
+  }
+
   void idReceived(String breezId) {
     if (breezId == null) _breezIdStreamController.close();
     _breezIdStreamController.add(breezId);
@@ -105,6 +112,9 @@ class NFCService {
       if (call.method == 'receivedBolt11') {
         log.info("Received BOLT-11: " + call.arguments);
         _bolt11StreamController.add(call.arguments);
+      }
+      if (call.method == 'receivedLNURL') {
+        _lnURLController.add(call.arguments);
       }
     });
   }

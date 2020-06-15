@@ -148,7 +148,7 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
                     messages[i] = (NdefMessage) rawMessages[i];
                 }
                 Log.d(TAG, "message type = " + messages[0].getRecords()[0].toMimeType());
-                if (messages[0].getRecords()[0].toMimeType().equals("application/breez")) {
+                if (messages[0].getRecords()[0].toMimeType() != null && messages[0].getRecords()[0].toMimeType().equals("application/breez")) {
                     if (m_mainActivity.isPos) { // We are a POS getting a Breez ID from the card
                         Log.d(TAG, "Discovered a Breez card...");
                         try {
@@ -158,6 +158,26 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
                         } catch (UnsupportedEncodingException exc) {
                             Log.e(TAG, "UnsupportedEncodingException while reading Breez card", exc);
                         }
+                    }
+                } else {
+                    try {
+                        byte[] payload = messages[0].getRecords()[0].getPayload();
+                        //Get the Text Encoding
+                        String textEncoding = ((payload[0] & 0200) == 0) ? "UTF-8" : "UTF-16";
+                        //Get the Language Code
+                        int languageCodeLength = payload[0] & 0077;
+                        String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
+                        //Get the Text
+                        String lnURL = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+
+                        if (lnURL != null && lnURL.startsWith("lightning:lnurl")) {
+                            Log.d(TAG, "Discovered LNURL...");
+                            m_methodChannel.invokeMethod("receivedLNURL", lnURL);
+                        }
+                        Log.d(TAG, "LNURL: " + lnURL);
+
+                    } catch (UnsupportedEncodingException exc) {
+                        Log.e(TAG, "Error", exc);
                     }
                 }
             }
