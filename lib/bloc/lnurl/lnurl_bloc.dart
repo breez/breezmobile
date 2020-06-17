@@ -13,7 +13,6 @@ import 'lnurl_model.dart';
 class LNUrlBloc with AsyncActionsHandler {
   final StreamController<String> lnurlRequestsStreamController =
       StreamController<String>.broadcast();
-
   Sink<String> get lnurlRequestSink => lnurlRequestsStreamController.sink;
 
   BreezBridge _breezLib;

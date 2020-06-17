@@ -156,6 +156,7 @@ class InvoiceBloc with AsyncActionsHandler {
         return message["payment_request"];
       }),
       nfc.receivedBolt11s(),
+      nfc.receivedLNURLs(),
       _decodeInvoiceController.stream,
       _newLightningLinkController.stream,
       links.linksNotifications,

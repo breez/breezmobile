@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:breez/logger.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show PlatformException;
+import 'package:flutter_nfc_plugin/models/nfc_event.dart';
+import 'package:flutter_nfc_plugin/nfc_plugin.dart';
 
 class NFCService {
   static const _platform = MethodChannel('com.breez.client/nfc');
@@ -9,7 +12,6 @@ class NFCService {
       StreamController<String>();
 
   StreamController<bool> _cardActivationController = StreamController<bool>();
-
   Stream<bool> get cardActivationStream =>
       _cardActivationController.stream.asBroadcastStream();
 
@@ -87,6 +89,7 @@ class NFCService {
   }
 
   NFCService() {
+    _checkNfcPayload();
     _platform.setMethodCallHandler((MethodCall call) {
       if (call.method == 'receivedBreezId') {
         log.info("Received a Breez ID: " + call.arguments);
@@ -117,6 +120,18 @@ class NFCService {
         _lnURLController.add(call.arguments);
       }
     });
+  }
+
+  _checkNfcPayload() async {
+    NfcPlugin nfcPlugin = NfcPlugin();
+    try {
+      final NfcEvent _nfcEventStartedWith = await nfcPlugin.nfcStartedWith;
+      if (_nfcEventStartedWith != null) {
+        _lnURLController.add(_nfcEventStartedWith.message.payload[0]);
+      }
+    } on PlatformException {
+      print('Method "NFC event started with" exception was thrown');
+    }
   }
 
   close() {

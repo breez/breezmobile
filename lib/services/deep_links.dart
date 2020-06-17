@@ -2,9 +2,6 @@ import 'dart:async';
 
 import 'package:breez/logger.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-import 'package:flutter/services.dart' show PlatformException;
-import 'package:flutter_nfc_plugin/models/nfc_event.dart';
-import 'package:flutter_nfc_plugin/nfc_plugin.dart';
 import 'package:rxdart/rxdart.dart';
 
 class DeepLinksService {
@@ -26,8 +23,6 @@ class DeepLinksService {
       }
     };
 
-    _checkNfcPayload();
-
     var data = await FirebaseDynamicLinks.instance.getInitialLink();
     publishLink(data);
 
@@ -36,19 +31,6 @@ class DeepLinksService {
         onError: (err) async {
           log.severe("Failed to fetch dynamic link " + err.toString());
         });
-  }
-
-  _checkNfcPayload() async {
-    NfcPlugin nfcPlugin = NfcPlugin();
-    try {
-      final NfcEvent _nfcEventStartedWith = await nfcPlugin.nfcStartedWith;
-      if (_nfcEventStartedWith != null) {
-        _linksNotificationsController
-            .add(_nfcEventStartedWith.message.payload[0]);
-      }
-    } on PlatformException {
-      print('Method "NFC event started with" exception was thrown');
-    }
   }
 
   SessionLinkModel parseSessionInviteLink(String link) {
