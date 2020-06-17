@@ -89,7 +89,7 @@ class NFCService {
   }
 
   NFCService() {
-    _checkNfcPayload();
+    Timer(Duration(seconds: 2), _checkNfcPayload);
     _platform.setMethodCallHandler((MethodCall call) {
       if (call.method == 'receivedBreezId') {
         log.info("Received a Breez ID: " + call.arguments);
