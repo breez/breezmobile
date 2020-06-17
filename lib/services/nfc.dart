@@ -21,7 +21,7 @@ class NFCService {
   StreamController<String> _bolt11StreamController =
       StreamController<String>.broadcast();
   StreamController<String> _blankInvoiceController = StreamController<String>();
-  StreamController<String> _lnURLController =
+  StreamController<String> _lnLinkController =
       StreamController<String>.broadcast();
 
   void startCardActivation(String breezId) {
@@ -79,8 +79,8 @@ class NFCService {
     return _blankInvoiceController.stream;
   }
 
-  Stream<String> receivedLNURLs() {
-    return _lnURLController.stream;
+  Stream<String> receivedLnLinks() {
+    return _lnLinkController.stream;
   }
 
   void idReceived(String breezId) {
@@ -116,8 +116,8 @@ class NFCService {
         log.info("Received BOLT-11: " + call.arguments);
         _bolt11StreamController.add(call.arguments);
       }
-      if (call.method == 'receivedLNURL') {
-        _lnURLController.add(call.arguments);
+      if (call.method == 'receivedLnLink') {
+        _lnLinkController.add(call.arguments);
       }
     });
   }
@@ -127,7 +127,7 @@ class NFCService {
     try {
       final NfcEvent _nfcEventStartedWith = await nfcPlugin.nfcStartedWith;
       if (_nfcEventStartedWith != null) {
-        _lnURLController.add(_nfcEventStartedWith.message.payload[0]);
+        _lnLinkController.add(_nfcEventStartedWith.message.payload[0]);
       }
     } on PlatformException {
       print('Method "NFC event started with" exception was thrown');

@@ -30,7 +30,7 @@ class LNUrlBloc with AsyncActionsHandler {
   }
 
   Stream get lnurlStream => Observable.merge([
-        ServiceInjector().nfc.receivedLNURLs(),
+        ServiceInjector().nfc.receivedLnLinks(),
         ServiceInjector().lightningLinks.linksNotifications,
         lnurlRequestsStreamController.stream,
       ])
