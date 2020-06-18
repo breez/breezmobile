@@ -12,6 +12,7 @@ class NFCService {
       StreamController<String>();
 
   StreamController<bool> _cardActivationController = StreamController<bool>();
+
   Stream<bool> get cardActivationStream =>
       _cardActivationController.stream.asBroadcastStream();
 
@@ -23,6 +24,7 @@ class NFCService {
   StreamController<String> _blankInvoiceController = StreamController<String>();
   StreamController<String> _lnLinkController =
       StreamController<String>.broadcast();
+  StreamSubscription _lnLinkListener;
 
   void startCardActivation(String breezId) {
     _platform.invokeMethod("startCardActivation", {"breezId": breezId});
@@ -89,7 +91,7 @@ class NFCService {
   }
 
   NFCService() {
-    Timer(Duration(seconds: 2), _checkNfcPayload);
+    Timer(Duration(seconds: 2), _listenLnLinks);
     _platform.setMethodCallHandler((MethodCall call) {
       if (call.method == 'receivedBreezId') {
         log.info("Received a Breez ID: " + call.arguments);
@@ -116,14 +118,12 @@ class NFCService {
         log.info("Received BOLT-11: " + call.arguments);
         _bolt11StreamController.add(call.arguments);
       }
-      if (call.method == 'receivedLnLink') {
-        _lnLinkController.add(call.arguments);
-      }
     });
   }
 
-  _checkNfcPayload() async {
+  _listenLnLinks() async {
     NfcPlugin nfcPlugin = NfcPlugin();
+    // Check for deep link on startup
     try {
       final NfcEvent _nfcEventStartedWith = await nfcPlugin.nfcStartedWith;
       if (_nfcEventStartedWith != null) {
@@ -132,6 +132,15 @@ class NFCService {
     } on PlatformException {
       print('Method "NFC event started with" exception was thrown');
     }
+
+    _lnLinkListener = nfcPlugin.onNfcMessage.listen((NfcEvent event) {
+      if (event.error.isNotEmpty) {
+        print('NFC read error: ${event.error}');
+      } else {
+        String lnLink = event.message.payload[0].toString();
+        if (lnLink.startsWith("lightning:")) _lnLinkController.add(lnLink);
+      }
+    });
   }
 
   close() {
@@ -140,5 +149,6 @@ class NFCService {
     _bolt11BeamController.close();
     _p2pBeamController.close();
     _bolt11StreamController.close();
+    _lnLinkListener.cancel();
   }
 }

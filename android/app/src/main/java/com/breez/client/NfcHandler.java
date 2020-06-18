@@ -1,29 +1,22 @@
 package com.breez.client;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.nfc.tech.Ndef;
 import android.nfc.tech.IsoDep;
-import android.nfc.NdefRecord;
+import android.nfc.tech.Ndef;
 import android.os.Parcelable;
 import android.util.Log;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 
 import bindings.Bindings;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.io.UnsupportedEncodingException;
-
-import android.nfc.FormatException;
-import android.nfc.TagLostException;
-
-import java.io.IOException;
 
 
 public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.ReaderCallback {
@@ -109,8 +102,7 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
         Ndef ndefTag = Ndef.get(tag);
         try {
             ndefTag.connect();
-        }
-        catch (java.io.IOException ioe) {
+        } catch (java.io.IOException ioe) {
             Log.d(TAG, "IOException when connecting to NDEF tag");
         }
 
@@ -148,7 +140,7 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
                     messages[i] = (NdefMessage) rawMessages[i];
                 }
                 Log.d(TAG, "message type = " + messages[0].getRecords()[0].toMimeType());
-                if (messages[0].getRecords()[0].toMimeType() != null && messages[0].getRecords()[0].toMimeType().equals("application/breez")) {
+                if (messages[0].getRecords()[0].toMimeType().equals("application/breez")) {
                     if (m_mainActivity.isPos) { // We are a POS getting a Breez ID from the card
                         Log.d(TAG, "Discovered a Breez card...");
                         try {
@@ -158,23 +150,6 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, NfcAdapter.R
                         } catch (UnsupportedEncodingException exc) {
                             Log.e(TAG, "UnsupportedEncodingException while reading Breez card", exc);
                         }
-                    }
-                } else {
-                    try {
-                        byte[] payload = messages[0].getRecords()[0].getPayload();
-                        //Get the Text Encoding
-                        String textEncoding = ((payload[0] & 0200) == 0) ? "UTF-8" : "UTF-16";
-                        //Get the Language Code
-                        int languageCodeLength = payload[0] & 0077;
-                        String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
-                        //Get the Text
-                        String lnLink = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
-                        if (lnLink != null && lnLink.startsWith("lightning:")) {
-                            Log.d(TAG, "Discovered Lightning Link...");
-                            m_methodChannel.invokeMethod("receivedLnLink", lnLink);
-                        }
-                    } catch (UnsupportedEncodingException exc) {
-                        Log.e(TAG, "Error", exc);
                     }
                 }
             }
