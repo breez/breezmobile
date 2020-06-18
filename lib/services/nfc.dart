@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:breez/logger.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show PlatformException;
+import 'package:flutter_nfc_plugin/models/nfc_event.dart';
+import 'package:flutter_nfc_plugin/nfc_plugin.dart';
 
 class NFCService {
   static const _platform = MethodChannel('com.breez.client/nfc');
@@ -9,6 +12,7 @@ class NFCService {
       StreamController<String>();
 
   StreamController<bool> _cardActivationController = StreamController<bool>();
+
   Stream<bool> get cardActivationStream =>
       _cardActivationController.stream.asBroadcastStream();
 
@@ -18,6 +22,9 @@ class NFCService {
   StreamController<String> _bolt11StreamController =
       StreamController<String>.broadcast();
   StreamController<String> _blankInvoiceController = StreamController<String>();
+  StreamController<String> _lnLinkController =
+      StreamController<String>.broadcast();
+  StreamSubscription _lnLinkListener;
 
   void startCardActivation(String breezId) {
     _platform.invokeMethod("startCardActivation", {"breezId": breezId});
@@ -74,12 +81,17 @@ class NFCService {
     return _blankInvoiceController.stream;
   }
 
+  Stream<String> receivedLnLinks() {
+    return _lnLinkController.stream;
+  }
+
   void idReceived(String breezId) {
     if (breezId == null) _breezIdStreamController.close();
     _breezIdStreamController.add(breezId);
   }
 
   NFCService() {
+    Timer(Duration(seconds: 2), _listenLnLinks);
     _platform.setMethodCallHandler((MethodCall call) {
       if (call.method == 'receivedBreezId') {
         log.info("Received a Breez ID: " + call.arguments);
@@ -109,11 +121,34 @@ class NFCService {
     });
   }
 
+  _listenLnLinks() async {
+    NfcPlugin nfcPlugin = NfcPlugin();
+    // Check for deep link on startup
+    try {
+      final NfcEvent _nfcEventStartedWith = await nfcPlugin.nfcStartedWith;
+      if (_nfcEventStartedWith != null) {
+        _lnLinkController.add(_nfcEventStartedWith.message.payload[0]);
+      }
+    } on PlatformException {
+      print('Method "NFC event started with" exception was thrown');
+    }
+
+    _lnLinkListener = nfcPlugin.onNfcMessage.listen((NfcEvent event) {
+      if (event.error.isNotEmpty) {
+        print('NFC read error: ${event.error}');
+      } else {
+        String lnLink = event.message.payload[0].toString();
+        if (lnLink.startsWith("lightning:")) _lnLinkController.add(lnLink);
+      }
+    });
+  }
+
   close() {
     _breezIdStreamController.close();
     _cardActivationController.close();
     _bolt11BeamController.close();
     _p2pBeamController.close();
     _bolt11StreamController.close();
+    _lnLinkListener.cancel();
   }
 }

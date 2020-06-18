@@ -30,8 +30,9 @@ class LNUrlBloc with AsyncActionsHandler {
   }
 
   Stream get lnurlStream => Observable.merge([
+        ServiceInjector().nfc.receivedLnLinks(),
         ServiceInjector().lightningLinks.linksNotifications,
-        lnurlRequestsStreamController.stream
+        lnurlRequestsStreamController.stream,
       ])
           .where((l) => l.toLowerCase().startsWith("lightning:lnurl"))
           .asyncMap((l) => _breezLib.fetchLNUrl(l))
