@@ -65,6 +65,8 @@
 - [ ] Support zero-conf channels
 - [ ] Async payments via Lightning Rod
 - [ ] Support SD storage
+- [ ] Splice out
+- [ ] Splice in
 
 ## System Requirements
 * Android 7+ 64bit
