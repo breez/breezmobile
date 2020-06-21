@@ -7,6 +7,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../routes/create_invoice/create_invoice_page.dart';
 
@@ -92,7 +93,10 @@ class LNURLHandler {
   }
 
   void _listenLnLinks() {
-    ServiceInjector().nfc.receivedLnLinks().listen((lnLink) {
+    Observable.merge([
+      ServiceInjector().lightningLinks.linksNotifications,
+      ServiceInjector().nfc.receivedLnLinks()
+    ]).listen((lnLink) {
       if (!_handlingRequest) {
         _setLoading(true);
         return;
