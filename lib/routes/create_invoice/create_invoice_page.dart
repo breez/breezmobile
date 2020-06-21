@@ -328,6 +328,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         showDialog(
             useRootNavigator: false,
             context: context,
+            barrierDismissible: false,
             builder: (_) => dialog).then((success) {
           if (success == true) {
             navigator.push(TransparentPageRoute((navigator) {
