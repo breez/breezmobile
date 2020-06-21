@@ -2,12 +2,10 @@ import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/routes/sync_progress_dialog.dart';
-import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../routes/create_invoice/create_invoice_page.dart';
 
@@ -93,13 +91,11 @@ class LNURLHandler {
   }
 
   void _listenLnLinks() {
-    Observable.merge([
-      ServiceInjector().lightningLinks.linksNotifications,
-      ServiceInjector().nfc.receivedLnLinks()
-    ]).listen((lnLink) {
-      if (!_handlingRequest) {
+    lnurlBloc.fetchLNUrlStateStream.listen((state) {
+      if (state == fetchLNUrlState.started && !_handlingRequest) {
         _setLoading(true);
-        return;
+      } else {
+        _setLoading(false);
       }
     });
   }

@@ -10,8 +10,15 @@ import '../async_actions_handler.dart';
 import 'lnurl_actions.dart';
 import 'lnurl_model.dart';
 
+enum fetchLNUrlState { started, completed }
+
 class LNUrlBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
+
+  final _fetchLNUrlStateController =
+      StreamController<fetchLNUrlState>.broadcast();
+  Stream<fetchLNUrlState> get fetchLNUrlStateStream =>
+      _fetchLNUrlStateController.stream;
 
   LNUrlBloc() {
     ServiceInjector injector = ServiceInjector();
@@ -30,8 +37,11 @@ class LNUrlBloc with AsyncActionsHandler {
         ServiceInjector().lightningLinks.linksNotifications,
       ])
           .where((l) => l.toLowerCase().startsWith("lightning:lnurl"))
-          .asyncMap((l) => _breezLib.fetchLNUrl(l))
-          .map((response) {
+          .asyncMap((l) {
+        _fetchLNUrlStateController.add(fetchLNUrlState.started);
+        return _breezLib.fetchLNUrl(l);
+      }).map((response) {
+        _fetchLNUrlStateController.add(fetchLNUrlState.completed);
         if (response.hasWithdraw()) {
           return WithdrawFetchResponse(response.withdraw);
         }
@@ -66,5 +76,11 @@ class LNUrlBloc with AsyncActionsHandler {
         tryLimit: 3,
         interval: Duration(seconds: 5));
     action.resolve(await openResult);
+  }
+
+  @override
+  Future dispose() {
+    _fetchLNUrlStateController.close();
+    return super.dispose();
   }
 }
