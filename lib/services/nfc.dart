@@ -25,6 +25,7 @@ class NFCService {
   StreamController<String> _lnLinkController =
       StreamController<String>.broadcast();
   StreamSubscription _lnLinkListener;
+  Timer _checkNfcStartedWithTimer;
 
   void startCardActivation(String breezId) {
     _platform.invokeMethod("startCardActivation", {"breezId": breezId});
@@ -91,7 +92,10 @@ class NFCService {
   }
 
   NFCService() {
-    Timer(Duration(seconds: 2), _listenLnLinks);
+    NfcPlugin nfcPlugin = NfcPlugin();
+    _checkNfcStartedWithTimer = Timer.periodic(Duration(milliseconds: 100),
+        (Timer t) => _checkNfcStartedWith(nfcPlugin));
+    _listenLnLinks(nfcPlugin);
     _platform.setMethodCallHandler((MethodCall call) {
       if (call.method == 'receivedBreezId') {
         log.info("Received a Breez ID: " + call.arguments);
@@ -121,8 +125,7 @@ class NFCService {
     });
   }
 
-  _listenLnLinks() async {
-    NfcPlugin nfcPlugin = NfcPlugin();
+  _checkNfcStartedWith(NfcPlugin nfcPlugin) async {
     // Check for deep link on startup
     try {
       final NfcEvent _nfcEventStartedWith = await nfcPlugin.nfcStartedWith;
@@ -132,7 +135,10 @@ class NFCService {
     } on PlatformException {
       print('Method "NFC event started with" exception was thrown');
     }
+    _checkNfcStartedWithTimer?.cancel();
+  }
 
+  _listenLnLinks(NfcPlugin nfcPlugin) {
     _lnLinkListener = nfcPlugin.onNfcMessage.listen((NfcEvent event) {
       if (event.error.isNotEmpty) {
         print('NFC read error: ${event.error}');
@@ -149,6 +155,7 @@ class NFCService {
     _bolt11BeamController.close();
     _p2pBeamController.close();
     _bolt11StreamController.close();
-    _lnLinkListener.cancel();
+    _lnLinkListener?.cancel();
+    _checkNfcStartedWithTimer?.cancel();
   }
 }
