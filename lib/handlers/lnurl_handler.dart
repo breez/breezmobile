@@ -17,17 +17,18 @@ class LNURLHandler {
 
   LNURLHandler(this._context, this.lnurlBloc) {
     _listenLnLinks();
-    lnurlBloc.lnurlStream.listen((response) {
-      _handlingRequest = true;
-      return executeLNURLResponse(this._context, this.lnurlBloc, response);
-    }).onError((err) async {
-      _setLoading(false);
-      promptError(
-          this._context,
-          "Link Error",
-          Text("Failed to process link: " + err.toString(),
-              style: Theme.of(this._context).dialogTheme.contentTextStyle));
-    });
+    lnurlBloc.lnurlStream
+      ..where((event) => (event.runtimeType != fetchLNUrlState))
+          .listen((response) {
+        _handlingRequest = true;
+        return executeLNURLResponse(this._context, this.lnurlBloc, response);
+      }).onError((err) async {
+        promptError(
+            this._context,
+            "Link Error",
+            Text("Failed to process link: " + err.toString(),
+                style: Theme.of(this._context).dialogTheme.contentTextStyle));
+      });
   }
 
   void executeLNURLResponse(
@@ -35,7 +36,6 @@ class LNURLHandler {
     if (response.runtimeType == ChannelFetchResponse) {
       _openLNURLChannel(context, lnurlBloc, response);
     } else if (response.runtimeType == WithdrawFetchResponse) {
-      _setLoading(false);
       Navigator.popUntil(context, (route) {
         return route.settings.name == "/";
       });
@@ -44,14 +44,12 @@ class LNURLHandler {
         builder: (_) => CreateInvoicePage(lnurlWithdraw: response),
       ));
     } else {
-      _setLoading(false);
       throw "Unsupported LNUrl";
     }
   }
 
   void _openLNURLChannel(BuildContext context, LNUrlBloc lnurlBloc,
       ChannelFetchResponse response) {
-    _setLoading(false);
     var host = Uri.parse(response.callback).host;
     promptAreYouSure(context, "Open Channel",
             Text("Are you sure you want to open a channel with $host?"))
@@ -91,7 +89,9 @@ class LNURLHandler {
   }
 
   void _listenLnLinks() {
-    lnurlBloc.fetchLNUrlStateStream.listen((state) {
+    lnurlBloc.lnurlStream
+        .where((event) => (event.runtimeType == fetchLNUrlState))
+        .listen((state) {
       if (state == fetchLNUrlState.started && !_handlingRequest) {
         _setLoading(true);
       } else {
