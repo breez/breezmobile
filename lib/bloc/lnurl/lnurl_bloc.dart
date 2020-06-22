@@ -15,10 +15,13 @@ enum fetchLNUrlState { started, completed }
 class LNUrlBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
 
+  final _lnUrlStreamController = StreamController.broadcast();
+
   LNUrlBloc() {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
 
+    listenLNUrl();
     registerAsyncHandlers({
       Fetch: _fetch,
       Withdraw: _withdraw,
@@ -27,32 +30,28 @@ class LNUrlBloc with AsyncActionsHandler {
     listenActions();
   }
 
-  Stream get lnurlStream {
-    // This stream is used for the whole app lifecycle
-    // ignore: close_sinks
-    StreamController lnUrlStreamController = StreamController();
+  listenLNUrl() {
     Observable.merge([
       ServiceInjector().nfc.receivedLnLinks(),
       ServiceInjector().lightningLinks.linksNotifications,
     ])
         .where((l) => l.toLowerCase().startsWith("lightning:lnurl"))
         .asyncMap((l) {
-      lnUrlStreamController.add(fetchLNUrlState.started);
+      _lnUrlStreamController.add(fetchLNUrlState.started);
       return _breezLib.fetchLNUrl(l);
     }).map((response) {
-      lnUrlStreamController.add(fetchLNUrlState.completed);
+      _lnUrlStreamController.add(fetchLNUrlState.completed);
       if (response.hasWithdraw()) {
-        lnUrlStreamController.add(WithdrawFetchResponse(response.withdraw));
+        _lnUrlStreamController.add(WithdrawFetchResponse(response.withdraw));
+      } else if (response.hasChannel()) {
+        _lnUrlStreamController.add(ChannelFetchResponse(response.channel));
+      } else {
+        _lnUrlStreamController.add(Future.error("Unsupported lnurl"));
       }
-      if (response.hasChannel()) {
-        lnUrlStreamController.add(ChannelFetchResponse(response.channel));
-      }
-
-      lnUrlStreamController.add(Future.error("Unsupported lnurl"));
-    });
-
-    return lnUrlStreamController.stream;
+    }).listen((_) {});
   }
+
+  Stream get lnurlStream => _lnUrlStreamController.stream;
 
   Future _fetch(Fetch action) async {
     LNUrlResponse res = await _breezLib.fetchLNUrl(action.lnurl);
@@ -78,5 +77,11 @@ class LNUrlBloc with AsyncActionsHandler {
         tryLimit: 3,
         interval: Duration(seconds: 5));
     action.resolve(await openResult);
+  }
+
+  @override
+  Future dispose() {
+    _lnUrlStreamController.close();
+    return super.dispose();
   }
 }

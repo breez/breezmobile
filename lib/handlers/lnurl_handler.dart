@@ -13,22 +13,20 @@ class LNURLHandler {
   final BuildContext _context;
   final LNUrlBloc lnurlBloc;
   ModalRoute _loaderRoute;
-  bool _handlingRequest = false;
 
   LNURLHandler(this._context, this.lnurlBloc) {
     _listenLnLinks();
     lnurlBloc.lnurlStream
-      ..where((event) => (event.runtimeType != fetchLNUrlState))
-          .listen((response) {
-        _handlingRequest = true;
-        return executeLNURLResponse(this._context, this.lnurlBloc, response);
-      }).onError((err) async {
-        promptError(
-            this._context,
-            "Link Error",
-            Text("Failed to process link: " + err.toString(),
-                style: Theme.of(this._context).dialogTheme.contentTextStyle));
-      });
+        .where((event) => event.runtimeType != fetchLNUrlState)
+        .listen((response) {
+      return executeLNURLResponse(this._context, this.lnurlBloc, response);
+    }).onError((err) async {
+      promptError(
+          this._context,
+          "Link Error",
+          Text("Failed to process link: " + err.toString(),
+              style: Theme.of(this._context).dialogTheme.contentTextStyle));
+    });
   }
 
   void executeLNURLResponse(
@@ -90,13 +88,9 @@ class LNURLHandler {
 
   void _listenLnLinks() {
     lnurlBloc.lnurlStream
-        .where((event) => (event.runtimeType == fetchLNUrlState))
+        .where((event) => event.runtimeType == fetchLNUrlState)
         .listen((state) {
-      if (state == fetchLNUrlState.started && !_handlingRequest) {
-        _setLoading(true);
-      } else {
-        _setLoading(false);
-      }
+      _setLoading(state == fetchLNUrlState.started);
     });
   }
 
@@ -109,7 +103,6 @@ class LNURLHandler {
 
     if (!visible && _loaderRoute != null) {
       Navigator.removeRoute(_context, _loaderRoute);
-      _handlingRequest = false;
       _loaderRoute = null;
     }
   }
