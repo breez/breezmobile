@@ -15,12 +15,12 @@ class LNURLHandler {
   ModalRoute _loaderRoute;
 
   LNURLHandler(this._context, this.lnurlBloc) {
-    _listenLnLinks();
-    lnurlBloc
-        .listenLNUrl()
-        .where((event) => event.runtimeType != fetchLNUrlState)
-        .listen((response) {
-      return executeLNURLResponse(this._context, this.lnurlBloc, response);
+    lnurlBloc.listenLNUrl().listen((response) {
+      if (response.runtimeType == fetchLNUrlState) {
+        _setLoading(response == fetchLNUrlState.started);
+      } else {
+        return executeLNURLResponse(this._context, this.lnurlBloc, response);
+      }
     }).onError((err) async {
       promptError(
           this._context,
@@ -84,15 +84,6 @@ class LNURLHandler {
           }).whenComplete(() => Navigator.of(context).removeRoute(loaderRoute));
         }
       }
-    });
-  }
-
-  void _listenLnLinks() {
-    lnurlBloc
-        .listenLNUrl()
-        .where((event) => event.runtimeType == fetchLNUrlState)
-        .listen((state) {
-      _setLoading(state == fetchLNUrlState.started);
     });
   }
 
