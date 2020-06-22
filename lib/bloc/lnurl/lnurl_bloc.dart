@@ -15,13 +15,12 @@ enum fetchLNUrlState { started, completed }
 class LNUrlBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
 
-  final _lnUrlStreamController = StreamController.broadcast();
+  StreamController _lnUrlStreamController;
 
   LNUrlBloc() {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
 
-    listenLNUrl();
     registerAsyncHandlers({
       Fetch: _fetch,
       Withdraw: _withdraw,
@@ -31,27 +30,35 @@ class LNUrlBloc with AsyncActionsHandler {
   }
 
   listenLNUrl() {
-    Observable.merge([
-      ServiceInjector().nfc.receivedLnLinks(),
-      ServiceInjector().lightningLinks.linksNotifications,
-    ])
-        .where((l) => l.toLowerCase().startsWith("lightning:lnurl"))
-        .asyncMap((l) {
-      _lnUrlStreamController.add(fetchLNUrlState.started);
-      return _breezLib.fetchLNUrl(l);
-    }).map((response) {
-      _lnUrlStreamController.add(fetchLNUrlState.completed);
-      if (response.hasWithdraw()) {
-        _lnUrlStreamController.add(WithdrawFetchResponse(response.withdraw));
-      } else if (response.hasChannel()) {
-        _lnUrlStreamController.add(ChannelFetchResponse(response.channel));
-      } else {
-        _lnUrlStreamController.add(Future.error("Unsupported lnurl"));
-      }
-    }).listen((_) {});
+    if (_lnUrlStreamController == null) {
+      _lnUrlStreamController = StreamController.broadcast();
+      Observable.merge([
+        ServiceInjector().nfc.receivedLnLinks(),
+        ServiceInjector().lightningLinks.linksNotifications,
+      ])
+          .where((l) => l.toLowerCase().startsWith("lightning:lnurl"))
+          .asyncMap((l) {
+            _lnUrlStreamController.add(fetchLNUrlState.started);
+            return _breezLib.fetchLNUrl(l);
+          })
+          .map((response) {
+            _lnUrlStreamController.add(fetchLNUrlState.completed);
+            if (response.hasWithdraw()) {
+              _lnUrlStreamController
+                  .add(WithdrawFetchResponse(response.withdraw));
+            } else if (response.hasChannel()) {
+              _lnUrlStreamController
+                  .add(ChannelFetchResponse(response.channel));
+            } else {
+              _lnUrlStreamController.add(Future.error("Unsupported lnurl"));
+            }
+          })
+          .doOnError(
+              (_) => _lnUrlStreamController.add(fetchLNUrlState.completed))
+          .listen((_) {});
+    }
+    return _lnUrlStreamController.stream;
   }
-
-  Stream get lnurlStream => _lnUrlStreamController.stream;
 
   Future _fetch(Fetch action) async {
     LNUrlResponse res = await _breezLib.fetchLNUrl(action.lnurl);

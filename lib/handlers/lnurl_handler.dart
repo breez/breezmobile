@@ -16,7 +16,8 @@ class LNURLHandler {
 
   LNURLHandler(this._context, this.lnurlBloc) {
     _listenLnLinks();
-    lnurlBloc.lnurlStream
+    lnurlBloc
+        .listenLNUrl()
         .where((event) => event.runtimeType != fetchLNUrlState)
         .listen((response) {
       return executeLNURLResponse(this._context, this.lnurlBloc, response);
@@ -87,7 +88,8 @@ class LNURLHandler {
   }
 
   void _listenLnLinks() {
-    lnurlBloc.lnurlStream
+    lnurlBloc
+        .listenLNUrl()
         .where((event) => event.runtimeType == fetchLNUrlState)
         .listen((state) {
       _setLoading(state == fetchLNUrlState.started);
