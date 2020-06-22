@@ -93,8 +93,16 @@ class NFCService {
 
   NFCService() {
     NfcPlugin nfcPlugin = NfcPlugin();
-    _checkNfcStartedWithTimer = Timer.periodic(Duration(milliseconds: 100),
-        (Timer t) => _checkNfcStartedWith(nfcPlugin));
+    int fnCalls = 0;
+    _checkNfcStartedWithTimer =
+        Timer.periodic(Duration(milliseconds: 100), (Timer t) {
+      if (fnCalls == 5) {
+        _checkNfcStartedWithTimer.cancel();
+        return;
+      }
+      fnCalls++;
+      _checkNfcStartedWith(nfcPlugin);
+    });
     _listenLnLinks(nfcPlugin);
     _platform.setMethodCallHandler((MethodCall call) {
       if (call.method == 'receivedBreezId') {
@@ -135,7 +143,6 @@ class NFCService {
     } on PlatformException {
       print('Method "NFC event started with" exception was thrown');
     }
-    _checkNfcStartedWithTimer?.cancel();
   }
 
   _listenLnLinks(NfcPlugin nfcPlugin) {
