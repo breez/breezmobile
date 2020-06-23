@@ -152,6 +152,7 @@ class NFCService {
       } else {
         String lnLink = event.message.payload[0].toString();
         if (lnLink.startsWith("lightning:")) _lnLinkController.add(lnLink);
+        _checkNfcStartedWithTimer.cancel();
       }
     });
   }
