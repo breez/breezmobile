@@ -52,16 +52,4 @@ public class MainActivity extends FlutterFragmentActivity {
         super.onResume();
         BreezApplication.isBackground = false;
     }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        Log.d(TAG, "Got an intent...");
-
-        if (intent != null && (intent.getAction().equals(BreezApduService.ACTION_BOLT11_RECEIVED)
-                || intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)
-                || intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED))) {
-            m_nfc.handleIntent(intent);
-        }
-    }
 }

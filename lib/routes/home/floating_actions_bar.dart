@@ -206,7 +206,8 @@ class FloatingActionsBar extends StatelessWidget {
           return;
         }
 
-        executeLNURLResponse(context, lnurlBloc, response);
+        LNURLHandler(context, lnurlBloc)
+            .executeLNURLResponse(context, lnurlBloc, response);
       },
     ).catchError((err) {
       Navigator.of(context).removeRoute(loaderRoute);

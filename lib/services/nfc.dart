@@ -25,6 +25,7 @@ class NFCService {
   StreamController<String> _lnLinkController =
       StreamController<String>.broadcast();
   StreamSubscription _lnLinkListener;
+  Timer _checkNfcStartedWithTimer;
 
   void startCardActivation(String breezId) {
     _platform.invokeMethod("startCardActivation", {"breezId": breezId});
@@ -91,7 +92,18 @@ class NFCService {
   }
 
   NFCService() {
-    Timer(Duration(seconds: 2), _listenLnLinks);
+    NfcPlugin nfcPlugin = NfcPlugin();
+    int fnCalls = 0;
+    _checkNfcStartedWithTimer =
+        Timer.periodic(Duration(milliseconds: 100), (Timer t) {
+      if (fnCalls == 5) {
+        _checkNfcStartedWithTimer.cancel();
+        return;
+      }
+      fnCalls++;
+      _checkNfcStartedWith(nfcPlugin);
+    });
+    _listenLnLinks(nfcPlugin);
     _platform.setMethodCallHandler((MethodCall call) {
       if (call.method == 'receivedBreezId') {
         log.info("Received a Breez ID: " + call.arguments);
@@ -121,22 +133,24 @@ class NFCService {
     });
   }
 
-  _listenLnLinks() async {
-    NfcPlugin nfcPlugin = NfcPlugin();
+  _checkNfcStartedWith(NfcPlugin nfcPlugin) async {
     // Check for deep link on startup
     try {
       final NfcEvent _nfcEventStartedWith = await nfcPlugin.nfcStartedWith;
       if (_nfcEventStartedWith != null) {
         _lnLinkController.add(_nfcEventStartedWith.message.payload[0]);
+        _checkNfcStartedWithTimer.cancel();
       }
     } on PlatformException {
       print('Method "NFC event started with" exception was thrown');
     }
+  }
 
+  _listenLnLinks(NfcPlugin nfcPlugin) {
     _lnLinkListener = nfcPlugin.onNfcMessage.listen((NfcEvent event) {
-      if (event.error.isNotEmpty) {
+      if (event.error != null && event.error.isNotEmpty) {
         print('NFC read error: ${event.error}');
-      } else {
+      } else if (event.message.payload != null) {
         String lnLink = event.message.payload[0].toString();
         if (lnLink.startsWith("lightning:")) _lnLinkController.add(lnLink);
       }
@@ -149,6 +163,7 @@ class NFCService {
     _bolt11BeamController.close();
     _p2pBeamController.close();
     _bolt11StreamController.close();
-    _lnLinkListener.cancel();
+    _lnLinkListener?.cancel();
+    _checkNfcStartedWithTimer?.cancel();
   }
 }
