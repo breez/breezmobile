@@ -56,7 +56,7 @@ class LNUrlBloc with AsyncActionsHandler {
         }
       }).handleError((error) {
         _lnUrlStreamController.add(fetchLNUrlState.completed);
-        //_lnUrlStreamController.add(error.toString());
+        _lnUrlStreamController.addError(error.toString());
       }).listen((_) {});
     }
     return _lnUrlStreamController.stream;

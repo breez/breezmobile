@@ -22,12 +22,22 @@ class LNURLHandler {
         return executeLNURLResponse(this._context, this.lnurlBloc, response);
       }
     }).onError((err) async {
+      var errorMessage = _getErrorMessage(err.toString());
       promptError(
           this._context,
           "Link Error",
-          Text("Failed to process link: " + err.toString(),
+          Text("Failed to process link: " + errorMessage,
               style: Theme.of(this._context).dialogTheme.contentTextStyle));
     });
+  }
+
+  String _getErrorMessage(String error) {
+    switch (error) {
+      case "GIFT_SPENT":
+        return "This gift has been redeemed!";
+      default:
+        return error;
+    }
   }
 
   void executeLNURLResponse(
