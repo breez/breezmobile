@@ -38,24 +38,26 @@ class LNUrlBloc with AsyncActionsHandler {
       ])
           .where((l) => l.toLowerCase().startsWith("lightning:lnurl"))
           .asyncMap((l) {
-            _lnUrlStreamController.add(fetchLNUrlState.started);
-            return _breezLib.fetchLNUrl(l);
-          })
-          .map((response) {
-            _lnUrlStreamController.add(fetchLNUrlState.completed);
-            if (response.hasWithdraw()) {
-              _lnUrlStreamController
-                  .add(WithdrawFetchResponse(response.withdraw));
-            } else if (response.hasChannel()) {
-              _lnUrlStreamController
-                  .add(ChannelFetchResponse(response.channel));
-            } else {
-              _lnUrlStreamController.add(Future.error("Unsupported lnurl"));
-            }
-          })
-          .doOnError(
-              (_) => _lnUrlStreamController.add(fetchLNUrlState.completed))
-          .listen((_) {});
+        _lnUrlStreamController.add(fetchLNUrlState.started);
+        return _breezLib.fetchLNUrl(l).catchError((error) {
+          throw error.toString();
+        });
+      }).map((response) {
+        _lnUrlStreamController.add(fetchLNUrlState.completed);
+        if (response.runtimeType == LNUrlResponse) {
+          if (response.hasWithdraw()) {
+            _lnUrlStreamController
+                .add(WithdrawFetchResponse(response.withdraw));
+          } else if (response.hasChannel()) {
+            _lnUrlStreamController.add(ChannelFetchResponse(response.channel));
+          } else {
+            _lnUrlStreamController.add(Future.error("Unsupported lnurl"));
+          }
+        }
+      }).handleError((error) {
+        _lnUrlStreamController.add(fetchLNUrlState.completed);
+        //_lnUrlStreamController.add(error.toString());
+      }).listen((_) {});
     }
     return _lnUrlStreamController.stream;
   }
