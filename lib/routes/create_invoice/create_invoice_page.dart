@@ -116,7 +116,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
               padding: const EdgeInsets.only(top: 24.0),
               child: SingleButtonBottomBar(
                 stickToBottom: true,
-                text: _withdrawFetchResponse == null ? "CREATE" : "WITHDRAW",
+                text: _withdrawFetchResponse == null ? "CREATE" : "REDEEM",
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
                     _createInvoice(
