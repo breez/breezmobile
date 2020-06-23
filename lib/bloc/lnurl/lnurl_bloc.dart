@@ -51,7 +51,7 @@ class LNUrlBloc with AsyncActionsHandler {
           } else if (response.hasChannel()) {
             _lnUrlStreamController.add(ChannelFetchResponse(response.channel));
           } else {
-            _lnUrlStreamController.add(Future.error("Unsupported lnurl"));
+            _lnUrlStreamController.addError("Unsupported LNUrl");
           }
         }
       }).handleError((error) {
