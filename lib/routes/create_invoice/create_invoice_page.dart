@@ -167,76 +167,80 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             child: Padding(
               padding: EdgeInsets.only(
                   left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  TextFormField(
-                    controller: _descriptionController,
-                    keyboardType: TextInputType.multiline,
-                    textInputAction: TextInputAction.done,
-                    maxLines: null,
-                    maxLength: 90,
-                    maxLengthEnforced: true,
-                    decoration: InputDecoration(
-                      labelText: "Description (optional)",
-                    ),
-                    style: theme.FieldTextStyle.textStyle,
-                  ),
-                  AmountFormField(
-                      context: context,
-                      accountModel: acc,
-                      focusNode: _amountFocusNode,
-                      controller: _amountController,
-                      validatorFn: acc.validateIncomingPayment,
-                      style: theme.FieldTextStyle.textStyle),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 48,
-                    padding: EdgeInsets.only(top: 16.0),
-                    child: _buildReceivableBTC(acc),
-                  ),
-                  StreamBuilder(
-                      stream: accountBloc.accountStream,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<AccountModel> accSnapshot) {
-                        if (!accSnapshot.hasData) {
-                          return Container();
-                        }
-                        AccountModel acc = accSnapshot.data;
+              child: Scrollbar(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      TextFormField(
+                        controller: _descriptionController,
+                        keyboardType: TextInputType.multiline,
+                        textInputAction: TextInputAction.done,
+                        maxLines: null,
+                        maxLength: 90,
+                        maxLengthEnforced: true,
+                        decoration: InputDecoration(
+                          labelText: "Description (optional)",
+                        ),
+                        style: theme.FieldTextStyle.textStyle,
+                      ),
+                      AmountFormField(
+                          context: context,
+                          accountModel: acc,
+                          focusNode: _amountFocusNode,
+                          controller: _amountController,
+                          validatorFn: acc.validateIncomingPayment,
+                          style: theme.FieldTextStyle.textStyle),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 48,
+                        padding: EdgeInsets.only(top: 16.0),
+                        child: _buildReceivableBTC(acc),
+                      ),
+                      StreamBuilder(
+                          stream: accountBloc.accountStream,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<AccountModel> accSnapshot) {
+                            if (!accSnapshot.hasData) {
+                              return Container();
+                            }
+                            AccountModel acc = accSnapshot.data;
 
-                        String message;
-                        if (accSnapshot.hasError) {
-                          message = accSnapshot.error.toString();
-                        } else if (!accSnapshot.hasData) {
-                          message =
-                              'Receiving payments will be available as soon as Breez is synchronized.';
-                        } else if (acc.processingConnection) {
-                          message =
-                              'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
-                        }
+                            String message;
+                            if (accSnapshot.hasError) {
+                              message = accSnapshot.error.toString();
+                            } else if (!accSnapshot.hasData) {
+                              message =
+                                  'Receiving payments will be available as soon as Breez is synchronized.';
+                            } else if (acc.processingConnection) {
+                              message =
+                                  'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
+                            }
 
-                        if (message != null) {
-                          // In case error doesn't have a trailing full stop
-                          if (!message.endsWith('.')) {
-                            message += '.';
-                          }
-                          return Container(
-                              padding: EdgeInsets.only(
-                                  top: 50.0, left: 30.0, right: 30.0),
-                              child: Column(children: <Widget>[
-                                Text(
-                                  message,
-                                  textAlign: TextAlign.center,
-                                  style: theme.warningStyle.copyWith(
-                                      color: Theme.of(context).errorColor),
-                                ),
-                              ]));
-                        } else {
-                          return SizedBox();
-                        }
-                      })
-                ],
+                            if (message != null) {
+                              // In case error doesn't have a trailing full stop
+                              if (!message.endsWith('.')) {
+                                message += '.';
+                              }
+                              return Container(
+                                  padding: EdgeInsets.only(
+                                      top: 50.0, left: 30.0, right: 30.0),
+                                  child: Column(children: <Widget>[
+                                    Text(
+                                      message,
+                                      textAlign: TextAlign.center,
+                                      style: theme.warningStyle.copyWith(
+                                          color: Theme.of(context).errorColor),
+                                    ),
+                                  ]));
+                            } else {
+                              return SizedBox();
+                            }
+                          })
+                    ],
+                  ),
+                ),
               ),
             ),
           );
