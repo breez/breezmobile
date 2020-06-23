@@ -139,6 +139,7 @@ class NFCService {
       final NfcEvent _nfcEventStartedWith = await nfcPlugin.nfcStartedWith;
       if (_nfcEventStartedWith != null) {
         _lnLinkController.add(_nfcEventStartedWith.message.payload[0]);
+        _checkNfcStartedWithTimer.cancel();
       }
     } on PlatformException {
       print('Method "NFC event started with" exception was thrown');
@@ -147,12 +148,11 @@ class NFCService {
 
   _listenLnLinks(NfcPlugin nfcPlugin) {
     _lnLinkListener = nfcPlugin.onNfcMessage.listen((NfcEvent event) {
-      if (event.error.isNotEmpty) {
+      if (event.error != null && event.error.isNotEmpty) {
         print('NFC read error: ${event.error}');
-      } else {
+      } else if (event.message.payload != null) {
         String lnLink = event.message.payload[0].toString();
         if (lnLink.startsWith("lightning:")) _lnLinkController.add(lnLink);
-        _checkNfcStartedWithTimer.cancel();
       }
     });
   }
