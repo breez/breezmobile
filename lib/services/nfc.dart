@@ -90,7 +90,6 @@ class NFCService {
   }
 
   NFCService() {
-    /*
     int fnCalls = 0;
     _checkNfcStartedWithTimer =
         Timer.periodic(Duration(milliseconds: 100), (Timer t) {
@@ -101,7 +100,6 @@ class NFCService {
       fnCalls++;
       _checkNfcStartedWith();
     });
-    */
     _listenLnLinks();
     _platform.setMethodCallHandler((MethodCall call) {
       if (call.method == 'receivedBreezId') {
