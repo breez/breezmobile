@@ -40,21 +40,6 @@ public class NfcHandler implements MethodChannel.MethodCallHandler {
 
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        if (call.method.equals("checkNFCSettings")) {
-            try {
-                boolean isNFCEnabledString = checkNFCSettings();
-                result.success(isNFCEnabledString);
-            } catch (Exception e) {
-                result.success(false);
-            }
-        }
-        if (call.method.equals("openNFCSettings")) {
-            try {
-                startNfcSettingsActivity();
-            } catch (Exception e) {
-                result.success(false);
-            }
-        }
         if (call.method.equals("checkIfStartedWithNfc")) {
             Log.d(TAG, "Called: checkIfStartedWithNfc");
             try {
@@ -63,23 +48,6 @@ public class NfcHandler implements MethodChannel.MethodCallHandler {
             } catch (Exception e) {
                 result.success("false");
             }
-        }
-
-    }
-
-    private boolean checkNFCSettings() {
-        boolean isNFCEnabledString = false;
-        if (m_adapter != null && m_adapter.isEnabled()) {
-            isNFCEnabledString = true;
-        }
-        return isNFCEnabledString;
-    }
-
-    protected void startNfcSettingsActivity() {
-        if (android.os.Build.VERSION.SDK_INT >= 16) {
-            m_mainActivity.startActivity(new Intent(android.provider.Settings.ACTION_NFC_SETTINGS));
-        } else {
-            m_mainActivity.startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
         }
     }
 
