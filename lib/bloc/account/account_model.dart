@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:breez/bloc/account/fiat_conversion.dart';

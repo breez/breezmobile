@@ -3,11 +3,9 @@ import 'dart:io';
 import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ini/ini.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 
 import 'graph_downloader.dart';
 

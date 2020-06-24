@@ -6,7 +6,6 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/breez_avatar.dart';
-import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -304,11 +303,6 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         ),
       ),
     );
-  }
-
-  double _getDialogSize() {
-    RenderBox _dialogBox = _dialogKey.currentContext.findRenderObject();
-    return _dialogBox.size.height;
   }
 
   Int64 amountToPay(AccountModel acc) {
