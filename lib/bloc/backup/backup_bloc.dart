@@ -74,7 +74,6 @@ class BackupBloc {
     _breezLib = injector.breezBridge;
     _tasksService = injector.backgroundTaskService;
     _actionHandlers = {
-      UpdateBackupSettings: _setBackupProvider,
       SaveBackupKey: _saveBackupKey,
       UpdateBackupSettings: _updateBackupSettings,
     };
@@ -158,14 +157,6 @@ class BackupBloc {
       _sharedPreferences.setString(
           BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
     });
-  }
-
-  Future _setBackupProvider(UpdateBackupSettings action) async {
-    _backupSettingsController.add(action.settings);
-    if (action.settings.backupProvider != null) {
-      action.resolve(
-          _breezLib.setBackupProvider(action.settings.backupProvider.name));
-    }
   }
 
   void _listenPinCodeChange(Stream<BreezUserModel> userStream) {

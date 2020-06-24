@@ -12,7 +12,6 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/collapsible_list_item.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
-import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/processsing_payment_dialog.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:breez/bloc/invoice/actions.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/logger.dart';
-import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/device.dart';
@@ -14,7 +13,6 @@ import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../async_actions_handler.dart';
@@ -51,13 +49,11 @@ class InvoiceBloc with AsyncActionsHandler {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     NFCService nfc = injector.nfc;
-    BreezServer server = injector.breezServer;
     Notifications notificationsService = injector.notifications;
     LightningLinksService lightningLinks = ServiceInjector().lightningLinks;
     device = injector.device;
 
     _listenInvoiceRequests(_breezLib, nfc);
-    _listenNFCStream(nfc, server, _breezLib);
     _listenIncomingInvoices(
         notificationsService, _breezLib, nfc, lightningLinks, device);
     _listenPaidInvoices(_breezLib);
@@ -95,7 +91,6 @@ class InvoiceBloc with AsyncActionsHandler {
               description: invoiceRequest.description,
               expiry: invoiceRequest.expiry)
           .then((paymentRequest) {
-        nfc.startBolt11Beam(paymentRequest);
         log.info("Payment Request");
         log.info(paymentRequest);
         _readyInvoicesController.add(paymentRequest);
@@ -115,34 +110,6 @@ class InvoiceBloc with AsyncActionsHandler {
     action.resolve(PaymentRequestModel(memo, payReq, paymentHash));
   }
 
-  void _listenNFCStream(
-      NFCService nfc, BreezServer server, BreezBridge breezLib) {
-    nfc.receivedBreezIds().listen((breezID) async {
-      if (_readyInvoicesController.value != null) {
-        log.info("Breez card was detected, sending payment request...");
-        _sentInvoicesController.add("Breez card was detected...");
-
-        var paymentRequest = _readyInvoicesController.value;
-
-        var memo = await breezLib.decodePaymentRequest(paymentRequest);
-        var amount = memo.amount;
-        var payee = memo.payeeName;
-
-        server
-            .sendInvoice(breezID, paymentRequest, payee, amount)
-            .then((res) =>
-                _sentInvoicesController.add("Payment request was sent!"))
-            .catchError(_sentInvoicesController.addError);
-      }
-    });
-  }
-
-  // void _listenIncomingBlankInvoices(BreezBridge breezLib, NFCService nfc) {
-  //   nfc.receivedBlankInvoices().listen((invoice) {
-  //     breezLib.sendPaymentForRequest(invoice, amount: payBlankAmount).catchError(_paidInvoicesController.addError);
-  //   }).onError(_paidInvoicesController.addError);
-  // }
-
   void _listenIncomingInvoices(
       Notifications notificationService,
       BreezBridge breezLib,
@@ -155,7 +122,6 @@ class InvoiceBloc with AsyncActionsHandler {
           .map((message) {
         return message["payment_request"];
       }),
-      nfc.receivedBolt11s(),
       nfc.receivedLnLinks(),
       _decodeInvoiceController.stream,
       _newLightningLinkController.stream,

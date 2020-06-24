@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:breez/utils/icon_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_svg/svg.dart';
@@ -85,7 +84,6 @@ class _IconAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, IconData> iconMapping = IconMap.iconMap;
     return Container(
       width: radius * 2,
       height: radius * 2,
