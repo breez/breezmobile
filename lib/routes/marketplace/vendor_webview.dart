@@ -37,7 +37,6 @@ class VendorWebViewPageState extends State<VendorWebViewPage> with RouteAware {
   WeblnHandlers _weblnHandlers;
   bool _isInit = false;
   Uint8List _screenshotData;
-  ModalRoute _currentRoute;
 
   @override
   void initState() {
@@ -92,7 +91,6 @@ class VendorWebViewPageState extends State<VendorWebViewPage> with RouteAware {
       _isInit = true;
     }
     routeObserver.subscribe(this, ModalRoute.of(context));
-    _currentRoute = ModalRoute.of(context);
     super.didChangeDependencies();
   }
 
