@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:breez/logger.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_nfc_plugin/models/nfc_event.dart';
 import 'package:flutter_nfc_plugin/nfc_plugin.dart';
 
@@ -101,7 +100,7 @@ class NFCService {
         return;
       }
       fnCalls++;
-      _checkNfcStartedWith(nfcPlugin);
+      _checkNfcStartedWith();
     });
     _listenLnLinks(nfcPlugin);
     _platform.setMethodCallHandler((MethodCall call) {
@@ -133,17 +132,13 @@ class NFCService {
     });
   }
 
-  _checkNfcStartedWith(NfcPlugin nfcPlugin) async {
-    // Check for deep link on startup
-    try {
-      final NfcEvent _nfcEventStartedWith = await nfcPlugin.nfcStartedWith;
-      if (_nfcEventStartedWith != null) {
-        _lnLinkController.add(_nfcEventStartedWith.message.payload[0]);
+  _checkNfcStartedWith() async {
+    _platform.invokeMethod("checkIfStartedWithNfc").then((lnLink) {
+      if (lnLink != null && lnLink.toString().isNotEmpty) {
+        _lnLinkController.add(lnLink);
         _checkNfcStartedWithTimer.cancel();
       }
-    } on PlatformException {
-      print('Method "NFC event started with" exception was thrown');
-    }
+    });
   }
 
   _listenLnLinks(NfcPlugin nfcPlugin) {
