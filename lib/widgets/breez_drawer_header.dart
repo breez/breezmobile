@@ -19,7 +19,7 @@ class BreezDrawerHeader extends DrawerHeader {
     this.duration = const Duration(milliseconds: 250),
     this.curve = Curves.fastOutSlowIn,
     @required this.child,
-  }) : super(key: key);
+  }) : super(key: key, child: child);
 
   @override
   Widget build(BuildContext context) {
