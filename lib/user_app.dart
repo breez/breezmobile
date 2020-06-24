@@ -18,7 +18,6 @@ import 'bloc/lnurl/lnurl_bloc.dart';
 import 'bloc/lsp/lsp_bloc.dart';
 import 'bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'home_page.dart';
-import 'routes/activate_card/activate_card_page.dart';
 import 'routes/add_funds/deposit_to_btc_address_page.dart';
 import 'routes/add_funds/fastbitcoins_page.dart';
 import 'routes/add_funds/moonpay_webview.dart';
@@ -32,8 +31,6 @@ import 'routes/lsp/select_lsp_page.dart';
 import 'routes/marketplace/marketplace.dart';
 import 'routes/network/network.dart';
 import 'routes/order_card/order_card_page.dart';
-import 'routes/pay_nearby/pay_nearby_complete.dart';
-import 'routes/pay_nearby/pay_nearby_page.dart';
 import 'routes/security_pin/lock_screen.dart';
 import 'routes/security_pin/security_pin_page.dart';
 import 'routes/settings/pos_settings_page.dart';
@@ -207,21 +204,6 @@ class UserApp extends StatelessWidget {
                                     case '/get_refund':
                                       return FadeInRoute(
                                         builder: (_) => GetRefundPage(),
-                                        settings: settings,
-                                      );
-                                    case '/activate_card':
-                                      return FadeInRoute(
-                                        builder: (_) => ActivateCardPage(),
-                                        settings: settings,
-                                      );
-                                    case '/pay_nearby':
-                                      return FadeInRoute(
-                                        builder: (_) => PayNearbyPage(),
-                                        settings: settings,
-                                      );
-                                    case '/pay_nearby_complete':
-                                      return FadeInRoute(
-                                        builder: (_) => PayNearbyComplete(),
                                         settings: settings,
                                       );
                                     case '/create_invoice':

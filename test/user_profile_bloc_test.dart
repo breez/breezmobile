@@ -1,9 +1,7 @@
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/services/injector.dart';
-import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
-import 'package:rxdart/rxdart.dart';
 import 'bloc_tester.dart';
 import 'mocks.dart';
 
@@ -14,7 +12,6 @@ void main() {
 
     setUp(() async {
       ServiceInjector.configure(_injector);
-      when(_injector.nfc.startCardActivation("testUserID")).thenReturn((new BehaviorSubject(seedValue: null).stream));
       _userProfileBloc = new UserProfileBloc();
     });
 

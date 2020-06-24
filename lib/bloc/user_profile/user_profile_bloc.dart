@@ -14,7 +14,6 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/local_auth_service.dart';
-import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
@@ -32,7 +31,6 @@ class UserProfileBloc {
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   BreezServer _breezServer;
   Notifications _notifications;
-  NFCService _nfc;
   Device _deviceService;
   LocalAuthenticationService _localAuthService;
   Future<SharedPreferences> _preferences;
@@ -51,8 +49,6 @@ class UserProfileBloc {
   Stream<BreezUserModel> get userPreviewStream =>
       _userStreamPreviewController.stream;
 
-  Stream<bool> cardActivationStream;
-
   final _currencyController = BehaviorSubject<Currency>();
   Sink<Currency> get currencySink => _currencyController.sink;
 
@@ -67,7 +63,6 @@ class UserProfileBloc {
 
   UserProfileBloc() {
     ServiceInjector injector = ServiceInjector();
-    _nfc = injector.nfc;
     _breezServer = injector.breezServer;
     _deviceService = injector.device;
     _preferences = injector.sharedPreferences;
@@ -92,8 +87,6 @@ class UserProfileBloc {
       SetPOSCurrency: _setPOSCurrency,
     };
     print("UserProfileBloc started");
-
-    cardActivationStream = _nfc.cardActivationStream;
 
     //push already saved user to the stream
     _initializeWithSavedUser(injector).then((_) {
@@ -382,10 +375,6 @@ class UserProfileBloc {
     }
     _userStreamController.add(user);
     _userStreamPreviewController.add(user);
-  }
-
-  void cardActivationInit() {
-    _nfc.startCardActivation(_userStreamController.value.userID);
   }
 
   BreezUserModel get _currentUser => _userStreamController.value;
