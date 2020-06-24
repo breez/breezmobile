@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:breez/logger.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_nfc_plugin/models/nfc_event.dart';
-import 'package:flutter_nfc_plugin/nfc_plugin.dart';
+import 'package:nfc_in_flutter/nfc_in_flutter.dart';
 
 class NFCService {
   static const _platform = MethodChannel('com.breez.client/nfc');
@@ -91,7 +90,6 @@ class NFCService {
   }
 
   NFCService() {
-    NfcPlugin nfcPlugin = NfcPlugin();
     int fnCalls = 0;
     _checkNfcStartedWithTimer =
         Timer.periodic(Duration(milliseconds: 100), (Timer t) {
@@ -102,7 +100,7 @@ class NFCService {
       fnCalls++;
       _checkNfcStartedWith();
     });
-    _listenLnLinks(nfcPlugin);
+    _listenLnLinks();
     _platform.setMethodCallHandler((MethodCall call) {
       if (call.method == 'receivedBreezId') {
         log.info("Received a Breez ID: " + call.arguments);
@@ -141,15 +139,13 @@ class NFCService {
     });
   }
 
-  _listenLnLinks(NfcPlugin nfcPlugin) {
-    _lnLinkListener = nfcPlugin.onNfcMessage.listen((NfcEvent event) {
-      if (event.error != null && event.error.isNotEmpty) {
-        print('NFC read error: ${event.error}');
-      } else if (event.message.payload != null) {
-        String lnLink = event.message.payload[0].toString();
+  _listenLnLinks() {
+    _lnLinkListener = NFC.readNDEF().listen(
+      (message) {
+        String lnLink = message.payload;
         if (lnLink.startsWith("lightning:")) _lnLinkController.add(lnLink);
-      }
-    });
+      },
+    );
   }
 
   close() {
