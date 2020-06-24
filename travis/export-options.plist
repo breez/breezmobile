@@ -16,8 +16,10 @@
 	<key>signingStyle</key>
 	<string>manual</string>
 	<key>teamID</key>
+	<key>stripSwiftSymbols</key>
+	<true/>
 	<string>F7R2LZH3W5</string>
 	<key>uploadSymbols</key>
-	<true/>
+	<false/>
 </dict>
 </plist>
