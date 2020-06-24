@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:breez/logger.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/services.dart' show PlatformException;
-import 'package:flutter_nfc_plugin/models/nfc_event.dart';
-import 'package:flutter_nfc_plugin/nfc_plugin.dart';
+import 'package:nfc_in_flutter/nfc_in_flutter.dart';
 
 class NFCService {
   static const _platform = MethodChannel('com.breez.client/nfc');
@@ -92,7 +90,7 @@ class NFCService {
   }
 
   NFCService() {
-    NfcPlugin nfcPlugin = NfcPlugin();
+    /*
     int fnCalls = 0;
     _checkNfcStartedWithTimer =
         Timer.periodic(Duration(milliseconds: 100), (Timer t) {
@@ -101,9 +99,10 @@ class NFCService {
         return;
       }
       fnCalls++;
-      _checkNfcStartedWith(nfcPlugin);
+      _checkNfcStartedWith();
     });
-    _listenLnLinks(nfcPlugin);
+    */
+    _listenLnLinks();
     _platform.setMethodCallHandler((MethodCall call) {
       if (call.method == 'receivedBreezId') {
         log.info("Received a Breez ID: " + call.arguments);
@@ -133,28 +132,22 @@ class NFCService {
     });
   }
 
-  _checkNfcStartedWith(NfcPlugin nfcPlugin) async {
-    // Check for deep link on startup
-    try {
-      final NfcEvent _nfcEventStartedWith = await nfcPlugin.nfcStartedWith;
-      if (_nfcEventStartedWith != null) {
-        _lnLinkController.add(_nfcEventStartedWith.message.payload[0]);
+  _checkNfcStartedWith() async {
+    _platform.invokeMethod("checkIfStartedWithNfc").then((lnLink) {
+      if (lnLink != null && lnLink.toString().isNotEmpty) {
+        _lnLinkController.add(lnLink);
         _checkNfcStartedWithTimer.cancel();
       }
-    } on PlatformException {
-      print('Method "NFC event started with" exception was thrown');
-    }
+    });
   }
 
-  _listenLnLinks(NfcPlugin nfcPlugin) {
-    _lnLinkListener = nfcPlugin.onNfcMessage.listen((NfcEvent event) {
-      if (event.error != null && event.error.isNotEmpty) {
-        print('NFC read error: ${event.error}');
-      } else if (event.message.payload != null) {
-        String lnLink = event.message.payload[0].toString();
+  _listenLnLinks() {
+    _lnLinkListener = NFC.readNDEF().listen(
+      (message) {
+        String lnLink = message.payload;
         if (lnLink.startsWith("lightning:")) _lnLinkController.add(lnLink);
-      }
-    });
+      },
+    );
   }
 
   close() {
