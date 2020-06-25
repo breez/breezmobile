@@ -22,14 +22,13 @@ before_script:
 - export GOPRIVATE=github.com/btcsuite/btcd
 - go mod vendor
 - export GOPATH=$TMP_GOPATH
-- export GO111MODULE=off
 - go get golang.org/x/mobile/cmd/gomobile
 - go get golang.org/x/mobile/cmd/gobind
 - "$GOPATH/bin/gomobile init"
 - mkdir -p build/ios
 - PATH=$PATH:$GOPATH/bin gomobile bind -target=ios -tags="ios experimental signrpc
   walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc"
-  -o build/ios/bindings.framework github.com/breez/breez/bindings
+  -o build/ios/bindings.framework -ldflags="-s -w" github.com/breez/breez/bindings
 - popd
 - brew install ideviceinstaller ios-deploy
 - pod setup
