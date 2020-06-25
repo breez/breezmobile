@@ -26,7 +26,7 @@ before_script:
 - go get golang.org/x/mobile/cmd/gobind
 - "$GOPATH/bin/gomobile init"
 - mkdir -p build/ios
-- PATH=$PATH:$GOPATH/bin gomobile bind -target=ios -tags="ios experimental signrpc
+- PATH=$PATH:$GOPATH/bin gomobile bind -target=ios/arm64 -tags="ios experimental signrpc
   walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc"
   -o build/ios/bindings.framework -ldflags="-s -w" github.com/breez/breez/bindings
 - popd
