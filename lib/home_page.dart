@@ -532,7 +532,7 @@ class HomeState extends State<Home> {
           !fulfilledPayment.ignoreGlobalFeedback) {
         scrollController.animateTo(scrollController.position.minScrollExtent,
             duration: Duration(milliseconds: 10), curve: Curves.ease);
-        showFlushbar(context, message: "Payment was successfuly sent!");
+        showFlushbar(context, message: "Payment was successfully sent!");
       }
     }, onError: (err) async {
       var error = err as PaymentError;

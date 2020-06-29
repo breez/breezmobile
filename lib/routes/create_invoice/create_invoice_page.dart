@@ -64,7 +64,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
     if (!_isInit) {
       _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {
-        Navigator.pop(context, "Payment was successfuly received!");
+        Navigator.pop(context, "Payment was successfully received!");
       });
       if (widget.lnurlWithdraw != null) {
         accBloc.accountStream.first.then((account) {
