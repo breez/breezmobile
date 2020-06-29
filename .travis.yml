@@ -16,7 +16,7 @@ before_script:
 - go version
 - brew update
 - brew install bazaar
-- git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
+- git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez --branch test-new-version
 - export TMP_GOPATH=$(pwd)/gopath
 - pushd gopath/src/github.com/breez/breez
 - export GOPRIVATE=github.com/btcsuite/btcd
