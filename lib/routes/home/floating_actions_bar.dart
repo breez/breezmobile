@@ -10,7 +10,6 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/handlers/lnurl_handler.dart';
 import 'package:breez/routes/add_funds/fastbitcoins_page.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
@@ -18,6 +17,7 @@ import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/bip21.dart';
+import 'package:breez/utils/btc_address.dart';
 import 'package:breez/utils/fastbitcoin.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
@@ -106,21 +106,6 @@ class FloatingActionsBar extends StatelessWidget {
                           try {
                             String scannedString = await QRScanner.scan();
                             if (scannedString != null) {
-                              String requestAmount;
-                              if (scannedString.contains("?")) {
-                                Map parameters = QRScanner.parse(
-                                    scannedString.split('?')[1]);
-                                try {
-                                  requestAmount = account.currency.format(
-                                      Currency.BTC.toSats(
-                                          double.parse(parameters["amount"])),
-                                      userInput: true,
-                                      includeDisplayName: false,
-                                      removeTrailingZeros: true);
-                                } on FormatException {}
-                                scannedString = scannedString.split('?')[0];
-                              }
-
                               String lower = scannedString.toLowerCase();
 
                               // lnurl string
@@ -153,11 +138,16 @@ class FloatingActionsBar extends StatelessWidget {
                                 ));
                                 return;
                               }
-                              if (await _isBTCAddress(scannedString)) {
+
+                              // bitcoin
+                              Map<String, String> btcInvoice =
+                                  parseBTCAddress(scannedString, account);
+
+                              if (await _isBTCAddress(btcInvoice["address"])) {
                                 Navigator.of(context).push(FadeInRoute(
                                   builder: (_) => ReverseSwapPage(
-                                      userAddress: scannedString,
-                                      requestAmount: requestAmount),
+                                      userAddress: btcInvoice["address"],
+                                      requestAmount: btcInvoice["amount"]),
                                 ));
                                 return;
                               }
