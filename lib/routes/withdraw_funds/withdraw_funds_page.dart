@@ -8,6 +8,7 @@ import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/btc_address.dart';
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -158,7 +159,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                           height: 24.0,
                         ),
                         tooltip: 'Scan Barcode',
-                        onPressed: _scanBarcode,
+                        onPressed: () => _scanBarcode(acc),
                       ),
                     ),
                     style: theme.FieldTextStyle.textStyle,
@@ -277,12 +278,21 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     });
   }
 
-  Future _scanBarcode() async {
+  Future _scanBarcode(AccountModel account) async {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await QRScanner.scan();
+      BTCAddressInfo btcInvoice = parseBTCAddress(barcode);
+      String amount;
+      if (btcInvoice.satAmount != null) {
+        amount = account.currency.format(btcInvoice.satAmount,
+            userInput: true,
+            includeDisplayName: false,
+            removeTrailingZeros: true);
+      }
       setState(() {
-        _addressController.text = barcode;
+        _addressController.text = btcInvoice.address;
+        _amountController.text = amount ?? _amountController.text;
         _scannerErrorMessage = "";
       });
     } on PlatformException catch (e) {

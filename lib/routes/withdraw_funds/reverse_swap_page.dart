@@ -18,8 +18,10 @@ import 'withdraw_funds_page.dart';
 
 class ReverseSwapPage extends StatefulWidget {
   final String userAddress;
+  final String requestAmount;
 
-  const ReverseSwapPage({Key key, this.userAddress}) : super(key: key);
+  const ReverseSwapPage({Key key, this.userAddress, this.requestAmount})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -130,6 +132,8 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                       .format(currentSwap.amount,
                                           userInput: true,
                                           includeDisplayName: false);
+                                } else if (widget.requestAmount != null) {
+                                  initialAmount = widget.requestAmount;
                                 }
 
                                 return PageView(

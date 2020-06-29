@@ -17,6 +17,7 @@ import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/bip21.dart';
+import 'package:breez/utils/btc_address.dart';
 import 'package:breez/utils/fastbitcoin.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
@@ -137,11 +138,24 @@ class FloatingActionsBar extends StatelessWidget {
                                 ));
                                 return;
                               }
-                              if (await _isBTCAddress(scannedString)) {
+
+                              // bitcoin
+                              BTCAddressInfo btcInvoice =
+                                  parseBTCAddress(scannedString);
+
+                              if (await _isBTCAddress(btcInvoice.address)) {
+                                String requestAmount;
+                                if (btcInvoice.satAmount != null) {
+                                  requestAmount = account.currency.format(
+                                      btcInvoice.satAmount,
+                                      userInput: true,
+                                      includeDisplayName: false,
+                                      removeTrailingZeros: true);
+                                }
                                 Navigator.of(context).push(FadeInRoute(
                                   builder: (_) => ReverseSwapPage(
-                                    userAddress: scannedString,
-                                  ),
+                                      userAddress: btcInvoice.address,
+                                      requestAmount: requestAmount),
                                 ));
                                 return;
                               }
