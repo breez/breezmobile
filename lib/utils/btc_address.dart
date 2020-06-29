@@ -6,8 +6,8 @@ Map<String, String> parseBTCAddress(
   Map<String, String> btcAddressMap = Map<String, String>();
   try {
     Uri uri = Uri.parse(scannedString);
-    String amount = uri.queryParameters["amount"];
     btcAddressMap["address"] = uri.path;
+    String amount = uri.queryParameters["amount"];
     if (amount != null) {
       btcAddressMap["amount"] = account.currency.format(
           Currency.BTC.toSats(double.parse(amount)),
