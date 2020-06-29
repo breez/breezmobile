@@ -2,12 +2,15 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:fixnum/fixnum.dart';
 
 BTCAddressInfo parseBTCAddress(String scannedString) {
-  Uri uri = Uri.parse(scannedString);
-  String address = uri.path;
+  String address;
   Int64 satAmount;
-  if (uri.queryParameters["amount"] != null)
-    satAmount =
-        Currency.BTC.toSats(double.parse(uri.queryParameters["amount"]));
+  Uri uri = Uri.tryParse(scannedString);
+  if (uri != null) {
+    address = uri.path;
+    if (uri.queryParameters["amount"] != null)
+      satAmount =
+          Currency.BTC.toSats(double.parse(uri.queryParameters["amount"]));
+  }
   return BTCAddressInfo(address, satAmount: satAmount);
 }
 
