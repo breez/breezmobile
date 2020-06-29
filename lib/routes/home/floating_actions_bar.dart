@@ -14,6 +14,7 @@ import 'package:breez/handlers/lnurl_handler.dart';
 import 'package:breez/routes/add_funds/fastbitcoins_page.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/btc_address.dart';
@@ -140,9 +141,9 @@ class FloatingActionsBar extends StatelessWidget {
 
                               // bitcoin
                               BTCAddressInfo btcInvoice =
-                                  await parseBTCAddress(scannedString);
+                                  parseBTCAddress(scannedString);
 
-                              if (btcInvoice != null) {
+                              if (await _isBTCAddress(btcInvoice.address)) {
                                 String requestAmount;
                                 if (btcInvoice.satAmount != null) {
                                   requestAmount = account.currency.format(
@@ -192,6 +193,14 @@ class FloatingActionsBar extends StatelessWidget {
             ]),
       ],
     );
+  }
+
+  Future<bool> _isBTCAddress(String scannedString) {
+    return ServiceInjector()
+        .breezBridge
+        .validateAddress(scannedString)
+        .then((_) => true)
+        .catchError((err) => false);
   }
 
   Future _handleLNUrl(

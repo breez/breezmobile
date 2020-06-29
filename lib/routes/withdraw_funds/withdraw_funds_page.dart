@@ -282,7 +282,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await QRScanner.scan();
-      BTCAddressInfo btcInvoice = await parseBTCAddress(barcode);
+      BTCAddressInfo btcInvoice = parseBTCAddress(barcode);
       String amount;
       if (btcInvoice.satAmount != null) {
         amount = account.currency.format(btcInvoice.satAmount,
