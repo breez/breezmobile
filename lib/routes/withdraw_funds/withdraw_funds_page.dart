@@ -5,6 +5,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -158,7 +159,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                           height: 24.0,
                         ),
                         tooltip: 'Scan Barcode',
-                        onPressed: _scanBarcode,
+                        onPressed: () => _scanBarcode(acc),
                       ),
                     ),
                     style: theme.FieldTextStyle.textStyle,
@@ -277,12 +278,25 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     });
   }
 
-  Future _scanBarcode() async {
+  Future _scanBarcode(AccountModel account) async {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await QRScanner.scan();
+      String requestAmount;
+      if (barcode.contains("?")) {
+        Map parameters = QRScanner.parse(barcode.split('?')[1]);
+        try {
+          requestAmount = account.currency.format(
+              Currency.BTC.toSats(double.parse(parameters["amount"])),
+              userInput: true,
+              includeDisplayName: false,
+              removeTrailingZeros: true);
+        } on FormatException {}
+        barcode = barcode.split('?')[0];
+      }
       setState(() {
         _addressController.text = barcode;
+        _amountController.text = requestAmount ?? _amountController.text;
         _scannerErrorMessage = "";
       });
     } on PlatformException catch (e) {
