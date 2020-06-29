@@ -282,10 +282,17 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await QRScanner.scan();
-      Map<String, String> btcInvoice = parseBTCAddress(barcode, account);
+      BTCAddressInfo btcInvoice = await parseBTCAddress(barcode);
+      String amount;
+      if (btcInvoice.satAmount != null) {
+        amount = account.currency.format(btcInvoice.satAmount,
+            userInput: true,
+            includeDisplayName: false,
+            removeTrailingZeros: true);
+      }
       setState(() {
-        _addressController.text = btcInvoice["address"];
-        _amountController.text = btcInvoice["amount"] ?? _amountController.text;
+        _addressController.text = btcInvoice.address;
+        _amountController.text = amount ?? _amountController.text;
         _scannerErrorMessage = "";
       });
     } on PlatformException catch (e) {

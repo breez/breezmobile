@@ -1,20 +1,24 @@
-import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/services/injector.dart';
+import 'package:fixnum/fixnum.dart';
 
-Map<String, String> parseBTCAddress(
-    String scannedString, AccountModel account) {
-  Map<String, String> btcAddressMap = Map<String, String>();
-  try {
-    Uri uri = Uri.parse(scannedString);
-    btcAddressMap["address"] = uri.path;
-    String amount = uri.queryParameters["amount"];
-    if (amount != null) {
-      btcAddressMap["amount"] = account.currency.format(
-          Currency.BTC.toSats(double.parse(amount)),
-          userInput: true,
-          includeDisplayName: false,
-          removeTrailingZeros: true);
-    }
-  } on FormatException {} // do nothing.
-  return btcAddressMap;
+Future<BTCAddressInfo> parseBTCAddress(String scannedString) {
+  Uri uri = Uri.parse(scannedString);
+  String address = uri.path;
+  Int64 satAmount;
+  if (uri.queryParameters["amount"] != null)
+    satAmount =
+        Currency.BTC.toSats(double.parse(uri.queryParameters["amount"]));
+  return ServiceInjector()
+      .breezBridge
+      .validateAddress(address)
+      .then((_) => BTCAddressInfo(address, satAmount: satAmount))
+      .catchError((err) => null);
+}
+
+class BTCAddressInfo {
+  final String address;
+  final Int64 satAmount;
+
+  BTCAddressInfo(this.address, {this.satAmount});
 }
