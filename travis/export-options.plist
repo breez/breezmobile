@@ -17,9 +17,7 @@
 	<string>manual</string>
 	<key>teamID</key>
 	<string>F7R2LZH3W5</string>
-	<key>stripSwiftSymbols</key>
-	<true/>
 	<key>uploadSymbols</key>
-	<false/>
+	<true/>
 </dict>
 </plist>
