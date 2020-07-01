@@ -210,6 +210,9 @@ final VendorTheme fixedfloat = VendorTheme(
 final VendorTheme lnroulette = VendorTheme(
   iconBgColor: Color(0xFF0c532d),
 );
+final VendorTheme boltz = VendorTheme(
+  iconBgColor: Color(0xFF001524),
+);
 
 final Map<String, VendorTheme> vendorTheme = {
   "bitrefill": bitrefill,
@@ -219,6 +222,7 @@ final Map<String, VendorTheme> vendorTheme = {
   "lightnite": lightnite,
   "fixedfloat": fixedfloat,
   "lightningroulette": lnroulette,
+  "boltz": boltz
 };
 
 final TextStyle drawerItemTextStyle =
