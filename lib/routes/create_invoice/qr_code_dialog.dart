@@ -117,7 +117,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   .setClipboardText(snapshot.data);
                               showFlushbar(context,
                                   message:
-                                      "Invoice address was copied to your clipboard.",
+                                      "Invoice data was copied to your clipboard.",
                                   duration: Duration(seconds: 3));
                             },
                           )

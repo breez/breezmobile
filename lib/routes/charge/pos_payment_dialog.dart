@@ -133,7 +133,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                     .device
                     .setClipboardText(widget.paymentRequest);
                 showFlushbar(context,
-                    message: "Invoice address was copied to your clipboard.",
+                    message: "Invoice data was copied to your clipboard.",
                     duration: Duration(seconds: 3));
               },
             )
