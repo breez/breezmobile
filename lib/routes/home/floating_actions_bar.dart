@@ -106,6 +106,11 @@ class FloatingActionsBar extends StatelessWidget {
                           try {
                             String scannedString = await QRScanner.scan();
                             if (scannedString != null) {
+                              if (scannedString.isEmpty) {
+                                showFlushbar(context,
+                                    message: "QR code not found.");
+                                return;
+                              }
                               String lower = scannedString.toLowerCase();
 
                               // lnurl string
