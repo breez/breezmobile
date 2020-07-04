@@ -250,6 +250,11 @@ class SendOnchainState extends State<SendOnchain> {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await QRScanner.scan();
+      if (barcode.isEmpty) {
+        showFlushbar(context,
+            message: "QR code not found.");
+        return;
+      }
       setState(() {
         _addressController.text = barcode;
         _scannerErrorMessage = "";

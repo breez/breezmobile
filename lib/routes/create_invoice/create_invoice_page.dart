@@ -20,6 +20,7 @@ import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
@@ -269,6 +270,11 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await QRScanner.scan();
+      if (barcode.isEmpty) {
+        showFlushbar(context,
+            message: "QR code not found.");
+        return;
+      }
       Navigator.of(context).push(loaderRoute);
       await _handleLNUrlWithdraw(account, barcode);
       Navigator.of(context).removeRoute(loaderRoute);
