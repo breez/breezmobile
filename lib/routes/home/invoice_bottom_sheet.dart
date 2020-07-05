@@ -68,7 +68,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                         String decodedQr = await QRScanner.scan();
                         if (decodedQr.isEmpty) {
                           showFlushbar(context,
-                              message: "QR code not found.");
+                              message: "QR code wasn't detected.");
                           return;
                         }
                          var nodeID = parseNodeId(decodedQr);

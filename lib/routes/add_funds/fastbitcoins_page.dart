@@ -79,7 +79,7 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
       String barcode = await QRScanner.scan();
       if (barcode.isEmpty) {
         showFlushbar(context,
-            message: "QR code not found.");
+            message: "QR code wasn't detected.");
         return;
       }
       String _voucherCode = barcode.substring(barcode.lastIndexOf("/") + 1);
