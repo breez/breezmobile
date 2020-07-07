@@ -62,6 +62,7 @@
 - [x] POS POC release
 - [x] Spontaneous payments to node id (nodes running with --accept-keysend)
 - [x] Fast graph sync
+- [x] Scan QR code from an image
 - [ ] Support zero-conf channels
 - [ ] 'On-the-fly' channel creation (increase limit)
 - [ ] Async payments via Lightning Rod
