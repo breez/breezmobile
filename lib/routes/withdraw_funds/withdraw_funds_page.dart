@@ -13,6 +13,7 @@ import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:fixnum/fixnum.dart';
@@ -282,6 +283,11 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await QRScanner.scan();
+      if (barcode.isEmpty) {
+        showFlushbar(context,
+            message: "QR code wasn't detected.");
+        return;
+      }
       BTCAddressInfo btcInvoice = parseBTCAddress(barcode);
       String amount;
       if (btcInvoice.satAmount != null) {

@@ -77,6 +77,11 @@ class FastbitcoinsPageState extends State<FastbitcoinsPage> {
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await QRScanner.scan();
+      if (barcode.isEmpty) {
+        showFlushbar(context,
+            message: "QR code wasn't detected.");
+        return;
+      }
       String _voucherCode = barcode.substring(barcode.lastIndexOf("/") + 1);
       setState(() {
         _codeController.text = _voucherCode;

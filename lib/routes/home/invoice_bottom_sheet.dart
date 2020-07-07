@@ -9,6 +9,7 @@ import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,6 +66,11 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                         () async {
                       try {
                         String decodedQr = await QRScanner.scan();
+                        if (decodedQr.isEmpty) {
+                          showFlushbar(context,
+                              message: "QR code wasn't detected.");
+                          return;
+                        }
                          var nodeID = parseNodeId(decodedQr);
                         if (nodeID == null) {
                           widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
