@@ -63,11 +63,14 @@
 - [x] Spontaneous payments to node id (nodes running with --accept-keysend)
 - [x] Fast graph sync
 - [ ] Support zero-conf channels
+- [ ] 'On-the-fly' channel creation (increase limit)
 - [ ] Async payments via Lightning Rod
+- [ ] Neutrino sync optimizations
 - [ ] Support SD storage
 
 ## System Requirements
 * Android 7+ 64bit
+* iPhone 6+
 
 ## Build
 1. Build `breez.aar` and `bindings.framework` as decribed in https://github.com/breez/breez
