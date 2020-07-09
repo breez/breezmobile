@@ -241,8 +241,6 @@ final TextStyle addFundsItemsStyle = TextStyle(
     height: 1.16,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
-final TextStyle bottomSheetMenuItemStyle = TextStyle(
-    color: BreezColors.white[400], fontSize: 14.3, letterSpacing: 0.55);
 final TextStyle autoCompleteStyle =
     TextStyle(color: Colors.black, fontSize: 14.0);
 final TextStyle blueLinkStyle =
