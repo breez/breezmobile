@@ -159,7 +159,6 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
               });
             },
             child: Row(children: <Widget>[
-              Padding(padding: EdgeInsets.only(left: 8.0)),
               Text(
                 "SELECT IMAGE",
                 style: TextStyle(
