@@ -1,17 +1,41 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:app_settings/app_settings.dart';
+import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/lnurl/lnurl_actions.dart';
+import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
+import 'package:breez/handlers/lnurl_handler.dart';
+import 'package:breez/routes/add_funds/fastbitcoins_page.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
+import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/bip21.dart';
+import 'package:breez/utils/btc_address.dart';
+import 'package:breez/utils/fastbitcoin.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../logger.dart';
+import 'error_dialog.dart';
+import 'flushbar.dart';
+import 'loader.dart';
+
+const FORMAT_UNKNOWN = -1;
 
 class BarcodeScannerPlaceholder extends StatefulWidget {
+  final AccountModel accountModel;
   final InvoiceBloc invoiceBloc;
   final GlobalKey firstPaymentItemKey;
 
-  BarcodeScannerPlaceholder(this.invoiceBloc, this.firstPaymentItemKey);
+  BarcodeScannerPlaceholder(
+      this.accountModel, this.invoiceBloc, this.firstPaymentItemKey);
 
   @override
   State<StatefulWidget> createState() {
@@ -22,6 +46,8 @@ class BarcodeScannerPlaceholder extends StatefulWidget {
 class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
   @override
   Widget build(BuildContext context) {
+    LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+
     return MaterialApp(
       theme: Theme.of(context).copyWith(
           backgroundColor: Colors.red,
@@ -34,27 +60,108 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
           backgroundColor: Theme.of(context).canvasColor,
           title: GestureDetector(
             onTap: () {
-              Clipboard.getData("text/plain").then((clipboardData) {
-                if (clipboardData != null) {
-                  Navigator.pop(context);
-                  var nodeID = parseNodeId(clipboardData.text);
-                  if (nodeID == null) {
-                    widget.invoiceBloc.decodeInvoiceSink
-                        .add(clipboardData.text);
+              // Open gallery and pick image
+              ImagePicker.pickImage(source: ImageSource.gallery)
+                  .then((pickedImage) async {
+                if (pickedImage != null) {
+                  // Detect barcode on selected image
+                  final FirebaseVisionImage visionImage =
+                      FirebaseVisionImage.fromFile(pickedImage);
+                  final BarcodeDetector barcodeDetector =
+                      FirebaseVision.instance.barcodeDetector();
+                  final List<Barcode> barcodes =
+                      await barcodeDetector.detectInImage(visionImage);
+                  barcodeDetector.close();
+                  if (barcodes.isNotEmpty) {
+                    for (Barcode barcode in barcodes) {
+                      // Handle barcode found on selected image
+                      final String scannedString = barcode.rawValue;
+                      if (scannedString != null) {
+                        if (barcode.format.value == FORMAT_UNKNOWN ||
+                            scannedString.isEmpty) {
+                          Navigator.pop(context);
+                          showFlushbar(context,
+                              message: "QR code wasn't detected.");
+                          return;
+                        }
+                        String lower = scannedString.toLowerCase();
+
+                        // lnurl string
+                        if (lower.startsWith("lightning:lnurl") ||
+                            lower.startsWith("lnurl")) {
+                          await _handleLNUrl(lnurlBloc, context, scannedString);
+                          return;
+                        }
+
+                        // bip 121
+                        String lnInvoice = extractBolt11FromBip21(lower);
+                        if (lnInvoice != null) {
+                          lower = lnInvoice;
+                        }
+
+                        // regular lightning invoice.
+                        if (lower.startsWith("lightning:") ||
+                            lower.startsWith("ln")) {
+                          widget.invoiceBloc.decodeInvoiceSink
+                              .add(scannedString);
+                          return;
+                        }
+
+                        // fast bitcoin
+                        if (isFastBitcoinURL(lower)) {
+                          Navigator.of(context).push(FadeInRoute(
+                            builder: (_) =>
+                                FastbitcoinsPage(fastBitcoinUrl: lower),
+                          ));
+                          return;
+                        }
+
+                        // bitcoin
+                        BTCAddressInfo btcInvoice =
+                            parseBTCAddress(scannedString);
+
+                        if (await _isBTCAddress(btcInvoice.address)) {
+                          String requestAmount;
+                          if (btcInvoice.satAmount != null) {
+                            requestAmount = widget.accountModel.currency.format(
+                                btcInvoice.satAmount,
+                                userInput: true,
+                                includeDisplayName: false,
+                                removeTrailingZeros: true);
+                          }
+                          Navigator.of(context).push(FadeInRoute(
+                            builder: (_) => ReverseSwapPage(
+                                userAddress: btcInvoice.address,
+                                requestAmount: requestAmount),
+                          ));
+                          return;
+                        }
+                        var nodeID = parseNodeId(scannedString);
+                        if (nodeID != null) {
+                          Navigator.of(context).push(FadeInRoute(
+                            builder: (_) => SpontaneousPaymentPage(
+                                nodeID, widget.firstPaymentItemKey),
+                          ));
+                          return;
+                        }
+                        Navigator.pop(context);
+                        showFlushbar(context,
+                            message: "QR code cannot be processed.");
+                      }
+                    }
                   } else {
-                    Navigator.of(context).push(FadeInRoute(
-                      builder: (_) => SpontaneousPaymentPage(
-                          nodeID, widget.firstPaymentItemKey),
-                    ));
+                    Navigator.pop(context);
+                    showFlushbar(context, message: "QR code wasn't detected.");
                   }
                 }
+              }).catchError((err) {
+                log.severe(err.toString());
               });
             },
             child: Row(children: <Widget>[
-              Icon(Icons.content_paste),
               Padding(padding: EdgeInsets.only(left: 8.0)),
               Text(
-                "PASTE INVOICE",
+                "SELECT IMAGE",
                 style: TextStyle(
                     fontSize: 14.0,
                     letterSpacing: 0.15,
@@ -116,4 +223,42 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
       ),
     );
   }
+}
+
+Future<bool> _isBTCAddress(String scannedString) {
+  return ServiceInjector()
+      .breezBridge
+      .validateAddress(scannedString)
+      .then((_) => true)
+      .catchError((err) => false);
+}
+
+Future _handleLNUrl(
+    LNUrlBloc lnurlBloc, BuildContext context, String lnurl) async {
+  Fetch fetchAction = Fetch(lnurl);
+  var cancelCompleter = Completer();
+  var loaderRoute = createLoaderRoute(context, onClose: () {
+    cancelCompleter.complete();
+  });
+  Navigator.of(context).push(loaderRoute);
+
+  lnurlBloc.actionsSink.add(fetchAction);
+  await Future.any([cancelCompleter.future, fetchAction.future]).then(
+    (response) {
+      Navigator.of(context).removeRoute(loaderRoute);
+      if (cancelCompleter.isCompleted) {
+        return;
+      }
+
+      LNURLHandler(context, lnurlBloc)
+          .executeLNURLResponse(context, lnurlBloc, response);
+    },
+  ).catchError((err) {
+    Navigator.of(context).removeRoute(loaderRoute);
+    promptError(
+        context,
+        "Link Error",
+        Text("Failed to process link: " + err.toString(),
+            style: Theme.of(context).dialogTheme.contentTextStyle));
+  });
 }

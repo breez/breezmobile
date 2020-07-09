@@ -179,7 +179,9 @@ class FloatingActionsBar extends StatelessWidget {
                             if (e.code == BarcodeScanner.CameraAccessDenied) {
                               Navigator.of(context).push(FadeInRoute(
                                   builder: (_) => BarcodeScannerPlaceholder(
-                                      invoiceBloc, firstPaymentItemKey)));
+                                      account,
+                                      invoiceBloc,
+                                      firstPaymentItemKey)));
                             }
                           }
                         },

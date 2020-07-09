@@ -8,7 +8,7 @@ Future<String> scan() async {
     String result = "";
     await BarcodeScanner.scan().then((scanResult) async {
       await Future.delayed(Duration(milliseconds: 250));
-        result = scanResult;
+      result = scanResult;
     });
     return result;
   } on PlatformException catch (error) {
