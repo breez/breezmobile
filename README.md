@@ -76,9 +76,9 @@
 ## Build
 1. Build `breez.aar` and `bindings.framework` as decribed in https://github.com/breez/breez
 2. For Android: 
-- Copy `breez.aar` to the `android/app/libs/` directory
+- Symlink `breez.aar` to the `android/app/libs/` directory
 - Create a firebase Android app using the [firebase console](https://console.firebase.google.com/)
-- Generate the google-services.json and copy it to the android/app/src/client directory
+- Generate the `google-services.json` (on "Project settings" menu) and copy it to the `android/app/src/client` directory
 3. For iOS:
 - Copy the bindings.framework directory to the ios directory.
 - Create a firebase iOS app using the [firebase console](https://console.firebase.google.com/)
@@ -88,12 +88,30 @@
 Run these command to switch to beta channel:
 - flutter channel beta
 - flutter upgrade
+
 ## Run
 Now you can use the following commands to run in a connected device the client app or the pos or to build the corresponding apks:
  - flutter run --flavor=client --target=lib/main.dart
  - flutter run --flavor=pos    --target=lib/main_pos.dart
  - flutter build apk --target-platform=android-arm64 --flavor=client --debug   --target=lib/main.dart
  - flutter build apk --target-platform=android-arm64 --flavor=pos    --debug   --target=lib/main_pos.dart
+
+### Running on testnet
+Modify the files under the `conf/` directory:
+
+```diff
+# breez.conf
+-network=mainnet
++network=testnet
+-peer=btcd-mainnet.lightning.computer
++peer=btcd-testnet.lightning.computer
+
+# lnd.conf
+-neutrino.connect=btcd-mainnet.lightning.computer
++neutrino.connect=btcd-testnet.lightning.computer
+```
+
+After the initial sync, go to the _Developer_ menu, get an address to fund with testnet coins with `newaddress p2wkh`, then fund it, and use `connect 03d5e17a3c213fe490e1b0c389f8cfcfcea08a29717d50a9f453735e0ab2a7c003@3.16.119.191:9735` then `openchannel --private --conf_target 1 03d5e17a3c213fe490e1b0c389f8cfcfcea08a29717d50a9f453735e0ab2a7c003 90000` to open a channel to that public node (adjust the amounts and the node id/address if you wish).
 
 ## Architecture 
 <p align='center'>
