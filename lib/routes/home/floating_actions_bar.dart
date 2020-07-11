@@ -268,12 +268,16 @@ class FloatingActionsBar extends StatelessWidget {
                             ? parseNodeId(snapshot.data)
                             : null;
                         if (nodeID == null) {
-                          return showDialog(
-                              useRootNavigator: false,
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (_) => EnterPaymentInfoDialog(
-                                  context, invoiceBloc, firstPaymentItemKey));
+                          if (snapshot.data != null) {
+                            invoiceBloc.decodeInvoiceSink.add(snapshot.data);
+                          } else {
+                            return showDialog(
+                                useRootNavigator: false,
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (_) => EnterPaymentInfoDialog(
+                                    context, invoiceBloc, firstPaymentItemKey));
+                          }
                         } else {
                           Navigator.of(context).push(FadeInRoute(
                             builder: (_) => SpontaneousPaymentPage(

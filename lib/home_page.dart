@@ -380,12 +380,16 @@ class HomeState extends State<Home> {
         disabled: !account.connected, onItemSelected: (decodedQr) async {
       var nodeID = snapshot.data != null ? parseNodeId(snapshot.data) : null;
       if (nodeID == null) {
-        return showDialog(
-            useRootNavigator: false,
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => EnterPaymentInfoDialog(
-                context, widget.invoiceBloc, firstPaymentItemKey));
+        if (snapshot.data != null) {
+          widget.invoiceBloc.decodeInvoiceSink.add(snapshot.data);
+        } else {
+          return showDialog(
+              useRootNavigator: false,
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => EnterPaymentInfoDialog(
+                  context, widget.invoiceBloc, firstPaymentItemKey));
+        }
       } else {
         Navigator.of(context).push(FadeInRoute(
           builder: (_) => SpontaneousPaymentPage(nodeID, firstPaymentItemKey),
