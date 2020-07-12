@@ -1,11 +1,8 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/node_id.dart';
-import 'package:breez/widgets/route.dart';
+import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class BarcodeScannerPlaceholder extends StatefulWidget {
   final InvoiceBloc invoiceBloc;
@@ -32,35 +29,10 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
           iconTheme: Theme.of(context).appBarTheme.iconTheme,
           textTheme: Theme.of(context).appBarTheme.textTheme,
           backgroundColor: Theme.of(context).canvasColor,
-          title: GestureDetector(
-            onTap: () {
-              Clipboard.getData("text/plain").then((clipboardData) {
-                if (clipboardData != null) {
-                  Navigator.pop(context);
-                  var nodeID = parseNodeId(clipboardData.text);
-                  if (nodeID == null) {
-                    widget.invoiceBloc.decodeInvoiceSink
-                        .add(clipboardData.text);
-                  } else {
-                    Navigator.of(context).push(FadeInRoute(
-                      builder: (_) => SpontaneousPaymentPage(
-                          nodeID, widget.firstPaymentItemKey),
-                    ));
-                  }
-                }
-              });
+          leading: backBtn.BackButton(
+            onPressed: () {
+              Navigator.of(context).pop();
             },
-            child: Row(children: <Widget>[
-              Icon(Icons.content_paste),
-              Padding(padding: EdgeInsets.only(left: 8.0)),
-              Text(
-                "PASTE INVOICE",
-                style: TextStyle(
-                    fontSize: 14.0,
-                    letterSpacing: 0.15,
-                    fontWeight: FontWeight.w500),
-              )
-            ]),
           ),
           elevation: 0.0,
         ),
