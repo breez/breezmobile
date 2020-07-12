@@ -94,7 +94,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                         color:
                             Theme.of(context).primaryTextTheme.headline4.color),
                     validator: (value) {
-                      if (parseNodeId(value) == null ||
+                      if (parseNodeId(value) == null &&
                           decodeInvoice(value) == null) {
                         return "Invalid invoice or node ID";
                       }
