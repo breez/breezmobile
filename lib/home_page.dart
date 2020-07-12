@@ -19,6 +19,7 @@ import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/node_id.dart';
+import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/escher_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
@@ -376,15 +377,22 @@ class HomeState extends State<Home> {
     List<DrawerItemConfig> itemConfigs = [];
     DrawerItemConfig pasteItem = DrawerItemConfig(
         "", "Paste Invoice or Node ID", "src/icon/paste.png",
-        disabled: !account.connected || snapshot.data == null,
-        onItemSelected: (decodedQr) async {
-      var nodeID = parseNodeId(snapshot.data);
+        disabled: !account.connected, onItemSelected: (decodedQr) async {
+      var nodeID = snapshot.data != null ? parseNodeId(snapshot.data) : null;
       if (nodeID == null) {
-        widget.invoiceBloc.decodeInvoiceSink.add(snapshot.data);
+        if (snapshot.data != null) {
+          widget.invoiceBloc.decodeInvoiceSink.add(snapshot.data);
+        } else {
+          return showDialog(
+              useRootNavigator: false,
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => EnterPaymentInfoDialog(
+                  context, widget.invoiceBloc, firstPaymentItemKey));
+        }
       } else {
         Navigator.of(context).push(FadeInRoute(
-          builder: (_) =>
-              SpontaneousPaymentPage(nodeID, firstPaymentItemKey),
+          builder: (_) => SpontaneousPaymentPage(nodeID, firstPaymentItemKey),
         ));
       }
     });

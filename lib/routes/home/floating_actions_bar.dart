@@ -22,6 +22,7 @@ import 'package:breez/utils/fastbitcoin.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
+import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/escher_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -256,16 +257,27 @@ class FloatingActionsBar extends StatelessWidget {
                   children: <Widget>[
                     SizedBox(height: 8.0),
                     ListTile(
-                      enabled: account.connected && snapshot.data != null,
+                      enabled: account.connected,
                       leading: _ActionImage(
                           iconAssetPath: "src/icon/paste.png",
-                          enabled: account.connected && snapshot.data != null),
+                          enabled: account.connected),
                       title: Text("Paste Invoice or Node ID"),
                       onTap: () async {
                         Navigator.of(context).pop();
-                        var nodeID = parseNodeId(snapshot.data);
+                        var nodeID = snapshot.data != null
+                            ? parseNodeId(snapshot.data)
+                            : null;
                         if (nodeID == null) {
-                          invoiceBloc.decodeInvoiceSink.add(snapshot.data);
+                          if (snapshot.data != null) {
+                            invoiceBloc.decodeInvoiceSink.add(snapshot.data);
+                          } else {
+                            return showDialog(
+                                useRootNavigator: false,
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (_) => EnterPaymentInfoDialog(
+                                    context, invoiceBloc, firstPaymentItemKey));
+                          }
                         } else {
                           Navigator.of(context).push(FadeInRoute(
                             builder: (_) => SpontaneousPaymentPage(
