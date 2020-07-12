@@ -52,7 +52,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: Text(
-        "Enter Invoice or Node ID",
+        "Payee Information",
         style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
