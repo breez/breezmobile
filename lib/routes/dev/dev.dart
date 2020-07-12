@@ -401,7 +401,7 @@ class DevViewState extends State<DevView> {
           await rescanFile.create(recursive: true);
           _promptForRestart();
         }));
-    /*
+    
     choices.add(Choice(
         title: "Export DB Files",
         icon: Icons.phone_android,
@@ -413,14 +413,17 @@ class DevViewState extends State<DevView> {
           var encoder = ZipFileEncoder();
           var zipFile = '${tempDir.path}/wallet-files.zip';
           encoder.create(zipFile);
+          var i = 1;
           walletFiles.forEach((f) {
-            encoder.addFile(File(f));
+            var file = File(f);
+            encoder.addFile(file,  "${i.toString()}_${file.path.split(Platform.pathSeparator).last}");
+            i += 1;
           });
           encoder.close();
           ShareExtend.share(zipFile, "file");
         }));
     
-        */
+      
     choices.add(Choice(
         title: 'Reset POS DB',
         icon: Icons.phone_android,
