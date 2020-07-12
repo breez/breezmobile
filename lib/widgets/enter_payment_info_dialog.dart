@@ -1,11 +1,15 @@
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/node_id.dart';
+import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import 'flushbar.dart';
 import 'keyboard_done_action.dart';
 
 class EnterPaymentInfoDialog extends StatefulWidget {
@@ -23,6 +27,7 @@ class EnterPaymentInfoDialog extends StatefulWidget {
 }
 
 class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
+  String _scannerErrorMessage = "";
   TextEditingController _paymentInfoController = TextEditingController();
   final FocusNode _paymentInfoFocusNode = FocusNode();
   KeyboardDoneAction _doneAction;
@@ -58,23 +63,49 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
 
   Theme _buildPaymentInfoForm(BuildContext context) {
     return Theme(
-      data: Theme.of(context).copyWith(
-          inputDecorationTheme: InputDecorationTheme(
-              enabledBorder:
-                  UnderlineInputBorder(borderSide: theme.greyBorderSide)),
-          hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-          accentColor: Theme.of(context).textTheme.button.color,
-          primaryColor: Theme.of(context).textTheme.button.color,
-          errorColor: theme.themeId == "BLUE"
-              ? Colors.red
-              : Theme.of(context).errorColor),
-      child: TextField(
-        focusNode: _paymentInfoFocusNode,
-        controller: _paymentInfoController,
-        style: TextStyle(
-            color: Theme.of(context).primaryTextTheme.headline4.color),
-      ),
-    );
+        data: Theme.of(context).copyWith(
+            inputDecorationTheme: InputDecorationTheme(
+                enabledBorder:
+                    UnderlineInputBorder(borderSide: theme.greyBorderSide)),
+            hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
+            accentColor: Theme.of(context).textTheme.button.color,
+            primaryColor: Theme.of(context).textTheme.button.color,
+            errorColor: theme.themeId == "BLUE"
+                ? Colors.red
+                : Theme.of(context).errorColor),
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(
+                  labelText: "Invoice or Node ID",
+                  suffixIcon: IconButton(
+                    padding: EdgeInsets.only(top: 21.0),
+                    alignment: Alignment.bottomRight,
+                    icon: Image(
+                      image: AssetImage("src/icon/qr_scan.png"),
+                      color: theme.BreezColors.white[500],
+                      fit: BoxFit.contain,
+                      width: 24.0,
+                      height: 24.0,
+                    ),
+                    tooltip: 'Scan Barcode',
+                    onPressed: () => _scanBarcode(),
+                  ),
+                ),
+                focusNode: _paymentInfoFocusNode,
+                controller: _paymentInfoController,
+                style: TextStyle(
+                    color: Theme.of(context).primaryTextTheme.headline4.color),
+              ),
+              _scannerErrorMessage.length > 0
+                  ? Text(
+                      _scannerErrorMessage,
+                      style: theme.validatorStyle,
+                    )
+                  : SizedBox(),
+            ]));
   }
 
   List<Widget> _buildActions() {
@@ -105,5 +136,33 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
       ));
     }
     return actions;
+  }
+
+  Future _scanBarcode() async {
+    try {
+      FocusScope.of(context).requestFocus(FocusNode());
+      String barcode = await QRScanner.scan();
+      if (barcode.isEmpty) {
+        showFlushbar(context, message: "QR code wasn't detected.");
+        return;
+      }
+      setState(() {
+        _paymentInfoController.text = barcode;
+        _scannerErrorMessage = "";
+      });
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        setState(() {
+          this._scannerErrorMessage =
+              'Please grant Breez camera permission to scan QR codes.';
+        });
+      } else {
+        setState(() => this._scannerErrorMessage = '');
+      }
+    } on FormatException {
+      setState(() => this._scannerErrorMessage = '');
+    } catch (e) {
+      setState(() => this._scannerErrorMessage = '');
+    }
   }
 }
