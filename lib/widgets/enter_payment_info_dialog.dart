@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'flushbar.dart';
-import 'keyboard_done_action.dart';
 
 class EnterPaymentInfoDialog extends StatefulWidget {
   final BuildContext context;
@@ -27,10 +26,10 @@ class EnterPaymentInfoDialog extends StatefulWidget {
 }
 
 class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
+  final _formKey = GlobalKey<FormState>();
   String _scannerErrorMessage = "";
   TextEditingController _paymentInfoController = TextEditingController();
   final FocusNode _paymentInfoFocusNode = FocusNode();
-  KeyboardDoneAction _doneAction;
 
   @override
   void initState() {
@@ -38,23 +37,14 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     _paymentInfoController.addListener(() {
       setState(() {});
     });
-    _doneAction = KeyboardDoneAction(<FocusNode>[_paymentInfoFocusNode]);
-  }
-
-  @override
-  void dispose() {
-    _doneAction.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-      title: Text(
-        "Payee Information",
-        style: Theme.of(context).dialogTheme.titleTextStyle,
-      ),
+      title: Text("Payee Information",
+          style: Theme.of(context).dialogTheme.titleTextStyle),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: _buildPaymentInfoForm(context),
       actions: _buildActions(),
@@ -73,39 +63,53 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
             errorColor: theme.themeId == "BLUE"
                 ? Colors.red
                 : Theme.of(context).errorColor),
-        child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              TextField(
-                decoration: InputDecoration(
-                  labelText: "Invoice or Node ID",
-                  suffixIcon: IconButton(
-                    padding: EdgeInsets.only(top: 21.0),
-                    alignment: Alignment.bottomRight,
-                    icon: Image(
-                      image: AssetImage("src/icon/qr_scan.png"),
-                      color: theme.BreezColors.white[500],
-                      fit: BoxFit.contain,
-                      width: 24.0,
-                      height: 24.0,
+        child: Form(
+          key: _formKey,
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: "Invoice or Node ID",
+                    suffixIcon: IconButton(
+                      padding: EdgeInsets.only(top: 21.0),
+                      alignment: Alignment.bottomRight,
+                      icon: Image(
+                        image: AssetImage("src/icon/qr_scan.png"),
+                        color: theme.BreezColors.white[500],
+                        fit: BoxFit.contain,
+                        width: 24.0,
+                        height: 24.0,
+                      ),
+                      tooltip: 'Scan Barcode',
+                      onPressed: () => _scanBarcode(),
                     ),
-                    tooltip: 'Scan Barcode',
-                    onPressed: () => _scanBarcode(),
                   ),
+                  focusNode: _paymentInfoFocusNode,
+                  controller: _paymentInfoController,
+                  style: TextStyle(
+                      color:
+                          Theme.of(context).primaryTextTheme.headline4.color),
+                  validator: (value) {
+                    if (parseNodeId(value) == null ||
+                        decodeInvoice(value) == null) {
+                      return "Invalid invoice or node ID";
+                    }
+                    return null;
+                  },
                 ),
-                focusNode: _paymentInfoFocusNode,
-                controller: _paymentInfoController,
-                style: TextStyle(
-                    color: Theme.of(context).primaryTextTheme.headline4.color),
-              ),
-              _scannerErrorMessage.length > 0
-                  ? Text(
-                      _scannerErrorMessage,
-                      style: theme.validatorStyle,
-                    )
-                  : SizedBox(),
-            ]));
+                _scannerErrorMessage.length > 0
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          _scannerErrorMessage,
+                          style: theme.validatorStyle,
+                        ),
+                      )
+                    : SizedBox(),
+              ]),
+        ));
   }
 
   List<Widget> _buildActions() {
@@ -119,16 +123,20 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     if (_paymentInfoController.text.isNotEmpty) {
       actions.add(SimpleDialogOption(
         onPressed: (() async {
-          Navigator.of(context).pop();
-          var nodeID = parseNodeId(_paymentInfoController.text);
-          if (nodeID == null) {
-            widget.invoiceBloc.decodeInvoiceSink
-                .add(_paymentInfoController.text);
-          } else {
-            Navigator.of(context).push(FadeInRoute(
-              builder: (_) =>
-                  SpontaneousPaymentPage(nodeID, widget.firstPaymentItemKey),
-            ));
+          if (_formKey.currentState.validate()) {
+            Navigator.of(context).pop();
+            var nodeID = parseNodeId(_paymentInfoController.text);
+            if (nodeID != null) {
+              Navigator.of(context).push(FadeInRoute(
+                builder: (_) =>
+                    SpontaneousPaymentPage(nodeID, widget.firstPaymentItemKey),
+              ));
+              return;
+            }
+            if (decodeInvoice(_paymentInfoController.text) != null) {
+              widget.invoiceBloc.decodeInvoiceSink
+                  .add(_paymentInfoController.text);
+            }
           }
         }),
         child:
@@ -154,7 +162,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
           this._scannerErrorMessage =
-              'Please grant Breez camera permission to scan QR codes.';
+              'Please grant Breez camera permission to scan QR codes';
         });
       } else {
         setState(() => this._scannerErrorMessage = '');
@@ -164,5 +172,19 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     } catch (e) {
       setState(() => this._scannerErrorMessage = '');
     }
+  }
+
+  decodeInvoice(String invoiceString) {
+    String normalized = invoiceString?.toLowerCase();
+    if (normalized == null) {
+      return null;
+    }
+    if (normalized.startsWith("lightning:")) {
+      normalized = normalized.substring(10);
+    }
+    if (normalized.startsWith("ln") && !normalized.startsWith("lnurl")) {
+      return invoiceString;
+    }
+    return null;
   }
 }
