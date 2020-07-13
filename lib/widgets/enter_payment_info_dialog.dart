@@ -79,7 +79,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                         alignment: Alignment.bottomRight,
                         icon: Image(
                           image: AssetImage("src/icon/qr_scan.png"),
-                          color: theme.BreezColors.white[500],
+                          color: Theme.of(context).primaryIconTheme.color,
                           fit: BoxFit.contain,
                           width: 24.0,
                           height: 24.0,
