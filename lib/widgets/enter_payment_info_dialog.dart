@@ -63,52 +63,55 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
             errorColor: theme.themeId == "BLUE"
                 ? Colors.red
                 : Theme.of(context).errorColor),
-        child: Form(
-          key: _formKey,
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: "Invoice or Node ID",
-                    suffixIcon: IconButton(
-                      padding: EdgeInsets.only(top: 21.0),
-                      alignment: Alignment.bottomRight,
-                      icon: Image(
-                        image: AssetImage("src/icon/qr_scan.png"),
-                        color: theme.BreezColors.white[500],
-                        fit: BoxFit.contain,
-                        width: 24.0,
-                        height: 24.0,
-                      ),
-                      tooltip: 'Scan Barcode',
-                      onPressed: () => _scanBarcode(),
-                    ),
-                  ),
-                  focusNode: _paymentInfoFocusNode,
-                  controller: _paymentInfoController,
-                  style: TextStyle(
-                      color:
-                          Theme.of(context).primaryTextTheme.headline4.color),
-                  validator: (value) {
-                    if (parseNodeId(value) == null ||
-                        decodeInvoice(value) == null) {
-                      return "Invalid invoice or node ID";
-                    }
-                    return null;
-                  },
-                ),
-                _scannerErrorMessage.length > 0
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          _scannerErrorMessage,
-                          style: theme.validatorStyle,
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          child: Form(
+            key: _formKey,
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: "Invoice or Node ID",
+                      suffixIcon: IconButton(
+                        padding: EdgeInsets.only(top: 21.0),
+                        alignment: Alignment.bottomRight,
+                        icon: Image(
+                          image: AssetImage("src/icon/qr_scan.png"),
+                          color: Theme.of(context).primaryIconTheme.color,
+                          fit: BoxFit.contain,
+                          width: 24.0,
+                          height: 24.0,
                         ),
-                      )
-                    : SizedBox(),
-              ]),
+                        tooltip: 'Scan Barcode',
+                        onPressed: () => _scanBarcode(),
+                      ),
+                    ),
+                    focusNode: _paymentInfoFocusNode,
+                    controller: _paymentInfoController,
+                    style: TextStyle(
+                        color:
+                            Theme.of(context).primaryTextTheme.headline4.color),
+                    validator: (value) {
+                      if (parseNodeId(value) == null &&
+                          decodeInvoice(value) == null) {
+                        return "Invalid invoice or node ID";
+                      }
+                      return null;
+                    },
+                  ),
+                  _scannerErrorMessage.length > 0
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            _scannerErrorMessage,
+                            style: theme.validatorStyle,
+                          ),
+                        )
+                      : SizedBox(),
+                ]),
+          ),
         ));
   }
 

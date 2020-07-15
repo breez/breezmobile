@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
@@ -593,6 +594,10 @@ class BreezBridge {
     return _invokeMethodWhenReady("enableAccount", {"argument": enabled});
   }
 
+  Future<String> backupFiles() {
+    return _invokeMethodWhenReady("backupFiles").then((res) => res as String);
+  }
+
   Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
     return _startedCompleter.future.then((completed) {
       return _methodChannel
@@ -611,20 +616,14 @@ class BreezBridge {
     String lines = await rootBundle.loadString('conf/breez.conf');
     var config = Config.fromString(lines);
     String lndDir = (await getApplicationDocumentsDirectory()).path;
+    List<String> result = [];
     String network = config.get('Application Options', 'network');
-    return [
-      '$lndDir/data/chain/bitcoin/$network/admin.macaroon',
-      '$lndDir/data/chain/bitcoin/$network/backupevents.macaroon',
-      '$lndDir/data/chain/bitcoin/$network/breezbackup.macaroon',
-      '$lndDir/data/chain/bitcoin/$network/chainnotifier.macaroon',
-      '$lndDir/data/chain/bitcoin/$network/invoice.macaroon',
-      '$lndDir/data/chain/bitcoin/$network/invoices.macaroon',
-      '$lndDir/data/chain/bitcoin/$network/readonly.macaroon',
-      '$lndDir/data/chain/bitcoin/$network/router.macaroon',
-      '$lndDir/data/chain/bitcoin/$network/signer.macaroon',
-      '$lndDir/data/chain/bitcoin/$network/submarineswap.macaroon',
-      '$lndDir/data/chain/bitcoin/$network/walletkit.macaroon',
-      '$lndDir/data/chain/bitcoin/$network/macaroons.db'
-    ];
+    String reply = await backupFiles();
+    List files = json.decode(reply);
+    if (files != null) {
+      result.addAll(files.map((e) => e as String));
+    }
+    result.add('$lndDir/data/chain/bitcoin/$network/wallet.db');
+    return result;
   }
 }
