@@ -73,25 +73,10 @@ class InvoiceBloc with AsyncActionsHandler {
           normalized = normalized.substring(10);
         }
         if (normalized.startsWith("ln") && !normalized.startsWith("lnurl")) {
-          var invoice = _getRelatedInvoice(normalized);
-          invoice.then((value) {
-            return (value != null) ? s : null;
-          });
-        } else {
-          return null;
+          return s;
         }
+        return null;
       }).where((event) => event != null);
-
-  Future<String> _getRelatedInvoice(String invoiceString) async {
-    try {
-      await _breezLib.getRelatedInvoice(invoiceString);
-      log.info("filtering our invoice from clipboard");
-      return null;
-    } catch (e) {
-      log.info("detected not ours invoice, continue to decoding");
-      return invoiceString;
-    }
-  }
 
   Stream<String> get clipboardNodeIdStream =>
       device.rawClipboardStream.where((s) => s != null && parseNodeId(s) != null);
