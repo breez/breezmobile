@@ -50,3 +50,5 @@ class FilterItems extends AsyncAction {
 
   FilterItems(this.filter);
 }
+
+class ExportItems extends AsyncAction {}

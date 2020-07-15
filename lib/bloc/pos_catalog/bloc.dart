@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/pos_catalog/actions.dart';
+import 'package:breez/bloc/pos_catalog/pos_csv_exporter.dart';
 import 'package:breez/bloc/pos_catalog/repository.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
@@ -23,10 +24,12 @@ class PosCatalogBloc with AsyncActionsHandler {
   Stream<List<Item>> get itemsStream => _itemsStreamController.stream;
 
   final BehaviorSubject<Sale> _currentSaleController = BehaviorSubject<Sale>();
+
   Stream<Sale> get currentSaleStream => _currentSaleController.stream;
 
   final BehaviorSubject<List<ProductIcon>> _productIconsController =
       BehaviorSubject<List<ProductIcon>>();
+
   Stream<List<ProductIcon>> get productIconsStream =>
       _productIconsController.stream;
 
@@ -42,6 +45,7 @@ class PosCatalogBloc with AsyncActionsHandler {
       FetchSale: _fetchSale,
       SetCurrentSale: _setCurrentSale,
       FilterItems: _filterItems,
+      ExportItems: _exportItems,
     });
     listenActions();
     _currentSaleController.add(Sale(saleLines: List()));
@@ -101,6 +105,11 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   _filterItems(FilterItems action) async {
     _loadItems(filter: action.filter);
+  }
+
+  _exportItems(ExportItems action) async {
+    action
+        .resolve(await PosCsvUtils(await _repository.fetchItems()).export());
   }
 
   Future _addItem(AddItem action) async {
