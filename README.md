@@ -11,7 +11,8 @@
 
 </p>
 
-[Breez](https://breez.technology) is a Lightning Network [mobile client](https://github.com/breez/breezmobile) and a [hub](https://github.com/breez/server). It provides a platform for simple, instantaneous bitcoin payments.
+[Breez](https://breez.technology) is a Lightning Network [mobile client](https://github.com/breez/breezmobile) and a [hub](https://github.com/breez/server). It provides a platform for simple, instantaneous bitcoin payments. <br>
+Breez is currently in a public beta, available on [Android](https://play.google.com/apps/testing/com.breez.client) and on [iOS](https://testflight.apple.com/join/wPju2Du7).
 
 ## Features
 
