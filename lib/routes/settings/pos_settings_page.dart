@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/pos_catalog/actions.dart';
+import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -8,10 +10,12 @@ import 'package:breez/routes/settings/set_admin_password.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:share_extend/share_extend.dart';
 
 class PosSettingsPage extends StatelessWidget {
   @override
@@ -140,6 +144,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                         ),
                       ]),
                   ..._buildAdminPasswordTiles(userProfileBloc, user),
+                  _buildExportItemsTile()
                 ],
               ),
             );
@@ -157,6 +162,70 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       widgets..add(Divider())..add(_buildSetPasswordTile());
     }
     return widgets;
+  }
+
+  Widget _buildExportItemsTile() {
+    return ListTile(
+      title: Container(
+        child: AutoSizeText(
+          "Items List",
+          style: TextStyle(color: Colors.white),
+          maxLines: 1,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
+          group: _autoSizeGroup,
+        ),
+      ),
+      trailing: Padding(
+        padding: const EdgeInsets.only(right: 0.0),
+        child: PopupMenuButton(
+          color: Theme.of(context).backgroundColor,
+          icon: Icon(
+            Icons.more_vert,
+            color: Theme.of(context).iconTheme.color,
+          ),
+          padding: EdgeInsets.zero,
+          offset: Offset(12, 36),
+          onSelected: _select,
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              height: 36,
+              value: Choice(() => _importPayments(context)),
+              child: Text('Import', style: Theme.of(context).textTheme.button),
+            ),
+            PopupMenuItem(
+              height: 36,
+              value: Choice(() => _exportPayments(context)),
+              child: Text('Export', style: Theme.of(context).textTheme.button),
+            ),
+          ],
+        ),
+      ),
+      onTap: () => _onChangeAdminPasswordSelected(),
+    );
+  }
+
+  void _select(Choice choice) {
+    choice.function();
+  }
+
+  Future _importPayments(BuildContext context) async {
+    showFlushbar(context, message: "Not implemented.");
+  }
+
+  Future _exportPayments(BuildContext context) async {
+    PosCatalogBloc posCatalogBloc =
+        AppBlocsProvider.of<PosCatalogBloc>(context);
+    var action = ExportItems();
+    posCatalogBloc.actionsSink.add(action);
+    Navigator.of(context).push(createLoaderRoute(context));
+    action.future.then((filePath) {
+      Navigator.of(context).pop();
+      ShareExtend.share(filePath, "file");
+    }).catchError((err) {
+      Navigator.of(context).pop();
+      showFlushbar(context, message: "Failed to export pos items.");
+    });
   }
 
   ListTile _buildSetPasswordTile() {
@@ -239,4 +308,10 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     SetAdminPassword action = SetAdminPassword(null);
     userProfileBloc.userActionsSink.add(action);
   }
+}
+
+class Choice {
+  const Choice(this.function);
+
+  final Function function;
 }
