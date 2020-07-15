@@ -144,6 +144,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                         ),
                       ]),
                   ..._buildAdminPasswordTiles(userProfileBloc, user),
+                  Divider(),
                   _buildExportItemsTile()
                 ],
               ),
@@ -181,7 +182,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
         child: PopupMenuButton(
           color: Theme.of(context).backgroundColor,
           icon: Icon(
-            Icons.more_vert,
+            Icons.more_horiz,
             color: Theme.of(context).iconTheme.color,
           ),
           padding: EdgeInsets.zero,
@@ -191,12 +192,14 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             PopupMenuItem(
               height: 36,
               value: Choice(() => _importPayments(context)),
-              child: Text('Import', style: Theme.of(context).textTheme.button),
+              child: Text('Import from CSV',
+                  style: Theme.of(context).textTheme.button),
             ),
             PopupMenuItem(
               height: 36,
               value: Choice(() => _exportPayments(context)),
-              child: Text('Export', style: Theme.of(context).textTheme.button),
+              child: Text('Export to CSV',
+                  style: Theme.of(context).textTheme.button),
             ),
           ],
         ),
@@ -269,7 +272,11 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                 }
               },
             )
-          : Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+          : Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(Icons.keyboard_arrow_right,
+                  color: Colors.white, size: 30.0),
+            ),
       onTap: user.hasAdminPassword
           ? null
           : () => _onChangeAdminPasswordSelected(isNew: !user.hasAdminPassword),
