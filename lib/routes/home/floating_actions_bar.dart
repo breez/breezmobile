@@ -268,7 +268,16 @@ class FloatingActionsBar extends StatelessWidget {
                             ? parseNodeId(snapshot.data)
                             : null;
                         if (nodeID == null) {
-                          if (snapshot.data != null) {
+                          var paymentRequest = snapshot.data;
+                          try {
+                            await ServiceInjector()
+                                .breezBridge
+                                .getRelatedInvoice(paymentRequest);
+                            paymentRequest = null;
+                          } catch (e) {
+                            paymentRequest = paymentRequest;
+                          }
+                          if (paymentRequest != null) {
                             invoiceBloc.decodeInvoiceSink.add(snapshot.data);
                           } else {
                             return showDialog(

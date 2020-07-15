@@ -17,6 +17,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
@@ -380,7 +381,14 @@ class HomeState extends State<Home> {
         disabled: !account.connected, onItemSelected: (decodedQr) async {
       var nodeID = snapshot.data != null ? parseNodeId(snapshot.data) : null;
       if (nodeID == null) {
-        if (snapshot.data != null) {
+        var paymentRequest = snapshot.data;
+        try {
+          await ServiceInjector().breezBridge.getRelatedInvoice(paymentRequest);
+          paymentRequest = null;
+        } catch (e) {
+          paymentRequest = paymentRequest;
+        }
+        if (paymentRequest != null) {
           widget.invoiceBloc.decodeInvoiceSink.add(snapshot.data);
         } else {
           return showDialog(
