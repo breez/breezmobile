@@ -213,7 +213,20 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   }
 
   Future _importPayments(BuildContext context) async {
-    showFlushbar(context, message: "Not implemented.");
+    return promptAreYouSure(
+            context,
+            "Import items",
+            Text(
+                "Importing this list will override the existing one. Are you sure you want to continue?",
+                style: Theme.of(context).dialogTheme.contentTextStyle),
+            contentPadding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 8.0),
+            cancelText: "NO",
+            okText: "YES")
+        .then((acknowledged) {
+      if (acknowledged) {
+        showFlushbar(context, message: "Not implemented");
+      }
+    });
   }
 
   Future _exportPayments(BuildContext context) async {
