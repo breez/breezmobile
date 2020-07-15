@@ -77,18 +77,19 @@ class InvoiceBloc with AsyncActionsHandler {
           invoice.then((value) {
             return (value != null) ? s : null;
           });
+        } else {
+          return null;
         }
-        return null;
       }).where((event) => event != null);
 
   Future<String> _getRelatedInvoice(String invoiceString) async {
     try {
       await _breezLib.getRelatedInvoice(invoiceString);
       log.info("filtering our invoice from clipboard");
-      return invoiceString;
+      return null;
     } catch (e) {
       log.info("detected not ours invoice, continue to decoding");
-      return null;
+      return invoiceString;
     }
   }
 
