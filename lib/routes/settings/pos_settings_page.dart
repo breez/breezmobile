@@ -60,6 +60,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    PosCatalogBloc posCatalogBloc =
+        AppBlocsProvider.of<PosCatalogBloc>(context);
     UserProfileBloc userProfileBloc =
         AppBlocsProvider.of<UserProfileBloc>(context);
     return Scaffold(
@@ -145,7 +147,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                       ]),
                   ..._buildAdminPasswordTiles(userProfileBloc, user),
                   Divider(),
-                  _buildExportItemsTile()
+                  _buildExportItemsTile(posCatalogBloc)
                 ],
               ),
             );
@@ -165,7 +167,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     return widgets;
   }
 
-  Widget _buildExportItemsTile() {
+  Widget _buildExportItemsTile(PosCatalogBloc posCatalogBloc) {
     return ListTile(
       title: Container(
         child: AutoSizeText(
@@ -191,13 +193,13 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
           itemBuilder: (context) => [
             PopupMenuItem(
               height: 36,
-              value: Choice(() => _importItems(context)),
+              value: Choice(() => _importItems(context, posCatalogBloc)),
               child: Text('Import from CSV',
                   style: Theme.of(context).textTheme.button),
             ),
             PopupMenuItem(
               height: 36,
-              value: Choice(() => _exportItems(context)),
+              value: Choice(() => _exportItems(context, posCatalogBloc)),
               child: Text('Export to CSV',
                   style: Theme.of(context).textTheme.button),
             ),
@@ -212,7 +214,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     choice.function();
   }
 
-  Future _importItems(BuildContext context) async {
+  Future _importItems(
+      BuildContext context, PosCatalogBloc posCatalogBloc) async {
     return promptAreYouSure(
             context,
             "Import Items",
@@ -229,9 +232,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     });
   }
 
-  Future _exportItems(BuildContext context) async {
-    PosCatalogBloc posCatalogBloc =
-        AppBlocsProvider.of<PosCatalogBloc>(context);
+  Future _exportItems(
+      BuildContext context, PosCatalogBloc posCatalogBloc) async {
     var action = ExportItems();
     posCatalogBloc.actionsSink.add(action);
     Navigator.of(context).push(createLoaderRoute(context));
