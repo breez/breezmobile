@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:breez/bloc/async_action.dart';
 
 import 'model.dart';
@@ -52,3 +54,9 @@ class FilterItems extends AsyncAction {
 }
 
 class ExportItems extends AsyncAction {}
+
+class ImportItems extends AsyncAction {
+  final File importFile;
+
+  ImportItems(this.importFile);
+}

@@ -10,6 +10,8 @@ import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
+import 'package:csv/csv.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/subjects.dart';
 
@@ -46,6 +48,7 @@ class PosCatalogBloc with AsyncActionsHandler {
       SetCurrentSale: _setCurrentSale,
       FilterItems: _filterItems,
       ExportItems: _exportItems,
+      ImportItems: _importItems,
     });
     listenActions();
     _currentSaleController.add(Sale(saleLines: List()));
@@ -114,6 +117,54 @@ class PosCatalogBloc with AsyncActionsHandler {
     } else {
       throw Exception("EMPTY_LIST");
     }
+  }
+
+  _importItems(ImportItems action) async {
+    List csvList = await action.importFile
+        .openRead()
+        .transform(utf8.decoder)
+        .transform(new CsvToListConverter())
+        .toList();
+    List<String> headerRow = List<String>.from(csvList.elementAt(0));
+    var defaultHeaders = [
+      "ID",
+      "Name",
+      "SKU",
+      "Image URL",
+      "Currency",
+      "Price",
+    ];
+    // Need a more sophisticated control here. Check #1
+    if (listEquals(headerRow, defaultHeaders)) {
+      throw Exception("INVALID_FILE");
+    }
+    // remove header row
+    csvList.removeAt(0);
+    // create items list
+    var itemsList = <Item>[];
+    csvList.forEach((csvItem) {
+      // #1: We should extend this so our users will be able
+      // to import files that does not have this exact column order.
+      Item item = Item(
+          id: csvItem[0],
+          name: csvItem[1],
+          sku: csvItem[2].toString(),
+          imageURL: csvItem[3] != "null" ? csvItem[3] : null,
+          currency: csvItem[4] != "null" ? csvItem[4] : null,
+          price: csvItem[5]);
+      itemsList.add(item);
+    });
+    // We should try to restore old db if import fails.
+    // var backupDB = await _repository.fetchItems();
+    await resetDB();
+    try {
+      itemsList.forEach((item) async => await _addItem(AddItem(item)));
+    } catch (e) {
+      // backupDB.forEach((item) async => await _addItem(AddItem(item)));
+      throw Exception("FAILED_IMPORT");
+    }
+    action.resolve(null);
+    _loadItems();
   }
 
   Future _addItem(AddItem action) async {

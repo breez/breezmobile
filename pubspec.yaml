@@ -45,6 +45,7 @@ dependencies:
   sqflite: ^1.2.1
   badges: ^1.1.1
   simple_animations: ^1.3.9
+  file_picker: ^1.12.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

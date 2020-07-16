@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -14,6 +16,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -225,9 +228,36 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             contentPadding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 8.0),
             cancelText: "NO",
             okText: "YES")
-        .then((acknowledged) {
+        .then((acknowledged) async {
       if (acknowledged) {
-        showFlushbar(context, message: "Not implemented");
+        File importFile = await FilePicker.getFile(
+            type: FileType.custom, allowedExtensions: ['csv']);
+        if (importFile != null) {
+          var action = ImportItems(importFile);
+          posCatalogBloc.actionsSink.add(action);
+          var loaderRoute = createLoaderRoute(context);
+          Navigator.of(context).push(loaderRoute);
+          action.future.then((_) {
+            Navigator.of(context).removeRoute(loaderRoute);
+            Navigator.of(context).pop();
+            showFlushbar(context, message: "Items were successfully imported.");
+          }).catchError((err) {
+            Navigator.of(context).removeRoute(loaderRoute);
+            var errorMessage = "Failed to import POS items.";
+            switch (err.toString()) {
+              case "INVALID_FILE":
+                errorMessage = "Please select a valid file";
+                break;
+              case "FAILED_IMPORT":
+                errorMessage = "Failed to import POS items, please try again.";
+                break;
+              default:
+                errorMessage = "Failed to import POS items.";
+                break;
+            }
+            showFlushbar(context, message: errorMessage);
+          });
+        }
       }
     });
   }
