@@ -242,7 +242,10 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       ShareExtend.share(filePath, "file");
     }).catchError((err) {
       Navigator.of(context).pop();
-      showFlushbar(context, message: "Failed to export pos items.");
+      var errorMessage = err.toString() == "EMPTY_LIST"
+          ? "There are no items to export."
+          : "Failed to export POS items.";
+      showFlushbar(context, message: errorMessage);
     });
   }
 

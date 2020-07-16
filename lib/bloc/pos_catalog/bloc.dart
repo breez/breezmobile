@@ -108,8 +108,12 @@ class PosCatalogBloc with AsyncActionsHandler {
   }
 
   _exportItems(ExportItems action) async {
-    action
-        .resolve(await PosCsvUtils(await _repository.fetchItems()).export());
+    List<Item> itemsList = await _repository.fetchItems();
+    if (itemsList.length != 0) {
+      action.resolve(await PosCsvUtils(itemsList).export());
+    } else {
+      throw Exception("EMPTY_LIST");
+    }
   }
 
   Future _addItem(AddItem action) async {
