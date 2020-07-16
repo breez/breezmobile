@@ -18,6 +18,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
 import 'package:share_extend/share_extend.dart';
 
 class PosSettingsPage extends StatelessWidget {
@@ -232,7 +233,9 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       if (acknowledged) {
         File importFile = await FilePicker.getFile(
             type: FileType.custom, allowedExtensions: ['csv']);
-        if (importFile != null) {
+
+        String fileExtension = path.extension(importFile.path);
+        if (fileExtension == ".csv") {
           var action = ImportItems(importFile);
           posCatalogBloc.actionsSink.add(action);
           var loaderRoute = createLoaderRoute(context);
@@ -257,6 +260,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             }
             showFlushbar(context, message: errorMessage);
           });
+        } else {
+          showFlushbar(context, message: "Please select a .csv file.");
         }
       }
     });
