@@ -63,7 +63,7 @@ class InvoiceBloc with AsyncActionsHandler {
     listenActions();
   }
 
-  Stream get decodedClipboardStream =>
+  Stream<Future<DecodedClipboardData>> get decodedClipboardStream =>
       device.rawClipboardStream.map((clipboardData) async {
         if (clipboardData != null && parseNodeId(clipboardData) != null) {
           return DecodedClipboardData(clipboardData, "nodeID");
