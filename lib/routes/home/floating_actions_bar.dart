@@ -8,6 +8,7 @@ import 'package:breez/bloc/account/add_fund_vendor_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/handlers/lnurl_handler.dart';
@@ -30,7 +31,6 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rxdart/rxdart.dart';
 
 class FloatingActionsBar extends StatelessWidget {
   static const double EXPANDED_ACTIONS_WIDTH = 253.0;
@@ -246,11 +246,8 @@ class FloatingActionsBar extends StatelessWidget {
     await showModalBottomSheet(
         context: context,
         builder: (ctx) {
-          return StreamBuilder<String>(
-              stream: Observable.merge([
-                invoiceBloc.clipboardInvoiceStream,
-                invoiceBloc.clipboardNodeIdStream
-              ]),
+          return StreamBuilder<Future<DecodedClipboardData>>(
+              stream: invoiceBloc.decodedClipboardStream,
               builder: (context, snapshot) {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -264,34 +261,25 @@ class FloatingActionsBar extends StatelessWidget {
                       title: Text("Paste Invoice or Node ID"),
                       onTap: () async {
                         Navigator.of(context).pop();
-                        var nodeID = snapshot.data != null
-                            ? parseNodeId(snapshot.data)
-                            : null;
-                        if (nodeID == null) {
-                          var paymentRequest = snapshot.data;
-                          try {
-                            await ServiceInjector()
-                                .breezBridge
-                                .getRelatedInvoice(paymentRequest);
-                            paymentRequest = null;
-                          } catch (e) {
-                            paymentRequest = paymentRequest;
-                          }
-                          if (paymentRequest != null) {
-                            invoiceBloc.decodeInvoiceSink.add(snapshot.data);
-                          } else {
-                            return showDialog(
-                                useRootNavigator: false,
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (_) => EnterPaymentInfoDialog(
-                                    context, invoiceBloc, firstPaymentItemKey));
+                        DecodedClipboardData clipboardData =
+                            await snapshot.data;
+                        if (clipboardData != null) {
+                          if (clipboardData.type == "invoice") {
+                            invoiceBloc.decodeInvoiceSink
+                                .add(clipboardData.data);
+                          } else if (clipboardData.type == "nodeID") {
+                            Navigator.of(context).push(FadeInRoute(
+                              builder: (_) => SpontaneousPaymentPage(
+                                  clipboardData.data, firstPaymentItemKey),
+                            ));
                           }
                         } else {
-                          Navigator.of(context).push(FadeInRoute(
-                            builder: (_) => SpontaneousPaymentPage(
-                                nodeID, firstPaymentItemKey),
-                          ));
+                          return showDialog(
+                              useRootNavigator: false,
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (_) => EnterPaymentInfoDialog(
+                                  context, invoiceBloc, firstPaymentItemKey));
                         }
                       },
                     ),

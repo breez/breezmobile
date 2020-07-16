@@ -63,9 +63,12 @@ class InvoiceBloc with AsyncActionsHandler {
     listenActions();
   }
 
-  Stream<String> get clipboardInvoiceStream =>
-      device.rawClipboardStream.map((s) {
-        String normalized = s?.toLowerCase();
+  Stream get decodedClipboardStream =>
+      device.rawClipboardStream.map((clipboardData) async {
+        if (clipboardData != null && parseNodeId(clipboardData) != null) {
+          return DecodedClipboardData(clipboardData, "nodeID");
+        }
+        String normalized = clipboardData?.toLowerCase();
         if (normalized == null) {
           return null;
         }
@@ -73,13 +76,15 @@ class InvoiceBloc with AsyncActionsHandler {
           normalized = normalized.substring(10);
         }
         if (normalized.startsWith("ln") && !normalized.startsWith("lnurl")) {
-          return s;
+          try {
+            await _breezLib.getRelatedInvoice(clipboardData);
+            return null;
+          } catch (e) {
+            return DecodedClipboardData(clipboardData, "invoice");
+          }
         }
         return null;
       }).where((event) => event != null);
-
-  Stream<String> get clipboardNodeIdStream =>
-      device.rawClipboardStream.where((s) => s != null && parseNodeId(s) != null);
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
     _newInvoiceRequestController.stream.listen((invoiceRequest) {

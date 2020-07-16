@@ -17,9 +17,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
-import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/escher_dialog.dart';
@@ -34,8 +32,8 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rxdart/rxdart.dart';
 
+import 'bloc/invoice/invoice_model.dart';
 import 'bloc/user_profile/user_actions.dart';
 import 'handlers/check_version_handler.dart';
 import 'handlers/ctp_join_session_handler.dart';
@@ -256,11 +254,9 @@ class HomeState extends State<Home> {
                                         "Developers", "src/icon/developers.png")
                                   ];
 
-                            return StreamBuilder<String>(
-                                stream: Observable.merge([
-                                  widget.invoiceBloc.clipboardInvoiceStream,
-                                  widget.invoiceBloc.clipboardNodeIdStream
-                                ]),
+                            return StreamBuilder<Future<DecodedClipboardData>>(
+                                stream:
+                                    widget.invoiceBloc.decodedClipboardStream,
                                 builder: (context, snapshot) {
                                   return Container(
                                     height: MediaQuery.of(context).size.height,
@@ -371,37 +367,31 @@ class HomeState extends State<Home> {
 
   DrawerItemConfigGroup _buildSendItems(
       AccountModel account,
-      AsyncSnapshot<String> snapshot,
+      AsyncSnapshot<Future<DecodedClipboardData>> snapshot,
       BuildContext context,
       BreezUserModel user,
       AccountSettings settings) {
     List<DrawerItemConfig> itemConfigs = [];
     DrawerItemConfig pasteItem = DrawerItemConfig(
         "", "Paste Invoice or Node ID", "src/icon/paste.png",
-        disabled: !account.connected, onItemSelected: (decodedQr) async {
-      var nodeID = snapshot.data != null ? parseNodeId(snapshot.data) : null;
-      if (nodeID == null) {
-        var paymentRequest = snapshot.data;
-        try {
-          await ServiceInjector().breezBridge.getRelatedInvoice(paymentRequest);
-          paymentRequest = null;
-        } catch (e) {
-          paymentRequest = paymentRequest;
-        }
-        if (paymentRequest != null) {
-          widget.invoiceBloc.decodeInvoiceSink.add(snapshot.data);
-        } else {
-          return showDialog(
-              useRootNavigator: false,
-              context: context,
-              barrierDismissible: false,
-              builder: (_) => EnterPaymentInfoDialog(
-                  context, widget.invoiceBloc, firstPaymentItemKey));
+        disabled: !account.connected, onItemSelected: (_) async {
+      DecodedClipboardData clipboardData = await snapshot.data;
+      if (clipboardData != null) {
+        if (clipboardData.type == "invoice") {
+          widget.invoiceBloc.decodeInvoiceSink.add(clipboardData.data);
+        } else if (clipboardData.type == "nodeID") {
+          Navigator.of(context).push(FadeInRoute(
+            builder: (_) =>
+                SpontaneousPaymentPage(clipboardData.data, firstPaymentItemKey),
+          ));
         }
       } else {
-        Navigator.of(context).push(FadeInRoute(
-          builder: (_) => SpontaneousPaymentPage(nodeID, firstPaymentItemKey),
-        ));
+        return showDialog(
+            useRootNavigator: false,
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => EnterPaymentInfoDialog(
+                context, widget.invoiceBloc, firstPaymentItemKey));
       }
     });
     DrawerItemConfig c2pItem = DrawerItemConfig(
