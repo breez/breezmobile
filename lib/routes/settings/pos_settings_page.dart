@@ -191,13 +191,13 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
           itemBuilder: (context) => [
             PopupMenuItem(
               height: 36,
-              value: Choice(() => _importPayments(context)),
+              value: Choice(() => _importItems(context)),
               child: Text('Import from CSV',
                   style: Theme.of(context).textTheme.button),
             ),
             PopupMenuItem(
               height: 36,
-              value: Choice(() => _exportPayments(context)),
+              value: Choice(() => _exportItems(context)),
               child: Text('Export to CSV',
                   style: Theme.of(context).textTheme.button),
             ),
@@ -212,10 +212,10 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     choice.function();
   }
 
-  Future _importPayments(BuildContext context) async {
+  Future _importItems(BuildContext context) async {
     return promptAreYouSure(
             context,
-            "Import items",
+            "Import Items",
             Text(
                 "Importing this list will override the existing one. Are you sure you want to continue?",
                 style: Theme.of(context).dialogTheme.contentTextStyle),
@@ -229,7 +229,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     });
   }
 
-  Future _exportPayments(BuildContext context) async {
+  Future _exportItems(BuildContext context) async {
     PosCatalogBloc posCatalogBloc =
         AppBlocsProvider.of<PosCatalogBloc>(context);
     var action = ExportItems();
