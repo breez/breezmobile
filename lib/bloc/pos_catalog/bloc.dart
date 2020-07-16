@@ -130,7 +130,6 @@ class PosCatalogBloc with AsyncActionsHandler {
       throw Exception("FAILED_IMPORT");
     }
     action.resolve(null);
-    _loadItems();
   }
 
   Future _addItem(AddItem action) async {
