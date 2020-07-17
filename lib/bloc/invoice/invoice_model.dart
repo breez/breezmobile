@@ -32,3 +32,10 @@ class PaymentRequestError implements Exception {
   final String message;
   PaymentRequestError(this.message);
 }
+
+class DecodedClipboardData {
+  String data;
+  String type;
+
+  DecodedClipboardData(this.data, this.type);
+}
