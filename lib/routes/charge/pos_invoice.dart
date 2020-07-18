@@ -885,7 +885,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
       //better to do calculations on integers to avoid precision lose.      
       var addition = int.parse(numberText);
-      int intAmount = (currentAmount * normalizeFactor).toInt();
+      int intAmount = (currentAmount * normalizeFactor).round();
       intAmount = intAmount * 10 + addition;
       var newPrice = intAmount / normalizeFactor;
 
