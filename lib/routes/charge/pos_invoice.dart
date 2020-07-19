@@ -885,7 +885,10 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
       //better to do calculations on integers to avoid precision lose.      
       var addition = int.parse(numberText);
-      int intAmount = (currentAmount * normalizeFactor).toInt();
+      // Double can hold precision up to 17 digits, using toInt() truncates the fraction digits
+      // That's why we use round to get the nearest number
+      // e.g. (0.29*100 should be 29, but it returns 28.999999999999996
+      int intAmount = (currentAmount * normalizeFactor).round();
       intAmount = intAmount * 10 + addition;
       var newPrice = intAmount / normalizeFactor;
 
