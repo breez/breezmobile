@@ -210,7 +210,6 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
           ],
         ),
       ),
-      onTap: () => _onChangeAdminPasswordSelected(),
     );
   }
 
