@@ -250,9 +250,6 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
               case "INVALID_FILE":
                 errorMessage = "Please select a valid file";
                 break;
-              case "FAILED_IMPORT":
-                errorMessage = "Failed to import POS items, please try again.";
-                break;
               default:
                 errorMessage = "Failed to import POS items.";
                 break;
