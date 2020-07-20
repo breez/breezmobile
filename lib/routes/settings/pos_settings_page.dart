@@ -230,8 +230,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             okText: "YES")
         .then((acknowledged) async {
       if (acknowledged) {
-        File importFile = await FilePicker.getFile(
-            type: FileType.custom, allowedExtensions: ['csv']);
+        File importFile = await FilePicker.getFile();
 
         String fileExtension = path.extension(importFile.path);
         if (fileExtension == ".csv") {
