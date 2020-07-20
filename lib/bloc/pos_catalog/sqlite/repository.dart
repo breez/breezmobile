@@ -16,6 +16,87 @@ class SqliteRepository implements Repository {
     print("deleted ${db.path}");
   }
 
+  Future replaceDB(List<Item> itemList) async {
+    Database db = await getDB();
+    db.transaction((txn) async {
+      await _dropTables(txn);
+      await _createTables(txn);
+      // Populate DB with items
+      itemList.forEach((item) async {
+        await _addDBItem(txn, "item", item);
+      });
+    });
+  }
+
+  Future _dropTables(Transaction txn) async {
+    await txn.rawDelete('DROP TABLE IF EXISTS asset');
+    await txn.rawDelete('DROP TABLE IF EXISTS item');
+    await txn.rawDelete('DROP TABLE IF EXISTS sale');
+    await txn.rawDelete('DROP TABLE IF EXISTS sale_payments');
+    await txn.rawDelete('DROP TABLE IF EXISTS sale_line');
+  }
+
+  Future _createTables(Transaction txn) async {
+    await txn.execute(
+      """
+        CREATE TABLE asset(          
+          url TEXT PRIMARY KEY,
+          data BLOB 
+        )
+        """,
+    );
+
+    await txn.execute(
+      """
+      CREATE TABLE item(
+        id INTEGER PRIMARY KEY,
+        name TEXT, 
+        sku TEXT,
+        imageURL TEXT,
+        price REAL, 
+        currency TEXT        
+      )
+      """,
+    );
+
+    await txn.execute(
+      """
+      CREATE TABLE sale(
+        id INTEGER PRIMARY KEY,
+        note TEXT      
+      )
+      """,
+    );
+
+    await txn.execute(
+      """
+      CREATE TABLE sale_payments(
+        id INTEGER PRIMARY KEY,
+        sale_id INTEGER,
+        payment_hash TEXT
+      )
+      """,
+    );
+
+    await txn.execute(
+      """
+      CREATE TABLE sale_line(
+        id INTEGER PRIMARY KEY,
+        sale_id INTEGER,
+        item_name TEXT,
+        item_id INTEGER,
+        item_sku TEXT,
+        item_image_url TEXT,
+        quantity INTEGER, 
+        price_per_item REAL,          
+        currency TEXT,
+        sat_conversion_rate REAL,
+        FOREIGN KEY(sale_id) REFERENCES sale(id)
+      )
+      """,
+    );
+  }
+
   /*
    * Images
    */

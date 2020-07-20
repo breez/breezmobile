@@ -118,18 +118,13 @@ class PosCatalogBloc with AsyncActionsHandler {
   }
 
   _importItems(ImportItems action) async {
-    List<Item> itemList =
-        await PosCsvUtils().retrieveItemListFromCSV(action.importFile);
-    // We should try to restore old db if import fails.
-    // var backupDB = await _repository.fetchItems();
-    await resetDB();
-    try {
-      itemList.forEach((item) async => await _addItem(AddItem(item)));
-    } catch (e) {
-      // backupDB.forEach((item) async => await _addItem(AddItem(item)));
-      throw Exception("FAILED_IMPORT");
-    }
-    action.resolve(null);
+    action.resolve(await replaceDB(
+        await PosCsvUtils().retrieveItemListFromCSV(action.importFile)));
+    _loadItems();
+  }
+
+  Future replaceDB(List<Item> itemList) async {
+    await (_repository as SqliteRepository).replaceDB(itemList);
   }
 
   Future _addItem(AddItem action) async {
