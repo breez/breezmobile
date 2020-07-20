@@ -93,6 +93,10 @@ class PosCsvUtils {
     csvList.forEach((csvItem) {
       // #1: We should extend this so our users will be able
       // to import files that does not have this exact column order.
+      List notNullColumns = [0, 1, 2, 5];
+      notNullColumns.forEach((index) {
+        if (csvItem[index] == null) throw Exception("INVALID_DATA");
+      });
       Item item = Item(
           id: csvItem[0],
           name: csvItem[1],
