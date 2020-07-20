@@ -88,7 +88,7 @@ class PosCsvUtils {
         "Price",
       ];
       if (!listEquals(headerRow, defaultHeaders)) {
-        throw throw PosCatalogBloc.InvalidFile;
+        throw PosCatalogBloc.InvalidFile;
       }
       // remove header row
       csvList.removeAt(0);
