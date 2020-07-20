@@ -29,8 +29,8 @@ class PosCsvUtils {
       Item paymentInfo = this.itemList.elementAt(index);
       paymentItem.add(paymentInfo.id.toString());
       paymentItem.add(paymentInfo.name);
-      paymentItem.add(paymentInfo.sku);
-      paymentItem.add(paymentInfo.imageURL);
+      paymentItem.add(paymentInfo.sku ?? "");
+      paymentItem.add(paymentInfo.imageURL ?? "");
       paymentItem.add(paymentInfo.currency);
       paymentItem.add(paymentInfo.price.toString());
       return paymentItem;
