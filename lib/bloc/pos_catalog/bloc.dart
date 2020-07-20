@@ -123,12 +123,12 @@ class PosCatalogBloc with AsyncActionsHandler {
   }
 
   _importItems(ImportItems action) async {
-    action.resolve(await replaceDB(
+    action.resolve(await importItems(
         await PosCsvUtils().retrieveItemListFromCSV(action.importFile)));
     _loadItems();
   }
 
-  Future replaceDB(List<Item> itemList) async {
+  Future importItems(List<Item> itemList) async {
     await (_repository as SqliteRepository).replaceDB(itemList);
   }
 
