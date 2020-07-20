@@ -247,7 +247,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             Navigator.of(context).removeRoute(loaderRoute);
             var errorMessage = "Failed to import POS items.";
             if (err == PosCatalogBloc.InvalidFile) {
-              errorMessage = "Please select a valid file.";
+              errorMessage = "Selected file isn't a valid CSV file.";
             } else if (err == PosCatalogBloc.InvalidData) {
               errorMessage = "Selected file contains invalid data.";
             }
