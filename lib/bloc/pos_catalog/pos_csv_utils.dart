@@ -82,7 +82,7 @@ class PosCsvUtils {
       "Price",
     ];
     // Need a more sophisticated control here. Check #1
-    if (listEquals(headerRow, defaultHeaders)) {
+    if (!listEquals(headerRow, defaultHeaders)) {
       throw Exception("INVALID_FILE");
     }
     // remove header row
