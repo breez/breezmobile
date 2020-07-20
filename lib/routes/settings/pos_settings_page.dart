@@ -246,13 +246,10 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
           }).catchError((err) {
             Navigator.of(context).removeRoute(loaderRoute);
             var errorMessage = "Failed to import POS items.";
-            switch (err.toString()) {
-              case "INVALID_FILE":
-                errorMessage = "Please select a valid file";
-                break;
-              default:
-                errorMessage = "Failed to import POS items.";
-                break;
+            if (err == PosCatalogBloc.InvalidFile) {
+              errorMessage = "Please select a valid file.";
+            } else if (err == PosCatalogBloc.InvalidData) {
+              errorMessage = "Selected file contains invalid data.";
             }
             showFlushbar(context, message: errorMessage);
           });

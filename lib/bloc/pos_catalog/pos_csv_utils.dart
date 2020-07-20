@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/logger.dart';
 import 'package:csv/csv.dart';
@@ -66,47 +67,59 @@ class PosCsvUtils {
 
   Future retrieveItemListFromCSV(File csvFile) async {
     log.info("retrieve item list from csv started");
-    List csvList = await csvFile
-        .openRead()
-        .transform(utf8.decoder)
-        .transform(new CsvToListConverter())
-        .toList();
-    log.info("header control started");
-    List<String> headerRow = List<String>.from(csvList.elementAt(0));
-    var defaultHeaders = [
-      "ID",
-      "Name",
-      "SKU",
-      "Image URL",
-      "Currency",
-      "Price",
-    ];
-    // Need a more sophisticated control here. Check #1
-    if (!listEquals(headerRow, defaultHeaders)) {
-      throw Exception("INVALID_FILE");
+    return _populateItemListFromCsv(await _getCsvList(csvFile));
+  }
+
+  Future<List> _getCsvList(File csvFile) async {
+    try {
+      List csvList = await csvFile
+          .openRead()
+          .transform(utf8.decoder)
+          .transform(new CsvToListConverter())
+          .toList();
+      log.info("header control started");
+      List<String> headerRow = List<String>.from(csvList.elementAt(0));
+      var defaultHeaders = [
+        "ID",
+        "Name",
+        "SKU",
+        "Image URL",
+        "Currency",
+        "Price",
+      ];
+      if (!listEquals(headerRow, defaultHeaders)) {
+        throw throw PosCatalogBloc.InvalidFile;
+      }
+      // remove header row
+      csvList.removeAt(0);
+      log.info("header control finished");
+      return csvList;
+    } catch (e) {
+      throw PosCatalogBloc.InvalidFile;
     }
-    // remove header row
-    csvList.removeAt(0);
-    log.info("header control finished");
-    // create items list
-    var itemsList = <Item>[];
-    csvList.forEach((csvItem) {
-      // #1: We should extend this so our users will be able
-      // to import files that does not have this exact column order.
-      List notNullColumns = [0, 1, 2, 5];
-      notNullColumns.forEach((index) {
-        if (csvItem[index] == null) throw Exception("INVALID_DATA");
+  }
+
+  List<Item> _populateItemListFromCsv(List csvList) {
+    try {
+      var itemsList = <Item>[];
+      csvList.forEach((csvItem) {
+        List notNullColumns = [0, 1, 2, 5];
+        notNullColumns.forEach((index) {
+          if (csvItem[index] == null) throw PosCatalogBloc.InvalidData;
+        });
+        Item item = Item(
+            id: csvItem[0],
+            name: csvItem[1],
+            sku: csvItem[2].toString(),
+            imageURL: csvItem[3] != "null" ? csvItem[3] : null,
+            currency: csvItem[4] != "null" ? csvItem[4] : null,
+            price: csvItem[5]);
+        itemsList.add(item);
       });
-      Item item = Item(
-          id: csvItem[0],
-          name: csvItem[1],
-          sku: csvItem[2].toString(),
-          imageURL: csvItem[3] != "null" ? csvItem[3] : null,
-          currency: csvItem[4] != "null" ? csvItem[4] : null,
-          price: csvItem[5]);
-      itemsList.add(item);
-    });
-    log.info("retrieving item list from csv finished");
-    return itemsList;
+      log.info("retrieving item list from csv finished");
+      return itemsList;
+    } catch (e) {
+      throw PosCatalogBloc.InvalidData;
+    }
   }
 }
