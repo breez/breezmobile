@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/pos_catalog/actions.dart';
+import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -8,10 +12,14 @@ import 'package:breez/routes/settings/set_admin_password.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
+import 'package:share_extend/share_extend.dart';
 
 class PosSettingsPage extends StatelessWidget {
   @override
@@ -56,6 +64,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    PosCatalogBloc posCatalogBloc =
+        AppBlocsProvider.of<PosCatalogBloc>(context);
     UserProfileBloc userProfileBloc =
         AppBlocsProvider.of<UserProfileBloc>(context);
     return Scaffold(
@@ -140,6 +150,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                         ),
                       ]),
                   ..._buildAdminPasswordTiles(userProfileBloc, user),
+                  Divider(),
+                  _buildExportItemsTile(posCatalogBloc)
                 ],
               ),
             );
@@ -157,6 +169,112 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       widgets..add(Divider())..add(_buildSetPasswordTile());
     }
     return widgets;
+  }
+
+  Widget _buildExportItemsTile(PosCatalogBloc posCatalogBloc) {
+    return ListTile(
+      title: Container(
+        child: AutoSizeText(
+          "Items List",
+          style: TextStyle(color: Colors.white),
+          maxLines: 1,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
+          group: _autoSizeGroup,
+        ),
+      ),
+      trailing: Padding(
+        padding: const EdgeInsets.only(right: 0.0),
+        child: PopupMenuButton(
+          color: Theme.of(context).backgroundColor,
+          icon: Icon(
+            Icons.more_horiz,
+            color: Theme.of(context).iconTheme.color,
+          ),
+          padding: EdgeInsets.zero,
+          offset: Offset(12, 36),
+          onSelected: _select,
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              height: 36,
+              value: Choice(() => _importItems(context, posCatalogBloc)),
+              child: Text('Import from CSV',
+                  style: Theme.of(context).textTheme.button),
+            ),
+            PopupMenuItem(
+              height: 36,
+              value: Choice(() => _exportItems(context, posCatalogBloc)),
+              child: Text('Export to CSV',
+                  style: Theme.of(context).textTheme.button),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _select(Choice choice) {
+    choice.function();
+  }
+
+  Future _importItems(
+      BuildContext context, PosCatalogBloc posCatalogBloc) async {
+    return promptAreYouSure(
+            context,
+            "Import Items",
+            Text(
+                "Importing this list will override the existing one. Are you sure you want to continue?",
+                style: Theme.of(context).dialogTheme.contentTextStyle),
+            contentPadding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 8.0),
+            cancelText: "NO",
+            okText: "YES")
+        .then((acknowledged) async {
+      if (acknowledged) {
+        File importFile = await FilePicker.getFile(
+            type: FileType.custom, allowedExtensions: ['csv']);
+
+        String fileExtension = path.extension(importFile.path);
+        if (fileExtension == ".csv") {
+          var action = ImportItems(importFile);
+          posCatalogBloc.actionsSink.add(action);
+          var loaderRoute = createLoaderRoute(context);
+          Navigator.of(context).push(loaderRoute);
+          action.future.then((_) {
+            Navigator.of(context).removeRoute(loaderRoute);
+            Navigator.of(context).pop();
+            showFlushbar(context, message: "Items were successfully imported.");
+          }).catchError((err) {
+            Navigator.of(context).removeRoute(loaderRoute);
+            var errorMessage = "Failed to import POS items.";
+            if (err == PosCatalogBloc.InvalidFile) {
+              errorMessage = "Selected file isn't a valid CSV file.";
+            } else if (err == PosCatalogBloc.InvalidData) {
+              errorMessage = "Selected file contains invalid data.";
+            }
+            showFlushbar(context, message: errorMessage);
+          });
+        } else {
+          showFlushbar(context, message: "Please select a .csv file.");
+        }
+      }
+    });
+  }
+
+  Future _exportItems(
+      BuildContext context, PosCatalogBloc posCatalogBloc) async {
+    var action = ExportItems();
+    posCatalogBloc.actionsSink.add(action);
+    Navigator.of(context).push(createLoaderRoute(context));
+    action.future.then((filePath) {
+      Navigator.of(context).pop();
+      ShareExtend.share(filePath, "file");
+    }).catchError((err) {
+      Navigator.of(context).pop();
+      var errorMessage = err.toString() == "EMPTY_LIST"
+          ? "There are no items to export."
+          : "Failed to export POS items.";
+      showFlushbar(context, message: errorMessage);
+    });
   }
 
   ListTile _buildSetPasswordTile() {
@@ -200,7 +318,11 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                 }
               },
             )
-          : Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+          : Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(Icons.keyboard_arrow_right,
+                  color: Colors.white, size: 30.0),
+            ),
       onTap: user.hasAdminPassword
           ? null
           : () => _onChangeAdminPasswordSelected(isNew: !user.hasAdminPassword),
@@ -239,4 +361,10 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     SetAdminPassword action = SetAdminPassword(null);
     userProfileBloc.userActionsSink.add(action);
   }
+}
+
+class Choice {
+  const Choice(this.function);
+
+  final Function function;
 }

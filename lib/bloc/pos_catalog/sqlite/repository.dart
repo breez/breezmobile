@@ -16,6 +16,21 @@ class SqliteRepository implements Repository {
     print("deleted ${db.path}");
   }
 
+  Future replaceDB(List<Item> itemList) async {
+    (await getDB()).transaction((txn) async {
+      await _emptyTables(txn);
+      // Populate DB with items
+      itemList.forEach((item) async {
+        await _addDBItem(txn, "item", item);
+      });
+    });
+  }
+
+  Future _emptyTables(Transaction txn) async {
+    await txn.rawDelete('DELETE FROM asset');
+    await txn.rawDelete('DELETE FROM  item');
+  }
+
   /*
    * Images
    */
