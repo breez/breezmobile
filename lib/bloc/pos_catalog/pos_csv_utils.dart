@@ -103,7 +103,7 @@ class PosCsvUtils {
     try {
       var itemsList = <Item>[];
       csvList.forEach((csvItem) {
-        List notNullColumns = [0, 1, 2, 5];
+        List notNullColumns = [0, 1, 4, 5];
         notNullColumns.forEach((index) {
           if (csvItem[index].toString().isEmpty)
             throw PosCatalogBloc.InvalidData;
