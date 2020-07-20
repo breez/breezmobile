@@ -75,7 +75,7 @@ class PosCsvUtils {
       List csvList = await csvFile
           .openRead()
           .transform(utf8.decoder)
-          .transform(new CsvToListConverter())
+          .transform(new CsvToListConverter(shouldParseNumbers: false))
           .toList();
       log.info("header control started");
       List<String> headerRow = List<String>.from(csvList.elementAt(0));
@@ -109,12 +109,13 @@ class PosCsvUtils {
             throw PosCatalogBloc.InvalidData;
         });
         Item item = Item(
-            id: csvItem[0],
-            name: csvItem[1],
-            sku: csvItem[2].toString(),
-            imageURL: csvItem[3] != "null" ? csvItem[3] : null,
-            currency: csvItem[4] != "null" ? csvItem[4] : null,
-            price: csvItem[5]);
+          id: int.parse(csvItem[0]),
+          name: csvItem[1],
+          sku: csvItem[2],
+          imageURL: csvItem[3],
+          currency: csvItem[4],
+          price: double.parse(csvItem[5]),
+        );
         itemsList.add(item);
       });
       log.info("retrieving item list from csv finished");
