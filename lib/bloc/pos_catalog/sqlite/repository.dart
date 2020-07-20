@@ -17,8 +17,7 @@ class SqliteRepository implements Repository {
   }
 
   Future replaceDB(List<Item> itemList) async {
-    Database db = await getDB();
-    db.transaction((txn) async {
+    (await getDB()).transaction((txn) async {
       await _dropTables(txn);
       await _createTables(txn);
       // Populate DB with items
