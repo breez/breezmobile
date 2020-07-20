@@ -105,7 +105,8 @@ class PosCsvUtils {
       csvList.forEach((csvItem) {
         List notNullColumns = [0, 1, 2, 5];
         notNullColumns.forEach((index) {
-          if (csvItem[index] == null) throw PosCatalogBloc.InvalidData;
+          if (csvItem[index].toString().isEmpty)
+            throw PosCatalogBloc.InvalidData;
         });
         Item item = Item(
             id: csvItem[0],
