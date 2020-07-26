@@ -64,6 +64,7 @@ Breez is currently in a public beta, available on [Android](https://play.google.
 - [x] Spontaneous payments to node id (nodes running with --accept-keysend)
 - [x] Fast graph sync
 - [x] Scan QR code from an image
+- [x] Import/export POS items
 - [ ] Support zero-conf channels
 - [ ] 'On-the-fly' channel creation (increase limit)
 - [ ] Async payments via Lightning Rod
