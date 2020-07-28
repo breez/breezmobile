@@ -311,12 +311,6 @@ class AccountModel {
       return 'Payment exceeds the limit (${currency.format(maxPaymentAmount)})';
     }
 
-    if (amount > maxAmount) {
-      return outgoing
-          ? "Not enough funds"
-          : "Amount exceeds available capacity";
-    }
-
     if (outgoing && amount > maxAllowedToPay) {
       return "Breez requires you to keep ${currency.format(reserveAmount)} in your balance.";
     }
