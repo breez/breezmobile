@@ -38,7 +38,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
     controller.value = 1.0;
     controller.addStatusListener((status) {
       if (status == AnimationStatus.dismissed && this.mounted) {
-        Navigator.pop(context, true);        
+        Navigator.pop(context, true);
       }
     });
 
@@ -48,18 +48,18 @@ class QrCodeDialogState extends State<QrCodeDialog>
   }
 
   void _listenPaidInvoice(String bolt11, AnimationController controller) async {
-    var payreq = await widget._invoiceBloc.paidInvoicesStream
-        .firstWhere((payreq) {
-          bool ok = payreq == bolt11;
-          return ok;
-        }, orElse: () => null);
-        if (payreq != null) {
-          Timer(Duration(milliseconds: 1000), () {
-                if (this.mounted) {
-                  controller.reverse();
-                }
-              });
+    var payreq =
+        await widget._invoiceBloc.paidInvoicesStream.firstWhere((payreq) {
+      bool ok = payreq == bolt11;
+      return ok;
+    }, orElse: () => null);
+    if (payreq != null) {
+      Timer(Duration(milliseconds: 1000), () {
+        if (this.mounted) {
+          controller.reverse();
         }
+      });
+    }
   }
 
   @override
@@ -68,75 +68,91 @@ class QrCodeDialogState extends State<QrCodeDialog>
   }
 
   Widget _buildQrCodeDialog() {
-    return FadeTransition(
-      opacity: _opacityAnimation,
-      child: SimpleDialog(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Invoice",
-              style: Theme.of(context).dialogTheme.titleTextStyle,
-            ),
-            StreamBuilder<AccountModel>(
-                stream: widget._accountBloc.accountStream,
-                builder: (accCtx, accSnapshot) {
-                  bool synced = accSnapshot.data?.synced == true;
-                  return StreamBuilder<String>(
-                    stream: widget._invoiceBloc.readyInvoicesStream,
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData || !synced) {
-                        return Container();
-                      }
-                      return Row(
-                        children: <Widget>[
-                          IconButton(
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            padding: EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
-                            icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-                            color:
-                                Theme.of(context).primaryTextTheme.button.color,
-                            onPressed: () {
-                              ShareExtend.share(
-                                  "lightning:" + snapshot.data, "text");
-                            },
-                          ),
-                          IconButton(
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            padding: EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
-                            icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-                            color:
-                                Theme.of(context).primaryTextTheme.button.color,
-                            onPressed: () {
-                              ServiceInjector()
-                                  .device
-                                  .setClipboardText(snapshot.data);
-                              showFlushbar(context,
-                                  message:
-                                      "Invoice data was copied to your clipboard.",
-                                  duration: Duration(seconds: 3));
-                            },
-                          )
-                        ],
-                      );
-                    },
-                  );
-                }),
-          ],
-        ),
-        titlePadding: EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
-        contentPadding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
-        children: <Widget>[
-          StreamBuilder<AccountModel>(
-            stream: widget._accountBloc.accountStream,
-            builder: (context, accSnapshot) {
-              return StreamBuilder<String>(
-                  stream: widget._invoiceBloc.readyInvoicesStream,
-                  builder: (context, snapshot) {
+    return StreamBuilder<String>(
+        stream: widget._invoiceBloc.readyInvoicesStream,
+        builder: (context, snapshot) {
+          return FadeTransition(
+            opacity: _opacityAnimation,
+            child: SimpleDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Invoice",
+                    style: Theme.of(context).dialogTheme.titleTextStyle,
+                  ),
+                  StreamBuilder<AccountModel>(
+                      stream: widget._accountBloc.accountStream,
+                      builder: (accCtx, accSnapshot) {
+                        bool synced = accSnapshot.data?.synced == true;
+                        return StreamBuilder<String>(
+                          stream: widget._invoiceBloc.readyInvoicesStream,
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData || !synced) {
+                              return Container();
+                            }
+                            return Row(
+                              children: <Widget>[
+                                IconButton(
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  padding: EdgeInsets.only(
+                                      top: 8.0,
+                                      bottom: 8.0,
+                                      right: 2.0,
+                                      left: 14.0),
+                                  icon: Icon(
+                                      IconData(0xe917, fontFamily: 'icomoon')),
+                                  color: Theme.of(context)
+                                      .primaryTextTheme
+                                      .button
+                                      .color,
+                                  onPressed: () {
+                                    ShareExtend.share(
+                                        "lightning:" + snapshot.data, "text");
+                                  },
+                                ),
+                                IconButton(
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  padding: EdgeInsets.only(
+                                      top: 8.0,
+                                      bottom: 8.0,
+                                      right: 14.0,
+                                      left: 2.0),
+                                  icon: Icon(
+                                      IconData(0xe90b, fontFamily: 'icomoon')),
+                                  color: Theme.of(context)
+                                      .primaryTextTheme
+                                      .button
+                                      .color,
+                                  onPressed: () {
+                                    ServiceInjector()
+                                        .device
+                                        .setClipboardText(snapshot.data);
+                                    showFlushbar(context,
+                                        message:
+                                            "Invoice data was copied to your clipboard.",
+                                        duration: Duration(seconds: 3));
+                                  },
+                                )
+                              ],
+                            );
+                          },
+                        );
+                      }),
+                ],
+              ),
+              titlePadding: EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
+              contentPadding:
+                  EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+              children: <Widget>[
+                StreamBuilder<AccountModel>(
+                  stream: widget._accountBloc.accountStream,
+                  builder: (context, accSnapshot) {
+                    if (snapshot.hasError) {
+                      return Container();
+                    }
                     bool synced = accSnapshot.data?.synced;
                     if (!snapshot.hasData || accSnapshot.data?.synced != true) {
                       double syncProgress = accSnapshot.data?.syncProgress;
@@ -194,19 +210,25 @@ class QrCodeDialogState extends State<QrCodeDialog>
                         ),
                       ],
                     );
-                  });
-            },
-          ),
-          Padding(padding: EdgeInsets.only(top: 16.0)),
-          _buildExpiryMessage(),
-          Padding(padding: EdgeInsets.only(top: 16.0)),
-          _buildCloseButton()
-        ],
-      ),
-    );
+                  },
+                ),
+                Padding(padding: EdgeInsets.only(top: 16.0)),
+                _buildExpiryMessage(snapshot.hasError),
+                Padding(padding: EdgeInsets.only(top: 16.0)),
+                _buildCloseButton()
+              ],
+            ),
+          );
+        });
   }
 
-  Widget _buildExpiryMessage() {
+  Widget _buildExpiryMessage(bool hasError) {
+    if (hasError) {
+      return Column(children: <Widget>[
+        Text("Failed to create invoice",
+            style: Theme.of(context).dialogTheme.contentTextStyle)
+      ]);
+    }
     return Column(children: <Widget>[
       Text("Keep the Breez app open in order to receive payment.",
           style: Theme.of(context).primaryTextTheme.caption)
