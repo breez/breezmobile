@@ -79,7 +79,7 @@ class LSPBloc with AsyncActionsHandler {
         if (action.lnurl?.isNotEmpty == true) {
           action.resolve(await _breezLib.connectToLnurl(action.lnurl));
         } else {
-          action.resolve(await _breezLib.connectToLSP(action.lspID));
+          action.resolve(await _breezLib.connectToLSPPeer(action.lspID));
         }
         _lspsStatusController.add(_lspsStatusController.value.copyWith(
             connectionStatus: LSPConnectionStatus.Active,
