@@ -142,6 +142,14 @@ const InvoiceMemo$json = const {
   ],
 };
 
+const AddInvoiceRequest$json = const {
+  '1': 'AddInvoiceRequest',
+  '2': const [
+    const {'1': 'invoiceDetails', '3': 1, '4': 1, '5': 11, '6': '.data.InvoiceMemo', '10': 'invoiceDetails'},
+    const {'1': 'lspInfo', '3': 2, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'lspInfo'},
+  ],
+};
+
 const Invoice$json = const {
   '1': 'Invoice',
   '2': const [
@@ -182,6 +190,7 @@ const NotificationEvent_NotificationType$json = const {
     const {'1': 'REVERSE_SWAP_CLAIM_SUCCEEDED', '2': 16},
     const {'1': 'REVERSE_SWAP_CLAIM_FAILED', '2': 17},
     const {'1': 'REVERSE_SWAP_CLAIM_CONFIRMED', '2': 18},
+    const {'1': 'LSP_CHANNEL_OPENED', '2': 19},
   ],
 };
 
@@ -375,6 +384,8 @@ const LSPInformation$json = const {
     const {'1': 'fee_rate', '3': 8, '4': 1, '5': 1, '10': 'feeRate'},
     const {'1': 'time_lock_delta', '3': 9, '4': 1, '5': 13, '10': 'timeLockDelta'},
     const {'1': 'min_htlc_msat', '3': 10, '4': 1, '5': 3, '10': 'minHtlcMsat'},
+    const {'1': 'channel_fee_start_amount', '3': 11, '4': 1, '5': 3, '10': 'channelFeeStartAmount'},
+    const {'1': 'channel_fee_rate', '3': 12, '4': 1, '5': 2, '10': 'channelFeeRate'},
   ],
 };
 

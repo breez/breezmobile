@@ -164,6 +164,10 @@ class BreezBridge {
     return _invokeMethodWhenReady("connectToLSP", {"argument": lspID});
   }
 
+  Future connectToLSPPeer(String lspID) {
+    return _invokeMethodWhenReady("connectLSPPeer", {"argument": lspID});
+  }
+
   Future connectToLnurl(String lnurl) {
     return _invokeMethodWhenReady("connectToLnurl", {"argument": lnurl});
   }
@@ -375,7 +379,8 @@ class BreezBridge {
       String payerName,
       String payerImageURL,
       String description,
-      Int64 expiry}) {
+      Int64 expiry,
+      LSPInformation lspInfo}) {
     InvoiceMemo invoice = InvoiceMemo();
     invoice.amount = amount;
     if (payeeImageURL != null) {
@@ -394,8 +399,13 @@ class BreezBridge {
       invoice.description = description;
     }
 
+    var request = AddInvoiceRequest()..invoiceDetails = invoice;
+    if (lspInfo != null) {
+      request.lspInfo = lspInfo;
+    }
+
     return _invokeMethodWhenReady(
-            "addInvoice", {"argument": invoice.writeToBuffer()})
+            "addInvoice", {"argument": request.writeToBuffer()})
         .then((payReq) => payReq as String);
   }
 

@@ -689,6 +689,51 @@ class InvoiceMemo extends $pb.GeneratedMessage {
   void clearExpiry() => clearField(8);
 }
 
+class AddInvoiceRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddInvoiceRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOM<InvoiceMemo>(1, 'invoiceDetails', protoName: 'invoiceDetails', subBuilder: InvoiceMemo.create)
+    ..aOM<LSPInformation>(2, 'lspInfo', protoName: 'lspInfo', subBuilder: LSPInformation.create)
+    ..hasRequiredFields = false
+  ;
+
+  AddInvoiceRequest._() : super();
+  factory AddInvoiceRequest() => create();
+  factory AddInvoiceRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddInvoiceRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AddInvoiceRequest clone() => AddInvoiceRequest()..mergeFromMessage(this);
+  AddInvoiceRequest copyWith(void Function(AddInvoiceRequest) updates) => super.copyWith((message) => updates(message as AddInvoiceRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AddInvoiceRequest create() => AddInvoiceRequest._();
+  AddInvoiceRequest createEmptyInstance() => create();
+  static $pb.PbList<AddInvoiceRequest> createRepeated() => $pb.PbList<AddInvoiceRequest>();
+  @$core.pragma('dart2js:noInline')
+  static AddInvoiceRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddInvoiceRequest>(create);
+  static AddInvoiceRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  InvoiceMemo get invoiceDetails => $_getN(0);
+  @$pb.TagNumber(1)
+  set invoiceDetails(InvoiceMemo v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasInvoiceDetails() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearInvoiceDetails() => clearField(1);
+  @$pb.TagNumber(1)
+  InvoiceMemo ensureInvoiceDetails() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  LSPInformation get lspInfo => $_getN(1);
+  @$pb.TagNumber(2)
+  set lspInfo(LSPInformation v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasLspInfo() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearLspInfo() => clearField(2);
+  @$pb.TagNumber(2)
+  LSPInformation ensureLspInfo() => $_ensure(1);
+}
+
 class Invoice extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('Invoice', package: const $pb.PackageName('data'), createEmptyInstance: create)
     ..aOM<InvoiceMemo>(1, 'memo', subBuilder: InvoiceMemo.create)
@@ -1733,6 +1778,8 @@ class LSPInformation extends $pb.GeneratedMessage {
     ..a<$core.double>(8, 'feeRate', $pb.PbFieldType.OD)
     ..a<$core.int>(9, 'timeLockDelta', $pb.PbFieldType.OU3)
     ..aInt64(10, 'minHtlcMsat')
+    ..aInt64(11, 'channelFeeStartAmount')
+    ..a<$core.double>(12, 'channelFeeRate', $pb.PbFieldType.OF)
     ..hasRequiredFields = false
   ;
 
@@ -1840,6 +1887,24 @@ class LSPInformation extends $pb.GeneratedMessage {
   $core.bool hasMinHtlcMsat() => $_has(9);
   @$pb.TagNumber(10)
   void clearMinHtlcMsat() => clearField(10);
+
+  @$pb.TagNumber(11)
+  $fixnum.Int64 get channelFeeStartAmount => $_getI64(10);
+  @$pb.TagNumber(11)
+  set channelFeeStartAmount($fixnum.Int64 v) { $_setInt64(10, v); }
+  @$pb.TagNumber(11)
+  $core.bool hasChannelFeeStartAmount() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearChannelFeeStartAmount() => clearField(11);
+
+  @$pb.TagNumber(12)
+  $core.double get channelFeeRate => $_getN(11);
+  @$pb.TagNumber(12)
+  set channelFeeRate($core.double v) { $_setFloat(11, v); }
+  @$pb.TagNumber(12)
+  $core.bool hasChannelFeeRate() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearChannelFeeRate() => clearField(12);
 }
 
 class LSPList extends $pb.GeneratedMessage {
