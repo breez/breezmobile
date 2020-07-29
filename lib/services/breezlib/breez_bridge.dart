@@ -380,7 +380,7 @@ class BreezBridge {
       String payerImageURL,
       String description,
       Int64 expiry,
-      LSPInformation lspInfo}) {
+      LSPInformation lspInfo}) async {
     InvoiceMemo invoice = InvoiceMemo();
     invoice.amount = amount;
     if (payeeImageURL != null) {
@@ -400,8 +400,12 @@ class BreezBridge {
     }
 
     var request = AddInvoiceRequest()..invoiceDetails = invoice;
-    if (lspInfo != null) {
-      request.lspInfo = lspInfo;
+    if (lspInfo == null) {
+      var lsps = await getLSPList();
+      var keys = lsps.lsps.keys.toList();
+      if (keys.length == 1) {
+        request.lspInfo = lsps.lsps[keys[0]];
+      }      
     }
 
     return _invokeMethodWhenReady(
