@@ -68,10 +68,16 @@ class DevViewState extends State<DevView> {
   var _richCliText = <TextSpan>[];
 
   bool _showDefaultCommands = true;
+  bool downloadGraphEnabled;
 
   @override
   void initState() {
     super.initState();
+    widget._breezBridge.isDownloadGraphEnabled().then((enabled){
+      setState(() {
+        downloadGraphEnabled = enabled;
+      });
+    });
   }
 
   void _sendCommand(String command) {
@@ -430,6 +436,18 @@ class DevViewState extends State<DevView> {
         function: () {
           PosCatalogBloc bloc = AppBlocsProvider.of<PosCatalogBloc>(context);
           bloc.resetDB();
+        }));
+
+    choices.add(Choice(
+        title: downloadGraphEnabled ? 'Disable graph download' : 'Enable graph download',
+        icon: Icons.phone_android,
+        function: () async {
+          await widget._breezBridge.setDownloadGraphEnabled(!downloadGraphEnabled);
+          if (downloadGraphEnabled) {
+            _refreshGraph();
+          } else {
+            _promptForRestart();
+          }
         }));
     return choices;
   }

@@ -7,6 +7,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
 import 'package:ini/ini.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'graph_downloader.dart';
 
@@ -46,21 +47,35 @@ class BreezBridge {
     _graphDownloader.init().whenComplete(() => initLightningDir());
   }
 
+  Future setDownloadGraphEnabled(bool enabled) async {
+    var preferences = await SharedPreferences.getInstance();
+    preferences.setBool("download_graph_enabled", enabled);
+  }
+
+  Future<bool> isDownloadGraphEnabled() async {
+    var preferences = await SharedPreferences.getInstance();
+    var enabled = preferences.getBool("download_graph_enabled");
+    return enabled != false;
+  }
+
   Future syncGraphIfNeeded() async {
-    var downloadURL = await graphURL();
-    if (downloadURL.isNotEmpty) {
-      logger.log.info("downloading graph");
-      _inProgressGraphSync =
-          _graphDownloader.downloadGraph(downloadURL).then((file) async {
-        logger.log.info("graph synchronization started");
-        await syncGraphFromFile(file.path);
-        logger.log.info("graph synchronized succesfully");
-        return DateTime.now();
-      }).catchError((err) {
-        logger.log.info("graph synchronized failed ${err.toString()}");
-      }).whenComplete(() {
-        _graphDownloader.deleteDownloads();
-      });
+    var enabled = await isDownloadGraphEnabled();
+    if (enabled) {
+      var downloadURL = await graphURL();
+      if (downloadURL.isNotEmpty) {
+        logger.log.info("downloading graph");
+        _inProgressGraphSync =
+            _graphDownloader.downloadGraph(downloadURL).then((file) async {
+          logger.log.info("graph synchronization started");
+          await syncGraphFromFile(file.path);
+          logger.log.info("graph synchronized succesfully");
+          return DateTime.now();
+        }).catchError((err) {
+          logger.log.info("graph synchronized failed ${err.toString()}");
+        }).whenComplete(() {
+          _graphDownloader.deleteDownloads();
+        });
+      }
     }
   }
 
