@@ -85,6 +85,7 @@ Breez is currently in a public beta, available on [Android](https://play.google.
 - Copy the bindings.framework directory to the ios directory.
 - Create a firebase iOS app using the [firebase console](https://console.firebase.google.com/)
 - Generate the GoogleServices-info.plist and copy it to ios/Runner directory
+- Run `pod install` from `breezmobile/ios`
 3. Flutter beta channel
 - Install [flutter](https://flutter.dev/docs/get-started/install)
 Run these command to switch to beta channel:
