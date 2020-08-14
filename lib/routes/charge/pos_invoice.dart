@@ -50,7 +50,6 @@ class POSInvoice extends StatefulWidget {
 class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   final GlobalKey badgeKey = GlobalKey();
 
-  TextEditingController _invoiceDescriptionController = TextEditingController();
   TextEditingController _itemFilterController = TextEditingController();
 
   double itemHeight;
@@ -735,7 +734,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         lockSale.future.then((value) {
           var newInvoiceAction = NewInvoice(InvoiceRequestModel(
               user.name,
-              _invoiceDescriptionController.text,
+              lockSale.currentSale.note,
               user.avatarURL,
               Int64(satAmount.toInt()),
               expiry: Int64(user.cancellationTimeoutValue.toInt())));
@@ -949,7 +948,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
       currentPendingItem = null;
-      _invoiceDescriptionController.text = "";
       posCatalogBloc.actionsSink.add(SetCurrentSale(Sale(saleLines: [])));
     });
   }
