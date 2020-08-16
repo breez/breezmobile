@@ -402,26 +402,26 @@ class DevViewState extends State<DevView> {
           _promptForRestart();
         }));
     
-    choices.add(Choice(
-        title: "Export DB Files",
-        icon: Icons.phone_android,
-        function: () async {
-          Directory tempDir = await getTemporaryDirectory();
-          tempDir = await tempDir.createTemp("graph");
-          var walletFiles =
-              await ServiceInjector().breezBridge.getWalletDBpFilePath();
-          var encoder = ZipFileEncoder();
-          var zipFile = '${tempDir.path}/wallet-files.zip';
-          encoder.create(zipFile);
-          var i = 1;
-          walletFiles.forEach((f) {
-            var file = File(f);
-            encoder.addFile(file,  "${i.toString()}_${file.path.split(Platform.pathSeparator).last}");
-            i += 1;
-          });
-          encoder.close();
-          ShareExtend.share(zipFile, "file");
-        }));
+    // choices.add(Choice(
+    //     title: "Export DB Files",
+    //     icon: Icons.phone_android,
+    //     function: () async {
+    //       Directory tempDir = await getTemporaryDirectory();
+    //       tempDir = await tempDir.createTemp("graph");
+    //       var walletFiles =
+    //           await ServiceInjector().breezBridge.getWalletDBpFilePath();
+    //       var encoder = ZipFileEncoder();
+    //       var zipFile = '${tempDir.path}/wallet-files.zip';
+    //       encoder.create(zipFile);
+    //       var i = 1;
+    //       walletFiles.forEach((f) {
+    //         var file = File(f);
+    //         encoder.addFile(file,  "${i.toString()}_${file.path.split(Platform.pathSeparator).last}");
+    //         i += 1;
+    //       });
+    //       encoder.close();
+    //       ShareExtend.share(zipFile, "file");
+    //     }));
     
       
     choices.add(Choice(
