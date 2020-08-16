@@ -1768,18 +1768,19 @@ class Rates extends $pb.GeneratedMessage {
 
 class LSPInformation extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('LSPInformation', package: const $pb.PackageName('data'), createEmptyInstance: create)
-    ..aOS(1, 'name')
-    ..aOS(2, 'widgetUrl')
-    ..aOS(3, 'pubkey')
-    ..aOS(4, 'host')
-    ..aInt64(5, 'channelCapacity')
-    ..a<$core.int>(6, 'targetConf', $pb.PbFieldType.O3)
-    ..aInt64(7, 'baseFeeMsat')
-    ..a<$core.double>(8, 'feeRate', $pb.PbFieldType.OD)
-    ..a<$core.int>(9, 'timeLockDelta', $pb.PbFieldType.OU3)
-    ..aInt64(10, 'minHtlcMsat')
-    ..aInt64(11, 'channelFeeStartAmount')
-    ..a<$core.double>(12, 'channelFeeRate', $pb.PbFieldType.OF)
+    ..aOS(1, 'id')
+    ..aOS(2, 'name')
+    ..aOS(3, 'widgetUrl')
+    ..aOS(4, 'pubkey')
+    ..aOS(5, 'host')
+    ..aInt64(6, 'channelCapacity')
+    ..a<$core.int>(7, 'targetConf', $pb.PbFieldType.O3)
+    ..aInt64(8, 'baseFeeMsat')
+    ..a<$core.double>(9, 'feeRate', $pb.PbFieldType.OD)
+    ..a<$core.int>(10, 'timeLockDelta', $pb.PbFieldType.OU3)
+    ..aInt64(11, 'minHtlcMsat')
+    ..aInt64(12, 'channelFeeStartAmount')
+    ..a<$core.double>(13, 'channelFeeRate', $pb.PbFieldType.OF)
     ..hasRequiredFields = false
   ;
 
@@ -1799,112 +1800,121 @@ class LSPInformation extends $pb.GeneratedMessage {
   static LSPInformation _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get name => $_getSZ(0);
+  $core.String get id => $_getSZ(0);
   @$pb.TagNumber(1)
-  set name($core.String v) { $_setString(0, v); }
+  set id($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasName() => $_has(0);
+  $core.bool hasId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearName() => clearField(1);
+  void clearId() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get widgetUrl => $_getSZ(1);
+  $core.String get name => $_getSZ(1);
   @$pb.TagNumber(2)
-  set widgetUrl($core.String v) { $_setString(1, v); }
+  set name($core.String v) { $_setString(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasWidgetUrl() => $_has(1);
+  $core.bool hasName() => $_has(1);
   @$pb.TagNumber(2)
-  void clearWidgetUrl() => clearField(2);
+  void clearName() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.String get pubkey => $_getSZ(2);
+  $core.String get widgetUrl => $_getSZ(2);
   @$pb.TagNumber(3)
-  set pubkey($core.String v) { $_setString(2, v); }
+  set widgetUrl($core.String v) { $_setString(2, v); }
   @$pb.TagNumber(3)
-  $core.bool hasPubkey() => $_has(2);
+  $core.bool hasWidgetUrl() => $_has(2);
   @$pb.TagNumber(3)
-  void clearPubkey() => clearField(3);
+  void clearWidgetUrl() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.String get host => $_getSZ(3);
+  $core.String get pubkey => $_getSZ(3);
   @$pb.TagNumber(4)
-  set host($core.String v) { $_setString(3, v); }
+  set pubkey($core.String v) { $_setString(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasHost() => $_has(3);
+  $core.bool hasPubkey() => $_has(3);
   @$pb.TagNumber(4)
-  void clearHost() => clearField(4);
+  void clearPubkey() => clearField(4);
 
   @$pb.TagNumber(5)
-  $fixnum.Int64 get channelCapacity => $_getI64(4);
+  $core.String get host => $_getSZ(4);
   @$pb.TagNumber(5)
-  set channelCapacity($fixnum.Int64 v) { $_setInt64(4, v); }
+  set host($core.String v) { $_setString(4, v); }
   @$pb.TagNumber(5)
-  $core.bool hasChannelCapacity() => $_has(4);
+  $core.bool hasHost() => $_has(4);
   @$pb.TagNumber(5)
-  void clearChannelCapacity() => clearField(5);
+  void clearHost() => clearField(5);
 
   @$pb.TagNumber(6)
-  $core.int get targetConf => $_getIZ(5);
+  $fixnum.Int64 get channelCapacity => $_getI64(5);
   @$pb.TagNumber(6)
-  set targetConf($core.int v) { $_setSignedInt32(5, v); }
+  set channelCapacity($fixnum.Int64 v) { $_setInt64(5, v); }
   @$pb.TagNumber(6)
-  $core.bool hasTargetConf() => $_has(5);
+  $core.bool hasChannelCapacity() => $_has(5);
   @$pb.TagNumber(6)
-  void clearTargetConf() => clearField(6);
+  void clearChannelCapacity() => clearField(6);
 
   @$pb.TagNumber(7)
-  $fixnum.Int64 get baseFeeMsat => $_getI64(6);
+  $core.int get targetConf => $_getIZ(6);
   @$pb.TagNumber(7)
-  set baseFeeMsat($fixnum.Int64 v) { $_setInt64(6, v); }
+  set targetConf($core.int v) { $_setSignedInt32(6, v); }
   @$pb.TagNumber(7)
-  $core.bool hasBaseFeeMsat() => $_has(6);
+  $core.bool hasTargetConf() => $_has(6);
   @$pb.TagNumber(7)
-  void clearBaseFeeMsat() => clearField(7);
+  void clearTargetConf() => clearField(7);
 
   @$pb.TagNumber(8)
-  $core.double get feeRate => $_getN(7);
+  $fixnum.Int64 get baseFeeMsat => $_getI64(7);
   @$pb.TagNumber(8)
-  set feeRate($core.double v) { $_setDouble(7, v); }
+  set baseFeeMsat($fixnum.Int64 v) { $_setInt64(7, v); }
   @$pb.TagNumber(8)
-  $core.bool hasFeeRate() => $_has(7);
+  $core.bool hasBaseFeeMsat() => $_has(7);
   @$pb.TagNumber(8)
-  void clearFeeRate() => clearField(8);
+  void clearBaseFeeMsat() => clearField(8);
 
   @$pb.TagNumber(9)
-  $core.int get timeLockDelta => $_getIZ(8);
+  $core.double get feeRate => $_getN(8);
   @$pb.TagNumber(9)
-  set timeLockDelta($core.int v) { $_setUnsignedInt32(8, v); }
+  set feeRate($core.double v) { $_setDouble(8, v); }
   @$pb.TagNumber(9)
-  $core.bool hasTimeLockDelta() => $_has(8);
+  $core.bool hasFeeRate() => $_has(8);
   @$pb.TagNumber(9)
-  void clearTimeLockDelta() => clearField(9);
+  void clearFeeRate() => clearField(9);
 
   @$pb.TagNumber(10)
-  $fixnum.Int64 get minHtlcMsat => $_getI64(9);
+  $core.int get timeLockDelta => $_getIZ(9);
   @$pb.TagNumber(10)
-  set minHtlcMsat($fixnum.Int64 v) { $_setInt64(9, v); }
+  set timeLockDelta($core.int v) { $_setUnsignedInt32(9, v); }
   @$pb.TagNumber(10)
-  $core.bool hasMinHtlcMsat() => $_has(9);
+  $core.bool hasTimeLockDelta() => $_has(9);
   @$pb.TagNumber(10)
-  void clearMinHtlcMsat() => clearField(10);
+  void clearTimeLockDelta() => clearField(10);
 
   @$pb.TagNumber(11)
-  $fixnum.Int64 get channelFeeStartAmount => $_getI64(10);
+  $fixnum.Int64 get minHtlcMsat => $_getI64(10);
   @$pb.TagNumber(11)
-  set channelFeeStartAmount($fixnum.Int64 v) { $_setInt64(10, v); }
+  set minHtlcMsat($fixnum.Int64 v) { $_setInt64(10, v); }
   @$pb.TagNumber(11)
-  $core.bool hasChannelFeeStartAmount() => $_has(10);
+  $core.bool hasMinHtlcMsat() => $_has(10);
   @$pb.TagNumber(11)
-  void clearChannelFeeStartAmount() => clearField(11);
+  void clearMinHtlcMsat() => clearField(11);
 
   @$pb.TagNumber(12)
-  $core.double get channelFeeRate => $_getN(11);
+  $fixnum.Int64 get channelFeeStartAmount => $_getI64(11);
   @$pb.TagNumber(12)
-  set channelFeeRate($core.double v) { $_setFloat(11, v); }
+  set channelFeeStartAmount($fixnum.Int64 v) { $_setInt64(11, v); }
   @$pb.TagNumber(12)
-  $core.bool hasChannelFeeRate() => $_has(11);
+  $core.bool hasChannelFeeStartAmount() => $_has(11);
   @$pb.TagNumber(12)
-  void clearChannelFeeRate() => clearField(12);
+  void clearChannelFeeStartAmount() => clearField(12);
+
+  @$pb.TagNumber(13)
+  $core.double get channelFeeRate => $_getN(12);
+  @$pb.TagNumber(13)
+  set channelFeeRate($core.double v) { $_setFloat(12, v); }
+  @$pb.TagNumber(13)
+  $core.bool hasChannelFeeRate() => $_has(12);
+  @$pb.TagNumber(13)
+  void clearChannelFeeRate() => clearField(13);
 }
 
 class LSPList extends $pb.GeneratedMessage {
