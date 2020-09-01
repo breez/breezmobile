@@ -188,24 +188,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: <Widget>[
-                                                StreamBuilder<AccountSettings>(
-                                                    stream: accountBloc
-                                                        .accountSettingsStream,
-                                                    builder: (settingCtx,
-                                                        settingSnapshot) {
-                                                      AccountSettings settings =
-                                                          settingSnapshot.data;
-                                                      if (settings?.showConnectProgress ==
-                                                              true ||
-                                                          accountModel
-                                                                  .isInitialBootstrap ==
-                                                              true) {
-                                                        return StatusIndicator(
-                                                            context,
-                                                            accountModel);
-                                                      }
-                                                      return SizedBox();
-                                                    }),
                                                 Padding(
                                                   padding: EdgeInsets.only(
                                                       top: 0.0,
