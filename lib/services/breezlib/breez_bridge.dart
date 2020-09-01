@@ -165,7 +165,7 @@ class BreezBridge {
   }
 
   Future connectToLSPPeer(String lspID) {
-    return _invokeMethodWhenReady("connectLSPPeer", {"argument": lspID});
+    return _invokeMethodWhenReady("connectToLSPPeer", {"argument": lspID});
   }
 
   Future connectToLnurl(String lnurl) {
