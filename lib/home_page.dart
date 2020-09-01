@@ -326,8 +326,7 @@ class HomeState extends State<Home> {
                                                       "/create_invoice",
                                                       "Receive via Invoice",
                                                       "src/icon/paste.png",
-                                                      disabled:
-                                                          !account.connected),
+                                                      ),
                                                   ...addFundsVendors,
                                                 ],
                                                     groupTitle: "Receive",

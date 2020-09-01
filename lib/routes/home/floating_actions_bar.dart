@@ -371,10 +371,10 @@ class FloatingActionsBar extends StatelessWidget {
                   children: <Widget>[
                     SizedBox(height: 8.0),
                     ListTile(
-                        enabled: account.connected,
+                        enabled: true,
                         leading: _ActionImage(
                             iconAssetPath: "src/icon/paste.png",
-                            enabled: account.connected),
+                            enabled: true),
                         title: Text("Receive via Invoice"),
                         onTap: () {
                           Navigator.of(context).pop();
