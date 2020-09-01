@@ -14,6 +14,141 @@ import 'rpc.pbenum.dart';
 
 export 'rpc.pbenum.dart';
 
+class RestartDaemonRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('RestartDaemonRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  RestartDaemonRequest._() : super();
+  factory RestartDaemonRequest() => create();
+  factory RestartDaemonRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RestartDaemonRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  RestartDaemonRequest clone() => RestartDaemonRequest()..mergeFromMessage(this);
+  RestartDaemonRequest copyWith(void Function(RestartDaemonRequest) updates) => super.copyWith((message) => updates(message as RestartDaemonRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static RestartDaemonRequest create() => RestartDaemonRequest._();
+  RestartDaemonRequest createEmptyInstance() => create();
+  static $pb.PbList<RestartDaemonRequest> createRepeated() => $pb.PbList<RestartDaemonRequest>();
+  @$core.pragma('dart2js:noInline')
+  static RestartDaemonRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RestartDaemonRequest>(create);
+  static RestartDaemonRequest _defaultInstance;
+}
+
+class RestartDaemonReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('RestartDaemonReply', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  RestartDaemonReply._() : super();
+  factory RestartDaemonReply() => create();
+  factory RestartDaemonReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RestartDaemonReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  RestartDaemonReply clone() => RestartDaemonReply()..mergeFromMessage(this);
+  RestartDaemonReply copyWith(void Function(RestartDaemonReply) updates) => super.copyWith((message) => updates(message as RestartDaemonReply));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static RestartDaemonReply create() => RestartDaemonReply._();
+  RestartDaemonReply createEmptyInstance() => create();
+  static $pb.PbList<RestartDaemonReply> createRepeated() => $pb.PbList<RestartDaemonReply>();
+  @$core.pragma('dart2js:noInline')
+  static RestartDaemonReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RestartDaemonReply>(create);
+  static RestartDaemonReply _defaultInstance;
+}
+
+class AddFundInitRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddFundInitRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'notificationToken', protoName: 'notificationToken')
+    ..hasRequiredFields = false
+  ;
+
+  AddFundInitRequest._() : super();
+  factory AddFundInitRequest() => create();
+  factory AddFundInitRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddFundInitRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AddFundInitRequest clone() => AddFundInitRequest()..mergeFromMessage(this);
+  AddFundInitRequest copyWith(void Function(AddFundInitRequest) updates) => super.copyWith((message) => updates(message as AddFundInitRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AddFundInitRequest create() => AddFundInitRequest._();
+  AddFundInitRequest createEmptyInstance() => create();
+  static $pb.PbList<AddFundInitRequest> createRepeated() => $pb.PbList<AddFundInitRequest>();
+  @$core.pragma('dart2js:noInline')
+  static AddFundInitRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddFundInitRequest>(create);
+  static AddFundInitRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get notificationToken => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set notificationToken($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasNotificationToken() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearNotificationToken() => clearField(1);
+}
+
+class FundStatusRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('FundStatusRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'notificationToken', protoName: 'notificationToken')
+    ..hasRequiredFields = false
+  ;
+
+  FundStatusRequest._() : super();
+  factory FundStatusRequest() => create();
+  factory FundStatusRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FundStatusRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  FundStatusRequest clone() => FundStatusRequest()..mergeFromMessage(this);
+  FundStatusRequest copyWith(void Function(FundStatusRequest) updates) => super.copyWith((message) => updates(message as FundStatusRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static FundStatusRequest create() => FundStatusRequest._();
+  FundStatusRequest createEmptyInstance() => create();
+  static $pb.PbList<FundStatusRequest> createRepeated() => $pb.PbList<FundStatusRequest>();
+  @$core.pragma('dart2js:noInline')
+  static FundStatusRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FundStatusRequest>(create);
+  static FundStatusRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get notificationToken => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set notificationToken($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasNotificationToken() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearNotificationToken() => clearField(1);
+}
+
+class AddInvoiceReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddInvoiceReply', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'paymentRequest', protoName: 'paymentRequest')
+    ..hasRequiredFields = false
+  ;
+
+  AddInvoiceReply._() : super();
+  factory AddInvoiceReply() => create();
+  factory AddInvoiceReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddInvoiceReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AddInvoiceReply clone() => AddInvoiceReply()..mergeFromMessage(this);
+  AddInvoiceReply copyWith(void Function(AddInvoiceReply) updates) => super.copyWith((message) => updates(message as AddInvoiceReply));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AddInvoiceReply create() => AddInvoiceReply._();
+  AddInvoiceReply createEmptyInstance() => create();
+  static $pb.PbList<AddInvoiceReply> createRepeated() => $pb.PbList<AddInvoiceReply>();
+  @$core.pragma('dart2js:noInline')
+  static AddInvoiceReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddInvoiceReply>(create);
+  static AddInvoiceReply _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get paymentRequest => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set paymentRequest($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasPaymentRequest() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearPaymentRequest() => clearField(1);
+}
+
 class ChainStatus extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ChainStatus', package: const $pb.PackageName('data'), createEmptyInstance: create)
     ..a<$core.int>(1, 'blockHeight', $pb.PbFieldType.OU3, protoName: 'blockHeight')
@@ -70,6 +205,7 @@ class Account extends $pb.GeneratedMessage {
     ..aOS(11, 'channelPoint', protoName: 'channelPoint')
     ..aOB(12, 'readyForPayments', protoName: 'readyForPayments')
     ..aInt64(13, 'tipHeight', protoName: 'tipHeight')
+    ..pPS(14, 'connectedPeers', protoName: 'connectedPeers')
     ..hasRequiredFields = false
   ;
 
@@ -204,6 +340,9 @@ class Account extends $pb.GeneratedMessage {
   $core.bool hasTipHeight() => $_has(12);
   @$pb.TagNumber(13)
   void clearTipHeight() => clearField(13);
+
+  @$pb.TagNumber(14)
+  $core.List<$core.String> get connectedPeers => $_getList(13);
 }
 
 class Payment extends $pb.GeneratedMessage {
@@ -1781,6 +1920,7 @@ class LSPInformation extends $pb.GeneratedMessage {
     ..aInt64(11, 'minHtlcMsat')
     ..aInt64(12, 'channelFeeStartAmount')
     ..a<$core.double>(13, 'channelFeeRate', $pb.PbFieldType.OF)
+    ..a<$core.List<$core.int>>(14, 'lspPubkey', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
@@ -1915,6 +2055,36 @@ class LSPInformation extends $pb.GeneratedMessage {
   $core.bool hasChannelFeeRate() => $_has(12);
   @$pb.TagNumber(13)
   void clearChannelFeeRate() => clearField(13);
+
+  @$pb.TagNumber(14)
+  $core.List<$core.int> get lspPubkey => $_getN(13);
+  @$pb.TagNumber(14)
+  set lspPubkey($core.List<$core.int> v) { $_setBytes(13, v); }
+  @$pb.TagNumber(14)
+  $core.bool hasLspPubkey() => $_has(13);
+  @$pb.TagNumber(14)
+  void clearLspPubkey() => clearField(14);
+}
+
+class LSPListRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('LSPListRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  LSPListRequest._() : super();
+  factory LSPListRequest() => create();
+  factory LSPListRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LSPListRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  LSPListRequest clone() => LSPListRequest()..mergeFromMessage(this);
+  LSPListRequest copyWith(void Function(LSPListRequest) updates) => super.copyWith((message) => updates(message as LSPListRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LSPListRequest create() => LSPListRequest._();
+  LSPListRequest createEmptyInstance() => create();
+  static $pb.PbList<LSPListRequest> createRepeated() => $pb.PbList<LSPListRequest>();
+  @$core.pragma('dart2js:noInline')
+  static LSPListRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LSPListRequest>(create);
+  static LSPListRequest _defaultInstance;
 }
 
 class LSPList extends $pb.GeneratedMessage {
@@ -1940,6 +2110,58 @@ class LSPList extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(1)
   $core.Map<$core.String, LSPInformation> get lsps => $_getMap(0);
+}
+
+class ConnectLSPRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ConnectLSPRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'lspId')
+    ..hasRequiredFields = false
+  ;
+
+  ConnectLSPRequest._() : super();
+  factory ConnectLSPRequest() => create();
+  factory ConnectLSPRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ConnectLSPRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ConnectLSPRequest clone() => ConnectLSPRequest()..mergeFromMessage(this);
+  ConnectLSPRequest copyWith(void Function(ConnectLSPRequest) updates) => super.copyWith((message) => updates(message as ConnectLSPRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ConnectLSPRequest create() => ConnectLSPRequest._();
+  ConnectLSPRequest createEmptyInstance() => create();
+  static $pb.PbList<ConnectLSPRequest> createRepeated() => $pb.PbList<ConnectLSPRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ConnectLSPRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ConnectLSPRequest>(create);
+  static ConnectLSPRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get lspId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set lspId($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasLspId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLspId() => clearField(1);
+}
+
+class ConnectLSPReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ConnectLSPReply', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  ConnectLSPReply._() : super();
+  factory ConnectLSPReply() => create();
+  factory ConnectLSPReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ConnectLSPReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ConnectLSPReply clone() => ConnectLSPReply()..mergeFromMessage(this);
+  ConnectLSPReply copyWith(void Function(ConnectLSPReply) updates) => super.copyWith((message) => updates(message as ConnectLSPReply));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ConnectLSPReply create() => ConnectLSPReply._();
+  ConnectLSPReply createEmptyInstance() => create();
+  static $pb.PbList<ConnectLSPReply> createRepeated() => $pb.PbList<ConnectLSPReply>();
+  @$core.pragma('dart2js:noInline')
+  static ConnectLSPReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ConnectLSPReply>(create);
+  static ConnectLSPReply _defaultInstance;
 }
 
 enum LNUrlResponse_Action {

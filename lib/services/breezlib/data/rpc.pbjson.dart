@@ -16,6 +16,35 @@ const SwapError$json = const {
   ],
 };
 
+const RestartDaemonRequest$json = const {
+  '1': 'RestartDaemonRequest',
+};
+
+const RestartDaemonReply$json = const {
+  '1': 'RestartDaemonReply',
+};
+
+const AddFundInitRequest$json = const {
+  '1': 'AddFundInitRequest',
+  '2': const [
+    const {'1': 'notificationToken', '3': 1, '4': 1, '5': 9, '10': 'notificationToken'},
+  ],
+};
+
+const FundStatusRequest$json = const {
+  '1': 'FundStatusRequest',
+  '2': const [
+    const {'1': 'notificationToken', '3': 1, '4': 1, '5': 9, '10': 'notificationToken'},
+  ],
+};
+
+const AddInvoiceReply$json = const {
+  '1': 'AddInvoiceReply',
+  '2': const [
+    const {'1': 'paymentRequest', '3': 1, '4': 1, '5': 9, '10': 'paymentRequest'},
+  ],
+};
+
 const ChainStatus$json = const {
   '1': 'ChainStatus',
   '2': const [
@@ -40,6 +69,7 @@ const Account$json = const {
     const {'1': 'channelPoint', '3': 11, '4': 1, '5': 9, '10': 'channelPoint'},
     const {'1': 'readyForPayments', '3': 12, '4': 1, '5': 8, '10': 'readyForPayments'},
     const {'1': 'tipHeight', '3': 13, '4': 1, '5': 3, '10': 'tipHeight'},
+    const {'1': 'connectedPeers', '3': 14, '4': 3, '5': 9, '10': 'connectedPeers'},
   ],
   '4': const [Account_AccountStatus$json],
 };
@@ -387,7 +417,12 @@ const LSPInformation$json = const {
     const {'1': 'min_htlc_msat', '3': 11, '4': 1, '5': 3, '10': 'minHtlcMsat'},
     const {'1': 'channel_fee_start_amount', '3': 12, '4': 1, '5': 3, '10': 'channelFeeStartAmount'},
     const {'1': 'channel_fee_rate', '3': 13, '4': 1, '5': 2, '10': 'channelFeeRate'},
+    const {'1': 'lsp_pubkey', '3': 14, '4': 1, '5': 12, '10': 'lspPubkey'},
   ],
+};
+
+const LSPListRequest$json = const {
+  '1': 'LSPListRequest',
 };
 
 const LSPList$json = const {
@@ -405,6 +440,17 @@ const LSPList_LspsEntry$json = const {
     const {'1': 'value', '3': 2, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'value'},
   ],
   '7': const {'7': true},
+};
+
+const ConnectLSPRequest$json = const {
+  '1': 'ConnectLSPRequest',
+  '2': const [
+    const {'1': 'lsp_id', '3': 1, '4': 1, '5': 9, '10': 'lspId'},
+  ],
+};
+
+const ConnectLSPReply$json = const {
+  '1': 'ConnectLSPReply',
 };
 
 const LNUrlResponse$json = const {
