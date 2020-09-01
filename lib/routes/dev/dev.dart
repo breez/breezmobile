@@ -21,6 +21,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
@@ -401,6 +402,12 @@ class DevViewState extends State<DevView> {
           await rescanFile.create(recursive: true);
           _promptForRestart();
         }));
+    // choices.add(Choice(
+    //     title: "Refresh Private",
+    //     icon: Icons.phone_android,
+    //     function: () async {
+    //       await widget._breezBridge.populateChannePolicy();
+    //     }));
     
     // choices.add(Choice(
     //     title: "Export DB Files",
@@ -504,6 +511,7 @@ class DevViewState extends State<DevView> {
   }
 
   void _refreshGraph() async {
+    FlutterDownloader.cancelAll();
     Navigator.push(
             context,
             createLoaderRoute(context,
