@@ -95,29 +95,27 @@ class LSPBloc with AsyncActionsHandler {
   }
 
   void _updateLSPStatus(SharedPreferences sp) {
-    var dontPrompt = sp.getBool(LSP_DONT_PROMPT_PREFERENCES_KEY);
+    //var dontPrompt = sp.getBool(LSP_DONT_PROMPT_PREFERENCES_KEY);
     _lspsStatusController.add(
-        LSPStatus.initial().copyWith(dontPromptToConnect: dontPrompt ?? false));
-    List<Account_AccountStatus> lspSelectedStatuses = [
-      Account_AccountStatus.CONNECTED,
-      Account_AccountStatus.PROCESSING_CONNECTION
-    ];
+        LSPStatus.initial().copyWith(dontPromptToConnect: false));
 
     bool breezReady = false;
     _breezLib.notificationStream.listen((event) {
+      var lsps = _lspsStatusController.value.availableLSPs;
+
       breezReady =
           breezReady || event.type == NotificationEvent_NotificationType.READY;
-      if (breezReady &&
+      if (breezReady && lsps.length > 0 &&
           event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
         _breezLib.getAccount().then((acc) async {
-          bool lspSelected = lspSelectedStatuses.contains(acc.status);
+          var connectedToLSP = acc.connectedPeers.contains(lsps[0].pubKey);
           _lspsStatusController.add(_lspsStatusController.value.copyWith(
-              connectionStatus: lspSelected
+              connectionStatus: connectedToLSP
                   ? LSPConnectionStatus.Active
                   : LSPConnectionStatus.NotSelected,
               dontPromptToConnect:
                   _lspsStatusController.value.dontPromptToConnect ||
-                      lspSelected));
+                      connectedToLSP));
         });
       }
     });
