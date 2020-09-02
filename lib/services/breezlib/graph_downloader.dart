@@ -54,9 +54,8 @@ class GraphDownloader {
 
     var expiredTime = DateTime.now().millisecondsSinceEpoch - 24 * 3600 * 1000;
     for (var i = 0; i < tasks.length; ++i) {
-      if (tasks[i].url == downloadURL) {
-        if (tasks[i].status == DownloadTaskStatus.complete &&
-            tasks[i].timeCreated > expiredTime) {
+      if (tasks[i].url == downloadURL && tasks[i].timeCreated > expiredTime) {
+        if (tasks[i].status == DownloadTaskStatus.complete) {
           log.info(
               "Already has a recently completed graph download task, using it");
           _onTaskFinished(tasks[i]);
