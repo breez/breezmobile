@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
@@ -42,15 +43,15 @@ class QrCodeDialogState extends State<QrCodeDialog>
       }
     });
 
-    widget._invoiceBloc.readyInvoicesStream.first.then((bolt11) {
-      _listenPaidInvoice(bolt11, controller);
+    widget._invoiceBloc.readyInvoicesStream.first.then((payReqModel) {
+      _listenPaidInvoice(payReqModel, controller);
     });
   }
 
-  void _listenPaidInvoice(String bolt11, AnimationController controller) async {
+  void _listenPaidInvoice(PaymentRequestModel payReqModel, AnimationController controller) async {
     var payreq =
         await widget._invoiceBloc.paidInvoicesStream.firstWhere((payreq) {
-      bool ok = payreq == bolt11;
+      bool ok = payreq.paymentHash == payReqModel.paymentHash;
       return ok;
     }, orElse: () => null);
     if (payreq != null) {
@@ -68,7 +69,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
   }
 
   Widget _buildQrCodeDialog() {
-    return StreamBuilder<String>(
+    return StreamBuilder<PaymentRequestModel>(
         stream: widget._invoiceBloc.readyInvoicesStream,
         builder: (context, snapshot) {
           return FadeTransition(
@@ -85,7 +86,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                       stream: widget._accountBloc.accountStream,
                       builder: (accCtx, accSnapshot) {
                         bool synced = accSnapshot.data?.synced == true;
-                        return StreamBuilder<String>(
+                        return StreamBuilder<PaymentRequestModel>(
                           stream: widget._invoiceBloc.readyInvoicesStream,
                           builder: (context, snapshot) {
                             if (!snapshot.hasData || !synced) {
@@ -109,7 +110,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                       .color,
                                   onPressed: () {
                                     ShareExtend.share(
-                                        "lightning:" + snapshot.data, "text");
+                                        "lightning:" + snapshot.data.rawPayReq, "text");
                                   },
                                 ),
                                 IconButton(
@@ -129,7 +130,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   onPressed: () {
                                     ServiceInjector()
                                         .device
-                                        .setClipboardText(snapshot.data);
+                                        .setClipboardText(snapshot.data.rawPayReq);
                                     showFlushbar(context,
                                         message:
                                             "Invoice data was copied to your clipboard.",
@@ -189,18 +190,18 @@ class QrCodeDialogState extends State<QrCodeDialog>
                             width: 230.0,
                             height: 230.0,
                             child: CompactQRImage(
-                              data: snapshot.data,
+                              data: snapshot.data.rawPayReq,
                             ),
                           ),
                         ),
                         Padding(padding: EdgeInsets.only(top: 8.0)),
                         GestureDetector(
                           onTap: () {
-                            ShareExtend.share(snapshot.data, "text");
+                            ShareExtend.share(snapshot.data.rawPayReq, "text");
                           },
                           child: Container(
                             child: Text(
-                              snapshot.data,
+                              snapshot.data.rawPayReq,
                               style: Theme.of(context)
                                   .primaryTextTheme
                                   .caption

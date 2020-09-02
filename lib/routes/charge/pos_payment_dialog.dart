@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
@@ -25,7 +26,7 @@ class PosPaymentResult {
 class PosPaymentDialog extends StatefulWidget {
   final InvoiceBloc _invoiceBloc;
   final BreezUserModel _user;
-  final String paymentRequest;
+  final PaymentRequestModel paymentRequest;
   final double satAmount;
 
   PosPaymentDialog(
@@ -40,7 +41,7 @@ class PosPaymentDialog extends StatefulWidget {
 class _PosPaymentDialogState extends State<PosPaymentDialog> {
   CountDown _paymentTimer;
   StreamSubscription<Duration> _timerSubscription;
-  StreamSubscription<String> _paidInvoiceSubscription;
+  StreamSubscription<PaymentRequestModel> _paidInvoiceSubscription;
   String _countdownString = "3:00";
 
   @override
@@ -66,7 +67,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     _paidInvoiceSubscription =
         widget._invoiceBloc.paidInvoicesStream.listen((paidRequest) {
       setState(() {
-        if (paidRequest == widget.paymentRequest) {
+        if (paidRequest.paymentHash == widget.paymentRequest.paymentHash) {
           Navigator.of(context).pop(PosPaymentResult(paid: true));
         }
       });
@@ -118,7 +119,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
               color: Theme.of(context).primaryTextTheme.button.color,
               onPressed: () {
-                ShareExtend.share("lightning:" + widget.paymentRequest, "text");
+                ShareExtend.share("lightning:" + widget.paymentRequest.rawPayReq, "text");
               },
             ),
             IconButton(
@@ -131,7 +132,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               onPressed: () {
                 ServiceInjector()
                     .device
-                    .setClipboardText(widget.paymentRequest);
+                    .setClipboardText(widget.paymentRequest.rawPayReq);
                 showFlushbar(context,
                     message: "Invoice data was copied to your clipboard.",
                     duration: Duration(seconds: 3));
@@ -175,7 +176,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                 height: 230.0,
                 width: 230.0,
                 child: CompactQRImage(
-                  data: widget.paymentRequest,
+                  data: widget.paymentRequest.rawPayReq,
                 ),
               ),
             ),

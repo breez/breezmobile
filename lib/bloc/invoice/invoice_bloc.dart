@@ -25,8 +25,8 @@ class InvoiceBloc with AsyncActionsHandler {
   final _newLightningLinkController = StreamController<String>();
   Sink<String> get newLightningLinkSink => _newLightningLinkController.sink;
 
-  final _readyInvoicesController = BehaviorSubject<String>();
-  Stream<String> get readyInvoicesStream => _readyInvoicesController.stream;
+  final _readyInvoicesController = BehaviorSubject<PaymentRequestModel>();
+  Stream<PaymentRequestModel> get readyInvoicesStream => _readyInvoicesController.stream;
 
   final _sentInvoicesController = StreamController<String>.broadcast();
   Stream<String> get sentInvoicesStream => _sentInvoicesController.stream;
@@ -38,8 +38,8 @@ class InvoiceBloc with AsyncActionsHandler {
   Stream<PaymentRequestModel> get receivedInvoicesStream =>
       _receivedInvoicesController.stream;
 
-  final _paidInvoicesController = StreamController<String>.broadcast();
-  Stream<String> get paidInvoicesStream => _paidInvoicesController.stream;
+  final _paidInvoicesController = StreamController<PaymentRequestModel>.broadcast();
+  Stream<PaymentRequestModel> get paidInvoicesStream => _paidInvoicesController.stream;
 
   Int64 payBlankAmount = Int64(-1);
   BreezBridge _breezLib;
@@ -95,11 +95,12 @@ class InvoiceBloc with AsyncActionsHandler {
               payeeImageURL: invoiceRequest.logo,
               description: invoiceRequest.description,
               expiry: invoiceRequest.expiry)
-          .then((paymentRequest) {
-        log.info("Payment Request");
-        log.info(paymentRequest);
-        _readyInvoicesController.add(paymentRequest);
-      }).catchError(_readyInvoicesController.addError);
+          .then((payReq) async {
+            log.info("Payment Request: " + payReq);
+            var memo = await _breezLib.decodePaymentRequest(payReq);
+            var paymentHash = await _breezLib.getPaymentRequestHash(payReq);
+            _readyInvoicesController.add(PaymentRequestModel(memo, payReq, paymentHash));
+          }).catchError(_readyInvoicesController.addError);
     });
   }
 
@@ -186,8 +187,11 @@ class InvoiceBloc with AsyncActionsHandler {
     breezLib.notificationStream
         .where((event) =>
             event.type == NotificationEvent_NotificationType.INVOICE_PAID)
-        .listen((invoice) {
-      _paidInvoicesController.add(invoice.data[0]);
+        .listen( (invoice) async {
+          var payReq = invoice.data[0];
+          var memo = await _breezLib.decodePaymentRequest(payReq);
+          var paymentHash = await _breezLib.getPaymentRequestHash(payReq);
+      _paidInvoicesController.add(PaymentRequestModel(memo, payReq, paymentHash));
     });
   }
 
