@@ -14,9 +14,6 @@ import '../async_actions_handler.dart';
 import 'lsp_actions.dart';
 
 class LSPBloc with AsyncActionsHandler {
-  static const LSP_DONT_PROMPT_PREFERENCES_KEY =
-      "LSP_DONT_PROMPT_PREFERENCES_KEY";
-
   final _lspPromptController = StreamController<bool>.broadcast();
   Stream<bool> get lspPromptStream => _lspPromptController.stream;
 
@@ -95,7 +92,6 @@ class LSPBloc with AsyncActionsHandler {
   }
 
   void _updateLSPStatus(SharedPreferences sp) {
-    //var dontPrompt = sp.getBool(LSP_DONT_PROMPT_PREFERENCES_KEY);
     _lspsStatusController.add(
         LSPStatus.initial().copyWith(dontPromptToConnect: false));
 
@@ -123,7 +119,6 @@ class LSPBloc with AsyncActionsHandler {
 
   void _handleLSPStatusChanges(SharedPreferences sp) {
     _lspsStatusController.stream.listen((status) {
-      sp.setBool(LSP_DONT_PROMPT_PREFERENCES_KEY, status.dontPromptToConnect);
       if (status.shouldAutoReconnect) {
         this.actionsSink.add(ConnectLSP(status.availableLSPs[0].lspID, null));
       } else if (status.selectionRequired &&
