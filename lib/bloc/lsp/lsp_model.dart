@@ -8,37 +8,26 @@ enum LSPConnectionStatus {
 
 class LSPStatus {
   final List<LSPInfo> availableLSPs;
-  final LSPConnectionStatus connectionStatus;
+  final String selectedLSP;
   final String lastConnectionError;
-  final bool dontPromptToConnect;
 
-  LSPStatus._(this.availableLSPs, this.connectionStatus,
-      this.lastConnectionError, this.dontPromptToConnect);
+  LSPStatus._(this.availableLSPs,
+      this.lastConnectionError, this.selectedLSP);
 
-  LSPStatus.initial() : this._([], null, null, null);
+  LSPStatus.initial() : this._([], null, null);
   LSPStatus copyWith(
       {List<LSPInfo> availableLSPs,
-      LSPConnectionStatus connectionStatus,
       String lastConnectionError,
-      bool dontPromptToConnect}) {
+      String selectedLSP}) {
     return LSPStatus._(
         availableLSPs ?? this.availableLSPs,
-        connectionStatus ?? this.connectionStatus,
         lastConnectionError ?? this.lastConnectionError,
-        dontPromptToConnect ?? this.dontPromptToConnect);
+        selectedLSP ?? this.selectedLSP);
   }
 
   bool get selectionRequired =>
-      connectionStatus == LSPConnectionStatus.NotSelected &&
-      !shouldAutoReconnect &&
-      (availableLSPs.length > 0 || lastConnectionError != null);
+     selectedLSP == null && availableLSPs.length > 1;
 
-  bool get shouldAutoReconnect =>
-      connectionStatus == LSPConnectionStatus.NotSelected &&
-      availableLSPs.length == 1 &&
-      availableLSPs[0].widgetURL.isEmpty &&
-      !dontPromptToConnect &&
-      lastConnectionError == null;
 }
 
 class LSPInfo {

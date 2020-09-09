@@ -71,7 +71,7 @@ class UserApp extends StatelessWidget {
               SystemUiOverlayStyle(statusBarColor: Colors.transparent));
           return BlocProvider(
               creator: () => AddFundsBloc(
-                  userProfileBloc.userStream, accountBloc.accountStream),
+                  userProfileBloc.userStream, accountBloc.accountStream, lspBloc.lspStatusStream),
               builder: (ctx) => MaterialApp(
                     navigatorKey: _navigatorKey,
                     title: 'Breez',
