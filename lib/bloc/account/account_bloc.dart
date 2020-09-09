@@ -338,7 +338,7 @@ class AccountBloc {
 
   void _trackOnBoardingStatus() {
     _accountController
-        .where((acc) => !acc.initial && !acc.isInitialBootstrap)
+        .where((acc) => !acc.initial && acc.synced)
         .first
         .then((_) {
       _onBoardingCompleter.complete();

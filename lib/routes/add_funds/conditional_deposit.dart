@@ -24,16 +24,12 @@ class ConditionalDeposit extends StatelessWidget {
         if (account == null) {
           return SizedBox();
         }
-        var isBootstrap = account.isInitialBootstrap;
+
         var unconfirmedTxID = account.swapFundsStatus.unconfirmedTxID;
         bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
         String errorMessage;
 
-        if (isBootstrap) {
-          errorMessage =
-              'You\'ll be able to add funds after Breez is finished bootstrapping.';
-        } else if (unconfirmedTxID?.isNotEmpty == true ||
-            account.closingConnection) {
+        if (unconfirmedTxID?.isNotEmpty == true || account.closingConnection) {
           errorMessage =
               'Breez is processing your previous ${waitingDepositConfirmation || account.processingConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
         }

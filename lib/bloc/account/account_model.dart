@@ -226,8 +226,6 @@ class AccountModel {
       _accountResponse.status == Account_AccountStatus.CLOSING_CONNECTION;
   bool get connected =>
       _accountResponse.status == Account_AccountStatus.CONNECTED;
-  bool get isInitialBootstrap =>
-      !initial && (disconnected || closingConnection);
   Int64 get tipHeight => _accountResponse.tipHeight;
   Int64 get balance => _accountResponse.balance;
   String get formattedFiatBalance => fiatCurrency?.format(balance);

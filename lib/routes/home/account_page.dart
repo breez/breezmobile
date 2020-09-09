@@ -101,8 +101,7 @@ class AccountPageState extends State<AccountPage>
 
     String message;
     bool showMessage = account?.syncUIState != SyncUIState.BLOCKING &&
-        (account != null && !account.initial ||
-            account?.isInitialBootstrap == true);
+        (account != null && !account.initial);
     if (pendingCTPLink != null) {
       message =
           "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";

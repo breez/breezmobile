@@ -30,22 +30,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     if (_addFundsBloc == null) {
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
       _addFundsBloc.addFundRequestSink.add(false);
-      widget._accountBloc.accountStream
-          .firstWhere((acc) => !acc.isInitialBootstrap)
-          .then((acc) {
-        if (this.mounted) {
-          _addFundsBloc.addFundRequestSink.add(true);
-        }
-      });
-
-      // widget._accountBloc.accountStream
-      //     .firstWhere((acc) =>
-      //         acc?.swapFundsStatus?.unconfirmedTxID?.isNotEmpty == true)
-      //     .then((acc) {
-      //   if (this.mounted) {
-      //     Navigator.of(context).removeRoute(_thisRoute);
-      //   }
-      // });
+      _addFundsBloc.addFundRequestSink.add(true);
     }
   }
 
