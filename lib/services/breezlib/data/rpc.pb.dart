@@ -59,6 +59,7 @@ class RestartDaemonReply extends $pb.GeneratedMessage {
 class AddFundInitRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddFundInitRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
     ..aOS(1, 'notificationToken', protoName: 'notificationToken')
+    ..aOS(2, 'lspID', protoName: 'lspID')
     ..hasRequiredFields = false
   ;
 
@@ -85,6 +86,15 @@ class AddFundInitRequest extends $pb.GeneratedMessage {
   $core.bool hasNotificationToken() => $_has(0);
   @$pb.TagNumber(1)
   void clearNotificationToken() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get lspID => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set lspID($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasLspID() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearLspID() => clearField(2);
 }
 
 class FundStatusRequest extends $pb.GeneratedMessage {
@@ -737,6 +747,7 @@ class InvoiceMemo extends $pb.GeneratedMessage {
     ..aOS(6, 'payerImageURL', protoName: 'payerImageURL')
     ..aOB(7, 'transferRequest', protoName: 'transferRequest')
     ..aInt64(8, 'expiry')
+    ..a<$core.List<$core.int>>(9, 'preimage', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
@@ -826,6 +837,15 @@ class InvoiceMemo extends $pb.GeneratedMessage {
   $core.bool hasExpiry() => $_has(7);
   @$pb.TagNumber(8)
   void clearExpiry() => clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.List<$core.int> get preimage => $_getN(8);
+  @$pb.TagNumber(9)
+  set preimage($core.List<$core.int> v) { $_setBytes(8, v); }
+  @$pb.TagNumber(9)
+  $core.bool hasPreimage() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearPreimage() => clearField(9);
 }
 
 class AddInvoiceRequest extends $pb.GeneratedMessage {

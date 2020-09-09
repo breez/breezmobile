@@ -478,8 +478,11 @@ class BreezBridge {
         .then((address) => address as String);
   }
 
-  Future<AddFundInitReply> addFundsInit(String breezID) {
-    return _invokeMethodWhenReady("addFundsInit", {"argument": breezID})
+  Future<AddFundInitReply> addFundsInit(String breezID, String selectedLSP) {
+    var initRequest = AddFundInitRequest()
+      ..notificationToken = breezID
+      ..lspID = selectedLSP;
+    return _invokeMethodWhenReady("addFundsInit", {"argument": initRequest.writeToBuffer()})
         .then((reply) => AddFundInitReply()..mergeFromBuffer(reply ?? []));
   }
 

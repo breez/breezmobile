@@ -28,6 +28,7 @@ const AddFundInitRequest$json = const {
   '1': 'AddFundInitRequest',
   '2': const [
     const {'1': 'notificationToken', '3': 1, '4': 1, '5': 9, '10': 'notificationToken'},
+    const {'1': 'lspID', '3': 2, '4': 1, '5': 9, '10': 'lspID'},
   ],
 };
 
@@ -169,6 +170,7 @@ const InvoiceMemo$json = const {
     const {'1': 'payerImageURL', '3': 6, '4': 1, '5': 9, '10': 'payerImageURL'},
     const {'1': 'transferRequest', '3': 7, '4': 1, '5': 8, '10': 'transferRequest'},
     const {'1': 'expiry', '3': 8, '4': 1, '5': 3, '10': 'expiry'},
+    const {'1': 'preimage', '3': 9, '4': 1, '5': 12, '10': 'preimage'},
   ],
 };
 
