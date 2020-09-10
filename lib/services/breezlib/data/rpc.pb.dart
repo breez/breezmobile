@@ -1938,9 +1938,8 @@ class LSPInformation extends $pb.GeneratedMessage {
     ..a<$core.double>(9, 'feeRate', $pb.PbFieldType.OD)
     ..a<$core.int>(10, 'timeLockDelta', $pb.PbFieldType.OU3)
     ..aInt64(11, 'minHtlcMsat')
-    ..aInt64(12, 'channelFeeStartAmount')
-    ..a<$core.double>(13, 'channelFeeRate', $pb.PbFieldType.OF)
-    ..a<$core.List<$core.int>>(14, 'lspPubkey', $pb.PbFieldType.OY)
+    ..aInt64(12, 'channelFeePermyriad')
+    ..a<$core.List<$core.int>>(13, 'lspPubkey', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
@@ -2059,31 +2058,22 @@ class LSPInformation extends $pb.GeneratedMessage {
   void clearMinHtlcMsat() => clearField(11);
 
   @$pb.TagNumber(12)
-  $fixnum.Int64 get channelFeeStartAmount => $_getI64(11);
+  $fixnum.Int64 get channelFeePermyriad => $_getI64(11);
   @$pb.TagNumber(12)
-  set channelFeeStartAmount($fixnum.Int64 v) { $_setInt64(11, v); }
+  set channelFeePermyriad($fixnum.Int64 v) { $_setInt64(11, v); }
   @$pb.TagNumber(12)
-  $core.bool hasChannelFeeStartAmount() => $_has(11);
+  $core.bool hasChannelFeePermyriad() => $_has(11);
   @$pb.TagNumber(12)
-  void clearChannelFeeStartAmount() => clearField(12);
+  void clearChannelFeePermyriad() => clearField(12);
 
   @$pb.TagNumber(13)
-  $core.double get channelFeeRate => $_getN(12);
+  $core.List<$core.int> get lspPubkey => $_getN(12);
   @$pb.TagNumber(13)
-  set channelFeeRate($core.double v) { $_setFloat(12, v); }
+  set lspPubkey($core.List<$core.int> v) { $_setBytes(12, v); }
   @$pb.TagNumber(13)
-  $core.bool hasChannelFeeRate() => $_has(12);
+  $core.bool hasLspPubkey() => $_has(12);
   @$pb.TagNumber(13)
-  void clearChannelFeeRate() => clearField(13);
-
-  @$pb.TagNumber(14)
-  $core.List<$core.int> get lspPubkey => $_getN(13);
-  @$pb.TagNumber(14)
-  set lspPubkey($core.List<$core.int> v) { $_setBytes(13, v); }
-  @$pb.TagNumber(14)
-  $core.bool hasLspPubkey() => $_has(13);
-  @$pb.TagNumber(14)
-  void clearLspPubkey() => clearField(14);
+  void clearLspPubkey() => clearField(13);
 }
 
 class LSPListRequest extends $pb.GeneratedMessage {

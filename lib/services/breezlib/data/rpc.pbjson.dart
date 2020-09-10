@@ -417,9 +417,8 @@ const LSPInformation$json = const {
     const {'1': 'fee_rate', '3': 9, '4': 1, '5': 1, '10': 'feeRate'},
     const {'1': 'time_lock_delta', '3': 10, '4': 1, '5': 13, '10': 'timeLockDelta'},
     const {'1': 'min_htlc_msat', '3': 11, '4': 1, '5': 3, '10': 'minHtlcMsat'},
-    const {'1': 'channel_fee_start_amount', '3': 12, '4': 1, '5': 3, '10': 'channelFeeStartAmount'},
-    const {'1': 'channel_fee_rate', '3': 13, '4': 1, '5': 2, '10': 'channelFeeRate'},
-    const {'1': 'lsp_pubkey', '3': 14, '4': 1, '5': 12, '10': 'lspPubkey'},
+    const {'1': 'channel_fee_permyriad', '3': 12, '4': 1, '5': 3, '10': 'channelFeePermyriad'},
+    const {'1': 'lsp_pubkey', '3': 13, '4': 1, '5': 12, '10': 'lspPubkey'},
   ],
 };
 
