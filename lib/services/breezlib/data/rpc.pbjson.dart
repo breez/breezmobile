@@ -43,6 +43,7 @@ const AddInvoiceReply$json = const {
   '1': 'AddInvoiceReply',
   '2': const [
     const {'1': 'paymentRequest', '3': 1, '4': 1, '5': 9, '10': 'paymentRequest'},
+    const {'1': 'lsp_fee', '3': 2, '4': 1, '5': 3, '10': 'lspFee'},
   ],
 };
 
@@ -71,6 +72,7 @@ const Account$json = const {
     const {'1': 'readyForPayments', '3': 12, '4': 1, '5': 8, '10': 'readyForPayments'},
     const {'1': 'tipHeight', '3': 13, '4': 1, '5': 3, '10': 'tipHeight'},
     const {'1': 'connectedPeers', '3': 14, '4': 3, '5': 9, '10': 'connectedPeers'},
+    const {'1': 'max_inbound_liquidity', '3': 15, '4': 1, '5': 3, '10': 'maxInboundLiquidity'},
   ],
   '4': const [Account_AccountStatus$json],
 };

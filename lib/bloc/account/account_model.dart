@@ -247,6 +247,7 @@ class AccountModel {
   bool get enabled => _accountResponse.enabled;
   Int64 get routingNodeFee => _accountResponse.routingNodeFee;
   bool get readyForPayments => _accountResponse.readyForPayments;
+  Int64 get maxInboundLiquidity => _accountResponse.maxInboundLiquidity;
 
   bool get synced => syncedToChain;
   String get channelFundingTxUrl {
@@ -257,7 +258,6 @@ class AccountModel {
   }
 
   String get statusMessage {
-  
     SwapFundStatus swapStatus = this.swapFundsStatus;
 
     if (swapStatus.unconfirmedTxID != null) {

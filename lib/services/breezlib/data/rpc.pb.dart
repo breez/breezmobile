@@ -131,6 +131,7 @@ class FundStatusRequest extends $pb.GeneratedMessage {
 class AddInvoiceReply extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddInvoiceReply', package: const $pb.PackageName('data'), createEmptyInstance: create)
     ..aOS(1, 'paymentRequest', protoName: 'paymentRequest')
+    ..aInt64(2, 'lspFee')
     ..hasRequiredFields = false
   ;
 
@@ -157,6 +158,15 @@ class AddInvoiceReply extends $pb.GeneratedMessage {
   $core.bool hasPaymentRequest() => $_has(0);
   @$pb.TagNumber(1)
   void clearPaymentRequest() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get lspFee => $_getI64(1);
+  @$pb.TagNumber(2)
+  set lspFee($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasLspFee() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearLspFee() => clearField(2);
 }
 
 class ChainStatus extends $pb.GeneratedMessage {
@@ -216,6 +226,7 @@ class Account extends $pb.GeneratedMessage {
     ..aOB(12, 'readyForPayments', protoName: 'readyForPayments')
     ..aInt64(13, 'tipHeight', protoName: 'tipHeight')
     ..pPS(14, 'connectedPeers', protoName: 'connectedPeers')
+    ..aInt64(15, 'maxInboundLiquidity')
     ..hasRequiredFields = false
   ;
 
@@ -353,6 +364,15 @@ class Account extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(14)
   $core.List<$core.String> get connectedPeers => $_getList(13);
+
+  @$pb.TagNumber(15)
+  $fixnum.Int64 get maxInboundLiquidity => $_getI64(14);
+  @$pb.TagNumber(15)
+  set maxInboundLiquidity($fixnum.Int64 v) { $_setInt64(14, v); }
+  @$pb.TagNumber(15)
+  $core.bool hasMaxInboundLiquidity() => $_has(14);
+  @$pb.TagNumber(15)
+  void clearMaxInboundLiquidity() => clearField(15);
 }
 
 class Payment extends $pb.GeneratedMessage {
