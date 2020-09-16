@@ -62,7 +62,8 @@ class AddFundsBloc extends Bloc {
   Sink<AddFundsSettings> get addFundsSettingsSink =>
       _addFundsSettingsController.sink;
 
-  AddFundsBloc(Stream<BreezUserModel> userStream, this.accountStream, this.lspStatusStream) {
+  AddFundsBloc(Stream<BreezUserModel> userStream, this.accountStream,
+      this.lspStatusStream) {
     ServiceInjector injector = ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
     int requestNumber = 0;
@@ -89,7 +90,7 @@ class AddFundsBloc extends Bloc {
         });
       });
     });
-   _populateAvailableVendors();
+    _populateAvailableVendors();
     _addFundsSettingsController.add(AddFundsSettings.start());
     _handleAddFundsSettings(injector);
     _handleMoonpayOrders(injector);
@@ -110,7 +111,9 @@ class AddFundsBloc extends Bloc {
         enabled: !hasPendingOrder));
     _vendorList.add(AddFundVendorModel(
         "Buy Bitcoin", "src/icon/credit_card.png", "/buy_bitcoin",
-        isAllowed: _isMoonpayAllowed, enabled: !hasPendingOrder));
+        isAllowed: _isMoonpayAllowed,
+        enabled: !hasPendingOrder,
+        showLSPFee: true));
     _vendorList.add(AddFundVendorModel("Redeem Fastbitcoins Voucher",
         "src/icon/vendors/fastbitcoins_logo.png", "/fastbitcoins",
         requireActiveChannel: true, shortName: "Redeem Voucher"));

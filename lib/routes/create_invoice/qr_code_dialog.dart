@@ -200,15 +200,17 @@ class QrCodeDialogState extends State<QrCodeDialog>
                           onTap: () {
                             ShareExtend.share(snapshot.data.rawPayReq, "text");
                           },
-                          child: Container(
-                            child: Text(
-                              "A setup fee of ${snapshot.data.lspFee} sats (${accSnapshot.data.fiatCurrency.format(snapshot.data.lspFee)} in fiat) is applied to this invoice.",
-                              style: Theme.of(context)
-                                  .primaryTextTheme
-                                  .caption
-                                  .copyWith(fontSize: 9),
-                            ),
-                          ),
+                          child: snapshot.data.lspFee == 0
+                              ? SizedBox()
+                              : Container(
+                                  child: Text(
+                                    "A setup fee of ${snapshot.data.lspFee} sats (${accSnapshot.data.fiatCurrency.format(snapshot.data.lspFee)} in fiat) is applied to this invoice.",
+                                    style: Theme.of(context)
+                                        .primaryTextTheme
+                                        .caption
+                                        .copyWith(fontSize: 9),
+                                  ),
+                                ),
                         ),
                       ],
                     );

@@ -11,6 +11,8 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/handlers/lnurl_handler.dart';
 import 'package:breez/routes/add_funds/fastbitcoins_page.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
@@ -28,6 +30,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/escher_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/lsp_fee.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -339,89 +342,111 @@ class FloatingActionsBar extends StatelessWidget {
 
   Future _showReceiveOptions(BuildContext context) {
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
+    LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     return showModalBottomSheet(
         context: context,
         builder: (ctx) {
-          return StreamBuilder<List<AddFundVendorModel>>(
-              stream: addFundsBloc.availableVendorsStream,
-              builder: (context, snapshot) {
-                if (snapshot.data == null) {
-                  return SizedBox();
-                }
+          return StreamBuilder<LSPStatus>(
+              stream: lspBloc.lspStatusStream,
+              builder: (context, lspSnapshot) {
+                return StreamBuilder<List<AddFundVendorModel>>(
+                    stream: addFundsBloc.availableVendorsStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null) {
+                        return SizedBox();
+                      }
 
-                List<Widget> children =
-                    snapshot.data.where((v) => v.isAllowed).map((v) {
-                  return ListTile(
-                      enabled: v.enabled &&
-                          (account.connected || !v.requireActiveChannel),
-                      leading: _ActionImage(
-                          iconAssetPath: v.icon,
-                          enabled:
-                              account.connected || !v.requireActiveChannel),
-                      title: Text(v.shortName ?? v.name),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pushNamed(v.route);
-                      });
-                }).toList();
+                      List<Widget> children =
+                          snapshot.data.where((v) => v.isAllowed).map((v) {
+                        return ListTile(
+                            enabled: v.enabled &&
+                                (account.connected || !v.requireActiveChannel),
+                            leading: _ActionImage(
+                                iconAssetPath: v.icon,
+                                enabled: account.connected ||
+                                    !v.requireActiveChannel),
+                            title: Text(v.shortName ?? v.name),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              if (v.showLSPFee) {
+                                promptLSPFeeAndNavigate(context, account,
+                                    lspSnapshot.data.currentLSP, v.route);
+                              } else {
+                                Navigator.of(context).pushNamed(v.route);
+                              }
+                            });
+                      }).toList();
 
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    SizedBox(height: 8.0),
-                    ListTile(
-                        enabled: true,
-                        leading: _ActionImage(
-                            iconAssetPath: "src/icon/paste.png",
-                            enabled: true),
-                        title: Text("Receive via Invoice"),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pushNamed("/create_invoice");
-                        }),
-                    ...children,
-                    !account.connected
-                        ? SizedBox(height: 8.0)
-                        : Padding(
-                            padding: const EdgeInsets.only(
-                                top: 16.0,
-                                left: 16.0,
-                                right: 16.0,
-                                bottom: 16.0),
-                            child: Container(
-                              padding: EdgeInsets.only(
-                                  top: 8.0, bottom: 8.0, left: 8.0, right: 8.0),
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(4)),
-                                  border: Border.all(
-                                      color: Theme.of(context).errorColor)),
-                              child: AutoSizeText(
-                                "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
-                                maxLines: 1,
-                                maxFontSize: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1
-                                    .fontSize,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline4
-                                    .copyWith(
-                                        fontSize: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1
-                                            .fontSize),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          )
-                  ],
-                );
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          SizedBox(height: 8.0),
+                          ListTile(
+                              enabled: true,
+                              leading: _ActionImage(
+                                  iconAssetPath: "src/icon/paste.png",
+                                  enabled: true),
+                              title: Text("Receive via Invoice"),
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context)
+                                    .pushNamed("/create_invoice");
+                              }),
+                          ...children,
+                          !account.connected
+                              ? SizedBox(height: 8.0)
+                              : Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 16.0,
+                                      left: 16.0,
+                                      right: 16.0,
+                                      bottom: 16.0),
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        top: 8.0,
+                                        bottom: 8.0,
+                                        left: 8.0,
+                                        right: 8.0),
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(4)),
+                                        border: Border.all(
+                                            color:
+                                                Theme.of(context).errorColor)),
+                                    child: AutoSizeText(
+                                      "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
+                                      maxLines: 1,
+                                      maxFontSize: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1
+                                          .fontSize,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline4
+                                          .copyWith(
+                                              fontSize: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle1
+                                                  .fontSize),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                )
+                        ],
+                      );
+                    });
               });
         });
   }
+}
+
+String _formatFeeMessage(AccountModel acc, LSPInfo lsp) {
+  if (acc.connected) {
+    return "A setup fee of ${lsp.channelFeePermyriad / 10000} will be applied for sending more than ${acc.maxInboundLiquidity} sats to this address.";
+  }
+  return "A setup fee of ${lsp.channelFeePermyriad / 10000} will be applied on the received amount.";
 }
 
 class _ActionSeparator extends StatelessWidget {
