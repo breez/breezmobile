@@ -2,6 +2,8 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
@@ -37,49 +39,59 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   @override
   Widget build(BuildContext context) {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    var lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     return ConditionalDeposit(
         title: _title,
-        enabledChild: StreamBuilder(
-            stream: accountBloc.accountStream,
-            builder: (BuildContext context,
-                AsyncSnapshot<AccountModel> accSnapshot) {
+        enabledChild: StreamBuilder<LSPStatus>(
+            stream: lspBloc.lspStatusStream,
+            builder:
+                (BuildContext context, AsyncSnapshot<LSPStatus> lspSnapshot) {
               return StreamBuilder(
-                  stream: _addFundsBloc.addFundResponseStream,
+                  stream: accountBloc.accountStream,
                   builder: (BuildContext context,
-                      AsyncSnapshot<AddFundResponse> snapshot) {
-                    return Material(
-                      child: Scaffold(
-                          appBar: AppBar(
-                            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-                            textTheme: Theme.of(context).appBarTheme.textTheme,
-                            backgroundColor: Theme.of(context).canvasColor,
-                            leading: backBtn.BackButton(),
-                            title: Text(
-                              _title,
-                              style: Theme.of(context)
-                                  .appBarTheme
-                                  .textTheme
-                                  .headline6,
-                            ),
-                            elevation: 0.0,
-                          ),
-                          body: getBody(
-                              context,
-                              accSnapshot.data,
-                              snapshot.data,
-                              snapshot.hasError
-                                  ? "Failed to retrieve an address from Breez server\nPlease check your internet connection."
-                                  : null),
-                          bottomNavigationBar: _buildBottomBar(
-                              snapshot.data, accSnapshot.data,
-                              hasError: snapshot.hasError)),
-                    );
+                      AsyncSnapshot<AccountModel> accSnapshot) {
+                    return StreamBuilder(
+                        stream: _addFundsBloc.addFundResponseStream,
+                        builder: (BuildContext context,
+                            AsyncSnapshot<AddFundResponse> snapshot) {
+                          return Material(
+                            child: Scaffold(
+                                appBar: AppBar(
+                                  iconTheme:
+                                      Theme.of(context).appBarTheme.iconTheme,
+                                  textTheme:
+                                      Theme.of(context).appBarTheme.textTheme,
+                                  backgroundColor:
+                                      Theme.of(context).canvasColor,
+                                  leading: backBtn.BackButton(),
+                                  title: Text(
+                                    _title,
+                                    style: Theme.of(context)
+                                        .appBarTheme
+                                        .textTheme
+                                        .headline6,
+                                  ),
+                                  elevation: 0.0,
+                                ),
+                                body: getBody(
+                                    context,
+                                    accSnapshot.data,
+                                    snapshot.data,
+                                    lspSnapshot.data,
+                                    snapshot.hasError
+                                        ? "Failed to retrieve an address from Breez server\nPlease check your internet connection."
+                                        : null),
+                                bottomNavigationBar: _buildBottomBar(
+                                    snapshot.data, accSnapshot.data,
+                                    hasError: snapshot.hasError)),
+                          );
+                        });
                   });
             }));
   }
 
   Widget getBody(BuildContext context, AccountModel account,
-      AddFundResponse response, String error) {
+      AddFundResponse response, LSPStatus lspStatus, String error) {
     String errorMessage;
     if (error != null) {
       errorMessage = error;
@@ -101,6 +113,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
         ],
       );
     }
+
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -126,9 +139,29 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                     ),
                   ),
                 ),
+          response == null
+              ? SizedBox()
+              : Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      formatFeeMessage(account, lspStatus.currentLSP),
+                      style: Theme.of(context).textTheme.headline4,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
         ],
       ),
     );
+  }
+
+  String formatFeeMessage(AccountModel acc, LSPInfo lsp) {
+    if (acc.connected) {
+      return "A setup fee of ${lsp.channelFeePermyriad / 10000} will be applied for sending more than ${acc.maxInboundLiquidity} sats to this address.";
+    }
+    return "A setup fee of ${lsp.channelFeePermyriad / 10000} will be applied on the received amount.";
   }
 
   Widget _buildBottomBar(AddFundResponse response, AccountModel account,
