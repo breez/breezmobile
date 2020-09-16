@@ -338,8 +338,8 @@ class BreezBridge {
     return _invokeMethodImmediate("graphURL")
         .then((result) => result as String)
         .catchError((e) {
-          logger.log.info("Error in graphURL:"+e.toString());
-        });
+      logger.log.info("Error in graphURL:" + e.toString());
+    });
   }
 
   Future sendPaymentFailureBugReport(String traceReport) {
@@ -373,7 +373,7 @@ class BreezBridge {
     return _invokeMethodImmediate("deleteGraph", {});
   }
 
-  Future<String> addInvoice(Int64 amount,
+  Future<AddInvoiceReply> addInvoice(Int64 amount,
       {String payeeName,
       String payeeImageURL,
       String payerName,
@@ -405,12 +405,12 @@ class BreezBridge {
       var keys = lsps.lsps.keys.toList();
       if (keys.length == 1) {
         request.lspInfo = lsps.lsps[keys[0]];
-      }      
+      }
     }
 
     return _invokeMethodWhenReady(
             "addInvoice", {"argument": request.writeToBuffer()})
-        .then((payReq) => payReq as String);
+        .then((res) => AddInvoiceReply()..mergeFromBuffer(res ?? []));
   }
 
   Future<CreateRatchetSessionReply> createRatchetSession(
@@ -482,7 +482,8 @@ class BreezBridge {
     var initRequest = AddFundInitRequest()
       ..notificationToken = breezID
       ..lspID = selectedLSP;
-    return _invokeMethodWhenReady("addFundsInit", {"argument": initRequest.writeToBuffer()})
+    return _invokeMethodWhenReady(
+            "addFundsInit", {"argument": initRequest.writeToBuffer()})
         .then((reply) => AddFundInitReply()..mergeFromBuffer(reply ?? []));
   }
 
