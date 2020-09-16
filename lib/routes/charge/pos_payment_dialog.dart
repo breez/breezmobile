@@ -119,7 +119,8 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
               color: Theme.of(context).primaryTextTheme.button.color,
               onPressed: () {
-                ShareExtend.share("lightning:" + widget.paymentRequest.rawPayReq, "text");
+                ShareExtend.share(
+                    "lightning:" + widget.paymentRequest.rawPayReq, "text");
               },
             ),
             IconButton(
@@ -181,6 +182,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               ),
             ),
           ),
+          Text(
+              "A setup fee of ${widget.paymentRequest.lspFee} sats (${account.fiatCurrency.format(widget.paymentRequest.lspFee)} in fiat) is applied to this invoice.",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).primaryTextTheme.headline4),
           Text(_countdownString,
               textAlign: TextAlign.center,
               style: Theme.of(context)
