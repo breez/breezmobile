@@ -48,7 +48,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
     });
   }
 
-  void _listenPaidInvoice(PaymentRequestModel payReqModel, AnimationController controller) async {
+  void _listenPaidInvoice(
+      PaymentRequestModel payReqModel, AnimationController controller) async {
     var payreq =
         await widget._invoiceBloc.paidInvoicesStream.firstWhere((payreq) {
       bool ok = payreq.paymentHash == payReqModel.paymentHash;
@@ -110,7 +111,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                       .color,
                                   onPressed: () {
                                     ShareExtend.share(
-                                        "lightning:" + snapshot.data.rawPayReq, "text");
+                                        "lightning:" + snapshot.data.rawPayReq,
+                                        "text");
                                   },
                                 ),
                                 IconButton(
@@ -128,9 +130,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                       .button
                                       .color,
                                   onPressed: () {
-                                    ServiceInjector()
-                                        .device
-                                        .setClipboardText(snapshot.data.rawPayReq);
+                                    ServiceInjector().device.setClipboardText(
+                                        snapshot.data.rawPayReq);
                                     showFlushbar(context,
                                         message:
                                             "Invoice data was copied to your clipboard.",
@@ -201,7 +202,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                           },
                           child: Container(
                             child: Text(
-                              snapshot.data.rawPayReq,
+                              "A setup fee of ${snapshot.data.lspFee} sats (${accSnapshot.data.fiatCurrency.format(snapshot.data.lspFee)} in fiat) is applied to this invoice.",
                               style: Theme.of(context)
                                   .primaryTextTheme
                                   .caption
