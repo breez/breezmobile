@@ -1,6 +1,7 @@
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payee_session.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
@@ -16,8 +17,9 @@ import 'session_instructions.dart';
 class PayeeSessionWidget extends StatelessWidget {
   final PayeeRemoteSession _currentSession;
   final AccountModel _account;
+  final LSPStatus _lspStatus;
 
-  PayeeSessionWidget(this._currentSession, this._account);
+  PayeeSessionWidget(this._currentSession, this._account, this._lspStatus);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,8 @@ class PayeeSessionWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              SessionInstructions(_PayeeInstructions(sessionState, _account),
+              SessionInstructions(
+                  _PayeeInstructions(sessionState, _account, _lspStatus),
                   actions: _getActions(sessionState),
                   onAction: (action) => _onAction(context, action),
                   disabledActions: _getDisabledActions(sessionState)),
@@ -78,8 +81,9 @@ class PayeeSessionWidget extends StatelessWidget {
 class _PayeeInstructions extends StatelessWidget {
   final PaymentSessionState _sessionState;
   final AccountModel _account;
+  final LSPStatus _lspStatus;
 
-  _PayeeInstructions(this._sessionState, this._account);
+  _PayeeInstructions(this._sessionState, this._account, this._lspStatus);
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +146,18 @@ class _PayeeInstructions extends StatelessWidget {
                 textAlign: TextAlign.center)
           ],
         );
+      } else {
+        return Column(
+          children: <Widget>[
+            Text(message, style: theme.sessionNotificationStyle),
+            Text(
+                _formatFeeMessage(
+                    _account, _lspStatus, _sessionState.payerData.amount),
+                style: theme.sessionNotificationWarningStyle
+                    .copyWith(color: Theme.of(context).errorColor),
+                textAlign: TextAlign.center)
+          ],
+        );
       }
     } else if (_sessionState.payeeData.paymentRequest != null) {
       return LoadingAnimatedText(
@@ -150,4 +166,15 @@ class _PayeeInstructions extends StatelessWidget {
     }
     return Text(message, style: theme.sessionNotificationStyle);
   }
+}
+
+_formatFeeMessage(AccountModel acc, LSPStatus lspStatus, int amount) {
+  if (acc.maxInboundLiquidity >= amount) {
+    return '';
+  }
+
+  var feeSats = (amount - acc.maxInboundLiquidity.toInt()) *
+      (lspStatus.currentLSP.channelFeePermyriad / 10000).round();
+  var feeFiat = acc.currency.format(Int64(feeSats));
+  return 'A setup fee of $feeSats sats  ($feeFiat) is applied to this payment.';
 }

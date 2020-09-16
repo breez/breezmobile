@@ -5,6 +5,8 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -183,6 +185,8 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     }
 
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    var lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+
     return StreamBuilder<PaymentSessionState>(
       stream: _currentSession.paymentSessionStateStream,
       builder: (context, snapshot) {
@@ -190,17 +194,22 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
           return Center(child: Loader());
         }
 
-        return StreamBuilder(
-            stream: accountBloc.accountStream,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(child: Loader());
-              }
-              if (_currentSession.runtimeType == PayerRemoteSession) {
-                return PayerSessionWidget(_currentSession, snapshot.data);
-              } else {
-                return PayeeSessionWidget(_currentSession, snapshot.data);
-              }
+        return StreamBuilder<LSPStatus>(
+            stream: lspBloc.lspStatusStream,
+            builder: (context, lspSnapshot) {
+              return StreamBuilder(
+                  stream: accountBloc.accountStream,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: Loader());
+                    }
+                    if (_currentSession.runtimeType == PayerRemoteSession) {
+                      return PayerSessionWidget(_currentSession, snapshot.data);
+                    } else {
+                      return PayeeSessionWidget(
+                          _currentSession, snapshot.data, lspSnapshot.data);
+                    }
+                  });
             });
       },
     );

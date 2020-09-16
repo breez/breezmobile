@@ -11,8 +11,7 @@ class LSPStatus {
   final String selectedLSP;
   final String lastConnectionError;
 
-  LSPStatus._(this.availableLSPs,
-      this.lastConnectionError, this.selectedLSP);
+  LSPStatus._(this.availableLSPs, this.lastConnectionError, this.selectedLSP);
 
   LSPStatus.initial() : this._([], null, null);
   LSPStatus copyWith(
@@ -25,9 +24,11 @@ class LSPStatus {
         selectedLSP ?? this.selectedLSP);
   }
 
-  bool get selectionRequired =>
-     selectedLSP == null && availableLSPs.length > 1;
+  bool get selectionRequired => selectedLSP == null && availableLSPs.length > 1;
 
+  LSPInfo get currentLSP =>
+      availableLSPs.firstWhere((element) => element.lspID == selectedLSP,
+          orElse: () => null);
 }
 
 class LSPInfo {
@@ -46,4 +47,5 @@ class LSPInfo {
   int get timeLockDelta => _lspInformation.timeLockDelta;
   int get baseFeeMsat => _lspInformation.baseFeeMsat.toInt();
   int get channelCapacity => _lspInformation.channelCapacity.toInt();
+  int get channelFeePermyriad => _lspInformation.channelFeePermyriad.toInt();
 }
