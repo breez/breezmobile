@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
@@ -185,6 +186,17 @@ class QrCodeDialogState extends State<QrCodeDialog>
                     }
                     return Column(
                       children: [
+                        snapshot.data.lspFee == 0
+                            ? SizedBox()
+                            : Container(
+                                child: Text(
+                                  "A setup fee of ${Currency.SAT.format(snapshot.data.lspFee)} (${accSnapshot.data.fiatCurrency.format(snapshot.data.lspFee)}) is applied to this invoice.",
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .primaryTextTheme
+                                      .caption,
+                                ),
+                              ),
                         AspectRatio(
                           aspectRatio: 1,
                           child: Container(
@@ -196,22 +208,6 @@ class QrCodeDialogState extends State<QrCodeDialog>
                           ),
                         ),
                         Padding(padding: EdgeInsets.only(top: 8.0)),
-                        GestureDetector(
-                          onTap: () {
-                            ShareExtend.share(snapshot.data.rawPayReq, "text");
-                          },
-                          child: snapshot.data.lspFee == 0
-                              ? SizedBox()
-                              : Container(
-                                  child: Text(
-                                    "A setup fee of ${snapshot.data.lspFee} sats (${accSnapshot.data.fiatCurrency.format(snapshot.data.lspFee)} in fiat) is applied to this invoice.",
-                                    style: Theme.of(context)
-                                        .primaryTextTheme
-                                        .caption
-                                        .copyWith(fontSize: 9),
-                                  ),
-                                ),
-                        ),
                       ],
                     );
                   },

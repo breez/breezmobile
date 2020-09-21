@@ -442,13 +442,6 @@ class FloatingActionsBar extends StatelessWidget {
   }
 }
 
-String _formatFeeMessage(AccountModel acc, LSPInfo lsp) {
-  if (acc.connected) {
-    return "A setup fee of ${lsp.channelFeePermyriad / 10000} will be applied for sending more than ${acc.maxInboundLiquidity} sats to this address.";
-  }
-  return "A setup fee of ${lsp.channelFeePermyriad / 10000} will be applied on the received amount.";
-}
-
 class _ActionSeparator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

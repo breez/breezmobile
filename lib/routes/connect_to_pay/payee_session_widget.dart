@@ -2,6 +2,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payee_session.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
@@ -173,8 +174,15 @@ _formatFeeMessage(AccountModel acc, LSPStatus lspStatus, int amount) {
     return '';
   }
 
-  var feeSats = (amount - acc.maxInboundLiquidity.toInt()) *
-      (lspStatus.currentLSP.channelFeePermyriad / 10000).round();
-  var feeFiat = acc.currency.format(Int64(feeSats));
-  return 'A setup fee of $feeSats sats  ($feeFiat) is applied to this payment.';
+  num feeSats = 0;
+  if (amount > acc.maxInboundLiquidity.toInt()) {
+    feeSats = (amount * lspStatus.currentLSP.channelFeePermyriad / 10000);
+  }
+  var intSats = feeSats.toInt();
+  if (intSats == 0) {
+    return "";
+  }
+  var feeFiat = acc.fiatCurrency.format(Int64(intSats));
+  var formattedSats = Currency.SAT.format(Int64(intSats));
+  return 'A setup fee of $formattedSats ($feeFiat) is applied to this payment.';
 }

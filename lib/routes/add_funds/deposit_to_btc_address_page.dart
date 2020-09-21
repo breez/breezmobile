@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
@@ -159,9 +160,10 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
 
   String formatFeeMessage(AccountModel acc, LSPInfo lsp) {
     if (acc.connected) {
-      return "A setup fee of ${lsp.channelFeePermyriad / 10000} will be applied for sending more than ${acc.maxInboundLiquidity} sats to this address.";
+      var liquidity = Currency.SAT.format(acc.maxInboundLiquidity);
+      return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied for sending more than $liquidity to this address.";
     }
-    return "A setup fee of ${lsp.channelFeePermyriad / 10000} will be applied on the received amount.";
+    return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied on the received amount.";
   }
 
   Widget _buildBottomBar(AddFundResponse response, AccountModel account,

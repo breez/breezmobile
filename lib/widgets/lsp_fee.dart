@@ -1,5 +1,6 @@
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:flutter/material.dart';
 
 import 'error_dialog.dart';
@@ -9,7 +10,7 @@ promptLSPFeeAndNavigate(
   var navigator = Navigator.of(context);
   promptAreYouSure(
           context,
-          "Purchase Fee",
+          "Setup Fee",
           Text(_formatFeeMessage(account, lsp),
               style: Theme.of(context).dialogTheme.contentTextStyle),
           cancelText: "CANCEL",
@@ -23,7 +24,8 @@ promptLSPFeeAndNavigate(
 
 String _formatFeeMessage(AccountModel acc, LSPInfo lsp) {
   if (acc.connected) {
-    return "A setup fee of ${lsp.channelFeePermyriad / 10000} will be applied for sending more than ${acc.maxInboundLiquidity} sats to this address.";
+    var liquidity = Currency.SAT.format(acc.maxInboundLiquidity);
+    return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied for buying more than $liquidity to this address.";
   }
-  return "A setup fee of ${lsp.channelFeePermyriad / 10000} will be applied on the received amount.";
+  return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied on the received amount.";
 }
