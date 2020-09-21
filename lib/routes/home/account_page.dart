@@ -71,20 +71,15 @@ class AccountPageState extends State<AccountPage>
                     builder: (context, snapshot) {
                       PaymentsModel paymentsModel =
                           snapshot.data ?? PaymentsModel.initial();
-                      return StreamBuilder<String>(
-                          stream: _connectPayBloc.pendingCTPLinkStream,
-                          builder: (ctx, ctpSnapshot) {
-                            //account and payments are ready, build their widgets
-                            return _buildBalanceAndPayments(
-                                paymentsModel, account, ctpSnapshot.data);
-                          });
+                      //account and payments are ready, build their widgets
+                      return _buildBalanceAndPayments(paymentsModel, account);
                     });
               });
         });
   }
 
-  Widget _buildBalanceAndPayments(PaymentsModel paymentsModel,
-      AccountModel account, String pendingCTPLink) {
+  Widget _buildBalanceAndPayments(
+      PaymentsModel paymentsModel, AccountModel account) {
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     double listHeightSpace = MediaQuery.of(context).size.height -
@@ -102,11 +97,6 @@ class AccountPageState extends State<AccountPage>
     String message;
     bool showMessage = account?.syncUIState != SyncUIState.BLOCKING &&
         (account != null && !account.initial);
-    if (pendingCTPLink != null) {
-      message =
-          "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";
-      showMessage = true;
-    }
 
     List<Widget> slivers = List<Widget>();
     slivers.add(SliverPersistentHeader(
@@ -186,7 +176,8 @@ class AccountPageState extends State<AccountPage>
                 (offset / (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT))
                     .clamp(0.0, 1.0);
             return account != null && !account.initial
-                ? FloatingActionsBar(account, height, heightFactor, firstPaymentItemKey)
+                ? FloatingActionsBar(
+                    account, height, heightFactor, firstPaymentItemKey)
                 : Positioned(top: 0.0, child: SizedBox());
           },
         ),
@@ -238,8 +229,13 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
                     (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
 
                 return Stack(overflow: Overflow.visible, children: <Widget>[
-                  WalletDashboard(settingSnapshot.data, snapshot.data, height,
-                      heightFactor, _userProfileBloc.currencySink.add, _userProfileBloc.fiatConversionSink.add)
+                  WalletDashboard(
+                      settingSnapshot.data,
+                      snapshot.data,
+                      height,
+                      heightFactor,
+                      _userProfileBloc.currencySink.add,
+                      _userProfileBloc.fiatConversionSink.add)
                 ]);
               });
         });

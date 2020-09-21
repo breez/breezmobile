@@ -24,7 +24,6 @@ The handling of the session itself is not done here but within the concrete sess
 
 */
 class ConnectPayBloc {
-  static const String PENDING_CTP_LINK = 'pending_ctp_link';
   BreezBridge _breezLib = ServiceInjector().breezBridge;
   BreezServer _breezServer = ServiceInjector().breezServer;
   RemoteSession _currentSession;
@@ -33,44 +32,15 @@ class ConnectPayBloc {
   Stream<SessionLinkModel> get sessionInvites =>
       _sessionInvitesController.stream;
 
-  final BehaviorSubject<String> _pendingCTPLinkController =
-      BehaviorSubject<String>();
-  Stream<String> get pendingCTPLinkStream => _pendingCTPLinkController.stream;
-
-  Stream<BreezUserModel> _userStream;
   Sink<AsyncAction> _accountActions;
   BreezUserModel _currentUser;
-  AccountModel _currentAccount;
 
   ConnectPayBloc(Stream<BreezUserModel> userStream,
       Stream<AccountModel> accountStream, Sink<AsyncAction> accountActions) {
-    _userStream = userStream;
     _accountActions = accountActions;
     userStream.listen((user) => _currentUser = user);
-    accountStream.listen(onAccountChanged);
     _monitorSessionInvites();
     _monitorSessionNotifications();
-    _monitorPendingCTPLinks();
-  }
-
-  void onAccountChanged(AccountModel acc) async {
-    _currentAccount = acc;
-    if (_currentAccount.connected && !_pendingCTPLinkController.isClosed) {
-      String pendingLink = _pendingCTPLinkController.value;
-      if (pendingLink != null) {
-        SessionLinkModel sessionLink =
-            ServiceInjector().deepLinks.parseSessionInviteLink(pendingLink);
-        _sessionInvitesController.add(sessionLink);
-      }
-      _pendingCTPLinkController.close();
-    }
-  }
-
-  _monitorPendingCTPLinks() async {
-    var preferences = await ServiceInjector().sharedPreferences;
-    _pendingCTPLinkController.stream.listen((link) async {
-      preferences.setString(PENDING_CTP_LINK, link);
-    }).onDone(() => preferences.remove(PENDING_CTP_LINK));
   }
 
   Future _sendPayment(String paymentRequest, Int64 amount) {
@@ -167,28 +137,8 @@ class ConnectPayBloc {
   RemoteSession get currentSession => _currentSession;
 
   _monitorSessionInvites() async {
-    var preferences = await ServiceInjector().sharedPreferences;
-    var pendingLink = preferences.getString(PENDING_CTP_LINK);
-    if (pendingLink != null) {
-      _pendingCTPLinkController.add(pendingLink);
-    }
-
     DeepLinksService deepLinks = ServiceInjector().deepLinks;
     deepLinks.linksNotifications.listen((link) async {
-      //if our account is not active yet, just persist the link
-      if (!_currentAccount.connected) {
-        _pendingCTPLinkController.add(link);
-        StreamSubscription<BreezUserModel> userSubscription;
-        userSubscription = _userStream.listen((user) {
-          if (user.token != null) {
-            _breezLib.registerReceivePaymentReadyNotification(user.token);
-            userSubscription.cancel();
-          }
-        });
-        return;
-      }
-
-      // otherwise push the link to the invites stream.
       SessionLinkModel sessionLink = deepLinks.parseSessionInviteLink(link);
       if (sessionLink != null && sessionLink.sessionID != null) {
         _sessionInvitesController.add(sessionLink);
