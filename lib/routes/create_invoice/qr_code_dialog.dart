@@ -186,17 +186,6 @@ class QrCodeDialogState extends State<QrCodeDialog>
                     }
                     return Column(
                       children: [
-                        snapshot.data.lspFee == 0
-                            ? SizedBox()
-                            : Container(
-                                child: Text(
-                                  "A setup fee of ${Currency.SAT.format(snapshot.data.lspFee)} (${accSnapshot.data.fiatCurrency.format(snapshot.data.lspFee)}) is applied to this invoice.",
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .primaryTextTheme
-                                      .caption,
-                                ),
-                              ),
                         AspectRatio(
                           aspectRatio: 1,
                           child: Container(
@@ -214,6 +203,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                 ),
                 Padding(padding: EdgeInsets.only(top: 16.0)),
                 _buildExpiryMessage(snapshot.hasError),
+                _buildFeeMessage(snapshot),
                 Padding(padding: EdgeInsets.only(top: 16.0)),
                 _buildCloseButton()
               ],
@@ -233,6 +223,25 @@ class QrCodeDialogState extends State<QrCodeDialog>
       Text("Keep the Breez app open in order to receive payment.",
           style: Theme.of(context).primaryTextTheme.caption)
     ]);
+  }
+
+  Widget _buildFeeMessage(AsyncSnapshot<PaymentRequestModel> snapshot) {
+    return StreamBuilder<AccountModel>(
+        stream: widget._accountBloc.accountStream,
+        builder: (context, accSnapshot) {
+          if (snapshot.hasError) {
+            return Container();
+          }
+          return snapshot.data.lspFee == 0
+              ? SizedBox()
+              : Container(
+                  child: Text(
+                    "A setup fee of ${Currency.SAT.format(snapshot.data.lspFee)} (${accSnapshot.data.fiatCurrency.format(snapshot.data.lspFee)}) is applied to this invoice.",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).primaryTextTheme.caption,
+                  ),
+                );
+        });
   }
 
   Widget _buildCloseButton() {

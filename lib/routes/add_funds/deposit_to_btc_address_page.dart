@@ -130,29 +130,30 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                         border:
                             Border.all(color: Theme.of(context).errorColor)),
                     padding: EdgeInsets.all(16),
-                    child: Text(
-                      "Send up to " +
-                          account.currency.format(response.maxAllowedDeposit,
-                              includeDisplayName: true) +
-                          " to this address.",
-                      style: Theme.of(context).textTheme.headline4,
-                      textAlign: TextAlign.center,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(
+                          "Send up to " +
+                              account.currency.format(
+                                  response.maxAllowedDeposit,
+                                  includeDisplayName: true) +
+                              " to this address.",
+                          style: Theme.of(context).textTheme.headline4,
+                          textAlign: TextAlign.center,
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            formatFeeMessage(account, lspStatus.currentLSP),
+                            style: Theme.of(context).textTheme.headline4,
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),
-          response == null
-              ? SizedBox()
-              : Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Container(
-                    padding: EdgeInsets.all(16),
-                    child: Text(
-                      formatFeeMessage(account, lspStatus.currentLSP),
-                      style: Theme.of(context).textTheme.headline4,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
         ],
       ),
     );
