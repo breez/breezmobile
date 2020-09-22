@@ -187,7 +187,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               : Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
-                      "A setup fee of ${Currency.SAT.format(widget.paymentRequest.lspFee)} (${account.fiatCurrency.format(widget.paymentRequest.lspFee)} in fiat) is applied to this invoice.",
+                      "A setup fee of ${Currency.SAT.format(widget.paymentRequest.lspFee)} (${account.fiatCurrency.format(widget.paymentRequest.lspFee)}) is applied to this invoice.",
                       textAlign: TextAlign.center,
                       style: Theme.of(context).primaryTextTheme.headline4),
                 ),
