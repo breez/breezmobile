@@ -47,6 +47,12 @@ class PayeeSessionWidget extends StatelessWidget {
                     left: 25.0, right: 25.0, bottom: 21.0, top: 25.0),
                 child: PeersConnection(sessionState),
               ),
+              Text(
+                  _formatFeeMessage(
+                      _account, _lspStatus, snapshot.data.payerData.amount),
+                  style: theme.sessionNotificationWarningStyle
+                      .copyWith(color: Theme.of(context).errorColor),
+                  textAlign: TextAlign.center)
             ],
           );
         });
@@ -142,18 +148,6 @@ class _PayeeInstructions extends StatelessWidget {
             Text(message, style: theme.sessionNotificationStyle),
             Text(
                 'This payment exceeds your limit (${_account.currency.format(_account.maxAllowedToReceive)}).',
-                style: theme.sessionNotificationWarningStyle
-                    .copyWith(color: Theme.of(context).errorColor),
-                textAlign: TextAlign.center)
-          ],
-        );
-      } else {
-        return Column(
-          children: <Widget>[
-            Text(message, style: theme.sessionNotificationStyle),
-            Text(
-                _formatFeeMessage(
-                    _account, _lspStatus, _sessionState.payerData.amount),
                 style: theme.sessionNotificationWarningStyle
                     .copyWith(color: Theme.of(context).errorColor),
                 textAlign: TextAlign.center)
