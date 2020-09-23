@@ -229,7 +229,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
     return StreamBuilder<AccountModel>(
         stream: widget._accountBloc.accountStream,
         builder: (context, accSnapshot) {
-          if (snapshot.hasError) {
+          if (snapshot.hasError || !snapshot.hasData) {
             return Container();
           }
           return snapshot.data.lspFee == 0
