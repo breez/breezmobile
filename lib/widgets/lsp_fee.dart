@@ -24,7 +24,7 @@ promptLSPFeeAndNavigate(
 
 String _formatFeeMessage(AccountModel acc, LSPInfo lsp) {
   if (acc.connected) {
-    var liquidity = Currency.SAT.format(acc.maxInboundLiquidity);
+    var liquidity = acc.currency.format(acc.maxInboundLiquidity);
     return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied for buying more than $liquidity.";
   }
   return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied on the received amount.";

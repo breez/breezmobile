@@ -197,14 +197,14 @@ class QrCodeDialogState extends State<QrCodeDialog>
                           ),
                         ),
                         Padding(padding: EdgeInsets.only(top: 8.0)),
+                        Padding(padding: EdgeInsets.only(top: 16.0)),
+                        _buildExpiryMessage(snapshot.hasError),
+                        _buildFeeMessage(snapshot),
+                        Padding(padding: EdgeInsets.only(top: 16.0)),
                       ],
                     );
                   },
                 ),
-                Padding(padding: EdgeInsets.only(top: 16.0)),
-                _buildExpiryMessage(snapshot.hasError),
-                _buildFeeMessage(snapshot),
-                Padding(padding: EdgeInsets.only(top: 16.0)),
                 _buildCloseButton()
               ],
             ),
@@ -229,7 +229,10 @@ class QrCodeDialogState extends State<QrCodeDialog>
     return StreamBuilder<AccountModel>(
         stream: widget._accountBloc.accountStream,
         builder: (context, accSnapshot) {
-          if (snapshot.hasError || !snapshot.hasData) {
+          if (accSnapshot.hasError ||
+              !accSnapshot.hasData ||
+              snapshot.hasError ||
+              !snapshot.hasData) {
             return Container();
           }
           return snapshot.data.lspFee == 0
