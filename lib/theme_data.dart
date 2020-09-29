@@ -238,6 +238,8 @@ final TextStyle notificationTextStyle = TextStyle(
     height: 1.10);
 final TextStyle addFundsBtnStyle = TextStyle(
     color: BreezColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
+final TextStyle bottomAppBarBtnStyle = TextStyle(
+    color: BreezColors.white[400], fontSize: 12.3, letterSpacing: 1.2, fontWeight: FontWeight.w600, height: 1.24);
 final TextStyle addFundsItemsStyle = TextStyle(
     color: BreezColors.white[500],
     fontSize: 14.3,
