@@ -6,13 +6,10 @@ import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/home_page.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
-import 'package:breez/widgets/scroll_watcher.dart';
 import 'package:flutter/material.dart';
 
-import 'floating_actions_bar.dart';
 import 'payments_filter.dart';
 import 'payments_list.dart';
 import 'status_text.dart';
@@ -177,20 +174,6 @@ class AccountPageState extends State<AccountPage>
               )
             : SizedBox(),
         CustomScrollView(controller: widget.scrollController, slivers: slivers),
-        //Floating actions
-        ScrollWatcher(
-          controller: widget.scrollController,
-          builder: (context, offset) {
-            double height = (DASHBOARD_MAX_HEIGHT - offset)
-                .clamp(DASHBOARD_MIN_HEIGHT, DASHBOARD_MAX_HEIGHT);
-            double heightFactor =
-                (offset / (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT))
-                    .clamp(0.0, 1.0);
-            return account != null && !account.initial
-                ? FloatingActionsBar(account, height, heightFactor, firstPaymentItemKey)
-                : Positioned(top: 0.0, child: SizedBox());
-          },
-        ),
       ],
     );
   }
