@@ -58,16 +58,21 @@ final ThemeData blueTheme = ThemeData(
   cardColor: BreezColors.blue[500],
   highlightColor: BreezColors.blue[200],
   textTheme: TextTheme(
-    subtitle2: TextStyle(
-        color: BreezColors.grey[600], fontSize: 14.3, letterSpacing: 0.2),
-    headline5: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
-    button: TextStyle(
-        color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
-    headline4: TextStyle(
-      color: Color(0xffffe685),
-      fontSize: 18.0,
-    ),
-  ),
+      subtitle2: TextStyle(
+          color: BreezColors.grey[600], fontSize: 14.3, letterSpacing: 0.2),
+      headline5: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
+      button: TextStyle(
+          color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
+      headline4: TextStyle(
+        color: Color(0xffffe685),
+        fontSize: 18.0,
+      ),
+      headline6: TextStyle(
+          color: Colors.white,
+          fontSize: 12.3,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0.25,
+          height: 1.22)),
   primaryTextTheme: TextTheme(
     headline4: TextStyle(
         color: BreezColors.grey[500],
@@ -144,15 +149,21 @@ final ThemeData darkTheme = ThemeData(
   cardColor: Color(0xFF121212),
   highlightColor: Color(0xFF4B88EB),
   textTheme: TextTheme(
-    subtitle2:
-        TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
-    headline5: TextStyle(color: Colors.white, fontSize: 26.0),
-    button: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
-    headline4: TextStyle(
-      color: Color(0xffffe685),
-      fontSize: 18.0,
-    ),
-  ),
+      subtitle2:
+          TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
+      headline5: TextStyle(color: Colors.white, fontSize: 26.0),
+      button:
+          TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
+      headline4: TextStyle(
+        color: Color(0xffffe685),
+        fontSize: 18.0,
+      ),
+      headline6: TextStyle(
+          color: Colors.white,
+          fontSize: 12.3,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0.25,
+          height: 1.22)),
   primaryTextTheme: TextTheme(
     headline4: TextStyle(
         color: Colors.white,
@@ -420,6 +431,7 @@ final Color pulseAnimationColor = Color.fromRGBO(100, 155, 230, 1.0);
 final Color marketplaceButtonColor = Color.fromRGBO(229, 238, 251, 0.09);
 final Color errorColor = Color(0xffffe685);
 final Color circularLoaderColor = BreezColors.blue[200].withOpacity(0.7);
+final Color warningBoxColor = Color.fromRGBO(251, 233, 148, 0.1);
 final BorderSide greyBorderSide = BorderSide(color: BreezColors.grey[500]);
 
 class FieldTextStyle {
