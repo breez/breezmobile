@@ -17,6 +17,8 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
+import 'package:breez/routes/home/bottom_actions_bar.dart';
+import 'package:breez/routes/home/qr_action_button.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -353,6 +355,13 @@ class HomeState extends State<Home> {
                                                         "src/icon/advanced.png"),
                                               ],
                                               _onNavigationItemSelected),
+                                          bottomNavigationBar: BottomActionsBar(
+                                              account, firstPaymentItemKey),
+                                          floatingActionButton: QrActionButton(
+                                              account, firstPaymentItemKey),
+                                          floatingActionButtonLocation:
+                                              FloatingActionButtonLocation
+                                                  .centerDocked,
                                           body: widget._screenBuilders[
                                                   _activeScreen] ??
                                               _homePage(user.isPOS)),
