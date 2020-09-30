@@ -49,6 +49,7 @@ class PayeeSessionWidget extends StatelessWidget {
                 child: PeersConnection(sessionState),
               ),
               WarningBox(
+                contentPadding: EdgeInsets.all(8),
                 child: Text(
                     _formatFeeMessage(
                         _account, _lspStatus, snapshot.data.payerData.amount),
