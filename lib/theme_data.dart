@@ -393,8 +393,6 @@ final TextStyle snackBarStyle = TextStyle(
     height: 1.2);
 final TextStyle sessionActionBtnStyle = TextStyle(fontSize: 12.3);
 final TextStyle sessionNotificationStyle = TextStyle(fontSize: 14.2);
-final TextStyle sessionNotificationWarningStyle =
-    TextStyle(color: errorColor, fontSize: 14.2);
 final TextStyle paymentDetailsTitleStyle = TextStyle(
     color: BreezColors.grey[500],
     fontSize: 14.0,
