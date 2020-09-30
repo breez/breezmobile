@@ -149,16 +149,12 @@ class _PayeeInstructions extends StatelessWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text(message,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline6
-                    .copyWith(fontSize: 14.2)),
-            WarningBox(
-                child: Text(
-                    'This payment exceeds your limit (${_account.currency.format(_account.maxAllowedToReceive)}).',
-                    style: Theme.of(context).textTheme.headline6,
-                    textAlign: TextAlign.center))
+            Text(message, style: theme.sessionNotificationStyle),
+            Text(
+                'This payment exceeds your limit (${_account.currency.format(_account.maxAllowedToReceive)}).',
+                style: theme.sessionNotificationStyle
+                    .copyWith(color: theme.errorColor),
+                textAlign: TextAlign.center)
           ],
         );
       }
