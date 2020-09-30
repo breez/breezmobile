@@ -6,6 +6,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
+import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -47,12 +48,13 @@ class PayeeSessionWidget extends StatelessWidget {
                     left: 25.0, right: 25.0, bottom: 21.0, top: 25.0),
                 child: PeersConnection(sessionState),
               ),
-              Text(
-                  _formatFeeMessage(
-                      _account, _lspStatus, snapshot.data.payerData.amount),
-                  style: theme.sessionNotificationWarningStyle
-                      .copyWith(color: Theme.of(context).errorColor),
-                  textAlign: TextAlign.center)
+              WarningBox(
+                child: Text(
+                    _formatFeeMessage(
+                        _account, _lspStatus, snapshot.data.payerData.amount),
+                    style: Theme.of(context).textTheme.headline6,
+                    textAlign: TextAlign.center),
+              )
             ],
           );
         });
@@ -144,13 +146,18 @@ class _PayeeInstructions extends StatelessWidget {
       if (_account.maxAllowedToReceive <
           Int64(_sessionState.payerData.amount)) {
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text(message, style: theme.sessionNotificationStyle),
-            Text(
-                'This payment exceeds your limit (${_account.currency.format(_account.maxAllowedToReceive)}).',
-                style: theme.sessionNotificationWarningStyle
-                    .copyWith(color: Theme.of(context).errorColor),
-                textAlign: TextAlign.center)
+            Text(message,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    .copyWith(fontSize: 14.2)),
+            WarningBox(
+                child: Text(
+                    'This payment exceeds your limit (${_account.currency.format(_account.maxAllowedToReceive)}).',
+                    style: Theme.of(context).textTheme.headline6,
+                    textAlign: TextAlign.center))
           ],
         );
       }
