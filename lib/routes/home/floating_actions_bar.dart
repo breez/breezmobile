@@ -394,7 +394,7 @@ class FloatingActionsBar extends StatelessWidget {
                                     .pushNamed("/create_invoice");
                               }),
                           ...children,
-                          !account.connected
+                          account.warningMaxChanReserveAmount == 0
                               ? SizedBox(height: 8.0)
                               : Padding(
                                   padding: const EdgeInsets.only(
@@ -415,27 +415,23 @@ class FloatingActionsBar extends StatelessWidget {
                                         border: Border.all(
                                             color:
                                                 Theme.of(context).errorColor)),
-                                    child:
-                                        account.warningMaxChanReserveAmount == 0
-                                            ? SizedBox()
-                                            : AutoSizeText(
-                                                "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
-                                                maxLines: 1,
-                                                maxFontSize: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle1
-                                                    .fontSize,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline4
-                                                    .copyWith(
-                                                        fontSize:
-                                                            Theme.of(context)
-                                                                .textTheme
-                                                                .subtitle1
-                                                                .fontSize),
-                                                textAlign: TextAlign.center,
-                                              ),
+                                    child: AutoSizeText(
+                                      "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
+                                      maxLines: 1,
+                                      maxFontSize: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1
+                                          .fontSize,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline4
+                                          .copyWith(
+                                              fontSize: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle1
+                                                  .fontSize),
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
                                 )
                         ],
