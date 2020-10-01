@@ -415,23 +415,27 @@ class FloatingActionsBar extends StatelessWidget {
                                         border: Border.all(
                                             color:
                                                 Theme.of(context).errorColor)),
-                                    child: AutoSizeText(
-                                      "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
-                                      maxLines: 1,
-                                      maxFontSize: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1
-                                          .fontSize,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          .copyWith(
-                                              fontSize: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle1
-                                                  .fontSize),
-                                      textAlign: TextAlign.center,
-                                    ),
+                                    child:
+                                        account.warningMaxChanReserveAmount == 0
+                                            ? SizedBox()
+                                            : AutoSizeText(
+                                                "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
+                                                maxLines: 1,
+                                                maxFontSize: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle1
+                                                    .fontSize,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline4
+                                                    .copyWith(
+                                                        fontSize:
+                                                            Theme.of(context)
+                                                                .textTheme
+                                                                .subtitle1
+                                                                .fontSize),
+                                                textAlign: TextAlign.center,
+                                              ),
                                   ),
                                 )
                         ],
