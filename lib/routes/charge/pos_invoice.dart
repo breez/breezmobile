@@ -274,10 +274,10 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                           Badge(
                                                                         key:
                                                                             badgeKey,
-                                                                        position: BadgePosition.topRight(
+                                                                        position: BadgePosition.topEnd(
                                                                             top:
                                                                                 5,
-                                                                            right:
+                                                                            end:
                                                                                 -10),
                                                                         animationType:
                                                                             BadgeAnimationType.scale,

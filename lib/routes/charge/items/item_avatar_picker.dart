@@ -73,7 +73,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   _buildItemAvatar(BuildContext context) {
     return Badge(
       showBadge: _selectedImage != "",
-      position: BadgePosition.topRight(top: 5, right: -10),
+      position: BadgePosition.topEnd(top: 5, end: -10),
       animationType: BadgeAnimationType.fade,
       badgeColor: Theme.of(context).primaryTextTheme.subtitle2.color,
       badgeContent: _buildResetIconBadge(context),
