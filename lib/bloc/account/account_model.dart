@@ -307,7 +307,10 @@ class AccountModel {
     }
 
     if (outgoing && amount > maxAllowedToPay) {
-      return "Breez requires you to keep ${currency.format(reserveAmount)} in your balance.";
+      if (reserveAmount > 0) {
+        return "Breez requires you to keep ${currency.format(reserveAmount)} in your balance.";
+      }
+      return "Insufficient local balance";
     }
 
     return null;
