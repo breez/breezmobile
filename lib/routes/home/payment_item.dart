@@ -21,7 +21,18 @@ class PaymentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
       ListTile(
-        leading: _buildPaymentItemAvatar(),
+        leading: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    offset: Offset(0.5, 0.5),
+                    blurRadius: 5.0),
+              ],
+            ),
+            child: _buildPaymentItemAvatar()),
         key: _firstItem ? firstPaymentItemKey : null,
         title: Text(
           _paymentInfo.title,
@@ -40,7 +51,9 @@ class PaymentItem extends StatelessWidget {
               ),
               _paymentInfo.pending
                   ? Text(" (Pending)",
-                      style: Theme.of(context).accentTextTheme.subtitle2
+                      style: Theme.of(context)
+                          .accentTextTheme
+                          .subtitle2
                           .copyWith(color: theme.warningStyle.color))
                   : SizedBox()
             ]),
@@ -83,7 +96,9 @@ class PaymentItem extends StatelessWidget {
         height: 0.0,
         color: _lastItem
             ? Colors.transparent
-            : theme.themeId == "BLUE" ? Color.fromRGBO(0, 0, 0, 0.12) : Color.fromRGBO(255, 255, 255, 0.12),
+            : theme.themeId == "BLUE"
+                ? Color.fromRGBO(0, 0, 0, 0.12)
+                : Color.fromRGBO(255, 255, 255, 0.12),
         indent: 72.0,
       ),
     ]);
