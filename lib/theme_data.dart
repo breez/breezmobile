@@ -104,6 +104,18 @@ final ThemeData blueTheme = ThemeData(
   primaryIconTheme: IconThemeData(color: BreezColors.grey[500]),
   textSelectionHandleColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
+  accentTextTheme: TextTheme(
+      headline4: TextStyle(
+          color: Color.fromRGBO(0, 133, 251, 1.0),
+          fontSize: 26.0,
+          fontWeight: FontWeight.w400,
+          height: 1.52),
+      subtitle1: TextStyle(
+          color: Color.fromRGBO(0, 133, 251, 1.0),
+          fontSize: 12.3,
+          fontWeight: FontWeight.w400,
+          height: 1.24,
+          letterSpacing: 0.2)),
 );
 
 // Color(0xFF121212) values are tbd
@@ -186,6 +198,18 @@ final ThemeData darkTheme = ThemeData(
   textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
   textSelectionHandleColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
+  accentTextTheme: TextTheme(
+      headline4: TextStyle(
+          color: Colors.white,
+          fontSize: 26.0,
+          fontWeight: FontWeight.w400,
+          height: 1.52),
+      subtitle1: TextStyle(
+          color: Colors.white,
+          fontSize: 12.3,
+          fontWeight: FontWeight.w400,
+          height: 1.24,
+          letterSpacing: 0.2)),
 );
 
 final VendorTheme bitrefill = VendorTheme(
@@ -239,7 +263,11 @@ final TextStyle notificationTextStyle = TextStyle(
 final TextStyle addFundsBtnStyle = TextStyle(
     color: BreezColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
 final TextStyle bottomAppBarBtnStyle = TextStyle(
-    color: BreezColors.white[400], fontSize: 12.3, letterSpacing: 1.2, fontWeight: FontWeight.w600, height: 1.24);
+    color: BreezColors.white[400],
+    fontSize: 12.3,
+    letterSpacing: 1.2,
+    fontWeight: FontWeight.w600,
+    height: 1.24);
 final TextStyle addFundsItemsStyle = TextStyle(
     color: BreezColors.white[500],
     fontSize: 14.3,
