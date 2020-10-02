@@ -80,7 +80,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                                 includeDisplayName: false),
                             children: <TextSpan>[
                               TextSpan(
-                                text: " " +
+                                text: "  " +
                                     widget._accountModel.currency.displayName,
                                 style: Theme.of(context)
                                     .accentTextTheme
