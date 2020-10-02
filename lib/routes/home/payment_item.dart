@@ -25,7 +25,7 @@ class PaymentItem extends StatelessWidget {
         key: _firstItem ? firstPaymentItemKey : null,
         title: Text(
           _paymentInfo.title,
-          style: theme.transactionTitleStyle,
+          style: Theme.of(context).accentTextTheme.subtitle2,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Row(
@@ -36,11 +36,11 @@ class PaymentItem extends StatelessWidget {
               Text(
                 DateUtils.formatMonthDate(DateTime.fromMillisecondsSinceEpoch(
                     _paymentInfo.creationTimestamp.toInt() * 1000)),
-                style: theme.transactionSubtitleStyle,
+                style: Theme.of(context).accentTextTheme.caption,
               ),
               _paymentInfo.pending
                   ? Text(" (Pending)",
-                      style: theme.transactionTitleStyle
+                      style: Theme.of(context).accentTextTheme.subtitle2
                           .copyWith(color: theme.warningStyle.color))
                   : SizedBox()
             ]),
@@ -73,7 +73,7 @@ class PaymentItem extends StatelessWidget {
                           "FEE " +
                               _paymentInfo.currency.format(_paymentInfo.fee,
                                   includeDisplayName: false),
-                          style: theme.transactionSubtitleStyle)
+                          style: Theme.of(context).accentTextTheme.caption)
                 ]),
           ],
         ),
@@ -82,8 +82,8 @@ class PaymentItem extends StatelessWidget {
       Divider(
         height: 0.0,
         color: _lastItem
-            ? Color.fromRGBO(255, 255, 255, 0.0)
-            : Color.fromRGBO(255, 255, 255, 0.12),
+            ? Colors.transparent
+            : theme.themeId == "BLUE" ? Color.fromRGBO(0, 0, 0, 0.12) : Color.fromRGBO(255, 255, 255, 0.12),
         indent: 72.0,
       ),
     ]);

@@ -65,7 +65,10 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
               : (scrollOffset).clamp(widget._minSize, widget._maxSize),
           builder: (context, shrinkedHeight, overlapContent) {
         return Container(
-            decoration: BoxDecoration(color: Theme.of(context).canvasColor),
+            decoration: BoxDecoration(
+                color: theme.themeId == "BLUE"
+                    ? Color.fromRGBO(249, 249, 249, 1)
+                    : Color.fromRGBO(20, 43, 61, 1)),
             height: widget._maxSize,
             child: AnimatedOpacity(
                 duration: Duration(milliseconds: 100),
@@ -115,7 +118,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       child: IconButton(
         icon: ImageIcon(
           AssetImage("src/icon/calendar.png"),
-          color: Colors.white,
+          color: Theme.of(context).accentTextTheme.subtitle2.color,
           size: 24.0,
         ),
         onPressed: () => widget._paymentsModel.firstDate != null
@@ -140,16 +143,16 @@ class PaymentsFilterState extends State<PaymentsFilter> {
 
   Theme _buildFilterDropdown(BuildContext context) {
     return Theme(
-      data: theme.themeId == "BLUE"
-          ? Theme.of(context)
-          : Theme.of(context)
-              .copyWith(canvasColor: Theme.of(context).backgroundColor),
+      data: Theme.of(context).copyWith(
+          canvasColor: theme.themeId == "BLUE"
+              ? Color.fromRGBO(249, 249, 249, 1)
+              : Color.fromRGBO(20, 43, 61, 1)),
       child: DropdownButtonHideUnderline(
         child: ButtonTheme(
           alignedDropdown: true,
           child: DropdownButton(
               value: _filter,
-              style: theme.transactionTitleStyle,
+              style: Theme.of(context).accentTextTheme.subtitle2,
               items: <String>['All Activities', 'Sent', 'Received']
                   .map((String value) {
                 return DropdownMenuItem<String>(
@@ -157,6 +160,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                   child: Material(
                     child: Text(
                       value,
+                      style: Theme.of(context).accentTextTheme.subtitle2,
                     ),
                   ),
                 );
@@ -195,7 +199,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
           color: Theme.of(context).backgroundColor,
           icon: Icon(
             Icons.more_vert,
-            color: Theme.of(context).iconTheme.color,
+            color: Theme.of(context).accentTextTheme.subtitle2.color,
           ),
           padding: EdgeInsets.zero,
           offset: Offset(12, 36),
@@ -211,11 +215,17 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       );
     }
     return Padding(
-      padding: const EdgeInsets.only(right: 16.0),
+      padding: const EdgeInsets.only(right: 0),
       child: IconButton(
         icon: Icon(
           Icons.more_vert,
-          color: Theme.of(context).disabledColor,
+          color: theme.themeId == "BLUE"
+              ? Theme.of(context)
+                  .accentTextTheme
+                  .subtitle2
+                  .color
+                  .withOpacity(0.25)
+              : Theme.of(context).disabledColor,
           size: 24.0,
         ),
       ),
