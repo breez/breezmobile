@@ -258,7 +258,7 @@ class _Action extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: FlatButton(
-        height: 80,
+        height: 60,
         padding: EdgeInsets.zero,
         onPressed: this.onPress,
         child: Text(
