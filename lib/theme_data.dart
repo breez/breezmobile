@@ -105,6 +105,7 @@ final ThemeData blueTheme = ThemeData(
   textSelectionHandleColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
+      bodyText2: TextStyle(color: BreezColors.grey[600]),
       headline4: TextStyle(
           color: Color.fromRGBO(0, 133, 251, 1.0),
           fontSize: 26.0,
@@ -199,6 +200,7 @@ final ThemeData darkTheme = ThemeData(
   textSelectionHandleColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
+      bodyText2: TextStyle(color: Colors.white),
       headline4: TextStyle(
           color: Colors.white,
           fontSize: 26.0,
