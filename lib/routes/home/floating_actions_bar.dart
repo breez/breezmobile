@@ -395,7 +395,7 @@ class FloatingActionsBar extends StatelessWidget {
                                     .pushNamed("/create_invoice");
                               }),
                           ...children,
-                          !account.connected
+                          account.warningMaxChanReserveAmount == 0
                               ? SizedBox(height: 8.0)
                               : WarningBox(
                                   boxPadding: EdgeInsets.all(16),
