@@ -48,21 +48,6 @@ class WalletDashboardState extends State<WalletDashboard> {
               height: widget._height,
               decoration:
                   BoxDecoration(color: Theme.of(context).backgroundColor)),
-          Positioned(
-            width: MediaQuery.of(context).size.width,
-            left: CHART_MAX_HORIZONTAL_OFFSET * widget._offsetFactor,
-            height: this.widget._height +
-                CHART_MAX_VERTICAL_OFFSET * widget._offsetFactor,
-            bottom: -CHART_MAX_VERTICAL_OFFSET * widget._offsetFactor,
-            child: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
-                    image: DecorationImage(
-                      image: AssetImage("src/images/chart_graph.png"),
-                      fit: BoxFit.fitWidth,
-                      alignment: FractionalOffset.bottomCenter,
-                    ))),
-          ),
           showProgressBar
               ? Positioned(
                   top: 0.0,
