@@ -151,6 +151,8 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         child: ButtonTheme(
           alignedDropdown: true,
           child: DropdownButton(
+              iconEnabledColor:
+                  Theme.of(context).accentTextTheme.subtitle2.color,
               value: _filter,
               style: Theme.of(context).accentTextTheme.subtitle2,
               items: <String>['All Activities', 'Sent', 'Received']
