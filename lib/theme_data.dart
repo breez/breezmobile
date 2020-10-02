@@ -105,18 +105,37 @@ final ThemeData blueTheme = ThemeData(
   textSelectionHandleColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
-      bodyText2: TextStyle(color: BreezColors.grey[600]),
-      headline4: TextStyle(
-          color: Color.fromRGBO(0, 133, 251, 1.0),
-          fontSize: 26.0,
-          fontWeight: FontWeight.w400,
-          height: 1.52),
-      subtitle1: TextStyle(
-          color: Color.fromRGBO(0, 133, 251, 1.0),
-          fontSize: 12.3,
-          fontWeight: FontWeight.w400,
-          height: 1.24,
-          letterSpacing: 0.2)),
+    bodyText2: TextStyle(color: BreezColors.grey[600]),
+    headline4: TextStyle(
+        color: Color.fromRGBO(0, 133, 251, 1.0),
+        fontSize: 26.0,
+        fontWeight: FontWeight.w400,
+        height: 1.52),
+    subtitle1: TextStyle(
+        color: Color.fromRGBO(0, 133, 251, 1.0),
+        fontSize: 12.3,
+        fontWeight: FontWeight.w400,
+        height: 1.24,
+        letterSpacing: 0.2),
+    headline6: TextStyle(
+        color: Colors.black,
+        fontSize: 16.0,
+        fontWeight: FontWeight.w500,
+        height: 1.28,
+        letterSpacing: 0.5),
+    subtitle2: TextStyle(
+        color: Colors.black,
+        fontSize: 14.0,
+        fontWeight: FontWeight.w400,
+        height: 1.2,
+        letterSpacing: 0.25),
+    caption: TextStyle(
+        color: Colors.black.withOpacity(0.7),
+        fontSize: 12.0,
+        fontWeight: FontWeight.w400,
+        height: 1.16,
+        letterSpacing: 0.39),
+  ),
 );
 
 // Color(0xFF121212) values are tbd
@@ -211,7 +230,25 @@ final ThemeData darkTheme = ThemeData(
           fontSize: 12.3,
           fontWeight: FontWeight.w400,
           height: 1.24,
-          letterSpacing: 0.2)),
+          letterSpacing: 0.2),
+      headline6: TextStyle(
+          color: Colors.white,
+          fontSize: 16.0,
+          fontWeight: FontWeight.w500,
+          height: 1.28,
+          letterSpacing: 0.5),
+      subtitle2: TextStyle(
+          color: Colors.white,
+          fontSize: 14.0,
+          fontWeight: FontWeight.w400,
+          height: 1.2,
+          letterSpacing: 0.25),
+      caption: TextStyle(
+          color: Colors.white.withOpacity(0.7),
+          fontSize: 12.0,
+          fontWeight: FontWeight.w400,
+          height: 1.16,
+          letterSpacing: 0.39)),
 );
 
 final VendorTheme bitrefill = VendorTheme(
