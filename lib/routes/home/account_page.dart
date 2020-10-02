@@ -6,6 +6,7 @@ import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:flutter/material.dart';
@@ -72,8 +73,13 @@ class AccountPageState extends State<AccountPage>
                           stream: _connectPayBloc.pendingCTPLinkStream,
                           builder: (ctx, ctpSnapshot) {
                             //account and payments are ready, build their widgets
-                            return _buildBalanceAndPayments(
-                                paymentsModel, account, ctpSnapshot.data);
+                            return Container(
+                              color: theme.themeId == "BLUE"
+                                  ? Color.fromRGBO(249, 249, 249, 1)
+                                  : Color.fromRGBO(20, 43, 61, 1),
+                              child: _buildBalanceAndPayments(
+                                  paymentsModel, account, ctpSnapshot.data),
+                            );
                           });
                     });
               });
@@ -165,14 +171,6 @@ class AccountPageState extends State<AccountPage>
       key: Key("account_sliver"),
       fit: StackFit.expand,
       children: [
-        paymentsModel.nonFilteredItems.length == 0
-            ? Image.asset(
-                "src/images/waves-home.png",
-                fit: BoxFit.contain,
-                width: double.infinity,
-                alignment: Alignment.bottomCenter,
-              )
-            : SizedBox(),
         CustomScrollView(controller: widget.scrollController, slivers: slivers),
       ],
     );
@@ -207,6 +205,7 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final UserProfileBloc _userProfileBloc;
 
   WalletDashboardHeaderDelegate(this.accountBloc, this._userProfileBloc);
+
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -222,8 +221,13 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
                     (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
 
                 return Stack(overflow: Overflow.visible, children: <Widget>[
-                  WalletDashboard(settingSnapshot.data, snapshot.data, height,
-                      heightFactor, _userProfileBloc.currencySink.add, _userProfileBloc.fiatConversionSink.add)
+                  WalletDashboard(
+                      settingSnapshot.data,
+                      snapshot.data,
+                      height,
+                      heightFactor,
+                      _userProfileBloc.currencySink.add,
+                      _userProfileBloc.fiatConversionSink.add)
                 ]);
               });
         });
