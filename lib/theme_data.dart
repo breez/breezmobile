@@ -147,8 +147,8 @@ final ThemeData darkTheme = ThemeData(
   floatingActionButtonTheme:
       FloatingActionButtonThemeData(backgroundColor: Color(0xFF4B89EB)),
   accentColor: Colors.white,
-  canvasColor: Color(0xFF0c2031),
-  backgroundColor: Color(0xFF152a3d),
+  canvasColor: Color(0xFF142B3D),
+  backgroundColor: Color(0xFF0D1F33),
   appBarTheme: AppBarTheme(
     textTheme: TextTheme(
       headline6:
