@@ -37,7 +37,7 @@ class QrActionButton extends StatelessWidget {
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
 
     return Padding(
-      padding: const EdgeInsets.only(top: 24.0),
+      padding: const EdgeInsets.only(top: 32.0),
       child: Container(
         width: 64,
         height: 64,
