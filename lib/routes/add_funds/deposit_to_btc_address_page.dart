@@ -4,9 +4,9 @@ import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
 
 import 'address_widget.dart';
@@ -122,39 +122,24 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
           AddressWidget(response?.address, response?.backupJson),
           response == null
               ? SizedBox()
-              : Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: theme.warningBoxColor,
-                      borderRadius: BorderRadius.all(Radius.circular(6)),
-                      border: Border.all(
-                          color: theme.themeId == "BLUE"
-                              ? Color.fromRGBO(250, 239, 188, 0.6)
-                              : Color.fromRGBO(227, 180, 47, 0.6)),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.3, vertical: 16.2),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(
-                          "Send up to " +
-                              account.currency.format(
-                                  response.maxAllowedDeposit,
-                                  includeDisplayName: true) +
-                              " to this address.",
-                          style: Theme.of(context).textTheme.headline6,
-                          textAlign: TextAlign.center,
-                        ),
-                        Text(
-                          formatFeeMessage(account, lspStatus.currentLSP),
-                          style: Theme.of(context).textTheme.headline6,
-                          textAlign: TextAlign.center,
-                        )
-                      ],
-                    ),
+              : WarningBox(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        "Send up to " +
+                            account.currency.format(response.maxAllowedDeposit,
+                                includeDisplayName: true) +
+                            " to this address.",
+                        style: Theme.of(context).textTheme.headline6,
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        formatFeeMessage(account, lspStatus.currentLSP),
+                        style: Theme.of(context).textTheme.headline6,
+                        textAlign: TextAlign.center,
+                      )
+                    ],
                   ),
                 ),
         ],

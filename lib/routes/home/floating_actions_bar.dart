@@ -32,6 +32,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/lsp_fee.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -396,42 +397,19 @@ class FloatingActionsBar extends StatelessWidget {
                           ...children,
                           account.warningMaxChanReserveAmount == 0
                               ? SizedBox(height: 8.0)
-                              : Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 16.0,
-                                      left: 16.0,
-                                      right: 16.0,
-                                      bottom: 16.0),
-                                  child: Container(
-                                    padding: EdgeInsets.only(
-                                        top: 8.0,
-                                        bottom: 8.0,
-                                        left: 8.0,
-                                        right: 8.0),
-                                    width: MediaQuery.of(context).size.width,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(4)),
-                                        border: Border.all(
-                                            color:
-                                                Theme.of(context).errorColor)),
-                                    child: AutoSizeText(
-                                      "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
-                                      maxLines: 1,
-                                      maxFontSize: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1
-                                          .fontSize,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          .copyWith(
-                                              fontSize: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle1
-                                                  .fontSize),
-                                      textAlign: TextAlign.center,
-                                    ),
+                              : WarningBox(
+                                  boxPadding: EdgeInsets.all(16),
+                                  contentPadding: EdgeInsets.all(8),
+                                  child: AutoSizeText(
+                                    "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
+                                    maxLines: 1,
+                                    maxFontSize: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        .fontSize,
+                                    style:
+                                        Theme.of(context).textTheme.headline6,
+                                    textAlign: TextAlign.center,
                                   ),
                                 )
                         ],
