@@ -27,7 +27,7 @@ class BottomActionsBar extends StatelessWidget {
     return BottomAppBar(
       child: Container(
         height: 60,
-        color: Color(0xff0085FB),
+        color: theme.themeId == "BLUE" ? Color(0xff0085FB) : Color(0xff4D88EC),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -265,7 +265,7 @@ class _Action extends StatelessWidget {
           text,
           textAlign: TextAlign.center,
           style: theme.bottomAppBarBtnStyle.copyWith(
-              fontSize: 12.3 / MediaQuery.of(context).textScaleFactor),
+              fontSize: 13.5 / MediaQuery.of(context).textScaleFactor),
           maxLines: 1,
         ),
       ),
