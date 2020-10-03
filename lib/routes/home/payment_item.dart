@@ -76,18 +76,21 @@ class PaymentItem extends StatelessWidget {
                     style: theme.transactionAmountStyle,
                   )
                 ]),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  _paymentInfo.fee == 0
-                      ? SizedBox()
-                      : Text(
-                          "FEE " +
-                              _paymentInfo.currency.format(_paymentInfo.fee,
-                                  includeDisplayName: false),
-                          style: Theme.of(context).accentTextTheme.caption)
-                ]),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    _paymentInfo.fee == 0
+                        ? SizedBox()
+                        : Text(
+                            "FEE " +
+                                _paymentInfo.currency.format(_paymentInfo.fee,
+                                    includeDisplayName: false),
+                            style: Theme.of(context).accentTextTheme.caption)
+                  ]),
+            ),
           ],
         ),
         onTap: () => showPaymentDetailsDialog(context, _paymentInfo),
