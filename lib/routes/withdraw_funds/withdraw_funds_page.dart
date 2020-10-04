@@ -16,6 +16,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/static_loader.dart';
+import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,16 +101,15 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
             return StaticLoader();
           }
           AccountModel acc = snapshot.data;
-          List<Widget> optionalMessage = widget.optionalMessage == null
-              ? []
-              : [
-                  Text(widget.optionalMessage,
-                      style: TextStyle(
-                          color: Theme.of(context).errorColor,
-                          fontSize: 16.0,
-                          height: 1.2)),
-                  SizedBox(height: 40.0),
-                ];
+          Widget optionalMessage = widget.optionalMessage == null
+              ? SizedBox()
+              : WarningBox(
+                  boxPadding: EdgeInsets.only(bottom: 24),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                  child: Text(widget.optionalMessage,
+                      style: Theme.of(context).textTheme.headline6),
+                );
           List<Widget> amountWidget = [];
           if (widget.policy.minValue != widget.policy.maxValue) {
             amountWidget.add(AmountFormField(
@@ -143,7 +143,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  ...optionalMessage,
+                  optionalMessage,
                   TextFormField(
                     readOnly: fetching,
                     controller: _addressController,
