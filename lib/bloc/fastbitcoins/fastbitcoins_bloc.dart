@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
 import 'package:breez/services/injector.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:http/http.dart' as http;
@@ -69,10 +70,10 @@ class FastbitcoinsBloc {
   void _listenRedeemRequests() {
     _redeemRequestController.stream.listen((request) async {
       try {
-        String payreq = await _breezLib.addInvoice(
+        AddInvoiceReply payreq = await _breezLib.addInvoice(
             Int64(request.validateResponse.satoshiAmount),
             description: "Fastbitcoins.com Voucher");
-        request.lightningInvoice = payreq;
+        request.lightningInvoice = payreq.paymentRequest;
         log.info("fastbicoins request: " + jsonEncode(request.toJson()));
         var response = await http.post(_baseURL + "/redeem",
             body: jsonEncode(request.toJson()));

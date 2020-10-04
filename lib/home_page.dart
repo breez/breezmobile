@@ -12,13 +12,12 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
-import 'package:breez/routes/home/bottom_actions_bar.dart';
-import 'package:breez/routes/home/qr_action_button.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -28,6 +27,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
+import 'package:breez/widgets/lsp_fee.dart';
 import 'package:breez/widgets/navigation_drawer.dart';
 import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
@@ -126,6 +126,7 @@ class HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
+    LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     return StreamBuilder<BreezUserModel>(
         stream: widget.userProfileBloc.userStream,
@@ -147,226 +148,263 @@ class HomeState extends State<Home> {
                         return SizedBox();
                       }
 
-                      return StreamBuilder<List<AddFundVendorModel>>(
-                          stream: addFundsBloc.availableVendorsStream,
-                          builder: (context, snapshot) {
-                            List<DrawerItemConfig> addFundsVendors = [];
-                            if (snapshot.data != null) {
-                              snapshot.data.forEach((v) {
-                                if (v.isAllowed) {
-                                  addFundsVendors.add(DrawerItemConfig(
-                                      v.route, v.shortName ?? v.name, v.icon,
-                                      disabled: !v.enabled ||
-                                          v.requireActiveChannel &&
-                                              !account.connected));
-                                }
-                              });
-                            }
-                            var refundableAddresses = account
-                                .swapFundsStatus.maturedRefundableAddresses;
-                            var refundItems = <DrawerItemConfigGroup>[];
-                            if (refundableAddresses.length > 0) {
-                              refundItems = [
-                                DrawerItemConfigGroup([
-                                  DrawerItemConfig("", "Get Refund",
-                                      "src/icon/withdraw_funds.png",
-                                      onItemSelected: (_) => protectAdminRoute(
-                                          context, user, "/get_refund"))
-                                ])
-                              ];
-                            }
+                      return StreamBuilder<LSPStatus>(
+                          stream: lspBloc.lspStatusStream,
+                          builder: (context, lspSnapshot) {
+                            return StreamBuilder<List<AddFundVendorModel>>(
+                                stream: addFundsBloc.availableVendorsStream,
+                                builder: (context, snapshot) {
+                                  List<DrawerItemConfig> addFundsVendors = [];
+                                  if (snapshot.data != null) {
+                                    snapshot.data.forEach((v) {
+                                      if (v.isAllowed) {
+                                        var vendorDrawerConfig =
+                                            DrawerItemConfig(v.route,
+                                                v.shortName ?? v.name, v.icon,
+                                                disabled: !v.enabled ||
+                                                    v.requireActiveChannel &&
+                                                        !account.connected,
+                                                onItemSelected: (item) {
+                                          if (!v.showLSPFee) {
+                                            Navigator.of(context)
+                                                .pushNamed(v.route);
+                                            return;
+                                          }
+                                          promptLSPFeeAndNavigate(
+                                              context,
+                                              account,
+                                              lspSnapshot.data.currentLSP,
+                                              v.route);
+                                        });
 
-                            var flavorItems = <DrawerItemConfigGroup>[];
-                            flavorItems = [
-                              DrawerItemConfigGroup([
-                                user.isPOS
-                                    ? DrawerItemConfig(
-                                        "/transactions",
-                                        "Transactions",
-                                        "src/icon/transactions.png")
-                                    : DrawerItemConfig("/marketplace",
-                                        "Marketplace", "src/icon/ic_market.png",
-                                        disabled: !account.connected)
-                              ])
-                            ];
+                                        addFundsVendors.add(vendorDrawerConfig);
+                                      }
+                                    });
+                                  }
+                                  var refundableAddresses = account
+                                      .swapFundsStatus
+                                      .maturedRefundableAddresses;
+                                  var refundItems = <DrawerItemConfigGroup>[];
+                                  if (refundableAddresses.length > 0) {
+                                    refundItems = [
+                                      DrawerItemConfigGroup([
+                                        DrawerItemConfig("", "Get Refund",
+                                            "src/icon/withdraw_funds.png",
+                                            onItemSelected: (_) =>
+                                                protectAdminRoute(context, user,
+                                                    "/get_refund"))
+                                      ])
+                                    ];
+                                  }
 
-                            var posItem = <DrawerItemConfigGroup>[];
-                            posItem = [
-                              DrawerItemConfigGroup(user.isPOS
-                                  ? [
-                                      DrawerItemConfig(
-                                          "", "POS", "src/icon/pos.png",
-                                          onItemSelected: (_) {
-                                        widget.userProfileBloc.userActionsSink
-                                            .add(SetPOSFlavor(!user.isPOS));
-                                      },
-                                          switchWidget: Switch(
-                                              activeColor: Colors.white,
-                                              value: user.isPOS,
-                                              onChanged: (_) {
-                                                protectAdminAction(
-                                                    context, user, () {
-                                                  var action =
-                                                      SetPOSFlavor(false);
-                                                  widget.userProfileBloc
-                                                      .userActionsSink
-                                                      .add(action);
-                                                  return action.future;
-                                                });
-                                              })),
-                                    ]
-                                  : [
-                                      DrawerItemConfig(
-                                          "", "POS", "src/icon/pos.png",
-                                          onItemSelected: (_) {
-                                        if (account.connected) {
-                                          widget.userProfileBloc.userActionsSink
-                                              .add(SetPOSFlavor(!user.isPOS));
-                                        }
-                                      },
-                                          disabled: !account.connected,
-                                          switchWidget: Switch(
-                                              inactiveThumbColor:
-                                                  Colors.grey.shade400,
-                                              activeColor: Colors.white,
-                                              value: user.isPOS,
-                                              onChanged: !account.connected
-                                                  ? null
-                                                  : (_) {
-                                                      var action = SetPOSFlavor(
-                                                          !user.isPOS);
-                                                      widget.userProfileBloc
-                                                          .userActionsSink
-                                                          .add(action);
-                                                    })),
+                                  var flavorItems = <DrawerItemConfigGroup>[];
+                                  flavorItems = [
+                                    DrawerItemConfigGroup([
+                                      user.isPOS
+                                          ? DrawerItemConfig(
+                                              "/transactions",
+                                              "Transactions",
+                                              "src/icon/transactions.png")
+                                          : DrawerItemConfig(
+                                              "/marketplace",
+                                              "Marketplace",
+                                              "src/icon/ic_market.png",
+                                              disabled: !account.connected)
                                     ])
-                            ];
-
-                            var advancedFlavorItems = List<DrawerItemConfig>();
-                            advancedFlavorItems = user.isPOS
-                                ? [
-                                    DrawerItemConfig("", "POS Settings",
-                                        "src/icon/settings.png",
-                                        onItemSelected: (_) =>
-                                            protectAdminRoute(
-                                                context, user, "/settings")),
-                                  ]
-                                : [
-                                    DrawerItemConfig("/developers",
-                                        "Developers", "src/icon/developers.png")
                                   ];
 
-                            return StreamBuilder<Future<DecodedClipboardData>>(
-                                stream:
-                                    widget.invoiceBloc.decodedClipboardStream,
-                                builder: (context, snapshot) {
-                                  return Container(
-                                    height: MediaQuery.of(context).size.height,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: FadeInWidget(
-                                      child: Scaffold(
-                                          key: _scaffoldKey,
-                                          appBar: AppBar(
-                                            brightness: theme.themeId == "BLUE"
-                                                ? Brightness.light
-                                                : Theme.of(context)
-                                                    .appBarTheme
-                                                    .brightness,
-                                            centerTitle: false,
-                                            actions: <Widget>[
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(14.0),
-                                                child:
-                                                    AccountRequiredActionsIndicator(
-                                                        widget.backupBloc,
-                                                        widget.accountBloc,
-                                                        widget.lspBloc),
-                                              ),
-                                            ],
-                                            leading: IconButton(
-                                                icon: ImageIcon(
-                                                  AssetImage(
-                                                      "src/icon/hamburger.png"),
-                                                  size: 24.0,
-                                                  color: Theme.of(context)
-                                                      .appBarTheme
-                                                      .actionsIconTheme
-                                                      .color,
+                                  var posItem = <DrawerItemConfigGroup>[];
+                                  posItem = [
+                                    DrawerItemConfigGroup(user.isPOS
+                                        ? [
+                                            DrawerItemConfig(
+                                                "", "POS", "src/icon/pos.png",
+                                                onItemSelected: (_) {
+                                              widget.userProfileBloc
+                                                  .userActionsSink
+                                                  .add(SetPOSFlavor(
+                                                      !user.isPOS));
+                                            },
+                                                switchWidget: Switch(
+                                                    activeColor: Colors.white,
+                                                    value: user.isPOS,
+                                                    onChanged: (_) {
+                                                      protectAdminAction(
+                                                          context, user, () {
+                                                        var action =
+                                                            SetPOSFlavor(false);
+                                                        widget.userProfileBloc
+                                                            .userActionsSink
+                                                            .add(action);
+                                                        return action.future;
+                                                      });
+                                                    })),
+                                          ]
+                                        : [
+                                            DrawerItemConfig(
+                                                "", "POS", "src/icon/pos.png",
+                                                onItemSelected: (_) {
+                                              if (account.connected) {
+                                                widget.userProfileBloc
+                                                    .userActionsSink
+                                                    .add(SetPOSFlavor(
+                                                        !user.isPOS));
+                                              }
+                                            },
+                                                disabled: !account.connected,
+                                                switchWidget: Switch(
+                                                    inactiveThumbColor:
+                                                        Colors.grey.shade400,
+                                                    activeColor: Colors.white,
+                                                    value: user.isPOS,
+                                                    onChanged: !account
+                                                            .connected
+                                                        ? null
+                                                        : (_) {
+                                                            var action =
+                                                                SetPOSFlavor(
+                                                                    !user
+                                                                        .isPOS);
+                                                            widget
+                                                                .userProfileBloc
+                                                                .userActionsSink
+                                                                .add(action);
+                                                          })),
+                                          ])
+                                  ];
+
+                                  var advancedFlavorItems =
+                                      List<DrawerItemConfig>();
+                                  advancedFlavorItems = user.isPOS
+                                      ? [
+                                          DrawerItemConfig("", "POS Settings",
+                                              "src/icon/settings.png",
+                                              onItemSelected: (_) =>
+                                                  protectAdminRoute(context,
+                                                      user, "/settings")),
+                                        ]
+                                      : [
+                                          DrawerItemConfig(
+                                              "/developers",
+                                              "Developers",
+                                              "src/icon/developers.png")
+                                        ];
+
+                                  return StreamBuilder<
+                                          Future<DecodedClipboardData>>(
+                                      stream: widget
+                                          .invoiceBloc.decodedClipboardStream,
+                                      builder: (context, snapshot) {
+                                        return Container(
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: FadeInWidget(
+                                            child: Scaffold(
+                                                key: _scaffoldKey,
+                                                appBar: AppBar(
+                                                  brightness:
+                                                      theme.themeId == "BLUE"
+                                                          ? Brightness.light
+                                                          : Theme.of(context)
+                                                              .appBarTheme
+                                                              .brightness,
+                                                  centerTitle: false,
+                                                  actions: <Widget>[
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              14.0),
+                                                      child:
+                                                          AccountRequiredActionsIndicator(
+                                                              widget.backupBloc,
+                                                              widget
+                                                                  .accountBloc,
+                                                              widget.lspBloc),
+                                                    ),
+                                                  ],
+                                                  leading: IconButton(
+                                                      icon: ImageIcon(
+                                                        AssetImage(
+                                                            "src/icon/hamburger.png"),
+                                                        size: 24.0,
+                                                        color: Theme.of(context)
+                                                            .appBarTheme
+                                                            .actionsIconTheme
+                                                            .color,
+                                                      ),
+                                                      onPressed: () =>
+                                                          _scaffoldKey
+                                                              .currentState
+                                                              .openDrawer()),
+                                                  title: Image.asset(
+                                                    "src/images/logo-color.png",
+                                                    height: 23.5,
+                                                    width: 62.7,
+                                                    color: Theme.of(context)
+                                                        .appBarTheme
+                                                        .color,
+                                                    colorBlendMode:
+                                                        BlendMode.srcATop,
+                                                  ),
+                                                  iconTheme: IconThemeData(
+                                                      color: Color.fromARGB(
+                                                          255, 0, 133, 251)),
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .backgroundColor,
+                                                  elevation: 0.0,
                                                 ),
-                                                onPressed: () => _scaffoldKey
-                                                    .currentState
-                                                    .openDrawer()),
-                                            title: Image.asset(
-                                              "src/images/logo-color.png",
-                                              height: 23.5,
-                                              width: 62.7,
-                                              color: Theme.of(context)
-                                                  .appBarTheme
-                                                  .color,
-                                              colorBlendMode: BlendMode.srcATop,
-                                            ),
-                                            iconTheme: IconThemeData(
-                                                color: Color.fromARGB(
-                                                    255, 0, 133, 251)),
-                                            backgroundColor: Theme.of(context)
-                                                .backgroundColor,
-                                            elevation: 0.0,
+                                                drawer: NavigationDrawer(
+                                                    true,
+                                                    [
+                                                      ...refundItems,
+                                                      _buildSendItems(
+                                                          account,
+                                                          snapshot,
+                                                          context,
+                                                          user,
+                                                          settings),
+                                                      DrawerItemConfigGroup([
+                                                        DrawerItemConfig(
+                                                          "/create_invoice",
+                                                          "Receive via Invoice",
+                                                          "src/icon/paste.png",
+                                                        ),
+                                                        ...addFundsVendors,
+                                                      ],
+                                                          groupTitle: "Receive",
+                                                          groupAssetImage:
+                                                              "src/icon/receive-action.png",
+                                                          withDivider: false),
+                                                      ...flavorItems,
+                                                      ...posItem,
+                                                      DrawerItemConfigGroup(
+                                                          _filterItems([
+                                                            DrawerItemConfig(
+                                                                "/network",
+                                                                "Network",
+                                                                "src/icon/network.png"),
+                                                            DrawerItemConfig(
+                                                                "/security",
+                                                                "Security & Backup",
+                                                                "src/icon/security.png"),
+                                                            ...advancedFlavorItems,
+                                                          ]),
+                                                          groupTitle:
+                                                              "Advanced",
+                                                          groupAssetImage:
+                                                              "src/icon/advanced.png"),
+                                                    ],
+                                                    _onNavigationItemSelected),
+                                                body: widget._screenBuilders[
+                                                        _activeScreen] ??
+                                                    _homePage(user.isPOS)),
                                           ),
-                                          drawer: NavigationDrawer(
-                                              true,
-                                              [
-                                                ...refundItems,
-                                                _buildSendItems(
-                                                    account,
-                                                    snapshot,
-                                                    context,
-                                                    user,
-                                                    settings),
-                                                DrawerItemConfigGroup([
-                                                  DrawerItemConfig(
-                                                      "/create_invoice",
-                                                      "Receive via Invoice",
-                                                      "src/icon/paste.png",
-                                                      disabled:
-                                                          !account.connected),
-                                                  ...addFundsVendors,
-                                                ],
-                                                    groupTitle: "Receive",
-                                                    groupAssetImage:
-                                                        "src/icon/receive-action.png",
-                                                    withDivider: false),
-                                                ...flavorItems,
-                                                ...posItem,
-                                                DrawerItemConfigGroup(
-                                                    _filterItems([
-                                                      DrawerItemConfig(
-                                                          "/network",
-                                                          "Network",
-                                                          "src/icon/network.png"),
-                                                      DrawerItemConfig(
-                                                          "/security",
-                                                          "Security & Backup",
-                                                          "src/icon/security.png"),
-                                                      ...advancedFlavorItems,
-                                                    ]),
-                                                    groupTitle: "Advanced",
-                                                    groupAssetImage:
-                                                        "src/icon/advanced.png"),
-                                              ],
-                                              _onNavigationItemSelected),
-                                          bottomNavigationBar: BottomActionsBar(
-                                              account, firstPaymentItemKey),
-                                          floatingActionButton: QrActionButton(
-                                              account, firstPaymentItemKey),
-                                          floatingActionButtonLocation:
-                                              FloatingActionButtonLocation
-                                                  .centerDocked,
-                                          body: widget._screenBuilders[
-                                                  _activeScreen] ??
-                                              _homePage(user.isPOS)),
-                                    ),
-                                  );
+                                        );
+                                      });
                                 });
                           });
                     });
@@ -561,10 +599,9 @@ class HomeState extends State<Home> {
       bool send = accountSettings.failedPaymentBehavior ==
           BugReportBehavior.SEND_REPORT;
 
-      var errorString = error.toString().isEmpty
-          ? ""
-          : ": ${error.toString().split("\n").first}";
-      showFlushbar(context, message: "Failed to send payment$errorString");
+      var accountModel = await widget.accountBloc.accountStream.first;
+      var errorString = error.toDisplayMessage(accountModel.currency);
+      showFlushbar(context, message: "$errorString");
       if (!error.validationError) {
         if (prompt) {
           send = await showDialog(

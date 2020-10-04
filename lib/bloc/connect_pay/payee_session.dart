@@ -103,7 +103,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
               payerName: payerData.userName,
               payerImageURL: payerData.imageURL,
               description: payerData.description)
-          .then((payReq) => _sendPaymentRequest(payReq))
+          .then((payReq) => _sendPaymentRequest(payReq.paymentRequest))
           .then((_) {
         _backgroundService.runAsTask(_sessionCompleter.future, () {
           log.info("payee session background task finished");

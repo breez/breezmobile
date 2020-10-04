@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/logger.dart';
@@ -27,6 +28,7 @@ class AddFundsBloc extends Bloc {
   bool _isMoonpayAllowed = false;
 
   final Stream<AccountModel> accountStream;
+  final Stream<LSPStatus> lspStatusStream;
   final _addFundRequestController = StreamController<bool>.broadcast();
 
   Sink<bool> get addFundRequestSink => _addFundRequestController.sink;
@@ -60,7 +62,8 @@ class AddFundsBloc extends Bloc {
   Sink<AddFundsSettings> get addFundsSettingsSink =>
       _addFundsSettingsController.sink;
 
-  AddFundsBloc(Stream<BreezUserModel> userStream, this.accountStream) {
+  AddFundsBloc(Stream<BreezUserModel> userStream, this.accountStream,
+      this.lspStatusStream) {
     ServiceInjector injector = ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
     int requestNumber = 0;
@@ -70,8 +73,12 @@ class AddFundsBloc extends Bloc {
         _addFundResponseController.add(null);
         return;
       }
-      userStream.firstWhere((u) => u.userID != null).then((user) {
-        breezLib.addFundsInit(user.userID).then((reply) {
+      userStream.firstWhere((u) => u.userID != null).then((user) async {
+        var lspStatus = await this.lspStatusStream.first;
+        if (lspStatus.selectedLSP == null) {
+          throw new Exception("lsp was not selected");
+        }
+        breezLib.addFundsInit(user.userID, lspStatus.selectedLSP).then((reply) {
           if (currentRequest == currentRequest) {
             AddFundResponse response = AddFundResponse(reply);
             _attachMoonpayUrl(response);
@@ -83,7 +90,7 @@ class AddFundsBloc extends Bloc {
         });
       });
     });
-   _populateAvailableVendors();
+    _populateAvailableVendors();
     _addFundsSettingsController.add(AddFundsSettings.start());
     _handleAddFundsSettings(injector);
     _handleMoonpayOrders(injector);
@@ -104,7 +111,9 @@ class AddFundsBloc extends Bloc {
         enabled: !hasPendingOrder));
     _vendorList.add(AddFundVendorModel(
         "Buy Bitcoin", "src/icon/credit_card.png", "/buy_bitcoin",
-        isAllowed: _isMoonpayAllowed, enabled: !hasPendingOrder));
+        isAllowed: _isMoonpayAllowed,
+        enabled: !hasPendingOrder,
+        showLSPFee: true));
     _vendorList.add(AddFundVendorModel("Redeem Fastbitcoins Voucher",
         "src/icon/vendors/fastbitcoins_logo.png", "/fastbitcoins",
         requireActiveChannel: true, shortName: "Redeem Voucher"));

@@ -187,24 +187,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: <Widget>[
-                                                StreamBuilder<AccountSettings>(
-                                                    stream: accountBloc
-                                                        .accountSettingsStream,
-                                                    builder: (settingCtx,
-                                                        settingSnapshot) {
-                                                      AccountSettings settings =
-                                                          settingSnapshot.data;
-                                                      if (settings?.showConnectProgress ==
-                                                              true ||
-                                                          accountModel
-                                                                  .isInitialBootstrap ==
-                                                              true) {
-                                                        return StatusIndicator(
-                                                            context,
-                                                            accountModel);
-                                                      }
-                                                      return SizedBox();
-                                                    }),
                                                 Padding(
                                                   padding: EdgeInsets.only(
                                                       top: 0.0,
@@ -291,10 +273,10 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                           Badge(
                                                                         key:
                                                                             badgeKey,
-                                                                        position: BadgePosition.topRight(
+                                                                        position: BadgePosition.topEnd(
                                                                             top:
                                                                                 5,
-                                                                            right:
+                                                                            end:
                                                                                 -10),
                                                                         animationType:
                                                                             BadgeAnimationType.scale,
@@ -745,7 +727,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             posCatalogBloc.actionsSink.add(addSaleAction);
             return addSaleAction.future.then((submittedSale) {
               return showPaymentDialog(
-                      invoiceBloc, user, payReq.rawPayReq, satAmount)
+                      invoiceBloc, user, payReq, satAmount)
                   .then((cleared) {
                 if (!cleared) {
                   var unLockSale = SetCurrentSale(
@@ -782,7 +764,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   Future showPaymentDialog(InvoiceBloc invoiceBloc, BreezUserModel user,
-      String payReq, double satAmount) {
+      PaymentRequestModel payReq, double satAmount) {
     return showDialog<PosPaymentResult>(
         useRootNavigator: false,
         context: context,

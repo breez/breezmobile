@@ -69,24 +69,18 @@ class AccountPageState extends State<AccountPage>
                     builder: (context, snapshot) {
                       PaymentsModel paymentsModel =
                           snapshot.data ?? PaymentsModel.initial();
-                      return StreamBuilder<String>(
-                          stream: _connectPayBloc.pendingCTPLinkStream,
-                          builder: (ctx, ctpSnapshot) {
-                            //account and payments are ready, build their widgets
-                            return Container(
-                              color: theme
-                                  .customData[theme.themeId].paymentListBgColor,
-                              child: _buildBalanceAndPayments(
-                                  paymentsModel, account, ctpSnapshot.data),
-                            );
-                          });
+                      return Container(
+                        color:
+                            theme.customData[theme.themeId].paymentListBgColor,
+                        child: _buildBalanceAndPayments(paymentsModel, account),
+                      );
                     });
               });
         });
   }
 
-  Widget _buildBalanceAndPayments(PaymentsModel paymentsModel,
-      AccountModel account, String pendingCTPLink) {
+  Widget _buildBalanceAndPayments(
+      PaymentsModel paymentsModel, AccountModel account) {
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     double listHeightSpace = MediaQuery.of(context).size.height -
@@ -103,13 +97,7 @@ class AccountPageState extends State<AccountPage>
 
     String message;
     bool showMessage = account?.syncUIState != SyncUIState.BLOCKING &&
-        (account != null && !account.initial ||
-            account?.isInitialBootstrap == true);
-    if (pendingCTPLink != null) {
-      message =
-          "You will be able to receive payments after Breez is finished opening a secured channel with our server. This usually takes ~10 minutes to be completed";
-      showMessage = true;
-    }
+        (account != null && !account.initial);
 
     List<Widget> slivers = List<Widget>();
     slivers.add(SliverPersistentHeader(

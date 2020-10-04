@@ -5,8 +5,6 @@ import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:flutter/material.dart';
 
-import '../status_indicator.dart';
-
 class WalletDashboard extends StatefulWidget {
   final AccountModel _accountModel;
   final AccountSettings _accSettings;
@@ -33,9 +31,6 @@ class WalletDashboardState extends State<WalletDashboard> {
         Theme.of(context).accentTextTheme.headline4.fontSize;
     double endHeaderFontSize =
         Theme.of(context).accentTextTheme.headline4.fontSize - 8.0;
-    bool showProgressBar = (widget._accSettings?.showConnectProgress == true &&
-            !widget._accountModel.initial) ||
-        widget._accountModel?.isInitialBootstrap == true;
 
     return GestureDetector(
       child: Stack(
@@ -46,11 +41,6 @@ class WalletDashboardState extends State<WalletDashboard> {
               height: widget._height,
               decoration:
                   BoxDecoration(color: Theme.of(context).backgroundColor)),
-          showProgressBar
-              ? Positioned(
-                  top: 0.0,
-                  child: StatusIndicator(context, widget._accountModel))
-              : SizedBox(),
           Positioned(
             top: 40 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
             child: Center(

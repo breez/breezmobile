@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -226,8 +227,6 @@ class AccountModel {
       _accountResponse.status == Account_AccountStatus.CLOSING_CONNECTION;
   bool get connected =>
       _accountResponse.status == Account_AccountStatus.CONNECTED;
-  bool get isInitialBootstrap =>
-      !initial && (disconnected || closingConnection);
   Int64 get tipHeight => _accountResponse.tipHeight;
   Int64 get balance => _accountResponse.balance;
   String get formattedFiatBalance => fiatCurrency?.format(balance);
@@ -249,6 +248,7 @@ class AccountModel {
   bool get enabled => _accountResponse.enabled;
   Int64 get routingNodeFee => _accountResponse.routingNodeFee;
   bool get readyForPayments => _accountResponse.readyForPayments;
+  Int64 get maxInboundLiquidity => _accountResponse.maxInboundLiquidity;
 
   bool get synced => syncedToChain;
   String get channelFundingTxUrl {
@@ -259,10 +259,6 @@ class AccountModel {
   }
 
   String get statusMessage {
-    if (this.isInitialBootstrap) {
-      return "Please wait a minute while Breez is initializing (keep the app open).";
-    }
-
     SwapFundStatus swapStatus = this.swapFundsStatus;
 
     if (swapStatus.unconfirmedTxID != null) {
@@ -311,14 +307,11 @@ class AccountModel {
       return 'Payment exceeds the limit (${currency.format(maxPaymentAmount)})';
     }
 
-    if (amount > maxAmount) {
-      return outgoing
-          ? "Not enough funds"
-          : "Amount exceeds available capacity";
-    }
-
     if (outgoing && amount > maxAllowedToPay) {
-      return "Breez requires you to keep ${currency.format(reserveAmount)} in your balance.";
+      if (reserveAmount > 0) {
+        return "Breez requires you to keep ${currency.format(reserveAmount)} in your balance.";
+      }
+      return "Insufficient local balance";
     }
 
     return null;
@@ -575,6 +568,22 @@ class PaymentError implements Exception {
 
   String errMsg() => error?.toString();
   String toString() => errMsg();
+  String toDisplayMessage(Currency currency) {
+    var str = toString();
+    if (str.isNotEmpty) {
+      var parts = str.split(":");
+      if (parts.length == 2) {
+        switch (parts[0]) {
+          case 'insufficient balance':
+            try {
+              var amount = Int64.parseInt(parts[1]);
+              return "Insufficient balance: you can send up to ${currency.format(amount)} to this destination";
+            } catch (err) {}
+        }
+      }
+    }
+    return "Failed to send payment: ${str.split("\n").first}";
+  }
 }
 
 class TxDetail {

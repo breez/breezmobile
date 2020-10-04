@@ -1,9 +1,12 @@
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payee_session.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
+import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -16,8 +19,9 @@ import 'session_instructions.dart';
 class PayeeSessionWidget extends StatelessWidget {
   final PayeeRemoteSession _currentSession;
   final AccountModel _account;
+  final LSPStatus _lspStatus;
 
-  PayeeSessionWidget(this._currentSession, this._account);
+  PayeeSessionWidget(this._currentSession, this._account, this._lspStatus);
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +32,15 @@ class PayeeSessionWidget extends StatelessWidget {
             return Center(child: Loader());
           }
           PaymentSessionState sessionState = snapshot.data;
+          var payerAmount = snapshot?.data?.payerData?.amount;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              SessionInstructions(_PayeeInstructions(sessionState, _account),
+              SessionInstructions(
+                  _PayeeInstructions(sessionState, _account, _lspStatus),
                   actions: _getActions(sessionState),
                   onAction: (action) => _onAction(context, action),
                   disabledActions: _getDisabledActions(sessionState)),
@@ -43,6 +49,16 @@ class PayeeSessionWidget extends StatelessWidget {
                     left: 25.0, right: 25.0, bottom: 21.0, top: 25.0),
                 child: PeersConnection(sessionState),
               ),
+              payerAmount == null || _account.maxInboundLiquidity >= payerAmount
+                  ? SizedBox()
+                  : WarningBox(
+                      contentPadding: EdgeInsets.all(8),
+                      child: Text(
+                          _formatFeeMessage(_account, _lspStatus,
+                              snapshot.data.payerData.amount),
+                          style: Theme.of(context).textTheme.headline6,
+                          textAlign: TextAlign.center),
+                    )
             ],
           );
         });
@@ -78,8 +94,9 @@ class PayeeSessionWidget extends StatelessWidget {
 class _PayeeInstructions extends StatelessWidget {
   final PaymentSessionState _sessionState;
   final AccountModel _account;
+  final LSPStatus _lspStatus;
 
-  _PayeeInstructions(this._sessionState, this._account);
+  _PayeeInstructions(this._sessionState, this._account, this._lspStatus);
 
   @override
   Widget build(BuildContext context) {
@@ -133,12 +150,13 @@ class _PayeeInstructions extends StatelessWidget {
       if (_account.maxAllowedToReceive <
           Int64(_sessionState.payerData.amount)) {
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(message, style: theme.sessionNotificationStyle),
             Text(
                 'This payment exceeds your limit (${_account.currency.format(_account.maxAllowedToReceive)}).',
-                style: theme.sessionNotificationWarningStyle
-                    .copyWith(color: Theme.of(context).errorColor),
+                style: theme.sessionNotificationStyle
+                    .copyWith(color: theme.errorColor),
                 textAlign: TextAlign.center)
           ],
         );
@@ -150,4 +168,18 @@ class _PayeeInstructions extends StatelessWidget {
     }
     return Text(message, style: theme.sessionNotificationStyle);
   }
+}
+
+_formatFeeMessage(AccountModel acc, LSPStatus lspStatus, int amount) {
+  num feeSats = 0;
+  if (amount > acc.maxInboundLiquidity.toInt()) {
+    feeSats = (amount * lspStatus.currentLSP.channelFeePermyriad / 10000);
+  }
+  var intSats = feeSats.toInt();
+  if (intSats == 0) {
+    return "";
+  }
+  var feeFiat = acc.fiatCurrency.format(Int64(intSats));
+  var formattedSats = Currency.SAT.format(Int64(intSats));
+  return 'A setup fee of $formattedSats ($feeFiat) is applied to this payment.';
 }

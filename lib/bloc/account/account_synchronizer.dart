@@ -56,8 +56,8 @@ class AccountSynchronizer {
       _breezLib.sendCommand("getinfo").then((info) {
         Map replyJson = json.decode(info);
         var syncedToTimestamp =
-            int.parse(replyJson["best_header_timestamp"].toString()) * 1000;
-        var syncedToChain = replyJson["synced_to_chain"].toString() == "true";
+            int.parse(replyJson["bestHeaderTimestamp"].toString()) * 1000;
+        var syncedToChain = replyJson["syncedToChain"].toString() == "true";
 
         if (_startPollTimestamp == 0 &&
             DateTime.now().millisecondsSinceEpoch - syncedToTimestamp > 0) {
@@ -77,9 +77,9 @@ class AccountSynchronizer {
           _emitProgress();
         }
 
-        int numChannels = replyJson["num_pending_channels"] +
-            replyJson["num_active_channels"] +
-            replyJson["num_inactive_channels"];
+        int numChannels = replyJson["numPendingChannels"] +
+            replyJson["numActiveChannels"] +
+            replyJson["numInactiveChannels"];
         bool hasChannel = numChannels > 0;
         if (syncedToChain) {
           if (!bootstrap || hasChannel || _openChannelProgress == 1.0) {
