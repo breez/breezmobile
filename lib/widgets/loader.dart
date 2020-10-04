@@ -84,16 +84,17 @@ class FullScreenLoader extends StatelessWidget {
                 )),
           ),
           this.onClose != null
-              ? Positioned(
-                  top: 25.0,
-                  right: 25.0,
-                  height: 30.0,
-                  width: 30.0,
-                  child: IconButton(
-                      color: Colors.white,
-                      onPressed: () => this.onClose(),
-                      icon: Icon(Icons.close,
-                          color: Theme.of(context).iconTheme.color)),
+              ? Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                        color: Colors.white,
+                        onPressed: () => this.onClose(),
+                        icon: Icon(Icons.close,
+                            color: Theme.of(context).iconTheme.color)),
+                  ),
                 )
               : SizedBox(),
         ],
