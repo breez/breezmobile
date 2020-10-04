@@ -5,17 +5,21 @@ String themeId = "BLUE";
 class CustomData {
   BlendMode loaderColorBlendMode;
   String loaderAssetPath;
+  Color paymentListBgColor;
 
-  CustomData({this.loaderColorBlendMode, this.loaderAssetPath});
+  CustomData(
+      {this.loaderColorBlendMode, this.loaderAssetPath, this.paymentListBgColor});
 }
 
 final Map<String, ThemeData> themeMap = {"BLUE": blueTheme, "DARK": darkTheme};
 final CustomData blueThemeCustomData = CustomData(
     loaderColorBlendMode: BlendMode.multiply,
-    loaderAssetPath: 'src/images/breez_loader_blue.gif');
+    loaderAssetPath: 'src/images/breez_loader_blue.gif',
+    paymentListBgColor: Color.fromRGBO(249, 249, 249, 1));
 final CustomData darkThemeCustomData = CustomData(
     loaderColorBlendMode: BlendMode.srcIn,
-    loaderAssetPath: 'src/images/breez_loader_dark.gif');
+    loaderAssetPath: 'src/images/breez_loader_dark.gif',
+    paymentListBgColor: Color.fromRGBO(20, 43, 61, 1));
 final Map<String, CustomData> customData = {
   "BLUE": blueThemeCustomData,
   "DARK": darkThemeCustomData
@@ -105,17 +109,37 @@ final ThemeData blueTheme = ThemeData(
   textSelectionHandleColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
-      headline4: TextStyle(
-          color: Color.fromRGBO(0, 133, 251, 1.0),
-          fontSize: 30.0,
-          fontWeight: FontWeight.w400,
-          height: 1.52),
-      subtitle1: TextStyle(
-          color: Color.fromRGBO(0, 133, 251, 1.0),
-          fontSize: 13.5,
-          fontWeight: FontWeight.w400,
-          height: 1.24,
-          letterSpacing: 0.2)),
+    bodyText2: TextStyle(color: BreezColors.grey[600]),
+    headline4: TextStyle(
+        color: Color.fromRGBO(0, 133, 251, 1.0),
+        fontSize: 30.0,
+        fontWeight: FontWeight.w400,
+        height: 1.52),
+    subtitle1: TextStyle(
+        color: Color.fromRGBO(0, 133, 251, 1.0),
+        fontSize: 13.5,
+        fontWeight: FontWeight.w400,
+        height: 1.24,
+        letterSpacing: 0.2),
+    headline6: TextStyle(
+        color: Colors.black,
+        fontSize: 12.0,
+        fontWeight: FontWeight.w500,
+        height: 1.28,
+        letterSpacing: 0.5),
+    subtitle2: TextStyle(
+        color: Colors.black,
+        fontSize: 10.725,
+        fontWeight: FontWeight.w400,
+        height: 1.2,
+        letterSpacing: 0.25),
+    caption: TextStyle(
+        color: Colors.black.withOpacity(0.7),
+        fontSize: 9.0,
+        fontWeight: FontWeight.w400,
+        height: 1.16,
+        letterSpacing: 0.39),
+  ),
 );
 
 // Color(0xFF121212) values are tbd
@@ -199,6 +223,7 @@ final ThemeData darkTheme = ThemeData(
   textSelectionHandleColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
+      bodyText2: TextStyle(color: Colors.white),
       headline4: TextStyle(
           color: Colors.white,
           fontSize: 30.0,
@@ -209,7 +234,25 @@ final ThemeData darkTheme = ThemeData(
           fontSize: 13.5,
           fontWeight: FontWeight.w400,
           height: 1.24,
-          letterSpacing: 0.2)),
+          letterSpacing: 0.2),
+      headline6: TextStyle(
+          color: Colors.white,
+          fontSize: 12.0,
+          fontWeight: FontWeight.w500,
+          height: 1.28,
+          letterSpacing: 0.5),
+      subtitle2: TextStyle(
+          color: Colors.white,
+          fontSize: 10.725,
+          fontWeight: FontWeight.w400,
+          height: 1.2,
+          letterSpacing: 0.25),
+      caption: TextStyle(
+          color: Colors.white.withOpacity(0.7),
+          fontSize: 9.0,
+          fontWeight: FontWeight.w400,
+          height: 1.16,
+          letterSpacing: 0.39)),
 );
 
 final VendorTheme bitrefill = VendorTheme(

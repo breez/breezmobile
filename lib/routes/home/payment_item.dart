@@ -21,11 +21,22 @@ class PaymentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
       ListTile(
-        leading: _buildPaymentItemAvatar(),
+        leading: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    offset: Offset(0.5, 0.5),
+                    blurRadius: 5.0),
+              ],
+            ),
+            child: _buildPaymentItemAvatar()),
         key: _firstItem ? firstPaymentItemKey : null,
         title: Text(
           _paymentInfo.title,
-          style: theme.transactionTitleStyle,
+          style: Theme.of(context).accentTextTheme.subtitle2,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Row(
@@ -36,11 +47,13 @@ class PaymentItem extends StatelessWidget {
               Text(
                 DateUtils.formatMonthDate(DateTime.fromMillisecondsSinceEpoch(
                     _paymentInfo.creationTimestamp.toInt() * 1000)),
-                style: theme.transactionSubtitleStyle,
+                style: Theme.of(context).accentTextTheme.caption,
               ),
               _paymentInfo.pending
                   ? Text(" (Pending)",
-                      style: theme.transactionTitleStyle
+                      style: Theme.of(context)
+                          .accentTextTheme
+                          .subtitle2
                           .copyWith(color: theme.warningStyle.color))
                   : SizedBox()
             ]),
@@ -63,18 +76,21 @@ class PaymentItem extends StatelessWidget {
                     style: theme.transactionAmountStyle,
                   )
                 ]),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  _paymentInfo.fee == 0
-                      ? SizedBox()
-                      : Text(
-                          "FEE " +
-                              _paymentInfo.currency.format(_paymentInfo.fee,
-                                  includeDisplayName: false),
-                          style: theme.transactionSubtitleStyle)
-                ]),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    _paymentInfo.fee == 0
+                        ? SizedBox()
+                        : Text(
+                            "FEE " +
+                                _paymentInfo.currency.format(_paymentInfo.fee,
+                                    includeDisplayName: false),
+                            style: Theme.of(context).accentTextTheme.caption)
+                  ]),
+            ),
           ],
         ),
         onTap: () => showPaymentDetailsDialog(context, _paymentInfo),
@@ -82,8 +98,10 @@ class PaymentItem extends StatelessWidget {
       Divider(
         height: 0.0,
         color: _lastItem
-            ? Color.fromRGBO(255, 255, 255, 0.0)
-            : Color.fromRGBO(255, 255, 255, 0.12),
+            ? Colors.transparent
+            : theme.themeId == "BLUE"
+                ? Color.fromRGBO(0, 0, 0, 0.12)
+                : Color.fromRGBO(255, 255, 255, 0.12),
         indent: 72.0,
       ),
     ]);
