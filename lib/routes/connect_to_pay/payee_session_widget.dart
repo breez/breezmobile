@@ -32,6 +32,7 @@ class PayeeSessionWidget extends StatelessWidget {
             return Center(child: Loader());
           }
           PaymentSessionState sessionState = snapshot.data;
+          var payerAmount = snapshot?.data?.payerData?.amount;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -48,14 +49,16 @@ class PayeeSessionWidget extends StatelessWidget {
                     left: 25.0, right: 25.0, bottom: 21.0, top: 25.0),
                 child: PeersConnection(sessionState),
               ),
-              WarningBox(
-                contentPadding: EdgeInsets.all(8),
-                child: Text(
-                    _formatFeeMessage(
-                        _account, _lspStatus, snapshot.data.payerData.amount),
-                    style: Theme.of(context).textTheme.headline6,
-                    textAlign: TextAlign.center),
-              )
+              payerAmount == null || _account.maxInboundLiquidity >= payerAmount
+                  ? SizedBox()
+                  : WarningBox(
+                      contentPadding: EdgeInsets.all(8),
+                      child: Text(
+                          _formatFeeMessage(_account, _lspStatus,
+                              snapshot.data.payerData.amount),
+                          style: Theme.of(context).textTheme.headline6,
+                          textAlign: TextAlign.center),
+                    )
             ],
           );
         });
@@ -168,10 +171,6 @@ class _PayeeInstructions extends StatelessWidget {
 }
 
 _formatFeeMessage(AccountModel acc, LSPStatus lspStatus, int amount) {
-  if (acc.maxInboundLiquidity >= amount) {
-    return '';
-  }
-
   num feeSats = 0;
   if (amount > acc.maxInboundLiquidity.toInt()) {
     feeSats = (amount * lspStatus.currentLSP.channelFeePermyriad / 10000);
