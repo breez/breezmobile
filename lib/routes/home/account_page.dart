@@ -74,9 +74,8 @@ class AccountPageState extends State<AccountPage>
                           builder: (ctx, ctpSnapshot) {
                             //account and payments are ready, build their widgets
                             return Container(
-                              color: theme.themeId == "BLUE"
-                                  ? Color.fromRGBO(249, 249, 249, 1)
-                                  : Color.fromRGBO(20, 43, 61, 1),
+                              color: theme
+                                  .customData[theme.themeId].paymentListBgColor,
                               child: _buildBalanceAndPayments(
                                   paymentsModel, account, ctpSnapshot.data),
                             );

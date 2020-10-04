@@ -66,9 +66,7 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
           builder: (context, shrinkedHeight, overlapContent) {
         return Container(
             decoration: BoxDecoration(
-                color: theme.themeId == "BLUE"
-                    ? Color.fromRGBO(249, 249, 249, 1)
-                    : Color.fromRGBO(20, 43, 61, 1)),
+                color: theme.customData[theme.themeId].paymentListBgColor),
             height: widget._maxSize,
             child: AnimatedOpacity(
                 duration: Duration(milliseconds: 100),
@@ -144,9 +142,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   Theme _buildFilterDropdown(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-          canvasColor: theme.themeId == "BLUE"
-              ? Color.fromRGBO(249, 249, 249, 1)
-              : Color.fromRGBO(20, 43, 61, 1)),
+          canvasColor: theme.customData[theme.themeId].paymentListBgColor),
       child: DropdownButtonHideUnderline(
         child: ButtonTheme(
           alignedDropdown: true,
