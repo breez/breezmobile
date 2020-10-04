@@ -599,10 +599,9 @@ class HomeState extends State<Home> {
       bool send = accountSettings.failedPaymentBehavior ==
           BugReportBehavior.SEND_REPORT;
 
-      var errorString = error.toString().isEmpty
-          ? ""
-          : ": ${error.toString().split("\n").first}";
-      showFlushbar(context, message: "Failed to send payment$errorString");
+      var accountModel = await widget.accountBloc.accountStream.first;
+      var errorString = error.toDisplayMessage(accountModel.currency);
+      showFlushbar(context, message: "$errorString");
       if (!error.validationError) {
         if (prompt) {
           send = await showDialog(

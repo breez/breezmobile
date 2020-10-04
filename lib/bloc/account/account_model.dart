@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -567,6 +568,22 @@ class PaymentError implements Exception {
 
   String errMsg() => error?.toString();
   String toString() => errMsg();
+  String toDisplayMessage(Currency currency) {
+    var str = toString();
+    if (str.isNotEmpty) {
+      var parts = str.split(":");
+      if (parts.length == 2) {
+        switch (parts[0]) {
+          case 'insufficient balance':
+            try {
+              var amount = Int64.parseInt(parts[1]);
+              return "Insufficient balance: you can send up to ${currency.format(amount)} to this destination";
+            } catch (err) {}
+        }
+      }
+    }
+    return "Failed to send payment: ${str.split("\n").first}";
+  }
 }
 
 class TxDetail {
