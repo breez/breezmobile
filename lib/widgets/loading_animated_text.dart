@@ -42,7 +42,7 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
     var textElements = widget.textElements.toList();
     return RichText(
         text: TextSpan(
-            style: widget.textStyle ?? DefaultTextStyle.of(context).style,
+            style: widget.textStyle ?? Theme.of(context).accentTextTheme.bodyText2,
             text: widget._loadingMessage,
             children: textElements
               ..addAll(<TextSpan>[

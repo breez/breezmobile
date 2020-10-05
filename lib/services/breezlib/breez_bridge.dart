@@ -347,6 +347,10 @@ class BreezBridge {
         "sendPaymentFailureBugReport", {"argument": traceReport});
   }
 
+  Future populateChannePolicy() {
+    return _invokeMethodWhenReady("populateChannelPolicy");
+  }
+
   Future<PaymentsList> getPayments() {
     return _invokeMethodImmediate("getPayments")
         .then((result) => PaymentsList()..mergeFromBuffer(result ?? []));

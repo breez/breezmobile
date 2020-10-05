@@ -66,7 +66,8 @@ class GetRefundPage extends StatelessWidget {
                                     item.lastRefundTxID.isNotEmpty
                                         ? "BROADCASTED"
                                         : "REFUND",
-                                    item.lastRefundTxID.isNotEmpty && !allowRebroadcastRefunds
+                                    item.lastRefundTxID.isNotEmpty &&
+                                            !allowRebroadcastRefunds
                                         ? null
                                         : () =>
                                             onRefund(context, account, item))),
@@ -89,7 +90,11 @@ class GetRefundPage extends StatelessWidget {
                 SendOnchain(account, item.confirmedAmount, "Refund Transaction",
                     (destAddress, feeRate) {
                   return broadcastAndWait(
-                      context, item.address, destAddress, feeRate);
+                          context, item.address, destAddress, feeRate)
+                      .then((str) {
+                    Navigator.of(context).pop();
+                    return str;
+                  });
                 })));
   }
 

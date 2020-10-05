@@ -6,22 +6,20 @@ import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/home_page.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
-import 'package:breez/widgets/scroll_watcher.dart';
 import 'package:flutter/material.dart';
 
-import 'floating_actions_bar.dart';
 import 'payments_filter.dart';
 import 'payments_list.dart';
 import 'status_text.dart';
 import 'wallet_dashboard.dart';
 
-const DASHBOARD_MAX_HEIGHT = 188.0;
+const DASHBOARD_MAX_HEIGHT = 176.25;
 const DASHBOARD_MIN_HEIGHT = 70.0;
 const FILTER_MAX_SIZE = 70.0;
-const FILTER_MIN_SIZE = 30.0;
+const FILTER_MIN_SIZE = 0.0;
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
 class AccountPage extends StatefulWidget {
@@ -71,8 +69,11 @@ class AccountPageState extends State<AccountPage>
                     builder: (context, snapshot) {
                       PaymentsModel paymentsModel =
                           snapshot.data ?? PaymentsModel.initial();
-                      //account and payments are ready, build their widgets
-                      return _buildBalanceAndPayments(paymentsModel, account);
+                      return Container(
+                        color:
+                            theme.customData[theme.themeId].paymentListBgColor,
+                        child: _buildBalanceAndPayments(paymentsModel, account),
+                      );
                     });
               });
         });
@@ -157,30 +158,7 @@ class AccountPageState extends State<AccountPage>
       key: Key("account_sliver"),
       fit: StackFit.expand,
       children: [
-        paymentsModel.nonFilteredItems.length == 0
-            ? Image.asset(
-                "src/images/waves-home.png",
-                fit: BoxFit.contain,
-                width: double.infinity,
-                alignment: Alignment.bottomCenter,
-              )
-            : SizedBox(),
         CustomScrollView(controller: widget.scrollController, slivers: slivers),
-        //Floating actions
-        ScrollWatcher(
-          controller: widget.scrollController,
-          builder: (context, offset) {
-            double height = (DASHBOARD_MAX_HEIGHT - offset)
-                .clamp(DASHBOARD_MIN_HEIGHT, DASHBOARD_MAX_HEIGHT);
-            double heightFactor =
-                (offset / (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT))
-                    .clamp(0.0, 1.0);
-            return account != null && !account.initial
-                ? FloatingActionsBar(
-                    account, height, heightFactor, firstPaymentItemKey)
-                : Positioned(top: 0.0, child: SizedBox());
-          },
-        ),
       ],
     );
   }
@@ -214,6 +192,7 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final UserProfileBloc _userProfileBloc;
 
   WalletDashboardHeaderDelegate(this.accountBloc, this._userProfileBloc);
+
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {

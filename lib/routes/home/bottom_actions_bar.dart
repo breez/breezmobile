@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_fund_vendor_model.dart';
@@ -9,238 +8,53 @@ import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/bloc/lnurl/lnurl_actions.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/handlers/lnurl_handler.dart';
-import 'package:breez/routes/add_funds/fastbitcoins_page.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
-import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
-import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/bip21.dart';
-import 'package:breez/utils/btc_address.dart';
-import 'package:breez/utils/fastbitcoin.dart';
-import 'package:breez/utils/node_id.dart';
-import 'package:breez/utils/qr_scan.dart' as QRScanner;
-import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
-import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/escher_dialog.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/lsp_fee.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-class FloatingActionsBar extends StatelessWidget {
-  static const double EXPANDED_ACTIONS_WIDTH = 253.0;
-  static const double COLLAPSED_ACTIONS_WIDTH = 147.0;
-  static const double TEXT_ACTION_SIZE = 70.0;
+class BottomActionsBar extends StatelessWidget {
   final AccountModel account;
-  final double height;
-  final double offsetFactor;
   final GlobalKey firstPaymentItemKey;
 
-  FloatingActionsBar(
-      this.account, this.height, this.offsetFactor, this.firstPaymentItemKey);
+  BottomActionsBar(this.account, this.firstPaymentItemKey);
 
   @override
   Widget build(BuildContext context) {
-    bool isSmallView = height < 160;
-
-    return Positioned(
-      top: (height - 25.0),
-      right: 16.0,
-      child: AnimatedContainer(
-        width: isSmallView ? COLLAPSED_ACTIONS_WIDTH : EXPANDED_ACTIONS_WIDTH,
-        duration: Duration(milliseconds: 150),
-        decoration: BoxDecoration(
-            color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-            borderRadius: BorderRadius.circular(24.0)),
+    AutoSizeGroup actionsGroup = AutoSizeGroup();
+    return BottomAppBar(
+      child: Container(
+        height: 60,
+        color: theme.themeId == "BLUE" ? Color(0xff0085FB) : Color(0xff4D88EC),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
+            _Action(
+              onPress: () => _showSendOptions(context),
+              group: actionsGroup,
+              text: "SEND",
+              iconAssetPath: "src/icon/send-action.png",
+            ),
             Container(
-              alignment: Alignment.center,
-              height: 48,
-              width: isSmallView
-                  ? COLLAPSED_ACTIONS_WIDTH
-                  : EXPANDED_ACTIONS_WIDTH,
-              child: _buildActionsBar(context, isSmallView),
+              width: 64,
+            ),
+            _Action(
+              onPress: () => _showReceiveOptions(context),
+              group: actionsGroup,
+              text: "RECEIVE",
+              iconAssetPath: "src/icon/receive-action.png",
             ),
           ],
         ),
       ),
     );
-  }
-
-  Widget _buildActionsBar(BuildContext context, bool minimized) {
-    AutoSizeGroup actionsGroup = AutoSizeGroup();
-    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _Action(
-                  onPress: () => _showSendOptions(context),
-                  group: actionsGroup,
-                  text: "SEND",
-                  iconAssetPath: "src/icon/send-action.png",
-                  minimized: minimized),
-              Container(
-                alignment: Alignment.center,
-                width: minimized ? 50.0 : 75.0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    _ActionSeparator(),
-                    _Action(
-                        onPress: () async {
-                          try {
-                            String scannedString = await QRScanner.scan();
-                            if (scannedString != null) {
-                              if (scannedString.isEmpty) {
-                                showFlushbar(context,
-                                    message: "QR code wasn't detected.");
-                                return;
-                              }
-                              String lower = scannedString.toLowerCase();
-
-                              // lnurl string
-                              if (lower.startsWith("lightning:lnurl") ||
-                                  lower.startsWith("lnurl")) {
-                                await _handleLNUrl(
-                                    lnurlBloc, context, scannedString);
-                                return;
-                              }
-
-                              // bip 121
-                              String lnInvoice = extractBolt11FromBip21(lower);
-                              if (lnInvoice != null) {
-                                lower = lnInvoice;
-                              }
-
-                              // regular lightning invoice.
-                              if (lower.startsWith("lightning:") ||
-                                  lower.startsWith("ln")) {
-                                invoiceBloc.decodeInvoiceSink
-                                    .add(scannedString);
-                                return;
-                              }
-
-                              // fast bitcoin
-                              if (isFastBitcoinURL(lower)) {
-                                Navigator.of(context).push(FadeInRoute(
-                                  builder: (_) =>
-                                      FastbitcoinsPage(fastBitcoinUrl: lower),
-                                ));
-                                return;
-                              }
-
-                              // bitcoin
-                              BTCAddressInfo btcInvoice =
-                                  parseBTCAddress(scannedString);
-
-                              if (await _isBTCAddress(btcInvoice.address)) {
-                                String requestAmount;
-                                if (btcInvoice.satAmount != null) {
-                                  requestAmount = account.currency.format(
-                                      btcInvoice.satAmount,
-                                      userInput: true,
-                                      includeDisplayName: false,
-                                      removeTrailingZeros: true);
-                                }
-                                Navigator.of(context).push(FadeInRoute(
-                                  builder: (_) => ReverseSwapPage(
-                                      userAddress: btcInvoice.address,
-                                      requestAmount: requestAmount),
-                                ));
-                                return;
-                              }
-                              var nodeID = parseNodeId(scannedString);
-                              if (nodeID != null) {
-                                Navigator.of(context).push(FadeInRoute(
-                                  builder: (_) => SpontaneousPaymentPage(
-                                      nodeID, firstPaymentItemKey),
-                                ));
-                                return;
-                              }
-                              showFlushbar(context,
-                                  message: "QR code cannot be processed.");
-                            }
-                          } on PlatformException catch (e) {
-                            if (e.code == BarcodeScanner.CameraAccessDenied) {
-                              Navigator.of(context).push(FadeInRoute(
-                                  builder: (_) => BarcodeScannerPlaceholder(
-                                      invoiceBloc, firstPaymentItemKey)));
-                            }
-                          }
-                        },
-                        iconAssetPath: "src/icon/qr_scan.png",
-                        minimized: minimized),
-                    _ActionSeparator(),
-                  ],
-                ),
-              ),
-              _Action(
-                  onPress: () => _showReceiveOptions(context),
-                  group: actionsGroup,
-                  text: "RECEIVE",
-                  iconAssetPath: "src/icon/receive-action.png",
-                  minimized: minimized),
-            ]),
-      ],
-    );
-  }
-
-  Future<bool> _isBTCAddress(String scannedString) {
-    return ServiceInjector()
-        .breezBridge
-        .validateAddress(scannedString)
-        .then((_) => true)
-        .catchError((err) => false);
-  }
-
-  Future _handleLNUrl(
-      LNUrlBloc lnurlBloc, BuildContext context, String lnurl) async {
-    Fetch fetchAction = Fetch(lnurl);
-    var cancelCompleter = Completer();
-    var loaderRoute = createLoaderRoute(context, onClose: () {
-      cancelCompleter.complete();
-    });
-    Navigator.of(context).push(loaderRoute);
-
-    lnurlBloc.actionsSink.add(fetchAction);
-    await Future.any([cancelCompleter.future, fetchAction.future]).then(
-      (response) {
-        Navigator.of(context).removeRoute(loaderRoute);
-        if (cancelCompleter.isCompleted) {
-          return;
-        }
-
-        LNURLHandler(context, lnurlBloc)
-            .executeLNURLResponse(context, lnurlBloc, response);
-      },
-    ).catchError((err) {
-      Navigator.of(context).removeRoute(loaderRoute);
-      promptError(
-          context,
-          "Link Error",
-          Text("Failed to process link: " + err.toString(),
-              style: Theme.of(context).dialogTheme.contentTextStyle));
-    });
   }
 
   Future _showSendOptions(BuildContext context) async {
@@ -420,19 +234,10 @@ class FloatingActionsBar extends StatelessWidget {
   }
 }
 
-class _ActionSeparator extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        height: 32.0, width: 1.0, color: Colors.white.withOpacity(0.4));
-  }
-}
-
 class _Action extends StatelessWidget {
   final String text;
   final AutoSizeGroup group;
   final String iconAssetPath;
-  final bool minimized;
   final Function() onPress;
   final Alignment minimizedAlignment;
 
@@ -441,39 +246,22 @@ class _Action extends StatelessWidget {
     this.text,
     this.group,
     this.iconAssetPath,
-    this.minimized,
     this.onPress,
     this.minimizedAlignment = Alignment.center,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (minimized || text == null) {
-      return IconButton(
-        alignment: minimizedAlignment,
-        onPressed: this.onPress,
-        padding: EdgeInsets.zero,
-        icon: Image(
-          image: AssetImage(iconAssetPath),
-          color: theme.BreezColors.white[500],
-          fit: BoxFit.contain,
-          width: 24.0,
-          height: 24.0,
-        ),
-      );
-    }
-
-    return Container(
-      width: FloatingActionsBar.TEXT_ACTION_SIZE,
-      //decoration: BoxDecoration(color: Colors.red),
+    return Expanded(
       child: FlatButton(
+        height: 60,
         padding: EdgeInsets.zero,
         onPressed: this.onPress,
         child: Text(
           text,
           textAlign: TextAlign.center,
-          style: theme.addFundsBtnStyle.copyWith(
-              fontSize: 12.3 / MediaQuery.of(context).textScaleFactor),
+          style: theme.bottomAppBarBtnStyle.copyWith(
+              fontSize: 13.5 / MediaQuery.of(context).textScaleFactor),
           maxLines: 1,
         ),
       ),

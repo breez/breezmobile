@@ -64,6 +64,7 @@ Breez is currently in a public beta, available on [Android](https://play.google.
 - [x] Spontaneous payments to node id (nodes running with --accept-keysend)
 - [x] Fast graph sync
 - [x] Scan QR code from an image
+- [x] Import/export POS items
 - [ ] Support zero-conf channels
 - [ ] 'On-the-fly' channel creation (increase limit)
 - [ ] Async payments via Lightning Rod
@@ -84,6 +85,7 @@ Breez is currently in a public beta, available on [Android](https://play.google.
 - Copy the bindings.framework directory to the ios directory.
 - Create a firebase iOS app using the [firebase console](https://console.firebase.google.com/)
 - Generate the GoogleServices-info.plist and copy it to ios/Runner directory
+- Run `pod install` from `breezmobile/ios`
 3. Flutter beta channel
 - Install [flutter](https://flutter.dev/docs/get-started/install)
 Run these command to switch to beta channel:
