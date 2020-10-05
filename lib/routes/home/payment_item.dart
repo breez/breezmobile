@@ -73,7 +73,7 @@ class PaymentItem extends StatelessWidget {
                             : "+ ") +
                         _paymentInfo.currency.format(_paymentInfo.amount,
                             includeDisplayName: false),
-                    style: theme.transactionAmountStyle,
+                    style: Theme.of(context).accentTextTheme.headline6,
                   )
                 ]),
             Padding(
