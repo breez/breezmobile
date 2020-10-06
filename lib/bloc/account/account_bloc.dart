@@ -492,8 +492,7 @@ class AccountBloc {
               _accountController.value.syncUIState == SyncUIState.NONE &&
               !blockingPrompted) {
             blockingPrompted = true;
-            syncUIState =
-                newNode ? SyncUIState.BLOCKING : SyncUIState.COLLAPSED;
+            syncUIState = SyncUIState.COLLAPSED;
           }
           _accountController.add(_accountController.value.copyWith(
               syncUIState: syncUIState,
