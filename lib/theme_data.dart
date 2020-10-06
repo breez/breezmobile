@@ -134,7 +134,7 @@ final ThemeData blueTheme = ThemeData(
         letterSpacing: 0.5),
     subtitle2: TextStyle(
         color: Colors.black,
-        fontSize: 14.3,
+        fontSize: 12.0,
         fontWeight: FontWeight.w400,
         height: 1.2,
         letterSpacing: 0.25),
@@ -254,7 +254,7 @@ final ThemeData darkTheme = ThemeData(
           letterSpacing: 0.5),
       subtitle2: TextStyle(
           color: Colors.white,
-          fontSize: 14.3,
+          fontSize: 12.0,
           fontWeight: FontWeight.w400,
           height: 1.2,
           letterSpacing: 0.25),
