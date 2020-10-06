@@ -401,12 +401,16 @@ class HomeState extends State<Home> {
                                                               "src/icon/advanced.png"),
                                                     ],
                                                     _onNavigationItemSelected),
-                                                bottomNavigationBar:
-                                                    BottomActionsBar(account,
-                                                        firstPaymentItemKey),
+                                                bottomNavigationBar: !user.isPOS
+                                                    ? BottomActionsBar(account,
+                                                        firstPaymentItemKey)
+                                                    : null,
                                                 floatingActionButton:
-                                                    QrActionButton(account,
-                                                        firstPaymentItemKey),
+                                                    !user.isPOS
+                                                        ? QrActionButton(
+                                                            account,
+                                                            firstPaymentItemKey)
+                                                        : null,
                                                 floatingActionButtonLocation:
                                                     FloatingActionButtonLocation
                                                         .centerDocked,
