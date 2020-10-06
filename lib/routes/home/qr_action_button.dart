@@ -7,14 +7,12 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/handlers/lnurl_handler.dart';
-import 'package:breez/routes/add_funds/fastbitcoins_page.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/btc_address.dart';
-import 'package:breez/utils/fastbitcoin.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
@@ -68,14 +66,6 @@ class QrActionButton extends StatelessWidget {
                 // regular lightning invoice.
                 if (lower.startsWith("lightning:") || lower.startsWith("ln")) {
                   invoiceBloc.decodeInvoiceSink.add(scannedString);
-                  return;
-                }
-
-                // fast bitcoin
-                if (isFastBitcoinURL(lower)) {
-                  Navigator.of(context).push(FadeInRoute(
-                    builder: (_) => FastbitcoinsPage(fastBitcoinUrl: lower),
-                  ));
                   return;
                 }
 

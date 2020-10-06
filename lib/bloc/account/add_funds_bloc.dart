@@ -114,9 +114,6 @@ class AddFundsBloc extends Bloc {
         isAllowed: _isMoonpayAllowed,
         enabled: !hasPendingOrder,
         showLSPFee: true));
-    _vendorList.add(AddFundVendorModel("Redeem Fastbitcoins Voucher",
-        "src/icon/vendors/fastbitcoins_logo.png", "/fastbitcoins",
-        requireActiveChannel: true, shortName: "Redeem Voucher"));
     _availableVendorsController.add(_vendorList);
   }
 
