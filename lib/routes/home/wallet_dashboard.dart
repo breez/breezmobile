@@ -111,7 +111,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                                       .subtitle1
                                       .color
                                       .withOpacity(pow(
-                                          1.00 - widget._offsetFactor, 8)))),
+                                          1.00 - widget._offsetFactor, 2)))),
                     )
                   : SizedBox(),
             ),
