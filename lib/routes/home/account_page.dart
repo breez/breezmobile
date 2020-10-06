@@ -92,7 +92,8 @@ class AccountPageState extends State<AccountPage>
             paymentsModel.paymentsList.length == 0
         ? 0.0
         : (listHeightSpace -
-                PAYMENT_LIST_ITEM_HEIGHT * paymentsModel.paymentsList.length)
+                PAYMENT_LIST_ITEM_HEIGHT *
+                    (paymentsModel.paymentsList.length + 1))
             .clamp(0.0, listHeightSpace);
 
     String message;
