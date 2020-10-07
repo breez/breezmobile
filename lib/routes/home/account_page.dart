@@ -159,6 +159,9 @@ class AccountPageState extends State<AccountPage>
       key: Key("account_sliver"),
       fit: StackFit.expand,
       children: [
+        paymentsModel.nonFilteredItems.length == 0
+            ? CustomPaint(painter: BubblePainter(context))
+            : SizedBox(),
         CustomScrollView(controller: widget.scrollController, slivers: slivers),
       ],
     );
@@ -186,6 +189,34 @@ class AccountPageState extends State<AccountPage>
       ],
     );
   }
+}
+
+class BubblePainter extends CustomPainter {
+  BuildContext context;
+
+  BubblePainter(this.context);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var bubblePaint = Paint()
+      ..color = theme.themeId == "BLUE"
+          ? Color(0xFF0085fb).withOpacity(0.1)
+          : Color(0xff4D88EC).withOpacity(0.1)
+      ..style = PaintingStyle.fill;
+    double bubbleRadius = 12;
+
+    canvas.drawCircle(
+        Offset(MediaQuery.of(context).size.width / 2,
+            DASHBOARD_MAX_HEIGHT + bubbleRadius + 40),
+        bubbleRadius,
+        bubblePaint);
+    canvas.drawCircle(Offset(MediaQuery.of(context).size.width / 2.5, DASHBOARD_MAX_HEIGHT + bubbleRadius * 1.5 + 193), bubbleRadius * 1.5, bubblePaint);
+    canvas.drawCircle(Offset(MediaQuery.of(context).size.width / 1.5, DASHBOARD_MAX_HEIGHT + bubbleRadius * 1.25 + 295), bubbleRadius * 1.25, bubblePaint);
+    canvas.drawCircle(Offset(MediaQuery.of(context).size.width / 2, DASHBOARD_MAX_HEIGHT + bubbleRadius * 0.75 + 370), bubbleRadius * 0.75, bubblePaint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
 class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
