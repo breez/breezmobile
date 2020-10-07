@@ -339,11 +339,19 @@ final TextStyle notificationTextStyle = TextStyle(
 final TextStyle addFundsBtnStyle = TextStyle(
     color: BreezColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
 final TextStyle bottomAppBarBtnStyle = TextStyle(
-    color: BreezColors.white[400],
-    fontSize: 12.3,
+    color: Colors.white,
+    fontSize: 13.5,
     letterSpacing: 1.2,
     fontWeight: FontWeight.w600,
-    height: 1.24);
+    height: 1.24,
+    fontFamily: 'IBMPlexSans');
+final TextStyle bottomSheetTextStyle = TextStyle(
+    fontFamily: 'IBMPlexSans',
+    color: Colors.white,
+    fontSize: 15,
+    letterSpacing: 1.2,
+    fontWeight: FontWeight.w400,
+    height: 1.30);
 final TextStyle addFundsItemsStyle = TextStyle(
     color: BreezColors.white[500],
     fontSize: 14.3,

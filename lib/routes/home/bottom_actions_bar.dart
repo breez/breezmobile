@@ -76,7 +76,10 @@ class BottomActionsBar extends StatelessWidget {
                       leading: _ActionImage(
                           iconAssetPath: "src/icon/paste.png",
                           enabled: account.connected),
-                      title: Text("Paste Invoice or Node ID"),
+                      title: Text(
+                        "Paste Invoice or Node ID",
+                        style: theme.bottomSheetTextStyle,
+                      ),
                       onTap: () async {
                         Navigator.of(context).pop();
                         DecodedClipboardData clipboardData =
@@ -113,7 +116,10 @@ class BottomActionsBar extends StatelessWidget {
                         leading: _ActionImage(
                             iconAssetPath: "src/icon/connect_to_pay.png",
                             enabled: account.connected),
-                        title: Text("Connect to Pay"),
+                        title: Text(
+                          "Connect to Pay",
+                          style: theme.bottomSheetTextStyle,
+                        ),
                         onTap: () {
                           Navigator.of(context).pop();
                           Navigator.of(context).pushNamed("/connect_to_pay");
@@ -130,7 +136,10 @@ class BottomActionsBar extends StatelessWidget {
                         leading: _ActionImage(
                             iconAssetPath: "src/icon/bitcoin.png",
                             enabled: account.connected),
-                        title: Text("Send to BTC Address"),
+                        title: Text(
+                          "Send to BTC Address",
+                          style: theme.bottomSheetTextStyle,
+                        ),
                         onTap: () {
                           Navigator.of(context).pop();
                           Navigator.of(context).pushNamed("/withdraw_funds");
@@ -157,7 +166,10 @@ class BottomActionsBar extends StatelessWidget {
                                     leading: _ActionImage(
                                         iconAssetPath: "src/icon/escher.png",
                                         enabled: account.connected),
-                                    title: Text("Cash-Out via Escher"),
+                                    title: Text(
+                                      "Cash-Out via Escher",
+                                      style: theme.bottomSheetTextStyle,
+                                    ),
                                     onTap: () {
                                       Navigator.pop(context);
                                       return showDialog(
@@ -216,7 +228,10 @@ class BottomActionsBar extends StatelessWidget {
                                     iconAssetPath: v.icon,
                                     enabled: account.connected ||
                                         !v.requireActiveChannel),
-                                title: Text(v.shortName ?? v.name),
+                                title: Text(
+                                  v.shortName ?? v.name,
+                                  style: theme.bottomSheetTextStyle,
+                                ),
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   if (v.showLSPFee) {
@@ -239,7 +254,10 @@ class BottomActionsBar extends StatelessWidget {
                               leading: _ActionImage(
                                   iconAssetPath: "src/icon/paste.png",
                                   enabled: true),
-                              title: Text("Receive via Invoice"),
+                              title: Text(
+                                "Receive via Invoice",
+                                style: theme.bottomSheetTextStyle,
+                              ),
                               onTap: () {
                                 Navigator.of(context).pop();
                                 Navigator.of(context)
