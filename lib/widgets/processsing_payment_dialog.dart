@@ -20,8 +20,8 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final Future Function() paymentFunc;
   final double minHeight;
 
-  ProcessingPaymentDialog(this.context, this.paymentFunc,
-      this.accountBloc, this.firstPaymentItemKey, this._onStateChange, this.minHeight,
+  ProcessingPaymentDialog(this.context, this.paymentFunc, this.accountBloc,
+      this.firstPaymentItemKey, this._onStateChange, this.minHeight,
       {this.popOnCompletion = false});
 
   @override
@@ -52,7 +52,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   void didChangeDependencies() {
     if (!_isInit) {
-     _payAncClose();
+      _payAncClose();
       _currentRoute = ModalRoute.of(context);
       controller = AnimationController(
           vsync: this, duration: Duration(milliseconds: 500));
@@ -82,16 +82,15 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 
   _payAncClose() {
-    widget.paymentFunc()
-      .then((value) => _animateClose())
-      .catchError((err){
-        if (widget.popOnCompletion) {
-          Navigator.of(context).removeRoute(_currentRoute);
-        }
-        widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
-      });
+    widget.paymentFunc().then((value) => _animateClose()).catchError((err) {
+      if (widget.popOnCompletion) {
+        Navigator.of(context).removeRoute(_currentRoute);
+      }
+      widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
+    });
 
     _pendingPaymentSubscription = widget.accountBloc.pendingPaymentStream
+        .where((p) => p.fullPending)
         .transform(DebounceStreamTransformer(Duration(seconds: 10)))
         .listen((p) {
       _animateClose();
@@ -153,16 +152,15 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     _processingPaymentDialog.add(Padding(
       padding: const EdgeInsets.only(bottom: 24.0),
       child: Image.asset(
-                  theme.customData[theme.themeId].loaderAssetPath,
-                  height: 64.0,
-                  colorBlendMode:
-                      theme.customData[theme.themeId].loaderColorBlendMode ??
-                          BlendMode.srcIn,
-                  color: theme.themeId == "BLUE"
-                      ? colorAnimation?.value ?? Colors.transparent
-                      : null,
-                  gaplessPlayback: true,
-                ),
+        theme.customData[theme.themeId].loaderAssetPath,
+        height: 64.0,
+        colorBlendMode: theme.customData[theme.themeId].loaderColorBlendMode ??
+            BlendMode.srcIn,
+        color: theme.themeId == "BLUE"
+            ? colorAnimation?.value ?? Colors.transparent
+            : null,
+        gaplessPlayback: true,
+      ),
     ));
     return _processingPaymentDialog;
   }

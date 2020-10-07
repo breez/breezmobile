@@ -14,6 +14,27 @@ import 'rpc.pbenum.dart';
 
 export 'rpc.pbenum.dart';
 
+class ListPaymentsRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ListPaymentsRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  ListPaymentsRequest._() : super();
+  factory ListPaymentsRequest() => create();
+  factory ListPaymentsRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ListPaymentsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ListPaymentsRequest clone() => ListPaymentsRequest()..mergeFromMessage(this);
+  ListPaymentsRequest copyWith(void Function(ListPaymentsRequest) updates) => super.copyWith((message) => updates(message as ListPaymentsRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ListPaymentsRequest create() => ListPaymentsRequest._();
+  ListPaymentsRequest createEmptyInstance() => create();
+  static $pb.PbList<ListPaymentsRequest> createRepeated() => $pb.PbList<ListPaymentsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ListPaymentsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ListPaymentsRequest>(create);
+  static ListPaymentsRequest _defaultInstance;
+}
+
 class RestartDaemonRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('RestartDaemonRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
     ..hasRequiredFields = false
@@ -393,6 +414,7 @@ class Payment extends $pb.GeneratedMessage {
     ..aOB(16, 'isChannelCloseConfimed', protoName: 'isChannelCloseConfimed')
     ..aOS(17, 'closedChannelTxID', protoName: 'closedChannelTxID')
     ..aOB(18, 'isKeySend', protoName: 'isKeySend')
+    ..aOB(19, 'PendingFull', protoName: 'PendingFull')
     ..hasRequiredFields = false
   ;
 
@@ -556,6 +578,15 @@ class Payment extends $pb.GeneratedMessage {
   $core.bool hasIsKeySend() => $_has(15);
   @$pb.TagNumber(18)
   void clearIsKeySend() => clearField(18);
+
+  @$pb.TagNumber(19)
+  $core.bool get pendingFull => $_getBF(16);
+  @$pb.TagNumber(19)
+  set pendingFull($core.bool v) { $_setBool(16, v); }
+  @$pb.TagNumber(19)
+  $core.bool hasPendingFull() => $_has(16);
+  @$pb.TagNumber(19)
+  void clearPendingFull() => clearField(19);
 }
 
 class PaymentsList extends $pb.GeneratedMessage {

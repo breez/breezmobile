@@ -394,6 +394,7 @@ class PaymentInfo {
   bool get pending =>
       _paymentResponse.pendingExpirationHeight > 0 ||
       _paymentResponse.isChannelPending;
+  bool get fullPending => pending && _paymentResponse.pendingFull == true;
   bool get channelCloseConfirmed => _paymentResponse.isChannelCloseConfimed;
   String get closeChannelTx => _paymentResponse.closedChannelTxID;
   String get closeChannelTxUrl {

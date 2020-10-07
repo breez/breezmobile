@@ -16,6 +16,10 @@ const SwapError$json = const {
   ],
 };
 
+const ListPaymentsRequest$json = const {
+  '1': 'ListPaymentsRequest',
+};
+
 const RestartDaemonRequest$json = const {
   '1': 'RestartDaemonRequest',
 };
@@ -106,6 +110,7 @@ const Payment$json = const {
     const {'1': 'isChannelCloseConfimed', '3': 16, '4': 1, '5': 8, '10': 'isChannelCloseConfimed'},
     const {'1': 'closedChannelTxID', '3': 17, '4': 1, '5': 9, '10': 'closedChannelTxID'},
     const {'1': 'isKeySend', '3': 18, '4': 1, '5': 8, '10': 'isKeySend'},
+    const {'1': 'PendingFull', '3': 19, '4': 1, '5': 8, '10': 'PendingFull'},
   ],
   '4': const [Payment_PaymentType$json],
 };

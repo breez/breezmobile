@@ -54,6 +54,11 @@ class BreezAPIClient extends $grpc.Client {
           ($0.RestartDaemonRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) =>
               $0.RestartDaemonReply.fromBuffer(value));
+  static final _$listPayments =
+      $grpc.ClientMethod<$0.ListPaymentsRequest, $0.PaymentsList>(
+          '/data.BreezAPI/ListPayments',
+          ($0.ListPaymentsRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $0.PaymentsList.fromBuffer(value));
 
   BreezAPIClient($grpc.ClientChannel channel, {$grpc.CallOptions options})
       : super(channel, options: options);
@@ -119,6 +124,15 @@ class BreezAPIClient extends $grpc.Client {
         options: options);
     return $grpc.ResponseFuture(call);
   }
+
+  $grpc.ResponseFuture<$0.PaymentsList> listPayments(
+      $0.ListPaymentsRequest request,
+      {$grpc.CallOptions options}) {
+    final call = $createCall(
+        _$listPayments, $async.Stream.fromIterable([request]),
+        options: options);
+    return $grpc.ResponseFuture(call);
+  }
 }
 
 abstract class BreezAPIServiceBase extends $grpc.Service {
@@ -177,6 +191,14 @@ abstract class BreezAPIServiceBase extends $grpc.Service {
             ($core.List<$core.int> value) =>
                 $0.RestartDaemonRequest.fromBuffer(value),
             ($0.RestartDaemonReply value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.ListPaymentsRequest, $0.PaymentsList>(
+        'ListPayments',
+        listPayments_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.ListPaymentsRequest.fromBuffer(value),
+        ($0.PaymentsList value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.LSPList> getLSPList_Pre(
@@ -214,6 +236,11 @@ abstract class BreezAPIServiceBase extends $grpc.Service {
     return restartDaemon(call, await request);
   }
 
+  $async.Future<$0.PaymentsList> listPayments_Pre($grpc.ServiceCall call,
+      $async.Future<$0.ListPaymentsRequest> request) async {
+    return listPayments(call, await request);
+  }
+
   $async.Future<$0.LSPList> getLSPList(
       $grpc.ServiceCall call, $0.LSPListRequest request);
   $async.Future<$0.ConnectLSPReply> connectToLSP(
@@ -228,4 +255,6 @@ abstract class BreezAPIServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.PayInvoiceRequest request);
   $async.Future<$0.RestartDaemonReply> restartDaemon(
       $grpc.ServiceCall call, $0.RestartDaemonRequest request);
+  $async.Future<$0.PaymentsList> listPayments(
+      $grpc.ServiceCall call, $0.ListPaymentsRequest request);
 }
