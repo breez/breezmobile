@@ -117,6 +117,7 @@ final ThemeData blueTheme = ThemeData(
   ),
   textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
   primaryIconTheme: IconThemeData(color: BreezColors.grey[500]),
+  bottomAppBarColor: Color(0xFF0085fb),
   textSelectionHandleColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
@@ -237,6 +238,7 @@ final ThemeData darkTheme = ThemeData(
   ),
   primaryIconTheme: IconThemeData(color: Color(0xFF7aa5eb)),
   textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
+  bottomAppBarColor: Color(0xff4D88EC),
   textSelectionHandleColor: Color(0xff4D88EC),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
