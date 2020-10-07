@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
 class WalletDashboard extends StatefulWidget {
@@ -39,8 +40,9 @@ class WalletDashboardState extends State<WalletDashboard> {
           Container(
               width: MediaQuery.of(context).size.width,
               height: widget._height,
-              decoration:
-                  BoxDecoration(color: Theme.of(context).backgroundColor)),
+              decoration: BoxDecoration(
+                color: theme.customData[theme.themeId].dashboardBgColor,
+              )),
           Positioned(
             top: 40 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
             child: Center(

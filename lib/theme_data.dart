@@ -5,20 +5,26 @@ String themeId = "BLUE";
 class CustomData {
   BlendMode loaderColorBlendMode;
   String loaderAssetPath;
+  Color dashboardBgColor;
   Color paymentListBgColor;
 
   CustomData(
-      {this.loaderColorBlendMode, this.loaderAssetPath, this.paymentListBgColor});
+      {this.loaderColorBlendMode,
+      this.loaderAssetPath,
+      this.dashboardBgColor,
+      this.paymentListBgColor});
 }
 
 final Map<String, ThemeData> themeMap = {"BLUE": blueTheme, "DARK": darkTheme};
 final CustomData blueThemeCustomData = CustomData(
     loaderColorBlendMode: BlendMode.multiply,
     loaderAssetPath: 'src/images/breez_loader_blue.gif',
+    dashboardBgColor: Colors.white,
     paymentListBgColor: Color.fromRGBO(249, 249, 249, 1));
 final CustomData darkThemeCustomData = CustomData(
     loaderColorBlendMode: BlendMode.srcIn,
     loaderAssetPath: 'src/images/breez_loader_dark.gif',
+    dashboardBgColor: Color(0xFF0D1F33),
     paymentListBgColor: Color.fromRGBO(20, 43, 61, 1));
 final Map<String, CustomData> customData = {
   "BLUE": blueThemeCustomData,
@@ -156,8 +162,8 @@ final ThemeData darkTheme = ThemeData(
   floatingActionButtonTheme:
       FloatingActionButtonThemeData(backgroundColor: Color(0xFF4B89EB)),
   accentColor: Colors.white,
-  canvasColor: Color(0xFF142B3D),
-  backgroundColor: Color(0xFF0D1F33),
+  canvasColor: Color(0xFF0c2031),
+  backgroundColor: Color(0xFF152a3d),
   appBarTheme: AppBarTheme(
     textTheme: TextTheme(
       headline6:

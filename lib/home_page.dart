@@ -351,9 +351,9 @@ class HomeState extends State<Home> {
                                                   iconTheme: IconThemeData(
                                                       color: Color.fromARGB(
                                                           255, 0, 133, 251)),
-                                                  backgroundColor:
-                                                      Theme.of(context)
-                                                          .backgroundColor,
+                                                  backgroundColor: theme
+                                                      .customData[theme.themeId]
+                                                      .dashboardBgColor,
                                                   elevation: 0.0,
                                                 ),
                                                 drawer: NavigationDrawer(
