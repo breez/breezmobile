@@ -24,7 +24,7 @@ class PaymentItem extends StatelessWidget {
       ListTile(
         tileColor: (_itemIndex % 2 == 0)
             ? theme.customData[theme.themeId].paymentListBgColor
-            : theme.customData[theme.themeId].dashboardBgColor,
+            : theme.customData[theme.themeId].paymentListAlternateBgColor,
         leading: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -103,9 +103,7 @@ class PaymentItem extends StatelessWidget {
         thickness: 1,
         color: _lastItem
             ? Colors.transparent
-            : theme.themeId == "BLUE"
-                ? Color.fromRGBO(0, 0, 0, 0.12)
-                : Color.fromRGBO(255, 255, 255, 0.12),
+            : theme.customData[theme.themeId].paymentListDividerColor,
         indent: 72.0,
       ),
     ]);

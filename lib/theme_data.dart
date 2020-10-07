@@ -8,28 +8,38 @@ class CustomData {
   Color pendingTextColor;
   Color dashboardBgColor;
   Color paymentListBgColor;
+  Color paymentListAlternateBgColor;
+  Color paymentListDividerColor;
 
   CustomData(
       {this.loaderColorBlendMode,
       this.loaderAssetPath,
       this.pendingTextColor,
       this.dashboardBgColor,
-      this.paymentListBgColor});
+      this.paymentListBgColor,
+      this.paymentListAlternateBgColor,
+      this.paymentListDividerColor});
 }
 
 final Map<String, ThemeData> themeMap = {"BLUE": blueTheme, "DARK": darkTheme};
 final CustomData blueThemeCustomData = CustomData(
-    loaderColorBlendMode: BlendMode.multiply,
-    loaderAssetPath: 'src/images/breez_loader_blue.gif',
-    dashboardBgColor: Colors.white,
-    pendingTextColor: Color(0xff4D88EC),
-    paymentListBgColor: Color.fromRGBO(249, 249, 249, 1));
+  loaderColorBlendMode: BlendMode.multiply,
+  loaderAssetPath: 'src/images/breez_loader_blue.gif',
+  dashboardBgColor: Colors.white,
+  pendingTextColor: Color(0xff4D88EC),
+  paymentListBgColor: Color.fromRGBO(249, 249, 249, 1),
+  paymentListAlternateBgColor: Color.fromRGBO(253, 253, 253, 1),
+  paymentListDividerColor: Color.fromRGBO(0, 0, 0, 0.12),
+);
 final CustomData darkThemeCustomData = CustomData(
-    loaderColorBlendMode: BlendMode.srcIn,
-    loaderAssetPath: 'src/images/breez_loader_dark.gif',
-    pendingTextColor: Color(0xFF0085fb),
-    dashboardBgColor: Color(0xFF0D1F33),
-    paymentListBgColor: Color.fromRGBO(20, 43, 61, 1));
+  loaderColorBlendMode: BlendMode.srcIn,
+  loaderAssetPath: 'src/images/breez_loader_dark.gif',
+  pendingTextColor: Color(0xFF0085fb),
+  dashboardBgColor: Color(0xFF0D1F33),
+  paymentListBgColor: Color.fromRGBO(21, 42, 61, 1),
+  paymentListAlternateBgColor: Color.fromRGBO(19, 37, 54, 1),
+  paymentListDividerColor: Color.fromRGBO(255, 255, 255, 0.12),
+);
 final Map<String, CustomData> customData = {
   "BLUE": blueThemeCustomData,
   "DARK": darkThemeCustomData
