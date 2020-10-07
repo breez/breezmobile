@@ -100,6 +100,7 @@ class PaymentItem extends StatelessWidget {
       ),
       Divider(
         height: 0.0,
+        thickness: 1,
         color: _lastItem
             ? Colors.transparent
             : theme.themeId == "BLUE"
