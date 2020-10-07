@@ -52,7 +52,8 @@ class PaymentItem extends StatelessWidget {
               _paymentInfo.pending
                   ? Text(" (Pending)",
                       style: Theme.of(context).accentTextTheme.caption.copyWith(
-                          color: Theme.of(context).bottomAppBarColor))
+                          color:
+                              theme.customData[theme.themeId].pendingTextColor))
                   : SizedBox()
             ]),
         trailing: Column(

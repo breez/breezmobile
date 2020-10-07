@@ -5,12 +5,14 @@ String themeId = "BLUE";
 class CustomData {
   BlendMode loaderColorBlendMode;
   String loaderAssetPath;
+  Color pendingTextColor;
   Color dashboardBgColor;
   Color paymentListBgColor;
 
   CustomData(
       {this.loaderColorBlendMode,
       this.loaderAssetPath,
+      this.pendingTextColor,
       this.dashboardBgColor,
       this.paymentListBgColor});
 }
@@ -20,10 +22,12 @@ final CustomData blueThemeCustomData = CustomData(
     loaderColorBlendMode: BlendMode.multiply,
     loaderAssetPath: 'src/images/breez_loader_blue.gif',
     dashboardBgColor: Colors.white,
+    pendingTextColor: Color(0xff4D88EC),
     paymentListBgColor: Color.fromRGBO(249, 249, 249, 1));
 final CustomData darkThemeCustomData = CustomData(
     loaderColorBlendMode: BlendMode.srcIn,
     loaderAssetPath: 'src/images/breez_loader_dark.gif',
+    pendingTextColor: Color(0xFF0085fb),
     dashboardBgColor: Color(0xFF0D1F33),
     paymentListBgColor: Color.fromRGBO(20, 43, 61, 1));
 final Map<String, CustomData> customData = {
