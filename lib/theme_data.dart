@@ -237,7 +237,7 @@ final ThemeData darkTheme = ThemeData(
   ),
   primaryIconTheme: IconThemeData(color: Color(0xFF7aa5eb)),
   textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
-  textSelectionHandleColor: Color(0xFF0085fb),
+  textSelectionHandleColor: Color(0xff4D88EC),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
       bodyText2: TextStyle(color: Colors.white),

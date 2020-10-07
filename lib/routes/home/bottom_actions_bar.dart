@@ -31,7 +31,7 @@ class BottomActionsBar extends StatelessWidget {
     return BottomAppBar(
       child: Container(
         height: 60,
-        color: theme.themeId == "BLUE" ? Color(0xff0085FB) : Color(0xff4D88EC),
+        color: Theme.of(context).textSelectionHandleColor,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
