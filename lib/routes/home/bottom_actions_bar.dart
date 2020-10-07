@@ -101,6 +101,13 @@ class BottomActionsBar extends StatelessWidget {
                         }
                       },
                     ),
+                    Divider(
+                      height: 0.0,
+                      color: theme.themeId == "BLUE"
+                          ? Color.fromRGBO(0, 0, 0, 0.12)
+                          : Color.fromRGBO(255, 255, 255, 0.12),
+                      indent: 72.0,
+                    ),
                     ListTile(
                         enabled: account.connected,
                         leading: _ActionImage(
@@ -111,6 +118,13 @@ class BottomActionsBar extends StatelessWidget {
                           Navigator.of(context).pop();
                           Navigator.of(context).pushNamed("/connect_to_pay");
                         }),
+                    Divider(
+                      height: 0.0,
+                      color: theme.themeId == "BLUE"
+                          ? Color.fromRGBO(0, 0, 0, 0.12)
+                          : Color.fromRGBO(255, 255, 255, 0.12),
+                      indent: 72.0,
+                    ),
                     ListTile(
                         enabled: account.connected,
                         leading: _ActionImage(
@@ -129,21 +143,32 @@ class BottomActionsBar extends StatelessWidget {
                           }
                           AccountSettings settings = settingsSnapshot.data;
                           if (settings.isEscherEnabled) {
-                            return ListTile(
-                                enabled: account.connected,
-                                leading: _ActionImage(
-                                    iconAssetPath: "src/icon/escher.png",
-                                    enabled: account.connected),
-                                title: Text("Cash-Out via Escher"),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  return showDialog(
-                                      useRootNavigator: false,
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (_) =>
-                                          EscherDialog(context, accBloc));
-                                });
+                            return Column(
+                              children: [
+                                Divider(
+                                  height: 0.0,
+                                  color: theme.themeId == "BLUE"
+                                      ? Color.fromRGBO(0, 0, 0, 0.12)
+                                      : Color.fromRGBO(255, 255, 255, 0.12),
+                                  indent: 72.0,
+                                ),
+                                ListTile(
+                                    enabled: account.connected,
+                                    leading: _ActionImage(
+                                        iconAssetPath: "src/icon/escher.png",
+                                        enabled: account.connected),
+                                    title: Text("Cash-Out via Escher"),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      return showDialog(
+                                          useRootNavigator: false,
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (_) =>
+                                              EscherDialog(context, accBloc));
+                                    }),
+                              ],
+                            );
                           } else {
                             return SizedBox();
                           }
@@ -174,23 +199,35 @@ class BottomActionsBar extends StatelessWidget {
 
                       List<Widget> children =
                           snapshot.data.where((v) => v.isAllowed).map((v) {
-                        return ListTile(
-                            enabled: v.enabled &&
-                                (account.connected || !v.requireActiveChannel),
-                            leading: _ActionImage(
-                                iconAssetPath: v.icon,
-                                enabled: account.connected ||
-                                    !v.requireActiveChannel),
-                            title: Text(v.shortName ?? v.name),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              if (v.showLSPFee) {
-                                promptLSPFeeAndNavigate(context, account,
-                                    lspSnapshot.data.currentLSP, v.route);
-                              } else {
-                                Navigator.of(context).pushNamed(v.route);
-                              }
-                            });
+                        return Column(
+                          children: [
+                            Divider(
+                              height: 0.0,
+                              color: theme.themeId == "BLUE"
+                                  ? Color.fromRGBO(0, 0, 0, 0.12)
+                                  : Color.fromRGBO(255, 255, 255, 0.12),
+                              indent: 72.0,
+                            ),
+                            ListTile(
+                                enabled: v.enabled &&
+                                    (account.connected ||
+                                        !v.requireActiveChannel),
+                                leading: _ActionImage(
+                                    iconAssetPath: v.icon,
+                                    enabled: account.connected ||
+                                        !v.requireActiveChannel),
+                                title: Text(v.shortName ?? v.name),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  if (v.showLSPFee) {
+                                    promptLSPFeeAndNavigate(context, account,
+                                        lspSnapshot.data.currentLSP, v.route);
+                                  } else {
+                                    Navigator.of(context).pushNamed(v.route);
+                                  }
+                                }),
+                          ],
+                        );
                       }).toList();
 
                       return Column(
