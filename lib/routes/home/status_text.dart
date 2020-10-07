@@ -50,7 +50,7 @@ class _StatusTextState extends State<StatusText> {
 
     if (widget.account == null || widget.account.statusMessage == null) {
       return AutoSizeText(
-        "Start using Breez by adding funds to your balance or by receiving payments from other users.",
+        "Breez is ready to receive funds.",
         style: Theme.of(context).accentTextTheme.bodyText2,
         textAlign: TextAlign.center,
         minFontSize: MinFontSize(context).minFontSize,
