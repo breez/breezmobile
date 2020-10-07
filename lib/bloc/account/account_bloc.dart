@@ -510,6 +510,7 @@ class AccountBloc {
     }
 
     return _breezLib.getFundStatus(_currentUser.userID ?? "").then((status) {
+      log.severe("fund status = " + status.writeToJson());
       _accountController
           .add(_accountController.value.copyWith(addedFundsReply: status));
     }).catchError((err) {
