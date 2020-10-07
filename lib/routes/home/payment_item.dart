@@ -10,17 +10,21 @@ import 'success_avatar.dart';
 
 class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
+  final int _itemIndex;
   final bool _lastItem;
   final bool _firstItem;
   final GlobalKey firstPaymentItemKey;
 
-  PaymentItem(this._paymentInfo, this._lastItem, this._firstItem,
-      this.firstPaymentItemKey);
+  PaymentItem(this._paymentInfo, this._itemIndex, this._lastItem,
+      this._firstItem, this.firstPaymentItemKey);
 
   @override
   Widget build(BuildContext context) {
     return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
       ListTile(
+        tileColor: (_itemIndex % 2 == 0)
+            ? theme.customData[theme.themeId].paymentListBgColor
+            : theme.customData[theme.themeId].dashboardBgColor,
         leading: Container(
             decoration: BoxDecoration(
               color: Colors.white,
