@@ -106,9 +106,7 @@ class BottomActionsBar extends StatelessWidget {
                     ),
                     Divider(
                       height: 0.0,
-                      color: theme.themeId == "BLUE"
-                          ? Color.fromRGBO(0, 0, 0, 0.12)
-                          : Color.fromRGBO(255, 255, 255, 0.12),
+                      color: Colors.white.withOpacity(0.2),
                       indent: 72.0,
                     ),
                     ListTile(
@@ -126,9 +124,7 @@ class BottomActionsBar extends StatelessWidget {
                         }),
                     Divider(
                       height: 0.0,
-                      color: theme.themeId == "BLUE"
-                          ? Color.fromRGBO(0, 0, 0, 0.12)
-                          : Color.fromRGBO(255, 255, 255, 0.12),
+                      color: Colors.white.withOpacity(0.2),
                       indent: 72.0,
                     ),
                     ListTile(
@@ -156,9 +152,7 @@ class BottomActionsBar extends StatelessWidget {
                               children: [
                                 Divider(
                                   height: 0.0,
-                                  color: theme.themeId == "BLUE"
-                                      ? Color.fromRGBO(0, 0, 0, 0.12)
-                                      : Color.fromRGBO(255, 255, 255, 0.12),
+                                  color: Colors.white.withOpacity(0.2),
                                   indent: 72.0,
                                 ),
                                 ListTile(
@@ -215,9 +209,7 @@ class BottomActionsBar extends StatelessWidget {
                           children: [
                             Divider(
                               height: 0.0,
-                              color: theme.themeId == "BLUE"
-                                  ? Color.fromRGBO(0, 0, 0, 0.12)
-                                  : Color.fromRGBO(255, 255, 255, 0.12),
+                              color: Colors.white.withOpacity(0.2),
                               indent: 72.0,
                             ),
                             ListTile(
