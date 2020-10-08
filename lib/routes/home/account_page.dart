@@ -70,11 +70,11 @@ class AccountPageState extends State<AccountPage>
                       PaymentsModel paymentsModel =
                           snapshot.data ?? PaymentsModel.initial();
                       return Container(
-                        color: paymentsModel.paymentsList.length % 2 == 1 ||
-                                paymentsModel.paymentsList.length == 0
-                            ? theme.customData[theme.themeId].paymentListBgColor
+                        color: paymentsModel.paymentsList.length % 2 == 1 &&
+                                paymentsModel.paymentsList.length != 0
+                            ? theme.customData[theme.themeId].paymentListAlternateBgColor
                             : theme.customData[theme.themeId]
-                                .paymentListAlternateBgColor,
+                                .paymentListBgColor,
                         child: _buildBalanceAndPayments(paymentsModel, account),
                       );
                     });
