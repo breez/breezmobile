@@ -25,6 +25,7 @@ class WalletDashboard extends StatefulWidget {
 
 class WalletDashboardState extends State<WalletDashboard> {
   static const BALANCE_OFFSET_TRANSITION = 35.0;
+  bool _showFiatCurrency = false;
 
   @override
   Widget build(BuildContext context) {
@@ -57,34 +58,50 @@ class WalletDashboardState extends State<WalletDashboard> {
                         widget._onCurrencyChange(
                             Currency.currencies[nextCurrencyIndex]);
                       },
-                      child: RichText(
-                        text: TextSpan(
-                            style: Theme.of(context)
-                                .accentTextTheme
-                                .headline4
-                                .copyWith(
-                                    fontSize: startHeaderSize -
-                                        (startHeaderSize - endHeaderFontSize) *
-                                            widget._offsetFactor),
-                            text: widget._accountModel.currency.format(
-                                widget._accountModel.balance,
-                                removeTrailingZeros: true,
-                                includeDisplayName: false),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: "  " +
-                                    widget._accountModel.currency.displayName,
-                                style: Theme.of(context)
-                                    .accentTextTheme
-                                    .headline4
-                                    .copyWith(
-                                        fontSize: startHeaderSize * 0.6 -
-                                            (startHeaderSize * 0.6 -
-                                                    endHeaderFontSize) *
-                                                widget._offsetFactor),
-                              ),
-                            ]),
-                      ))
+                      highlightColor:
+                          theme.customData[theme.themeId].paymentListBgColor,
+                      child: (widget._offsetFactor > 0.8 &&
+                              _showFiatCurrency &&
+                              widget._accountModel.fiatCurrency != null)
+                          ? Text("${widget._accountModel.formattedFiatBalance}",
+                              style: Theme.of(context)
+                                  .accentTextTheme
+                                  .headline4
+                                  .copyWith(
+                                      fontSize: startHeaderSize -
+                                          (startHeaderSize -
+                                                  endHeaderFontSize) *
+                                              widget._offsetFactor))
+                          : RichText(
+                              text: TextSpan(
+                                  style: Theme.of(context)
+                                      .accentTextTheme
+                                      .headline4
+                                      .copyWith(
+                                          fontSize: startHeaderSize -
+                                              (startHeaderSize -
+                                                      endHeaderFontSize) *
+                                                  widget._offsetFactor),
+                                  text: widget._accountModel.currency.format(
+                                      widget._accountModel.balance,
+                                      removeTrailingZeros: true,
+                                      includeDisplayName: false),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: "  " +
+                                          widget._accountModel.currency
+                                              .displayName,
+                                      style: Theme.of(context)
+                                          .accentTextTheme
+                                          .headline4
+                                          .copyWith(
+                                              fontSize: startHeaderSize * 0.6 -
+                                                  (startHeaderSize * 0.6 -
+                                                          endHeaderFontSize) *
+                                                      widget._offsetFactor),
+                                    ),
+                                  ]),
+                            ))
                   : SizedBox(),
             ),
           ),
@@ -102,6 +119,8 @@ class WalletDashboardState extends State<WalletDashboard> {
                           widget._onFiatCurrencyChange(
                               newFiatConversion.currencyData.shortName);
                       },
+                      highlightColor:
+                          theme.customData[theme.themeId].paymentListBgColor,
                       child: Text(
                           "${widget._accountModel.formattedFiatBalance}",
                           style: Theme.of(context)
@@ -120,6 +139,17 @@ class WalletDashboardState extends State<WalletDashboard> {
           ),
         ],
       ),
+      behavior: HitTestBehavior.translucent,
+      onLongPressStart: (_) {
+        setState(() {
+          _showFiatCurrency = true;
+        });
+      },
+      onLongPressEnd: (_) {
+        setState(() {
+          _showFiatCurrency = false;
+        });
+      },
     );
   }
 
