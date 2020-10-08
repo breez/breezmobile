@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -66,6 +68,16 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
           builder: (context, shrinkedHeight, overlapContent) {
         return Container(
             decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(
+                        width: 1,
+                        color: theme
+                            .customData[theme.themeId].paymentListDividerColor
+                            .withOpacity(pow(
+                                0.00 +
+                                    (scrollOffset - widget._maxSize)
+                                        .clamp(0.0, 0.3465),
+                                2)))),
                 color: theme.customData[theme.themeId].paymentListBgColor),
             height: widget._maxSize,
             child: AnimatedOpacity(
