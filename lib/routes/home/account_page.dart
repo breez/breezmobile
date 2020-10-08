@@ -91,12 +91,16 @@ class AccountPageState extends State<AccountPage>
         kToolbarHeight -
         FILTER_MAX_SIZE -
         25.0;
+    double dateFilterSpace = paymentsModel?.filter?.startDate != null &&
+            paymentsModel?.filter?.endDate != null
+        ? 1
+        : 0.0;
     double bottomPlaceholderSpace = paymentsModel.paymentsList == null ||
             paymentsModel.paymentsList.length == 0
         ? 0.0
         : (listHeightSpace -
                 PAYMENT_LIST_ITEM_HEIGHT *
-                    (paymentsModel.paymentsList.length + 1))
+                    (paymentsModel.paymentsList.length + 1 + dateFilterSpace))
             .clamp(0.0, listHeightSpace);
 
     String message;
@@ -119,7 +123,7 @@ class AccountPageState extends State<AccountPage>
         elevation: 0.0,
         expandedHeight: 32.0,
         automaticallyImplyLeading: false,
-        backgroundColor: Theme.of(context).canvasColor,
+        backgroundColor: theme.customData[theme.themeId].paymentListBgColor,
         flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
       ));
     }
@@ -180,6 +184,7 @@ class AccountPageState extends State<AccountPage>
         Padding(
           padding: EdgeInsets.only(left: 16.0),
           child: Chip(
+            backgroundColor: Theme.of(context).bottomAppBarColor,
             label: Text(DateUtils.formatFilterDateRange(
                 filter.startDate, filter.endDate)),
             onDeleted: () => _accountBloc.paymentFilterSink
