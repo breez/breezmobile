@@ -101,7 +101,7 @@ class PaymentItem extends StatelessWidget {
       Divider(
         height: 0.0,
         thickness: 1,
-        color: _lastItem
+        color: _lastItem == _firstItem
             ? Colors.transparent
             : theme.customData[theme.themeId].paymentListDividerColor,
         indent: 72.0,
