@@ -26,9 +26,9 @@ class PaymentItem extends StatelessWidget {
             border: _firstItem
                 ? Border(
                     top: BorderSide(
-                        width: 2,
-                        color:
-                            theme.customData[theme.themeId].dashboardBgColor))
+                        width: 1,
+                        color: theme
+                            .customData[theme.themeId].paymentListDividerColor))
                 : null),
         child: ListTile(
           tileColor: (_itemIndex % 2 == 0)
