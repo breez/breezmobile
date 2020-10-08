@@ -24,7 +24,7 @@ class WalletDashboard extends StatefulWidget {
 }
 
 class WalletDashboardState extends State<WalletDashboard> {
-  static const BALANCE_OFFSET_TRANSITION = 40.0;
+  static const BALANCE_OFFSET_TRANSITION = 35.0;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                 color: theme.customData[theme.themeId].dashboardBgColor,
               )),
           Positioned(
-            top: 40 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
+            top: 35 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
             child: Center(
               child: widget._accountModel != null &&
                       !widget._accountModel.initial
@@ -89,7 +89,7 @@ class WalletDashboardState extends State<WalletDashboard> {
             ),
           ),
           Positioned(
-            top: 80 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
+            top: 85 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
             child: Center(
               child: widget._accountModel != null &&
                       !widget._accountModel.initial &&
