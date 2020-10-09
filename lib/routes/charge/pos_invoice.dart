@@ -168,8 +168,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                               initialData: "Loading",
                               future: _fetchRatesActionFuture,
                               builder: (context, snapshot) {
-                                var persistedCurrency = CurrencyWrapper.fromShortName(accountModel.posCurrencyShortName, accountModel);
-                                if (persistedCurrency == null && snapshot.data == "Loading") {
+                                var persistedCurrency =
+                                    CurrencyWrapper.fromShortName(
+                                        accountModel.posCurrencyShortName,
+                                        accountModel);
+                                if (persistedCurrency == null &&
+                                    snapshot.data == "Loading") {
                                   return Center(child: Loader());
                                 }
 
@@ -442,7 +446,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                 opacity:
                                                     _opacityTransition.value,
                                                 child: ItemAvatar(
-                                                    _itemInTransition.imageURL, itemName: _itemInTransition.name),
+                                                    _itemInTransition.imageURL,
+                                                    itemName:
+                                                        _itemInTransition.name),
                                               ),
                                             ),
                                             left:
@@ -861,10 +867,10 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     PosCatalogBloc posCatalogBloc =
         AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
-      var normalizeFactor = pow(10, currentCurrency.fractionSize);     
+      var normalizeFactor = pow(10, currentCurrency.fractionSize);
       var newSale = currentSale;
 
-      //better to do calculations on integers to avoid precision lose.      
+      //better to do calculations on integers to avoid precision lose.
       var addition = int.parse(numberText);
       // Double can hold precision up to 17 digits, using toInt() truncates the fraction digits
       // That's why we use round to get the nearest number
