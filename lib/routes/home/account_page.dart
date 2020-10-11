@@ -72,9 +72,10 @@ class AccountPageState extends State<AccountPage>
                       return Container(
                         color: paymentsModel.paymentsList.length % 2 == 1 &&
                                 paymentsModel.paymentsList.length != 0
-                            ? theme.customData[theme.themeId].paymentListAlternateBgColor
-                            : theme.customData[theme.themeId]
-                                .paymentListBgColor,
+                            ? theme.customData[theme.themeId]
+                                .paymentListAlternateBgColor
+                            : theme
+                                .customData[theme.themeId].paymentListBgColor,
                         child: _buildBalanceAndPayments(paymentsModel, account),
                       );
                     });
@@ -178,20 +179,32 @@ class AccountPageState extends State<AccountPage>
   }
 
   Widget _filterChip(PaymentFilterModel filter) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(left: 16.0),
-          child: Chip(
-            backgroundColor: Theme.of(context).bottomAppBarColor,
-            label: Text(DateUtils.formatFilterDateRange(
-                filter.startDate, filter.endDate)),
-            onDeleted: () => _accountBloc.paymentFilterSink
-                .add(PaymentFilterModel(filter.paymentType, null, null)),
-          ),
-        )
-      ],
+    return Container(
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+                  width: 1,
+                  color:
+                      theme.customData[theme.themeId].paymentListDividerColor)),
+          color: theme.customData[theme.themeId].paymentListBgColor),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(
+              left: 16.0,
+              bottom: 8,
+            ),
+            child: Chip(
+              backgroundColor: Theme.of(context).bottomAppBarColor,
+              label: Text(DateUtils.formatFilterDateRange(
+                  filter.startDate, filter.endDate)),
+              onDeleted: () => _accountBloc.paymentFilterSink
+                  .add(PaymentFilterModel(filter.paymentType, null, null)),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

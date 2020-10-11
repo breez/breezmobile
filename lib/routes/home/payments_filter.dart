@@ -68,16 +68,19 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
           builder: (context, shrinkedHeight, overlapContent) {
         return Container(
             decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        width: 1,
-                        color: theme
-                            .customData[theme.themeId].paymentListDividerColor
-                            .withOpacity(pow(
-                                0.00 +
-                                    (scrollOffset - widget._maxSize)
-                                        .clamp(0.0, 0.3465),
-                                2)))),
+                border: (widget._paymentsModel.filter?.startDate == null &&
+                        widget._paymentsModel.filter?.endDate == null)
+                    ? Border(
+                        bottom: BorderSide(
+                            width: 1,
+                            color: theme.customData[theme.themeId]
+                                .paymentListDividerColor
+                                .withOpacity(pow(
+                                    0.00 +
+                                        (scrollOffset - widget._maxSize)
+                                            .clamp(0.0, 0.3465),
+                                    2))))
+                    : null,
                 color: theme.customData[theme.themeId].paymentListBgColor),
             height: widget._maxSize,
             child: AnimatedOpacity(
