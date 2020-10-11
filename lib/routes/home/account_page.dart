@@ -145,7 +145,7 @@ class AccountPageState extends State<AccountPage>
               builder: (context, snapshot) {
                 if (snapshot.hasData && snapshot.data.selectionRequired) {
                   return Padding(
-                    padding: const EdgeInsets.only(top: 130.0),
+                    padding: const EdgeInsets.only(top: 120.0),
                     child: NoLSPWidget(
                       error: snapshot.data.lastConnectionError,
                     ),
@@ -154,7 +154,7 @@ class AccountPageState extends State<AccountPage>
                 return Container(
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        top: 130.0, left: 40.0, right: 40.0),
+                        top: 120.0, left: 40.0, right: 40.0),
                     child: StatusText(account, message: message),
                   ),
                 );
@@ -225,15 +225,23 @@ class BubblePainter extends CustomPainter {
           : Color(0xff4D88EC).withOpacity(0.1)
       ..style = PaintingStyle.fill;
     double bubbleRadius = 12;
-
+    double height = (MediaQuery.of(context).size.height - kToolbarHeight);
     canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width / 2,
-            DASHBOARD_MAX_HEIGHT + bubbleRadius + 40),
+        Offset(MediaQuery.of(context).size.width / 2, height * 0.34),
         bubbleRadius,
         bubblePaint);
-    canvas.drawCircle(Offset(MediaQuery.of(context).size.width / 2.5, DASHBOARD_MAX_HEIGHT + bubbleRadius * 1.5 + 193), bubbleRadius * 1.5, bubblePaint);
-    canvas.drawCircle(Offset(MediaQuery.of(context).size.width / 1.5, DASHBOARD_MAX_HEIGHT + bubbleRadius * 1.25 + 295), bubbleRadius * 1.25, bubblePaint);
-    canvas.drawCircle(Offset(MediaQuery.of(context).size.width / 2, DASHBOARD_MAX_HEIGHT + bubbleRadius * 0.75 + 370), bubbleRadius * 0.75, bubblePaint);
+    canvas.drawCircle(
+        Offset(MediaQuery.of(context).size.width * 0.39, height * 0.56),
+        bubbleRadius * 1.5,
+        bubblePaint);
+    canvas.drawCircle(
+        Offset(MediaQuery.of(context).size.width * 0.65, height * 0.68),
+        bubbleRadius * 1.25,
+        bubblePaint);
+    canvas.drawCircle(
+        Offset(MediaQuery.of(context).size.width / 2, height * 0.77),
+        bubbleRadius * 0.75,
+        bubblePaint);
   }
 
   @override
