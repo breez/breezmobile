@@ -94,7 +94,7 @@ class AccountPageState extends State<AccountPage>
         25.0;
     double dateFilterSpace = paymentsModel?.filter?.startDate != null &&
             paymentsModel?.filter?.endDate != null
-        ? 1
+        ? 0.65
         : 0.0;
     double bottomPlaceholderSpace = paymentsModel.paymentsList == null ||
             paymentsModel.paymentsList.length == 0
