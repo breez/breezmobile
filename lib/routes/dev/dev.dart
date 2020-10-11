@@ -27,6 +27,7 @@ import 'package:share_extend/share_extend.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 
 import 'default_commands.dart';
+
 bool allowRebroadcastRefunds = false;
 final _cliInputController = TextEditingController();
 final FocusNode _cliEntryFocusNode = FocusNode();
@@ -381,7 +382,7 @@ class DevViewState extends State<DevView> {
         title: "${settings.isEscherEnabled ? "Disable" : "Enable"} Escher",
         icon: Icons.monetization_on,
         function: () => _enableEscher(accBloc, settings)));
-     choices.add(Choice(
+    choices.add(Choice(
         title: 'Reset Refunds Status',
         icon: Icons.phone_android,
         function: () {
@@ -402,13 +403,13 @@ class DevViewState extends State<DevView> {
           await rescanFile.create(recursive: true);
           _promptForRestart();
         }));
-    // choices.add(Choice(
-    //     title: "Refresh Private",
-    //     icon: Icons.phone_android,
-    //     function: () async {
-    //       await widget._breezBridge.populateChannePolicy();
-    //     }));
-    
+    choices.add(Choice(
+        title: "Refresh Private Channels",
+        icon: Icons.phone_android,
+        function: () async {
+          await widget._breezBridge.populateChannePolicy();
+        }));
+
     // choices.add(Choice(
     //     title: "Export DB Files",
     //     icon: Icons.phone_android,
@@ -429,8 +430,7 @@ class DevViewState extends State<DevView> {
     //       encoder.close();
     //       ShareExtend.share(zipFile, "file");
     //     }));
-    
-      
+
     choices.add(Choice(
         title: 'Reset POS DB',
         icon: Icons.phone_android,
@@ -512,10 +512,8 @@ class DevViewState extends State<DevView> {
 
   void _refreshGraph() async {
     FlutterDownloader.cancelAll();
-    Navigator.push(
-            context,
-            createLoaderRoute(context,
-                message: "Deleting graph...", opacity: 0.8));
+    Navigator.push(context,
+        createLoaderRoute(context, message: "Deleting graph...", opacity: 0.8));
     widget._breezBridge.deleteGraph().whenComplete(() {
       Navigator.pop(context);
       _promptForRestart();
