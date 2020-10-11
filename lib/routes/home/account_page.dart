@@ -18,7 +18,7 @@ import 'wallet_dashboard.dart';
 
 const DASHBOARD_MAX_HEIGHT = 176.25;
 const DASHBOARD_MIN_HEIGHT = 70.0;
-const FILTER_MAX_SIZE = 70.0;
+const FILTER_MAX_SIZE = 56.0;
 const FILTER_MIN_SIZE = 0.0;
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
@@ -70,8 +70,12 @@ class AccountPageState extends State<AccountPage>
                       PaymentsModel paymentsModel =
                           snapshot.data ?? PaymentsModel.initial();
                       return Container(
-                        color:
-                            theme.customData[theme.themeId].paymentListBgColor,
+                        color: paymentsModel.paymentsList.length % 2 == 1 &&
+                                paymentsModel.paymentsList.length != 0
+                            ? theme.customData[theme.themeId]
+                                .paymentListAlternateBgColor
+                            : theme
+                                .customData[theme.themeId].paymentListBgColor,
                         child: _buildBalanceAndPayments(paymentsModel, account),
                       );
                     });
@@ -88,12 +92,16 @@ class AccountPageState extends State<AccountPage>
         kToolbarHeight -
         FILTER_MAX_SIZE -
         25.0;
+    double dateFilterSpace = paymentsModel?.filter?.startDate != null &&
+            paymentsModel?.filter?.endDate != null
+        ? 0.65
+        : 0.0;
     double bottomPlaceholderSpace = paymentsModel.paymentsList == null ||
             paymentsModel.paymentsList.length == 0
         ? 0.0
         : (listHeightSpace -
                 PAYMENT_LIST_ITEM_HEIGHT *
-                    (paymentsModel.paymentsList.length + 1))
+                    (paymentsModel.paymentsList.length + 1 + dateFilterSpace))
             .clamp(0.0, listHeightSpace);
 
     String message;
@@ -116,7 +124,7 @@ class AccountPageState extends State<AccountPage>
         elevation: 0.0,
         expandedHeight: 32.0,
         automaticallyImplyLeading: false,
-        backgroundColor: Theme.of(context).canvasColor,
+        backgroundColor: theme.customData[theme.themeId].paymentListBgColor,
         flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
       ));
     }
@@ -174,19 +182,32 @@ class AccountPageState extends State<AccountPage>
   }
 
   Widget _filterChip(PaymentFilterModel filter) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(left: 16.0),
-          child: Chip(
-            label: Text(DateUtils.formatFilterDateRange(
-                filter.startDate, filter.endDate)),
-            onDeleted: () => _accountBloc.paymentFilterSink
-                .add(PaymentFilterModel(filter.paymentType, null, null)),
-          ),
-        )
-      ],
+    return Container(
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+                  width: 1,
+                  color:
+                      theme.customData[theme.themeId].paymentListDividerColor)),
+          color: theme.customData[theme.themeId].paymentListBgColor),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(
+              left: 16.0,
+              bottom: 8,
+            ),
+            child: Chip(
+              backgroundColor: Theme.of(context).bottomAppBarColor,
+              label: Text(DateUtils.formatFilterDateRange(
+                  filter.startDate, filter.endDate)),
+              onDeleted: () => _accountBloc.paymentFilterSink
+                  .add(PaymentFilterModel(filter.paymentType, null, null)),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

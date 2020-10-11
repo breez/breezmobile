@@ -11,12 +11,11 @@ import 'success_avatar.dart';
 class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
   final int _itemIndex;
-  final bool _lastItem;
   final bool _firstItem;
   final GlobalKey firstPaymentItemKey;
 
-  PaymentItem(this._paymentInfo, this._itemIndex, this._lastItem,
-      this._firstItem, this.firstPaymentItemKey);
+  PaymentItem(this._paymentInfo, this._itemIndex, this._firstItem,
+      this.firstPaymentItemKey);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,7 @@ class PaymentItem extends StatelessWidget {
       ListTile(
         tileColor: (_itemIndex % 2 == 0)
             ? theme.customData[theme.themeId].paymentListBgColor
-            : theme.customData[theme.themeId].dashboardBgColor,
+            : theme.customData[theme.themeId].paymentListAlternateBgColor,
         leading: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -100,11 +99,8 @@ class PaymentItem extends StatelessWidget {
       ),
       Divider(
         height: 0.0,
-        color: _lastItem
-            ? Colors.transparent
-            : theme.themeId == "BLUE"
-                ? Color.fromRGBO(0, 0, 0, 0.12)
-                : Color.fromRGBO(255, 255, 255, 0.12),
+        thickness: 1,
+        color: theme.customData[theme.themeId].paymentListDividerColor,
         indent: 72.0,
       ),
     ]);

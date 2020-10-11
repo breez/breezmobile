@@ -76,7 +76,10 @@ class BottomActionsBar extends StatelessWidget {
                       leading: _ActionImage(
                           iconAssetPath: "src/icon/paste.png",
                           enabled: account.connected),
-                      title: Text("Paste Invoice or Node ID"),
+                      title: Text(
+                        "Paste Invoice or Node ID",
+                        style: theme.bottomSheetTextStyle,
+                      ),
                       onTap: () async {
                         Navigator.of(context).pop();
                         DecodedClipboardData clipboardData =
@@ -101,22 +104,38 @@ class BottomActionsBar extends StatelessWidget {
                         }
                       },
                     ),
+                    Divider(
+                      height: 0.0,
+                      color: Colors.white.withOpacity(0.2),
+                      indent: 72.0,
+                    ),
                     ListTile(
                         enabled: account.connected,
                         leading: _ActionImage(
                             iconAssetPath: "src/icon/connect_to_pay.png",
                             enabled: account.connected),
-                        title: Text("Connect to Pay"),
+                        title: Text(
+                          "Connect to Pay",
+                          style: theme.bottomSheetTextStyle,
+                        ),
                         onTap: () {
                           Navigator.of(context).pop();
                           Navigator.of(context).pushNamed("/connect_to_pay");
                         }),
+                    Divider(
+                      height: 0.0,
+                      color: Colors.white.withOpacity(0.2),
+                      indent: 72.0,
+                    ),
                     ListTile(
                         enabled: account.connected,
                         leading: _ActionImage(
                             iconAssetPath: "src/icon/bitcoin.png",
                             enabled: account.connected),
-                        title: Text("Send to BTC Address"),
+                        title: Text(
+                          "Send to BTC Address",
+                          style: theme.bottomSheetTextStyle,
+                        ),
                         onTap: () {
                           Navigator.of(context).pop();
                           Navigator.of(context).pushNamed("/withdraw_funds");
@@ -129,21 +148,33 @@ class BottomActionsBar extends StatelessWidget {
                           }
                           AccountSettings settings = settingsSnapshot.data;
                           if (settings.isEscherEnabled) {
-                            return ListTile(
-                                enabled: account.connected,
-                                leading: _ActionImage(
-                                    iconAssetPath: "src/icon/escher.png",
-                                    enabled: account.connected),
-                                title: Text("Cash-Out via Escher"),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  return showDialog(
-                                      useRootNavigator: false,
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (_) =>
-                                          EscherDialog(context, accBloc));
-                                });
+                            return Column(
+                              children: [
+                                Divider(
+                                  height: 0.0,
+                                  color: Colors.white.withOpacity(0.2),
+                                  indent: 72.0,
+                                ),
+                                ListTile(
+                                    enabled: account.connected,
+                                    leading: _ActionImage(
+                                        iconAssetPath: "src/icon/escher.png",
+                                        enabled: account.connected),
+                                    title: Text(
+                                      "Cash-Out via Escher",
+                                      style: theme.bottomSheetTextStyle,
+                                    ),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      return showDialog(
+                                          useRootNavigator: false,
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (_) =>
+                                              EscherDialog(context, accBloc));
+                                    }),
+                              ],
+                            );
                           } else {
                             return SizedBox();
                           }
@@ -174,23 +205,36 @@ class BottomActionsBar extends StatelessWidget {
 
                       List<Widget> children =
                           snapshot.data.where((v) => v.isAllowed).map((v) {
-                        return ListTile(
-                            enabled: v.enabled &&
-                                (account.connected || !v.requireActiveChannel),
-                            leading: _ActionImage(
-                                iconAssetPath: v.icon,
-                                enabled: account.connected ||
-                                    !v.requireActiveChannel),
-                            title: Text(v.shortName ?? v.name),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              if (v.showLSPFee) {
-                                promptLSPFeeAndNavigate(context, account,
-                                    lspSnapshot.data.currentLSP, v.route);
-                              } else {
-                                Navigator.of(context).pushNamed(v.route);
-                              }
-                            });
+                        return Column(
+                          children: [
+                            Divider(
+                              height: 0.0,
+                              color: Colors.white.withOpacity(0.2),
+                              indent: 72.0,
+                            ),
+                            ListTile(
+                                enabled: v.enabled &&
+                                    (account.connected ||
+                                        !v.requireActiveChannel),
+                                leading: _ActionImage(
+                                    iconAssetPath: v.icon,
+                                    enabled: account.connected ||
+                                        !v.requireActiveChannel),
+                                title: Text(
+                                  v.shortName ?? v.name,
+                                  style: theme.bottomSheetTextStyle,
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  if (v.showLSPFee) {
+                                    promptLSPFeeAndNavigate(context, account,
+                                        lspSnapshot.data.currentLSP, v.route);
+                                  } else {
+                                    Navigator.of(context).pushNamed(v.route);
+                                  }
+                                }),
+                          ],
+                        );
                       }).toList();
 
                       return Column(
@@ -202,7 +246,10 @@ class BottomActionsBar extends StatelessWidget {
                               leading: _ActionImage(
                                   iconAssetPath: "src/icon/paste.png",
                                   enabled: true),
-                              title: Text("Receive via Invoice"),
+                              title: Text(
+                                "Receive via Invoice",
+                                style: theme.bottomSheetTextStyle,
+                              ),
                               onTap: () {
                                 Navigator.of(context).pop();
                                 Navigator.of(context)
