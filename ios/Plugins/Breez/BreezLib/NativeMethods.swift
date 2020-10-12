@@ -82,7 +82,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "fetchLnurl": SingleArgBindingExecutor(f: BindingsFetchLnurl),
     "syncGraphFromFile": SingleArgBindingExecutor(f: BindingsSyncGraphFromFile),
     "deleteGraph": EmptyArgsBindingExecutor(f: BindingsDeleteGraph),
-    "graphURL": EmptyArgsBindingExecutor(f: BindingsGraphURL)
+    "graphURL": EmptyArgsBindingExecutor(f: BindingsGraphURL),
     "populateChannelPolicy": VoidBindingExecutor(f: BindingsPopulateChannelPolicy),
     
     //jobs
