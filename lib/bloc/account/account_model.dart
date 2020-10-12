@@ -10,6 +10,15 @@ enum BugReportBehavior { PROMPT, SEND_REPORT, IGNORE }
 
 enum SyncUIState { BLOCKING, COLLAPSED, NONE }
 
+const Map<String, String> paymentErrorsMapping = {
+  "FAILURE_REASON_INSUFFICIENT_BALANCE": "Insufficient balance",
+  "FAILURE_REASON_INCORRECT_PAYMENT_DETAILS": "Incorrect payment details",
+  "FAILURE_REASON_ERROR": "Unexpected error",
+  "FAILURE_REASON_NO_ROUTE": "No route",
+  "FAILURE_REASON_TIMEOUT": "Payment timeout exceeded",
+  "FAILURE_REASON_NONE": "",
+};
+
 class AccountSettings {
   final bool ignoreWalletBalance;
   final bool showConnectProgress;
@@ -572,6 +581,10 @@ class PaymentError implements Exception {
   String toDisplayMessage(Currency currency) {
     var str = toString();
     if (str.isNotEmpty) {
+      var displayError = paymentErrorsMapping[str];
+      if (displayError != null) {
+        return displayError;
+      }
       var parts = str.split(":");
       if (parts.length == 2) {
         switch (parts[0]) {
