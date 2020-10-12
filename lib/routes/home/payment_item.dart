@@ -84,7 +84,7 @@ class PaymentItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    _paymentInfo.fee == 0
+                    _paymentInfo.fee == 0 || _paymentInfo.pending
                         ? SizedBox()
                         : Text(
                             "FEE " +
