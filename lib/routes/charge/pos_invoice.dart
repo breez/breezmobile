@@ -776,12 +776,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         builder: (BuildContext context) {
           return PosPaymentDialog(invoiceBloc, user, payReq, satAmount);
         }).then((res) {
-      if (res.paid) {
+      if (res?.paid == true) {
         Navigator.of(context).push(TransparentPageRoute((context) {
           return SuccessfulPaymentRoute();
         }));
       }
-      if (res.clearSale) {
+      if (res?.clearSale == true) {
         clearSale();
         return true;
       }
