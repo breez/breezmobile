@@ -32,7 +32,6 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../status_indicator.dart';
 import '../sync_progress_dialog.dart';
 import 'items/item_avatar.dart';
 import 'items/items_list.dart';
@@ -193,7 +192,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                               children: <Widget>[
                                                 Padding(
                                                   padding: EdgeInsets.only(
-                                                      top: 0.0,
+                                                      top: 16.0,
                                                       left: 16.0,
                                                       right: 16.0,
                                                       bottom: 24.0),
@@ -732,8 +731,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             var addSaleAction = SubmitCurrentSale(payReq.paymentHash);
             posCatalogBloc.actionsSink.add(addSaleAction);
             return addSaleAction.future.then((submittedSale) {
-              return showPaymentDialog(
-                      invoiceBloc, user, payReq, satAmount)
+              return showPaymentDialog(invoiceBloc, user, payReq, satAmount)
                   .then((cleared) {
                 if (!cleared) {
                   var unLockSale = SetCurrentSale(

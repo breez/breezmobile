@@ -347,7 +347,6 @@ final TextStyle bottomAppBarBtnStyle = TextStyle(
     fontFamily: 'IBMPlexSans');
 final TextStyle bottomSheetTextStyle = TextStyle(
     fontFamily: 'IBMPlexSans',
-    color: Colors.white,
     fontSize: 15,
     letterSpacing: 1.2,
     fontWeight: FontWeight.w400,

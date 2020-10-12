@@ -196,10 +196,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
                             ),
                           ),
                         ),
-                        Padding(padding: EdgeInsets.only(top: 8.0)),
-                        Padding(padding: EdgeInsets.only(top: 16.0)),
-                        _buildExpiryMessage(snapshot.hasError),
-                        _buildFeeMessage(snapshot),
+                        Padding(padding: EdgeInsets.only(top: 24.0)),
+                        _buildExpiryAndFeeMessage(snapshot),
                         Padding(padding: EdgeInsets.only(top: 16.0)),
                       ],
                     );
@@ -212,20 +210,10 @@ class QrCodeDialogState extends State<QrCodeDialog>
         });
   }
 
-  Widget _buildExpiryMessage(bool hasError) {
-    if (hasError) {
-      return Column(children: <Widget>[
-        Text("Failed to create invoice",
-            style: Theme.of(context).dialogTheme.contentTextStyle)
-      ]);
-    }
-    return Column(children: <Widget>[
-      Text("Keep the Breez app open in order to receive payment.",
-          style: Theme.of(context).primaryTextTheme.caption)
-    ]);
-  }
-
-  Widget _buildFeeMessage(AsyncSnapshot<PaymentRequestModel> snapshot) {
+  Widget _buildExpiryAndFeeMessage(
+      AsyncSnapshot<PaymentRequestModel> snapshot) {
+    String _message = "";
+    bool _hasError = true;
     return StreamBuilder<AccountModel>(
         stream: widget._accountBloc.accountStream,
         builder: (context, accSnapshot) {
@@ -233,17 +221,24 @@ class QrCodeDialogState extends State<QrCodeDialog>
               !accSnapshot.hasData ||
               snapshot.hasError ||
               !snapshot.hasData) {
-            return Container();
+            _message = "Failed to create invoice";
+          } else {
+            _hasError = false;
+            _message = "Keep Breez open until payment is completed.";
+
+            if (snapshot.data.lspFee != 0) {
+              _message +=
+                  " A setup fee of ${Currency.SAT.format(snapshot.data.lspFee)} (${accSnapshot.data.fiatCurrency.format(snapshot.data.lspFee)}) is applied to this invoice.";
+            }
           }
-          return snapshot.data.lspFee == 0
-              ? SizedBox()
-              : Container(
-                  child: Text(
-                    "A setup fee of ${Currency.SAT.format(snapshot.data.lspFee)} (${accSnapshot.data.fiatCurrency.format(snapshot.data.lspFee)}) is applied to this invoice.",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).primaryTextTheme.caption,
-                  ),
-                );
+
+          return Text(
+            _message,
+            textAlign: TextAlign.center,
+            style: (_hasError)
+                ? Theme.of(context).dialogTheme.contentTextStyle
+                : Theme.of(context).primaryTextTheme.caption,
+          );
         });
   }
 
