@@ -8,8 +8,10 @@ import 'flip_transition.dart';
 import 'payment_item_avatar.dart';
 import 'success_avatar.dart';
 
+const DASHBOARD_MAX_HEIGHT = 176.25;
+const DASHBOARD_MIN_HEIGHT = 70.0;
+const FILTER_MAX_SIZE = 56.0;
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
-const AVATAR_RADIUS = 20.0;
 
 class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
@@ -30,10 +32,13 @@ class PaymentItem extends StatelessWidget {
             : theme.customData[theme.themeId].paymentListAlternateBgColor,
         leading: AnimatedOpacity(
           duration: Duration(milliseconds: 200),
-          opacity:
-              (_scrollController.offset - (PAYMENT_LIST_ITEM_HEIGHT + AVATAR_RADIUS / 2 + (_itemIndex + 1) * PAYMENT_LIST_ITEM_HEIGHT) > 0)
-                  ? 0.0
-                  : 1.0,
+          opacity: (_scrollController.offset -
+                      (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
+                      (PAYMENT_LIST_ITEM_HEIGHT * (_itemIndex + 1) -
+                          PAYMENT_LIST_ITEM_HEIGHT / 3) >
+                  0)
+              ? 0.0
+              : 1.0,
           child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
