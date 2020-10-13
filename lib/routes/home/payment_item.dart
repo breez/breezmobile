@@ -32,6 +32,9 @@ class PaymentItem extends StatelessWidget {
             : theme.customData[theme.themeId].paymentListAlternateBgColor,
         leading: AnimatedOpacity(
           duration: Duration(milliseconds: 200),
+          // when the transaction list is fully expanded
+          // fade away the avatar of the item that's
+          // one third visible behind filter sliver
           opacity: (_scrollController.offset -
                       (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
                       (PAYMENT_LIST_ITEM_HEIGHT * (_itemIndex + 1) -
