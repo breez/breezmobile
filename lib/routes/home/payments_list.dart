@@ -3,21 +3,46 @@ import 'package:flutter/material.dart';
 
 import 'payment_item.dart';
 
-class PaymentsList extends StatelessWidget {
+class PaymentsList extends StatefulWidget {
   final List<PaymentInfo> _payments;
   final double _itemHeight;
   final GlobalKey firstPaymentItemKey;
+  final ScrollController scrollController;
 
-  PaymentsList(this._payments, this._itemHeight, this.firstPaymentItemKey);
+  PaymentsList(this._payments, this._itemHeight, this.firstPaymentItemKey,
+      this.scrollController);
+
+  @override
+  State<StatefulWidget> createState() {
+    return PaymentsListState();
+  }
+}
+
+class PaymentsListState extends State<PaymentsList> {
+  @override
+  void initState() {
+    super.initState();
+    widget.scrollController.addListener(onScroll);
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController.removeListener(onScroll);
+    super.dispose();
+  }
+
+  void onScroll() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return SliverFixedExtentList(
-      itemExtent: _itemHeight,
+      itemExtent: widget._itemHeight,
       delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-        return PaymentItem(
-            _payments[index], index, 0 == index, firstPaymentItemKey);
-      }, childCount: _payments.length),
+        return PaymentItem(widget._payments[index], index, 0 == index,
+            widget.firstPaymentItemKey, widget.scrollController);
+      }, childCount: widget._payments.length),
     );
   }
 }

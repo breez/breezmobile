@@ -13,9 +13,10 @@ class PaymentItem extends StatelessWidget {
   final int _itemIndex;
   final bool _firstItem;
   final GlobalKey firstPaymentItemKey;
+  final ScrollController _scrollController;
 
   PaymentItem(this._paymentInfo, this._itemIndex, this._firstItem,
-      this.firstPaymentItemKey);
+      this.firstPaymentItemKey, this._scrollController);
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +25,25 @@ class PaymentItem extends StatelessWidget {
         tileColor: (_itemIndex % 2 == 0)
             ? theme.customData[theme.themeId].paymentListBgColor
             : theme.customData[theme.themeId].paymentListAlternateBgColor,
-        leading: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    offset: Offset(0.5, 0.5),
-                    blurRadius: 5.0),
-              ],
-            ),
-            child: _buildPaymentItemAvatar()),
+        leading: AnimatedOpacity(
+          duration: Duration(milliseconds: 200),
+          opacity:
+              (_scrollController.offset - (72 + 9 + (_itemIndex + 1) * 72) > 0)
+                  ? 0.0
+                  : 1.0,
+          child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      offset: Offset(0.5, 0.5),
+                      blurRadius: 5.0),
+                ],
+              ),
+              child: _buildPaymentItemAvatar()),
+        ),
         key: _firstItem ? firstPaymentItemKey : null,
         title: Text(
           _paymentInfo.title,
