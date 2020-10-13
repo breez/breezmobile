@@ -8,6 +8,9 @@ import 'flip_transition.dart';
 import 'payment_item_avatar.dart';
 import 'success_avatar.dart';
 
+const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
+const AVATAR_RADIUS = 20.0;
+
 class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
   final int _itemIndex;
@@ -28,7 +31,7 @@ class PaymentItem extends StatelessWidget {
         leading: AnimatedOpacity(
           duration: Duration(milliseconds: 200),
           opacity:
-              (_scrollController.offset - (72 + 9 + (_itemIndex + 1) * 72) > 0)
+              (_scrollController.offset - (PAYMENT_LIST_ITEM_HEIGHT + AVATAR_RADIUS / 2 + (_itemIndex + 1) * PAYMENT_LIST_ITEM_HEIGHT) > 0)
                   ? 0.0
                   : 1.0,
           child: Container(
