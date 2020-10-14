@@ -50,8 +50,10 @@ class NavigationDrawer extends StatelessWidget {
         AppBlocsProvider.of<UserProfileBloc>(context);
 
     List<Widget> children = List<Widget>();
+    children.insert(0, Padding(padding: EdgeInsets.only(top: 16)));
     _drawerGroupedItems.forEach((groupItems) {
-      children.addAll(_createDrawerGroupWidgets(groupItems, context,
+      children.addAll(_createDrawerGroupWidgets(
+          groupItems, context, _drawerGroupedItems.indexOf(groupItems),
           withDivider: children.length > 0 && groupItems.withDivider));
     });
 
@@ -70,7 +72,7 @@ class NavigationDrawer extends StatelessWidget {
   }
 
   List<Widget> _createDrawerGroupWidgets(
-      DrawerItemConfigGroup group, BuildContext context,
+      DrawerItemConfigGroup group, BuildContext context, int index,
       {bool withDivider = false}) {
     List<Widget> groupItems = group.items
         .map((action) => _actionTile(
@@ -85,7 +87,7 @@ class NavigationDrawer extends StatelessWidget {
             controller: _scrollController));
     }
 
-    if (groupItems.length > 0 && withDivider) {
+    if (groupItems.length > 0 && withDivider && index != 0) {
       groupItems.insert(0, _ListDivider());
     }
     return groupItems;
