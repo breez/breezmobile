@@ -100,12 +100,6 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return BreezDrawerHeader(
     padding: EdgeInsets.only(left: 16.0),
     child: _buildDrawerHeaderContent(user, drawAvatar),
-    decoration: BoxDecoration(
-      image: DecorationImage(
-          image: AssetImage("src/images/waves-drawer.png"),
-          fit: BoxFit.scaleDown,
-          alignment: Alignment(0, 0)),
-    ),
   );
 }
 
