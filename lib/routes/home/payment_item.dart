@@ -12,6 +12,7 @@ const DASHBOARD_MAX_HEIGHT = 176.25;
 const DASHBOARD_MIN_HEIGHT = 70.0;
 const FILTER_MAX_SIZE = 56.0;
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
+const AVATAR_DIAMETER = 40.0;
 
 class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
@@ -30,15 +31,15 @@ class PaymentItem extends StatelessWidget {
         tileColor: (_itemIndex % 2 == 0)
             ? theme.customData[theme.themeId].paymentListBgColor
             : theme.customData[theme.themeId].paymentListAlternateBgColor,
-        leading: AnimatedOpacity(
-          duration: Duration(milliseconds: 200),
+        leading: Opacity(
           // when the transaction list is fully expanded
-          // fade away the avatar of the item that's
-          // one third visible behind filter sliver
+          // set opacity the avatar of the item that's
+          // no longer visible to transparent
           opacity: (_scrollController.offset -
                       (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
                       (PAYMENT_LIST_ITEM_HEIGHT * (_itemIndex + 1) -
-                          PAYMENT_LIST_ITEM_HEIGHT / 3) >
+                          FILTER_MAX_SIZE +
+                          AVATAR_DIAMETER) >
                   0)
               ? 0.0
               : 1.0,
