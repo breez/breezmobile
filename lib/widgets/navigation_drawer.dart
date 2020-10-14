@@ -57,12 +57,16 @@ class NavigationDrawer extends StatelessWidget {
 
     children.insert(0, _breezDrawerHeader(userProfileBloc, _avatar));
 
-    return Drawer(
-        child: ListView(
-            controller: _scrollController,
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.only(bottom: 20.0),
-            children: children));
+    return Theme(
+      data: Theme.of(context).copyWith(
+          canvasColor: theme.customData[theme.themeId].navigationDrawer BgColor),
+      child: Drawer(
+          child: ListView(
+              controller: _scrollController,
+              // Important: Remove any padding from the ListView.
+              padding: EdgeInsets.only(bottom: 20.0),
+              children: children)),
+    );
   }
 
   List<Widget> _createDrawerGroupWidgets(
@@ -97,9 +101,12 @@ class _ListDivider extends StatelessWidget {
 }
 
 Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
-  return BreezDrawerHeader(
-    padding: EdgeInsets.only(left: 16.0),
-    child: _buildDrawerHeaderContent(user, drawAvatar),
+  return Container(
+    color: theme.customData[theme.themeId].navigationDrawerHeaderBgColor,
+    child: BreezDrawerHeader(
+      padding: EdgeInsets.only(left: 16.0),
+      child: _buildDrawerHeaderContent(user, drawAvatar),
+    ),
   );
 }
 
