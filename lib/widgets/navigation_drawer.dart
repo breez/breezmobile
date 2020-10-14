@@ -61,7 +61,7 @@ class NavigationDrawer extends StatelessWidget {
 
     return Theme(
       data: Theme.of(context).copyWith(
-          canvasColor: theme.customData[theme.themeId].navigationDrawer BgColor),
+          canvasColor: theme.customData[theme.themeId].navigationDrawerBgColor),
       child: Drawer(
           child: ListView(
               controller: _scrollController,
