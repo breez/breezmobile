@@ -57,10 +57,21 @@ class PaymentItem extends StatelessWidget {
               child: _buildPaymentItemAvatar()),
         ),
         key: _firstItem ? firstPaymentItemKey : null,
-        title: Text(
-          _paymentInfo.title,
-          style: Theme.of(context).accentTextTheme.subtitle2,
-          overflow: TextOverflow.ellipsis,
+        title: Opacity(
+          // set title text to transparent when it leaves viewport
+          opacity: (_scrollController.offset -
+                      (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
+                      (PAYMENT_LIST_ITEM_HEIGHT * (_itemIndex + 1) -
+                          FILTER_MAX_SIZE +
+                          AVATAR_DIAMETER / 2) >
+                  0)
+              ? 0.0
+              : 1.0,
+          child: Text(
+            _paymentInfo.title,
+            style: Theme.of(context).accentTextTheme.subtitle2,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -87,15 +98,27 @@ class PaymentItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text(
-                    (_paymentInfo.type == PaymentType.SENT ||
-                                _paymentInfo.type == PaymentType.WITHDRAWAL ||
-                                _paymentInfo.type == PaymentType.CLOSED_CHANNEL
-                            ? "- "
-                            : "+ ") +
-                        _paymentInfo.currency.format(_paymentInfo.amount,
-                            includeDisplayName: false),
-                    style: Theme.of(context).accentTextTheme.headline6,
+                  Opacity(
+                    // set amount text to transparent when it leaves viewport
+                    opacity: (_scrollController.offset -
+                                (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
+                                (PAYMENT_LIST_ITEM_HEIGHT * (_itemIndex + 1) -
+                                    FILTER_MAX_SIZE +
+                                    AVATAR_DIAMETER / 2) >
+                            0)
+                        ? 0.0
+                        : 1.0,
+                    child: Text(
+                      (_paymentInfo.type == PaymentType.SENT ||
+                                  _paymentInfo.type == PaymentType.WITHDRAWAL ||
+                                  _paymentInfo.type ==
+                                      PaymentType.CLOSED_CHANNEL
+                              ? "- "
+                              : "+ ") +
+                          _paymentInfo.currency.format(_paymentInfo.amount,
+                              includeDisplayName: false),
+                      style: Theme.of(context).accentTextTheme.headline6,
+                    ),
                   )
                 ]),
             Padding(
@@ -117,11 +140,23 @@ class PaymentItem extends StatelessWidget {
         ),
         onTap: () => showPaymentDetailsDialog(context, _paymentInfo),
       ),
-      Divider(
-        height: 0.0,
-        thickness: 1,
-        color: theme.customData[theme.themeId].paymentListDividerColor,
-        indent: 72.0,
+      Opacity(
+        // set bottom divider to transparent when it leaves viewport
+        opacity: (_scrollController.offset -
+                    (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
+                    (PAYMENT_LIST_ITEM_HEIGHT * (_itemIndex + 1) -
+                        FILTER_MAX_SIZE +
+                        AVATAR_DIAMETER +
+                        16) >
+                0)
+            ? 0.0
+            : 1.0,
+        child: Divider(
+          height: 0.0,
+          thickness: 1,
+          color: theme.customData[theme.themeId].paymentListDividerColor,
+          indent: 72.0,
+        ),
       ),
     ]);
   }
