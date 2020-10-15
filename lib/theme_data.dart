@@ -10,6 +10,8 @@ class CustomData {
   Color paymentListBgColor;
   Color paymentListAlternateBgColor;
   Color paymentListDividerColor;
+  Color navigationDrawerHeaderBgColor;
+  Color navigationDrawerBgColor;
 
   CustomData(
       {this.loaderColorBlendMode,
@@ -18,7 +20,9 @@ class CustomData {
       this.dashboardBgColor,
       this.paymentListBgColor,
       this.paymentListAlternateBgColor,
-      this.paymentListDividerColor});
+      this.paymentListDividerColor,
+      this.navigationDrawerHeaderBgColor,
+      this.navigationDrawerBgColor});
 }
 
 final Map<String, ThemeData> themeMap = {"BLUE": blueTheme, "DARK": darkTheme};
@@ -30,6 +34,8 @@ final CustomData blueThemeCustomData = CustomData(
   paymentListBgColor: Color.fromRGBO(249, 249, 249, 1),
   paymentListAlternateBgColor: Color.fromRGBO(253, 253, 253, 1),
   paymentListDividerColor: Color.fromRGBO(0, 0, 0, 0.12),
+  navigationDrawerBgColor: BreezColors.blue[500],
+  navigationDrawerHeaderBgColor: Color.fromRGBO(0, 103, 255, 1),
 );
 final CustomData darkThemeCustomData = CustomData(
   loaderColorBlendMode: BlendMode.srcIn,
@@ -39,6 +45,8 @@ final CustomData darkThemeCustomData = CustomData(
   paymentListBgColor: Color.fromRGBO(21, 42, 61, 1),
   paymentListAlternateBgColor: Color.fromRGBO(19, 37, 54, 1),
   paymentListDividerColor: Color.fromRGBO(255, 255, 255, 0.12),
+  navigationDrawerBgColor: Color(0xFF152a3d),
+  navigationDrawerHeaderBgColor: Color.fromRGBO(13, 32, 50, 1),
 );
 final Map<String, CustomData> customData = {
   "BLUE": blueThemeCustomData,

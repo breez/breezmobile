@@ -226,21 +226,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
             child: Stack(children: <Widget>[
               Column(
                 children: <Widget>[
-                  Expanded(flex: 244, child: Container()),
+                  Expanded(flex: 200, child: Container()),
                   Expanded(
-                      flex: 372,
-                      child: Image.asset(
-                        'src/images/waves-middle.png',
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      )),
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Expanded(flex: 60, child: Container()),
-                  Expanded(
-                    flex: 151,
+                    flex: 171,
                     child: AnimatedBuilder(
                       animation: _animation,
                       builder: (BuildContext context, Widget child) {
@@ -254,7 +242,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       },
                     ),
                   ),
-                  Expanded(flex: 190, child: Container()),
+                  Expanded(flex: 200, child: Container()),
                   Expanded(
                     flex: 48,
                     child: Padding(
@@ -266,7 +254,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       ),
                     ),
                   ),
-                  Expanded(flex: 79, child: Container()),
+                  Expanded(flex: 60, child: Container()),
                   Container(
                     height: 48.0,
                     width: 168.0,
@@ -343,6 +331,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                               style: theme.restoreLinkStyle,
                             ))),
                   ),
+                  Expanded(flex: 120, child: Container()),
                 ],
               )
             ])),
