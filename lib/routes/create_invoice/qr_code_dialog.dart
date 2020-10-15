@@ -80,6 +80,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
               width: MediaQuery.of(context).size.width,
               child: SimpleDialog(
                 title: Row(
+                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
@@ -96,53 +97,58 @@ class QrCodeDialogState extends State<QrCodeDialog>
                               if (!snapshot.hasData || !synced) {
                                 return Container();
                               }
-                              return Row(
-                                children: <Widget>[
-                                  IconButton(
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    padding: EdgeInsets.only(
-                                        top: 8.0,
-                                        bottom: 8.0,
-                                        right: 2.0,
-                                        left: 14.0),
-                                    icon: Icon(IconData(0xe917,
-                                        fontFamily: 'icomoon')),
-                                    color: Theme.of(context)
-                                        .primaryTextTheme
-                                        .button
-                                        .color,
-                                    onPressed: () {
-                                      ShareExtend.share(
-                                          "lightning:" +
-                                              snapshot.data.rawPayReq,
-                                          "text");
-                                    },
-                                  ),
-                                  IconButton(
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    padding: EdgeInsets.only(
-                                        top: 8.0,
-                                        bottom: 8.0,
-                                        right: 14.0,
-                                        left: 2.0),
-                                    icon: Icon(IconData(0xe90b,
-                                        fontFamily: 'icomoon')),
-                                    color: Theme.of(context)
-                                        .primaryTextTheme
-                                        .button
-                                        .color,
-                                    onPressed: () {
-                                      ServiceInjector().device.setClipboardText(
-                                          snapshot.data.rawPayReq);
-                                      showFlushbar(context,
-                                          message:
-                                              "Invoice data was copied to your clipboard.",
-                                          duration: Duration(seconds: 3));
-                                    },
-                                  )
-                                ],
+                              return Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: Row(
+                                  children: <Widget>[
+                                    IconButton(
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      padding: EdgeInsets.only(
+                                          top: 8.0,
+                                          bottom: 8.0,
+                                          right: 2.0,
+                                          left: 14.0),
+                                      icon: Icon(IconData(0xe917,
+                                          fontFamily: 'icomoon')),
+                                      color: Theme.of(context)
+                                          .primaryTextTheme
+                                          .button
+                                          .color,
+                                      onPressed: () {
+                                        ShareExtend.share(
+                                            "lightning:" +
+                                                snapshot.data.rawPayReq,
+                                            "text");
+                                      },
+                                    ),
+                                    IconButton(
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      padding: EdgeInsets.only(
+                                          top: 8.0,
+                                          bottom: 8.0,
+                                          right: 14.0,
+                                          left: 2.0),
+                                      icon: Icon(IconData(0xe90b,
+                                          fontFamily: 'icomoon')),
+                                      color: Theme.of(context)
+                                          .primaryTextTheme
+                                          .button
+                                          .color,
+                                      onPressed: () {
+                                        ServiceInjector()
+                                            .device
+                                            .setClipboardText(
+                                                snapshot.data.rawPayReq);
+                                        showFlushbar(context,
+                                            message:
+                                                "Invoice data was copied to your clipboard.",
+                                            duration: Duration(seconds: 3));
+                                      },
+                                    )
+                                  ],
+                                ),
                               );
                             },
                           );
@@ -191,6 +197,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   )));
                       }
                       return Column(
+                        mainAxisSize: MainAxisSize.max,
                         children: [
                           AspectRatio(
                             aspectRatio: 1,
