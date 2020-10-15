@@ -50,23 +50,29 @@ class NavigationDrawer extends StatelessWidget {
         AppBlocsProvider.of<UserProfileBloc>(context);
 
     List<Widget> children = List<Widget>();
+    children.insert(0, Padding(padding: EdgeInsets.only(top: 16)));
     _drawerGroupedItems.forEach((groupItems) {
-      children.addAll(_createDrawerGroupWidgets(groupItems, context,
+      children.addAll(_createDrawerGroupWidgets(
+          groupItems, context, _drawerGroupedItems.indexOf(groupItems),
           withDivider: children.length > 0 && groupItems.withDivider));
     });
 
     children.insert(0, _breezDrawerHeader(userProfileBloc, _avatar));
 
-    return Drawer(
-        child: ListView(
-            controller: _scrollController,
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.only(bottom: 20.0),
-            children: children));
+    return Theme(
+      data: Theme.of(context).copyWith(
+          canvasColor: theme.customData[theme.themeId].navigationDrawerBgColor),
+      child: Drawer(
+          child: ListView(
+              controller: _scrollController,
+              // Important: Remove any padding from the ListView.
+              padding: EdgeInsets.only(bottom: 20.0),
+              children: children)),
+    );
   }
 
   List<Widget> _createDrawerGroupWidgets(
-      DrawerItemConfigGroup group, BuildContext context,
+      DrawerItemConfigGroup group, BuildContext context, int index,
       {bool withDivider = false}) {
     List<Widget> groupItems = group.items
         .map((action) => _actionTile(
@@ -81,7 +87,7 @@ class NavigationDrawer extends StatelessWidget {
             controller: _scrollController));
     }
 
-    if (groupItems.length > 0 && withDivider) {
+    if (groupItems.length > 0 && withDivider && index != 0) {
       groupItems.insert(0, _ListDivider());
     }
     return groupItems;
@@ -97,14 +103,11 @@ class _ListDivider extends StatelessWidget {
 }
 
 Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
-  return BreezDrawerHeader(
-    padding: EdgeInsets.only(left: 16.0),
-    child: _buildDrawerHeaderContent(user, drawAvatar),
-    decoration: BoxDecoration(
-      image: DecorationImage(
-          image: AssetImage("src/images/waves-drawer.png"),
-          fit: BoxFit.scaleDown,
-          alignment: Alignment(0, 0)),
+  return Container(
+    color: theme.customData[theme.themeId].navigationDrawerHeaderBgColor,
+    child: BreezDrawerHeader(
+      padding: EdgeInsets.only(left: 16.0),
+      child: _buildDrawerHeaderContent(user, drawAvatar),
     ),
   );
 }
