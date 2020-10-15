@@ -196,23 +196,26 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                     ),
                                   )));
                       }
-                      return Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          AspectRatio(
-                            aspectRatio: 1,
-                            child: Container(
-                              width: 230.0,
-                              height: 230.0,
-                              child: CompactQRImage(
-                                data: snapshot.data.rawPayReq,
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            AspectRatio(
+                              aspectRatio: 1,
+                              child: Container(
+                                width: 230.0,
+                                height: 230.0,
+                                child: CompactQRImage(
+                                  data: snapshot.data.rawPayReq,
+                                ),
                               ),
                             ),
-                          ),
-                          Padding(padding: EdgeInsets.only(top: 24.0)),
-                          _buildExpiryAndFeeMessage(snapshot),
-                          Padding(padding: EdgeInsets.only(top: 16.0)),
-                        ],
+                            Padding(padding: EdgeInsets.only(top: 24.0)),
+                            _buildExpiryAndFeeMessage(snapshot),
+                            Padding(padding: EdgeInsets.only(top: 16.0)),
+                          ],
+                        ),
                       );
                     },
                   ),
