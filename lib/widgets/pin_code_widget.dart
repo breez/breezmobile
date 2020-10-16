@@ -249,7 +249,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         Icons.delete_forever,
         color: Colors.white,
       ),
-      onTap: () => _setPinCodeInput(""),
+      onTap: _inputEnabled ? () => _setPinCodeInput("") : null,
     );
   }
 
@@ -259,9 +259,10 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         Icons.backspace,
         color: Colors.white,
       ),
-      onTap: () => _setPinCodeInput(
-        _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1),
-      ),
+      onTap: _inputEnabled
+          ? () => _setPinCodeInput(
+              _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1))
+          : null,
     );
   }
 
@@ -269,7 +270,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return CircularButton(
       child: Text(number,
           textAlign: TextAlign.center, style: theme.numPadNumberStyle),
-      onTap: () => _inputEnabled ? _onNumButtonPressed(number) : null,
+      onTap: _inputEnabled ? () => _onNumButtonPressed(number) : null,
     );
   }
 

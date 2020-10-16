@@ -14,6 +14,7 @@ class CircularButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         customBorder: CircleBorder(),
+        splashColor: onTap == null ? Colors.transparent : null,
         child: Container(
             child: FlatButton(padding: EdgeInsets.all(24), child: child)),
         onTap: onTap);
