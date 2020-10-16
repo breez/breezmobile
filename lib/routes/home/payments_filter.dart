@@ -8,6 +8,7 @@ import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -29,6 +30,8 @@ class PaymentFilterSliver extends StatefulWidget {
 
 class PaymentFilterSliverState extends State<PaymentFilterSliver> {
   bool _hasNoFilter;
+  bool _hasNoTypeFilter;
+  bool _hasNoDateFilter;
 
   @override
   void initState() {
@@ -49,16 +52,17 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
   @override
   Widget build(BuildContext context) {
     double scrollOffset = widget._controller.position.pixels;
-    _hasNoFilter =
+    _hasNoTypeFilter =
         (widget._paymentsModel.filter.paymentType.contains(PaymentType.SENT) &&
-                widget._paymentsModel.filter.paymentType
-                    .contains(PaymentType.DEPOSIT) &&
-                widget._paymentsModel.filter.paymentType
-                    .contains(PaymentType.WITHDRAWAL) &&
-                widget._paymentsModel.filter.paymentType
-                    .contains(PaymentType.RECEIVED)) &&
-            (widget._paymentsModel.filter.startDate == null ||
-                widget._paymentsModel.filter.endDate == null);
+            widget._paymentsModel.filter.paymentType
+                .contains(PaymentType.DEPOSIT) &&
+            widget._paymentsModel.filter.paymentType
+                .contains(PaymentType.WITHDRAWAL) &&
+            widget._paymentsModel.filter.paymentType
+                .contains(PaymentType.RECEIVED));
+    _hasNoDateFilter = (widget._paymentsModel.filter.startDate == null ||
+        widget._paymentsModel.filter.endDate == null);
+    _hasNoFilter = _hasNoTypeFilter && _hasNoDateFilter;
     return SliverPersistentHeader(
       pinned: true,
       delegate: FixedSliverDelegate(
@@ -66,20 +70,27 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
               ? widget._maxSize
               : (scrollOffset).clamp(widget._minSize, widget._maxSize),
           builder: (context, shrinkedHeight, overlapContent) {
+        double widgetSize = _hasNoFilter
+            ? (scrollOffset - widget._maxSize)
+            : (scrollOffset - widget._minSize);
         return Container(
             decoration: BoxDecoration(
-                border: (widget._paymentsModel.filter?.startDate == null &&
-                        widget._paymentsModel.filter?.endDate == null)
-                    ? Border(
-                        bottom: BorderSide(
-                            width: 1,
-                            color: theme.customData[theme.themeId]
-                                .paymentListDividerColor
-                                .withOpacity(pow(
-                                    0.00 +
-                                        (scrollOffset - widget._maxSize)
-                                            .clamp(0.0, 0.3465),
-                                    2))))
+                border: _hasNoDateFilter
+                    ? _hasNoTypeFilter
+                        ? Border(
+                            bottom: BorderSide(
+                                width: 1,
+                                color: theme.customData[theme.themeId]
+                                    .paymentListDividerColor
+                                    .withOpacity(pow(
+                                        0.00 + widgetSize.clamp(0.0, 0.3465),
+                                        2))))
+                        : Border(
+                            bottom: BorderSide(
+                                width: 1,
+                                color: theme.customData[theme.themeId]
+                                    .paymentListDividerColor
+                                    .withOpacity(0.12)))
                     : null,
                 color: theme.customData[theme.themeId].paymentListBgColor),
             height: widget._maxSize,
