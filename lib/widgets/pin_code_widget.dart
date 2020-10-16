@@ -33,6 +33,8 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   String _enrolledBiometrics;
   bool biometricsValidated = false;
 
+  bool _inputEnabled = true;
+
   @override
   initState() {
     super.initState();
@@ -267,7 +269,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return CircularButton(
       child: Text(number,
           textAlign: TextAlign.center, style: theme.numPadNumberStyle),
-      onTap: () => _onNumButtonPressed(number),
+      onTap: () => _inputEnabled ? _onNumButtonPressed(number) : null,
     );
   }
 
@@ -281,7 +283,10 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         widget
             .onPinEntered(_enteredPinCode)
             .catchError((err) => _errorMessage = err.toString().substring(10))
-            .whenComplete(() => _setPinCodeInput(""));
+            .whenComplete(() {
+          _setPinCodeInput("");
+          _inputEnabled = true;
+        });
       });
     }
   }
@@ -289,6 +294,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   void _setPinCodeInput(String enteredPinCode) {
     setState(() {
       _enteredPinCode = enteredPinCode;
+      if (_enteredPinCode.length == PIN_CODE_LENGTH) _inputEnabled = false;
     });
   }
 }
