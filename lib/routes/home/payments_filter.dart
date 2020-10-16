@@ -124,7 +124,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   @override
   void initState() {
     super.initState();
-    _filter = "All Activities";
+    _filter = _getFilterTypeString(widget._paymentsModel.filter.paymentType);
   }
 
   @override
@@ -213,6 +213,20 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       return [PaymentType.RECEIVED, PaymentType.DEPOSIT];
     }
     return PaymentType.values;
+  }
+
+  String _getFilterTypeString(List<PaymentType> filterList) {
+    if (listEquals(filterList, [
+      PaymentType.SENT,
+      PaymentType.WITHDRAWAL,
+      PaymentType.CLOSED_CHANNEL
+    ])) {
+      return "Sent";
+    } else if (listEquals(
+        filterList, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
+      return "Received";
+    }
+    return "All Activities";
   }
 
   Padding _buildExportButton(BuildContext context) {
