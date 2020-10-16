@@ -50,6 +50,12 @@ class AccountPageState extends State<AccountPage>
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
+      //a listener that rebuilds our widget tree when payment filter changes
+      _accountBloc.paymentFilterStream.listen((event) {
+        widget.scrollController.position
+            .restoreOffset(widget.scrollController.offset + 1);
+        Future.delayed(Duration(milliseconds: 150), () => {setState(() {})});
+      });
       _isInit = true;
     }
     super.didChangeDependencies();
