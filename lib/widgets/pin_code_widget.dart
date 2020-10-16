@@ -33,8 +33,6 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   String _enrolledBiometrics;
   bool biometricsValidated = false;
 
-  bool _inputEnabled = true;
-
   @override
   initState() {
     super.initState();
@@ -249,7 +247,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         Icons.delete_forever,
         color: Colors.white,
       ),
-      onTap: _inputEnabled ? () => _setPinCodeInput("") : null,
+      onTap: () => _setPinCodeInput(""),
     );
   }
 
@@ -259,10 +257,9 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         Icons.backspace,
         color: Colors.white,
       ),
-      onTap: _inputEnabled
-          ? () => _setPinCodeInput(
-              _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1))
-          : null,
+      onTap: () => _setPinCodeInput(
+        _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1),
+      ),
     );
   }
 
@@ -270,7 +267,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return CircularButton(
       child: Text(number,
           textAlign: TextAlign.center, style: theme.numPadNumberStyle),
-      onTap: _inputEnabled ? () => _onNumButtonPressed(number) : null,
+      onTap: () => _onNumButtonPressed(number),
     );
   }
 
@@ -280,14 +277,12 @@ class PinCodeWidgetState extends State<PinCodeWidget>
       _setPinCodeInput(_enteredPinCode + numberText);
     }
     if (_enteredPinCode.length == PIN_CODE_LENGTH) {
+      String pinCodeToValidate = _enteredPinCode;
       Future.delayed(Duration(milliseconds: 200), () {
         widget
-            .onPinEntered(_enteredPinCode)
+            .onPinEntered(pinCodeToValidate)
             .catchError((err) => _errorMessage = err.toString().substring(10))
-            .whenComplete(() {
-          _setPinCodeInput("");
-          _inputEnabled = true;
-        });
+            .whenComplete(() => _setPinCodeInput(""));
       });
     }
   }
@@ -295,7 +290,6 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   void _setPinCodeInput(String enteredPinCode) {
     setState(() {
       _enteredPinCode = enteredPinCode;
-      if (_enteredPinCode.length == PIN_CODE_LENGTH) _inputEnabled = false;
     });
   }
 }
