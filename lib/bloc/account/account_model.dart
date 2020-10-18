@@ -187,7 +187,7 @@ class AccountModel {
               ..walletBalance = Int64(0)
               ..status = Account_AccountStatus.DISCONNECTED
               ..maxAllowedToReceive = Int64(initialInboundCapacity)
-              ..maxPaymentAmount = Int64(0)
+              ..maxPaymentAmount = Int64(double.maxFinite ~/ 1000)
               ..enabled = true,
             Currency.SAT,
             "USD",
@@ -313,8 +313,11 @@ class AccountModel {
   }
 
   String validatePayment(Int64 amount, bool outgoing) {
-    Int64 maxAmount = outgoing ? balance : maxAllowedToReceive;
     if (maxPaymentAmount != null && amount > maxPaymentAmount) {
+      return 'Payment exceeds the limit (${currency.format(maxPaymentAmount)})';
+    }
+
+    if (!outgoing && amount > maxAllowedToReceive) {
       return 'Payment exceeds the limit (${currency.format(maxPaymentAmount)})';
     }
 
