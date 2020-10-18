@@ -19,6 +19,8 @@ const Map<String, String> paymentErrorsMapping = {
   "FAILURE_REASON_NONE": "",
 };
 
+const initialInboundCapacity = 4000000;
+
 class AccountSettings {
   final bool ignoreWalletBalance;
   final bool showConnectProgress;
@@ -184,7 +186,7 @@ class AccountModel {
               ..balance = Int64(0)
               ..walletBalance = Int64(0)
               ..status = Account_AccountStatus.DISCONNECTED
-              ..maxAllowedToReceive = Int64(0)
+              ..maxAllowedToReceive = Int64(initialInboundCapacity)
               ..maxPaymentAmount = Int64(0)
               ..enabled = true,
             Currency.SAT,
