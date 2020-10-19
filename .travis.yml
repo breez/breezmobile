@@ -42,6 +42,7 @@ script:
 - sftp builderfiles@packages.breez.technology:config/conf/moonpay.conf $TRAVIS_BUILD_DIR/conf/moonpay.conf
 - sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist
   $TRAVIS_BUILD_DIR/ios/Runner/GoogleService-Info.plist
+- cat $TRAVIS_BUILD_DIR/conf/breez.conf
 - "./flutter/bin/flutter upgrade"
 - "./flutter/bin/flutter build ios --no-codesign --no-tree-shake-icons"
 after_success:
