@@ -65,9 +65,9 @@ Breez is currently in a public beta, available on [Android](https://play.google.
 - [x] Fast graph sync
 - [x] Scan QR code from an image
 - [x] Import/export POS items
-- [ ] Support zero-conf channels
-- [ ] 'On-the-fly' channel creation (increase limit)
-- [ ] Remove reserve working using Breez channels
+- [x] Support zero-conf channels
+- [x] 'On-the-fly' channel creation (increase limit)
+- [x] Remove reserve working using Breez channels
 - [ ] Support additional fiat currencies
 - [ ] Support LNURL-Auth & LNURL-Pay & LNURL-Fallback
 - [ ] Async payments via Lightning Rod
