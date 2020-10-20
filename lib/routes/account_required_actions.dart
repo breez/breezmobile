@@ -201,8 +201,7 @@ class AccountRequiredActionsIndicatorState
                                   }
 
                                   var lspStat = lspStatusSnapshot?.data;
-                                  if (lspStat?.selectionRequired == true &&
-                                      lspStat?.dontPromptToConnect == true) {
+                                  if (lspStat?.selectionRequired == true) {
                                     warnings.add(WarningAction(() {
                                       if (lspStat?.lastConnectionError !=
                                           null) {

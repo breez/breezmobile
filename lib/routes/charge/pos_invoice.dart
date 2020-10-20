@@ -32,7 +32,6 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../status_indicator.dart';
 import '../sync_progress_dialog.dart';
 import 'items/item_avatar.dart';
 import 'items/items_list.dart';
@@ -191,27 +190,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: <Widget>[
-                                                StreamBuilder<AccountSettings>(
-                                                    stream: accountBloc
-                                                        .accountSettingsStream,
-                                                    builder: (settingCtx,
-                                                        settingSnapshot) {
-                                                      AccountSettings settings =
-                                                          settingSnapshot.data;
-                                                      if (settings?.showConnectProgress ==
-                                                              true ||
-                                                          accountModel
-                                                                  .isInitialBootstrap ==
-                                                              true) {
-                                                        return StatusIndicator(
-                                                            context,
-                                                            accountModel);
-                                                      }
-                                                      return SizedBox();
-                                                    }),
                                                 Padding(
                                                   padding: EdgeInsets.only(
-                                                      top: 0.0,
+                                                      top: 16.0,
                                                       left: 16.0,
                                                       right: 16.0,
                                                       bottom: 24.0),
@@ -750,8 +731,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             var addSaleAction = SubmitCurrentSale(payReq.paymentHash);
             posCatalogBloc.actionsSink.add(addSaleAction);
             return addSaleAction.future.then((submittedSale) {
-              return showPaymentDialog(
-                      invoiceBloc, user, payReq.rawPayReq, satAmount)
+              return showPaymentDialog(invoiceBloc, user, payReq, satAmount)
                   .then((cleared) {
                 if (!cleared) {
                   var unLockSale = SetCurrentSale(
@@ -788,7 +768,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   Future showPaymentDialog(InvoiceBloc invoiceBloc, BreezUserModel user,
-      String payReq, double satAmount) {
+      PaymentRequestModel payReq, double satAmount) {
     return showDialog<PosPaymentResult>(
         useRootNavigator: false,
         context: context,
@@ -796,12 +776,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         builder: (BuildContext context) {
           return PosPaymentDialog(invoiceBloc, user, payReq, satAmount);
         }).then((res) {
-      if (res.paid) {
+      if (res?.paid == true) {
         Navigator.of(context).push(TransparentPageRoute((context) {
           return SuccessfulPaymentRoute();
         }));
       }
-      if (res.clearSale) {
+      if (res?.clearSale == true) {
         clearSale();
         return true;
       }

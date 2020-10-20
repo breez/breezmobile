@@ -5,17 +5,49 @@ String themeId = "BLUE";
 class CustomData {
   BlendMode loaderColorBlendMode;
   String loaderAssetPath;
+  Color pendingTextColor;
+  Color dashboardBgColor;
+  Color paymentListBgColor;
+  Color paymentListAlternateBgColor;
+  Color paymentListDividerColor;
+  Color navigationDrawerHeaderBgColor;
+  Color navigationDrawerBgColor;
 
-  CustomData({this.loaderColorBlendMode, this.loaderAssetPath});
+  CustomData(
+      {this.loaderColorBlendMode,
+      this.loaderAssetPath,
+      this.pendingTextColor,
+      this.dashboardBgColor,
+      this.paymentListBgColor,
+      this.paymentListAlternateBgColor,
+      this.paymentListDividerColor,
+      this.navigationDrawerHeaderBgColor,
+      this.navigationDrawerBgColor});
 }
 
 final Map<String, ThemeData> themeMap = {"BLUE": blueTheme, "DARK": darkTheme};
 final CustomData blueThemeCustomData = CustomData(
-    loaderColorBlendMode: BlendMode.multiply,
-    loaderAssetPath: 'src/images/breez_loader_blue.gif');
+  loaderColorBlendMode: BlendMode.multiply,
+  loaderAssetPath: 'src/images/breez_loader_blue.gif',
+  dashboardBgColor: Colors.white,
+  pendingTextColor: Color(0xff4D88EC),
+  paymentListBgColor: Color.fromRGBO(249, 249, 249, 1),
+  paymentListAlternateBgColor: Color.fromRGBO(253, 253, 253, 1),
+  paymentListDividerColor: Color.fromRGBO(0, 0, 0, 0.12),
+  navigationDrawerBgColor: BreezColors.blue[500],
+  navigationDrawerHeaderBgColor: Color.fromRGBO(0, 103, 255, 1),
+);
 final CustomData darkThemeCustomData = CustomData(
-    loaderColorBlendMode: BlendMode.srcIn,
-    loaderAssetPath: 'src/images/breez_loader_dark.gif');
+  loaderColorBlendMode: BlendMode.srcIn,
+  loaderAssetPath: 'src/images/breez_loader_dark.gif',
+  pendingTextColor: Color(0xFF0085fb),
+  dashboardBgColor: Color(0xFF0D1F33),
+  paymentListBgColor: Color.fromRGBO(21, 42, 61, 1),
+  paymentListAlternateBgColor: Color.fromRGBO(19, 37, 54, 1),
+  paymentListDividerColor: Color.fromRGBO(255, 255, 255, 0.12),
+  navigationDrawerBgColor: Color(0xFF152a3d),
+  navigationDrawerHeaderBgColor: Color.fromRGBO(13, 32, 50, 1),
+);
 final Map<String, CustomData> customData = {
   "BLUE": blueThemeCustomData,
   "DARK": darkThemeCustomData
@@ -58,16 +90,21 @@ final ThemeData blueTheme = ThemeData(
   cardColor: BreezColors.blue[500],
   highlightColor: BreezColors.blue[200],
   textTheme: TextTheme(
-    subtitle2: TextStyle(
-        color: BreezColors.grey[600], fontSize: 14.3, letterSpacing: 0.2),
-    headline5: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
-    button: TextStyle(
-        color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
-    headline4: TextStyle(
-      color: Color(0xffffe685),
-      fontSize: 18.0,
-    ),
-  ),
+      subtitle2: TextStyle(
+          color: BreezColors.grey[600], fontSize: 14.3, letterSpacing: 0.2),
+      headline5: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
+      button: TextStyle(
+          color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
+      headline4: TextStyle(
+        color: Color(0xffffe685),
+        fontSize: 18.0,
+      ),
+      headline6: TextStyle(
+          color: Colors.white,
+          fontSize: 12.3,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0.25,
+          height: 1.22)),
   primaryTextTheme: TextTheme(
     headline4: TextStyle(
         color: BreezColors.grey[500],
@@ -102,8 +139,41 @@ final ThemeData blueTheme = ThemeData(
   ),
   textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
   primaryIconTheme: IconThemeData(color: BreezColors.grey[500]),
+  bottomAppBarColor: Color(0xFF0085fb),
   textSelectionHandleColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
+  accentTextTheme: TextTheme(
+    bodyText2: TextStyle(color: BreezColors.grey[600]),
+    headline4: TextStyle(
+        color: Color.fromRGBO(0, 133, 251, 1.0),
+        fontSize: 30.0,
+        fontWeight: FontWeight.w400,
+        height: 1.52),
+    subtitle1: TextStyle(
+        color: Color.fromRGBO(0, 133, 251, 1.0),
+        fontSize: 13.5,
+        fontWeight: FontWeight.w400,
+        height: 1.24,
+        letterSpacing: 0.2),
+    headline6: TextStyle(
+        color: Colors.black,
+        fontSize: 13.5,
+        fontWeight: FontWeight.w500,
+        height: 1.28,
+        letterSpacing: 0.5),
+    subtitle2: TextStyle(
+        color: Colors.black,
+        fontSize: 12.25,
+        fontWeight: FontWeight.w400,
+        height: 1.2,
+        letterSpacing: 0.25),
+    caption: TextStyle(
+        color: Colors.black.withOpacity(0.7),
+        fontSize: 10.5,
+        fontWeight: FontWeight.w400,
+        height: 1.16,
+        letterSpacing: 0.39),
+  ),
 );
 
 // Color(0xFF121212) values are tbd
@@ -144,15 +214,21 @@ final ThemeData darkTheme = ThemeData(
   cardColor: Color(0xFF121212),
   highlightColor: Color(0xFF4B88EB),
   textTheme: TextTheme(
-    subtitle2:
-        TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
-    headline5: TextStyle(color: Colors.white, fontSize: 26.0),
-    button: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
-    headline4: TextStyle(
-      color: Color(0xffffe685),
-      fontSize: 18.0,
-    ),
-  ),
+      subtitle2:
+          TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
+      headline5: TextStyle(color: Colors.white, fontSize: 26.0),
+      button:
+          TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
+      headline4: TextStyle(
+        color: Color(0xffffe685),
+        fontSize: 18.0,
+      ),
+      headline6: TextStyle(
+          color: Colors.white,
+          fontSize: 12.3,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0.25,
+          height: 1.22)),
   primaryTextTheme: TextTheme(
     headline4: TextStyle(
         color: Colors.white,
@@ -184,8 +260,40 @@ final ThemeData darkTheme = ThemeData(
   ),
   primaryIconTheme: IconThemeData(color: Color(0xFF7aa5eb)),
   textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
-  textSelectionHandleColor: Color(0xFF0085fb),
+  bottomAppBarColor: Color(0xff4D88EC),
+  textSelectionHandleColor: Color(0xff4D88EC),
   fontFamily: 'IBMPlexSans',
+  accentTextTheme: TextTheme(
+      bodyText2: TextStyle(color: Colors.white),
+      headline4: TextStyle(
+          color: Colors.white,
+          fontSize: 30.0,
+          fontWeight: FontWeight.w400,
+          height: 1.52),
+      subtitle1: TextStyle(
+          color: Colors.white,
+          fontSize: 13.5,
+          fontWeight: FontWeight.w400,
+          height: 1.24,
+          letterSpacing: 0.2),
+      headline6: TextStyle(
+          color: Colors.white,
+          fontSize: 13.5,
+          fontWeight: FontWeight.w500,
+          height: 1.28,
+          letterSpacing: 0.5),
+      subtitle2: TextStyle(
+          color: Colors.white,
+          fontSize: 12.25,
+          fontWeight: FontWeight.w400,
+          height: 1.2,
+          letterSpacing: 0.25),
+      caption: TextStyle(
+          color: Colors.white.withOpacity(0.7),
+          fontSize: 10.5,
+          fontWeight: FontWeight.w400,
+          height: 1.16,
+          letterSpacing: 0.39)),
 );
 
 final VendorTheme bitrefill = VendorTheme(
@@ -238,6 +346,19 @@ final TextStyle notificationTextStyle = TextStyle(
     height: 1.10);
 final TextStyle addFundsBtnStyle = TextStyle(
     color: BreezColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
+final TextStyle bottomAppBarBtnStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 13.5,
+    letterSpacing: 1.2,
+    fontWeight: FontWeight.w600,
+    height: 1.24,
+    fontFamily: 'IBMPlexSans');
+final TextStyle bottomSheetTextStyle = TextStyle(
+    fontFamily: 'IBMPlexSans',
+    fontSize: 15,
+    letterSpacing: 1.2,
+    fontWeight: FontWeight.w400,
+    height: 1.30);
 final TextStyle addFundsItemsStyle = TextStyle(
     color: BreezColors.white[500],
     fontSize: 14.3,
@@ -386,8 +507,6 @@ final TextStyle snackBarStyle = TextStyle(
     height: 1.2);
 final TextStyle sessionActionBtnStyle = TextStyle(fontSize: 12.3);
 final TextStyle sessionNotificationStyle = TextStyle(fontSize: 14.2);
-final TextStyle sessionNotificationWarningStyle =
-    TextStyle(color: errorColor, fontSize: 14.2);
 final TextStyle paymentDetailsTitleStyle = TextStyle(
     color: BreezColors.grey[500],
     fontSize: 14.0,
@@ -424,6 +543,7 @@ final Color pulseAnimationColor = Color.fromRGBO(100, 155, 230, 1.0);
 final Color marketplaceButtonColor = Color.fromRGBO(229, 238, 251, 0.09);
 final Color errorColor = Color(0xffffe685);
 final Color circularLoaderColor = BreezColors.blue[200].withOpacity(0.7);
+final Color warningBoxColor = Color.fromRGBO(251, 233, 148, 0.1);
 final BorderSide greyBorderSide = BorderSide(color: BreezColors.grey[500]);
 
 class FieldTextStyle {

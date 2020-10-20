@@ -19,7 +19,6 @@ import 'bloc/lsp/lsp_bloc.dart';
 import 'bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'home_page.dart';
 import 'routes/add_funds/deposit_to_btc_address_page.dart';
-import 'routes/add_funds/fastbitcoins_page.dart';
 import 'routes/add_funds/moonpay_webview.dart';
 import 'routes/charge/items/item_page.dart';
 import 'routes/connect_to_pay/connect_to_pay_page.dart';
@@ -70,8 +69,8 @@ class UserApp extends StatelessWidget {
           SystemChrome.setSystemUIOverlayStyle(
               SystemUiOverlayStyle(statusBarColor: Colors.transparent));
           return BlocProvider(
-              creator: () => AddFundsBloc(
-                  userProfileBloc.userStream, accountBloc.accountStream),
+              creator: () => AddFundsBloc(userProfileBloc.userStream,
+                  accountBloc.accountStream, lspBloc.lspStatusStream),
               builder: (ctx) => MaterialApp(
                     navigatorKey: _navigatorKey,
                     title: 'Breez',
@@ -237,12 +236,6 @@ class UserApp extends StatelessWidget {
                                         builder: (_) => MarketplacePage(),
                                         settings: settings,
                                       );
-                                    case '/fastbitcoins':
-                                      return FadeInRoute(
-                                        builder: (_) => FastbitcoinsPage(),
-                                        settings: settings,
-                                      );
-
                                     // POS routes
                                     case '/add_item':
                                       return FadeInRoute(

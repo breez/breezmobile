@@ -16,7 +16,7 @@ before_script:
 - go version
 - brew update
 - brew install bazaar
-- git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
+- git clone https://github.com/breez/breez.git -b lnd-merge-pay-to-open gopath/src/github.com/breez/breez
 - export TMP_GOPATH=$(pwd)/gopath
 - pushd gopath/src/github.com/breez/breez
 - export GOPRIVATE=github.com/btcsuite/btcd
@@ -37,7 +37,7 @@ script:
 - mkdir -p $TRAVIS_BUILD_DIR/conf
 - cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $TRAVIS_BUILD_DIR/ios/bindings.framework
 - sftp builderfiles@packages.breez.technology:config/conf/lnd.conf $TRAVIS_BUILD_DIR/conf/lnd.conf
-- sftp builderfiles@packages.breez.technology:config/conf/breez-lsp.conf $TRAVIS_BUILD_DIR/conf/breez.conf
+- sftp builderfiles@packages.breez.technology:config/conf/breez.conf $TRAVIS_BUILD_DIR/conf/breez.conf
 - sftp builderfiles@packages.breez.technology:config/conf/marketplace.conf $TRAVIS_BUILD_DIR/conf/marketplace.conf
 - sftp builderfiles@packages.breez.technology:config/conf/moonpay.conf $TRAVIS_BUILD_DIR/conf/moonpay.conf
 - sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist

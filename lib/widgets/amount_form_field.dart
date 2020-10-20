@@ -81,15 +81,19 @@ class AmountFormField extends TextFormField {
         return "Please enter the amount in " +
             accountModel.currency.displayName;
       }
-      Int64 intAmount = accountModel.currency.parse(value);
-      if (intAmount <= 0) {
+      try {
+        Int64 intAmount = accountModel.currency.parse(value);
+        if (intAmount <= 0) {
+          return "Invalid amount";
+        }
+        String msg;
+        if (validatorFn != null) {
+          msg = validatorFn(intAmount);
+        }
+        return msg;
+      } catch (err) {
         return "Invalid amount";
       }
-      String msg;
-      if (validatorFn != null) {
-        msg = validatorFn(intAmount);
-      }
-      return msg;
     };
   }
 }

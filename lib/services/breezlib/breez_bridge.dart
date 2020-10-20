@@ -11,7 +11,6 @@ import 'package:path_provider/path_provider.dart';
 import 'graph_downloader.dart';
 
 // This is the bridge to the native breez library. Protobuf messages are used as the interface and to generate the classes use the bellow command.
-// Note that the version of protoc comiler must be 3-4-0
 // protoc --dart_out=grpc:lib/services/breezlib/data/ -Ilib/services/breezlib/ lib/services/breezlib/rpc.proto
 class BreezBridge {
   static const _methodChannel = MethodChannel('com.breez.client/breez_lib');
@@ -162,6 +161,10 @@ class BreezBridge {
 
   Future connectToLSP(String lspID) {
     return _invokeMethodWhenReady("connectToLSP", {"argument": lspID});
+  }
+
+  Future connectToLSPPeer(String lspID) {
+    return _invokeMethodWhenReady("connectToLSPPeer", {"argument": lspID});
   }
 
   Future connectToLnurl(String lnurl) {
@@ -334,8 +337,8 @@ class BreezBridge {
     return _invokeMethodImmediate("graphURL")
         .then((result) => result as String)
         .catchError((e) {
-          logger.log.info("Error in graphURL:"+e.toString());
-        });
+      logger.log.info("Error in graphURL:" + e.toString());
+    });
   }
 
   Future sendPaymentFailureBugReport(String traceReport) {
@@ -373,13 +376,14 @@ class BreezBridge {
     return _invokeMethodImmediate("deleteGraph", {});
   }
 
-  Future<String> addInvoice(Int64 amount,
+  Future<AddInvoiceReply> addInvoice(Int64 amount,
       {String payeeName,
       String payeeImageURL,
       String payerName,
       String payerImageURL,
       String description,
-      Int64 expiry}) {
+      Int64 expiry,
+      LSPInformation lspInfo}) async {
     InvoiceMemo invoice = InvoiceMemo();
     invoice.amount = amount;
     if (payeeImageURL != null) {
@@ -398,9 +402,18 @@ class BreezBridge {
       invoice.description = description;
     }
 
+    var request = AddInvoiceRequest()..invoiceDetails = invoice;
+    if (lspInfo == null) {
+      var lsps = await getLSPList();
+      var keys = lsps.lsps.keys.toList();
+      if (keys.length == 1) {
+        request.lspInfo = lsps.lsps[keys[0]];
+      }
+    }
+
     return _invokeMethodWhenReady(
-            "addInvoice", {"argument": invoice.writeToBuffer()})
-        .then((payReq) => payReq as String);
+            "addInvoice", {"argument": request.writeToBuffer()})
+        .then((res) => AddInvoiceReply()..mergeFromBuffer(res ?? []));
   }
 
   Future<CreateRatchetSessionReply> createRatchetSession(
@@ -468,8 +481,12 @@ class BreezBridge {
         .then((address) => address as String);
   }
 
-  Future<AddFundInitReply> addFundsInit(String breezID) {
-    return _invokeMethodWhenReady("addFundsInit", {"argument": breezID})
+  Future<AddFundInitReply> addFundsInit(String breezID, String selectedLSP) {
+    var initRequest = AddFundInitRequest()
+      ..notificationToken = breezID
+      ..lspID = selectedLSP;
+    return _invokeMethodWhenReady(
+            "addFundsInit", {"argument": initRequest.writeToBuffer()})
         .then((reply) => AddFundInitReply()..mergeFromBuffer(reply ?? []));
   }
 

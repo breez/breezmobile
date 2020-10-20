@@ -14,6 +14,182 @@ import 'rpc.pbenum.dart';
 
 export 'rpc.pbenum.dart';
 
+class ListPaymentsRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ListPaymentsRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  ListPaymentsRequest._() : super();
+  factory ListPaymentsRequest() => create();
+  factory ListPaymentsRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ListPaymentsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ListPaymentsRequest clone() => ListPaymentsRequest()..mergeFromMessage(this);
+  ListPaymentsRequest copyWith(void Function(ListPaymentsRequest) updates) => super.copyWith((message) => updates(message as ListPaymentsRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ListPaymentsRequest create() => ListPaymentsRequest._();
+  ListPaymentsRequest createEmptyInstance() => create();
+  static $pb.PbList<ListPaymentsRequest> createRepeated() => $pb.PbList<ListPaymentsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ListPaymentsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ListPaymentsRequest>(create);
+  static ListPaymentsRequest _defaultInstance;
+}
+
+class RestartDaemonRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('RestartDaemonRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  RestartDaemonRequest._() : super();
+  factory RestartDaemonRequest() => create();
+  factory RestartDaemonRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RestartDaemonRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  RestartDaemonRequest clone() => RestartDaemonRequest()..mergeFromMessage(this);
+  RestartDaemonRequest copyWith(void Function(RestartDaemonRequest) updates) => super.copyWith((message) => updates(message as RestartDaemonRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static RestartDaemonRequest create() => RestartDaemonRequest._();
+  RestartDaemonRequest createEmptyInstance() => create();
+  static $pb.PbList<RestartDaemonRequest> createRepeated() => $pb.PbList<RestartDaemonRequest>();
+  @$core.pragma('dart2js:noInline')
+  static RestartDaemonRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RestartDaemonRequest>(create);
+  static RestartDaemonRequest _defaultInstance;
+}
+
+class RestartDaemonReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('RestartDaemonReply', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  RestartDaemonReply._() : super();
+  factory RestartDaemonReply() => create();
+  factory RestartDaemonReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RestartDaemonReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  RestartDaemonReply clone() => RestartDaemonReply()..mergeFromMessage(this);
+  RestartDaemonReply copyWith(void Function(RestartDaemonReply) updates) => super.copyWith((message) => updates(message as RestartDaemonReply));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static RestartDaemonReply create() => RestartDaemonReply._();
+  RestartDaemonReply createEmptyInstance() => create();
+  static $pb.PbList<RestartDaemonReply> createRepeated() => $pb.PbList<RestartDaemonReply>();
+  @$core.pragma('dart2js:noInline')
+  static RestartDaemonReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RestartDaemonReply>(create);
+  static RestartDaemonReply _defaultInstance;
+}
+
+class AddFundInitRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddFundInitRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'notificationToken', protoName: 'notificationToken')
+    ..aOS(2, 'lspID', protoName: 'lspID')
+    ..hasRequiredFields = false
+  ;
+
+  AddFundInitRequest._() : super();
+  factory AddFundInitRequest() => create();
+  factory AddFundInitRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddFundInitRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AddFundInitRequest clone() => AddFundInitRequest()..mergeFromMessage(this);
+  AddFundInitRequest copyWith(void Function(AddFundInitRequest) updates) => super.copyWith((message) => updates(message as AddFundInitRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AddFundInitRequest create() => AddFundInitRequest._();
+  AddFundInitRequest createEmptyInstance() => create();
+  static $pb.PbList<AddFundInitRequest> createRepeated() => $pb.PbList<AddFundInitRequest>();
+  @$core.pragma('dart2js:noInline')
+  static AddFundInitRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddFundInitRequest>(create);
+  static AddFundInitRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get notificationToken => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set notificationToken($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasNotificationToken() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearNotificationToken() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get lspID => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set lspID($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasLspID() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearLspID() => clearField(2);
+}
+
+class FundStatusRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('FundStatusRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'notificationToken', protoName: 'notificationToken')
+    ..hasRequiredFields = false
+  ;
+
+  FundStatusRequest._() : super();
+  factory FundStatusRequest() => create();
+  factory FundStatusRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FundStatusRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  FundStatusRequest clone() => FundStatusRequest()..mergeFromMessage(this);
+  FundStatusRequest copyWith(void Function(FundStatusRequest) updates) => super.copyWith((message) => updates(message as FundStatusRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static FundStatusRequest create() => FundStatusRequest._();
+  FundStatusRequest createEmptyInstance() => create();
+  static $pb.PbList<FundStatusRequest> createRepeated() => $pb.PbList<FundStatusRequest>();
+  @$core.pragma('dart2js:noInline')
+  static FundStatusRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FundStatusRequest>(create);
+  static FundStatusRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get notificationToken => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set notificationToken($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasNotificationToken() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearNotificationToken() => clearField(1);
+}
+
+class AddInvoiceReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddInvoiceReply', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'paymentRequest', protoName: 'paymentRequest')
+    ..aInt64(2, 'lspFee')
+    ..hasRequiredFields = false
+  ;
+
+  AddInvoiceReply._() : super();
+  factory AddInvoiceReply() => create();
+  factory AddInvoiceReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddInvoiceReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AddInvoiceReply clone() => AddInvoiceReply()..mergeFromMessage(this);
+  AddInvoiceReply copyWith(void Function(AddInvoiceReply) updates) => super.copyWith((message) => updates(message as AddInvoiceReply));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AddInvoiceReply create() => AddInvoiceReply._();
+  AddInvoiceReply createEmptyInstance() => create();
+  static $pb.PbList<AddInvoiceReply> createRepeated() => $pb.PbList<AddInvoiceReply>();
+  @$core.pragma('dart2js:noInline')
+  static AddInvoiceReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddInvoiceReply>(create);
+  static AddInvoiceReply _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get paymentRequest => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set paymentRequest($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasPaymentRequest() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearPaymentRequest() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get lspFee => $_getI64(1);
+  @$pb.TagNumber(2)
+  set lspFee($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasLspFee() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearLspFee() => clearField(2);
+}
+
 class ChainStatus extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ChainStatus', package: const $pb.PackageName('data'), createEmptyInstance: create)
     ..a<$core.int>(1, 'blockHeight', $pb.PbFieldType.OU3, protoName: 'blockHeight')
@@ -70,6 +246,8 @@ class Account extends $pb.GeneratedMessage {
     ..aOS(11, 'channelPoint', protoName: 'channelPoint')
     ..aOB(12, 'readyForPayments', protoName: 'readyForPayments')
     ..aInt64(13, 'tipHeight', protoName: 'tipHeight')
+    ..pPS(14, 'connectedPeers', protoName: 'connectedPeers')
+    ..aInt64(15, 'maxInboundLiquidity')
     ..hasRequiredFields = false
   ;
 
@@ -204,6 +382,18 @@ class Account extends $pb.GeneratedMessage {
   $core.bool hasTipHeight() => $_has(12);
   @$pb.TagNumber(13)
   void clearTipHeight() => clearField(13);
+
+  @$pb.TagNumber(14)
+  $core.List<$core.String> get connectedPeers => $_getList(13);
+
+  @$pb.TagNumber(15)
+  $fixnum.Int64 get maxInboundLiquidity => $_getI64(14);
+  @$pb.TagNumber(15)
+  set maxInboundLiquidity($fixnum.Int64 v) { $_setInt64(14, v); }
+  @$pb.TagNumber(15)
+  $core.bool hasMaxInboundLiquidity() => $_has(14);
+  @$pb.TagNumber(15)
+  void clearMaxInboundLiquidity() => clearField(15);
 }
 
 class Payment extends $pb.GeneratedMessage {
@@ -224,6 +414,7 @@ class Payment extends $pb.GeneratedMessage {
     ..aOB(16, 'isChannelCloseConfimed', protoName: 'isChannelCloseConfimed')
     ..aOS(17, 'closedChannelTxID', protoName: 'closedChannelTxID')
     ..aOB(18, 'isKeySend', protoName: 'isKeySend')
+    ..aOB(19, 'PendingFull', protoName: 'PendingFull')
     ..hasRequiredFields = false
   ;
 
@@ -387,6 +578,15 @@ class Payment extends $pb.GeneratedMessage {
   $core.bool hasIsKeySend() => $_has(15);
   @$pb.TagNumber(18)
   void clearIsKeySend() => clearField(18);
+
+  @$pb.TagNumber(19)
+  $core.bool get pendingFull => $_getBF(16);
+  @$pb.TagNumber(19)
+  set pendingFull($core.bool v) { $_setBool(16, v); }
+  @$pb.TagNumber(19)
+  $core.bool hasPendingFull() => $_has(16);
+  @$pb.TagNumber(19)
+  void clearPendingFull() => clearField(19);
 }
 
 class PaymentsList extends $pb.GeneratedMessage {
@@ -598,6 +798,7 @@ class InvoiceMemo extends $pb.GeneratedMessage {
     ..aOS(6, 'payerImageURL', protoName: 'payerImageURL')
     ..aOB(7, 'transferRequest', protoName: 'transferRequest')
     ..aInt64(8, 'expiry')
+    ..a<$core.List<$core.int>>(9, 'preimage', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
@@ -687,6 +888,60 @@ class InvoiceMemo extends $pb.GeneratedMessage {
   $core.bool hasExpiry() => $_has(7);
   @$pb.TagNumber(8)
   void clearExpiry() => clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.List<$core.int> get preimage => $_getN(8);
+  @$pb.TagNumber(9)
+  set preimage($core.List<$core.int> v) { $_setBytes(8, v); }
+  @$pb.TagNumber(9)
+  $core.bool hasPreimage() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearPreimage() => clearField(9);
+}
+
+class AddInvoiceRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddInvoiceRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOM<InvoiceMemo>(1, 'invoiceDetails', protoName: 'invoiceDetails', subBuilder: InvoiceMemo.create)
+    ..aOM<LSPInformation>(2, 'lspInfo', protoName: 'lspInfo', subBuilder: LSPInformation.create)
+    ..hasRequiredFields = false
+  ;
+
+  AddInvoiceRequest._() : super();
+  factory AddInvoiceRequest() => create();
+  factory AddInvoiceRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddInvoiceRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AddInvoiceRequest clone() => AddInvoiceRequest()..mergeFromMessage(this);
+  AddInvoiceRequest copyWith(void Function(AddInvoiceRequest) updates) => super.copyWith((message) => updates(message as AddInvoiceRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AddInvoiceRequest create() => AddInvoiceRequest._();
+  AddInvoiceRequest createEmptyInstance() => create();
+  static $pb.PbList<AddInvoiceRequest> createRepeated() => $pb.PbList<AddInvoiceRequest>();
+  @$core.pragma('dart2js:noInline')
+  static AddInvoiceRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddInvoiceRequest>(create);
+  static AddInvoiceRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  InvoiceMemo get invoiceDetails => $_getN(0);
+  @$pb.TagNumber(1)
+  set invoiceDetails(InvoiceMemo v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasInvoiceDetails() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearInvoiceDetails() => clearField(1);
+  @$pb.TagNumber(1)
+  InvoiceMemo ensureInvoiceDetails() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  LSPInformation get lspInfo => $_getN(1);
+  @$pb.TagNumber(2)
+  set lspInfo(LSPInformation v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasLspInfo() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearLspInfo() => clearField(2);
+  @$pb.TagNumber(2)
+  LSPInformation ensureLspInfo() => $_ensure(1);
 }
 
 class Invoice extends $pb.GeneratedMessage {
@@ -1723,16 +1978,19 @@ class Rates extends $pb.GeneratedMessage {
 
 class LSPInformation extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('LSPInformation', package: const $pb.PackageName('data'), createEmptyInstance: create)
-    ..aOS(1, 'name')
-    ..aOS(2, 'widgetUrl')
-    ..aOS(3, 'pubkey')
-    ..aOS(4, 'host')
-    ..aInt64(5, 'channelCapacity')
-    ..a<$core.int>(6, 'targetConf', $pb.PbFieldType.O3)
-    ..aInt64(7, 'baseFeeMsat')
-    ..a<$core.double>(8, 'feeRate', $pb.PbFieldType.OD)
-    ..a<$core.int>(9, 'timeLockDelta', $pb.PbFieldType.OU3)
-    ..aInt64(10, 'minHtlcMsat')
+    ..aOS(1, 'id')
+    ..aOS(2, 'name')
+    ..aOS(3, 'widgetUrl')
+    ..aOS(4, 'pubkey')
+    ..aOS(5, 'host')
+    ..aInt64(6, 'channelCapacity')
+    ..a<$core.int>(7, 'targetConf', $pb.PbFieldType.O3)
+    ..aInt64(8, 'baseFeeMsat')
+    ..a<$core.double>(9, 'feeRate', $pb.PbFieldType.OD)
+    ..a<$core.int>(10, 'timeLockDelta', $pb.PbFieldType.OU3)
+    ..aInt64(11, 'minHtlcMsat')
+    ..aInt64(12, 'channelFeePermyriad')
+    ..a<$core.List<$core.int>>(13, 'lspPubkey', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
@@ -1752,94 +2010,142 @@ class LSPInformation extends $pb.GeneratedMessage {
   static LSPInformation _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get name => $_getSZ(0);
+  $core.String get id => $_getSZ(0);
   @$pb.TagNumber(1)
-  set name($core.String v) { $_setString(0, v); }
+  set id($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasName() => $_has(0);
+  $core.bool hasId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearName() => clearField(1);
+  void clearId() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get widgetUrl => $_getSZ(1);
+  $core.String get name => $_getSZ(1);
   @$pb.TagNumber(2)
-  set widgetUrl($core.String v) { $_setString(1, v); }
+  set name($core.String v) { $_setString(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasWidgetUrl() => $_has(1);
+  $core.bool hasName() => $_has(1);
   @$pb.TagNumber(2)
-  void clearWidgetUrl() => clearField(2);
+  void clearName() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.String get pubkey => $_getSZ(2);
+  $core.String get widgetUrl => $_getSZ(2);
   @$pb.TagNumber(3)
-  set pubkey($core.String v) { $_setString(2, v); }
+  set widgetUrl($core.String v) { $_setString(2, v); }
   @$pb.TagNumber(3)
-  $core.bool hasPubkey() => $_has(2);
+  $core.bool hasWidgetUrl() => $_has(2);
   @$pb.TagNumber(3)
-  void clearPubkey() => clearField(3);
+  void clearWidgetUrl() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.String get host => $_getSZ(3);
+  $core.String get pubkey => $_getSZ(3);
   @$pb.TagNumber(4)
-  set host($core.String v) { $_setString(3, v); }
+  set pubkey($core.String v) { $_setString(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasHost() => $_has(3);
+  $core.bool hasPubkey() => $_has(3);
   @$pb.TagNumber(4)
-  void clearHost() => clearField(4);
+  void clearPubkey() => clearField(4);
 
   @$pb.TagNumber(5)
-  $fixnum.Int64 get channelCapacity => $_getI64(4);
+  $core.String get host => $_getSZ(4);
   @$pb.TagNumber(5)
-  set channelCapacity($fixnum.Int64 v) { $_setInt64(4, v); }
+  set host($core.String v) { $_setString(4, v); }
   @$pb.TagNumber(5)
-  $core.bool hasChannelCapacity() => $_has(4);
+  $core.bool hasHost() => $_has(4);
   @$pb.TagNumber(5)
-  void clearChannelCapacity() => clearField(5);
+  void clearHost() => clearField(5);
 
   @$pb.TagNumber(6)
-  $core.int get targetConf => $_getIZ(5);
+  $fixnum.Int64 get channelCapacity => $_getI64(5);
   @$pb.TagNumber(6)
-  set targetConf($core.int v) { $_setSignedInt32(5, v); }
+  set channelCapacity($fixnum.Int64 v) { $_setInt64(5, v); }
   @$pb.TagNumber(6)
-  $core.bool hasTargetConf() => $_has(5);
+  $core.bool hasChannelCapacity() => $_has(5);
   @$pb.TagNumber(6)
-  void clearTargetConf() => clearField(6);
+  void clearChannelCapacity() => clearField(6);
 
   @$pb.TagNumber(7)
-  $fixnum.Int64 get baseFeeMsat => $_getI64(6);
+  $core.int get targetConf => $_getIZ(6);
   @$pb.TagNumber(7)
-  set baseFeeMsat($fixnum.Int64 v) { $_setInt64(6, v); }
+  set targetConf($core.int v) { $_setSignedInt32(6, v); }
   @$pb.TagNumber(7)
-  $core.bool hasBaseFeeMsat() => $_has(6);
+  $core.bool hasTargetConf() => $_has(6);
   @$pb.TagNumber(7)
-  void clearBaseFeeMsat() => clearField(7);
+  void clearTargetConf() => clearField(7);
 
   @$pb.TagNumber(8)
-  $core.double get feeRate => $_getN(7);
+  $fixnum.Int64 get baseFeeMsat => $_getI64(7);
   @$pb.TagNumber(8)
-  set feeRate($core.double v) { $_setDouble(7, v); }
+  set baseFeeMsat($fixnum.Int64 v) { $_setInt64(7, v); }
   @$pb.TagNumber(8)
-  $core.bool hasFeeRate() => $_has(7);
+  $core.bool hasBaseFeeMsat() => $_has(7);
   @$pb.TagNumber(8)
-  void clearFeeRate() => clearField(8);
+  void clearBaseFeeMsat() => clearField(8);
 
   @$pb.TagNumber(9)
-  $core.int get timeLockDelta => $_getIZ(8);
+  $core.double get feeRate => $_getN(8);
   @$pb.TagNumber(9)
-  set timeLockDelta($core.int v) { $_setUnsignedInt32(8, v); }
+  set feeRate($core.double v) { $_setDouble(8, v); }
   @$pb.TagNumber(9)
-  $core.bool hasTimeLockDelta() => $_has(8);
+  $core.bool hasFeeRate() => $_has(8);
   @$pb.TagNumber(9)
-  void clearTimeLockDelta() => clearField(9);
+  void clearFeeRate() => clearField(9);
 
   @$pb.TagNumber(10)
-  $fixnum.Int64 get minHtlcMsat => $_getI64(9);
+  $core.int get timeLockDelta => $_getIZ(9);
   @$pb.TagNumber(10)
-  set minHtlcMsat($fixnum.Int64 v) { $_setInt64(9, v); }
+  set timeLockDelta($core.int v) { $_setUnsignedInt32(9, v); }
   @$pb.TagNumber(10)
-  $core.bool hasMinHtlcMsat() => $_has(9);
+  $core.bool hasTimeLockDelta() => $_has(9);
   @$pb.TagNumber(10)
-  void clearMinHtlcMsat() => clearField(10);
+  void clearTimeLockDelta() => clearField(10);
+
+  @$pb.TagNumber(11)
+  $fixnum.Int64 get minHtlcMsat => $_getI64(10);
+  @$pb.TagNumber(11)
+  set minHtlcMsat($fixnum.Int64 v) { $_setInt64(10, v); }
+  @$pb.TagNumber(11)
+  $core.bool hasMinHtlcMsat() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearMinHtlcMsat() => clearField(11);
+
+  @$pb.TagNumber(12)
+  $fixnum.Int64 get channelFeePermyriad => $_getI64(11);
+  @$pb.TagNumber(12)
+  set channelFeePermyriad($fixnum.Int64 v) { $_setInt64(11, v); }
+  @$pb.TagNumber(12)
+  $core.bool hasChannelFeePermyriad() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearChannelFeePermyriad() => clearField(12);
+
+  @$pb.TagNumber(13)
+  $core.List<$core.int> get lspPubkey => $_getN(12);
+  @$pb.TagNumber(13)
+  set lspPubkey($core.List<$core.int> v) { $_setBytes(12, v); }
+  @$pb.TagNumber(13)
+  $core.bool hasLspPubkey() => $_has(12);
+  @$pb.TagNumber(13)
+  void clearLspPubkey() => clearField(13);
+}
+
+class LSPListRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('LSPListRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  LSPListRequest._() : super();
+  factory LSPListRequest() => create();
+  factory LSPListRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LSPListRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  LSPListRequest clone() => LSPListRequest()..mergeFromMessage(this);
+  LSPListRequest copyWith(void Function(LSPListRequest) updates) => super.copyWith((message) => updates(message as LSPListRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LSPListRequest create() => LSPListRequest._();
+  LSPListRequest createEmptyInstance() => create();
+  static $pb.PbList<LSPListRequest> createRepeated() => $pb.PbList<LSPListRequest>();
+  @$core.pragma('dart2js:noInline')
+  static LSPListRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LSPListRequest>(create);
+  static LSPListRequest _defaultInstance;
 }
 
 class LSPList extends $pb.GeneratedMessage {
@@ -1865,6 +2171,58 @@ class LSPList extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(1)
   $core.Map<$core.String, LSPInformation> get lsps => $_getMap(0);
+}
+
+class ConnectLSPRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ConnectLSPRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'lspId')
+    ..hasRequiredFields = false
+  ;
+
+  ConnectLSPRequest._() : super();
+  factory ConnectLSPRequest() => create();
+  factory ConnectLSPRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ConnectLSPRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ConnectLSPRequest clone() => ConnectLSPRequest()..mergeFromMessage(this);
+  ConnectLSPRequest copyWith(void Function(ConnectLSPRequest) updates) => super.copyWith((message) => updates(message as ConnectLSPRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ConnectLSPRequest create() => ConnectLSPRequest._();
+  ConnectLSPRequest createEmptyInstance() => create();
+  static $pb.PbList<ConnectLSPRequest> createRepeated() => $pb.PbList<ConnectLSPRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ConnectLSPRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ConnectLSPRequest>(create);
+  static ConnectLSPRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get lspId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set lspId($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasLspId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLspId() => clearField(1);
+}
+
+class ConnectLSPReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ConnectLSPReply', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  ConnectLSPReply._() : super();
+  factory ConnectLSPReply() => create();
+  factory ConnectLSPReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ConnectLSPReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ConnectLSPReply clone() => ConnectLSPReply()..mergeFromMessage(this);
+  ConnectLSPReply copyWith(void Function(ConnectLSPReply) updates) => super.copyWith((message) => updates(message as ConnectLSPReply));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ConnectLSPReply create() => ConnectLSPReply._();
+  ConnectLSPReply createEmptyInstance() => create();
+  static $pb.PbList<ConnectLSPReply> createRepeated() => $pb.PbList<ConnectLSPReply>();
+  @$core.pragma('dart2js:noInline')
+  static ConnectLSPReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ConnectLSPReply>(create);
+  static ConnectLSPReply _defaultInstance;
 }
 
 enum LNUrlResponse_Action {

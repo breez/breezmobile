@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -8,6 +9,17 @@ import 'package:fixnum/fixnum.dart';
 enum BugReportBehavior { PROMPT, SEND_REPORT, IGNORE }
 
 enum SyncUIState { BLOCKING, COLLAPSED, NONE }
+
+const Map<String, String> paymentErrorsMapping = {
+  "FAILURE_REASON_INSUFFICIENT_BALANCE": "Insufficient balance",
+  "FAILURE_REASON_INCORRECT_PAYMENT_DETAILS": "Incorrect payment details",
+  "FAILURE_REASON_ERROR": "Unexpected error",
+  "FAILURE_REASON_NO_ROUTE": "No route",
+  "FAILURE_REASON_TIMEOUT": "Payment timeout exceeded",
+  "FAILURE_REASON_NONE": "",
+};
+
+const initialInboundCapacity = 4000000;
 
 class AccountSettings {
   final bool ignoreWalletBalance;
@@ -174,8 +186,8 @@ class AccountModel {
               ..balance = Int64(0)
               ..walletBalance = Int64(0)
               ..status = Account_AccountStatus.DISCONNECTED
-              ..maxAllowedToReceive = Int64(0)
-              ..maxPaymentAmount = Int64(0)
+              ..maxAllowedToReceive = Int64(initialInboundCapacity)
+              ..maxPaymentAmount = Int64(double.maxFinite ~/ 1000)
               ..enabled = true,
             Currency.SAT,
             "USD",
@@ -226,8 +238,6 @@ class AccountModel {
       _accountResponse.status == Account_AccountStatus.CLOSING_CONNECTION;
   bool get connected =>
       _accountResponse.status == Account_AccountStatus.CONNECTED;
-  bool get isInitialBootstrap =>
-      !initial && (disconnected || closingConnection);
   Int64 get tipHeight => _accountResponse.tipHeight;
   Int64 get balance => _accountResponse.balance;
   String get formattedFiatBalance => fiatCurrency?.format(balance);
@@ -249,6 +259,7 @@ class AccountModel {
   bool get enabled => _accountResponse.enabled;
   Int64 get routingNodeFee => _accountResponse.routingNodeFee;
   bool get readyForPayments => _accountResponse.readyForPayments;
+  Int64 get maxInboundLiquidity => _accountResponse.maxInboundLiquidity;
 
   bool get synced => syncedToChain;
   String get channelFundingTxUrl {
@@ -259,10 +270,6 @@ class AccountModel {
   }
 
   String get statusMessage {
-    if (this.isInitialBootstrap) {
-      return "Please wait a minute while Breez is initializing (keep the app open).";
-    }
-
     SwapFundStatus swapStatus = this.swapFundsStatus;
 
     if (swapStatus.unconfirmedTxID != null) {
@@ -306,19 +313,19 @@ class AccountModel {
   }
 
   String validatePayment(Int64 amount, bool outgoing) {
-    Int64 maxAmount = outgoing ? balance : maxAllowedToReceive;
     if (maxPaymentAmount != null && amount > maxPaymentAmount) {
       return 'Payment exceeds the limit (${currency.format(maxPaymentAmount)})';
     }
 
-    if (amount > maxAmount) {
-      return outgoing
-          ? "Not enough funds"
-          : "Amount exceeds available capacity";
+    if (!outgoing && amount > maxAllowedToReceive) {
+      return 'Payment exceeds the limit (${currency.format(maxPaymentAmount)})';
     }
 
     if (outgoing && amount > maxAllowedToPay) {
-      return "Breez requires you to keep ${currency.format(reserveAmount)} in your balance.";
+      if (reserveAmount > 0) {
+        return "Breez requires you to keep ${currency.format(reserveAmount)} in your balance.";
+      }
+      return "Insufficient local balance";
     }
 
     return null;
@@ -401,6 +408,7 @@ class PaymentInfo {
   bool get pending =>
       _paymentResponse.pendingExpirationHeight > 0 ||
       _paymentResponse.isChannelPending;
+  bool get fullPending => pending && _paymentResponse.pendingFull == true;
   bool get channelCloseConfirmed => _paymentResponse.isChannelCloseConfimed;
   String get closeChannelTx => _paymentResponse.closedChannelTxID;
   String get closeChannelTxUrl {
@@ -575,6 +583,26 @@ class PaymentError implements Exception {
 
   String errMsg() => error?.toString();
   String toString() => errMsg();
+  String toDisplayMessage(Currency currency) {
+    var str = toString();
+    if (str.isNotEmpty) {
+      var displayError = paymentErrorsMapping[str];
+      if (displayError != null) {
+        return displayError;
+      }
+      var parts = str.split(":");
+      if (parts.length == 2) {
+        switch (parts[0]) {
+          case 'insufficient balance':
+            try {
+              var amount = Int64.parseInt(parts[1]);
+              return "Insufficient balance: you can send up to ${currency.format(amount)} to this destination";
+            } catch (err) {}
+        }
+      }
+    }
+    return "Failed to send payment: ${str.split("\n").first}";
+  }
 }
 
 class TxDetail {

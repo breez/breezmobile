@@ -139,6 +139,9 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
               }
               return null;
             },
+            onEditingComplete: () => (index == 2)
+                ? FocusScope.of(context).unfocus()
+                : FocusScope.of(context).nextFocus(),
           ),
         );
       },

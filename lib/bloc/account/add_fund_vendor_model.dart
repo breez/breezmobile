@@ -6,12 +6,14 @@ class AddFundVendorModel {
   final bool isAllowed;
   final bool enabled;
   final bool requireActiveChannel;
+  final bool showLSPFee;
 
   AddFundVendorModel(this.name, this.icon, this.route,
       {this.isAllowed = true,
       this.enabled = true,
       this.requireActiveChannel = false,
-      this.shortName});
+      this.shortName,
+      this.showLSPFee = false});
 
   AddFundVendorModel copyWith({bool isAllowed}) {
     return AddFundVendorModel(this.name, this.icon, this.route,

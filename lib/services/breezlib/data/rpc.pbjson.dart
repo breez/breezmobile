@@ -16,6 +16,41 @@ const SwapError$json = const {
   ],
 };
 
+const ListPaymentsRequest$json = const {
+  '1': 'ListPaymentsRequest',
+};
+
+const RestartDaemonRequest$json = const {
+  '1': 'RestartDaemonRequest',
+};
+
+const RestartDaemonReply$json = const {
+  '1': 'RestartDaemonReply',
+};
+
+const AddFundInitRequest$json = const {
+  '1': 'AddFundInitRequest',
+  '2': const [
+    const {'1': 'notificationToken', '3': 1, '4': 1, '5': 9, '10': 'notificationToken'},
+    const {'1': 'lspID', '3': 2, '4': 1, '5': 9, '10': 'lspID'},
+  ],
+};
+
+const FundStatusRequest$json = const {
+  '1': 'FundStatusRequest',
+  '2': const [
+    const {'1': 'notificationToken', '3': 1, '4': 1, '5': 9, '10': 'notificationToken'},
+  ],
+};
+
+const AddInvoiceReply$json = const {
+  '1': 'AddInvoiceReply',
+  '2': const [
+    const {'1': 'paymentRequest', '3': 1, '4': 1, '5': 9, '10': 'paymentRequest'},
+    const {'1': 'lsp_fee', '3': 2, '4': 1, '5': 3, '10': 'lspFee'},
+  ],
+};
+
 const ChainStatus$json = const {
   '1': 'ChainStatus',
   '2': const [
@@ -40,6 +75,8 @@ const Account$json = const {
     const {'1': 'channelPoint', '3': 11, '4': 1, '5': 9, '10': 'channelPoint'},
     const {'1': 'readyForPayments', '3': 12, '4': 1, '5': 8, '10': 'readyForPayments'},
     const {'1': 'tipHeight', '3': 13, '4': 1, '5': 3, '10': 'tipHeight'},
+    const {'1': 'connectedPeers', '3': 14, '4': 3, '5': 9, '10': 'connectedPeers'},
+    const {'1': 'max_inbound_liquidity', '3': 15, '4': 1, '5': 3, '10': 'maxInboundLiquidity'},
   ],
   '4': const [Account_AccountStatus$json],
 };
@@ -73,6 +110,7 @@ const Payment$json = const {
     const {'1': 'isChannelCloseConfimed', '3': 16, '4': 1, '5': 8, '10': 'isChannelCloseConfimed'},
     const {'1': 'closedChannelTxID', '3': 17, '4': 1, '5': 9, '10': 'closedChannelTxID'},
     const {'1': 'isKeySend', '3': 18, '4': 1, '5': 8, '10': 'isKeySend'},
+    const {'1': 'PendingFull', '3': 19, '4': 1, '5': 8, '10': 'PendingFull'},
   ],
   '4': const [Payment_PaymentType$json],
 };
@@ -139,6 +177,15 @@ const InvoiceMemo$json = const {
     const {'1': 'payerImageURL', '3': 6, '4': 1, '5': 9, '10': 'payerImageURL'},
     const {'1': 'transferRequest', '3': 7, '4': 1, '5': 8, '10': 'transferRequest'},
     const {'1': 'expiry', '3': 8, '4': 1, '5': 3, '10': 'expiry'},
+    const {'1': 'preimage', '3': 9, '4': 1, '5': 12, '10': 'preimage'},
+  ],
+};
+
+const AddInvoiceRequest$json = const {
+  '1': 'AddInvoiceRequest',
+  '2': const [
+    const {'1': 'invoiceDetails', '3': 1, '4': 1, '5': 11, '6': '.data.InvoiceMemo', '10': 'invoiceDetails'},
+    const {'1': 'lspInfo', '3': 2, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'lspInfo'},
   ],
 };
 
@@ -182,6 +229,7 @@ const NotificationEvent_NotificationType$json = const {
     const {'1': 'REVERSE_SWAP_CLAIM_SUCCEEDED', '2': 16},
     const {'1': 'REVERSE_SWAP_CLAIM_FAILED', '2': 17},
     const {'1': 'REVERSE_SWAP_CLAIM_CONFIRMED', '2': 18},
+    const {'1': 'LSP_CHANNEL_OPENED', '2': 19},
   ],
 };
 
@@ -365,17 +413,24 @@ const Rates$json = const {
 const LSPInformation$json = const {
   '1': 'LSPInformation',
   '2': const [
-    const {'1': 'name', '3': 1, '4': 1, '5': 9, '10': 'name'},
-    const {'1': 'widget_url', '3': 2, '4': 1, '5': 9, '10': 'widgetUrl'},
-    const {'1': 'pubkey', '3': 3, '4': 1, '5': 9, '10': 'pubkey'},
-    const {'1': 'host', '3': 4, '4': 1, '5': 9, '10': 'host'},
-    const {'1': 'channel_capacity', '3': 5, '4': 1, '5': 3, '10': 'channelCapacity'},
-    const {'1': 'target_conf', '3': 6, '4': 1, '5': 5, '10': 'targetConf'},
-    const {'1': 'base_fee_msat', '3': 7, '4': 1, '5': 3, '10': 'baseFeeMsat'},
-    const {'1': 'fee_rate', '3': 8, '4': 1, '5': 1, '10': 'feeRate'},
-    const {'1': 'time_lock_delta', '3': 9, '4': 1, '5': 13, '10': 'timeLockDelta'},
-    const {'1': 'min_htlc_msat', '3': 10, '4': 1, '5': 3, '10': 'minHtlcMsat'},
+    const {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
+    const {'1': 'name', '3': 2, '4': 1, '5': 9, '10': 'name'},
+    const {'1': 'widget_url', '3': 3, '4': 1, '5': 9, '10': 'widgetUrl'},
+    const {'1': 'pubkey', '3': 4, '4': 1, '5': 9, '10': 'pubkey'},
+    const {'1': 'host', '3': 5, '4': 1, '5': 9, '10': 'host'},
+    const {'1': 'channel_capacity', '3': 6, '4': 1, '5': 3, '10': 'channelCapacity'},
+    const {'1': 'target_conf', '3': 7, '4': 1, '5': 5, '10': 'targetConf'},
+    const {'1': 'base_fee_msat', '3': 8, '4': 1, '5': 3, '10': 'baseFeeMsat'},
+    const {'1': 'fee_rate', '3': 9, '4': 1, '5': 1, '10': 'feeRate'},
+    const {'1': 'time_lock_delta', '3': 10, '4': 1, '5': 13, '10': 'timeLockDelta'},
+    const {'1': 'min_htlc_msat', '3': 11, '4': 1, '5': 3, '10': 'minHtlcMsat'},
+    const {'1': 'channel_fee_permyriad', '3': 12, '4': 1, '5': 3, '10': 'channelFeePermyriad'},
+    const {'1': 'lsp_pubkey', '3': 13, '4': 1, '5': 12, '10': 'lspPubkey'},
   ],
+};
+
+const LSPListRequest$json = const {
+  '1': 'LSPListRequest',
 };
 
 const LSPList$json = const {
@@ -393,6 +448,17 @@ const LSPList_LspsEntry$json = const {
     const {'1': 'value', '3': 2, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'value'},
   ],
   '7': const {'7': true},
+};
+
+const ConnectLSPRequest$json = const {
+  '1': 'ConnectLSPRequest',
+  '2': const [
+    const {'1': 'lsp_id', '3': 1, '4': 1, '5': 9, '10': 'lspId'},
+  ],
+};
+
+const ConnectLSPReply$json = const {
+  '1': 'ConnectLSPReply',
 };
 
 const LNUrlResponse$json = const {

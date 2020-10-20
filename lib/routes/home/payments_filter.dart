@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -6,6 +8,7 @@ import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -27,6 +30,8 @@ class PaymentFilterSliver extends StatefulWidget {
 
 class PaymentFilterSliverState extends State<PaymentFilterSliver> {
   bool _hasNoFilter;
+  bool _hasNoTypeFilter;
+  bool _hasNoDateFilter;
 
   @override
   void initState() {
@@ -47,16 +52,17 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
   @override
   Widget build(BuildContext context) {
     double scrollOffset = widget._controller.position.pixels;
-    _hasNoFilter =
+    _hasNoTypeFilter =
         (widget._paymentsModel.filter.paymentType.contains(PaymentType.SENT) &&
-                widget._paymentsModel.filter.paymentType
-                    .contains(PaymentType.DEPOSIT) &&
-                widget._paymentsModel.filter.paymentType
-                    .contains(PaymentType.WITHDRAWAL) &&
-                widget._paymentsModel.filter.paymentType
-                    .contains(PaymentType.RECEIVED)) &&
-            (widget._paymentsModel.filter.startDate == null ||
-                widget._paymentsModel.filter.endDate == null);
+            widget._paymentsModel.filter.paymentType
+                .contains(PaymentType.DEPOSIT) &&
+            widget._paymentsModel.filter.paymentType
+                .contains(PaymentType.WITHDRAWAL) &&
+            widget._paymentsModel.filter.paymentType
+                .contains(PaymentType.RECEIVED));
+    _hasNoDateFilter = (widget._paymentsModel.filter.startDate == null ||
+        widget._paymentsModel.filter.endDate == null);
+    _hasNoFilter = _hasNoTypeFilter && _hasNoDateFilter;
     return SliverPersistentHeader(
       pinned: true,
       delegate: FixedSliverDelegate(
@@ -64,8 +70,29 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
               ? widget._maxSize
               : (scrollOffset).clamp(widget._minSize, widget._maxSize),
           builder: (context, shrinkedHeight, overlapContent) {
+        double widgetSize = _hasNoFilter
+            ? (scrollOffset - widget._maxSize)
+            : (scrollOffset - widget._minSize);
         return Container(
-            decoration: BoxDecoration(color: Theme.of(context).canvasColor),
+            decoration: BoxDecoration(
+                border: _hasNoDateFilter
+                    ? _hasNoTypeFilter
+                        ? Border(
+                            bottom: BorderSide(
+                                width: 1,
+                                color: theme.customData[theme.themeId]
+                                    .paymentListDividerColor
+                                    .withOpacity(pow(
+                                        0.00 + widgetSize.clamp(0.0, 0.3465),
+                                        2))))
+                        : Border(
+                            bottom: BorderSide(
+                                width: 1,
+                                color: theme.customData[theme.themeId]
+                                    .paymentListDividerColor
+                                    .withOpacity(0.12)))
+                    : null,
+                color: theme.customData[theme.themeId].paymentListBgColor),
             height: widget._maxSize,
             child: AnimatedOpacity(
                 duration: Duration(milliseconds: 100),
@@ -97,7 +124,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   @override
   void initState() {
     super.initState();
-    _filter = "All Activities";
+    _filter = _getFilterTypeString(widget._paymentsModel.filter.paymentType);
   }
 
   @override
@@ -115,7 +142,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       child: IconButton(
         icon: ImageIcon(
           AssetImage("src/icon/calendar.png"),
-          color: Colors.white,
+          color: Theme.of(context).accentTextTheme.subtitle2.color,
           size: 24.0,
         ),
         onPressed: () => widget._paymentsModel.firstDate != null
@@ -140,16 +167,16 @@ class PaymentsFilterState extends State<PaymentsFilter> {
 
   Theme _buildFilterDropdown(BuildContext context) {
     return Theme(
-      data: theme.themeId == "BLUE"
-          ? Theme.of(context)
-          : Theme.of(context)
-              .copyWith(canvasColor: Theme.of(context).backgroundColor),
+      data: Theme.of(context).copyWith(
+          canvasColor: theme.customData[theme.themeId].paymentListBgColor),
       child: DropdownButtonHideUnderline(
         child: ButtonTheme(
           alignedDropdown: true,
           child: DropdownButton(
+              iconEnabledColor:
+                  Theme.of(context).accentTextTheme.subtitle2.color,
               value: _filter,
-              style: theme.transactionTitleStyle,
+              style: Theme.of(context).accentTextTheme.subtitle2,
               items: <String>['All Activities', 'Sent', 'Received']
                   .map((String value) {
                 return DropdownMenuItem<String>(
@@ -157,6 +184,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                   child: Material(
                     child: Text(
                       value,
+                      style: Theme.of(context).accentTextTheme.subtitle2,
                     ),
                   ),
                 );
@@ -187,6 +215,20 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     return PaymentType.values;
   }
 
+  String _getFilterTypeString(List<PaymentType> filterList) {
+    if (listEquals(filterList, [
+      PaymentType.SENT,
+      PaymentType.WITHDRAWAL,
+      PaymentType.CLOSED_CHANNEL
+    ])) {
+      return "Sent";
+    } else if (listEquals(
+        filterList, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
+      return "Received";
+    }
+    return "All Activities";
+  }
+
   Padding _buildExportButton(BuildContext context) {
     if (widget._paymentsModel.paymentsList.isNotEmpty) {
       return Padding(
@@ -195,7 +237,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
           color: Theme.of(context).backgroundColor,
           icon: Icon(
             Icons.more_vert,
-            color: Theme.of(context).iconTheme.color,
+            color: Theme.of(context).accentTextTheme.subtitle2.color,
           ),
           padding: EdgeInsets.zero,
           offset: Offset(12, 36),
@@ -211,11 +253,17 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       );
     }
     return Padding(
-      padding: const EdgeInsets.only(right: 16.0),
+      padding: const EdgeInsets.only(right: 0),
       child: IconButton(
         icon: Icon(
           Icons.more_vert,
-          color: Theme.of(context).disabledColor,
+          color: theme.themeId == "BLUE"
+              ? Theme.of(context)
+                  .accentTextTheme
+                  .subtitle2
+                  .color
+                  .withOpacity(0.25)
+              : Theme.of(context).disabledColor,
           size: 24.0,
         ),
       ),

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -43,14 +44,14 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
       }
     });
 
-    widget.invoiceBloc.readyInvoicesStream.first.then((bolt11) {
+    widget.invoiceBloc.readyInvoicesStream.first.then((payReqModel) {
       return widget.accountBloc.accountStream
           .firstWhere((a) => a != null && a.syncedToChain == true)
           .then((_) {
         if (this.mounted) {
-          Withdraw withdrawAction = Withdraw(bolt11);
+          Withdraw withdrawAction = Withdraw(payReqModel.rawPayReq);
           widget.lnurlBloc.actionsSink.add(withdrawAction);
-          _listenPaidInvoice(bolt11, controller);
+          _listenPaidInvoice(payReqModel, controller);
           return withdrawAction.future;
         }
         return null;
@@ -62,10 +63,10 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
     });
   }
 
-  void _listenPaidInvoice(String bolt11, AnimationController controller) async {
+  void _listenPaidInvoice(PaymentRequestModel payReqModel, AnimationController controller) async {
     var payreq = await widget.invoiceBloc.paidInvoicesStream
         .firstWhere((payreq) {
-          bool ok = payreq == bolt11;
+          bool ok = payreq.paymentHash == payReqModel.paymentHash;
           return ok;
         }, orElse: () => null);
         if (payreq != null) {

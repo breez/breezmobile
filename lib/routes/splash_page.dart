@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashPage extends StatefulWidget {
   final BreezUserModel _user;
+
   SplashPage(this._user);
 
   @override
@@ -53,13 +54,6 @@ class SplashPageState extends State<SplashPage> {
           width: MediaQuery.of(context).size.width / 3,
         ),
       ),
-      Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Image.asset('src/images/waves-bottom.png', fit: BoxFit.cover)
-          ])
     ]));
   }
 }

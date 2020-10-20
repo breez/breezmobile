@@ -16,7 +16,7 @@ class WeblnHandlers {
   final AccountBloc accountBloc;
   final InvoiceBloc invoiceBloc;
   StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
-  StreamSubscription<String> _readyInvoicesSubscription;
+  StreamSubscription<PaymentRequestModel> _readyInvoicesSubscription;
   StreamSubscription<AccountModel> _accountModelSubscription;
   Completer<String> _currentInovoiceRequestCompleter;
   AccountModel _account;
@@ -26,7 +26,7 @@ class WeblnHandlers {
         .asBroadcastStream()
         .where((p) => p != null)
         .listen((bolt11) {
-      _currentInovoiceRequestCompleter?.complete(bolt11);
+      _currentInovoiceRequestCompleter?.complete(bolt11.rawPayReq);
       _currentInovoiceRequestCompleter = null;
     }, onError: (_) {
       _currentInovoiceRequestCompleter?.completeError("Failed");

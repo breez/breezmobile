@@ -338,7 +338,7 @@ class AccountBloc {
 
   void _trackOnBoardingStatus() {
     _accountController
-        .where((acc) => !acc.initial && !acc.isInitialBootstrap)
+        .where((acc) => !acc.initial && acc.synced)
         .first
         .then((_) {
       _onBoardingCompleter.complete();
@@ -492,8 +492,7 @@ class AccountBloc {
               _accountController.value.syncUIState == SyncUIState.NONE &&
               !blockingPrompted) {
             blockingPrompted = true;
-            syncUIState =
-                newNode ? SyncUIState.BLOCKING : SyncUIState.COLLAPSED;
+            syncUIState = SyncUIState.COLLAPSED;
           }
           _accountController.add(_accountController.value.copyWith(
               syncUIState: syncUIState,

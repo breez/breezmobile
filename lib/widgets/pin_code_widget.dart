@@ -33,6 +33,8 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   String _enrolledBiometrics;
   bool biometricsValidated = false;
 
+  bool _inputEnabled = true;
+
   @override
   initState() {
     super.initState();
@@ -70,7 +72,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     _enrolledBiometrics = await _getEnrolledBiometrics();
     if (_enrolledBiometrics != "") {
       await Future.delayed(Duration(milliseconds: 240));
-      if (this.mounted) _validateBiometrics();
+      _validateBiometrics();
     }
   }
 
@@ -81,7 +83,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   }
 
   void _validateBiometrics({bool force = false}) async {
-    if (!biometricsValidated || force) {
+    if (this.mounted && (!biometricsValidated || force)) {
       biometricsValidated = true;
       var validateBiometricsAction =
           ValidateBiometrics(localizedReason: widget.localizedReason);
@@ -237,7 +239,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         _enrolledBiometrics.contains("Face") ? Icons.face : Icons.fingerprint,
         color: Theme.of(context).errorColor,
       ),
-      onTap: () => _validateBiometrics(force: true),
+      onTap: _inputEnabled ? () => _validateBiometrics(force: true) : null,
     );
   }
 
@@ -247,7 +249,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         Icons.delete_forever,
         color: Colors.white,
       ),
-      onTap: () => _setPinCodeInput(""),
+      onTap: _inputEnabled ? () => _setPinCodeInput("") : null,
     );
   }
 
@@ -257,9 +259,10 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         Icons.backspace,
         color: Colors.white,
       ),
-      onTap: () => _setPinCodeInput(
-        _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1),
-      ),
+      onTap: _inputEnabled
+          ? () => _setPinCodeInput(
+              _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1))
+          : null,
     );
   }
 
@@ -267,7 +270,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return CircularButton(
       child: Text(number,
           textAlign: TextAlign.center, style: theme.numPadNumberStyle),
-      onTap: () => _onNumButtonPressed(number),
+      onTap: _inputEnabled ? () => _onNumButtonPressed(number) : null,
     );
   }
 
@@ -277,11 +280,19 @@ class PinCodeWidgetState extends State<PinCodeWidget>
       _setPinCodeInput(_enteredPinCode + numberText);
     }
     if (_enteredPinCode.length == PIN_CODE_LENGTH) {
+      _inputEnabled = false;
+      String pinCodeToValidate = _enteredPinCode;
       Future.delayed(Duration(milliseconds: 200), () {
         widget
-            .onPinEntered(_enteredPinCode)
+            .onPinEntered(pinCodeToValidate)
             .catchError((err) => _errorMessage = err.toString().substring(10))
-            .whenComplete(() => _setPinCodeInput(""));
+            .whenComplete(() {
+          if (!this.mounted) {
+            return;
+          }
+          _setPinCodeInput("");
+          _inputEnabled = true;
+        });
       });
     }
   }

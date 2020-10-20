@@ -30,24 +30,28 @@ class _StatusTextState extends State<StatusText> {
           textAlign: TextAlign.center,
           textElements: <TextSpan>[
             TextSpan(
-                text: "Breez is ", style: DefaultTextStyle.of(context).style),
+                text: "Breez is ",
+                style: Theme.of(context).accentTextTheme.bodyText2),
             _LinkTextSpan(
                 text: "opening a secure channel",
                 url: widget.account.channelFundingTxUrl,
-                style: DefaultTextStyle.of(context)
-                    .style
+                style: Theme.of(context)
+                    .accentTextTheme
+                    .bodyText2
                     .copyWith(decoration: TextDecoration.underline)),
             // style: theme.blueLinkStyle),
             TextSpan(
-                text:
-                    " with our server. This might take a while, but don't worry, we'll notify you when the app is ready to send and receive payments.",
-                style: DefaultTextStyle.of(context).style)
+              text:
+                  " with our server. This might take a while, but don't worry, we'll notify you when the app is ready to send and receive payments.",
+              style: Theme.of(context).accentTextTheme.bodyText2,
+            )
           ]);
     }
 
     if (widget.account == null || widget.account.statusMessage == null) {
       return AutoSizeText(
-        "Start using Breez by adding funds to your balance or by receiving payments from other users.",
+        "Breez is ready to receive funds.",
+        style: Theme.of(context).accentTextTheme.bodyText2,
         textAlign: TextAlign.center,
         minFontSize: MinFontSize(context).minFontSize,
         stepGranularity: 0.1,
@@ -58,7 +62,9 @@ class _StatusTextState extends State<StatusText> {
     bool loading = swapError == null || swapError.isEmpty;
     return loading
         ? LoadingAnimatedText(widget.account.statusMessage)
-        : Text(widget.account.statusMessage, textAlign: TextAlign.center);
+        : Text(widget.account.statusMessage,
+            style: Theme.of(context).accentTextTheme.bodyText2,
+            textAlign: TextAlign.center);
   }
 }
 
