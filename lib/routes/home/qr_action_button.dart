@@ -13,6 +13,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/btc_address.dart';
+import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
@@ -51,8 +52,7 @@ class QrActionButton extends StatelessWidget {
                 String lower = scannedString.toLowerCase();
 
                 // lnurl string
-                if (lower.startsWith("lightning:lnurl") ||
-                    lower.startsWith("lnurl")) {
+                if (isLNURL(lower)) {
                   await _handleLNUrl(lnurlBloc, context, scannedString);
                   return;
                 }
