@@ -1,11 +1,11 @@
 # Breez Mobile Client
 
 <p align='center'>
-  <img src='https://breez.technology/prod/images/app/personal/2-66afa45814.png' height='300' alt='screenshot' />
-  <img src='https://breez.technology/prod/images/app/personal/4-2e00fa09ab.png' height='300' alt='screenshot' />
+  <img src='https://breez.technology/prod/images/app/personal/13-6d70412da5.png' height='300' alt='screenshot' />
+  <img src='https://breez.technology/prod/images/app/personal/15-d572161123.png' height='300' alt='screenshot' />
   <img src='https://breez.technology/prod/images/app/personal/9-fb03a82c84.png' height='300' alt='screenshot' />
   <img src='https://breez.technology/prod/images/app/personal/8-4ba5326fc1.png' height='300' alt='screenshot' />
-  <img src='https://breez.technology/prod/images/app/personal/10-a91670ec8d.png' height='300' alt='screenshot' />
+  <img src='https://breez.technology/prod/images/app/personal/14-e586696a4b.png' height='300' alt='screenshot' />
   <img src='https://breez.technology/prod/images/app/personal/11-801d846b7f.png' height='300' alt='screenshot' />
   <img src='https://breez.technology/prod/images/app/personal/12-b91e1b3960.png' height='300' alt='screenshot' />
 
