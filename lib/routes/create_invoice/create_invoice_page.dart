@@ -271,8 +271,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await QRScanner.scan();
       if (barcode.isEmpty) {
-        showFlushbar(context,
-            message: "QR code wasn't detected.");
+        showFlushbar(context, message: "QR code wasn't detected.");
         return;
       }
       Navigator.of(context).push(loaderRoute);
@@ -339,11 +338,15 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             useRootNavigator: false,
             context: context,
             barrierDismissible: false,
-            builder: (_) => dialog).then((success) {
-          if (success == true) {
+            builder: (_) => dialog).then((result) {
+          if (result == true) {
             navigator.push(TransparentPageRoute((navigator) {
               return SuccessfulPaymentRoute();
             }));
+          } else {
+            if (result is String) {
+              showFlushbar(context, title: "", message: result);
+            }
           }
         }), () {
       log.info("waiting for payment background task finished");

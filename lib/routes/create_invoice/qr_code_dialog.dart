@@ -29,6 +29,7 @@ class QrCodeDialog extends StatefulWidget {
 class QrCodeDialogState extends State<QrCodeDialog>
     with SingleTickerProviderStateMixin {
   Animation<double> _opacityAnimation;
+  StreamSubscription<PaymentRequestModel> _invoiceSubscription;
 
   @override
   void initState() {
@@ -47,6 +48,12 @@ class QrCodeDialogState extends State<QrCodeDialog>
     widget._invoiceBloc.readyInvoicesStream.first.then((payReqModel) {
       _listenPaidInvoice(payReqModel, controller);
     });
+
+    _invoiceSubscription = widget._invoiceBloc.readyInvoicesStream
+        .listen((event) {}, onError: (err) {
+      Navigator.of(context)
+          .pop("Failed to create an invoice ($err). Please try again later.");
+    });
   }
 
   void _listenPaidInvoice(
@@ -63,6 +70,12 @@ class QrCodeDialogState extends State<QrCodeDialog>
         }
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _invoiceSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -184,27 +197,31 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                           Theme.of(context).backgroundColor,
                                     ),
                                   ))),
-                      secondChild: Column(
-                        children: [
-                          AspectRatio(
-                            aspectRatio: 1,
-                            child: Container(
-                              width: 230.0,
-                              height: 230.0,
-                              child: CompactQRImage(
-                                data: snapshot.data?.rawPayReq,
-                              ),
+                      secondChild: snapshot.data?.rawPayReq == null
+                          ? SizedBox()
+                          : Column(
+                              children: [
+                                AspectRatio(
+                                  aspectRatio: 1,
+                                  child: Container(
+                                    width: 230.0,
+                                    height: 230.0,
+                                    child: CompactQRImage(
+                                      data: snapshot.data?.rawPayReq,
+                                    ),
+                                  ),
+                                ),
+                                Padding(padding: EdgeInsets.only(top: 24.0)),
+                                Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: _buildExpiryAndFeeMessage(snapshot)),
+                                Padding(padding: EdgeInsets.only(top: 16.0)),
+                              ],
                             ),
-                          ),
-                          Padding(padding: EdgeInsets.only(top: 24.0)),
-                          Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: _buildExpiryAndFeeMessage(snapshot)),
-                          Padding(padding: EdgeInsets.only(top: 16.0)),
-                        ],
-                      ),
                       duration: Duration(seconds: 1),
-                      crossFadeState: (!snapshot.hasData || !synced)
+                      crossFadeState: (!snapshot.hasData ||
+                              snapshot.data?.rawPayReq == null ||
+                              !synced)
                           ? CrossFadeState.showFirst
                           : CrossFadeState.showSecond,
                     );
