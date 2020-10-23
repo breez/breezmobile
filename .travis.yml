@@ -37,8 +37,7 @@ script:
 - mkdir -p $TRAVIS_BUILD_DIR/conf
 - cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $TRAVIS_BUILD_DIR/ios/bindings.framework
 - rm -rf $TRAVIS_BUILD_DIR/conf
-- git clone builderfiles@packages.breez.technology:configuration -b master $TRAVIS_BUILD_DIR/temp_config
-- cp -r $TRAVIS_BUILD_DIR/temp_config/conf $TRAVIS_BUILD_DIR/conf
+- git clone builderfiles@packages.breez.technology:configuration -b master $TRAVIS_BUILD_DIR
 - sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist
   $TRAVIS_BUILD_DIR/ios/Runner/GoogleService-Info.plist
 - "./flutter/bin/flutter upgrade"
