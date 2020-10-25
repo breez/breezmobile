@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:nfc_in_flutter/nfc_in_flutter.dart';
@@ -15,17 +16,19 @@ class NFCService {
   }
 
   NFCService() {
-    int fnCalls = 0;
-    _checkNfcStartedWithTimer =
-        Timer.periodic(Duration(milliseconds: 100), (Timer t) {
-      if (fnCalls == 5) {
-        _checkNfcStartedWithTimer.cancel();
-        return;
-      }
-      fnCalls++;
-      _checkNfcStartedWith();
-    });
-    _listenLnLinks();
+    if (Platform.isAndroid) {
+      int fnCalls = 0;
+      _checkNfcStartedWithTimer =
+          Timer.periodic(Duration(milliseconds: 100), (Timer t) {
+        if (fnCalls == 5) {
+          _checkNfcStartedWithTimer.cancel();
+          return;
+        }
+        fnCalls++;
+        _checkNfcStartedWith();
+      });
+      _listenLnLinks();
+    }
   }
 
   _checkNfcStartedWith() async {
