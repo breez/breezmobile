@@ -7,6 +7,7 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/widgets/BGRenderAware.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/rotator.dart';
@@ -283,10 +284,10 @@ class WarningActionState extends State<WarningAction>
       icon: Container(
         width: 45 * _animation.value,
         child: widget.iconWidget ??
-            Image(
+            BGRenderAware(Image(
               image: AssetImage("src/icon/warning.png"),
               color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-            ),
+            )),
       ),
       tooltip: 'Backup',
       onPressed: this.widget.onTap,

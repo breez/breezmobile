@@ -50,6 +50,7 @@ import 'routes/connect_to_pay/connect_to_pay_page.dart';
 import 'routes/home/account_page.dart';
 import 'routes/no_connection_dialog.dart';
 import 'routes/spontaneous_payment/spontaneous_payment_page.dart';
+import 'widgets/BGRenderAware.dart';
 
 final GlobalKey firstPaymentItemKey = GlobalKey();
 final ScrollController scrollController = ScrollController();
@@ -325,7 +326,8 @@ class HomeState extends State<Home> {
                                                     ),
                                                   ],
                                                   leading: IconButton(
-                                                      icon: ImageIcon(
+                                                      icon: BGRenderAware(
+                                                          ImageIcon(
                                                         AssetImage(
                                                             "src/icon/hamburger.png"),
                                                         size: 24.0,
@@ -333,12 +335,13 @@ class HomeState extends State<Home> {
                                                             .appBarTheme
                                                             .actionsIconTheme
                                                             .color,
-                                                      ),
+                                                      )),
                                                       onPressed: () =>
                                                           _scaffoldKey
                                                               .currentState
                                                               .openDrawer()),
-                                                  title: Image.asset(
+                                                  title:
+                                                      BGRenderAware(Image.asset(
                                                     "src/images/logo-color.png",
                                                     height: 23.5,
                                                     width: 62.7,
@@ -347,7 +350,7 @@ class HomeState extends State<Home> {
                                                         .color,
                                                     colorBlendMode:
                                                         BlendMode.srcATop,
-                                                  ),
+                                                  )),
                                                   iconTheme: IconThemeData(
                                                       color: Color.fromARGB(
                                                           255, 0, 133, 251)),

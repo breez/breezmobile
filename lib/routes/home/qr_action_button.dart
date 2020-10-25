@@ -16,6 +16,7 @@ import 'package:breez/utils/btc_address.dart';
 import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
+import 'package:breez/widgets/BGRenderAware.dart';
 import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -106,13 +107,13 @@ class QrActionButton extends StatelessWidget {
               }
             }
           },
-          child: Image(
+          child: BGRenderAware(Image(
             image: AssetImage("src/icon/qr_scan.png"),
             color: theme.BreezColors.white[500],
             fit: BoxFit.contain,
             width: 24.0,
             height: 24.0,
-          ),
+          )),
         ),
       ),
     );
