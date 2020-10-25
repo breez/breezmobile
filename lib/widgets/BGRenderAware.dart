@@ -4,6 +4,8 @@ import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:flutter/material.dart';
 
+import '../logger.dart';
+
 // This is a generic widget wrapper that renders empty widget when app is in
 // the background and the widget tree is built.
 // In addtion it triggers a re-build tree when app is entering foreground.
@@ -29,8 +31,11 @@ class BGRenderAwareState extends State<BGRenderAware> {
     super.initState();
     ServiceInjector injector = ServiceInjector();
     _deviceSubscription = injector.device.eventStream.listen((event) {
-      _inBackground = event == NotificationType.PAUSE;
+      _inBackground = (event == NotificationType.PAUSE);
+      log.info(
+          "BGRenderAwareState: got notification event $event, setting _inBackground=$_inBackground");
       if (!_inBackground) {
+        log.info("BGRenderAwareState: triggering manual tree build");
         setState(() {});
       }
     });
@@ -45,6 +50,7 @@ class BGRenderAwareState extends State<BGRenderAware> {
   @override
   Widget build(BuildContext context) {
     if (_inBackground) {
+      log.info("BGRenderAwareState: rendering in background");
       return SizedBox();
     }
     return this.widget.child;
