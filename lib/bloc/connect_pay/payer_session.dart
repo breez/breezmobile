@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:breez/bloc/connect_pay/firebase_session_channel.dart';
@@ -244,7 +245,11 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       return this.sendPayment(paymentRequest, invoice.amount).then((_) {
         _onPaymentFulfilled(invoice);
       }).catchError((err) {
-        _onError(err);
+        var displayError = err;
+        if (err is PaymentError) {
+          displayError = err.toDisplayMessage(this._currentUser.currency);
+        }
+        _onError(displayError);
       });
     }).catchError(_onError);
   }
