@@ -306,7 +306,11 @@ class AccountBloc {
         .then((response) {
       if (response.paymentError.isNotEmpty) {
         var error = PaymentError(
-            payRequest, response.paymentError, response.traceReport);
+          payRequest,
+          response.paymentError,
+          response.traceReport,
+          ignoreGlobalFeedback: action.ignoreGlobalFeedback,
+        );
         _completedPaymentsController.addError(error);
         return Future.error(error);
       }
