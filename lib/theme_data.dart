@@ -530,6 +530,13 @@ final TextStyle vendorTitleStyle = TextStyle(
     fontWeight: FontWeight.w600,
     letterSpacing: 1.1,
     fontFamily: 'Roboto');
+final TextStyle fiatConversionTitleStyle = TextStyle(
+    color: BreezColors.white[500],
+    fontSize: 16.3,
+    letterSpacing: 0.25,
+    height: 1.2);
+final TextStyle fiatConversionDescriptionStyle =
+    TextStyle(color: BreezColors.white[200], fontSize: 14.3);
 final BoxDecoration boxDecoration = BoxDecoration(
     border:
         Border(bottom: BorderSide(color: BreezColors.white[500], width: 1.5)));
