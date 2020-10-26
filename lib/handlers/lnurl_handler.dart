@@ -52,6 +52,13 @@ class LNURLHandler {
       Navigator.of(context).push(FadeInRoute(
         builder: (_) => CreateInvoicePage(lnurlWithdraw: response),
       ));
+    } else if (response is AuthFetchResponse) {
+      Navigator.popUntil(context, (route) {
+        return route.settings.name == "/";
+      });
+      promptAreYouSure(context, "Login",
+              Text("Do you want to login to ${response.host}"))
+          .then((value) => () {});
     } else {
       throw "Unsupported LNUrl";
     }

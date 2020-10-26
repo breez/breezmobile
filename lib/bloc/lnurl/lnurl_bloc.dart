@@ -50,6 +50,8 @@ class LNUrlBloc with AsyncActionsHandler {
                 .add(WithdrawFetchResponse(response.withdraw));
           } else if (response.hasChannel()) {
             _lnUrlStreamController.add(ChannelFetchResponse(response.channel));
+          } else if (response.hasAuth()) {
+            _lnUrlStreamController.add(AuthFetchResponse(response.auth));
           } else {
             _lnUrlStreamController.addError("Unsupported LNUrl");
           }
@@ -70,6 +72,10 @@ class LNUrlBloc with AsyncActionsHandler {
     }
     if (res.hasChannel()) {
       action.resolve(ChannelFetchResponse(res.channel));
+      return;
+    }
+    if (res.hasAuth()) {
+      action.resolve(AuthFetchResponse(res.auth));
       return;
     }
     throw "Unsupported LNUrl action";
