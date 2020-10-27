@@ -169,19 +169,22 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           _sortListByAlphabet();
         });
       },
+      subtitle: Text(fiatConversion.currencyData.name,
+          style: theme.fiatConversionDescriptionStyle),
       title: RichText(
         text: TextSpan(
             text: fiatConversion.currencyData.shortName,
             style: theme.fiatConversionTitleStyle,
             children: <TextSpan>[
               TextSpan(
-                  text: " (${fiatConversion.currencyData.name})",
+                  text: " (${fiatConversion.currencyData.symbol})",
                   style: theme.fiatConversionDescriptionStyle),
             ]),
       ),
       secondary: Icon(
         Icons.drag_handle,
-        color: values[fiatConversion.currencyData.shortName]
+        color: _preferredFiatCurrencies
+                .contains(fiatConversion.currencyData.shortName)
             ? theme.BreezColors.white[200]
             : Colors.transparent,
       ),
