@@ -3,6 +3,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
@@ -22,9 +23,9 @@ class FiatCurrencySettings extends StatefulWidget {
 class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   AccountBloc _accountBloc;
 
-  //UserProfileBloc _userProfileBloc;
+  UserProfileBloc _userProfileBloc;
 
-  Map<String, bool> values;
+  List<String> _preferredFiatCurrencies;
   List<FiatConversion> _fiatConversionList;
 
   bool _isInit = false;
@@ -33,7 +34,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   void didChangeDependencies() {
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-      // _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _getExchangeRates();
       _getUserFiatCurrencyPreferences();
       _initializeFiatCurrencyList();
@@ -58,14 +59,10 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   }
 
   void _getUserFiatCurrencyPreferences() {
-    // Temporary values
-    // TODO: Move user fiat currency preferences to BreezUserModel
-    values = {
-      'USD': true,
-      'EUR': true,
-      'GBP': true,
-      'JPY': true,
-    };
+    _userProfileBloc.userStream.firstWhere((user) => user != null).then((user) {
+      _preferredFiatCurrencies =
+          user.fiatCurrencyPreferences.preferredFiatCurrencies;
+    });
   }
 
   void _initializeFiatCurrencyList() {
@@ -73,32 +70,15 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         .firstWhere((account) => account.fiatConversionList.isNotEmpty)
         .then((account) {
       _fiatConversionList = account.fiatConversionList;
-      _sortListByPreference();
       _sortListByAlphabet();
-    });
-  }
-
-  void _sortListByPreference() {
-    _fiatConversionList.sort((a, b) {
-      if (values[a.currencyData.shortName] ==
-          values[b.currencyData.shortName]) {
-        return 0;
-      } else if (values[b.currencyData.shortName]) {
-        return 1;
-      }
-      return -1;
     });
   }
 
   void _sortListByAlphabet() {
     _fiatConversionList.sort((a, b) {
-      if (!values[a.currencyData.shortName] &&
-          !values[b.currencyData.shortName]) {
-        return a.currencyData.shortName
-            .toString()
-            .compareTo(b.currencyData.shortName.toString());
-      }
-      return 0;
+      return a.currencyData.shortName
+          .toString()
+          .compareTo(b.currencyData.shortName.toString());
     });
   }
 
@@ -110,7 +90,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         textTheme: Theme.of(context).appBarTheme.textTheme,
         backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(
-          onPressed: () => _applyChanges,
+          onPressed: () => _applyChanges(context),
         ),
         title: Text(
           "Fiat Currencies",
@@ -141,16 +121,26 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   }
 
   void _applyChanges(BuildContext context) {
-    _accountBloc.accountStream
-        .firstWhere((account) => account.fiatConversionList.isNotEmpty)
-        .then((account) {
-      // Check for changes
-      if (listEquals(_fiatConversionList, account.fiatConversionList)) {
+    Navigator.pop(context);
+    // TODO: Check for changes and open confirmation dialog to save changes
+    /*
+    _userProfileBloc.userStream.firstWhere((user) => user != null).then((user) async {
+      if (!listEquals(_preferredFiatCurrencies,
+          user.fiatCurrencyPreferences.preferredFiatCurrencies)) {
         // Open confirmation dialog to save changes
+        bool cancel = await promptAreYouSure(
+          context,
+          "Apply Changes",
+          Text("Do you want to save changes to your fiat currency preferences?",
+              style: Theme.of(context).dialogTheme.contentTextStyle),
+        );
+        if (cancel) {
+          Navigator.pop(context);
+        }
       } else {
         Navigator.pop(context);
       }
-    });
+    });*/
   }
 
   List<CheckboxListTile> _getListItems(List list) => list
@@ -167,11 +157,15 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
       controlAffinity: ListTileControlAffinity.leading,
       activeColor: Colors.white,
       checkColor: Theme.of(context).canvasColor,
-      value: values[fiatConversion.currencyData.shortName] ?? false,
-      onChanged: (bool value) {
+      value: _preferredFiatCurrencies
+          .contains(fiatConversion.currencyData.shortName),
+      onChanged: (bool checked) {
         setState(() {
-          values[fiatConversion.currencyData.shortName] = value;
-          _sortListByPreference();
+          checked
+              ? _preferredFiatCurrencies
+                  .add(fiatConversion.currencyData.shortName)
+              : _preferredFiatCurrencies
+                  .remove(fiatConversion.currencyData.shortName);
           _sortListByAlphabet();
         });
       },

@@ -1,6 +1,8 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 
+import 'fiat_currency_preferences.dart';
+
 class BreezUserModel {
   final String userID;
   final Currency currency;
@@ -18,6 +20,7 @@ class BreezUserModel {
   final double cancellationTimeoutValue;
   final bool hasAdminPassword;
   final String posCurrencyShortName;
+  final FiatCurrencyPreferences fiatCurrencyPreferences;
 
   BreezUserModel._(this.userID, this.name, this.color, this.animal,
       {this.currency = Currency.SAT,
@@ -31,7 +34,8 @@ class BreezUserModel {
       this.isPOS = false,
       this.cancellationTimeoutValue = 90.0,
       this.hasAdminPassword = false,
-      this.posCurrencyShortName = "SAT"});
+      this.posCurrencyShortName = "SAT",
+      this.fiatCurrencyPreferences});
 
   BreezUserModel copyWith(
       {String name,
@@ -49,24 +53,30 @@ class BreezUserModel {
       bool isPOS,
       double cancellationTimeoutValue,
       bool hasAdminPassword,
-      String posCurrencyShortName}) {
-    return BreezUserModel._(userID ?? this.userID, name ?? this.name,
-        color ?? this.color, animal ?? this.animal,
-        currency: currency ?? this.currency,
-        fiatCurrency: fiatCurrency ?? this.fiatCurrency,
-        image: image ?? this.image,
-        securityModel: securityModel ?? this.securityModel,
-        locked: locked ?? this.locked,
-        token: token ?? this.token,
-        themeId: themeId ?? this.themeId,
-        registrationRequested:
-            registrationRequested ?? this.registrationRequested,
-        isPOS: isPOS ?? this.isPOS,
-        cancellationTimeoutValue:
-            cancellationTimeoutValue ?? this.cancellationTimeoutValue,
-        hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword,
-        posCurrencyShortName:
-            posCurrencyShortName ?? this.posCurrencyShortName);
+      String posCurrencyShortName,
+      FiatCurrencyPreferences fiatCurrencyPreferences}) {
+    return BreezUserModel._(
+      userID ?? this.userID,
+      name ?? this.name,
+      color ?? this.color,
+      animal ?? this.animal,
+      currency: currency ?? this.currency,
+      fiatCurrency: fiatCurrency ?? this.fiatCurrency,
+      image: image ?? this.image,
+      securityModel: securityModel ?? this.securityModel,
+      locked: locked ?? this.locked,
+      token: token ?? this.token,
+      themeId: themeId ?? this.themeId,
+      registrationRequested:
+          registrationRequested ?? this.registrationRequested,
+      isPOS: isPOS ?? this.isPOS,
+      cancellationTimeoutValue:
+          cancellationTimeoutValue ?? this.cancellationTimeoutValue,
+      hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword,
+      posCurrencyShortName: posCurrencyShortName ?? this.posCurrencyShortName,
+      fiatCurrencyPreferences:
+          fiatCurrencyPreferences ?? this.fiatCurrencyPreferences,
+    );
   }
 
   bool get registered {
@@ -103,7 +113,10 @@ class BreezUserModel {
             ? 90.0
             : json['cancellationTimeoutValue'],
         hasAdminPassword = json['hasAdminPassword'] ?? false,
-        posCurrencyShortName = json['posCurrencyShortName'] ?? "SAT";
+        posCurrencyShortName = json['posCurrencyShortName'] ?? "SAT",
+        fiatCurrencyPreferences = json['fiatCurrencyPreferences'] == null
+            ? FiatCurrencyPreferences.initial()
+            : FiatCurrencyPreferences.fromJson(json['fiatCurrencyPreferences']);
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -121,5 +134,6 @@ class BreezUserModel {
         'isPOS': isPOS,
         'hasAdminPassword': hasAdminPassword,
         'posCurrencyShortName': posCurrencyShortName,
+        'fiatCurrencyPreferences': fiatCurrencyPreferences?.toJson(),
       };
 }
