@@ -717,7 +717,6 @@ class AccountBloc {
     _currencyData = await _currencyService.currencies();
     Rates _rate = await _breezLib.rate();
     List<FiatConversion> _fiatConversionList = _rate.rates
-        .where((rate) => ["USD", "EUR", "GBP", "JPY"].contains(rate.coin))
         .map((rate) => FiatConversion(_currencyData[rate.coin], rate.value))
         .toList();
     _fiatConversionList.sort(
