@@ -12,6 +12,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -49,32 +50,6 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     super.didChangeDependencies();
   }
 
-  void _sortList() {
-    _selectedFiatConversions = List.from(_fiatConversionList.where(
-        (fiatConversion) => _preferredFiatCurrencies
-            .contains(fiatConversion.currencyData.shortName)));
-    _unselectedFiatConversions = List.from(_fiatConversionList.where(
-        (fiatConversion) => !_preferredFiatCurrencies
-            .contains(fiatConversion.currencyData.shortName)));
-    _sortByOrder();
-    _sortByAlphabet();
-    _fiatConversionList = _selectedFiatConversions + _unselectedFiatConversions;
-  }
-
-  void _sortByOrder() {
-    Map<String, int> order = new Map.fromIterable(_preferredFiatCurrencies,
-        key: (key) => key,
-        value: (key) => _preferredFiatCurrencies.indexOf(key));
-    _selectedFiatConversions.sort((a, b) => order[a.currencyData.shortName]
-        .compareTo(order[b.currencyData.shortName]));
-  }
-
-  void _sortByAlphabet() {
-    _unselectedFiatConversions.sort((a, b) => a.currencyData.shortName
-        .toString()
-        .compareTo(b.currencyData.shortName.toString()));
-  }
-
   void _getExchangeRates() {
     FetchRates fetchRatesAction = FetchRates();
     _accountBloc.userActionsSink.add(fetchRatesAction);
@@ -103,6 +78,30 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
       _fiatConversionList = List.from(account.fiatConversionList);
       _sortList();
     });
+  }
+
+  void _sortList() {
+    _updateSelectedFiatConversions();
+    _unselectedFiatConversions = List.from(_fiatConversionList.where(
+        (fiatConversion) => !_preferredFiatCurrencies
+            .contains(fiatConversion.currencyData.shortName)));
+    _sortByOrder();
+    _sortByAlphabet();
+    _fiatConversionList = _selectedFiatConversions + _unselectedFiatConversions;
+  }
+
+  void _sortByOrder() {
+    Map<String, int> order = new Map.fromIterable(_preferredFiatCurrencies,
+        key: (key) => key,
+        value: (key) => _preferredFiatCurrencies.indexOf(key));
+    _selectedFiatConversions.sort((a, b) => order[a.currencyData.shortName]
+        .compareTo(order[b.currencyData.shortName]));
+  }
+
+  void _sortByAlphabet() {
+    _unselectedFiatConversions.sort((a, b) => a.currencyData.shortName
+        .toString()
+        .compareTo(b.currencyData.shortName.toString()));
   }
 
   @override
@@ -147,24 +146,25 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     _userProfileBloc.userStream
         .firstWhere((user) => user != null)
         .then((user) async {
-      if (!listEquals(_preferredFiatCurrencies,
+      List<String> preferredFiatCurrencies = _selectedFiatConversions
+          .map((fiatConversion) => fiatConversion.currencyData.shortName)
+          .toList();
+      if (!ListEquality().equals(preferredFiatCurrencies,
           user.fiatCurrencyPreferences.preferredFiatCurrencies)) {
-        _updateFiatCurrencyPreferences(user, context);
+        _updateFiatCurrencyPreferences(user, preferredFiatCurrencies, context);
+      } else {
+        Navigator.pop(context);
       }
-      Navigator.pop(context);
     });
   }
 
-  void _updateFiatCurrencyPreferences(
-      BreezUserModel user, BuildContext context) {
+  void _updateFiatCurrencyPreferences(BreezUserModel user,
+      List<String> preferredFiatCurrencies, BuildContext context) {
     var action = UpdateFiatCurrencyPreferences(FiatCurrencyPreferences(
-        preferredFiatCurrencies: _preferredFiatCurrencies));
+        preferredFiatCurrencies: preferredFiatCurrencies));
     _userProfileBloc.userActionsSink.add(action);
     action.future.then((_) {
-      if (listEquals(_preferredFiatCurrencies,
-          user.fiatCurrencyPreferences.preferredFiatCurrencies)) {
-        Navigator.pop(context);
-      }
+      Navigator.pop(context);
     }).catchError((err) {
       promptError(
           context,
@@ -237,6 +237,16 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     setState(() {
       FiatConversion item = _fiatConversionList.removeAt(oldIndex);
       _fiatConversionList.insert(newIndex, item);
+      _updateSelectedFiatConversions();
+    });
+  }
+
+  _updateSelectedFiatConversions() {
+    setState(() {
+      _selectedFiatConversions = List.from(_fiatConversionList.where(
+          (fiatConversion) => _preferredFiatCurrencies
+              .contains(fiatConversion.currencyData.shortName)));
     });
   }
 }
+  
