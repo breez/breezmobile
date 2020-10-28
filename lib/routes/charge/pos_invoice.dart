@@ -362,12 +362,23 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                       .accountStream,
                                                                   builder: (context,
                                                                       snapshot) {
+                                                                    List<CurrencyWrapper>
+                                                                        currencies =
+                                                                        Currency
+                                                                            .currencies
+                                                                            .map((c) =>
+                                                                                CurrencyWrapper.fromBTC(c))
+                                                                            .toList();
                                                                     List<FiatConversion> usersFiatConversions = List.from(accountModel.fiatConversionList.where((fiatConversion) => userProfile
                                                                         .fiatCurrencyPreferences
                                                                         .preferredFiatCurrencies
                                                                         .contains(fiatConversion
                                                                             .currencyData
                                                                             .shortName)));
+                                                                    currencies
+                                                                      ..addAll(usersFiatConversions.map(
+                                                                          (f) =>
+                                                                              CurrencyWrapper.fromFiat(f)));
 
                                                                     return DropdownButtonHideUnderline(
                                                                       child:
@@ -379,32 +390,18 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                             iconEnabledColor: Theme.of(context).textTheme.headline5.color,
                                                                             value: currentCurrency.shortName,
                                                                             style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline5.color),
-                                                                            items: Currency.currencies.map((Currency value) {
+                                                                            items: currencies.map((CurrencyWrapper value) {
                                                                               return DropdownMenuItem<String>(
-                                                                                value: value.tickerSymbol,
+                                                                                value: value.shortName,
                                                                                 child: Material(
                                                                                   child: Text(
-                                                                                    value.tickerSymbol.toUpperCase(),
+                                                                                    value.shortName.toUpperCase(),
                                                                                     textAlign: TextAlign.right,
                                                                                     style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline5.color),
                                                                                   ),
                                                                                 ),
                                                                               );
-                                                                            }).toList()
-                                                                              ..addAll(
-                                                                                usersFiatConversions.map((FiatConversion fiat) {
-                                                                                  return new DropdownMenuItem<String>(
-                                                                                    value: fiat.currencyData.shortName,
-                                                                                    child: Material(
-                                                                                      child: new Text(
-                                                                                        fiat.currencyData.shortName,
-                                                                                        textAlign: TextAlign.right,
-                                                                                        style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline5.color),
-                                                                                      ),
-                                                                                    ),
-                                                                                  );
-                                                                                }).toList(),
-                                                                              )),
+                                                                            }).toList()),
                                                                       ),
                                                                     );
                                                                   });
