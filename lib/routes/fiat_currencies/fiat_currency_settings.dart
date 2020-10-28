@@ -13,6 +13,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:collection/collection.dart';
+import 'package:dragable_flutter_list/dragable_flutter_list.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -133,10 +134,15 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
               return Loader();
             }
 
-            return ReorderableListView(
-              padding: EdgeInsets.only(top: 16),
-              children: _getListItems(_fiatConversionList),
-              onReorder: _onReorder,
+            return DragAndDropList(
+              _fiatConversionList.length,
+              itemBuilder: (BuildContext context, index) =>
+                  _buildFiatCurrencyTile(_fiatConversionList[index], index),
+              onDragFinish: _onReorder,
+              canDrag: (index) => index < _selectedFiatConversions.length,
+              canBeDraggedTo: (from, to) =>
+                  to < _selectedFiatConversions.length,
+              dragElevation: 8.0,
             );
           }),
     );
@@ -176,15 +182,8 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     });
   }
 
-  List<CheckboxListTile> _getListItems(List list) => list
-      .asMap()
-      .map((i, item) => MapEntry(i, _buildFiatCurrencyTile(item, i)))
-      .values
-      .toList();
-
   CheckboxListTile _buildFiatCurrencyTile(
       FiatConversion fiatConversion, int index) {
-    // TODO: Disable drag for unchecked items
     return CheckboxListTile(
       key: ValueKey(fiatConversion.currencyData.shortName),
       controlAffinity: ListTileControlAffinity.leading,
@@ -249,4 +248,3 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     });
   }
 }
-  
