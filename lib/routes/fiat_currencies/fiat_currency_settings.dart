@@ -196,6 +196,9 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           break;
         }
       }
+      // revert to first item on list if no fiat value is above minimum amount
+      _userProfileBloc.fiatConversionSink
+          .add(_selectedFiatConversions[0].currencyData.shortName);
     }
   }
 
