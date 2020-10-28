@@ -46,6 +46,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
   bool _isInit = false;
 
+  List<String> _preferredFiatCurrencies;
+
   @override
   void initState() {
     super.initState();
@@ -78,6 +80,12 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                 message: "Failed to retrieve BTC exchange rate.");
           });
         }
+      });
+      _userProfileBloc.userStream
+          .firstWhere((user) => user != null)
+          .then((user) {
+        _preferredFiatCurrencies =
+            List.from(user.fiatCurrencyPreferences.preferredFiatCurrencies);
       });
       _colorAnimation = ColorTween(
         // change to white according to theme
@@ -123,6 +131,11 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
               .exchangeRate;
           _updateExchangeLabel(exchangeRate);
 
+          List<FiatConversion> usersFiatConversions = List.from(account
+              .fiatConversionList
+              .where((fiatConversion) => _preferredFiatCurrencies
+                  .contains(fiatConversion.currencyData.shortName)));
+
           return AlertDialog(
             title: Theme(
               data: Theme.of(context).copyWith(
@@ -164,7 +177,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                                 .titleTextStyle
                                 .color,
                             style: Theme.of(context).dialogTheme.titleTextStyle,
-                            items: account.fiatConversionList
+                            items: usersFiatConversions
                                 .map((FiatConversion value) {
                               return DropdownMenuItem<String>(
                                 value: value.currencyData.shortName,
