@@ -128,16 +128,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         .then((user) async {
       if (!listEquals(_preferredFiatCurrencies,
           user.fiatCurrencyPreferences.preferredFiatCurrencies)) {
-        // Open confirmation dialog to save changes
-        bool confirmed = await promptAreYouSure(
-          context,
-          "Apply Changes",
-          Text("Do you want to save changes to your fiat currency preferences?",
-              style: Theme.of(context).dialogTheme.contentTextStyle),
-        );
-        if (confirmed) {
-          _updateFiatCurrencyPreferences(user, context);
-        }
+        _updateFiatCurrencyPreferences(user, context);
       }
       Navigator.pop(context);
     });
