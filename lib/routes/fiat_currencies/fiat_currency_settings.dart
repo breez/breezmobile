@@ -170,31 +170,21 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
 
   void _updateFiatCurrencyPreferences(BreezUserModel user,
       List<String> preferredFiatCurrencies, BuildContext context) {
-    if (preferredFiatCurrencies.isNotEmpty) {
-      var action = UpdateFiatCurrencyPreferences(FiatCurrencyPreferences(
-          preferredFiatCurrencies: preferredFiatCurrencies));
-      _userProfileBloc.userActionsSink.add(action);
-      action.future.then((_) {
-        isSelectedFiatConversionValid();
-        Navigator.pop(context);
-      }).catchError((err) {
-        promptError(
-            context,
-            "Failed to save changes",
-            Text(
-              err.toString(),
-              style: Theme.of(context).dialogTheme.contentTextStyle,
-            ));
-      });
-    } else {
+    var action = UpdateFiatCurrencyPreferences(FiatCurrencyPreferences(
+        preferredFiatCurrencies: preferredFiatCurrencies));
+    _userProfileBloc.userActionsSink.add(action);
+    action.future.then((_) {
+      isSelectedFiatConversionValid();
+      Navigator.pop(context);
+    }).catchError((err) {
       promptError(
           context,
-          "",
+          "Failed to save changes",
           Text(
-            "You need to select at least one fiat currency.",
+            err.toString(),
             style: Theme.of(context).dialogTheme.contentTextStyle,
           ));
-    }
+    });
   }
 
   isSelectedFiatConversionValid() {
@@ -235,7 +225,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
             _preferredFiatCurrencies.add(fiatConversion.currencyData.shortName);
             _unselectedFiatConversions.remove(fiatConversion);
             _selectedFiatConversions.add(fiatConversion);
-          } else {
+          } else if (_selectedFiatConversions.length != 1) {
             _preferredFiatCurrencies
                 .remove(fiatConversion.currencyData.shortName);
             _selectedFiatConversions.remove(fiatConversion);
