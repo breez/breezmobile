@@ -11,7 +11,6 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:collection/collection.dart';
@@ -111,49 +110,52 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
-        leading: backBtn.BackButton(
-          onPressed: () => _applyChanges(context),
+    return WillPopScope(
+      onWillPop: () => _onWillPop(),
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
+          leading: backBtn.BackButton(
+            onPressed: () => _onWillPop(),
+          ),
+          title: Text(
+            "Fiat Currencies",
+            style: Theme.of(context).appBarTheme.textTheme.headline6,
+          ),
+          elevation: 0.0,
         ),
-        title: Text(
-          "Fiat Currencies",
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        body: StreamBuilder<AccountModel>(
+            stream: _accountBloc.accountStream,
+            builder: (context, snapshot) {
+              AccountModel account = snapshot.data;
+              if (!snapshot.hasData) {
+                return Container();
+              }
+
+              if (account.fiatConversionList.isEmpty ||
+                  account.fiatCurrency == null) {
+                return Loader();
+              }
+
+              return DragAndDropList(
+                _fiatConversionList.length,
+                itemBuilder: (BuildContext context, index) =>
+                    _buildFiatCurrencyTile(_fiatConversionList[index], index),
+                onDragFinish: _onReorder,
+                canDrag: (index) => index < _selectedFiatConversions.length,
+                canBeDraggedTo: (from, to) =>
+                    to < _selectedFiatConversions.length,
+                dragElevation: 8.0,
+              );
+            }),
       ),
-      body: StreamBuilder<AccountModel>(
-          stream: _accountBloc.accountStream,
-          builder: (context, snapshot) {
-            AccountModel account = snapshot.data;
-            if (!snapshot.hasData) {
-              return Container();
-            }
-
-            if (account.fiatConversionList.isEmpty ||
-                account.fiatCurrency == null) {
-              return Loader();
-            }
-
-            return DragAndDropList(
-              _fiatConversionList.length,
-              itemBuilder: (BuildContext context, index) =>
-                  _buildFiatCurrencyTile(_fiatConversionList[index], index),
-              onDragFinish: _onReorder,
-              canDrag: (index) => index < _selectedFiatConversions.length,
-              canBeDraggedTo: (from, to) =>
-                  to < _selectedFiatConversions.length,
-              dragElevation: 8.0,
-            );
-          }),
     );
   }
 
-  void _applyChanges(BuildContext context) {
-    _userProfileBloc.userStream
+  _onWillPop() async {
+    await _userProfileBloc.userStream
         .firstWhere((user) => user != null)
         .then((user) async {
       List<String> preferredFiatCurrencies = _selectedFiatConversions
@@ -161,15 +163,15 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           .toList();
       if (!ListEquality().equals(preferredFiatCurrencies,
           user.fiatCurrencyPreferences.preferredFiatCurrencies)) {
-        _updateFiatCurrencyPreferences(user, preferredFiatCurrencies, context);
+        _updateFiatCurrencyPreferences(user, preferredFiatCurrencies);
       } else {
         Navigator.pop(context);
       }
     });
   }
 
-  void _updateFiatCurrencyPreferences(BreezUserModel user,
-      List<String> preferredFiatCurrencies, BuildContext context) {
+  void _updateFiatCurrencyPreferences(
+      BreezUserModel user, List<String> preferredFiatCurrencies) {
     var action = UpdateFiatCurrencyPreferences(FiatCurrencyPreferences(
         preferredFiatCurrencies: preferredFiatCurrencies));
     _userProfileBloc.userActionsSink.add(action);
@@ -177,13 +179,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
       isSelectedFiatConversionValid();
       Navigator.pop(context);
     }).catchError((err) {
-      promptError(
-          context,
-          "Failed to save changes",
-          Text(
-            err.toString(),
-            style: Theme.of(context).dialogTheme.contentTextStyle,
-          ));
+      showFlushbar(context, message: "Failed to save changes.");
     });
   }
 
