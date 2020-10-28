@@ -44,7 +44,7 @@ class FiatConversion {
 
   String formatFiat(
     double fiatAmount, {
-    bool addCurrencyPrefix = true,
+    bool addCurrencySymbol = true,
     bool removeTrailingZeros = false,
     bool allowBelowMin = false,
   }) {
@@ -52,20 +52,22 @@ class FiatConversion {
     double minimumAmount = 1 / (pow(10, fractionSize));
 
     String formattedAmount = "";
-    String prefix = '${this.currencyData.symbol}';
+    String symbol = '${this.currencyData.symbol}';
     // if conversion result is less than the minimum it doesn't make sense to display
     // it.
     if (!allowBelowMin && fiatAmount < minimumAmount) {
       formattedAmount = minimumAmount.toStringAsFixed(fractionSize);
-      prefix = '< ' + prefix;
+      symbol = '< ' + symbol;
     } else {
       final formatter = CurrencyFormatter().formatter;
       formatter.minimumFractionDigits = fractionSize;
       formatter.maximumFractionDigits = fractionSize;
       formattedAmount = formatter.format(fiatAmount);
     }
-    if (addCurrencyPrefix) {
-      formattedAmount = prefix + formattedAmount;
+    if (addCurrencySymbol) {
+      formattedAmount = (this.currencyData.rtl)
+          ? formattedAmount + symbol
+          : symbol + formattedAmount;
     }
     if (removeTrailingZeros) {
       RegExp removeTrailingZeros = RegExp(r"([.]0*)(?!.*\d)");

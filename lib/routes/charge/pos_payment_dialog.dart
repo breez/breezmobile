@@ -164,7 +164,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
           Text(
             userCurrency.format(
                     widget.satAmount / userCurrency.satConversionRate,
-                    includeCurrencySuffix: true) +
+                    includeCurrencySymbol: true) +
                 priceInSaleCurrency,
             textAlign: TextAlign.center,
             style: Theme.of(context).primaryTextTheme.headline4,
