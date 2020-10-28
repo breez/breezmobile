@@ -170,21 +170,31 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
 
   void _updateFiatCurrencyPreferences(BreezUserModel user,
       List<String> preferredFiatCurrencies, BuildContext context) {
-    var action = UpdateFiatCurrencyPreferences(FiatCurrencyPreferences(
-        preferredFiatCurrencies: preferredFiatCurrencies));
-    _userProfileBloc.userActionsSink.add(action);
-    action.future.then((_) {
-      isSelectedFiatConversionValid();
-      Navigator.pop(context);
-    }).catchError((err) {
+    if (preferredFiatCurrencies.isNotEmpty) {
+      var action = UpdateFiatCurrencyPreferences(FiatCurrencyPreferences(
+          preferredFiatCurrencies: preferredFiatCurrencies));
+      _userProfileBloc.userActionsSink.add(action);
+      action.future.then((_) {
+        isSelectedFiatConversionValid();
+        Navigator.pop(context);
+      }).catchError((err) {
+        promptError(
+            context,
+            "Failed to save changes",
+            Text(
+              err.toString(),
+              style: Theme.of(context).dialogTheme.contentTextStyle,
+            ));
+      });
+    } else {
       promptError(
           context,
-          "Failed to save changes",
+          "",
           Text(
-            err.toString(),
+            "You need to select at least one fiat currency.",
             style: Theme.of(context).dialogTheme.contentTextStyle,
           ));
-    });
+    }
   }
 
   isSelectedFiatConversionValid() {
