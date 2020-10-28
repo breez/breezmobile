@@ -362,18 +362,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                       .accountStream,
                                                                   builder: (context,
                                                                       snapshot) {
-                                                                    List<CurrencyWrapper>
-                                                                        currencies =
-                                                                        Currency
-                                                                            .currencies
-                                                                            .map((c) =>
-                                                                                CurrencyWrapper.fromBTC(c))
-                                                                            .toList();
-                                                                    currencies
-                                                                      ..addAll(accountModel
-                                                                          .fiatConversionList
-                                                                          .map((f) =>
-                                                                              CurrencyWrapper.fromFiat(f)));
+                                                                    List<FiatConversion> usersFiatConversions = List.from(accountModel.fiatConversionList.where((fiatConversion) => userProfile
+                                                                        .fiatCurrencyPreferences
+                                                                        .preferredFiatCurrencies
+                                                                        .contains(fiatConversion
+                                                                            .currencyData
+                                                                            .shortName)));
 
                                                                     return DropdownButtonHideUnderline(
                                                                       child:
@@ -398,7 +392,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                               );
                                                                             }).toList()
                                                                               ..addAll(
-                                                                                accountModel.fiatConversionList.map((FiatConversion fiat) {
+                                                                                usersFiatConversions.map((FiatConversion fiat) {
                                                                                   return new DropdownMenuItem<String>(
                                                                                     value: fiat.currencyData.shortName,
                                                                                     child: Material(
