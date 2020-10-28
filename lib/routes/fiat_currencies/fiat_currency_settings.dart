@@ -30,6 +30,9 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   List<String> _preferredFiatCurrencies;
   List<FiatConversion> _fiatConversionList;
 
+  List<FiatConversion> _selectedFiatConversions;
+  List<FiatConversion> _unselectedFiatConversions;
+
   bool _isInit = false;
 
   @override
@@ -44,6 +47,32 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
       _isInit = true;
     }
     super.didChangeDependencies();
+  }
+
+  void _sortList() {
+    _selectedFiatConversions = List.from(_fiatConversionList.where(
+        (fiatConversion) => _preferredFiatCurrencies
+            .contains(fiatConversion.currencyData.shortName)));
+    _unselectedFiatConversions = List.from(_fiatConversionList.where(
+        (fiatConversion) => !_preferredFiatCurrencies
+            .contains(fiatConversion.currencyData.shortName)));
+    _sortByOrder();
+    _sortByAlphabet();
+    _fiatConversionList = _selectedFiatConversions + _unselectedFiatConversions;
+  }
+
+  void _sortByOrder() {
+    Map<String, int> order = new Map.fromIterable(_preferredFiatCurrencies,
+        key: (key) => key,
+        value: (key) => _preferredFiatCurrencies.indexOf(key));
+    _selectedFiatConversions.sort((a, b) => order[a.currencyData.shortName]
+        .compareTo(order[b.currencyData.shortName]));
+  }
+
+  void _sortByAlphabet() {
+    _unselectedFiatConversions.sort((a, b) => a.currencyData.shortName
+        .toString()
+        .compareTo(b.currencyData.shortName.toString()));
   }
 
   void _getExchangeRates() {
@@ -71,16 +100,8 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     _accountBloc.accountStream
         .firstWhere((account) => account.fiatConversionList.isNotEmpty)
         .then((account) {
-      _fiatConversionList = account.fiatConversionList;
-      _sortListByAlphabet();
-    });
-  }
-
-  void _sortListByAlphabet() {
-    _fiatConversionList.sort((a, b) {
-      return a.currencyData.shortName
-          .toString()
-          .compareTo(b.currencyData.shortName.toString());
+      _fiatConversionList = List.from(account.fiatConversionList);
+      _sortList();
     });
   }
 
@@ -173,12 +194,17 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           .contains(fiatConversion.currencyData.shortName),
       onChanged: (bool checked) {
         setState(() {
-          checked
-              ? _preferredFiatCurrencies
-                  .add(fiatConversion.currencyData.shortName)
-              : _preferredFiatCurrencies
-                  .remove(fiatConversion.currencyData.shortName);
-          _sortListByAlphabet();
+          if (checked) {
+            _preferredFiatCurrencies.add(fiatConversion.currencyData.shortName);
+            _unselectedFiatConversions.remove(fiatConversion);
+            _selectedFiatConversions.add(fiatConversion);
+          } else {
+            _preferredFiatCurrencies
+                .remove(fiatConversion.currencyData.shortName);
+            _selectedFiatConversions.remove(fiatConversion);
+            _unselectedFiatConversions.add(fiatConversion);
+          }
+          _sortList();
         });
       },
       subtitle: Text(fiatConversion.currencyData.name,
