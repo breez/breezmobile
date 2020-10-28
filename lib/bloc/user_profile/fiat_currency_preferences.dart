@@ -1,16 +1,16 @@
 class FiatCurrencyPreferences {
   final List<String> preferredFiatCurrencies;
 
-  FiatCurrencyPreferences._({this.preferredFiatCurrencies});
+  FiatCurrencyPreferences({this.preferredFiatCurrencies});
 
   FiatCurrencyPreferences copyWith({List<String> preferredFiatCurrencies}) {
-    return FiatCurrencyPreferences._(
+    return FiatCurrencyPreferences(
         preferredFiatCurrencies:
             preferredFiatCurrencies ?? this.preferredFiatCurrencies);
   }
 
   FiatCurrencyPreferences.initial()
-      : this._(
+      : this(
           preferredFiatCurrencies: [
             'USD',
             'EUR',

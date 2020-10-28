@@ -3,9 +3,13 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/fiat_currency_preferences.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/foundation.dart';
@@ -119,26 +123,45 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   }
 
   void _applyChanges(BuildContext context) {
-    Navigator.pop(context);
-    // TODO: Check for changes and open confirmation dialog to save changes
-    /*
-    _userProfileBloc.userStream.firstWhere((user) => user != null).then((user) async {
+    _userProfileBloc.userStream
+        .firstWhere((user) => user != null)
+        .then((user) async {
       if (!listEquals(_preferredFiatCurrencies,
           user.fiatCurrencyPreferences.preferredFiatCurrencies)) {
         // Open confirmation dialog to save changes
-        bool cancel = await promptAreYouSure(
+        bool confirmed = await promptAreYouSure(
           context,
           "Apply Changes",
           Text("Do you want to save changes to your fiat currency preferences?",
               style: Theme.of(context).dialogTheme.contentTextStyle),
         );
-        if (cancel) {
-          Navigator.pop(context);
+        if (confirmed) {
+          _updateFiatCurrencyPreferences(user, context);
         }
-      } else {
+      }
+      Navigator.pop(context);
+    });
+  }
+
+  void _updateFiatCurrencyPreferences(
+      BreezUserModel user, BuildContext context) {
+    var action = UpdateFiatCurrencyPreferences(FiatCurrencyPreferences(
+        preferredFiatCurrencies: _preferredFiatCurrencies));
+    _userProfileBloc.userActionsSink.add(action);
+    action.future.then((_) {
+      if (listEquals(_preferredFiatCurrencies,
+          user.fiatCurrencyPreferences.preferredFiatCurrencies)) {
         Navigator.pop(context);
       }
-    });*/
+    }).catchError((err) {
+      promptError(
+          context,
+          "Failed to save changes",
+          Text(
+            err.toString(),
+            style: Theme.of(context).dialogTheme.contentTextStyle,
+          ));
+    });
   }
 
   List<CheckboxListTile> _getListItems(List list) => list

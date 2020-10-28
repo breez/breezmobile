@@ -72,6 +72,7 @@ class UserProfileBloc {
     _actionHandlers = {
       UpdateSecurityModel: _updateSecurityModelAction,
       ResetSecurityModel: _resetSecurityModelAction,
+      UpdateFiatCurrencyPreferences: _updateFiatCurrencyPreferencesAction,
       UpdatePinCode: _updatePinCode,
       ValidatePinCode: _validatePinCode,
       ChangeTheme: _changeThemeAction,
@@ -266,6 +267,22 @@ class UserProfileBloc {
         _currentUser.copyWith(
             securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
+  }
+
+  Future _updateFiatCurrencyPreferencesAction(
+      UpdateFiatCurrencyPreferences updateFiatCurrencyPreferences) async {
+    updateFiatCurrencyPreferences.resolve(
+        await _updateFiatCurrencyPreferences(updateFiatCurrencyPreferences));
+  }
+
+  Future _updateFiatCurrencyPreferences(
+      UpdateFiatCurrencyPreferences updateFiatCurrencyPreferences) async {
+    await _saveChanges(
+        await _preferences,
+        _currentUser.copyWith(
+            fiatCurrencyPreferences:
+                updateFiatCurrencyPreferences.newPreferences));
+    return updateFiatCurrencyPreferences.newPreferences;
   }
 
   Future _changeThemeAction(ChangeTheme action) async {
