@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -28,6 +30,7 @@ class FiatCurrencySettings extends StatefulWidget {
 
 class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   AccountBloc _accountBloc;
+  AccountModel _accountModel;
   UserProfileBloc _userProfileBloc;
   List<String> _preferredFiatCurrencies;
   List<FiatConversion> _fiatConversionList;
@@ -77,6 +80,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         .firstWhere((account) => account.fiatConversionList.isNotEmpty)
         .then((account) {
       _fiatConversionList = List.from(account.fiatConversionList);
+      _accountModel = account;
       _sortList();
     });
   }
@@ -170,6 +174,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         preferredFiatCurrencies: preferredFiatCurrencies));
     _userProfileBloc.userActionsSink.add(action);
     action.future.then((_) {
+      isSelectedFiatConversionValid();
       Navigator.pop(context);
     }).catchError((err) {
       promptError(
@@ -180,6 +185,26 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
             style: Theme.of(context).dialogTheme.contentTextStyle,
           ));
     });
+  }
+
+  isSelectedFiatConversionValid() {
+    if (!_selectedFiatConversions.contains(_accountModel.fiatCurrency)) {
+      for (var i = 0; i < _selectedFiatConversions.length; i++) {
+        if (isAboveMinAmount(_selectedFiatConversions[i])) {
+          _userProfileBloc.fiatConversionSink
+              .add(_selectedFiatConversions[i].currencyData.shortName);
+          break;
+        }
+      }
+    }
+  }
+
+  bool isAboveMinAmount(FiatConversion fiatConversion) {
+    double fiatValue = fiatConversion.satToFiat(_accountModel.balance);
+    int fractionSize = fiatConversion.currencyData.fractionSize;
+    double minimumAmount = 1 / (pow(10, fractionSize));
+
+    return fiatValue > minimumAmount;
   }
 
   CheckboxListTile _buildFiatCurrencyTile(
