@@ -22,9 +22,7 @@ class FiatCurrencySettings extends StatefulWidget {
 
 class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   AccountBloc _accountBloc;
-
   UserProfileBloc _userProfileBloc;
-
   List<String> _preferredFiatCurrencies;
   List<FiatConversion> _fiatConversionList;
 
@@ -61,7 +59,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   void _getUserFiatCurrencyPreferences() {
     _userProfileBloc.userStream.firstWhere((user) => user != null).then((user) {
       _preferredFiatCurrencies =
-          user.fiatCurrencyPreferences.preferredFiatCurrencies;
+          List.from(user.fiatCurrencyPreferences.preferredFiatCurrencies);
     });
   }
 
