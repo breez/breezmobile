@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
@@ -127,6 +128,11 @@ class BreezBridge {
 
   Future withdrawLNUrl(String bolt11Invoice) {
     return _invokeMethodWhenReady("withdrawLnurl", {"argument": bolt11Invoice});
+  }
+
+  Future loginLNUrl(AuthFetchResponse response) {
+    return _invokeMethodWhenReady(
+        "finishLNURLAuth", {"argument": response.response.writeToBuffer()});
   }
 
   Future<String> getLogPath() {

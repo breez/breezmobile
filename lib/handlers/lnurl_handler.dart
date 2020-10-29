@@ -58,7 +58,16 @@ class LNURLHandler {
       });
       promptAreYouSure(context, "Login",
               Text("Do you want to login to ${response.host}"))
-          .then((value) => () {});
+          .then((value) {
+        var loaderRoute = createLoaderRoute(context);
+        Navigator.of(context).push(loaderRoute);
+        var action = Login(response);
+        lnurlBloc.actionsSink.add(action);
+        action.future.catchError((err) {
+          promptError(context, "Login Error",
+              Text("Failed to log in.\n" + err.toString()));
+        }).whenComplete(() => Navigator.of(context).removeRoute(loaderRoute));
+      });
     } else {
       throw "Unsupported LNUrl";
     }

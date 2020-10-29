@@ -25,6 +25,7 @@ class LNUrlBloc with AsyncActionsHandler {
       Fetch: _fetch,
       Withdraw: _withdraw,
       OpenChannel: _openChannel,
+      Login: _login,
     });
     listenActions();
   }
@@ -83,6 +84,10 @@ class LNUrlBloc with AsyncActionsHandler {
 
   Future _withdraw(Withdraw action) async {
     action.resolve(await _breezLib.withdrawLNUrl(action.bolt11Invoice));
+  }
+
+  Future _login(Login action) async {
+    action.resolve(await _breezLib.loginLNUrl(action.response));
   }
 
   Future _openChannel(OpenChannel action) async {
