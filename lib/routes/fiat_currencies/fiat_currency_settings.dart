@@ -115,11 +115,16 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         .contains(account.fiatCurrency.currencyData.shortName);
   }
 
-  _changeFiatCurrency(AccountModel account) {
-    for (var i = 0; i < account.preferredFiatConversionList.length; i++) {
+  _changeFiatCurrency(AccountModel account,
+      FiatCurrencyPreferences newFiatCurrencyPreferences) {
+    List<FiatConversion> preferredFiatConversionList = List.from(
+        account.fiatConversionList.where((fiatConversion) =>
+            newFiatCurrencyPreferences.preferredFiatCurrencies
+                .contains(fiatConversion.currencyData.shortName)));
+    for (var i = 0; i < preferredFiatConversionList.length; i++) {
       if (isAboveMinAmount(account, i)) {
         widget.userProfileBloc.fiatConversionSink
-            .add(account.preferredFiatConversionList[i].currencyData.shortName);
+            .add(preferredFiatConversionList[i].currencyData.shortName);
         break;
       }
     }
@@ -202,7 +207,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     action.future.then((newFiatCurrencyPreferences) {
       if (!_isSelectedFiatConversionValid(
           account, newFiatCurrencyPreferences)) {
-        _changeFiatCurrency(account);
+        _changeFiatCurrency(account, newFiatCurrencyPreferences);
       }
     }).catchError((err) {
       showFlushbar(context, message: "Failed to save changes.");
