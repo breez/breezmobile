@@ -123,6 +123,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         break;
       }
     }
+    // revert to first item on list if no fiat value is above minimum amount
     widget.userProfileBloc.fiatConversionSink
         .add(account.preferredFiatConversionList[0].currencyData.shortName);
   }
