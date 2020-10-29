@@ -346,7 +346,11 @@
   "CHF": {
     "name": "Swiss Franc",
     "fractionSize": 2,
-    "symbol": null,
+    "symbol": {
+      "grapheme": "fr.",
+      "template": "$1",
+      "rtl": false
+    },
     "uniqSymbol": null
   },
   "CHW": {
@@ -465,7 +469,7 @@
     "name": "Danish Krone",
     "fractionSize": 2,
     "symbol": {
-      "grapheme": "kr",
+      "grapheme": "kr.",
       "template": "1 $",
       "rtl": false
     },
@@ -538,6 +542,7 @@
   "EUR": {
     "name": "Euro",
     "fractionSize": 2,
+    "spacing": 0,
     "symbol": {
       "grapheme": "€",
       "template": "$1",
@@ -576,6 +581,7 @@
   "GBP": {
     "name": "Pound Sterling",
     "fractionSize": 2,
+    "spacing": 0,
     "symbol": {
       "grapheme": "£",
       "template": "$1",
@@ -677,7 +683,7 @@
     "name": "Hong Kong Dollar",
     "fractionSize": 2,
     "symbol": {
-      "grapheme": "$",
+      "grapheme": "HK$",
       "template": "$1",
       "rtl": false
     },
@@ -1449,7 +1455,7 @@
     "symbol": {
       "grapheme": "₽",
       "template": "1 $",
-      "rtl": false
+      "rtl": true
     },
     "uniqSymbol": {
       "grapheme": "₽",
@@ -1527,13 +1533,14 @@
     "symbol": {
       "grapheme": "kr",
       "template": "1 $",
-      "rtl": false
+      "rtl": true
     },
     "uniqSymbol": null
   },
   "SGD": {
     "name": "Singapore Dollar",
     "fractionSize": 2,
+    "spacing": 0,
     "symbol": {
       "grapheme": "$",
       "template": "$1",
@@ -1774,6 +1781,7 @@
   "USD": {
     "name": "US Dollar",
     "fractionSize": 2,
+    "spacing": 0,
     "symbol": {
       "grapheme": "$",
       "template": "$1",
@@ -1859,7 +1867,7 @@
     "symbol": {
       "grapheme": "₫",
       "template": "1 $",
-      "rtl": false
+      "rtl": true
     },
     "uniqSymbol": {
       "grapheme": "₫",

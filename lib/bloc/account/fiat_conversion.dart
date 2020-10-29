@@ -52,7 +52,10 @@ class FiatConversion {
     double minimumAmount = 1 / (pow(10, fractionSize));
 
     String formattedAmount = "";
-    String symbol = '${this.currencyData.symbol}';
+    String spacing = " " * this.currencyData.spacing;
+    String symbol = (this.currencyData.rtl)
+        ? spacing + '${this.currencyData.symbol}'
+        : '${this.currencyData.symbol}' + spacing;
     // if conversion result is less than the minimum it doesn't make sense to display
     // it.
     if (!allowBelowMin && fiatAmount < minimumAmount) {
