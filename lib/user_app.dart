@@ -8,6 +8,7 @@ import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
@@ -208,6 +209,12 @@ class UserApp extends StatelessWidget {
                                     case '/create_invoice':
                                       return FadeInRoute(
                                         builder: (_) => CreateInvoicePage(),
+                                        settings: settings,
+                                      );
+                                    case '/fiat_currency':
+                                      return FadeInRoute(
+                                        builder: (_) => FiatCurrencySettings(
+                                            accountBloc, userProfileBloc),
                                         settings: settings,
                                       );
                                     case '/network':

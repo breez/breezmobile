@@ -2,19 +2,20 @@ import 'dart:math';
 
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
 class WalletDashboard extends StatefulWidget {
   final AccountModel _accountModel;
-  final AccountSettings _accSettings;
+  final BreezUserModel _userModel;
   final double _height;
   final double _offsetFactor;
   final Function(Currency currency) _onCurrencyChange;
   final Function(String fiatConversion) _onFiatCurrencyChange;
 
-  WalletDashboard(this._accSettings, this._accountModel, this._height,
+  WalletDashboard(this._userModel, this._accountModel, this._height,
       this._offsetFactor, this._onCurrencyChange, this._onFiatCurrencyChange);
 
   @override
@@ -154,14 +155,16 @@ class WalletDashboardState extends State<WalletDashboard> {
   }
 
   FiatConversion nextValidFiatConversion() {
-    var currentIndex = widget._accountModel.fiatConversionList
+    var currentIndex = widget._accountModel.preferredFiatConversionList
         .indexOf(widget._accountModel.fiatCurrency);
-    for (var i = 1; i < widget._accountModel.fiatConversionList.length; i++) {
-      var nextIndex =
-          (i + currentIndex) % widget._accountModel.fiatConversionList.length;
+    for (var i = 1;
+        i < widget._accountModel.preferredFiatConversionList.length;
+        i++) {
+      var nextIndex = (i + currentIndex) %
+          widget._accountModel.preferredFiatConversionList.length;
       if (isAboveMinAmount(
-          widget._accountModel.fiatConversionList[nextIndex])) {
-        return widget._accountModel.fiatConversionList[nextIndex];
+          widget._accountModel.preferredFiatConversionList[nextIndex])) {
+        return widget._accountModel.preferredFiatConversionList[nextIndex];
       }
     }
     return null;

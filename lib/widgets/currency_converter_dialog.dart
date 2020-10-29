@@ -79,6 +79,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
           });
         }
       });
+
       _colorAnimation = ColorTween(
         // change to white according to theme
         begin: Theme.of(context).primaryTextTheme.headline4.color,
@@ -109,12 +110,12 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             return Container();
           }
 
-          if (account.fiatConversionList.isEmpty ||
+          if (account.preferredFiatConversionList.isEmpty ||
               account.fiatCurrency == null) {
             return Loader();
           }
 
-          double exchangeRate = account.fiatConversionList
+          double exchangeRate = account.preferredFiatConversionList
               .firstWhere(
                   (fiatConversion) =>
                       fiatConversion.currencyData.symbol ==
@@ -164,7 +165,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                                 .titleTextStyle
                                 .color,
                             style: Theme.of(context).dialogTheme.titleTextStyle,
-                            items: account.fiatConversionList
+                            items: account.preferredFiatConversionList
                                 .map((FiatConversion value) {
                               return DropdownMenuItem<String>(
                                 value: value.currencyData.shortName,

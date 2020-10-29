@@ -390,6 +390,10 @@ class HomeState extends State<Home> {
                                                       DrawerItemConfigGroup(
                                                           _filterItems([
                                                             DrawerItemConfig(
+                                                                "/fiat_currency",
+                                                                "Fiat Currencies",
+                                                                "src/icon/fiat_currencies.png"),
+                                                            DrawerItemConfig(
                                                                 "/network",
                                                                 "Network",
                                                                 "src/icon/network.png"),

@@ -6,7 +6,6 @@ import 'package:badges/badges.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/actions.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
@@ -371,7 +370,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                             .toList();
                                                                     currencies
                                                                       ..addAll(accountModel
-                                                                          .fiatConversionList
+                                                                          .preferredFiatConversionList
                                                                           .map((f) =>
                                                                               CurrencyWrapper.fromFiat(f)));
 
@@ -385,32 +384,18 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                             iconEnabledColor: Theme.of(context).textTheme.headline5.color,
                                                                             value: currentCurrency.shortName,
                                                                             style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline5.color),
-                                                                            items: Currency.currencies.map((Currency value) {
+                                                                            items: currencies.map((CurrencyWrapper value) {
                                                                               return DropdownMenuItem<String>(
-                                                                                value: value.tickerSymbol,
+                                                                                value: value.shortName,
                                                                                 child: Material(
                                                                                   child: Text(
-                                                                                    value.tickerSymbol.toUpperCase(),
+                                                                                    value.shortName.toUpperCase(),
                                                                                     textAlign: TextAlign.right,
                                                                                     style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline5.color),
                                                                                   ),
                                                                                 ),
                                                                               );
-                                                                            }).toList()
-                                                                              ..addAll(
-                                                                                accountModel.fiatConversionList.map((FiatConversion fiat) {
-                                                                                  return new DropdownMenuItem<String>(
-                                                                                    value: fiat.currencyData.shortName,
-                                                                                    child: Material(
-                                                                                      child: new Text(
-                                                                                        fiat.currencyData.shortName,
-                                                                                        textAlign: TextAlign.right,
-                                                                                        style: theme.invoiceAmountStyle.copyWith(color: Theme.of(context).textTheme.headline5.color),
-                                                                                      ),
-                                                                                    ),
-                                                                                  );
-                                                                                }).toList(),
-                                                                              )),
+                                                                            }).toList()),
                                                                       ),
                                                                     );
                                                                   });

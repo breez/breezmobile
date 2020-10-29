@@ -4,6 +4,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -266,9 +267,9 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return StreamBuilder<AccountSettings>(
-        stream: accountBloc.accountSettingsStream,
-        builder: (settingCtx, settingSnapshot) {
+    return StreamBuilder<BreezUserModel>(
+        stream: _userProfileBloc.userStream,
+        builder: (settingCtx, userSnapshot) {
           return StreamBuilder<AccountModel>(
               stream: accountBloc.accountStream,
               builder: (context, snapshot) {
@@ -279,7 +280,7 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
 
                 return Stack(overflow: Overflow.visible, children: <Widget>[
                   WalletDashboard(
-                      settingSnapshot.data,
+                      userSnapshot.data,
                       snapshot.data,
                       height,
                       heightFactor,

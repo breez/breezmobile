@@ -24,9 +24,9 @@ dependencies:
       url: https://github.com/mchome/flutter_advanced_networkimage
   intl: ^0.15.7
   flushbar:
-   git:
-     url: https://github.com/AndreHaueisen/flushbar.git
-     ref: 13c55a8
+    git:
+      url: https://github.com/AndreHaueisen/flushbar.git
+      ref: 13c55a8
   barcode_scan:
     git:
       url: https://github.com/breez/flutter_barcode_reader.git
@@ -49,6 +49,7 @@ dependencies:
   badges: ^1.1.1
   simple_animations: ^1.3.9
   file_picker: ^1.13.0+1
+  collection: ^1.14.13
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -75,6 +76,7 @@ dependencies:
   local_auth:
     git:
       url: https://github.com/breez/local_auth.git
+  dragable_flutter_list: ^1.0.2
 
 dev_dependencies:
   mockito: "^3.0.0"
