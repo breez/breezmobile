@@ -46,8 +46,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
   bool _isInit = false;
 
-  List<String> _preferredFiatCurrencies;
-
   @override
   void initState() {
     super.initState();
@@ -81,12 +79,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
           });
         }
       });
-      _userProfileBloc.userStream
-          .firstWhere((user) => user != null)
-          .then((user) {
-        _preferredFiatCurrencies =
-            List.from(user.fiatCurrencyPreferences.preferredFiatCurrencies);
-      });
+
       _colorAnimation = ColorTween(
         // change to white according to theme
         begin: Theme.of(context).primaryTextTheme.headline4.color,
@@ -117,12 +110,12 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             return Container();
           }
 
-          if (account.fiatConversionList.isEmpty ||
+          if (account.preferredFiatConversionList.isEmpty ||
               account.fiatCurrency == null) {
             return Loader();
           }
 
-          double exchangeRate = account.fiatConversionList
+          double exchangeRate = account.preferredFiatConversionList
               .firstWhere(
                   (fiatConversion) =>
                       fiatConversion.currencyData.symbol ==
@@ -130,11 +123,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                   orElse: () => null)
               .exchangeRate;
           _updateExchangeLabel(exchangeRate);
-
-          List<FiatConversion> usersFiatConversions = List.from(account
-              .fiatConversionList
-              .where((fiatConversion) => _preferredFiatCurrencies
-                  .contains(fiatConversion.currencyData.shortName)));
 
           return AlertDialog(
             title: Theme(
@@ -177,7 +165,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                                 .titleTextStyle
                                 .color,
                             style: Theme.of(context).dialogTheme.titleTextStyle,
-                            items: usersFiatConversions
+                            items: account.preferredFiatConversionList
                                 .map((FiatConversion value) {
                               return DropdownMenuItem<String>(
                                 value: value.currencyData.shortName,

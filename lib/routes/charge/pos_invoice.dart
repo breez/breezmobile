@@ -6,7 +6,6 @@ import 'package:badges/badges.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/actions.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
@@ -369,15 +368,10 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                             .map((c) =>
                                                                                 CurrencyWrapper.fromBTC(c))
                                                                             .toList();
-                                                                    List<FiatConversion> usersFiatConversions = List.from(accountModel.fiatConversionList.where((fiatConversion) => userProfile
-                                                                        .fiatCurrencyPreferences
-                                                                        .preferredFiatCurrencies
-                                                                        .contains(fiatConversion
-                                                                            .currencyData
-                                                                            .shortName)));
                                                                     currencies
-                                                                      ..addAll(usersFiatConversions.map(
-                                                                          (f) =>
+                                                                      ..addAll(accountModel
+                                                                          .preferredFiatConversionList
+                                                                          .map((f) =>
                                                                               CurrencyWrapper.fromFiat(f)));
 
                                                                     return DropdownButtonHideUnderline(

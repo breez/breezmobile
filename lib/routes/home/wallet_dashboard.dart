@@ -155,17 +155,16 @@ class WalletDashboardState extends State<WalletDashboard> {
   }
 
   FiatConversion nextValidFiatConversion() {
-    List<FiatConversion> usersFiatConversions = List.from(
-        widget._accountModel.fiatConversionList.where((fiatConversion) => widget
-            ._userModel.fiatCurrencyPreferences.preferredFiatCurrencies
-            .contains(fiatConversion.currencyData.shortName)));
-
-    var currentIndex =
-        usersFiatConversions.indexOf(widget._accountModel.fiatCurrency);
-    for (var i = 1; i < usersFiatConversions.length; i++) {
-      var nextIndex = (i + currentIndex) % usersFiatConversions.length;
-      if (isAboveMinAmount(usersFiatConversions[nextIndex])) {
-        return usersFiatConversions[nextIndex];
+    var currentIndex = widget._accountModel.preferredFiatConversionList
+        .indexOf(widget._accountModel.fiatCurrency);
+    for (var i = 1;
+        i < widget._accountModel.preferredFiatConversionList.length;
+        i++) {
+      var nextIndex = (i + currentIndex) %
+          widget._accountModel.preferredFiatConversionList.length;
+      if (isAboveMinAmount(
+          widget._accountModel.preferredFiatConversionList[nextIndex])) {
+        return widget._accountModel.preferredFiatConversionList[nextIndex];
       }
     }
     return null;

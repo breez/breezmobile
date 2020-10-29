@@ -431,9 +431,11 @@ class AccountBloc {
       log.info("account: got new user $user");
       //convert currency.
       _accountController.add(_accountController.value.copyWith(
-          currency: user.currency,
-          fiatShortName: user.fiatCurrency,
-          posCurrencyShortName: user.posCurrencyShortName));
+        currency: user.currency,
+        fiatShortName: user.fiatCurrency,
+        posCurrencyShortName: user.posCurrencyShortName,
+        fiatCurrencyPreferences: user.fiatCurrencyPreferences,
+      ));
       var updatedPayments = _paymentsController.value.copyWith(
         nonFilteredItems: _paymentsController.value.nonFilteredItems
             .map((p) => p.copyWith(_accountController.value))
@@ -651,6 +653,7 @@ class AccountBloc {
             accountResponse: acc,
             currency: _currentUser?.currency,
             fiatShortName: _currentUser?.fiatCurrency,
+            fiatCurrencyPreferences: _currentUser?.fiatCurrencyPreferences,
             initial: false);
       } else {
         return _accountController.value.copyWith(initial: false);
@@ -724,6 +727,7 @@ class AccountBloc {
     _accountController.add(_accountController.value.copyWith(
       fiatConversionList: _fiatConversionList,
       fiatShortName: _currentUser?.fiatCurrency,
+      fiatCurrencyPreferences: _currentUser?.fiatCurrencyPreferences,
     ));
   }
 
