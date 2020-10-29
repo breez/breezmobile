@@ -756,7 +756,7 @@
     }
   },
   "ILS": {
-    "name": "New Israeli Sheqel",
+    "name": "New Israeli Shekel",
     "fractionSize": 2,
     "symbol": {
       "grapheme": "₪",

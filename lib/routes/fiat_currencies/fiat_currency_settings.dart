@@ -16,6 +16,8 @@ import 'package:dragable_flutter_list/dragable_flutter_list.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+const double ITEM_HEIGHT = 72.0;
+
 class FiatCurrencySettings extends StatefulWidget {
   final AccountBloc accountBloc;
   final UserProfileBloc userProfileBloc;
@@ -29,6 +31,7 @@ class FiatCurrencySettings extends StatefulWidget {
 }
 
 class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
+  ScrollController _scrollController = new ScrollController();
   bool _isInit = false;
 
   @override
@@ -94,6 +97,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                     ),
                     body: DragAndDropList(
                       _fiatConversionList.length,
+                      scrollController: _scrollController,
                       itemBuilder: (BuildContext context, index) =>
                           _buildFiatCurrencyTile(
                               account, user, _fiatConversionList[index], index),
@@ -158,6 +162,14 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         setState(() {
           if (checked) {
             preferredFiatCurrencies.add(fiatConversion.currencyData.shortName);
+            // center item in viewport
+            _scrollController.animateTo(
+              ((2 * preferredFiatCurrencies.length - 1) * ITEM_HEIGHT -
+                      _scrollController.position.viewportDimension) /
+                  2,
+              curve: Curves.easeOut,
+              duration: const Duration(milliseconds: 400),
+            );
           } else if (account.preferredFiatConversionList.length != 1) {
             preferredFiatCurrencies
                 .remove(fiatConversion.currencyData.shortName);
