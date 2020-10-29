@@ -201,6 +201,7 @@ class AccountModel {
             "USD",
             null,
             List(),
+            FiatCurrencyPreferences.initial(),
             "SAT",
             initial: true);
 
