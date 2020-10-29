@@ -52,8 +52,41 @@ class LNURLHandler {
       Navigator.of(context).push(FadeInRoute(
         builder: (_) => CreateInvoicePage(lnurlWithdraw: response),
       ));
+    } else if (response is AuthFetchResponse) {
+      Navigator.popUntil(context, (route) {
+        return route.settings.name == "/";
+      });
+      promptAreYouSure(
+          context,
+          null,
+          RichText(
+              text: TextSpan(
+                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  text: "Do you want to anonymously login to ",
+                  children: <TextSpan>[
+                TextSpan(
+                    text: "${response.host}",
+                    style: Theme.of(context)
+                        .dialogTheme
+                        .contentTextStyle
+                        .copyWith(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: "?",
+                    style: Theme.of(context).dialogTheme.contentTextStyle)
+              ]))).then((value) {
+        if (value == true) {
+          var loaderRoute = createLoaderRoute(context);
+          Navigator.of(context).push(loaderRoute);
+          var action = Login(response);
+          lnurlBloc.actionsSink.add(action);
+          action.future.catchError((err) {
+            promptError(context, "Login Error",
+                Text("Failed to log in.\n" + err.toString()));
+          }).whenComplete(() => Navigator.of(context).removeRoute(loaderRoute));
+        }
+      });
     } else {
-      throw "Unsupported LNUrl";
+      throw "Unsupported LNURL";
     }
   }
 

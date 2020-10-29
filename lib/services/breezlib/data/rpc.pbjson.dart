@@ -466,6 +466,7 @@ const LNUrlResponse$json = const {
   '2': const [
     const {'1': 'withdraw', '3': 1, '4': 1, '5': 11, '6': '.data.LNUrlWithdraw', '9': 0, '10': 'withdraw'},
     const {'1': 'channel', '3': 2, '4': 1, '5': 11, '6': '.data.LNURLChannel', '9': 0, '10': 'channel'},
+    const {'1': 'auth', '3': 3, '4': 1, '5': 11, '6': '.data.LNURLAuth', '9': 0, '10': 'auth'},
   ],
   '8': const [
     const {'1': 'action'},
@@ -487,6 +488,16 @@ const LNURLChannel$json = const {
     const {'1': 'k1', '3': 1, '4': 1, '5': 9, '10': 'k1'},
     const {'1': 'callback', '3': 2, '4': 1, '5': 9, '10': 'callback'},
     const {'1': 'uri', '3': 3, '4': 1, '5': 9, '10': 'uri'},
+  ],
+};
+
+const LNURLAuth$json = const {
+  '1': 'LNURLAuth',
+  '2': const [
+    const {'1': 'tag', '3': 1, '4': 1, '5': 9, '10': 'tag'},
+    const {'1': 'k1', '3': 2, '4': 1, '5': 9, '10': 'k1'},
+    const {'1': 'callback', '3': 3, '4': 1, '5': 9, '10': 'callback'},
+    const {'1': 'host', '3': 4, '4': 1, '5': 9, '10': 'host'},
   ],
 };
 
