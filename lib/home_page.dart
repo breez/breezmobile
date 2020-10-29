@@ -18,7 +18,6 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
-import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:breez/routes/home/qr_action_button.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -391,18 +390,9 @@ class HomeState extends State<Home> {
                                                       DrawerItemConfigGroup(
                                                           _filterItems([
                                                             DrawerItemConfig(
-                                                                "",
+                                                                "/fiat_currency",
                                                                 "Fiat Currencies",
-                                                                "src/icon/fiat_currencies.png",
-                                                                onItemSelected: (_) => showDialog(
-                                                                    useRootNavigator:
-                                                                        false,
-                                                                    context:
-                                                                        context,
-                                                                    barrierDismissible:
-                                                                        false,
-                                                                    builder: (_) =>
-                                                                        FiatCurrencySettings())),
+                                                                "src/icon/fiat_currencies.png"),
                                                             DrawerItemConfig(
                                                                 "/network",
                                                                 "Network",
