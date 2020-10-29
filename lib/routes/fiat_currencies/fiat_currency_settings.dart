@@ -97,7 +97,8 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                       itemBuilder: (BuildContext context, index) =>
                           _buildFiatCurrencyTile(
                               account, user, _fiatConversionList[index], index),
-                      onDragFinish: (from, to) => _onReorder(user, from, to),
+                      onDragFinish: (from, to) =>
+                          _onReorder(account, user, from, to),
                       canDrag: (index) =>
                           index <= account.preferredFiatConversionList.length,
                       canBeDraggedTo: (from, to) =>
@@ -108,22 +109,22 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         });
   }
 
-  isSelectedFiatConversionValid(AccountModel accountModel) {
-    if (!accountModel.preferredFiatConversionList
-        .contains(accountModel.fiatCurrency)) {
-      for (var i = 0;
-          i < accountModel.preferredFiatConversionList.length;
-          i++) {
-        if (isAboveMinAmount(accountModel, i)) {
-          widget.userProfileBloc.fiatConversionSink.add(accountModel
-              .preferredFiatConversionList[i].currencyData.shortName);
-          break;
-        }
+  bool _isSelectedFiatConversionValid(AccountModel account,
+      FiatCurrencyPreferences newFiatCurrencyPreferences) {
+    return newFiatCurrencyPreferences.preferredFiatCurrencies
+        .contains(account.fiatCurrency.currencyData.shortName);
+  }
+
+  _changeFiatCurrency(AccountModel account) {
+    for (var i = 0; i < account.preferredFiatConversionList.length; i++) {
+      if (isAboveMinAmount(account, i)) {
+        widget.userProfileBloc.fiatConversionSink
+            .add(account.preferredFiatConversionList[i].currencyData.shortName);
+        break;
       }
-      // revert to first item on list if no fiat value is above minimum amount
-      widget.userProfileBloc.fiatConversionSink.add(
-          accountModel.preferredFiatConversionList[0].currencyData.shortName);
     }
+    widget.userProfileBloc.fiatConversionSink
+        .add(account.preferredFiatConversionList[0].currencyData.shortName);
   }
 
   bool isAboveMinAmount(AccountModel accountModel, int index) {
@@ -155,7 +156,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
             preferredFiatCurrencies
                 .remove(fiatConversion.currencyData.shortName);
           }
-          _updateFiatCurrencyPreferences(preferredFiatCurrencies);
+          _updateFiatCurrencyPreferences(account, preferredFiatCurrencies);
         });
       },
       subtitle: Text(fiatConversion.currencyData.name,
@@ -180,7 +181,8 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     );
   }
 
-  void _onReorder(BreezUserModel user, int oldIndex, int newIndex) {
+  void _onReorder(
+      AccountModel account, BreezUserModel user, int oldIndex, int newIndex) {
     if (newIndex > oldIndex) {
       newIndex -= 1;
     }
@@ -188,14 +190,19 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         List.from(user.fiatCurrencyPreferences.preferredFiatCurrencies);
     String item = preferredFiatCurrencies.removeAt(oldIndex);
     preferredFiatCurrencies.insert(newIndex, item);
-    _updateFiatCurrencyPreferences(preferredFiatCurrencies);
+    _updateFiatCurrencyPreferences(account, preferredFiatCurrencies);
   }
 
-  void _updateFiatCurrencyPreferences(List<String> preferredFiatCurrencies) {
+  void _updateFiatCurrencyPreferences(
+      AccountModel account, List<String> preferredFiatCurrencies) {
     var action = UpdateFiatCurrencyPreferences(FiatCurrencyPreferences(
         preferredFiatCurrencies: preferredFiatCurrencies));
     widget.userProfileBloc.userActionsSink.add(action);
-    action.future.then((_) {}).catchError((err) {
+    action.future.then((newFiatCurrencyPreferences) {
+      bool isSelectedFiatConversionValid =
+          _isSelectedFiatConversionValid(account, newFiatCurrencyPreferences);
+      if (!isSelectedFiatConversionValid) _changeFiatCurrency(account);
+    }).catchError((err) {
       showFlushbar(context, message: "Failed to save changes.");
     });
   }
