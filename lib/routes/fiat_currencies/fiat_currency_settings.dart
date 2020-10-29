@@ -104,9 +104,9 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                       onDragFinish: (from, to) =>
                           _onReorder(account, user, from, to),
                       canDrag: (index) =>
-                          index <= account.preferredFiatConversionList.length,
+                          index < account.preferredFiatConversionList.length,
                       canBeDraggedTo: (from, to) =>
-                          to <= account.preferredFiatConversionList.length,
+                          to < account.preferredFiatConversionList.length,
                       dragElevation: 8.0,
                     ));
               });
