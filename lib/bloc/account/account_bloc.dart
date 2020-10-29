@@ -226,6 +226,33 @@ class AccountBloc {
     rates.resolve(this._accountController.value.fiatConversionList);
   }
 
+  Future<List<FiatConversion>> _sortFiatConversionList(
+      {List<FiatConversion> fiatConversionList}) async {
+    List<FiatConversion> preferredFiatConversionList = List.from(
+        (fiatConversionList ?? _accountController.value.fiatConversionList)
+            .where((fiatConversion) => _currentUser
+                .fiatCurrencyPreferences.preferredFiatCurrencies
+                .contains(fiatConversion.currencyData.shortName)));
+    Map<String, int> order = new Map.fromIterable(
+        _currentUser?.fiatCurrencyPreferences?.preferredFiatCurrencies,
+        key: (key) => key,
+        value: (key) => _currentUser
+            .fiatCurrencyPreferences.preferredFiatCurrencies
+            .indexOf(key));
+    preferredFiatConversionList.sort((a, b) => order[a.currencyData.shortName]
+        .compareTo(order[b.currencyData.shortName]));
+
+    List unselectedFiatConversions =
+        (fiatConversionList ?? _accountController.value.fiatConversionList)
+            .where((fiatConversion) =>
+                !preferredFiatConversionList.contains(fiatConversion))
+            .toList();
+    unselectedFiatConversions.sort((a, b) => a.currencyData.shortName
+        .toString()
+        .compareTo(b.currencyData.shortName.toString()));
+    return preferredFiatConversionList + unselectedFiatConversions;
+  }
+
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
     Map<String, dynamic> jsonReport = json.decode(action.traceReport);
     jsonReport["app version"] = await _device.appVersion();
@@ -436,6 +463,11 @@ class AccountBloc {
         posCurrencyShortName: user.posCurrencyShortName,
         fiatCurrencyPreferences: user.fiatCurrencyPreferences,
       ));
+      List<FiatConversion> _sortedFiatConversionList =
+          await _sortFiatConversionList();
+      _accountController.add(_accountController.value
+          .copyWith(fiatConversionList: _sortedFiatConversionList));
+
       var updatedPayments = _paymentsController.value.copyWith(
         nonFilteredItems: _paymentsController.value.nonFilteredItems
             .map((p) => p.copyWith(_accountController.value))
@@ -722,8 +754,8 @@ class AccountBloc {
     List<FiatConversion> _fiatConversionList = _rate.rates
         .map((rate) => FiatConversion(_currencyData[rate.coin], rate.value))
         .toList();
-    _fiatConversionList.sort(
-        (a, b) => a.currencyData.shortName.compareTo(b.currencyData.shortName));
+    _fiatConversionList =
+        await _sortFiatConversionList(fiatConversionList: _fiatConversionList);
     _accountController.add(_accountController.value.copyWith(
       fiatConversionList: _fiatConversionList,
       fiatShortName: _currentUser?.fiatCurrency,
