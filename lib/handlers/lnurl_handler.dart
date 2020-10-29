@@ -57,11 +57,23 @@ class LNURLHandler {
         return route.settings.name == "/";
       });
       promptAreYouSure(
-              context,
-              null,
-              Text("Do you want to login to ${response.host}",
-                  style: Theme.of(context).dialogTheme.contentTextStyle))
-          .then((value) {
+          context,
+          null,
+          RichText(
+              text: TextSpan(
+                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  text: "Do you want to anonymously login to ",
+                  children: <TextSpan>[
+                TextSpan(
+                    text: "${response.host}",
+                    style: Theme.of(context)
+                        .dialogTheme
+                        .contentTextStyle
+                        .copyWith(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: "?",
+                    style: Theme.of(context).dialogTheme.contentTextStyle)
+              ]))).then((value) {
         if (value == true) {
           var loaderRoute = createLoaderRoute(context);
           Navigator.of(context).push(loaderRoute);
@@ -74,7 +86,7 @@ class LNURLHandler {
         }
       });
     } else {
-      throw "Unsupported LNUrl";
+      throw "Unsupported LNURL";
     }
   }
 
