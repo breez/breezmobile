@@ -1,5 +1,7 @@
 import 'package:breez/bloc/async_action.dart';
 
+import 'lnurl_model.dart';
+
 class Fetch extends AsyncAction {
   final String lnurl;
 
@@ -18,4 +20,10 @@ class OpenChannel extends AsyncAction {
   final String k1;
 
   OpenChannel(this.uri, this.callback, this.k1);
+}
+
+class Login extends AsyncAction {
+  final AuthFetchResponse response;
+
+  Login(this.response);
 }

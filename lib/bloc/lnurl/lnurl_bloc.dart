@@ -25,6 +25,7 @@ class LNUrlBloc with AsyncActionsHandler {
       Fetch: _fetch,
       Withdraw: _withdraw,
       OpenChannel: _openChannel,
+      Login: _login,
     });
     listenActions();
   }
@@ -50,6 +51,8 @@ class LNUrlBloc with AsyncActionsHandler {
                 .add(WithdrawFetchResponse(response.withdraw));
           } else if (response.hasChannel()) {
             _lnUrlStreamController.add(ChannelFetchResponse(response.channel));
+          } else if (response.hasAuth()) {
+            _lnUrlStreamController.add(AuthFetchResponse(response.auth));
           } else {
             _lnUrlStreamController.addError("Unsupported LNUrl");
           }
@@ -72,11 +75,19 @@ class LNUrlBloc with AsyncActionsHandler {
       action.resolve(ChannelFetchResponse(res.channel));
       return;
     }
+    if (res.hasAuth()) {
+      action.resolve(AuthFetchResponse(res.auth));
+      return;
+    }
     throw "Unsupported LNUrl action";
   }
 
   Future _withdraw(Withdraw action) async {
     action.resolve(await _breezLib.withdrawLNUrl(action.bolt11Invoice));
+  }
+
+  Future _login(Login action) async {
+    action.resolve(await _breezLib.loginLNUrl(action.response));
   }
 
   Future _openChannel(OpenChannel action) async {

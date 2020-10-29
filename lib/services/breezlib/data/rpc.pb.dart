@@ -2228,6 +2228,7 @@ class ConnectLSPReply extends $pb.GeneratedMessage {
 enum LNUrlResponse_Action {
   withdraw, 
   channel, 
+  auth, 
   notSet
 }
 
@@ -2235,12 +2236,14 @@ class LNUrlResponse extends $pb.GeneratedMessage {
   static const $core.Map<$core.int, LNUrlResponse_Action> _LNUrlResponse_ActionByTag = {
     1 : LNUrlResponse_Action.withdraw,
     2 : LNUrlResponse_Action.channel,
+    3 : LNUrlResponse_Action.auth,
     0 : LNUrlResponse_Action.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('LNUrlResponse', package: const $pb.PackageName('data'), createEmptyInstance: create)
-    ..oo(0, [1, 2])
+    ..oo(0, [1, 2, 3])
     ..aOM<LNUrlWithdraw>(1, 'withdraw', subBuilder: LNUrlWithdraw.create)
     ..aOM<LNURLChannel>(2, 'channel', subBuilder: LNURLChannel.create)
+    ..aOM<LNURLAuth>(3, 'auth', subBuilder: LNURLAuth.create)
     ..hasRequiredFields = false
   ;
 
@@ -2283,6 +2286,17 @@ class LNUrlResponse extends $pb.GeneratedMessage {
   void clearChannel() => clearField(2);
   @$pb.TagNumber(2)
   LNURLChannel ensureChannel() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  LNURLAuth get auth => $_getN(2);
+  @$pb.TagNumber(3)
+  set auth(LNURLAuth v) { setField(3, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasAuth() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearAuth() => clearField(3);
+  @$pb.TagNumber(3)
+  LNURLAuth ensureAuth() => $_ensure(2);
 }
 
 class LNUrlWithdraw extends $pb.GeneratedMessage {
@@ -2385,6 +2399,67 @@ class LNURLChannel extends $pb.GeneratedMessage {
   $core.bool hasUri() => $_has(2);
   @$pb.TagNumber(3)
   void clearUri() => clearField(3);
+}
+
+class LNURLAuth extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('LNURLAuth', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'tag')
+    ..aOS(2, 'k1')
+    ..aOS(3, 'callback')
+    ..aOS(4, 'host')
+    ..hasRequiredFields = false
+  ;
+
+  LNURLAuth._() : super();
+  factory LNURLAuth() => create();
+  factory LNURLAuth.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNURLAuth.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  LNURLAuth clone() => LNURLAuth()..mergeFromMessage(this);
+  LNURLAuth copyWith(void Function(LNURLAuth) updates) => super.copyWith((message) => updates(message as LNURLAuth));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LNURLAuth create() => LNURLAuth._();
+  LNURLAuth createEmptyInstance() => create();
+  static $pb.PbList<LNURLAuth> createRepeated() => $pb.PbList<LNURLAuth>();
+  @$core.pragma('dart2js:noInline')
+  static LNURLAuth getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNURLAuth>(create);
+  static LNURLAuth _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get tag => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set tag($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasTag() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearTag() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get k1 => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set k1($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasK1() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearK1() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get callback => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set callback($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasCallback() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearCallback() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get host => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set host($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasHost() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearHost() => clearField(4);
 }
 
 class ReverseSwapRequest extends $pb.GeneratedMessage {

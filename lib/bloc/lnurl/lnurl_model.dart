@@ -20,3 +20,14 @@ class ChannelFetchResponse {
   String get callback => response.callback;
   String get k1 => response.k1;
 }
+
+class AuthFetchResponse {
+  final LNURLAuth response;
+
+  AuthFetchResponse(this.response);
+
+  String get host => response.host;
+  String get tag => response.tag;
+  String get callback => response.callback;
+  String get k1 => response.k1;
+}
