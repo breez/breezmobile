@@ -199,9 +199,10 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         preferredFiatCurrencies: preferredFiatCurrencies));
     widget.userProfileBloc.userActionsSink.add(action);
     action.future.then((newFiatCurrencyPreferences) {
-      bool isSelectedFiatConversionValid =
-          _isSelectedFiatConversionValid(account, newFiatCurrencyPreferences);
-      if (!isSelectedFiatConversionValid) _changeFiatCurrency(account);
+      if (!_isSelectedFiatConversionValid(
+          account, newFiatCurrencyPreferences)) {
+        _changeFiatCurrency(account);
+      }
     }).catchError((err) {
       showFlushbar(context, message: "Failed to save changes.");
     });
