@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/fiat_currency_preferences.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
@@ -102,22 +101,17 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     );
   }
 
-  _changeFiatCurrency(AccountModel account,
-      FiatCurrencyPreferences newFiatCurrencyPreferences) {
-    List<FiatConversion> preferredFiatConversionList = List.from(
-        account.fiatConversionList.where((fiatConversion) =>
-            newFiatCurrencyPreferences.preferredFiatCurrencies
-                .contains(fiatConversion.currencyData.shortName)));
-    for (var i = 0; i < preferredFiatConversionList.length; i++) {
+  _changeFiatCurrency(
+      AccountModel account, List<String> preferredFiatCurrencies) {
+    for (var i = 0; i < preferredFiatCurrencies.length; i++) {
       if (isAboveMinAmount(account, i)) {
         widget.userProfileBloc.fiatConversionSink
-            .add(preferredFiatConversionList[i].currencyData.shortName);
+            .add(preferredFiatCurrencies[i]);
         break;
       }
     }
     // revert to first item on list if no fiat value is above minimum amount
-    widget.userProfileBloc.fiatConversionSink
-        .add(preferredFiatConversionList[0].currencyData.shortName);
+    widget.userProfileBloc.fiatConversionSink.add(preferredFiatCurrencies[0]);
   }
 
   bool isAboveMinAmount(AccountModel accountModel, int index) {
@@ -203,8 +197,8 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     var action = UpdateFiatCurrencyPreferences(FiatCurrencyPreferences(
         preferredFiatCurrencies: preferredFiatCurrencies));
     widget.userProfileBloc.userActionsSink.add(action);
-    action.future.then((newFiatCurrencyPreferences) {
-      _changeFiatCurrency(account, newFiatCurrencyPreferences);
+    action.future.then((_) {
+      _changeFiatCurrency(account, preferredFiatCurrencies);
     }).catchError((err) {
       showFlushbar(context, message: "Failed to save changes.");
     });
