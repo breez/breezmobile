@@ -183,13 +183,17 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           if (checked) {
             preferredFiatCurrencies.add(fiatConversion.currencyData.shortName);
             // center item in viewport
-            _scrollController.animateTo(
-              ((2 * preferredFiatCurrencies.length - 1) * ITEM_HEIGHT -
-                      _scrollController.position.viewportDimension) /
-                  2,
-              curve: Curves.easeOut,
-              duration: const Duration(milliseconds: 400),
-            );
+            if (_scrollController.offset +
+                    (ITEM_HEIGHT * preferredFiatCurrencies.length) >
+                _scrollController.position.viewportDimension / 2) {
+              _scrollController.animateTo(
+                ((2 * preferredFiatCurrencies.length - 1) * ITEM_HEIGHT -
+                        _scrollController.position.viewportDimension) /
+                    2,
+                curve: Curves.easeOut,
+                duration: const Duration(milliseconds: 400),
+              );
+            }
           } else if (account.preferredFiatConversionList.length != 1) {
             preferredFiatCurrencies
                 .remove(fiatConversion.currencyData.shortName);
