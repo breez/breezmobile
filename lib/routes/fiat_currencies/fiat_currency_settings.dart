@@ -183,9 +183,8 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           if (checked) {
             preferredFiatCurrencies.add(fiatConversion.currencyData.shortName);
             // center item in viewport
-            if (_scrollController.offset +
-                    (ITEM_HEIGHT * preferredFiatCurrencies.length) >
-                _scrollController.position.viewportDimension / 2) {
+            if (_scrollController.offset >=
+                (ITEM_HEIGHT * (preferredFiatCurrencies.length - 1))) {
               _scrollController.animateTo(
                 ((2 * preferredFiatCurrencies.length - 1) * ITEM_HEIGHT -
                         _scrollController.position.viewportDimension) /
