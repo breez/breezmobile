@@ -12,7 +12,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:dragable_flutter_list/dragable_flutter_list.dart';
+import 'package:draggable_flutter_list/draggable_flutter_list.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
