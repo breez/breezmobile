@@ -110,7 +110,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                     onItemReorder: (from, oldListIndex, to, newListIndex) =>
                         _onReorder(account, user, from, to),
                     dragHandle: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: Icon(Icons.drag_handle,
                           color: theme.BreezColors.white[200]),
                     ),
