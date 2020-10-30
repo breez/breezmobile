@@ -76,9 +76,7 @@ dependencies:
   local_auth:
     git:
       url: https://github.com/breez/local_auth.git
-  draggable_flutter_list:
-    git:
-      url: https://github.com/breez/draggable_flutter_list.git
+  drag_and_drop_lists: ^0.2.7
 
 dev_dependencies:
   mockito: "^3.0.0"

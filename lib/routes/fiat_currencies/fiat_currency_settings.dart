@@ -12,7 +12,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:draggable_flutter_list/draggable_flutter_list.dart';
+import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -95,22 +95,40 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                       ),
                       elevation: 0.0,
                     ),
-                    body: DragAndDropList(
-                      _fiatConversionList.length,
+                    body: DragAndDropLists(
+                      children: [
+                        _buildList(account, user, _fiatConversionList)
+                      ],
                       scrollController: _scrollController,
-                      itemBuilder: (BuildContext context, index) =>
-                          _buildFiatCurrencyTile(
-                              account, user, _fiatConversionList[index], index),
-                      onDragFinish: (from, to) =>
+                      onItemReorder: (from, oldListIndex, to, newListIndex) =>
                           _onReorder(account, user, from, to),
-                      canDrag: (index) =>
-                          index < account.preferredFiatConversionList.length,
-                      canBeDraggedTo: (from, to) =>
-                          to < account.preferredFiatConversionList.length,
-                      dragElevation: 8.0,
+                      dragHandle: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.drag_handle,
+                            color: theme.BreezColors.white[200]),
+                      ),
                     ));
               });
         });
+  }
+
+  DragAndDropList _buildList(AccountModel account, BreezUserModel user,
+      List<FiatConversion> fiatConversionList) {
+    List<String> preferredFiatCurrencies =
+        List.from(user.fiatCurrencyPreferences.preferredFiatCurrencies);
+    return DragAndDropList(
+      canDrag: false,
+      children: List.generate(
+        fiatConversionList.length,
+        (index) {
+          return DragAndDropItem(
+              child: _buildFiatCurrencyTile(account, user,
+                  fiatConversionList[index], preferredFiatCurrencies, index),
+              canDrag: preferredFiatCurrencies
+                  .contains(fiatConversionList[index].currencyData.shortName));
+        },
+      ),
+    );
   }
 
   bool _isSelectedFiatConversionValid(AccountModel account,
@@ -147,10 +165,12 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     return fiatValue > minimumAmount;
   }
 
-  CheckboxListTile _buildFiatCurrencyTile(AccountModel account,
-      BreezUserModel user, FiatConversion fiatConversion, int index) {
-    List<String> preferredFiatCurrencies =
-        List.from(user.fiatCurrencyPreferences.preferredFiatCurrencies);
+  CheckboxListTile _buildFiatCurrencyTile(
+      AccountModel account,
+      BreezUserModel user,
+      FiatConversion fiatConversion,
+      List<String> preferredFiatCurrencies,
+      int index) {
     return CheckboxListTile(
       key: ValueKey(fiatConversion.currencyData.shortName),
       controlAffinity: ListTileControlAffinity.leading,
@@ -189,23 +209,16 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                   style: theme.fiatConversionDescriptionStyle),
             ]),
       ),
-      secondary: Icon(
-        Icons.drag_handle,
-        color: preferredFiatCurrencies
-                .contains(fiatConversion.currencyData.shortName)
-            ? theme.BreezColors.white[200]
-            : Colors.transparent,
-      ),
     );
   }
 
   void _onReorder(
       AccountModel account, BreezUserModel user, int oldIndex, int newIndex) {
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
-    }
     List<String> preferredFiatCurrencies =
         List.from(user.fiatCurrencyPreferences.preferredFiatCurrencies);
+    if (newIndex >= preferredFiatCurrencies.length) {
+      newIndex = preferredFiatCurrencies.length - 1;
+    }
     String item = preferredFiatCurrencies.removeAt(oldIndex);
     preferredFiatCurrencies.insert(newIndex, item);
     _updateFiatCurrencyPreferences(account, preferredFiatCurrencies);
