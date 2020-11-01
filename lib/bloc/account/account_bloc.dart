@@ -228,26 +228,23 @@ class AccountBloc {
 
   List<FiatConversion> _sortFiatConversionList(
       {List<FiatConversion> fiatConversionList}) {
-    List<FiatConversion> preferredFiatConversionList = List.from(
-        (fiatConversionList ?? _accountController.value.fiatConversionList)
-            .where((fiatConversion) => _currentUser.preferredCurrencies
-                .contains(fiatConversion.currencyData.shortName)));
-    Map<String, int> order = new Map.fromIterable(
-        _currentUser?.preferredCurrencies,
-        key: (key) => key,
-        value: (key) => _currentUser.preferredCurrencies.indexOf(key));
-    preferredFiatConversionList.sort((a, b) => order[a.currencyData.shortName]
-        .compareTo(order[b.currencyData.shortName]));
+    var toSort = List<FiatConversion>.from(
+        (fiatConversionList ?? _accountController.value.fiatConversionList));
 
-    List unselectedFiatConversions =
-        (fiatConversionList ?? _accountController.value.fiatConversionList)
-            .where((fiatConversion) =>
-                !preferredFiatConversionList.contains(fiatConversion))
-            .toList();
-    unselectedFiatConversions.sort((a, b) => a.currencyData.shortName
-        .toString()
-        .compareTo(b.currencyData.shortName.toString()));
-    return preferredFiatConversionList + unselectedFiatConversions;
+    // First sort by name
+    toSort.sort((f1, f2) =>
+        f1.currencyData.shortName.compareTo(f2.currencyData.shortName));
+
+    // Then give precendence to the preferred items.
+    _currentUser.preferredCurrencies.reversed.forEach((p) {
+      var preferred = toSort.firstWhere((e) => e.currencyData.shortName == p,
+          orElse: () => null);
+      if (preferred != null) {
+        toSort.remove(preferred);
+        toSort.insert(0, preferred);
+      }
+    });
+    return toSort;
   }
 
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
@@ -459,11 +456,9 @@ class AccountBloc {
         fiatShortName: user.fiatCurrency,
         posCurrencyShortName: user.posCurrencyShortName,
         preferredCurrencies: user.preferredCurrencies,
+        fiatConversionList: _sortFiatConversionList(
+            fiatConversionList: _accountController.value.fiatConversionList),
       ));
-      List<FiatConversion> _sortedFiatConversionList =
-          _sortFiatConversionList();
-      _accountController.add(_accountController.value
-          .copyWith(fiatConversionList: _sortedFiatConversionList));
 
       var updatedPayments = _paymentsController.value.copyWith(
         nonFilteredItems: _paymentsController.value.nonFilteredItems
