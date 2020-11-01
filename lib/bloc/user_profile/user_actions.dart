@@ -1,6 +1,4 @@
 import 'package:breez/bloc/async_action.dart';
-import 'package:breez/bloc/user_profile/fiat_currency_preferences.dart';
-
 import 'security_model.dart';
 
 class UpdateSecurityModel extends AsyncAction {

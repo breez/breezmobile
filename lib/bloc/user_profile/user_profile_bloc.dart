@@ -271,17 +271,10 @@ class UserProfileBloc {
 
   Future _updatePreferredCurrenciesAction(
       UpdatePreferredCurrencies updateCurrencies) async {
-    updateCurrencies
-        .resolve(await _updateFiatCurrencyPreferences(updateCurrencies));
-  }
-
-  Future _updateFiatCurrencyPreferences(
-      UpdatePreferredCurrencies updatePreferredCurrencies) async {
-    await _saveChanges(
-        await _preferences,
-        _currentUser.copyWith(
-            preferredCurrencies: updatePreferredCurrencies.currencies));
-    return updatePreferredCurrencies.currencies;
+    var updated =
+        _currentUser.copyWith(preferredCurrencies: updateCurrencies.currencies);
+    await _saveChanges(await _preferences, updated);
+    updateCurrencies.resolve(updateCurrencies.currencies);
   }
 
   Future _changeThemeAction(ChangeTheme action) async {
