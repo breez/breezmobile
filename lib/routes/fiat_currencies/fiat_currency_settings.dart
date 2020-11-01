@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/fiat_currency_preferences.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -70,8 +69,6 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                   body: DragAndDropLists(
                     children: [_buildList(account, user)],
                     scrollController: _scrollController,
-                    lastListTargetSize: 0,
-                    lastItemTargetHeight: 8,
                     onItemReorder: (from, oldListIndex, to, newListIndex) =>
                         _onReorder(account, user, from, to),
                     dragHandle: Padding(
@@ -93,9 +90,8 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         (index) {
           return DragAndDropItem(
               child: _buildFiatCurrencyTile(account, user, index),
-              canDrag: user.fiatCurrencyPreferences.preferredFiatCurrencies
-                  .contains(account
-                      .fiatConversionList[index].currencyData.shortName));
+              canDrag: user.preferredCurrencies.contains(
+                  account.fiatConversionList[index].currencyData.shortName));
         },
       ),
     );
@@ -124,32 +120,25 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     return fiatValue > minimumAmount;
   }
 
-  CheckboxListTile _buildFiatCurrencyTile(
+  Widget _buildFiatCurrencyTile(
       AccountModel account, BreezUserModel user, int index) {
     return CheckboxListTile(
-      key: ValueKey(account.fiatConversionList[index].currencyData.shortName),
+      key: Key("tile-index-$index"),
       controlAffinity: ListTileControlAffinity.leading,
       activeColor: Colors.white,
       checkColor: Theme.of(context).canvasColor,
-      value: user.fiatCurrencyPreferences.preferredFiatCurrencies
+      value: user.preferredCurrencies
           .contains(account.fiatConversionList[index].currencyData.shortName),
       onChanged: (bool checked) {
         setState(() {
           if (checked) {
-            user.fiatCurrencyPreferences.preferredFiatCurrencies
+            user.preferredCurrencies
                 .add(account.fiatConversionList[index].currencyData.shortName);
             // center item in viewport
             if (_scrollController.offset >=
-                (ITEM_HEIGHT *
-                    (user.fiatCurrencyPreferences.preferredFiatCurrencies
-                            .length -
-                        1))) {
+                (ITEM_HEIGHT * (user.preferredCurrencies.length - 1))) {
               _scrollController.animateTo(
-                ((2 *
-                                    user.fiatCurrencyPreferences
-                                        .preferredFiatCurrencies.length -
-                                1) *
-                            ITEM_HEIGHT -
+                ((2 * user.preferredCurrencies.length - 1) * ITEM_HEIGHT -
                         _scrollController.position.viewportDimension) /
                     2,
                 curve: Curves.easeOut,
@@ -157,11 +146,10 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
               );
             }
           } else if (account.preferredFiatConversionList.length != 1) {
-            user.fiatCurrencyPreferences.preferredFiatCurrencies
-                .remove(account.fiatCurrency.currencyData.shortName);
+            user.preferredCurrencies.remove(
+                account.fiatConversionList[index].currencyData.shortName);
           }
-          _updateFiatCurrencyPreferences(
-              account, user.fiatCurrencyPreferences.preferredFiatCurrencies);
+          _updateFiatCurrencyPreferences(account, user.preferredCurrencies);
         });
       },
       subtitle: Text(account.fiatConversionList[index].currencyData.name,
@@ -182,8 +170,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
 
   void _onReorder(
       AccountModel account, BreezUserModel user, int oldIndex, int newIndex) {
-    List<String> preferredFiatCurrencies =
-        List.from(user.fiatCurrencyPreferences.preferredFiatCurrencies);
+    List<String> preferredFiatCurrencies = List.from(user.preferredCurrencies);
     if (newIndex >= preferredFiatCurrencies.length) {
       newIndex = preferredFiatCurrencies.length - 1;
     }
@@ -194,8 +181,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
 
   void _updateFiatCurrencyPreferences(
       AccountModel account, List<String> preferredFiatCurrencies) {
-    var action = UpdateFiatCurrencyPreferences(FiatCurrencyPreferences(
-        preferredFiatCurrencies: preferredFiatCurrencies));
+    var action = UpdatePreferredCurrencies(preferredFiatCurrencies);
     widget.userProfileBloc.userActionsSink.add(action);
     action.future.then((_) {
       _changeFiatCurrency(account, preferredFiatCurrencies);

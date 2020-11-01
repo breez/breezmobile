@@ -160,7 +160,7 @@ class AccountModel {
   final String _fiatShortName;
   final FiatConversion _fiatCurrency;
   final List<FiatConversion> _fiatConversionList;
-  final FiatCurrencyPreferences _fiatCurrencyPreferences;
+  final List<String> preferredCurrencies;
   final String _posCurrencyShortName;
   final FundStatusReply addedFundsReply;
   final Int64 onChainFeeRate;
@@ -177,7 +177,7 @@ class AccountModel {
       this._fiatShortName,
       this._fiatCurrency,
       this._fiatConversionList,
-      this._fiatCurrencyPreferences,
+      this.preferredCurrencies,
       this._posCurrencyShortName,
       {this.initial = true,
       this.addedFundsReply,
@@ -201,7 +201,7 @@ class AccountModel {
             "USD",
             null,
             List(),
-            FiatCurrencyPreferences.initial(),
+            List(),
             "SAT",
             initial: true);
 
@@ -211,7 +211,7 @@ class AccountModel {
       String fiatShortName,
       FiatConversion fiatCurrency,
       List<FiatConversion> fiatConversionList,
-      FiatCurrencyPreferences fiatCurrencyPreferences,
+      List<String> preferredCurrencies,
       String posCurrencyShortName,
       FundStatusReply addedFundsReply,
       Int64 onChainFeeRate,
@@ -227,7 +227,7 @@ class AccountModel {
         fiatShortName ?? this._fiatShortName,
         fiatCurrency ?? this._fiatCurrency,
         fiatConversionList ?? this._fiatConversionList,
-        fiatCurrencyPreferences ?? this._fiatCurrencyPreferences,
+        preferredCurrencies ?? this.preferredCurrencies,
         posCurrencyShortName ?? this._posCurrencyShortName,
         addedFundsReply: addedFundsReply ?? this.addedFundsReply,
         onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
@@ -262,8 +262,7 @@ class AccountModel {
 
   List<FiatConversion> get preferredFiatConversionList =>
       List.from(_fiatConversionList.where((fiatConversion) =>
-          _fiatCurrencyPreferences.preferredFiatCurrencies
-              .contains(fiatConversion.currencyData.shortName)));
+          preferredCurrencies.contains(fiatConversion.currencyData.shortName)));
 
   String get posCurrencyShortName => _posCurrencyShortName;
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;

@@ -9,10 +9,10 @@ class UpdateSecurityModel extends AsyncAction {
   UpdateSecurityModel(this.newModel);
 }
 
-class UpdateFiatCurrencyPreferences extends AsyncAction {
-  final FiatCurrencyPreferences newPreferences;
+class UpdatePreferredCurrencies extends AsyncAction {
+  final List<String> currencies;
 
-  UpdateFiatCurrencyPreferences(this.newPreferences);
+  UpdatePreferredCurrencies(this.currencies);
 }
 
 class ResetSecurityModel extends AsyncAction {}

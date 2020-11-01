@@ -226,19 +226,16 @@ class AccountBloc {
     rates.resolve(this._accountController.value.fiatConversionList);
   }
 
-  Future<List<FiatConversion>> _sortFiatConversionList(
-      {List<FiatConversion> fiatConversionList}) async {
+  List<FiatConversion> _sortFiatConversionList(
+      {List<FiatConversion> fiatConversionList}) {
     List<FiatConversion> preferredFiatConversionList = List.from(
         (fiatConversionList ?? _accountController.value.fiatConversionList)
-            .where((fiatConversion) => _currentUser
-                .fiatCurrencyPreferences.preferredFiatCurrencies
+            .where((fiatConversion) => _currentUser.preferredCurrencies
                 .contains(fiatConversion.currencyData.shortName)));
     Map<String, int> order = new Map.fromIterable(
-        _currentUser?.fiatCurrencyPreferences?.preferredFiatCurrencies,
+        _currentUser?.preferredCurrencies,
         key: (key) => key,
-        value: (key) => _currentUser
-            .fiatCurrencyPreferences.preferredFiatCurrencies
-            .indexOf(key));
+        value: (key) => _currentUser.preferredCurrencies.indexOf(key));
     preferredFiatConversionList.sort((a, b) => order[a.currencyData.shortName]
         .compareTo(order[b.currencyData.shortName]));
 
@@ -461,10 +458,10 @@ class AccountBloc {
         currency: user.currency,
         fiatShortName: user.fiatCurrency,
         posCurrencyShortName: user.posCurrencyShortName,
-        fiatCurrencyPreferences: user.fiatCurrencyPreferences,
+        preferredCurrencies: user.preferredCurrencies,
       ));
       List<FiatConversion> _sortedFiatConversionList =
-          await _sortFiatConversionList();
+          _sortFiatConversionList();
       _accountController.add(_accountController.value
           .copyWith(fiatConversionList: _sortedFiatConversionList));
 
@@ -685,7 +682,7 @@ class AccountBloc {
             accountResponse: acc,
             currency: _currentUser?.currency,
             fiatShortName: _currentUser?.fiatCurrency,
-            fiatCurrencyPreferences: _currentUser?.fiatCurrencyPreferences,
+            preferredCurrencies: _currentUser?.preferredCurrencies,
             initial: false);
       } else {
         return _accountController.value.copyWith(initial: false);
@@ -755,11 +752,11 @@ class AccountBloc {
         .map((rate) => FiatConversion(_currencyData[rate.coin], rate.value))
         .toList();
     _fiatConversionList =
-        await _sortFiatConversionList(fiatConversionList: _fiatConversionList);
+        _sortFiatConversionList(fiatConversionList: _fiatConversionList);
     _accountController.add(_accountController.value.copyWith(
       fiatConversionList: _fiatConversionList,
       fiatShortName: _currentUser?.fiatCurrency,
-      fiatCurrencyPreferences: _currentUser?.fiatCurrencyPreferences,
+      preferredCurrencies: _currentUser?.preferredCurrencies,
     ));
   }
 

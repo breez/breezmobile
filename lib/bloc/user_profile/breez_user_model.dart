@@ -20,7 +20,7 @@ class BreezUserModel {
   final double cancellationTimeoutValue;
   final bool hasAdminPassword;
   final String posCurrencyShortName;
-  final FiatCurrencyPreferences fiatCurrencyPreferences;
+  final List<String> preferredCurrencies;
 
   BreezUserModel._(this.userID, this.name, this.color, this.animal,
       {this.currency = Currency.SAT,
@@ -35,7 +35,7 @@ class BreezUserModel {
       this.cancellationTimeoutValue = 90.0,
       this.hasAdminPassword = false,
       this.posCurrencyShortName = "SAT",
-      this.fiatCurrencyPreferences});
+      this.preferredCurrencies});
 
   BreezUserModel copyWith(
       {String name,
@@ -54,7 +54,7 @@ class BreezUserModel {
       double cancellationTimeoutValue,
       bool hasAdminPassword,
       String posCurrencyShortName,
-      FiatCurrencyPreferences fiatCurrencyPreferences}) {
+      List<String> preferredCurrencies}) {
     return BreezUserModel._(
       userID ?? this.userID,
       name ?? this.name,
@@ -74,8 +74,7 @@ class BreezUserModel {
           cancellationTimeoutValue ?? this.cancellationTimeoutValue,
       hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword,
       posCurrencyShortName: posCurrencyShortName ?? this.posCurrencyShortName,
-      fiatCurrencyPreferences:
-          fiatCurrencyPreferences ?? this.fiatCurrencyPreferences,
+      preferredCurrencies: preferredCurrencies ?? this.preferredCurrencies,
     );
   }
 
@@ -114,9 +113,9 @@ class BreezUserModel {
             : json['cancellationTimeoutValue'],
         hasAdminPassword = json['hasAdminPassword'] ?? false,
         posCurrencyShortName = json['posCurrencyShortName'] ?? "SAT",
-        fiatCurrencyPreferences = json['fiatCurrencyPreferences'] == null
-            ? FiatCurrencyPreferences.initial()
-            : FiatCurrencyPreferences.fromJson(json['fiatCurrencyPreferences']);
+        preferredCurrencies =
+            (json['preferredCurrencies'] as List<dynamic>).cast<String>() ??
+                <String>['USD', 'EUR', 'GBP', 'JPY'];
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -134,6 +133,6 @@ class BreezUserModel {
         'isPOS': isPOS,
         'hasAdminPassword': hasAdminPassword,
         'posCurrencyShortName': posCurrencyShortName,
-        'fiatCurrencyPreferences': fiatCurrencyPreferences?.toJson(),
+        'preferredCurrencies': preferredCurrencies,
       };
 }
