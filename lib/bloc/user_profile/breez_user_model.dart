@@ -112,7 +112,7 @@ class BreezUserModel {
         hasAdminPassword = json['hasAdminPassword'] ?? false,
         posCurrencyShortName = json['posCurrencyShortName'] ?? "SAT",
         preferredCurrencies =
-            (json['preferredCurrencies'] as List<dynamic>).cast<String>() ??
+            (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
                 <String>['USD', 'EUR', 'GBP', 'JPY'];
 
   Map<String, dynamic> toJson() => {
