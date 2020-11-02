@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
+import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
@@ -395,12 +396,12 @@ class DevViewState extends State<DevView> {
         function: () => _setPOS(userBloc, !userModel.isPOS)));
         */
     choices.add(Choice(
-        title: "Force Rescan",
+        title: "Recover Chain Information",
         icon: Icons.phone_android,
         function: () async {
-          var workingDir = await widget._breezBridge.getWorkingDir();
-          var rescanFile = File(workingDir.path + "/$FORCE_RESCAN_FILE_NAME");
-          await rescanFile.create(recursive: true);
+          ResetChainService resetAction = ResetChainService();
+          accBloc.userActionsSink.add(resetAction);
+          await resetAction.future;
           _promptForRestart();
         }));
     choices.add(Choice(
