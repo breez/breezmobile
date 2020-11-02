@@ -226,31 +226,25 @@ class AccountBloc {
     rates.resolve(this._accountController.value.fiatConversionList);
   }
 
-  Future<List<FiatConversion>> _sortFiatConversionList(
-      {List<FiatConversion> fiatConversionList}) async {
-    List<FiatConversion> preferredFiatConversionList = List.from(
-        (fiatConversionList ?? _accountController.value.fiatConversionList)
-            .where((fiatConversion) => _currentUser
-                .fiatCurrencyPreferences.preferredFiatCurrencies
-                .contains(fiatConversion.currencyData.shortName)));
-    Map<String, int> order = new Map.fromIterable(
-        _currentUser?.fiatCurrencyPreferences?.preferredFiatCurrencies,
-        key: (key) => key,
-        value: (key) => _currentUser
-            .fiatCurrencyPreferences.preferredFiatCurrencies
-            .indexOf(key));
-    preferredFiatConversionList.sort((a, b) => order[a.currencyData.shortName]
-        .compareTo(order[b.currencyData.shortName]));
+  List<FiatConversion> _sortFiatConversionList(
+      {List<FiatConversion> fiatConversionList}) {
+    var toSort = List<FiatConversion>.from(
+        (fiatConversionList ?? _accountController.value.fiatConversionList));
 
-    List unselectedFiatConversions =
-        (fiatConversionList ?? _accountController.value.fiatConversionList)
-            .where((fiatConversion) =>
-                !preferredFiatConversionList.contains(fiatConversion))
-            .toList();
-    unselectedFiatConversions.sort((a, b) => a.currencyData.shortName
-        .toString()
-        .compareTo(b.currencyData.shortName.toString()));
-    return preferredFiatConversionList + unselectedFiatConversions;
+    // First sort by name
+    toSort.sort((f1, f2) =>
+        f1.currencyData.shortName.compareTo(f2.currencyData.shortName));
+
+    // Then give precendence to the preferred items.
+    _currentUser.preferredCurrencies.reversed.forEach((p) {
+      var preferred = toSort.firstWhere((e) => e.currencyData.shortName == p,
+          orElse: () => null);
+      if (preferred != null) {
+        toSort.remove(preferred);
+        toSort.insert(0, preferred);
+      }
+    });
+    return toSort;
   }
 
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
@@ -461,12 +455,10 @@ class AccountBloc {
         currency: user.currency,
         fiatShortName: user.fiatCurrency,
         posCurrencyShortName: user.posCurrencyShortName,
-        fiatCurrencyPreferences: user.fiatCurrencyPreferences,
+        preferredCurrencies: user.preferredCurrencies,
+        fiatConversionList: _sortFiatConversionList(
+            fiatConversionList: _accountController.value.fiatConversionList),
       ));
-      List<FiatConversion> _sortedFiatConversionList =
-          await _sortFiatConversionList();
-      _accountController.add(_accountController.value
-          .copyWith(fiatConversionList: _sortedFiatConversionList));
 
       var updatedPayments = _paymentsController.value.copyWith(
         nonFilteredItems: _paymentsController.value.nonFilteredItems
@@ -685,7 +677,7 @@ class AccountBloc {
             accountResponse: acc,
             currency: _currentUser?.currency,
             fiatShortName: _currentUser?.fiatCurrency,
-            fiatCurrencyPreferences: _currentUser?.fiatCurrencyPreferences,
+            preferredCurrencies: _currentUser?.preferredCurrencies,
             initial: false);
       } else {
         return _accountController.value.copyWith(initial: false);
@@ -755,11 +747,11 @@ class AccountBloc {
         .map((rate) => FiatConversion(_currencyData[rate.coin], rate.value))
         .toList();
     _fiatConversionList =
-        await _sortFiatConversionList(fiatConversionList: _fiatConversionList);
+        _sortFiatConversionList(fiatConversionList: _fiatConversionList);
     _accountController.add(_accountController.value.copyWith(
       fiatConversionList: _fiatConversionList,
       fiatShortName: _currentUser?.fiatCurrency,
-      fiatCurrencyPreferences: _currentUser?.fiatCurrencyPreferences,
+      preferredCurrencies: _currentUser?.preferredCurrencies,
     ));
   }
 
