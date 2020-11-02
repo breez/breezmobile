@@ -125,7 +125,9 @@ class SaleViewState extends State<SaleView> {
               backgroundColor: Theme.of(context).canvasColor,
               leading: backBtn.BackButton(),
               title: Text(title),
-              actions: _buildActions(widget.readOnly ? accModel : null),
+              actions: widget.readOnly
+                  ? _buildActions(account: accModel, saleCurrency: saleCurrency)
+                  : _buildActions(),
               elevation: 0.0,
             ),
             extendBody: false,
@@ -227,12 +229,9 @@ class SaleViewState extends State<SaleView> {
         });
   }
 
-  _buildActions(AccountModel account) {
+  _buildActions({AccountModel account, CurrencyWrapper saleCurrency}) {
     if (account != null) {
       UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      CurrencyWrapper currentCurrency = CurrencyWrapper.fromShortName(
-              account.posCurrencyShortName, account) ??
-          CurrencyWrapper.fromBTC(Currency.SAT);
       return <Widget>[
         StreamBuilder<BreezUserModel>(
             stream: userBloc.userStream,
@@ -250,7 +249,7 @@ class SaleViewState extends State<SaleView> {
                   color: Theme.of(context).iconTheme.color,
                   icon: Icon(Icons.local_print_shop_outlined),
                   onPressed: () => PrintService(
-                          user, currentCurrency, account, widget.readOnlySale)
+                          user, saleCurrency, account, widget.readOnlySale)
                       .printAsPDF(),
                 ),
               );
