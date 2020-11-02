@@ -53,6 +53,8 @@ class _PosSettingsPage extends StatefulWidget {
 class PosSettingsPageState extends State<_PosSettingsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var _cancellationTimeoutValueController = TextEditingController();
+  var _addressLine1Controller = TextEditingController();
+  var _addressLine2Controller = TextEditingController();
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
 
   @override
@@ -60,6 +62,10 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     super.initState();
     _cancellationTimeoutValueController.text =
         widget.currentProfile.cancellationTimeoutValue.toString();
+    _addressLine1Controller.text =
+        widget.currentProfile.businessAddress?.addressLine1;
+    _addressLine2Controller.text =
+        widget.currentProfile.businessAddress?.addressLine2;
   }
 
   @override
@@ -151,7 +157,9 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                       ]),
                   ..._buildAdminPasswordTiles(userProfileBloc, user),
                   Divider(),
-                  _buildExportItemsTile(posCatalogBloc)
+                  _buildExportItemsTile(posCatalogBloc),
+                  Divider(),
+                  _buildAddressField(userProfileBloc, user)
                 ],
               ),
             );
@@ -359,6 +367,49 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   _resetAdminPassword(UserProfileBloc userProfileBloc) {
     SetAdminPassword action = SetAdminPassword(null);
     userProfileBloc.userActionsSink.add(action);
+  }
+
+  Column _buildAddressField(
+      UserProfileBloc userProfileBloc, BreezUserModel user) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: Text(
+            "Business Address",
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+          child: TextField(
+            controller: _addressLine1Controller,
+            minLines: 1,
+            maxLines: 1,
+            decoration: InputDecoration(hintText: "Address Line 1"),
+            onChanged: (_) => widget._userProfileBloc.userSink.add(
+                widget.currentProfile.copyWith(
+                    businessAddress: widget.currentProfile.businessAddress
+                        .copyWith(addressLine1: _addressLine1Controller.text))),
+            onEditingComplete: () => FocusScope.of(context).nextFocus(),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+          child: TextField(
+            controller: _addressLine2Controller,
+            minLines: 1,
+            maxLines: 1,
+            decoration: InputDecoration(hintText: "Address Line 2"),
+            onChanged: (_) => widget._userProfileBloc.userSink.add(
+                widget.currentProfile.copyWith(
+                    businessAddress: widget.currentProfile.businessAddress
+                        .copyWith(addressLine2: _addressLine2Controller.text))),
+            onEditingComplete: () => FocusScope.of(context).unfocus(),
+          ),
+        ),
+      ],
+      crossAxisAlignment: CrossAxisAlignment.start,
+    );
   }
 }
 
