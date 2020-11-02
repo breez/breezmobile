@@ -60,6 +60,8 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           children: [
             _buildList(account),
           ],
+          lastListTargetSize: 0,
+          lastItemTargetHeight: 8,
           scrollController: _scrollController,
           onItemReorder: (from, oldListIndex, to, newListIndex) =>
               _onReorder(account, from, to),
