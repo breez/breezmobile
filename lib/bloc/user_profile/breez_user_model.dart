@@ -1,6 +1,7 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 
+import 'business_adress.dart';
 import 'fiat_currency_preferences.dart';
 
 class BreezUserModel {
@@ -19,6 +20,7 @@ class BreezUserModel {
   final bool isPOS;
   final double cancellationTimeoutValue;
   final bool hasAdminPassword;
+  final BusinessAddress businessAddress;
   final String posCurrencyShortName;
   final FiatCurrencyPreferences fiatCurrencyPreferences;
 
@@ -34,6 +36,7 @@ class BreezUserModel {
       this.isPOS = false,
       this.cancellationTimeoutValue = 90.0,
       this.hasAdminPassword = false,
+      this.businessAddress,
       this.posCurrencyShortName = "SAT",
       this.fiatCurrencyPreferences});
 
@@ -53,6 +56,7 @@ class BreezUserModel {
       bool isPOS,
       double cancellationTimeoutValue,
       bool hasAdminPassword,
+      BusinessAddress businessAddress,
       String posCurrencyShortName,
       FiatCurrencyPreferences fiatCurrencyPreferences}) {
     return BreezUserModel._(
@@ -73,6 +77,7 @@ class BreezUserModel {
       cancellationTimeoutValue:
           cancellationTimeoutValue ?? this.cancellationTimeoutValue,
       hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword,
+      businessAddress: businessAddress ?? this.businessAddress,
       posCurrencyShortName: posCurrencyShortName ?? this.posCurrencyShortName,
       fiatCurrencyPreferences:
           fiatCurrencyPreferences ?? this.fiatCurrencyPreferences,
@@ -113,6 +118,9 @@ class BreezUserModel {
             ? 90.0
             : json['cancellationTimeoutValue'],
         hasAdminPassword = json['hasAdminPassword'] ?? false,
+        businessAddress = json['businessAddress'] == null
+            ? BusinessAddress.initial()
+            : BusinessAddress.fromJson(json['businessAddress']),
         posCurrencyShortName = json['posCurrencyShortName'] ?? "SAT",
         fiatCurrencyPreferences = json['fiatCurrencyPreferences'] == null
             ? FiatCurrencyPreferences.initial()
@@ -134,6 +142,7 @@ class BreezUserModel {
         'isPOS': isPOS,
         'hasAdminPassword': hasAdminPassword,
         'posCurrencyShortName': posCurrencyShortName,
+        'businessAddress': businessAddress,
         'fiatCurrencyPreferences': fiatCurrencyPreferences?.toJson(),
       };
 }
