@@ -384,16 +384,10 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
       children: <Widget>[
         RichText(
             text: TextSpan(
-                style: Theme.of(context).dialogTheme.contentTextStyle,
-                text:
-                    "Waiting for closed channel funds to be transferred to your local wallet$estimation",
-                children: [
-              TextSpan(
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
-                  text: closedChannel.channelCloseConfirmed
-                      ? "."
-                      : " (closing transaction is expected to be confirmed within an hour).")
-            ])),
+          style: Theme.of(context).dialogTheme.contentTextStyle,
+          text:
+              "Waiting for closed channel funds to be transferred to your local wallet$estimation.",
+        )),
         _TxWidget(
           txURL: closedChannel.closeChannelTxUrl,
           txID: closedChannel.closeChannelTx,
