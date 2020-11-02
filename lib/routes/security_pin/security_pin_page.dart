@@ -163,7 +163,7 @@ class SecurityPageState extends State<SecurityPage>
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Encrypt Backup Data",
+          "Encrypt Cloud Backup",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
