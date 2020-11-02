@@ -369,19 +369,16 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     userProfileBloc.userActionsSink.add(action);
   }
 
-  Column _buildAddressField(
-      UserProfileBloc userProfileBloc, BreezUserModel user) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: Text(
+  _buildAddressField(UserProfileBloc userProfileBloc, BreezUserModel user) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
             "Business Address",
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
-          child: TextField(
+          TextField(
             controller: _addressLine1Controller,
             minLines: 1,
             maxLines: 1,
@@ -392,10 +389,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                         .copyWith(addressLine1: _addressLine1Controller.text))),
             onEditingComplete: () => FocusScope.of(context).nextFocus(),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
-          child: TextField(
+          TextField(
             controller: _addressLine2Controller,
             minLines: 1,
             maxLines: 1,
@@ -406,9 +400,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                         .copyWith(addressLine2: _addressLine2Controller.text))),
             onEditingComplete: () => FocusScope.of(context).unfocus(),
           ),
-        ),
-      ],
-      crossAxisAlignment: CrossAxisAlignment.start,
+        ],
+      ),
     );
   }
 }
