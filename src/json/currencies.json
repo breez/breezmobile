@@ -346,11 +346,7 @@
   "CHF": {
     "name": "Swiss Franc",
     "fractionSize": 2,
-    "symbol": {
-      "grapheme": "fr.",
-      "template": "$1",
-      "rtl": false
-    },
+    "symbol": null,
     "uniqSymbol": null
   },
   "CHW": {
