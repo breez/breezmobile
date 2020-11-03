@@ -4,7 +4,7 @@ class BusinessAddress {
 
   BusinessAddress._({this.addressLine1, this.addressLine2});
 
-  BusinessAddress.initial() : this._(addressLine1: null, addressLine2: null);
+  BusinessAddress.initial() : this._(addressLine1: "", addressLine2: "");
 
   BusinessAddress copyWith({String addressLine1, String addressLine2}) {
     return BusinessAddress._(
@@ -23,6 +23,6 @@ class BusinessAddress {
 
   @override
   String toString() {
-    return addressLine1 + '\n' + addressLine2;
+    return "$addressLine1\n$addressLine2";
   }
 }
