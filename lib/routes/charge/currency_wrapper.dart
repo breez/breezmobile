@@ -34,6 +34,8 @@ class CurrencyWrapper {
 
   String get symbol => btc?.symbol ?? fiat.currencyData.symbol;
 
+  bool get rtl => fiat?.currencyData?.rtl ?? false;
+
   String get chargeSuffix => btc?.displayName ?? fiat.currencyData.shortName;
 
   int get fractionSize {
