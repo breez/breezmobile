@@ -447,7 +447,8 @@
     "symbol": {
       "grapheme": "Kč",
       "template": "1 $",
-      "rtl": false
+      "rtl": false,
+      "position": 1
     },
     "uniqSymbol": {
       "grapheme": "Kč",
