@@ -716,7 +716,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             var addSaleAction = SubmitCurrentSale(payReq.paymentHash);
             posCatalogBloc.actionsSink.add(addSaleAction);
             return addSaleAction.future.then((submittedSale) {
-              return showPaymentDialog(invoiceBloc, user, payReq, satAmount)
+              return showPaymentDialog(invoiceBloc, user, payReq, satAmount,
+                      account, submittedSale)
                   .then((cleared) {
                 if (!cleared) {
                   var unLockSale = SetCurrentSale(
@@ -752,8 +753,13 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             ));
   }
 
-  Future showPaymentDialog(InvoiceBloc invoiceBloc, BreezUserModel user,
-      PaymentRequestModel payReq, double satAmount) {
+  Future showPaymentDialog(
+      InvoiceBloc invoiceBloc,
+      BreezUserModel user,
+      PaymentRequestModel payReq,
+      double satAmount,
+      AccountModel account,
+      Sale submittedSale) {
     return showDialog<PosPaymentResult>(
         useRootNavigator: false,
         context: context,
@@ -763,7 +769,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         }).then((res) {
       if (res?.paid == true) {
         Navigator.of(context).push(TransparentPageRoute((context) {
-          return SuccessfulPaymentRoute();
+          return SuccessfulPaymentRoute(
+            currentUser: user,
+            currentCurrency: currentCurrency,
+            account: account,
+            submittedSale: submittedSale,
+          );
         }));
       }
       if (res?.clearSale == true) {

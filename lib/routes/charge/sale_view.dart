@@ -6,10 +6,13 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
+import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
@@ -123,18 +126,8 @@ class SaleViewState extends State<SaleView> {
               leading: backBtn.BackButton(),
               title: Text(title),
               actions: widget.readOnly
-                  ? []
-                  : <Widget>[
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete_forever,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        onPressed: () {
-                          widget.onDeleteSale();
-                        },
-                      )
-                    ],
+                  ? _buildActions(account: accModel, saleCurrency: saleCurrency)
+                  : _buildActions(),
               elevation: 0.0,
             ),
             extendBody: false,
@@ -234,6 +227,46 @@ class SaleViewState extends State<SaleView> {
             ),
           );
         });
+  }
+
+  _buildActions({AccountModel account, CurrencyWrapper saleCurrency}) {
+    if (account != null) {
+      UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      return <Widget>[
+        StreamBuilder<BreezUserModel>(
+            stream: userBloc.userStream,
+            builder: (context, snapshot) {
+              var user = snapshot.data;
+              if (user == null) {
+                return Loader();
+              }
+              return Padding(
+                padding: const EdgeInsets.only(right: 18.0),
+                child: IconButton(
+                  alignment: Alignment.center,
+                  tooltip: "Print",
+                  iconSize: 24.0,
+                  color: Theme.of(context).iconTheme.color,
+                  icon: Icon(Icons.local_print_shop_outlined),
+                  onPressed: () => PrintService(
+                          user, saleCurrency, account, widget.readOnlySale)
+                      .printAsPDF(),
+                ),
+              );
+            })
+      ];
+    }
+    return <Widget>[
+      IconButton(
+        icon: Icon(
+          Icons.delete_forever,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        onPressed: () {
+          widget.onDeleteSale();
+        },
+      )
+    ];
   }
 }
 
