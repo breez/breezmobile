@@ -67,14 +67,14 @@ class FiatConversion {
       formatter.maximumFractionDigits = fractionSize;
       formattedAmount = formatter.format(fiatAmount);
     }
+    if (removeTrailingZeros) {
+      RegExp removeTrailingZeros = RegExp(r"([.]0*)(?!.*\d)");
+      formattedAmount = formattedAmount.replaceAll(removeTrailingZeros, "");
+    }
     if (addCurrencySymbol) {
       formattedAmount = (this.currencyData.rtl)
           ? formattedAmount + symbol
           : symbol + formattedAmount;
-    }
-    if (removeTrailingZeros) {
-      RegExp removeTrailingZeros = RegExp(r"([.]0*)(?!.*\d)");
-      formattedAmount = formattedAmount.replaceAll(removeTrailingZeros, "");
     }
     return formattedAmount;
   }
