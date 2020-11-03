@@ -71,6 +71,7 @@ class CurrencyWrapper {
           removeTrailingZeros: removeTrailingZeros);
     }
     return fiat.formatFiat(value,
+        addCurrencySuffix: includeDisplayName,
         addCurrencySymbol: includeCurrencySymbol,
         allowBelowMin: true,
         removeTrailingZeros: removeTrailingZeros);

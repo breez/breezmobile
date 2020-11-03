@@ -104,9 +104,12 @@ class PrintService {
       if (saleCurrency.symbol != currentCurrency.symbol) {
         String totalSalePrice = currentCurrency.format(
             totalPriceInSats / currentCurrency.satConversionRate,
+            includeCurrencySymbol: !currentCurrency.rtl ?? true,
+            includeDisplayName: currentCurrency.rtl,
             removeTrailingZeros: true);
-        totalPriceInSaleCurrency =
-            " (${currentCurrency.symbol}$totalSalePrice)";
+        // no need to compensate for empty character added for rtl currencies
+        // since their symbols are not supported and their display name is shown instead
+        totalPriceInSaleCurrency = " ($totalSalePrice)";
       }
       pw.TextStyle textStyle = pw.TextStyle(
         font: font,
@@ -118,7 +121,10 @@ class PrintService {
           style: textStyle,
         ),
         _buildTableItem(
-          "${saleCurrency.symbol}${saleCurrency.format(priceInFiat, removeTrailingZeros: true)}",
+          // RTL symbols are mostly in arabic, which are not supported by our current font
+          // We'll display display name for these currencies till we find a font
+          // that supports both cryptocurrency symbols and arabic characters
+          "${saleCurrency.format(priceInFiat, removeTrailingZeros: true, includeCurrencySymbol: !saleCurrency.rtl ?? true, includeDisplayName: saleCurrency.rtl)}",
           style: textStyle,
         ),
         _buildTableItem(
@@ -126,7 +132,7 @@ class PrintService {
           style: textStyle,
         ),
         _buildTableItem(
-          "${saleCurrency.symbol}${saleCurrency.format(totalPriceInFiat, removeTrailingZeros: true)}$totalPriceInSaleCurrency",
+          "${saleCurrency.format(totalPriceInFiat, removeTrailingZeros: true, includeCurrencySymbol: !saleCurrency.rtl ?? true, includeDisplayName: saleCurrency.rtl)}$totalPriceInSaleCurrency",
           style: textStyle,
         ),
       ]));

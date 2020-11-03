@@ -44,6 +44,7 @@ class FiatConversion {
 
   String formatFiat(
     double fiatAmount, {
+    bool addCurrencySuffix = false,
     bool addCurrencySymbol = true,
     bool removeTrailingZeros = false,
     bool allowBelowMin = false,
@@ -73,8 +74,12 @@ class FiatConversion {
     }
     if (addCurrencySymbol) {
       formattedAmount = (this.currencyData.rtl)
-          ? formattedAmount + symbol
+          // if rtl symbol is followed by other text, symbol is displayed incorrectly
+          // empty character is added to prevent that behavior
+          ? formattedAmount + symbol + "⠀"
           : symbol + formattedAmount;
+    } else if (addCurrencySuffix) {
+      formattedAmount += " " + this.currencyData.shortName;
     }
     return formattedAmount;
   }

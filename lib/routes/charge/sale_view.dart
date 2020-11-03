@@ -426,8 +426,10 @@ class SaleLineWidget extends StatelessWidget {
     if (saleCurrency.symbol != currency.symbol) {
       String salePrice = saleCurrency.format(
           priceInSats / saleCurrency.satConversionRate,
+          includeCurrencySymbol: true,
           removeTrailingZeros: true);
-      priceInSaleCurrency = " (${saleCurrency.symbol}$salePrice)";
+      // compensate for empty character added for rtl symbols
+      priceInSaleCurrency = (currency.rtl ? "" : " ") + "($salePrice)";
     }
 
     var iconColor = theme.themeId == "BLUE"
@@ -442,7 +444,7 @@ class SaleLineWidget extends StatelessWidget {
             //style: TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
-              "${currency.symbol}${currency.format(priceInFiat, removeTrailingZeros: true)}$priceInSaleCurrency",
+              "${currency.format(priceInFiat, removeTrailingZeros: true, includeCurrencySymbol: true)}$priceInSaleCurrency",
               style: TextStyle(
                   color: ListTileTheme.of(context)
                       .textColor
