@@ -393,8 +393,9 @@ class SaleLineWidget extends StatelessWidget {
     if (saleCurrency.symbol != currency.symbol) {
       String salePrice = saleCurrency.format(
           priceInSats / saleCurrency.satConversionRate,
+          includeCurrencySymbol: true,
           removeTrailingZeros: true);
-      priceInSaleCurrency = " (${saleCurrency.symbol}$salePrice)";
+      priceInSaleCurrency = " ($salePrice)";
     }
 
     var iconColor = theme.themeId == "BLUE"
