@@ -116,7 +116,7 @@ class PaymentItem extends StatelessWidget {
                               ? "- "
                               : "+ ") +
                           _paymentInfo.currency.format(_paymentInfo.amount,
-                              includeDisplayName: false),
+                              addCurrencySuffix: false),
                       style: Theme.of(context).accentTextTheme.headline6,
                     ),
                   )
@@ -132,7 +132,7 @@ class PaymentItem extends StatelessWidget {
                         : Text(
                             "FEE " +
                                 _paymentInfo.currency.format(_paymentInfo.fee,
-                                    includeDisplayName: false),
+                                    addCurrencySuffix: false),
                             style: Theme.of(context).accentTextTheme.caption)
                   ]),
             ),

@@ -19,12 +19,14 @@ class Currency extends Object {
 
   String format(
     Int64 sat, {
-    includeDisplayName = true,
+    addCurrencySuffix = true,
+    addCurrencySymbol = false,
     removeTrailingZeros = false,
     userInput = false,
   }) =>
       _CurrencyFormatter().format(sat, this,
-          addCurrencySuffix: includeDisplayName,
+          addCurrencySuffix: addCurrencySuffix,
+          addCurrencySymbol: addCurrencySymbol,
           removeTrailingZeros: removeTrailingZeros,
           userInput: userInput);
 
@@ -65,6 +67,7 @@ class _CurrencyFormatter {
 
   String format(satoshies, Currency currency,
       {bool addCurrencySuffix = true,
+      bool addCurrencySymbol = false,
       removeTrailingZeros = false,
       userInput = false}) {
     String formattedAmount = formatter.format(satoshies);
@@ -85,7 +88,9 @@ class _CurrencyFormatter {
         formattedAmount = formatter.format(satoshies);
         break;
     }
-    if (addCurrencySuffix) {
+    if (addCurrencySymbol) {
+      formattedAmount = currency.symbol + formattedAmount;
+    } else if (addCurrencySuffix) {
       formattedAmount += ' ${currency.displayName}';
     }
 

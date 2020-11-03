@@ -123,7 +123,7 @@ class AddFundsBloc extends Bloc {
       String walletAddress = response.address;
       String maxQuoteCurrencyAmount = Currency.BTC.format(
           response.maxAllowedDeposit,
-          includeDisplayName: false,
+          addCurrencySuffix: false,
           removeTrailingZeros: true);
       moonpayUrl +=
           "&walletAddress=$walletAddress&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";

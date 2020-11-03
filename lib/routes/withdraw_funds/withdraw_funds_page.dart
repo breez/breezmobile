@@ -293,7 +293,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
       if (btcInvoice.satAmount != null) {
         amount = account.currency.format(btcInvoice.satAmount,
             userInput: true,
-            includeDisplayName: false,
+            addCurrencySuffix: false,
             removeTrailingZeros: true);
       }
       setState(() {

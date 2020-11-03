@@ -189,7 +189,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
       ),
       onTap: () => _amountController.text = acc.currency.format(
           acc.maxAllowedToPay,
-          includeDisplayName: false,
+          addCurrencySuffix: false,
           userInput: true),
     );
   }

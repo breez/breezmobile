@@ -260,7 +260,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       ),
       onTap: () => _amountController.text = acc.currency.format(
           acc.maxAllowedToReceive,
-          includeDisplayName: false,
+          addCurrencySuffix: false,
           userInput: true),
     );
   }
@@ -317,7 +317,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     _withdrawFetchResponse = response;
     _descriptionController.text = response.defaultDescription;
     _amountController.text = account.currency
-        .format(response.maxAmount, includeDisplayName: false, userInput: true);
+        .format(response.maxAmount, addCurrencySuffix: false, userInput: true);
   }
 
   Future _createInvoice(InvoiceBloc invoiceBloc, AccountBloc accountBloc,

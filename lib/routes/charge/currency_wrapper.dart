@@ -36,6 +36,8 @@ class CurrencyWrapper {
 
   String get chargeSuffix => btc?.displayName ?? fiat.currencyData.shortName;
 
+  bool get rtl => fiat?.currencyData?.rtl ?? false;
+
   int get fractionSize {
     if (btc != null) {
       return btc == Currency.SAT ? 0 : 8;
@@ -56,6 +58,7 @@ class CurrencyWrapper {
   String format(
     double value, {
     userInput = false,
+    bool includeDisplayName = false,
     bool includeCurrencySymbol = false,
     removeTrailingZeros = false,
   }) {
@@ -63,7 +66,8 @@ class CurrencyWrapper {
       var satValue = btc.toSats(value);
       return btc.format(satValue,
           userInput: userInput,
-          includeDisplayName: includeCurrencySymbol,
+          addCurrencySuffix: includeDisplayName,
+          addCurrencySymbol: includeCurrencySymbol,
           removeTrailingZeros: removeTrailingZeros);
     }
     return fiat.formatFiat(value,

@@ -40,7 +40,7 @@ class PosPaymentItem extends StatelessWidget {
                             ? "- "
                             : "") +
                         _paymentInfo.currency.format(_paymentInfo.amount,
-                            includeDisplayName: false),
+                            addCurrencySuffix: false),
                     style: _paymentInfo.type == PaymentType.SENT
                         ? theme.posWithdrawalTransactionAmountStyle
                         : theme.transactionAmountStyle),

@@ -86,7 +86,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                                   text: widget._accountModel.currency.format(
                                       widget._accountModel.balance,
                                       removeTrailingZeros: true,
-                                      includeDisplayName: false),
+                                      addCurrencySuffix: false),
                                   children: <TextSpan>[
                                     TextSpan(
                                       text: "  " +

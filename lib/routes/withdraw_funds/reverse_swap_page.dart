@@ -131,7 +131,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                   initialAmount = accSnapshot.data.currency
                                       .format(currentSwap.amount,
                                           userInput: true,
-                                          includeDisplayName: false);
+                                          addCurrencySuffix: false);
                                 } else if (widget.requestAmount != null) {
                                   initialAmount = widget.requestAmount;
                                 }

@@ -79,7 +79,7 @@ class QrActionButton extends StatelessWidget {
                     requestAmount = account.currency.format(
                         btcInvoice.satAmount,
                         userInput: true,
-                        includeDisplayName: false,
+                        addCurrencySuffix: false,
                         removeTrailingZeros: true);
                   }
                   Navigator.of(context).push(FadeInRoute(

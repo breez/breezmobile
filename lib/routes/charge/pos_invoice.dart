@@ -681,7 +681,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             context,
             "You don't have the capacity to receive such payment.",
             Text(
-                "Maximum payment size you can receive is ${account.currency.format(account.maxAllowedToReceive, includeDisplayName: true)}. Please enter a smaller value.",
+                "Maximum payment size you can receive is ${account.currency.format(account.maxAllowedToReceive, addCurrencySuffix: true)}. Please enter a smaller value.",
                 style: Theme.of(context).dialogTheme.contentTextStyle));
         return;
       }
@@ -691,7 +691,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             context,
             "You have exceeded the maximum payment size.",
             Text(
-                "Maximum payment size on the Lightning Network is ${account.currency.format(account.maxPaymentAmount, includeDisplayName: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
+                "Maximum payment size on the Lightning Network is ${account.currency.format(account.maxPaymentAmount, addCurrencySuffix: true)}. Please enter a smaller value or complete the payment in multiple transactions.",
                 style: Theme.of(context).dialogTheme.contentTextStyle));
         return;
       }
