@@ -44,6 +44,7 @@ class FiatConversion {
 
   String formatFiat(
     double fiatAmount, {
+    bool includeDisplayName = false,
     bool addCurrencySymbol = true,
     bool removeTrailingZeros = false,
     bool allowBelowMin = false,
@@ -71,6 +72,8 @@ class FiatConversion {
       formattedAmount = (this.currencyData.position == 1)
           ? formattedAmount + symbol
           : symbol + formattedAmount;
+    } else if (includeDisplayName) {
+      formattedAmount += this.currencyData.shortName;
     }
     if (removeTrailingZeros) {
       RegExp removeTrailingZeros = RegExp(r"([.]0*)(?!.*\d)");
