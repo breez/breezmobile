@@ -410,6 +410,13 @@ class DevViewState extends State<DevView> {
         function: () async {
           await widget._breezBridge.populateChannePolicy();
         }));
+    choices.add(Choice(
+        title: "Reset Unconfirmed Swap",
+        icon: Icons.phone_android,
+        function: () async {
+          await widget._breezBridge
+              .resetUnconfirmedReverseSwapClaimTransaction();
+        }));
 
     // choices.add(Choice(
     //     title: "Export DB Files",
