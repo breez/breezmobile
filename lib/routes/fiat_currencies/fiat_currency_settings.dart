@@ -101,6 +101,10 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     }
     // revert to first item on list if no fiat value is above minimum amount
     widget.userProfileBloc.fiatConversionSink.add(preferredFiatCurrencies[0]);
+    // reset pos currency to BTC if it's no longer in preferredFiatCurrencies
+    if (!preferredFiatCurrencies.contains(account.posCurrencyShortName)) {
+      widget.userProfileBloc.userActionsSink.add(SetPOSCurrency("BTC"));
+    }
   }
 
   bool isAboveMinAmount(AccountModel accountModel, int index) {
