@@ -415,6 +415,8 @@ class Payment extends $pb.GeneratedMessage {
     ..aOS(17, 'closedChannelTxID', protoName: 'closedChannelTxID')
     ..aOB(18, 'isKeySend', protoName: 'isKeySend')
     ..aOB(19, 'PendingFull', protoName: 'PendingFull')
+    ..aOS(20, 'closedChannelRemoteTxID', protoName: 'closedChannelRemoteTxID')
+    ..aOS(21, 'closedChannelSweepTxID', protoName: 'closedChannelSweepTxID')
     ..hasRequiredFields = false
   ;
 
@@ -587,6 +589,24 @@ class Payment extends $pb.GeneratedMessage {
   $core.bool hasPendingFull() => $_has(16);
   @$pb.TagNumber(19)
   void clearPendingFull() => clearField(19);
+
+  @$pb.TagNumber(20)
+  $core.String get closedChannelRemoteTxID => $_getSZ(17);
+  @$pb.TagNumber(20)
+  set closedChannelRemoteTxID($core.String v) { $_setString(17, v); }
+  @$pb.TagNumber(20)
+  $core.bool hasClosedChannelRemoteTxID() => $_has(17);
+  @$pb.TagNumber(20)
+  void clearClosedChannelRemoteTxID() => clearField(20);
+
+  @$pb.TagNumber(21)
+  $core.String get closedChannelSweepTxID => $_getSZ(18);
+  @$pb.TagNumber(21)
+  set closedChannelSweepTxID($core.String v) { $_setString(18, v); }
+  @$pb.TagNumber(21)
+  $core.bool hasClosedChannelSweepTxID() => $_has(18);
+  @$pb.TagNumber(21)
+  void clearClosedChannelSweepTxID() => clearField(21);
 }
 
 class PaymentsList extends $pb.GeneratedMessage {

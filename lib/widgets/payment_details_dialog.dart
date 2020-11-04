@@ -391,6 +391,10 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
         _TxWidget(
           txURL: closedChannel.closeChannelTxUrl,
           txID: closedChannel.closeChannelTx,
+        ),
+        _TxWidget(
+          txURL: closedChannel.remoteCloseChannelTxUrl,
+          txID: closedChannel.remoteCloseChannelTx,
         )
       ],
     );
