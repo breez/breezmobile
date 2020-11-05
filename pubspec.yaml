@@ -197,6 +197,9 @@ flutter:
     - family: IBMPlexSansRegular
       fonts:
         - asset: fonts/IBMPlexSans-Regular.ttf
+    - family: HacenTunisia
+      fonts:
+        - asset: fonts/Hacen-Tunisia.ttf
     - family: SAT
       fonts:
         - asset: fonts/sat.otf
