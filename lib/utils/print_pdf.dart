@@ -101,14 +101,6 @@ class PrintService {
       double totalPriceInFiat = saleLine.pricePerItem * saleLine.quantity;
       double totalPriceInSats =
           saleCurrency.satConversionRate * totalPriceInFiat;
-      String totalPriceInSaleCurrency = "";
-      if (saleCurrency.symbol != currentCurrency.symbol) {
-        String totalSalePrice = currentCurrency.format(
-            totalPriceInSats / currentCurrency.satConversionRate,
-            includeCurrencySymbol: true,
-            removeTrailingZeros: true);
-        totalPriceInSaleCurrency = saleCurrency.rtl ? "($totalSalePrice) " : " ($totalSalePrice)";
-      }
       pw.TextStyle textStyle = pw.TextStyle(
         fontSize: 12.3,
       );
@@ -117,18 +109,13 @@ class PrintService {
           saleLine.itemName,
           style: textStyle,
         ),
-        _buildTableItem(
-          "${saleCurrency.format(priceInFiat, removeTrailingZeros: true, includeCurrencySymbol: true)}",
-          style: textStyle,
-        ),
+        _buildPrice(saleCurrency, priceInFiat, fontMap),
         _buildTableItem(
           "${saleLine.quantity}",
           style: textStyle,
         ),
-        _buildTableItem(
-          "${saleCurrency.format(totalPriceInFiat, removeTrailingZeros: true, includeCurrencySymbol: true)}$totalPriceInSaleCurrency",
-          style: textStyle,
-        ),
+        _buildAmount(totalPriceInFiat, totalPriceInSats,
+            saleCurrency: saleCurrency, fontMap: fontMap),
       ]));
     });
     return saleLines;
@@ -164,5 +151,76 @@ class PrintService {
             ),
       ),
     );
+  }
+
+  pw.Padding _buildPrice(CurrencyWrapper saleCurrency, double amount,
+      Map<String, ByteData> fontMap,
+      {bool addParenthesis = false,
+      pw.EdgeInsets padding = const pw.EdgeInsets.all(8)}) {
+    return pw.Padding(
+      padding: padding,
+      child: pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.start,
+          crossAxisAlignment: pw.CrossAxisAlignment.center,
+          children: (saleCurrency.rtl)
+              ? [
+                  pw.Text(
+                      (addParenthesis ? "(" : "") +
+                          "${saleCurrency.format(amount, removeTrailingZeros: true, includeCurrencySymbol: false)} ",
+                      style: pw.TextStyle(
+                        font: pw.Font.ttf(fontMap["ltr"]),
+                        fontSize: 12.3,
+                      )),
+                  pw.Text("${saleCurrency.symbol}",
+                      textDirection: pw.TextDirection.rtl,
+                      textAlign: pw.TextAlign.right,
+                      style: pw.TextStyle(
+                        font: pw.Font.ttf(fontMap["rtl"]),
+                        fontSize: 12.3,
+                      )),
+                  pw.Text((addParenthesis ? " )" : ""),
+                      style: pw.TextStyle(
+                        font: pw.Font.ttf(fontMap["ltr"]),
+                        fontSize: 12.3,
+                      ))
+                ]
+              : [
+                  pw.Text(
+                    (addParenthesis ? "(" : "") +
+                        "${saleCurrency.format(amount, removeTrailingZeros: true, includeCurrencySymbol: true)}" +
+                        (addParenthesis ? ")" : ""),
+                    textDirection: saleCurrency.rtl
+                        ? pw.TextDirection.rtl
+                        : pw.TextDirection.ltr,
+                    style: pw.TextStyle(
+                      font: saleCurrency.rtl
+                          ? pw.Font.ttf(fontMap["rtl"])
+                          : pw.Font.ttf(fontMap["ltr"]),
+                      fontSize: 12.3,
+                    ),
+                  ),
+                ]),
+    );
+  }
+
+  pw.Row _buildAmount(double totalPriceInFiat, double totalPriceInSats,
+      {Map<String, ByteData> fontMap, CurrencyWrapper saleCurrency}) {
+    return pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.start,
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        children: (saleCurrency.symbol != currentCurrency.symbol)
+            ? [
+                _buildPrice(saleCurrency, totalPriceInFiat, fontMap,
+                    padding: pw.EdgeInsets.only(left: 8, top: 8, bottom: 8)),
+                _buildPrice(
+                    currentCurrency,
+                    totalPriceInSats / currentCurrency.satConversionRate,
+                    fontMap,
+                    addParenthesis: true,
+                    padding: pw.EdgeInsets.all(8)),
+              ]
+            : [
+                _buildPrice(saleCurrency, totalPriceInFiat, fontMap),
+              ]);
   }
 }
