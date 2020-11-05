@@ -463,7 +463,7 @@ class CurrencyDisplay extends StatelessWidget {
           priceInSats / saleCurrency.satConversionRate,
           includeCurrencySymbol: true,
           removeTrailingZeros: true);
-      priceInSaleCurrency = " ($salePrice)";
+      priceInSaleCurrency = saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
     }
     TextStyle textStyle = TextStyle(
         color: ListTileTheme.of(context)
