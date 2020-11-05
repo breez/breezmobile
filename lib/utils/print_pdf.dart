@@ -2,6 +2,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
+import 'package:breez/utils/date.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -12,9 +13,11 @@ class PrintService {
   final CurrencyWrapper currentCurrency;
   final AccountModel account;
   final Sale submittedSale;
+  final PaymentInfo paymentInfo;
 
   PrintService(
-      this.currentUser, this.currentCurrency, this.account, this.submittedSale);
+      this.currentUser, this.currentCurrency, this.account, this.submittedSale,
+      {this.paymentInfo});
 
   printAsPDF() async {
     try {
@@ -36,7 +39,9 @@ class PrintService {
                 pw.SizedBox(height: 8),
                 _buildAddress(),
                 pw.SizedBox(height: 40),
-                _buildTable(fontMap)
+                _buildTable(fontMap),
+                pw.SizedBox(height: 40),
+                _buildPaymentInfo(),
               ],
             );
             // Center
@@ -51,10 +56,30 @@ class PrintService {
     }
   }
 
-  pw.Text _buildTitle() {
-    return pw.Text(
-      currentUser.name,
-      style: pw.TextStyle(fontSize: 24, letterSpacing: 0.25),
+  _buildTitle() {
+    return pw.Row(
+      mainAxisSize: pw.MainAxisSize.max,
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+      children: [
+        pw.Text(
+          currentUser.name,
+          style: pw.TextStyle(fontSize: 24, letterSpacing: 0.25),
+        ),
+        paymentInfo?.creationTimestamp != null
+            ? pw.Column(children: [
+                pw.Text("Transaction Time",
+                    style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold, letterSpacing: 0.5)),
+                pw.SizedBox(height: 4),
+                pw.Text(
+                    DateUtils.formatYearMonthDayHourMinute(
+                        DateTime.fromMillisecondsSinceEpoch(
+                            paymentInfo.creationTimestamp.toInt() * 1000)),
+                    style: pw.TextStyle(letterSpacing: 0.5)),
+              ])
+            : pw.SizedBox(),
+      ],
     );
   }
 
@@ -222,5 +247,20 @@ class PrintService {
             : [
                 _buildPrice(saleCurrency, totalPriceInFiat, fontMap),
               ]);
+  }
+
+  pw.Widget _buildPaymentInfo() {
+    return paymentInfo?.preimage != null
+        ? pw.Column(
+            mainAxisAlignment: pw.MainAxisAlignment.start,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+                pw.Text("Payment Preimage:",
+                    style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold, letterSpacing: 0.5)),
+                pw.SizedBox(height: 4),
+                pw.Text(paymentInfo.preimage)
+              ])
+        : pw.SizedBox();
   }
 }
