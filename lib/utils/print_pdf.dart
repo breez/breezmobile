@@ -104,9 +104,9 @@ class PrintService {
       if (saleCurrency.symbol != currentCurrency.symbol) {
         String totalSalePrice = currentCurrency.format(
             totalPriceInSats / currentCurrency.satConversionRate,
+            includeCurrencySymbol: true,
             removeTrailingZeros: true);
-        totalPriceInSaleCurrency =
-            " (${currentCurrency.symbol}$totalSalePrice)";
+        totalPriceInSaleCurrency = saleCurrency.rtl ? "($totalSalePrice) " : " ($totalSalePrice)";
       }
       pw.TextStyle textStyle = pw.TextStyle(
         font: font,
@@ -118,7 +118,7 @@ class PrintService {
           style: textStyle,
         ),
         _buildTableItem(
-          "${saleCurrency.symbol}${saleCurrency.format(priceInFiat, removeTrailingZeros: true)}",
+          "${saleCurrency.format(priceInFiat, removeTrailingZeros: true, includeCurrencySymbol: true)}",
           style: textStyle,
         ),
         _buildTableItem(
@@ -126,7 +126,7 @@ class PrintService {
           style: textStyle,
         ),
         _buildTableItem(
-          "${saleCurrency.symbol}${saleCurrency.format(totalPriceInFiat, removeTrailingZeros: true)}$totalPriceInSaleCurrency",
+          "${saleCurrency.format(totalPriceInFiat, removeTrailingZeros: true, includeCurrencySymbol: true)}$totalPriceInSaleCurrency",
           style: textStyle,
         ),
       ]));
