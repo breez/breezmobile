@@ -40,6 +40,8 @@ class PrintService {
                 _buildAddress(),
                 pw.SizedBox(height: 40),
                 _buildTable(fontMap),
+                pw.SizedBox(height: 8),
+                _buildDescription(),
                 pw.SizedBox(height: 40),
                 _buildPaymentInfo(),
               ],
@@ -247,6 +249,22 @@ class PrintService {
             : [
                 _buildPrice(saleCurrency, totalPriceInFiat, fontMap),
               ]);
+  }
+
+  pw.Widget _buildDescription() {
+    return submittedSale.note != null
+        ? pw.Column(
+            mainAxisSize: pw.MainAxisSize.min,
+            mainAxisAlignment: pw.MainAxisAlignment.start,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+                pw.Text("Description:",
+                    style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold, letterSpacing: 0.5)),
+                pw.SizedBox(height: 4),
+                pw.Text(submittedSale.note)
+              ])
+        : pw.SizedBox();
   }
 
   pw.Widget _buildPaymentInfo() {
