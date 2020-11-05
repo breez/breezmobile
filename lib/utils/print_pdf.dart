@@ -20,8 +20,9 @@ class PrintService {
     try {
       final doc = pw.Document();
       // Use TrueType font to support unicode characters
-      final font = await rootBundle.load("fonts/IBMPlexSans-Regular.ttf");
-      final ttf = pw.Font.ttf(font);
+      final ltrFont = await rootBundle.load("fonts/IBMPlexSans-Regular.ttf");
+      final rtlFont = await rootBundle.load("fonts/Hacen-Tunisia.ttf");
+      final Map<String, ByteData> fontMap = {"ltr": ltrFont, "rtl": rtlFont};
 
       // Create PDF
       doc.addPage(
@@ -35,7 +36,7 @@ class PrintService {
                 pw.SizedBox(height: 8),
                 _buildAddress(),
                 pw.SizedBox(height: 40),
-                _buildTable(ttf)
+                _buildTable(fontMap)
               ],
             );
             // Center
@@ -66,18 +67,18 @@ class PrintService {
     );
   }
 
-  pw.Table _buildTable(pw.Font font) {
+  pw.Table _buildTable(Map<String, ByteData> fontMap) {
     return pw.Table(
-        children: _buildTableContent(font),
+        children: _buildTableContent(fontMap),
         border: pw.TableBorder(width: 1),
         defaultColumnWidth: pw.IntrinsicColumnWidth());
   }
 
-  _buildTableContent(pw.Font font) {
+  _buildTableContent(Map<String, ByteData> fontMap) {
     List<pw.TableRow> saleLines = [];
     saleLines.add(_addTableHeader());
-    saleLines = _addSales(saleLines, font);
-    saleLines.add(_addTotalLineToTable(font));
+    saleLines = _addSales(saleLines, fontMap);
+    saleLines.add(_addTotalLineToTable(fontMap));
     return saleLines;
   }
 
@@ -92,7 +93,7 @@ class PrintService {
     );
   }
 
-  _addSales(List<pw.TableRow> saleLines, pw.Font font) {
+  _addSales(List<pw.TableRow> saleLines, Map<String, ByteData> fontMap) {
     submittedSale.saleLines.forEach((saleLine) {
       CurrencyWrapper saleCurrency =
           CurrencyWrapper.fromShortName(saleLine.currency, account);
@@ -109,7 +110,6 @@ class PrintService {
         totalPriceInSaleCurrency = saleCurrency.rtl ? "($totalSalePrice) " : " ($totalSalePrice)";
       }
       pw.TextStyle textStyle = pw.TextStyle(
-        font: font,
         fontSize: 12.3,
       );
       saleLines.add(pw.TableRow(children: [
@@ -134,7 +134,7 @@ class PrintService {
     return saleLines;
   }
 
-  _addTotalLineToTable(pw.Font font) {
+  _addTotalLineToTable(Map<String, ByteData> fontMap) {
     double totalAmount =
         submittedSale.totalChargeSat / currentCurrency.satConversionRate;
     return pw.TableRow(
@@ -145,7 +145,7 @@ class PrintService {
         _buildTableItem(
             "${currentCurrency.format(totalAmount, removeTrailingZeros: true)} ${currentCurrency.shortName}",
             style: pw.TextStyle(
-              font: font,
+              font: pw.Font.ttf(fontMap["ltr"]),
               fontSize: 14.3,
             )),
       ],
