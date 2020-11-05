@@ -44,6 +44,7 @@ class FiatConversion {
 
   String formatFiat(
     double fiatAmount, {
+    bool includeDisplayName = false,
     bool addCurrencySymbol = true,
     bool removeTrailingZeros = false,
     bool allowBelowMin = false,
@@ -53,7 +54,7 @@ class FiatConversion {
 
     String formattedAmount = "";
     String spacing = " " * this.currencyData.spacing;
-    String symbol = (this.currencyData.rtl)
+    String symbol = (this.currencyData.position == 1)
         ? spacing + '${this.currencyData.symbol}'
         : '${this.currencyData.symbol}' + spacing;
     // if conversion result is less than the minimum it doesn't make sense to display
@@ -68,9 +69,11 @@ class FiatConversion {
       formattedAmount = formatter.format(fiatAmount);
     }
     if (addCurrencySymbol) {
-      formattedAmount = (this.currencyData.rtl)
+      formattedAmount = (this.currencyData.position == 1)
           ? formattedAmount + symbol
           : symbol + formattedAmount;
+    } else if (includeDisplayName) {
+      formattedAmount += this.currencyData.shortName;
     }
     if (removeTrailingZeros) {
       RegExp removeTrailingZeros = RegExp(r"([.]0*)(?!.*\d)");

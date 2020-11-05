@@ -10,6 +10,7 @@ class CurrencyData {
   int fractionSize;
   String symbol;
   bool rtl;
+  int position;
   int spacing;
 
   CurrencyData(
@@ -18,6 +19,7 @@ class CurrencyData {
       this.fractionSize,
       this.symbol,
       this.rtl,
+      this.position,
       this.spacing});
 
   factory CurrencyData.fromJson(String shortName, Map<String, dynamic> json) =>
@@ -27,6 +29,7 @@ class CurrencyData {
         fractionSize: json["fractionSize"] ?? 0,
         symbol: json["symbol"] != null ? json["symbol"]["grapheme"] : shortName,
         rtl: json["symbol"] != null ? json["symbol"]["rtl"] : false,
+        position: json["symbol"] != null ? json["symbol"]["position"] ?? 0 : 0,
         spacing: json["spacing"] ?? 1,
       );
 }

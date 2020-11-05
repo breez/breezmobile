@@ -34,6 +34,8 @@ class CurrencyWrapper {
 
   String get symbol => btc?.symbol ?? fiat.currencyData.symbol;
 
+  bool get rtl => fiat?.currencyData?.rtl ?? false;
+
   String get chargeSuffix => btc?.displayName ?? fiat.currencyData.shortName;
 
   int get fractionSize {
@@ -57,16 +59,19 @@ class CurrencyWrapper {
     double value, {
     userInput = false,
     bool includeCurrencySymbol = false,
+    bool includeDisplayName = false,
     removeTrailingZeros = false,
   }) {
     if (btc != null) {
       var satValue = btc.toSats(value);
       return btc.format(satValue,
           userInput: userInput,
-          includeDisplayName: includeCurrencySymbol,
+          includeDisplayName: includeDisplayName,
+          includeCurrencySymbol: includeCurrencySymbol,
           removeTrailingZeros: removeTrailingZeros);
     }
     return fiat.formatFiat(value,
+        includeDisplayName: includeDisplayName,
         addCurrencySymbol: includeCurrencySymbol,
         allowBelowMin: true,
         removeTrailingZeros: removeTrailingZeros);
