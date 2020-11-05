@@ -3,7 +3,7 @@
     "name": "UAE Dirham",
     "fractionSize": 2,
     "symbol": {
-      "grapheme": ".د.إ",
+      "grapheme": "د.إ",
       "template": "1 $",
       "rtl": true
     },
@@ -346,11 +346,7 @@
   "CHF": {
     "name": "Swiss Franc",
     "fractionSize": 2,
-    "symbol": {
-      "grapheme": "fr.",
-      "template": "$1",
-      "rtl": false
-    },
+    "symbol": null,
     "uniqSymbol": null
   },
   "CHW": {
@@ -451,7 +447,8 @@
     "symbol": {
       "grapheme": "Kč",
       "template": "1 $",
-      "rtl": false
+      "rtl": false,
+      "position": 1
     },
     "uniqSymbol": {
       "grapheme": "Kč",
@@ -1455,7 +1452,8 @@
     "symbol": {
       "grapheme": "₽",
       "template": "1 $",
-      "rtl": true
+      "rtl": false,
+      "position": 1
     },
     "uniqSymbol": {
       "grapheme": "₽",
@@ -1533,7 +1531,8 @@
     "symbol": {
       "grapheme": "kr",
       "template": "1 $",
-      "rtl": true
+      "rtl": false,
+      "position": 1
     },
     "uniqSymbol": null
   },
@@ -1867,7 +1866,8 @@
     "symbol": {
       "grapheme": "₫",
       "template": "1 $",
-      "rtl": true
+      "rtl": false,
+      "position": 1
     },
     "uniqSymbol": {
       "grapheme": "₫",

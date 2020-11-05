@@ -418,18 +418,6 @@ class SaleLineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var currency =
-        CurrencyWrapper.fromShortName(saleLine.currency, accountModel);
-    double priceInFiat = saleLine.pricePerItem * saleLine.quantity;
-    double priceInSats = currency.satConversionRate * priceInFiat;
-    String priceInSaleCurrency = "";
-    if (saleCurrency.symbol != currency.symbol) {
-      String salePrice = saleCurrency.format(
-          priceInSats / saleCurrency.satConversionRate,
-          removeTrailingZeros: true);
-      priceInSaleCurrency = " (${saleCurrency.symbol}$salePrice)";
-    }
-
     var iconColor = theme.themeId == "BLUE"
         ? Colors.black.withOpacity(0.3)
         : ListTileTheme.of(context).iconColor.withOpacity(0.5);
@@ -441,12 +429,12 @@ class SaleLineWidget extends StatelessWidget {
             saleLine.itemName,
             //style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          subtitle: Text(
-              "${currency.symbol}${currency.format(priceInFiat, removeTrailingZeros: true)}$priceInSaleCurrency",
-              style: TextStyle(
-                  color: ListTileTheme.of(context)
-                      .textColor
-                      .withOpacity(theme.themeId == "BLUE" ? 0.75 : 0.5))),
+          subtitle: CurrencyDisplay(
+            currency:
+                CurrencyWrapper.fromShortName(saleLine.currency, accountModel),
+            saleLine: saleLine,
+            saleCurrency: saleCurrency,
+          ),
           trailing: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
@@ -483,5 +471,76 @@ class SaleLineWidget extends StatelessWidget {
             ],
           )),
     );
+  }
+}
+
+class CurrencyDisplay extends StatelessWidget {
+  final CurrencyWrapper currency;
+  final SaleLine saleLine;
+  final CurrencyWrapper saleCurrency;
+
+  const CurrencyDisplay({
+    Key key,
+    @required this.currency,
+    @required this.saleLine,
+    @required this.saleCurrency,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double priceInFiat = saleLine.pricePerItem * saleLine.quantity;
+    double priceInSats = currency.satConversionRate * priceInFiat;
+    String priceInSaleCurrency = "";
+    if (saleCurrency.symbol != currency.symbol) {
+      String salePrice = saleCurrency.format(
+          priceInSats / saleCurrency.satConversionRate,
+          includeCurrencySymbol: true,
+          removeTrailingZeros: true);
+      priceInSaleCurrency = " ($salePrice)";
+    }
+    TextStyle textStyle = TextStyle(
+        color: ListTileTheme.of(context)
+            .textColor
+            .withOpacity(theme.themeId == "BLUE" ? 0.75 : 0.5));
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CurrencyText(
+                text:
+                    "${currency.format(priceInFiat, includeCurrencySymbol: true, removeTrailingZeros: true)}",
+                currency: currency,
+                style: textStyle),
+            CurrencyText(
+                text: priceInSaleCurrency,
+                currency: saleCurrency,
+                style: textStyle),
+          ]),
+    );
+  }
+}
+
+class CurrencyText extends StatelessWidget {
+  const CurrencyText({
+    Key key,
+    @required this.text,
+    @required this.currency,
+    this.style,
+  }) : super(key: key);
+
+  final String text;
+  final CurrencyWrapper currency;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text,
+        maxLines: 1,
+        textDirection: currency.rtl ? TextDirection.rtl : TextDirection.ltr,
+        textAlign: currency.rtl ? TextAlign.end : TextAlign.start,
+        style: style ?? DefaultTextStyle.of(context).style);
   }
 }

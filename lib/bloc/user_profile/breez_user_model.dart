@@ -1,8 +1,6 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
-
 import 'business_adress.dart';
-import 'fiat_currency_preferences.dart';
 
 class BreezUserModel {
   final String userID;
@@ -22,7 +20,7 @@ class BreezUserModel {
   final bool hasAdminPassword;
   final BusinessAddress businessAddress;
   final String posCurrencyShortName;
-  final FiatCurrencyPreferences fiatCurrencyPreferences;
+  final List<String> preferredCurrencies;
 
   BreezUserModel._(this.userID, this.name, this.color, this.animal,
       {this.currency = Currency.SAT,
@@ -38,7 +36,7 @@ class BreezUserModel {
       this.hasAdminPassword = false,
       this.businessAddress,
       this.posCurrencyShortName = "SAT",
-      this.fiatCurrencyPreferences});
+      this.preferredCurrencies});
 
   BreezUserModel copyWith(
       {String name,
@@ -58,7 +56,7 @@ class BreezUserModel {
       bool hasAdminPassword,
       BusinessAddress businessAddress,
       String posCurrencyShortName,
-      FiatCurrencyPreferences fiatCurrencyPreferences}) {
+      List<String> preferredCurrencies}) {
     return BreezUserModel._(
       userID ?? this.userID,
       name ?? this.name,
@@ -79,8 +77,7 @@ class BreezUserModel {
       hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword,
       businessAddress: businessAddress ?? this.businessAddress,
       posCurrencyShortName: posCurrencyShortName ?? this.posCurrencyShortName,
-      fiatCurrencyPreferences:
-          fiatCurrencyPreferences ?? this.fiatCurrencyPreferences,
+      preferredCurrencies: preferredCurrencies ?? this.preferredCurrencies,
     );
   }
 
@@ -122,9 +119,9 @@ class BreezUserModel {
             ? BusinessAddress.initial()
             : BusinessAddress.fromJson(json['businessAddress']),
         posCurrencyShortName = json['posCurrencyShortName'] ?? "SAT",
-        fiatCurrencyPreferences = json['fiatCurrencyPreferences'] == null
-            ? FiatCurrencyPreferences.initial()
-            : FiatCurrencyPreferences.fromJson(json['fiatCurrencyPreferences']);
+        preferredCurrencies =
+            (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
+                <String>['USD', 'EUR', 'GBP', 'JPY'];
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -143,6 +140,6 @@ class BreezUserModel {
         'hasAdminPassword': hasAdminPassword,
         'posCurrencyShortName': posCurrencyShortName,
         'businessAddress': businessAddress,
-        'fiatCurrencyPreferences': fiatCurrencyPreferences?.toJson(),
+        'preferredCurrencies': preferredCurrencies,
       };
 }
