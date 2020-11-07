@@ -13,12 +13,14 @@ class SuccessfulPaymentRoute extends StatefulWidget {
   final CurrencyWrapper currentCurrency;
   final AccountModel account;
   final Sale submittedSale;
+  final PaymentInfo paymentInfo;
 
   SuccessfulPaymentRoute(
       {this.currentUser,
       this.currentCurrency,
       this.account,
-      this.submittedSale});
+      this.submittedSale,
+      this.paymentInfo});
 
   @override
   State<StatefulWidget> createState() {
@@ -52,6 +54,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
                       currentCurrency: widget.currentCurrency,
                       account: widget.account,
                       submittedSale: widget.submittedSale,
+                      paymentInfo: widget.paymentInfo,
                     )),
               );
             }).whenComplete(() => Navigator.of(context).pop());
@@ -75,12 +78,14 @@ class _SuccessfulPaymentMessage extends StatefulWidget {
   final CurrencyWrapper currentCurrency;
   final AccountModel account;
   final Sale submittedSale;
+  final PaymentInfo paymentInfo;
 
   _SuccessfulPaymentMessage(
       {this.currentUser,
       this.currentCurrency,
       this.account,
-      this.submittedSale});
+      this.submittedSale,
+      this.paymentInfo});
 
   @override
   State<StatefulWidget> createState() {
@@ -123,7 +128,8 @@ class _SuccessfulPaymentMessageState extends State<_SuccessfulPaymentMessage> {
                                 widget.currentUser,
                                 widget.currentCurrency,
                                 widget.account,
-                                widget.submittedSale)
+                                widget.submittedSale,
+                                paymentInfo: widget.paymentInfo)
                             .printAsPDF(),
                       )
                     : SizedBox(width: 40),

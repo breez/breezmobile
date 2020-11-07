@@ -766,14 +766,16 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return PosPaymentDialog(invoiceBloc, user, payReq, satAmount);
-        }).then((res) {
+        }).then((res) async {
       if (res?.paid == true) {
+        PaymentInfo paymentInfo = await _findPayment(payReq.paymentHash);
         Navigator.of(context).push(TransparentPageRoute((context) {
           return SuccessfulPaymentRoute(
             currentUser: user,
             currentCurrency: currentCurrency,
             account: account,
             submittedSale: submittedSale,
+            paymentInfo: paymentInfo,
           );
         }));
       }
@@ -783,6 +785,14 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       }
       return false;
     });
+  }
+
+  Future<PaymentInfo> _findPayment(String paymentHash) async {
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    PaymentsModel paymentsModel = await accountBloc.paymentsStream
+        .firstWhere((paymentsModel) => paymentsModel != null);
+    return paymentsModel.paymentsList
+        .firstWhere((paymentInfo) => paymentInfo.paymentHash == paymentHash);
   }
 
   onAddition(PosCatalogBloc posCatalogBloc, Sale currentSale,
