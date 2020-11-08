@@ -6,6 +6,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/qr_scan.dart' as QRScanner;
+import 'package:breez/widgets/collapsible_list_item.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,10 @@ class SendOnchain extends StatefulWidget {
   final Int64 _amount;
   final String _title;
   final String prefixMessage;
+  final String originalTransaction;
 
   SendOnchain(this._account, this._amount, this._title, this._onBroadcast,
-      {this.prefixMessage});
+      {this.prefixMessage, this.originalTransaction});
 
   @override
   State<StatefulWidget> createState() {
@@ -217,6 +219,16 @@ class SendOnchainState extends State<SendOnchain> {
                       padding: EdgeInsets.only(top: 12.0),
                       child: _buildAvailableBTC(widget._account),
                     ),
+                    widget.originalTransaction != null
+                        ? CollapsibleListItem(
+                            title: "Original Transaction",
+                            sharedValue: widget.originalTransaction,
+                            userStyle: Theme.of(context)
+                                .dialogTheme
+                                .contentTextStyle
+                                .copyWith(fontWeight: FontWeight.normal),
+                          )
+                        : SizedBox()
                   ],
                 ),
               ),
@@ -251,8 +263,7 @@ class SendOnchainState extends State<SendOnchain> {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await QRScanner.scan();
       if (barcode.isEmpty) {
-        showFlushbar(context,
-            message: "QR code wasn't detected.");
+        showFlushbar(context, message: "QR code wasn't detected.");
         return;
       }
       setState(() {

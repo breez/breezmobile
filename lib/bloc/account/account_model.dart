@@ -135,6 +135,8 @@ class RefundableAddress {
   String get address => _refundableInfo.address;
   String get lastRefundTxID => _refundableInfo.lastRefundTxID;
   Int64 get confirmedAmount => _refundableInfo.confirmedAmount;
+  List<String> get confirmedTransactionIds =>
+      _refundableInfo.confirmedTransactionIds;
   int get lockHeight => _refundableInfo.lockHeight;
   double get hoursToUnlock => _refundableInfo.hoursToUnlock;
   String get refundableError {
