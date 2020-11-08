@@ -15,9 +15,8 @@ class PrintService {
   final Sale submittedSale;
   final PaymentInfo paymentInfo;
 
-  PrintService(
-      this.currentUser, this.currentCurrency, this.account, this.submittedSale,
-      {this.paymentInfo});
+  PrintService(this.currentUser, this.currentCurrency, this.account,
+      this.submittedSale, this.paymentInfo);
 
   printAsPDF() async {
     try {
@@ -268,7 +267,7 @@ class PrintService {
   }
 
   pw.Widget _buildPaymentInfo() {
-    return paymentInfo?.preimage != null
+    return paymentInfo?.preimage != null && paymentInfo.preimage.isNotEmpty
         ? pw.Column(
             mainAxisAlignment: pw.MainAxisAlignment.start,
             crossAxisAlignment: pw.CrossAxisAlignment.start,
