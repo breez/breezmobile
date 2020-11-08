@@ -37,10 +37,9 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
                   Navigator.of(context).pop();
                 },
                 child: AlertDialog(
-                    contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 0.0, 0.0),
-                    content: _SuccessfulPaymentMessage(
-                      printParameters: widget.printParameters,
-                    )),
+                  contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 0.0, 0.0),
+                  content: _buildSuccessfulPaymentMessage(),
+                ),
               );
             }).whenComplete(() => Navigator.of(context).pop());
       });
@@ -56,24 +55,8 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
       ],
     );
   }
-}
 
-class _SuccessfulPaymentMessage extends StatefulWidget {
-  final PrintParameters printParameters;
-
-  _SuccessfulPaymentMessage({
-    this.printParameters,
-  });
-
-  @override
-  State<StatefulWidget> createState() {
-    return _SuccessfulPaymentMessageState();
-  }
-}
-
-class _SuccessfulPaymentMessageState extends State<_SuccessfulPaymentMessage> {
-  @override
-  Widget build(BuildContext context) {
+  _buildSuccessfulPaymentMessage() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
