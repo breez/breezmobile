@@ -1,26 +1,15 @@
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/practicles_animations.dart';
+import 'package:breez/widgets/print_parameters.dart';
 import 'package:flutter/material.dart';
 
-import 'currency_wrapper.dart';
-
 class SuccessfulPaymentRoute extends StatefulWidget {
-  final BreezUserModel currentUser;
-  final CurrencyWrapper currentCurrency;
-  final AccountModel account;
-  final Sale submittedSale;
-  final PaymentInfo paymentInfo;
+  final PrintParameters printParameters;
 
-  SuccessfulPaymentRoute(
-      {this.currentUser,
-      this.currentCurrency,
-      this.account,
-      this.submittedSale,
-      this.paymentInfo});
+  SuccessfulPaymentRoute({
+    this.printParameters,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -50,11 +39,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
                 child: AlertDialog(
                     contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 0.0, 0.0),
                     content: _SuccessfulPaymentMessage(
-                      currentUser: widget.currentUser,
-                      currentCurrency: widget.currentCurrency,
-                      account: widget.account,
-                      submittedSale: widget.submittedSale,
-                      paymentInfo: widget.paymentInfo,
+                      printParameters: widget.printParameters,
                     )),
               );
             }).whenComplete(() => Navigator.of(context).pop());
@@ -74,18 +59,11 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
 }
 
 class _SuccessfulPaymentMessage extends StatefulWidget {
-  final BreezUserModel currentUser;
-  final CurrencyWrapper currentCurrency;
-  final AccountModel account;
-  final Sale submittedSale;
-  final PaymentInfo paymentInfo;
+  final PrintParameters printParameters;
 
-  _SuccessfulPaymentMessage(
-      {this.currentUser,
-      this.currentCurrency,
-      this.account,
-      this.submittedSale,
-      this.paymentInfo});
+  _SuccessfulPaymentMessage({
+    this.printParameters,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -117,7 +95,7 @@ class _SuccessfulPaymentMessageState extends State<_SuccessfulPaymentMessage> {
                         .copyWith(fontSize: 16),
                   ),
                 ),
-                (widget.currentUser.isPOS)
+                (widget.printParameters != null)
                     ? IconButton(
                         alignment: Alignment.centerRight,
                         tooltip: "Print",
@@ -125,11 +103,11 @@ class _SuccessfulPaymentMessageState extends State<_SuccessfulPaymentMessage> {
                         color: Theme.of(context).primaryTextTheme.button.color,
                         icon: Icon(Icons.local_print_shop_outlined),
                         onPressed: () => PrintService(
-                                widget.currentUser,
-                                widget.currentCurrency,
-                                widget.account,
-                                widget.submittedSale,
-                                paymentInfo: widget.paymentInfo)
+                                widget.printParameters.currentUser,
+                                widget.printParameters.currentCurrency,
+                                widget.printParameters.account,
+                                widget.printParameters.submittedSale,
+                                widget.printParameters.paymentInfo)
                             .printAsPDF(),
                       )
                     : SizedBox(width: 40),

@@ -26,6 +26,7 @@ import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/print_parameters.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
@@ -770,12 +771,15 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       if (res?.paid == true) {
         PaymentInfo paymentInfo = await _findPayment(payReq.paymentHash);
         Navigator.of(context).push(TransparentPageRoute((context) {
-          return SuccessfulPaymentRoute(
+          PrintParameters printParameters = PrintParameters(
             currentUser: user,
             currentCurrency: currentCurrency,
             account: account,
             submittedSale: submittedSale,
             paymentInfo: paymentInfo,
+          );
+          return SuccessfulPaymentRoute(
+            printParameters: printParameters,
           );
         }));
       }
