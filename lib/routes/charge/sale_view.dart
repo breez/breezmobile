@@ -126,8 +126,18 @@ class SaleViewState extends State<SaleView> {
               leading: backBtn.BackButton(),
               title: Text(title),
               actions: widget.readOnly
-                  ? _buildActions(account: accModel, saleCurrency: saleCurrency)
-                  : _buildActions(),
+                  ? _buildPrintIcon(accModel, saleCurrency)
+                  : <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete_forever,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        onPressed: () {
+                          widget.onDeleteSale();
+                        },
+                      )
+                    ],
               elevation: 0.0,
             ),
             extendBody: false,
@@ -229,44 +239,31 @@ class SaleViewState extends State<SaleView> {
         });
   }
 
-  _buildActions({AccountModel account, CurrencyWrapper saleCurrency}) {
-    if (account != null) {
-      UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      return <Widget>[
-        StreamBuilder<BreezUserModel>(
-            stream: userBloc.userStream,
-            builder: (context, snapshot) {
-              var user = snapshot.data;
-              if (user == null) {
-                return Loader();
-              }
-              return Padding(
-                padding: const EdgeInsets.only(right: 18.0),
-                child: IconButton(
-                  alignment: Alignment.center,
-                  tooltip: "Print",
-                  iconSize: 24.0,
-                  color: Theme.of(context).iconTheme.color,
-                  icon: Icon(Icons.local_print_shop_outlined),
-                  onPressed: () => PrintService(
-                          user, saleCurrency, account, widget.readOnlySale,
-                          paymentInfo: widget.salePayment)
-                      .printAsPDF(),
-                ),
-              );
-            })
-      ];
-    }
+  _buildPrintIcon(AccountModel account, CurrencyWrapper saleCurrency) {
+    UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     return <Widget>[
-      IconButton(
-        icon: Icon(
-          Icons.delete_forever,
-          color: Theme.of(context).iconTheme.color,
-        ),
-        onPressed: () {
-          widget.onDeleteSale();
-        },
-      )
+      StreamBuilder<BreezUserModel>(
+          stream: userBloc.userStream,
+          builder: (context, snapshot) {
+            var user = snapshot.data;
+            if (user == null) {
+              return Loader();
+            }
+            return Padding(
+              padding: const EdgeInsets.only(right: 18.0),
+              child: IconButton(
+                alignment: Alignment.center,
+                tooltip: "Print",
+                iconSize: 24.0,
+                color: Theme.of(context).iconTheme.color,
+                icon: Icon(Icons.local_print_shop_outlined),
+                onPressed: () => PrintService(
+                        user, saleCurrency, account, widget.readOnlySale,
+                        paymentInfo: widget.salePayment)
+                    .printAsPDF(),
+              ),
+            );
+          })
     ];
   }
 }
@@ -425,7 +422,8 @@ class SaleLineWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
       child: ListTile(
-          leading: ItemAvatar(saleLine.itemImageURL, itemName: saleLine.itemName),
+          leading:
+              ItemAvatar(saleLine.itemImageURL, itemName: saleLine.itemName),
           title: Text(
             saleLine.itemName,
             //style: TextStyle(fontWeight: FontWeight.bold),
