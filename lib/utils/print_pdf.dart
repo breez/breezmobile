@@ -1,22 +1,15 @@
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/utils/date.dart';
+import 'package:breez/widgets/print_parameters.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 class PrintService {
-  final BreezUserModel currentUser;
-  final CurrencyWrapper currentCurrency;
-  final AccountModel account;
-  final Sale submittedSale;
-  final PaymentInfo paymentInfo;
+  final PrintParameters printParameters;
 
-  PrintService(this.currentUser, this.currentCurrency, this.account,
-      this.submittedSale, this.paymentInfo);
+  PrintService(this.printParameters);
 
   printAsPDF() async {
     try {
@@ -64,10 +57,10 @@ class PrintService {
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
         pw.Text(
-          currentUser.name,
+          printParameters.currentUser.name,
           style: pw.TextStyle(fontSize: 24, letterSpacing: 0.25),
         ),
-        paymentInfo?.creationTimestamp != null
+        printParameters.paymentInfo?.creationTimestamp != null
             ? pw.Column(children: [
                 pw.Text("Transaction Time",
                     style: pw.TextStyle(
@@ -75,8 +68,10 @@ class PrintService {
                 pw.SizedBox(height: 4),
                 pw.Text(
                     DateUtils.formatYearMonthDayHourMinute(
-                        DateTime.fromMillisecondsSinceEpoch(
-                            paymentInfo.creationTimestamp.toInt() * 1000)),
+                        DateTime.fromMillisecondsSinceEpoch(printParameters
+                                .paymentInfo.creationTimestamp
+                                .toInt() *
+                            1000)),
                     style: pw.TextStyle(letterSpacing: 0.5)),
               ])
             : pw.SizedBox(),
@@ -86,7 +81,7 @@ class PrintService {
 
   pw.Text _buildAddress() {
     return pw.Text(
-      currentUser.businessAddress.toString(),
+      printParameters.currentUser.businessAddress.toString(),
       style: pw.TextStyle(
         fontSize: 16,
       ),
@@ -120,9 +115,9 @@ class PrintService {
   }
 
   _addSales(List<pw.TableRow> saleLines, Map<String, ByteData> fontMap) {
-    submittedSale.saleLines.forEach((saleLine) {
-      CurrencyWrapper saleCurrency =
-          CurrencyWrapper.fromShortName(saleLine.currency, account);
+    printParameters.submittedSale.saleLines.forEach((saleLine) {
+      CurrencyWrapper saleCurrency = CurrencyWrapper.fromShortName(
+          saleLine.currency, printParameters.account);
       double priceInFiat = saleLine.pricePerItem;
       double totalPriceInFiat = saleLine.pricePerItem * saleLine.quantity;
       double totalPriceInSats =
@@ -148,15 +143,15 @@ class PrintService {
   }
 
   _addTotalLineToTable(Map<String, ByteData> fontMap) {
-    double totalAmount =
-        submittedSale.totalChargeSat / currentCurrency.satConversionRate;
+    double totalAmount = printParameters.submittedSale.totalChargeSat /
+        printParameters.currentCurrency.satConversionRate;
     return pw.TableRow(
       children: [
         pw.SizedBox(),
         pw.SizedBox(),
         _buildTableItem("Total"),
         _buildTableItem(
-            "${currentCurrency.format(totalAmount, removeTrailingZeros: true)} ${currentCurrency.shortName}",
+            "${printParameters.currentCurrency.format(totalAmount, removeTrailingZeros: true)} ${printParameters.currentCurrency.shortName}",
             style: pw.TextStyle(
               font: pw.Font.ttf(fontMap["ltr"]),
               fontSize: 14.3,
@@ -234,13 +229,15 @@ class PrintService {
     return pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.start,
         crossAxisAlignment: pw.CrossAxisAlignment.center,
-        children: (saleCurrency.symbol != currentCurrency.symbol)
+        children: (saleCurrency.symbol !=
+                printParameters.currentCurrency.symbol)
             ? [
                 _buildPrice(saleCurrency, totalPriceInFiat, fontMap,
                     padding: pw.EdgeInsets.only(left: 8, top: 8, bottom: 8)),
                 _buildPrice(
-                    currentCurrency,
-                    totalPriceInSats / currentCurrency.satConversionRate,
+                    printParameters.currentCurrency,
+                    totalPriceInSats /
+                        printParameters.currentCurrency.satConversionRate,
                     fontMap,
                     addParenthesis: true,
                     padding: pw.EdgeInsets.all(8)),
@@ -251,7 +248,7 @@ class PrintService {
   }
 
   pw.Widget _buildDescription() {
-    return submittedSale.note != null
+    return printParameters.submittedSale.note != null
         ? pw.Column(
             mainAxisSize: pw.MainAxisSize.min,
             mainAxisAlignment: pw.MainAxisAlignment.start,
@@ -261,13 +258,14 @@ class PrintService {
                     style: pw.TextStyle(
                         fontWeight: pw.FontWeight.bold, letterSpacing: 0.5)),
                 pw.SizedBox(height: 4),
-                pw.Text(submittedSale.note)
+                pw.Text(printParameters.submittedSale.note)
               ])
         : pw.SizedBox();
   }
 
   pw.Widget _buildPaymentInfo() {
-    return paymentInfo?.preimage != null && paymentInfo.preimage.isNotEmpty
+    return printParameters.paymentInfo?.preimage != null &&
+            printParameters.paymentInfo.preimage.isNotEmpty
         ? pw.Column(
             mainAxisAlignment: pw.MainAxisAlignment.start,
             crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -276,7 +274,7 @@ class PrintService {
                     style: pw.TextStyle(
                         fontWeight: pw.FontWeight.bold, letterSpacing: 0.5)),
                 pw.SizedBox(height: 4),
-                pw.Text(paymentInfo.preimage)
+                pw.Text(printParameters.paymentInfo.preimage)
               ])
         : pw.SizedBox();
   }

@@ -16,6 +16,7 @@ import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
+import 'package:breez/widgets/print_parameters.dart';
 import 'package:flutter/material.dart';
 
 import 'items/item_avatar.dart';
@@ -257,8 +258,12 @@ class SaleViewState extends State<SaleView> {
                 iconSize: 24.0,
                 color: Theme.of(context).iconTheme.color,
                 icon: Icon(Icons.local_print_shop_outlined),
-                onPressed: () => PrintService(user, saleCurrency, account,
-                        widget.readOnlySale, widget.salePayment)
+                onPressed: () => PrintService(PrintParameters(
+                        currentUser: user,
+                        currentCurrency: saleCurrency,
+                        account: account,
+                        submittedSale: widget.readOnlySale,
+                        paymentInfo: widget.salePayment))
                     .printAsPDF(),
               ),
             );

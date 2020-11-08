@@ -102,13 +102,8 @@ class _SuccessfulPaymentMessageState extends State<_SuccessfulPaymentMessage> {
                         iconSize: 24.0,
                         color: Theme.of(context).primaryTextTheme.button.color,
                         icon: Icon(Icons.local_print_shop_outlined),
-                        onPressed: () => PrintService(
-                                widget.printParameters.currentUser,
-                                widget.printParameters.currentCurrency,
-                                widget.printParameters.account,
-                                widget.printParameters.submittedSale,
-                                widget.printParameters.paymentInfo)
-                            .printAsPDF(),
+                        onPressed: () =>
+                            PrintService(widget.printParameters).printAsPDF(),
                       )
                     : SizedBox(width: 40),
               ],
