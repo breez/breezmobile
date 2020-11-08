@@ -53,25 +53,23 @@ class WalletDashboardState extends State<WalletDashboard> {
                       !widget._accountModel.initial
                   ? FlatButton(
                       onPressed: () {
-                        List<Currency> currencyList =
-                            Currency.currencies.reversed.toList();
                         if (_privacyMode) {
                           setState(() {
                             _privacyMode = false;
                           });
                           return;
                         }
-                        var nextCurrencyIndex = (currencyList
+                        var nextCurrencyIndex = (Currency.currencies
                                     .indexOf(widget._accountModel.currency) +
                                 1) %
-                            currencyList.length;
-                        if (nextCurrencyIndex == 0) {
+                            Currency.currencies.length;
+                        if (nextCurrencyIndex == 1) {
                           setState(() {
                             _privacyMode = true;
                           });
                         }
-                        widget
-                            ._onCurrencyChange(currencyList[nextCurrencyIndex]);
+                        widget._onCurrencyChange(
+                            Currency.currencies[nextCurrencyIndex]);
                       },
                       highlightColor:
                           theme.customData[theme.themeId].paymentListBgColor,
