@@ -257,9 +257,8 @@ class SaleViewState extends State<SaleView> {
                 iconSize: 24.0,
                 color: Theme.of(context).iconTheme.color,
                 icon: Icon(Icons.local_print_shop_outlined),
-                onPressed: () => PrintService(
-                        user, saleCurrency, account, widget.readOnlySale,
-                        paymentInfo: widget.salePayment)
+                onPressed: () => PrintService(user, saleCurrency, account,
+                        widget.readOnlySale, widget.salePayment)
                     .printAsPDF(),
               ),
             );
