@@ -1,14 +1,12 @@
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/practicles_animations.dart';
-import 'package:breez/widgets/print_parameters.dart';
 import 'package:flutter/material.dart';
 
 class SuccessfulPaymentRoute extends StatefulWidget {
-  final PrintParameters printParameters;
+  final Function() onPrint;
 
   SuccessfulPaymentRoute({
-    this.printParameters,
+    this.onPrint,
   });
 
   @override
@@ -78,15 +76,14 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
                         .copyWith(fontSize: 16),
                   ),
                 ),
-                (widget.printParameters != null)
+                (widget.onPrint != null)
                     ? IconButton(
                         alignment: Alignment.centerRight,
                         tooltip: "Print",
                         iconSize: 24.0,
                         color: Theme.of(context).primaryTextTheme.button.color,
                         icon: Icon(Icons.local_print_shop_outlined),
-                        onPressed: () =>
-                            PrintService(widget.printParameters).printAsPDF(),
+                        onPressed: widget.onPrint,
                       )
                     : SizedBox(width: 40),
               ],

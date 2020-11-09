@@ -22,6 +22,7 @@ import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/routes/charge/succesful_payment.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -779,7 +780,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             paymentInfo: paymentInfo,
           );
           return SuccessfulPaymentRoute(
-            printParameters: printParameters,
+            onPrint: () => PrintService(printParameters).printAsPDF(),
           );
         }));
       }
