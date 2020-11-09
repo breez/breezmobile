@@ -14,9 +14,16 @@ class WalletDashboard extends StatefulWidget {
   final double _offsetFactor;
   final Function(Currency currency) _onCurrencyChange;
   final Function(String fiatConversion) _onFiatCurrencyChange;
+  final Function(bool hideBalance) _onPrivacyChange;
 
-  WalletDashboard(this._userModel, this._accountModel, this._height,
-      this._offsetFactor, this._onCurrencyChange, this._onFiatCurrencyChange);
+  WalletDashboard(
+      this._userModel,
+      this._accountModel,
+      this._height,
+      this._offsetFactor,
+      this._onCurrencyChange,
+      this._onFiatCurrencyChange,
+      this._onPrivacyChange);
 
   @override
   State<StatefulWidget> createState() {
@@ -27,7 +34,6 @@ class WalletDashboard extends StatefulWidget {
 class WalletDashboardState extends State<WalletDashboard> {
   static const BALANCE_OFFSET_TRANSITION = 35.0;
   bool _showFiatCurrency = false;
-  bool _privacyMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +59,8 @@ class WalletDashboardState extends State<WalletDashboard> {
                       !widget._accountModel.initial
                   ? FlatButton(
                       onPressed: () {
-                        if (_privacyMode) {
-                          setState(() {
-                            _privacyMode = false;
-                          });
+                        if (widget._userModel.hideBalance) {
+                          widget._onPrivacyChange(false);
                           return;
                         }
                         var nextCurrencyIndex = (Currency.currencies
@@ -64,16 +68,14 @@ class WalletDashboardState extends State<WalletDashboard> {
                                 1) %
                             Currency.currencies.length;
                         if (nextCurrencyIndex == 1) {
-                          setState(() {
-                            _privacyMode = true;
-                          });
+                          widget._onPrivacyChange(true);
                         }
                         widget._onCurrencyChange(
                             Currency.currencies[nextCurrencyIndex]);
                       },
                       highlightColor:
                           theme.customData[theme.themeId].paymentListBgColor,
-                      child: _privacyMode
+                      child: widget._userModel.hideBalance
                           ? Text("******",
                               style: Theme.of(context)
                                   .accentTextTheme
@@ -137,7 +139,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                       !widget._accountModel.initial &&
                       widget._accountModel.fiatConversionList.isNotEmpty &&
                       isAboveMinAmount(widget._accountModel?.fiatCurrency) &&
-                      !_privacyMode
+                      !widget._userModel.hideBalance
                   ? FlatButton(
                       onPressed: () {
                         var newFiatConversion = nextValidFiatConversion();
