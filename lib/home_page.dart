@@ -36,6 +36,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'bloc/invoice/invoice_model.dart';
 import 'bloc/user_profile/user_actions.dart';
@@ -50,7 +51,6 @@ import 'routes/connect_to_pay/connect_to_pay_page.dart';
 import 'routes/home/account_page.dart';
 import 'routes/no_connection_dialog.dart';
 import 'routes/spontaneous_payment/spontaneous_payment_page.dart';
-import 'widgets/BGRenderAware.dart';
 
 final GlobalKey firstPaymentItemKey = GlobalKey();
 final ScrollController scrollController = ScrollController();
@@ -326,23 +326,21 @@ class HomeState extends State<Home> {
                                                     ),
                                                   ],
                                                   leading: IconButton(
-                                                      icon: BGRenderAware(
-                                                          ImageIcon(
-                                                        AssetImage(
-                                                            "src/icon/hamburger.png"),
-                                                        size: 24.0,
+                                                      icon: SvgPicture.asset(
+                                                        "src/icon/hamburger.svg",
+                                                        height: 24.0,
+                                                        width: 24.0,
                                                         color: Theme.of(context)
                                                             .appBarTheme
                                                             .actionsIconTheme
                                                             .color,
-                                                      )),
+                                                      ),
                                                       onPressed: () =>
                                                           _scaffoldKey
                                                               .currentState
                                                               .openDrawer()),
-                                                  title:
-                                                      BGRenderAware(Image.asset(
-                                                    "src/images/logo-color.png",
+                                                  title: SvgPicture.asset(
+                                                    "src/images/logo-color.svg",
                                                     height: 23.5,
                                                     width: 62.7,
                                                     color: Theme.of(context)
@@ -350,7 +348,7 @@ class HomeState extends State<Home> {
                                                         .color,
                                                     colorBlendMode:
                                                         BlendMode.srcATop,
-                                                  )),
+                                                  ),
                                                   iconTheme: IconThemeData(
                                                       color: Color.fromARGB(
                                                           255, 0, 133, 251)),

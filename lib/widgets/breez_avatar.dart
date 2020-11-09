@@ -5,6 +5,7 @@ import 'package:breez/bloc/user_profile/default_profile_generator.dart'
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:flutter_svg/svg.dart';
 
 final _breezAvatarColors = {
   "salmon": Color(0xFFFA8072),
@@ -79,11 +80,12 @@ class _UnknownAvatar extends StatelessWidget {
     return CircleAvatar(
         backgroundColor: backgroundColor,
         radius: radius,
-        child: ImageIcon(
-          AssetImage("src/icon/alien.png"),
-          color: Color.fromARGB(255, 0, 166, 68),
-          size: 0.70 * radius * 2,
-        ) // Used to be: Icon(Icons.person, color: theme.BreezColors.blue[500], size: 0.7 * radius * 2,)
+        child: SvgPicture.asset("src/icon/alien.svg",
+            color: Color.fromARGB(255, 0, 166, 68),
+            width: 0.70 * radius * 2,
+            height: 0.70 *
+                radius *
+                2) // Used to be: Icon(Icons.person, color: theme.BreezColors.blue[500], size: 0.7 * radius * 2,)
         );
   }
 }

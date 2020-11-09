@@ -3,6 +3,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:breez/widgets/delay_render.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'animations/pending_share.dart';
 import 'animations/pulse_animation.dart';
@@ -162,7 +163,7 @@ class AvatarDecorator extends StatelessWidget {
 class AlienAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AvatarDecorator(ImageIcon(AssetImage("src/icon/alien.png"),
+    return AvatarDecorator(SvgPicture.asset("src/icon/alien.svg",
         color: Color.fromARGB(255, 0, 166, 68)));
   }
 }
