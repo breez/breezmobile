@@ -6,13 +6,17 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
+import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
+import 'package:breez/widgets/print_parameters.dart';
 import 'package:flutter/material.dart';
 
 import 'items/item_avatar.dart';
@@ -123,7 +127,7 @@ class SaleViewState extends State<SaleView> {
               leading: backBtn.BackButton(),
               title: Text(title),
               actions: widget.readOnly
-                  ? []
+                  ? _buildPrintIcon(accModel, saleCurrency)
                   : <Widget>[
                       IconButton(
                         icon: Icon(
@@ -234,6 +238,37 @@ class SaleViewState extends State<SaleView> {
             ),
           );
         });
+  }
+
+  _buildPrintIcon(AccountModel account, CurrencyWrapper saleCurrency) {
+    UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    return <Widget>[
+      StreamBuilder<BreezUserModel>(
+          stream: userBloc.userStream,
+          builder: (context, snapshot) {
+            var user = snapshot.data;
+            if (user == null) {
+              return Loader();
+            }
+            return Padding(
+              padding: const EdgeInsets.only(right: 18.0),
+              child: IconButton(
+                alignment: Alignment.center,
+                tooltip: "Print",
+                iconSize: 24.0,
+                color: Theme.of(context).iconTheme.color,
+                icon: Icon(Icons.local_print_shop_outlined),
+                onPressed: () => PrintService(PrintParameters(
+                        currentUser: user,
+                        currentCurrency: saleCurrency,
+                        account: account,
+                        submittedSale: widget.readOnlySale,
+                        paymentInfo: widget.salePayment))
+                    .printAsPDF(),
+              ),
+            );
+          })
+    ];
   }
 }
 
@@ -391,7 +426,8 @@ class SaleLineWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
       child: ListTile(
-          leading: ItemAvatar(saleLine.itemImageURL, itemName: saleLine.itemName),
+          leading:
+              ItemAvatar(saleLine.itemImageURL, itemName: saleLine.itemName),
           title: Text(
             saleLine.itemName,
             //style: TextStyle(fontWeight: FontWeight.bold),

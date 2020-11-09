@@ -22,10 +22,12 @@ import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/routes/charge/succesful_payment.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/print_parameters.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
@@ -716,7 +718,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             var addSaleAction = SubmitCurrentSale(payReq.paymentHash);
             posCatalogBloc.actionsSink.add(addSaleAction);
             return addSaleAction.future.then((submittedSale) {
-              return showPaymentDialog(invoiceBloc, user, payReq, satAmount)
+              return showPaymentDialog(invoiceBloc, user, payReq, satAmount,
+                      account, submittedSale)
                   .then((cleared) {
                 if (!cleared) {
                   var unLockSale = SetCurrentSale(
@@ -752,8 +755,13 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             ));
   }
 
-  Future showPaymentDialog(InvoiceBloc invoiceBloc, BreezUserModel user,
-      PaymentRequestModel payReq, double satAmount) {
+  Future showPaymentDialog(
+      InvoiceBloc invoiceBloc,
+      BreezUserModel user,
+      PaymentRequestModel payReq,
+      double satAmount,
+      AccountModel account,
+      Sale submittedSale) {
     return showDialog<PosPaymentResult>(
         useRootNavigator: false,
         context: context,
@@ -763,7 +771,19 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         }).then((res) {
       if (res?.paid == true) {
         Navigator.of(context).push(TransparentPageRoute((context) {
-          return SuccessfulPaymentRoute();
+          return SuccessfulPaymentRoute(
+            onPrint: () async {
+              PaymentInfo paymentInfo = await _findPayment(payReq.paymentHash);
+              PrintParameters printParameters = PrintParameters(
+                currentUser: user,
+                currentCurrency: currentCurrency,
+                account: account,
+                submittedSale: submittedSale,
+                paymentInfo: paymentInfo,
+              );
+              return PrintService(printParameters).printAsPDF();
+            },
+          );
         }));
       }
       if (res?.clearSale == true) {
@@ -772,6 +792,14 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       }
       return false;
     });
+  }
+
+  Future<PaymentInfo> _findPayment(String paymentHash) async {
+    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    PaymentsModel paymentsModel = await accountBloc.paymentsStream
+        .firstWhere((paymentsModel) => paymentsModel != null);
+    return paymentsModel.paymentsList
+        .firstWhere((paymentInfo) => paymentInfo.paymentHash == paymentHash);
   }
 
   onAddition(PosCatalogBloc posCatalogBloc, Sale currentSale,

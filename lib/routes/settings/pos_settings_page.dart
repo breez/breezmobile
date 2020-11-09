@@ -53,6 +53,8 @@ class _PosSettingsPage extends StatefulWidget {
 class PosSettingsPageState extends State<_PosSettingsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var _cancellationTimeoutValueController = TextEditingController();
+  var _addressLine1Controller = TextEditingController();
+  var _addressLine2Controller = TextEditingController();
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
 
   @override
@@ -60,6 +62,10 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     super.initState();
     _cancellationTimeoutValueController.text =
         widget.currentProfile.cancellationTimeoutValue.toString();
+    _addressLine1Controller.text =
+        widget.currentProfile.businessAddress?.addressLine1;
+    _addressLine2Controller.text =
+        widget.currentProfile.businessAddress?.addressLine2;
   }
 
   @override
@@ -82,80 +88,86 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
         ),
         elevation: 0.0,
       ),
-      body: StreamBuilder<BreezUserModel>(
-          stream: userProfileBloc.userStream,
-          builder: (context, snapshot) {
-            var user = snapshot.data;
-            if (user == null) {
-              return Loader();
-            }
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                FocusScope.of(context).requestFocus(FocusNode());
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    padding:
-                        EdgeInsets.only(top: 32.0, bottom: 19.0, left: 16.0),
-                    child: Text(
-                      "Payment Cancellation Timeout (in seconds)",
-                      style: TextStyle(
-                          fontSize: 12.4,
-                          letterSpacing: 0.11,
-                          height: 1.24,
-                          color: Color.fromRGBO(255, 255, 255, 0.87)),
+      body: SingleChildScrollView(
+        reverse: true,
+        child: StreamBuilder<BreezUserModel>(
+            stream: userProfileBloc.userStream,
+            builder: (context, snapshot) {
+              var user = snapshot.data;
+              if (user == null) {
+                return Loader();
+              }
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      padding:
+                          EdgeInsets.only(top: 32.0, bottom: 19.0, left: 16.0),
+                      child: Text(
+                        "Payment Cancellation Timeout (in seconds)",
+                        style: TextStyle(
+                            fontSize: 12.4,
+                            letterSpacing: 0.11,
+                            height: 1.24,
+                            color: Color.fromRGBO(255, 255, 255, 0.87)),
+                      ),
                     ),
-                  ),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 304.0,
-                          child: Padding(
-                            padding: EdgeInsets.zero,
-                            child: Slider(
-                                value: widget
-                                    .currentProfile.cancellationTimeoutValue,
-                                label:
-                                    '${widget.currentProfile.cancellationTimeoutValue.toStringAsFixed(0)}',
-                                min: 30.0,
-                                max: 180.0,
-                                divisions: 5,
-                                onChanged: (double value) {
-                                  FocusScope.of(context)
-                                      .requestFocus(FocusNode());
-                                  _cancellationTimeoutValueController.text =
-                                      value.toString();
-                                  widget._userProfileBloc.userSink.add(
-                                      widget.currentProfile.copyWith(
-                                          cancellationTimeoutValue: value));
-                                }),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            width: 304.0,
+                            child: Padding(
+                              padding: EdgeInsets.zero,
+                              child: Slider(
+                                  value: widget
+                                      .currentProfile.cancellationTimeoutValue,
+                                  label:
+                                      '${widget.currentProfile.cancellationTimeoutValue.toStringAsFixed(0)}',
+                                  min: 30.0,
+                                  max: 180.0,
+                                  divisions: 5,
+                                  onChanged: (double value) {
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                    _cancellationTimeoutValueController.text =
+                                        value.toString();
+                                    widget._userProfileBloc.userSink.add(
+                                        widget.currentProfile.copyWith(
+                                            cancellationTimeoutValue: value));
+                                  }),
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 8.0, right: 16.0),
-                          child: Text(
-                            num.parse(_cancellationTimeoutValueController.text)
-                                .toStringAsFixed(0),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.4,
-                                letterSpacing: 0.11),
+                          Padding(
+                            padding: EdgeInsets.only(left: 8.0, right: 16.0),
+                            child: Text(
+                              num.parse(
+                                      _cancellationTimeoutValueController.text)
+                                  .toStringAsFixed(0),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12.4,
+                                  letterSpacing: 0.11),
+                            ),
                           ),
-                        ),
-                      ]),
-                  ..._buildAdminPasswordTiles(userProfileBloc, user),
-                  Divider(),
-                  _buildExportItemsTile(posCatalogBloc)
-                ],
-              ),
-            );
-          }),
+                        ]),
+                    ..._buildAdminPasswordTiles(userProfileBloc, user),
+                    Divider(),
+                    _buildExportItemsTile(posCatalogBloc),
+                    Divider(),
+                    _buildAddressField(userProfileBloc, user)
+                  ],
+                ),
+              );
+            }),
+      ),
     );
   }
 
@@ -359,6 +371,42 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   _resetAdminPassword(UserProfileBloc userProfileBloc) {
     SetAdminPassword action = SetAdminPassword(null);
     userProfileBloc.userActionsSink.add(action);
+  }
+
+  _buildAddressField(UserProfileBloc userProfileBloc, BreezUserModel user) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Business Address",
+          ),
+          TextField(
+            controller: _addressLine1Controller,
+            minLines: 1,
+            maxLines: 1,
+            decoration: InputDecoration(hintText: "Address Line 1"),
+            onChanged: (_) => widget._userProfileBloc.userSink.add(
+                widget.currentProfile.copyWith(
+                    businessAddress: widget.currentProfile.businessAddress
+                        .copyWith(addressLine1: _addressLine1Controller.text))),
+            onEditingComplete: () => FocusScope.of(context).nextFocus(),
+          ),
+          TextField(
+            controller: _addressLine2Controller,
+            minLines: 1,
+            maxLines: 1,
+            decoration: InputDecoration(hintText: "Address Line 2"),
+            onChanged: (_) => widget._userProfileBloc.userSink.add(
+                widget.currentProfile.copyWith(
+                    businessAddress: widget.currentProfile.businessAddress
+                        .copyWith(addressLine2: _addressLine2Controller.text))),
+            onEditingComplete: () => FocusScope.of(context).unfocus(),
+          ),
+        ],
+      ),
+    );
   }
 }
 

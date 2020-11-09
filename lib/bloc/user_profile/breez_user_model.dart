@@ -1,5 +1,6 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
+import 'business_adress.dart';
 
 class BreezUserModel {
   final String userID;
@@ -18,6 +19,7 @@ class BreezUserModel {
   final bool hideBalance;
   final double cancellationTimeoutValue;
   final bool hasAdminPassword;
+  final BusinessAddress businessAddress;
   final String posCurrencyShortName;
   final List<String> preferredCurrencies;
 
@@ -34,6 +36,7 @@ class BreezUserModel {
       this.hideBalance = false,
       this.cancellationTimeoutValue = 90.0,
       this.hasAdminPassword = false,
+      this.businessAddress,
       this.posCurrencyShortName = "SAT",
       this.preferredCurrencies});
 
@@ -54,6 +57,7 @@ class BreezUserModel {
       bool hideBalance,
       double cancellationTimeoutValue,
       bool hasAdminPassword,
+      BusinessAddress businessAddress,
       String posCurrencyShortName,
       List<String> preferredCurrencies}) {
     return BreezUserModel._(
@@ -75,6 +79,7 @@ class BreezUserModel {
       cancellationTimeoutValue:
           cancellationTimeoutValue ?? this.cancellationTimeoutValue,
       hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword,
+      businessAddress: businessAddress ?? this.businessAddress,
       posCurrencyShortName: posCurrencyShortName ?? this.posCurrencyShortName,
       preferredCurrencies: preferredCurrencies ?? this.preferredCurrencies,
     );
@@ -115,6 +120,9 @@ class BreezUserModel {
             ? 90.0
             : json['cancellationTimeoutValue'],
         hasAdminPassword = json['hasAdminPassword'] ?? false,
+        businessAddress = json['businessAddress'] == null
+            ? BusinessAddress.initial()
+            : BusinessAddress.fromJson(json['businessAddress']),
         posCurrencyShortName = json['posCurrencyShortName'] ?? "SAT",
         preferredCurrencies =
             (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
@@ -137,6 +145,7 @@ class BreezUserModel {
         'hideBalance': hideBalance,
         'hasAdminPassword': hasAdminPassword,
         'posCurrencyShortName': posCurrencyShortName,
+        'businessAddress': businessAddress,
         'preferredCurrencies': preferredCurrencies,
       };
 }

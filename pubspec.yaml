@@ -77,6 +77,7 @@ dependencies:
     git:
       url: https://github.com/breez/local_auth.git
   drag_and_drop_lists: ^0.2.7
+  printing: ^3.7.0
 
 dev_dependencies:
   mockito: "^3.0.0"
@@ -193,6 +194,12 @@ flutter:
     - family: ComfortaaBold
       fonts:
         - asset: fonts/Comfortaa-Bold.ttf
+    - family: IBMPlexSansRegular
+      fonts:
+        - asset: fonts/IBMPlexSans-Regular.ttf
+    - family: HacenTunisia
+      fonts:
+        - asset: fonts/Hacen-Tunisia.ttf
     - family: SAT
       fonts:
         - asset: fonts/sat.otf

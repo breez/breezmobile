@@ -3,6 +3,12 @@ import 'package:breez/widgets/practicles_animations.dart';
 import 'package:flutter/material.dart';
 
 class SuccessfulPaymentRoute extends StatefulWidget {
+  final Function() onPrint;
+
+  SuccessfulPaymentRoute({
+    this.onPrint,
+  });
+
   @override
   State<StatefulWidget> createState() {
     return SuccessfulPaymentRouteState();
@@ -29,8 +35,9 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
                   Navigator.of(context).pop();
                 },
                 child: AlertDialog(
-                    contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 40.0, 0.0),
-                    content: _SuccessfulPaymentMessage()),
+                  contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 0.0, 0.0),
+                  content: _buildSuccessfulPaymentMessage(),
+                ),
               );
             }).whenComplete(() => Navigator.of(context).pop());
       });
@@ -46,28 +53,43 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
       ],
     );
   }
-}
 
-class _SuccessfulPaymentMessage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  _buildSuccessfulPaymentMessage() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.only(bottom: 40.0),
-          child: Text(
-            'Payment approved!',
-            textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .primaryTextTheme
-                .headline4
-                .copyWith(fontSize: 16),
-          ),
-        ),
+            padding:
+                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    'Payment approved!',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .primaryTextTheme
+                        .headline4
+                        .copyWith(fontSize: 16),
+                  ),
+                ),
+                (widget.onPrint != null)
+                    ? IconButton(
+                        alignment: Alignment.centerRight,
+                        tooltip: "Print",
+                        iconSize: 24.0,
+                        color: Theme.of(context).primaryTextTheme.button.color,
+                        icon: Icon(Icons.local_print_shop_outlined),
+                        onPressed: widget.onPrint,
+                      )
+                    : SizedBox(width: 40),
+              ],
+            )),
         Padding(
-          padding: EdgeInsets.only(bottom: 40.0),
+          padding: EdgeInsets.only(bottom: 40.0, right: 40),
           child: Container(
             decoration: new BoxDecoration(
               color: Theme.of(context).buttonColor,
