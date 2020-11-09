@@ -135,6 +135,8 @@ class RefundableAddress {
   String get address => _refundableInfo.address;
   String get lastRefundTxID => _refundableInfo.lastRefundTxID;
   Int64 get confirmedAmount => _refundableInfo.confirmedAmount;
+  List<String> get confirmedTransactionIds =>
+      _refundableInfo.confirmedTransactionIds;
   int get lockHeight => _refundableInfo.lockHeight;
   double get hoursToUnlock => _refundableInfo.hoursToUnlock;
   String get refundableError {
@@ -424,13 +426,32 @@ class PaymentInfo {
       _paymentResponse.pendingExpirationHeight > 0 ||
       _paymentResponse.isChannelPending;
   bool get fullPending => pending && _paymentResponse.pendingFull == true;
-  bool get channelCloseConfirmed => _paymentResponse.isChannelCloseConfimed;
-  String get closeChannelTx => _paymentResponse.closedChannelTxID;
+  String get closeChannelTx {
+    if (_paymentResponse.closedChannelSweepTxID?.isNotEmpty == true) {
+      return _paymentResponse.closedChannelSweepTxID;
+    }
+    if (_paymentResponse.closedChannelRemoteTxID?.isNotEmpty == true) {
+      return _paymentResponse.closedChannelRemoteTxID;
+    }
+    return "";
+  }
+
   String get closeChannelTxUrl {
     if (closeChannelTx.isEmpty) {
       return null;
     }
     return "https://blockstream.info/tx/$closeChannelTx";
+  }
+
+  String get remoteCloseChannelTx {
+    return _paymentResponse.closedChannelRemoteTxID;
+  }
+
+  String get remoteCloseChannelTxUrl {
+    if (remoteCloseChannelTx.isEmpty) {
+      return null;
+    }
+    return "https://blockstream.info/tx/$remoteCloseChannelTx";
   }
 
   bool get keySend => _paymentResponse.isKeySend;

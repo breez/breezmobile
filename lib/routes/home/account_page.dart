@@ -280,12 +280,16 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
 
                 return Stack(overflow: Overflow.visible, children: <Widget>[
                   WalletDashboard(
-                      userSnapshot.data,
-                      snapshot.data,
-                      height,
-                      heightFactor,
-                      _userProfileBloc.currencySink.add,
-                      _userProfileBloc.fiatConversionSink.add)
+                    userSnapshot.data,
+                    snapshot.data,
+                    height,
+                    heightFactor,
+                    _userProfileBloc.currencySink.add,
+                    _userProfileBloc.fiatConversionSink.add,
+                    (hideBalance) => _userProfileBloc.userSink.add(
+                      userSnapshot.data.copyWith(hideBalance: hideBalance),
+                    ),
+                  )
                 ]);
               });
         });

@@ -45,12 +45,12 @@ class GetRefundPage extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
-                        Expanded(flex: 5, child: Text(item.address)),
                         Expanded(
-                            flex: 3,
                             child: Text(
-                                account.currency.format(item.confirmedAmount),
-                                textAlign: TextAlign.right))
+                                "Amount: " +
+                                    account.currency
+                                        .format(item.confirmedAmount),
+                                textAlign: TextAlign.left))
                       ],
                     ),
                     Row(
@@ -65,7 +65,7 @@ class GetRefundPage extends StatelessWidget {
                                 child: SubmitButton(
                                     item.lastRefundTxID.isNotEmpty
                                         ? "BROADCASTED"
-                                        : "REFUND",
+                                        : "CONTINUE",
                                     item.lastRefundTxID.isNotEmpty &&
                                             !allowRebroadcastRefunds
                                         ? null
@@ -82,20 +82,28 @@ class GetRefundPage extends StatelessWidget {
   }
 
   onRefund(BuildContext context, AccountModel account, RefundableAddress item) {
+    String originalTransaction;
+    if (item.confirmedTransactionIds.length > 0) {
+      originalTransaction = item.confirmedTransactionIds[0];
+    }
     Navigator.push(
         context,
         MaterialPageRoute(
             fullscreenDialog: true,
-            builder: (_) =>
-                SendOnchain(account, item.confirmedAmount, "Refund Transaction",
-                    (destAddress, feeRate) {
-                  return broadcastAndWait(
-                          context, item.address, destAddress, feeRate)
-                      .then((str) {
-                    Navigator.of(context).pop();
-                    return str;
-                  });
-                })));
+            builder: (_) => SendOnchain(
+                  account,
+                  item.confirmedAmount,
+                  "Refund Transaction",
+                  (destAddress, feeRate) {
+                    return broadcastAndWait(
+                            context, item.address, destAddress, feeRate)
+                        .then((str) {
+                      Navigator.of(context).pop();
+                      return str;
+                    });
+                  },
+                  originalTransaction: originalTransaction,
+                )));
   }
 
   Future<String> broadcastAndWait(BuildContext context, String fromAddress,

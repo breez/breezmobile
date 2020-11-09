@@ -111,6 +111,8 @@ const Payment$json = const {
     const {'1': 'closedChannelTxID', '3': 17, '4': 1, '5': 9, '10': 'closedChannelTxID'},
     const {'1': 'isKeySend', '3': 18, '4': 1, '5': 8, '10': 'isKeySend'},
     const {'1': 'PendingFull', '3': 19, '4': 1, '5': 8, '10': 'PendingFull'},
+    const {'1': 'closedChannelRemoteTxID', '3': 20, '4': 1, '5': 9, '10': 'closedChannelRemoteTxID'},
+    const {'1': 'closedChannelSweepTxID', '3': 21, '4': 1, '5': 9, '10': 'closedChannelSweepTxID'},
   ],
   '4': const [Payment_PaymentType$json],
 };

@@ -9,25 +9,23 @@ class CollapsibleListItem extends StatelessWidget {
   final String title;
   final String sharedValue;
   final AutoSizeGroup labelGroup;
-  final Color color;
+  final TextStyle userStyle;
 
   const CollapsibleListItem(
-      {Key key, this.title, this.sharedValue, this.labelGroup, this.color})
+      {Key key, this.title, this.sharedValue, this.labelGroup, this.userStyle})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    TextStyle userStyle = TextStyle(color: this.color);
     return ListTileTheme(
       contentPadding: EdgeInsets.zero,
-      textColor: this.color,
-      iconColor: this.color,
+      textColor: this.userStyle.color,
+      iconColor: this.userStyle.color,
       child: Theme(
         data: ThemeData(
-          dividerColor: Colors.transparent,
-          unselectedWidgetColor: color,
-          accentColor: color
-        ),
+            dividerColor: Colors.transparent,
+            unselectedWidgetColor: this.userStyle.color,
+            accentColor: this.userStyle.color),
         child: ExpansionTile(
             title: AutoSizeText(
               title,
@@ -68,7 +66,7 @@ class CollapsibleListItem extends StatelessWidget {
                               padding: EdgeInsets.only(right: 8.0),
                               tooltip: "Copy $title",
                               iconSize: 16.0,
-                              color: this.color ??
+                              color: this.userStyle.color ??
                                   Theme.of(context)
                                       .primaryTextTheme
                                       .button
@@ -90,7 +88,7 @@ class CollapsibleListItem extends StatelessWidget {
                             IconButton(
                               padding: EdgeInsets.only(right: 8.0),
                               iconSize: 16.0,
-                              color: this.color ??
+                              color: this.userStyle.color ??
                                   Theme.of(context)
                                       .primaryTextTheme
                                       .button
