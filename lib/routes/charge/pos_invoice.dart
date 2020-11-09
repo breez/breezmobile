@@ -768,19 +768,21 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return PosPaymentDialog(invoiceBloc, user, payReq, satAmount);
-        }).then((res) async {
+        }).then((res) {
       if (res?.paid == true) {
-        PaymentInfo paymentInfo = await _findPayment(payReq.paymentHash);
         Navigator.of(context).push(TransparentPageRoute((context) {
-          PrintParameters printParameters = PrintParameters(
-            currentUser: user,
-            currentCurrency: currentCurrency,
-            account: account,
-            submittedSale: submittedSale,
-            paymentInfo: paymentInfo,
-          );
           return SuccessfulPaymentRoute(
-            onPrint: () => PrintService(printParameters).printAsPDF(),
+            onPrint: () async {
+              PaymentInfo paymentInfo = await _findPayment(payReq.paymentHash);
+              PrintParameters printParameters = PrintParameters(
+                currentUser: user,
+                currentCurrency: currentCurrency,
+                account: account,
+                submittedSale: submittedSale,
+                paymentInfo: paymentInfo,
+              );
+              return PrintService(printParameters).printAsPDF();
+            },
           );
         }));
       }
