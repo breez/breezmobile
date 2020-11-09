@@ -14,9 +14,16 @@ class WalletDashboard extends StatefulWidget {
   final double _offsetFactor;
   final Function(Currency currency) _onCurrencyChange;
   final Function(String fiatConversion) _onFiatCurrencyChange;
+  final Function(bool hideBalance) _onPrivacyChange;
 
-  WalletDashboard(this._userModel, this._accountModel, this._height,
-      this._offsetFactor, this._onCurrencyChange, this._onFiatCurrencyChange);
+  WalletDashboard(
+      this._userModel,
+      this._accountModel,
+      this._height,
+      this._offsetFactor,
+      this._onCurrencyChange,
+      this._onFiatCurrencyChange,
+      this._onPrivacyChange);
 
   @override
   State<StatefulWidget> createState() {
@@ -52,19 +59,24 @@ class WalletDashboardState extends State<WalletDashboard> {
                       !widget._accountModel.initial
                   ? FlatButton(
                       onPressed: () {
+                        if (widget._userModel.hideBalance) {
+                          widget._onPrivacyChange(false);
+                          return;
+                        }
                         var nextCurrencyIndex = (Currency.currencies
                                     .indexOf(widget._accountModel.currency) +
                                 1) %
                             Currency.currencies.length;
+                        if (nextCurrencyIndex == 1) {
+                          widget._onPrivacyChange(true);
+                        }
                         widget._onCurrencyChange(
                             Currency.currencies[nextCurrencyIndex]);
                       },
                       highlightColor:
                           theme.customData[theme.themeId].paymentListBgColor,
-                      child: (widget._offsetFactor > 0.8 &&
-                              _showFiatCurrency &&
-                              widget._accountModel.fiatCurrency != null)
-                          ? Text("${widget._accountModel.formattedFiatBalance}",
+                      child: widget._userModel.hideBalance
+                          ? Text("******",
                               style: Theme.of(context)
                                   .accentTextTheme
                                   .headline4
@@ -73,8 +85,11 @@ class WalletDashboardState extends State<WalletDashboard> {
                                           (startHeaderSize -
                                                   endHeaderFontSize) *
                                               widget._offsetFactor))
-                          : RichText(
-                              text: TextSpan(
+                          : (widget._offsetFactor > 0.8 &&
+                                  _showFiatCurrency &&
+                                  widget._accountModel.fiatCurrency != null)
+                              ? Text(
+                                  "${widget._accountModel.formattedFiatBalance}",
                                   style: Theme.of(context)
                                       .accentTextTheme
                                       .headline4
@@ -82,27 +97,38 @@ class WalletDashboardState extends State<WalletDashboard> {
                                           fontSize: startHeaderSize -
                                               (startHeaderSize -
                                                       endHeaderFontSize) *
-                                                  widget._offsetFactor),
-                                  text: widget._accountModel.currency.format(
-                                      widget._accountModel.balance,
-                                      removeTrailingZeros: true,
-                                      includeDisplayName: false),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: "  " +
-                                          widget._accountModel.currency
-                                              .displayName,
+                                                  widget._offsetFactor))
+                              : RichText(
+                                  text: TextSpan(
                                       style: Theme.of(context)
                                           .accentTextTheme
                                           .headline4
                                           .copyWith(
-                                              fontSize: startHeaderSize * 0.6 -
-                                                  (startHeaderSize * 0.6 -
+                                              fontSize: startHeaderSize -
+                                                  (startHeaderSize -
                                                           endHeaderFontSize) *
                                                       widget._offsetFactor),
-                                    ),
-                                  ]),
-                            ))
+                                      text: widget._accountModel.currency
+                                          .format(widget._accountModel.balance,
+                                              removeTrailingZeros: true,
+                                              includeDisplayName: false),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          text: "  " +
+                                              widget._accountModel.currency
+                                                  .displayName,
+                                          style: Theme.of(context)
+                                              .accentTextTheme
+                                              .headline4
+                                              .copyWith(
+                                                  fontSize: startHeaderSize *
+                                                          0.6 -
+                                                      (startHeaderSize * 0.6 -
+                                                              endHeaderFontSize) *
+                                                          widget._offsetFactor),
+                                        ),
+                                      ]),
+                                ))
                   : SizedBox(),
             ),
           ),
@@ -112,7 +138,8 @@ class WalletDashboardState extends State<WalletDashboard> {
               child: widget._accountModel != null &&
                       !widget._accountModel.initial &&
                       widget._accountModel.fiatConversionList.isNotEmpty &&
-                      isAboveMinAmount(widget._accountModel?.fiatCurrency)
+                      isAboveMinAmount(widget._accountModel?.fiatCurrency) &&
+                      !widget._userModel.hideBalance
                   ? FlatButton(
                       onPressed: () {
                         var newFiatConversion = nextValidFiatConversion();

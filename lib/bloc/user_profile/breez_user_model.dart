@@ -15,6 +15,7 @@ class BreezUserModel {
   final bool locked;
   final bool registrationRequested;
   final bool isPOS;
+  final bool hideBalance;
   final double cancellationTimeoutValue;
   final bool hasAdminPassword;
   final String posCurrencyShortName;
@@ -30,6 +31,7 @@ class BreezUserModel {
       this.themeId = "BLUE",
       this.registrationRequested = false,
       this.isPOS = false,
+      this.hideBalance = false,
       this.cancellationTimeoutValue = 90.0,
       this.hasAdminPassword = false,
       this.posCurrencyShortName = "SAT",
@@ -49,6 +51,7 @@ class BreezUserModel {
       String themeId,
       bool registrationRequested,
       bool isPOS,
+      bool hideBalance,
       double cancellationTimeoutValue,
       bool hasAdminPassword,
       String posCurrencyShortName,
@@ -68,6 +71,7 @@ class BreezUserModel {
       registrationRequested:
           registrationRequested ?? this.registrationRequested,
       isPOS: isPOS ?? this.isPOS,
+      hideBalance: hideBalance ?? this.hideBalance,
       cancellationTimeoutValue:
           cancellationTimeoutValue ?? this.cancellationTimeoutValue,
       hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword,
@@ -106,6 +110,7 @@ class BreezUserModel {
         registrationRequested =
             json['registrationRequested'] ?? json['token'] != null,
         isPOS = json['isPOS'] ?? false,
+        hideBalance = json['hideBalance'] ?? false,
         cancellationTimeoutValue = json['cancellationTimeoutValue'] == null
             ? 90.0
             : json['cancellationTimeoutValue'],
@@ -129,6 +134,7 @@ class BreezUserModel {
         'registrationRequested': registrationRequested,
         'cancellationTimeoutValue': cancellationTimeoutValue,
         'isPOS': isPOS,
+        'hideBalance': hideBalance,
         'hasAdminPassword': hasAdminPassword,
         'posCurrencyShortName': posCurrencyShortName,
         'preferredCurrencies': preferredCurrencies,
