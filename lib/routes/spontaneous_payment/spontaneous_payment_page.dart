@@ -196,7 +196,9 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
 
   Widget _buildNodeIdDescription() {
     return CollapsibleListItem(
-        title: "Node ID", sharedValue: widget.nodeID, color: Colors.white);
+        title: "Node ID",
+        sharedValue: widget.nodeID,
+        userStyle: TextStyle(color: Colors.white));
   }
 
   Future _sendPayment(AccountBloc accBloc, AccountModel account) async {

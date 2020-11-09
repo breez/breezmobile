@@ -17,6 +17,7 @@ import 'package:breez/services/currency_service.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
+import 'package:breez/utils/retry.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -720,17 +721,19 @@ class AccountBloc {
     return preferences.getString(PERSISTENT_NODE_ID_PREFERENCES_KEY);
   }
 
-  _updateExchangeRates() {
-    _getExchangeRate();
-    _startExchangeRateTimer();
-    _device.eventStream.listen((e) {
-      if (e == NotificationType.RESUME) {
-        _getExchangeRate();
-        _startExchangeRateTimer();
-      } else {
-        // cancel timer when AppLifecycleState is paused, inactive or suspending
-        _exchangeRateTimer?.cancel();
-      }
+  Future _updateExchangeRates() {
+    return retry(_getExchangeRate, interval: Duration(seconds: 5))
+        .whenComplete(() {
+      _startExchangeRateTimer();
+      _device.eventStream.listen((e) {
+        if (e == NotificationType.RESUME) {
+          _getExchangeRate();
+          _startExchangeRateTimer();
+        } else {
+          // cancel timer when AppLifecycleState is paused, inactive or suspending
+          _exchangeRateTimer?.cancel();
+        }
+      });
     });
   }
 
