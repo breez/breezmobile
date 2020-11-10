@@ -18,6 +18,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/widgets/print_parameters.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'items/item_avatar.dart';
 
@@ -257,7 +258,13 @@ class SaleViewState extends State<SaleView> {
                 tooltip: "Print",
                 iconSize: 24.0,
                 color: Theme.of(context).iconTheme.color,
-                icon: Icon(Icons.local_print_shop_outlined),
+                icon: SvgPicture.asset(
+                  "src/icon/printer.svg",
+                  color: Colors.white,
+                  fit: BoxFit.contain,
+                  width: 24.0,
+                  height: 24.0,
+                ),
                 onPressed: () => PrintService(PrintParameters(
                         currentUser: user,
                         currentCurrency: saleCurrency,

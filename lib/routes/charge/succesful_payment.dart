@@ -1,6 +1,7 @@
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/practicles_animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class SuccessfulPaymentRoute extends StatefulWidget {
   final Function() onPrint;
@@ -35,7 +36,35 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
                   Navigator.of(context).pop();
                 },
                 child: AlertDialog(
-                  contentPadding: EdgeInsets.fromLTRB(40.0, 28.0, 0.0, 0.0),
+                  title: (widget.onPrint != null)
+                      ? Align(
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                            tooltip: "Print",
+                            iconSize: 24.0,
+                            color: Theme.of(context)
+                                .appBarTheme
+                                .actionsIconTheme
+                                .color,
+                            icon: SvgPicture.asset(
+                              "src/icon/printer.svg",
+                              color: Theme.of(context)
+                                  .appBarTheme
+                                  .actionsIconTheme
+                                  .color,
+                              fit: BoxFit.contain,
+                              width: 24.0,
+                              height: 24.0,
+                            ),
+                            onPressed: widget.onPrint,
+                          ),
+                        )
+                      : SizedBox(
+                          height: 40,
+                        ),
+                  titlePadding:
+                      EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 40),
                   content: _buildSuccessfulPaymentMessage(),
                 ),
               );
@@ -57,39 +86,19 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
   _buildSuccessfulPaymentMessage() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
+        Text(
+          'Payment approved!',
+          textAlign: TextAlign.center,
+          style: Theme.of(context)
+              .primaryTextTheme
+              .headline4
+              .copyWith(fontSize: 16),
+        ),
         Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    'Payment approved!',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .primaryTextTheme
-                        .headline4
-                        .copyWith(fontSize: 16),
-                  ),
-                ),
-                (widget.onPrint != null)
-                    ? IconButton(
-                        alignment: Alignment.centerRight,
-                        tooltip: "Print",
-                        iconSize: 24.0,
-                        color: Theme.of(context).primaryTextTheme.button.color,
-                        icon: Icon(Icons.local_print_shop_outlined),
-                        onPressed: widget.onPrint,
-                      )
-                    : SizedBox(width: 40),
-              ],
-            )),
-        Padding(
-          padding: EdgeInsets.only(bottom: 40.0, right: 40),
+          padding: const EdgeInsets.only(top: 20, bottom: 40),
           child: Container(
             decoration: new BoxDecoration(
               color: Theme.of(context).buttonColor,
