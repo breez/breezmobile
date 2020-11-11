@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -9,7 +7,6 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/btc_address.dart';
-import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -19,7 +16,6 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class WithdrawFundsPage extends StatefulWidget {
   final Future Function(Int64 amount, String destAddress) onNext;
@@ -280,41 +276,25 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   }
 
   Future _scanBarcode(AccountModel account) async {
-    try {
-      FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await QRScanner.scan();
-      if (barcode.isEmpty) {
-        showFlushbar(context,
-            message: "QR code wasn't detected.");
-        return;
-      }
-      BTCAddressInfo btcInvoice = parseBTCAddress(barcode);
-      String amount;
-      if (btcInvoice.satAmount != null) {
-        amount = account.currency.format(btcInvoice.satAmount,
-            userInput: true,
-            includeDisplayName: false,
-            removeTrailingZeros: true);
-      }
-      setState(() {
-        _addressController.text = btcInvoice.address;
-        _amountController.text = amount ?? _amountController.text;
-        _scannerErrorMessage = "";
-      });
-    } on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        setState(() {
-          this._scannerErrorMessage =
-              'Please grant Breez camera permission to scan QR codes.';
-        });
-      } else {
-        setState(() => this._scannerErrorMessage = '');
-      }
-    } on FormatException {
-      setState(() => this._scannerErrorMessage = '');
-    } catch (e) {
-      setState(() => this._scannerErrorMessage = '');
+    FocusScope.of(context).requestFocus(FocusNode());
+    String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
+    if (barcode.isEmpty) {
+      showFlushbar(context, message: "QR code wasn't detected.");
+      return;
     }
+    BTCAddressInfo btcInvoice = parseBTCAddress(barcode);
+    String amount;
+    if (btcInvoice.satAmount != null) {
+      amount = account.currency.format(btcInvoice.satAmount,
+          userInput: true,
+          includeDisplayName: false,
+          removeTrailingZeros: true);
+    }
+    setState(() {
+      _addressController.text = btcInvoice.address;
+      _amountController.text = amount ?? _amountController.text;
+      _scannerErrorMessage = "";
+    });
   }
 
   Future<bool> _asyncValidate() {

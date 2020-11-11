@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -16,7 +15,6 @@ import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -269,7 +267,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     var loaderRoute = createLoaderRoute(context);
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await QRScanner.scan();
+      String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
       if (barcode.isEmpty) {
         showFlushbar(context, message: "QR code wasn't detected.");
         return;
@@ -277,17 +275,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       Navigator.of(context).push(loaderRoute);
       await _handleLNUrlWithdraw(account, barcode);
       Navigator.of(context).removeRoute(loaderRoute);
-    } on PlatformException catch (e) {
-      Navigator.of(context).removeRoute(loaderRoute);
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        promptError(
-            context,
-            "",
-            Text(
-              "Please grant Breez camera permission to scan QR codes.",
-              style: Theme.of(context).dialogTheme.contentTextStyle,
-            ));
-      }
     } catch (e) {
       Navigator.of(context).removeRoute(loaderRoute);
       promptError(

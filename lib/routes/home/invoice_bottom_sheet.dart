@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -7,12 +6,9 @@ import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/utils/node_id.dart';
-import 'package:breez/utils/qr_scan.dart' as QRScanner;
-import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class InvoiceBottomSheet extends StatefulWidget {
   final InvoiceBloc invoiceBloc;
@@ -64,30 +60,21 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                     }, snapshot.data.themeId, isFirst: true),
                     _buildInvoiceMenuItem("PAY", "src/icon/qr_scan.png",
                         () async {
-                      try {
-                        String decodedQr = await QRScanner.scan();
-                        if (decodedQr.isEmpty) {
-                          showFlushbar(context,
-                              message: "QR code wasn't detected.");
-                          return;
-                        }
-                         var nodeID = parseNodeId(decodedQr);
-                        if (nodeID == null) {
-                          widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
-                        } else {
-                          Navigator.of(context).push(FadeInRoute(
-                            builder: (_) =>
-                                SpontaneousPaymentPage(
-                                nodeID, widget.firstPaymentItemKey),
-                          ));
-                        }
-                      } on PlatformException catch (e) {
-                        if (e.code == BarcodeScanner.CameraAccessDenied) {
-                          Navigator.of(context).push(FadeInRoute(
-                              builder: (_) => BarcodeScannerPlaceholder(
-                                  widget.invoiceBloc,
-                                  widget.firstPaymentItemKey)));
-                        }
+                      String decodedQr = await Navigator.pushNamed<String>(
+                          context, "/qr_scan");
+                      if (decodedQr.isEmpty) {
+                        showFlushbar(context,
+                            message: "QR code wasn't detected.");
+                        return;
+                      }
+                      var nodeID = parseNodeId(decodedQr);
+                      if (nodeID == null) {
+                        widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
+                      } else {
+                        Navigator.of(context).push(FadeInRoute(
+                          builder: (_) => SpontaneousPaymentPage(
+                              nodeID, widget.firstPaymentItemKey),
+                        ));
                       }
                     }, snapshot.data.themeId),
                     _buildInvoiceMenuItem(
@@ -110,7 +97,9 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
       child: RaisedButton(
         onPressed: function,
         color: (themeId == "BLUE")
-            ? isFirst ? Colors.white : Theme.of(context).primaryColorLight
+            ? isFirst
+                ? Colors.white
+                : Theme.of(context).primaryColorLight
             : isFirst
                 ? Theme.of(context).buttonColor
                 : Theme.of(context).backgroundColor,

@@ -1,11 +1,8 @@
 import 'dart:async';
-
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/collapsible_list_item.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:fixnum/fixnum.dart';
@@ -259,31 +256,16 @@ class SendOnchainState extends State<SendOnchain> {
   }
 
   Future _scanBarcode() async {
-    try {
-      FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await QRScanner.scan();
-      if (barcode.isEmpty) {
-        showFlushbar(context, message: "QR code wasn't detected.");
-        return;
-      }
-      setState(() {
-        _addressController.text = barcode;
-        _scannerErrorMessage = "";
-      });
-    } on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        setState(() {
-          this._scannerErrorMessage =
-              'Please grant Breez camera permission to scan QR codes.';
-        });
-      } else {
-        setState(() => this._scannerErrorMessage = '');
-      }
-    } on FormatException {
-      setState(() => this._scannerErrorMessage = '');
-    } catch (e) {
-      setState(() => this._scannerErrorMessage = '');
+    FocusScope.of(context).requestFocus(FocusNode());
+    String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
+    if (barcode.isEmpty) {
+      showFlushbar(context, message: "QR code wasn't detected.");
+      return;
     }
+    setState(() {
+      _addressController.text = barcode;
+      _scannerErrorMessage = "";
+    });
   }
 
   Future<bool> _asyncValidate() {

@@ -1,6 +1,5 @@
 import 'dart:async';
-
-import 'package:barcode_scan/barcode_scan.dart';
+import 'dart:io';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
@@ -15,21 +14,26 @@ import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/btc_address.dart';
 import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
-import 'package:breez/utils/qr_scan.dart' as QRScanner;
-import 'package:breez/widgets/barcode_scanner_placeholder.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:qr_code_tools/qr_code_tools.dart';
 
 class QrActionButton extends StatelessWidget {
   final AccountModel account;
   final GlobalKey firstPaymentItemKey;
 
   QrActionButton(this.account, this.firstPaymentItemKey);
+
+  Future<File> _pickImage() async {
+    return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
+      return file;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,68 +47,60 @@ class QrActionButton extends StatelessWidget {
         height: 64,
         child: FloatingActionButton(
           onPressed: () async {
-            try {
-              String scannedString = await QRScanner.scan();
-              if (scannedString != null) {
-                if (scannedString.isEmpty) {
-                  showFlushbar(context, message: "QR code wasn't detected.");
-                  return;
-                }
-                String lower = scannedString.toLowerCase();
-
-                // lnurl string
-                if (isLNURL(lower)) {
-                  await _handleLNUrl(lnurlBloc, context, scannedString);
-                  return;
-                }
-
-                // bip 121
-                String lnInvoice = extractBolt11FromBip21(lower);
-                if (lnInvoice != null) {
-                  lower = lnInvoice;
-                }
-
-                // regular lightning invoice.
-                if (lower.startsWith("lightning:") || lower.startsWith("ln")) {
-                  invoiceBloc.decodeInvoiceSink.add(scannedString);
-                  return;
-                }
-
-                // bitcoin
-                BTCAddressInfo btcInvoice = parseBTCAddress(scannedString);
-
-                if (await _isBTCAddress(btcInvoice.address)) {
-                  String requestAmount;
-                  if (btcInvoice.satAmount != null) {
-                    requestAmount = account.currency.format(
-                        btcInvoice.satAmount,
-                        userInput: true,
-                        includeDisplayName: false,
-                        removeTrailingZeros: true);
-                  }
-                  Navigator.of(context).push(FadeInRoute(
-                    builder: (_) => ReverseSwapPage(
-                        userAddress: btcInvoice.address,
-                        requestAmount: requestAmount),
-                  ));
-                  return;
-                }
-                var nodeID = parseNodeId(scannedString);
-                if (nodeID != null) {
-                  Navigator.of(context).push(FadeInRoute(
-                    builder: (_) =>
-                        SpontaneousPaymentPage(nodeID, firstPaymentItemKey),
-                  ));
-                  return;
-                }
-                showFlushbar(context, message: "QR code cannot be processed.");
+            String scannedString =
+                await Navigator.pushNamed<String>(context, "/qr_scan");
+            if (scannedString != null) {
+              if (scannedString.isEmpty) {
+                showFlushbar(context, message: "QR code wasn't detected.");
+                return;
               }
-            } on PlatformException catch (e) {
-              if (e.code == BarcodeScanner.CameraAccessDenied) {
+              String lower = scannedString.toLowerCase();
+
+              // lnurl string
+              if (isLNURL(lower)) {
+                await _handleLNUrl(lnurlBloc, context, scannedString);
+                return;
+              }
+
+              // bip 121
+              String lnInvoice = extractBolt11FromBip21(lower);
+              if (lnInvoice != null) {
+                lower = lnInvoice;
+              }
+
+              // regular lightning invoice.
+              if (lower.startsWith("lightning:") || lower.startsWith("ln")) {
+                invoiceBloc.decodeInvoiceSink.add(scannedString);
+                return;
+              }
+
+              // bitcoin
+              BTCAddressInfo btcInvoice = parseBTCAddress(scannedString);
+
+              if (await _isBTCAddress(btcInvoice.address)) {
+                String requestAmount;
+                if (btcInvoice.satAmount != null) {
+                  requestAmount = account.currency.format(btcInvoice.satAmount,
+                      userInput: true,
+                      includeDisplayName: false,
+                      removeTrailingZeros: true);
+                }
                 Navigator.of(context).push(FadeInRoute(
-                    builder: (_) => BarcodeScannerPlaceholder(
-                        invoiceBloc, firstPaymentItemKey)));
+                  builder: (_) => ReverseSwapPage(
+                      userAddress: btcInvoice.address,
+                      requestAmount: requestAmount),
+                ));
+                return;
               }
+              var nodeID = parseNodeId(scannedString);
+              if (nodeID != null) {
+                Navigator.of(context).push(FadeInRoute(
+                  builder: (_) =>
+                      SpontaneousPaymentPage(nodeID, firstPaymentItemKey),
+                ));
+                return;
+              }
+              showFlushbar(context, message: "QR code cannot be processed.");
             }
           },
           child: SvgPicture.asset(

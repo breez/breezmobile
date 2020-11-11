@@ -19,6 +19,7 @@ dependencies:
   qr_flutter: ^2.0.0
   hex: "^0.1.1"
   rxdart: "^0.18.1"
+  qr_code_tools: "^0.0.6"
   flutter_advanced_networkimage:
     git:
       url: https://github.com/mchome/flutter_advanced_networkimage
@@ -27,10 +28,7 @@ dependencies:
     git:
       url: https://github.com/AndreHaueisen/flushbar.git
       ref: 13c55a8
-  barcode_scan:
-    git:
-      url: https://github.com/breez/flutter_barcode_reader.git
-      ref: d6b6cbd115ff41c693364bc7521f525e5bd86730
+  qr_code_scanner: ^0.0.13
   image_picker: ^0.5.0+9
   image: any
   package_info: ^0.4.0+13

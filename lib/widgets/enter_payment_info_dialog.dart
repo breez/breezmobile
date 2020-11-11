@@ -1,13 +1,10 @@
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/node_id.dart';
-import 'package:breez/utils/qr_scan.dart' as QRScanner;
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'flushbar.dart';
 
@@ -150,31 +147,16 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
   }
 
   Future _scanBarcode() async {
-    try {
-      FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await QRScanner.scan();
-      if (barcode.isEmpty) {
-        showFlushbar(context, message: "QR code wasn't detected.");
-        return;
-      }
-      setState(() {
-        _paymentInfoController.text = barcode;
-        _scannerErrorMessage = "";
-      });
-    } on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        setState(() {
-          this._scannerErrorMessage =
-              'Please grant Breez camera permission to scan QR codes';
-        });
-      } else {
-        setState(() => this._scannerErrorMessage = '');
-      }
-    } on FormatException {
-      setState(() => this._scannerErrorMessage = '');
-    } catch (e) {
-      setState(() => this._scannerErrorMessage = '');
+    FocusScope.of(context).requestFocus(FocusNode());
+    String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
+    if (barcode.isEmpty) {
+      showFlushbar(context, message: "QR code wasn't detected.");
+      return;
     }
+    setState(() {
+      _paymentInfoController.text = barcode;
+      _scannerErrorMessage = "";
+    });
   }
 
   decodeInvoice(String invoiceString) {
