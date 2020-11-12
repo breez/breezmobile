@@ -430,8 +430,8 @@ class PaymentInfo {
     if (_paymentResponse.closedChannelSweepTxID?.isNotEmpty == true) {
       return _paymentResponse.closedChannelSweepTxID;
     }
-    if (_paymentResponse.closedChannelRemoteTxID?.isNotEmpty == true) {
-      return _paymentResponse.closedChannelRemoteTxID;
+    if (_paymentResponse.closedChannelTxID?.isNotEmpty == true) {
+      return _paymentResponse.closedChannelTxID;
     }
     return "";
   }
