@@ -78,9 +78,10 @@ Future<Null> showPaymentDetailsDialog(
                           ? 16
                           : 8),
                   child: AutoSizeText(
-                    paymentInfo.dialogTitle,
+                    paymentInfo.dialogTitle.replaceAll("\n", " "),
                     style: Theme.of(context).primaryTextTheme.headline5,
                     textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
                 ),
