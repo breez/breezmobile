@@ -442,25 +442,27 @@ class HomeState extends State<Home> {
     List<DrawerItemConfig> itemConfigs = [];
     DrawerItemConfig pasteItem = DrawerItemConfig(
         "", "Paste Invoice or Node ID", "src/icon/paste.png",
-        disabled: !account.connected, onItemSelected: (_) async {
-      DecodedClipboardData clipboardData = await snapshot.data;
-      if (clipboardData != null) {
-        if (clipboardData.type == "invoice") {
-          widget.invoiceBloc.decodeInvoiceSink.add(clipboardData.data);
-        } else if (clipboardData.type == "nodeID") {
-          Navigator.of(context).push(FadeInRoute(
-            builder: (_) =>
-                SpontaneousPaymentPage(clipboardData.data, firstPaymentItemKey),
-          ));
+        disabled: !account.connected, onItemSelected: (_) {
+      protectAdminAction(context, user, () async {
+        DecodedClipboardData clipboardData = await snapshot.data;
+        if (clipboardData != null) {
+          if (clipboardData.type == "invoice") {
+            widget.invoiceBloc.decodeInvoiceSink.add(clipboardData.data);
+          } else if (clipboardData.type == "nodeID") {
+            Navigator.of(context).push(FadeInRoute(
+              builder: (_) => SpontaneousPaymentPage(
+                  clipboardData.data, firstPaymentItemKey),
+            ));
+          }
+        } else {
+          return showDialog(
+              useRootNavigator: false,
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => EnterPaymentInfoDialog(
+                  context, widget.invoiceBloc, firstPaymentItemKey));
         }
-      } else {
-        return showDialog(
-            useRootNavigator: false,
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => EnterPaymentInfoDialog(
-                context, widget.invoiceBloc, firstPaymentItemKey));
-      }
+      });
     });
     DrawerItemConfig c2pItem = DrawerItemConfig(
         "", "Connect to Pay", "src/icon/connect_to_pay.png",
