@@ -42,40 +42,41 @@ class InvoiceNotificationsHandler {
   }
 
   _listenPaymentRequests() {
-    _accountBloc.accountStream.where((acc) => acc.connected).first.then((acc) {
-      // show payment request dialog for decoded requests
-      _receivedInvoicesStream
-          .where((payreq) => payreq != null && !_handlingRequest)
-          .listen((payreq) async {
-        if (!payreq.loaded) {
-          _setLoading(true);
-          return;
-        }
-        var user =
-            await _userProfileBloc.userStream.firstWhere((u) => u != null);
-        _setLoading(false);
-        _handlingRequest = true;
+    // show payment request dialog for decoded requests
+    _receivedInvoicesStream
+        .where((payreq) => payreq != null && !_handlingRequest)
+        .listen((payreq) async {
+      var account = await _accountBloc.accountStream.first;
+      if (!account.connected) {
+        return;
+      }
+      if (!payreq.loaded) {
+        _setLoading(true);
+        return;
+      }
+      var user = await _userProfileBloc.userStream.firstWhere((u) => u != null);
+      _setLoading(false);
+      _handlingRequest = true;
 
-        // Close the drawer before showing payment request dialog
-        if (scaffoldController.currentState.isDrawerOpen) {
-          Navigator.pop(_context);
-        }
+      // Close the drawer before showing payment request dialog
+      if (scaffoldController.currentState.isDrawerOpen) {
+        Navigator.pop(_context);
+      }
 
-        protectAdminAction(_context, user, () {
-          return showDialog(
-              useRootNavigator: false,
-              context: _context,
-              barrierDismissible: false,
-              builder: (_) => paymentRequest.PaymentRequestDialog(_context,
-                  _accountBloc, payreq, firstPaymentItemKey, scrollController));
-        });
-      }).onError((error) {
-        _setLoading(false);
-        _handlingRequest = false;
-        if (error is PaymentRequestError) {
-          showFlushbar(_context, message: error.message);
-        }
+      protectAdminAction(_context, user, () {
+        return showDialog(
+            useRootNavigator: false,
+            context: _context,
+            barrierDismissible: false,
+            builder: (_) => paymentRequest.PaymentRequestDialog(_context,
+                _accountBloc, payreq, firstPaymentItemKey, scrollController));
       });
+    }).onError((error) {
+      _setLoading(false);
+      _handlingRequest = false;
+      if (error is PaymentRequestError) {
+        showFlushbar(_context, message: error.message);
+      }
     });
   }
 
