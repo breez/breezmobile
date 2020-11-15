@@ -7,6 +7,7 @@ import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -174,6 +175,9 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                               return action.future
                                                   .then((value) {
                                                 Navigator.of(context).pop();
+                                              }).catchError((err) async {
+                                                await promptError(context, null,
+                                                    Text(err.toString()));
                                               });
                                             },
                                             onPrevious: () {

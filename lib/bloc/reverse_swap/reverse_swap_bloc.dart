@@ -114,7 +114,6 @@ class ReverseSwapBloc with AsyncActionsHandler {
 
   Future _payReverseSwap(PayReverseSwap action) async {
     var resultCompleter = Completer();
-    StreamSubscription<PaymentsModel> paymentsSubscription;
     var onComplete = ({String error}) {
       if (resultCompleter.isCompleted) {
         return;
@@ -124,7 +123,6 @@ class ReverseSwapBloc with AsyncActionsHandler {
       } else {
         resultCompleter.complete();
       }
-      paymentsSubscription.cancel();
     };
 
     await _breezLib.setReverseSwapClaimFee(action.swap.hash, action.claimFee);
@@ -138,7 +136,13 @@ class ReverseSwapBloc with AsyncActionsHandler {
               payments.nonFilteredItems[0].paymentHash == action.swap.hash)
           .first
     ]).then((_) => onComplete()).catchError((err) {
-      onComplete(error: "Failed to execute payment.");
+      onComplete(
+          error: new PaymentError(
+                  new PayRequest(
+                      action.swap.paymentRequest, action.swap.amount),
+                  err.toString(),
+                  null)
+              .toDisplayMessage(_currentUser.currency));
     });
 
     action.resolve(await resultCompleter.future);
