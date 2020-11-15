@@ -68,7 +68,7 @@ class PaymentItem extends StatelessWidget {
               ? 0.0
               : 1.0,
           child: Text(
-            _paymentInfo.title,
+            _paymentInfo.title.replaceAll("\n", " "),
             style: Theme.of(context).accentTextTheme.subtitle2,
             overflow: TextOverflow.ellipsis,
           ),

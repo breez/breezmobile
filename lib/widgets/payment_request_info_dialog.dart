@@ -226,16 +226,24 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         ? null
         : Padding(
             padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
-            child: AutoSizeText(
-              widget.invoice.description,
-              style: Theme.of(context)
-                  .primaryTextTheme
-                  .headline3
-                  .copyWith(fontSize: 16),
-              textAlign: widget.invoice.description.length > 40
-                  ? TextAlign.justify
-                  : TextAlign.center,
-              maxLines: 3,
+            child: Container(
+              constraints:
+                  BoxConstraints(maxHeight: 200, minWidth: double.infinity),
+              child: Scrollbar(
+                child: SingleChildScrollView(
+                  child: AutoSizeText(
+                    widget.invoice.description,
+                    style: Theme.of(context)
+                        .primaryTextTheme
+                        .headline3
+                        .copyWith(fontSize: 16),
+                    textAlign: widget.invoice.description.length > 40 &&
+                            !widget.invoice.description.contains("\n")
+                        ? TextAlign.start
+                        : TextAlign.center,
+                  ),
+                ),
+              ),
             ),
           );
   }
