@@ -70,6 +70,8 @@ Breez is currently in a public beta, available on [Android](https://play.google.
 - [x] Remove reserve working using Breez channels
 - [x] Support additional fiat currencies
 - [x] Support LNURL-Auth & LNURL-Fallback
+- [x] Print POS transactions
+- [x] Hide balance
 - [ ] Support LNURL-Pay
 - [ ] Async payments via Lightning Rod
 - [ ] Neutrino sync optimizations
