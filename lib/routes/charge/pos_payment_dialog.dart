@@ -155,8 +155,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     if (saleCurrency.isFiat) {
       String salePrice = saleCurrency.format(
           widget.satAmount / saleCurrency.satConversionRate,
+          includeCurrencySymbol: true,
           removeTrailingZeros: true);
-      priceInSaleCurrency = " (${saleCurrency.symbol}$salePrice)";
+      priceInSaleCurrency =
+      saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
     }
     return SingleChildScrollView(
       child: ListBody(
