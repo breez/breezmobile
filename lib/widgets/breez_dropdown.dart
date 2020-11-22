@@ -796,7 +796,7 @@ class _BreezDropdownButtonState<T> extends State<BreezDropdownButton<T>>
         padding: _kMenuItemPadding.resolve(textDirection),
         selectedIndex: _selectedIndex ?? 0,
         elevation: widget.elevation,
-        theme: Theme.of(context, shadowThemeOnly: true),
+        theme: Theme.of(context),
         style: _textStyle,
         barrierLabel:
             MaterialLocalizations.of(context).modalBarrierDismissLabel,
@@ -853,7 +853,7 @@ class _BreezDropdownButtonState<T> extends State<BreezDropdownButton<T>>
       widget.onChanged != null;
 
   Orientation _getOrientation(BuildContext context) {
-    Orientation result = MediaQuery.of(context, nullOk: true)?.orientation;
+    Orientation result = MediaQuery.of(context)?.orientation;
     if (result == null) {
       // If there's no MediaQuery, then use the window aspect to determine
       // orientation.
