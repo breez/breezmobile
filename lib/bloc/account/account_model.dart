@@ -560,6 +560,7 @@ class AddFundResponse {
   String get address => _addfundReply.address;
   String get backupJson => _addfundReply.backupJson;
   Int64 get requiredReserve => _addfundReply.requiredReserve;
+  Int64 get minAllowedDeposit => _addfundReply.minAllowedDeposit;
 }
 
 class RefundableDepositModel {

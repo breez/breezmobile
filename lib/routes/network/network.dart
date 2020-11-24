@@ -135,7 +135,25 @@ class NetworkPageState extends State<NetworkPage> {
                                 "Reset",
                               ),
                               onPressed: () async {
-                                await _reset();
+                                var error = await showDialog(
+                                    useRootNavigator: false,
+                                    context: context,
+                                    builder: (ctx) => _TestingPeerDialog(
+                                        testFuture: _breezLib.testPeer("")));
+
+                                if (error != null) {
+                                  await promptError(
+                                      context,
+                                      null,
+                                      Text(
+                                          "Breez is unable to use the default node.",
+                                          style: Theme.of(context)
+                                              .dialogTheme
+                                              .contentTextStyle));
+                                  return;
+                                } else {
+                                  await _reset();
+                                }
                                 _promptForRestart();
                               },
                             ),

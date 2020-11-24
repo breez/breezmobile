@@ -243,6 +243,7 @@ const AddFundInitReply$json = const {
     const {'1': 'errorMessage', '3': 3, '4': 1, '5': 9, '10': 'errorMessage'},
     const {'1': 'backupJson', '3': 4, '4': 1, '5': 9, '10': 'backupJson'},
     const {'1': 'requiredReserve', '3': 5, '4': 1, '5': 3, '10': 'requiredReserve'},
+    const {'1': 'minAllowedDeposit', '3': 6, '4': 1, '5': 3, '10': 'minAllowedDeposit'},
   ],
 };
 
