@@ -127,21 +127,17 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text(
-                        "Send a minimum of " +
+                        "Send more than " +
                             account.currency.format(response.minAllowedDeposit,
                                 includeDisplayName: true) +
                             " and up to " +
                             account.currency.format(response.maxAllowedDeposit,
                                 includeDisplayName: true) +
-                            " to this address.",
+                            " to this address. " +
+                            formatFeeMessage(account, lspStatus.currentLSP),
                         style: Theme.of(context).textTheme.headline6,
                         textAlign: TextAlign.center,
                       ),
-                      Text(
-                        formatFeeMessage(account, lspStatus.currentLSP),
-                        style: Theme.of(context).textTheme.headline6,
-                        textAlign: TextAlign.center,
-                      )
                     ],
                   ),
                 ),
