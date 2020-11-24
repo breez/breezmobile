@@ -1059,6 +1059,7 @@ class AddFundInitReply extends $pb.GeneratedMessage {
     ..aOS(3, 'errorMessage', protoName: 'errorMessage')
     ..aOS(4, 'backupJson', protoName: 'backupJson')
     ..aInt64(5, 'requiredReserve', protoName: 'requiredReserve')
+    ..aInt64(6, 'minAllowedDeposit', protoName: 'minAllowedDeposit')
     ..hasRequiredFields = false
   ;
 
@@ -1121,6 +1122,15 @@ class AddFundInitReply extends $pb.GeneratedMessage {
   $core.bool hasRequiredReserve() => $_has(4);
   @$pb.TagNumber(5)
   void clearRequiredReserve() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $fixnum.Int64 get minAllowedDeposit => $_getI64(5);
+  @$pb.TagNumber(6)
+  set minAllowedDeposit($fixnum.Int64 v) { $_setInt64(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasMinAllowedDeposit() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearMinAllowedDeposit() => clearField(6);
 }
 
 class AddFundReply extends $pb.GeneratedMessage {
