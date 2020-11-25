@@ -15,7 +15,7 @@ class LinkLauncher extends StatelessWidget {
       this.linkAddress,
       this.onCopy,
       this.textStyle,
-      this.linkTitle,
+      this.linkTitle = "Transaction ID:",
       this.iconSize = 16.0})
       : super(key: key);
 
@@ -34,7 +34,7 @@ class LinkLauncher extends StatelessWidget {
             children: <Widget>[
               Expanded(
                   flex: 1,
-                  child: Text("Transaction ID:",
+                  child: Text(linkTitle,
                       textAlign: TextAlign.start, style: textStyle)),
               Expanded(
                 child: Padding(

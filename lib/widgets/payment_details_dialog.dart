@@ -413,8 +413,11 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
 class TxWidget extends StatelessWidget {
   final String txURL;
   final String txID;
+  final String txLabel;
 
-  const TxWidget({Key key, this.txURL, this.txID}) : super(key: key);
+  const TxWidget(
+      {Key key, this.txURL, this.txID, this.txLabel = "Transaction ID:"})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -430,6 +433,7 @@ class TxWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: 20.0),
             child: LinkLauncher(
+              linkTitle: txLabel,
               textStyle: textStyle,
               linkName: this.txID,
               linkAddress: this.txURL,

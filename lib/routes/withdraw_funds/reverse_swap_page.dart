@@ -222,7 +222,10 @@ class UnconfirmedChannels extends StatelessWidget {
   Widget build(BuildContext context) {
     var rows = unconfirmedChannels.map((chanPoint) {
       var tx = chanPoint.split(":")[0];
-      return TxWidget(txID: tx, txURL: "https://blockstream.info/tx/$tx");
+      return TxWidget(
+          txLabel: "Funding Transaction:",
+          txID: tx,
+          txURL: "https://blockstream.info/tx/$tx");
     }).toList();
 
     return Padding(
