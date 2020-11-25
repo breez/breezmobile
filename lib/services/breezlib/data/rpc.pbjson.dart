@@ -77,6 +77,7 @@ const Account$json = const {
     const {'1': 'tipHeight', '3': 13, '4': 1, '5': 3, '10': 'tipHeight'},
     const {'1': 'connectedPeers', '3': 14, '4': 3, '5': 9, '10': 'connectedPeers'},
     const {'1': 'max_inbound_liquidity', '3': 15, '4': 1, '5': 3, '10': 'maxInboundLiquidity'},
+    const {'1': 'unconfirmed_channels', '3': 16, '4': 3, '5': 9, '10': 'unconfirmedChannels'},
   ],
   '4': const [Account_AccountStatus$json],
 };

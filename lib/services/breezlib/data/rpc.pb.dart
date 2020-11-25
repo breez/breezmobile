@@ -248,6 +248,7 @@ class Account extends $pb.GeneratedMessage {
     ..aInt64(13, 'tipHeight', protoName: 'tipHeight')
     ..pPS(14, 'connectedPeers', protoName: 'connectedPeers')
     ..aInt64(15, 'maxInboundLiquidity')
+    ..pPS(16, 'unconfirmedChannels')
     ..hasRequiredFields = false
   ;
 
@@ -394,6 +395,9 @@ class Account extends $pb.GeneratedMessage {
   $core.bool hasMaxInboundLiquidity() => $_has(14);
   @$pb.TagNumber(15)
   void clearMaxInboundLiquidity() => clearField(15);
+
+  @$pb.TagNumber(16)
+  $core.List<$core.String> get unconfirmedChannels => $_getList(15);
 }
 
 class Payment extends $pb.GeneratedMessage {

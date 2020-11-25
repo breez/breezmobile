@@ -9,6 +9,7 @@ import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
@@ -77,25 +78,37 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
   Widget build(BuildContext context) {
     var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    return Scaffold(
-        appBar: !_policyCompleter.isCompleted || _loadingError != null
-            ? AppBar(
-                iconTheme: Theme.of(context).appBarTheme.iconTheme,
-                textTheme: Theme.of(context).appBarTheme.textTheme,
-                backgroundColor: Theme.of(context).canvasColor,
-                leading: backBtn.BackButton(onPressed: () {
-                  Navigator.of(context).pop();
-                }),
-                title: Text("Send to BTC Address",
-                    style: Theme.of(context).appBarTheme.textTheme.headline6),
-                elevation: 0.0)
-            : null,
-        body: StreamBuilder<AccountModel>(
-            stream: accountBloc.accountStream,
-            builder: (context, accSnapshot) {
-              return FutureBuilder<Object>(
+    return StreamBuilder<AccountModel>(
+        stream: accountBloc.accountStream,
+        builder: (context, accSnapshot) {
+          var unconfirmedChannels = accSnapshot.data?.unconfirmedChannels;
+          bool hasUnconfirmed =
+              unconfirmedChannels != null && unconfirmedChannels.length > 0;
+          return Scaffold(
+              appBar: !_policyCompleter.isCompleted ||
+                      _loadingError != null ||
+                      hasUnconfirmed
+                  ? AppBar(
+                      iconTheme: Theme.of(context).appBarTheme.iconTheme,
+                      textTheme: Theme.of(context).appBarTheme.textTheme,
+                      backgroundColor: Theme.of(context).canvasColor,
+                      leading: backBtn.BackButton(onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                      title: Text("Send to BTC Address",
+                          style: Theme.of(context)
+                              .appBarTheme
+                              .textTheme
+                              .headline6),
+                      elevation: 0.0)
+                  : null,
+              body: FutureBuilder<Object>(
                   future: _policyCompleter.future,
                   builder: (context, snapshot) {
+                    if (hasUnconfirmed) {
+                      return UnconfirmedChannels(
+                          unconfirmedChannels: unconfirmedChannels);
+                    }
                     if (snapshot.error != null) {
                       return Center(
                           child: Text(snapshot.error.toString(),
@@ -194,7 +207,45 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                 );
                               });
                         });
-                  });
-            }));
+                  }));
+        });
+  }
+}
+
+class UnconfirmedChannels extends StatelessWidget {
+  final List<String> unconfirmedChannels;
+
+  const UnconfirmedChannels({Key key, this.unconfirmedChannels})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var rows = unconfirmedChannels.map((chanPoint) {
+      var tx = chanPoint.split(":")[0];
+      return TxWidget(txID: tx, txURL: "https://blockstream.info/tx/$tx");
+    }).toList();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 48, left: 16, right: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children:
+            //rows
+            [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Text(
+                    "You will be able to send your funds to a BTC address once all channels are confirmed.",
+                    textAlign: TextAlign.center),
+              )
+            ],
+          ),
+          ...rows
+        ],
+      ),
+    );
   }
 }

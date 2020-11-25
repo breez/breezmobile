@@ -371,7 +371,7 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
           style: Theme.of(context).dialogTheme.contentTextStyle,
           text: "Transfer to local wallet due to closed channel.",
         )),
-        _TxWidget(
+        TxWidget(
           txURL: closedChannel.closeChannelTxUrl,
           txID: closedChannel.closeChannelTx,
         )
@@ -397,11 +397,11 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
           text:
               "Waiting for closed channel funds to be transferred to your local wallet$estimation.",
         )),
-        _TxWidget(
+        TxWidget(
           txURL: closedChannel.closeChannelTxUrl,
           txID: closedChannel.closeChannelTx,
         ),
-        _TxWidget(
+        TxWidget(
           txURL: closedChannel.remoteCloseChannelTxUrl,
           txID: closedChannel.remoteCloseChannelTx,
         )
@@ -410,11 +410,11 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
   }
 }
 
-class _TxWidget extends StatelessWidget {
+class TxWidget extends StatelessWidget {
   final String txURL;
   final String txID;
 
-  const _TxWidget({Key key, this.txURL, this.txID}) : super(key: key);
+  const TxWidget({Key key, this.txURL, this.txID}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

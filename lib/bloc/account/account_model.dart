@@ -241,6 +241,7 @@ class AccountModel {
   }
 
   String get id => _accountResponse.id;
+  List<String> get unconfirmedChannels => _accountResponse.unconfirmedChannels;
   SwapFundStatus get swapFundsStatus => SwapFundStatus(this.addedFundsReply);
   bool get disconnected =>
       _accountResponse.status == Account_AccountStatus.DISCONNECTED;
