@@ -103,6 +103,7 @@ class QRScanState extends State<QRScan> {
 
   @override
   void dispose() {
+    this.controller?.pauseCamera();
     this.controller?.dispose();
     super.dispose();
   }
