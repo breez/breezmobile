@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 
 class SyncProgressDialog extends StatefulWidget {
   final bool closeOnSync;
+  final Color progressColor;
 
-  const SyncProgressDialog({Key key, this.closeOnSync = true})
+  const SyncProgressDialog(
+      {Key key, this.closeOnSync = true, this.progressColor})
       : super(key: key);
 
   @override
@@ -50,7 +52,8 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
           width: MediaQuery.of(context).size.width,
           height: 150.0,
           child: CircularProgress(
-              color: Theme.of(context).textTheme.button.color,
+              color: widget.progressColor ??
+                  Theme.of(context).textTheme.button.color,
               size: 100.0,
               value: acc.serverReady ? acc.syncProgress : null,
               title: acc.serverReady

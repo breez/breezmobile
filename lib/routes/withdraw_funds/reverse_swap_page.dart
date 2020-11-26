@@ -14,6 +14,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
 
+import '../sync_progress_dialog.dart';
 import 'reverse_swap_confirmation.dart';
 import 'swap_in_progress.dart';
 import 'withdraw_funds_page.dart';
@@ -107,6 +108,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                   builder: (context, snapshot) {
                     if (hasUnconfirmed) {
                       return UnconfirmedChannels(
+                          accountModel: accSnapshot.data,
                           unconfirmedChannels: unconfirmedChannels);
                     }
                     if (snapshot.error != null) {
@@ -213,9 +215,11 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
 }
 
 class UnconfirmedChannels extends StatelessWidget {
+  final AccountModel accountModel;
   final List<String> unconfirmedChannels;
 
-  const UnconfirmedChannels({Key key, this.unconfirmedChannels})
+  const UnconfirmedChannels(
+      {Key key, this.accountModel, this.unconfirmedChannels})
       : super(key: key);
 
   @override
@@ -227,27 +231,45 @@ class UnconfirmedChannels extends StatelessWidget {
           txID: tx,
           txURL: "https://blockstream.info/tx/$tx");
     }).toList();
-
     return Padding(
       padding: const EdgeInsets.only(top: 48, left: 16, right: 16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children:
-            //rows
-            [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Text(
-                    "You will be able to send your funds to a BTC address once all channels are confirmed.",
-                    textAlign: TextAlign.center),
-              )
-            ],
-          ),
-          ...rows
-        ],
+      child: AnimatedCrossFade(
+        duration: Duration(milliseconds: 300),
+        crossFadeState: this.accountModel.synced
+            ? CrossFadeState.showSecond
+            : CrossFadeState.showFirst,
+        firstChild: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: SyncProgressDialog(
+                      progressColor: Colors.white, closeOnSync: false),
+                )
+              ],
+            ),
+          ],
+        ),
+        secondChild: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Text(
+                      "You will be able to send your funds to a BTC address once all channels are confirmed.",
+                      textAlign: TextAlign.center),
+                )
+              ],
+            ),
+            ...rows
+          ],
+        ),
       ),
     );
   }
