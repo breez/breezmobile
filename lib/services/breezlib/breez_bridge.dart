@@ -47,6 +47,8 @@ class BreezBridge {
   }
 
   Future syncGraphIfNeeded() async {
+    await _readyCompleter.future;
+    await Future.delayed(Duration(seconds: 10));
     var downloadURL = await graphURL();
     if (downloadURL.isNotEmpty) {
       logger.log.info("downloading graph");
