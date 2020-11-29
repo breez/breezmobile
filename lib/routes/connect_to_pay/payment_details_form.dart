@@ -53,7 +53,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
       print("constraints biggest = " + constraints.biggest.toString());
       _maxHeight = max(_maxHeight, constraints.maxHeight);
       return Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Container(
             height: max(formMinHeight, constraints.maxHeight - bottomBarHeight),
