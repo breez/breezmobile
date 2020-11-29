@@ -194,23 +194,26 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
           return Center(child: Loader());
         }
 
-        return StreamBuilder<LSPStatus>(
-            stream: lspBloc.lspStatusStream,
-            builder: (context, lspSnapshot) {
-              return StreamBuilder(
-                  stream: accountBloc.accountStream,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(child: Loader());
-                    }
-                    if (_currentSession.runtimeType == PayerRemoteSession) {
-                      return PayerSessionWidget(_currentSession, snapshot.data);
-                    } else {
-                      return PayeeSessionWidget(
-                          _currentSession, snapshot.data, lspSnapshot.data);
-                    }
-                  });
-            });
+        return SingleChildScrollView(
+          child: StreamBuilder<LSPStatus>(
+              stream: lspBloc.lspStatusStream,
+              builder: (context, lspSnapshot) {
+                return StreamBuilder(
+                    stream: accountBloc.accountStream,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(child: Loader());
+                      }
+                      if (_currentSession.runtimeType == PayerRemoteSession) {
+                        return PayerSessionWidget(
+                            _currentSession, snapshot.data);
+                      } else {
+                        return PayeeSessionWidget(
+                            _currentSession, snapshot.data, lspSnapshot.data);
+                      }
+                    });
+              }),
+        );
       },
     );
   }
