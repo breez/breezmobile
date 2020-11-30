@@ -69,14 +69,14 @@ class BreezBridge {
   initLightningDir() {
     logger.log.info("initLightningDir started");
 
-    getApplicationDocumentsDirectory().then((workingDir) {
-      return copyBreezConfig(workingDir.path).then((_) async {
-        var tmpDir = await _tempDirFuture;
-        await init(workingDir.path, tmpDir.path);
-        logger.log.info("breez library init finished");
-        _startedCompleter.complete(true);
-      });
-    });
+    // getApplicationDocumentsDirectory().then((workingDir) {
+    //   return copyBreezConfig(workingDir.path).then((_) async {
+    //     var tmpDir = await _tempDirFuture;
+    //     await init(workingDir.path, tmpDir.path);
+    //     logger.log.info("breez library init finished");
+    //     _startedCompleter.complete(true);
+    //   });
+    // });
   }
 
   Future<Directory> getWorkingDir() {
