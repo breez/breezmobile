@@ -575,6 +575,11 @@ class BreezBridge {
 
   Future<String> getAvailableBackups() async {
     await signIn(true);
+    var workingDir = await getApplicationDocumentsDirectory();
+    await copyBreezConfig(workingDir.path);
+    var tmpDir = await _tempDirFuture;
+    await init(workingDir.path, tmpDir.path);
+    logger.log.info("breez library init finished");
     return await _methodChannel
         .invokeMethod("availableSnapshots")
         .then((res) => res as String);
@@ -584,6 +589,7 @@ class BreezBridge {
     try {
       await _methodChannel.invokeMethod(
           "restoreBackup", {"nodeID": nodeId, "encryptionKey": encryptionKey});
+      _startedCompleter.complete(true);
     } on PlatformException catch (e) {
       throw e.message;
     }
@@ -652,12 +658,13 @@ class BreezBridge {
     String lndDir = (await getApplicationDocumentsDirectory()).path;
     List<String> result = [];
     String network = config.get('Application Options', 'network');
-    String reply = await backupFiles();
-    List files = json.decode(reply);
-    if (files != null) {
-      result.addAll(files.map((e) => e as String));
-    }
+    // String reply = await backupFiles();
+    // List files = json.decode(reply);
+    // if (files != null) {
+    //   result.addAll(files.map((e) => e as String));
+    // }
     result.add('$lndDir/data/chain/bitcoin/$network/wallet.db');
+    result.add('$lndDir/breez.db');
     return result;
   }
 }
