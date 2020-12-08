@@ -9,22 +9,45 @@ import 'package:breez/user_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tsacdop/class/settingstate.dart';
 
 import 'bloc/backup/backup_model.dart';
 import 'bloc/user_profile/user_profile_bloc.dart';
+import 'package:provider/provider.dart';
+import 'package:tsacdop/state/audio_state.dart';
+import 'package:tsacdop/state/download_state.dart';
+import 'package:tsacdop/state/podcast_group.dart';
+import 'package:tsacdop/state/refresh_podcast.dart';
+import 'package:tsacdop/state/search_state.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   BreezLogger();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  initializeDateFormatting(Platform.localeName, null);
+  //initializeDateFormatting(Platform.localeName, null);
+
+  final SettingState themeSetting = SettingState();
   SharedPreferences.getInstance().then((preferences) async {
     await runMigration(preferences);
     AppBlocs blocs = AppBlocs();
-    runApp(AppBlocsProvider(child: UserApp(), appBlocs: blocs));
+
+    var app = MultiProvider(providers: [
+      ChangeNotifierProvider(
+        create: (_) => themeSetting,
+      ),
+      ChangeNotifierProvider(create: (_) => AudioPlayerNotifier()),
+      ChangeNotifierProvider(create: (_) => GroupList()),
+      ChangeNotifierProvider(create: (_) => RefreshWorker()),
+      ChangeNotifierProvider(create: (_) => SearchState()),
+      ChangeNotifierProvider(
+        lazy: false,
+        create: (_) => DownloadState(),
+      )
+    ], child: AppBlocsProvider(child: UserApp(), appBlocs: blocs));
+
+    runApp(app);
   });
 }
 

@@ -270,6 +270,10 @@ class HomeState extends State<Home> {
                                                                 .userActionsSink
                                                                 .add(action);
                                                           })),
+                                            DrawerItemConfig(
+                                                "/podcast",
+                                                "Podcasts",
+                                                "src/icon/developers.png")
                                           ])
                                   ];
 

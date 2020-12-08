@@ -26,7 +26,7 @@ dependencies:
   tsacdop:
     git: 
       url: https://github.com/breez/tsacdop
-      ref: sample-integration
+      ref: 93cc3dc0fa9d055480af3eb8c0e3b379c6d90687
   intl: ^0.16.1
   flushbar: ^1.10.4
   qr_code_scanner: ^0.0.13
@@ -78,6 +78,11 @@ dependencies:
   drag_and_drop_lists: ^0.2.7
   printing: ^3.7.0
 
+dependency_overrides:
+  linkify:
+    git:
+      url: https://github.com/stonega/linkify.git
+
 dev_dependencies:
   mockito: "^3.0.0"
   protoc_plugin: ^19.0.1
@@ -94,7 +99,8 @@ environment:
 
 # The following section is specific to Flutter.
 flutter:
-  assets:
+  assets: 
+    - packages/tsacdop/assets/
     - cert/letsencrypt.cert
     - conf/lnd.conf
     - conf/breez.conf
