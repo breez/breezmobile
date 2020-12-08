@@ -25,19 +25,20 @@ public class MainActivity extends FlutterActivity {
         Log.d(TAG, "Breez activity created...");
         BreezApplication.isRunning = true;
         isPos = this.getPackageName().equals("com.breez.client.pos");
-        m_nfc = new NfcHandler(this);
 
 
-        registerBreezPlugins();
+        registerBreezPlugins(flutterEngine);
         GeneratedPluginRegistrant.registerWith(flutterEngine);
     }
 
 
     void registerBreezPlugins(@NonNull FlutterEngine flutterEngine) {
-        BreezApplication.breezShare = new BreezShare(this.registrarFor("com.breez.client.plugins.breez_share"), this);
+        flutterEngine.getPlugins().add(new NfcHandler());
+        BreezApplication.breezShare = new BreezShare();
+        flutterEngine.getPlugins().add(BreezApplication.breezShare);
         flutterEngine.getPlugins().add(new Breez());
-        _lifecycleEventsPlugin = new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
-        new Permissions(this.registrarFor("com.breez.client.plugins.permissions"), this);        
+        flutterEngine.getPlugins().add(new LifecycleEvents());
+        flutterEngine.getPlugins().add(new Permissions());
     }
 
     public void onPause() {

@@ -65,8 +65,6 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         this.flutterPluginBinding = null;
-        _channel.setMethodCallHandler(null);
-        _eventChannel.setStreamHandler(null);
     }
 
     @Override
@@ -93,6 +91,7 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
     @Override
     public void onDetachedFromActivityForConfigChanges() {
         this.onDetachedFromActivity();
+        ProcessLifecycleOwner.get().getLifecycle().removeObserver(this);
     }
 
     @Override
@@ -102,6 +101,8 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
 
     @Override
     public void onDetachedFromActivity() {
+        _channel.setMethodCallHandler(null);
+        _eventChannel.setStreamHandler(null);
         _channel = null;
         _eventChannel = null;
         _uiThreadExecutor = null;

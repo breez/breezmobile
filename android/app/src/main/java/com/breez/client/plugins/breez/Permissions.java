@@ -9,26 +9,66 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ProcessLifecycleOwner;
+
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 
-public class Permissions implements MethodChannel.MethodCallHandler, PluginRegistry.ActivityResultListener {
+public class Permissions implements MethodChannel.MethodCallHandler, PluginRegistry.ActivityResultListener, FlutterPlugin, ActivityAware {
     public static final String BREEZ_PERMISSIONS_CHANNEL_NAME = "com.breez.client/permissions";
     public static final int BREEZ_PERMISSIONS_REQUEST_CODE = 9735;
     public static final int BREEZ_PERMISSIONS_SETTINGS_CODE = 9736;
     private static final String TAG = "BreezPermissions";
-    private Activity m_activity;
     private MethodChannel m_methodChannel;
     private MethodChannel.Result m_result;
     private MethodChannel.Result m_settingsRequestResult;
 
-    public Permissions(PluginRegistry.Registrar registrar, Activity activity) {
-        this.m_activity = activity;
-        m_methodChannel = new MethodChannel(registrar.messenger(), BREEZ_PERMISSIONS_CHANNEL_NAME);
-        m_methodChannel.setMethodCallHandler(this);
-        registrar.addActivityResultListener(this);
+    private ActivityPluginBinding binding;
+    private FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
+
+    @Override
+    public void onAttachedToEngine(@NonNull FlutterPlugin.FlutterPluginBinding flutterPluginBinding) {
+        this.flutterPluginBinding = flutterPluginBinding;
     }
+
+    @Override
+    public void onDetachedFromEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
+        this.flutterPluginBinding = null;
+    }
+
+    @Override
+    public void onAttachedToActivity(final ActivityPluginBinding binding) {
+        this.binding = binding;
+        BinaryMessenger messenger = flutterPluginBinding.getBinaryMessenger();
+        m_methodChannel = new MethodChannel(messenger, BREEZ_PERMISSIONS_CHANNEL_NAME);
+        m_methodChannel.setMethodCallHandler(this);
+        binding.addActivityResultListener(this);
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        this.onDetachedFromActivity();
+        binding.removeActivityResultListener(this);
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(final ActivityPluginBinding binding) {
+        this.onAttachedToActivity(binding);
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        m_methodChannel.setMethodCallHandler(null);
+        m_methodChannel = null;
+    }
+
     @Override
     public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
         if (methodCall.method.equals("requestOptimizationWhitelist")) {
@@ -47,26 +87,26 @@ public class Permissions implements MethodChannel.MethodCallHandler, PluginRegis
     }
 
     private void requestOptimizationWhitelist(MethodChannel.Result result){
-        PowerManager pm = (PowerManager) m_activity.getSystemService(Context.POWER_SERVICE);
-        String packageName = m_activity.getApplicationContext().getPackageName();
+        PowerManager pm = (PowerManager) binding.getActivity().getSystemService(Context.POWER_SERVICE);
+        String packageName = binding.getActivity().getApplicationContext().getPackageName();
         if (!pm.isIgnoringBatteryOptimizations(packageName)) {
             m_result = result;
             Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
             intent.setData(Uri.parse("package:" + packageName));
-            m_activity.startActivityForResult(intent, BREEZ_PERMISSIONS_REQUEST_CODE);
+            binding.getActivity().startActivityForResult(intent, BREEZ_PERMISSIONS_REQUEST_CODE);
         }
     }
 
     private void requestOptimizationSettings(MethodChannel.Result result){
-        String packageName = m_activity.getApplicationContext().getPackageName();
+        String packageName = binding.getActivity().getApplicationContext().getPackageName();
         m_settingsRequestResult = result;
         Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-        m_activity.startActivityForResult(intent, BREEZ_PERMISSIONS_SETTINGS_CODE);
+        binding.getActivity().startActivityForResult(intent, BREEZ_PERMISSIONS_SETTINGS_CODE);
     }
 
     private boolean isNotOptimized(){
-        PowerManager pm = (PowerManager) m_activity.getSystemService(Context.POWER_SERVICE);
-        String packageName = m_activity.getApplicationContext().getPackageName();
+        PowerManager pm = (PowerManager) binding.getActivity().getSystemService(Context.POWER_SERVICE);
+        String packageName = binding.getActivity().getApplicationContext().getPackageName();
         return pm.isIgnoringBatteryOptimizations(packageName);
     }
 
