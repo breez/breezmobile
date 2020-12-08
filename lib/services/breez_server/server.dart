@@ -101,7 +101,6 @@ class BreezServer {
   }
 
   Future<ClientChannel> _createChannel() async {
-    var cert = await rootBundle.load('cert/letsencrypt.cert');
     String configString = await rootBundle.loadString('conf/breez.conf');
     Config config = Config.fromString(configString);
     var hostdetails =
@@ -111,8 +110,6 @@ class BreezServer {
     }
     return ClientChannel(hostdetails[0],
         port: int.parse(hostdetails[1]),
-        options: ChannelOptions(
-            credentials: ChannelCredentials.secure(
-                certificates: cert.buffer.asUint8List())));
+        options: ChannelOptions(credentials: ChannelCredentials.secure()));
   }
 }
