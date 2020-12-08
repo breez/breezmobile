@@ -2500,6 +2500,7 @@ class ReverseSwapRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ReverseSwapRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
     ..aOS(1, 'address')
     ..aInt64(2, 'amount')
+    ..aOS(3, 'feesHash')
     ..hasRequiredFields = false
   ;
 
@@ -2535,6 +2536,15 @@ class ReverseSwapRequest extends $pb.GeneratedMessage {
   $core.bool hasAmount() => $_has(1);
   @$pb.TagNumber(2)
   void clearAmount() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get feesHash => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set feesHash($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasFeesHash() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearFeesHash() => clearField(3);
 }
 
 class ReverseSwap extends $pb.GeneratedMessage {
@@ -2744,6 +2754,7 @@ class ReverseSwapInfo extends $pb.GeneratedMessage {
     ..aInt64(1, 'min')
     ..aInt64(2, 'max')
     ..aOM<ReverseSwapFees>(3, 'fees', subBuilder: ReverseSwapFees.create)
+    ..aOS(4, 'feesHash')
     ..hasRequiredFields = false
   ;
 
@@ -2790,6 +2801,15 @@ class ReverseSwapInfo extends $pb.GeneratedMessage {
   void clearFees() => clearField(3);
   @$pb.TagNumber(3)
   ReverseSwapFees ensureFees() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  $core.String get feesHash => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set feesHash($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasFeesHash() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearFeesHash() => clearField(4);
 }
 
 class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {

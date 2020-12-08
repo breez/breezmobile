@@ -34,8 +34,8 @@ class ReverseSwapPage extends StatefulWidget {
 
 class ReverseSwapPageState extends State<ReverseSwapPage> {
   ReverseSwapBloc _reverseSwapBloc;
-  StreamController<ReverseSwapDetails> _reverseSwapsStream =
-      BehaviorSubject<ReverseSwapDetails>();
+  StreamController<ReverseSwapRequest> _reverseSwapsStream =
+      BehaviorSubject<ReverseSwapRequest>();
   PageController _pageController = PageController();
   Completer _policyCompleter = Completer();
   Object _loadingError;
@@ -134,7 +134,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                             return SwapInProgress(
                                 swapInProgress: swapInProgress);
                           }
-                          return StreamBuilder<ReverseSwapDetails>(
+                          return StreamBuilder<ReverseSwapRequest>(
                               stream: _reverseSwapsStream.stream,
                               builder: (context, swapSnapshot) {
                                 String initialAddress, initialAmount;
@@ -142,14 +142,15 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                 if (widget.userAddress != null) {
                                   initialAddress = widget.userAddress;
                                 }
+                                if (widget.requestAmount != null) {
+                                  initialAmount = widget.requestAmount;
+                                }
                                 if (currentSwap != null) {
                                   initialAddress = currentSwap.claimAddress;
                                   initialAmount = accSnapshot.data.currency
                                       .format(currentSwap.amount,
                                           userInput: true,
                                           includeDisplayName: false);
-                                } else if (widget.requestAmount != null) {
-                                  initialAmount = widget.requestAmount;
                                 }
 
                                 return PageView(
@@ -159,17 +160,23 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                     WithdrawFundsPage(
                                         title: "Send to BTC Address",
                                         policy: WithdrawFundsPolicy(
-                                            policy.minValue,
-                                            policy.maxValue,
-                                            accSnapshot.data.balance),
+                                          policy.minValue,
+                                          policy.maxValue,
+                                          accSnapshot.data.balance,
+                                        ),
                                         initialAddress: initialAddress,
                                         initialAmount: initialAmount,
                                         onNext: (amount, address) {
-                                          var action = NewReverseSwap(
-                                              amount, address, Int64(0));
+                                          var action = GetReverseSwapPolicy();
                                           reverseSwapBloc.actionsSink
                                               .add(action);
-                                          return action.future.then((swap) {
+                                          return action.future.then((p) {
+                                            var swap = ReverseSwapRequest(
+                                                address,
+                                                amount,
+                                                false,
+                                                accSnapshot.data.balance,
+                                                p);
                                             _reverseSwapsStream.add(swap);
                                             _pageController.nextPage(
                                                 duration:
@@ -182,9 +189,18 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                         : ReverseSwapConfirmation(
                                             swap: swapSnapshot.data,
                                             bloc: reverseSwapBloc,
-                                            onFeeConfirmed: (fee) {
-                                              var action = PayReverseSwap(
-                                                  swapSnapshot.data, fee);
+                                            onFeeConfirmed: (address,
+                                                toSend,
+                                                boltzFees,
+                                                claimFees,
+                                                received,
+                                                feesHash) {
+                                              var action = NewReverseSwap(
+                                                  toSend,
+                                                  address,
+                                                  feesHash,
+                                                  claimFees,
+                                                  received);
                                               reverseSwapBloc.actionsSink
                                                   .add(action);
                                               return action.future

@@ -5,9 +5,12 @@ import 'package:fixnum/fixnum.dart';
 class NewReverseSwap extends AsyncAction {
   final Int64 amount;
   final String address;
-  final Int64 feeSats;
+  final String feesHash;
+  final Int64 claimFees;
+  final Int64 received;
 
-  NewReverseSwap(this.amount, this.address, this.feeSats);
+  NewReverseSwap(
+      this.amount, this.address, this.feesHash, this.claimFees, this.received);
 }
 
 class PayReverseSwap extends AsyncAction {

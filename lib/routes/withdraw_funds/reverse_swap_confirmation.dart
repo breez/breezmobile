@@ -15,10 +15,11 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 class ReverseSwapConfirmation extends StatefulWidget {
-  final ReverseSwapDetails swap;
+  final ReverseSwapRequest swap;
   final ReverseSwapBloc bloc;
   final Function() onPrevious;
-  final Future Function(Int64 fee) onFeeConfirmed;
+  final Future Function(String address, Int64 toSend, Int64 boltzFees,
+      Int64 claimFees, Int64 received, String feesHash) onFeeConfirmed;
 
   const ReverseSwapConfirmation(
       {Key key, this.swap, this.onPrevious, this.onFeeConfirmed, this.bloc})
@@ -32,6 +33,7 @@ class ReverseSwapConfirmation extends StatefulWidget {
 
 class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
   List<FeeOption> feeOptions;
+  Map<int, ReverseSwapAmounts> amounts;
   int selectedFeeIndex = 1;
   Future _claimFeeFuture;
   bool _showConfirm = false;
@@ -55,9 +57,41 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
         ];
       }
 
+      if (widget.swap.isMax) {
+        amounts = new Map.fromIterable(trimmedTargetConfirmations,
+            key: (e) => e,
+            value: (e) {
+              var toSend = widget.swap.amount;
+              var boltzFees = Int64(
+                      (toSend.toDouble() * widget.swap.policy.percentage / 100)
+                          .ceil()) +
+                  widget.swap.policy.lockup;
+              var received = toSend - boltzFees - feeEstimates.fees[e];
+              return ReverseSwapAmounts(
+                  toSend, boltzFees, feeEstimates.fees[e], received);
+            });
+      } else {
+        amounts = new Map.fromIterable(trimmedTargetConfirmations,
+            key: (e) => e,
+            value: (e) {
+              var received = widget.swap.amount;
+              //(bt + cl)*pe/(1-pe) + lo/(1-pe)
+              var p = widget.swap.policy.percentage / 100;
+              var boltzFees = Int64(
+                  ((received + feeEstimates.fees[e]).toDouble() * p / (1 - p) +
+                          widget.swap.policy.lockup.toDouble() / (1 - p))
+                      .ceil());
+              var toSend = received + boltzFees + feeEstimates.fees[e];
+
+              return ReverseSwapAmounts(
+                  toSend, boltzFees, feeEstimates.fees[e], received);
+            });
+      }
       feeOptions = trimmedTargetConfirmations
           .map((e) => FeeOption(feeEstimates.fees[e].toInt(), e))
-          .where((e) => widget.swap.onChainAmount > e.sats)
+          .where((e) =>
+              amounts[e.confirmationTarget].received > 0 &&
+              amounts[e.confirmationTarget].toSend <= widget.swap.available)
           .toList();
 
       if (feeOptions.length > 0) {
@@ -74,6 +108,8 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 
   @override
   Widget build(BuildContext context) {
+    var rsAmounts = amounts[feeOptions[selectedFeeIndex].confirmationTarget];
+
     return Scaffold(
       appBar: AppBar(
           iconTheme: Theme.of(context).appBarTheme.iconTheme,
@@ -133,7 +169,8 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                           ),
                         ),
                         SizedBox(height: 36.0),
-                        buildSummary(acc),
+                        buildSummary(acc, rsAmounts.toSend, rsAmounts.boltzFees,
+                            rsAmounts.received),
                       ],
                     ),
                   );
@@ -146,7 +183,13 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
               onPressed: () {
                 Navigator.of(context).push(createLoaderRoute(context));
                 widget
-                    .onFeeConfirmed(Int64(feeOptions[selectedFeeIndex].sats))
+                    .onFeeConfirmed(
+                        widget.swap.claimAddress,
+                        rsAmounts.toSend,
+                        rsAmounts.boltzFees,
+                        rsAmounts.claimFees,
+                        rsAmounts.received,
+                        widget.swap.policy.feesHash)
                     .then((_) {
                   Navigator.of(context).pop();
                 }).catchError((error) {
@@ -163,8 +206,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
     );
   }
 
-  Widget buildSummary(AccountModel acc) {
-    var receive = widget.swap.onChainAmount - feeOptions[selectedFeeIndex].sats;
+  Widget buildSummary(AccountModel acc, Int64 toSend, boltzFees, received) {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -183,7 +225,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             ),
             trailing: Container(
               child: AutoSizeText(
-                acc.currency.format(widget.swap.amount),
+                acc.currency.format(toSend),
                 style: TextStyle(color: Theme.of(context).errorColor),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
@@ -202,7 +244,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             ),
             trailing: Container(
               child: AutoSizeText(
-                "-${acc.currency.format(widget.swap.amount - widget.swap.onChainAmount)}",
+                "-" + acc.currency.format(boltzFees),
                 style: TextStyle(
                     color: Theme.of(context).errorColor.withOpacity(0.4)),
                 maxLines: 1,
@@ -242,17 +284,16 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             ),
             trailing: Container(
               child: AutoSizeText(
-                acc.currency.format(widget.swap.onChainAmount -
-                        feeOptions[selectedFeeIndex].sats) +
+                acc.currency.format(received) +
                     (acc.fiatCurrency == null
                         ? ""
-                        : " (${acc.fiatCurrency.format(receive)})"),
+                        : " (${acc.fiatCurrency.format(received)})"),
                 style: TextStyle(color: Theme.of(context).errorColor),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
                 stepGranularity: 0.1,
               ),
-            ))
+            )),
       ]),
     );
   }
@@ -280,4 +321,14 @@ class _ErrorMessage extends StatelessWidget {
           ],
         ));
   }
+}
+
+class ReverseSwapAmounts {
+  final Int64 toSend;
+  final Int64 boltzFees;
+  final Int64 claimFees;
+  final Int64 received;
+
+  ReverseSwapAmounts(
+      this.toSend, this.boltzFees, this.claimFees, this.received);
 }

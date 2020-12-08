@@ -203,10 +203,11 @@ class BreezBridge {
         .then((res) => ReverseSwapInfo()..mergeFromBuffer(res ?? []));
   }
 
-  Future<String> newReverseSwap(String address, Int64 amount) {
+  Future<String> newReverseSwap(String address, Int64 amount, String feesHash) {
     ReverseSwapRequest request = ReverseSwapRequest()
       ..address = address
-      ..amount = amount;
+      ..amount = amount
+      ..feesHash = feesHash;
     return _invokeMethodWhenReady(
             "newReverseSwap", {"argument": request.writeToBuffer()})
         .then((res) => res as String);
