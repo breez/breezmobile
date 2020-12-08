@@ -242,8 +242,11 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             okText: "YES")
         .then((acknowledged) async {
       if (acknowledged) {
-        File importFile = await FilePicker.getFile();
-
+        FilePickerResult result = await FilePicker.platform.pickFiles();
+        if (result == null) {
+          return;
+        }
+        File importFile = File(result.files.single.path);
         String fileExtension = path.extension(importFile.path);
         if (fileExtension == ".csv") {
           var action = ImportItems(importFile);
@@ -362,8 +365,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     }
     if (confirmed) {
       Navigator.of(context).push(FadeInRoute(
-        builder: (_) => SetAdminPasswordPage(
-            submitAction: isNew ? "CREATE" : "CHANGE"),
+        builder: (_) =>
+            SetAdminPasswordPage(submitAction: isNew ? "CREATE" : "CHANGE"),
       ));
     }
   }

@@ -33,7 +33,7 @@ class LNUrlBloc with AsyncActionsHandler {
   listenLNUrl() {
     if (_lnUrlStreamController == null) {
       _lnUrlStreamController = StreamController.broadcast();
-      Observable.merge([
+      Rx.merge([
         ServiceInjector().nfc.receivedLnLinks(),
         ServiceInjector().lightningLinks.linksNotifications,
       ])

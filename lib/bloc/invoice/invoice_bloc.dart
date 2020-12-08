@@ -129,8 +129,8 @@ class InvoiceBloc with AsyncActionsHandler {
       NFCService nfc,
       LightningLinksService links,
       Device device) {
-    Observable<String>.merge([
-      Observable(notificationService.notifications)
+    Rx.merge([
+      notificationService.notifications
           .where((message) => message.containsKey("payment_request"))
           .map((message) {
         return message["payment_request"];

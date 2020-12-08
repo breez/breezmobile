@@ -11,7 +11,11 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.services.drive.DriveScopes;
 
 import bindings.Logger;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.ActivityLifecycleListener;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.EventChannel.StreamHandler;
@@ -22,12 +26,20 @@ import bindings.*;
 import java.io.File;
 import java.lang.reflect.*;
 import java.util.*;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.work.*;
 import java.util.concurrent.*;
 
 import static com.breez.client.plugins.breez.breezlib.ChainSync.UNIQUE_WORK_NAME;
 
-public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, ActivityLifecycleListener, AppServices {
+public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
+        ActivityLifecycleListener, AppServices, FlutterPlugin, ActivityAware, LifecycleObserver {
 
     public static final String BREEZ_CHANNEL_NAME = "com.breez.client/breez_lib";
     public static final String BREEZ_STREAM_NAME = "com.breez.client/breez_lib_notifications";
@@ -37,20 +49,64 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
     private EventChannel.EventSink m_eventsListener;
     private Map<String, Method> _bindingMethods = new HashMap<String, Method>();
     private Executor _executor = Executors.newCachedThreadPool();
+    private Executor _uiThreadExecutor;
     private GoogleAuthenticator m_authenticator;
-    private Activity m_activity;
     private static Logger _breezLogger;
+    private MethodChannel _channel;
+    private EventChannel _eventChannel;
+    private ActivityPluginBinding binding;
+    private FlutterPluginBinding flutterPluginBinding;
 
-    public Breez(PluginRegistry.Registrar registrar) {
-        m_authenticator = new GoogleAuthenticator(registrar);
-        m_activity = registrar.activity();
-        registrar.view().addActivityLifecycleListener(this);
-        new MethodChannel(registrar.messenger(), BREEZ_CHANNEL_NAME).setMethodCallHandler(this);
-        new EventChannel(registrar.messenger(), BREEZ_STREAM_NAME).setStreamHandler(this);
+    @Override
+    public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+        this.flutterPluginBinding = flutterPluginBinding;
+    }
+
+    @Override
+    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        this.flutterPluginBinding = null;
+        _channel.setMethodCallHandler(null);
+        _eventChannel.setStreamHandler(null);
+    }
+
+    @Override
+    public void onAttachedToActivity(final ActivityPluginBinding binding) {
+        this.binding = binding;
+        BinaryMessenger messenger = flutterPluginBinding.getBinaryMessenger();
+        _channel = new MethodChannel(messenger, BREEZ_CHANNEL_NAME);
+        _channel.setMethodCallHandler(this);
+
+        _eventChannel = new EventChannel(messenger, BREEZ_STREAM_NAME);
+        _eventChannel.setStreamHandler(this);
+
+        _uiThreadExecutor = ContextCompat.getMainExecutor(flutterPluginBinding.getApplicationContext());
+
         Method[] methods = Bindings.class.getDeclaredMethods();
         for (Method m : methods) {
             _bindingMethods.put(m.getName(), m);
         }
+        m_authenticator = new GoogleAuthenticator(binding);
+
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        this.onDetachedFromActivity();
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(final ActivityPluginBinding binding) {
+        this.onAttachedToActivity(binding);
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        _channel = null;
+        _eventChannel = null;
+        _uiThreadExecutor = null;
+        ProcessLifecycleOwner.get().getLifecycle().removeObserver(this);
+        m_authenticator = null;
     }
 
     public static synchronized Logger getLogger(Context context) throws Exception {
@@ -214,14 +270,14 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
         //JNI pass here null in the case of empty byte array
         byte[] marshaledData = bytes == null ? new byte[0] : bytes;
         if (m_eventsListener != null) {
-            m_activity.runOnUiThread(() -> {
+            _uiThreadExecutor.execute(() -> {
                 m_eventsListener.success(marshaledData);
             });
         }
     }
 
 
-    @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void onPostResume() {
        _executor.execute(() -> {
            try {
@@ -234,11 +290,11 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler, Ac
     }
 
     private void success(MethodChannel.Result res, Object result) {
-        this.m_activity.runOnUiThread(() -> res.success(result));
+        _uiThreadExecutor.execute(() -> res.success(result));
     }
 
     private void fail(MethodChannel.Result res, String code, String message, Object err) {
-        this.m_activity.runOnUiThread(() -> res.error(code, message, err));
+        _uiThreadExecutor.execute(() -> res.error(code, message, err));
     }
 
     private class BreezTask implements  Runnable {

@@ -57,7 +57,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
             NotificationEvent_NotificationType.ACCOUNT_CHANGED
           ].contains(n.type);
         })
-        .transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
+        .debounceTime(Duration(milliseconds: 500))
         .listen((_) {
           _refreshInProgressSwaps();
         });

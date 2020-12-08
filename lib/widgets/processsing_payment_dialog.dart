@@ -91,7 +91,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
     _pendingPaymentSubscription = widget.accountBloc.pendingPaymentStream
         .where((p) => p.fullPending)
-        .transform(DebounceStreamTransformer(Duration(seconds: 10)))
+        .debounceTime(Duration(seconds: 10))
         .listen((p) {
       _animateClose();
     });

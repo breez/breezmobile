@@ -62,7 +62,10 @@ class LSPBloc with AsyncActionsHandler {
   }
 
   Future _connectLSP(ConnectLSP action) async {
-    if (_lspsStatusController.value.availableLSPs.where((element) => element.lspID == action.lspID).length == 0) {
+    if (_lspsStatusController.value.availableLSPs
+            .where((element) => element.lspID == action.lspID)
+            .length ==
+        0) {
       throw Exception("LSP does not exist");
     }
     String selectedLSP = action.lspID;
@@ -92,9 +95,8 @@ class LSPBloc with AsyncActionsHandler {
           breezReady || event.type == NotificationEvent_NotificationType.READY;
       if (breezReady &&
           event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
-        
         await _ensureLSPSFetched();
-        if ( await _selectedLSP == null) {
+        if (await _selectedLSP == null) {
           var availableLSPs = _lspsStatusController.value.availableLSPs;
           if (availableLSPs.length == 1) {
             log.info("LSP - not selected, selecting default");
@@ -119,7 +121,7 @@ class LSPBloc with AsyncActionsHandler {
   void _listenReconnects() {
     Future connectingFuture = Future.value(null);
     _reconnectStreamController.stream
-        .transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
+        .debounceTime(Duration(milliseconds: 500))
         .listen((_) async {
       connectingFuture.whenComplete(() {
         connectingFuture = _ensureLSPConnected();
@@ -161,11 +163,11 @@ class LSPBloc with AsyncActionsHandler {
   Future _ensureLSPSFetched() async {
     if (_lspsStatusController.value.availableLSPs.length == 0) {
       var list = await _breezLib.getLSPList();
-        var lspInfoList = list.lsps.entries.map<LSPInfo>((entry) {
-          return LSPInfo(entry.value, entry.key);
-        }).toList();
-        _lspsStatusController.add(
-            _lspsStatusController.value.copyWith(availableLSPs: lspInfoList));
-      }
+      var lspInfoList = list.lsps.entries.map<LSPInfo>((entry) {
+        return LSPInfo(entry.value, entry.key);
+      }).toList();
+      _lspsStatusController.add(
+          _lspsStatusController.value.copyWith(availableLSPs: lspInfoList));
+    }
   }
 }
