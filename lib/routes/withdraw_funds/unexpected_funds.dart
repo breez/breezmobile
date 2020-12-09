@@ -65,7 +65,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                           accSnapshot.data.walletBalance,
                           userInput: true,
                           includeDisplayName: false),
-                      onNext: (amount, address) {
+                      onNext: (amount, address, _) {
                         setState(() {
                           this._destAddress = address;
                           _pageController.nextPage(

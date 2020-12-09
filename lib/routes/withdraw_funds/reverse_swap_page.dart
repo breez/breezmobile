@@ -166,7 +166,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                         ),
                                         initialAddress: initialAddress,
                                         initialAmount: initialAmount,
-                                        onNext: (amount, address) {
+                                        onNext: (amount, address, isMax) {
                                           var action = GetReverseSwapPolicy();
                                           reverseSwapBloc.actionsSink
                                               .add(action);
@@ -174,7 +174,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                             var swap = ReverseSwapRequest(
                                                 address,
                                                 amount,
-                                                false,
+                                                isMax,
                                                 accSnapshot.data.balance,
                                                 p);
                                             _reverseSwapsStream.add(swap);

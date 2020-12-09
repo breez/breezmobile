@@ -18,7 +18,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 class WithdrawFundsPage extends StatefulWidget {
-  final Future Function(Int64 amount, String destAddress) onNext;
+  final Future Function(Int64 amount, String destAddress, bool isMax) onNext;
   final String initialAddress;
   final String initialAmount;
   final WithdrawFundsPolicy policy;
@@ -26,9 +26,9 @@ class WithdrawFundsPage extends StatefulWidget {
   final String optionalMessage;
 
   const WithdrawFundsPage(
-      {this.initialAddress,
+      {this.onNext,
+      this.initialAddress,
       this.initialAmount,
-      this.onNext,
       this.policy,
       this.title,
       this.optionalMessage});
@@ -44,6 +44,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   String _scannerErrorMessage = "";
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
+  bool _isMax = false;
 
   BreezBridge _breezLib;
   String _addressValidated;
@@ -108,8 +109,9 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                 );
           List<Widget> amountWidget = [];
           if (widget.policy.minValue != widget.policy.maxValue) {
-            amountWidget.add(AmountFormField(
-                readOnly: fetching,
+            var amountFormField = AmountFormField(
+                readOnly: fetching || _isMax,
+                enabled: !_isMax,
                 context: context,
                 accountModel: acc,
                 focusNode: _amountFocusNode,
@@ -128,7 +130,22 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                   }
                   return err;
                 },
-                style: theme.FieldTextStyle.textStyle));
+                style: theme.FieldTextStyle.textStyle);
+            amountWidget.add(amountFormField);
+            amountWidget.add(SwitchListTile(
+              title: const Text('Max'),
+              value: _isMax,
+              onChanged: (bool newValue) {
+                setState(() {
+                  _isMax = newValue;
+                  if (_isMax) {
+                    _amountController.text = widget.policy.available.toString();
+                  } else {
+                    _amountController.text = "";
+                  }
+                });
+              },
+            ));
           }
           return Form(
             key: _formKey,
@@ -259,8 +276,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
         });
         FocusScope.of(context).requestFocus(FocusNode());
 
-        return widget.onNext(
-            acc.currency.parse(_amountController.text), _addressValidated);
+        return widget.onNext(acc.currency.parse(_amountController.text),
+            _addressValidated, _isMax);
       }
     }).catchError((error) {
       promptError(
