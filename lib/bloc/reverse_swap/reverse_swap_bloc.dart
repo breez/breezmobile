@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fixnum/fixnum.dart';
 
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
@@ -97,8 +98,9 @@ class ReverseSwapBloc with AsyncActionsHandler {
   }
 
   Future _reverseSwapPolicy(GetReverseSwapPolicy action) async {
+    var maxAmount = await _breezLib.maxReverseSwapAmount();
     action.resolve(await _breezLib.getReverseSwapPolicy().then((policy) {
-      return ReverseSwapPolicy(policy);
+      return ReverseSwapPolicy(policy, Int64(maxAmount));
     }));
   }
 

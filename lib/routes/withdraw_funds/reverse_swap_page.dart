@@ -164,6 +164,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                           policy.minValue,
                                           policy.maxValue,
                                           accSnapshot.data.balance,
+                                          policy.maxAmount,
                                         ),
                                         initialAddress: initialAddress,
                                         initialAmount: initialAmount,
@@ -177,7 +178,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                                 address,
                                                 amount,
                                                 isMax,
-                                                accSnapshot.data.balance,
+                                                policy.maxAmount,
                                                 p);
                                             _reverseSwapsStream.add(swap);
                                             _pageController.nextPage(

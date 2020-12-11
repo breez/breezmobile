@@ -260,7 +260,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
         Text("Available:", style: theme.textStyle),
         Padding(
           padding: EdgeInsets.only(left: 3.0),
-          child: Text(acc.currency.format(widget.policy.available),
+          child: Text(acc.currency.format(widget.policy.balance),
               style: theme.textStyle),
         )
       ],
@@ -346,7 +346,9 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 class WithdrawFundsPolicy {
   final Int64 minValue;
   final Int64 maxValue;
+  final Int64 balance;
   final Int64 available;
 
-  WithdrawFundsPolicy(this.minValue, this.maxValue, this.available);
+  WithdrawFundsPolicy(
+      this.minValue, this.maxValue, this.balance, this.available);
 }

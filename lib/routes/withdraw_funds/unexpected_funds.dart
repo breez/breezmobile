@@ -59,6 +59,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                       policy: WithdrawFundsPolicy(
                           accSnapshot.data.walletBalance,
                           accSnapshot.data.walletBalance,
+                          accSnapshot.data.walletBalance,
                           accSnapshot.data.walletBalance),
                       initialAddress: _destAddress,
                       initialAmount: accSnapshot.data.currency.format(

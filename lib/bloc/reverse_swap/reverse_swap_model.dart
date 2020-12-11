@@ -35,8 +35,9 @@ class ReverseSwapRequest {
 
 class ReverseSwapPolicy {
   final ReverseSwapInfo _info;
+  final Int64 maxAmount;
 
-  ReverseSwapPolicy(this._info);
+  ReverseSwapPolicy(this._info, this.maxAmount);
 
   Int64 get minValue => _info.min;
 
