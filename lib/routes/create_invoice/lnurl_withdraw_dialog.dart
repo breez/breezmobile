@@ -16,8 +16,10 @@ class LNURlWithdrawDialog extends StatefulWidget {
   final InvoiceBloc invoiceBloc;
   final AccountBloc accountBloc;
   final LNUrlBloc lnurlBloc;
+  final Function(dynamic result) _onFinish;
 
-  const LNURlWithdrawDialog(this.invoiceBloc, this.accountBloc, this.lnurlBloc);
+  const LNURlWithdrawDialog(
+      this.invoiceBloc, this.accountBloc, this.lnurlBloc, this._onFinish);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,6 +31,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
     with SingleTickerProviderStateMixin {
   String _error;
   Animation<double> _opacityAnimation;
+  ModalRoute _currentRoute;
 
   @override
   void initState() {
@@ -40,7 +43,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
     controller.value = 1.0;
     controller.addStatusListener((status) {
       if (status == AnimationStatus.dismissed && this.mounted) {
-        Navigator.pop(context, true);
+        onFinish(true);
       }
     });
 
@@ -63,19 +66,28 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
     });
   }
 
-  void _listenPaidInvoice(PaymentRequestModel payReqModel, AnimationController controller) async {
-    var payreq = await widget.invoiceBloc.paidInvoicesStream
-        .firstWhere((payreq) {
-          bool ok = payreq.paymentHash == payReqModel.paymentHash;
-          return ok;
-        }, orElse: () => null);
-        if (payreq != null) {
-          Timer(Duration(milliseconds: 1000), () {
-                if (this.mounted) {
-                  controller.reverse();
-                }
-              });
+  void _listenPaidInvoice(
+      PaymentRequestModel payReqModel, AnimationController controller) async {
+    var payreq =
+        await widget.invoiceBloc.paidInvoicesStream.firstWhere((payreq) {
+      bool ok = payreq.paymentHash == payReqModel.paymentHash;
+      return ok;
+    }, orElse: () => null);
+    if (payreq != null) {
+      Timer(Duration(milliseconds: 1000), () {
+        if (this.mounted) {
+          controller.reverse();
         }
+      });
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_currentRoute == null) {
+      _currentRoute = ModalRoute.of(context);
+    }
   }
 
   @override
@@ -121,7 +133,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
                               )),
                   FlatButton(
                     onPressed: (() {
-                      Navigator.pop(context, false);
+                      onFinish(false);
                     }),
                     child: Text("CLOSE",
                         style: Theme.of(context).primaryTextTheme.button),
@@ -131,5 +143,10 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
             }),
       ),
     );
+  }
+
+  onFinish(dynamic result) {
+    Navigator.removeRoute(context, _currentRoute);
+    widget._onFinish(result);
   }
 }

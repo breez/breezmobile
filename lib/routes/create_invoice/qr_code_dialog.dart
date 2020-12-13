@@ -17,8 +17,10 @@ class QrCodeDialog extends StatefulWidget {
   final BuildContext context;
   final InvoiceBloc _invoiceBloc;
   final AccountBloc _accountBloc;
+  final Function(dynamic result) _onFinish;
 
-  QrCodeDialog(this.context, this._invoiceBloc, this._accountBloc);
+  QrCodeDialog(
+      this.context, this._invoiceBloc, this._accountBloc, this._onFinish);
 
   @override
   State<StatefulWidget> createState() {
@@ -30,6 +32,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
     with SingleTickerProviderStateMixin {
   Animation<double> _opacityAnimation;
   StreamSubscription<PaymentRequestModel> _invoiceSubscription;
+  ModalRoute _currentRoute;
 
   @override
   void initState() {
@@ -39,21 +42,32 @@ class QrCodeDialogState extends State<QrCodeDialog>
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
         .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
     controller.value = 1.0;
-    controller.addStatusListener((status) {
+    controller.addStatusListener((status) async {
       if (status == AnimationStatus.dismissed && this.mounted) {
-        Navigator.pop(context, true);
+        onFinish(true);
       }
     });
 
-    widget._invoiceBloc.readyInvoicesStream.first.then((payReqModel) {
-      _listenPaidInvoice(payReqModel, controller);
+    widget._invoiceBloc.readyInvoicesStream
+        .firstWhere((element) => element != null, orElse: () => null)
+        .then((payReqModel) {
+      if (payReqModel != null) {
+        _listenPaidInvoice(payReqModel, controller);
+      }
     });
 
     _invoiceSubscription = widget._invoiceBloc.readyInvoicesStream
         .listen((event) {}, onError: (err) {
-      Navigator.of(context)
-          .pop("Failed to create an invoice ($err). Please try again later.");
+      onFinish("Failed to create an invoice ($err). Please try again later.");
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_currentRoute == null) {
+      _currentRoute = ModalRoute.of(context);
+    }
   }
 
   void _listenPaidInvoice(
@@ -269,9 +283,14 @@ class QrCodeDialogState extends State<QrCodeDialog>
   Widget _buildCloseButton() {
     return FlatButton(
       onPressed: (() {
-        Navigator.pop(context, false);
+        onFinish(false);
       }),
       child: Text("CLOSE", style: Theme.of(context).primaryTextTheme.button),
     );
+  }
+
+  onFinish(dynamic result) {
+    Navigator.removeRoute(context, _currentRoute);
+    widget._onFinish(result);
   }
 }

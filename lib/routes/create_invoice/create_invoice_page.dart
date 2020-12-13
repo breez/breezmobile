@@ -314,29 +314,40 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         _descriptionController.text,
         null,
         account.currency.parse(_amountController.text)));
-
-    Widget dialog = _withdrawFetchResponse != null
-        ? LNURlWithdrawDialog(invoiceBloc, accountBloc, lnurlBloc)
-        : QrCodeDialog(context, invoiceBloc, accountBloc);
     var navigator = Navigator.of(context);
     navigator.pop();
+    var currentRoute = ModalRoute.of(navigator.context);
+    Widget dialog = _withdrawFetchResponse != null
+        ? LNURlWithdrawDialog(invoiceBloc, accountBloc, lnurlBloc, (result) {
+            onPaymentFinished(result, currentRoute, navigator);
+          })
+        : QrCodeDialog(context, invoiceBloc, accountBloc, (result) {
+            onPaymentFinished(result, currentRoute, navigator);
+          });
     return _bgService.runAsTask(
         showDialog(
             useRootNavigator: false,
             context: context,
             barrierDismissible: false,
-            builder: (_) => dialog).then((result) {
-          if (result == true) {
-            navigator.push(TransparentPageRoute((navigator) {
-              return SuccessfulPaymentRoute();
-            }));
-          } else {
-            if (result is String) {
-              showFlushbar(context, title: "", message: result);
-            }
-          }
-        }), () {
+            builder: (_) => dialog), () {
       log.info("waiting for payment background task finished");
     });
+  }
+
+  onPaymentFinished(
+      dynamic result, ModalRoute currentRoute, NavigatorState navigator) {
+    {
+      if (result == true) {
+        if (currentRoute.isCurrent) {
+          navigator.push(TransparentPageRoute((navigator) {
+            return SuccessfulPaymentRoute();
+          }));
+        }
+      } else {
+        if (result is String) {
+          showFlushbar(context, title: "", message: result);
+        }
+      }
+    }
   }
 }
