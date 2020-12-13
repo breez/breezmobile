@@ -24,6 +24,7 @@ class WithdrawFundsPage extends StatefulWidget {
   final Future Function(Int64 amount, String destAddress, bool isMax) onNext;
   final String initialAddress;
   final String initialAmount;
+  final bool initialIsMax;
   final WithdrawFundsPolicy policy;
   final String title;
   final String optionalMessage;
@@ -32,6 +33,7 @@ class WithdrawFundsPage extends StatefulWidget {
       {this.onNext,
       this.initialAddress,
       this.initialAmount,
+      this.initialIsMax,
       this.policy,
       this.title,
       this.optionalMessage});
@@ -64,6 +66,9 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     }
     if (widget.initialAmount != null) {
       _amountController.text = widget.initialAmount;
+    }
+    if (widget.initialIsMax != null) {
+      _isMax = widget.initialIsMax;
     }
   }
 
@@ -114,7 +119,6 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           if (widget.policy.minValue != widget.policy.maxValue) {
             var amountFormField = AmountFormField(
                 readOnly: fetching || _isMax,
-                //enabled: !_isMax,
                 context: context,
                 accountModel: acc,
                 focusNode: _amountFocusNode,

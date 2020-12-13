@@ -23,8 +23,10 @@ import 'withdraw_funds_page.dart';
 class ReverseSwapPage extends StatefulWidget {
   final String userAddress;
   final String requestAmount;
+  final bool isMax;
 
-  const ReverseSwapPage({Key key, this.userAddress, this.requestAmount})
+  const ReverseSwapPage(
+      {Key key, this.userAddress, this.requestAmount, this.isMax})
       : super(key: key);
 
   @override
@@ -139,6 +141,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                               stream: _reverseSwapsStream.stream,
                               builder: (context, swapSnapshot) {
                                 String initialAddress, initialAmount;
+                                bool initialIsMax;
                                 var currentSwap = swapSnapshot.data;
                                 if (widget.userAddress != null) {
                                   initialAddress = widget.userAddress;
@@ -146,12 +149,16 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                 if (widget.requestAmount != null) {
                                   initialAmount = widget.requestAmount;
                                 }
+                                if (widget.isMax != null) {
+                                  initialIsMax = widget.isMax;
+                                }
                                 if (currentSwap != null) {
                                   initialAddress = currentSwap.claimAddress;
                                   initialAmount = accSnapshot.data.currency
                                       .format(currentSwap.amount,
                                           userInput: true,
                                           includeDisplayName: false);
+                                  initialIsMax = currentSwap.isMax;
                                 }
 
                                 return PageView(
@@ -168,6 +175,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                         ),
                                         initialAddress: initialAddress,
                                         initialAmount: initialAmount,
+                                        initialIsMax: initialIsMax,
                                         onNext: (amount, address, isMax) {
                                           log.info("-- yas -- onNext-1 --");
                                           var action = GetReverseSwapPolicy();
