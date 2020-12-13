@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -8,6 +9,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/btc_address.dart';
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -133,19 +135,31 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                 },
                 style: theme.FieldTextStyle.textStyle);
             amountWidget.add(amountFormField);
-            amountWidget.add(SwitchListTile(
-              title: const Text('Max'),
-              value: _isMax,
-              onChanged: (bool newValue) {
-                setState(() {
-                  _isMax = newValue;
-                  if (_isMax) {
-                    _amountController.text = widget.policy.available.toString();
-                  } else {
-                    _amountController.text = "";
-                  }
-                });
-              },
+            amountWidget.add(ListTile(
+              title: Container(
+                child: AutoSizeText(
+                  "Use All Funds",
+                  style: TextStyle(color: Colors.white),
+                  maxLines: 1,
+                  minFontSize: MinFontSize(context).minFontSize,
+                  stepGranularity: 0.1,
+                ),
+              ),
+              trailing: Switch(
+                value: _isMax,
+                activeColor: Colors.white,
+                onChanged: (bool value) async {
+                  setState(() {
+                    _isMax = value;
+                    if (_isMax) {
+                      _amountController.text =
+                          widget.policy.available.toString();
+                    } else {
+                      _amountController.text = "";
+                    }
+                  });
+                },
+              ),
             ));
           }
           return Form(
