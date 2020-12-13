@@ -6,12 +6,47 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.2.0)
   - AppAuth/Core (1.2.0)
   - AppAuth/ExternalUserAgent (1.2.0)
-  - barcode_scan (0.0.1):
-    - Flutter
-    - MTBBarcodeScanner
   - connectivity (0.0.1):
     - Flutter
     - Reachability
+  - connectivity_for_web (0.1.0):
+    - Flutter
+  - connectivity_macos (0.0.1):
+    - Flutter
+  - DKImagePickerController/Core (4.3.2):
+    - DKImagePickerController/ImageDataManager
+    - DKImagePickerController/Resource
+  - DKImagePickerController/ImageDataManager (4.3.2)
+  - DKImagePickerController/PhotoGallery (4.3.2):
+    - DKImagePickerController/Core
+    - DKPhotoGallery
+  - DKImagePickerController/Resource (4.3.2)
+  - DKPhotoGallery (0.0.17):
+    - DKPhotoGallery/Core (= 0.0.17)
+    - DKPhotoGallery/Model (= 0.0.17)
+    - DKPhotoGallery/Preview (= 0.0.17)
+    - DKPhotoGallery/Resource (= 0.0.17)
+    - SDWebImage
+    - SwiftyGif
+  - DKPhotoGallery/Core (0.0.17):
+    - DKPhotoGallery/Model
+    - DKPhotoGallery/Preview
+    - SDWebImage
+    - SwiftyGif
+  - DKPhotoGallery/Model (0.0.17):
+    - SDWebImage
+    - SwiftyGif
+  - DKPhotoGallery/Preview (0.0.17):
+    - DKPhotoGallery/Model
+    - DKPhotoGallery/Resource
+    - SDWebImage
+    - SwiftyGif
+  - DKPhotoGallery/Resource (0.0.17):
+    - SDWebImage
+    - SwiftyGif
+  - file_picker (0.0.1):
+    - DKImagePickerController/PhotoGallery
+    - Flutter
   - Firebase/Core (6.9.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 6.1.2)
@@ -84,6 +119,8 @@ PODS:
   - Flutter (1.0.0)
   - flutter_downloader (0.0.1):
     - Flutter
+  - flutter_plugin_android_lifecycle (0.0.1):
+    - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
   - flutter_webview_plugin (0.0.1):
@@ -131,6 +168,9 @@ PODS:
   - GTMSessionFetcher/Core (1.2.2)
   - GTMSessionFetcher/Full (1.2.2):
     - GTMSessionFetcher/Core (= 1.2.2)
+  - image_cropper (0.0.3):
+    - Flutter
+    - TOCropViewController (~> 2.5.4)
   - image_picker (0.0.1):
     - Flutter
   - keyboard_visibility (0.5.0):
@@ -145,54 +185,105 @@ PODS:
     - nanopb/encode (= 0.3.901)
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
+  - nfc_in_flutter (1.0.0):
+    - Flutter
   - package_info (0.0.1):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
+  - path_provider_linux (0.0.1):
+    - Flutter
   - path_provider_macos (0.0.1):
     - Flutter
+  - path_provider_windows (0.0.1):
+    - Flutter
+  - printing (0.0.1):
+    - Flutter
   - Protobuf (3.10.0)
+  - qr_code_scanner (0.0.2):
+    - Flutter
+    - MTBBarcodeScanner
+  - qr_code_tools (0.0.1):
+    - Flutter
   - Reachability (3.2)
+  - SDWebImage (5.9.3):
+    - SDWebImage/Core (= 5.9.3)
+  - SDWebImage/Core (5.9.3)
   - share_extend (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
+  - shared_preferences_linux (0.0.1):
+    - Flutter
+  - shared_preferences_macos (0.0.1):
+    - Flutter
+  - shared_preferences_web (0.0.1):
+    - Flutter
   - sqflite (0.0.1):
     - Flutter
     - FMDB (~> 2.7.2)
+  - SwiftyGif (5.3.0)
+  - TOCropViewController (2.5.5)
   - uni_links (0.0.1):
     - Flutter
   - url_launcher (0.0.1):
     - Flutter
+  - url_launcher_linux (0.0.1):
+    - Flutter
+  - url_launcher_macos (0.0.1):
+    - Flutter
+  - url_launcher_web (0.0.1):
+    - Flutter
+  - url_launcher_windows (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - app_settings (from `Pods/.symlinks/plugins/app_settings/ios`)
-  - barcode_scan (from `Pods/.symlinks/plugins/barcode_scan/ios`)
   - connectivity (from `Pods/.symlinks/plugins/connectivity/ios`)
+  - connectivity_for_web (from `Pods/.symlinks/plugins/connectivity_for_web/ios`)
+  - connectivity_macos (from `Pods/.symlinks/plugins/connectivity_macos/ios`)
+  - file_picker (from `Pods/.symlinks/plugins/file_picker/ios`)
   - firebase_core (from `Pods/.symlinks/plugins/firebase_core/ios`)
   - firebase_database (from `Pods/.symlinks/plugins/firebase_database/ios`)
   - firebase_dynamic_links (from `Pods/.symlinks/plugins/firebase_dynamic_links/ios`)
   - firebase_messaging (from `Pods/.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Pods/.symlinks/flutter/ios`)
   - flutter_downloader (from `Pods/.symlinks/plugins/flutter_downloader/ios`)
+  - flutter_plugin_android_lifecycle (from `Pods/.symlinks/plugins/flutter_plugin_android_lifecycle/ios`)
   - flutter_secure_storage (from `Pods/.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_webview_plugin (from `Pods/.symlinks/plugins/flutter_webview_plugin/ios`)
   - GoogleSignIn
+  - image_cropper (from `Pods/.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `Pods/.symlinks/plugins/image_picker/ios`)
   - keyboard_visibility (from `Pods/.symlinks/plugins/keyboard_visibility/ios`)
   - local_auth (from `Pods/.symlinks/plugins/local_auth/ios`)
+  - nfc_in_flutter (from `Pods/.symlinks/plugins/nfc_in_flutter/ios`)
   - package_info (from `Pods/.symlinks/plugins/package_info/ios`)
   - path_provider (from `Pods/.symlinks/plugins/path_provider/ios`)
+  - path_provider_linux (from `Pods/.symlinks/plugins/path_provider_linux/ios`)
   - path_provider_macos (from `Pods/.symlinks/plugins/path_provider_macos/ios`)
+  - path_provider_windows (from `Pods/.symlinks/plugins/path_provider_windows/ios`)
+  - printing (from `Pods/.symlinks/plugins/printing/ios`)
+  - qr_code_scanner (from `Pods/.symlinks/plugins/qr_code_scanner/ios`)
+  - qr_code_tools (from `Pods/.symlinks/plugins/qr_code_tools/ios`)
   - share_extend (from `Pods/.symlinks/plugins/share_extend/ios`)
   - shared_preferences (from `Pods/.symlinks/plugins/shared_preferences/ios`)
+  - shared_preferences_linux (from `Pods/.symlinks/plugins/shared_preferences_linux/ios`)
+  - shared_preferences_macos (from `Pods/.symlinks/plugins/shared_preferences_macos/ios`)
+  - shared_preferences_web (from `Pods/.symlinks/plugins/shared_preferences_web/ios`)
   - sqflite (from `Pods/.symlinks/plugins/sqflite/ios`)
   - uni_links (from `Pods/.symlinks/plugins/uni_links/ios`)
   - url_launcher (from `Pods/.symlinks/plugins/url_launcher/ios`)
+  - url_launcher_linux (from `Pods/.symlinks/plugins/url_launcher_linux/ios`)
+  - url_launcher_macos (from `Pods/.symlinks/plugins/url_launcher_macos/ios`)
+  - url_launcher_web (from `Pods/.symlinks/plugins/url_launcher_web/ios`)
+  - url_launcher_windows (from `Pods/.symlinks/plugins/url_launcher_windows/ios`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - AppAuth
+    - DKImagePickerController
+    - DKPhotoGallery
     - Firebase
     - FirebaseAnalytics
     - FirebaseAnalyticsInterop
@@ -217,14 +308,21 @@ SPEC REPOS:
     - nanopb
     - Protobuf
     - Reachability
+    - SDWebImage
+    - SwiftyGif
+    - TOCropViewController
 
 EXTERNAL SOURCES:
   app_settings:
     :path: Pods/.symlinks/plugins/app_settings/ios
-  barcode_scan:
-    :path: Pods/.symlinks/plugins/barcode_scan/ios
   connectivity:
     :path: Pods/.symlinks/plugins/connectivity/ios
+  connectivity_for_web:
+    :path: Pods/.symlinks/plugins/connectivity_for_web/ios
+  connectivity_macos:
+    :path: Pods/.symlinks/plugins/connectivity_macos/ios
+  file_picker:
+    :path: Pods/.symlinks/plugins/file_picker/ios
   firebase_core:
     :path: Pods/.symlinks/plugins/firebase_core/ios
   firebase_database:
@@ -237,42 +335,76 @@ EXTERNAL SOURCES:
     :path: Pods/.symlinks/flutter/ios
   flutter_downloader:
     :path: Pods/.symlinks/plugins/flutter_downloader/ios
+  flutter_plugin_android_lifecycle:
+    :path: Pods/.symlinks/plugins/flutter_plugin_android_lifecycle/ios
   flutter_secure_storage:
     :path: Pods/.symlinks/plugins/flutter_secure_storage/ios
   flutter_webview_plugin:
     :path: Pods/.symlinks/plugins/flutter_webview_plugin/ios
+  image_cropper:
+    :path: Pods/.symlinks/plugins/image_cropper/ios
   image_picker:
     :path: Pods/.symlinks/plugins/image_picker/ios
   keyboard_visibility:
     :path: Pods/.symlinks/plugins/keyboard_visibility/ios
   local_auth:
     :path: Pods/.symlinks/plugins/local_auth/ios
+  nfc_in_flutter:
+    :path: Pods/.symlinks/plugins/nfc_in_flutter/ios
   package_info:
     :path: Pods/.symlinks/plugins/package_info/ios
   path_provider:
     :path: Pods/.symlinks/plugins/path_provider/ios
+  path_provider_linux:
+    :path: Pods/.symlinks/plugins/path_provider_linux/ios
   path_provider_macos:
     :path: Pods/.symlinks/plugins/path_provider_macos/ios
+  path_provider_windows:
+    :path: Pods/.symlinks/plugins/path_provider_windows/ios
+  printing:
+    :path: Pods/.symlinks/plugins/printing/ios
+  qr_code_scanner:
+    :path: Pods/.symlinks/plugins/qr_code_scanner/ios
+  qr_code_tools:
+    :path: Pods/.symlinks/plugins/qr_code_tools/ios
   share_extend:
     :path: Pods/.symlinks/plugins/share_extend/ios
   shared_preferences:
     :path: Pods/.symlinks/plugins/shared_preferences/ios
+  shared_preferences_linux:
+    :path: Pods/.symlinks/plugins/shared_preferences_linux/ios
+  shared_preferences_macos:
+    :path: Pods/.symlinks/plugins/shared_preferences_macos/ios
+  shared_preferences_web:
+    :path: Pods/.symlinks/plugins/shared_preferences_web/ios
   sqflite:
     :path: Pods/.symlinks/plugins/sqflite/ios
   uni_links:
     :path: Pods/.symlinks/plugins/uni_links/ios
   url_launcher:
     :path: Pods/.symlinks/plugins/url_launcher/ios
+  url_launcher_linux:
+    :path: Pods/.symlinks/plugins/url_launcher_linux/ios
+  url_launcher_macos:
+    :path: Pods/.symlinks/plugins/url_launcher_macos/ios
+  url_launcher_web:
+    :path: Pods/.symlinks/plugins/url_launcher_web/ios
+  url_launcher_windows:
+    :path: Pods/.symlinks/plugins/url_launcher_windows/ios
 
 SPEC CHECKSUMS:
-  app_settings: 72b0ab4369ff445589e275506896bca9bf321944
+  app_settings: 27651d311385d34d91afa163c0e4539cfd0c4c5d
   AppAuth: bce82c76043657c99d91e7882e8a9e1a93650cd4
-  barcode_scan: 33f586d02270046fc6559135038b34b5754eaa4f
-  connectivity: 6e94255659cc86dcbef1d452ad3e0491bb1b3e75
+  connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
+  connectivity_for_web: 2b8584556930d4bd490d82b836bcf45067ce345b
+  connectivity_macos: e2e9731b6b22dda39eb1b128f6969d574460e191
+  DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
+  DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
+  file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   Firebase: 2d750c54cda57d5a6ae31212cfe5cc813c6be7e4
   firebase_core: ce5006bb48508ee4e71e0f429a3f519bb8ee2961
-  firebase_database: 8724d18445b3f77073e71237ca2048261e9d588f
-  firebase_dynamic_links: 7aaa8cbd086b55de330e34912dd144687e7d5c47
+  firebase_database: 88085c38a41ad0b5c3c611ede7205831a2ece844
+  firebase_dynamic_links: 6aa278fc5e6e8cca17d5aa4c7aa46283f2b94749
   firebase_messaging: b8543d17dd9825f4f24a585477f77db103e5228e
   FirebaseAnalytics: 5d9ccbf46ed25d3ec9304d263f85bddf1e93e2d2
   FirebaseAnalyticsInterop: d48b6ab67bcf016a05e55b71fc39c61c0cb6b7f3
@@ -286,6 +418,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: b22b949cc45c14da01e60404dd7bffc78956380c
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
+  flutter_plugin_android_lifecycle: dc0b544e129eebb77a6bfb1239d4d1c673a60a35
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
@@ -296,23 +429,40 @@ SPEC CHECKSUMS:
   GoogleUtilities: f895fde57977df4e0233edda0dbeac490e3703b6
   GTMAppAuth: 4deac854479704f348309e7b66189e604cf5e01e
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
+  image_cropper: c8f9b4157933c7bb965a66d1c5e6c8fd408c6eb4
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
   keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   local_auth: 2571c49920ae469f46d5557435fad8fa473a5e88
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
-  package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
-  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  nfc_in_flutter: c656fbfb1ec5b9d021da87b0c87629d62fd5264d
+  package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  path_provider_linux: 4d630dc393e1f20364f3e3b4a2ff41d9674a84e4
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
+  path_provider_windows: a2b81600c677ac1959367280991971cb9a1edb3b
+  printing: 5ec249946ebbd51cead5ed9b0b48113bb5141bcf
   Protobuf: a4dc852ad69c027ca2166ed287b856697814375b
+  qr_code_scanner: 16107718bdad7d708cdf6a5eacdca24b56cdf471
+  qr_code_tools: bd0c76036813e6251a1df7d130b9c366fe961444
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  SDWebImage: a31ee8e90a97303529e03fb0c333eae0eacb88e9
   share_extend: b6748dc53695587891126a89533b862b92548c7b
-  shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
+  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  shared_preferences_linux: afefbfe8d921e207f01ede8b60373d9e3b566b78
+  shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
+  shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
+  SwiftyGif: e466e86c660d343357ab944a819a101c4127cb40
+  TOCropViewController: da59f531f8ac8a94ef6d6c0fc34009350f9e8bfe
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
-  url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
+  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
+  url_launcher_linux: ac237cb7a8058736e4aae38bdbcc748a4b394cc0
+  url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
+  url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
+  url_launcher_windows: 683d7c283894db8d1914d3ab2223b20cc1ad95d5
 
 PODFILE CHECKSUM: 31a941cc61eea4b797a004267fb2cf2ea11a6105
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.9.3

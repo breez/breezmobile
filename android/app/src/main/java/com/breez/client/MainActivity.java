@@ -6,41 +6,39 @@ import android.os.Bundle;
 
 import android.content.Intent;
 import android.nfc.NfcAdapter;
-import io.flutter.app.FlutterFragmentActivity;
+import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 import android.util.Log;
 
-public class MainActivity extends FlutterFragmentActivity {
+import androidx.annotation.NonNull;
+
+public class MainActivity extends FlutterActivity {
     private static final String TAG = "Breez";
     private LifecycleEvents _lifecycleEventsPlugin;
     public boolean isPos = false;
     NfcHandler m_nfc;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         Log.d(TAG, "Breez activity created...");
         BreezApplication.isRunning = true;
         isPos = this.getPackageName().equals("com.breez.client.pos");
-        m_nfc = new NfcHandler(this);
 
-        registerBreezPlugins();
-        GeneratedPluginRegistrant.registerWith(this);
+
+        registerBreezPlugins(flutterEngine);
+        GeneratedPluginRegistrant.registerWith(flutterEngine);
     }
 
-    @Override
-    protected void onDestroy() {
-        Log.d(TAG, "Breez activity destroying...");
-        super.onDestroy();
-        System.exit(0);
-    }
 
-    void registerBreezPlugins() {
-        BreezApplication.breezShare = new BreezShare(this.registrarFor("com.breez.client.plugins.breez_share"), this);
-        new Breez(this.registrarFor("com.breez.client.plugins.breez_lib"));
-        _lifecycleEventsPlugin = new LifecycleEvents(this.registrarFor("com.breez.client.plugins.lifecycle_events_notifications"));
-        new Permissions(this.registrarFor("com.breez.client.plugins.permissions"), this);        
+    void registerBreezPlugins(@NonNull FlutterEngine flutterEngine) {
+        flutterEngine.getPlugins().add(new NfcHandler());
+        BreezApplication.breezShare = new BreezShare();
+        flutterEngine.getPlugins().add(BreezApplication.breezShare);
+        flutterEngine.getPlugins().add(new Breez());
+        flutterEngine.getPlugins().add(new LifecycleEvents());
+        flutterEngine.getPlugins().add(new Permissions());
     }
 
     public void onPause() {

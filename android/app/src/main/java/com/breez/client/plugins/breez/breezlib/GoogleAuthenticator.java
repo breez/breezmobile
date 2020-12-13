@@ -20,20 +20,21 @@ import com.google.api.services.drive.DriveScopes;
 
 import java.util.Collections;
 
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.PluginRegistry;
 
 public class GoogleAuthenticator implements PluginRegistry.ActivityResultListener{
     private static final String TAG = "BreezGAuthenticator";
     private static final int AUTHORIZE_ACTIVITY_REQUEST_CODE = 84;
 
-    private Activity m_breezActivity;
     TaskCompletionSource<GoogleSignInAccount> m_signInProgressTask;
     private GoogleSignInClient m_signInClient;
+    private ActivityPluginBinding activityBinding;
 
-    public GoogleAuthenticator(PluginRegistry.Registrar registrar) {
-        m_breezActivity = registrar.activity();
+    public GoogleAuthenticator(ActivityPluginBinding binding) {
+        activityBinding = binding;
         m_signInClient = createSignInClient();
-        registrar.addActivityResultListener(this);
+        activityBinding.addActivityResultListener(this);
     }
 
     public void signOut() throws Exception{
@@ -63,7 +64,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         GoogleSignInAccount googleAccount = ensureSignedIn(true);
         GoogleAccountCredential credential =
                 GoogleAccountCredential.usingOAuth2(
-                        m_breezActivity.getApplicationContext(), Collections.singleton(DriveScopes.DRIVE_APPDATA));
+                        activityBinding.getActivity(), Collections.singleton(DriveScopes.DRIVE_APPDATA));
 
         credential.setSelectedAccount(googleAccount.getAccount());
         return credential.getToken();
@@ -75,13 +76,13 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                         .requestScopes( new Scope(DriveScopes.DRIVE_APPDATA))
                         .requestEmail()
                         .build();
-        return GoogleSignIn.getClient(m_breezActivity, signInOptions);
+        return GoogleSignIn.getClient(activityBinding.getActivity(), signInOptions);
     }
 
     private Task<GoogleSignInAccount> signIn(){
         Log.i(TAG, "Signing in using google activity");
         m_signInProgressTask = new TaskCompletionSource<GoogleSignInAccount>();
-        m_breezActivity.startActivityForResult(m_signInClient.getSignInIntent(), AUTHORIZE_ACTIVITY_REQUEST_CODE);
+        activityBinding.getActivity().startActivityForResult(m_signInClient.getSignInIntent(), AUTHORIZE_ACTIVITY_REQUEST_CODE);
         return m_signInProgressTask.getTask();
     }
 

@@ -18,23 +18,20 @@ dependencies:
       url: https://github.com/breez/ShareExtend.git
   qr_flutter: ^2.0.0
   hex: "^0.1.1"
-  rxdart: "^0.18.1"
+  rxdart: "^0.24.1"
   qr_code_tools: "^0.0.6"
   flutter_advanced_networkimage:
     git:
       url: https://github.com/mchome/flutter_advanced_networkimage
-  intl: ^0.15.7
-  flushbar:
-    git:
-      url: https://github.com/AndreHaueisen/flushbar.git
-      ref: 13c55a8
+  intl: ^0.16.1
+  flushbar: ^1.10.4
   qr_code_scanner: ^0.0.13
   image_picker: ^0.5.0+9
   image: any
   package_info: ^0.4.0+13
-  uuid: ^1.0.3
+  uuid: ^2.2.2
   ini: ^2.0.1
-  connectivity: ^0.4.5+3
+  connectivity: ^2.0.0
   logging: ^0.11.3+2
   flutter_svg: ^0.18.0
   json_annotation: any
@@ -42,16 +39,16 @@ dependencies:
   url_launcher: ^5.0.1
   archive: ^2.0.8
   duration: ^2.0.8
-  dio: ^2.1.13
+  dio: ^3.0.10
   sqflite: ^1.2.1
   badges: ^1.1.1
   simple_animations: ^1.3.9
-  file_picker: ^1.13.0+1
+  file_picker: ^2.0.11
   collection: ^1.14.13
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.0
+  cupertino_icons: ^1.0.0
   image_cropper: ^1.3.0
   uni_links: ^0.2.0
   nfc_in_flutter: ^2.0.4

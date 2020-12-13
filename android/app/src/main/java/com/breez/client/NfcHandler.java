@@ -7,12 +7,19 @@ import android.nfc.NfcAdapter;
 import android.os.Parcelable;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.io.UnsupportedEncodingException;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.PluginRegistry;
 
-public class NfcHandler implements MethodChannel.MethodCallHandler {
+public class NfcHandler implements MethodChannel.MethodCallHandler, FlutterPlugin, ActivityAware {
     private static final String NFC_CHANNEL = "com.breez.client/nfc";
     private MainActivity m_mainActivity;
 
@@ -22,20 +29,43 @@ public class NfcHandler implements MethodChannel.MethodCallHandler {
 
     private static final String TAG = "Breez-NFC";
 
-    public NfcHandler(MainActivity mainActivity) {
-        m_adapter = NfcAdapter.getDefaultAdapter(mainActivity);
+    private ActivityPluginBinding binding;
+    private FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
 
-        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+    @Override
+    public void onAttachedToEngine(@NonNull FlutterPlugin.FlutterPluginBinding flutterPluginBinding) {
+        this.flutterPluginBinding = flutterPluginBinding;
+    }
 
-        try {
-            ndef.addDataType("application/breez");
-        } catch (IntentFilter.MalformedMimeTypeException e) {
-            throw new RuntimeException("fail", e);
-        }
+    @Override
+    public void onDetachedFromEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
+        this.flutterPluginBinding = null;
+    }
 
-        m_mainActivity = mainActivity;
-        m_methodChannel = new MethodChannel(mainActivity.getFlutterView(), NFC_CHANNEL);
+    @Override
+    public void onAttachedToActivity(final ActivityPluginBinding binding) {
+        this.binding = binding;
+        m_adapter = NfcAdapter.getDefaultAdapter(binding.getActivity());
+        BinaryMessenger messenger = flutterPluginBinding.getBinaryMessenger();
+        m_methodChannel = new MethodChannel(messenger, NFC_CHANNEL);
         m_methodChannel.setMethodCallHandler(this);
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        this.onDetachedFromActivity();
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(final ActivityPluginBinding binding) {
+        this.onAttachedToActivity(binding);
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        m_methodChannel.setMethodCallHandler(null);
+        m_methodChannel = null;
+        m_adapter = null;
     }
 
     @Override

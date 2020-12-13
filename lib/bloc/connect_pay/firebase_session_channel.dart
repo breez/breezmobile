@@ -137,7 +137,7 @@ class PaymentSessionChannel {
     var terminationRef = FirebaseDatabase.instance
         .reference()
         .child('remote-payments/$terminationPath');
-    _peerResetListener = Observable(terminationRef.onValue)
+    _peerResetListener = terminationRef.onValue
         .delay(Duration(milliseconds: 500))
         .listen((event) {
       if (event.snapshot.value == null) {

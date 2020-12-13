@@ -29,13 +29,13 @@ class BackupBloc {
   Stream<bool> get promptBackupStream => _promptBackupController.stream;
 
   final StreamController<bool> _backupPromptVisibleController =
-      BehaviorSubject<bool>(seedValue: false);
+      BehaviorSubject<bool>.seeded(false);
   Stream<bool> get backupPromptVisibleStream =>
       _backupPromptVisibleController.stream;
   Sink<bool> get backupPromptVisibleSink => _backupPromptVisibleController.sink;
 
   final BehaviorSubject<BackupSettings> _backupSettingsController =
-      BehaviorSubject<BackupSettings>(seedValue: BackupSettings.start());
+      BehaviorSubject<BackupSettings>.seeded(BackupSettings.start());
   Stream<BackupSettings> get backupSettingsStream =>
       _backupSettingsController.stream;
   Sink<BackupSettings> get backupSettingsSink => _backupSettingsController.sink;
@@ -193,7 +193,9 @@ class BackupBloc {
     var encryptionKeyType = encryptionKey != null
         ? keyType == BackupKeyType.PHRASE
             ? "Mnemonics"
-            : keyType == BackupKeyType.PIN ? "Pin" : ""
+            : keyType == BackupKeyType.PIN
+                ? "Pin"
+                : ""
         : "";
     return _breezLib.setBackupEncryptionKey(encryptionKey, encryptionKeyType);
   }
@@ -206,7 +208,7 @@ class BackupBloc {
     ];
     Completer taskCompleter;
 
-    Observable(_breezLib.notificationStream).listen((event) {
+    _breezLib.notificationStream.listen((event) {
       if (taskCompleter == null &&
           event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         taskCompleter = Completer();
@@ -243,7 +245,7 @@ class BackupBloc {
       NotificationEvent_NotificationType.FUND_ADDRESS_CREATED
     ];
 
-    Observable(_breezLib.notificationStream).listen((event) {
+    _breezLib.notificationStream.listen((event) {
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         _backupServiceNeedLogin = false;
         _backupStateController.add((BackupState(

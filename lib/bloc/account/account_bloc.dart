@@ -406,7 +406,7 @@ class AccountBloc {
   void _listenReconnects() {
     Future connectingFuture = Future.value(null);
     _reconnectStreamController.stream
-        .transform(DebounceStreamTransformer(Duration(milliseconds: 500)))
+        .debounceTime(Duration(milliseconds: 500))
         .listen((_) async {
       connectingFuture = connectingFuture.whenComplete(() async {
         var acc = _accountController.value;
@@ -603,8 +603,7 @@ class AccountBloc {
 
   void _listenAccountChanges() {
     StreamSubscription<NotificationEvent> eventSubscription;
-    eventSubscription =
-        Observable(_breezLib.notificationStream).listen((event) async {
+    eventSubscription = _breezLib.notificationStream.listen((event) async {
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
         _accountController
@@ -703,7 +702,7 @@ class AccountBloc {
   }
 
   void _listenRoutingConnectionChanges() {
-    Observable(_accountController.stream)
+    _accountController.stream
         .distinct((acc1, acc2) {
           return acc1?.readyForPayments == acc2?.readyForPayments;
         })

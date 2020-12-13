@@ -23,6 +23,9 @@
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false">
 
+      <meta-data
+          android:name="flutterEmbedding"
+          android:value="2" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/breez_notify" />
 
@@ -43,13 +46,6 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
-            <!-- This keeps the window background of the activity showing
-                 until Flutter renders its first frame. It can be removed if
-                 there is no splash screen (such as the default splash screen
-                 defined in @style/LaunchTheme). -->
-            <meta-data
-                android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
-                android:value="true" />
             <meta-data android:name="com.google.android.apps.drive.APP_ID" android:value="id=1001954867449-mbueu43acvpaakrvhka0vpr02qq1asb4.apps.googleusercontent.com" />
 
             <intent-filter>
