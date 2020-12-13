@@ -276,7 +276,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   Widget _buildAvailableBTC(AccountModel acc) {
     return Row(
       children: <Widget>[
-        Text("Available:", style: theme.textStyle),
+        Text("Balance:", style: theme.textStyle),
         Padding(
           padding: EdgeInsets.only(left: 3.0),
           child: Text(acc.currency.format(widget.policy.balance),
