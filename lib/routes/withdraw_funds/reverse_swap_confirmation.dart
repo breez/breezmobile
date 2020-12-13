@@ -145,7 +145,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                   if (feeOptions.where((f) => f != null).length == 0) {
                     return _ErrorMessage(
                         message:
-                            "The amount is too small to broadcast. Please try again later.");
+                            "You don't have enough funds for this payment network fee.");
                   }
 
                   return Container(
