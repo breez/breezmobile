@@ -506,7 +506,8 @@ class CurrencyDisplay extends StatelessWidget {
           priceInSats / saleCurrency.satConversionRate,
           includeCurrencySymbol: true,
           removeTrailingZeros: true);
-      priceInSaleCurrency = saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
+      priceInSaleCurrency =
+          saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
     }
     TextStyle textStyle = TextStyle(
         color: ListTileTheme.of(context)
@@ -517,6 +518,7 @@ class CurrencyDisplay extends StatelessWidget {
       child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
           mainAxisSize: MainAxisSize.min,
           children: [
             CurrencyText(
