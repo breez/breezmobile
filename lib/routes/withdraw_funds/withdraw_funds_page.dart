@@ -136,6 +136,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                 style: theme.FieldTextStyle.textStyle);
             amountWidget.add(amountFormField);
             amountWidget.add(ListTile(
+              contentPadding: EdgeInsets.zero,
               title: Container(
                 child: AutoSizeText(
                   "Use All Funds",
