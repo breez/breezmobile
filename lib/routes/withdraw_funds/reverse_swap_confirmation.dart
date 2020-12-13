@@ -108,7 +108,9 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 
   @override
   Widget build(BuildContext context) {
-    var rsAmounts = amounts[feeOptions[selectedFeeIndex].confirmationTarget];
+    var rsAmounts = feeOptions[selectedFeeIndex] != null
+        ? amounts[feeOptions[selectedFeeIndex].confirmationTarget]
+        : null;
 
     return Scaffold(
       appBar: AppBar(
