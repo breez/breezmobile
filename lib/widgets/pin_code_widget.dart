@@ -63,7 +63,9 @@ class PinCodeWidgetState extends State<PinCodeWidget>
 
   @override
   void dispose() {
-    widget.userProfileBloc.userActionsSink.add(StopBiometrics());
+    if (widget.userProfileBloc != null) {
+      widget.userProfileBloc.userActionsSink.add(StopBiometrics());
+    }
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
