@@ -47,11 +47,13 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
       }
     });
 
-    widget.invoiceBloc.readyInvoicesStream.first.then((payReqModel) {
+    widget.invoiceBloc.readyInvoicesStream
+        .firstWhere((e) => e != null, orElse: () => null)
+        .then((payReqModel) {
       return widget.accountBloc.accountStream
           .firstWhere((a) => a != null && a.syncedToChain == true)
           .then((_) {
-        if (this.mounted) {
+        if (this.mounted && payReqModel != null) {
           Withdraw withdrawAction = Withdraw(payReqModel.rawPayReq);
           widget.lnurlBloc.actionsSink.add(withdrawAction);
           _listenPaidInvoice(payReqModel, controller);
