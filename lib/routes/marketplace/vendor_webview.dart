@@ -96,6 +96,10 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
             javascriptChannels: <JavascriptChannel>[
               _breezJavascriptChannel(context),
             ].toSet(),
+            navigationDelegate: (NavigationRequest request) =>
+                request.url.startsWith('lightning:')
+                    ? NavigationDecision.prevent
+                    : NavigationDecision.navigate,
             onPageFinished: (String url) async {
               // intercept ln link clicks
               _webViewController.evaluateJavascript(await rootBundle
