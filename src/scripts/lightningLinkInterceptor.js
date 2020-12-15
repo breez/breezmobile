@@ -9,13 +9,17 @@ function interceptClickEvent(e) {
             window.postMessage(JSON.stringify({"lightningLink": url}), "*");
         }
     }
-    // if (target.tagName === 'A') {
-    //     href = target.getAttribute('href');
-    //     console.log("interceptClickEvent href=" + href);
-    //     if (href && href.startsWith("lightning:")) {
-    //         window.postMessage(JSON.stringify({"lightningLink": href}), "*");
-    //     }
-    // }
+    if (target.tagName === 'A') {
+        href = target.getAttribute('href');
+    } else if (target.tagName === 'svg' && target.parentElement && target.parentElement.tagName === 'A') {
+        href = target.parentElement.getAttribute('href');
+    } else if (target.tagName === 'rect' && target.parentElement && target.parentElement.tagName === 'svg' && target.parentElement.parentElement && target.parentElement.parentElement.tagName === 'A') {
+        href = target.parentElement.parentElement.getAttribute('href');
+    }
+    console.log("interceptClickEvent href=" + href);
+    if (href && href.startsWith("lightning:")) {
+        window.postMessage(JSON.stringify({"lightningLink": href}), "*");
+    }
 }
 
 
