@@ -73,6 +73,7 @@ dependencies:
       url: https://github.com/breez/local_auth.git
   drag_and_drop_lists: ^0.2.7
   printing: ^3.7.0
+  webview_flutter: ^1.0.7
 
 dev_dependencies:
   mockito: "^3.0.0"
