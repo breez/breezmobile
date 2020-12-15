@@ -41,7 +41,7 @@ class AmountFormField extends TextFormField {
                 decimal: accountModel.currency != Currency.SAT),
             decoration: InputDecoration(
               labelText: "Amount in ${accountModel.currency.displayName}",
-              suffixIcon: readOnly
+              suffixIcon: (readOnly ?? false)
                   ? null
                   : IconButton(
                       icon: Image.asset(
