@@ -510,6 +510,7 @@ const ReverseSwapRequest$json = const {
   '2': const [
     const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
     const {'1': 'amount', '3': 2, '4': 1, '5': 3, '10': 'amount'},
+    const {'1': 'fees_hash', '3': 3, '4': 1, '5': 9, '10': 'feesHash'},
   ],
 };
 
@@ -547,6 +548,7 @@ const ReverseSwapInfo$json = const {
     const {'1': 'min', '3': 1, '4': 1, '5': 3, '10': 'min'},
     const {'1': 'max', '3': 2, '4': 1, '5': 3, '10': 'max'},
     const {'1': 'fees', '3': 3, '4': 1, '5': 11, '6': '.data.ReverseSwapFees', '10': 'fees'},
+    const {'1': 'fees_hash', '3': 4, '4': 1, '5': 9, '10': 'feesHash'},
   ],
 };
 

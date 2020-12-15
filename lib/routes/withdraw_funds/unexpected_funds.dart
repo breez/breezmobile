@@ -59,13 +59,14 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                       policy: WithdrawFundsPolicy(
                           accSnapshot.data.walletBalance,
                           accSnapshot.data.walletBalance,
+                          accSnapshot.data.walletBalance,
                           accSnapshot.data.walletBalance),
                       initialAddress: _destAddress,
                       initialAmount: accSnapshot.data.currency.format(
                           accSnapshot.data.walletBalance,
                           userInput: true,
                           includeDisplayName: false),
-                      onNext: (amount, address) {
+                      onNext: (amount, address, _) {
                         setState(() {
                           this._destAddress = address;
                           _pageController.nextPage(

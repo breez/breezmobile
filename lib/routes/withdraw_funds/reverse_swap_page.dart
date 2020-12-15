@@ -22,8 +22,10 @@ import 'withdraw_funds_page.dart';
 class ReverseSwapPage extends StatefulWidget {
   final String userAddress;
   final String requestAmount;
+  final bool isMax;
 
-  const ReverseSwapPage({Key key, this.userAddress, this.requestAmount})
+  const ReverseSwapPage(
+      {Key key, this.userAddress, this.requestAmount, this.isMax})
       : super(key: key);
 
   @override
@@ -34,8 +36,8 @@ class ReverseSwapPage extends StatefulWidget {
 
 class ReverseSwapPageState extends State<ReverseSwapPage> {
   ReverseSwapBloc _reverseSwapBloc;
-  StreamController<ReverseSwapDetails> _reverseSwapsStream =
-      BehaviorSubject<ReverseSwapDetails>();
+  StreamController<ReverseSwapRequest> _reverseSwapsStream =
+      BehaviorSubject<ReverseSwapRequest>();
   PageController _pageController = PageController();
   Completer _policyCompleter = Completer();
   Object _loadingError;
@@ -134,13 +136,20 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                             return SwapInProgress(
                                 swapInProgress: swapInProgress);
                           }
-                          return StreamBuilder<ReverseSwapDetails>(
+                          return StreamBuilder<ReverseSwapRequest>(
                               stream: _reverseSwapsStream.stream,
                               builder: (context, swapSnapshot) {
                                 String initialAddress, initialAmount;
+                                bool initialIsMax;
                                 var currentSwap = swapSnapshot.data;
                                 if (widget.userAddress != null) {
                                   initialAddress = widget.userAddress;
+                                }
+                                if (widget.requestAmount != null) {
+                                  initialAmount = widget.requestAmount;
+                                }
+                                if (widget.isMax != null) {
+                                  initialIsMax = widget.isMax;
                                 }
                                 if (currentSwap != null) {
                                   initialAddress = currentSwap.claimAddress;
@@ -148,8 +157,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                       .format(currentSwap.amount,
                                           userInput: true,
                                           includeDisplayName: false);
-                                } else if (widget.requestAmount != null) {
-                                  initialAmount = widget.requestAmount;
+                                  initialIsMax = currentSwap.isMax;
                                 }
 
                                 return PageView(
@@ -159,17 +167,25 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                     WithdrawFundsPage(
                                         title: "Send to BTC Address",
                                         policy: WithdrawFundsPolicy(
-                                            policy.minValue,
-                                            policy.maxValue,
-                                            accSnapshot.data.balance),
+                                          policy.minValue,
+                                          policy.maxValue,
+                                          accSnapshot.data.balance,
+                                          policy.maxAmount,
+                                        ),
                                         initialAddress: initialAddress,
                                         initialAmount: initialAmount,
-                                        onNext: (amount, address) {
-                                          var action = NewReverseSwap(
-                                              amount, address, Int64(0));
+                                        initialIsMax: initialIsMax,
+                                        onNext: (amount, address, isMax) {
+                                          var action = GetReverseSwapPolicy();
                                           reverseSwapBloc.actionsSink
                                               .add(action);
-                                          return action.future.then((swap) {
+                                          return action.future.then((p) {
+                                            var swap = ReverseSwapRequest(
+                                                address,
+                                                amount,
+                                                isMax,
+                                                policy.maxAmount,
+                                                p);
                                             _reverseSwapsStream.add(swap);
                                             _pageController.nextPage(
                                                 duration:
@@ -182,9 +198,18 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                         : ReverseSwapConfirmation(
                                             swap: swapSnapshot.data,
                                             bloc: reverseSwapBloc,
-                                            onFeeConfirmed: (fee) {
-                                              var action = PayReverseSwap(
-                                                  swapSnapshot.data, fee);
+                                            onFeeConfirmed: (address,
+                                                toSend,
+                                                boltzFees,
+                                                claimFees,
+                                                received,
+                                                feesHash) {
+                                              var action = NewReverseSwap(
+                                                  toSend,
+                                                  address,
+                                                  feesHash,
+                                                  claimFees,
+                                                  received);
                                               reverseSwapBloc.actionsSink
                                                   .add(action);
                                               return action.future

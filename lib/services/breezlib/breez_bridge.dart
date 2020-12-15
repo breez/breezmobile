@@ -198,15 +198,21 @@ class BreezBridge {
     return _invokeMethodWhenReady("publishTransaction", {"argument": tx});
   }
 
+  Future<int> maxReverseSwapAmount() {
+    return _invokeMethodWhenReady("maxReverseSwapAmount", {})
+        .then((res) => res as int);
+  }
+
   Future<ReverseSwapInfo> getReverseSwapPolicy() {
     return _invokeMethodWhenReady("reverseSwapInfo", {})
         .then((res) => ReverseSwapInfo()..mergeFromBuffer(res ?? []));
   }
 
-  Future<String> newReverseSwap(String address, Int64 amount) {
+  Future<String> newReverseSwap(String address, Int64 amount, String feesHash) {
     ReverseSwapRequest request = ReverseSwapRequest()
       ..address = address
-      ..amount = amount;
+      ..amount = amount
+      ..feesHash = feesHash;
     return _invokeMethodWhenReady(
             "newReverseSwap", {"argument": request.writeToBuffer()})
         .then((res) => res as String);
