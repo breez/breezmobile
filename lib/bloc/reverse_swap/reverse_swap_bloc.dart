@@ -117,7 +117,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
     await _breezLib.setReverseSwapClaimFee(
         hash, reverseSwap.onchainAmount - action.received);
 
-    /*var resultCompleter = Completer();
+    var resultCompleter = Completer();
     var onComplete = ({String error}) {
       if (resultCompleter.isCompleted) {
         return;
@@ -146,7 +146,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
               .toDisplayMessage(_currentUser.currency));
     });
 
-    action.resolve(await resultCompleter.future); */
+    action.resolve(await resultCompleter.future);
     action.resolve(null);
   }
 
