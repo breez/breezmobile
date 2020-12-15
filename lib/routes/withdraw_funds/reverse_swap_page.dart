@@ -6,7 +6,6 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
@@ -177,7 +176,6 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                         initialAmount: initialAmount,
                                         initialIsMax: initialIsMax,
                                         onNext: (amount, address, isMax) {
-                                          log.info("-- yas -- onNext-1 --");
                                           var action = GetReverseSwapPolicy();
                                           reverseSwapBloc.actionsSink
                                               .add(action);

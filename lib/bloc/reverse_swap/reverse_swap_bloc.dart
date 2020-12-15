@@ -107,11 +107,11 @@ class ReverseSwapBloc with AsyncActionsHandler {
   Future _newReverseSwap(NewReverseSwap action) async {
     var hash = await _breezLib.newReverseSwap(
         action.address, action.amount, action.feesHash);
-    log.info('-- yas -- hash');
+    log.info('reverseSwap hash:');
     log.info(hash);
 
     var reverseSwap = await _breezLib.fetchReverseSwap(hash);
-    log.info('-- yas -- reverseSwap');
+    log.info('reverseSwap data:');
     log.info(reverseSwap);
 
     await _breezLib.setReverseSwapClaimFee(

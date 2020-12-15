@@ -4,7 +4,6 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -262,8 +261,6 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                               onPressed: acc == null
                                   ? null
                                   : () {
-                                      log.info("-- yas -- _isMax --");
-                                      log.info(_isMax);
                                       _onNext(acc, reverseSwapBloc, _isMax);
                                     },
                             ),
@@ -288,25 +285,16 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 
   void _onNext(
       AccountModel acc, ReverseSwapBloc reverseSwapBloc, bool _isNext) {
-    log.info("-- yas -- _onNext1-begin --");
-
     if (fetching) {
-      log.info("-- yas -- _onNext1-fetching --");
-
       return;
     }
     _asyncValidate().then((validated) {
-      log.info("-- yas -- _onNext1-validated --");
-
       if (validated) {
-        log.info("-- yas -- _onNext1-validated-true --");
-
         _formKey.currentState.save();
         setState(() {
           fetching = true;
         });
         FocusScope.of(context).requestFocus(FocusNode());
-        log.info("-- yas -- _onNext1 --");
         return widget.onNext(acc.currency.parse(_amountController.text),
             _addressValidated, _isMax);
       }
@@ -348,15 +336,10 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   Future<bool> _asyncValidate() {
     return _breezLib.validateAddress(_addressController.text).then((data) {
       _addressValidated = data;
-      log.info("-- yas -- _asyncValidate-ok --");
-      log.info(data);
       var v = _formKey.currentState.validate();
-      log.info("-- yas -- _asyncValidate-ok2 --");
-      log.info(v);
       return v;
     }).catchError((err) {
       _addressValidated = null;
-      log.info("-- yas -- _asyncValidate-notok --");
       return _formKey.currentState.validate();
     });
   }
