@@ -99,7 +99,9 @@ class QRScanState extends State<QRScan> {
 
   @override
   void dispose() {
-    this.controller?.pauseCamera();
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      this.controller?.pauseCamera();
+    }
     this.controller?.dispose();
     super.dispose();
   }
