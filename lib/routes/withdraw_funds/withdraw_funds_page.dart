@@ -77,17 +77,6 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     ReverseSwapBloc reverseSwapBloc =
         AppBlocsProvider.of<ReverseSwapBloc>(context);
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    Widget buttonChild = Text(
-      "NEXT",
-      style: Theme.of(context).textTheme.button,
-    );
-    if (fetching) {
-      buttonChild = Container(
-        width: 18.0,
-        height: 18.0,
-        child: Loader(strokeWidth: 2.0),
-      );
-    }
     return Scaffold(
         appBar: AppBar(
             iconTheme: Theme.of(context).appBarTheme.iconTheme,
@@ -224,14 +213,12 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
                                   Container(
-                                    width: 18.0,
-                                    height: 18.0,
                                     child: Loader(
                                         strokeWidth: 2.0,
                                         color: Theme.of(context)
                                             .colorScheme
                                             .onSurface
-                                            .withOpacity(0.6)),
+                                            .withOpacity(0.5)),
                                   )
                                 ])
                     ],
@@ -293,9 +280,6 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   Future _scanBarcode(AccountModel account) async {
     FocusScope.of(context).requestFocus(FocusNode());
     String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
-    if (barcode == null) {
-      return;
-    }
     if (barcode.isEmpty) {
       showFlushbar(context, message: "QR code wasn't detected.");
       return;
@@ -347,12 +331,6 @@ class _NextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget loader = Container(
-      width: 18.0,
-      height: 18.0,
-      child: Loader(strokeWidth: 2.0),
-    );
-
     return StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
         builder: (context, snapshot) {
@@ -360,7 +338,7 @@ class _NextButton extends StatelessWidget {
           return Padding(
               padding: EdgeInsets.only(bottom: 36.0, top: 8.0),
               child: fetching
-                  ? loader
+                  ? null
                   : Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
