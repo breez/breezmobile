@@ -264,19 +264,25 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   Future _scanBarcode(AccountModel account) async {
-    var loaderRoute = createLoaderRoute(context);
+    TransparentPageRoute loaderRoute = null;
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
+      if (barcode == null) {
+        return;
+      }
       if (barcode.isEmpty) {
         showFlushbar(context, message: "QR code wasn't detected.");
         return;
       }
+      loaderRoute = createLoaderRoute(context);
       Navigator.of(context).push(loaderRoute);
       await _handleLNUrlWithdraw(account, barcode);
       Navigator.of(context).removeRoute(loaderRoute);
     } catch (e) {
-      Navigator.of(context).removeRoute(loaderRoute);
+      if (loaderRoute != null) {
+        Navigator.of(context).removeRoute(loaderRoute);
+      }
       promptError(
           context,
           "Receive Failed",
