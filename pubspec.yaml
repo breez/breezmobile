@@ -52,9 +52,6 @@ dependencies:
   image_cropper: ^1.3.0
   uni_links: ^0.2.0
   nfc_in_flutter: ^2.0.4
-  flutter_webview_plugin:
-    git:
-      url: https://github.com/breez/flutter_webview_plugin.git
   keyboard_actions: ^2.1.1
   flutter_secure_storage: ^3.2.1+1
   auto_size_text: 2.0.2+1
