@@ -21,7 +21,6 @@ import io.flutter.plugin.common.PluginRegistry;
 
 public class NfcHandler implements MethodChannel.MethodCallHandler, FlutterPlugin, ActivityAware {
     private static final String NFC_CHANNEL = "com.breez.client/nfc";
-    private MainActivity m_mainActivity;
 
     private NfcAdapter m_adapter;
 
@@ -73,9 +72,11 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, FlutterPlugi
         if (call.method.equals("checkIfStartedWithNfc")) {
             Log.d(TAG, "Called: checkIfStartedWithNfc");
             try {
-                String nfcStartedWith = getNfcStartedWith(m_mainActivity.getIntent());
+                String nfcStartedWith = getNfcStartedWith(binding.getActivity().getIntent());
                 result.success(nfcStartedWith);
             } catch (Exception e) {
+              System.out.println(e.getMessage());
+                e.printStackTrace();
                 result.success("false");
             }
         }

@@ -41,27 +41,29 @@ class AmountFormField extends TextFormField {
                 decimal: accountModel.currency != Currency.SAT),
             decoration: InputDecoration(
               labelText: "Amount in ${accountModel.currency.displayName}",
-              suffixIcon: IconButton(
-                icon: Image.asset(
-                  (accountModel.fiatCurrency != null)
-                      ? accountModel.fiatCurrency.logoPath
-                      : "src/icon/btc_convert.png",
-                  color: iconColor != null
-                      ? iconColor
-                      : theme.BreezColors.white[500],
-                ),
-                padding: EdgeInsets.only(top: 21.0),
-                alignment: Alignment.bottomRight,
-                onPressed: () => showDialog(
-                  useRootNavigator: false,
-                  context: context,
-                  builder: (_) => CurrencyConverterDialog(
-                      returnFN != null
-                          ? returnFN
-                          : (value) => controller.text = value,
-                      validatorFn),
-                ),
-              ),
+              suffixIcon: (readOnly ?? false)
+                  ? null
+                  : IconButton(
+                      icon: Image.asset(
+                        (accountModel.fiatCurrency != null)
+                            ? accountModel.fiatCurrency.logoPath
+                            : "src/icon/btc_convert.png",
+                        color: iconColor != null
+                            ? iconColor
+                            : theme.BreezColors.white[500],
+                      ),
+                      padding: EdgeInsets.only(top: 21.0),
+                      alignment: Alignment.bottomRight,
+                      onPressed: () => showDialog(
+                        useRootNavigator: false,
+                        context: context,
+                        builder: (_) => CurrencyConverterDialog(
+                            returnFN != null
+                                ? returnFN
+                                : (value) => controller.text = value,
+                            validatorFn),
+                      ),
+                    ),
             ),
             style: style,
             enabled: enabled,

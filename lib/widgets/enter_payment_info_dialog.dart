@@ -149,6 +149,9 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
   Future _scanBarcode() async {
     FocusScope.of(context).requestFocus(FocusNode());
     String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
+    if (barcode == null) {
+      return;
+    }
     if (barcode.isEmpty) {
       showFlushbar(context, message: "QR code wasn't detected.");
       return;

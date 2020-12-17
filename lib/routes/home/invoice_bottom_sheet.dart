@@ -62,6 +62,9 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                         () async {
                       String decodedQr = await Navigator.pushNamed<String>(
                           context, "/qr_scan");
+                      if (decodedQr == null) {
+                        return;
+                      }
                       if (decodedQr.isEmpty) {
                         showFlushbar(context,
                             message: "QR code wasn't detected.");

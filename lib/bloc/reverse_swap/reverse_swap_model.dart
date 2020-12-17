@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -16,14 +18,38 @@ class ReverseSwapDetails {
   String get claimAddress => _response.claimAddress;
 }
 
+class ReverseSwapRequest {
+  ReverseSwapRequest(
+      this.claimAddress, this.amount, this.isMax, this.available, this.policy);
+
+  final String claimAddress;
+
+  final Int64 amount;
+
+  final bool isMax;
+
+  final Int64 available;
+
+  final ReverseSwapPolicy policy;
+}
+
 class ReverseSwapPolicy {
   final ReverseSwapInfo _info;
+  final Int64 maxAmount;
 
-  ReverseSwapPolicy(this._info);
+  ReverseSwapPolicy(this._info, this.maxAmount);
 
   Int64 get minValue => _info.min;
 
   Int64 get maxValue => _info.max;
+
+  double get percentage => _info.fees.percentage;
+
+  Int64 get lockup => _info.fees.lockup;
+
+  Int64 get claim => _info.fees.claim;
+
+  String get feesHash => _info.feesHash;
 }
 
 class ReverseSwapClaimFeeEstimates {

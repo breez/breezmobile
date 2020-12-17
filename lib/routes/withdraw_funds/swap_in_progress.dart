@@ -19,7 +19,7 @@ class SwapInProgress extends StatelessWidget {
       String message = "Breez is waiting for your transaction to be confirmed.";
       if (swapInProgress.claimTxId.isEmpty) {
         message =
-            "Breez is currently processing your previous request (it should take ~${formatConfirmationTime(swapInProgress.lockupTxETA)}). You'll be notified once processing is completed to send your funds to the address you've specified.";
+            "Breez is currently processing your previous request. You'll be notified once processing is completed to send your funds to the address you've specified.";
       }
       body = Column(
         mainAxisSize: MainAxisSize.max,

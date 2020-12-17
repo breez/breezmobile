@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:fixnum/fixnum.dart';
 
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
@@ -40,7 +42,6 @@ class ReverseSwapBloc with AsyncActionsHandler {
 
     registerAsyncHandlers({
       NewReverseSwap: _newReverseSwap,
-      PayReverseSwap: _payReverseSwap,
       GetClaimFeeEstimates: _getFeeClaimEstimates,
       FetchInProgressSwap: _fetchInProgressSwap,
       GetReverseSwapPolicy: _reverseSwapPolicy,
@@ -97,22 +98,25 @@ class ReverseSwapBloc with AsyncActionsHandler {
   }
 
   Future _reverseSwapPolicy(GetReverseSwapPolicy action) async {
+    var maxAmount = await _breezLib.maxReverseSwapAmount();
     action.resolve(await _breezLib.getReverseSwapPolicy().then((policy) {
-      return ReverseSwapPolicy(policy);
+      return ReverseSwapPolicy(policy, Int64(maxAmount));
     }));
   }
 
   Future _newReverseSwap(NewReverseSwap action) async {
-    action.resolve(await _breezLib
-        .newReverseSwap(action.address, action.amount)
-        .then((hash) {
-      return _breezLib.fetchReverseSwap(hash).then((resp) {
-        return ReverseSwapDetails(hash, resp);
-      });
-    }));
-  }
+    var hash = await _breezLib.newReverseSwap(
+        action.address, action.amount, action.feesHash);
+    log.info('reverseSwap hash:');
+    log.info(hash);
 
-  Future _payReverseSwap(PayReverseSwap action) async {
+    var reverseSwap = await _breezLib.fetchReverseSwap(hash);
+    log.info('reverseSwap data:');
+    log.info(reverseSwap);
+
+    await _breezLib.setReverseSwapClaimFee(
+        hash, reverseSwap.onchainAmount - action.received);
+
     var resultCompleter = Completer();
     var onComplete = ({String error}) {
       if (resultCompleter.isCompleted) {
@@ -125,27 +129,25 @@ class ReverseSwapBloc with AsyncActionsHandler {
       }
     };
 
-    await _breezLib.setReverseSwapClaimFee(action.swap.hash, action.claimFee);
-
     Future.any([
       _breezLib.payReverseSwap(
-          action.swap.hash, _currentUser.token ?? "", NTFN_TITLE, NTFN_BODY),
+          hash, _currentUser.token ?? "", NTFN_TITLE, NTFN_BODY),
       _paymentsStream
           .where((payments) =>
               payments.nonFilteredItems.length > 0 &&
-              payments.nonFilteredItems[0].paymentHash == action.swap.hash)
+              payments.nonFilteredItems[0].paymentHash == hash)
           .first
     ]).then((_) => onComplete()).catchError((err) {
       onComplete(
           error: new PaymentError(
-                  new PayRequest(
-                      action.swap.paymentRequest, action.swap.amount),
+                  new PayRequest(reverseSwap.invoice, reverseSwap.lnAmount),
                   err.toString(),
                   null)
               .toDisplayMessage(_currentUser.currency));
     });
 
     action.resolve(await resultCompleter.future);
+    action.resolve(null);
   }
 
   void _listenPushNotification() {
