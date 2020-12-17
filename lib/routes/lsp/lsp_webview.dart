@@ -62,6 +62,10 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
         javascriptChannels: <JavascriptChannel>[
           _breezJavascriptChannel(context),
         ].toSet(),
+        navigationDelegate: (NavigationRequest request) =>
+        request.url.startsWith('lightning:')
+            ? NavigationDecision.prevent
+            : NavigationDecision.navigate,
         onPageFinished: (String url) async {
           // redirect post messages to javascript channel
           _webViewController.evaluateJavascript(
