@@ -164,7 +164,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
               String lnurl = await Navigator.of(context).push<String>(
                   FadeInRoute(
                       builder: (_) => LSPWebViewPage(
-                          null, _selectedLSP.widgetURL, _selectedLSP.name)));
+                          _selectedLSP.widgetURL, _selectedLSP.name)));
               if (lnurl != null) {
                 connectAction = ConnectLSP(_selectedLSP.lspID, lnurl);
               }
