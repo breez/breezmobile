@@ -546,6 +546,9 @@ class BreezBridge {
 
   Future<String> validateAddress(String address) {
     String addr = address;
+    if (address == null) {
+      return Future.error("empty address");
+    }
     if (addr.startsWith("bitcoin:")) {
       addr = addr.substring(8);
     }
