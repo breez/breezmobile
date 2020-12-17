@@ -180,8 +180,7 @@ class UserApp extends StatelessWidget {
                                       );
                                     case '/buy_bitcoin':
                                       return FadeInRoute(
-                                        builder: (_) => MoonpayWebView(
-                                            accountBloc, backupBloc),
+                                        builder: (_) => MoonpayWebView(),
                                         settings: settings,
                                       );
                                     case '/withdraw_funds':
