@@ -74,7 +74,7 @@ class RestoreDialogState extends State<RestoreDialog> {
                           )
                         : Icon(Icons.check),
                     title: Text(
-                      DateUtils.formatYearMonthDayHourMinute(DateTime.parse(
+                      BreezDateUtils.formatYearMonthDayHourMinute(DateTime.parse(
                               widget.snapshots[index].modifiedTime)) +
                           (widget.snapshots[index].encrypted
                               ? " - (Requires key)"

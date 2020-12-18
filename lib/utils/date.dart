@@ -2,7 +2,7 @@ import 'dart:io' show Platform;
 
 import "package:intl/intl.dart";
 
-class DateUtils {
+class BreezDateUtils {
   static final DateFormat _monthDateFormat = DateFormat.Md(Platform.localeName);
   static final DateFormat _yearMonthDayFormat =
       DateFormat.yMd(Platform.localeName);

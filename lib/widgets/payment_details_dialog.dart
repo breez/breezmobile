@@ -169,7 +169,7 @@ Future<Null> showPaymentDetailsDialog(
                           reverse: true,
                           padding: EdgeInsets.only(left: 8.0),
                           child: AutoSizeText(
-                            DateUtils.formatYearMonthDayHourMinute(
+                            BreezDateUtils.formatYearMonthDayHourMinute(
                                 DateTime.fromMillisecondsSinceEpoch(
                                     paymentInfo.creationTimestamp.toInt() *
                                         1000)),
@@ -207,7 +207,7 @@ Future<Null> showPaymentDetailsDialog(
                           reverse: true,
                           padding: EdgeInsets.only(left: 8.0),
                           child: AutoSizeText(
-                            DateUtils.formatYearMonthDayHourMinute(
+                            BreezDateUtils.formatYearMonthDayHourMinute(
                                 DateTime.fromMillisecondsSinceEpoch(paymentInfo
                                         .pendingExpirationTimestamp
                                         .toInt() *

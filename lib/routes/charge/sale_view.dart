@@ -116,7 +116,7 @@ class SaleViewState extends State<SaleView> {
               widget.saleCurrency ?? CurrencyWrapper.fromBTC(Currency.SAT);
           String title = "Current Sale";
           if (widget.salePayment != null) {
-            title = DateUtils.formatYearMonthDayHourMinute(
+            title = BreezDateUtils.formatYearMonthDayHourMinute(
                 DateTime.fromMillisecondsSinceEpoch(
                     widget.salePayment.creationTimestamp.toInt() * 1000));
           }
