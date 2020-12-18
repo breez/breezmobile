@@ -1,0 +1,2 @@
+-keep class androidx.lifecycle.** { *; }
+-keep class io.flutter.plugin.editing.** { *; }
