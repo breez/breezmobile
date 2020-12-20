@@ -57,12 +57,6 @@ android {
 
     flavorDimensions "breez"
     productFlavors {
-        pos {
-            dimension "breez"
-            applicationIdSuffix ".pos"
-            versionNameSuffix "-pos"
-            resValue "string", "app_name", "Breez POS"
-        }
         client {
             dimension "breez"
             resValue "string", "app_name", "Breez"
