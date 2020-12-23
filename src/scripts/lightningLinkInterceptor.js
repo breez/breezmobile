@@ -11,10 +11,6 @@ function interceptClickEvent(e) {
     }
     if (target.tagName === 'A') {
         href = target.getAttribute('href');
-    } else if (target.tagName === 'svg' && target.parentElement && target.parentElement.tagName === 'A') {
-        href = target.parentElement.getAttribute('href');
-    } else if (target.tagName === 'rect' && target.parentElement && target.parentElement.tagName === 'svg' && target.parentElement.parentElement && target.parentElement.parentElement.tagName === 'A') {
-        href = target.parentElement.parentElement.getAttribute('href');
     }
     console.log("interceptClickEvent href=" + href);
     if (href && href.startsWith("lightning:")) {
@@ -29,3 +25,10 @@ if (document.addEventListener) {
 } else if (document.attachEvent) {
     document.attachEvent('onclick', interceptClickEvent);
 }
+
+// disable clicks on SVG elements
+((d,e)=>{
+  e = d.createElement("style");
+  e.innerHTML = "svg{pointer-events: none;}";
+  d.head.appendChild(e)
+})(document)
