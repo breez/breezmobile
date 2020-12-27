@@ -70,7 +70,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "setReverseSwapClaimFee": SingleArgBindingExecutor(f: BindingsSetReverseSwapClaimFee),
     "unconfirmedReverseSwapClaimTransaction": EmptyArgsBindingExecutor(f: BindingsUnconfirmedReverseSwapClaimTransaction),
     "reverseSwapPayments": EmptyArgsBindingExecutor(f: BindingsReverseSwapPayments),
-    "maxReverseSwapAmount": EmptyArgsBindingExecutor(f: BindingsMaxReverseSwapAmount),
+    "maxReverseSwapAmount": MaxReverseSwapAmountExecutor(),
     "reverseSwapInfo": EmptyArgsBindingExecutor(f: BindingsReverseSwapInfo),
     "checkVersion": EmptyArgsBindingExecutor(f: BindingsCheckVersion),
     "daemonReady": VoidBindingExecutor(f: BindingsDaemonReady),
@@ -130,6 +130,21 @@ fileprivate class DefaultOnChainFeeRateExecutor : BindingExecutor {
             var arg : Int64 = 0;
             var error : NSError?;
             BindingsGetDefaultOnChainFeeRate(&arg, &error);
+            if let err = error {
+                result(self.wrapOutputType(arg: err));
+            } else {
+                result(self.wrapOutputType(arg: arg))
+            }
+        }
+    }
+}
+
+fileprivate class MaxReverseSwapAmountExecutor : BindingExecutor {
+    func execute(call : FlutterMethodCall, result : @escaping FlutterResult){
+        DispatchQueue.global().async {
+            var arg : Int64 = 0;
+            var error : NSError?;
+            BindingsMaxReverseSwapAmount(&arg, &error);
             if let err = error {
                 result(self.wrapOutputType(arg: err));
             } else {
