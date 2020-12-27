@@ -46,8 +46,9 @@ class InvoiceNotificationsHandler {
     _receivedInvoicesStream
         .where((payreq) => payreq != null && !_handlingRequest)
         .listen((payreq) async {
-      var account = await _accountBloc.accountStream.first;
-      if (!account.connected) {
+      var account = await _accountBloc.accountStream
+          .firstWhere((a) => !a.initial, orElse: () => null);
+      if (account == null || !account.connected) {
         return;
       }
       if (!payreq.loaded) {

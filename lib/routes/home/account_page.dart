@@ -210,7 +210,7 @@ class AccountPageState extends State<AccountPage>
             ),
             child: Chip(
               backgroundColor: Theme.of(context).bottomAppBarColor,
-              label: Text(DateUtils.formatFilterDateRange(
+              label: Text(BreezDateUtils.formatFilterDateRange(
                   filter.startDate, filter.endDate)),
               onDeleted: () => _accountBloc.paymentFilterSink
                   .add(PaymentFilterModel(filter.paymentType, null, null)),

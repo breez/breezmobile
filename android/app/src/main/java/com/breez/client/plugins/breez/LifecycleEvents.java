@@ -10,6 +10,8 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
+import com.breez.client.BreezApplication;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -85,6 +87,7 @@ public class LifecycleEvents implements StreamHandler, FlutterPlugin, ActivityAw
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void onResume() {
+        BreezApplication.isBackground = false;
         Log.d("Breez", "App Resumed - OnPostResume called");
         if (m_eventsListener != null) {
             _executor.execute(() -> {
@@ -97,6 +100,7 @@ public class LifecycleEvents implements StreamHandler, FlutterPlugin, ActivityAw
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void onStop() {
+        BreezApplication.isBackground = true;
         Log.d("Breez", "App Paused - onPause called");
         if (m_eventsListener != null) {
             _executor.execute(() -> {

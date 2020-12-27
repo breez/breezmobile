@@ -117,7 +117,7 @@ class SecurityPageState extends State<SecurityPage>
                     child: backupStateSnapshot.data != null &&
                             backupStateSnapshot.data.lastBackupTime != null
                         ? Text(
-                            "Last backup: ${DateUtils.formatYearMonthDayHourMinute(backupState.lastBackupTime)}" +
+                            "Last backup: ${BreezDateUtils.formatYearMonthDayHourMinute(backupState.lastBackupTime)}" +
                                 (backupState.lastBackupAccountName
                                             ?.isNotEmpty ==
                                         true

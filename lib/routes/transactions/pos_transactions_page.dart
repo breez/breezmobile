@@ -213,7 +213,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
         Padding(
           padding: EdgeInsets.only(left: 16.0),
           child: Chip(
-            label: Text(DateUtils.formatFilterDateRange(
+            label: Text(BreezDateUtils.formatFilterDateRange(
                 filter.startDate, filter.endDate)),
             onDeleted: () => _accountBloc.paymentFilterSink
                 .add(PaymentFilterModel(filter.paymentType, null, null)),

@@ -28,7 +28,7 @@ class CsvExporter {
         List.generate(this.paymentList.length, (index) {
       List paymentItem = List();
       PaymentInfo paymentInfo = this.paymentList.elementAt(index);
-      paymentItem.add(DateUtils.formatYearMonthDayHourMinute(
+      paymentItem.add(BreezDateUtils.formatYearMonthDayHourMinute(
           DateTime.fromMillisecondsSinceEpoch(
               paymentInfo.creationTimestamp.toInt() * 1000)));
       paymentItem.add(paymentInfo.title);

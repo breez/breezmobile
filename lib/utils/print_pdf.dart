@@ -67,7 +67,7 @@ class PrintService {
                         fontWeight: pw.FontWeight.bold, letterSpacing: 0.5)),
                 pw.SizedBox(height: 4),
                 pw.Text(
-                    DateUtils.formatYearMonthDayHourMinute(
+                    BreezDateUtils.formatYearMonthDayHourMinute(
                         DateTime.fromMillisecondsSinceEpoch(printParameters
                                 .paymentInfo.creationTimestamp
                                 .toInt() *
