@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.android.FlutterFragmentActivity;
+import io.flutter.embedding.android.SplashScreen;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
@@ -14,7 +16,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-public class MainActivity extends FlutterActivity {
+public class MainActivity extends FlutterFragmentActivity {
     private static final String TAG = "Breez";
     private LifecycleEvents _lifecycleEventsPlugin;
     public boolean isPos = false;
@@ -24,7 +26,6 @@ public class MainActivity extends FlutterActivity {
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         Log.d(TAG, "Breez activity created...");
         BreezApplication.isRunning = true;
-        isPos = this.getPackageName().equals("com.breez.client.pos");
 
 
         registerBreezPlugins(flutterEngine);
@@ -41,13 +42,8 @@ public class MainActivity extends FlutterActivity {
         flutterEngine.getPlugins().add(new Permissions());
     }
 
-    public void onPause() {
-        super.onPause();
-        BreezApplication.isBackground = true;
-    }
-
-    public void onResume() {
-        super.onResume();
-        BreezApplication.isBackground = false;
+    @Override
+    public SplashScreen provideSplashScreen() {
+        return null;
     }
 }
