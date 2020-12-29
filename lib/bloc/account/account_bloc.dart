@@ -19,6 +19,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'account_model.dart';
@@ -28,6 +29,8 @@ class AccountBloc {
   static const FORCE_BOOTSTRAP_FILE_NAME = "FORCE_BOOTSTRAP";
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
+
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   Timer _exchangeRateTimer;
   Map<String, CurrencyData> _currencyData;
@@ -625,6 +628,13 @@ class AccountBloc {
         _accountController
             .add(_accountController.value.copyWith(serverReady: true));
         _refreshAccountAndPayments();
+        log.info("fetching pincode from secure storage...");
+        _secureStorage.read(key: 'pinCode').then((pinCode) {
+          log.info("fetched pincode = " + pinCode);
+        }).catchError((err) {
+          log.severe(
+              "failed to fetch pincode from secure storage: " + err.toString());
+        });
       }
       if (event.type ==
           NotificationEvent_NotificationType.BACKUP_NODE_CONFLICT) {

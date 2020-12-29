@@ -115,10 +115,6 @@ class UserProfileBloc {
           _refreshRegistration(_userStreamController.value);
         }
       });
-
-      _secureStorage.read(key: 'pinCode').then((pinCode) {
-        log.info("pincode = " + pinCode);
-      });
     });
   }
 
