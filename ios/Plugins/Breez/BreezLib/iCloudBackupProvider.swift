@@ -81,6 +81,32 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
             return "";
         }
         
+        guard let backupAsset = record["backup"] as? CKAsset else {
+            return legacyDownloadBackupFiles(record, error: error)
+        }
+        
+        let tempDir = FileManager.default.temporaryDirectory;
+        let destBackupFile = tempDir.appendingPathComponent("backup.zip");
+        do {
+            
+            if (FileManager.default.fileExists(atPath: destBackupFile.path)) {
+                try FileManager.default.removeItem(at: destBackupFile);
+            }
+            try FileManager.default.copyItem(at: backupAsset.fileURL!, to: destBackupFile)
+        } catch let errorEx {
+            error?.pointee = NSError(domain: errorEx.localizedDescription, code: 0, userInfo: nil);
+            return ""
+        }
+        let filesArray = [destBackupFile.path];
+        return filesArray.joined(separator: ",");
+    }
+    
+    func legacyDownloadBackupFiles(_ record: CKRecord, error: NSErrorPointer) -> String {
+        if let err = updateRecord(record: record, savePolicy: .changedKeys) {
+            error?.pointee = NSError(domain: err.localizedDescription, code: 0, userInfo: nil);
+            return "";
+        }
+        
         guard let walletdbAsset = record["walletdb"] as? CKAsset else {
             error?.pointee = NSError(domain: "walletdb was not found", code: 0, userInfo: nil);
             return ""
@@ -126,7 +152,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         return filesArray.joined(separator: ",");
     }
     
-    func uploadBackupFiles(_ files: String?, nodeID: String?, encryptionType: String?, error: NSErrorPointer) -> String {
+    func uploadBackupFiles(_ file: String?, nodeID: String?, encryptionType: String?, error: NSErrorPointer) -> String {
         let accStatus = getAccountStatus();
         if (accStatus == .noAccount) {
             error?.pointee = NSError(domain: "AuthError", code: 0, userInfo: [NSLocalizedDescriptionKey: "AuthError"]);
@@ -135,13 +161,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         
         let record = CKRecord(recordType: "BackupSnapshot", recordID: CKRecord.ID(recordName: nodeID!));
         record["backupEncryptionType"] = encryptionType;
-        let filesArray = files!.split(separator: ",");
-        let channeldb = String(filesArray[0]);
-        let walletdb = String(filesArray[1]);
-        let breezdb = String(filesArray[2]);
-        record["walletdb"] = CKAsset(fileURL: URL(fileURLWithPath: walletdb));
-        record["channeldb"] = CKAsset(fileURL: URL(fileURLWithPath: channeldb));
-        record["breezdb"] = CKAsset(fileURL: URL(fileURLWithPath: breezdb));
+        record["backup"] = CKAsset(fileURL: URL(fileURLWithPath: String(file!)));
         
         if let err = updateRecord(record: record, savePolicy: .allKeys) {
             error?.pointee = NSError(domain: err.localizedDescription, code: 0, userInfo: nil);
