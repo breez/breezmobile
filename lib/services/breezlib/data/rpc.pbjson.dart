@@ -201,6 +201,20 @@ const Invoice$json = const {
   ],
 };
 
+const SyncLSPChannelsRequest$json = const {
+  '1': 'SyncLSPChannelsRequest',
+  '2': const [
+    const {'1': 'lspInfo', '3': 1, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'lspInfo'},
+  ],
+};
+
+const SyncLSPChannelsResponse$json = const {
+  '1': 'SyncLSPChannelsResponse',
+  '2': const [
+    const {'1': 'hasMismatch', '3': 1, '4': 1, '5': 8, '10': 'hasMismatch'},
+  ],
+};
+
 const NotificationEvent$json = const {
   '1': 'NotificationEvent',
   '2': const [

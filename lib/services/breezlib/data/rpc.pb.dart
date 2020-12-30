@@ -1021,6 +1021,70 @@ class Invoice extends $pb.GeneratedMessage {
   void clearAmtPaid() => clearField(3);
 }
 
+class SyncLSPChannelsRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('SyncLSPChannelsRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOM<LSPInformation>(1, 'lspInfo', protoName: 'lspInfo', subBuilder: LSPInformation.create)
+    ..hasRequiredFields = false
+  ;
+
+  SyncLSPChannelsRequest._() : super();
+  factory SyncLSPChannelsRequest() => create();
+  factory SyncLSPChannelsRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory SyncLSPChannelsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  SyncLSPChannelsRequest clone() => SyncLSPChannelsRequest()..mergeFromMessage(this);
+  SyncLSPChannelsRequest copyWith(void Function(SyncLSPChannelsRequest) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static SyncLSPChannelsRequest create() => SyncLSPChannelsRequest._();
+  SyncLSPChannelsRequest createEmptyInstance() => create();
+  static $pb.PbList<SyncLSPChannelsRequest> createRepeated() => $pb.PbList<SyncLSPChannelsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static SyncLSPChannelsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SyncLSPChannelsRequest>(create);
+  static SyncLSPChannelsRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  LSPInformation get lspInfo => $_getN(0);
+  @$pb.TagNumber(1)
+  set lspInfo(LSPInformation v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasLspInfo() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLspInfo() => clearField(1);
+  @$pb.TagNumber(1)
+  LSPInformation ensureLspInfo() => $_ensure(0);
+}
+
+class SyncLSPChannelsResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('SyncLSPChannelsResponse', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOB(1, 'hasMismatch', protoName: 'hasMismatch')
+    ..hasRequiredFields = false
+  ;
+
+  SyncLSPChannelsResponse._() : super();
+  factory SyncLSPChannelsResponse() => create();
+  factory SyncLSPChannelsResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory SyncLSPChannelsResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  SyncLSPChannelsResponse clone() => SyncLSPChannelsResponse()..mergeFromMessage(this);
+  SyncLSPChannelsResponse copyWith(void Function(SyncLSPChannelsResponse) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsResponse));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static SyncLSPChannelsResponse create() => SyncLSPChannelsResponse._();
+  SyncLSPChannelsResponse createEmptyInstance() => create();
+  static $pb.PbList<SyncLSPChannelsResponse> createRepeated() => $pb.PbList<SyncLSPChannelsResponse>();
+  @$core.pragma('dart2js:noInline')
+  static SyncLSPChannelsResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SyncLSPChannelsResponse>(create);
+  static SyncLSPChannelsResponse _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get hasMismatch => $_getBF(0);
+  @$pb.TagNumber(1)
+  set hasMismatch($core.bool v) { $_setBool(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasHasMismatch() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearHasMismatch() => clearField(1);
+}
+
 class NotificationEvent extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('NotificationEvent', package: const $pb.PackageName('data'), createEmptyInstance: create)
     ..e<NotificationEvent_NotificationType>(1, 'type', $pb.PbFieldType.OE, defaultOrMaker: NotificationEvent_NotificationType.READY, valueOf: NotificationEvent_NotificationType.valueOf, enumValues: NotificationEvent_NotificationType.values)

@@ -435,6 +435,13 @@ class BreezBridge {
         .then((res) => AddInvoiceReply()..mergeFromBuffer(res ?? []));
   }
 
+  Future<SyncLSPChannelsResponse> syncLSPChannels(LSPInformation lsp) {
+    var request = SyncLSPChannelsRequest()..lspInfo = lsp;
+    return _invokeMethodWhenReady(
+            "syncLSPChannels", {"argument": request.writeToBuffer()})
+        .then((res) => SyncLSPChannelsResponse()..mergeFromBuffer(res ?? []));
+  }
+
   Future<CreateRatchetSessionReply> createRatchetSession(
       String sessionID, Int64 expiry,
       {String secret, String remotePubKey}) {

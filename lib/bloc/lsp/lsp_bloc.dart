@@ -108,6 +108,18 @@ class LSPBloc with AsyncActionsHandler {
         log.info("LSP - account changed adding reconnect request");
         _reconnectStreamController.add(null);
       }
+      if (event.type == NotificationEvent_NotificationType.READY) {
+        await _ensureLSPSFetched();
+        var selectedLSP = await _selectedLSP;
+        if (selectedLSP != null) {
+          _breezLib.syncLSPChannels(selectedLSP.raw).then((value) {
+            log.info("finished to sync lsp channels: " +
+                value.hasMismatch.toString());
+          }).catchError((err) {
+            log.severe("failed to sync lsp channels: " + err.toString());
+          });
+        }
+      }
     });
   }
 

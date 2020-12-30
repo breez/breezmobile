@@ -48,4 +48,5 @@ class LSPInfo {
   int get baseFeeMsat => _lspInformation.baseFeeMsat.toInt();
   int get channelCapacity => _lspInformation.channelCapacity.toInt();
   int get channelFeePermyriad => _lspInformation.channelFeePermyriad.toInt();
+  LSPInformation get raw => _lspInformation;
 }
