@@ -628,13 +628,6 @@ class AccountBloc {
         _accountController
             .add(_accountController.value.copyWith(serverReady: true));
         _refreshAccountAndPayments();
-        log.info("fetching pincode from secure storage...");
-        _secureStorage.read(key: 'pinCode').then((pinCode) {
-          log.info("fetched pincode = " + pinCode);
-        }).catchError((err) {
-          log.severe(
-              "failed to fetch pincode from secure storage: " + err.toString());
-        });
       }
       if (event.type ==
           NotificationEvent_NotificationType.BACKUP_NODE_CONFLICT) {

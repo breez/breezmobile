@@ -17,6 +17,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 
+import '../../logger.dart';
 import 'backup_phrase/backup_phrase_confirmation_page.dart';
 import 'backup_phrase/backup_phrase_warning_dialog.dart';
 import 'change_pin_code.dart';
@@ -392,6 +393,7 @@ class SecurityPageState extends State<SecurityPage>
         },
       ),
     ).then((newPIN) async {
+      log.info("changing pin to: " + newPIN);
       if (newPIN != null) {
         var updatePinAction = UpdatePinCode(newPIN);
         widget.userProfileBloc.userActionsSink.add(updatePinAction);

@@ -157,6 +157,17 @@ class UserProfileBloc {
             color: randomName[0],
             animal: randomName[1]);
       }
+      if (user.securityModel.requiresPin) {
+        String pin;
+        try {
+          pin = await _secureStorage.read(key: "pinCode");
+        } catch (err) {
+          log.severe("failed to fetch pin code " + err.toString());
+        }
+        if (pin == null) {
+          user = user.copyWith(securityModel: SecurityModel.initial());
+        }
+      }
       user = user.copyWith(locked: user.securityModel.requiresPin);
       _publishUser(user);
     });
@@ -213,7 +224,13 @@ class UserProfileBloc {
   }
 
   Future _updatePinCode(UpdatePinCode action) async {
-    await _secureStorage.write(key: 'pinCode', value: action.newPin);
+    log.info("updating pin to: " + action.newPin);
+    try {
+      await _secureStorage.write(key: 'pinCode', value: action.newPin);
+    } catch (err) {
+      log.severe("failed to update pin: " + err.toString());
+    }
+    log.severe("pin updated succesfully");
     _publishUser(_currentUser);
     action.resolve(null);
   }
