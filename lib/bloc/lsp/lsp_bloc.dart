@@ -48,6 +48,7 @@ class LSPBloc with AsyncActionsHandler {
       _listenReconnects();
       _handleAccountChangs(sp);
       _handleLSPStatusChanges(sp);
+      _handleSyncLSPChannels();
     });
   }
 
@@ -108,19 +109,21 @@ class LSPBloc with AsyncActionsHandler {
         log.info("LSP - account changed adding reconnect request");
         _reconnectStreamController.add(null);
       }
-      if (event.type == NotificationEvent_NotificationType.READY) {
-        await _ensureLSPSFetched();
-        var selectedLSP = await _selectedLSP;
-        if (selectedLSP != null) {
-          _breezLib.syncLSPChannels(selectedLSP.raw).then((value) {
-            log.info("finished to sync lsp channels: " +
-                value.hasMismatch.toString());
-          }).catchError((err) {
-            log.severe("failed to sync lsp channels: " + err.toString());
-          });
-        }
-      }
     });
+  }
+
+  Future _handleSyncLSPChannels() async {
+    try {
+      await this.accountStream.firstWhere((a) => a.syncedToChain);
+      var status = await this
+          .lspStatusStream
+          .firstWhere((status) => status.currentLSP != null);
+      var syncResult = await _breezLib.syncLSPChannels(status.currentLSP.raw);
+      log.info("finished to sync lsp channels: " +
+          syncResult.hasMismatch.toString());
+    } catch (err) {
+      log.severe("failed to sync lsp channels: " + err.toString());
+    }
   }
 
   void _handleLSPStatusChanges(SharedPreferences sp) {
