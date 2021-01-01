@@ -88,6 +88,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "graphURL": EmptyArgsBindingExecutor(f: BindingsGraphURL),
     "resetUnconfirmedReverseSwapClaimTransaction": EmptyArgsBindingExecutor(f: BindingsResetUnconfirmedReverseSwapClaimTransaction),
     "populateChannelPolicy": VoidBindingExecutor(f: BindingsPopulateChannelPolicy),
+    "syncLSPChannels": SingleArgBindingExecutor(f: BindingsSyncLSPChannels),
     
     //jobs
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewClosedChannelsJob(NSString* workingDir, NSError** error);
