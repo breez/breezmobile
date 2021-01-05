@@ -427,6 +427,7 @@ class PaymentInfo {
       _paymentResponse.pendingExpirationHeight > 0 ||
       _paymentResponse.isChannelPending;
   bool get fullPending => pending && _paymentResponse.pendingFull == true;
+  String get closedChannelPoint => _paymentResponse.closedChannelPoint;
   String get closeChannelTx {
     if (_paymentResponse.closedChannelSweepTxID?.isNotEmpty == true) {
       return _paymentResponse.closedChannelSweepTxID;
@@ -445,6 +446,10 @@ class PaymentInfo {
   }
 
   String get remoteCloseChannelTx {
+    return _paymentResponse.closedChannelRemoteTxID;
+  }
+
+  String get localCloseChannelTx {
     return _paymentResponse.closedChannelRemoteTxID;
   }
 
