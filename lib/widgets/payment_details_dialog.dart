@@ -424,7 +424,7 @@ class ClosedChannelPaymentDetailsState
       widget.accountBloc.userActionsSink.add(checkChannels);
       checkChannels.future.then((value) {
         var response = value as CheckLSPClosedChannelMismatchResponse;
-        if (!response.mismatch && this.mounted) {
+        if (response.mismatch && this.mounted) {
           setState(() {
             showRefreshChainButton = true;
           });
