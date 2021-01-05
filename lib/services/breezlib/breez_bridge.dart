@@ -396,6 +396,10 @@ class BreezBridge {
     return _invokeMethodImmediate("deleteGraph", {});
   }
 
+  Future setNonBlockingUnconfirmedSwaps() {
+    return _invokeMethodImmediate("setNonBlockingUnconfirmedSwaps", {});
+  }
+
   Future<AddInvoiceReply> addInvoice(Int64 amount,
       {String payeeName,
       String payeeImageURL,

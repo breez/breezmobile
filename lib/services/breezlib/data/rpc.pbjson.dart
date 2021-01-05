@@ -353,6 +353,7 @@ const SwapAddressInfo$json = const {
     const {'1': 'swapError', '3': 9, '4': 1, '5': 14, '6': '.data.SwapError', '10': 'swapError'},
     const {'1': 'FundingTxID', '3': 10, '4': 1, '5': 9, '10': 'FundingTxID'},
     const {'1': 'hoursToUnlock', '3': 11, '4': 1, '5': 2, '10': 'hoursToUnlock'},
+    const {'1': 'nonBlocking', '3': 12, '4': 1, '5': 8, '10': 'nonBlocking'},
   ],
 };
 

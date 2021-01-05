@@ -1600,6 +1600,7 @@ class SwapAddressInfo extends $pb.GeneratedMessage {
     ..e<SwapError>(9, 'swapError', $pb.PbFieldType.OE, protoName: 'swapError', defaultOrMaker: SwapError.NO_ERROR, valueOf: SwapError.valueOf, enumValues: SwapError.values)
     ..aOS(10, 'FundingTxID', protoName: 'FundingTxID')
     ..a<$core.double>(11, 'hoursToUnlock', $pb.PbFieldType.OF, protoName: 'hoursToUnlock')
+    ..aOB(12, 'nonBlocking', protoName: 'nonBlocking')
     ..hasRequiredFields = false
   ;
 
@@ -1710,6 +1711,15 @@ class SwapAddressInfo extends $pb.GeneratedMessage {
   $core.bool hasHoursToUnlock() => $_has(10);
   @$pb.TagNumber(11)
   void clearHoursToUnlock() => clearField(11);
+
+  @$pb.TagNumber(12)
+  $core.bool get nonBlocking => $_getBF(11);
+  @$pb.TagNumber(12)
+  set nonBlocking($core.bool v) { $_setBool(11, v); }
+  @$pb.TagNumber(12)
+  $core.bool hasNonBlocking() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearNonBlocking() => clearField(12);
 }
 
 class SwapAddressList extends $pb.GeneratedMessage {

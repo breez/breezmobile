@@ -416,6 +416,7 @@ class DevViewState extends State<DevView> {
         function: () async {
           await widget._breezBridge
               .resetUnconfirmedReverseSwapClaimTransaction();
+          await widget._breezBridge.setNonBlockingUnconfirmedSwaps();
         }));
 
     choices.add(Choice(

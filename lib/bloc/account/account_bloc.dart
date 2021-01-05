@@ -145,7 +145,8 @@ class AccountBloc {
       SweepAllCoinsTxsAction: _sweepAllCoinsTransactions,
       PublishTransaction: _publishTransaction,
       CheckClosedChannelMismatchAction: _checkClosedChannelMismatch,
-      ResetClosedChannelChainInfoAction: _resetClosedChannelChainInfoAction
+      ResetClosedChannelChainInfoAction: _resetClosedChannelChainInfoAction,
+      SetNonBlockingUnconfirmedSwaps: _setNonBlockingUnconfirmedSwaps,
     };
 
     _accountController.add(AccountModel.initial());
@@ -308,6 +309,11 @@ class AccountBloc {
 
   Future _fetchFundStatusAction(FetchSwapFundStatus action) async {
     action.resolve(await _fetchFundStatus());
+  }
+
+  Future _setNonBlockingUnconfirmedSwaps(
+      SetNonBlockingUnconfirmedSwaps action) async {
+    action.resolve(await _breezLib.setNonBlockingUnconfirmedSwaps());
   }
 
   Future _sendSpontaneousPayment(SendSpontaneousPayment action) async {
