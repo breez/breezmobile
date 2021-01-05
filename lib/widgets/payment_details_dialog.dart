@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
@@ -395,6 +396,8 @@ class ClosedChannelPaymentDetails extends StatefulWidget {
 class ClosedChannelPaymentDetailsState
     extends State<ClosedChannelPaymentDetails> {
   bool showRefreshChainButton = false;
+  bool mismatchChecked = false;
+  bool mismatchedLoading = false;
 
   @override
   void didChangeDependencies() {
@@ -409,8 +412,13 @@ class ClosedChannelPaymentDetailsState
   }
 
   void checkMismatch() {
-    if (widget.closedChannel.pending && widget.lsp != null) {
-      // check sync
+    if (!mismatchChecked &&
+        widget.closedChannel.pending &&
+        widget.lsp != null) {
+      mismatchChecked = true;
+      setState(() {
+        mismatchedLoading = true;
+      });
       var checkChannels = CheckClosedChannelMismatchAction(
           widget.lsp.currentLSP.raw, widget.closedChannel.closedChannelPoint);
       widget.accountBloc.userActionsSink.add(checkChannels);
@@ -419,6 +427,12 @@ class ClosedChannelPaymentDetailsState
         if (!response.mismatch && this.mounted) {
           setState(() {
             showRefreshChainButton = true;
+          });
+        }
+      }).whenComplete(() {
+        if (this.mounted) {
+          setState(() {
+            mismatchedLoading = false;
           });
         }
       });
@@ -508,6 +522,17 @@ class ClosedChannelPaymentDetailsState
           txURL: widget.closedChannel.remoteCloseChannelTxUrl,
           txID: widget.closedChannel.remoteCloseChannelTx,
         ),
+        mismatchedLoading
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Loader(),
+                    )
+                  ])
+            : SizedBox(),
         showRefreshChainButton
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

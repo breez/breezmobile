@@ -450,7 +450,7 @@ class PaymentInfo {
   }
 
   String get localCloseChannelTx {
-    return _paymentResponse.closedChannelRemoteTxID;
+    return _paymentResponse.closedChannelTxID;
   }
 
   String get remoteCloseChannelTxUrl {
