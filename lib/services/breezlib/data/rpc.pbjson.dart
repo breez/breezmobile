@@ -215,6 +215,33 @@ const SyncLSPChannelsResponse$json = const {
   ],
 };
 
+const CheckLSPClosedChannelMismatchRequest$json = const {
+  '1': 'CheckLSPClosedChannelMismatchRequest',
+  '2': const [
+    const {'1': 'lspInfo', '3': 1, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'lspInfo'},
+    const {'1': 'chanPoint', '3': 2, '4': 1, '5': 9, '10': 'chanPoint'},
+  ],
+};
+
+const CheckLSPClosedChannelMismatchResponse$json = const {
+  '1': 'CheckLSPClosedChannelMismatchResponse',
+  '2': const [
+    const {'1': 'mismatch', '3': 1, '4': 1, '5': 8, '10': 'mismatch'},
+  ],
+};
+
+const ResetClosedChannelChainInfoRequest$json = const {
+  '1': 'ResetClosedChannelChainInfoRequest',
+  '2': const [
+    const {'1': 'chanPoint', '3': 1, '4': 1, '5': 9, '10': 'chanPoint'},
+    const {'1': 'blockHeight', '3': 2, '4': 1, '5': 3, '10': 'blockHeight'},
+  ],
+};
+
+const ResetClosedChannelChainInfoReply$json = const {
+  '1': 'ResetClosedChannelChainInfoReply',
+};
+
 const NotificationEvent$json = const {
   '1': 'NotificationEvent',
   '2': const [

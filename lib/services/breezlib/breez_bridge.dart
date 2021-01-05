@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart' as logger;
@@ -440,6 +441,28 @@ class BreezBridge {
     return _invokeMethodWhenReady(
             "syncLSPChannels", {"argument": request.writeToBuffer()})
         .then((res) => SyncLSPChannelsResponse()..mergeFromBuffer(res ?? []));
+  }
+
+  Future<CheckLSPClosedChannelMismatchResponse> checkLSPClosedChannelMismatch(
+      LSPInformation lsp, String chanPoint) {
+    var request = CheckLSPClosedChannelMismatchRequest()
+      ..lspInfo = lsp
+      ..chanPoint = chanPoint;
+    return _invokeMethodWhenReady("checkLSPClosedChannelMismatch", {
+      "argument": request.writeToBuffer()
+    }).then((res) =>
+        CheckLSPClosedChannelMismatchResponse()..mergeFromBuffer(res ?? []));
+  }
+
+  Future<ResetClosedChannelChainInfoReply> resetClosedChannelChainInfo(
+      Int64 blockHeight, String chanPoint) {
+    var request = ResetClosedChannelChainInfoRequest()
+      ..blockHeight = blockHeight
+      ..chanPoint = chanPoint;
+    return _invokeMethodWhenReady("resetClosedChannelChainInfo", {
+      "argument": request.writeToBuffer()
+    }).then((res) =>
+        ResetClosedChannelChainInfoReply()..mergeFromBuffer(res ?? []));
   }
 
   Future<CreateRatchetSessionReply> createRatchetSession(
