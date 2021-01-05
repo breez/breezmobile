@@ -144,6 +144,8 @@ class AccountBloc {
       FetchPayments: _handleFetchPayments,
       SweepAllCoinsTxsAction: _sweepAllCoinsTransactions,
       PublishTransaction: _publishTransaction,
+      CheckClosedChannelMismatchAction: _checkClosedChannelMismatch,
+      ResetClosedChannelChainInfoAction: _resetClosedChannelChainInfoAction
     };
 
     _accountController.add(AccountModel.initial());
@@ -272,6 +274,18 @@ class AccountBloc {
 
   Future _publishTransaction(PublishTransaction action) async {
     action.resolve(await _breezLib.publishTransaction(action.tx));
+  }
+
+  Future _checkClosedChannelMismatch(
+      CheckClosedChannelMismatchAction action) async {
+    action.resolve(await _breezLib.checkLSPClosedChannelMismatch(
+        action.lsp, action.channelPoint));
+  }
+
+  Future _resetClosedChannelChainInfoAction(
+      ResetClosedChannelChainInfoAction action) async {
+    action.resolve(await _breezLib.resetClosedChannelChainInfo(
+        action.blockHeight, action.channelPoint));
   }
 
   Future _exportPaymentsAction(ExportPayments action) async {

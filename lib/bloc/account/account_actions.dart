@@ -1,4 +1,5 @@
 import 'package:breez/bloc/async_action.dart';
+import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
 import 'package:fixnum/fixnum.dart';
 import 'account_model.dart';
 
@@ -59,4 +60,18 @@ class PublishTransaction extends AsyncAction {
   final List<int> tx;
 
   PublishTransaction(this.tx);
+}
+
+class CheckClosedChannelMismatchAction extends AsyncAction {
+  final LSPInformation lsp;
+  final String channelPoint;
+
+  CheckClosedChannelMismatchAction(this.lsp, this.channelPoint);
+}
+
+class ResetClosedChannelChainInfoAction extends AsyncAction {
+  final String channelPoint;
+  final Int64 blockHeight;
+
+  ResetClosedChannelChainInfoAction(this.channelPoint, this.blockHeight);
 }
