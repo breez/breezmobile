@@ -414,7 +414,8 @@ class ClosedChannelPaymentDetailsState
   void checkMismatch() {
     if (!mismatchChecked &&
         widget.closedChannel.pending &&
-        widget.lsp != null) {
+        widget.lsp != null &&
+        widget.lsp.currentLSP != null) {
       mismatchChecked = true;
       setState(() {
         mismatchedLoading = true;
@@ -424,7 +425,7 @@ class ClosedChannelPaymentDetailsState
       widget.accountBloc.userActionsSink.add(checkChannels);
       checkChannels.future.then((value) {
         var response = value as CheckLSPClosedChannelMismatchResponse;
-        if (response.mismatch && this.mounted) {
+        if (!response.mismatch && this.mounted) {
           setState(() {
             showRefreshChainButton = true;
           });
