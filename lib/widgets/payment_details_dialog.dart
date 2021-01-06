@@ -557,7 +557,7 @@ class ClosedChannelPaymentDetailsState
                                 ));
                           });
                         },
-                        child: Text("Refresh Chain Info",
+                        child: Text("Refresh Information",
                             style: Theme.of(context).primaryTextTheme.button),
                       ),
                     )
