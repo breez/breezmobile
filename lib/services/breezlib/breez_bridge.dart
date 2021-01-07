@@ -257,8 +257,8 @@ class BreezBridge {
   }
 
   Future resetUnconfirmedReverseSwapClaimTransaction() {
-    return _invokeMethodWhenReady("resetUnconfirmedReverseSwapClaimTransaction")
-        .then((s) => s as String);
+    return _invokeMethodWhenReady(
+        "resetUnconfirmedReverseSwapClaimTransaction");
   }
 
   Future<ReverseSwapPaymentStatuses> reverseSwapPayments() {
