@@ -544,6 +544,7 @@ const LNURLAuth$json = const {
     const {'1': 'k1', '3': 2, '4': 1, '5': 9, '10': 'k1'},
     const {'1': 'callback', '3': 3, '4': 1, '5': 9, '10': 'callback'},
     const {'1': 'host', '3': 4, '4': 1, '5': 9, '10': 'host'},
+    const {'1': 'jwt', '3': 5, '4': 1, '5': 8, '10': 'jwt'},
   ],
 };
 

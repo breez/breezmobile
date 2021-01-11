@@ -87,6 +87,7 @@ class LNUrlBloc with AsyncActionsHandler {
   }
 
   Future _login(Login action) async {
+    action.response.response.jwt = action.jwt;
     action.resolve(await _breezLib.loginLNUrl(action.response));
   }
 

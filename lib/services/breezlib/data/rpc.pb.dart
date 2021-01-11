@@ -2651,6 +2651,7 @@ class LNURLAuth extends $pb.GeneratedMessage {
     ..aOS(2, 'k1')
     ..aOS(3, 'callback')
     ..aOS(4, 'host')
+    ..aOB(5, 'jwt')
     ..hasRequiredFields = false
   ;
 
@@ -2704,6 +2705,15 @@ class LNURLAuth extends $pb.GeneratedMessage {
   $core.bool hasHost() => $_has(3);
   @$pb.TagNumber(4)
   void clearHost() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.bool get jwt => $_getBF(4);
+  @$pb.TagNumber(5)
+  set jwt($core.bool v) { $_setBool(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasJwt() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearJwt() => clearField(5);
 }
 
 class ReverseSwapRequest extends $pb.GeneratedMessage {

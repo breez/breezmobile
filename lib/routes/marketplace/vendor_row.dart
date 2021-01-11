@@ -1,9 +1,12 @@
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
+import 'lnmarkets_webview.dart';
 import 'vendor_webview.dart';
 
 class VendorRow extends StatelessWidget {
@@ -35,12 +38,19 @@ class VendorRow extends StatelessWidget {
 
     final _vendorCard = GestureDetector(
         onTap: () {
-          Navigator.push(
-              context,
-              FadeInRoute(
-                builder: (_) => VendorWebViewPage(
-                    accountBloc, _vendor.url, _vendor.displayName),
-              ));
+          Navigator.push(context, FadeInRoute(
+            builder: (_) {
+              var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+              if (_vendor.id == "lnmarkets") {
+                return LNMarketsWebViewPage(
+                    accountBloc: accountBloc,
+                    lnMarketModel: _vendor,
+                    lnurlBloc: lnurlBloc);
+              }
+              return VendorWebViewPage(
+                  accountBloc, _vendor.url, _vendor.displayName);
+            },
+          ));
         },
         child: Container(
           margin: EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 8.0),

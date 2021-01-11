@@ -24,6 +24,7 @@ class OpenChannel extends AsyncAction {
 
 class Login extends AsyncAction {
   final AuthFetchResponse response;
+  final bool jwt;
 
-  Login(this.response);
+  Login(this.response, {this.jwt = false});
 }

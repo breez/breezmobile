@@ -133,9 +133,10 @@ class BreezBridge {
     return _invokeMethodWhenReady("withdrawLnurl", {"argument": bolt11Invoice});
   }
 
-  Future loginLNUrl(AuthFetchResponse response) {
+  Future<String> loginLNUrl(AuthFetchResponse response) {
     return _invokeMethodWhenReady(
-        "finishLNURLAuth", {"argument": response.response.writeToBuffer()});
+            "finishLNURLAuth", {"argument": response.response.writeToBuffer()})
+        .then((value) => value as String);
   }
 
   Future<String> getLogPath() {
