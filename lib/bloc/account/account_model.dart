@@ -70,11 +70,13 @@ class SwapFundStatus {
   SwapFundStatus(this._addedFundsReply);
 
   String get unconfirmedTxID {
-    if (_addedFundsReply == null ||
-        _addedFundsReply.unConfirmedAddresses.length == 0) {
+    var nonBlocking = _addedFundsReply.unConfirmedAddresses
+        .where((a) => a.nonBlocking != true)
+        .toList();
+    if (_addedFundsReply == null || nonBlocking.length == 0) {
       return null;
     }
-    return _addedFundsReply.unConfirmedAddresses[0].fundingTxID;
+    return nonBlocking[0].fundingTxID;
   }
 
   bool get depositConfirmed {
@@ -103,7 +105,10 @@ class SwapFundStatus {
   List<String> get unConfirmedAddresses {
     var unConfirmedAddresses =
         _addedFundsReply?.unConfirmedAddresses ?? List<SwapAddressInfo>();
-    return unConfirmedAddresses.map((a) => a.address).toList();
+    return unConfirmedAddresses
+        .where((a) => a.nonBlocking != true)
+        .map((a) => a.address)
+        .toList();
   }
 
   List<String> get confirmedAddresses {
@@ -427,6 +432,7 @@ class PaymentInfo {
       _paymentResponse.pendingExpirationHeight > 0 ||
       _paymentResponse.isChannelPending;
   bool get fullPending => pending && _paymentResponse.pendingFull == true;
+  String get closedChannelPoint => _paymentResponse.closedChannelPoint;
   String get closeChannelTx {
     if (_paymentResponse.closedChannelSweepTxID?.isNotEmpty == true) {
       return _paymentResponse.closedChannelSweepTxID;
@@ -446,6 +452,10 @@ class PaymentInfo {
 
   String get remoteCloseChannelTx {
     return _paymentResponse.closedChannelRemoteTxID;
+  }
+
+  String get localCloseChannelTx {
+    return _paymentResponse.closedChannelTxID;
   }
 
   String get remoteCloseChannelTxUrl {

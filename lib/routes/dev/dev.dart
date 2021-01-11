@@ -414,6 +414,7 @@ class DevViewState extends State<DevView> {
         title: "Reset Unconfirmed Swap",
         icon: Icons.phone_android,
         function: () async {
+          await widget._breezBridge.setNonBlockingUnconfirmedSwaps();
           await widget._breezBridge
               .resetUnconfirmedReverseSwapClaimTransaction();
         }));

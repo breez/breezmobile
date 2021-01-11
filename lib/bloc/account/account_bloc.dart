@@ -144,6 +144,9 @@ class AccountBloc {
       FetchPayments: _handleFetchPayments,
       SweepAllCoinsTxsAction: _sweepAllCoinsTransactions,
       PublishTransaction: _publishTransaction,
+      CheckClosedChannelMismatchAction: _checkClosedChannelMismatch,
+      ResetClosedChannelChainInfoAction: _resetClosedChannelChainInfoAction,
+      SetNonBlockingUnconfirmedSwaps: _setNonBlockingUnconfirmedSwaps,
     };
 
     _accountController.add(AccountModel.initial());
@@ -274,6 +277,18 @@ class AccountBloc {
     action.resolve(await _breezLib.publishTransaction(action.tx));
   }
 
+  Future _checkClosedChannelMismatch(
+      CheckClosedChannelMismatchAction action) async {
+    action.resolve(await _breezLib.checkLSPClosedChannelMismatch(
+        action.lsp, action.channelPoint));
+  }
+
+  Future _resetClosedChannelChainInfoAction(
+      ResetClosedChannelChainInfoAction action) async {
+    action.resolve(await _breezLib.resetClosedChannelChainInfo(
+        action.blockHeight, action.channelPoint));
+  }
+
   Future _exportPaymentsAction(ExportPayments action) async {
     List currentPaymentList =
         _filterPayments(_paymentsController.value.paymentsList);
@@ -294,6 +309,11 @@ class AccountBloc {
 
   Future _fetchFundStatusAction(FetchSwapFundStatus action) async {
     action.resolve(await _fetchFundStatus());
+  }
+
+  Future _setNonBlockingUnconfirmedSwaps(
+      SetNonBlockingUnconfirmedSwaps action) async {
+    action.resolve(await _breezLib.setNonBlockingUnconfirmedSwaps());
   }
 
   Future _sendSpontaneousPayment(SendSpontaneousPayment action) async {

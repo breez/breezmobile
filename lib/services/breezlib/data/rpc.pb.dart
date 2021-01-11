@@ -1021,6 +1021,206 @@ class Invoice extends $pb.GeneratedMessage {
   void clearAmtPaid() => clearField(3);
 }
 
+class SyncLSPChannelsRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('SyncLSPChannelsRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOM<LSPInformation>(1, 'lspInfo', protoName: 'lspInfo', subBuilder: LSPInformation.create)
+    ..hasRequiredFields = false
+  ;
+
+  SyncLSPChannelsRequest._() : super();
+  factory SyncLSPChannelsRequest() => create();
+  factory SyncLSPChannelsRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory SyncLSPChannelsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  SyncLSPChannelsRequest clone() => SyncLSPChannelsRequest()..mergeFromMessage(this);
+  SyncLSPChannelsRequest copyWith(void Function(SyncLSPChannelsRequest) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static SyncLSPChannelsRequest create() => SyncLSPChannelsRequest._();
+  SyncLSPChannelsRequest createEmptyInstance() => create();
+  static $pb.PbList<SyncLSPChannelsRequest> createRepeated() => $pb.PbList<SyncLSPChannelsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static SyncLSPChannelsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SyncLSPChannelsRequest>(create);
+  static SyncLSPChannelsRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  LSPInformation get lspInfo => $_getN(0);
+  @$pb.TagNumber(1)
+  set lspInfo(LSPInformation v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasLspInfo() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLspInfo() => clearField(1);
+  @$pb.TagNumber(1)
+  LSPInformation ensureLspInfo() => $_ensure(0);
+}
+
+class SyncLSPChannelsResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('SyncLSPChannelsResponse', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOB(1, 'hasMismatch', protoName: 'hasMismatch')
+    ..hasRequiredFields = false
+  ;
+
+  SyncLSPChannelsResponse._() : super();
+  factory SyncLSPChannelsResponse() => create();
+  factory SyncLSPChannelsResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory SyncLSPChannelsResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  SyncLSPChannelsResponse clone() => SyncLSPChannelsResponse()..mergeFromMessage(this);
+  SyncLSPChannelsResponse copyWith(void Function(SyncLSPChannelsResponse) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsResponse));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static SyncLSPChannelsResponse create() => SyncLSPChannelsResponse._();
+  SyncLSPChannelsResponse createEmptyInstance() => create();
+  static $pb.PbList<SyncLSPChannelsResponse> createRepeated() => $pb.PbList<SyncLSPChannelsResponse>();
+  @$core.pragma('dart2js:noInline')
+  static SyncLSPChannelsResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SyncLSPChannelsResponse>(create);
+  static SyncLSPChannelsResponse _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get hasMismatch => $_getBF(0);
+  @$pb.TagNumber(1)
+  set hasMismatch($core.bool v) { $_setBool(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasHasMismatch() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearHasMismatch() => clearField(1);
+}
+
+class CheckLSPClosedChannelMismatchRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('CheckLSPClosedChannelMismatchRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOM<LSPInformation>(1, 'lspInfo', protoName: 'lspInfo', subBuilder: LSPInformation.create)
+    ..aOS(2, 'chanPoint', protoName: 'chanPoint')
+    ..hasRequiredFields = false
+  ;
+
+  CheckLSPClosedChannelMismatchRequest._() : super();
+  factory CheckLSPClosedChannelMismatchRequest() => create();
+  factory CheckLSPClosedChannelMismatchRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CheckLSPClosedChannelMismatchRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  CheckLSPClosedChannelMismatchRequest clone() => CheckLSPClosedChannelMismatchRequest()..mergeFromMessage(this);
+  CheckLSPClosedChannelMismatchRequest copyWith(void Function(CheckLSPClosedChannelMismatchRequest) updates) => super.copyWith((message) => updates(message as CheckLSPClosedChannelMismatchRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static CheckLSPClosedChannelMismatchRequest create() => CheckLSPClosedChannelMismatchRequest._();
+  CheckLSPClosedChannelMismatchRequest createEmptyInstance() => create();
+  static $pb.PbList<CheckLSPClosedChannelMismatchRequest> createRepeated() => $pb.PbList<CheckLSPClosedChannelMismatchRequest>();
+  @$core.pragma('dart2js:noInline')
+  static CheckLSPClosedChannelMismatchRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CheckLSPClosedChannelMismatchRequest>(create);
+  static CheckLSPClosedChannelMismatchRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  LSPInformation get lspInfo => $_getN(0);
+  @$pb.TagNumber(1)
+  set lspInfo(LSPInformation v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasLspInfo() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLspInfo() => clearField(1);
+  @$pb.TagNumber(1)
+  LSPInformation ensureLspInfo() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $core.String get chanPoint => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set chanPoint($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasChanPoint() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearChanPoint() => clearField(2);
+}
+
+class CheckLSPClosedChannelMismatchResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('CheckLSPClosedChannelMismatchResponse', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOB(1, 'mismatch')
+    ..hasRequiredFields = false
+  ;
+
+  CheckLSPClosedChannelMismatchResponse._() : super();
+  factory CheckLSPClosedChannelMismatchResponse() => create();
+  factory CheckLSPClosedChannelMismatchResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CheckLSPClosedChannelMismatchResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  CheckLSPClosedChannelMismatchResponse clone() => CheckLSPClosedChannelMismatchResponse()..mergeFromMessage(this);
+  CheckLSPClosedChannelMismatchResponse copyWith(void Function(CheckLSPClosedChannelMismatchResponse) updates) => super.copyWith((message) => updates(message as CheckLSPClosedChannelMismatchResponse));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static CheckLSPClosedChannelMismatchResponse create() => CheckLSPClosedChannelMismatchResponse._();
+  CheckLSPClosedChannelMismatchResponse createEmptyInstance() => create();
+  static $pb.PbList<CheckLSPClosedChannelMismatchResponse> createRepeated() => $pb.PbList<CheckLSPClosedChannelMismatchResponse>();
+  @$core.pragma('dart2js:noInline')
+  static CheckLSPClosedChannelMismatchResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CheckLSPClosedChannelMismatchResponse>(create);
+  static CheckLSPClosedChannelMismatchResponse _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get mismatch => $_getBF(0);
+  @$pb.TagNumber(1)
+  set mismatch($core.bool v) { $_setBool(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasMismatch() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMismatch() => clearField(1);
+}
+
+class ResetClosedChannelChainInfoRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ResetClosedChannelChainInfoRequest', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..aOS(1, 'chanPoint', protoName: 'chanPoint')
+    ..aInt64(2, 'blockHeight', protoName: 'blockHeight')
+    ..hasRequiredFields = false
+  ;
+
+  ResetClosedChannelChainInfoRequest._() : super();
+  factory ResetClosedChannelChainInfoRequest() => create();
+  factory ResetClosedChannelChainInfoRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ResetClosedChannelChainInfoRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ResetClosedChannelChainInfoRequest clone() => ResetClosedChannelChainInfoRequest()..mergeFromMessage(this);
+  ResetClosedChannelChainInfoRequest copyWith(void Function(ResetClosedChannelChainInfoRequest) updates) => super.copyWith((message) => updates(message as ResetClosedChannelChainInfoRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ResetClosedChannelChainInfoRequest create() => ResetClosedChannelChainInfoRequest._();
+  ResetClosedChannelChainInfoRequest createEmptyInstance() => create();
+  static $pb.PbList<ResetClosedChannelChainInfoRequest> createRepeated() => $pb.PbList<ResetClosedChannelChainInfoRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ResetClosedChannelChainInfoRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ResetClosedChannelChainInfoRequest>(create);
+  static ResetClosedChannelChainInfoRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get chanPoint => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set chanPoint($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasChanPoint() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearChanPoint() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get blockHeight => $_getI64(1);
+  @$pb.TagNumber(2)
+  set blockHeight($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasBlockHeight() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearBlockHeight() => clearField(2);
+}
+
+class ResetClosedChannelChainInfoReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ResetClosedChannelChainInfoReply', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  ResetClosedChannelChainInfoReply._() : super();
+  factory ResetClosedChannelChainInfoReply() => create();
+  factory ResetClosedChannelChainInfoReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ResetClosedChannelChainInfoReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  ResetClosedChannelChainInfoReply clone() => ResetClosedChannelChainInfoReply()..mergeFromMessage(this);
+  ResetClosedChannelChainInfoReply copyWith(void Function(ResetClosedChannelChainInfoReply) updates) => super.copyWith((message) => updates(message as ResetClosedChannelChainInfoReply));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ResetClosedChannelChainInfoReply create() => ResetClosedChannelChainInfoReply._();
+  ResetClosedChannelChainInfoReply createEmptyInstance() => create();
+  static $pb.PbList<ResetClosedChannelChainInfoReply> createRepeated() => $pb.PbList<ResetClosedChannelChainInfoReply>();
+  @$core.pragma('dart2js:noInline')
+  static ResetClosedChannelChainInfoReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ResetClosedChannelChainInfoReply>(create);
+  static ResetClosedChannelChainInfoReply _defaultInstance;
+}
+
 class NotificationEvent extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('NotificationEvent', package: const $pb.PackageName('data'), createEmptyInstance: create)
     ..e<NotificationEvent_NotificationType>(1, 'type', $pb.PbFieldType.OE, defaultOrMaker: NotificationEvent_NotificationType.READY, valueOf: NotificationEvent_NotificationType.valueOf, enumValues: NotificationEvent_NotificationType.values)
@@ -1400,6 +1600,7 @@ class SwapAddressInfo extends $pb.GeneratedMessage {
     ..e<SwapError>(9, 'swapError', $pb.PbFieldType.OE, protoName: 'swapError', defaultOrMaker: SwapError.NO_ERROR, valueOf: SwapError.valueOf, enumValues: SwapError.values)
     ..aOS(10, 'FundingTxID', protoName: 'FundingTxID')
     ..a<$core.double>(11, 'hoursToUnlock', $pb.PbFieldType.OF, protoName: 'hoursToUnlock')
+    ..aOB(12, 'nonBlocking', protoName: 'nonBlocking')
     ..hasRequiredFields = false
   ;
 
@@ -1510,6 +1711,15 @@ class SwapAddressInfo extends $pb.GeneratedMessage {
   $core.bool hasHoursToUnlock() => $_has(10);
   @$pb.TagNumber(11)
   void clearHoursToUnlock() => clearField(11);
+
+  @$pb.TagNumber(12)
+  $core.bool get nonBlocking => $_getBF(11);
+  @$pb.TagNumber(12)
+  set nonBlocking($core.bool v) { $_setBool(11, v); }
+  @$pb.TagNumber(12)
+  $core.bool hasNonBlocking() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearNonBlocking() => clearField(12);
 }
 
 class SwapAddressList extends $pb.GeneratedMessage {

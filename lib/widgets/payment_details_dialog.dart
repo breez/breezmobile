@@ -1,13 +1,27 @@
+import 'dart:convert';
+import 'dart:ffi';
+import 'dart:io';
+import 'dart:math';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/widgets/loader.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/account/account_actions.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/home/payment_item_avatar.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:http/http.dart' as http;
 
+import 'error_dialog.dart';
 import 'flushbar.dart';
 import 'link_launcher.dart';
 
@@ -21,6 +35,7 @@ Future<Null> showPaymentDetailsDialog(
         barrierDismissible: true,
         context: context,
         builder: (ctx) {
+          LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
           return AlertDialog(
             titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
             title: Text(
@@ -28,7 +43,14 @@ Future<Null> showPaymentDetailsDialog(
               style: Theme.of(context).dialogTheme.titleTextStyle,
             ),
             contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
-            content: ClosedChannelPaymentDetails(closedChannel: paymentInfo),
+            content: StreamBuilder<LSPStatus>(
+                stream: lspBloc.lspStatusStream,
+                builder: (context, snapshot) {
+                  return ClosedChannelPaymentDetails(
+                      accountBloc: AppBlocsProvider.of<AccountBloc>(context),
+                      lsp: snapshot.data,
+                      closedChannel: paymentInfo);
+                }),
             actions: [
               SimpleDialogOption(
                 onPressed: () => Navigator.pop(ctx),
@@ -356,15 +378,111 @@ class ShareablePaymentRow extends StatelessWidget {
   return snackBar;
 }*/
 
-class ClosedChannelPaymentDetails extends StatelessWidget {
+class ClosedChannelPaymentDetails extends StatefulWidget {
   final PaymentInfo closedChannel;
+  final LSPStatus lsp;
+  final AccountBloc accountBloc;
 
-  const ClosedChannelPaymentDetails({Key key, this.closedChannel})
+  const ClosedChannelPaymentDetails(
+      {Key key, this.closedChannel, this.lsp, this.accountBloc})
       : super(key: key);
 
   @override
+  State<StatefulWidget> createState() {
+    return ClosedChannelPaymentDetailsState();
+  }
+}
+
+class ClosedChannelPaymentDetailsState
+    extends State<ClosedChannelPaymentDetails> {
+  bool showRefreshChainButton = false;
+  bool mismatchChecked = false;
+  bool mismatchedLoading = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    checkMismatch();
+  }
+
+  @override
+  void didUpdateWidget(ClosedChannelPaymentDetails oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    checkMismatch();
+  }
+
+  void checkMismatch() {
+    if (!mismatchChecked &&
+        widget.closedChannel.pending &&
+        widget.lsp != null &&
+        widget.lsp.currentLSP != null) {
+      mismatchChecked = true;
+      setState(() {
+        mismatchedLoading = true;
+      });
+      var checkChannels = CheckClosedChannelMismatchAction(
+          widget.lsp.currentLSP.raw, widget.closedChannel.closedChannelPoint);
+      widget.accountBloc.userActionsSink.add(checkChannels);
+      checkChannels.future.then((value) {
+        var response = value as CheckLSPClosedChannelMismatchResponse;
+        if (response.mismatch && this.mounted) {
+          setState(() {
+            showRefreshChainButton = true;
+          });
+        }
+      }).whenComplete(() {
+        if (this.mounted) {
+          setState(() {
+            mismatchedLoading = false;
+          });
+        }
+      });
+    }
+  }
+
+  Future _resetClosedChannelChainInfo(Int64 blockHeight) {
+    var resetChannelAction = ResetClosedChannelChainInfoAction(
+        widget.closedChannel.closedChannelPoint, blockHeight);
+    widget.accountBloc.userActionsSink.add(resetChannelAction);
+    return resetChannelAction.future;
+  }
+
+  Future _onResetChainInfoPressed() async {
+    int localConfirmHeight = await _getTXConfirmationHeight(
+        widget.closedChannel.localCloseChannelTx);
+    if (localConfirmHeight > 0) {
+      await _resetClosedChannelChainInfo(Int64(localConfirmHeight));
+      return;
+    }
+    int remoteConfirmHeight = await _getTXConfirmationHeight(
+        widget.closedChannel.remoteCloseChannelTx);
+    if (remoteConfirmHeight > 0) {
+      await _resetClosedChannelChainInfo(Int64(remoteConfirmHeight));
+      return;
+    }
+  }
+
+  Future<int> _getTXConfirmationHeight(String chanPoint) async {
+    String txUrl = "https://blockstream.info/api/tx/${chanPoint.split(":")[0]}";
+    var response = await http.get(txUrl);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> userData = json.decode(response.body);
+      var status = userData["status"];
+      if (status != null && status is Map<String, dynamic>) {
+        if (status["confirmed"] == true) {
+          var height = status["block_height"];
+          if (height is int) {
+            return height;
+          }
+        }
+      }
+    }
+    return 0;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (!closedChannel.pending) {
+    if (!widget.closedChannel.pending) {
       return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
         RichText(
             text: TextSpan(
@@ -372,14 +490,14 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
           text: "Transfer to local wallet due to closed channel.",
         )),
         TxWidget(
-          txURL: closedChannel.closeChannelTxUrl,
-          txID: closedChannel.closeChannelTx,
+          txURL: widget.closedChannel.closeChannelTxUrl,
+          txID: widget.closedChannel.closeChannelTx,
         )
       ]);
     }
 
-    int lockHeight = closedChannel.pendingExpirationHeight;
-    double hoursToUnlock = closedChannel.hoursToExpire;
+    int lockHeight = widget.closedChannel.pendingExpirationHeight;
+    double hoursToUnlock = widget.closedChannel.hoursToExpire;
 
     int roundedHoursToUnlock = hoursToUnlock.round();
     String hoursToUnlockStr = roundedHoursToUnlock > 1
@@ -398,15 +516,72 @@ class ClosedChannelPaymentDetails extends StatelessWidget {
               "Waiting for closed channel funds to be transferred to your local wallet$estimation.",
         )),
         TxWidget(
-          txURL: closedChannel.closeChannelTxUrl,
-          txID: closedChannel.closeChannelTx,
+          txURL: widget.closedChannel.closeChannelTxUrl,
+          txID: widget.closedChannel.closeChannelTx,
         ),
         TxWidget(
-          txURL: closedChannel.remoteCloseChannelTxUrl,
-          txID: closedChannel.remoteCloseChannelTx,
-        )
+          txURL: widget.closedChannel.remoteCloseChannelTxUrl,
+          txID: widget.closedChannel.remoteCloseChannelTx,
+        ),
+        mismatchedLoading
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Loader(),
+                    )
+                  ])
+            : SizedBox(),
+        showRefreshChainButton
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 20.0),
+                      child: FlatButton(
+                        onPressed: () {
+                          _onResetChainInfoPressed().then((_) {
+                            _promptForRestart();
+                          }).catchError((err) {
+                            promptError(
+                                context,
+                                "Internal Error",
+                                Text(
+                                  err.toString(),
+                                  style: Theme.of(context)
+                                      .dialogTheme
+                                      .contentTextStyle,
+                                ));
+                          });
+                        },
+                        child: Text("Refresh Information",
+                            style: Theme.of(context).primaryTextTheme.button),
+                      ),
+                    )
+                  ])
+            : SizedBox(),
       ],
     );
+  }
+
+  Future<bool> _promptForRestart() {
+    return promptAreYouSure(
+            context,
+            null,
+            Text(
+                "Please restart Breez to reset chain information for this channel.",
+                style: Theme.of(context).dialogTheme.contentTextStyle),
+            cancelText: "CANCEL",
+            okText: "EXIT BREEZ")
+        .then((shouldExit) {
+      if (shouldExit) {
+        exit(0);
+      }
+      return true;
+    });
   }
 }
 

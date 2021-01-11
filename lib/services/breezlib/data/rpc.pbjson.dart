@@ -201,6 +201,47 @@ const Invoice$json = const {
   ],
 };
 
+const SyncLSPChannelsRequest$json = const {
+  '1': 'SyncLSPChannelsRequest',
+  '2': const [
+    const {'1': 'lspInfo', '3': 1, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'lspInfo'},
+  ],
+};
+
+const SyncLSPChannelsResponse$json = const {
+  '1': 'SyncLSPChannelsResponse',
+  '2': const [
+    const {'1': 'hasMismatch', '3': 1, '4': 1, '5': 8, '10': 'hasMismatch'},
+  ],
+};
+
+const CheckLSPClosedChannelMismatchRequest$json = const {
+  '1': 'CheckLSPClosedChannelMismatchRequest',
+  '2': const [
+    const {'1': 'lspInfo', '3': 1, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'lspInfo'},
+    const {'1': 'chanPoint', '3': 2, '4': 1, '5': 9, '10': 'chanPoint'},
+  ],
+};
+
+const CheckLSPClosedChannelMismatchResponse$json = const {
+  '1': 'CheckLSPClosedChannelMismatchResponse',
+  '2': const [
+    const {'1': 'mismatch', '3': 1, '4': 1, '5': 8, '10': 'mismatch'},
+  ],
+};
+
+const ResetClosedChannelChainInfoRequest$json = const {
+  '1': 'ResetClosedChannelChainInfoRequest',
+  '2': const [
+    const {'1': 'chanPoint', '3': 1, '4': 1, '5': 9, '10': 'chanPoint'},
+    const {'1': 'blockHeight', '3': 2, '4': 1, '5': 3, '10': 'blockHeight'},
+  ],
+};
+
+const ResetClosedChannelChainInfoReply$json = const {
+  '1': 'ResetClosedChannelChainInfoReply',
+};
+
 const NotificationEvent$json = const {
   '1': 'NotificationEvent',
   '2': const [
@@ -312,6 +353,7 @@ const SwapAddressInfo$json = const {
     const {'1': 'swapError', '3': 9, '4': 1, '5': 14, '6': '.data.SwapError', '10': 'swapError'},
     const {'1': 'FundingTxID', '3': 10, '4': 1, '5': 9, '10': 'FundingTxID'},
     const {'1': 'hoursToUnlock', '3': 11, '4': 1, '5': 2, '10': 'hoursToUnlock'},
+    const {'1': 'nonBlocking', '3': 12, '4': 1, '5': 8, '10': 'nonBlocking'},
   ],
 };
 
