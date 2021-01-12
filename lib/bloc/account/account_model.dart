@@ -70,10 +70,13 @@ class SwapFundStatus {
   SwapFundStatus(this._addedFundsReply);
 
   String get unconfirmedTxID {
+    if (_addedFundsReply == null) {
+      return null;
+    }
     var nonBlocking = _addedFundsReply.unConfirmedAddresses
         .where((a) => a.nonBlocking != true)
         .toList();
-    if (_addedFundsReply == null || nonBlocking.length == 0) {
+    if (nonBlocking.length == 0) {
       return null;
     }
     return nonBlocking[0].fundingTxID;
