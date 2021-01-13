@@ -3395,3 +3395,28 @@ class SweepAllCoinsTransactions extends $pb.GeneratedMessage {
   $core.Map<$core.int, TransactionDetails> get transactions => $_getMap(1);
 }
 
+class DownloadBackupResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('DownloadBackupResponse', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..pPS(1, 'files')
+    ..hasRequiredFields = false
+  ;
+
+  DownloadBackupResponse._() : super();
+  factory DownloadBackupResponse() => create();
+  factory DownloadBackupResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory DownloadBackupResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  DownloadBackupResponse clone() => DownloadBackupResponse()..mergeFromMessage(this);
+  DownloadBackupResponse copyWith(void Function(DownloadBackupResponse) updates) => super.copyWith((message) => updates(message as DownloadBackupResponse));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static DownloadBackupResponse create() => DownloadBackupResponse._();
+  DownloadBackupResponse createEmptyInstance() => create();
+  static $pb.PbList<DownloadBackupResponse> createRepeated() => $pb.PbList<DownloadBackupResponse>();
+  @$core.pragma('dart2js:noInline')
+  static DownloadBackupResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DownloadBackupResponse>(create);
+  static DownloadBackupResponse _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<$core.String> get files => $_getList(0);
+}
+

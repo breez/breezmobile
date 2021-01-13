@@ -688,3 +688,10 @@ const SweepAllCoinsTransactions_TransactionsEntry$json = const {
   '7': const {'7': true},
 };
 
+const DownloadBackupResponse$json = const {
+  '1': 'DownloadBackupResponse',
+  '2': const [
+    const {'1': 'files', '3': 1, '4': 3, '5': 9, '10': 'files'},
+  ],
+};
+

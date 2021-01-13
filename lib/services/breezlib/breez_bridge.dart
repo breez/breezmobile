@@ -624,6 +624,12 @@ class BreezBridge {
         .then((res) => res as String);
   }
 
+  Future<DownloadBackupResponse> downloadBackup(String nodeId) async {
+    return _methodChannel
+        .invokeMethod("downloadBackup", {"argument": nodeId}).then(
+            (reply) => DownloadBackupResponse()..mergeFromBuffer(reply ?? []));
+  }
+
   Future restore(String nodeId, List<int> encryptionKey) async {
     try {
       await _methodChannel.invokeMethod(

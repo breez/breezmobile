@@ -1,9 +1,19 @@
+import 'dart:io';
+
+import 'package:archive/archive_io.dart';
+import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_extend/share_extend.dart';
+
+import 'error_dialog.dart';
+import 'loader.dart';
 
 class RestoreDialog extends StatefulWidget {
   final BuildContext context;
@@ -74,8 +84,9 @@ class RestoreDialogState extends State<RestoreDialog> {
                           )
                         : Icon(Icons.check),
                     title: Text(
-                      BreezDateUtils.formatYearMonthDayHourMinute(DateTime.parse(
-                              widget.snapshots[index].modifiedTime)) +
+                      BreezDateUtils.formatYearMonthDayHourMinute(
+                              DateTime.parse(
+                                  widget.snapshots[index].modifiedTime)) +
                           (widget.snapshots[index].encrypted
                               ? " - (Requires key)"
                               : ""),
@@ -92,6 +103,33 @@ class RestoreDialogState extends State<RestoreDialog> {
                           .caption
                           .copyWith(fontSize: 9),
                     ),
+                    onLongPress: () {
+                      var nodeID = widget.snapshots[index].nodeID;
+                      promptAreYouSure(
+                              context,
+                              "Download Backup",
+                              Text(
+                                  "Do you want to download the backup data for node: $nodeID?"))
+                          .then((yes) {
+                        if (yes) {
+                          var downloadAction =
+                              DownloadSnapshot(widget.snapshots[index].nodeID);
+                          widget.backupBloc.backupActionsSink
+                              .add(downloadAction);
+                          var loaderRoute = createLoaderRoute(context);
+                          Navigator.of(context).push(loaderRoute);
+                          downloadAction.future.then((value) {
+                            Navigator.removeRoute(context, loaderRoute);
+                            _shareBackup(
+                                (value as DownloadBackupResponse).files);
+                          }).catchError((err) {
+                            Navigator.removeRoute(context, loaderRoute);
+                            promptError(context, "Download Error",
+                                Text(err.toString()));
+                          });
+                        }
+                      });
+                    },
                     onTap: () {
                       setState(() {
                         _selectedSnapshot = widget.snapshots[index];
@@ -133,4 +171,18 @@ class RestoreDialogState extends State<RestoreDialog> {
       ],
     );
   }
+}
+
+Future _shareBackup(List<String> files) async {
+  Directory tempDir = await getTemporaryDirectory();
+  tempDir = await tempDir.createTemp("backup");
+  var encoder = ZipFileEncoder();
+  var zipFile = '${tempDir.path}/backup.zip';
+  encoder.create(zipFile);
+  files.forEach((f) {
+    var file = File(f);
+    encoder.addFile(file, "${file.path.split(Platform.pathSeparator).last}");
+  });
+  encoder.close();
+  ShareExtend.share(zipFile, "file");
 }

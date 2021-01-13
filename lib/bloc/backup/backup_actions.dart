@@ -12,3 +12,9 @@ class UpdateBackupSettings extends AsyncAction {
 
   UpdateBackupSettings(this.settings);
 }
+
+class DownloadSnapshot extends AsyncAction {
+  final String nodeID;
+
+  DownloadSnapshot(this.nodeID);
+}

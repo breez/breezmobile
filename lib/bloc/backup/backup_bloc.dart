@@ -76,6 +76,7 @@ class BackupBloc {
     _actionHandlers = {
       SaveBackupKey: _saveBackupKey,
       UpdateBackupSettings: _updateBackupSettings,
+      DownloadSnapshot: _downloadSnapshot,
     };
 
     SharedPreferences.getInstance().then((sp) async {
@@ -168,6 +169,10 @@ class BackupBloc {
   Future _saveBackupKey(SaveBackupKey action) async {
     await _secureStorage.write(key: 'backupKey', value: action.backupPhrase);
     action.resolve(null);
+  }
+
+  Future _downloadSnapshot(DownloadSnapshot action) async {
+    action.resolve(await _breezLib.downloadBackup(action.nodeID));
   }
 
   Future<List<int>> _getBackupKey(BackupKeyType keyType) async {
