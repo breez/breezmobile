@@ -1,30 +1,33 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
 
+import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/routes/podcast/podcast_page.dart';
 import 'package:breez/user_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc/backup/backup_model.dart';
 import 'bloc/user_profile/user_profile_bloc.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   BreezLogger();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  initializeDateFormatting(Platform.localeName, null);
+  //initializeDateFormatting(Platform.localeName, null);
+  var mobileService = await MobileSettingsService.instance();
   SharedPreferences.getInstance().then((preferences) async {
     await runMigration(preferences);
     AppBlocs blocs = AppBlocs();
-    runApp(AppBlocsProvider(child: UserApp(), appBlocs: blocs));
+    runApp(AppBlocsProvider(
+        child: AnytimePodcastApp(mobileService, UserApp()), appBlocs: blocs));
   });
 }
 

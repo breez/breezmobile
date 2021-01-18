@@ -386,6 +386,15 @@ class HomeState extends State<Home> {
                                                       ...flavorItems,
                                                       ...posItem,
                                                       DrawerItemConfigGroup(
+                                                        [
+                                                          DrawerItemConfig(
+                                                            "/podcast",
+                                                            "Podcasts",
+                                                            "src/icon/paste.png",
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      DrawerItemConfigGroup(
                                                           _filterItems([
                                                             DrawerItemConfig(
                                                                 "/fiat_currency",

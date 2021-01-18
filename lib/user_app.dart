@@ -1,3 +1,6 @@
+import 'package:anytime/l10n/L.dart';
+import 'package:anytime/ui/anytime_podcast_app.dart';
+import 'package:anytime/ui/themes.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -9,12 +12,15 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
+import 'package:breez/routes/podcast/podcast_page.dart';
 import 'package:breez/routes/qr_scan.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'bloc/lnurl/lnurl_bloc.dart';
 import 'bloc/lsp/lsp_bloc.dart';
@@ -77,6 +83,15 @@ class UserApp extends StatelessWidget {
                     navigatorKey: _navigatorKey,
                     title: 'Breez',
                     theme: theme.themeMap[user.themeId],
+                    localizationsDelegates: [
+                      const LocalisationsDelegate(),
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                    ],
+                    supportedLocales: [
+                      const Locale('en', ''),
+                      const Locale('de', ''),
+                    ],
                     builder: (BuildContext context, Widget child) {
                       final MediaQueryData data = MediaQuery.of(context);
                       return MediaQuery(
@@ -264,6 +279,39 @@ class UserApp extends StatelessWidget {
                                       return MaterialPageRoute<String>(
                                         fullscreenDialog: true,
                                         builder: (_) => QRScan(),
+                                        settings: settings,
+                                      );
+                                    case '/podcast':
+                                      return MaterialPageRoute<String>(
+                                        fullscreenDialog: true,
+                                        builder: (_) => StreamBuilder<
+                                                BreezUserModel>(
+                                            stream: userProfileBloc.userStream,
+                                            builder: (context, snapshot) {
+                                              if (!snapshot.hasData) {
+                                                return Loader();
+                                              }
+                                              return Theme(
+                                                  data: snapshot.data.themeId ==
+                                                          "BLUE"
+                                                      ? Themes.lightTheme()
+                                                          .themeData
+                                                      : Themes.darkTheme()
+                                                          .themeData,
+                                                  child: Navigator(
+                                                    initialRoute: "/",
+                                                    onGenerateRoute:
+                                                        (RouteSettings
+                                                            settings) {
+                                                      return FadeInRoute(
+                                                          builder: (_) =>
+                                                              AnytimeHomePage(
+                                                                title:
+                                                                    'Anytime Podcast Player',
+                                                              ));
+                                                    },
+                                                  ));
+                                            }),
                                         settings: settings,
                                       );
                                   }

@@ -9,32 +9,33 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 
 class GraphDownloader {
-
   ReceivePort _port = ReceivePort();
   bool handlingFile = false;
   Completer<File> _downloadCompleter;
 
   Future init() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await FlutterDownloader.initialize(debug: true);
-    IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
-    _port.listen((dynamic data) async {
-      String id = data[0];
-      DownloadTaskStatus status = data[1];
-      log.info("Graph download completed id=$id status = $status");
+    //await FlutterDownloader.initialize(debug: true);
+    // IsolateNameServer.registerPortWithName(
+    //     _port.sendPort, 'downloader_send_port');
+    // _port.listen((dynamic data) async {
+    //   String id = data[0];
+    //   DownloadTaskStatus status = data[1];
+    //   log.info("Graph download completed id=$id status = $status");
 
-      var tasks = await FlutterDownloader.loadTasks();
-      var currentTask = tasks.firstWhere((t) => t.taskId == id);
-       await _onTaskFinished(currentTask);
-    });
-    FlutterDownloader.registerCallback(downloadCallback);
+    //   var tasks = await FlutterDownloader.loadTasks();
+    //   var currentTask = tasks.firstWhere((t) => t.taskId == id);
+    //   await _onTaskFinished(currentTask);
+    // });
+    // FlutterDownloader.registerCallback(downloadCallback);
   }
 
   Future _onTaskFinished(DownloadTask currentTask) async {
     if (_downloadCompleter != null) {
       if (currentTask.status == DownloadTaskStatus.complete) {
-        _downloadCompleter.complete(File(currentTask.savedDir + Platform.pathSeparator + currentTask.filename));
+        _downloadCompleter.complete(File(currentTask.savedDir +
+            Platform.pathSeparator +
+            currentTask.filename));
       } else {
         _downloadCompleter.completeError("graph sync failed");
       }
@@ -90,7 +91,7 @@ class GraphDownloader {
     return _downloadCompleter.future;
   }
 
-  Future deleteDownloads() async{
+  Future deleteDownloads() async {
     var tasks = await FlutterDownloader.loadTasks();
     var finishedStatuses = [
       DownloadTaskStatus.complete,
