@@ -316,7 +316,7 @@ final VendorTheme fixedfloat = VendorTheme(
   iconBgColor: Color(0xFF0B4E7B),
 );
 final VendorTheme spendl = VendorTheme(
-  iconBgColor: Color(0xFFffc816),
+  iconBgColor: Color(0xFFffffff),
 );
 final VendorTheme lnroulette = VendorTheme(
   iconBgColor: Color(0xFF0c532d),
