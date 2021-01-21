@@ -5,6 +5,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/currency_service.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/device.dart';
+import 'package:breez/services/download_manager.dart';
 import 'package:breez/services/lightning_links.dart';
 import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/services/nfc.dart';
@@ -25,11 +26,13 @@ class ServiceInjector {
   DeepLinksService _deepLinksService;
   LightningLinksService _lightningLinksService;
   Device _device;
-  Future<SharedPreferences> _sharedPreferences;
+  Future<SharedPreferences> _sharedPreferences =
+      SharedPreferences.getInstance();
   Permissions _permissions;
   BackgroundTaskService _backgroundTaskService;
   CurrencyService _currencyService;
   LocalAuthenticationService _localAuthService;
+  DownloadTaskManager _downloadManager = DownloadTaskManager();
 
   factory ServiceInjector() {
     return _injector != null ? _injector : _singleton;
@@ -54,7 +57,7 @@ class ServiceInjector {
   }
 
   BreezBridge get breezBridge {
-    return _breezBridge ??= BreezBridge();
+    return _breezBridge ??= BreezBridge(_downloadManager, _sharedPreferences);
   }
 
   Device get device {
@@ -83,5 +86,9 @@ class ServiceInjector {
 
   LocalAuthenticationService get localAuthService {
     return _localAuthService ??= LocalAuthenticationService();
+  }
+
+  DownloadTaskManager get downloadManager {
+    return _downloadManager ??= DownloadTaskManager();
   }
 }

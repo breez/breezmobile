@@ -5,10 +5,12 @@ import 'dart:io';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/download_manager.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
 import 'package:ini/ini.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'graph_downloader.dart';
 
@@ -19,6 +21,8 @@ class BreezBridge {
   static const _eventChannel =
       EventChannel('com.breez.client/breez_lib_notifications');
 
+  final DownloadTaskManager downloadManager;
+  final Future<SharedPreferences> sharedPreferences;
   Completer _readyCompleter = Completer();
   Completer _startedCompleter = Completer();
   StreamController _eventsController =
@@ -29,7 +33,7 @@ class BreezBridge {
   GraphDownloader _graphDownloader;
   Future<DateTime> _inProgressGraphSync;
 
-  BreezBridge() {
+  BreezBridge(this.downloadManager, this.sharedPreferences) {
     _eventChannel.receiveBroadcastStream().listen((event) async {
       var notification = NotificationEvent()..mergeFromBuffer(event);
       if (notification.type == NotificationEvent_NotificationType.READY) {
@@ -43,7 +47,7 @@ class BreezBridge {
       _eventsController.add(NotificationEvent()..mergeFromBuffer(event));
     });
     _tempDirFuture = getTemporaryDirectory();
-    _graphDownloader = GraphDownloader();
+    _graphDownloader = GraphDownloader(downloadManager, sharedPreferences);
     _graphDownloader.init().whenComplete(() => initLightningDir());
   }
 
