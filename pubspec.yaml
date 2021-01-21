@@ -50,7 +50,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
   image_cropper: ^1.3.0
-  uni_links: ^0.2.0
+  uni_links: ^0.4.0
   nfc_in_flutter: ^2.0.4
   keyboard_actions: ^2.1.1
   flutter_secure_storage: ^3.2.1+1
