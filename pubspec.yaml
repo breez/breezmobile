@@ -6,7 +6,7 @@ dependencies:
     sdk: flutter
   grpc: ^1.0.1
   protobuf: ^1.0.1
-  flutter_slidable: ^0.5.4
+  flutter_slidable: ^0.5.4 
   path_provider: any
   firebase_core: 0.4.0+3
   firebase_database: ^3.0.0
@@ -14,7 +14,7 @@ dependencies:
   firebase_dynamic_links: ^0.5.0
   shared_preferences: ^0.5.1+2
   anytime:
-    git: 
+    git:
       url: https://github.com/amugofjava/anytime_podcast_player.git
   share_extend:
     git:
@@ -61,11 +61,9 @@ dependencies:
   app_settings: ^1.0.6+2
   bip39: ^1.0.3
   crypto: ^2.1.2
-  flutter_typeahead:
-    git:
-      url: https://github.com/breez/flutter_typeahead.git
+  flutter_typeahead: ^2.0.0
   csv: ^4.0.3
-  
+
   local_auth:
     git:
       url: https://github.com/breez/local_auth.git
