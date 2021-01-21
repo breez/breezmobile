@@ -21,6 +21,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'anytime_downloader.dart';
+
 var theme = Themes.lightTheme().themeData;
 
 /// Anytime is a Podcast player. You can search and subscribe to podcasts,
@@ -42,7 +44,8 @@ class AnytimePodcastApp extends StatefulWidget {
   AnytimePodcastApp(this.mobileSettingsService, this.child)
       : repository = SembastRepository(),
         podcastApi = MobilePodcastApi() {
-    downloadService = MobileDownloadService(repository: repository);
+    downloadService = MobileDownloadService(
+        repository: repository, downloadManager: AnytimeDownloadManager());
     podcastService = MobilePodcastService(
         api: podcastApi,
         repository: repository,
