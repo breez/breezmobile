@@ -250,10 +250,12 @@ class HomeState extends State<Home> {
                                             DrawerItemConfig(
                                                 "", "POS", "src/icon/pos.png",
                                                 onItemSelected: (_) {
-                                              widget.userProfileBloc
-                                                  .userActionsSink
-                                                  .add(SetPOSFlavor(
-                                                      !user.isPOS));
+                                              if (!user.isPodcast) {
+                                                widget.userProfileBloc
+                                                    .userActionsSink
+                                                    .add(SetPOSFlavor(
+                                                        !user.isPOS));
+                                              }
                                             },
                                                 switchWidget: Switch(
                                                     inactiveThumbColor:
@@ -261,7 +263,8 @@ class HomeState extends State<Home> {
                                                     activeColor: Colors.white,
                                                     value: user.isPOS,
                                                     onChanged: !account
-                                                            .connected
+                                                                .connected ||
+                                                            user.isPodcast
                                                         ? null
                                                         : (_) {
                                                             var action =
@@ -277,22 +280,27 @@ class HomeState extends State<Home> {
                                   ];
 
                                   var podcastItem = DrawerItemConfig(
-                                      "", "Podcast", "src/icon/pos.png",
+                                      "", "Podcast", "src/icon/podcast.png",
                                       onItemSelected: (_) {
-                                    widget.userProfileBloc.userActionsSink
-                                        .add(SetPodcastFlavor(!user.isPodcast));
+                                    if (!user.isPOS) {
+                                      widget.userProfileBloc.userActionsSink
+                                          .add(SetPodcastFlavor(
+                                              !user.isPodcast));
+                                    }
                                   },
                                       switchWidget: Switch(
                                           inactiveThumbColor:
                                               Colors.grey.shade400,
                                           activeColor: Colors.white,
                                           value: user.isPodcast,
-                                          onChanged: (val) {
-                                            widget
-                                                .userProfileBloc.userActionsSink
-                                                .add(SetPodcastFlavor(
-                                                    !user.isPodcast));
-                                          }));
+                                          onChanged: user.isPOS
+                                              ? null
+                                              : (val) {
+                                                  widget.userProfileBloc
+                                                      .userActionsSink
+                                                      .add(SetPodcastFlavor(
+                                                          !user.isPodcast));
+                                                }));
 
                                   var advancedFlavorItems =
                                       List<DrawerItemConfig>();
