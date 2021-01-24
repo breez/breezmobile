@@ -12,7 +12,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
-import 'package:breez/routes/podcast/podcast_page.dart';
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/qr_scan.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
@@ -48,6 +48,13 @@ import 'routes/withdraw_funds/unexpected_funds.dart';
 import 'theme_data.dart' as theme;
 
 final routeObserver = RouteObserver();
+
+Widget _withTheme(BreezUserModel user, Widget child) {
+  if (user.isPodcast) {
+    return withPodcastTheme(user, child);
+  }
+  return child;
+}
 
 class UserApp extends StatelessWidget {
   GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
@@ -100,7 +107,7 @@ class UserApp extends StatelessWidget {
                                 ? 1.3
                                 : data.textScaleFactor,
                           ),
-                          child: child);
+                          child: _withTheme(user, child));
                     },
                     initialRoute: user.registrationRequested
                         ? (user.locked ? '/lockscreen' : "/")
@@ -279,39 +286,6 @@ class UserApp extends StatelessWidget {
                                       return MaterialPageRoute<String>(
                                         fullscreenDialog: true,
                                         builder: (_) => QRScan(),
-                                        settings: settings,
-                                      );
-                                    case '/podcast':
-                                      return MaterialPageRoute<String>(
-                                        fullscreenDialog: true,
-                                        builder: (_) => StreamBuilder<
-                                                BreezUserModel>(
-                                            stream: userProfileBloc.userStream,
-                                            builder: (context, snapshot) {
-                                              if (!snapshot.hasData) {
-                                                return Loader();
-                                              }
-                                              return Theme(
-                                                  data: snapshot.data.themeId ==
-                                                          "BLUE"
-                                                      ? Themes.lightTheme()
-                                                          .themeData
-                                                      : Themes.darkTheme()
-                                                          .themeData,
-                                                  child: Navigator(
-                                                    initialRoute: "/",
-                                                    onGenerateRoute:
-                                                        (RouteSettings
-                                                            settings) {
-                                                      return FadeInRoute(
-                                                          builder: (_) =>
-                                                              AnytimeHomePage(
-                                                                title:
-                                                                    'Anytime Podcast Player',
-                                                              ));
-                                                    },
-                                                  ));
-                                            }),
                                         settings: settings,
                                       );
                                   }

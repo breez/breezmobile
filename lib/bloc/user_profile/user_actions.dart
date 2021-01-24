@@ -57,6 +57,12 @@ class SetPOSFlavor extends AsyncAction {
   SetPOSFlavor(this.isPos);
 }
 
+class SetPodcastFlavor extends AsyncAction {
+  final bool isPodcast;
+
+  SetPodcastFlavor(this.isPodcast);
+}
+
 class SetAdminPassword extends AsyncAction {
   final String password;
 

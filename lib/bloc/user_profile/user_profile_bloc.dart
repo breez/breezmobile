@@ -82,6 +82,7 @@ class UserProfileBloc {
       SetLockState: _setLockState,
       CheckVersion: _checkVersion,
       SetPOSFlavor: _setPOSFlavor,
+      SetPodcastFlavor: _setPodcastFlavor,
       SetAdminPassword: _setAdminPassword,
       VerifyAdminPassword: _verifyAdminPassword,
       UploadProfilePicture: _uploadProfilePicture,
@@ -185,6 +186,12 @@ class UserProfileBloc {
     _saveChanges(
         await _preferences, _currentUser.copyWith(isPOS: action.isPos));
     action.resolve(action.isPos);
+  }
+
+  Future _setPodcastFlavor(SetPodcastFlavor action) async {
+    _saveChanges(
+        await _preferences, _currentUser.copyWith(isPodcast: action.isPodcast));
+    action.resolve(action.isPodcast);
   }
 
   Future _setPOSCurrency(SetPOSCurrency action) async {

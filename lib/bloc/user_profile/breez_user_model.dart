@@ -16,6 +16,7 @@ class BreezUserModel {
   final bool locked;
   final bool registrationRequested;
   final bool isPOS;
+  final bool isPodcast;
   final bool hideBalance;
   final double cancellationTimeoutValue;
   final bool hasAdminPassword;
@@ -33,6 +34,7 @@ class BreezUserModel {
       this.themeId = "BLUE",
       this.registrationRequested = false,
       this.isPOS = false,
+      this.isPodcast = false,
       this.hideBalance = false,
       this.cancellationTimeoutValue = 90.0,
       this.hasAdminPassword = false,
@@ -54,6 +56,7 @@ class BreezUserModel {
       String themeId,
       bool registrationRequested,
       bool isPOS,
+      bool isPodcast,
       bool hideBalance,
       double cancellationTimeoutValue,
       bool hasAdminPassword,
@@ -75,6 +78,7 @@ class BreezUserModel {
       registrationRequested:
           registrationRequested ?? this.registrationRequested,
       isPOS: isPOS ?? this.isPOS,
+      isPodcast: isPodcast ?? this.isPodcast,
       hideBalance: hideBalance ?? this.hideBalance,
       cancellationTimeoutValue:
           cancellationTimeoutValue ?? this.cancellationTimeoutValue,
@@ -84,6 +88,8 @@ class BreezUserModel {
       preferredCurrencies: preferredCurrencies ?? this.preferredCurrencies,
     );
   }
+
+  bool get isWalletMode => !isPOS && !isPodcast;
 
   bool get registered {
     return userID != null;
@@ -115,6 +121,7 @@ class BreezUserModel {
         registrationRequested =
             json['registrationRequested'] ?? json['token'] != null,
         isPOS = json['isPOS'] ?? false,
+        isPodcast = json['isPodcast'] ?? false,
         hideBalance = json['hideBalance'] ?? false,
         cancellationTimeoutValue = json['cancellationTimeoutValue'] == null
             ? 90.0
@@ -142,6 +149,7 @@ class BreezUserModel {
         'registrationRequested': registrationRequested,
         'cancellationTimeoutValue': cancellationTimeoutValue,
         'isPOS': isPOS,
+        'isPodcast': isPodcast,
         'hideBalance': hideBalance,
         'hasAdminPassword': hasAdminPassword,
         'posCurrencyShortName': posCurrencyShortName,

@@ -240,7 +240,8 @@ Widget _actionTile(
     DrawerItemConfig action, BuildContext context, Function onItemSelected,
     [bool subTile]) {
   TextStyle itemStyle = theme.drawerItemTextStyle;
-  Color color = DefaultTextStyle.of(context).style.color;
+  Color color = null;
+  //DefaultTextStyle.of(context).style.color;
   if (action.disabled) {
     color = Theme.of(context).disabledColor;
     itemStyle = itemStyle.copyWith(color: color);

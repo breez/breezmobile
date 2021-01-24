@@ -10,7 +10,7 @@ import 'package:anytime/core/chrome.dart';
 import 'package:anytime/repository/repository.dart';
 import 'package:anytime/repository/sembast/sembast_repository.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
-import 'package:anytime/services/audio/mobile_audio_service.dart';
+import 'package:anytime/services/audio/mobile_audio_player_service.dart';
 import 'package:anytime/services/download/download_service.dart';
 import 'package:anytime/services/download/mobile_download_service.dart';
 import 'package:anytime/services/podcast/mobile_podcast_service.dart';
@@ -50,7 +50,8 @@ class AnytimePodcastApp extends StatefulWidget {
         api: podcastApi,
         repository: repository,
         settingsService: mobileSettingsService);
-    audioPlayerService = MobileAudioPlayerService(repository: repository);
+    audioPlayerService = MobileAudioPlayerService(
+        repository: repository, settingsService: mobileSettingsService);
     settingsBloc = SettingsBloc(mobileSettingsService);
   }
 

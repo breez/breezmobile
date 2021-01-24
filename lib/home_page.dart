@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:anytime/ui/anytime_podcast_app.dart';
+import 'package:anytime/ui/themes.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -21,6 +23,7 @@ import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:breez/routes/home/qr_action_button.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/escher_dialog.dart';
@@ -273,6 +276,24 @@ class HomeState extends State<Home> {
                                           ])
                                   ];
 
+                                  var podcastItem = DrawerItemConfig(
+                                      "", "Podcast", "src/icon/pos.png",
+                                      onItemSelected: (_) {
+                                    widget.userProfileBloc.userActionsSink
+                                        .add(SetPodcastFlavor(!user.isPodcast));
+                                  },
+                                      switchWidget: Switch(
+                                          inactiveThumbColor:
+                                              Colors.grey.shade400,
+                                          activeColor: Colors.white,
+                                          value: user.isPodcast,
+                                          onChanged: (val) {
+                                            widget
+                                                .userProfileBloc.userActionsSink
+                                                .add(SetPodcastFlavor(
+                                                    !user.isPodcast));
+                                          }));
+
                                   var advancedFlavorItems =
                                       List<DrawerItemConfig>();
                                   advancedFlavorItems = user.isPOS
@@ -361,67 +382,69 @@ class HomeState extends State<Home> {
                                                           .dashboardBgColor,
                                                   elevation: 0.0,
                                                 ),
-                                                drawer: NavigationDrawer(
-                                                    true,
-                                                    [
-                                                      ...refundItems,
-                                                      _buildSendItems(
-                                                          account,
-                                                          snapshot,
-                                                          context,
-                                                          user,
-                                                          settings),
-                                                      DrawerItemConfigGroup([
-                                                        DrawerItemConfig(
-                                                          "/create_invoice",
-                                                          "Receive via Invoice",
-                                                          "src/icon/paste.png",
-                                                        ),
-                                                        ...addFundsVendors,
-                                                      ],
-                                                          groupTitle: "Receive",
-                                                          groupAssetImage:
-                                                              "src/icon/receive-action.png",
-                                                          withDivider: false),
-                                                      ...flavorItems,
-                                                      ...posItem,
-                                                      DrawerItemConfigGroup(
-                                                        [
+                                                drawer: Theme(
+                                                  data: theme
+                                                      .themeMap[user.themeId],
+                                                  child: NavigationDrawer(
+                                                      true,
+                                                      [
+                                                        ...refundItems,
+                                                        _buildSendItems(
+                                                            account,
+                                                            snapshot,
+                                                            context,
+                                                            user,
+                                                            settings),
+                                                        DrawerItemConfigGroup([
                                                           DrawerItemConfig(
-                                                            "/podcast",
-                                                            "Podcasts",
+                                                            "/create_invoice",
+                                                            "Receive via Invoice",
                                                             "src/icon/paste.png",
                                                           ),
+                                                          ...addFundsVendors,
                                                         ],
-                                                      ),
-                                                      DrawerItemConfigGroup(
-                                                          _filterItems([
-                                                            DrawerItemConfig(
-                                                                "/fiat_currency",
-                                                                "Fiat Currencies",
-                                                                "src/icon/fiat_currencies.png"),
-                                                            DrawerItemConfig(
-                                                                "/network",
-                                                                "Network",
-                                                                "src/icon/network.png"),
-                                                            DrawerItemConfig(
-                                                                "/security",
-                                                                "Security & Backup",
-                                                                "src/icon/security.png"),
-                                                            ...advancedFlavorItems,
-                                                          ]),
-                                                          groupTitle:
-                                                              "Advanced",
-                                                          groupAssetImage:
-                                                              "src/icon/advanced.png"),
-                                                    ],
-                                                    _onNavigationItemSelected),
-                                                bottomNavigationBar: !user.isPOS
+                                                            groupTitle:
+                                                                "Receive",
+                                                            groupAssetImage:
+                                                                "src/icon/receive-action.png",
+                                                            withDivider: false),
+                                                        ...flavorItems,
+                                                        ...posItem,
+                                                        DrawerItemConfigGroup(
+                                                          [
+                                                            podcastItem,
+                                                          ],
+                                                        ),
+                                                        DrawerItemConfigGroup(
+                                                            _filterItems([
+                                                              DrawerItemConfig(
+                                                                  "/fiat_currency",
+                                                                  "Fiat Currencies",
+                                                                  "src/icon/fiat_currencies.png"),
+                                                              DrawerItemConfig(
+                                                                  "/network",
+                                                                  "Network",
+                                                                  "src/icon/network.png"),
+                                                              DrawerItemConfig(
+                                                                  "/security",
+                                                                  "Security & Backup",
+                                                                  "src/icon/security.png"),
+                                                              ...advancedFlavorItems,
+                                                            ]),
+                                                            groupTitle:
+                                                                "Advanced",
+                                                            groupAssetImage:
+                                                                "src/icon/advanced.png"),
+                                                      ],
+                                                      _onNavigationItemSelected),
+                                                ),
+                                                bottomNavigationBar: user
+                                                        .isWalletMode
                                                     ? BottomActionsBar(account,
                                                         firstPaymentItemKey)
                                                     : null,
                                                 floatingActionButton:
-                                                    !user.isPOS
+                                                    user.isWalletMode
                                                         ? QrActionButton(
                                                             account,
                                                             firstPaymentItemKey)
@@ -431,7 +454,7 @@ class HomeState extends State<Home> {
                                                         .centerDocked,
                                                 body: widget._screenBuilders[
                                                         _activeScreen] ??
-                                                    _homePage(user.isPOS)),
+                                                    _homePage(user)),
                                           ),
                                         );
                                       });
@@ -506,8 +529,14 @@ class HomeState extends State<Home> {
         withDivider: true);
   }
 
-  _homePage(bool isPOS) {
-    return isPOS
+  _homePage(BreezUserModel user) {
+    if (user.isPodcast) {
+      return AnytimeHomePage(
+        topBarVisible: false,
+        title: 'Anytime Podcast Player',
+      );
+    }
+    return user.isPOS
         ? POSInvoice()
         : AccountPage(firstPaymentItemKey, scrollController);
   }
