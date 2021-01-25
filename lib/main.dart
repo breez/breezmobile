@@ -23,6 +23,7 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   //initializeDateFormatting(Platform.localeName, null);
   var mobileService = await MobileSettingsService.instance();
+  mobileService.autoOpenNowPlaying = true;
   SharedPreferences.getInstance().then((preferences) async {
     await runMigration(preferences);
     AppBlocs blocs = AppBlocs();

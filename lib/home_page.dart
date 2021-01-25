@@ -541,7 +541,7 @@ class HomeState extends State<Home> {
     if (user.isPodcast) {
       return AnytimeHomePage(
         noSubscriptionsMessage:
-            "Use the Discovery view to find and subscribe to your first podcast.",
+            "Use the Discover view to find and subscribe to your first podcast.",
         topBarVisible: false,
         title: 'Anytime Podcast Player',
       );
