@@ -540,6 +540,8 @@ class HomeState extends State<Home> {
   _homePage(BreezUserModel user) {
     if (user.isPodcast) {
       return AnytimeHomePage(
+        noSubscriptionsMessage:
+            "Use the Discovery view to find and subscribe to your first podcast.",
         topBarVisible: false,
         title: 'Anytime Podcast Player',
       );

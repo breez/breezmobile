@@ -2,7 +2,7 @@ name: breez
 description: A new Flutter project.
 
 dependencies:
-  flutter:
+  flutter:    
     sdk: flutter
   grpc: ^1.0.1
   protobuf: ^1.0.1
@@ -16,7 +16,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: exclude-top-bar
+      ref: no-subsription-message
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
