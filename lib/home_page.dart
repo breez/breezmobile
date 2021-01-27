@@ -461,6 +461,8 @@ class HomeState extends State<Home> {
     switch (user.appMode) {
       case AppMode.podcasts:
         return AnytimeHomePage(
+          noSubscriptionsMessage:
+              "Use the Discover view to find and subscribe to your first podcast.",
           topBarVisible: false,
           title: 'Anytime Podcast Player',
         );
