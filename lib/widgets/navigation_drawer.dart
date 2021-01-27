@@ -19,9 +19,13 @@ class DrawerItemConfig {
   final bool disabled;
   final void Function(String name) onItemSelected;
   final Widget switchWidget;
+  final bool isSelected;
 
   DrawerItemConfig(this.name, this.title, this.icon,
-      {this.onItemSelected, this.disabled = false, this.switchWidget});
+      {this.onItemSelected,
+      this.disabled = false,
+      this.switchWidget,
+      this.isSelected = false});
 }
 
 class DrawerItemConfigGroup {
@@ -249,14 +253,23 @@ Widget _actionTile(
   return Padding(
     padding: subTile != null
         ? EdgeInsets.only(left: 36.0, right: 8.0)
-        : EdgeInsets.only(left: 8.0, right: 8.0),
+        : EdgeInsets.only(left: 0.0, right: 0.0),
     child: ListTile(
-      leading: ImageIcon(
-        AssetImage(action.icon),
-        size: 26.0,
-        color: color,
+      tileColor: action.isSelected
+          ? Theme.of(context).primaryColorLight
+          : Colors.transparent,
+      leading: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: ImageIcon(
+          AssetImage(action.icon),
+          size: 26.0,
+          color: color,
+        ),
       ),
-      title: Text(action.title, style: itemStyle),
+      title: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Text(action.title, style: itemStyle),
+      ),
       trailing: action.switchWidget,
       onTap: action.disabled
           ? null
