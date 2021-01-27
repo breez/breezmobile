@@ -81,8 +81,7 @@ class UserProfileBloc {
       GetEnrolledBiometrics: _getEnrolledBiometrics,
       SetLockState: _setLockState,
       CheckVersion: _checkVersion,
-      SetPOSFlavor: _setPOSFlavor,
-      SetPodcastFlavor: _setPodcastFlavor,
+      SetAppMode: _setAppMode,
       SetAdminPassword: _setAdminPassword,
       VerifyAdminPassword: _verifyAdminPassword,
       UploadProfilePicture: _uploadProfilePicture,
@@ -182,16 +181,10 @@ class UserProfileBloc {
     action.resolve(await _breezBridge.checkVersion());
   }
 
-  Future _setPOSFlavor(SetPOSFlavor action) async {
+  Future _setAppMode(SetAppMode action) async {
     _saveChanges(
-        await _preferences, _currentUser.copyWith(isPOS: action.isPos));
-    action.resolve(action.isPos);
-  }
-
-  Future _setPodcastFlavor(SetPodcastFlavor action) async {
-    _saveChanges(
-        await _preferences, _currentUser.copyWith(isPodcast: action.isPodcast));
-    action.resolve(action.isPodcast);
+        await _preferences, _currentUser.copyWith(appMode: action.appMode));
+    action.resolve(action.appMode);
   }
 
   Future _setPOSCurrency(SetPOSCurrency action) async {

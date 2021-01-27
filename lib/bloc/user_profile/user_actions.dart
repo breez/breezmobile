@@ -1,4 +1,6 @@
 import 'package:breez/bloc/async_action.dart';
+
+import 'breez_user_model.dart';
 import 'security_model.dart';
 
 class UpdateSecurityModel extends AsyncAction {
@@ -51,16 +53,10 @@ class StopBiometrics extends AsyncAction {}
 
 class CheckVersion extends AsyncAction {}
 
-class SetPOSFlavor extends AsyncAction {
-  final bool isPos;
+class SetAppMode extends AsyncAction {
+  final AppMode appMode;
 
-  SetPOSFlavor(this.isPos);
-}
-
-class SetPodcastFlavor extends AsyncAction {
-  final bool isPodcast;
-
-  SetPodcastFlavor(this.isPodcast);
+  SetAppMode(this.appMode);
 }
 
 class SetAdminPassword extends AsyncAction {
