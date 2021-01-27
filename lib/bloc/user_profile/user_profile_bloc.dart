@@ -26,7 +26,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserProfileBloc {
   static const PROFILE_DATA_FOLDER_PATH = "profile";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
-  static const String POS_FLAVOR_PREFERENCES_KEY = "BreezUserModel.isPos";
 
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   BreezServer _breezServer;
