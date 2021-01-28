@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
 
+import 'package:anytime/bloc/podcast/audio_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/podcast/podcast_page.dart';
 import 'package:breez/user_app.dart';
@@ -28,7 +31,16 @@ void main() async {
     await runMigration(preferences);
     AppBlocs blocs = AppBlocs();
     runApp(AppBlocsProvider(
-        child: AnytimePodcastApp(mobileService, UserApp()), appBlocs: blocs));
+        child: AnytimePodcastApp(
+            mobileService,
+            Provider<PodcastPaymentsBloc>(
+              lazy: false,
+              create: (ctx) => PodcastPaymentsBloc(
+                  Provider.of<AudioBloc>(ctx, listen: false)),
+              dispose: (_, value) => value.dispose(),
+              child: UserApp(),
+            )),
+        appBlocs: blocs));
   });
 }
 
