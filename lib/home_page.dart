@@ -368,7 +368,7 @@ class HomeState extends State<Home> {
                                                 drawerEnableOpenDragGesture:
                                                     true,
                                                 drawerDragStartBehavior:
-                                                    DragStartBehavior.start,
+                                                    DragStartBehavior.down,
                                                 drawerEdgeDragWidth: 80,
                                                 drawer: Theme(
                                                   data: theme
