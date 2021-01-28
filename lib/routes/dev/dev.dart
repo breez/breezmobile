@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
@@ -423,22 +424,34 @@ class DevViewState extends State<DevView> {
         title: "Export DB Files",
         icon: Icons.phone_android,
         function: () async {
-          Directory tempDir = await getTemporaryDirectory();
-          tempDir = await tempDir.createTemp("graph");
-          var walletFiles =
-              await ServiceInjector().breezBridge.getWalletDBpFilePath();
-          var encoder = ZipFileEncoder();
-          var zipFile = '${tempDir.path}/wallet-files.zip';
-          encoder.create(zipFile);
-          var i = 1;
-          walletFiles.forEach((f) {
-            var file = File(f);
-            encoder.addFile(file,
-                "${i.toString()}_${file.path.split(Platform.pathSeparator).last}");
-            i += 1;
-          });
-          encoder.close();
-          ShareExtend.share(zipFile, "file");
+          try {
+            log.severe("Export wallet files started");
+            Directory tempDir = await getTemporaryDirectory();
+            log.severe("Export wallet files temp dir = ${tempDir.path}");
+            tempDir = await tempDir.createTemp("graph");
+            log.severe("Export wallet files graph dir = ${tempDir.path}");
+            var walletFiles =
+                await ServiceInjector().breezBridge.getWalletDBpFilePath();
+            log.severe("Export wallet files paths = ${walletFiles.join(",")}");
+            var encoder = ZipFileEncoder();
+            var zipFile = '${tempDir.path}/wallet-files.zip';
+            encoder.create(zipFile);
+            log.severe("Export create zip file $zipFile");
+            var i = 1;
+            walletFiles.forEach((f) {
+              var file = File(f);
+              encoder.addFile(file,
+                  "${i.toString()}_${file.path.split(Platform.pathSeparator).last}");
+              log.severe("Export adding file: ${file.path}");
+              i += 1;
+            });
+            encoder.close();
+            log.severe("Export after close");
+            ShareExtend.share(zipFile, "file");
+            log.severe("Export after share");
+          } catch (e) {
+            log.severe("Error exporting wallet files" + e.toString());
+          }
         }));
 
     choices.add(Choice(
