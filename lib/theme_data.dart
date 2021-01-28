@@ -212,7 +212,7 @@ final ThemeData darkTheme = ThemeData(
   dividerColor: Color(0x337aa5eb),
   buttonColor: Color(0xFF4B89EB),
   cardColor: Color(0xFF121212),
-  highlightColor: Color(0xFF4B88EB),
+  highlightColor: Color(0xFF81acf1),
   textTheme: TextTheme(
       subtitle2:
           TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),

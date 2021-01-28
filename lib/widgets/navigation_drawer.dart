@@ -83,6 +83,11 @@ class NavigationDrawer extends StatelessWidget {
             action, context, action.onItemSelected ?? _onItemSelected))
         .toList();
     if (group.groupTitle != null && groupItems.length > 0) {
+      groupItems = group.items
+          .map((action) => _actionTile(
+              action, context, action.onItemSelected ?? _onItemSelected,
+              subTile: true))
+          .toList();
       groupItems = List<Widget>()
         ..add(_ExpansionTile(
             items: groupItems,
@@ -242,7 +247,7 @@ Padding _buildUsername(AsyncSnapshot<BreezUserModel> snapshot) {
 
 Widget _actionTile(
     DrawerItemConfig action, BuildContext context, Function onItemSelected,
-    [bool subTile]) {
+    {bool subTile}) {
   TextStyle itemStyle = theme.drawerItemTextStyle;
   Color color = null;
   //DefaultTextStyle.of(context).style.color;
@@ -251,32 +256,46 @@ Widget _actionTile(
     itemStyle = itemStyle.copyWith(color: color);
   }
   return Padding(
-    padding: subTile != null
-        ? EdgeInsets.only(left: 36.0, right: 8.0)
-        : EdgeInsets.only(left: 0.0, right: 0.0),
-    child: ListTile(
-      tileColor: action.isSelected
-          ? Theme.of(context).primaryColorLight
-          : Colors.transparent,
-      leading: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: ImageIcon(
-          AssetImage(action.icon),
-          size: 26.0,
-          color: color,
-        ),
-      ),
-      title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Text(action.title, style: itemStyle),
-      ),
-      trailing: action.switchWidget,
-      onTap: action.disabled
+    padding: EdgeInsets.only(left: 0.0, right: subTile != null ? 0.0 : 16.0),
+    // Check flutter issue: "List Tile Does Not Respect shape when tileColor is provided #63877"
+    child: Ink(
+      decoration: subTile != null
           ? null
-          : () {
-              Navigator.pop(context);
-              onItemSelected(action.name);
-            },
+          : BoxDecoration(
+              color: action.isSelected
+                  ? Theme.of(context).primaryColorLight
+                  : Colors.transparent,
+              borderRadius: BorderRadius.horizontal(right: Radius.circular(32)),
+            ),
+      child: ListTile(
+        shape: subTile != null
+            ? null
+            : RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.horizontal(right: Radius.circular(32)),
+              ),
+        leading: Padding(
+          padding: subTile != null
+              ? EdgeInsets.only(left: 28.0)
+              : const EdgeInsets.symmetric(horizontal: 8.0),
+          child: ImageIcon(
+            AssetImage(action.icon),
+            size: 26.0,
+            color: color,
+          ),
+        ),
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text(action.title, style: itemStyle),
+        ),
+        trailing: action.switchWidget,
+        onTap: action.disabled
+            ? null
+            : () {
+                Navigator.pop(context);
+                onItemSelected(action.name);
+              },
+      ),
     ),
   );
 }
@@ -300,22 +319,29 @@ class _ExpansionTile extends StatelessWidget {
         child: ExpansionTile(
           title: Padding(
             padding: EdgeInsets.only(left: 8.0, right: 8.0),
-            child: Text(
-              title,
-              style: theme.drawerItemTextStyle,
-            ),
+            child: icon.assetName == ""
+                ? null
+                : Text(
+                    title,
+                    style: theme.drawerItemTextStyle,
+                  ),
           ),
           leading: Padding(
             padding: EdgeInsets.only(left: 8.0),
-            child: ImageIcon(
-              icon,
-              size: 26.0,
-              color: Colors.white,
-            ),
+            child: icon.assetName == ""
+                ? Text(
+                    title,
+                    style: theme.drawerItemTextStyle,
+                  )
+                : ImageIcon(
+                    icon,
+                    size: 26.0,
+                    color: Colors.white,
+                  ),
           ),
           children: items
               .map((item) =>
-                  Padding(padding: EdgeInsets.only(left: 28.0), child: item))
+                  Padding(padding: EdgeInsets.only(left: 0.0), child: item))
               .toList(),
           onExpansionChanged: (isExpanded) {
             if (isExpanded)
