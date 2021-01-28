@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:anytime/ui/anytime_podcast_app.dart';
-import 'package:anytime/ui/themes.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -22,11 +21,9 @@ import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:breez/routes/home/qr_action_button.dart';
+import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/theme_data.dart';
-import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/escher_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
@@ -37,6 +34,7 @@ import 'package:breez/widgets/navigation_drawer.dart';
 import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -53,7 +51,6 @@ import 'routes/account_required_actions.dart';
 import 'routes/connect_to_pay/connect_to_pay_page.dart';
 import 'routes/home/account_page.dart';
 import 'routes/no_connection_dialog.dart';
-import 'routes/spontaneous_payment/spontaneous_payment_page.dart';
 
 final GlobalKey firstPaymentItemKey = GlobalKey();
 final ScrollController scrollController = ScrollController();
@@ -204,120 +201,99 @@ class HomeState extends State<Home> {
                                   }
 
                                   var flavorItems = <DrawerItemConfigGroup>[];
-                                  flavorItems = [
-                                    DrawerItemConfigGroup([
-                                      user.isPOS
-                                          ? DrawerItemConfig(
-                                              "/transactions",
-                                              "Transactions",
-                                              "src/icon/transactions.png")
-                                          : DrawerItemConfig(
-                                              "/marketplace",
-                                              "Marketplace",
-                                              "src/icon/ic_market.png",
-                                              disabled: !account.connected)
-                                    ])
-                                  ];
-
-                                  var posItem = <DrawerItemConfigGroup>[];
-                                  posItem = [
-                                    DrawerItemConfigGroup(user.isPOS
-                                        ? [
+                                  flavorItems = user.appMode == AppMode.pos
+                                      ? [
+                                          DrawerItemConfigGroup([
                                             DrawerItemConfig(
-                                                "", "POS", "src/icon/pos.png",
-                                                onItemSelected: (_) {
-                                              widget.userProfileBloc
-                                                  .userActionsSink
-                                                  .add(SetPOSFlavor(
-                                                      !user.isPOS));
-                                            },
-                                                switchWidget: Switch(
-                                                    activeColor: Colors.white,
-                                                    value: user.isPOS,
-                                                    onChanged: (_) {
-                                                      protectAdminAction(
-                                                          context, user, () {
-                                                        var action =
-                                                            SetPOSFlavor(false);
-                                                        widget.userProfileBloc
-                                                            .userActionsSink
-                                                            .add(action);
-                                                        return action.future;
-                                                      });
-                                                    })),
-                                          ]
-                                        : [
-                                            DrawerItemConfig(
-                                                "", "POS", "src/icon/pos.png",
-                                                onItemSelected: (_) {
-                                              if (!user.isPodcast) {
-                                                widget.userProfileBloc
-                                                    .userActionsSink
-                                                    .add(SetPOSFlavor(
-                                                        !user.isPOS));
-                                              }
-                                            },
-                                                switchWidget: Switch(
-                                                    inactiveThumbColor:
-                                                        Colors.grey.shade400,
-                                                    activeColor: Colors.white,
-                                                    value: user.isPOS,
-                                                    onChanged: !account
-                                                                .connected ||
-                                                            user.isPodcast
-                                                        ? null
-                                                        : (_) {
-                                                            var action =
-                                                                SetPOSFlavor(
-                                                                    !user
-                                                                        .isPOS);
-                                                            widget
-                                                                .userProfileBloc
-                                                                .userActionsSink
-                                                                .add(action);
-                                                          })),
+                                                "/transactions",
+                                                "Transactions",
+                                                "src/icon/transactions.png")
                                           ])
-                                  ];
+                                        ]
+                                      : [];
+
+                                  var balanceItem = DrawerItemConfig(
+                                    "",
+                                    "Balance",
+                                    "src/icon/balance.png",
+                                    isSelected: user.appMode == AppMode.balance,
+                                    onItemSelected: (_) {
+                                      widget.userProfileBloc.userActionsSink
+                                          .add(SetAppMode(AppMode.balance));
+                                    },
+                                  );
 
                                   var podcastItem = DrawerItemConfig(
-                                      "", "Podcast", "src/icon/podcast.png",
-                                      onItemSelected: (_) {
-                                    if (!user.isPOS) {
+                                    "",
+                                    "Podcasts",
+                                    "src/icon/podcast.png",
+                                    isSelected:
+                                        user.appMode == AppMode.podcasts,
+                                    onItemSelected: (_) {
                                       widget.userProfileBloc.userActionsSink
-                                          .add(SetPodcastFlavor(
-                                              !user.isPodcast));
-                                    }
-                                  },
-                                      switchWidget: Switch(
-                                          inactiveThumbColor:
-                                              Colors.grey.shade400,
-                                          activeColor: Colors.white,
-                                          value: user.isPodcast,
-                                          onChanged: user.isPOS
-                                              ? null
-                                              : (val) {
-                                                  widget.userProfileBloc
-                                                      .userActionsSink
-                                                      .add(SetPodcastFlavor(
-                                                          !user.isPodcast));
-                                                }));
+                                          .add(SetAppMode(AppMode.podcasts));
+                                    },
+                                  );
+
+                                  var posItem = DrawerItemConfig(
+                                    "",
+                                    "Point of Sale",
+                                    "src/icon/pos.png",
+                                    isSelected: user.appMode == AppMode.pos,
+                                    onItemSelected: (_) {
+                                      widget.userProfileBloc.userActionsSink
+                                          .add(SetAppMode(AppMode.pos));
+                                    },
+                                  );
+
+                                  var lightningAppsItem = DrawerItemConfig(
+                                    "",
+                                    "Apps",
+                                    "src/icon/apps.png",
+                                    isSelected: user.appMode == AppMode.apps,
+                                    onItemSelected: (_) {
+                                      widget.userProfileBloc.userActionsSink
+                                          .add(SetAppMode(AppMode.apps));
+                                    },
+                                    disabled: !account.connected,
+                                  );
+
+                                  var appModeItems = <DrawerItemConfigGroup>[];
+                                  appModeItems = [
+                                    DrawerItemConfigGroup([
+                                      balanceItem,
+                                    ]),
+                                    DrawerItemConfigGroup([
+                                      podcastItem,
+                                    ]),
+                                    DrawerItemConfigGroup([
+                                      posItem,
+                                    ]),
+                                    DrawerItemConfigGroup([
+                                      lightningAppsItem,
+                                    ]),
+                                    DrawerItemConfigGroup([])
+                                  ];
 
                                   var advancedFlavorItems =
                                       List<DrawerItemConfig>();
-                                  advancedFlavorItems = user.isPOS
-                                      ? [
-                                          DrawerItemConfig("", "POS Settings",
-                                              "src/icon/settings.png",
-                                              onItemSelected: (_) =>
-                                                  protectAdminRoute(context,
-                                                      user, "/settings")),
-                                        ]
-                                      : [
-                                          DrawerItemConfig(
-                                              "/developers",
-                                              "Developers",
-                                              "src/icon/developers.png")
-                                        ];
+                                  advancedFlavorItems =
+                                      user.appMode == AppMode.pos
+                                          ? [
+                                              DrawerItemConfig(
+                                                  "",
+                                                  "POS Settings",
+                                                  "src/icon/settings.png",
+                                                  onItemSelected: (_) =>
+                                                      protectAdminRoute(context,
+                                                          user, "/settings")),
+                                            ]
+                                          : [
+                                              DrawerItemConfig(
+                                                  "/developers",
+                                                  "Developers",
+                                                  "src/icon/developers.png")
+                                            ];
 
                                   return StreamBuilder<
                                           Future<DecodedClipboardData>>(
@@ -354,42 +330,46 @@ class HomeState extends State<Home> {
                                                               widget.lspBloc),
                                                     ),
                                                   ],
-                                                  leading: IconButton(
-                                                      icon: SvgPicture.asset(
-                                                        "src/icon/hamburger.svg",
-                                                        height: 24.0,
-                                                        width: 24.0,
-                                                        color: Theme.of(context)
-                                                            .appBarTheme
-                                                            .actionsIconTheme
-                                                            .color,
-                                                      ),
-                                                      onPressed: () =>
-                                                          _scaffoldKey
-                                                              .currentState
-                                                              .openDrawer()),
-                                                  title: SvgPicture.asset(
-                                                    "src/images/logo-color.svg",
-                                                    height: 23.5,
-                                                    width: 62.7,
-                                                    color: Theme.of(context)
-                                                        .appBarTheme
-                                                        .color,
-                                                    colorBlendMode:
-                                                        BlendMode.srcATop,
+                                                  leading: _buildMenuIcon(
+                                                      context, user.appMode),
+                                                  title: IconButton(
+                                                    padding: EdgeInsets.zero,
+                                                    icon: SvgPicture.asset(
+                                                      "src/images/logo-color.svg",
+                                                      height: 23.5,
+                                                      width: 62.7,
+                                                      color: Theme.of(context)
+                                                          .appBarTheme
+                                                          .actionsIconTheme
+                                                          .color,
+                                                      colorBlendMode:
+                                                          BlendMode.srcATop,
+                                                    ),
+                                                    iconSize: 64,
+                                                    onPressed: () =>
+                                                        _scaffoldKey
+                                                            .currentState
+                                                            .openDrawer(),
                                                   ),
                                                   iconTheme: IconThemeData(
                                                       color: Color.fromARGB(
                                                           255, 0, 133, 251)),
-                                                  backgroundColor: (user.isPOS)
-                                                      ? Theme.of(context)
-                                                          .backgroundColor
-                                                      : theme
-                                                          .customData[
-                                                              theme.themeId]
-                                                          .dashboardBgColor,
+                                                  backgroundColor:
+                                                      (user.appMode ==
+                                                              AppMode.pos)
+                                                          ? Theme.of(context)
+                                                              .backgroundColor
+                                                          : theme
+                                                              .customData[
+                                                                  theme.themeId]
+                                                              .dashboardBgColor,
                                                   elevation: 0.0,
                                                 ),
+                                                drawerEnableOpenDragGesture:
+                                                    true,
+                                                drawerDragStartBehavior:
+                                                    DragStartBehavior.start,
+                                                drawerEdgeDragWidth: 80,
                                                 drawer: Theme(
                                                   data: theme
                                                       .themeMap[user.themeId],
@@ -397,62 +377,40 @@ class HomeState extends State<Home> {
                                                       true,
                                                       [
                                                         ...refundItems,
-                                                        _buildSendItems(
-                                                            account,
-                                                            snapshot,
-                                                            context,
-                                                            user,
-                                                            settings),
-                                                        DrawerItemConfigGroup([
-                                                          DrawerItemConfig(
-                                                            "/create_invoice",
-                                                            "Receive via Invoice",
-                                                            "src/icon/paste.png",
-                                                          ),
-                                                          ...addFundsVendors,
-                                                        ],
-                                                            groupTitle:
-                                                                "Receive",
-                                                            groupAssetImage:
-                                                                "src/icon/receive-action.png",
-                                                            withDivider: false),
+                                                        ...appModeItems,
                                                         ...flavorItems,
-                                                        ...posItem,
                                                         DrawerItemConfigGroup(
-                                                          [
-                                                            podcastItem,
-                                                          ],
+                                                          _filterItems([
+                                                            DrawerItemConfig(
+                                                                "/fiat_currency",
+                                                                "Fiat Currencies",
+                                                                "src/icon/fiat_currencies.png"),
+                                                            DrawerItemConfig(
+                                                                "/network",
+                                                                "Network",
+                                                                "src/icon/network.png"),
+                                                            DrawerItemConfig(
+                                                                "/security",
+                                                                "Security & Backup",
+                                                                "src/icon/security.png"),
+                                                            ...advancedFlavorItems,
+                                                          ]),
+                                                          groupTitle:
+                                                              "Preferences",
+                                                          groupAssetImage: "",
                                                         ),
-                                                        DrawerItemConfigGroup(
-                                                            _filterItems([
-                                                              DrawerItemConfig(
-                                                                  "/fiat_currency",
-                                                                  "Fiat Currencies",
-                                                                  "src/icon/fiat_currencies.png"),
-                                                              DrawerItemConfig(
-                                                                  "/network",
-                                                                  "Network",
-                                                                  "src/icon/network.png"),
-                                                              DrawerItemConfig(
-                                                                  "/security",
-                                                                  "Security & Backup",
-                                                                  "src/icon/security.png"),
-                                                              ...advancedFlavorItems,
-                                                            ]),
-                                                            groupTitle:
-                                                                "Advanced",
-                                                            groupAssetImage:
-                                                                "src/icon/advanced.png"),
                                                       ],
                                                       _onNavigationItemSelected),
                                                 ),
                                                 bottomNavigationBar: user
-                                                        .isWalletMode
+                                                            .appMode ==
+                                                        AppMode.balance
                                                     ? BottomActionsBar(account,
                                                         firstPaymentItemKey)
                                                     : null,
                                                 floatingActionButton:
-                                                    user.isWalletMode
+                                                    user.appMode ==
+                                                            AppMode.balance
                                                         ? QrActionButton(
                                                             account,
                                                             firstPaymentItemKey)
@@ -473,82 +431,48 @@ class HomeState extends State<Home> {
         });
   }
 
-  DrawerItemConfigGroup _buildSendItems(
-      AccountModel account,
-      AsyncSnapshot<Future<DecodedClipboardData>> snapshot,
-      BuildContext context,
-      BreezUserModel user,
-      AccountSettings settings) {
-    List<DrawerItemConfig> itemConfigs = [];
-    DrawerItemConfig pasteItem = DrawerItemConfig(
-        "", "Paste Invoice or Node ID", "src/icon/paste.png",
-        disabled: !account.connected, onItemSelected: (_) {
-      protectAdminAction(context, user, () async {
-        DecodedClipboardData clipboardData = await snapshot.data;
-        if (clipboardData != null) {
-          if (clipboardData.type == "invoice") {
-            widget.invoiceBloc.decodeInvoiceSink.add(clipboardData.data);
-          } else if (clipboardData.type == "nodeID") {
-            Navigator.of(context).push(FadeInRoute(
-              builder: (_) => SpontaneousPaymentPage(
-                  clipboardData.data, firstPaymentItemKey),
-            ));
-          }
-        } else {
-          return showDialog(
-              useRootNavigator: false,
-              context: context,
-              barrierDismissible: false,
-              builder: (_) => EnterPaymentInfoDialog(
-                  context, widget.invoiceBloc, firstPaymentItemKey));
-        }
-      });
-    });
-    DrawerItemConfig c2pItem = DrawerItemConfig(
-        "", "Connect to Pay", "src/icon/connect_to_pay.png",
-        disabled: !account.connected,
-        onItemSelected: (_) =>
-            protectAdminRoute(context, user, "/connect_to_pay"));
-    DrawerItemConfig sendToBTCAddressItem = DrawerItemConfig(
-        "", "Send to BTC Address", "src/icon/bitcoin.png",
-        disabled: !account.connected,
-        onItemSelected: (_) =>
-            protectAdminRoute(context, user, "/withdraw_funds"));
-    DrawerItemConfig escherItem = DrawerItemConfig(
-        "", "Cash-Out via Escher", "src/icon/escher.png",
-        disabled: !account.connected, onItemSelected: (_) {
-      return showDialog(
-          useRootNavigator: false,
-          context: context,
-          barrierDismissible: false,
-          builder: (_) => EscherDialog(context, widget.accountBloc));
-    });
-    itemConfigs.add(pasteItem);
-    itemConfigs.add(c2pItem);
-    itemConfigs.add(sendToBTCAddressItem);
+  IconButton _buildMenuIcon(BuildContext context, AppMode appMode) {
+    return IconButton(
+        icon: Image.asset(
+          _getAppModesAssetName(appMode),
+          height: 24.0,
+          width: 24.0,
+          color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+        ),
+        onPressed: () => _scaffoldKey.currentState.openDrawer());
+  }
 
-    if (settings.isEscherEnabled) {
-      itemConfigs.add(escherItem);
+  String _getAppModesAssetName(AppMode appMode) {
+    switch (appMode) {
+      case (AppMode.podcasts):
+        return "src/icon/podcast.png";
+      case (AppMode.pos):
+        return "src/icon/pos.png";
+      case (AppMode.apps):
+        return "src/icon/apps.png";
+      case (AppMode.balance):
+        return "src/icon/balance.png";
+      default:
+        return "src/icon/hamburger.svg";
     }
-
-    return DrawerItemConfigGroup(itemConfigs,
-        groupTitle: "Send",
-        groupAssetImage: "src/icon/send-action.png",
-        withDivider: true);
   }
 
   _homePage(BreezUserModel user) {
-    if (user.isPodcast) {
-      return AnytimeHomePage(
-        noSubscriptionsMessage:
-            "Use the Discover view to find and subscribe to your first podcast.",
-        topBarVisible: false,
-        title: 'Anytime Podcast Player',
-      );
+    switch (user.appMode) {
+      case AppMode.podcasts:
+        return AnytimeHomePage(
+          noSubscriptionsMessage:
+              "Use the Discover view to find and subscribe to your first podcast.",
+          topBarVisible: false,
+          title: 'Anytime Podcast Player',
+        );
+      case AppMode.pos:
+        return POSInvoice();
+      case AppMode.apps:
+        return MarketplacePage();
+      default:
+        return AccountPage(firstPaymentItemKey, scrollController);
     }
-    return user.isPOS
-        ? POSInvoice()
-        : AccountPage(firstPaymentItemKey, scrollController);
   }
 
   _onNavigationItemSelected(String itemName) {

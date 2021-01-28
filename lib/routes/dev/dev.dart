@@ -389,12 +389,6 @@ class DevViewState extends State<DevView> {
         function: () {
           allowRebroadcastRefunds = true;
         }));
-    /*
-    choices.add(Choice(
-        title: "Switch to ${userModel.isPOS ? 'User flavor' : 'POS flavor'}",
-        icon: Icons.network_check,
-        function: () => _setPOS(userBloc, !userModel.isPOS)));
-        */
     choices.add(Choice(
         title: "Recover Chain Information",
         icon: Icons.phone_android,
@@ -488,10 +482,6 @@ class DevViewState extends State<DevView> {
     bloc.accountSettingsSink
         .add(settings.copyWith(isEscherEnabled: !settings.isEscherEnabled));
   }
-
-/*  void _setPOS(UserProfileBloc userBloc, bool isPOS) {
-    userBloc.userActionsSink.add(SetPOSFlavor(isPOS));
-  }*/
 
   void _describeGraph() async {
     Directory tempDir = await getTemporaryDirectory();

@@ -50,7 +50,7 @@ import 'theme_data.dart' as theme;
 final routeObserver = RouteObserver();
 
 Widget _withTheme(BreezUserModel user, Widget child) {
-  if (user.isPodcast) {
+  if (user.appMode == AppMode.podcasts) {
     return withPodcastTheme(user, child);
   }
   return child;

@@ -1,6 +1,9 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
+
 import 'business_adress.dart';
+
+enum AppMode { balance, podcasts, pos, apps }
 
 class BreezUserModel {
   final String userID;
@@ -15,54 +18,57 @@ class BreezUserModel {
   final String themeId;
   final bool locked;
   final bool registrationRequested;
-  final bool isPOS;
-  final bool isPodcast;
   final bool hideBalance;
   final double cancellationTimeoutValue;
   final bool hasAdminPassword;
   final BusinessAddress businessAddress;
   final String posCurrencyShortName;
   final List<String> preferredCurrencies;
+  final AppMode appMode;
 
-  BreezUserModel._(this.userID, this.name, this.color, this.animal,
-      {this.currency = Currency.SAT,
-      this.fiatCurrency = "USD",
-      this.image,
-      this.securityModel,
-      this.locked,
-      this.token = '',
-      this.themeId = "BLUE",
-      this.registrationRequested = false,
-      this.isPOS = false,
-      this.isPodcast = false,
-      this.hideBalance = false,
-      this.cancellationTimeoutValue = 90.0,
-      this.hasAdminPassword = false,
-      this.businessAddress,
-      this.posCurrencyShortName = "SAT",
-      this.preferredCurrencies});
+  BreezUserModel._(
+    this.userID,
+    this.name,
+    this.color,
+    this.animal, {
+    this.currency = Currency.SAT,
+    this.fiatCurrency = "USD",
+    this.image,
+    this.securityModel,
+    this.locked,
+    this.token = '',
+    this.themeId = "BLUE",
+    this.registrationRequested = false,
+    this.hideBalance = false,
+    this.cancellationTimeoutValue = 90.0,
+    this.hasAdminPassword = false,
+    this.businessAddress,
+    this.posCurrencyShortName = "SAT",
+    this.preferredCurrencies,
+    this.appMode = AppMode.balance,
+  });
 
-  BreezUserModel copyWith(
-      {String name,
-      String color,
-      String animal,
-      Currency currency,
-      String fiatCurrency,
-      String image,
-      SecurityModel securityModel,
-      bool locked,
-      String token,
-      String userID,
-      String themeId,
-      bool registrationRequested,
-      bool isPOS,
-      bool isPodcast,
-      bool hideBalance,
-      double cancellationTimeoutValue,
-      bool hasAdminPassword,
-      BusinessAddress businessAddress,
-      String posCurrencyShortName,
-      List<String> preferredCurrencies}) {
+  BreezUserModel copyWith({
+    String name,
+    String color,
+    String animal,
+    Currency currency,
+    String fiatCurrency,
+    String image,
+    SecurityModel securityModel,
+    bool locked,
+    String token,
+    String userID,
+    String themeId,
+    bool registrationRequested,
+    bool hideBalance,
+    double cancellationTimeoutValue,
+    bool hasAdminPassword,
+    BusinessAddress businessAddress,
+    String posCurrencyShortName,
+    List<String> preferredCurrencies,
+    AppMode appMode,
+  }) {
     return BreezUserModel._(
       userID ?? this.userID,
       name ?? this.name,
@@ -77,8 +83,6 @@ class BreezUserModel {
       themeId: themeId ?? this.themeId,
       registrationRequested:
           registrationRequested ?? this.registrationRequested,
-      isPOS: isPOS ?? this.isPOS,
-      isPodcast: isPodcast ?? this.isPodcast,
       hideBalance: hideBalance ?? this.hideBalance,
       cancellationTimeoutValue:
           cancellationTimeoutValue ?? this.cancellationTimeoutValue,
@@ -86,10 +90,9 @@ class BreezUserModel {
       businessAddress: businessAddress ?? this.businessAddress,
       posCurrencyShortName: posCurrencyShortName ?? this.posCurrencyShortName,
       preferredCurrencies: preferredCurrencies ?? this.preferredCurrencies,
+      appMode: appMode ?? this.appMode,
     );
   }
-
-  bool get isWalletMode => !isPOS && !isPodcast;
 
   bool get registered {
     return userID != null;
@@ -120,8 +123,6 @@ class BreezUserModel {
         themeId = json['themeId'] == null ? "BLUE" : json['themeId'],
         registrationRequested =
             json['registrationRequested'] ?? json['token'] != null,
-        isPOS = json['isPOS'] ?? false,
-        isPodcast = json['isPodcast'] ?? false,
         hideBalance = json['hideBalance'] ?? false,
         cancellationTimeoutValue = json['cancellationTimeoutValue'] == null
             ? 90.0
@@ -133,7 +134,8 @@ class BreezUserModel {
         posCurrencyShortName = json['posCurrencyShortName'] ?? "SAT",
         preferredCurrencies =
             (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
-                <String>['USD', 'EUR', 'GBP', 'JPY'];
+                <String>['USD', 'EUR', 'GBP', 'JPY'],
+        appMode = AppMode.values[json["appMode"] ?? 0];
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -148,12 +150,11 @@ class BreezUserModel {
         'themeId': themeId,
         'registrationRequested': registrationRequested,
         'cancellationTimeoutValue': cancellationTimeoutValue,
-        'isPOS': isPOS,
-        'isPodcast': isPodcast,
         'hideBalance': hideBalance,
         'hasAdminPassword': hasAdminPassword,
         'posCurrencyShortName': posCurrencyShortName,
         'businessAddress': businessAddress,
         'preferredCurrencies': preferredCurrencies,
+        'appMode': appMode.index,
       };
 }
