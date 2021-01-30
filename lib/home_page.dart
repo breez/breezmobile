@@ -369,7 +369,10 @@ class HomeState extends State<Home> {
                                                     true,
                                                 drawerDragStartBehavior:
                                                     DragStartBehavior.down,
-                                                drawerEdgeDragWidth: 80,
+                                                drawerEdgeDragWidth:
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .width,
                                                 drawer: Theme(
                                                   data: theme
                                                       .themeMap[user.themeId],
