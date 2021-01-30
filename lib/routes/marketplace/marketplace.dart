@@ -2,6 +2,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
 import 'vendor_row.dart';
@@ -48,7 +49,9 @@ class MarketplacePageState extends State<MarketplacePage> {
   Widget _buildScaffold(Widget body) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: theme.themeId == "BLUE"
+          ? Theme.of(context).backgroundColor
+          : Theme.of(context).canvasColor,
       body: body,
     );
   }
