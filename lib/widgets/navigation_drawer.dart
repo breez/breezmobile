@@ -331,7 +331,8 @@ class _ExpansionTile extends StatelessWidget {
             child: icon.assetName == ""
                 ? Text(
                     title,
-                    style: theme.drawerItemTextStyle,
+                    style: theme.drawerItemTextStyle
+                        .copyWith(fontWeight: FontWeight.w500),
                   )
                 : ImageIcon(
                     icon,
