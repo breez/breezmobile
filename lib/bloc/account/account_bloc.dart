@@ -18,6 +18,7 @@ import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/retry.dart';
+import 'package:collection/collection.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -579,7 +580,8 @@ class AccountBloc {
     print("refreshing payments...");
     return _breezLib.getPayments().then((payments) {
       List<PaymentInfo> _paymentsList = payments.paymentsList
-          .map((payment) => PaymentInfo(payment, _accountController.value))
+          .map(
+              (payment) => SinglePaymentInfo(payment, _accountController.value))
           .toList();
       if (_paymentsList.length > 0) {
         _firstDate = DateTime.fromMillisecondsSinceEpoch(
@@ -601,8 +603,25 @@ class AccountBloc {
         .catchError(_paymentsController.addError);
   }
 
+  List<PaymentInfo> _groupPayments(List<PaymentInfo> paymentsList) {
+    var groupedPayments = groupBy<PaymentInfo, String>(paymentsList, (p) {
+      return p.paymentGroup;
+    });
+
+    var payments = List<PaymentInfo>();
+    groupedPayments.forEach((key, singles) {
+      if (singles.length > 1) {
+        payments
+            .add(StreamedPaymentInfo(singles, key, _accountController.value));
+      } else {
+        payments.add(singles[0]);
+      }
+    });
+    return payments;
+  }
+
   _filterPayments(List<PaymentInfo> paymentsList) {
-    Set<PaymentInfo> paymentsSet = paymentsList
+    Set<PaymentInfo> paymentsSet = _groupPayments(paymentsList)
         .where(
             (p) => _paymentFilterController.value.paymentType.contains(p.type))
         .toSet();

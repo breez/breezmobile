@@ -2,8 +2,8 @@
 //  Generated code. Do not modify.
 //  source: rpc.proto
 //
-// @dart = 2.3
-// ignore_for_file: camel_case_types,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type
+// @dart = 2.7
+// ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 const SwapError$json = const {
   '1': 'SwapError',
@@ -114,6 +114,7 @@ const Payment$json = const {
     const {'1': 'PendingFull', '3': 19, '4': 1, '5': 8, '10': 'PendingFull'},
     const {'1': 'closedChannelRemoteTxID', '3': 20, '4': 1, '5': 9, '10': 'closedChannelRemoteTxID'},
     const {'1': 'closedChannelSweepTxID', '3': 21, '4': 1, '5': 9, '10': 'closedChannelSweepTxID'},
+    const {'1': 'group', '3': 22, '4': 1, '5': 9, '10': 'group'},
   ],
   '4': const [Payment_PaymentType$json],
 };
@@ -166,6 +167,7 @@ const SpontaneousPaymentRequest$json = const {
     const {'1': 'amount', '3': 1, '4': 1, '5': 3, '10': 'amount'},
     const {'1': 'destNode', '3': 2, '4': 1, '5': 9, '10': 'destNode'},
     const {'1': 'description', '3': 3, '4': 1, '5': 9, '10': 'description'},
+    const {'1': 'group', '3': 4, '4': 1, '5': 9, '10': 'group'},
   ],
 };
 

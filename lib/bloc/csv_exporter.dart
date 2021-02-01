@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CsvExporter {
-  final List paymentList;
+  final List<PaymentInfo> paymentList;
   final PaymentFilterModel filter;
 
   CsvExporter(this.paymentList, this.filter);
@@ -27,7 +27,7 @@ class CsvExporter {
     List<List<dynamic>> paymentList =
         List.generate(this.paymentList.length, (index) {
       List paymentItem = List();
-      PaymentInfo paymentInfo = this.paymentList.elementAt(index);
+      var paymentInfo = this.paymentList.elementAt(index);
       paymentItem.add(BreezDateUtils.formatYearMonthDayHourMinute(
           DateTime.fromMillisecondsSinceEpoch(
               paymentInfo.creationTimestamp.toInt() * 1000)));

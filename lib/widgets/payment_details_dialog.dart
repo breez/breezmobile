@@ -244,24 +244,7 @@ Future<Null> showPaymentDetailsDialog(
                     ],
                   ),
                 ),
-          paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
-              ? Container()
-              : ShareablePaymentRow(
-                  title: "Payment Preimage", sharedValue: paymentInfo.preimage),
-          paymentInfo.destination == null || paymentInfo.destination.isEmpty
-              ? Container()
-              : ShareablePaymentRow(
-                  title: "Node ID", sharedValue: paymentInfo.destination),
-          paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
-              ? Container()
-              : ShareablePaymentRow(
-                  title: "Transaction Hash",
-                  sharedValue: paymentInfo.paymentHash),
-          paymentInfo.redeemTxID == null || paymentInfo.redeemTxID.isEmpty
-              ? Container()
-              : ShareablePaymentRow(
-                  title: "On-chain Transaction",
-                  sharedValue: paymentInfo.redeemTxID),
+          ..._getPaymentInfoDetails(paymentInfo),
         ],
       ),
     ),
@@ -274,6 +257,27 @@ Future<Null> showPaymentDetailsDialog(
     context: context,
     builder: (_) => _paymentDetailsDialog,
   );
+}
+
+List<Widget> _getPaymentInfoDetails(PaymentInfo paymentInfo) {
+  return List<Widget>.from({
+    paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
+        ? Container()
+        : ShareablePaymentRow(
+            title: "Payment Preimage", sharedValue: paymentInfo.preimage),
+    paymentInfo.destination == null || paymentInfo.destination.isEmpty
+        ? Container()
+        : ShareablePaymentRow(
+            title: "Node ID", sharedValue: paymentInfo.destination),
+    paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
+        ? Container()
+        : ShareablePaymentRow(
+            title: "Transaction Hash", sharedValue: paymentInfo.paymentHash),
+    paymentInfo.redeemTxID == null || paymentInfo.redeemTxID.isEmpty
+        ? Container()
+        : ShareablePaymentRow(
+            title: "On-chain Transaction", sharedValue: paymentInfo.redeemTxID),
+  });
 }
 
 class ShareablePaymentRow extends StatelessWidget {
@@ -379,7 +383,7 @@ class ShareablePaymentRow extends StatelessWidget {
 }*/
 
 class ClosedChannelPaymentDetails extends StatefulWidget {
-  final PaymentInfo closedChannel;
+  final SinglePaymentInfo closedChannel;
   final LSPStatus lsp;
   final AccountBloc accountBloc;
 
