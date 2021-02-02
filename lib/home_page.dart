@@ -460,12 +460,12 @@ class HomeState extends State<Home> {
     }
   }
 
+//  noSubscriptionsMessage:
+//               "Use the Discover view to find and subscribe to your first podcast.",
   _homePage(BreezUserModel user) {
     switch (user.appMode) {
       case AppMode.podcasts:
-        return AnytimeHomePage(
-          noSubscriptionsMessage:
-              "Use the Discover view to find and subscribe to your first podcast.",
+        return AnytimeHomePage(         
           topBarVisible: false,
           title: 'Anytime Podcast Player',
         );

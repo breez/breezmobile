@@ -49,7 +49,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         audioBloc.playingState,
         audioBloc.nowPlaying,
         (AudioState audioState, Episode episode) =>
-            PlayerControlState(audioState, episode, null)).listen((event) {
+            PlayerControlState(audioState, episode)).listen((event) {
       _stopPaymentTimer();
       if (event.audioState == AudioState.playing) {
         startPaymentTimer(event.episode);
