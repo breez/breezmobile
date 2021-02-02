@@ -104,7 +104,7 @@ class UserApp extends StatelessWidget {
                                 ? 1.3
                                 : data.textScaleFactor,
                           ),
-                          child: _withTheme(user, context, child));
+                          child: _withTheme(user, child));
                     },
                     initialRoute: user.registrationRequested
                         ? (user.locked ? '/lockscreen' : "/")
