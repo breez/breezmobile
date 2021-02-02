@@ -61,7 +61,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     _paymentTimer = Timer.periodic(Duration(seconds: 10), (t) {
       var currentDuration = (_listeningTime[episode.contentUrl] ?? 0) + 10;
       _listeningTime[episode.contentUrl] = currentDuration;
-      if (currentDuration % 20 == 0) {
+      if (currentDuration % 60 == 0) {
         print(
             "sending payment for episode ${episode.contentUrl}, duration: $currentDuration");
         int total = 10;
