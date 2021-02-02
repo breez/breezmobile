@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -465,9 +465,12 @@ class HomeState extends State<Home> {
   _homePage(BreezUserModel user) {
     switch (user.appMode) {
       case AppMode.podcasts:
-        return AnytimeHomePage(         
-          topBarVisible: false,
-          title: 'Anytime Podcast Player',
+        return Theme(
+          data: withPodcastTheme(user),
+          child: AnytimeHomePage(
+            topBarVisible: false,
+            title: 'Anytime Podcast Player',
+          ),
         );
       case AppMode.pos:
         return POSInvoice();

@@ -49,13 +49,6 @@ import 'theme_data.dart' as theme;
 
 final routeObserver = RouteObserver();
 
-Widget _withTheme(BreezUserModel user, Widget child) {
-  if (user.appMode == AppMode.podcasts) {
-    return withPodcastTheme(user, child);
-  }
-  return child;
-}
-
 class UserApp extends StatelessWidget {
   GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
@@ -107,7 +100,7 @@ class UserApp extends StatelessWidget {
                                 ? 1.3
                                 : data.textScaleFactor,
                           ),
-                          child: _withTheme(user, child));
+                          child: child);
                     },
                     initialRoute: user.registrationRequested
                         ? (user.locked ? '/lockscreen' : "/")
