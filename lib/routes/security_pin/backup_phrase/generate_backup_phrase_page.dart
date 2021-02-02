@@ -126,9 +126,10 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
           Navigator.push(
             context,
             FadeInRoute(
-              builder: (_) => withPodcastTheme(
-                  context, VerifyBackupPhrasePage(widget.mnemonics),
-                  overridePodcastTheme: true),
+              builder: (_) => withBreezTheme(
+                context,
+                VerifyBackupPhrasePage(widget.mnemonics),
+              ),
             ),
           );
         } else {

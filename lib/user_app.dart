@@ -46,9 +46,9 @@ import 'theme_data.dart' as theme;
 
 final routeObserver = RouteObserver();
 
-Widget _withTheme(BreezUserModel user, BuildContext context, Widget child) {
+Widget _withTheme(BreezUserModel user, Widget child) {
   if (user.appMode == AppMode.podcasts) {
-    return withPodcastTheme(context, child);
+    return withPodcastTheme(user, child);
   }
   return child;
 }
@@ -125,7 +125,7 @@ class UserApp extends StatelessWidget {
                           );
                         case '/lockscreen':
                           return NoTransitionRoute(
-                              builder: (ctx) => withPodcastTheme(
+                              builder: (ctx) => withBreezTheme(
                                   ctx,
                                   AppLockScreen(
                                     (pinEntered) {
@@ -152,8 +152,7 @@ class UserApp extends StatelessWidget {
                                           }
                                         : null,
                                     userProfileBloc: userProfileBloc,
-                                  ),
-                                  overridePodcastTheme: true),
+                                  )),
                               settings: settings);
                         case '/':
                           return FadeInRoute(
@@ -235,35 +234,36 @@ class UserApp extends StatelessWidget {
                                       );
                                     case '/fiat_currency':
                                       return FadeInRoute(
-                                        builder: (_) => withPodcastTheme(
+                                        builder: (_) => withBreezTheme(
                                           context,
                                           FiatCurrencySettings(
                                               accountBloc, userProfileBloc),
-                                          overridePodcastTheme: true,
                                         ),
                                         settings: settings,
                                       );
                                     case '/network':
                                       return FadeInRoute(
-                                        builder: (_) => withPodcastTheme(
-                                            context, NetworkPage(),
-                                            overridePodcastTheme: true),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          NetworkPage(),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/security':
                                       return FadeInRoute(
-                                        builder: (_) => withPodcastTheme(
-                                            context,
-                                            SecurityPage(
-                                                userProfileBloc, backupBloc),
-                                            overridePodcastTheme: true),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          SecurityPage(
+                                              userProfileBloc, backupBloc),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/developers':
                                       return FadeInRoute(
-                                        builder: (_) => withPodcastTheme(
-                                            context, DevView(),
-                                            overridePodcastTheme: true),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          DevView(),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/connect_to_pay':

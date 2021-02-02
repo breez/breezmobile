@@ -121,9 +121,10 @@ class BackupPhraseGeneratorConfirmationPageState
                   Navigator.pushReplacement(
                     context,
                     FadeInRoute(
-                      builder: (BuildContext context) => withPodcastTheme(
-                          context, GenerateBackupPhrasePage(mnemonics),
-                          overridePodcastTheme: true),
+                      builder: (BuildContext context) => withBreezTheme(
+                        context,
+                        GenerateBackupPhrasePage(mnemonics),
+                      ),
                     ),
                   );
                 },

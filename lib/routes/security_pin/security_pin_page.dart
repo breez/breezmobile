@@ -181,9 +181,10 @@ class SecurityPageState extends State<SecurityPage>
               Navigator.push(
                 context,
                 FadeInRoute(
-                  builder: (BuildContext context) => withPodcastTheme(
-                      context, BackupPhraseGeneratorConfirmationPage(),
-                      overridePodcastTheme: true),
+                  builder: (BuildContext context) => withBreezTheme(
+                    context,
+                    BackupPhraseGeneratorConfirmationPage(),
+                  ),
                 ),
               );
             } else {
@@ -392,8 +393,10 @@ class SecurityPageState extends State<SecurityPage>
     Navigator.of(context).push(
       FadeInRoute(
         builder: (BuildContext context) {
-          return withPodcastTheme(context, ChangePinCode(),
-              overridePodcastTheme: true);
+          return withBreezTheme(
+            context,
+            ChangePinCode(),
+          );
         },
       ),
     ).then((newPIN) async {
