@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -125,7 +126,9 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
           Navigator.push(
             context,
             FadeInRoute(
-              builder: (_) => VerifyBackupPhrasePage(widget.mnemonics),
+              builder: (_) => withPodcastTheme(
+                  context, VerifyBackupPhrasePage(widget.mnemonics),
+                  overridePodcastTheme: true),
             ),
           );
         } else {

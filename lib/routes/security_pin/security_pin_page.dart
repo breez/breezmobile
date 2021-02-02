@@ -7,6 +7,7 @@ import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/min_font_size.dart';
@@ -178,10 +179,13 @@ class SecurityPageState extends State<SecurityPage>
           if (this.mounted) {
             if (value) {
               Navigator.push(
-                  context,
-                  FadeInRoute(
-                      builder: (BuildContext context) =>
-                          BackupPhraseGeneratorConfirmationPage()));
+                context,
+                FadeInRoute(
+                  builder: (BuildContext context) => withPodcastTheme(
+                      context, BackupPhraseGeneratorConfirmationPage(),
+                      overridePodcastTheme: true),
+                ),
+              );
             } else {
               showDialog(
                   context: context,
@@ -388,7 +392,8 @@ class SecurityPageState extends State<SecurityPage>
     Navigator.of(context).push(
       FadeInRoute(
         builder: (BuildContext context) {
-          return ChangePinCode();
+          return withPodcastTheme(context, ChangePinCode(),
+              overridePodcastTheme: true);
         },
       ),
     ).then((newPIN) async {
