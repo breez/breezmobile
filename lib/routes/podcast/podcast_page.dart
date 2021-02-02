@@ -19,6 +19,7 @@ import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:anytime/ui/themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'anytime_downloader.dart';
@@ -77,9 +78,19 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
           theme = newTheme;
 
           if (event.theme == 'dark') {
-            Chrome.transparentDark();
+            SystemChrome.setSystemUIOverlayStyle(
+              SystemUiOverlayStyle(
+                statusBarColor: Themes.lightTheme().themeData.scaffoldBackgroundColor,
+                statusBarIconBrightness: Brightness.light,
+              ),
+            );
           } else {
-            Chrome.transparentLight();
+            SystemChrome.setSystemUIOverlayStyle(
+              SystemUiOverlayStyle(
+                statusBarColor: Themes.darkTheme().themeData.scaffoldBackgroundColor,
+                statusBarIconBrightness: Brightness.dark,
+              ),
+            );
           }
         }
       });
