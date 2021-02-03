@@ -273,12 +273,13 @@ class BreezBridge {
 
   Future<PaymentResponse> sendSpontaneousPayment(
       String destNode, Int64 amount, String description,
-      {String group = ""}) {
+      {String groupKey = "", String groupName = ""}) {
     var request = SpontaneousPaymentRequest()
       ..description = description
       ..destNode = destNode
       ..amount = amount
-      ..group = group;
+      ..groupKey = groupKey
+      ..groupName = groupName;
 
     var payFunc = () => _invokeMethodWhenReady(
             "sendSpontaneousPayment", {"argument": request.writeToBuffer()})

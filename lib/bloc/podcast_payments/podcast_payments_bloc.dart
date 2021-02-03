@@ -69,9 +69,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           var amount = Int64((d.split * total / 100).floor()).toInt();
           if (amount > 0 && amount <= total) {
             print("sending $amount to ${d.name}");
-            _breezLib.sendSpontaneousPayment(
-                d.address, Int64(amount), episode.title,
-                group: episode.contentUrl + "1");
+            _breezLib.sendSpontaneousPayment(d.address, Int64(amount), d.name,
+                groupKey: episode.contentUrl, groupName: episode.title);
           }
         });
         //_breezLib.sendSpontaneousPayment(destNode, amount, description)

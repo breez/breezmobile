@@ -432,15 +432,15 @@ abstract class PaymentInfo {
   String get destination;
   bool get fullPending;
   String get paymentGroup;
+  String get paymentGroupName;
   PaymentInfo copyWith(AccountModel account);
 }
 
 class StreamedPaymentInfo implements PaymentInfo {
   final AccountModel account;
-  final String streamID;
   final List<PaymentInfo> singlePayments;
 
-  StreamedPaymentInfo(this.singlePayments, this.streamID, this.account);
+  StreamedPaymentInfo(this.singlePayments, this.account);
 
   PaymentType get type => PaymentType.SENT;
   Int64 get amount => singlePayments.fold(Int64(0), (sum, p) => sum + p.amount);
@@ -449,11 +449,11 @@ class StreamedPaymentInfo implements PaymentInfo {
       Int64(0), (t, p) => Int64(max(t.toInt(), p.creationTimestamp.toInt())));
   String get description => singlePayments
       .firstWhere((p) => !p.pending, orElse: () => singlePayments[0])
-      .description;
+      .paymentGroup;
   bool get pending => singlePayments.fold(false, (t, p) => t || p.pending);
   PaymentInfo copyWith(AccountModel account) {
-    var payments = singlePayments.map((e) => e.copyWith(account));
-    return StreamedPaymentInfo(payments, streamID, account);
+    var payments = singlePayments.map((e) => e.copyWith(account)).toList();
+    return StreamedPaymentInfo(payments, account);
   }
 
   Currency get currency => account.currency;
@@ -461,10 +461,10 @@ class StreamedPaymentInfo implements PaymentInfo {
   bool get keySend => true;
   String get imageURL => null;
   bool get containsPaymentInfo => false;
-  String get dialogTitle => description;
+  String get dialogTitle => paymentGroupName;
   String get title => singlePayments
       .firstWhere((p) => !p.pending, orElse: () => singlePayments[0])
-      .title;
+      .paymentGroupName;
   Int64 get pendingExpirationTimestamp {
     var pendingExpiration = 0;
     singlePayments.forEach((p) {
@@ -476,7 +476,8 @@ class StreamedPaymentInfo implements PaymentInfo {
   }
 
   bool get fullPending => singlePayments.any((p) => p.fullPending);
-  String get paymentGroup => streamID;
+  String get paymentGroup => singlePayments[0].paymentGroup;
+  String get paymentGroupName => singlePayments[0].paymentGroupName;
 
   String get redeemTxID => "";
   String get paymentHash => "";
@@ -504,9 +505,10 @@ class SinglePaymentInfo implements PaymentInfo {
   String get redeemTxID => _paymentResponse.redeemTxID;
   String get paymentHash => _paymentResponse.paymentHash;
   String get preimage => _paymentResponse.preimage;
-  String get paymentGroup => _paymentResponse.group?.isNotEmpty == true
-      ? _paymentResponse.group
+  String get paymentGroup => _paymentResponse.groupKey?.isNotEmpty == true
+      ? _paymentResponse.groupKey
       : paymentHash;
+  String get paymentGroupName => _paymentResponse.groupName;
   bool get pending =>
       _paymentResponse.pendingExpirationHeight > 0 ||
       _paymentResponse.isChannelPending;

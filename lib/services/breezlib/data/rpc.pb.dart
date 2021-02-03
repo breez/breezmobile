@@ -597,7 +597,8 @@ class Payment extends $pb.GeneratedMessage {
     ..aOB(19, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'PendingFull', protoName: 'PendingFull')
     ..aOS(20, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'closedChannelRemoteTxID', protoName: 'closedChannelRemoteTxID')
     ..aOS(21, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'closedChannelSweepTxID', protoName: 'closedChannelSweepTxID')
-    ..aOS(22, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'group')
+    ..aOS(22, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'groupKey', protoName: 'groupKey')
+    ..aOS(23, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'groupName', protoName: 'groupName')
     ..hasRequiredFields = false
   ;
 
@@ -622,7 +623,8 @@ class Payment extends $pb.GeneratedMessage {
     $core.bool pendingFull,
     $core.String closedChannelRemoteTxID,
     $core.String closedChannelSweepTxID,
-    $core.String group,
+    $core.String groupKey,
+    $core.String groupName,
   }) {
     final _result = create();
     if (type != null) {
@@ -682,8 +684,11 @@ class Payment extends $pb.GeneratedMessage {
     if (closedChannelSweepTxID != null) {
       _result.closedChannelSweepTxID = closedChannelSweepTxID;
     }
-    if (group != null) {
-      _result.group = group;
+    if (groupKey != null) {
+      _result.groupKey = groupKey;
+    }
+    if (groupName != null) {
+      _result.groupName = groupName;
     }
     return _result;
   }
@@ -882,13 +887,22 @@ class Payment extends $pb.GeneratedMessage {
   void clearClosedChannelSweepTxID() => clearField(21);
 
   @$pb.TagNumber(22)
-  $core.String get group => $_getSZ(19);
+  $core.String get groupKey => $_getSZ(19);
   @$pb.TagNumber(22)
-  set group($core.String v) { $_setString(19, v); }
+  set groupKey($core.String v) { $_setString(19, v); }
   @$pb.TagNumber(22)
-  $core.bool hasGroup() => $_has(19);
+  $core.bool hasGroupKey() => $_has(19);
   @$pb.TagNumber(22)
-  void clearGroup() => clearField(22);
+  void clearGroupKey() => clearField(22);
+
+  @$pb.TagNumber(23)
+  $core.String get groupName => $_getSZ(20);
+  @$pb.TagNumber(23)
+  set groupName($core.String v) { $_setString(20, v); }
+  @$pb.TagNumber(23)
+  $core.bool hasGroupName() => $_has(20);
+  @$pb.TagNumber(23)
+  void clearGroupName() => clearField(23);
 }
 
 class PaymentsList extends $pb.GeneratedMessage {
@@ -1120,7 +1134,8 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
     ..aInt64(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'amount')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'destNode', protoName: 'destNode')
     ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'description')
-    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'group')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'groupKey', protoName: 'groupKey')
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'groupName', protoName: 'groupName')
     ..hasRequiredFields = false
   ;
 
@@ -1129,7 +1144,8 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
     $fixnum.Int64 amount,
     $core.String destNode,
     $core.String description,
-    $core.String group,
+    $core.String groupKey,
+    $core.String groupName,
   }) {
     final _result = create();
     if (amount != null) {
@@ -1141,8 +1157,11 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
     if (description != null) {
       _result.description = description;
     }
-    if (group != null) {
-      _result.group = group;
+    if (groupKey != null) {
+      _result.groupKey = groupKey;
+    }
+    if (groupName != null) {
+      _result.groupName = groupName;
     }
     return _result;
   }
@@ -1195,13 +1214,22 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
   void clearDescription() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.String get group => $_getSZ(3);
+  $core.String get groupKey => $_getSZ(3);
   @$pb.TagNumber(4)
-  set group($core.String v) { $_setString(3, v); }
+  set groupKey($core.String v) { $_setString(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasGroup() => $_has(3);
+  $core.bool hasGroupKey() => $_has(3);
   @$pb.TagNumber(4)
-  void clearGroup() => clearField(4);
+  void clearGroupKey() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get groupName => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set groupName($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasGroupName() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearGroupName() => clearField(5);
 }
 
 class InvoiceMemo extends $pb.GeneratedMessage {

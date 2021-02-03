@@ -611,8 +611,7 @@ class AccountBloc {
     var payments = List<PaymentInfo>();
     groupedPayments.forEach((key, singles) {
       if (singles.length > 1) {
-        payments
-            .add(StreamedPaymentInfo(singles, key, _accountController.value));
+        payments.add(StreamedPaymentInfo(singles, _accountController.value));
       } else {
         payments.add(singles[0]);
       }
