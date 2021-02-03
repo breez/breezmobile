@@ -80,14 +80,14 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
           if (event.theme == 'dark') {
             SystemChrome.setSystemUIOverlayStyle(
               SystemUiOverlayStyle(
-                statusBarColor: Themes.lightTheme().themeData.scaffoldBackgroundColor,
+                statusBarColor: Color(0xFF0c2031),
                 statusBarIconBrightness: Brightness.light,
               ),
             );
           } else {
             SystemChrome.setSystemUIOverlayStyle(
               SystemUiOverlayStyle(
-                statusBarColor: Themes.darkTheme().themeData.scaffoldBackgroundColor,
+                statusBarColor: Color.fromRGBO(0, 133, 251, 1.0),
                 statusBarIconBrightness: Brightness.dark,
               ),
             );
