@@ -120,7 +120,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               selectedRowColor: Color(0xfff5f5f5),
               unselectedWidgetColor: Color(0x8a000000),
               disabledColor: Color(0x77ffffff),
-              buttonColor: Color(0xFF4B89EB),
+              buttonColor: Colors.white,
               toggleableActiveColor: Color(0xFF4B89EB),
               secondaryHeaderColor: Color(0xfffff3e0),
               textSelectionColor: Color(0xffffcc80),
