@@ -6,7 +6,6 @@ import 'package:anytime/bloc/podcast/podcast_bloc.dart';
 import 'package:anytime/bloc/search/search_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/bloc/ui/pager_bloc.dart';
-import 'package:anytime/core/chrome.dart';
 import 'package:anytime/repository/repository.dart';
 import 'package:anytime/repository/sembast/sembast_repository.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
@@ -19,7 +18,6 @@ import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:anytime/ui/themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'anytime_downloader.dart';
@@ -76,33 +74,13 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
         /// Only update the theme if it has changed.
         if (newTheme != theme) {
           theme = newTheme;
-
-          if (event.theme == 'dark') {
-            SystemChrome.setSystemUIOverlayStyle(
-              SystemUiOverlayStyle(
-                statusBarColor: Color(0xFF0c2031),
-                statusBarIconBrightness: Brightness.light,
-              ),
-            );
-          } else {
-            SystemChrome.setSystemUIOverlayStyle(
-              SystemUiOverlayStyle(
-                statusBarColor: Color.fromRGBO(0, 133, 251, 1.0),
-                statusBarIconBrightness: Brightness.dark,
-              ),
-            );
-          }
         }
       });
     });
 
     if (widget.mobileSettingsService.themeDarkMode) {
       theme = Themes.darkTheme().themeData;
-
-      Chrome.transparentDark();
     } else {
-      Chrome.transparentLight();
-
       theme = Themes.lightTheme().themeData;
     }
   }
