@@ -16,6 +16,7 @@ import 'package:anytime/services/podcast/mobile_podcast_service.dart';
 import 'package:anytime/services/podcast/podcast_service.dart';
 import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:anytime/ui/themes.dart';
+import 'package:breez/theme_data.dart' as breezTheme;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +51,10 @@ class AnytimePodcastApp extends StatefulWidget {
         repository: repository,
         settingsService: mobileSettingsService);
     audioPlayerService = MobileAudioPlayerService(
-        repository: repository, settingsService: mobileSettingsService);
+      repository: repository,
+      settingsService: mobileSettingsService,
+      androidNotificationColor: breezTheme.BreezColors.blue[500],
+    );
     settingsBloc = SettingsBloc(mobileSettingsService);
   }
 
