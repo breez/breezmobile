@@ -312,7 +312,8 @@ class UserProfileBloc {
     try {
       String token = await _notifications.getToken();
       if (token != user.token || user.userID == null || user.userID.isEmpty) {
-        var userID = await _breezServer.registerDevice(token);
+        //var userID = await _breezServer.registerDevice(token);
+        var userID = token;
         userToRegister = userToRegister.copyWith(token: token, userID: userID);
       }
     } catch (e) {
