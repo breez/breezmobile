@@ -195,7 +195,7 @@ class AccountBloc {
 
   Future _handleRegisterDeviceNode() async {
     userProfileStream.listen((user) async {
-      if (user.token != null && user.token != _currentUser?.token) {
+      if (user.token != null) {
         var acc =
             await _accountController.firstWhere((acc) => acc.id?.isNotEmpty);
         await _breezServer.registerDevice(user.token, acc.id);
