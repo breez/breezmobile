@@ -11,6 +11,12 @@ import '../download_manager.dart';
 class GraphDownloader {
   final DownloadTaskManager downloadManager;
   final Future<SharedPreferences> preferences;
+  final finalTaskStatuses = <DownloadTaskStatus>[
+    DownloadTaskStatus.canceled,
+    DownloadTaskStatus.failed,
+    DownloadTaskStatus.complete,
+    DownloadTaskStatus.undefined
+  ];
   bool handlingFile = false;
   Completer<File> _downloadCompleter;
 
@@ -23,7 +29,8 @@ class GraphDownloader {
       var currentTask = tasks.firstWhere(
           (t) => t.url == downloadURL && t.taskId == event.id,
           orElse: () => null);
-      if (currentTask != null) {
+      if (currentTask != null &&
+          finalTaskStatuses.contains(currentTask.status)) {
         await _onTaskFinished(currentTask);
       }
     });
