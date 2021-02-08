@@ -60,12 +60,12 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         this.flutterPluginBinding = flutterPluginBinding;
-        System.exit(0);
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         this.flutterPluginBinding = null;
+        System.exit(0);
     }
 
     @Override
