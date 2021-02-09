@@ -308,6 +308,7 @@ class HomeState extends State<Home> {
                                               MediaQuery.of(context).size.width,
                                           child: FadeInWidget(
                                             child: Scaffold(
+                                                resizeToAvoidBottomInset: false,
                                                 key: _scaffoldKey,
                                                 appBar: AppBar(
                                                   brightness:
