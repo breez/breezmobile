@@ -405,17 +405,18 @@ class HomeState extends State<Home> {
                                                       ],
                                                       _onNavigationItemSelected),
                                                 ),
-                                                bottomNavigationBar: user
-                                                            .appMode ==
-                                                        AppMode.balance
-                                                    ? BottomActionsBar(account,
-                                                        firstPaymentItemKey)
-                                                    : null,
-                                                floatingActionButton:
+                                                bottomNavigationBar:
                                                     user.appMode ==
                                                             AppMode.balance
-                                                        ? QrActionButton(
+                                                        ? BottomActionsBar(
                                                             account,
+                                                            firstPaymentItemKey)
+                                                        : null,
+                                                floatingActionButton:
+                                                    user
+                                                                .appMode ==
+                                                            AppMode.balance
+                                                        ? QrActionButton(account,
                                                             firstPaymentItemKey)
                                                         : null,
                                                 floatingActionButtonLocation:
@@ -467,6 +468,7 @@ class HomeState extends State<Home> {
       case AppMode.podcasts:
         return AnytimeHomePage(
           topBarVisible: false,
+          inlineSearch: true,
           title: 'Anytime Podcast Player',
         );
       case AppMode.pos:
