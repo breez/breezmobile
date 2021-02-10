@@ -169,6 +169,11 @@ class BreezBridge {
         .then((result) => LSPList()..mergeFromBuffer(result ?? []));
   }
 
+  Future setReverseRoutingNode(String pubKey) {
+    return _invokeMethodWhenReady(
+        "setReverseRoutingNode", {"argument": pubKey});
+  }
+
   Future connectToLSP(String lspID) {
     return _invokeMethodWhenReady("connectToLSP", {"argument": lspID});
   }

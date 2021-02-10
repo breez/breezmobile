@@ -32,6 +32,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "getPaymentRequestHash": SingleArgBindingExecutor(f: BindingsGetPaymentRequestHash),
     "getAccountInfo": EmptyArgsBindingExecutor(f: BindingsGetAccountInfo),
     "lspList": EmptyArgsBindingExecutor(f: BindingsLSPList),
+    "setReverseRoutingNode": SingleArgBindingExecutor(f: BindingsSetReverseRoutingNode),
     "connectToLSP": SingleArgBindingExecutor(f: BindingsConnectToLSP),
     "connectToLSPPeer": SingleArgBindingExecutor(f: BindingsConnectToLSPPeer),
     "connectToLnurl": SingleArgBindingExecutor(f: BindingsConnectToLnurl),

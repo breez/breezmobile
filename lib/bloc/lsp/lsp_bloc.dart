@@ -160,6 +160,8 @@ class LSPBloc with AsyncActionsHandler {
       return;
     }
     log.info("LSP - has selected lsp ensuring reconnect");
+    log.info("REVERSE - RoutingNode: " + lsp.pubKey);
+    _breezLib.setReverseRoutingNode(lsp.pubKey);
     var acc = await _breezLib.getAccount();
     if (acc.connectedPeers.contains(lsp.pubKey)) {
       log.info("LSP - already contains lsp peer, no need for reconnect");
