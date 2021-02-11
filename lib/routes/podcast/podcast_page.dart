@@ -1,4 +1,4 @@
-import 'package:anytime/api/podcast/mobile_podcast_api.dart';
+import 'package:anytime/api/podcast/podcast_api.dart';
 import 'package:anytime/bloc/discovery/discovery_bloc.dart';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/podcast/episode_bloc.dart';
@@ -16,6 +16,8 @@ import 'package:anytime/services/podcast/mobile_podcast_service.dart';
 import 'package:anytime/services/podcast/podcast_service.dart';
 import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:anytime/ui/themes.dart';
+import 'package:breez/routes/podcast/podcast_index_api.dart';
+import 'package:breez/routes/podcast/podcast_loader.dart';
 import 'package:breez/theme_data.dart' as breezTheme;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +34,9 @@ class AnytimePodcastApp extends StatefulWidget {
   static String applicationVersion = '0.1.3';
   static String applicationBuildNumber = '22';
 
+  final podcastIndexClient = PodcastIndexClient();
   final Repository repository;
-  final MobilePodcastApi podcastApi;
+  final PodcastApi podcastApi;
   final Widget child;
   DownloadService downloadService;
   PodcastService podcastService;
@@ -41,15 +44,15 @@ class AnytimePodcastApp extends StatefulWidget {
   SettingsBloc settingsBloc;
   MobileSettingsService mobileSettingsService;
 
-  AnytimePodcastApp(this.mobileSettingsService, this.child)
-      : repository = SembastRepository(),
-        podcastApi = MobilePodcastApi() {
+  AnytimePodcastApp(this.mobileSettingsService, this.repository, this.child)
+      : podcastApi = PodcastIndexAPI() {
     downloadService = MobileDownloadService(
         repository: repository, downloadManager: AnytimeDownloadManager());
     podcastService = MobilePodcastService(
         api: podcastApi,
         repository: repository,
-        settingsService: mobileSettingsService);
+        settingsService: mobileSettingsService,
+        loadMetadata: (url) => podcastIndexClient.loadFeed(url: url));
     audioPlayerService = MobileAudioPlayerService(
       repository: repository,
       settingsService: mobileSettingsService,
