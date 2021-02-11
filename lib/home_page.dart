@@ -470,7 +470,7 @@ class HomeState extends State<Home> {
         return AnytimeHomePage(
           topBarVisible: false,
           inlineSearch: true,
-          title: 'Anytime Podcast Player.',
+          title: 'Anytime Podcast Player',
         );
       case AppMode.pos:
         return POSInvoice();
