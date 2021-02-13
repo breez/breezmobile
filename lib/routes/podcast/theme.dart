@@ -45,7 +45,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               toggleableActiveColor: Color.fromRGBO(0, 133, 251, 1.0),
               secondaryHeaderColor: Color(0xfffff3e0),
               textSelectionColor: Color(0xffffcc80),
-              cursorColor: Colors.white,
+              cursorColor: Colors.orange,
               textSelectionHandleColor: Color(0xffffb74d),
               backgroundColor: Colors.white,
               dialogBackgroundColor: Color(0xffffffff),
