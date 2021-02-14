@@ -16,7 +16,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: ef451dc578e99a254541f9bc13e3d5c515a1b7ca
+      ref: f205e5ecb63ff425a21d42941244b68890206301
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
@@ -80,6 +80,10 @@ dependency_overrides:
       url: https://github.com/breez/flutter_downloader.git
   cupertino_icons: ^1.0.0
   connectivity: ^2.0.0
+  podcast_search:
+    git:
+      url: https://github.com/breez/podcast_search.git
+      ref: aa11b3a18682cf407dbadcd9e15dd6b90ab7fad2
   intl: ^0.17.0-nullsafety.2
 
 dev_dependencies:
