@@ -1,4 +1,4 @@
-import 'package:anytime/api/podcast/mobile_podcast_api.dart';
+import 'package:anytime/api/podcast/podcast_api.dart';
 import 'package:anytime/bloc/discovery/discovery_bloc.dart';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/podcast/episode_bloc.dart';
@@ -7,7 +7,6 @@ import 'package:anytime/bloc/search/search_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/bloc/ui/pager_bloc.dart';
 import 'package:anytime/repository/repository.dart';
-import 'package:anytime/repository/sembast/sembast_repository.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:anytime/services/audio/mobile_audio_player_service.dart';
 import 'package:anytime/services/download/download_service.dart';
@@ -15,7 +14,13 @@ import 'package:anytime/services/download/mobile_download_service.dart';
 import 'package:anytime/services/podcast/mobile_podcast_service.dart';
 import 'package:anytime/services/podcast/podcast_service.dart';
 import 'package:anytime/services/settings/mobile_settings_service.dart';
+import 'package:anytime/ui/anytime_podcast_app.dart';
+import 'package:anytime/ui/podcast/player_position_controls.dart';
 import 'package:anytime/ui/themes.dart';
+import 'package:breez/routes/podcast/payment_adjustment.dart';
+import 'package:breez/routes/podcast/podcast_index_api.dart';
+import 'package:breez/routes/podcast/podcast_loader.dart';
+import 'package:breez/routes/podcast/transport_controls.dart';
 import 'package:breez/theme_data.dart' as breezTheme;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +37,9 @@ class AnytimePodcastApp extends StatefulWidget {
   static String applicationVersion = '0.1.3';
   static String applicationBuildNumber = '22';
 
+  final podcastIndexClient = PodcastIndexClient();
   final Repository repository;
-  final MobilePodcastApi podcastApi;
+  final PodcastApi podcastApi;
   final Widget child;
   DownloadService downloadService;
   PodcastService podcastService;
@@ -41,15 +47,15 @@ class AnytimePodcastApp extends StatefulWidget {
   SettingsBloc settingsBloc;
   MobileSettingsService mobileSettingsService;
 
-  AnytimePodcastApp(this.mobileSettingsService, this.child)
-      : repository = SembastRepository(),
-        podcastApi = MobilePodcastApi() {
+  AnytimePodcastApp(this.mobileSettingsService, this.repository, this.child)
+      : podcastApi = PodcastIndexAPI() {
     downloadService = MobileDownloadService(
         repository: repository, downloadManager: AnytimeDownloadManager());
     podcastService = MobilePodcastService(
         api: podcastApi,
         repository: repository,
-        settingsService: mobileSettingsService);
+        settingsService: mobileSettingsService,
+        loadMetadata: (url) => podcastIndexClient.loadFeed(url: url));
     audioPlayerService = MobileAudioPlayerService(
       repository: repository,
       settingsService: mobileSettingsService,
@@ -93,6 +99,7 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<PlayerControlsBuilder>(create: (_) => PlayerBuilder()),
         Provider<SearchBloc>(
           create: (_) => SearchBloc(
               podcastService: MobilePodcastService(
@@ -144,5 +151,40 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
       ],
       child: widget.child,
     );
+  }
+}
+
+class NowPlayingTransport extends StatelessWidget {
+  final int duration;
+
+  const NowPlayingTransport({@required this.duration});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Divider(
+          height: 0.0,
+        ),
+        PlayerPositionControls(
+          duration: duration,
+        ),
+        PlayerTransportControls(),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 0.0,
+          ),
+        ),
+        PaymentAdjustment(total: 100),
+      ],
+    );
+  }
+}
+
+class PlayerBuilder extends PlayerControlsBuilder {
+  @override
+  builder(int duration) {
+    return (context) =>
+        SizedBox(height: 190.0, child: NowPlayingTransport(duration: duration));
   }
 }

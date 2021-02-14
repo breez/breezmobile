@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/entities/episode.dart';
+import 'package:anytime/repository/repository.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:anytime/ui/widgets/transport_controls.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
@@ -35,10 +36,11 @@ List<_Destination> _destinations = [
 class PodcastPaymentsBloc with AsyncActionsHandler {
   final _listeningTime = Map<String, int>();
   final AudioBloc audioBloc;
+  final Repository repository;
   BreezBridge _breezLib;
   Timer _paymentTimer;
 
-  PodcastPaymentsBloc(this.audioBloc) {
+  PodcastPaymentsBloc(this.audioBloc, this.repository) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     listenAudioState();
@@ -49,9 +51,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         audioBloc.playingState,
         audioBloc.nowPlaying,
         (AudioState audioState, Episode episode) =>
-            PlayerControlState(audioState, episode)).listen((event) {
+            PlayerControlState(audioState, episode)).listen((event) async {
       _stopPaymentTimer();
       if (event.audioState == AudioState.playing) {
+        print("metadata" + event.episode.metadata?.toString());
         startPaymentTimer(event.episode);
       }
     });
