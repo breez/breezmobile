@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:breez/bloc/podcast_payments/actions.dart';
+import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PaymentAdjustment extends StatefulWidget {
   final int total;
@@ -16,39 +19,46 @@ class PaymentAdjustment extends StatefulWidget {
 }
 
 class PaymentAdjustmentState extends State<PaymentAdjustment> {
-  double position = 0;
-
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 16.0,
-        right: 16.0,
-        top: 4.0,
-        bottom: 4.0,
-      ),
-      child: Row(
-        children: <Widget>[
-          Text(_formatAmount(position)),
-          Expanded(
-            child: Slider(
-              onChanged: (val) {
-                setState(() {
-                  position = val;
-                });
-              },
-              value: position,
-              min: 0.0,
-              max: 1.0,
-              activeColor: Theme.of(context).buttonColor,
+    final paymentsBloc = Provider.of<PodcastPaymentsBloc>(context);
+
+    return StreamBuilder<int>(
+        stream: paymentsBloc.amountStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return SizedBox();
+          }
+
+          final amount = snapshot.data;
+          return Padding(
+            padding: const EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              top: 4.0,
+              bottom: 4.0,
             ),
-          ),
-        ],
-      ),
-    );
+            child: Row(
+              children: <Widget>[
+                Text(_formatAmount(amount.toDouble())),
+                Expanded(
+                  child: Slider(
+                    onChanged: (val) {
+                      paymentsBloc.actionsSink.add(AdjustAmount(val.toInt()));
+                    },
+                    value: amount.toDouble(),
+                    min: 0.0,
+                    max: widget.total.toDouble(),
+                    activeColor: Theme.of(context).buttonColor,
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
   }
 
   String _formatAmount(double total) {
-    return "${(widget.total.toDouble() * total).toInt()} Sats";
+    return "${total.toInt()} Sats";
   }
 }

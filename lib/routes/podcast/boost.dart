@@ -1,6 +1,9 @@
 import 'package:anytime/l10n/L.dart';
+import 'package:breez/bloc/podcast_payments/actions.dart';
+import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BoostWidget extends StatefulWidget {
   final ValueChanged<double> onBoost;
@@ -14,6 +17,8 @@ class BoostWidget extends StatefulWidget {
 class _BoostWidgetState extends State<BoostWidget> {
   @override
   Widget build(BuildContext context) {
+    final paymentsBloc = Provider.of<PodcastPaymentsBloc>(context);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -39,7 +44,9 @@ class _BoostWidgetState extends State<BoostWidget> {
             size: 24.0,
             color: Theme.of(context).buttonColor,
           ),
-          onPressed: () {},
+          onPressed: () {
+            paymentsBloc.actionsSink.add(PayBoost());
+          },
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
