@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:anytime/api/podcast/podcast_api.dart';
+import 'package:anytime/core/environment.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:podcast_search/podcast_search.dart';
@@ -11,8 +12,8 @@ import 'package:podcast_search/podcast_search.dart';
 /// interacts with the iTunes search API via the podcast_search package.
 class PodcastIndexAPI extends PodcastApi {
   final Search api = Search();
-  static String userAgent =
-      'Anytime/${AnytimePodcastApp.applicationVersion} (https://github.com/amugofjava/anytime_podcast_player)';
+  // static String userAgent =
+  //     'Anytime/${AnytimePodcastApp.applicationVersion} (https://github.com/amugofjava/anytime_podcast_player)';
 
   @override
   Future<SearchResult> search(String term,
@@ -39,7 +40,7 @@ class PodcastIndexAPI extends PodcastApi {
   }
 
   static Future<SearchResult> _search(String term) {
-    return Search(userAgent: userAgent)
+    return Search(userAgent: Environment.userAgent())
         .search(term,
             searchProvider:
                 PodcastIndexProvider(key: 'XXWQEGULBJABVHZUM8NF', secret: 'KZ2uy4upvq4t3e\$m\$3r2TeFS2fEpFTAaF92xcNdX'))
@@ -47,14 +48,14 @@ class PodcastIndexAPI extends PodcastApi {
   }
 
   static Future<SearchResult> _charts(int size) {
-    return Search(userAgent: userAgent).charts(
+    return Search(userAgent: Environment.userAgent()).charts(
         searchProvider:
             PodcastIndexProvider(key: 'XXWQEGULBJABVHZUM8NF', secret: 'KZ2uy4upvq4t3e\$m\$3r2TeFS2fEpFTAaF92xcNdX'),
         queryParams: {'val': 'lightning'}).timeout(Duration(seconds: 10));
   }
 
   static Future<Podcast> _loadFeed(String url) {
-    return Podcast.loadFeed(url: url, userAgent: userAgent);
+    return Podcast.loadFeed(url: url, userAgent: Environment.userAgent());
   }
 
   @override
