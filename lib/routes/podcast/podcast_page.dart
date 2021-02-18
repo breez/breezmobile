@@ -47,10 +47,8 @@ class AnytimePodcastApp extends StatefulWidget {
   SettingsBloc settingsBloc;
   MobileSettingsService mobileSettingsService;
 
-  AnytimePodcastApp(this.mobileSettingsService, this.repository, this.child)
-      : podcastApi = PodcastIndexAPI() {
-    downloadService = MobileDownloadService(
-        repository: repository, downloadManager: AnytimeDownloadManager());
+  AnytimePodcastApp(this.mobileSettingsService, this.repository, this.child) : podcastApi = PodcastIndexAPI() {
+    downloadService = MobileDownloadService(repository: repository, downloadManager: AnytimeDownloadManager());
     podcastService = MobilePodcastService(
         api: podcastApi,
         repository: repository,
@@ -58,6 +56,7 @@ class AnytimePodcastApp extends StatefulWidget {
         loadMetadata: (url) => podcastIndexClient.loadFeed(url: url));
     audioPlayerService = MobileAudioPlayerService(
       repository: repository,
+      podcastService: podcastService,
       settingsService: mobileSettingsService,
       androidNotificationColor: breezTheme.BreezColors.blue[500],
     );
@@ -77,9 +76,7 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
 
     widget.settingsBloc.settings.listen((event) {
       setState(() {
-        var newTheme = event.theme == 'dark'
-            ? Themes.darkTheme().themeData
-            : Themes.lightTheme().themeData;
+        var newTheme = event.theme == 'dark' ? Themes.darkTheme().themeData : Themes.lightTheme().themeData;
 
         /// Only update the theme if it has changed.
         if (newTheme != theme) {
@@ -99,7 +96,6 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<PlayerControlsBuilder>(create: (_) => PlayerBuilder()),
         Provider<SearchBloc>(
           create: (_) => SearchBloc(
               podcastService: MobilePodcastService(
@@ -140,8 +136,7 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
           dispose: (_, value) => value.dispose(),
         ),
         Provider<AudioBloc>(
-          create: (_) =>
-              AudioBloc(audioPlayerService: widget.audioPlayerService),
+          create: (_) => AudioBloc(audioPlayerService: widget.audioPlayerService),
           dispose: (_, value) => value.dispose(),
         ),
         Provider<SettingsBloc>(
@@ -181,10 +176,8 @@ class NowPlayingTransport extends StatelessWidget {
   }
 }
 
-class PlayerBuilder extends PlayerControlsBuilder {
-  @override
-  builder(int duration) {
-    return (context) =>
-        SizedBox(height: 190.0, child: NowPlayingTransport(duration: duration));
-  }
+WidgetBuilder playerBuilder(int duration) {
+  final WidgetBuilder builder =
+      (BuildContext context) => SizedBox(height: 190.0, child: NowPlayingTransport(duration: duration));
+  return builder;
 }
