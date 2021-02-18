@@ -16,7 +16,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: f205e5ecb63ff425a21d42941244b68890206301
+      ref: bdaf408b78a4591d754ff183b4b865cf0e83c91d
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
@@ -83,7 +83,7 @@ dependency_overrides:
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
-      ref: aa11b3a18682cf407dbadcd9e15dd6b90ab7fad2
+      ref: 60284732978a139f66aa5801d20babb52e08e53b
   intl: ^0.17.0-nullsafety.2
 
 dev_dependencies:
@@ -116,6 +116,7 @@ flutter:
     - src/animations/welcome/
     - src/scripts/
     - src/pos-icons/
+    - assets/images/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
