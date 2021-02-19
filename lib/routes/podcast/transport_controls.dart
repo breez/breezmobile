@@ -7,11 +7,12 @@ import 'dart:async';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/l10n/L.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
-import 'package:anytime/ui/widgets/speed_selector_widget.dart';
 import 'package:breez/routes/podcast/boost.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+
+import 'speed_selector.dart';
 
 /// Builds a transport control bar for rewind, play and fast-forward.
 /// See [NowPlaying].
@@ -116,7 +117,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                     color: Theme.of(context).buttonColor,
                   ),
                 ),
-                SpeedSelectorWidget(
+                SpeedSelector(
                   onChanged: (double value) {
                     print('Speed callback of $value');
                     audioBloc.playbackSpeed(value);
