@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class PaymentAdjuster extends StatefulWidget {
   final List amountList;
+  final ValueChanged<String> onChanged;
 
-  PaymentAdjuster({this.amountList});
+  PaymentAdjuster({this.amountList, this.onChanged});
 
   @override
   _PaymentAdjusterState createState() => _PaymentAdjusterState();
@@ -27,6 +28,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
               (selectedBoostIndex == 0)
                   ? selectedBoostIndex = 0
                   : selectedBoostIndex--;
+              widget.onChanged(widget.amountList[selectedBoostIndex]);
             });
           },
           padding: EdgeInsets.zero,
@@ -73,6 +75,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
               (selectedBoostIndex == widget.amountList.length - 1)
                   ? selectedBoostIndex = widget.amountList.length - 1
                   : selectedBoostIndex++;
+              widget.onChanged(widget.amountList[selectedBoostIndex]);
             });
           },
           padding: EdgeInsets.zero,

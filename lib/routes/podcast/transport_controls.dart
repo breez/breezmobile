@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/l10n/L.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
-import 'package:breez/routes/podcast/boost.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +72,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
     final audioBloc = Provider.of<AudioBloc>(context, listen: false);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: EdgeInsets.only(left: 70, right: 16),
       child: StreamBuilder<AudioState>(
           stream: audioBloc.playingState,
           builder: (context, snapshot) {
@@ -84,11 +83,6 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                BoostWidget(
-                  onBoost: (double value) {
-                    print('Speed callback of $value');
-                  },
-                ),
                 IconButton(
                   onPressed: () {
                     _rewind(audioBloc);

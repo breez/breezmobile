@@ -1,61 +1,85 @@
-import 'package:anytime/l10n/L.dart';
-import 'package:breez/bloc/podcast_payments/actions.dart';
-import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class BoostWidget extends StatefulWidget {
-  final ValueChanged<double> onBoost;
+  final List amountList;
+  final ValueChanged<String> onBoost;
 
-  BoostWidget({this.onBoost});
+  BoostWidget({this.amountList, this.onBoost});
 
   @override
   _BoostWidgetState createState() => _BoostWidgetState();
 }
 
 class _BoostWidgetState extends State<BoostWidget> {
+  int selectedBoostIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    final paymentsBloc = Provider.of<PodcastPaymentsBloc>(context);
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
+    return Row(
       children: [
-        // Slight temporary hack, but ensures the button is still centrally aligned.
-        Text(' ',
-            style: TextStyle(
-              fontSize: 12.0,
-              color: Theme.of(context).buttonColor,
-            )),
         IconButton(
+            icon: ImageIcon(
+              AssetImage("src/icon/boost.png"),
+              color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+            ),
+            onPressed: () {
+              widget.onBoost(widget.amountList[selectedBoostIndex]);
+            }),
+        IconButton(
+          icon: Icon(
+            Icons.remove,
+            size: 16,
+            color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+          ),
+          onPressed: () {
+            setState(() {
+              (selectedBoostIndex == 0)
+                  ? selectedBoostIndex = 0
+                  : selectedBoostIndex--;
+            });
+          },
+          padding: EdgeInsets.zero,
           constraints: const BoxConstraints(
             maxHeight: 24.0,
             minHeight: 24.0,
             maxWidth: 24.0,
             minWidth: 24.0,
           ),
-          tooltip: L.of(context).playback_speed_label,
-          padding: const EdgeInsets.all(0.0),
+        ),
+        SizedBox(
+          width: 36,
+          child: Padding(
+            padding: EdgeInsets.zero,
+            child: Text(
+              widget.amountList[selectedBoostIndex],
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12.0,
+                color: Theme.of(context).buttonColor,
+              ),
+            ),
+          ),
+        ),
+        IconButton(
           icon: Icon(
-            Icons.speed,
-            size: 24.0,
-            color: Theme.of(context).buttonColor,
+            Icons.add,
+            size: 16,
+            color: Theme.of(context).appBarTheme.actionsIconTheme.color,
           ),
           onPressed: () {
-            paymentsBloc.actionsSink.add(PayBoost());
+            setState(() {
+              (selectedBoostIndex == widget.amountList.length - 1)
+                  ? selectedBoostIndex = widget.amountList.length - 1
+                  : selectedBoostIndex++;
+            });
           },
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-          child: Text(
-            'boost',
-            style: TextStyle(
-              fontSize: 12.0,
-              color: Theme.of(context).buttonColor,
-            ),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(
+            maxHeight: 24.0,
+            minHeight: 24.0,
+            maxWidth: 24.0,
+            minWidth: 24.0,
           ),
         ),
       ],
