@@ -94,8 +94,8 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                   },
                   tooltip: L.of(context).rewind_button_label,
                   padding: const EdgeInsets.all(0.0),
-                  icon: Icon(
-                    Icons.replay_30,
+                  icon: ImageIcon(
+                    AssetImage('src/icon/replay_30.png'),
                     size: 48.0,
                     color: Theme.of(context).buttonColor,
                   ),
@@ -110,8 +110,8 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                     _fastforward(audioBloc);
                   },
                   padding: const EdgeInsets.all(0.0),
-                  icon: Icon(
-                    Icons.forward_30,
+                  icon: ImageIcon(
+                    AssetImage('src/icon/forward_30.png'),
                     size: 48.0,
                     color: Theme.of(context).buttonColor,
                   ),
