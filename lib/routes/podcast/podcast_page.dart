@@ -161,9 +161,7 @@ class NowPlayingTransport extends StatelessWidget {
         Divider(
           height: 0.0,
         ),
-        PlayerPositionControls(
-          duration: duration,
-        ),
+        PlayerPositionControls(),
         PlayerTransportControls(),
         Padding(
           padding: const EdgeInsets.symmetric(
