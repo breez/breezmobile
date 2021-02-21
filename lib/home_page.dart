@@ -470,6 +470,8 @@ class HomeState extends State<Home> {
         return AnytimeHomePage(
           topBarVisible: false,
           inlineSearch: true,
+          noSubscriptionsMessage:
+              "Use the Discover view to find and subscribe to your first podcast.",
           title: 'Anytime Podcast Player',
         );
       case AppMode.pos:
