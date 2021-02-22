@@ -22,6 +22,7 @@ class PaymentAdjustment extends StatefulWidget {
 
 class PaymentAdjustmentState extends State<PaymentAdjustment> {
   Map<int, String> boostAmountMap = {
+    100: '100',
     500: '500',
     1000: '1K',
     5000: '5K',

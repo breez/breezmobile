@@ -12,7 +12,7 @@ class BoostWidget extends StatefulWidget {
 }
 
 class _BoostWidgetState extends State<BoostWidget> {
-  int selectedBoostIndex = 2;
+  int selectedBoostIndex = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                 Padding(
                   padding: EdgeInsets.zero,
                   child: Text(
-                    "Boost",
+                    "Boost!",
                     style: TextStyle(
                       fontSize: 12.0,
                       fontWeight: FontWeight.normal,
