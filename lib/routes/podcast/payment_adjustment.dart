@@ -42,7 +42,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
 
         return Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: 16.0,
+            horizontal: 32.0,
             vertical: 4.0,
           ),
           child: Row(
@@ -51,8 +51,6 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
               BoostWidget(
                 amountList: boostAmountMap.values.toList(),
                 onBoost: (String value) {
-                  print(
-                      "Boost Amount: ${boostAmountMap.keys.firstWhere((element) => boostAmountMap[element] == value)}");
                   int boostAmount = boostAmountMap.keys.firstWhere(
                       (element) => boostAmountMap[element] == value);
                   paymentsBloc.actionsSink.add(PayBoost(boostAmount));

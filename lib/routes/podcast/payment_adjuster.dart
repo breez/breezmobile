@@ -54,14 +54,37 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.zero,
-          child: Text(
-            "sats/min",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12.0,
-              color: Theme.of(context).buttonColor,
-            ),
+          padding: EdgeInsets.only(top: 2),
+          child: Column(
+            children: [
+              Text(
+                "sats",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Theme.of(context).buttonColor,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Container(
+                  width: 24,
+                  child: Divider(
+                    height: 0.0,
+                    thickness: 1,
+                    color: Theme.of(context).buttonColor,
+                  ),
+                ),
+              ),
+              Text(
+                "min",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Theme.of(context).buttonColor,
+                ),
+              ),
+            ],
           ),
         ),
         IconButton(
