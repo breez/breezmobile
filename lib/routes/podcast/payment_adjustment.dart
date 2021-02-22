@@ -4,6 +4,8 @@
 
 import 'package:breez/bloc/podcast_payments/actions.dart';
 import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
+import 'package:breez/routes/podcast/boost.dart';
+import 'package:breez/routes/podcast/payment_adjuster.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,46 +21,62 @@ class PaymentAdjustment extends StatefulWidget {
 }
 
 class PaymentAdjustmentState extends State<PaymentAdjustment> {
+  Map<int, String> boostAmountMap = {
+    500: '500',
+    1000: '1K',
+    5000: '5K',
+    10000: '10K',
+    50000: '50K',
+  };
+
+  Map<int, String> satsPerMinuteIntervalsMap = {
+    0: '0',
+    25: '25',
+    50: '50',
+    100: '100',
+    250: '250',
+    500: '500',
+    1000: '1K',
+  };
+
   @override
   Widget build(BuildContext context) {
     final paymentsBloc = Provider.of<PodcastPaymentsBloc>(context);
 
     return StreamBuilder<int>(
-        stream: paymentsBloc.amountStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return SizedBox();
-          }
+      stream: paymentsBloc.amountStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return SizedBox();
+        }
 
-          final amount = snapshot.data;
-          return Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 4.0,
-              bottom: 4.0,
-            ),
-            child: Row(
-              children: <Widget>[
-                Text(_formatAmount(amount.toDouble())),
-                Expanded(
-                  child: Slider(
-                    onChanged: (val) {
-                      paymentsBloc.actionsSink.add(AdjustAmount(val.toInt()));
-                    },
-                    value: amount.toDouble(),
-                    min: 0.0,
-                    max: widget.total.toDouble(),
-                    activeColor: Theme.of(context).buttonColor,
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
-  }
-
-  String _formatAmount(double total) {
-    return "${total.toInt()} Sats";
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 32.0,
+            vertical: 4.0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              BoostWidget(
+                amountList: boostAmountMap.values.toList(),
+                onBoost: (String value) {
+                  int boostAmount = boostAmountMap.keys.firstWhere(
+                      (element) => boostAmountMap[element] == value);
+                  paymentsBloc.actionsSink.add(PayBoost(boostAmount));
+                },
+              ),
+              PaymentAdjuster(
+                  satsPerMinuteList: satsPerMinuteIntervalsMap.values.toList(),
+                  onChanged: (String value) {
+                    int satsPerMinute = satsPerMinuteIntervalsMap.keys.firstWhere(
+                        (element) => satsPerMinuteIntervalsMap[element] == value);
+                    paymentsBloc.actionsSink.add(AdjustAmount(satsPerMinute));
+                  }),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

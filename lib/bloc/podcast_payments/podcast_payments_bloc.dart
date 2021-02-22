@@ -49,7 +49,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       _stopPaymentTimer();
       if (event.audioState == AudioState.playing) {
         _currentPaidEpisode = event.episode;
-        final value = _getLightnintPaymentValue(_currentPaidEpisode);
+        final value = _getLightningPaymentValue(_currentPaidEpisode);
         if (value != null) {
           if (_amountController.value == null) {
             final amount =
@@ -64,10 +64,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   Future _payBoost(PayBoost action) async {
     if (_currentPaidEpisode != null) {
-      final value = _getLightnintPaymentValue(_currentPaidEpisode);
+      final value = _getLightningPaymentValue(_currentPaidEpisode);
       if (value != null) {
-        _payRecipients(
-            _currentPaidEpisode, value.recipients, _amountController.value);
+        _payRecipients(_currentPaidEpisode, value.recipients, action.sats);
       }
     }
   }
@@ -140,7 +139,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     });
   }
 
-  Value _getLightnintPaymentValue(Episode episode) {
+  Value _getLightningPaymentValue(Episode episode) {
     final metadata = episode?.metadata;
     if (metadata != null && metadata["feed"] != null) {
       final value = metadata["feed"]["value"];
