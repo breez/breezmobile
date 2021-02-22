@@ -12,7 +12,7 @@ class BoostWidget extends StatefulWidget {
 }
 
 class _BoostWidgetState extends State<BoostWidget> {
-  int selectedBoostIndex = 0;
+  int selectedBoostIndex = 2;
 
   @override
   Widget build(BuildContext context) {

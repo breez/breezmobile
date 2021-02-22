@@ -29,6 +29,16 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
     50000: '50K',
   };
 
+  Map<int, String> satsPerMinuteIntervalsMap = {
+    0: '0',
+    25: '25',
+    50: '50',
+    100: '100',
+    250: '250',
+    500: '500',
+    1000: '1K',
+  };
+
   @override
   Widget build(BuildContext context) {
     final paymentsBloc = Provider.of<PodcastPaymentsBloc>(context);
@@ -57,11 +67,11 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                 },
               ),
               PaymentAdjuster(
-                  amountList: boostAmountMap.values.toList(),
+                  satsPerMinuteList: satsPerMinuteIntervalsMap.values.toList(),
                   onChanged: (String value) {
-                    int boostAmount = boostAmountMap.keys.firstWhere(
-                        (element) => boostAmountMap[element] == value);
-                    paymentsBloc.actionsSink.add(AdjustAmount(boostAmount));
+                    int satsPerMinute = satsPerMinuteIntervalsMap.keys.firstWhere(
+                        (element) => satsPerMinuteIntervalsMap[element] == value);
+                    paymentsBloc.actionsSink.add(AdjustAmount(satsPerMinute));
                   }),
             ],
           ),

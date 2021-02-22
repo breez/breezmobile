@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class PaymentAdjuster extends StatefulWidget {
-  final List amountList;
+  final List satsPerMinuteList;
   final ValueChanged<String> onChanged;
 
-  PaymentAdjuster({this.amountList, this.onChanged});
+  PaymentAdjuster({this.satsPerMinuteList, this.onChanged});
 
   @override
   _PaymentAdjusterState createState() => _PaymentAdjusterState();
 }
 
 class _PaymentAdjusterState extends State<PaymentAdjuster> {
-  int selectedBoostIndex = 0;
+  int selectedSatsPerMinuteIndex = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +25,10 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           ),
           onPressed: () {
             setState(() {
-              (selectedBoostIndex == 0)
-                  ? selectedBoostIndex = 0
-                  : selectedBoostIndex--;
-              widget.onChanged(widget.amountList[selectedBoostIndex]);
+              (selectedSatsPerMinuteIndex == 0)
+                  ? selectedSatsPerMinuteIndex = 0
+                  : selectedSatsPerMinuteIndex--;
+              widget.onChanged(widget.satsPerMinuteList[selectedSatsPerMinuteIndex]);
             });
           },
           padding: EdgeInsets.zero,
@@ -44,7 +44,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           child: Padding(
             padding: EdgeInsets.zero,
             child: Text(
-              widget.amountList[selectedBoostIndex],
+              widget.satsPerMinuteList[selectedSatsPerMinuteIndex],
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12.0,
@@ -95,10 +95,10 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           ),
           onPressed: () {
             setState(() {
-              (selectedBoostIndex == widget.amountList.length - 1)
-                  ? selectedBoostIndex = widget.amountList.length - 1
-                  : selectedBoostIndex++;
-              widget.onChanged(widget.amountList[selectedBoostIndex]);
+              (selectedSatsPerMinuteIndex == widget.satsPerMinuteList.length - 1)
+                  ? selectedSatsPerMinuteIndex = widget.satsPerMinuteList.length - 1
+                  : selectedSatsPerMinuteIndex++;
+              widget.onChanged(widget.satsPerMinuteList[selectedSatsPerMinuteIndex]);
             });
           },
           padding: EdgeInsets.zero,
