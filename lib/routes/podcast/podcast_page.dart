@@ -169,10 +169,13 @@ class NowPlayingTransport extends StatelessWidget {
         ),
         Divider(
           height: 0.0,
-          thickness: 1,
-          color: Theme.of(context).dividerColor,
           indent: 116,
           endIndent: 116,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 4.0,
+          ),
         ),
         PaymentAdjustment(total: 100),
       ],
@@ -182,7 +185,7 @@ class NowPlayingTransport extends StatelessWidget {
 
 WidgetBuilder playerBuilder(int duration) {
   final WidgetBuilder builder =
-      (BuildContext context) => SizedBox(height: 200.0, child: NowPlayingTransport(duration: duration));
+      (BuildContext context) => SizedBox(height: 216.0, child: NowPlayingTransport(duration: duration));
   return builder;
 }
 
