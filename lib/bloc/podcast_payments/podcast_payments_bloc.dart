@@ -4,6 +4,7 @@ import 'package:anytime/entities/episode.dart';
 import 'package:anytime/repository/repository.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:anytime/ui/widgets/transport_controls.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/podcast_payments/actions.dart';
 import 'package:breez/logger.dart';
@@ -18,6 +19,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   final _listeningTime = Map<String, int>();
   final AudioBloc audioBloc;
   final Repository repository;
+  final AccountBloc accountBloc;
 
   final _amountController = BehaviorSubject<int>();
   Stream<int> get amountStream => _amountController.stream;
@@ -27,7 +29,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   Timer _paymentTimer;
   Map<String, double> _perDestinationPayments = Map<String, double>();
 
-  PodcastPaymentsBloc(this.audioBloc, this.repository) {
+  PodcastPaymentsBloc(this.accountBloc, this.audioBloc, this.repository) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     listenAudioState();
@@ -103,34 +105,36 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     ])
       ..addAll(recipients);
 
-    withBreez.forEach((d) {
+    withBreez.forEach((d) async {
       final amount = (d.split * total / totalSplits);
       var aggregatedAmount =
           (_perDestinationPayments[d.address] ?? 0.0) + amount;
       _perDestinationPayments[d.address] = aggregatedAmount;
 
+      final lastFee = await _lastFeeForDestination(d.address);
+      final payPart = aggregatedAmount.toInt();
+      final netPay = payPart - lastFee.toInt();
       final maxFee = Int64((aggregatedAmount * 1000 * maxFeePart).toInt());
-      final toPay = aggregatedAmount.toInt();
       log.info(
-          "starting recipient payment $aggregatedAmount from total: $total with fee: $maxFee split=${d.split}");
-      if (toPay > 0 && amount <= total && maxFee > 0) {
-        log.info("trying to pay $toPay to destination ${d.address}");
+          "starting recipient payment $aggregatedAmount (netPay=$netPay) from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
+      if (netPay > 0 && amount <= total && maxFee > 0) {
+        log.info("trying to pay $netPay to destination ${d.address}");
         _breezLib
-            .sendSpontaneousPayment(d.address, Int64(toPay), d.name,
+            .sendSpontaneousPayment(d.address, Int64(netPay), d.name,
                 feeLimitMsat: maxFee,
                 groupKey: episode.contentUrl,
                 groupName: episode.title)
             .then((payResponse) {
           if (payResponse.paymentError?.isNotEmpty == true) {
             log.info(
-                "failed to pay $toPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
+                "failed to pay $netPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
             return;
           }
-          _perDestinationPayments[d.address] -= toPay;
-          log.info("succesfully paid $toPay to destination ${d.address}");
+          _perDestinationPayments[d.address] -= payPart;
+          log.info("succesfully paid $netPay to destination ${d.address}");
         }).catchError((err) {
           log.info(
-              "failed to pay $toPay to destination ${d.address}, error=$err trying next time...");
+              "failed to pay $netPay to destination ${d.address}, error=$err trying next time...");
         });
       }
     });
@@ -153,6 +157,16 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   void _stopPaymentTimer() {
     _paymentTimer?.cancel();
+  }
+
+  Future<Int64> _lastFeeForDestination(String address) {
+    return accountBloc.paymentsStream
+        .map((ps) => ps.nonFilteredItems
+            .firstWhere((i) => i.destination == address, orElse: () => null))
+        .where((pi) => pi != null)
+        .map(((pi) => pi.fee))
+        .first
+        .timeout(Duration(seconds: 1), onTimeout: () => Int64.ZERO);
   }
 }
 
