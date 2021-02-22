@@ -14,7 +14,6 @@ import 'package:anytime/services/download/mobile_download_service.dart';
 import 'package:anytime/services/podcast/mobile_podcast_service.dart';
 import 'package:anytime/services/podcast/podcast_service.dart';
 import 'package:anytime/services/settings/mobile_settings_service.dart';
-import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:anytime/ui/podcast/player_position_controls.dart';
 import 'package:anytime/ui/themes.dart';
 import 'package:breez/routes/podcast/payment_adjustment.dart';
@@ -177,5 +176,21 @@ class NowPlayingTransport extends StatelessWidget {
 WidgetBuilder playerBuilder(int duration) {
   final WidgetBuilder builder =
       (BuildContext context) => SizedBox(height: 190.0, child: NowPlayingTransport(duration: duration));
+  return builder;
+}
+
+WidgetBuilder placeholderBuilder() {
+  final WidgetBuilder builder = (BuildContext context) => Container(
+    color: Theme.of(context).primaryColor,
+    constraints: BoxConstraints.expand(),
+  );
+  return builder;
+}
+
+WidgetBuilder errorPlaceholderBuilder() {
+  final WidgetBuilder builder = (BuildContext context) => Placeholder(
+    color: Theme.of(context).errorColor,
+    strokeWidth: 1,
+  );
   return builder;
 }

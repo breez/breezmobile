@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/repository/sembast/sembast_repository.dart';
 import 'package:anytime/ui/podcast/now_playing.dart';
+import 'package:anytime/ui/widgets/placeholder_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:breez/bloc/app_blocs.dart';
@@ -39,7 +40,10 @@ void main() async {
               lazy: false,
               create: (ctx) => PodcastPaymentsBloc(Provider.of<AudioBloc>(ctx, listen: false), repository),
               dispose: (_, value) => value.dispose(),
-              child: PlayerControlsBuilder(builder: playerBuilder, child: UserApp()),
+              child: PlayerControlsBuilder(
+                  builder: playerBuilder,
+                  child:
+                      PlaceholderBuilder(builder: placeholderBuilder, errorBuilder: errorPlaceholderBuilder, child: UserApp())),
             )),
         appBlocs: blocs));
   });
