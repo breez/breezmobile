@@ -273,11 +273,14 @@ class BreezBridge {
 
   Future<PaymentResponse> sendSpontaneousPayment(
       String destNode, Int64 amount, String description,
-      {String groupKey = "", String groupName = ""}) {
+      {Int64 feeLimitMsat = Int64.ZERO,
+      String groupKey = "",
+      String groupName = ""}) {
     var request = SpontaneousPaymentRequest()
       ..description = description
       ..destNode = destNode
       ..amount = amount
+      ..feeLimitMsat = feeLimitMsat
       ..groupKey = groupKey
       ..groupName = groupName;
 

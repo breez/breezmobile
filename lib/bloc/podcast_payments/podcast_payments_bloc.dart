@@ -6,10 +6,13 @@ import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:anytime/ui/widgets/transport_controls.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/podcast_payments/actions.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:fixnum/fixnum.dart';
+
+const maxFeePart = 0.2;
 
 class PodcastPaymentsBloc with AsyncActionsHandler {
   final _listeningTime = Map<String, int>();
@@ -22,6 +25,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   Episode _currentPaidEpisode;
   BreezBridge _breezLib;
   Timer _paymentTimer;
+  Map<String, double> _perDestinationPayments = Map<String, double>();
 
   PodcastPaymentsBloc(this.audioBloc, this.repository) {
     ServiceInjector injector = ServiceInjector();
@@ -35,17 +39,22 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   void listenAudioState() {
-    Rx.combineLatest2(audioBloc.playingState, audioBloc.nowPlaying,
-        (AudioState audioState, Episode episode) => PlayerControlState(audioState, episode)).listen((event) async {
+    Rx.combineLatest2(
+        audioBloc.playingState,
+        audioBloc.nowPlaying,
+        (AudioState audioState, Episode episode) =>
+            PlayerControlState(audioState, episode)).listen((event) async {
       _stopPaymentTimer();
       if (event.audioState == AudioState.playing) {
         _currentPaidEpisode = event.episode;
         final value = _getLightnintPaymentValue(_currentPaidEpisode);
         if (value != null) {
-          final amount = (double.tryParse(value?.model?.suggested) * 100000000).floor();
-          _amountController.add(amount);
+          if (_amountController.value == null) {
+            final amount =
+                (double.tryParse(value?.model?.suggested) * 100000000).floor();
+            _amountController.add(amount);
+          }
           startPaymentTimer(event.episode, value.recipients);
-          _payRecipients(_currentPaidEpisode, value.recipients, _amountController.value);
         }
       }
     });
@@ -55,7 +64,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     if (_currentPaidEpisode != null) {
       final value = _getLightnintPaymentValue(_currentPaidEpisode);
       if (value != null) {
-        _payRecipients(_currentPaidEpisode, value.recipients, _amountController.value);
+        _payRecipients(
+            _currentPaidEpisode, value.recipients, _amountController.value);
       }
     }
   }
@@ -69,19 +79,59 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     _paymentTimer = Timer.periodic(Duration(seconds: 10), (t) {
       var currentDuration = (_listeningTime[episode.contentUrl] ?? 0) + 10;
       _listeningTime[episode.contentUrl] = currentDuration;
-      if (currentDuration % 60 == 0) {
-        print("sending payment for episode ${episode.contentUrl}, duration: $currentDuration");
+      if (currentDuration > 0 && currentDuration % 60 == 0) {
+        print(
+            "sending payment for episode ${episode.contentUrl}, duration: $currentDuration");
         _payRecipients(episode, recipients, _amountController.value);
       }
     });
   }
 
-  void _payRecipients(Episode episode, List<ValueDestination> recipients, int total) {
-    recipients.forEach((d) {
-      var amount = Int64((d.split * total / 100).floor()).toInt();
-      if (amount > 0 && amount <= total) {
-        _breezLib.sendSpontaneousPayment(d.address, Int64(amount), d.name,
-            groupKey: episode.contentUrl, groupName: episode.title);
+  void _payRecipients(
+      Episode episode, List<ValueDestination> recipients, int total) {
+    double totalSplits =
+        recipients.map((r) => r.split).reduce((agg, next) => agg + next);
+    final breezShare = totalSplits / 20;
+    totalSplits += breezShare;
+    final withBreez = List<ValueDestination>.from([
+      ValueDestination(
+          address:
+              "031015a7839468a3c266d662d5bb21ea4cea24226936e2864a7ca4f2c3939836e0",
+          name: "Breez",
+          type: "keysend",
+          split: breezShare)
+    ])
+      ..addAll(recipients);
+
+    withBreez.forEach((d) {
+      final amount = (d.split * total / totalSplits);
+      var aggregatedAmount =
+          (_perDestinationPayments[d.address] ?? 0.0) + amount;
+      _perDestinationPayments[d.address] = aggregatedAmount;
+
+      final maxFee = Int64((aggregatedAmount * 1000 * maxFeePart).toInt());
+      final toPay = aggregatedAmount.toInt();
+      log.info(
+          "starting recipient payment $aggregatedAmount from total: $total with fee: $maxFee split=${d.split}");
+      if (toPay > 0 && amount <= total && maxFee > 0) {
+        log.info("trying to pay $toPay to destination ${d.address}");
+        _breezLib
+            .sendSpontaneousPayment(d.address, Int64(toPay), d.name,
+                feeLimitMsat: maxFee,
+                groupKey: episode.contentUrl,
+                groupName: episode.title)
+            .then((payResponse) {
+          if (payResponse.paymentError?.isNotEmpty == true) {
+            log.info(
+                "failed to pay $toPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
+            return;
+          }
+          _perDestinationPayments[d.address] -= toPay;
+          log.info("succesfully paid $toPay to destination ${d.address}");
+        }).catchError((err) {
+          log.info(
+              "failed to pay $toPay to destination ${d.address}, error=$err trying next time...");
+        });
       }
     });
   }
@@ -92,7 +142,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       final value = metadata["feed"]["value"];
       if (value != null && value is Map<String, dynamic>) {
         final valueObj = Value.fromJson(value);
-        if (valueObj?.model?.type == "lightning" && valueObj?.model?.method == 'keysend') {
+        if (valueObj?.model?.type == "lightning" &&
+            valueObj?.model?.method == 'keysend') {
           return valueObj;
         }
       }
@@ -124,11 +175,15 @@ class Value {
       }
     });
 
-    return Value._(model: ValueModel.fromJson(map['model']), recipients: recipients);
+    return Value._(
+        model: ValueModel.fromJson(map['model']), recipients: recipients);
   }
 
   Map<String, dynamic> toJson() {
-    return <String, dynamic>{'model': model.toJson(), 'recipients': recipients.map((d) => d.toJson()).toList()};
+    return <String, dynamic>{
+      'model': model.toJson(),
+      'recipients': recipients.map((d) => d.toJson()).toList()
+    };
   }
 }
 
@@ -174,6 +229,11 @@ class ValueDestination {
   }
 
   Map<String, dynamic> toJson() {
-    return <String, dynamic>{'name': name, 'address': address, 'type': type, 'split': split};
+    return <String, dynamic>{
+      'name': name,
+      'address': address,
+      'type': type,
+      'split': split
+    };
   }
 }

@@ -170,6 +170,7 @@ const SpontaneousPaymentRequest$json = const {
     const {'1': 'description', '3': 3, '4': 1, '5': 9, '10': 'description'},
     const {'1': 'groupKey', '3': 4, '4': 1, '5': 9, '10': 'groupKey'},
     const {'1': 'groupName', '3': 5, '4': 1, '5': 9, '10': 'groupName'},
+    const {'1': 'feeLimitMsat', '3': 6, '4': 1, '5': 3, '10': 'feeLimitMsat'},
   ],
 };
 

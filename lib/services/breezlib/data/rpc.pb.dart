@@ -1136,6 +1136,7 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
     ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'description')
     ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'groupKey', protoName: 'groupKey')
     ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'groupName', protoName: 'groupName')
+    ..aInt64(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'feeLimitMsat', protoName: 'feeLimitMsat')
     ..hasRequiredFields = false
   ;
 
@@ -1146,6 +1147,7 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
     $core.String description,
     $core.String groupKey,
     $core.String groupName,
+    $fixnum.Int64 feeLimitMsat,
   }) {
     final _result = create();
     if (amount != null) {
@@ -1162,6 +1164,9 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
     }
     if (groupName != null) {
       _result.groupName = groupName;
+    }
+    if (feeLimitMsat != null) {
+      _result.feeLimitMsat = feeLimitMsat;
     }
     return _result;
   }
@@ -1230,6 +1235,15 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
   $core.bool hasGroupName() => $_has(4);
   @$pb.TagNumber(5)
   void clearGroupName() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $fixnum.Int64 get feeLimitMsat => $_getI64(5);
+  @$pb.TagNumber(6)
+  set feeLimitMsat($fixnum.Int64 v) { $_setInt64(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasFeeLimitMsat() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearFeeLimitMsat() => clearField(6);
 }
 
 class InvoiceMemo extends $pb.GeneratedMessage {
