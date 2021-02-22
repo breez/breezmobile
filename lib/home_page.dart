@@ -255,7 +255,6 @@ class HomeState extends State<Home> {
                                       widget.userProfileBloc.userActionsSink
                                           .add(SetAppMode(AppMode.apps));
                                     },
-                                    disabled: !account.connected,
                                   );
 
                                   var appModeItems = <DrawerItemConfigGroup>[];
