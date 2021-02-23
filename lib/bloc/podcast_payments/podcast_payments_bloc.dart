@@ -113,7 +113,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       final lastFee = await _lastFeeForDestination(d.address);
       final payPart = aggregatedAmount.toInt();
       final netPay = payPart - lastFee.toInt();
-      final maxFee = Int64((aggregatedAmount * 1000 * maxFeePart).toInt());
+      final maxFee = Int64((netPay * 1000 * maxFeePart).toInt());
       log.info(
           "starting recipient payment $aggregatedAmount (netPay=$netPay) from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
       if (netPay > 0 && amount <= total && maxFee > 0) {
