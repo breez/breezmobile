@@ -11,7 +11,7 @@ class PaymentAdjuster extends StatefulWidget {
 }
 
 class _PaymentAdjusterState extends State<PaymentAdjuster> {
-  int selectedSatsPerMinuteIndex = 2;
+  int selectedSatsPerMinuteIndex = 3;
 
   @override
   Widget build(BuildContext context) {
