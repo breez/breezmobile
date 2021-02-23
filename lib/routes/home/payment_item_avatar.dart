@@ -17,13 +17,20 @@ class PaymentItemAvatar extends StatelessWidget {
               0
           ? Icons.add
           : Icons.remove;
+      Widget child = Icon(icon, color: theme.BreezColors.blue[500]);
+      if (paymentItem is StreamedPaymentInfo) {
+        child = Image(
+          image: AssetImage("src/icon/podcast.png"),
+          color: theme.BreezColors.blue[500],
+        );
+      }
       return Container(
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(radius))),
           width: radius * 2,
           height: radius * 2,
-          child: Icon(icon, color: theme.BreezColors.blue[500]));
+          child: child);
     } else {
       return BreezAvatar(paymentItem.imageURL, radius: radius);
     }
