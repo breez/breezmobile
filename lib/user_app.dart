@@ -229,7 +229,10 @@ class UserApp extends StatelessWidget {
                                       );
                                     case '/create_invoice':
                                       return FadeInRoute(
-                                        builder: (_) => CreateInvoicePage(),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          CreateInvoicePage(),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/fiat_currency':
