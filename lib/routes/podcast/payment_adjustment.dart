@@ -45,40 +45,31 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
   Widget build(BuildContext context) {
     final paymentsBloc = Provider.of<PodcastPaymentsBloc>(context);
 
-    return StreamBuilder<int>(
-      stream: paymentsBloc.amountStream,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return SizedBox();
-        }
-
-        return Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 32.0,
-            vertical: 4.0,
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 32.0,
+        vertical: 4.0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          BoostWidget(
+            amountList: boostAmountMap.values.toList(),
+            onBoost: (String value) {
+              int boostAmount = boostAmountMap.keys
+                  .firstWhere((element) => boostAmountMap[element] == value);
+              paymentsBloc.actionsSink.add(PayBoost(boostAmount));
+            },
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              BoostWidget(
-                amountList: boostAmountMap.values.toList(),
-                onBoost: (String value) {
-                  int boostAmount = boostAmountMap.keys.firstWhere(
-                      (element) => boostAmountMap[element] == value);
-                  paymentsBloc.actionsSink.add(PayBoost(boostAmount));
-                },
-              ),
-              PaymentAdjuster(
-                  satsPerMinuteList: satsPerMinuteIntervalsMap.values.toList(),
-                  onChanged: (String value) {
-                    int satsPerMinute = satsPerMinuteIntervalsMap.keys.firstWhere(
-                        (element) => satsPerMinuteIntervalsMap[element] == value);
-                    paymentsBloc.actionsSink.add(AdjustAmount(satsPerMinute));
-                  }),
-            ],
-          ),
-        );
-      },
+          PaymentAdjuster(
+              satsPerMinuteList: satsPerMinuteIntervalsMap.values.toList(),
+              onChanged: (String value) {
+                int satsPerMinute = satsPerMinuteIntervalsMap.keys.firstWhere(
+                    (element) => satsPerMinuteIntervalsMap[element] == value);
+                paymentsBloc.actionsSink.add(AdjustAmount(satsPerMinute));
+              }),
+        ],
+      ),
     );
   }
 }
