@@ -23,7 +23,6 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   final AccountBloc accountBloc;
 
   final _amountController = BehaviorSubject<int>();
-  Stream<int> get amountStream => _amountController.stream;
 
   Episode _currentPaidEpisode;
   BreezBridge _breezLib;
