@@ -195,8 +195,10 @@ class UserApp extends StatelessWidget {
                                       );
                                     case '/deposit_btc_address':
                                       return FadeInRoute(
-                                        builder: (_) => DepositToBTCAddressPage(
-                                            accountBloc),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          DepositToBTCAddressPage(accountBloc),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/buy_bitcoin':
