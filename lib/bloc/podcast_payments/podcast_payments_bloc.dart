@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/entities/episode.dart';
 import 'package:anytime/repository/repository.dart';
@@ -118,14 +119,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           "starting recipient payment $aggregatedAmount (netPay=$netPay) from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
       if (netPay > 0 && amount <= total && maxFee > 0) {
         log.info("trying to pay $netPay to destination ${d.address}");
-        final title = _getPodcastTitle(episode);
-        final groupKey = title != null
-            ? "--@@$title@@--${episode.contentUrl}"
-            : "--@@${episode.contentUrl}@@--";
         _breezLib
             .sendSpontaneousPayment(d.address, Int64(netPay), d.name,
                 feeLimitMsat: maxFee,
-                groupKey: groupKey,
+                groupKey: _getPodcastGroupKey(episode),
                 groupName: episode.title)
             .then((payResponse) {
           if (payResponse.paymentError?.isNotEmpty == true) {
@@ -158,12 +155,14 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     return null;
   }
 
-  String _getPodcastTitle(Episode episode) {
+  String _getPodcastGroupKey(Episode episode) {
+    final info = Map<String, dynamic>();
+    info["content_url"] = episode.contentUrl;
     final metadata = episode?.metadata;
     if (metadata != null && metadata["feed"] != null) {
-      return metadata["feed"]["title"];
+      info["title"] = metadata["feed"]["title"];
     }
-    return null;
+    return json.encode(info);
   }
 
   void _stopPaymentTimer() {

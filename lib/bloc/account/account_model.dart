@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:math';
 
@@ -451,12 +452,15 @@ class StreamedPaymentInfo implements PaymentInfo {
     final group = singlePayments
         .firstWhere((p) => !p.pending, orElse: () => singlePayments[0])
         .paymentGroup;
-    RegExp exp = new RegExp("--@@(.*)@@--");
-    var match = exp.firstMatch(group);
-    if (match != null) {
-      return match.group(1);
-    }
-    return group;
+
+    var desc = group;
+    try {
+      final decoded = json.decode(desc);
+      if (decoded["title"] != null) {
+        desc = decoded["title"];
+      }
+    } catch (e) {}
+    return desc;
   }
 
   bool get pending => singlePayments.fold(false, (t, p) => t || p.pending);
