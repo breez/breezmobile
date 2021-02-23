@@ -82,3 +82,15 @@ class SetPOSCurrency extends AsyncAction {
 
   SetPOSCurrency(this.shortName);
 }
+
+class SetBoostAmount extends AsyncAction {
+  final int boostAmount;
+
+  SetBoostAmount(this.boostAmount);
+}
+
+class SetSatsPerMinAmount extends AsyncAction {
+  final int satsPerMin;
+
+  SetSatsPerMinAmount(this.satsPerMin);
+}

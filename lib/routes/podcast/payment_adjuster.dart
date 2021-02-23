@@ -1,17 +1,26 @@
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:flutter/material.dart';
 
 class PaymentAdjuster extends StatefulWidget {
+  final BreezUserModel userModel;
   final List satsPerMinuteList;
-  final ValueChanged<String> onChanged;
+  final ValueChanged<int> onChanged;
 
-  PaymentAdjuster({this.satsPerMinuteList, this.onChanged});
+  PaymentAdjuster({this.userModel, this.satsPerMinuteList, this.onChanged});
 
   @override
   _PaymentAdjusterState createState() => _PaymentAdjusterState();
 }
 
 class _PaymentAdjusterState extends State<PaymentAdjuster> {
-  int selectedSatsPerMinuteIndex = 3;
+  int selectedSatsPerMinuteIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedSatsPerMinuteIndex = widget.satsPerMinuteList
+        .indexOf(widget.userModel.preferredSatsPerMinValue);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +37,8 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
               (selectedSatsPerMinuteIndex == 0)
                   ? selectedSatsPerMinuteIndex = 0
                   : selectedSatsPerMinuteIndex--;
-              widget.onChanged(widget.satsPerMinuteList[selectedSatsPerMinuteIndex]);
+              widget.onChanged(widget.satsPerMinuteList
+                  .elementAt(selectedSatsPerMinuteIndex));
             });
           },
           padding: EdgeInsets.zero,
@@ -44,7 +54,9 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           child: Padding(
             padding: EdgeInsets.zero,
             child: Text(
-              widget.satsPerMinuteList[selectedSatsPerMinuteIndex],
+              widget.satsPerMinuteList
+                  .elementAt(selectedSatsPerMinuteIndex)
+                  .toString(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12.0,
@@ -95,10 +107,13 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           ),
           onPressed: () {
             setState(() {
-              (selectedSatsPerMinuteIndex == widget.satsPerMinuteList.length - 1)
-                  ? selectedSatsPerMinuteIndex = widget.satsPerMinuteList.length - 1
+              (selectedSatsPerMinuteIndex ==
+                      widget.satsPerMinuteList.length - 1)
+                  ? selectedSatsPerMinuteIndex =
+                      widget.satsPerMinuteList.length - 1
                   : selectedSatsPerMinuteIndex++;
-              widget.onChanged(widget.satsPerMinuteList[selectedSatsPerMinuteIndex]);
+              widget.onChanged(widget.satsPerMinuteList
+                  .elementAt(selectedSatsPerMinuteIndex));
             });
           },
           padding: EdgeInsets.zero,

@@ -1,18 +1,27 @@
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BoostWidget extends StatefulWidget {
-  final List amountList;
-  final ValueChanged<String> onBoost;
+  final BreezUserModel userModel;
+  final List boostAmountList;
+  final ValueChanged<int> onBoost;
 
-  BoostWidget({this.amountList, this.onBoost});
+  BoostWidget({this.userModel, this.boostAmountList, this.onBoost});
 
   @override
   _BoostWidgetState createState() => _BoostWidgetState();
 }
 
 class _BoostWidgetState extends State<BoostWidget> {
-  int selectedBoostIndex = 3;
+  int selectedBoostIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedBoostIndex =
+        widget.boostAmountList.indexOf(widget.userModel.preferredBoostValue);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,34 +30,36 @@ class _BoostWidgetState extends State<BoostWidget> {
         SizedBox(
           width: 48,
           child: FlatButton(
-            padding: EdgeInsets.zero,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.zero,
-                  child: ImageIcon(
-                    AssetImage("src/icon/boost.png"),
-                    size: 24,
-                    color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.zero,
-                  child: Text(
-                    "Boost!",
-                    style: TextStyle(
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.normal,
-                      color: Theme.of(context).buttonColor,
+              padding: EdgeInsets.zero,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.zero,
+                    child: ImageIcon(
+                      AssetImage("src/icon/boost.png"),
+                      size: 24,
+                      color:
+                          Theme.of(context).appBarTheme.actionsIconTheme.color,
                     ),
                   ),
-                ),
-              ],
-            ),
-            onPressed: () =>
-                widget.onBoost(widget.amountList[selectedBoostIndex]),
-          ),
+                  Padding(
+                    padding: EdgeInsets.zero,
+                    child: Text(
+                      "Boost!",
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.normal,
+                        color: Theme.of(context).buttonColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              onPressed: () {
+                widget.onBoost(
+                    widget.boostAmountList.elementAt(selectedBoostIndex));
+              }),
         ),
         IconButton(
           icon: Icon(
@@ -78,7 +89,9 @@ class _BoostWidgetState extends State<BoostWidget> {
               child: Padding(
                 padding: EdgeInsets.zero,
                 child: Text(
-                  widget.amountList[selectedBoostIndex],
+                  widget.boostAmountList
+                      .elementAt(selectedBoostIndex)
+                      .toString(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 12.0,
@@ -105,8 +118,8 @@ class _BoostWidgetState extends State<BoostWidget> {
           ),
           onPressed: () {
             setState(() {
-              (selectedBoostIndex == widget.amountList.length - 1)
-                  ? selectedBoostIndex = widget.amountList.length - 1
+              (selectedBoostIndex == widget.boostAmountList.length - 1)
+                  ? selectedBoostIndex = widget.boostAmountList.length - 1
                   : selectedBoostIndex++;
             });
           },

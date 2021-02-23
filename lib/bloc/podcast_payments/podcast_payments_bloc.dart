@@ -8,6 +8,7 @@ import 'package:anytime/ui/widgets/transport_controls.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/podcast_payments/actions.dart';
+import 'package:breez/bloc/podcast_payments/payment_options.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
@@ -24,6 +25,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   final _amountController = BehaviorSubject<int>();
 
+  final _paymentOptionsController = BehaviorSubject<PaymentOptions>();
+  Stream<PaymentOptions> get paymentOptionsStream =>
+      _paymentOptionsController.stream;
+
   Episode _currentPaidEpisode;
   BreezBridge _breezLib;
   Timer _paymentTimer;
@@ -32,6 +37,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   PodcastPaymentsBloc(this.accountBloc, this.audioBloc, this.repository) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
+    _paymentOptionsController.add(PaymentOptions());
     listenAudioState();
     registerAsyncHandlers({
       PayBoost: _payBoost,
@@ -176,6 +182,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         .map(((pi) => pi.fee))
         .first
         .timeout(Duration(seconds: 1), onTimeout: () => Int64.ZERO);
+  }
+
+  close() {
+    _paymentOptionsController.close();
   }
 }
 
