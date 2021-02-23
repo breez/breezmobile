@@ -1,9 +1,11 @@
+import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:flutter/material.dart';
 
 class AddFundsMessage extends StatefulWidget {
-  final int total;
+  final AccountModel accountModel;
 
-  const AddFundsMessage({Key key, this.total}) : super(key: key);
+  const AddFundsMessage({Key key, this.accountModel}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -27,7 +29,7 @@ class AddFundsMessageState extends State<AddFundsMessage> {
           ),
           RaisedButton(
               onPressed: () {
-                Navigator.of(context).pushNamed("/create_invoice");
+                showReceiveOptions(context, widget.accountModel);
               },
               color: Theme.of(context).primaryColor,
               child: Text(

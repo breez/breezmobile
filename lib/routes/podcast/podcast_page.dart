@@ -172,7 +172,7 @@ class NowPlayingTransport extends StatelessWidget {
         // 50 is default sats/min value. We will later persist users sats/min selection and use it here.
         // We'll also show add funds message if user tries to boost and has no balance
         if (snapshot.data.balance < 50) {
-          widgets.add(AddFundsMessage());
+          widgets.add(AddFundsMessage(accountModel:snapshot.data));
           widgets.add(Divider(height: 0.0));
         }
         widgets.add(PlayerPositionControls());
