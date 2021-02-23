@@ -1,5 +1,6 @@
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PaymentAdjuster extends StatefulWidget {
   final BreezUserModel userModel;
@@ -54,9 +55,8 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           child: Padding(
             padding: EdgeInsets.zero,
             child: Text(
-              widget.satsPerMinuteList
-                  .elementAt(selectedSatsPerMinuteIndex)
-                  .toString(),
+              NumberFormat.compact().format(widget.satsPerMinuteList
+                  .elementAt(selectedSatsPerMinuteIndex)),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12.0,
