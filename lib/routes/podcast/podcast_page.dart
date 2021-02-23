@@ -19,6 +19,8 @@ import 'package:anytime/ui/themes.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/podcast/add_funds_message.dart';
 import 'package:breez/routes/podcast/payment_adjustment.dart';
 import 'package:breez/routes/podcast/podcast_index_api.dart';
@@ -160,30 +162,46 @@ class NowPlayingTransport extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    return StreamBuilder<AccountModel>(
-      stream: accountBloc.accountStream,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return SizedBox();
-        }
+    final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
-        List<Widget> widgets = [];
-        widgets.add(Divider(height: 0.0));
-        // 50 is default sats/min value. We will later persist users sats/min selection and use it here.
-        // We'll also show add funds message if user tries to boost and has no balance
-        if (snapshot.data.balance < 50) {
-          widgets.add(AddFundsMessage(accountModel:snapshot.data));
-          widgets.add(Divider(height: 0.0));
-        }
-        widgets.add(PlayerPositionControls());
-        widgets.add(PlayerTransportControls());
-        widgets.add(Padding(padding: const EdgeInsets.symmetric(vertical: 8.0)));
-        widgets.add(Divider(height: 0.0, indent: 116, endIndent: 116));
-        widgets.add(Padding(padding: const EdgeInsets.symmetric(vertical: 4.0)));
-        widgets.add(PaymentAdjustment(total: 100));
-        return SizedBox(height: snapshot.data.balance < 50 ? 288.0 : 216.0, child: Column(children: widgets));
-      },
-    );
+    return StreamBuilder<BreezUserModel>(
+        stream: userBloc.userStream,
+        builder: (context, userSnapshot) {
+          if (!userSnapshot.hasData) {
+            return SizedBox();
+          }
+          var userModel = userSnapshot.data;
+          return StreamBuilder<AccountModel>(
+            stream: accountBloc.accountStream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return SizedBox();
+              }
+
+              List<Widget> widgets = [];
+              widgets.add(Divider(height: 0.0));
+              // We'll also show add funds message if user tries to boost and has no balance
+              if (snapshot.data.balance < userModel.preferredSatsPerMinValue) {
+                widgets.add(AddFundsMessage(accountModel: snapshot.data));
+                widgets.add(Divider(height: 0.0));
+              }
+              widgets.add(PlayerPositionControls());
+              widgets.add(PlayerTransportControls());
+              widgets.add(
+                  Padding(padding: const EdgeInsets.symmetric(vertical: 8.0)));
+              widgets.add(Divider(height: 0.0, indent: 116, endIndent: 116));
+              widgets.add(
+                  Padding(padding: const EdgeInsets.symmetric(vertical: 4.0)));
+              widgets.add(PaymentAdjustment(total: 100));
+              return SizedBox(
+                  height:
+                      snapshot.data.balance < userModel.preferredSatsPerMinValue
+                          ? 288.0
+                          : 216.0,
+                  child: Column(children: widgets));
+            },
+          );
+        });
   }
 }
 
