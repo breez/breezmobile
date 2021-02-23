@@ -118,10 +118,14 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           "starting recipient payment $aggregatedAmount (netPay=$netPay) from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
       if (netPay > 0 && amount <= total && maxFee > 0) {
         log.info("trying to pay $netPay to destination ${d.address}");
+        final title = _getPodcastTitle(episode);
+        final groupKey = title != null
+            ? "--@@$title@@--${episode.contentUrl}"
+            : "--@@${episode.contentUrl}@@--";
         _breezLib
             .sendSpontaneousPayment(d.address, Int64(netPay), d.name,
                 feeLimitMsat: maxFee,
-                groupKey: episode.contentUrl,
+                groupKey: groupKey,
                 groupName: episode.title)
             .then((payResponse) {
           if (payResponse.paymentError?.isNotEmpty == true) {
@@ -150,6 +154,14 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           return valueObj;
         }
       }
+    }
+    return null;
+  }
+
+  String _getPodcastTitle(Episode episode) {
+    final metadata = episode?.metadata;
+    if (metadata != null && metadata["feed"] != null) {
+      return metadata["feed"]["title"];
     }
     return null;
   }

@@ -447,9 +447,18 @@ class StreamedPaymentInfo implements PaymentInfo {
   Int64 get fee => singlePayments.fold(Int64(0), (sum, p) => sum + p.fee);
   Int64 get creationTimestamp => singlePayments.fold(
       Int64(0), (t, p) => Int64(max(t.toInt(), p.creationTimestamp.toInt())));
-  String get description => singlePayments
-      .firstWhere((p) => !p.pending, orElse: () => singlePayments[0])
-      .paymentGroup;
+  String get description {
+    final group = singlePayments
+        .firstWhere((p) => !p.pending, orElse: () => singlePayments[0])
+        .paymentGroup;
+    RegExp exp = new RegExp("--@@(.*)@@--");
+    var match = exp.firstMatch(group);
+    if (match != null) {
+      return match.group(1);
+    }
+    return group;
+  }
+
   bool get pending => singlePayments.fold(false, (t, p) => t || p.pending);
   PaymentInfo copyWith(AccountModel account) {
     var payments = singlePayments.map((e) => e.copyWith(account)).toList();
