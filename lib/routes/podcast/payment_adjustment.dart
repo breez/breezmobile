@@ -32,6 +32,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
 
   Map<int, String> satsPerMinuteIntervalsMap = {
     0: '0',
+    10: '10',
     25: '25',
     50: '50',
     100: '100',
