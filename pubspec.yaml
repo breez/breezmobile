@@ -83,7 +83,7 @@ dependency_overrides:
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
-      ref: 056a98a707fd6c5364f8e00c10f20c709bfc3dec
+      ref: 8f00e9e0df33c79eeae6cdb35466ec813a56d9ed
   intl: ^0.17.0-nullsafety.2
 
 dev_dependencies:
