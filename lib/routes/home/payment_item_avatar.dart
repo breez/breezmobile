@@ -12,18 +12,23 @@ class PaymentItemAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (_shouldShowLeadingIcon) {
+      if (paymentItem is StreamedPaymentInfo) {
+        return CircleAvatar(
+            radius: radius,
+            backgroundColor: Colors.white,
+            child: ImageIcon(
+              AssetImage("src/icon/podcast.png"),
+              color: theme.BreezColors.blue[500],
+              size: 0.6 * radius * 2,
+            ));
+      }
+
       IconData icon = [PaymentType.DEPOSIT, PaymentType.RECEIVED]
                   .indexOf(paymentItem.type) >=
               0
           ? Icons.add
           : Icons.remove;
       Widget child = Icon(icon, color: theme.BreezColors.blue[500]);
-      if (paymentItem is StreamedPaymentInfo) {
-        child = Image(
-          image: AssetImage("src/icon/podcast.png"),
-          color: theme.BreezColors.blue[500],
-        );
-      }
       return Container(
           decoration: BoxDecoration(
               color: Colors.white,
