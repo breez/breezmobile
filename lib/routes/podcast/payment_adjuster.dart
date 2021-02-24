@@ -7,7 +7,9 @@ class PaymentAdjuster extends StatefulWidget {
   final List satsPerMinuteList;
   final ValueChanged<int> onChanged;
 
-  PaymentAdjuster({this.userModel, this.satsPerMinuteList, this.onChanged});
+  PaymentAdjuster(
+      {Key key, this.userModel, this.satsPerMinuteList, this.onChanged})
+      : super(key: key);
 
   @override
   _PaymentAdjusterState createState() => _PaymentAdjusterState();

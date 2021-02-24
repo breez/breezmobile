@@ -15,6 +15,7 @@ import 'package:breez/routes/podcast/payment_adjuster.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import 'confetti.dart';
 
@@ -30,6 +31,96 @@ class PaymentAdjustment extends StatefulWidget {
 }
 
 class PaymentAdjustmentState extends State<PaymentAdjustment> {
+  final GlobalKey boostWidgetKey = GlobalKey();
+  final GlobalKey paymentAdjusterKey = GlobalKey();
+
+  TutorialCoachMark tutorial;
+  List<TargetFocus> targets = [];
+
+  @override
+  void initState() {
+    super.initState();
+    postInit(() {
+      _buildTutorial();
+      tutorial.show();
+    });
+  }
+
+  void _buildTutorial() {
+    tutorial = TutorialCoachMark(
+      context,
+      targets: targets,
+      colorShadow: Theme.of(context).primaryColor,
+      hideSkip: true,
+    );
+    _buildTutorialTargets();
+  }
+
+  void _buildTutorialTargets() {
+    targets.add(TargetFocus(
+      identify: "BoostWidget",
+      keyTarget: boostWidgetKey,
+      shape: ShapeLightFocus.RRect,
+      radius: 4,
+      paddingFocus: 8,
+      contents: [
+        TargetContent(
+            align: ContentAlign.top,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Boost Title",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 20.0),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    "Boost Description",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ))
+      ],
+    ));
+    targets.add(TargetFocus(
+      identify: "PaymentAdjuster",
+      keyTarget: paymentAdjusterKey,
+      shape: ShapeLightFocus.RRect,
+      radius: 4,
+      paddingFocus: 4,
+      contents: [
+        TargetContent(
+            align: ContentAlign.top,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Payment Adjuster Title",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 20.0),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    "Payment Adjuster Description",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ))
+      ],
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final paymentsBloc = Provider.of<PodcastPaymentsBloc>(context);
@@ -62,6 +153,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                       WithConfettyPaymentEffect(
                           type: PaymentEventType.BoostStarted,
                           child: BoostWidget(
+                            key: boostWidgetKey,
                             userModel: userModel,
                             boostAmountList: paymentOptions.boostAmountList,
                             onBoost: (int boostAmount) {
@@ -72,6 +164,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                             },
                           )),
                       PaymentAdjuster(
+                          key: paymentAdjusterKey,
                           userModel: userModel,
                           satsPerMinuteList:
                               paymentOptions.satsPerMinuteIntervalsList,
@@ -86,5 +179,19 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                 );
               });
         });
+  }
+}
+
+extension StateExtension<T extends StatefulWidget> on State<T> {
+  Stream waitForStateLoading() async* {
+    while (!mounted) {
+      yield false;
+    }
+    yield true;
+  }
+
+  Future<void> postInit(VoidCallback action) async {
+    await for (var isLoaded in waitForStateLoading()) {}
+    action();
   }
 }

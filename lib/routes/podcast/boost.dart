@@ -8,7 +8,8 @@ class BoostWidget extends StatefulWidget {
   final List boostAmountList;
   final ValueChanged<int> onBoost;
 
-  BoostWidget({this.userModel, this.boostAmountList, this.onBoost});
+  BoostWidget({Key key, this.userModel, this.boostAmountList, this.onBoost})
+      : super(key: key);
 
   @override
   _BoostWidgetState createState() => _BoostWidgetState();
@@ -29,6 +30,7 @@ class _BoostWidgetState extends State<BoostWidget> {
     return Row(
       children: [
         SizedBox(
+          height: 38,
           width: 48,
           child: FlatButton(
               padding: EdgeInsets.zero,
