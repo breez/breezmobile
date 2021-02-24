@@ -11,6 +11,7 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/succesful_payment.dart';
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -346,7 +347,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       if (result == true) {
         if (currentRoute.isCurrent) {
           navigator.push(TransparentPageRoute((navigator) {
-            return SuccessfulPaymentRoute();
+            return withBreezTheme(context, SuccessfulPaymentRoute());
           }));
         }
       } else {
