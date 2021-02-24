@@ -195,8 +195,10 @@ class UserApp extends StatelessWidget {
                                       );
                                     case '/deposit_btc_address':
                                       return FadeInRoute(
-                                        builder: (_) => DepositToBTCAddressPage(
-                                            accountBloc),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          DepositToBTCAddressPage(accountBloc),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/buy_bitcoin':
@@ -229,7 +231,10 @@ class UserApp extends StatelessWidget {
                                       );
                                     case '/create_invoice':
                                       return FadeInRoute(
-                                        builder: (_) => CreateInvoicePage(),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          CreateInvoicePage(),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/fiat_currency':

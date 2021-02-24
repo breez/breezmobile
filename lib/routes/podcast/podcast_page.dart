@@ -16,6 +16,12 @@ import 'package:anytime/services/podcast/podcast_service.dart';
 import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:anytime/ui/podcast/player_position_controls.dart';
 import 'package:anytime/ui/themes.dart';
+import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/podcast/add_funds_message.dart';
 import 'package:breez/routes/podcast/payment_adjustment.dart';
 import 'package:breez/routes/podcast/podcast_index_api.dart';
 import 'package:breez/routes/podcast/podcast_loader.dart';
@@ -155,37 +161,52 @@ class NowPlayingTransport extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Divider(
-          height: 0.0,
-        ),
-        PlayerPositionControls(),
-        PlayerTransportControls(),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 8.0,
-          ),
-        ),
-        Divider(
-          height: 0.0,
-          indent: 116,
-          endIndent: 116,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 4.0,
-          ),
-        ),
-        PaymentAdjustment(total: 100),
-      ],
-    );
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+
+    return StreamBuilder<BreezUserModel>(
+        stream: userBloc.userStream,
+        builder: (context, userSnapshot) {
+          if (!userSnapshot.hasData) {
+            return SizedBox();
+          }
+          var userModel = userSnapshot.data;
+          return StreamBuilder<AccountModel>(
+            stream: accountBloc.accountStream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return SizedBox();
+              }
+
+              List<Widget> widgets = [];
+              widgets.add(Divider(height: 0.0));
+              // We'll also show add funds message if user tries to boost and has no balance
+              if (snapshot.data.balance < userModel.preferredSatsPerMinValue) {
+                widgets.add(AddFundsMessage(accountModel: snapshot.data));
+                widgets.add(Divider(height: 0.0));
+              }
+              widgets.add(PlayerPositionControls());
+              widgets.add(PlayerTransportControls());
+              widgets.add(
+                  Padding(padding: const EdgeInsets.symmetric(vertical: 8.0)));
+              widgets.add(Divider(height: 0.0, indent: 116, endIndent: 116));
+              widgets.add(
+                  Padding(padding: const EdgeInsets.symmetric(vertical: 4.0)));
+              widgets.add(PaymentAdjustment(total: 100));
+              return SizedBox(
+                  height:
+                      snapshot.data.balance < userModel.preferredSatsPerMinValue
+                          ? 288.0
+                          : 216.0,
+                  child: Column(children: widgets));
+            },
+          );
+        });
   }
 }
 
 WidgetBuilder playerBuilder(int duration) {
-  final WidgetBuilder builder =
-      (BuildContext context) => SizedBox(height: 216.0, child: NowPlayingTransport(duration: duration));
+  final WidgetBuilder builder = (BuildContext context) => NowPlayingTransport(duration: duration);
   return builder;
 }
 

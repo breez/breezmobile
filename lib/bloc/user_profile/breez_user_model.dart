@@ -25,6 +25,8 @@ class BreezUserModel {
   final String posCurrencyShortName;
   final List<String> preferredCurrencies;
   final AppMode appMode;
+  final int preferredBoostValue;
+  final int preferredSatsPerMinValue;
 
   BreezUserModel._(
     this.userID,
@@ -46,6 +48,8 @@ class BreezUserModel {
     this.posCurrencyShortName = "SAT",
     this.preferredCurrencies,
     this.appMode = AppMode.balance,
+    this.preferredBoostValue = 5000,
+    this.preferredSatsPerMinValue = 50,
   });
 
   BreezUserModel copyWith({
@@ -68,6 +72,8 @@ class BreezUserModel {
     String posCurrencyShortName,
     List<String> preferredCurrencies,
     AppMode appMode,
+    int preferredBoostValue,
+    int preferredSatsPerMinValue,
   }) {
     return BreezUserModel._(
       userID ?? this.userID,
@@ -91,6 +97,9 @@ class BreezUserModel {
       posCurrencyShortName: posCurrencyShortName ?? this.posCurrencyShortName,
       preferredCurrencies: preferredCurrencies ?? this.preferredCurrencies,
       appMode: appMode ?? this.appMode,
+      preferredBoostValue: preferredBoostValue ?? this.preferredBoostValue,
+      preferredSatsPerMinValue:
+          preferredSatsPerMinValue ?? this.preferredSatsPerMinValue,
     );
   }
 
@@ -135,7 +144,9 @@ class BreezUserModel {
         preferredCurrencies =
             (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
                 <String>['USD', 'EUR', 'GBP', 'JPY'],
-        appMode = AppMode.values[json["appMode"] ?? 0];
+        appMode = AppMode.values[json["appMode"] ?? 0],
+        preferredBoostValue = json["preferredBoostValue"] ?? 5000,
+        preferredSatsPerMinValue = json["preferredSatsPerMinValue"] ?? 50;
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -156,5 +167,7 @@ class BreezUserModel {
         'businessAddress': businessAddress,
         'preferredCurrencies': preferredCurrencies,
         'appMode': appMode.index,
+        'preferredBoostValue': preferredBoostValue,
+        'preferredSatsPerMinValue': preferredSatsPerMinValue,
       };
 }

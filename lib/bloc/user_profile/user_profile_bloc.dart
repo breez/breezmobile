@@ -85,6 +85,8 @@ class UserProfileBloc {
       VerifyAdminPassword: _verifyAdminPassword,
       UploadProfilePicture: _uploadProfilePicture,
       SetPOSCurrency: _setPOSCurrency,
+      SetBoostAmount: _setBoostAmount,
+      SetSatsPerMinAmount: _setSatsPerMinAmount,
     };
     print("UserProfileBloc started");
 
@@ -190,6 +192,18 @@ class UserProfileBloc {
     _saveChanges(await _preferences,
         _currentUser.copyWith(posCurrencyShortName: action.shortName));
     action.resolve(action.shortName);
+  }
+
+  Future _setBoostAmount(SetBoostAmount action) async {
+    _saveChanges(await _preferences,
+        _currentUser.copyWith(preferredBoostValue: action.boostAmount));
+    action.resolve(action.boostAmount);
+  }
+
+  Future _setSatsPerMinAmount(SetSatsPerMinAmount action) async {
+    _saveChanges(await _preferences,
+        _currentUser.copyWith(preferredSatsPerMinValue: action.satsPerMin));
+    action.resolve(action.satsPerMin);
   }
 
   Future _uploadProfilePicture(UploadProfilePicture action) async {

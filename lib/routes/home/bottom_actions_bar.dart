@@ -46,7 +46,7 @@ class BottomActionsBar extends StatelessWidget {
               width: 64,
             ),
             _Action(
-              onPress: () => _showReceiveOptions(context),
+              onPress: () => showReceiveOptions(context, account),
               group: actionsGroup,
               text: "RECEIVE",
               iconAssetPath: "src/icon/receive-action.png",
@@ -185,100 +185,6 @@ class BottomActionsBar extends StatelessWidget {
               });
         });
   }
-
-  Future _showReceiveOptions(BuildContext context) {
-    AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
-    LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
-
-    return showModalBottomSheet(
-        context: context,
-        builder: (ctx) {
-          return StreamBuilder<LSPStatus>(
-              stream: lspBloc.lspStatusStream,
-              builder: (context, lspSnapshot) {
-                return StreamBuilder<List<AddFundVendorModel>>(
-                    stream: addFundsBloc.availableVendorsStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.data == null) {
-                        return SizedBox();
-                      }
-
-                      List<Widget> children =
-                          snapshot.data.where((v) => v.isAllowed).map((v) {
-                        return Column(
-                          children: [
-                            Divider(
-                              height: 0.0,
-                              color: Colors.white.withOpacity(0.2),
-                              indent: 72.0,
-                            ),
-                            ListTile(
-                                enabled: v.enabled &&
-                                    (account.connected ||
-                                        !v.requireActiveChannel),
-                                leading: _ActionImage(
-                                    iconAssetPath: v.icon,
-                                    enabled: account.connected ||
-                                        !v.requireActiveChannel),
-                                title: Text(
-                                  v.shortName ?? v.name,
-                                  style: theme.bottomSheetTextStyle,
-                                ),
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                  if (v.showLSPFee) {
-                                    promptLSPFeeAndNavigate(context, account,
-                                        lspSnapshot.data.currentLSP, v.route);
-                                  } else {
-                                    Navigator.of(context).pushNamed(v.route);
-                                  }
-                                }),
-                          ],
-                        );
-                      }).toList();
-
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          SizedBox(height: 8.0),
-                          ListTile(
-                              enabled: true,
-                              leading: _ActionImage(
-                                  iconAssetPath: "src/icon/paste.png",
-                                  enabled: true),
-                              title: Text(
-                                "Receive via Invoice",
-                                style: theme.bottomSheetTextStyle,
-                              ),
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                Navigator.of(context)
-                                    .pushNamed("/create_invoice");
-                              }),
-                          ...children,
-                          account.warningMaxChanReserveAmount == 0
-                              ? SizedBox(height: 8.0)
-                              : WarningBox(
-                                  boxPadding: EdgeInsets.all(16),
-                                  contentPadding: EdgeInsets.all(8),
-                                  child: AutoSizeText(
-                                    "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
-                                    maxLines: 1,
-                                    maxFontSize: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1
-                                        .fontSize,
-                                    style:
-                                        Theme.of(context).textTheme.headline6,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                )
-                        ],
-                      );
-                    });
-              });
-        });
-  }
 }
 
 class _Action extends StatelessWidget {
@@ -335,4 +241,97 @@ class _ActionImage extends StatelessWidget {
       height: 24.0,
     );
   }
+}
+
+Future showReceiveOptions(BuildContext context, AccountModel account) {
+  AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
+  LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+
+  return showModalBottomSheet(
+      context: context,
+      builder: (ctx) {
+        return StreamBuilder<LSPStatus>(
+            stream: lspBloc.lspStatusStream,
+            builder: (context, lspSnapshot) {
+              return StreamBuilder<List<AddFundVendorModel>>(
+                  stream: addFundsBloc.availableVendorsStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return SizedBox();
+                    }
+
+                    List<Widget> children =
+                    snapshot.data.where((v) => v.isAllowed).map((v) {
+                      return Column(
+                        children: [
+                          Divider(
+                            height: 0.0,
+                            color: Colors.white.withOpacity(0.2),
+                            indent: 72.0,
+                          ),
+                          ListTile(
+                              enabled: v.enabled &&
+                                  (account.connected ||
+                                      !v.requireActiveChannel),
+                              leading: _ActionImage(
+                                  iconAssetPath: v.icon,
+                                  enabled: account.connected ||
+                                      !v.requireActiveChannel),
+                              title: Text(
+                                v.shortName ?? v.name,
+                                style: theme.bottomSheetTextStyle,
+                              ),
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                if (v.showLSPFee) {
+                                  promptLSPFeeAndNavigate(context, account,
+                                      lspSnapshot.data.currentLSP, v.route);
+                                } else {
+                                  Navigator.of(context).pushNamed(v.route);
+                                }
+                              }),
+                        ],
+                      );
+                    }).toList();
+
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        SizedBox(height: 8.0),
+                        ListTile(
+                            enabled: true,
+                            leading: _ActionImage(
+                                iconAssetPath: "src/icon/paste.png",
+                                enabled: true),
+                            title: Text(
+                              "Receive via Invoice",
+                              style: theme.bottomSheetTextStyle,
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context)
+                                  .pushNamed("/create_invoice");
+                            }),
+                        ...children,
+                        account.warningMaxChanReserveAmount == 0
+                            ? SizedBox(height: 8.0)
+                            : WarningBox(
+                          boxPadding: EdgeInsets.all(16),
+                          contentPadding: EdgeInsets.all(8),
+                          child: AutoSizeText(
+                            "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
+                            maxLines: 1,
+                            maxFontSize: Theme.of(context)
+                                .textTheme
+                                .subtitle1
+                                .fontSize,
+                            style: Theme.of(context).textTheme.headline6,
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      ],
+                    );
+                  });
+            });
+      });
 }
