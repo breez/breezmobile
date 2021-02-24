@@ -31,7 +31,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               primaryColorDark: Color.fromRGBO(19, 85, 191, 1.0),
               accentColor: Color.fromRGBO(0, 117, 255, 1.0),
               accentColorBrightness: Brightness.light,
-              canvasColor: Color(0xfffafafa),
+              canvasColor: Color.fromRGBO(5, 93, 235, 1.0),
               scaffoldBackgroundColor: Color(0xffffffff),
               bottomAppBarColor: Color(0xFF0085fb),
               cardColor: Color(0xffffffff),
