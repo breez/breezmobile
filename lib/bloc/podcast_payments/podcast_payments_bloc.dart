@@ -119,16 +119,19 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
     withBreez.forEach((d) async {
       final amount = (d.split * total / totalSplits);
-      var aggregatedAmount =
-          (_perDestinationPayments[d.address] ?? 0.0) + amount;
-      _perDestinationPayments[d.address] = aggregatedAmount;
+      var payPart = amount.toInt();
+      if (!boost) {
+        var aggregatedAmount =
+            (_perDestinationPayments[d.address] ?? 0.0) + amount;
+        _perDestinationPayments[d.address] = aggregatedAmount;
+        payPart = aggregatedAmount.toInt();
+      }
 
       final lastFee = await _lastFeeForDestination(d.address);
-      final payPart = aggregatedAmount.toInt();
       final netPay = payPart - lastFee.toInt();
       final maxFee = Int64((netPay * 1000 * maxFeePart).toInt());
       log.info(
-          "starting recipient payment $aggregatedAmount (netPay=$netPay) from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
+          "starting recipient payment boost=$boost netPay=$netPay from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
       if (netPay > 0 && amount <= total && maxFee > 0) {
         log.info("trying to pay $netPay to destination ${d.address}");
         _breezLib
@@ -142,9 +145,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                 "failed to pay $netPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
             return;
           }
-          _perDestinationPayments[d.address] -= payPart;
           log.info("succesfully paid $netPay to destination ${d.address}");
           if (!boost) {
+            _perDestinationPayments[d.address] -= payPart;
             _paymentEventsController
                 .add(PaymentEvent(PaymentEventType.StreamCompleted, payPart));
           }
