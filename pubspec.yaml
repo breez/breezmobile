@@ -13,10 +13,11 @@ dependencies:
   firebase_messaging: ^5.0.1+1
   firebase_dynamic_links: ^0.5.0
   shared_preferences: ^0.5.1+2
+  confetti: ^0.5.4+1
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: 770c5e7dab66fd63532069889548be80b03808be
+      ref: b71e69ff1289b24d824648c3147fbab0118f8830
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
