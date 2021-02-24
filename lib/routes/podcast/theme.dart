@@ -81,6 +81,11 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                         fontFamily: 'IBMPlexSans',
                       )
                       .copyWith(
+                        button: Typography.material2018(
+                                platform: TargetPlatform.android)
+                            .black
+                            .button
+                            .copyWith(color: Color.fromRGBO(5, 93, 235, 1.0)),
                         headline6: Typography.material2018(
                                 platform: TargetPlatform.android)
                             .black
