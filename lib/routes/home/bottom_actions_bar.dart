@@ -10,6 +10,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
@@ -233,9 +234,7 @@ class _ActionImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image(
       image: AssetImage(iconAssetPath),
-      color: enabled
-          ? DefaultTextStyle.of(context).style.color
-          : Theme.of(context).disabledColor,
+      color: enabled ? Colors.white : Theme.of(context).disabledColor,
       fit: BoxFit.contain,
       width: 24.0,
       height: 24.0,
@@ -250,88 +249,94 @@ Future showReceiveOptions(BuildContext context, AccountModel account) {
   return showModalBottomSheet(
       context: context,
       builder: (ctx) {
-        return StreamBuilder<LSPStatus>(
-            stream: lspBloc.lspStatusStream,
-            builder: (context, lspSnapshot) {
-              return StreamBuilder<List<AddFundVendorModel>>(
-                  stream: addFundsBloc.availableVendorsStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.data == null) {
-                      return SizedBox();
-                    }
+        return withBreezTheme(
+          context,
+          StreamBuilder<LSPStatus>(
+              stream: lspBloc.lspStatusStream,
+              builder: (context, lspSnapshot) {
+                return StreamBuilder<List<AddFundVendorModel>>(
+                    stream: addFundsBloc.availableVendorsStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null) {
+                        return SizedBox();
+                      }
 
-                    List<Widget> children =
-                    snapshot.data.where((v) => v.isAllowed).map((v) {
+                      List<Widget> children =
+                          snapshot.data.where((v) => v.isAllowed).map((v) {
+                        return Column(
+                          children: [
+                            Divider(
+                              height: 0.0,
+                              color: Theme.of(context)
+                                  .dividerColor
+                                  .withOpacity(0.2),
+                              indent: 72.0,
+                            ),
+                            ListTile(
+                                enabled: v.enabled &&
+                                    (account.connected ||
+                                        !v.requireActiveChannel),
+                                leading: _ActionImage(
+                                    iconAssetPath: v.icon,
+                                    enabled: account.connected ||
+                                        !v.requireActiveChannel),
+                                title: Text(
+                                  v.shortName ?? v.name,
+                                  style: theme.bottomSheetTextStyle,
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  if (v.showLSPFee) {
+                                    promptLSPFeeAndNavigate(context, account,
+                                        lspSnapshot.data.currentLSP, v.route);
+                                  } else {
+                                    Navigator.of(context).pushNamed(v.route);
+                                  }
+                                }),
+                          ],
+                        );
+                      }).toList();
+
                       return Column(
-                        children: [
-                          Divider(
-                            height: 0.0,
-                            color: Colors.white.withOpacity(0.2),
-                            indent: 72.0,
-                          ),
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          SizedBox(height: 8.0),
                           ListTile(
-                              enabled: v.enabled &&
-                                  (account.connected ||
-                                      !v.requireActiveChannel),
+                              enabled: true,
                               leading: _ActionImage(
-                                  iconAssetPath: v.icon,
-                                  enabled: account.connected ||
-                                      !v.requireActiveChannel),
+                                  iconAssetPath: "src/icon/paste.png",
+                                  enabled: true),
                               title: Text(
-                                v.shortName ?? v.name,
+                                "Receive via Invoice",
                                 style: theme.bottomSheetTextStyle,
                               ),
                               onTap: () {
                                 Navigator.of(context).pop();
-                                if (v.showLSPFee) {
-                                  promptLSPFeeAndNavigate(context, account,
-                                      lspSnapshot.data.currentLSP, v.route);
-                                } else {
-                                  Navigator.of(context).pushNamed(v.route);
-                                }
+                                Navigator.of(context)
+                                    .pushNamed("/create_invoice");
                               }),
+                          ...children,
+                          account.warningMaxChanReserveAmount == 0
+                              ? SizedBox(height: 8.0)
+                              : WarningBox(
+                                  boxPadding: EdgeInsets.all(16),
+                                  contentPadding: EdgeInsets.all(8),
+                                  child: AutoSizeText(
+                                    "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
+                                    maxLines: 1,
+                                    maxFontSize: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        .fontSize,
+                                    style:
+                                        Theme.of(context).textTheme.headline6,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )
                         ],
                       );
-                    }).toList();
-
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        SizedBox(height: 8.0),
-                        ListTile(
-                            enabled: true,
-                            leading: _ActionImage(
-                                iconAssetPath: "src/icon/paste.png",
-                                enabled: true),
-                            title: Text(
-                              "Receive via Invoice",
-                              style: theme.bottomSheetTextStyle,
-                            ),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context)
-                                  .pushNamed("/create_invoice");
-                            }),
-                        ...children,
-                        account.warningMaxChanReserveAmount == 0
-                            ? SizedBox(height: 8.0)
-                            : WarningBox(
-                          boxPadding: EdgeInsets.all(16),
-                          contentPadding: EdgeInsets.all(8),
-                          child: AutoSizeText(
-                            "Breez requires you to keep ${account.currency.format(account.warningMaxChanReserveAmount, removeTrailingZeros: true)} in your balance.",
-                            maxLines: 1,
-                            maxFontSize: Theme.of(context)
-                                .textTheme
-                                .subtitle1
-                                .fontSize,
-                            style: Theme.of(context).textTheme.headline6,
-                            textAlign: TextAlign.center,
-                          ),
-                        )
-                      ],
-                    );
-                  });
-            });
+                    });
+              }),
+        );
       });
 }

@@ -95,6 +95,9 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               primaryIconTheme:
                   IconThemeData(color: Color.fromRGBO(0, 133, 251, 1.0)),
               iconTheme: IconThemeData(color: Colors.white, size: 32.0),
+              bottomSheetTheme: BottomSheetThemeData(
+                backgroundColor: currentTheme.scaffoldBackgroundColor,
+              ),
               appBarTheme: currentTheme.appBarTheme.copyWith(
                 backgroundColor: Colors.white,
                 color: currentTheme.backgroundColor,
