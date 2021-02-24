@@ -30,6 +30,7 @@ void main() async {
   //initializeDateFormatting(Platform.localeName, null);
   var mobileService = await MobileSettingsService.instance();
   mobileService.autoOpenNowPlaying = true;
+  mobileService.showFunding = false;
   final repository = SembastRepository();
   SharedPreferences.getInstance().then((preferences) async {
     await runMigration(preferences);
