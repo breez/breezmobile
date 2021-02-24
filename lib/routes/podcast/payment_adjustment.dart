@@ -4,6 +4,7 @@
 
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/podcast_payments/actions.dart';
+import 'package:breez/bloc/podcast_payments/model.dart';
 import 'package:breez/bloc/podcast_payments/payment_options.dart';
 import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -14,6 +15,8 @@ import 'package:breez/routes/podcast/payment_adjuster.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'confetti.dart';
 
 class PaymentAdjustment extends StatefulWidget {
   final int total;
@@ -56,15 +59,18 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      BoostWidget(
-                        userModel: userModel,
-                        boostAmountList: paymentOptions.boostAmountList,
-                        onBoost: (int boostAmount) {
-                          paymentsBloc.actionsSink.add(PayBoost(boostAmount));
-                          userProfileBloc.userActionsSink
-                              .add(SetBoostAmount(boostAmount));
-                        },
-                      ),
+                      WithConfettyPaymentEffect(
+                          type: PaymentEventType.BoostStarted,
+                          child: BoostWidget(
+                            userModel: userModel,
+                            boostAmountList: paymentOptions.boostAmountList,
+                            onBoost: (int boostAmount) {
+                              paymentsBloc.actionsSink
+                                  .add(PayBoost(boostAmount));
+                              userProfileBloc.userActionsSink
+                                  .add(SetBoostAmount(boostAmount));
+                            },
+                          )),
                       PaymentAdjuster(
                           userModel: userModel,
                           satsPerMinuteList:

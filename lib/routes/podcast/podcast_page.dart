@@ -19,6 +19,7 @@ import 'package:anytime/ui/themes.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/podcast_payments/model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/podcast/add_funds_message.dart';
@@ -32,6 +33,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'anytime_downloader.dart';
+import 'confetti.dart';
 
 var theme = Themes.lightTheme().themeData;
 
@@ -52,8 +54,10 @@ class AnytimePodcastApp extends StatefulWidget {
   SettingsBloc settingsBloc;
   MobileSettingsService mobileSettingsService;
 
-  AnytimePodcastApp(this.mobileSettingsService, this.repository, this.child) : podcastApi = PodcastIndexAPI() {
-    downloadService = MobileDownloadService(repository: repository, downloadManager: AnytimeDownloadManager());
+  AnytimePodcastApp(this.mobileSettingsService, this.repository, this.child)
+      : podcastApi = PodcastIndexAPI() {
+    downloadService = MobileDownloadService(
+        repository: repository, downloadManager: AnytimeDownloadManager());
     podcastService = MobilePodcastService(
         api: podcastApi,
         repository: repository,
@@ -81,7 +85,9 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
 
     widget.settingsBloc.settings.listen((event) {
       setState(() {
-        var newTheme = event.theme == 'dark' ? Themes.darkTheme().themeData : Themes.lightTheme().themeData;
+        var newTheme = event.theme == 'dark'
+            ? Themes.darkTheme().themeData
+            : Themes.lightTheme().themeData;
 
         /// Only update the theme if it has changed.
         if (newTheme != theme) {
@@ -141,7 +147,8 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
           dispose: (_, value) => value.dispose(),
         ),
         Provider<AudioBloc>(
-          create: (_) => AudioBloc(audioPlayerService: widget.audioPlayerService),
+          create: (_) =>
+              AudioBloc(audioPlayerService: widget.audioPlayerService),
           dispose: (_, value) => value.dispose(),
         ),
         Provider<SettingsBloc>(
@@ -185,7 +192,9 @@ class NowPlayingTransport extends StatelessWidget {
                 widgets.add(AddFundsMessage(accountModel: snapshot.data));
                 widgets.add(Divider(height: 0.0));
               }
-              widgets.add(PlayerPositionControls());
+              widgets.add(WithConfettyPaymentEffect(
+                  type: PaymentEventType.StreamCompleted,
+                  child: PlayerPositionControls()));
               widgets.add(PlayerTransportControls());
               widgets.add(
                   Padding(padding: const EdgeInsets.symmetric(vertical: 8.0)));
@@ -206,22 +215,23 @@ class NowPlayingTransport extends StatelessWidget {
 }
 
 WidgetBuilder playerBuilder(int duration) {
-  final WidgetBuilder builder = (BuildContext context) => NowPlayingTransport(duration: duration);
+  final WidgetBuilder builder =
+      (BuildContext context) => NowPlayingTransport(duration: duration);
   return builder;
 }
 
 WidgetBuilder placeholderBuilder() {
   final WidgetBuilder builder = (BuildContext context) => Container(
-    color: Theme.of(context).primaryColor,
-    constraints: BoxConstraints.expand(),
-  );
+        color: Theme.of(context).primaryColor,
+        constraints: BoxConstraints.expand(),
+      );
   return builder;
 }
 
 WidgetBuilder errorPlaceholderBuilder() {
   final WidgetBuilder builder = (BuildContext context) => Placeholder(
-    color: Theme.of(context).errorColor,
-    strokeWidth: 1,
-  );
+        color: Theme.of(context).errorColor,
+        strokeWidth: 1,
+      );
   return builder;
 }

@@ -8,6 +8,7 @@ import 'package:anytime/ui/widgets/transport_controls.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/podcast_payments/actions.dart';
+import 'package:breez/bloc/podcast_payments/model.dart';
 import 'package:breez/bloc/podcast_payments/payment_options.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -28,6 +29,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   final _paymentOptionsController = BehaviorSubject<PaymentOptions>();
   Stream<PaymentOptions> get paymentOptionsStream =>
       _paymentOptionsController.stream;
+
+  final _paymentEventsController = StreamController<PaymentEvent>.broadcast();
+  Stream<PaymentEvent> get paymentEventsStream =>
+      _paymentEventsController.stream;
 
   Episode _currentPaidEpisode;
   BreezBridge _breezLib;
@@ -69,10 +74,13 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   Future _payBoost(PayBoost action) async {
+    _paymentEventsController
+        .add(PaymentEvent(PaymentEventType.BoostStarted, action.sats));
     if (_currentPaidEpisode != null) {
       final value = _getLightningPaymentValue(_currentPaidEpisode);
       if (value != null) {
-        _payRecipients(_currentPaidEpisode, value.recipients, action.sats);
+        _payRecipients(_currentPaidEpisode, value.recipients, action.sats,
+            boost: true);
       }
     }
   }
@@ -87,15 +95,14 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       var currentDuration = (_listeningTime[episode.contentUrl] ?? 0) + 10;
       _listeningTime[episode.contentUrl] = currentDuration;
       if (currentDuration > 0 && currentDuration % 60 == 0) {
-        print(
-            "sending payment for episode ${episode.contentUrl}, duration: $currentDuration");
         _payRecipients(episode, recipients, _amountController.value);
       }
     });
   }
 
   void _payRecipients(
-      Episode episode, List<ValueDestination> recipients, int total) {
+      Episode episode, List<ValueDestination> recipients, int total,
+      {bool boost = false}) {
     double totalSplits =
         recipients.map((r) => r.split).reduce((agg, next) => agg + next);
     final breezShare = totalSplits / 20;
@@ -137,6 +144,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           }
           _perDestinationPayments[d.address] -= payPart;
           log.info("succesfully paid $netPay to destination ${d.address}");
+          if (!boost) {
+            _paymentEventsController
+                .add(PaymentEvent(PaymentEventType.StreamCompleted, payPart));
+          }
         }).catchError((err) {
           log.info(
               "failed to pay $netPay to destination ${d.address}, error=$err trying next time...");
