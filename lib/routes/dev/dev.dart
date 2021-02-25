@@ -11,9 +11,9 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-//import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/routes/dev/set_height_hint.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/permissions.dart';
@@ -21,6 +21,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
@@ -441,6 +442,17 @@ class DevViewState extends State<DevView> {
         function: () {
           PosCatalogBloc bloc = AppBlocsProvider.of<PosCatalogBloc>(context);
           bloc.resetDB();
+        }));
+    choices.add(Choice(
+        title: "Set Height Hint",
+        icon: Icons.phone_android,
+        function: () async {
+          final success = await Navigator.of(context).push(FadeInRoute(
+            builder: (_) => SetHeightHintPage(),
+          ));
+          if (success == true) {
+            _promptForRestart();
+          }
         }));
     return choices;
   }

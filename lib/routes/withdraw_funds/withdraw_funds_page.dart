@@ -146,8 +146,10 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                     setState(() {
                       _isMax = value;
                       if (_isMax) {
-                        _amountController.text =
-                            widget.policy.available.toString();
+                        _amountController.text = acc.currency.format(
+                            widget.policy.available,
+                            includeDisplayName: false,
+                            userInput: true);
                       } else {
                         _amountController.text = "";
                       }

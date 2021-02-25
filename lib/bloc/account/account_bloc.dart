@@ -9,6 +9,7 @@ import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/csv_exporter.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
@@ -115,6 +116,7 @@ class AccountBloc {
   BreezUserModel _currentUser;
   bool _startedLightning = false;
   bool _retryingLightningService = false;
+  BreezServer _breezServer;
   BreezBridge _breezLib;
   Notifications _notificationsService;
   Device _device;
@@ -125,6 +127,7 @@ class AccountBloc {
 
   AccountBloc(this.userProfileStream) {
     ServiceInjector injector = ServiceInjector();
+    _breezServer = injector.breezServer;
     _breezLib = injector.breezBridge;
     _notificationsService = injector.notifications;
     _device = injector.device;
@@ -157,6 +160,7 @@ class AccountBloc {
 
     log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
+      _handleRegisterDeviceNode();
       _refreshAccountAndPayments();
       //listen streams
       _listenAccountActions();
@@ -187,6 +191,16 @@ class AccountBloc {
         _accountController
             .add(_accountController.value.copyWith(enableInProgress: false));
       });
+    });
+  }
+
+  Future _handleRegisterDeviceNode() async {
+    userProfileStream.listen((user) async {
+      if (user.token != null) {
+        var acc =
+            await _accountController.firstWhere((acc) => acc.id?.isNotEmpty);
+        await _breezServer.registerDevice(user.token, acc.id);
+      }
     });
   }
 

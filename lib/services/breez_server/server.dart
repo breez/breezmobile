@@ -15,11 +15,12 @@ class BreezServer {
 
   ClientChannel _channel;
 
-  Future<String> registerDevice(String id) async {
+  Future<String> registerDevice(String id, String nodeid) async {
     await _ensureValidChannel();
     var invoicerClient = InvoicerClient(_channel, options: defaultCallOptions);
-    var response =
-        await invoicerClient.registerDevice(RegisterRequest()..deviceID = id);
+    var response = await invoicerClient.registerDevice(RegisterRequest()
+      ..deviceID = id
+      ..lightningID = nodeid);
     log.info('registerDevice response: $response');
     return response.breezID;
   }
