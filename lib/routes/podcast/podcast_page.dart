@@ -161,10 +161,30 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
   }
 }
 
-class NowPlayingTransport extends StatelessWidget {
+class NowPlayingTransport extends StatefulWidget {
+  static bool nowPlayingVisible = false;
   final int duration;
 
-  const NowPlayingTransport({@required this.duration});
+  const NowPlayingTransport({Key key, this.duration}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return NowPlayingTransportState();
+  }
+}
+
+class NowPlayingTransportState extends State<NowPlayingTransport> {
+  @override
+  void initState() {
+    super.initState();
+    NowPlayingTransport.nowPlayingVisible = true;
+  }
+
+  @override
+  void dispose() {
+    NowPlayingTransport.nowPlayingVisible = false;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

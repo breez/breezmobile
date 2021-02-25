@@ -1,6 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:anytime/ui/podcast/now_playing.dart';
+import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
+import 'package:breez/routes/podcast/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:anytime/bloc/podcast/audio_bloc.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -80,14 +86,19 @@ class Home extends StatefulWidget {
   }
 }
 
-class HomeState extends State<Home> {
+class HomeState extends State<Home> with WidgetsBindingObserver {
   String _activeScreen = "breezHome";
   Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
+  AudioBloc audioBloc;
 
   @override
   void initState() {
     super.initState();
+    audioBloc = Provider.of<AudioBloc>(context, listen: false);
+    WidgetsBinding.instance.addObserver(this);
+    audioBloc.transitionLifecycleState(LifecyleState.resume);
+
     _registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
@@ -118,10 +129,46 @@ class HomeState extends State<Home> {
         activeAccountRoutes.forEach((r) => addOrRemove(r));
       });
     });
+
+    AudioService.notificationClickEventStream
+        .where((event) => event == true)
+        .listen((event) async {
+      final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      final userModel = await userBloc.userStream.first;
+      if (!breezPodcast.NowPlayingTransport.nowPlayingVisible) {
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+              builder: (context) => withPodcastTheme(userModel, NowPlaying()),
+              fullscreenDialog: false),
+        );
+      }
+    }, onDone: () {
+      print("done");
+    }, onError: (e) {
+      print("error " + e.toString());
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    final audioBloc = Provider.of<AudioBloc>(context, listen: false);
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+        audioBloc.transitionLifecycleState(LifecyleState.resume);
+        break;
+      case AppLifecycleState.paused:
+        audioBloc.transitionLifecycleState(LifecyleState.pause);
+        break;
+      default:
+        break;
+    }
   }
 
   @override
   void dispose() {
+    audioBloc.transitionLifecycleState(LifecyleState.pause);
+    WidgetsBinding.instance.removeObserver(this);
     _accountNotificationsSubscription?.cancel();
     super.dispose();
   }
