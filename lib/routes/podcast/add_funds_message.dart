@@ -19,30 +19,52 @@ class AddFundsMessageState extends State<AddFundsMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80,
+      height: 72,
+      color: Theme.of(context).brightness == Brightness.light
+          ? Color(0xFFf3f8fc)
+          : Color(0xFF152a3d),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
+        padding: const EdgeInsets.only(
+            top: 16.0, bottom: 16.0, left: 24.0, right: 20.0),
         child: Row(
           children: [
             Expanded(
               child: AutoSizeText(
                 "Add funds to your balance to send payments to this podcast.",
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    .copyWith(letterSpacing: 0.25, height: 1.24),
                 textAlign: TextAlign.start,
                 minFontSize: MinFontSize(context).minFontSize,
                 stepGranularity: 0.1,
+                maxLines: 2,
               ),
             ),
-            SizedBox(width: 4),
-            RaisedButton(
+            SizedBox(width: 16),
+            Container(
+              width: 100,
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6.0),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                 onPressed: () {
                   showReceiveOptions(context, widget.accountModel);
                 },
                 color: Theme.of(context).primaryColor,
-                child: Text(
-                  "Add Funds",
-                  style: Theme.of(context).accentTextTheme.bodyText2,
-                )),
+                child: AutoSizeText(
+                  "ADD FUNDS",
+                  minFontSize: MinFontSize(context).minFontSize,
+                  stepGranularity: 0.1,
+                  maxLines: 1,
+                  style: Theme.of(context).accentTextTheme.bodyText2.copyWith(
+                      letterSpacing: 1,
+                      height: 1.24,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
           ],
         ),
       ),

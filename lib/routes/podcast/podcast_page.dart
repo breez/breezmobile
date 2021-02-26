@@ -225,7 +225,7 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
               return SizedBox(
                   height:
                       snapshot.data.balance < userModel.preferredSatsPerMinValue
-                          ? 288.0
+                          ? 280.0
                           : 216.0,
                   child: Column(children: widgets));
             },
