@@ -17,7 +17,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: ee8d56b81943a7bf2869d040fd3d609fd1f5a8a2
+      ref: f679ec5
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
