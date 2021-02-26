@@ -20,9 +20,7 @@ class AddFundsMessageState extends State<AddFundsMessage> {
   Widget build(BuildContext context) {
     return Container(
       height: 72,
-      color: Theme.of(context).brightness == Brightness.light
-          ? Color(0xFFf3f8fc)
-          : Color(0xFF152a3d),
+      color: Theme.of(context).backgroundColor,
       child: Padding(
         padding: const EdgeInsets.only(
             top: 16.0, bottom: 16.0, left: 24.0, right: 20.0),

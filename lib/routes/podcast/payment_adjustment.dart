@@ -50,9 +50,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                 }
                 var userModel = snapshot.data;
                 return Container(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Color(0xFFf3f8fc)
-                      : Color(0xFF152a3d),
+                  color: Theme.of(context).backgroundColor,
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(

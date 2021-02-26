@@ -17,7 +17,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: f679ec5
+      ref: 5e5280b
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
@@ -58,7 +58,7 @@ dependencies:
   nfc_in_flutter: ^2.0.4
   keyboard_actions: ^2.1.1
   flutter_secure_storage: ^3.2.1+1
-  auto_size_text: 2.0.2+1
+  auto_size_text: ^2.1.0
   app_settings: ^1.0.6+2
   bip39: ^1.0.3
   crypto: ^2.1.2

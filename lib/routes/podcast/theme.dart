@@ -47,7 +47,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               textSelectionColor: Color(0xffffcc80),
               cursorColor: Colors.orange,
               textSelectionHandleColor: Color(0xffffb74d),
-              backgroundColor: Colors.white,
+              backgroundColor: Color(0xFFf3f8fc),
               dialogBackgroundColor: Color(0xffffffff),
               indicatorColor: Colors.grey[800],
               hintColor: Color(0x8a000000),
@@ -95,7 +95,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                       ),
               accentTextTheme:
                   Typography.material2018(platform: TargetPlatform.android)
-                      .white
+                      .black
                       .apply(fontFamily: 'IBMPlexSans'),
               primaryIconTheme:
                   IconThemeData(color: Color.fromRGBO(0, 133, 251, 1.0)),
@@ -136,7 +136,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               textSelectionColor: Color(0xffffcc80),
               cursorColor: Color(0xFF4B89EB),
               textSelectionHandleColor: Color(0xffffb74d),
-              backgroundColor: Color(0xFF0c2031),
+              backgroundColor: Color(0xFF152a3d),
               dialogBackgroundColor: Color(0xFF0c2031),
               indicatorColor: Color(0xfff5f5f5),
               hintColor: Color(0x80ffffff),
