@@ -29,8 +29,8 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
       children: [
         IconButton(
           icon: Icon(
-            Icons.remove,
-            size: 16,
+            Icons.remove_circle_outline,
+            size: 20,
             color: Theme.of(context).appBarTheme.actionsIconTheme.color,
           ),
           onPressed: () {
@@ -50,59 +50,32 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
             minWidth: 24.0,
           ),
         ),
-        SizedBox(
-          width: 36,
-          child: Padding(
-            padding: EdgeInsets.zero,
-            child: Text(
-              NumberFormat.compact().format(widget.satsPerMinuteList
-                  .elementAt(selectedSatsPerMinuteIndex)),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12.0,
-                color: Theme.of(context).buttonColor,
-              ),
-            ),
-          ),
-        ),
         Padding(
-          padding: EdgeInsets.only(top: 2),
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: Column(
             children: [
               Text(
-                "sats",
+                NumberFormat.compact().format(widget.satsPerMinuteList
+                    .elementAt(selectedSatsPerMinuteIndex)),
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 12.0,
-                  color: Theme.of(context).buttonColor,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Container(
-                  width: 24,
-                  child: Divider(
-                    height: 0.0,
-                    thickness: 1,
-                    color: Theme.of(context).buttonColor,
-                  ),
+                  fontSize: 18.0,
+                  letterSpacing: 1,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               Text(
-                "min",
+                "sats/min",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12.0,
-                  color: Theme.of(context).buttonColor,
-                ),
-              ),
+                style: TextStyle(fontSize: 12, letterSpacing: 1),
+              )
             ],
           ),
         ),
         IconButton(
           icon: Icon(
-            Icons.add,
-            size: 16,
+            Icons.add_circle_outline,
+            size: 20,
             color: Theme.of(context).appBarTheme.actionsIconTheme.color,
           ),
           onPressed: () {

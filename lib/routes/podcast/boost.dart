@@ -28,44 +28,40 @@ class _BoostWidgetState extends State<BoostWidget> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(
-          width: 48,
-          child: FlatButton(
-              padding: EdgeInsets.zero,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.zero,
-                    child: ImageIcon(
-                      AssetImage("src/icon/boost.png"),
-                      size: 24,
-                      color:
-                          Theme.of(context).appBarTheme.actionsIconTheme.color,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.zero,
-                    child: Text(
-                      "Boost!",
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.normal,
-                        color: Theme.of(context).buttonColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              onPressed: () {
-                widget.onBoost(
-                    widget.boostAmountList.elementAt(selectedBoostIndex));
-              }),
+        FlatButton.icon(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              side: BorderSide(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Color(0xFF0085fb)
+                      : Colors.white70,
+                  width: 1.6)),
+          icon: ImageIcon(
+            AssetImage("src/icon/boost.png"),
+            size: 18,
+            color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+          ),
+          label: Text(
+            "BOOST!",
+            style: TextStyle(
+              fontSize: 12.0,
+              height: 1.2,
+              letterSpacing: 1,
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).buttonColor,
+            ),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          onPressed: () {
+            widget
+                .onBoost(widget.boostAmountList.elementAt(selectedBoostIndex));
+          },
         ),
+        SizedBox(width: 8),
         IconButton(
           icon: Icon(
-            Icons.remove,
-            size: 16,
+            Icons.remove_circle_outline,
+            size: 20,
             color: Theme.of(context).appBarTheme.actionsIconTheme.color,
           ),
           onPressed: () {
@@ -83,37 +79,35 @@ class _BoostWidgetState extends State<BoostWidget> {
             minWidth: 24.0,
           ),
         ),
-        Column(
-          children: [
-            SizedBox(
-              width: 36,
-              child: Padding(
-                padding: EdgeInsets.zero,
-                child: Text(
+        SizedBox(
+          width: 48,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: Column(
+              children: [
+                Text(
                   NumberFormat.compact().format(
                       widget.boostAmountList.elementAt(selectedBoostIndex)),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 12.0,
-                    color: Theme.of(context).buttonColor,
+                    fontSize: 18.0,
+                    letterSpacing: 1,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
+                Text(
+                  "sats",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, letterSpacing: 1),
+                )
+              ],
             ),
-            Text(
-              "sats",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12.0,
-                color: Theme.of(context).buttonColor,
-              ),
-            )
-          ],
+          ),
         ),
         IconButton(
           icon: Icon(
-            Icons.add,
-            size: 16,
+            Icons.add_circle_outline,
+            size: 20,
             color: Theme.of(context).appBarTheme.actionsIconTheme.color,
           ),
           onPressed: () {
