@@ -114,6 +114,8 @@ const Payment$json = const {
     const {'1': 'PendingFull', '3': 19, '4': 1, '5': 8, '10': 'PendingFull'},
     const {'1': 'closedChannelRemoteTxID', '3': 20, '4': 1, '5': 9, '10': 'closedChannelRemoteTxID'},
     const {'1': 'closedChannelSweepTxID', '3': 21, '4': 1, '5': 9, '10': 'closedChannelSweepTxID'},
+    const {'1': 'groupKey', '3': 22, '4': 1, '5': 9, '10': 'groupKey'},
+    const {'1': 'groupName', '3': 23, '4': 1, '5': 9, '10': 'groupName'},
   ],
   '4': const [Payment_PaymentType$json],
 };
@@ -166,6 +168,9 @@ const SpontaneousPaymentRequest$json = const {
     const {'1': 'amount', '3': 1, '4': 1, '5': 3, '10': 'amount'},
     const {'1': 'destNode', '3': 2, '4': 1, '5': 9, '10': 'destNode'},
     const {'1': 'description', '3': 3, '4': 1, '5': 9, '10': 'description'},
+    const {'1': 'groupKey', '3': 4, '4': 1, '5': 9, '10': 'groupKey'},
+    const {'1': 'groupName', '3': 5, '4': 1, '5': 9, '10': 'groupName'},
+    const {'1': 'feeLimitMsat', '3': 6, '4': 1, '5': 3, '10': 'feeLimitMsat'},
   ],
 };
 
@@ -472,6 +477,7 @@ const LSPInformation$json = const {
     const {'1': 'min_htlc_msat', '3': 11, '4': 1, '5': 3, '10': 'minHtlcMsat'},
     const {'1': 'channel_fee_permyriad', '3': 12, '4': 1, '5': 3, '10': 'channelFeePermyriad'},
     const {'1': 'lsp_pubkey', '3': 13, '4': 1, '5': 12, '10': 'lspPubkey'},
+    const {'1': 'max_inactive_duration', '3': 14, '4': 1, '5': 3, '10': 'maxInactiveDuration'},
   ],
 };
 
@@ -492,6 +498,23 @@ const LSPList_LspsEntry$json = const {
   '2': const [
     const {'1': 'key', '3': 1, '4': 1, '5': 9, '10': 'key'},
     const {'1': 'value', '3': 2, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'value'},
+  ],
+  '7': const {'7': true},
+};
+
+const LSPActivity$json = const {
+  '1': 'LSPActivity',
+  '2': const [
+    const {'1': 'activity', '3': 1, '4': 3, '5': 11, '6': '.data.LSPActivity.ActivityEntry', '10': 'activity'},
+  ],
+  '3': const [LSPActivity_ActivityEntry$json],
+};
+
+const LSPActivity_ActivityEntry$json = const {
+  '1': 'ActivityEntry',
+  '2': const [
+    const {'1': 'key', '3': 1, '4': 1, '5': 9, '10': 'key'},
+    const {'1': 'value', '3': 2, '4': 1, '5': 3, '10': 'value'},
   ],
   '7': const {'7': true},
 };

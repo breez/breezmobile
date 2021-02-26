@@ -421,6 +421,8 @@ class Payment extends $pb.GeneratedMessage {
     ..aOB(19, 'PendingFull', protoName: 'PendingFull')
     ..aOS(20, 'closedChannelRemoteTxID', protoName: 'closedChannelRemoteTxID')
     ..aOS(21, 'closedChannelSweepTxID', protoName: 'closedChannelSweepTxID')
+    ..aOS(22, 'groupKey', protoName: 'groupKey')
+    ..aOS(23, 'groupName', protoName: 'groupName')
     ..hasRequiredFields = false
   ;
 
@@ -611,6 +613,24 @@ class Payment extends $pb.GeneratedMessage {
   $core.bool hasClosedChannelSweepTxID() => $_has(18);
   @$pb.TagNumber(21)
   void clearClosedChannelSweepTxID() => clearField(21);
+
+  @$pb.TagNumber(22)
+  $core.String get groupKey => $_getSZ(19);
+  @$pb.TagNumber(22)
+  set groupKey($core.String v) { $_setString(19, v); }
+  @$pb.TagNumber(22)
+  $core.bool hasGroupKey() => $_has(19);
+  @$pb.TagNumber(22)
+  void clearGroupKey() => clearField(22);
+
+  @$pb.TagNumber(23)
+  $core.String get groupName => $_getSZ(20);
+  @$pb.TagNumber(23)
+  set groupName($core.String v) { $_setString(20, v); }
+  @$pb.TagNumber(23)
+  $core.bool hasGroupName() => $_has(20);
+  @$pb.TagNumber(23)
+  void clearGroupName() => clearField(23);
 }
 
 class PaymentsList extends $pb.GeneratedMessage {
@@ -766,6 +786,9 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
     ..aInt64(1, 'amount')
     ..aOS(2, 'destNode', protoName: 'destNode')
     ..aOS(3, 'description')
+    ..aOS(4, 'groupKey', protoName: 'groupKey')
+    ..aOS(5, 'groupName', protoName: 'groupName')
+    ..aInt64(6, 'feeLimitMsat', protoName: 'feeLimitMsat')
     ..hasRequiredFields = false
   ;
 
@@ -810,6 +833,33 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
   $core.bool hasDescription() => $_has(2);
   @$pb.TagNumber(3)
   void clearDescription() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get groupKey => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set groupKey($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasGroupKey() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearGroupKey() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get groupName => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set groupName($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasGroupName() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearGroupName() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $fixnum.Int64 get feeLimitMsat => $_getI64(5);
+  @$pb.TagNumber(6)
+  set feeLimitMsat($fixnum.Int64 v) { $_setInt64(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasFeeLimitMsat() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearFeeLimitMsat() => clearField(6);
 }
 
 class InvoiceMemo extends $pb.GeneratedMessage {
@@ -2235,6 +2285,7 @@ class LSPInformation extends $pb.GeneratedMessage {
     ..aInt64(11, 'minHtlcMsat')
     ..aInt64(12, 'channelFeePermyriad')
     ..a<$core.List<$core.int>>(13, 'lspPubkey', $pb.PbFieldType.OY)
+    ..aInt64(14, 'maxInactiveDuration')
     ..hasRequiredFields = false
   ;
 
@@ -2369,6 +2420,15 @@ class LSPInformation extends $pb.GeneratedMessage {
   $core.bool hasLspPubkey() => $_has(12);
   @$pb.TagNumber(13)
   void clearLspPubkey() => clearField(13);
+
+  @$pb.TagNumber(14)
+  $fixnum.Int64 get maxInactiveDuration => $_getI64(13);
+  @$pb.TagNumber(14)
+  set maxInactiveDuration($fixnum.Int64 v) { $_setInt64(13, v); }
+  @$pb.TagNumber(14)
+  $core.bool hasMaxInactiveDuration() => $_has(13);
+  @$pb.TagNumber(14)
+  void clearMaxInactiveDuration() => clearField(14);
 }
 
 class LSPListRequest extends $pb.GeneratedMessage {
@@ -2415,6 +2475,31 @@ class LSPList extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(1)
   $core.Map<$core.String, LSPInformation> get lsps => $_getMap(0);
+}
+
+class LSPActivity extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('LSPActivity', package: const $pb.PackageName('data'), createEmptyInstance: create)
+    ..m<$core.String, $fixnum.Int64>(1, 'activity', entryClassName: 'LSPActivity.ActivityEntry', keyFieldType: $pb.PbFieldType.OS, valueFieldType: $pb.PbFieldType.O6, packageName: const $pb.PackageName('data'))
+    ..hasRequiredFields = false
+  ;
+
+  LSPActivity._() : super();
+  factory LSPActivity() => create();
+  factory LSPActivity.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LSPActivity.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  LSPActivity clone() => LSPActivity()..mergeFromMessage(this);
+  LSPActivity copyWith(void Function(LSPActivity) updates) => super.copyWith((message) => updates(message as LSPActivity));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LSPActivity create() => LSPActivity._();
+  LSPActivity createEmptyInstance() => create();
+  static $pb.PbList<LSPActivity> createRepeated() => $pb.PbList<LSPActivity>();
+  @$core.pragma('dart2js:noInline')
+  static LSPActivity getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LSPActivity>(create);
+  static LSPActivity _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.Map<$core.String, $fixnum.Int64> get activity => $_getMap(0);
 }
 
 class ConnectLSPRequest extends $pb.GeneratedMessage {
