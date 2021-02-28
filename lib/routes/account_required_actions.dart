@@ -123,7 +123,7 @@ class AccountRequiredActionsIndicatorState
       print(l.maxInactiveDuration);
       if (activity.containsKey(l.lspID) &&
           ((currentTimestamp - activity[l.lspID].toInt()) >
-              (l.maxInactiveDuration ~/ 6))) {
+              (l.maxInactiveDuration ~/ 1080))) {
         print("Need to show inactive warning");
         warning = true;
       }
