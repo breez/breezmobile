@@ -19,9 +19,7 @@ import 'package:provider/provider.dart';
 import 'confetti.dart';
 
 class PaymentAdjustment extends StatefulWidget {
-  final int total;
-
-  const PaymentAdjustment({Key key, this.total}) : super(key: key);
+  const PaymentAdjustment({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -51,37 +49,48 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                   return Center(child: Loader());
                 }
                 var userModel = snapshot.data;
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 32.0,
-                    vertical: 4.0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      WithConfettyPaymentEffect(
-                          type: PaymentEventType.BoostStarted,
-                          child: BoostWidget(
+                return Container(
+                  color: Theme.of(context).backgroundColor,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: WithConfettyPaymentEffect(
+                              type: PaymentEventType.BoostStarted,
+                              child: BoostWidget(
+                                userModel: userModel,
+                                boostAmountList: paymentOptions.boostAmountList,
+                                onBoost: (int boostAmount) {
+                                  paymentsBloc.actionsSink
+                                      .add(PayBoost(boostAmount));
+                                  userProfileBloc.userActionsSink
+                                      .add(SetBoostAmount(boostAmount));
+                                },
+                              )),
+                        ),
+                        Container(
+                          height: 80,
+                          width: 1,
+                          child: VerticalDivider(
+                            thickness: 1,
+                            color: Theme.of(context).dividerColor,
+                          ),
+                        ),
+                        PaymentAdjuster(
                             userModel: userModel,
-                            boostAmountList: paymentOptions.boostAmountList,
-                            onBoost: (int boostAmount) {
+                            satsPerMinuteList:
+                                paymentOptions.satsPerMinuteIntervalsList,
+                            onChanged: (int satsPerMinute) {
                               paymentsBloc.actionsSink
-                                  .add(PayBoost(boostAmount));
+                                  .add(AdjustAmount(satsPerMinute));
                               userProfileBloc.userActionsSink
-                                  .add(SetBoostAmount(boostAmount));
-                            },
-                          )),
-                      PaymentAdjuster(
-                          userModel: userModel,
-                          satsPerMinuteList:
-                              paymentOptions.satsPerMinuteIntervalsList,
-                          onChanged: (int satsPerMinute) {
-                            paymentsBloc.actionsSink
-                                .add(AdjustAmount(satsPerMinute));
-                            userProfileBloc.userActionsSink
-                                .add(SetSatsPerMinAmount(satsPerMinute));
-                          }),
-                    ],
+                                  .add(SetSatsPerMinAmount(satsPerMinute));
+                            }),
+                      ],
+                    ),
                   ),
                 );
               });

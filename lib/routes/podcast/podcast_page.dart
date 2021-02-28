@@ -206,11 +206,11 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
               }
 
               List<Widget> widgets = [];
-              widgets.add(Divider(height: 0.0));
+              widgets.add(Divider(height: 0.0, thickness: 1));
               // We'll also show add funds message if user tries to boost and has no balance
               if (snapshot.data.balance < userModel.preferredSatsPerMinValue) {
                 widgets.add(AddFundsMessage(accountModel: snapshot.data));
-                widgets.add(Divider(height: 0.0));
+                widgets.add(Divider(height: 0.0, thickness: 1));
               }
               widgets.add(WithConfettyPaymentEffect(
                   type: PaymentEventType.StreamCompleted,
@@ -218,15 +218,13 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
               widgets.add(PlayerTransportControls());
               widgets.add(
                   Padding(padding: const EdgeInsets.symmetric(vertical: 8.0)));
-              widgets.add(Divider(height: 0.0, indent: 116, endIndent: 116));
-              widgets.add(
-                  Padding(padding: const EdgeInsets.symmetric(vertical: 4.0)));
-              widgets.add(PaymentAdjustment(total: 100));
+              widgets.add(Divider(height: 0.0, thickness: 1));
+              widgets.add(PaymentAdjustment());
               return SizedBox(
                   height:
                       snapshot.data.balance < userModel.preferredSatsPerMinValue
-                          ? 288.0
-                          : 216.0,
+                          ? 296.0
+                          : 224.0,
                   child: Column(children: widgets));
             },
           );

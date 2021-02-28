@@ -24,6 +24,7 @@ class _SpeedSelectorState extends State<SpeedSelector> {
         return DropdownButtonHideUnderline(
           child: ButtonTheme(
             child: DropdownButton(
+              dropdownColor: Theme.of(context).scaffoldBackgroundColor,
               iconSize: 0,
               value: snapshot.data.playbackSpeed,
               style: Theme.of(context).primaryTextTheme.subtitle2,
