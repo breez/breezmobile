@@ -119,7 +119,9 @@ class AccountRequiredActionsIndicatorState
     int currentTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     lsps.forEach((l) {
       print(activity.containsKey(l.lspID));
-      print(currentTimestamp - activity[l.lspID].toInt());
+      if (activity.containsKey(l.lspID)) {
+        print(currentTimestamp - activity[l.lspID].toInt());
+      }
       print("maxduration");
       print(l.maxInactiveDuration);
       if (activity.containsKey(l.lspID) &&
