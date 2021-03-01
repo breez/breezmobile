@@ -111,10 +111,11 @@ class AccountRequiredActionsIndicatorState
     return null;
   }
 
-  bool _inactiveWarning(List<LSPInfo> lsps, Map<String, Int64> activity) {
+  int _inactiveWarningDuration(
+      List<LSPInfo> lsps, Map<String, Int64> activity) {
     print(" --- activity -- ");
     print(activity);
-    bool warning = false;
+    int warningDuration = 0;
     int currentTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     lsps.forEach((l) {
       print(activity.containsKey(l.lspID));
@@ -125,10 +126,14 @@ class AccountRequiredActionsIndicatorState
           ((currentTimestamp - activity[l.lspID].toInt()) >
               (l.maxInactiveDuration ~/ 1080))) {
         print("Need to show inactive warning");
-        warning = true;
+        if ((warningDuration == 0) ||
+            (warningDuration >
+                (currentTimestamp - activity[l.lspID].toInt()))) {
+          warningDuration = (currentTimestamp - activity[l.lspID].toInt());
+        }
       }
     });
-    return warning;
+    return warningDuration;
   }
 
   @override
@@ -195,15 +200,15 @@ class AccountRequiredActionsIndicatorState
                                             print(element.maxInactiveDuration);
                                             print(element.raw);
                                           });
-                                          bool inactiveWarning = this
-                                              ._inactiveWarning(
+                                          int inactiveWarningDuration = this
+                                              ._inactiveWarningDuration(
                                                   lspStatusSnapshot
                                                       .data.availableLSPs,
                                                   lspActivitySnapshot
                                                       .data.activity);
                                           print("-- activity - inactive -- ");
-                                          print(inactiveWarning);
-                                          if (inactiveWarning) {
+                                          print(inactiveWarningDuration);
+                                          if (inactiveWarningDuration > 0) {
                                             warnings
                                                 .add(WarningAction(() async {
                                               showDialog(
@@ -211,7 +216,8 @@ class AccountRequiredActionsIndicatorState
                                                   barrierDismissible: false,
                                                   context: context,
                                                   builder: (_) =>
-                                                      CloseWarningDialog());
+                                                      CloseWarningDialog(
+                                                          inactiveWarningDuration));
                                             }));
                                           }
                                         }

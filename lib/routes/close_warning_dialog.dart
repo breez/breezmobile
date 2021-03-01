@@ -1,16 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CloseWarningDialog extends StatefulWidget {
+  final int inactiveDuration;
+
+  CloseWarningDialog(this.inactiveDuration);
+
   @override
   _CloseWarningDialogState createState() => _CloseWarningDialogState();
 }
 
 class _CloseWarningDialogState extends State<CloseWarningDialog> {
-  bool _isUnderstood = false;
-  bool _showReminderText = false;
-
   @override
   void initState() {
     super.initState();
@@ -20,54 +23,27 @@ class _CloseWarningDialogState extends State<CloseWarningDialog> {
     List<Widget> children = <Widget>[
       Padding(
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
-        child: Text(
-          "You didn't make any payment since more than 30 days. Not using blabla",
-          style: Theme.of(context)
-              .primaryTextTheme
-              .headline3
-              .copyWith(fontSize: 16),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(top: 16.0, bottom: 0.0),
-        child: Row(
-          children: <Widget>[
-            Theme(
-              data: Theme.of(context).copyWith(
-                  unselectedWidgetColor:
-                      Theme.of(context).textTheme.button.color),
-              child: Checkbox(
-                  activeColor: Theme.of(context).canvasColor,
-                  value: _isUnderstood,
-                  onChanged: (value) {
-                    setState(() {
-                      _isUnderstood = value;
-                    });
-                  }),
-            ),
-            Text(
-              "I understand",
+        child: RichText(
+            text: TextSpan(children: [
+          TextSpan(
+            text: """You haven't made any payments with Breez for """ +
+                (widget.inactiveDuration ~/ 86400).toString() +
+                """ days, so your LSP might have to close your channels.
+Should this happen, Breez will generate an on-chain address and sweep your funds into it. You will retain complete control of your money, less the mining fee incurred by the sweep transaction, and you can come back any time. To learn more about why this happens, read our post on """,
+            style: Theme.of(context)
+                .primaryTextTheme
+                .headline3
+                .copyWith(fontSize: 16),
+          ),
+          _LinkTextSpan(
+              text: "inbound liquidity",
+              url:
+                  "https://medium.com/breez-technology/lightning-economics-how-i-learned-to-stop-worrying-and-love-inbound-liquidity-511d05aa8b8b",
               style: Theme.of(context)
                   .primaryTextTheme
                   .headline3
-                  .copyWith(fontSize: 16),
-            )
-          ],
-        ),
-      ),
-      Visibility(
-        visible: _showReminderText,
-        child: Padding(
-            padding: const EdgeInsets.only(
-                top: 0.0, left: 16.0, right: 16.0, bottom: 0.0),
-            child: Text(
-              "Please confirm that you understand before you continue.",
-              style: Theme.of(context)
-                  .primaryTextTheme
-                  .headline3
-                  .copyWith(fontSize: 16)
-                  .copyWith(fontSize: 12.0, color: Colors.red),
-            )),
+                  .copyWith(fontSize: 16, decoration: TextDecoration.underline))
+        ])),
       ),
     ];
 
@@ -95,18 +71,23 @@ class _CloseWarningDialogState extends State<CloseWarningDialog> {
           actions: [
             FlatButton(
               onPressed: (() {
-                if (_isUnderstood) {
-                  Navigator.of(context).pop(_isUnderstood);
-                } else {
-                  setState(() {
-                    _showReminderText = !_isUnderstood;
-                  });
-                }
+                Navigator.of(context).pop();
               }),
-              child: Text("CONTINUE",
-                  style: Theme.of(context).primaryTextTheme.button),
+              child:
+                  Text("OK", style: Theme.of(context).primaryTextTheme.button),
             ),
           ],
         ));
   }
+}
+
+class _LinkTextSpan extends TextSpan {
+  _LinkTextSpan({TextStyle style, String url, String text})
+      : super(
+            style: style,
+            text: text ?? url,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                launch(url, forceSafariVC: false);
+              });
 }
