@@ -56,7 +56,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 8),
+                        padding: const EdgeInsets.only(left: 16, right: 0),
                         child: WithConfettyPaymentEffect(
                             type: PaymentEventType.BoostStarted,
                             child: BoostWidget(
@@ -79,7 +79,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 8, right: 16),
+                        padding: EdgeInsets.only(left: 0, right: 0),
                         child: PaymentAdjuster(
                             userModel: userModel,
                             satsPerMinuteList:
