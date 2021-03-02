@@ -34,7 +34,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   Stream<PaymentEvent> get paymentEventsStream =>
       _paymentEventsController.stream;
 
+  StreamSubscription<PositionState> currentPositionSubscription;
+
   Episode _currentPaidEpisode;
+  Duration _currentEpisodeDuration;
   BreezBridge _breezLib;
   Timer _paymentTimer;
   Map<String, double> _perDestinationPayments = Map<String, double>();
@@ -53,11 +56,19 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   void listenAudioState() {
     Rx.combineLatest2(
-        audioBloc.playingState,
-        audioBloc.nowPlaying,
-        (AudioState audioState, Episode episode) =>
-            PlayerControlState(audioState, episode)).listen((event) async {
+            audioBloc.playingState,
+            audioBloc.nowPlaying,
+            (AudioState audioState, Episode episode) =>
+                PlayerControlState(audioState, episode))
+        .distinct((s1, s2) =>
+            s1.episode.guid == s2.episode.guid &&
+            s1.audioState == s2.audioState)
+        .listen((event) async {
       _stopPaymentTimer();
+      print("start payment timer " +
+          event.audioState.toString() +
+          " " +
+          event.episode.guid);
       if (event.audioState == AudioState.playing) {
         _currentPaidEpisode = event.episode;
         final value = _getLightningPaymentValue(_currentPaidEpisode);
@@ -91,6 +102,12 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   void startPaymentTimer(Episode episode, List<ValueDestination> recipients) {
+    currentPositionSubscription = audioBloc.playPosition.listen((event) {
+      if (event.episode.guid == _currentPaidEpisode?.guid) {
+        _currentEpisodeDuration = event.position;
+      }
+    });
+
     _paymentTimer = Timer.periodic(Duration(seconds: 10), (t) {
       var currentDuration = (_listeningTime[episode.contentUrl] ?? 0) + 10;
       _listeningTime[episode.contentUrl] = currentDuration;
@@ -138,7 +155,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
             .sendSpontaneousPayment(d.address, Int64(netPay), d.name,
                 feeLimitMsat: maxFee,
                 groupKey: _getPodcastGroupKey(episode),
-                groupName: episode.title)
+                groupName: episode.title,
+                tlv: _getTlv(boost: boost))
             .then((payResponse) {
           if (payResponse.paymentError?.isNotEmpty == true) {
             log.info(
@@ -185,6 +203,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   void _stopPaymentTimer() {
+    currentPositionSubscription?.cancel();
     _paymentTimer?.cancel();
   }
 
@@ -200,6 +219,33 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   close() {
     _paymentOptionsController.close();
+  }
+
+  Map<Int64, String> _getTlv({bool boost = false}) {
+    var tlv = Map<String, dynamic>();
+    tlv["podcast"] = _getPodcastTitle(_currentPaidEpisode);
+    tlv["episode"] = _currentPaidEpisode.title;
+    tlv["action"] = boost ? "boost" : "stream";
+    tlv["time"] = _formatDuration(_currentEpisodeDuration);
+    var encoded = json.encode(tlv);
+    var records = Map<Int64, String>();
+    records[Int64(7629169)] = encoded;
+    return records;
+  }
+
+  String _getPodcastTitle(Episode episode) {
+    final metadata = episode?.metadata;
+    if (metadata != null && metadata["feed"] != null) {
+      return metadata["feed"]["title"];
+    }
+    return "";
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 }
 

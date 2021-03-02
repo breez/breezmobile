@@ -171,7 +171,18 @@ const SpontaneousPaymentRequest$json = const {
     const {'1': 'groupKey', '3': 4, '4': 1, '5': 9, '10': 'groupKey'},
     const {'1': 'groupName', '3': 5, '4': 1, '5': 9, '10': 'groupName'},
     const {'1': 'feeLimitMsat', '3': 6, '4': 1, '5': 3, '10': 'feeLimitMsat'},
+    const {'1': 'tlv', '3': 7, '4': 3, '5': 11, '6': '.data.SpontaneousPaymentRequest.TlvEntry', '10': 'tlv'},
   ],
+  '3': const [SpontaneousPaymentRequest_TlvEntry$json],
+};
+
+const SpontaneousPaymentRequest_TlvEntry$json = const {
+  '1': 'TlvEntry',
+  '2': const [
+    const {'1': 'key', '3': 1, '4': 1, '5': 3, '10': 'key'},
+    const {'1': 'value', '3': 2, '4': 1, '5': 9, '10': 'value'},
+  ],
+  '7': const {'7': true},
 };
 
 const InvoiceMemo$json = const {
