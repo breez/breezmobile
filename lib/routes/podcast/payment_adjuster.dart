@@ -75,7 +75,8 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        width: 56,
+                        width: 32,
+                        height: 20,
                         child: AutoSizeText(
                           NumberFormat.compact().format(widget.satsPerMinuteList
                               .elementAt(selectedSatsPerMinuteIndex)),

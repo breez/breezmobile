@@ -32,40 +32,43 @@ class _BoostWidgetState extends State<BoostWidget> {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        FlatButton.icon(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6.0),
-              side: BorderSide(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Color(0xFF0085fb)
-                      : Colors.white70,
-                  width: 1.6)),
-          icon: ImageIcon(
-            AssetImage("src/icon/boost.png"),
-            size: 20,
-            color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-          ),
-          label: Container(
-            width: 48,
-            child: AutoSizeText(
-              "BOOST!",
-              style: TextStyle(
-                fontSize: 14,
-                height: 1.2,
-                letterSpacing: 0,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).buttonColor,
-              ),
-              minFontSize: MinFontSize(context).minFontSize,
-              stepGranularity: 0.1,
-              maxLines: 1,
+        Container(
+          width: 94,
+          child: FlatButton.icon(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                side: BorderSide(
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Color(0xFF0085fb)
+                        : Colors.white70,
+                    width: 1.6)),
+            icon: ImageIcon(
+              AssetImage("src/icon/boost.png"),
+              size: 20,
+              color: Theme.of(context).appBarTheme.actionsIconTheme.color,
             ),
+            label: Container(
+              width: 48,
+              child: AutoSizeText(
+                "BOOST!",
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.2,
+                  letterSpacing: 0,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).buttonColor,
+                ),
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+                maxLines: 1,
+              ),
+            ),
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            onPressed: () {
+              widget
+                  .onBoost(widget.boostAmountList.elementAt(selectedBoostIndex));
+            },
           ),
-          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          onPressed: () {
-            widget
-                .onBoost(widget.boostAmountList.elementAt(selectedBoostIndex));
-          },
         ),
         Container(
           width: 108,
@@ -110,7 +113,8 @@ class _BoostWidgetState extends State<BoostWidget> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        width: 42,
+                        width: 32,
+                        height: 20,
                         child: AutoSizeText(
                           NumberFormat.compact().format(widget.boostAmountList
                               .elementAt(selectedBoostIndex)),
@@ -123,6 +127,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                           ),
                           minFontSize: MinFontSize(context).minFontSize,
                           stepGranularity: 0.1,
+                          maxLines: 1,
                         ),
                       ),
                       AutoSizeText(
