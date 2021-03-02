@@ -32,12 +32,12 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          width: 127,
+          width: 120,
           child: Stack(
             children: [
               GestureDetector(
                   child: Container(
-                      width: 48,
+                      width: 32,
                       height: 64,
                       child: Material(
                         color: Colors.transparent,
@@ -66,7 +66,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                         ),
                       ))),
               Positioned(
-                left: 36,
+                left: 24,
                 top: 16,
                 child: SizedBox(
                   width: 56,
@@ -105,10 +105,10 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                 ),
               ),
               Positioned(
-                left: 80,
+                left: 72,
                 child: GestureDetector(
                     child: Container(
-                        width: 48,
+                        width: 32,
                         height: 64,
                         child: Material(
                           color: Colors.transparent,

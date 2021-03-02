@@ -33,7 +33,7 @@ class _BoostWidgetState extends State<BoostWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          width: 94,
+          width: 88,
           child: FlatButton.icon(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6.0),
@@ -48,7 +48,7 @@ class _BoostWidgetState extends State<BoostWidget> {
               color: Theme.of(context).appBarTheme.actionsIconTheme.color,
             ),
             label: Container(
-              width: 48,
+              width: 44,
               child: AutoSizeText(
                 "BOOST!",
                 style: TextStyle(
@@ -71,13 +71,13 @@ class _BoostWidgetState extends State<BoostWidget> {
           ),
         ),
         Container(
-          width: 108,
+          width: 92,
           child: Stack(
             fit: StackFit.loose,
             children: [
               GestureDetector(
                   child: Container(
-                      width: 48,
+                      width: 32,
                       height: 64,
                       child: Material(
                         color: Colors.transparent,
@@ -104,7 +104,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                         ),
                       ))),
               Positioned(
-                left: 32,
+                left: 24,
                 top: 16,
                 child: SizedBox(
                   width: 42,
@@ -145,7 +145,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                 left: 60,
                 child: GestureDetector(
                     child: Container(
-                        width: 48,
+                        width: 32,
                         height: 64,
                         child: Material(
                           color: Colors.transparent,
