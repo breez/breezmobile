@@ -13,6 +13,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
 
 class DrawerItemConfig {
+  final GlobalKey key;
   final String name;
   final String title;
   final String icon;
@@ -22,7 +23,8 @@ class DrawerItemConfig {
   final bool isSelected;
 
   DrawerItemConfig(this.name, this.title, this.icon,
-      {this.onItemSelected,
+      {this.key,
+      this.onItemSelected,
       this.disabled = false,
       this.switchWidget,
       this.isSelected = false});
@@ -268,6 +270,7 @@ Widget _actionTile(
               borderRadius: BorderRadius.horizontal(right: Radius.circular(32)),
             ),
       child: ListTile(
+        key: action.key,
         shape: subTile != null
             ? null
             : RoundedRectangleBorder(

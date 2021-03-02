@@ -38,6 +38,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import 'bloc/invoice/invoice_model.dart';
 import 'bloc/user_profile/user_actions.dart';
@@ -81,9 +82,14 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  final GlobalKey podcastMenuItemKey = GlobalKey();
+
   String _activeScreen = "breezHome";
   Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
+
+  TutorialCoachMark tutorial;
+  List<TargetFocus> targets = [];
 
   @override
   void initState() {
@@ -124,6 +130,67 @@ class HomeState extends State<Home> {
   void dispose() {
     _accountNotificationsSubscription?.cancel();
     super.dispose();
+  }
+
+  Future<dynamic> _showTutorial() {
+    return Future.delayed(Duration(milliseconds: 200), () {
+      if (_scaffoldKey.currentState.isDrawerOpen) _buildTutorial();
+    });
+  }
+
+  void _buildTutorial() {
+    tutorial = TutorialCoachMark(context,
+        targets: targets,
+        opacityShadow: 0.9,
+        textSkip: "DISMISS",
+        colorShadow: Theme.of(context).primaryColorLight,
+        onClickOverlay: (s) => tutorial.finish(),
+        onClickTarget: (s) {
+          tutorial.finish();
+          widget.userProfileBloc.userActionsSink
+              .add(SetAppMode(AppMode.podcasts));
+          Navigator.pop(context);
+        },
+        onSkip: () => tutorial.finish(),
+        onFinish: () {
+          // set users seenTutorials.podcastTutorial to true
+        });
+    _buildTutorialTargets();
+  }
+
+  void _buildTutorialTargets() {
+    targets.add(TargetFocus(
+      identify: "PodcastMenuItem",
+      keyTarget: podcastMenuItemKey,
+      enableOverlayTab: true,
+      shape: ShapeLightFocus.RRect,
+      paddingFocus: 32,
+      contents: [
+        TargetContent(
+            align: ContentAlign.top,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "New!",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 20.0),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    "Stream sats to your favorite podcasters while they stream ideas back to you.",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ))
+      ],
+    ));
+    tutorial.show();
   }
 
   @override
@@ -227,6 +294,7 @@ class HomeState extends State<Home> {
                                     "",
                                     "Podcasts",
                                     "src/icon/podcast.png",
+                                    key: podcastMenuItemKey,
                                     isSelected:
                                         user.appMode == AppMode.podcasts,
                                     onItemSelected: (_) {
@@ -331,26 +399,32 @@ class HomeState extends State<Home> {
                                                     ),
                                                   ],
                                                   leading: _buildMenuIcon(
-                                                      context, user.appMode),
+                                                      context,
+                                                      user.appMode,
+                                                      user.seenTutorials
+                                                          .podcastsTutorial),
                                                   title: IconButton(
-                                                    padding: EdgeInsets.zero,
-                                                    icon: SvgPicture.asset(
-                                                      "src/images/logo-color.svg",
-                                                      height: 23.5,
-                                                      width: 62.7,
-                                                      color: Theme.of(context)
-                                                          .appBarTheme
-                                                          .actionsIconTheme
-                                                          .color,
-                                                      colorBlendMode:
-                                                          BlendMode.srcATop,
-                                                    ),
-                                                    iconSize: 64,
-                                                    onPressed: () =>
+                                                      padding: EdgeInsets.zero,
+                                                      icon: SvgPicture.asset(
+                                                        "src/images/logo-color.svg",
+                                                        height: 23.5,
+                                                        width: 62.7,
+                                                        color: Theme.of(context)
+                                                            .appBarTheme
+                                                            .actionsIconTheme
+                                                            .color,
+                                                        colorBlendMode:
+                                                            BlendMode.srcATop,
+                                                      ),
+                                                      iconSize: 64,
+                                                      onPressed: () async {
                                                         _scaffoldKey
                                                             .currentState
-                                                            .openDrawer(),
-                                                  ),
+                                                            .openDrawer();
+                                                        if (!user.seenTutorials
+                                                            .podcastsTutorial)
+                                                          _showTutorial();
+                                                      }),
                                                   iconTheme: IconThemeData(
                                                       color: Color.fromARGB(
                                                           255, 0, 133, 251)),
@@ -435,7 +509,8 @@ class HomeState extends State<Home> {
         });
   }
 
-  IconButton _buildMenuIcon(BuildContext context, AppMode appMode) {
+  IconButton _buildMenuIcon(
+      BuildContext context, AppMode appMode, bool seenPodcastTutorial) {
     return IconButton(
         icon: Image.asset(
           _getAppModesAssetName(appMode),
@@ -443,7 +518,10 @@ class HomeState extends State<Home> {
           width: 24.0,
           color: Theme.of(context).appBarTheme.actionsIconTheme.color,
         ),
-        onPressed: () => _scaffoldKey.currentState.openDrawer());
+        onPressed: () {
+          _scaffoldKey.currentState.openDrawer();
+          if (!seenPodcastTutorial) _showTutorial();
+        });
   }
 
   String _getAppModesAssetName(AppMode appMode) {
