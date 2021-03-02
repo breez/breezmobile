@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -28,11 +30,12 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
           icon: Icon(
-            Icons.remove,
-            size: 16,
+            Icons.remove_circle_outline,
+            size: 20,
             color: Theme.of(context).appBarTheme.actionsIconTheme.color,
           ),
           onPressed: () {
@@ -46,65 +49,46 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           },
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(
-            maxHeight: 24.0,
-            minHeight: 24.0,
-            maxWidth: 24.0,
-            minWidth: 24.0,
+            maxHeight: 20.0,
+            minHeight: 20.0,
+            maxWidth: 20.0,
+            minWidth: 20.0,
           ),
         ),
         SizedBox(
-          width: 36,
-          child: Padding(
-            padding: EdgeInsets.zero,
-            child: Text(
-              NumberFormat.compact().format(widget.satsPerMinuteList
-                  .elementAt(selectedSatsPerMinuteIndex)),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12.0,
-                color: Theme.of(context).buttonColor,
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 2),
+          width: 56,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                "sats",
+              AutoSizeText(
+                NumberFormat.compact().format(widget.satsPerMinuteList
+                    .elementAt(selectedSatsPerMinuteIndex)),
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 12.0,
-                  color: Theme.of(context).buttonColor,
+                  fontSize: 14.3,
+                  letterSpacing: 1,
+                  fontWeight: FontWeight.w600,
+                  height: 1.2,
                 ),
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
               ),
-              Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Container(
-                  width: 24,
-                  child: Divider(
-                    height: 0.0,
-                    thickness: 1,
-                    color: Theme.of(context).buttonColor,
-                  ),
-                ),
-              ),
-              Text(
-                "min",
+              AutoSizeText(
+                "sats/min",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12.0,
-                  color: Theme.of(context).buttonColor,
-                ),
-              ),
+                style: TextStyle(fontSize: 10, letterSpacing: 1),
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+                maxLines: 1,
+              )
             ],
           ),
         ),
         IconButton(
           icon: Icon(
-            Icons.add,
-            size: 16,
+            Icons.add_circle_outline,
+            size: 20,
             color: Theme.of(context).appBarTheme.actionsIconTheme.color,
           ),
           onPressed: () {
@@ -120,10 +104,10 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           },
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(
-            maxHeight: 24.0,
-            minHeight: 24.0,
-            maxWidth: 24.0,
-            minWidth: 24.0,
+            maxHeight: 20.0,
+            minHeight: 20.0,
+            maxWidth: 20.0,
+            minWidth: 20.0,
           ),
         ),
       ],

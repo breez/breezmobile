@@ -5,6 +5,7 @@ import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:math';
 
 class Confetty extends StatelessWidget {
   final ConfettiController controller;
@@ -13,9 +14,12 @@ class Confetty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConfettiWidget(
+      maxBlastForce: 50, // set a lower max blast force
+      minBlastForce: 5, // set a lower min blast force
+      emissionFrequency: 0.01,
+      numberOfParticles: 100,
       confettiController: controller,
-      blastDirectionality: BlastDirectionality
-          .explosive, // don't specify a direction, blast randomly
+      blastDirection: pi * 1.75,
       shouldLoop: false, // start again as soon as the animation is finished
       colors: const [
         Colors.green,

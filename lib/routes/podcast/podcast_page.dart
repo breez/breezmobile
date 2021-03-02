@@ -161,10 +161,30 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
   }
 }
 
-class NowPlayingTransport extends StatelessWidget {
+class NowPlayingTransport extends StatefulWidget {
+  static bool nowPlayingVisible = false;
   final int duration;
 
-  const NowPlayingTransport({@required this.duration});
+  const NowPlayingTransport({Key key, this.duration}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return NowPlayingTransportState();
+  }
+}
+
+class NowPlayingTransportState extends State<NowPlayingTransport> {
+  @override
+  void initState() {
+    super.initState();
+    NowPlayingTransport.nowPlayingVisible = true;
+  }
+
+  @override
+  void dispose() {
+    NowPlayingTransport.nowPlayingVisible = false;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -186,11 +206,11 @@ class NowPlayingTransport extends StatelessWidget {
               }
 
               List<Widget> widgets = [];
-              widgets.add(Divider(height: 0.0));
+              widgets.add(Divider(height: 0.0, thickness: 1));
               // We'll also show add funds message if user tries to boost and has no balance
               if (snapshot.data.balance < userModel.preferredSatsPerMinValue) {
                 widgets.add(AddFundsMessage(accountModel: snapshot.data));
-                widgets.add(Divider(height: 0.0));
+                widgets.add(Divider(height: 0.0, thickness: 1));
               }
               widgets.add(WithConfettyPaymentEffect(
                   type: PaymentEventType.StreamCompleted,
@@ -198,15 +218,13 @@ class NowPlayingTransport extends StatelessWidget {
               widgets.add(PlayerTransportControls());
               widgets.add(
                   Padding(padding: const EdgeInsets.symmetric(vertical: 8.0)));
-              widgets.add(Divider(height: 0.0, indent: 116, endIndent: 116));
-              widgets.add(
-                  Padding(padding: const EdgeInsets.symmetric(vertical: 4.0)));
-              widgets.add(PaymentAdjustment(total: 100));
+              widgets.add(Divider(height: 0.0, thickness: 1));
+              widgets.add(PaymentAdjustment());
               return SizedBox(
                   height:
                       snapshot.data.balance < userModel.preferredSatsPerMinValue
-                          ? 288.0
-                          : 216.0,
+                          ? 272.0
+                          : 208.0,
                   child: Column(children: widgets));
             },
           );

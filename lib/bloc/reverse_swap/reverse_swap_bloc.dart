@@ -133,9 +133,8 @@ class ReverseSwapBloc with AsyncActionsHandler {
       _breezLib.payReverseSwap(
           hash, _currentUser.token ?? "", NTFN_TITLE, NTFN_BODY),
       _paymentsStream
-          .where((payments) =>
-              payments.nonFilteredItems.length > 0 &&
-              payments.nonFilteredItems[0].paymentHash == hash)
+          .where((payments) => payments.nonFilteredItems
+              .any((element) => element.paymentHash == hash))
           .first
     ]).then((_) => onComplete()).catchError((err) {
       onComplete(

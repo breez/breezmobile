@@ -20,9 +20,7 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'confetti.dart';
 
 class PaymentAdjustment extends StatefulWidget {
-  final int total;
-
-  const PaymentAdjustment({Key key, this.total}) : super(key: key);
+  const PaymentAdjustment({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -142,38 +140,50 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                   return Center(child: Loader());
                 }
                 var userModel = snapshot.data;
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 32.0,
-                    vertical: 4.0,
-                  ),
+                return Container(
+                  height: 64,
+                  color: Theme.of(context).backgroundColor,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      WithConfettyPaymentEffect(
-                          type: PaymentEventType.BoostStarted,
-                          child: BoostWidget(
-                            key: boostWidgetKey,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 8),
+                        child: WithConfettyPaymentEffect(
+                            type: PaymentEventType.BoostStarted,
+                            child: BoostWidget(
+                              key: boostWidgetKey,
+                              userModel: userModel,
+                              boostAmountList: paymentOptions.boostAmountList,
+                              onBoost: (int boostAmount) {
+                                paymentsBloc.actionsSink
+                                    .add(PayBoost(boostAmount));
+                                userProfileBloc.userActionsSink
+                                    .add(SetBoostAmount(boostAmount));
+                              },
+                            )),
+                      ),
+                      Container(
+                        height: 64,
+                        width: 1,
+                        child: VerticalDivider(
+                          thickness: 1,
+                          color: Theme.of(context).dividerColor,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 8, right: 16),
+                        child: PaymentAdjuster(
+                            key: paymentAdjusterKey,
                             userModel: userModel,
-                            boostAmountList: paymentOptions.boostAmountList,
-                            onBoost: (int boostAmount) {
+                            satsPerMinuteList:
+                                paymentOptions.satsPerMinuteIntervalsList,
+                            onChanged: (int satsPerMinute) {
                               paymentsBloc.actionsSink
-                                  .add(PayBoost(boostAmount));
+                                  .add(AdjustAmount(satsPerMinute));
                               userProfileBloc.userActionsSink
-                                  .add(SetBoostAmount(boostAmount));
-                            },
-                          )),
-                      PaymentAdjuster(
-                          key: paymentAdjusterKey,
-                          userModel: userModel,
-                          satsPerMinuteList:
-                              paymentOptions.satsPerMinuteIntervalsList,
-                          onChanged: (int satsPerMinute) {
-                            paymentsBloc.actionsSink
-                                .add(AdjustAmount(satsPerMinute));
-                            userProfileBloc.userActionsSink
-                                .add(SetSatsPerMinAmount(satsPerMinute));
-                          }),
+                                  .add(SetSatsPerMinAmount(satsPerMinute));
+                            }),
+                      ),
                     ],
                   ),
                 );

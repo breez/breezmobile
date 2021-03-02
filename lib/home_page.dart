@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
+import 'package:anytime/ui/podcast/now_playing.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -22,6 +25,8 @@ import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:breez/routes/home/qr_action_button.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
+import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
@@ -38,6 +43,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import 'bloc/invoice/invoice_model.dart';
@@ -81,12 +87,12 @@ class Home extends StatefulWidget {
   }
 }
 
-class HomeState extends State<Home> {
+class HomeState extends State<Home> with WidgetsBindingObserver {
   final GlobalKey podcastMenuItemKey = GlobalKey();
-
   String _activeScreen = "breezHome";
   Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
+  AudioBloc audioBloc;
 
   TutorialCoachMark tutorial;
   List<TargetFocus> targets = [];
@@ -94,6 +100,10 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    audioBloc = Provider.of<AudioBloc>(context, listen: false);
+    WidgetsBinding.instance.addObserver(this);
+    audioBloc.transitionLifecycleState(LifecyleState.resume);
+
     _registerNotificationHandlers();
     listenNoConnection(context, widget.accountBloc);
     _listenBackupConflicts();
@@ -124,10 +134,46 @@ class HomeState extends State<Home> {
         activeAccountRoutes.forEach((r) => addOrRemove(r));
       });
     });
+
+    AudioService.notificationClickEventStream
+        .where((event) => event == true)
+        .listen((event) async {
+      final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      final userModel = await userBloc.userStream.first;
+      if (!breezPodcast.NowPlayingTransport.nowPlayingVisible) {
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+              builder: (context) => withPodcastTheme(userModel, NowPlaying()),
+              fullscreenDialog: false),
+        );
+      }
+    }, onDone: () {
+      print("done");
+    }, onError: (e) {
+      print("error " + e.toString());
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    final audioBloc = Provider.of<AudioBloc>(context, listen: false);
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+        audioBloc.transitionLifecycleState(LifecyleState.resume);
+        break;
+      case AppLifecycleState.paused:
+        audioBloc.transitionLifecycleState(LifecyleState.pause);
+        break;
+      default:
+        break;
+    }
   }
 
   @override
   void dispose() {
+    audioBloc.transitionLifecycleState(LifecyleState.pause);
+    WidgetsBinding.instance.removeObserver(this);
     _accountNotificationsSubscription?.cancel();
     super.dispose();
   }

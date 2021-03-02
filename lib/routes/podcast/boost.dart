@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -28,46 +30,44 @@ class _BoostWidgetState extends State<BoostWidget> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SizedBox(
-          height: 38,
-          width: 48,
-          child: FlatButton(
-              padding: EdgeInsets.zero,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.zero,
-                    child: ImageIcon(
-                      AssetImage("src/icon/boost.png"),
-                      size: 24,
-                      color:
-                          Theme.of(context).appBarTheme.actionsIconTheme.color,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.zero,
-                    child: Text(
-                      "Boost!",
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.normal,
-                        color: Theme.of(context).buttonColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              onPressed: () {
-                widget.onBoost(
-                    widget.boostAmountList.elementAt(selectedBoostIndex));
-              }),
+        FlatButton.icon(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              side: BorderSide(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Color(0xFF0085fb)
+                      : Colors.white70,
+                  width: 1.6)),
+          icon: ImageIcon(
+            AssetImage("src/icon/boost.png"),
+            size: 20,
+            color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+          ),
+          label: AutoSizeText(
+            "BOOST!",
+            style: TextStyle(
+              fontSize: 14,
+              height: 1.2,
+              letterSpacing: 0,
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).buttonColor,
+            ),
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
+          ),
+          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          onPressed: () {
+            widget
+                .onBoost(widget.boostAmountList.elementAt(selectedBoostIndex));
+          },
         ),
+        SizedBox(width: 16),
         IconButton(
           icon: Icon(
-            Icons.remove,
-            size: 16,
+            Icons.remove_circle_outline,
+            size: 20,
             color: Theme.of(context).appBarTheme.actionsIconTheme.color,
           ),
           onPressed: () {
@@ -79,43 +79,45 @@ class _BoostWidgetState extends State<BoostWidget> {
           },
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(
-            maxHeight: 24.0,
-            minHeight: 24.0,
-            maxWidth: 24.0,
-            minWidth: 24.0,
+            maxHeight: 20.0,
+            minHeight: 20.0,
+            maxWidth: 20.0,
+            minWidth: 20.0,
           ),
         ),
-        Column(
-          children: [
-            SizedBox(
-              width: 36,
-              child: Padding(
-                padding: EdgeInsets.zero,
-                child: Text(
-                  NumberFormat.compact().format(
-                      widget.boostAmountList.elementAt(selectedBoostIndex)),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    color: Theme.of(context).buttonColor,
-                  ),
+        SizedBox(
+          width: 42,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              AutoSizeText(
+                NumberFormat.compact().format(
+                    widget.boostAmountList.elementAt(selectedBoostIndex)),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14.3,
+                  letterSpacing: 1,
+                  fontWeight: FontWeight.w600,
+                  height: 1.2,
                 ),
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
               ),
-            ),
-            Text(
-              "sats",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12.0,
-                color: Theme.of(context).buttonColor,
-              ),
-            )
-          ],
+              AutoSizeText(
+                "sats",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 10, letterSpacing: 1),
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+              )
+            ],
+          ),
         ),
         IconButton(
           icon: Icon(
-            Icons.add,
-            size: 16,
+            Icons.add_circle_outline,
+            size: 20,
             color: Theme.of(context).appBarTheme.actionsIconTheme.color,
           ),
           onPressed: () {
@@ -127,10 +129,10 @@ class _BoostWidgetState extends State<BoostWidget> {
           },
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(
-            maxHeight: 24.0,
-            minHeight: 24.0,
-            maxWidth: 24.0,
-            minWidth: 24.0,
+            maxHeight: 20.0,
+            minHeight: 20.0,
+            maxWidth: 20.0,
+            minWidth: 20.0,
           ),
         ),
       ],
