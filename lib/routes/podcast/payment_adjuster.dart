@@ -74,18 +74,22 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      AutoSizeText(
-                        NumberFormat.compact().format(widget.satsPerMinuteList
-                            .elementAt(selectedSatsPerMinuteIndex)),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14.3,
-                          letterSpacing: 1,
-                          fontWeight: FontWeight.w600,
-                          height: 1.2,
+                      Container(
+                        width: 56,
+                        child: AutoSizeText(
+                          NumberFormat.compact().format(widget.satsPerMinuteList
+                              .elementAt(selectedSatsPerMinuteIndex)),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14.3,
+                            letterSpacing: 1,
+                            fontWeight: FontWeight.w600,
+                            height: 1.2,
+                          ),
+                          minFontSize: MinFontSize(context).minFontSize,
+                          stepGranularity: 0.1,
+                          maxLines: 1,
                         ),
-                        minFontSize: MinFontSize(context).minFontSize,
-                        stepGranularity: 0.1,
                       ),
                       AutoSizeText(
                         "sats/min",

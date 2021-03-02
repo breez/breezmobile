@@ -45,17 +45,21 @@ class _BoostWidgetState extends State<BoostWidget> {
             size: 20,
             color: Theme.of(context).appBarTheme.actionsIconTheme.color,
           ),
-          label: AutoSizeText(
-            "BOOST!",
-            style: TextStyle(
-              fontSize: 14,
-              height: 1.2,
-              letterSpacing: 0,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).buttonColor,
+          label: Container(
+            width: 48,
+            child: AutoSizeText(
+              "BOOST!",
+              style: TextStyle(
+                fontSize: 14,
+                height: 1.2,
+                letterSpacing: 0,
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).buttonColor,
+              ),
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
+              maxLines: 1,
             ),
-            minFontSize: MinFontSize(context).minFontSize,
-            stepGranularity: 0.1,
           ),
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           onPressed: () {
@@ -105,18 +109,21 @@ class _BoostWidgetState extends State<BoostWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      AutoSizeText(
-                        NumberFormat.compact().format(widget.boostAmountList
-                            .elementAt(selectedBoostIndex)),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14.3,
-                          letterSpacing: 1,
-                          fontWeight: FontWeight.w600,
-                          height: 1.2,
+                      Container(
+                        width: 42,
+                        child: AutoSizeText(
+                          NumberFormat.compact().format(widget.boostAmountList
+                              .elementAt(selectedBoostIndex)),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14.3,
+                            letterSpacing: 1,
+                            fontWeight: FontWeight.w600,
+                            height: 1.2,
+                          ),
+                          minFontSize: MinFontSize(context).minFontSize,
+                          stepGranularity: 0.1,
                         ),
-                        minFontSize: MinFontSize(context).minFontSize,
-                        stepGranularity: 0.1,
                       ),
                       AutoSizeText(
                         "sats",
