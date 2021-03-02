@@ -19,11 +19,11 @@ class AddFundsMessageState extends State<AddFundsMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 72,
+      height: 64,
       color: Theme.of(context).backgroundColor,
       child: Padding(
         padding: const EdgeInsets.only(
-            top: 16.0, bottom: 16.0, left: 24.0, right: 20.0),
+            top: 12.0, bottom: 12.0, left: 24.0, right: 20.0),
         child: Row(
           children: [
             Expanded(

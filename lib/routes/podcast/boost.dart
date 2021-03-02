@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -27,102 +29,152 @@ class _BoostWidgetState extends State<BoostWidget> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        FlatButton.icon(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6.0),
-              side: BorderSide(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Color(0xFF0085fb)
-                      : Colors.white70,
-                  width: 1.6)),
-          icon: ImageIcon(
-            AssetImage("src/icon/boost.png"),
-            size: 18,
-            color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-          ),
-          label: Text(
-            "BOOST!",
-            style: TextStyle(
-              fontSize: 12.0,
-              height: 1.2,
-              letterSpacing: 1,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).buttonColor,
+        Container(
+          width: 88,
+          child: FlatButton.icon(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                side: BorderSide(
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Color(0xFF0085fb)
+                        : Colors.white70,
+                    width: 1.6)),
+            icon: ImageIcon(
+              AssetImage("src/icon/boost.png"),
+              size: 20,
+              color: Theme.of(context).appBarTheme.actionsIconTheme.color,
             ),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-          onPressed: () {
-            widget
-                .onBoost(widget.boostAmountList.elementAt(selectedBoostIndex));
-          },
-        ),
-        SizedBox(width: 8),
-        IconButton(
-          icon: Icon(
-            Icons.remove_circle_outline,
-            size: 20,
-            color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-          ),
-          onPressed: () {
-            setState(() {
-              (selectedBoostIndex == 0)
-                  ? selectedBoostIndex = 0
-                  : selectedBoostIndex--;
-            });
-          },
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(
-            maxHeight: 24.0,
-            minHeight: 24.0,
-            maxWidth: 24.0,
-            minWidth: 24.0,
+            label: Container(
+              width: 44,
+              child: AutoSizeText(
+                "BOOST!",
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.2,
+                  letterSpacing: 0,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).buttonColor,
+                ),
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+                maxLines: 1,
+              ),
+            ),
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            onPressed: () {
+              widget
+                  .onBoost(widget.boostAmountList.elementAt(selectedBoostIndex));
+            },
           ),
         ),
-        SizedBox(
-          width: 48,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Column(
-              children: [
-                Text(
-                  NumberFormat.compact().format(
-                      widget.boostAmountList.elementAt(selectedBoostIndex)),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    letterSpacing: 1,
-                    fontWeight: FontWeight.w600,
+        Container(
+          width: 92,
+          child: Stack(
+            fit: StackFit.loose,
+            children: [
+              GestureDetector(
+                  child: Container(
+                      width: 32,
+                      height: 64,
+                      child: Material(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(32),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(32),
+                          onTap: () {
+                            setState(() {
+                              (selectedBoostIndex == 0)
+                                  ? selectedBoostIndex = 0
+                                  : selectedBoostIndex--;
+                            });
+                          },
+                          splashColor: Theme.of(context).splashColor,
+                          highlightColor: Colors.transparent,
+                          child: Icon(
+                            Icons.remove_circle_outline,
+                            size: 20,
+                            color: Theme.of(context)
+                                .appBarTheme
+                                .actionsIconTheme
+                                .color,
+                          ),
+                        ),
+                      ))),
+              Positioned(
+                left: 24,
+                top: 16,
+                child: SizedBox(
+                  width: 42,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 32,
+                        height: 20,
+                        child: AutoSizeText(
+                          NumberFormat.compact().format(widget.boostAmountList
+                              .elementAt(selectedBoostIndex)),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14.3,
+                            letterSpacing: 1,
+                            fontWeight: FontWeight.w600,
+                            height: 1.2,
+                          ),
+                          minFontSize: MinFontSize(context).minFontSize,
+                          stepGranularity: 0.1,
+                          maxLines: 1,
+                        ),
+                      ),
+                      AutoSizeText(
+                        "sats",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 10, letterSpacing: 1),
+                        minFontSize: MinFontSize(context).minFontSize,
+                        stepGranularity: 0.1,
+                      )
+                    ],
                   ),
                 ),
-                Text(
-                  "sats",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, letterSpacing: 1),
-                )
-              ],
-            ),
-          ),
-        ),
-        IconButton(
-          icon: Icon(
-            Icons.add_circle_outline,
-            size: 20,
-            color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-          ),
-          onPressed: () {
-            setState(() {
-              (selectedBoostIndex == widget.boostAmountList.length - 1)
-                  ? selectedBoostIndex = widget.boostAmountList.length - 1
-                  : selectedBoostIndex++;
-            });
-          },
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(
-            maxHeight: 24.0,
-            minHeight: 24.0,
-            maxWidth: 24.0,
-            minWidth: 24.0,
+              ),
+              Positioned(
+                left: 60,
+                child: GestureDetector(
+                    child: Container(
+                        width: 32,
+                        height: 64,
+                        child: Material(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(32),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(32),
+                            onTap: () {
+                              setState(() {
+                                (selectedBoostIndex ==
+                                        widget.boostAmountList.length - 1)
+                                    ? selectedBoostIndex =
+                                        widget.boostAmountList.length - 1
+                                    : selectedBoostIndex++;
+                              });
+                            },
+                            splashColor: Theme.of(context).splashColor,
+                            highlightColor: Colors.transparent,
+                            child: Icon(
+                              Icons.add_circle_outline,
+                              size: 20,
+                              color: Theme.of(context)
+                                  .appBarTheme
+                                  .actionsIconTheme
+                                  .color,
+                            ),
+                          ),
+                        ))),
+              ),
+            ],
           ),
         ),
       ],
