@@ -2,6 +2,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 
 import 'business_adress.dart';
+import 'seen_tutorials.dart';
 
 enum AppMode { balance, podcasts, pos, apps }
 
@@ -27,6 +28,7 @@ class BreezUserModel {
   final AppMode appMode;
   final int preferredBoostValue;
   final int preferredSatsPerMinValue;
+  final SeenTutorials seenTutorials;
 
   BreezUserModel._(
     this.userID,
@@ -50,6 +52,7 @@ class BreezUserModel {
     this.appMode = AppMode.balance,
     this.preferredBoostValue = 5000,
     this.preferredSatsPerMinValue = 50,
+    this.seenTutorials,
   });
 
   BreezUserModel copyWith({
@@ -74,6 +77,7 @@ class BreezUserModel {
     AppMode appMode,
     int preferredBoostValue,
     int preferredSatsPerMinValue,
+    SeenTutorials seenTutorials,
   }) {
     return BreezUserModel._(
       userID ?? this.userID,
@@ -100,6 +104,7 @@ class BreezUserModel {
       preferredBoostValue: preferredBoostValue ?? this.preferredBoostValue,
       preferredSatsPerMinValue:
           preferredSatsPerMinValue ?? this.preferredSatsPerMinValue,
+      seenTutorials: seenTutorials ?? this.seenTutorials,
     );
   }
 
@@ -146,7 +151,10 @@ class BreezUserModel {
                 <String>['USD', 'EUR', 'GBP', 'JPY'],
         appMode = AppMode.values[json["appMode"] ?? 0],
         preferredBoostValue = json["preferredBoostValue"] ?? 5000,
-        preferredSatsPerMinValue = json["preferredSatsPerMinValue"] ?? 50;
+        preferredSatsPerMinValue = json["preferredSatsPerMinValue"] ?? 50,
+        seenTutorials = json["seenTutorials"] == null
+            ? SeenTutorials.initial()
+            : SeenTutorials.fromJson(json["seenTutorials"]);
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -169,5 +177,6 @@ class BreezUserModel {
         'appMode': appMode.index,
         'preferredBoostValue': preferredBoostValue,
         'preferredSatsPerMinValue': preferredSatsPerMinValue,
+        'seenTutorials': seenTutorials,
       };
 }
