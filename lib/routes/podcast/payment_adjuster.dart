@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -26,6 +28,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
           icon: Icon(
@@ -44,30 +47,38 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           },
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(
-            maxHeight: 24.0,
-            minHeight: 24.0,
-            maxWidth: 24.0,
-            minWidth: 24.0,
+            maxHeight: 20.0,
+            minHeight: 20.0,
+            maxWidth: 20.0,
+            minWidth: 20.0,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        SizedBox(
+          width: 56,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              AutoSizeText(
                 NumberFormat.compact().format(widget.satsPerMinuteList
                     .elementAt(selectedSatsPerMinuteIndex)),
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 18.0,
+                  fontSize: 14.3,
                   letterSpacing: 1,
                   fontWeight: FontWeight.w600,
+                  height: 1.2,
                 ),
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
               ),
-              Text(
+              AutoSizeText(
                 "sats/min",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, letterSpacing: 1),
+                style: TextStyle(fontSize: 10, letterSpacing: 1),
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+                maxLines: 1,
               )
             ],
           ),
@@ -91,10 +102,10 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           },
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(
-            maxHeight: 24.0,
-            minHeight: 24.0,
-            maxWidth: 24.0,
-            minWidth: 24.0,
+            maxHeight: 20.0,
+            minHeight: 20.0,
+            maxWidth: 20.0,
+            minWidth: 20.0,
           ),
         ),
       ],

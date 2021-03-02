@@ -50,36 +50,37 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                 }
                 var userModel = snapshot.data;
                 return Container(
+                  height: 64,
                   color: Theme.of(context).backgroundColor,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: WithConfettyPaymentEffect(
-                              type: PaymentEventType.BoostStarted,
-                              child: BoostWidget(
-                                userModel: userModel,
-                                boostAmountList: paymentOptions.boostAmountList,
-                                onBoost: (int boostAmount) {
-                                  paymentsBloc.actionsSink
-                                      .add(PayBoost(boostAmount));
-                                  userProfileBloc.userActionsSink
-                                      .add(SetBoostAmount(boostAmount));
-                                },
-                              )),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 8),
+                        child: WithConfettyPaymentEffect(
+                            type: PaymentEventType.BoostStarted,
+                            child: BoostWidget(
+                              userModel: userModel,
+                              boostAmountList: paymentOptions.boostAmountList,
+                              onBoost: (int boostAmount) {
+                                paymentsBloc.actionsSink
+                                    .add(PayBoost(boostAmount));
+                                userProfileBloc.userActionsSink
+                                    .add(SetBoostAmount(boostAmount));
+                              },
+                            )),
+                      ),
+                      Container(
+                        height: 64,
+                        width: 1,
+                        child: VerticalDivider(
+                          thickness: 1,
+                          color: Theme.of(context).dividerColor,
                         ),
-                        Container(
-                          height: 80,
-                          width: 1,
-                          child: VerticalDivider(
-                            thickness: 1,
-                            color: Theme.of(context).dividerColor,
-                          ),
-                        ),
-                        PaymentAdjuster(
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 8, right: 16),
+                        child: PaymentAdjuster(
                             userModel: userModel,
                             satsPerMinuteList:
                                 paymentOptions.satsPerMinuteIntervalsList,
@@ -89,8 +90,8 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                               userProfileBloc.userActionsSink
                                   .add(SetSatsPerMinAmount(satsPerMinute));
                             }),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
               });
