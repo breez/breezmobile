@@ -39,10 +39,15 @@ Should this happen, Breez will generate an on-chain address and sweep your funds
               text: "inbound liquidity",
               url:
                   "https://medium.com/breez-technology/lightning-economics-how-i-learned-to-stop-worrying-and-love-inbound-liquidity-511d05aa8b8b",
-              style: Theme.of(context)
-                  .primaryTextTheme
-                  .headline3
-                  .copyWith(fontSize: 16, decoration: TextDecoration.underline))
+              style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+                  fontSize: 16, decoration: TextDecoration.underline)),
+          TextSpan(
+            text: ".",
+            style: Theme.of(context)
+                .primaryTextTheme
+                .headline3
+                .copyWith(fontSize: 16),
+          ),
         ])),
       ),
     ];
@@ -59,7 +64,7 @@ Should this happen, Breez will generate an on-chain address and sweep your funds
         child: AlertDialog(
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: Text(
-            "No use Warning",
+            "Inactive Channels",
             style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
           contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
