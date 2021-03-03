@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
+import 'package:anytime/bloc/settings/settings_bloc.dart';
+import 'package:anytime/entities/app_settings.dart';
 import 'package:anytime/entities/episode.dart';
 import 'package:anytime/repository/repository.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
@@ -19,8 +21,9 @@ import 'package:fixnum/fixnum.dart';
 const maxFeePart = 0.2;
 
 class PodcastPaymentsBloc with AsyncActionsHandler {
-  final _listeningTime = Map<String, int>();
+  final _listeningTime = Map<String, double>();
   final AudioBloc audioBloc;
+  final SettingsBloc settingsBloc;
   final Repository repository;
   final AccountBloc accountBloc;
 
@@ -35,14 +38,17 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       _paymentEventsController.stream;
 
   StreamSubscription<PositionState> currentPositionSubscription;
+  StreamSubscription<AppSettings> currentSettingsSubscription;
 
   Episode _currentPaidEpisode;
   Duration _currentEpisodeDuration;
+  double _currentPlaybackSpeed = 1.0;
   BreezBridge _breezLib;
   Timer _paymentTimer;
   Map<String, double> _perDestinationPayments = Map<String, double>();
 
-  PodcastPaymentsBloc(this.accountBloc, this.audioBloc, this.repository) {
+  PodcastPaymentsBloc(
+      this.accountBloc, this.settingsBloc, this.audioBloc, this.repository) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     _paymentOptionsController.add(PaymentOptions());
@@ -108,10 +114,21 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       }
     });
 
-    _paymentTimer = Timer.periodic(Duration(seconds: 10), (t) {
-      var currentDuration = (_listeningTime[episode.contentUrl] ?? 0) + 10;
-      _listeningTime[episode.contentUrl] = currentDuration;
-      if (currentDuration > 0 && currentDuration % 60 == 0) {
+    currentSettingsSubscription = settingsBloc.settings.listen((event) {
+      _currentPlaybackSpeed = event.playbackSpeed;
+    });
+
+    final paidTimeOnStart = _listeningTime[episode.contentUrl] ?? 0;
+    _listeningTime[episode.contentUrl] = paidTimeOnStart;
+    var paidMinutes = Duration(seconds: paidTimeOnStart.floor()).inMinutes;
+    _paymentTimer = Timer.periodic(Duration(seconds: 1), (t) {
+      _listeningTime[episode.contentUrl] += _currentPlaybackSpeed;
+      final nextPaidMinutes =
+          Duration(seconds: _listeningTime[episode.contentUrl].floor())
+              .inMinutes;
+      if (nextPaidMinutes > paidMinutes) {
+        paidMinutes = nextPaidMinutes;
+        log.info("paying recipients " + paidMinutes.toString());
         _payRecipients(episode, recipients, _amountController.value);
       }
     });
@@ -204,6 +221,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   void _stopPaymentTimer() {
     currentPositionSubscription?.cancel();
+    currentSettingsSubscription?.cancel();
     _paymentTimer?.cancel();
   }
 
