@@ -255,8 +255,6 @@ class AccountModel {
       _accountResponse.status == Account_AccountStatus.DISCONNECTED;
   bool get processingConnection =>
       _accountResponse.status == Account_AccountStatus.PROCESSING_CONNECTION;
-  bool get closingConnection =>
-      _accountResponse.status == Account_AccountStatus.CLOSING_CONNECTION;
   bool get connected =>
       _accountResponse.status == Account_AccountStatus.CONNECTED;
   Int64 get tipHeight => _accountResponse.tipHeight;
