@@ -30,84 +30,118 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconButton(
-          icon: Icon(
-            Icons.remove_circle_outline,
-            size: 20,
-            color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-          ),
-          onPressed: () {
-            setState(() {
-              (selectedSatsPerMinuteIndex == 0)
-                  ? selectedSatsPerMinuteIndex = 0
-                  : selectedSatsPerMinuteIndex--;
-              widget.onChanged(widget.satsPerMinuteList
-                  .elementAt(selectedSatsPerMinuteIndex));
-            });
-          },
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(
-            maxHeight: 20.0,
-            minHeight: 20.0,
-            maxWidth: 20.0,
-            minWidth: 20.0,
-          ),
-        ),
-        SizedBox(
-          width: 56,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+        Container(
+          width: 120,
+          child: Stack(
             children: [
-              AutoSizeText(
-                NumberFormat.compact().format(widget.satsPerMinuteList
-                    .elementAt(selectedSatsPerMinuteIndex)),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14.3,
-                  letterSpacing: 1,
-                  fontWeight: FontWeight.w600,
-                  height: 1.2,
+              GestureDetector(
+                  child: Container(
+                      width: 32,
+                      height: 64,
+                      child: Material(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(32),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(32),
+                          onTap: () {
+                            setState(() {
+                              (selectedSatsPerMinuteIndex == 0)
+                                  ? selectedSatsPerMinuteIndex = 0
+                                  : selectedSatsPerMinuteIndex--;
+                              widget.onChanged(widget.satsPerMinuteList
+                                  .elementAt(selectedSatsPerMinuteIndex));
+                            });
+                          },
+                          splashColor: Theme.of(context).splashColor,
+                          highlightColor: Colors.transparent,
+                          child: Icon(
+                            Icons.remove_circle_outline,
+                            size: 20,
+                            color: Theme.of(context)
+                                .appBarTheme
+                                .actionsIconTheme
+                                .color,
+                          ),
+                        ),
+                      ))),
+              Positioned(
+                left: 24,
+                top: 16,
+                child: SizedBox(
+                  width: 56,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 32,
+                        height: 20,
+                        child: AutoSizeText(
+                          NumberFormat.compact().format(widget.satsPerMinuteList
+                              .elementAt(selectedSatsPerMinuteIndex)),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14.3,
+                            letterSpacing: 1,
+                            fontWeight: FontWeight.w600,
+                            height: 1.2,
+                          ),
+                          minFontSize: MinFontSize(context).minFontSize,
+                          stepGranularity: 0.1,
+                          maxLines: 1,
+                        ),
+                      ),
+                      AutoSizeText(
+                        "sats/min",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 10, letterSpacing: 1),
+                        minFontSize: MinFontSize(context).minFontSize,
+                        stepGranularity: 0.1,
+                        maxLines: 1,
+                      )
+                    ],
+                  ),
                 ),
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
               ),
-              AutoSizeText(
-                "sats/min",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10, letterSpacing: 1),
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
-                maxLines: 1,
-              )
+              Positioned(
+                left: 72,
+                child: GestureDetector(
+                    child: Container(
+                        width: 32,
+                        height: 64,
+                        child: Material(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(32),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(32),
+                            onTap: () {
+                              setState(() {
+                                (selectedSatsPerMinuteIndex ==
+                                        widget.satsPerMinuteList.length - 1)
+                                    ? selectedSatsPerMinuteIndex =
+                                        widget.satsPerMinuteList.length - 1
+                                    : selectedSatsPerMinuteIndex++;
+                                widget.onChanged(widget.satsPerMinuteList
+                                    .elementAt(selectedSatsPerMinuteIndex));
+                              });
+                            },
+                            splashColor: Theme.of(context).splashColor,
+                            highlightColor: Colors.transparent,
+                            child: Icon(
+                              Icons.add_circle_outline,
+                              size: 20,
+                              color: Theme.of(context)
+                                  .appBarTheme
+                                  .actionsIconTheme
+                                  .color,
+                            ),
+                          ),
+                        ))),
+              ),
             ],
-          ),
-        ),
-        IconButton(
-          icon: Icon(
-            Icons.add_circle_outline,
-            size: 20,
-            color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-          ),
-          onPressed: () {
-            setState(() {
-              (selectedSatsPerMinuteIndex ==
-                      widget.satsPerMinuteList.length - 1)
-                  ? selectedSatsPerMinuteIndex =
-                      widget.satsPerMinuteList.length - 1
-                  : selectedSatsPerMinuteIndex++;
-              widget.onChanged(widget.satsPerMinuteList
-                  .elementAt(selectedSatsPerMinuteIndex));
-            });
-          },
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(
-            maxHeight: 20.0,
-            minHeight: 20.0,
-            maxWidth: 20.0,
-            minWidth: 20.0,
           ),
         ),
       ],

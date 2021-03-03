@@ -275,7 +275,8 @@ class BreezBridge {
       String destNode, Int64 amount, String description,
       {Int64 feeLimitMsat = Int64.ZERO,
       String groupKey = "",
-      String groupName = ""}) {
+      String groupName = "",
+      Map<Int64, String> tlv}) {
     var request = SpontaneousPaymentRequest()
       ..description = description
       ..destNode = destNode
@@ -283,6 +284,10 @@ class BreezBridge {
       ..feeLimitMsat = feeLimitMsat
       ..groupKey = groupKey
       ..groupName = groupName;
+
+    if (tlv != null) {
+      request.tlv.addAll(tlv);
+    }
 
     var payFunc = () => _invokeMethodWhenReady(
             "sendSpontaneousPayment", {"argument": request.writeToBuffer()})
