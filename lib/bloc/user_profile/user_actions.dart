@@ -94,3 +94,15 @@ class SetSatsPerMinAmount extends AsyncAction {
 
   SetSatsPerMinAmount(this.satsPerMin);
 }
+
+class SetSeenPodcastTutorial extends AsyncAction {
+  final bool seen;
+
+  SetSeenPodcastTutorial(this.seen);
+}
+
+class SetSeenPaymentStripTutorial extends AsyncAction {
+  final bool seen;
+
+  SetSeenPaymentStripTutorial(this.seen);
+}

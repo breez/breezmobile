@@ -11,6 +11,7 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/dev/set_height_hint.dart';
@@ -453,6 +454,14 @@ class DevViewState extends State<DevView> {
           if (success == true) {
             _promptForRestart();
           }
+        }));
+    choices.add(Choice(
+        title: 'Show Tutorials',
+        icon: Icons.phone_android,
+        function: () {
+          UserProfileBloc bloc = AppBlocsProvider.of<UserProfileBloc>(context);
+          bloc.userActionsSink.add(SetSeenPodcastTutorial(false));
+          bloc.userActionsSink.add(SetSeenPaymentStripTutorial(false));
         }));
     return choices;
   }

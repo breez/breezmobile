@@ -7,8 +7,7 @@ class SeenTutorials {
   SeenTutorials.initial()
       : this._(podcastsTutorial: false, paymentStripTutorial: false);
 
-  SeenTutorials copyWith(
-      {String podcastsTutorial, String paymentStripTutorial}) {
+  SeenTutorials copyWith({bool podcastsTutorial, bool paymentStripTutorial}) {
     return SeenTutorials._(
         podcastsTutorial: podcastsTutorial ?? this.podcastsTutorial,
         paymentStripTutorial:

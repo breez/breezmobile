@@ -180,7 +180,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   Future<dynamic> _showTutorial() {
     return Future.delayed(Duration(milliseconds: 200), () {
-      if (_scaffoldKey.currentState.isDrawerOpen) _buildTutorial();
+      if (_scaffoldKey.currentState.isDrawerOpen) {
+        _buildTutorial();
+      }
     });
   }
 
@@ -199,7 +201,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         },
         onSkip: () => tutorial.finish(),
         onFinish: () {
-          // set users seenTutorials.podcastTutorial to true
+          final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+          userBloc.userActionsSink.add(SetSeenPodcastTutorial(true));
         });
     _buildTutorialTargets();
   }

@@ -38,19 +38,24 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
   @override
   void initState() {
     super.initState();
-    postInit(() {
-      _buildTutorial();
-      tutorial.show();
+    postInit(() async {
+      final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      final user = await userBloc.userStream.first;
+      if (!user.seenTutorials.paymentStripTutorial) {
+        _buildTutorial();
+        tutorial.show();
+      }
     });
   }
 
   void _buildTutorial() {
-    tutorial = TutorialCoachMark(
-      context,
-      targets: targets,
-      colorShadow: Theme.of(context).primaryColor,
-      hideSkip: true,
-    );
+    tutorial = TutorialCoachMark(context,
+        targets: targets,
+        colorShadow: Theme.of(context).primaryColor,
+        hideSkip: true, onFinish: () {
+      final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      userBloc.userActionsSink.add(SetSeenPaymentStripTutorial(true));
+    });
     _buildTutorialTargets();
   }
 
