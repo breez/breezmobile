@@ -57,8 +57,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                                   }
                                   final satAmount =
                                       widget.satsPerMinuteList.elementAt(index);
-                                  userBloc.userActionsSink
-                                      .add(SetSatsPerMinAmount(satAmount));
+                                  widget.onChanged(satAmount);
                                 },
                                 splashColor: Theme.of(context).splashColor,
                                 highlightColor: Colors.transparent,
@@ -134,8 +133,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                                     }
                                     final satAmount = widget.satsPerMinuteList
                                         .elementAt(nextIndex);
-                                    userBloc.userActionsSink
-                                        .add(SetSatsPerMinAmount(satAmount));
+                                    widget.onChanged(satAmount);
                                   },
                                   splashColor: Theme.of(context).splashColor,
                                   highlightColor: Colors.transparent,

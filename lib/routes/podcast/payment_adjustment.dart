@@ -213,23 +213,27 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                     height: 64,
                     color: Theme.of(context).backgroundColor,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16, right: 0),
-                          child: WithConfettyPaymentEffect(
-                              type: PaymentEventType.BoostStarted,
-                              child: BoostWidget(
-                                key: boostWidgetKey,
-                                userModel: userModel,
-                                boostAmountList: paymentOptions.boostAmountList,
-                                onBoost: (int boostAmount) {
-                                  paymentsBloc.actionsSink
-                                      .add(PayBoost(boostAmount));
-                                  userProfileBloc.userActionsSink
-                                      .add(SetBoostAmount(boostAmount));
-                                },
-                              )),
+                        Flexible(
+                          flex: 5,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 16, right: 0),
+                            child: WithConfettyPaymentEffect(
+                                type: PaymentEventType.BoostStarted,
+                                child: BoostWidget(
+                                  key: boostWidgetKey,
+                                  userModel: userModel,
+                                  boostAmountList:
+                                      paymentOptions.boostAmountList,
+                                  onBoost: (int boostAmount) {
+                                    paymentsBloc.actionsSink
+                                        .add(PayBoost(boostAmount));
+                                    userProfileBloc.userActionsSink
+                                        .add(SetBoostAmount(boostAmount));
+                                  },
+                                )),
+                          ),
                         ),
                         Container(
                           height: 64,
@@ -239,19 +243,24 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                             color: Theme.of(context).dividerColor,
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 0, right: 0),
-                          child: PaymentAdjuster(
-                              key: paymentAdjusterKey,
-                              userModel: userModel,
-                              satsPerMinuteList:
-                                  paymentOptions.satsPerMinuteIntervalsList,
-                              onChanged: (int satsPerMinute) {
-                                paymentsBloc.actionsSink
-                                    .add(AdjustAmount(satsPerMinute));
-                                userProfileBloc.userActionsSink
-                                    .add(SetSatsPerMinAmount(satsPerMinute));
-                              }),
+                        Flexible(
+                          flex: 3,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 0, right: 0),
+                            child: Center(
+                              child: PaymentAdjuster(
+                                  key: paymentAdjusterKey,
+                                  userModel: userModel,
+                                  satsPerMinuteList:
+                                      paymentOptions.satsPerMinuteIntervalsList,
+                                  onChanged: (int satsPerMinute) {
+                                    paymentsBloc.actionsSink
+                                        .add(AdjustAmount(satsPerMinute));
+                                    userProfileBloc.userActionsSink.add(
+                                        SetSatsPerMinAmount(satsPerMinute));
+                                  }),
+                            ),
+                          ),
                         ),
                       ],
                     ),

@@ -30,7 +30,7 @@ class _BoostWidgetState extends State<BoostWidget> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
@@ -66,116 +66,123 @@ class _BoostWidgetState extends State<BoostWidget> {
             ),
             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             onPressed: () {
-              widget
-                  .onBoost(widget.boostAmountList.elementAt(selectedBoostIndex));
+              widget.onBoost(
+                  widget.boostAmountList.elementAt(selectedBoostIndex));
             },
           ),
         ),
-        Container(
-          width: 92,
-          child: Stack(
-            fit: StackFit.loose,
-            children: [
-              GestureDetector(
-                  child: Container(
-                      width: 32,
-                      height: 64,
-                      child: Material(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(32),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(32),
-                          onTap: () {
-                            setState(() {
-                              (selectedBoostIndex == 0)
-                                  ? selectedBoostIndex = 0
-                                  : selectedBoostIndex--;
-                            });
-                          },
-                          splashColor: Theme.of(context).splashColor,
-                          highlightColor: Colors.transparent,
-                          child: Icon(
-                            Icons.remove_circle_outline,
-                            size: 20,
-                            color: Theme.of(context)
-                                .appBarTheme
-                                .actionsIconTheme
-                                .color,
-                          ),
-                        ),
-                      ))),
-              Positioned(
-                left: 24,
-                top: 16,
-                child: SizedBox(
-                  width: 42,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 32,
-                        height: 20,
-                        child: AutoSizeText(
-                          NumberFormat.compact().format(widget.boostAmountList
-                              .elementAt(selectedBoostIndex)),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14.3,
-                            letterSpacing: 1,
-                            fontWeight: FontWeight.w600,
-                            height: 1.2,
-                          ),
-                          minFontSize: MinFontSize(context).minFontSize,
-                          stepGranularity: 0.1,
-                          maxLines: 1,
-                        ),
-                      ),
-                      AutoSizeText(
-                        "sats",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 10, letterSpacing: 1),
-                        minFontSize: MinFontSize(context).minFontSize,
-                        stepGranularity: 0.1,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 60,
-                child: GestureDetector(
-                    child: Container(
-                        width: 32,
-                        height: 64,
-                        child: Material(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(32),
-                          child: InkWell(
+        Flexible(
+          fit: FlexFit.tight,
+          flex: 1,
+          child: Center(
+            child: Container(
+              width: 92,
+              child: Stack(
+                fit: StackFit.loose,
+                children: [
+                  GestureDetector(
+                      child: Container(
+                          width: 32,
+                          height: 64,
+                          child: Material(
+                            color: Colors.transparent,
                             borderRadius: BorderRadius.circular(32),
-                            onTap: () {
-                              setState(() {
-                                (selectedBoostIndex ==
-                                        widget.boostAmountList.length - 1)
-                                    ? selectedBoostIndex =
-                                        widget.boostAmountList.length - 1
-                                    : selectedBoostIndex++;
-                              });
-                            },
-                            splashColor: Theme.of(context).splashColor,
-                            highlightColor: Colors.transparent,
-                            child: Icon(
-                              Icons.add_circle_outline,
-                              size: 20,
-                              color: Theme.of(context)
-                                  .appBarTheme
-                                  .actionsIconTheme
-                                  .color,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(32),
+                              onTap: () {
+                                setState(() {
+                                  (selectedBoostIndex == 0)
+                                      ? selectedBoostIndex = 0
+                                      : selectedBoostIndex--;
+                                });
+                              },
+                              splashColor: Theme.of(context).splashColor,
+                              highlightColor: Colors.transparent,
+                              child: Icon(
+                                Icons.remove_circle_outline,
+                                size: 20,
+                                color: Theme.of(context)
+                                    .appBarTheme
+                                    .actionsIconTheme
+                                    .color,
+                              ),
+                            ),
+                          ))),
+                  Positioned(
+                    left: 24,
+                    top: 16,
+                    child: SizedBox(
+                      width: 42,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 32,
+                            height: 20,
+                            child: AutoSizeText(
+                              NumberFormat.compact().format(widget
+                                  .boostAmountList
+                                  .elementAt(selectedBoostIndex)),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14.3,
+                                letterSpacing: 1,
+                                fontWeight: FontWeight.w600,
+                                height: 1.2,
+                              ),
+                              minFontSize: MinFontSize(context).minFontSize,
+                              stepGranularity: 0.1,
+                              maxLines: 1,
                             ),
                           ),
-                        ))),
+                          AutoSizeText(
+                            "sats",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 10, letterSpacing: 1),
+                            minFontSize: MinFontSize(context).minFontSize,
+                            stepGranularity: 0.1,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 60,
+                    child: GestureDetector(
+                        child: Container(
+                            width: 32,
+                            height: 64,
+                            child: Material(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(32),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(32),
+                                onTap: () {
+                                  setState(() {
+                                    (selectedBoostIndex ==
+                                            widget.boostAmountList.length - 1)
+                                        ? selectedBoostIndex =
+                                            widget.boostAmountList.length - 1
+                                        : selectedBoostIndex++;
+                                  });
+                                },
+                                splashColor: Theme.of(context).splashColor,
+                                highlightColor: Colors.transparent,
+                                child: Icon(
+                                  Icons.add_circle_outline,
+                                  size: 20,
+                                  color: Theme.of(context)
+                                      .appBarTheme
+                                      .actionsIconTheme
+                                      .color,
+                                ),
+                              ),
+                            ))),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ],
