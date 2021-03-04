@@ -12,6 +12,9 @@ Widget withBreezTheme(BuildContext context, Widget child) {
     stream: userProfileBloc.userStream,
     builder: (context, snapshot) {
       var user = snapshot.data;
+      if (user == null) {
+        return child;
+      }
       var currentTheme = theme.themeMap[user.themeId];
       return Theme(child: child, data: currentTheme);
     },

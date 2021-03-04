@@ -51,7 +51,7 @@ class BreezUserModel {
     this.preferredCurrencies,
     this.appMode = AppMode.balance,
     this.preferredBoostValue = 5000,
-    this.preferredSatsPerMinValue = 50,
+    this.preferredSatsPerMinValue = 0,
     this.seenTutorials,
   });
 
