@@ -56,11 +56,22 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
   void _buildTutorial() {
     tutorial = TutorialCoachMark(context,
         targets: targets,
+        onClickOverlay: (t) {
+          if (t.keyTarget == boostWidgetKey) {
+            tutorial.next();
+          }
+        },
+        onClickTarget: (t) {
+          if (t.keyTarget != paymentAdjusterKey) {
+            tutorial.next();
+          }
+        },
         colorShadow: Theme.of(context).primaryColor,
-        hideSkip: true, onFinish: () {
-      final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      userBloc.userActionsSink.add(SetSeenPaymentStripTutorial(true));
-    });
+        hideSkip: true,
+        onFinish: () {
+          final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+          userBloc.userActionsSink.add(SetSeenPaymentStripTutorial(true));
+        });
     _buildTutorialTargets();
   }
 
@@ -71,6 +82,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
       shape: ShapeLightFocus.RRect,
       radius: 4,
       paddingFocus: 8,
+      enableOverlayTab: true,
       contents: [
         TargetContent(
             align: ContentAlign.top,
@@ -102,6 +114,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
       shape: ShapeLightFocus.RRect,
       radius: 4,
       paddingFocus: 4,
+      enableTargetTab: false,
       contents: [
         TargetContent(
             align: ContentAlign.top,
